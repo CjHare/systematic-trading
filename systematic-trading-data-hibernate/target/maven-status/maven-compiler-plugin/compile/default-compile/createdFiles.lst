@@ -1,7 +1,0 @@
-com\systematic\trading\data\dao\impl\DataPointDaoImpl.class
-com\systematic\trading\data\util\HibernateUtil.class
-com\systematic\trading\data\dao\DataPointDao.class
-com\systematic\trading\data\examples\Event.class
-com\systematic\trading\data\examples\EventManager.class
-com\systematic\trading\data\DataPointImpl.class
-com\systematic\trading\data\examples\DataPointImplOLD.class
