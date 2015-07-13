@@ -1,0 +1,208 @@
+/**
+ * Copyright (c) 2015, CJ Hare
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * * Neither the name of [project] nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.systematic.trading.data;
+
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.systematic.trading.data.dao.DataPointDao;
+import com.systematic.trading.data.dao.impl.DataPointDaoImpl;
+import com.systematic.trading.data.stock.api.StockApi;
+import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.signals.yahoo.YahooStockApi;
+
+public class DataServiceUpdaterImpl implements DataServiceUpdater {
+
+	private static final DataServiceUpdater INSTANCE = new DataServiceUpdaterImpl();
+
+	/* Days data needed - 20 + 20 for the MACD part EMA(20), Weekend and bank holidays */
+	private static final int HISTORY_REQUIRED = 50 + 16 + 5;
+
+	/** Average number of data points above which assumes the month already retrieve covered. */
+	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
+
+	public static DataServiceUpdater getInstance() {
+		return INSTANCE;
+	}
+
+	private final DataPointDao dao = new DataPointDaoImpl();
+	private final StockApi api = new YahooStockApi();
+
+	private DataServiceUpdaterImpl() {
+	}
+
+	@Override
+	public void get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
+
+		// Ensure there's a table for the data
+		dao.createTable( tickerSymbol );
+
+		// TODO of partial data, retrieve & discard
+		// TODO delete requests after processing
+
+		final List<HistoryRetrievalRequest> unfilteredRequests = sliceHistoryRetrievalRequest( tickerSymbol, startDate,
+				endDate );
+		final List<HistoryRetrievalRequest> filteredRequests = removeRedundantRequests( unfilteredRequests );
+		storeHistoryRetrievalRequests( filteredRequests );
+
+		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests( tickerSymbol );
+
+		processHistoryRetrievalRequests( outstandingRequests );
+	}
+
+	@Override
+	public void get( final String tickerSymbol ) {
+		final LocalDate endDate = LocalDate.now();
+		final LocalDate startDate = getMinimumStartDate( tickerSymbol, endDate );
+
+		get( tickerSymbol, startDate, endDate );
+	};
+
+	/**
+	 * Determine the minimum start date to retrieve, based on the currently stored data.
+	 */
+	private LocalDate getMinimumStartDate( final String tickerSymbol, final LocalDate endDate ) {
+		final DataPoint mostRecent = dao.getMostRecent( tickerSymbol );
+
+		// Alter the start date to be the day after the most recent
+		if (mostRecent == null) {
+			return endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS );
+		} else {
+			return endDate.plus( 1, ChronoUnit.DAYS );
+		}
+	}
+
+	/**
+	 * Get the history requests from the stock API.
+	 */
+	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests ) {
+		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
+
+		for (final HistoryRetrievalRequest request : requests) {
+
+			final String tickerSymbol = request.getTickerSymbol();
+			final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
+			final LocalDate endDate = request.getInclusiveEndDate().toLocalDate();
+
+			try {
+
+				// Pull the data from the Stock API
+				final DataPoint[] tradingData = api.getStockData( tickerSymbol, startDate, endDate );
+
+				// Push to the data source
+				dao.create( tradingData );
+
+				// Remove the request from the queue
+				requestManager.delete( request );
+
+			} catch (final CannotRetrieveDataException e) {
+
+				// TODO ? propagate ?
+			}
+
+		}
+	}
+
+	/**
+	 * Split up the date range into manageable size pieces.
+	 */
+	private List<HistoryRetrievalRequest> sliceHistoryRetrievalRequest( final String tickerSymbol,
+			final LocalDate startDate, final LocalDate endDate ) {
+
+		final Period maximum = api.getMaximumDurationInSingleUpdate();
+		Period actual = Period.between( startDate, endDate );
+
+		final List<HistoryRetrievalRequest> requests = new ArrayList<HistoryRetrievalRequest>();
+
+		if (isDurationTooLong( maximum, actual )) {
+
+			// Split up the requests for processing
+			LocalDate movedStartDate = startDate;
+			LocalDate movedEndDate = startDate.plus( maximum );
+
+			while (endDate.isAfter( movedEndDate )) {
+
+				requests.add( new HistoryRetrievalRequest( tickerSymbol, movedStartDate, movedEndDate ) );
+
+				movedStartDate = movedEndDate.plus( 1, ChronoUnit.DAYS );
+				movedEndDate = movedStartDate.plus( maximum );
+				actual = Period.between( movedStartDate, movedEndDate );
+			}
+
+		} else {
+
+			requests.add( new HistoryRetrievalRequest( tickerSymbol, startDate, endDate ) );
+		}
+
+		return requests;
+	}
+
+	/**
+	 * Remove requests where the full set of data already has already been retrieved.
+	 */
+	private List<HistoryRetrievalRequest> removeRedundantRequests( final List<HistoryRetrievalRequest> requests ) {
+		final List<HistoryRetrievalRequest> filtered = new ArrayList<HistoryRetrievalRequest>();
+
+		for (final HistoryRetrievalRequest request : requests) {
+
+			final String tickerSymbol = request.getTickerSymbol();
+			final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
+			final LocalDate endDate = request.getInclusiveEndDate().toLocalDate();
+
+			final long count = dao.count( tickerSymbol, startDate, endDate );
+			final Period interval = Period.between( startDate, endDate );
+			final long meanDataPointsPerMonth = count / interval.toTotalMonths();
+
+			if (meanDataPointsPerMonth < MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD) {
+				filtered.add( request );
+			}
+		}
+
+		return filtered;
+	}
+
+	private boolean isDurationTooLong( final Period maximum, final Period actual ) {
+		return actual.toTotalMonths() > maximum.toTotalMonths();
+	}
+
+	/**
+	 * These we store as a defensive approach in case of partial failure during processing.
+	 */
+	private void storeHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests ) {
+		HistoryRetrievalRequestManager.getInstance().create( requests );
+	}
+
+	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
+		return HistoryRetrievalRequestManager.getInstance().get( tickerSymbol );
+	}
+}

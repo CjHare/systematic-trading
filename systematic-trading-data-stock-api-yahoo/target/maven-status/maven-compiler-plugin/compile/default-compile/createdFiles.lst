@@ -1,0 +1,4 @@
+com\systematic\trading\signals\yahoo\util\HttpUtil.class
+com\systematic\trading\signals\yahoo\YahooStockApi$1.class
+com\systematic\trading\signals\yahoo\YahooStockApi.class
+com\systematic\trading\signals\yahoo\data\DataPointImpl.class

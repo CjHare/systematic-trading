@@ -1,0 +1,7 @@
+com\systematic\trading\maths\indicator\ExponentialMovingAverage.class
+com\systematic\trading\maths\ValueWithDate.class
+com\systematic\trading\maths\indicator\AverageTrueRange.class
+com\systematic\trading\maths\indicator\SimpleMovingAverage.class
+com\systematic\trading\maths\exception\TooFewDataPoints.class
+com\systematic\trading\maths\indicator\RelativeStrengthIndex.class
+com\systematic\trading\maths\indicator\StochasticPercentageK.class

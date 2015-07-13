@@ -1,0 +1,13 @@
+com\systematic\trading\signals\indicator\RelativeStrengthIndexSignals.class
+com\systematic\trading\signals\indicator\IndicatorSignalType.class
+com\systematic\trading\signals\model\AnalysisLongBuySignals.class
+com\systematic\trading\signals\indicator\StochasticOscillatorSignals.class
+com\systematic\trading\signals\model\BuySignalDateComparator.class
+com\systematic\trading\signals\model\filter\SignalFilter.class
+com\systematic\trading\signals\model\BuySignal.class
+com\systematic\trading\signals\model\configuration\LongBuySignalConfiguration.class
+com\systematic\trading\signals\indicator\IndicatorSignal.class
+com\systematic\trading\signals\model\DataPointComparator.class
+com\systematic\trading\signals\indicator\MovingAveragingConvergeDivergenceSignals.class
+com\systematic\trading\signals\model\configuration\AllSignalsConfiguration.class
+com\systematic\trading\signals\model\filter\EveryIndicatorIsBuySignalFilter.class
