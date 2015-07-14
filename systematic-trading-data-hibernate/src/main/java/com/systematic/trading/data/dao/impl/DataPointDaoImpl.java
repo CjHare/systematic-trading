@@ -159,7 +159,7 @@ public class DataPointDaoImpl implements DataPointDao {
 		// Convert result entries into the DataPoint
 		final DataPoint[] data = new DataPoint[result.size()];
 		for (int i = 0; i < data.length; i++) {
-			data[i] = DataPointUtil.parseDataPoint( tickerSymbol, result.get( 0 ) );
+			data[i] = DataPointUtil.parseDataPoint( tickerSymbol, result.get( i ) );
 		}
 
 		return data;
