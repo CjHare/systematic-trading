@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals;
+package com.systematic.trading.analysis;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -39,6 +39,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.analysis.model.ProcessLongBuySignals;
+import com.systematic.trading.analysis.view.DisplayBuySignals;
 import com.systematic.trading.data.DataPoint;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
@@ -49,12 +51,10 @@ import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenc
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.ProcessLongBuySignals;
 import com.systematic.trading.signals.model.configuration.AllSignalsConfiguration;
 import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
 import com.systematic.trading.signals.model.filter.EveryIndicatorIsBuySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
-import com.systematic.trading.signals.view.DisplayBuySignals;
 
 public class TodaysBuySignals {
 

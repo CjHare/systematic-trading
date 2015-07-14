@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.model;
+package com.systematic.trading.analysis.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +35,11 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.analysis.Equity;
 import com.systematic.trading.data.DataPoint;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.signals.Equity;
+import com.systematic.trading.signals.model.AnalysisLongBuySignals;
+import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
