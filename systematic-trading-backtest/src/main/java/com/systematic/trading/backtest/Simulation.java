@@ -34,34 +34,80 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.data.DataPoint;
 
 /**
  * The application of the chosen trading logic over a given set of data is performed in the Simulation.
+ * <p/>
+ * Applies the trading logic over a single equity only.
  * 
  * @author CJ Hare
  */
 public class Simulation {
 
-	/** Data set to feed into the trading behaviour. */
-	private final SortedSet<DataPoint> data;
+    /** Data set to feed into the trading behaviour. */
+    private final SortedSet<DataPoint> chronologicalData;
 
-	public Simulation( final DataPoint[] unordered ) {
+    /** Makes the decision on whether action is required.*/
+    private final TradingLogic logic;
 
-		// Correctly order the data set with the oldest entry first
-		this.data = new TreeSet<DataPoint>( new Comparator<DataPoint>() {
-			@Override
-			public int compare( final DataPoint a, final DataPoint b ) {
-				return a.getDate().compareTo( b.getDate() );
-			}
-		} );
-		this.data.addAll( Arrays.asList( unordered ) );
-	}
+    /** The manager dealing with cash and it's accounting.*/
+    private final CashAccount cashAccount;
 
-	public void run() {
+    /** Dealer of equities.*/
+    private final Brokerage broker;
 
-		for (final DataPoint d : data) {
-			System.out.println( d.getDate() );
-		}
-	}
+    public Simulation(final DataPoint[] unordered, final TradingLogic logic, final CashAccount cashAccount,
+            final Brokerage broker) {
+
+        // Correctly order the data set with the oldest entry first
+        this.chronologicalData = new TreeSet<DataPoint>(new Comparator<DataPoint>() {
+            @Override
+            public int compare(final DataPoint a, final DataPoint b) {
+                return a.getDate().compareTo(b.getDate());
+            }
+        });
+        this.chronologicalData.addAll(Arrays.asList(unordered));
+
+        this.logic = logic;
+        this.cashAccount = cashAccount;
+        this.broker = broker;
+    }
+
+    public void run() {
+
+        // Iterating through the chronologically ordered data point
+        TradeSignal signal;
+        TradeEvent trade;
+
+        for (final DataPoint data : chronologicalData) {
+
+            signal = logic.update(data);
+
+            cashAccount.update(data);
+
+            trade = filterTradeSignal(signal);
+
+            //TODO broker, buying logic i.e. how much
+
+            //TODO need a trading balance
+            //TODO decrement the cash account balance on trade
+
+            //TODO queue for orders, choose to place order & execute tomorrow, at tomorrows price, or at a price
+            //TODO action the trade (if there is one)
+        }
+    }
+
+    /**
+     * Determines whether there are sufficient funds to perform a trade based on the signal.
+     */
+    private TradeEvent filterTradeSignal(final TradeSignal signal) {
+        //TODO action signal
+        //TODO apply brokerage
+        
+        //TODO calculation
+        return null;
+    }
+
 }
