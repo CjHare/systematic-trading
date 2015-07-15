@@ -29,28 +29,12 @@
  */
 package com.systematic.trading.backtest;
 
-import com.systematic.trading.data.DataPoint;
-
 /**
- * The trading order that can be executed by a specific brokerage.
+ * What action to take on an order whose triggering conditions are met, however there are now not enough available
+ * funds to execute.
  * 
  * @author CJ Hare
  */
-public interface TradingOrder {
-
-	/**
-	 * Whether the order has expire.
-	 * 
-	 * @return <code>true</code> has expire and should not be executed, <code>false</code> otherwise.
-	 */
-	boolean hasExpired();
-
-	/**
-	 * Whether the day's trading movement satisfied the execution criteria for the order.
-	 * 
-	 * @param todaysTrading
-	 *            the price action for today.
-	 * @return <code>true</code> the conditions are met, <code>false</code> otherwise.
-	 */
-	boolean areExecutionConditionsMet( DataPoint todaysTrading );
+public enum OrderInsufficientFundsAction {
+	DELETE,
 }

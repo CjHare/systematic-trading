@@ -29,8 +29,10 @@
  */
 package com.systematic.trading.backtest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -46,68 +48,87 @@ import com.systematic.trading.data.DataPoint;
  */
 public class Simulation {
 
-    /** Data set to feed into the trading behaviour. */
-    private final SortedSet<DataPoint> chronologicalData;
+	/** Data set to feed into the trading behaviour. */
+	private final SortedSet<DataPoint> chronologicalData;
 
-    /** Makes the decision on whether action is required.*/
-    private final TradingLogic logic;
+	/** Makes the decision on whether action is required. */
+	private final TradingLogic logic;
 
-    /** The manager dealing with cash and it's accounting.*/
-    private final CashAccount cashAccount;
+	/** The manager dealing with cash and it's accounting. */
+	private final CashAccount cashAccount;
 
-    /** Dealer of equities.*/
-    private final Brokerage broker;
+	/** Dealer of equities. */
+	private final Brokerage broker;
 
-    public Simulation(final DataPoint[] unordered, final TradingLogic logic, final CashAccount cashAccount,
-            final Brokerage broker) {
+	public Simulation( final DataPoint[] unordered, final TradingLogic logic, final CashAccount cashAccount,
+			final Brokerage broker ) {
 
-        // Correctly order the data set with the oldest entry first
-        this.chronologicalData = new TreeSet<DataPoint>(new Comparator<DataPoint>() {
-            @Override
-            public int compare(final DataPoint a, final DataPoint b) {
-                return a.getDate().compareTo(b.getDate());
-            }
-        });
-        this.chronologicalData.addAll(Arrays.asList(unordered));
+		// Correctly order the data set with the oldest entry first
+		this.chronologicalData = new TreeSet<DataPoint>( new Comparator<DataPoint>() {
+			@Override
+			public int compare( final DataPoint a, final DataPoint b ) {
+				return a.getDate().compareTo( b.getDate() );
+			}
+		} );
+		this.chronologicalData.addAll( Arrays.asList( unordered ) );
 
-        this.logic = logic;
-        this.cashAccount = cashAccount;
-        this.broker = broker;
-    }
+		this.logic = logic;
+		this.cashAccount = cashAccount;
+		this.broker = broker;
+	}
 
-    public void run() {
+	public void run() {
 
-        // Iterating through the chronologically ordered data point
-        TradeSignal signal;
-        TradeEvent trade;
+		//TODO restructure
+		
+		// Iterating through the chronologically ordered data point
+		TradeSignal signal = null;
+		TradingOrder order = null;
+		List<TradingOrder> orders = new ArrayList<TradingOrder>();
 
-        for (final DataPoint data : chronologicalData) {
+		for (final DataPoint data : chronologicalData) {
 
-            signal = logic.update(data);
+			orders = processOutstandingOrders( orders, data );
 
-            cashAccount.update(data);
+			signal = logic.update( data );
 
-            trade = filterTradeSignal(signal);
+			cashAccount.update( data );
 
-            //TODO broker, buying logic i.e. how much
+			if (signal != null) {
+				order = logic.createOrder( signal, cashAccount, broker );
+			}
 
-            //TODO need a trading balance
-            //TODO decrement the cash account balance on trade
+			if (order != null) {
+				orders.add( order );
+			}
+		}
+	}
 
-            //TODO queue for orders, choose to place order & execute tomorrow, at tomorrows price, or at a price
-            //TODO action the trade (if there is one)
-        }
-    }
+	/**
+	 * Attempts to process the outstanding orders against today's price action.
+	 * 
+	 * @return orders that were not executed as their conditions were not met.
+	 */
+	private List<TradingOrder> processOutstandingOrders( final List<TradingOrder> orders, final DataPoint data ) {
+		final List<TradingOrder> remainingOrders = new ArrayList<TradingOrder>( orders.size() );
 
-    /**
-     * Determines whether there are sufficient funds to perform a trade based on the signal.
-     */
-    private TradeEvent filterTradeSignal(final TradeSignal signal) {
-        //TODO action signal
-        //TODO apply brokerage
-        
-        //TODO calculation
-        return null;
-    }
+		for (final TradingOrder order : orders) {
+
+			if (!order.hasExpired()) {
+				if (order.areExecutionConditionsMet( data )) {
+
+					// TODO execute if money, otherwise ??
+					// TODO add calc on brokerage
+					// TODO execute any outstanding order(s)
+					// TODO decrement the cash account balance on trade
+
+				} else {
+					remainingOrders.add( order );
+				}
+			}
+		}
+
+		return remainingOrders;
+	}
 
 }

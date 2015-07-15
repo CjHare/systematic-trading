@@ -29,6 +29,11 @@
  */
 package com.systematic.trading.backtest;
 
-public class TradeEvent {
-
+/**
+ * What action to take on an order when it has expired.
+ * 
+ * @author CJ Hare
+ */
+public enum OrderExpiryAction {
+	DELETE,
 }
