@@ -40,7 +40,7 @@ import java.math.BigDecimal;
 
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
-import com.systematic.trading.backtest.brokerage.exception.UnsupportedEquityClass;
+import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 
 /**
  * Fees for the online broker Bell Direct.

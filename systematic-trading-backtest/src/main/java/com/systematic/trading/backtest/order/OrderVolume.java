@@ -27,35 +27,43 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage;
+package com.systematic.trading.backtest.order;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.backtest.order.OrderVolume;
-import com.systematic.trading.backtest.order.Price;
-
 /**
- * The broker performs the trading on a customers behalf, charging for privilege.
+ * The number of equities.
  * 
  * @author CJ Hare
  */
-public interface Brokerage {
+public class OrderVolume {
 
     /**
-     * Performs a purchase, applying the corresponding brokers fees.
+     * Creates a volume of an order from a decimal.
      * 
-     * @param price mean price paid for the equity.
-     * @param volume number of equities being purchased.
-     * @return total cost of the purchase.
+     * @param volume decimal to create the volume from, cannot be <code>null</code>.
+     * @return equivalent volume.
      */
-    BigDecimal buy(Price price, OrderVolume volume);
+    public static OrderVolume valueOf(final BigDecimal volume) {
+        if (volume == null) {
+            throw new IllegalArgumentException("null is not accepted by OrderVolume.valueOf()");
+        }
+
+        return new OrderVolume(volume);
+    }
+
+    private final BigDecimal volume;
+
+    private OrderVolume(final BigDecimal volume) {
+        this.volume = volume;
+    }
 
     /**
-     * Performs a liquidation, applying the corresponding brokers fees.
+     * Retrieves the number of equities.
      * 
-     * @param price mean price paid for the equity.
-     * @param volume number of equities being sold.
-     * @return total funds acquired from the liquidation.
+     * @return volume of the order, never <code>null</code>.
      */
-    BigDecimal sell(Price price, OrderVolume volume);
+    public BigDecimal getVolume() {
+        return volume;
+    }
 }

@@ -35,11 +35,12 @@ import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.TE
 import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.TEN_BASIS_POINTS;
 import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.THIRTEEN;
 import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.applyLargest;
+
 import java.math.BigDecimal;
 
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
-import com.systematic.trading.backtest.brokerage.exception.UnsupportedEquityClass;
+import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 
 /**
  * Fees for the online broker Bell Direct.

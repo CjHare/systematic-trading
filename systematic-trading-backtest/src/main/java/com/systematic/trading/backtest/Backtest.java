@@ -36,6 +36,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.logic.EntryLogic;
+import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.data.DataPoint;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
@@ -43,6 +45,13 @@ import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.util.HibernateUtil;
 
+/**
+ * Performs back testing of trading logic over a historical data set. 
+ * <p/>
+ * Assumption: no liquidity issues == can always execute a trade.
+ * 
+ * @author CJ Hare
+ */
 public class Backtest {
 
     private static final Logger LOG = LogManager.getLogger(Backtest.class);
@@ -68,8 +77,12 @@ public class Backtest {
         final DataService service = DataServiceImpl.getInstance();
         final DataPoint[] data = service.get(tickerSymbol, startDate, endDate);
 
+        //TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
+
         //TODO create logic
-        final TradingLogic logic = null;
+        final EntryLogic entry = null;
+
+        final ExitLogic exit = null;
 
         //TODO create cash account
         final CashAccount cashAccount = null;
@@ -77,7 +90,7 @@ public class Backtest {
         //TODO create brokerage
         final Brokerage broker = null;
 
-        final Simulation simulation = new Simulation(data, logic, cashAccount, broker);
+        final Simulation simulation = new Simulation(data, broker, cashAccount, entry, exit);
 
         // TODO metrics, time in / out market etc
 

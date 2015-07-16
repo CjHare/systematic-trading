@@ -27,8 +27,27 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
+package com.systematic.trading.backtest.logic;
 
-public class TradeSignal {
+import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.order.Order;
+import com.systematic.trading.data.DataPoint;
 
+/**
+ * Encapsulates the trading behaviour that decides whether an action shall be taken given a rolling set of data,
+ * focusing on the liquidation actions rather then the purchasing action.
+ *  
+ * @author CJ Hare
+ */
+public interface ExitLogic {
+
+    /**
+     * Updates the trading logic with a subsequent trading point and open positions.
+     * 
+     * @param broker the positions currently open.
+     * @param data
+     *            next day of trading to add, also applying logic for trade signals.
+     * @return the order to place at the next opportunity, or <code>null</code> when no order is to be placed.
+     */
+    Order udpate(Brokerage broker, DataPoint data);
 }

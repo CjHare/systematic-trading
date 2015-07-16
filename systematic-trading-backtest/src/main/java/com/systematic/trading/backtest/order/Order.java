@@ -27,35 +27,44 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage;
+package com.systematic.trading.backtest.order;
 
-import java.math.BigDecimal;
-
-import com.systematic.trading.backtest.order.OrderVolume;
-import com.systematic.trading.backtest.order.Price;
+import com.systematic.trading.backtest.CashAccount;
+import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.exception.InsufficientFundsException;
+import com.systematic.trading.data.DataPoint;
 
 /**
- * The broker performs the trading on a customers behalf, charging for privilege.
+ * The trading order that can be executed by a specific brokerage.
  * 
  * @author CJ Hare
  */
-public interface Brokerage {
+public interface Order {
 
     /**
-     * Performs a purchase, applying the corresponding brokers fees.
+     * Whether the order has expire.
      * 
-     * @param price mean price paid for the equity.
-     * @param volume number of equities being purchased.
-     * @return total cost of the purchase.
+     * @param todaysTrading
+     *            the price action for today.
+     * @return <code>true</code> has expire and should not be executed, <code>false</code> otherwise.
      */
-    BigDecimal buy(Price price, OrderVolume volume);
+    boolean isNotExpired(DataPoint todaysTrading);
 
     /**
-     * Performs a liquidation, applying the corresponding brokers fees.
+     * Whether the day's trading movement satisfied the execution criteria for the order.
      * 
-     * @param price mean price paid for the equity.
-     * @param volume number of equities being sold.
-     * @return total funds acquired from the liquidation.
+     * @param todaysTrading
+     *            the price action for today.
+     * @return <code>true</code> the conditions are met, <code>false</code> otherwise.
      */
-    BigDecimal sell(Price price, OrderVolume volume);
+    boolean areExecutionConditionsMet(DataPoint todaysTrading);
+
+    /**
+     * Executes the trade, side affecting the broker and cash account.
+     * 
+     * @param broker performs the execution of the order.
+     * @param cashAccount where the money for the transaction is withdrawn.
+     * @throws InsufficientFundsException when the cash account lacks the funds to execute the order.
+     */
+    void execute(Brokerage broker, CashAccount cashAccount) throws InsufficientFundsException;
 }

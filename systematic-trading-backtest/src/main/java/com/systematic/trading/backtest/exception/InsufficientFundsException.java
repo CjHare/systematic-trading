@@ -27,20 +27,18 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage.exception;
-
-import com.systematic.trading.backtest.brokerage.EquityClass;
+package com.systematic.trading.backtest.exception;
 
 /**
- * When the type of equity is unsupported by a broker.
+ * When there is not enough money available.
  * 
  * @author CJ Hare
  */
-public class UnsupportedEquityClass extends Exception {
+public class InsufficientFundsException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public UnsupportedEquityClass( final EquityClass type ) {
-		super( String.format( "Unsupported Equity class: %s", type ) );
-	}
+    public InsufficientFundsException(final String message) {
+        super(message);
+    }
 }

@@ -27,14 +27,63 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
+package com.systematic.trading.backtest.order;
+
+import java.math.BigDecimal;
 
 /**
- * What action to take on an order whose triggering conditions are met, however there are now not enough available
- * funds to execute.
+ * Price for an equity.
  * 
  * @author CJ Hare
  */
-public enum OrderInsufficientFundsAction {
-	DELETE,
+public class Price {
+
+    /**
+     * Creates a price from an underlying decimal value.
+     * 
+     * @param price decimal to create as a price, cannot be <code>null</code>.
+     * @return equivalent price for the given decimal.
+     */
+    public static Price valueOf(final BigDecimal price) {
+        if (price == null) {
+            throw new IllegalArgumentException("null is not accepted by Price.valueOf()");
+        }
+
+        return new Price(price);
+    }
+
+    private final BigDecimal price;
+
+    private Price(final BigDecimal price) {
+        this.price = price;
+    }
+
+    /**
+     * Retrieves the price.
+     * 
+     * @return price, never <code>null</code>.
+     */
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    /**
+     * Is the price larger then another price.
+     * 
+     * @param other comparison value.
+     * @return <code>true</code> when the other is smaller, <code>false</code> otherwise.
+     */
+    public boolean isGreaterThan(final BigDecimal other) {
+        return price.compareTo(other) > 0;
+    }
+
+    /**
+     * Is the price smaller then another price.
+     * 
+     * @param other comparison value.
+     * @return <code>true</code> when the other value is larger, <code>false</code> otherwise.
+     */
+    public boolean isLessThan(final BigDecimal other) {
+        return price.compareTo(other) < 0;
+    }
 }

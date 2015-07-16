@@ -27,35 +27,33 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage;
+package com.systematic.trading.backtest.order;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
 
-import com.systematic.trading.backtest.order.OrderVolume;
-import com.systematic.trading.backtest.order.Price;
+import com.systematic.trading.backtest.CashAccount;
+import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.exception.InsufficientFundsException;
 
 /**
- * The broker performs the trading on a customers behalf, charging for privilege.
+ * Order to sell a number of equities, at a certain price, within a specific time frame.
  * 
  * @author CJ Hare
  */
-public interface Brokerage {
+public class ExitOrder extends BaseOrder {
 
-    /**
-     * Performs a purchase, applying the corresponding brokers fees.
-     * 
-     * @param price mean price paid for the equity.
-     * @param volume number of equities being purchased.
-     * @return total cost of the purchase.
-     */
-    BigDecimal buy(Price price, OrderVolume volume);
+    public ExitOrder(final LocalDate creationDate, final Price entryPrice, final Period expiry, final OrderVolume volume) {
+        super(creationDate, entryPrice, expiry, volume);
+    }
 
-    /**
-     * Performs a liquidation, applying the corresponding brokers fees.
-     * 
-     * @param price mean price paid for the equity.
-     * @param volume number of equities being sold.
-     * @return total funds acquired from the liquidation.
-     */
-    BigDecimal sell(Price price, OrderVolume volume);
+    @Override
+    public void execute(final Brokerage broker, final CashAccount cashAccount) throws InsufficientFundsException {
+
+        // Total cost of executing the order
+        final BigDecimal orderCost = broker.sell(getPrice(), getVolume());
+
+        cashAccount.credit(orderCost);
+    }
 }

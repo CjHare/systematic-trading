@@ -27,13 +27,42 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
+package com.systematic.trading.backtest.logic;
+
+import com.systematic.trading.backtest.CashAccount;
+import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.order.OrderInsufficientFundsAction;
+import com.systematic.trading.backtest.order.Order;
+import com.systematic.trading.data.DataPoint;
 
 /**
- * What action to take on an order when it has expired.
+ * Encapsulates the trading behaviour that decides whether an action shall be taken given a rolling set of data,
+ * focusing on the purchasing actions rather then the liquidation action.
  * 
  * @author CJ Hare
  */
-public enum OrderExpiryAction {
-	DELETE,
+public interface EntryLogic {
+
+    /**
+     * Updates the trading logic with a subsequent trading point.
+     * 
+     * @param broker
+     *            the brokerage to execute the order with, and whose fees are to be included in the transaction.
+     * @param cashAccount
+     *            currently available funds.
+     * @param data
+     *             next day of trading to add, also applying logic for trade signals.
+     * @return the order to place at the next opportunity, or <code>null</code> when no order is to be placed.
+     */
+    Order update(Brokerage broker, CashAccount cashAccount, DataPoint data);
+
+    /**
+     * Action to take on the order when the triggering conditions are met, however there are insufficient available
+     * funds.
+     * 
+     * @param order
+     *            that cannot be executed, due to lack of funds.
+     * @return action to take in this situation.
+     */
+    OrderInsufficientFundsAction actionOnInsufficentFunds(Order order);
 }

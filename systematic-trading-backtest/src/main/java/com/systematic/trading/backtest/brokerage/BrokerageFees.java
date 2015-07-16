@@ -31,7 +31,7 @@ package com.systematic.trading.backtest.brokerage;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.backtest.brokerage.exception.UnsupportedEquityClass;
+import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 
 /**
  * Brokerage fees applied to all an equity transaction.

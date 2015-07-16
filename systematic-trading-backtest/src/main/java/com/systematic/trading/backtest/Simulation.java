@@ -36,7 +36,15 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.exception.InsufficientFundsException;
+import com.systematic.trading.backtest.logic.EntryLogic;
+import com.systematic.trading.backtest.logic.ExitLogic;
+import com.systematic.trading.backtest.order.OrderInsufficientFundsAction;
+import com.systematic.trading.backtest.order.Order;
 import com.systematic.trading.data.DataPoint;
 
 /**
@@ -48,87 +56,150 @@ import com.systematic.trading.data.DataPoint;
  */
 public class Simulation {
 
-	/** Data set to feed into the trading behaviour. */
-	private final SortedSet<DataPoint> chronologicalData;
+    private static final Logger LOG = LogManager.getLogger(Simulation.class);
 
-	/** Makes the decision on whether action is required. */
-	private final TradingLogic logic;
+    /** Data set to feed into the trading behaviour. */
+    private final SortedSet<DataPoint> chronologicalData;
 
-	/** The manager dealing with cash and it's accounting. */
-	private final CashAccount cashAccount;
+    /** Makes the decision on whether entry action is required. */
+    private final EntryLogic entry;
 
-	/** Dealer of equities. */
-	private final Brokerage broker;
+    /** Decision maker on trade exit behaviour.*/
+    private final ExitLogic exit;
 
-	public Simulation( final DataPoint[] unordered, final TradingLogic logic, final CashAccount cashAccount,
-			final Brokerage broker ) {
+    /** The manager dealing with cash and it's accounting. */
+    private final CashAccount funds;
 
-		// Correctly order the data set with the oldest entry first
-		this.chronologicalData = new TreeSet<DataPoint>( new Comparator<DataPoint>() {
-			@Override
-			public int compare( final DataPoint a, final DataPoint b ) {
-				return a.getDate().compareTo( b.getDate() );
-			}
-		} );
-		this.chronologicalData.addAll( Arrays.asList( unordered ) );
+    /** Dealer of equities, manages the equity balance. */
+    private final Brokerage broker;
 
-		this.logic = logic;
-		this.cashAccount = cashAccount;
-		this.broker = broker;
-	}
+    public Simulation(final DataPoint[] unordered, final Brokerage broker, final CashAccount funds,
+            final EntryLogic entry, final ExitLogic exit) {
 
-	public void run() {
+        // Correctly order the data set with the oldest entry first
+        this.chronologicalData = new TreeSet<DataPoint>(new Comparator<DataPoint>() {
+            @Override
+            public int compare(final DataPoint a, final DataPoint b) {
+                return a.getDate().compareTo(b.getDate());
+            }
+        });
+        this.chronologicalData.addAll(Arrays.asList(unordered));
 
-		//TODO restructure
-		
-		// Iterating through the chronologically ordered data point
-		TradeSignal signal = null;
-		TradingOrder order = null;
-		List<TradingOrder> orders = new ArrayList<TradingOrder>();
+        this.entry = entry;
+        this.exit = exit;
+        this.funds = funds;
+        this.broker = broker;
+    }
 
-		for (final DataPoint data : chronologicalData) {
+    public void run() {
 
-			orders = processOutstandingOrders( orders, data );
+        List<Order> orders = new ArrayList<Order>();
 
-			signal = logic.update( data );
+        // Iterating through the chronologically ordered data points from the youngest
+        for (final DataPoint data : chronologicalData) {
 
-			cashAccount.update( data );
+            // Financial activity of deposits, withdrawal and interest
+            funds.update(data);
 
-			if (signal != null) {
-				order = logic.createOrder( signal, cashAccount, broker );
-			}
+            // Attempt to execute the queued orders
+            orders = processOutstandingOrders(orders, data);
 
-			if (order != null) {
-				orders.add( order );
-			}
-		}
-	}
+            // Apply analysis to generate more orders
+            orders = addExitOrderForToday(data, orders);
+            orders = addEntryOrderForToday(data, orders);
+        }
+    }
 
-	/**
-	 * Attempts to process the outstanding orders against today's price action.
-	 * 
-	 * @return orders that were not executed as their conditions were not met.
-	 */
-	private List<TradingOrder> processOutstandingOrders( final List<TradingOrder> orders, final DataPoint data ) {
-		final List<TradingOrder> remainingOrders = new ArrayList<TradingOrder>( orders.size() );
+    /**
+     * Update the exit logic analysis, adding any orders triggered by the day's trading data.
+     * 
+     * @param data todays trading data.
+     * @param openOrders the existing trading orders unfulfilled.
+     * @return the given list of open orders, plus any order added by the exit logic.
+     */
+    private List<Order> addExitOrderForToday(final DataPoint data, final List<Order> openOrders) {
+        final Order order = exit.udpate(broker, data);
 
-		for (final TradingOrder order : orders) {
+        if (order != null) {
+            openOrders.add(order);
+        }
 
-			if (!order.hasExpired()) {
-				if (order.areExecutionConditionsMet( data )) {
+        return openOrders;
+    }
 
-					// TODO execute if money, otherwise ??
-					// TODO add calc on brokerage
-					// TODO execute any outstanding order(s)
-					// TODO decrement the cash account balance on trade
+    /**
+     * Update the entry logic analysis, adding any orders triggered by the day's trading data.
+     * 
+     * @param data todays trading data.
+     * @param openOrders the existing trading orders unfulfilled.
+     * @return the given list of open orders, plus any order added by the entry logic.
+     */
+    private List<Order> addEntryOrderForToday(final DataPoint data, final List<Order> openOrders) {
+        final Order order = entry.update(broker, funds, data);
 
-				} else {
-					remainingOrders.add( order );
-				}
-			}
-		}
+        if (order != null) {
+            openOrders.add(order);
+        }
 
-		return remainingOrders;
-	}
+        return openOrders;
+    }
 
+    /**
+     * Attempts to process the outstanding orders against today's price action.
+     * 
+     * @return orders that were not executed as their conditions were not met.
+     */
+    private List<Order> processOutstandingOrders(final List<Order> orders, final DataPoint data) {
+        final List<Order> remainingOrders = new ArrayList<Order>(orders.size());
+
+        for (final Order order : orders) {
+
+            if (!order.isNotExpired(data)) {
+                final Order processedOrder = processOutstandingValidOrder(order, data);
+
+                // Add the original / altered order back to try again 
+                if (processedOrder != null) {
+                    remainingOrders.add(processedOrder);
+                }
+            }
+        }
+
+        return remainingOrders;
+    }
+
+    private Order processOutstandingValidOrder(final Order order, final DataPoint data) {
+
+        if (order.areExecutionConditionsMet(data)) {
+            return executeOrder(order);
+        }
+
+        return order;
+    }
+
+    /**
+     * Attempt to execute the order.
+     * 
+     * @param order trade to execute.
+     * @return <code>null</code> on success, or an order to re-attempt next cycle.
+     */
+    private Order executeOrder(final Order order) {
+        try {
+            order.execute(broker, funds);
+
+            // Discard the order, as it's processed
+            return null;
+
+        } catch (final InsufficientFundsException e) {
+            LOG.warn(String.format("Insufficient funds to execute order %s", order.toString()));
+
+            final OrderInsufficientFundsAction action = entry.actionOnInsufficentFunds(order);
+            switch (action) {
+            case DELETE:
+                // Discard the order
+                return null;
+            default:
+                throw new IllegalArgumentException(String.format("Unsupported insufficient funds action: %s", action));
+            }
+        }
+    }
 }

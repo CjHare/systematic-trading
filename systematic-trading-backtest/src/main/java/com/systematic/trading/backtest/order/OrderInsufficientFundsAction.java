@@ -27,48 +27,14 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
-
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.data.DataPoint;
+package com.systematic.trading.backtest.order;
 
 /**
- * Encapsulates the trading behaviour that decides whether an action shall be taken given a rolling set of data.
+ * What action to take on an order whose triggering conditions are met, however there are now not enough available
+ * funds to execute.
  * 
  * @author CJ Hare
  */
-public interface TradingLogic {
-
-	/**
-	 * Updates the trading logic with a subsequent trading point.
-	 * 
-	 * @param data
-	 *            the next day of trading to add, also applying logic for trade signals.
-	 * @return any signal generated from analysis after adding the given additional data point, <code>null</code> when
-	 *         no signal is triggered.
-	 */
-	TradeSignal update( DataPoint data );
-
-	/**
-	 * Interprets a trading signal and given the current available funds and broker determines the order.
-	 * 
-	 * @param signal
-	 *            the trade to action.
-	 * @param cashAccount
-	 *            the currently available funds.
-	 * @param broker
-	 *            the brokerage to execute the order with, and whose fees are to be included in the transaction.
-	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to be placed.
-	 */
-	TradingOrder createOrder( TradeSignal signal, CashAccount cashAccount, Brokerage broker );
-
-	/**
-	 * Action to take on the order when the triggering conditions are met, however there are insufficient available
-	 * funds.
-	 * 
-	 * @param order
-	 *            that cannot be executed, due to lack of funds.
-	 * @return action to take in this situation.
-	 */
-	OrderInsufficientFundsAction insufficentFunds( TradingOrder order );
+public enum OrderInsufficientFundsAction {
+	DELETE,
 }
