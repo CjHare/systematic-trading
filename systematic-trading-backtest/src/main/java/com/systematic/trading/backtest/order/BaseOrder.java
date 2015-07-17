@@ -39,50 +39,49 @@ import com.systematic.trading.data.DataPoint;
  * 
  * @author CJ Hare
  */
-public abstract class BaseOrder implements Order {
+public abstract class BaseOrder {
 
-    /** The date that the entry order expires.*/
-    private final LocalDate expiryDate;
+	/** The date that the entry order expires. */
+	private final LocalDate expiryDate;
 
-    /** Target price for entry order. */
-    private final Price price;
+	/** Target price for entry order. */
+	private final Price price;
 
-    /** The number of equities, possibly a fraction for unit trusts.*/
-    private final OrderVolume volume;
+	/** The number of equities, possibly a fraction for unit trusts. */
+	private final OrderVolume volume;
 
-    public BaseOrder(final LocalDate creationDate, final Price price, final Period expiry, final OrderVolume volume) {
-        this.expiryDate = creationDate.plus(expiry);
-        this.price = price;
-        this.volume = volume;
-    }
+	public BaseOrder( final LocalDate creationDate, final Price price, final Period expiry, final OrderVolume volume ) {
+		this.expiryDate = creationDate.plus( expiry );
+		this.price = price;
+		this.volume = volume;
+	}
 
-    @Override
-    public boolean isNotExpired(final DataPoint todaysTrading) {
-        return todaysTrading.getDate().isBefore(expiryDate);
-    }
+	public boolean isNotExpired( final DataPoint todaysTrading ) {
+		return todaysTrading.getDate().isBefore( expiryDate );
+	}
 
-    @Override
-    public boolean areExecutionConditionsMet(final DataPoint todaysTrading) {
+	public boolean areExecutionConditionsMet( final DataPoint todaysTrading ) {
 
-        // Is the range of todays trading including the entry price
-        return price.isGreaterThan(todaysTrading.getLowestPrice()) && price.isLessThan(todaysTrading.getHighestPrice());
-    }
+		// Is the range of todays trading including the entry price
+		return price.isGreaterThan( todaysTrading.getLowestPrice() )
+				&& price.isLessThan( todaysTrading.getHighestPrice() );
+	}
 
-    /**
-     * Retrieves the price to execute the order at.
-     * 
-     * @return order execution price.
-     */
-    protected Price getPrice() {
-        return price;
-    }
+	/**
+	 * Retrieves the price to execute the order at.
+	 * 
+	 * @return order execution price.
+	 */
+	protected Price getPrice() {
+		return price;
+	}
 
-    /**
-     * Retrieve the number of equities to execute on.
-     * 
-     * @return the number of equities the order applies.
-     */
-    protected OrderVolume getVolume() {
-        return volume;
-    }
+	/**
+	 * Retrieve the number of equities to execute on.
+	 * 
+	 * @return the number of equities the order applies.
+	 */
+	protected OrderVolume getVolume() {
+		return volume;
+	}
 }

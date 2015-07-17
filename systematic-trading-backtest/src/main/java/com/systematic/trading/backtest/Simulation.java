@@ -42,10 +42,11 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
+import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.backtest.order.OrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.Order;
+import com.systematic.trading.backtest.order.OrderInsufficientFundsAction;
 import com.systematic.trading.data.DataPoint;
 
 /**
@@ -57,150 +58,156 @@ import com.systematic.trading.data.DataPoint;
  */
 public class Simulation {
 
-    private static final Logger LOG = LogManager.getLogger(Simulation.class);
+	private static final Logger LOG = LogManager.getLogger( Simulation.class );
 
-    /** Data set to feed into the trading behaviour. */
-    private final SortedSet<DataPoint> chronologicalData;
+	/** Data set to feed into the trading behaviour. */
+	private final SortedSet<DataPoint> chronologicalData;
 
-    /** Makes the decision on whether entry action is required. */
-    private final EntryLogic entry;
+	/** Makes the decision on whether entry action is required. */
+	private final EntryLogic entry;
 
-    /** Decision maker on trade exit behaviour.*/
-    private final ExitLogic exit;
+	/** Decision maker on trade exit behaviour. */
+	private final ExitLogic exit;
 
-    /** The manager dealing with cash and it's accounting. */
-    private final CashAccount funds;
+	/** The manager dealing with cash and it's accounting. */
+	private final CashAccount funds;
 
-    /** Dealer of equities, manages the equity balance. */
-    private final Brokerage broker;
+	/** Dealer of equities, manages the equity balance. */
+	private final Brokerage broker;
 
-    public Simulation(final DataPoint[] unordered, final Brokerage broker, final CashAccount funds,
-            final EntryLogic entry, final ExitLogic exit) {
+	public Simulation( final DataPoint[] unordered, final Brokerage broker, final CashAccount funds,
+			final EntryLogic entry, final ExitLogic exit ) {
 
-        // Correctly order the data set with the oldest entry first
-        this.chronologicalData = new TreeSet<DataPoint>(new Comparator<DataPoint>() {
-            @Override
-            public int compare(final DataPoint a, final DataPoint b) {
-                return a.getDate().compareTo(b.getDate());
-            }
-        });
-        this.chronologicalData.addAll(Arrays.asList(unordered));
+		// Correctly order the data set with the oldest entry first
+		this.chronologicalData = new TreeSet<DataPoint>( new Comparator<DataPoint>() {
+			@Override
+			public int compare( final DataPoint a, final DataPoint b ) {
+				return a.getDate().compareTo( b.getDate() );
+			}
+		} );
+		this.chronologicalData.addAll( Arrays.asList( unordered ) );
 
-        this.entry = entry;
-        this.exit = exit;
-        this.funds = funds;
-        this.broker = broker;
-    }
+		this.entry = entry;
+		this.exit = exit;
+		this.funds = funds;
+		this.broker = broker;
+	}
 
-    public void run() {
+	public void run() {
 
-        List<Order> orders = new ArrayList<Order>();
+		List<Order> orders = new ArrayList<Order>();
 
-        // Iterating through the chronologically ordered data points from the youngest
-        for (final DataPoint data : chronologicalData) {
+		// Iterating through the chronologically ordered data points from the youngest
+		for (final DataPoint data : chronologicalData) {
 
-            // Financial activity of deposits, withdrawal and interest
-            funds.update(data);
+			// Financial activity of deposits, withdrawal and interest
+			funds.update( data );
 
-            // Attempt to execute the queued orders
-            orders = processOutstandingOrders(orders, data);
+			// Attempt to execute the queued orders
+			orders = processOutstandingOrders( orders, data );
 
-            // Apply analysis to generate more orders
-            orders = addExitOrderForToday(data, orders);
-            orders = addEntryOrderForToday(data, orders);
-        }
-    }
+			// Apply analysis to generate more orders
+			orders = addExitOrderForToday( data, orders );
+			orders = addEntryOrderForToday( data, orders );
+		}
+	}
 
-    /**
-     * Update the exit logic analysis, adding any orders triggered by the day's trading data.
-     * 
-     * @param data todays trading data.
-     * @param openOrders the existing trading orders unfulfilled.
-     * @return the given list of open orders, plus any order added by the exit logic.
-     */
-    private List<Order> addExitOrderForToday(final DataPoint data, final List<Order> openOrders) {
-        final Order order = exit.udpate(broker, data);
+	/**
+	 * Update the exit logic analysis, adding any orders triggered by the day's trading data.
+	 * 
+	 * @param data todays trading data.
+	 * @param openOrders the existing trading orders unfulfilled.
+	 * @return the given list of open orders, plus any order added by the exit logic.
+	 */
+	private List<Order> addExitOrderForToday( final DataPoint data, final List<Order> openOrders ) {
+		final Order order = exit.udpate( broker, data );
 
-        if (order != null) {
-            openOrders.add(order);
-        }
+		if (order != null) {
+			openOrders.add( order );
+		}
 
-        return openOrders;
-    }
+		return openOrders;
+	}
 
-    /**
-     * Update the entry logic analysis, adding any orders triggered by the day's trading data.
-     * 
-     * @param data todays trading data.
-     * @param openOrders the existing trading orders unfulfilled.
-     * @return the given list of open orders, plus any order added by the entry logic.
-     */
-    private List<Order> addEntryOrderForToday(final DataPoint data, final List<Order> openOrders) {
-        final Order order = entry.update(broker, funds, data);
+	/**
+	 * Update the entry logic analysis, adding any orders triggered by the day's trading data.
+	 * 
+	 * @param data todays trading data.
+	 * @param openOrders the existing trading orders unfulfilled.
+	 * @return the given list of open orders, plus any order added by the entry logic.
+	 */
+	private List<Order> addEntryOrderForToday( final DataPoint data, final List<Order> openOrders ) {
+		final Order order = entry.update( broker, funds, data );
 
-        if (order != null) {
-            openOrders.add(order);
-        }
+		if (order != null) {
+			openOrders.add( order );
+		}
 
-        return openOrders;
-    }
+		return openOrders;
+	}
 
-    /**
-     * Attempts to process the outstanding orders against today's price action.
-     * 
-     * @return orders that were not executed as their conditions were not met.
-     */
-    private List<Order> processOutstandingOrders(final List<Order> orders, final DataPoint data) {
-        final List<Order> remainingOrders = new ArrayList<Order>(orders.size());
+	/**
+	 * Attempts to process the outstanding orders against today's price action.
+	 * 
+	 * @return orders that were not executed as their conditions were not met.
+	 */
+	private List<Order> processOutstandingOrders( final List<Order> orders, final DataPoint data ) {
+		final List<Order> remainingOrders = new ArrayList<Order>( orders.size() );
 
-        for (final Order order : orders) {
+		for (final Order order : orders) {
 
-            if (!order.isNotExpired(data)) {
-                final Order processedOrder = processOutstandingValidOrder(order, data);
+			if (!order.isNotExpired( data )) {
+				final Order processedOrder = processOutstandingValidOrder( order, data );
 
-                // Add the original / altered order back to try again 
-                if (processedOrder != null) {
-                    remainingOrders.add(processedOrder);
-                }
-            }
-        }
+				// Add the original / altered order back to try again
+				if (processedOrder != null) {
+					remainingOrders.add( processedOrder );
+				}
+			}
+		}
 
-        return remainingOrders;
-    }
+		return remainingOrders;
+	}
 
-    private Order processOutstandingValidOrder(final Order order, final DataPoint data) {
+	private Order processOutstandingValidOrder( final Order order, final DataPoint data ) {
 
-        if (order.areExecutionConditionsMet(data)) {
-            return executeOrder(order);
-        }
+		if (order.areExecutionConditionsMet( data )) {
+			return executeOrder( order, data );
+		}
 
-        return order;
-    }
+		return order;
+	}
 
-    /**
-     * Attempt to execute the order.
-     * 
-     * @param order trade to execute.
-     * @return <code>null</code> on success, or an order to re-attempt next cycle.
-     */
-    private Order executeOrder(final Order order) {
-        try {
-            order.execute(broker, funds);
+	/**
+	 * Attempt to execute the order.
+	 * 
+	 * @param order trade to execute.
+	 * @return <code>null</code> on success, or an order to re-attempt next cycle.
+	 * @throws OrderException
+	 */
+	private Order executeOrder( final Order order, final DataPoint data ) {
+		try {
+			order.execute( broker, funds, data.getDate() );
 
-            // Discard the order, as it's processed
-            return null;
+			// Discard the order, as it's processed
+			return null;
 
-        } catch (final InsufficientFundsException e) {
-            LOG.warn(String.format("Insufficient funds to execute order %s", order.toString()));
+		} catch (final InsufficientFundsException e) {
+			LOG.warn( String.format( "Insufficient funds to execute order %s", order.toString() ) );
 
-            final OrderInsufficientFundsAction action = entry.actionOnInsufficentFunds(order);
-            switch (action) {
-            case DELETE:
-                // Discard the order
-                return null;
-            default:
-                throw new IllegalArgumentException(String.format("Unsupported insufficient funds action: %s", action));
-            }
-        }
-    }
+			final OrderInsufficientFundsAction action = entry.actionOnInsufficentFunds( order );
+			switch (action) {
+				case DELETE:
+					// Discard the order
+					return null;
+				default:
+					throw new IllegalArgumentException( String.format( "Unsupported insufficient funds action: %s",
+							action ) );
+			}
+		} catch (final OrderException e) {
+			LOG.error( e );
+			// TODO handle?
+			throw new IllegalArgumentException( "Unhandled Order exception", e );
+		}
+	}
 }

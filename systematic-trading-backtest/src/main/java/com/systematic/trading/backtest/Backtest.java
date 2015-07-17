@@ -29,6 +29,7 @@
  */
 package com.systematic.trading.backtest;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -36,7 +37,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.brokerage.BrokerageFees;
+import com.systematic.trading.backtest.brokerage.EquityClass;
+import com.systematic.trading.backtest.brokerage.impl.BellDirectFees;
+import com.systematic.trading.backtest.brokerage.impl.SingleEquityClassBroker;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.cash.InterestRate;
+import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
+import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.data.DataPoint;
@@ -47,7 +55,7 @@ import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.util.HibernateUtil;
 
 /**
- * Performs back testing of trading logic over a historical data set. 
+ * Performs back testing of trading logic over a historical data set.
  * <p/>
  * Assumption: no liquidity issues == can always execute a trade.
  * 
@@ -55,50 +63,56 @@ import com.systematic.trading.data.util.HibernateUtil;
  */
 public class Backtest {
 
-    private static final Logger LOG = LogManager.getLogger(Backtest.class);
+	private static final Logger LOG = LogManager.getLogger( Backtest.class );
 
-    private static final int DAYS_IN_A_YEAR = 365;
+	private static final int DAYS_IN_A_YEAR = 365;
 
-    /** Minimum amount of historical data needed for back testing. */
-    private static final int HISTORY_REQUIRED = 5 * DAYS_IN_A_YEAR;
+	/** Minimum amount of historical data needed for back testing. */
+	private static final int HISTORY_REQUIRED = 5 * DAYS_IN_A_YEAR;
 
-    public static void main(final String... args) {
+	public static void main( final String... args ) {
 
-        final LocalDate endDate = LocalDate.now();
-        final LocalDate startDate = endDate.minus(HISTORY_REQUIRED, ChronoUnit.DAYS);
+		final LocalDate endDate = LocalDate.now();
+		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS );
 
-        final String tickerSymbol = "^GSPC";
-        // final String tickerSymbol = "USD";
+		final String tickerSymbol = "^GSPC";
+		// final String tickerSymbol = "USD";
 
-        LOG.info(String.format("Including data set for %s from %s to %s", tickerSymbol, startDate, endDate));
+		LOG.info( String.format( "Including data set for %s from %s to %s", tickerSymbol, startDate, endDate ) );
 
-        final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
-        updateService.get(tickerSymbol, startDate, endDate);
+		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
+		updateService.get( tickerSymbol, startDate, endDate );
 
-        final DataService service = DataServiceImpl.getInstance();
-        final DataPoint[] data = service.get(tickerSymbol, startDate, endDate);
+		final DataService service = DataServiceImpl.getInstance();
+		final DataPoint[] data = service.get( tickerSymbol, startDate, endDate );
 
-        //TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
+		// TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
 
-        //TODO create logic
-        final EntryLogic entry = null;
+		// TODO weekly buy-in of $100
 
-        final ExitLogic exit = null;
+		// TODO create logic
+		final EntryLogic entry = null;
 
-        //TODO create cash account
-        final CashAccount cashAccount = null;
+		final ExitLogic exit = null;
 
-        //TODO create brokerage
-        final Brokerage broker = null;
+		// Cash account with flat interest of 1.5% - 50K starting balance
+		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ) );
+		final BigDecimal openingFunds = BigDecimal.valueOf( 50000 );
+		final LocalDate openingDate = data[0].getDate();
+		final CashAccount cashAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds, openingDate );
 
-        final Simulation simulation = new Simulation(data, broker, cashAccount, entry, exit);
+		// ETF Broker with Bell Direct fees
+		final BrokerageFees fees = new BellDirectFees();
+		final Brokerage broker = new SingleEquityClassBroker( fees, EquityClass.ETF );
 
-        // TODO metrics, time in / out market etc
+		final Simulation simulation = new Simulation( data, broker, cashAccount, entry, exit );
 
-        //TODO metrics of accounts, cash flow, share purchases
+		// TODO metrics, time in / out market etc
 
-        simulation.run();
+		// TODO metrics of accounts, cash flow, share purchases
 
-        HibernateUtil.getSessionFactory().close();
-    }
+		simulation.run();
+
+		HibernateUtil.getSessionFactory().close();
+	}
 }

@@ -36,7 +36,7 @@ import com.systematic.trading.backtest.brokerage.EquityClass;
  * 
  * @author CJ Hare
  */
-public class UnsupportedEquityClass extends Exception {
+public class UnsupportedEquityClass extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 

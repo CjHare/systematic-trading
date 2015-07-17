@@ -34,11 +34,11 @@ package com.systematic.trading.backtest.exception;
  * 
  * @author CJ Hare
  */
-public class InsufficientFundsException extends Exception {
+public class InsufficientFundsException extends OrderException {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public InsufficientFundsException(final String message) {
-        super(message);
-    }
+	public InsufficientFundsException( final String message ) {
+		super( message );
+	}
 }

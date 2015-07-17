@@ -29,9 +29,11 @@
  */
 package com.systematic.trading.backtest.order;
 
+import java.time.LocalDate;
+
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
+import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.data.DataPoint;
 
 /**
@@ -41,30 +43,31 @@ import com.systematic.trading.data.DataPoint;
  */
 public interface Order {
 
-    /**
-     * Whether the order has expire.
-     * 
-     * @param todaysTrading
-     *            the price action for today.
-     * @return <code>true</code> has expire and should not be executed, <code>false</code> otherwise.
-     */
-    boolean isNotExpired(DataPoint todaysTrading);
+	/**
+	 * Whether the order has expire.
+	 * 
+	 * @param todaysTrading
+	 *            the price action for today.
+	 * @return <code>true</code> has expire and should not be executed, <code>false</code> otherwise.
+	 */
+	boolean isNotExpired( DataPoint todaysTrading );
 
-    /**
-     * Whether the day's trading movement satisfied the execution criteria for the order.
-     * 
-     * @param todaysTrading
-     *            the price action for today.
-     * @return <code>true</code> the conditions are met, <code>false</code> otherwise.
-     */
-    boolean areExecutionConditionsMet(DataPoint todaysTrading);
+	/**
+	 * Whether the day's trading movement satisfied the execution criteria for the order.
+	 * 
+	 * @param todaysTrading
+	 *            the price action for today.
+	 * @return <code>true</code> the conditions are met, <code>false</code> otherwise.
+	 */
+	boolean areExecutionConditionsMet( DataPoint todaysTrading );
 
-    /**
-     * Executes the trade, side affecting the broker and cash account.
-     * 
-     * @param broker performs the execution of the order.
-     * @param cashAccount where the money for the transaction is withdrawn.
-     * @throws InsufficientFundsException when the cash account lacks the funds to execute the order.
-     */
-    void execute(Brokerage broker, CashAccount cashAccount) throws InsufficientFundsException;
+	/**
+	 * Executes the trade, side affecting the broker and cash account.
+	 * 
+	 * @param broker performs the execution of the order.
+	 * @param cashAccount where the money for the transaction is withdrawn.
+	 * @param tradeDate date of execution.
+	 * @throws OrderException when the order fails.
+	 */
+	void execute( Brokerage broker, CashAccount cashAccount, LocalDate tradeDate ) throws OrderException;
 }

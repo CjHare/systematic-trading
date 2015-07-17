@@ -35,6 +35,7 @@ import java.time.Period;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
 
 /**
@@ -42,18 +43,20 @@ import com.systematic.trading.backtest.exception.InsufficientFundsException;
  * 
  * @author CJ Hare
  */
-public class ExitOrder extends BaseOrder {
+public class ExitOrder extends BaseOrder implements Order {
 
-    public ExitOrder(final LocalDate creationDate, final Price entryPrice, final Period expiry, final OrderVolume volume) {
-        super(creationDate, entryPrice, expiry, volume);
-    }
+	public ExitOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
+			final OrderVolume volume ) {
+		super( creationDate, entryPrice, expiry, volume );
+	}
 
-    @Override
-    public void execute(final Brokerage broker, final CashAccount cashAccount) throws InsufficientFundsException {
+	@Override
+	public void execute( final Brokerage broker, final CashAccount cashAccount, final LocalDate tradeDate )
+			throws InsufficientFundsException, InsufficientEquitiesException {
 
-        // Total cost of executing the order
-        final BigDecimal orderCost = broker.sell(getPrice(), getVolume());
+		// Total cost of executing the order
+		final BigDecimal orderCost = broker.sell( getPrice(), getVolume(), tradeDate );
 
-        cashAccount.credit(orderCost);
-    }
+		cashAccount.credit( orderCost );
+	}
 }

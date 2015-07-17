@@ -42,19 +42,20 @@ import com.systematic.trading.backtest.exception.InsufficientFundsException;
  * 
  * @author CJ Hare
  */
-public class EntryOrder extends BaseOrder {
+public class EntryOrder extends BaseOrder implements Order {
 
-    public EntryOrder(final LocalDate creationDate, final Price entryPrice, final Period expiry,
-            final OrderVolume volume) {
-        super(creationDate, entryPrice, expiry, volume);
-    }
+	public EntryOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
+			final OrderVolume volume ) {
+		super( creationDate, entryPrice, expiry, volume );
+	}
 
-    @Override
-    public void execute(final Brokerage broker, final CashAccount cashAccount) throws InsufficientFundsException {
+	@Override
+	public void execute( final Brokerage broker, final CashAccount cashAccount, final LocalDate tradeDate )
+			throws InsufficientFundsException {
 
-        // Total cost of executing the order
-        final BigDecimal orderCost = broker.buy(getPrice(), getVolume());
+		// Total cost of executing the order
+		final BigDecimal orderCost = broker.buy( getPrice(), getVolume(), tradeDate );
 
-        cashAccount.debit(orderCost);
-    }
+		cashAccount.debit( orderCost );
+	}
 }

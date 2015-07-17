@@ -27,39 +27,18 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.cash.impl;
-
-import java.math.BigDecimal;
-
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.data.DataPoint;
+package com.systematic.trading.backtest.exception;
 
 /**
- * The CMC Markets cash account.
- * <p/>
- * Tiered interest rates calculated daily, paid monthly.
+ * Base exception for orders.
  * 
  * @author CJ Hare
  */
-public class CmcMarketsCashAccount implements CashAccount {
+public abstract class OrderException extends Exception {
 
-    @Override
-    public void update(final DataPoint data) {
-        // TODO Auto-generated method stub
+	private static final long serialVersionUID = 1L;
 
-    }
-
-    @Override
-    public void debit(final BigDecimal amount) throws InsufficientFundsException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void credit(final BigDecimal amount) {
-        // TODO Auto-generated method stub
-
-    }
-
+	public OrderException( final String message ) {
+		super( message );
+	}
 }
