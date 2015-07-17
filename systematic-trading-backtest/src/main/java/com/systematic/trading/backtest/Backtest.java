@@ -36,6 +36,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.data.DataPoint;

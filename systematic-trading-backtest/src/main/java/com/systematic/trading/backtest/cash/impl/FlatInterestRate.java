@@ -27,42 +27,42 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.logic;
+package com.systematic.trading.backtest.cash.impl;
 
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.order.OrderInsufficientFundsAction;
-import com.systematic.trading.backtest.order.Order;
-import com.systematic.trading.data.DataPoint;
+import java.math.BigDecimal;
+
+import com.systematic.trading.backtest.cash.InterestRate;
 
 /**
- * Encapsulates the trading behaviour that decides whether an action shall be taken given a rolling set of data,
- * focusing on the purchasing actions rather then the liquidation action.
+ * The same interest rate is applied on all funds.
  * 
  * @author CJ Hare
  */
-public interface EntryLogic {
+public class FlatInterestRate implements InterestRate {
+
+    private static final BigDecimal DAYS_IN_LEAP_YEAR = BigDecimal.valueOf(366);
+    private static final BigDecimal DAYS_IN_YEAR = BigDecimal.valueOf(365);
+
+    /** Interest applied daily in a non-leap year.*/
+    private final BigDecimal dailyInterestRate;
+
+    /** Interest applied daily in a leap year.*/
+    private final BigDecimal dailyInterestRateLeapYear;
 
     /**
-     * Updates the trading logic with a subsequent trading point.
-     * 
-     * @param broker
-     *            the brokerage to execute the order with, and whose fees are to be included in the transaction.
-     * @param cashAccount
-     *            currently available funds.
-     * @param data
-     *             next day of trading to add, also applying logic for trade signals.
-     * @return the order to place at the next opportunity, or <code>null</code> when no order is to be placed.
+     * @param annualInterestRate rate of interest applied over the course of a year.
      */
-    Order update(Brokerage broker, CashAccount cashAccount, DataPoint data);
+    public FlatInterestRate(final BigDecimal annualInterestRate) {
+        this.dailyInterestRate = annualInterestRate.divide(DAYS_IN_YEAR);
+        this.dailyInterestRateLeapYear = annualInterestRate.divide(DAYS_IN_LEAP_YEAR);
+    }
 
-    /**
-     * Action to take on the order when the triggering conditions are met, however there are insufficient available
-     * funds.
-     * 
-     * @param order
-     *            that cannot be executed, due to lack of funds.
-     * @return action to take in this situation.
-     */
-    OrderInsufficientFundsAction actionOnInsufficentFunds(Order order);
+    @Override
+    public BigDecimal interest(final BigDecimal funds, final int days, final boolean isLeapYear) {
+        if (isLeapYear) {
+            dailyInterestRateLeapYear.multiply(funds).multiply(BigDecimal.valueOf(days));
+        }
+
+        return dailyInterestRate.multiply(funds).multiply(BigDecimal.valueOf(days));
+    }
 }

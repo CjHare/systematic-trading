@@ -29,8 +29,8 @@
  */
 package com.systematic.trading.backtest.order;
 
-import com.systematic.trading.backtest.CashAccount;
 import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
 import com.systematic.trading.data.DataPoint;
 

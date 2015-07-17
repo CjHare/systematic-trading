@@ -27,39 +27,24 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
+package com.systematic.trading.backtest.cash;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.data.DataPoint;
-
 /**
- * Cash flow and interest management.
+ * Interest rate applied to a cash account.
  * 
  * @author CJ Hare
  */
-public interface CashAccount {
+public interface InterestRate {
 
     /**
-     * Applies relevant interest calculations and payments based on the passage of time.
+     * Calculate the interest accrued, with no accumulation.
      * 
-     * @param data the next day of trading data to add.
+     * @param funds amount the interest is calculated on.
+     * @param days number of days the interest is earned, typically under a month.
+     * @param isLeapYear whether the year the interest is calculated is a leap year.
+     * @return amount of interest to award for the given time.
      */
-    void update(DataPoint data);
-
-    /**
-     * Removes funds from an account.
-     * 
-     * @param amount sum to be removed from the account.
-     * @throws InsufficientFundsException encountered when the funds cannot be debited.
-     */
-    void debit(BigDecimal amount) throws InsufficientFundsException;
-
-    /**
-     * Adds funds to an account.
-     * 
-     * @param amount sum to be added to the account.
-     */
-    void credit(BigDecimal amount);
+    BigDecimal interest(BigDecimal funds, int days, boolean isLeapYear);
 }

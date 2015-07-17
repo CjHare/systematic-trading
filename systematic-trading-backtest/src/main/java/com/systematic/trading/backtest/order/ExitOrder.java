@@ -33,8 +33,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.backtest.CashAccount;
 import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
 
 /**
