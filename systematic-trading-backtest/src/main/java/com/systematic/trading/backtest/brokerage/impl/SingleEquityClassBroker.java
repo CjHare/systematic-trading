@@ -27,7 +27,6 @@ package com.systematic.trading.backtest.brokerage.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Month;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
@@ -50,17 +49,16 @@ public class SingleEquityClassBroker implements Brokerage {
 	private final EquityClass type;
 
 	/** Number of equities held. */
-	private BigDecimal balance = BigDecimal.ZERO;
+	private BigDecimal balance;
 
-	/** Month of the last trade, used in counting number of transactions in month. */
-	private Month monthOfLastTrade;
-
-	/** Counter for number of trades in the monthOfLastTrade. */
-	private int tradesThisMonth = 0;
+	/** Deals with keeping track of the number of trades on a rolling basis. */
+	private final MonthlyRollingCounter monthlyTradeCounter;
 
 	public SingleEquityClassBroker( final BrokerageFees fees, final EquityClass type ) {
 		this.fees = fees;
 		this.type = type;
+		this.monthlyTradeCounter = new MonthlyRollingCounter();
+		this.balance = BigDecimal.ZERO;
 	}
 
 	@Override
@@ -68,13 +66,7 @@ public class SingleEquityClassBroker implements Brokerage {
 		balance = balance.add( volume.getVolume() );
 
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume() );
-
-		if (monthOfLastTrade == tradeDate.getMonth()) {
-			tradesThisMonth++;
-		} else {
-			monthOfLastTrade = tradeDate.getMonth();
-			tradesThisMonth = 1;
-		}
+		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
 
 		return fees.calculateFee( tradeValue, type, tradesThisMonth );
 	}
@@ -89,13 +81,7 @@ public class SingleEquityClassBroker implements Brokerage {
 		}
 
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume() );
-
-		if (monthOfLastTrade == tradeDate.getMonth()) {
-			tradesThisMonth++;
-		} else {
-			monthOfLastTrade = tradeDate.getMonth();
-			tradesThisMonth = 1;
-		}
+		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
 
 		return fees.calculateFee( tradeValue, type, tradesThisMonth );
 	}
