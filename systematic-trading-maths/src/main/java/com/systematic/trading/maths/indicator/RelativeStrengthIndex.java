@@ -1,31 +1,27 @@
 /**
- * Copyright (c) 2015, CJ Hare
- * All rights reserved.
+ * Copyright (c) 2015, CJ Hare All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without modification, are permitted
+ * provided that the following conditions are met:
  *
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * * Redistributions of source code must retain the above copyright notice, this list of conditions
+ * and the following disclaimer.
  *
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * * Redistributions in binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or other materials provided with
+ * the distribution.
  *
- * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * * Neither the name of [project] nor the names of its contributors may be used to endorse or
+ * promote products derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+ * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.systematic.trading.maths.indicator;
 
@@ -38,8 +34,8 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
 /**
  * Relative Strength Index - RSI
  * 
- * A technical momentum indicator that compares the magnitude of recent gains to recent losses in an attempt to
- * determine over bought and over sold conditions of an asset.
+ * A technical momentum indicator that compares the magnitude of recent gains to recent losses in an
+ * attempt to determine over bought and over sold conditions of an asset.
  * 
  * RSI = 100 - 100/(1 + RS*)
  * 
@@ -62,10 +58,8 @@ public class RelativeStrengthIndex {
 	}
 
 	/**
-	 * @param closePrices
-	 *            ordered chronologically, from oldest to youngest (most recent first).
-	 * @throws TooFewDataPoints
-	 *             not enough closing prices to perform RSI calculations.
+	 * @param closePrices ordered chronologically, from oldest to youngest (most recent first).
+	 * @throws TooFewDataPoints not enough closing prices to perform RSI calculations.
 	 */
 	public BigDecimal[] rsi( final DataPoint[] data ) throws TooFewDataPoints {
 
@@ -75,13 +69,9 @@ public class RelativeStrengthIndex {
 					lookback + 1, data.length ) );
 		}
 
-		/*
-		 * For the first zero - time period entries calculate the SMA based on up to down movement
-		 * 
-		 * Upwards movement upward = closeToday - closeYesterday downward = 0
-		 * 
-		 * Downwards movement upward = closeYesterday - closeToday
-		 */
+		/* For the first zero - time period entries calculate the SMA based on up to down movement
+		 * Upwards movement upward = closeToday - closeYesterday downward = 0 Downwards movement
+		 * upward = closeYesterday - closeToday */
 		final int warmUpTimePeriod = lookback;
 		BigDecimal closeYesterday = data[0].getClosingPrice();
 		BigDecimal upward = BigDecimal.valueOf( 0 );
@@ -116,13 +106,8 @@ public class RelativeStrengthIndex {
 		upward = upward.divide( BigDecimal.valueOf( warmUpTimePeriod ), 2, RoundingMode.HALF_UP );
 		downward = downward.divide( BigDecimal.valueOf( warmUpTimePeriod ), 2, RoundingMode.HALF_UP );
 
-		/*
-		 * RS = EMA(U,n) / EMA(D,n)
-		 * 
-		 * (smoothing constant) multiplier: (2 / (Time periods + 1) )
-		 * 
-		 * EMA: {Close - EMA(previous day)} x multiplier + EMA(previous day).
-		 */
+		/* RS = EMA(U,n) / EMA(D,n) (smoothing constant) multiplier: (2 / (Time periods + 1) ) EMA:
+		 * {Close - EMA(previous day)} x multiplier + EMA(previous day). */
 
 		final BigDecimal multiplier = calculateSmoothingConstant();
 		final BigDecimal[] relativeStrength = new BigDecimal[data.length];
@@ -163,9 +148,7 @@ public class RelativeStrengthIndex {
 			}
 		}
 
-		/*
-		 * RSI = 100 / 1 + RS
-		 */
+		/* RSI = 100 / 1 + RS */
 		final BigDecimal[] rsiValues = new BigDecimal[relativeStrength.length];
 		final BigDecimal oneHundred = BigDecimal.valueOf( 100 );
 
