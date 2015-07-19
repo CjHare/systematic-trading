@@ -23,46 +23,44 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.cash;
+package com.systematic.trading.backtest.order;
 
-import java.math.BigDecimal;
-
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
+import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
+import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.data.DataPoint;
 
 /**
- * Cash flow and interest management.
+ * The trading order that can be executed by a specific brokerage.
  * 
  * @author CJ Hare
  */
-public interface CashAccount {
+public interface EquityOrder {
 
 	/**
-	 * Applies relevant interest calculations and payments based on the passage of time.
+	 * Whether the order has expire.
 	 * 
-	 * @param data the next day of trading data to add.
+	 * @param todaysTrading the price action for today.
+	 * @return <code>true</code> has expire and should not be executed, <code>false</code>
+	 *         otherwise.
 	 */
-	void update( DataPoint data );
+	boolean isNotExpired( DataPoint todaysTrading );
 
 	/**
-	 * Removes funds from an account.
+	 * Whether the day's trading movement satisfied the execution criteria for the order.
 	 * 
-	 * @param amount sum to be removed from the account.
-	 * @throws InsufficientFundsException encountered when the funds cannot be debited.
+	 * @param todaysTrading the price action for today.
+	 * @return <code>true</code> the conditions are met, <code>false</code> otherwise.
 	 */
-	void debit( BigDecimal amount ) throws InsufficientFundsException;
+	boolean areExecutionConditionsMet( DataPoint todaysTrading );
 
 	/**
-	 * Adds funds to an account.
+	 * Executes the trade, side affecting the broker and cash account.
 	 * 
-	 * @param amount sum to be added to the account.
+	 * @param broker performs the execution of the order.
+	 * @param cashAccount where the money for the transaction is withdrawn.
+	 * @param todaysTrading the price action for today.
+	 * @throws OrderException when the order fails.
 	 */
-	void credit( BigDecimal amount );
-
-	/**
-	 * Retrieves the current balance of the account.
-	 * 
-	 * @return positive number when the account is credit, negative otherwise.
-	 */
-	BigDecimal getBalance();
+	void execute( BrokerageTransaction broker, CashAccount cashAccount, DataPoint todaysTrading ) throws OrderException;
 }

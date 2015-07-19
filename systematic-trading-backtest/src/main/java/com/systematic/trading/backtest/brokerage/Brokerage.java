@@ -25,39 +25,11 @@
  */
 package com.systematic.trading.backtest.brokerage;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
-import com.systematic.trading.backtest.order.OrderVolume;
-import com.systematic.trading.backtest.order.Price;
-
 /**
- * The broker performs the trading on a customers behalf, charging for privilege.
+ * The bringing together of the different aspects of a brokerage house.
  * 
  * @author CJ Hare
  */
-public interface Brokerage {
+public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageFees {
 
-	/**
-	 * Performs a purchase, applying the corresponding brokers fees.
-	 * 
-	 * @param price mean price paid for the equity.
-	 * @param volume number of equities being purchased.
-	 * @param tradeDate date of execution.
-	 * @return total cost of the purchase.
-	 */
-	BigDecimal buy( Price price, OrderVolume volume, LocalDate tradeDate );
-
-	/**
-	 * Performs a liquidation, applying the corresponding brokers fees.
-	 * 
-	 * @param price mean price paid for the equity.
-	 * @param volume number of equities being sold.
-	 * @param tradeDate date of execution.
-	 * @throws InsufficientEquitiesException encountered when there are insufficient equities are
-	 *             held.
-	 * @return total funds acquired from the liquidation.
-	 */
-	BigDecimal sell( Price price, OrderVolume volume, LocalDate tradeDate ) throws InsufficientEquitiesException;
 }

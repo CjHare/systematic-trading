@@ -111,4 +111,10 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	public void credit( final BigDecimal amount ) {
 		funds = funds.add( amount );
 	}
+
+	@Override
+	public BigDecimal getBalance() {
+		// Only available funds count, not those in escrow
+		return funds;
+	}
 }

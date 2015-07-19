@@ -25,44 +25,41 @@
  */
 package com.systematic.trading.backtest.order;
 
-import java.time.LocalDate;
-
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
-import com.systematic.trading.data.DataPoint;
+import java.math.BigDecimal;
 
 /**
- * The trading order that can be executed by a specific brokerage.
+ * The number of equities.
  * 
  * @author CJ Hare
  */
-public interface Order {
+public class EquityOrderVolume {
 
 	/**
-	 * Whether the order has expire.
+	 * Creates a volume of an order from a decimal.
 	 * 
-	 * @param todaysTrading the price action for today.
-	 * @return <code>true</code> has expire and should not be executed, <code>false</code>
-	 *         otherwise.
+	 * @param volume decimal to create the volume from, cannot be <code>null</code>.
+	 * @return equivalent volume.
 	 */
-	boolean isNotExpired( DataPoint todaysTrading );
+	public static EquityOrderVolume valueOf( final BigDecimal volume ) {
+		if (volume == null) {
+			throw new IllegalArgumentException( "null is not accepted by OrderVolume.valueOf()" );
+		}
+
+		return new EquityOrderVolume( volume );
+	}
+
+	private final BigDecimal volume;
+
+	private EquityOrderVolume( final BigDecimal volume ) {
+		this.volume = volume;
+	}
 
 	/**
-	 * Whether the day's trading movement satisfied the execution criteria for the order.
+	 * Retrieves the number of equities.
 	 * 
-	 * @param todaysTrading the price action for today.
-	 * @return <code>true</code> the conditions are met, <code>false</code> otherwise.
+	 * @return volume of the order, never <code>null</code>.
 	 */
-	boolean areExecutionConditionsMet( DataPoint todaysTrading );
-
-	/**
-	 * Executes the trade, side affecting the broker and cash account.
-	 * 
-	 * @param broker performs the execution of the order.
-	 * @param cashAccount where the money for the transaction is withdrawn.
-	 * @param tradeDate date of execution.
-	 * @throws OrderException when the order fails.
-	 */
-	void execute( Brokerage broker, CashAccount cashAccount, LocalDate tradeDate ) throws OrderException;
+	public BigDecimal getVolume() {
+		return volume;
+	}
 }

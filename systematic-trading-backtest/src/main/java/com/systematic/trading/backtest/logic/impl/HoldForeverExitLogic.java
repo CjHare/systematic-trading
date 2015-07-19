@@ -25,9 +25,9 @@
  */
 package com.systematic.trading.backtest.logic.impl;
 
-import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.backtest.order.Order;
+import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.data.DataPoint;
 
 /**
@@ -38,7 +38,7 @@ import com.systematic.trading.data.DataPoint;
 public class HoldForeverExitLogic implements ExitLogic {
 
 	@Override
-	public Order udpate( final Brokerage broker, final DataPoint data ) {
+	public EquityOrder udpate( final BrokerageTransaction broker, final DataPoint data ) {
 		// There's never an order to place :. return null
 		return null;
 	}

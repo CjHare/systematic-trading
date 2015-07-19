@@ -23,46 +23,15 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.cash;
-
-import java.math.BigDecimal;
-
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.data.DataPoint;
+package com.systematic.trading.backtest.order;
 
 /**
- * Cash flow and interest management.
+ * What action to take on an order whose triggering conditions are met, however there are now not
+ * enough available funds to execute.
  * 
  * @author CJ Hare
  */
-public interface CashAccount {
-
-	/**
-	 * Applies relevant interest calculations and payments based on the passage of time.
-	 * 
-	 * @param data the next day of trading data to add.
-	 */
-	void update( DataPoint data );
-
-	/**
-	 * Removes funds from an account.
-	 * 
-	 * @param amount sum to be removed from the account.
-	 * @throws InsufficientFundsException encountered when the funds cannot be debited.
-	 */
-	void debit( BigDecimal amount ) throws InsufficientFundsException;
-
-	/**
-	 * Adds funds to an account.
-	 * 
-	 * @param amount sum to be added to the account.
-	 */
-	void credit( BigDecimal amount );
-
-	/**
-	 * Retrieves the current balance of the account.
-	 * 
-	 * @return positive number when the account is credit, negative otherwise.
-	 */
-	BigDecimal getBalance();
+public enum EquityOrderInsufficientFundsAction {
+	DELETE,
+	RESUMIT,
 }

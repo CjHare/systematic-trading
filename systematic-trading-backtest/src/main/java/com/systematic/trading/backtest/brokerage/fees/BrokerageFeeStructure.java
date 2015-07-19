@@ -23,46 +23,30 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.cash;
+package com.systematic.trading.backtest.brokerage.fees;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.backtest.brokerage.EquityClass;
+import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 
 /**
- * Cash flow and interest management.
+ * Brokerage fees applied to all an equity transaction.
  * 
  * @author CJ Hare
  */
-public interface CashAccount {
+public interface BrokerageFeeStructure {
 
 	/**
-	 * Applies relevant interest calculations and payments based on the passage of time.
+	 * Calculates the brokerage fee based on the given details.
 	 * 
-	 * @param data the next day of trading data to add.
+	 * @param tradeValue sum of the equities being purchased.
+	 * @param type different classes may attract alternative pricing structures.
+	 * @param tradesThisMonth the number of trades, inclusive of this one per the calendar month
+	 *            e.g. if this is the tenth trade this month the value is ten.
+	 * @return transaction (brokerage) cost.
+	 * @throws UnsupportedEquityClass encountered when the broker does not support the equity type.
 	 */
-	void update( DataPoint data );
-
-	/**
-	 * Removes funds from an account.
-	 * 
-	 * @param amount sum to be removed from the account.
-	 * @throws InsufficientFundsException encountered when the funds cannot be debited.
-	 */
-	void debit( BigDecimal amount ) throws InsufficientFundsException;
-
-	/**
-	 * Adds funds to an account.
-	 * 
-	 * @param amount sum to be added to the account.
-	 */
-	void credit( BigDecimal amount );
-
-	/**
-	 * Retrieves the current balance of the account.
-	 * 
-	 * @return positive number when the account is credit, negative otherwise.
-	 */
-	BigDecimal getBalance();
+	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, int tradesThisMonth )
+			throws UnsupportedEquityClass;
 }

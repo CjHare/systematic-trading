@@ -23,46 +23,36 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.cash;
+package com.systematic.trading.backtest.order;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
 
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
+import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
+import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.data.DataPoint;
 
 /**
- * Cash flow and interest management.
+ * Order to purchase a number of equities, at a certain price, within a specific time frame.
  * 
  * @author CJ Hare
  */
-public interface CashAccount {
+public class EntryEquityOrder extends BaseEquityOrder implements EquityOrder {
 
-	/**
-	 * Applies relevant interest calculations and payments based on the passage of time.
-	 * 
-	 * @param data the next day of trading data to add.
-	 */
-	void update( DataPoint data );
+	public EntryEquityOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
+			final EquityOrderVolume volume ) {
+		super( creationDate, entryPrice, expiry, volume );
+	}
 
-	/**
-	 * Removes funds from an account.
-	 * 
-	 * @param amount sum to be removed from the account.
-	 * @throws InsufficientFundsException encountered when the funds cannot be debited.
-	 */
-	void debit( BigDecimal amount ) throws InsufficientFundsException;
+	@Override
+	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrading )
+			throws OrderException {
 
-	/**
-	 * Adds funds to an account.
-	 * 
-	 * @param amount sum to be added to the account.
-	 */
-	void credit( BigDecimal amount );
+		// Total cost of executing the order
+		final BigDecimal orderCost = broker.buy( getPrice(), getVolume(), todaysTrading.getDate() );
 
-	/**
-	 * Retrieves the current balance of the account.
-	 * 
-	 * @return positive number when the account is credit, negative otherwise.
-	 */
-	BigDecimal getBalance();
+		cashAccount.debit( orderCost );
+	}
 }

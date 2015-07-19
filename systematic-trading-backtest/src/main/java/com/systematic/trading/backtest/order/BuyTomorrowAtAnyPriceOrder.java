@@ -23,46 +23,42 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.cash;
+package com.systematic.trading.backtest.order;
 
-import java.math.BigDecimal;
-
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
+import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
+import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.data.DataPoint;
 
 /**
- * Cash flow and interest management.
+ * Placing an order to purchase an equity.
  * 
  * @author CJ Hare
  */
-public interface CashAccount {
+public class BuyTomorrowAtAnyPriceOrder implements EquityOrder {
 
-	/**
-	 * Applies relevant interest calculations and payments based on the passage of time.
-	 * 
-	 * @param data the next day of trading data to add.
-	 */
-	void update( DataPoint data );
+	/** Number of equities to purchase. */
+	private final EquityOrderVolume volume;
 
-	/**
-	 * Removes funds from an account.
-	 * 
-	 * @param amount sum to be removed from the account.
-	 * @throws InsufficientFundsException encountered when the funds cannot be debited.
-	 */
-	void debit( BigDecimal amount ) throws InsufficientFundsException;
+	public BuyTomorrowAtAnyPriceOrder( final EquityOrderVolume volume ) {
+		this.volume = volume;
+	}
 
-	/**
-	 * Adds funds to an account.
-	 * 
-	 * @param amount sum to be added to the account.
-	 */
-	void credit( BigDecimal amount );
+	@Override
+	public boolean isNotExpired( final DataPoint todaysTrading ) {
+		// Never expire
+		return false;
+	}
 
-	/**
-	 * Retrieves the current balance of the account.
-	 * 
-	 * @return positive number when the account is credit, negative otherwise.
-	 */
-	BigDecimal getBalance();
+	@Override
+	public boolean areExecutionConditionsMet( final DataPoint todaysTrading ) {
+		// Buy irrespective of the date or price
+		return true;
+	}
+
+	@Override
+	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrade )
+			throws OrderException {
+		broker.buy( Price.valueOf( todaysTrade.getClosingPrice() ), volume, todaysTrade.getDate() );
+	}
 }

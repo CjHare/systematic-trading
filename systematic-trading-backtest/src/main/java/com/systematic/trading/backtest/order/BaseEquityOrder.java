@@ -35,7 +35,7 @@ import com.systematic.trading.data.DataPoint;
  * 
  * @author CJ Hare
  */
-public abstract class BaseOrder {
+public abstract class BaseEquityOrder {
 
 	/** The date that the entry order expires. */
 	private final LocalDate expiryDate;
@@ -44,9 +44,9 @@ public abstract class BaseOrder {
 	private final Price price;
 
 	/** The number of equities, possibly a fraction for unit trusts. */
-	private final OrderVolume volume;
+	private final EquityOrderVolume volume;
 
-	public BaseOrder( final LocalDate creationDate, final Price price, final Period expiry, final OrderVolume volume ) {
+	public BaseEquityOrder( final LocalDate creationDate, final Price price, final Period expiry, final EquityOrderVolume volume ) {
 		this.expiryDate = creationDate.plus( expiry );
 		this.price = price;
 		this.volume = volume;
@@ -77,7 +77,7 @@ public abstract class BaseOrder {
 	 * 
 	 * @return the number of equities the order applies.
 	 */
-	protected OrderVolume getVolume() {
+	protected EquityOrderVolume getVolume() {
 		return volume;
 	}
 }

@@ -25,10 +25,10 @@
  */
 package com.systematic.trading.backtest.logic;
 
-import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.order.OrderInsufficientFundsAction;
-import com.systematic.trading.backtest.order.Order;
+import com.systematic.trading.backtest.order.EquityOrder;
+import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.data.DataPoint;
 
 /**
@@ -42,14 +42,14 @@ public interface EntryLogic {
 	/**
 	 * Updates the trading logic with a subsequent trading point.
 	 * 
-	 * @param broker the brokerage to execute the order with, and whose fees are to be included in
+	 * @param fees the brokerage to execute the order with, and whose fees are to be included in
 	 *            the transaction.
 	 * @param cashAccount currently available funds.
 	 * @param data next day of trading to add, also applying logic for trade signals.
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
 	 *         be placed.
 	 */
-	Order update( Brokerage broker, CashAccount cashAccount, DataPoint data );
+	EquityOrder update( BrokerageFees fees, CashAccount cashAccount, DataPoint data );
 
 	/**
 	 * Action to take on the order when the triggering conditions are met, however there are
@@ -58,5 +58,5 @@ public interface EntryLogic {
 	 * @param order that cannot be executed, due to lack of funds.
 	 * @return action to take in this situation.
 	 */
-	OrderInsufficientFundsAction actionOnInsufficentFunds( Order order );
+	EquityOrderInsufficientFundsAction actionOnInsufficentFunds( EquityOrder order );
 }

@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.brokerage;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 
@@ -41,11 +42,10 @@ public interface BrokerageFees {
 	 * 
 	 * @param tradeValue sum of the equities being purchased.
 	 * @param type different classes may attract alternative pricing structures.
-	 * @param tradesThisMonth the number of trades, inclusive of this one per the calendar month
-	 *            e.g. if this is the tenth trade this month the value is ten.
+	 * @param tradeDate the date for the intended transaction.
 	 * @return transaction (brokerage) cost.
 	 * @throws UnsupportedEquityClass encountered when the broker does not support the equity type.
 	 */
-	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, int tradesThisMonth )
+	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, LocalDate tradeDate )
 			throws UnsupportedEquityClass;
 }

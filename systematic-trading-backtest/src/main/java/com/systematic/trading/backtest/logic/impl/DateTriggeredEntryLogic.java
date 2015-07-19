@@ -23,35 +23,53 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.backtest.logic.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
+import com.systematic.trading.backtest.logic.EntryLogic;
+import com.systematic.trading.backtest.order.BuyTomorrowAtAnyPriceOrder;
+import com.systematic.trading.backtest.order.EquityOrder;
+import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.backtest.order.EquityOrderVolume;
+import com.systematic.trading.data.DataPoint;
 
 /**
- * Order to purchase a number of equities, at a certain price, within a specific time frame.
+ * Frequent purchases of a fixed amount at regular intervals.
  * 
  * @author CJ Hare
  */
-public class EntryOrder extends BaseOrder implements Order {
+public class DateTriggeredEntryLogic implements EntryLogic {
 
-	public EntryOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
-			final OrderVolume volume ) {
-		super( creationDate, entryPrice, expiry, volume );
+	private final Period interval;
+	private final BigDecimal amount;
+	private final LocalDate lastOrder;
+
+	public DateTriggeredEntryLogic( final LocalDate firstOrder, final Period interval, final BigDecimal amount ) {
+		this.interval = interval;
+		this.amount = amount;
+
+		// The first order needs to be on that date, not interval after
+		lastOrder = LocalDate.from( firstOrder ).minus( interval );
 	}
 
 	@Override
-	public void execute( final Brokerage broker, final CashAccount cashAccount, final LocalDate tradeDate )
-			throws InsufficientFundsException {
+	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final DataPoint data ) {
 
-		// Total cost of executing the order
-		final BigDecimal orderCost = broker.buy( getPrice(), getVolume(), tradeDate );
+		if (data.getDate().isAfter( lastOrder.plus( interval ) )) {
+			final EquityOrderVolume volume = EquityOrderVolume.valueOf( amount );
+			return new BuyTomorrowAtAnyPriceOrder( volume );
+		}
 
-		cashAccount.debit( orderCost );
+		return null;
+	}
+
+	@Override
+	public EquityOrderInsufficientFundsAction actionOnInsufficentFunds( final EquityOrder order ) {
+		return EquityOrderInsufficientFundsAction.RESUMIT;
 	}
 }

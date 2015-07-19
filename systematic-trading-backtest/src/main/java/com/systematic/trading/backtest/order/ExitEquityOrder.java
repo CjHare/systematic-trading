@@ -25,12 +25,34 @@
  */
 package com.systematic.trading.backtest.order;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
+
+import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
+import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.exception.OrderException;
+import com.systematic.trading.data.DataPoint;
+
 /**
- * What action to take on an order whose triggering conditions are met, however there are now not
- * enough available funds to execute.
+ * Order to sell a number of equities, at a certain price, within a specific time frame.
  * 
  * @author CJ Hare
  */
-public enum OrderInsufficientFundsAction {
-	DELETE,
+public class ExitEquityOrder extends BaseEquityOrder implements EquityOrder {
+
+	public ExitEquityOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
+			final EquityOrderVolume volume ) {
+		super( creationDate, entryPrice, expiry, volume );
+	}
+
+	@Override
+	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrading )
+			throws OrderException {
+
+		// Total cost of executing the order
+		final BigDecimal orderCost = broker.sell( getPrice(), getVolume(), todaysTrading.getDate() );
+
+		cashAccount.credit( orderCost );
+	}
 }

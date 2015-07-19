@@ -23,43 +23,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.backtest.brokerage;
 
 import java.math.BigDecimal;
 
 /**
- * The number of equities.
+ * The brokerage keeps the balance of the equities currently held.
  * 
  * @author CJ Hare
  */
-public class OrderVolume {
+public interface BrokerageBalance {
 
 	/**
-	 * Creates a volume of an order from a decimal.
+	 * The number of equities currently on balance.
 	 * 
-	 * @param volume decimal to create the volume from, cannot be <code>null</code>.
-	 * @return equivalent volume.
+	 * @return number of equities currently held.
 	 */
-	public static OrderVolume valueOf( final BigDecimal volume ) {
-		if (volume == null) {
-			throw new IllegalArgumentException( "null is not accepted by OrderVolume.valueOf()" );
-		}
-
-		return new OrderVolume( volume );
-	}
-
-	private final BigDecimal volume;
-
-	private OrderVolume( final BigDecimal volume ) {
-		this.volume = volume;
-	}
-
-	/**
-	 * Retrieves the number of equities.
-	 * 
-	 * @return volume of the order, never <code>null</code>.
-	 */
-	public BigDecimal getVolume() {
-		return volume;
-	}
+	BigDecimal getEquityBalance();
 }

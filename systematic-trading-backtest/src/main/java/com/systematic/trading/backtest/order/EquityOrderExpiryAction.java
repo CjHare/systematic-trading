@@ -25,34 +25,11 @@
  */
 package com.systematic.trading.backtest.order;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Period;
-
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
-
 /**
- * Order to sell a number of equities, at a certain price, within a specific time frame.
+ * What action to take on an order when it has expired.
  * 
  * @author CJ Hare
  */
-public class ExitOrder extends BaseOrder implements Order {
-
-	public ExitOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
-			final OrderVolume volume ) {
-		super( creationDate, entryPrice, expiry, volume );
-	}
-
-	@Override
-	public void execute( final Brokerage broker, final CashAccount cashAccount, final LocalDate tradeDate )
-			throws InsufficientFundsException, InsufficientEquitiesException {
-
-		// Total cost of executing the order
-		final BigDecimal orderCost = broker.sell( getPrice(), getVolume(), tradeDate );
-
-		cashAccount.credit( orderCost );
-	}
+public enum EquityOrderExpiryAction {
+	DELETE,
 }

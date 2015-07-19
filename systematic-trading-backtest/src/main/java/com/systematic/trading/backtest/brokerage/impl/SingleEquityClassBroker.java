@@ -29,10 +29,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
+import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
-import com.systematic.trading.backtest.order.OrderVolume;
+import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
+import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.backtest.order.Price;
 
 /**
@@ -43,7 +44,7 @@ import com.systematic.trading.backtest.order.Price;
 public class SingleEquityClassBroker implements Brokerage {
 
 	/** Fee structure to apply to equity transactions. */
-	private final BrokerageFees fees;
+	private final BrokerageFeeStructure fees;
 
 	/** Single type of equity class traded in. */
 	private final EquityClass type;
@@ -54,7 +55,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	/** Deals with keeping track of the number of trades on a rolling basis. */
 	private final MonthlyRollingCounter monthlyTradeCounter;
 
-	public SingleEquityClassBroker( final BrokerageFees fees, final EquityClass type ) {
+	public SingleEquityClassBroker( final BrokerageFeeStructure fees, final EquityClass type ) {
 		this.fees = fees;
 		this.type = type;
 		this.monthlyTradeCounter = new MonthlyRollingCounter();
@@ -62,7 +63,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	}
 
 	@Override
-	public BigDecimal buy( final Price price, final OrderVolume volume, final LocalDate tradeDate ) {
+	public BigDecimal buy( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
 		balance = balance.add( volume.getVolume() );
 
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume() );
@@ -72,7 +73,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	}
 
 	@Override
-	public BigDecimal sell( final Price price, final OrderVolume volume, final LocalDate tradeDate )
+	public BigDecimal sell( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate )
 			throws InsufficientEquitiesException {
 		balance = balance.subtract( volume.getVolume() );
 
@@ -84,5 +85,16 @@ public class SingleEquityClassBroker implements Brokerage {
 		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
 
 		return fees.calculateFee( tradeValue, type, tradesThisMonth );
+	}
+
+	@Override
+	public BigDecimal getEquityBalance() {
+		return balance;
+	}
+
+	@Override
+	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final LocalDate tradeDate )
+			throws UnsupportedEquityClass {
+		return fees.calculateFee( tradeValue, type, monthlyTradeCounter.get( tradeDate ) );
 	}
 }

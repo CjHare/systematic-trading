@@ -63,6 +63,20 @@ public class MonthlyRollingCounter {
 		return additionsThisMonth;
 	}
 
+	/**
+	 * The number of transactions.
+	 * 
+	 * @return number of transaction in the given month.
+	 */
+	public int get( final LocalDate date ) {
+
+		if (isSameMonthAsLastAddition( date )) {
+			return additionsThisMonth;
+		}
+
+		return 0;
+	}
+
 	private boolean isSameMonthAsLastAddition( final LocalDate tradeDate ) {
 		return yearOfLastAddition == tradeDate.getYear() && monthOfLastAddition == tradeDate.getMonth();
 	}

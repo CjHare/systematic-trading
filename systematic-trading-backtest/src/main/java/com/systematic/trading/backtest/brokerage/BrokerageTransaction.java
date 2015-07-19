@@ -23,13 +23,41 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.backtest.brokerage;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
+import com.systematic.trading.backtest.order.EquityOrderVolume;
+import com.systematic.trading.backtest.order.Price;
 
 /**
- * What action to take on an order when it has expired.
+ * The broker performs the trading on a customers behalf, charging for privilege.
  * 
  * @author CJ Hare
  */
-public enum OrderExpiryAction {
-	DELETE,
+public interface BrokerageTransaction {
+
+	/**
+	 * Performs a purchase, applying the corresponding brokers fees.
+	 * 
+	 * @param price mean price paid for the equity.
+	 * @param volume number of equities being purchased.
+	 * @param tradeDate date of execution.
+	 * @return total cost of the purchase.
+	 */
+	BigDecimal buy( Price price, EquityOrderVolume volume, LocalDate tradeDate );
+
+	/**
+	 * Performs a liquidation, applying the corresponding brokers fees.
+	 * 
+	 * @param price mean price paid for the equity.
+	 * @param volume number of equities being sold.
+	 * @param tradeDate date of execution.
+	 * @throws InsufficientEquitiesException encountered when there are insufficient equities are
+	 *             held.
+	 * @return total funds acquired from the liquidation.
+	 */
+	BigDecimal sell( Price price, EquityOrderVolume volume, LocalDate tradeDate ) throws InsufficientEquitiesException;
 }

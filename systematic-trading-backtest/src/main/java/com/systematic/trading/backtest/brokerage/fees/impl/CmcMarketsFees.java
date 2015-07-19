@@ -23,19 +23,19 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage.impl;
+package com.systematic.trading.backtest.brokerage.fees.impl;
 
 import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
-import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.FIFTEEN;
-import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.TEN;
+import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.ELEVEN;
+import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.NINE_NINTY;
+import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.SEVENTY_FIVE_BASIS_POINTS;
 import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.TEN_BASIS_POINTS;
-import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.THIRTEEN;
 import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.applyLargest;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
+import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 
 /**
@@ -43,7 +43,7 @@ import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
  * 
  * @author CJ Hare
  */
-public class BellDirectFees implements BrokerageFees {
+public class CmcMarketsFees implements BrokerageFeeStructure {
 
 	@Override
 	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
@@ -54,17 +54,17 @@ public class BellDirectFees implements BrokerageFees {
 		switch (type) {
 			case BOND:
 			case STOCK:
-				// Your first 10 trades per month = $15 or 0.1%
+				// Your first 10 trades per month = $11 or 0.1%
 				if (tradesThisMonth < 11) {
-					brokerage = applyLargest( tradeValue, FIFTEEN, TEN_BASIS_POINTS );
+					brokerage = applyLargest( tradeValue, ELEVEN, TEN_BASIS_POINTS );
 				}
-				// Your 11th to 30th trades per month = $13 or 0.8%
+				// Your 11th to 30th trades per month = $9.90 or 0.8%
 				else if (tradesThisMonth < 31) {
-					brokerage = applyLargest( tradeValue, THIRTEEN, EIGHT_BASIS_POINTS );
+					brokerage = applyLargest( tradeValue, NINE_NINTY, EIGHT_BASIS_POINTS );
 				}
-				// Your 31st trade onwards per month = $10 or 0.8%
+				// Your 31st trade onwards per month = $9.90 or 0.75%
 				else {
-					brokerage = applyLargest( tradeValue, TEN, EIGHT_BASIS_POINTS );
+					brokerage = applyLargest( tradeValue, NINE_NINTY, SEVENTY_FIVE_BASIS_POINTS );
 				}
 
 				break;

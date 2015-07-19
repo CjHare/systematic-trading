@@ -27,15 +27,16 @@ package com.systematic.trading.backtest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
-import com.systematic.trading.backtest.brokerage.impl.BellDirectFees;
+import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.backtest.brokerage.fees.impl.BellDirectFees;
 import com.systematic.trading.backtest.brokerage.impl.SingleEquityClassBroker;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.cash.InterestRate;
@@ -43,6 +44,7 @@ import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashA
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
+import com.systematic.trading.backtest.logic.impl.DateTriggeredEntryLogic;
 import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
 import com.systematic.trading.data.DataPoint;
 import com.systematic.trading.data.DataService;
@@ -85,10 +87,10 @@ public class Backtest {
 
 		// TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
 
-		// TODO weekly buy-in of $100
-
-		// TODO create logic
-		final EntryLogic entry = null;
+		// Weekly purchase of $100
+		final Period weekly = Period.ofDays( 7 );
+		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
+		final EntryLogic entry = new DateTriggeredEntryLogic( data[0].getDate(), weekly, oneHundredDollars );
 
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();
@@ -100,7 +102,7 @@ public class Backtest {
 		final CashAccount cashAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds, openingDate );
 
 		// ETF Broker with Bell Direct fees
-		final BrokerageFees fees = new BellDirectFees();
+		final BrokerageFeeStructure fees = new BellDirectFees();
 		final Brokerage broker = new SingleEquityClassBroker( fees, EquityClass.ETF );
 
 		final Simulation simulation = new Simulation( data, broker, cashAccount, entry, exit );
