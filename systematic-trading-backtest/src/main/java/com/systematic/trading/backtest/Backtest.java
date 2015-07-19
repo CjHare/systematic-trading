@@ -43,6 +43,7 @@ import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashA
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
+import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
 import com.systematic.trading.data.DataPoint;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
@@ -89,7 +90,8 @@ public class Backtest {
 		// TODO create logic
 		final EntryLogic entry = null;
 
-		final ExitLogic exit = null;
+		// Never sell
+		final ExitLogic exit = new HoldForeverExitLogic();
 
 		// Cash account with flat interest of 1.5% - 50K starting balance
 		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ) );
