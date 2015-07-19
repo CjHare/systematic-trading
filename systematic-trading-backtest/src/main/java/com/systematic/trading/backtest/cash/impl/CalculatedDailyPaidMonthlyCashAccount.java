@@ -62,6 +62,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		this.rate = rate;
 		this.funds = openingFunds;
 		this.lastInterestCalculation = openingDate;
+		this.escrow = BigDecimal.ZERO;
 	}
 
 	@Override

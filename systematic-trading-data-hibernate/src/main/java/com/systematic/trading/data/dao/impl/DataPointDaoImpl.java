@@ -65,12 +65,12 @@ public class DataPointDaoImpl implements DataPointDao {
 	public void create( final DataPoint data, final Session session ) {
 		final String sql = String
 				.format(
-						"INSERT INTO history_%s (date, opening_price, lowest_price, highest_price, closing_price) VALUES (:date, :closing_price, :lowest_price, :highest_price)",
+						"INSERT INTO history_%s (date, opening_price, lowest_price, highest_price, closing_price) VALUES (:date, :opening_price, :lowest_price, :highest_price, :closing_price)",
 						sanitise( data.getTickerSymbol() ) );
 
 		final Query query = session.createSQLQuery( sql );
 		query.setDate( "date", Date.valueOf( data.getDate() ) );
-		query.setBigDecimal( "lowest_price", data.getOpeningPrice().getPrice() );
+		query.setBigDecimal( "opening_price", data.getOpeningPrice().getPrice() );
 		query.setBigDecimal( "lowest_price", data.getLowestPrice().getPrice() );
 		query.setBigDecimal( "highest_price", data.getHighestPrice().getPrice() );
 		query.setBigDecimal( "closing_price", data.getClosingPrice().getPrice() );

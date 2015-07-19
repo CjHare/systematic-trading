@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.cash.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import com.systematic.trading.backtest.cash.InterestRate;
 
@@ -49,8 +50,8 @@ public class FlatInterestRate implements InterestRate {
 	 * @param annualInterestRate rate of interest applied over the course of a year.
 	 */
 	public FlatInterestRate( final BigDecimal annualInterestRate ) {
-		this.dailyInterestRate = annualInterestRate.divide( DAYS_IN_YEAR );
-		this.dailyInterestRateLeapYear = annualInterestRate.divide( DAYS_IN_LEAP_YEAR );
+		this.dailyInterestRate = annualInterestRate.divide( DAYS_IN_YEAR, RoundingMode.HALF_EVEN );
+		this.dailyInterestRateLeapYear = annualInterestRate.divide( DAYS_IN_LEAP_YEAR, RoundingMode.HALF_EVEN );
 	}
 
 	@Override

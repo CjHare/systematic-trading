@@ -87,6 +87,9 @@ public class Backtest {
 
 		// TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
 
+		//TODO add $100 weekly
+		//TODO add output
+		
 		// Weekly purchase of $100
 		final Period weekly = Period.ofDays( 7 );
 		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
