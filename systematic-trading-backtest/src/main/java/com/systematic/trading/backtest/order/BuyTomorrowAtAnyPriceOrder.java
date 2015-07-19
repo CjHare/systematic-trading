@@ -59,6 +59,6 @@ public class BuyTomorrowAtAnyPriceOrder implements EquityOrder {
 	@Override
 	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrade )
 			throws OrderException {
-		broker.buy( Price.valueOf( todaysTrade.getClosingPrice() ), volume, todaysTrade.getDate() );
+		broker.buy( todaysTrade.getClosingPrice(), volume, todaysTrade.getDate() );
 	}
 }

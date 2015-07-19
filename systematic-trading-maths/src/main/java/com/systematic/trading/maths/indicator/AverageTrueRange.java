@@ -79,15 +79,15 @@ public class AverageTrueRange {
 	}
 
 	private BigDecimal trueRangeMethodOne( final DataPoint today ) {
-		return today.getHighestPrice().subtract( today.getLowestPrice() );
+		return today.getHighestPrice().getPrice().subtract( today.getLowestPrice().getPrice() );
 	}
 
 	private BigDecimal trueRangeMethodTwo( final DataPoint today, final DataPoint yesterday ) {
-		return today.getHighestPrice().subtract( yesterday.getClosingPrice() );
+		return today.getHighestPrice().getPrice().subtract( yesterday.getClosingPrice().getPrice() );
 	}
 
 	private BigDecimal trueRangeMethodThree( final DataPoint today, final DataPoint yesterday ) {
-		return today.getLowestPrice().subtract( yesterday.getClosingPrice() );
+		return today.getLowestPrice().getPrice().subtract( yesterday.getClosingPrice().getPrice() );
 	}
 
 	/**

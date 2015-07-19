@@ -55,7 +55,7 @@ public class StochasticPercentageK {
 		BigDecimal lowestLow, highestHigh, currentClose, lowestHighestDifference;
 
 		for (int i = lookback; i < data.length; i++) {
-			currentClose = data[i].getClosingPrice();
+			currentClose = data[i].getClosingPrice().getPrice();
 			lowestLow = lowestLow( data, i );
 			highestHigh = highestHigh( data, i );
 			lowestHighestDifference = differenceBetweenHighestHighAndLowestLow( lowestLow, highestHigh );
@@ -78,10 +78,10 @@ public class StochasticPercentageK {
 	}
 
 	private BigDecimal lowestLow( final DataPoint[] data, final int inclusiveStart ) {
-		BigDecimal contender, lowest = data[inclusiveStart].getLowestPrice();
+		BigDecimal contender, lowest = data[inclusiveStart].getLowestPrice().getPrice();
 
 		for (int i = inclusiveStart - lookback; i < inclusiveStart; i++) {
-			contender = data[i].getLowestPrice();
+			contender = data[i].getLowestPrice().getPrice();
 			if (contender.compareTo( lowest ) < 0) {
 				lowest = contender;
 			}
@@ -91,10 +91,10 @@ public class StochasticPercentageK {
 	}
 
 	private BigDecimal highestHigh( final DataPoint[] data, final int inclusiveStart ) {
-		BigDecimal contender, highest = data[inclusiveStart].getHighestPrice();
+		BigDecimal contender, highest = data[inclusiveStart].getHighestPrice().getPrice();
 
 		for (int i = inclusiveStart - lookback; i < inclusiveStart; i++) {
-			contender = data[i].getHighestPrice();
+			contender = data[i].getHighestPrice().getPrice();
 			if (contender.compareTo( highest ) > 0) {
 				highest = contender;
 			}

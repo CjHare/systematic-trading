@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.data;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -35,13 +34,33 @@ import java.time.LocalDate;
  */
 public interface DataPoint {
 
+	/**
+	 * The calendar date for the day's trading.
+	 * 
+	 * @return date of the trading data.
+	 */
 	LocalDate getDate();
 
-	BigDecimal getClosingPrice();
+	/**
+	 * Price at the market close.
+	 * 
+	 * @return price of the equity at the close of trading.
+	 */
+	Price getClosingPrice();
 
-	BigDecimal getLowestPrice();
+	/**
+	 * Lowest price of the equity during the day.
+	 * 
+	 * @return lowest price of the equity during the day's trading.
+	 */
+	Price getLowestPrice();
 
-	BigDecimal getHighestPrice();
+	/**
+	 * Highest price of the equity during the day.
+	 * 
+	 * @return highest price of the equity during the day's trading.
+	 */
+	Price getHighestPrice();
 
 	String getTickerSymbol();
 }

@@ -33,6 +33,7 @@ import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.Price;
 
 /**
  * Order to purchase a number of equities, at a certain price, within a specific time frame.

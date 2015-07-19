@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.data;
 
 import java.math.BigDecimal;
 
@@ -69,8 +69,8 @@ public class Price {
 	 * @param other comparison value.
 	 * @return <code>true</code> when the other is smaller, <code>false</code> otherwise.
 	 */
-	public boolean isGreaterThan( final BigDecimal other ) {
-		return price.compareTo( other ) > 0;
+	public boolean isGreaterThan( final Price other ) {
+		return price.compareTo( other.getPrice() ) > 0;
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class Price {
 	 * @param other comparison value.
 	 * @return <code>true</code> when the other value is larger, <code>false</code> otherwise.
 	 */
-	public boolean isLessThan( final BigDecimal other ) {
-		return price.compareTo( other ) < 0;
+	public boolean isLessThan( final Price other ) {
+		return price.compareTo( other.getPrice() ) < 0;
 	}
 }

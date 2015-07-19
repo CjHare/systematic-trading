@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.Price;
 
 /**
  * The basis of a trading order.

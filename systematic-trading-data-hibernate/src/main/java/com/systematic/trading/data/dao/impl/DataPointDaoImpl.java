@@ -70,9 +70,9 @@ public class DataPointDaoImpl implements DataPointDao {
 
 		final Query query = session.createSQLQuery( sql );
 		query.setDate( "date", Date.valueOf( data.getDate() ) );
-		query.setBigDecimal( "closing_price", data.getClosingPrice() );
-		query.setBigDecimal( "lowest_price", data.getLowestPrice() );
-		query.setBigDecimal( "highest_price", data.getHighestPrice() );
+		query.setBigDecimal( "closing_price", data.getClosingPrice().getPrice() );
+		query.setBigDecimal( "lowest_price", data.getLowestPrice().getPrice() );
+		query.setBigDecimal( "highest_price", data.getHighestPrice().getPrice() );
 
 		try {
 			query.executeUpdate();

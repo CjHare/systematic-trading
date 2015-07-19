@@ -120,7 +120,7 @@ public class MovingAveragingConvergeDivergenceSignals {
 	private ValueWithDate[] convertToClosingPriceAndDate( final DataPoint[] data ) {
 		final ValueWithDate[] vd = new ValueWithDate[data.length];
 		for (int i = 0; i < vd.length; i++) {
-			vd[i] = new ValueWithDate( data[i].getDate(), data[i].getClosingPrice() );
+			vd[i] = new ValueWithDate( data[i].getDate(), data[i].getClosingPrice().getPrice() );
 		}
 
 		return vd;

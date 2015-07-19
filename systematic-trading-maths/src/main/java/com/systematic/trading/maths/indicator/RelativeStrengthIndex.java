@@ -73,13 +73,13 @@ public class RelativeStrengthIndex {
 		 * Upwards movement upward = closeToday - closeYesterday downward = 0 Downwards movement
 		 * upward = closeYesterday - closeToday */
 		final int warmUpTimePeriod = lookback;
-		BigDecimal closeYesterday = data[0].getClosingPrice();
+		BigDecimal closeYesterday = data[0].getClosingPrice().getPrice();
 		BigDecimal upward = BigDecimal.valueOf( 0 );
 		BigDecimal downward = BigDecimal.valueOf( 0 );
 		BigDecimal closeToday;
 
 		for (int i = 0; i < warmUpTimePeriod; i++) {
-			closeToday = data[i].getClosingPrice();
+			closeToday = data[i].getClosingPrice().getPrice();
 
 			switch (closeToday.compareTo( closeYesterday )) {
 
@@ -113,8 +113,8 @@ public class RelativeStrengthIndex {
 		final BigDecimal[] relativeStrength = new BigDecimal[data.length];
 
 		for (int i = warmUpTimePeriod; i < relativeStrength.length; i++) {
-			closeToday = data[i].getClosingPrice();
-			closeYesterday = data[i - 1].getClosingPrice();
+			closeToday = data[i].getClosingPrice().getPrice();
+			closeYesterday = data[i - 1].getClosingPrice().getPrice();
 
 			switch (closeToday.compareTo( closeYesterday )) {
 

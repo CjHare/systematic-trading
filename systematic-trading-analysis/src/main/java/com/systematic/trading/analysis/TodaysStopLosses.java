@@ -96,10 +96,10 @@ public class TodaysStopLosses {
 				// TODO 2dp
 				System.out.println( "--- " );
 				System.out.println( symbol );
-				System.out.println( twoDecimalPlaces.format( data[lastDate].getClosingPrice().subtract(
-						averageTrueRange.multiply( threeQuaterMultiplier ) ) ) );
-				System.out.println( twoDecimalPlaces.format( data[lastDate].getClosingPrice().subtract(
-						averageTrueRange.multiply( threeHalfMultiplier ) ) ) );
+				System.out.println( twoDecimalPlaces.format( data[lastDate].getClosingPrice().getPrice()
+						.subtract( averageTrueRange.multiply( threeQuaterMultiplier ) ) ) );
+				System.out.println( twoDecimalPlaces.format( data[lastDate].getClosingPrice().getPrice()
+						.subtract( averageTrueRange.multiply( threeHalfMultiplier ) ) ) );
 				System.out.println( "--- " );
 
 			} catch (final TooFewDataPoints e) {

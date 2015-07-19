@@ -35,6 +35,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.Price;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 public class RelativeStrengthIndexSignalsTest {
@@ -71,31 +72,31 @@ public class RelativeStrengthIndexSignalsTest {
 	class DataPointImpl implements DataPoint {
 
 		private final LocalDate date;
-		private final BigDecimal closingPrice;
-		private final BigDecimal lowstPrice;
-		private final BigDecimal highestPrice;
+		private final Price closingPrice;
+		private final Price lowstPrice;
+		private final Price highestPrice;
 
 		public DataPointImpl( final LocalDate date, final BigDecimal lowstPrice, final BigDecimal highestPrice,
 				final BigDecimal closingPrice ) {
 			this.date = date;
-			this.closingPrice = closingPrice;
-			this.lowstPrice = lowstPrice;
-			this.highestPrice = highestPrice;
+			this.closingPrice = Price.valueOf( closingPrice );
+			this.lowstPrice = Price.valueOf( lowstPrice );
+			this.highestPrice = Price.valueOf( highestPrice );
 		}
 
 		public LocalDate getDate() {
 			return date;
 		}
 
-		public BigDecimal getClosingPrice() {
+		public Price getClosingPrice() {
 			return closingPrice;
 		}
 
-		public BigDecimal getLowestPrice() {
+		public Price getLowestPrice() {
 			return lowstPrice;
 		}
 
-		public BigDecimal getHighestPrice() {
+		public Price getHighestPrice() {
 			return highestPrice;
 		}
 
