@@ -27,6 +27,11 @@ package com.systematic.trading.data;
 
 import java.time.LocalDate;
 
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.LowestPrice;
+import com.systematic.trading.data.price.OpeningPrice;
+
 /**
  * Data point for a single day of trading.
  * 
@@ -46,21 +51,28 @@ public interface DataPoint {
 	 * 
 	 * @return price of the equity at the close of trading.
 	 */
-	Price getClosingPrice();
+	ClosingPrice getClosingPrice();
 
 	/**
 	 * Lowest price of the equity during the day.
 	 * 
 	 * @return lowest price of the equity during the day's trading.
 	 */
-	Price getLowestPrice();
+	LowestPrice getLowestPrice();
 
 	/**
 	 * Highest price of the equity during the day.
 	 * 
 	 * @return highest price of the equity during the day's trading.
 	 */
-	Price getHighestPrice();
+	HighestPrice getHighestPrice();
+
+	/**
+	 * Price of the equity at the start of trading.
+	 * 
+	 * @return opening price of the equity during the day's trading.
+	 */
+	OpeningPrice getOpeningPrice();
 
 	String getTickerSymbol();
 }

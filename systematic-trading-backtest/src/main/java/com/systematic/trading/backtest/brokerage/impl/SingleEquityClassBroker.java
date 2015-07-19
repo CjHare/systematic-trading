@@ -34,7 +34,7 @@ import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
 import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
-import com.systematic.trading.data.Price;
+import com.systematic.trading.data.price.Price;
 
 /**
  * Handles execution of trades and maintains the balance of equities.

@@ -30,7 +30,7 @@ import java.time.LocalDate;
 
 import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
-import com.systematic.trading.data.Price;
+import com.systematic.trading.data.price.Price;
 
 /**
  * The broker performs the trading on a customers behalf, charging for privilege.

@@ -25,46 +25,60 @@
  */
 package com.systematic.trading.signals.yahoo.data;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.data.DataPoint;
-import com.systematic.trading.data.Price;
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.LowestPrice;
+import com.systematic.trading.data.price.OpeningPrice;
 
 public class DataPointImpl implements DataPoint {
 
 	private final String tickerSymbol;
 	private final LocalDate date;
-	private final Price closingPrice;
-	private final Price lowestPrice;
-	private final Price highestPrice;
+	private final OpeningPrice openingPrice;
+	private final LowestPrice lowestPrice;
+	private final HighestPrice highestPrice;
+	private final ClosingPrice closingPrice;
 
-	public DataPointImpl( final String tickerSymbol, final LocalDate date, final BigDecimal lowestPrice,
-			final BigDecimal highestPrice, final BigDecimal closingPrice ) {
+	public DataPointImpl( final String tickerSymbol, final LocalDate date, final OpeningPrice openingPrice,
+			final LowestPrice lowestPrice, final HighestPrice highestPrice, final ClosingPrice closingPrice ) {
 		this.tickerSymbol = tickerSymbol;
 		this.date = date;
-		this.closingPrice = Price.valueOf( closingPrice );
-		this.lowestPrice = Price.valueOf( lowestPrice );
-		this.highestPrice = Price.valueOf( highestPrice );
+		this.closingPrice = closingPrice;
+		this.lowestPrice = lowestPrice;
+		this.highestPrice = highestPrice;
+		this.openingPrice = openingPrice;
 	}
 
+	@Override
 	public LocalDate getDate() {
 		return date;
 	}
 
-	public Price getClosingPrice() {
+	@Override
+	public ClosingPrice getClosingPrice() {
 		return closingPrice;
 	}
 
-	public Price getLowestPrice() {
+	@Override
+	public LowestPrice getLowestPrice() {
 		return lowestPrice;
 	}
 
-	public Price getHighestPrice() {
+	@Override
+	public HighestPrice getHighestPrice() {
 		return highestPrice;
 	}
 
+	@Override
 	public String getTickerSymbol() {
 		return tickerSymbol;
+	}
+
+	@Override
+	public OpeningPrice getOpeningPrice() {
+		return openingPrice;
 	}
 }

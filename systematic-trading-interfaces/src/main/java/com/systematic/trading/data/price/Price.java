@@ -23,37 +23,64 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.data.price;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Period;
-
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
-import com.systematic.trading.data.DataPoint;
-import com.systematic.trading.data.price.Price;
 
 /**
- * Order to purchase a number of equities, at a certain price, within a specific time frame.
+ * Price for an equity.
  * 
  * @author CJ Hare
  */
-public class EntryEquityOrder extends BaseEquityOrder implements EquityOrder {
+public class Price {
 
-	public EntryEquityOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
-			final EquityOrderVolume volume ) {
-		super( creationDate, entryPrice, expiry, volume );
+	/**
+	 * Creates a price from an underlying decimal value.
+	 * 
+	 * @param price decimal to create as a price, cannot be <code>null</code>.
+	 * @return equivalent price for the given decimal.
+	 */
+	public static Price valueOf( final BigDecimal price ) {
+		if (price == null) {
+			throw new IllegalArgumentException( "null is not accepted by Price.valueOf()" );
+		}
+
+		return new Price( price );
 	}
 
-	@Override
-	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrading )
-			throws OrderException {
+	/** Price of the equity. */
+	private final BigDecimal price;
 
-		// Total cost of executing the order
-		final BigDecimal orderCost = broker.buy( getPrice(), getVolume(), todaysTrading.getDate() );
+	protected Price( final BigDecimal price ) {
+		this.price = price;
+	}
 
-		cashAccount.debit( orderCost );
+	/**
+	 * Retrieves the price.
+	 * 
+	 * @return price, never <code>null</code>.
+	 */
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	/**
+	 * Is the price larger then another price.
+	 * 
+	 * @param other comparison value.
+	 * @return <code>true</code> when the other is smaller, <code>false</code> otherwise.
+	 */
+	public boolean isGreaterThan( final Price other ) {
+		return price.compareTo( other.getPrice() ) > 0;
+	}
+
+	/**
+	 * Is the price smaller then another price.
+	 * 
+	 * @param other comparison value.
+	 * @return <code>true</code> when the other value is larger, <code>false</code> otherwise.
+	 */
+	public boolean isLessThan( final Price other ) {
+		return price.compareTo( other.getPrice() ) < 0;
 	}
 }

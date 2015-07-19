@@ -23,63 +23,33 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data;
+package com.systematic.trading.data.price;
 
 import java.math.BigDecimal;
 
 /**
- * Price for an equity.
+ * Within a trading day the opening price of the equity.
  * 
  * @author CJ Hare
  */
-public class Price {
+public class OpeningPrice extends Price {
 
 	/**
-	 * Creates a price from an underlying decimal value.
+	 * Creates an opening price from an underlying decimal value.
 	 * 
-	 * @param price decimal to create as a price, cannot be <code>null</code>.
-	 * @return equivalent price for the given decimal.
+	 * @param price decimal to create as an opening price, cannot be <code>null</code>.
+	 * @return equivalent opening price for the given decimal.
 	 */
-	public static Price valueOf( final BigDecimal price ) {
+	public static OpeningPrice valueOf( final BigDecimal price ) {
 		if (price == null) {
-			throw new IllegalArgumentException( "null is not accepted by Price.valueOf()" );
+			throw new IllegalArgumentException( "null is not accepted by OpeningPrice.valueOf()" );
 		}
 
-		return new Price( price );
+		return new OpeningPrice( price );
 	}
 
-	private final BigDecimal price;
-
-	private Price( final BigDecimal price ) {
-		this.price = price;
+	protected OpeningPrice( final BigDecimal price ) {
+		super( price );
 	}
 
-	/**
-	 * Retrieves the price.
-	 * 
-	 * @return price, never <code>null</code>.
-	 */
-	public BigDecimal getPrice() {
-		return price;
-	}
-
-	/**
-	 * Is the price larger then another price.
-	 * 
-	 * @param other comparison value.
-	 * @return <code>true</code> when the other is smaller, <code>false</code> otherwise.
-	 */
-	public boolean isGreaterThan( final Price other ) {
-		return price.compareTo( other.getPrice() ) > 0;
-	}
-
-	/**
-	 * Is the price smaller then another price.
-	 * 
-	 * @param other comparison value.
-	 * @return <code>true</code> when the other value is larger, <code>false</code> otherwise.
-	 */
-	public boolean isLessThan( final Price other ) {
-		return price.compareTo( other.getPrice() ) < 0;
-	}
 }

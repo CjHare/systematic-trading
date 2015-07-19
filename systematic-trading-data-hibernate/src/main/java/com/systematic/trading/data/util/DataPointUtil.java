@@ -31,17 +31,23 @@ import java.time.LocalDate;
 
 import com.systematic.trading.data.DataPoint;
 import com.systematic.trading.data.DataPointImpl;
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.LowestPrice;
+import com.systematic.trading.data.price.OpeningPrice;
 
 public class DataPointUtil {
 
 	public static DataPoint parseDataPoint( final String tickerSymbol, final Object uncast ) {
 		final Object[] data = (Object[]) uncast;
 		final LocalDate date = parseDate( data[0] );
-		final BigDecimal lowestPrice = parseBigDecimal( data[1] );
-		final BigDecimal highestPrice = parseBigDecimal( data[2] );
-		final BigDecimal closingPrice = parseBigDecimal( data[3] );
 
-		return new DataPointImpl( tickerSymbol, date, lowestPrice, highestPrice, closingPrice );
+		final OpeningPrice openingPrice = OpeningPrice.valueOf( parseBigDecimal( data[3] ) );
+		final LowestPrice lowestPrice = LowestPrice.valueOf( parseBigDecimal( data[1] ) );
+		final HighestPrice highestPrice = HighestPrice.valueOf( parseBigDecimal( data[2] ) );
+		final ClosingPrice closingPrice = ClosingPrice.valueOf( parseBigDecimal( data[4] ) );
+
+		return new DataPointImpl( tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice );
 	}
 
 	private static LocalDate parseDate( final Object o ) {

@@ -65,14 +65,15 @@ public class DataPointDaoImpl implements DataPointDao {
 	public void create( final DataPoint data, final Session session ) {
 		final String sql = String
 				.format(
-						"INSERT INTO history_%s (date, closing_price, lowest_price, highest_price) VALUES (:date, :closing_price, :lowest_price, :highest_price)",
+						"INSERT INTO history_%s (date, opening_price, lowest_price, highest_price, closing_price) VALUES (:date, :closing_price, :lowest_price, :highest_price)",
 						sanitise( data.getTickerSymbol() ) );
 
 		final Query query = session.createSQLQuery( sql );
 		query.setDate( "date", Date.valueOf( data.getDate() ) );
-		query.setBigDecimal( "closing_price", data.getClosingPrice().getPrice() );
+		query.setBigDecimal( "lowest_price", data.getOpeningPrice().getPrice() );
 		query.setBigDecimal( "lowest_price", data.getLowestPrice().getPrice() );
 		query.setBigDecimal( "highest_price", data.getHighestPrice().getPrice() );
+		query.setBigDecimal( "closing_price", data.getClosingPrice().getPrice() );
 
 		try {
 			query.executeUpdate();
@@ -94,9 +95,10 @@ public class DataPointDaoImpl implements DataPointDao {
 		final StringBuilder template = new StringBuilder();
 		template.append( "CREATE TABLE IF NOT EXISTS history_%s (" );
 		template.append( "date DATE," );
-		template.append( "closing_price DECIMAL(8,2) NOT NULL," );
+		template.append( "opening_price DECIMAL(8,2) NOT NULL," );
 		template.append( "lowest_price DECIMAL(8,2) NOT NULL," );
 		template.append( "highest_price DECIMAL(8,2) NOT NULL," );
+		template.append( "closing_price DECIMAL(8,2) NOT NULL," );
 		template.append( "PRIMARY KEY (date) );" );
 
 		final String sql = String.format( template.toString(), sanitise( tickerSymbol ) );
@@ -108,9 +110,10 @@ public class DataPointDaoImpl implements DataPointDao {
 
 	@Override
 	public DataPoint getMostRecent( final String tickerSymbol ) {
-		final String sql = String.format(
-				"SELECT date, closing_price, lowest_price, highest_price FROM history_%s ORDER BY date DESC LIMIT 1",
-				sanitise( tickerSymbol ) );
+		final String sql = String
+				.format(
+						"SELECT date, opening_price, lowest_price, highest_price, closing_price FROM history_%s ORDER BY date DESC LIMIT 1",
+						sanitise( tickerSymbol ) );
 
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
@@ -134,7 +137,7 @@ public class DataPointDaoImpl implements DataPointDao {
 
 		final String sql = String
 				.format(
-						"SELECT date, closing_price, lowest_price, highest_price FROM history_%s WHERE date BETWEEN :start_date AND :end_date ORDER BY date DESC",
+						"SELECT date, opening_price, lowest_price, highest_price, closing_price FROM history_%s WHERE date BETWEEN :start_date AND :end_date ORDER BY date DESC",
 						sanitise( tickerSymbol ) );
 
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();

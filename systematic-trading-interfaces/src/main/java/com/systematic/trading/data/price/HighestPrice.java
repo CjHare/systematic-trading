@@ -23,37 +23,33 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.data.price;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Period;
-
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
-import com.systematic.trading.data.DataPoint;
-import com.systematic.trading.data.price.Price;
 
 /**
- * Order to purchase a number of equities, at a certain price, within a specific time frame.
+ * Within a trading day the highest price of the equity.
  * 
  * @author CJ Hare
  */
-public class EntryEquityOrder extends BaseEquityOrder implements EquityOrder {
+public class HighestPrice extends Price {
 
-	public EntryEquityOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
-			final EquityOrderVolume volume ) {
-		super( creationDate, entryPrice, expiry, volume );
+	/**
+	 * Creates a highest price from an underlying decimal value.
+	 * 
+	 * @param price decimal to create as an highest price, cannot be <code>null</code>.
+	 * @return equivalent highest price for the given decimal.
+	 */
+	public static HighestPrice valueOf( final BigDecimal price ) {
+		if (price == null) {
+			throw new IllegalArgumentException( "null is not accepted by HighestPrice.valueOf()" );
+		}
+
+		return new HighestPrice( price );
 	}
 
-	@Override
-	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrading )
-			throws OrderException {
-
-		// Total cost of executing the order
-		final BigDecimal orderCost = broker.buy( getPrice(), getVolume(), todaysTrading.getDate() );
-
-		cashAccount.debit( orderCost );
+	protected HighestPrice( final BigDecimal price ) {
+		super( price );
 	}
+
 }

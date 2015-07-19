@@ -43,6 +43,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.LowestPrice;
+import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.data.stock.api.StockApi;
 import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.yahoo.data.DataPointImpl;
@@ -122,11 +126,12 @@ public class YahooStockApi implements StockApi {
 
 		final String unparseDdate = quote.getString( "Date" );
 		final LocalDate date = LocalDate.from( DateTimeFormatter.ISO_LOCAL_DATE.parse( unparseDdate ) );
-		final BigDecimal closingPrice = BigDecimal.valueOf( quote.getDouble( "Close" ) );
-		final BigDecimal lowestPrice = BigDecimal.valueOf( quote.getDouble( "Low" ) );
-		final BigDecimal highestPrice = BigDecimal.valueOf( quote.getDouble( "High" ) );
+		final ClosingPrice closingPrice = ClosingPrice.valueOf( BigDecimal.valueOf( quote.getDouble( "Close" ) ) );
+		final LowestPrice lowestPrice = LowestPrice.valueOf( BigDecimal.valueOf( quote.getDouble( "Low" ) ) );
+		final HighestPrice highestPrice = HighestPrice.valueOf( BigDecimal.valueOf( quote.getDouble( "High" ) ) );
+		final OpeningPrice openingPrice = OpeningPrice.valueOf( BigDecimal.valueOf( quote.getDouble( "Open" ) ) );
 
-		return new DataPointImpl( tickerSymbol, date, lowestPrice, highestPrice, closingPrice );
+		return new DataPointImpl( tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice );
 	}
 
 	@Override

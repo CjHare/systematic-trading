@@ -45,7 +45,7 @@ public class RelativeStrengthIndexTest {
 				15.41, 15.46, 15.50, 15.63, 15.50, 15.51, 15.42, 15.38, 15.24, 15.26, 15.29, 15.25, 15.05 };
 		final DataPoint[] closingPrices = new DataPoint[prices.length];
 		for (int i = 0; i < closingPrices.length; i++) {
-			closingPrices[i] = new DataPointImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO,
+			closingPrices[i] = new DataPointImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
 					BigDecimal.valueOf( prices[i] ) );
 		}
 
@@ -100,7 +100,8 @@ public class RelativeStrengthIndexTest {
 
 		final DataPoint[] closingPrices = new DataPoint[closingPricesDb.length];
 		for (int i = 0; i < closingPrices.length; i++) {
-			closingPrices[i] = new DataPointImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, closingPricesDb[i] );
+			closingPrices[i] = new DataPointImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+					closingPricesDb[i] );
 
 		}
 
@@ -136,8 +137,10 @@ public class RelativeStrengthIndexTest {
 		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10 );
 
 		final DataPoint[] closingPrices = {
-				new DataPointImpl( LocalDate.now(), BigDecimal.valueOf( 93.15 ), BigDecimal.ZERO, BigDecimal.ZERO ),
-				new DataPointImpl( LocalDate.now(), BigDecimal.valueOf( 93.47 ), BigDecimal.ZERO, BigDecimal.ZERO ) };
+				new DataPointImpl( LocalDate.now(), BigDecimal.valueOf( 93.15 ), BigDecimal.ZERO, BigDecimal.ZERO,
+						BigDecimal.ZERO ),
+				new DataPointImpl( LocalDate.now(), BigDecimal.valueOf( 93.47 ), BigDecimal.ZERO, BigDecimal.ZERO,
+						BigDecimal.ZERO ) };
 
 		rsi.rsi( closingPrices );
 	}
@@ -155,7 +158,8 @@ public class RelativeStrengthIndexTest {
 
 		final DataPoint[] closingPrices = new DataPoint[closingPricesDb.length];
 		for (int i = 0; i < closingPrices.length; i++) {
-			closingPrices[i] = new DataPointImpl( LocalDate.now(), closingPricesDb[i], BigDecimal.ZERO, BigDecimal.ZERO );
+			closingPrices[i] = new DataPointImpl( LocalDate.now(), closingPricesDb[i], BigDecimal.ZERO,
+					BigDecimal.ZERO, BigDecimal.ZERO );
 		}
 
 		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10 );
