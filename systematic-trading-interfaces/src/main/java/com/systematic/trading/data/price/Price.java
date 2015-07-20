@@ -71,7 +71,7 @@ public class Price {
 	 * @return <code>true</code> when the other is smaller, <code>false</code> otherwise.
 	 */
 	public boolean isGreaterThan( final Price other ) {
-		return price.compareTo( other.getPrice() ) > 0;
+		return getPrice().compareTo( other.getPrice() ) > 0;
 	}
 
 	/**
@@ -81,6 +81,37 @@ public class Price {
 	 * @return <code>true</code> when the other value is larger, <code>false</code> otherwise.
 	 */
 	public boolean isLessThan( final Price other ) {
-		return price.compareTo( other.getPrice() ) < 0;
+		return getPrice().compareTo( other.getPrice() ) < 0;
+	}
+
+	/**
+	 * Whether the price is the same as another price.
+	 * 
+	 * @param other comparison value.
+	 * @return <code>true</code> when the other value is the same, <code>false</code> otherwise.
+	 */
+	public boolean isEqaul( final Price other ) {
+		return getPrice().compareTo( other.getPrice() ) == 0;
+	}
+
+	/**
+	 * Compares this {@code Price} with the specified {@code Price}.
+	 *
+	 * @param other {@code Price} to which this {@code Price} is to be compared.
+	 * @return -1, 0, or 1 as this {@code Price} is numerically less than, equal to, or greater than
+	 *         {@code other}.
+	 */
+	public int compareTo( final Price other ) {
+		return getPrice().compareTo( other.getPrice() );
+	}
+
+	/**
+	 * Result of subtracting the other price from this one.
+	 * 
+	 * @param other the price to subtract.
+	 * @return the result of the subtraction, not side effecting this Price.
+	 */
+	public BigDecimal subtract( final Price other ) {
+		return getPrice().subtract( other.getPrice() );
 	}
 }
