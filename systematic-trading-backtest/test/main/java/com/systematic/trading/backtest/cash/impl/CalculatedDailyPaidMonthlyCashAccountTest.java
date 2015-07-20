@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -139,6 +140,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account.update( tradingDate );
 
 		assertEquals( openingFunds, account.getBalance() );
+		verify( rate ).interest( openingFunds, 1, false );
 	}
 
 	@Test
@@ -157,6 +159,8 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account.update( tradingDate );
 
 		assertEquals( openingFunds.add( firstInterest ).add( secondInterest ), account.getBalance() );
+		verify( rate ).interest( openingFunds, 1, false );
+		verify( rate ).interest( openingFunds.add( firstInterest ), 30, false );
 	}
 
 	@Test
@@ -178,6 +182,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account.update( secondTradingDate );
 
 		assertEquals( openingFunds.add( firstInterest ).add( secondInterest ), account.getBalance() );
+		verify( rate, times( 2 ) ).interest( openingFunds, 1, false );
 	}
 
 }
