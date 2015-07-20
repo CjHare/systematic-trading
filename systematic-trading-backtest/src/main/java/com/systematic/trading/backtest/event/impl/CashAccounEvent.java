@@ -23,37 +23,64 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.backtest.event.impl;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.Period;
 
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
-import com.systematic.trading.data.DataPoint;
-import com.systematic.trading.data.price.Price;
+import com.systematic.trading.backtest.event.Event;
 
 /**
- * Order to sell a number of equities, at a certain price, within a specific time frame.
+ * Cash Account events, such as credit, debit and interest.
  * 
  * @author CJ Hare
  */
-public class ExitEquityOrder extends BaseEquityOrder implements EquityOrder {
+public class CashAccounEvent implements Event {
 
-	public ExitEquityOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
-			final EquityOrderVolume volume ) {
-		super( creationDate, entryPrice, expiry, volume );
+	private static final DecimalFormat TWO_DECIMAL_PLACES;
+
+	static {
+		TWO_DECIMAL_PLACES = new DecimalFormat();
+		TWO_DECIMAL_PLACES.setMaximumFractionDigits( 2 );
+		TWO_DECIMAL_PLACES.setMinimumFractionDigits( 2 );
+		TWO_DECIMAL_PLACES.setGroupingUsed( false );
+	}
+
+	public enum CashAccountEventType {
+		CREDIT( "Credit" ),
+		DEBIT( "Debit" ),
+		INTEREST( "Interest" );
+
+		private final String display;
+
+		private CashAccountEventType( final String display ) {
+			this.display = display;
+		}
+
+		public String getDisplay() {
+			return display;
+		}
+	}
+
+	private final String interest;
+	private final String fundsBefore;
+	private final String fundsAfter;
+	private final LocalDate transactionDate;
+	private final CashAccountEventType type;
+
+	public CashAccounEvent( final BigDecimal fundsBefore, final BigDecimal fundsAfter, final BigDecimal interest,
+			final CashAccountEventType type, final LocalDate transactionDate ) {
+		this.fundsBefore = TWO_DECIMAL_PLACES.format( fundsBefore );
+		this.fundsAfter = TWO_DECIMAL_PLACES.format( fundsAfter );
+		this.interest = TWO_DECIMAL_PLACES.format( interest );
+		this.transactionDate = transactionDate;
+		this.type = type;
 	}
 
 	@Override
-	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrading )
-			throws OrderException {
-
-		// Total cost of executing the order
-		final BigDecimal orderCost = broker.sell( getPrice(), getVolume(), todaysTrading.getDate() );
-
-		cashAccount.credit( orderCost, todaysTrading.getDate() );
+	public String toString() {
+		return String.format( "Cash Account - %s: %s - funds %s -> %s on %s", type.getDisplay(), interest,
+				fundsBefore, fundsAfter, transactionDate );
 	}
 }

@@ -54,6 +54,6 @@ public class EntryEquityOrder extends BaseEquityOrder implements EquityOrder {
 		// Total cost of executing the order
 		final BigDecimal orderCost = broker.buy( getPrice(), getVolume(), todaysTrading.getDate() );
 
-		cashAccount.debit( orderCost );
+		cashAccount.debit( orderCost, todaysTrading.getDate() );
 	}
 }

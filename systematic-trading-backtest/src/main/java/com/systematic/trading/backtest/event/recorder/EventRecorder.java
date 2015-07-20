@@ -23,37 +23,23 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.backtest.event.recorder;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Period;
-
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
-import com.systematic.trading.data.DataPoint;
-import com.systematic.trading.data.price.Price;
+import com.systematic.trading.backtest.event.Event;
 
 /**
- * Order to sell a number of equities, at a certain price, within a specific time frame.
+ * Records interesting events.
+ * <p/>
+ * Records can be used to discover what happened during the simulation and any needed statistics.
  * 
  * @author CJ Hare
  */
-public class ExitEquityOrder extends BaseEquityOrder implements EquityOrder {
+public interface EventRecorder {
 
-	public ExitEquityOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
-			final EquityOrderVolume volume ) {
-		super( creationDate, entryPrice, expiry, volume );
-	}
-
-	@Override
-	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrading )
-			throws OrderException {
-
-		// Total cost of executing the order
-		final BigDecimal orderCost = broker.sell( getPrice(), getVolume(), todaysTrading.getDate() );
-
-		cashAccount.credit( orderCost, todaysTrading.getDate() );
-	}
+	/**
+	 * Records an event to the interest source.
+	 * 
+	 * @param event that which is going to be recorded.
+	 */
+	void record( Event event );
 }

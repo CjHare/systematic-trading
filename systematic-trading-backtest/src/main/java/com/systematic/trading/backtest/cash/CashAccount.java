@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.cash;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
 import com.systematic.trading.data.DataPoint;
@@ -48,16 +49,18 @@ public interface CashAccount {
 	 * Removes funds from an account.
 	 * 
 	 * @param amount sum to be removed from the account.
+	 * @param transactionDate date of the debit.
 	 * @throws InsufficientFundsException encountered when the funds cannot be debited.
 	 */
-	void debit( BigDecimal amount ) throws InsufficientFundsException;
+	void debit( BigDecimal amount, LocalDate transactionDate ) throws InsufficientFundsException;
 
 	/**
 	 * Adds funds to an account.
 	 * 
 	 * @param amount sum to be added to the account.
+	 * @param transactionDate date of the credit.
 	 */
-	void credit( BigDecimal amount );
+	void credit( BigDecimal amount, LocalDate transactionDate );
 
 	/**
 	 * Retrieves the current balance of the account.

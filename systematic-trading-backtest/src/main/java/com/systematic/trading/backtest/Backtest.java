@@ -42,6 +42,8 @@ import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
+import com.systematic.trading.backtest.event.recorder.EventRecorder;
+import com.systematic.trading.backtest.event.recorder.impl.ConsoleEventRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.DateTriggeredEntryLogic;
@@ -67,7 +69,7 @@ public class Backtest {
 	private static final int DAYS_IN_A_YEAR = 365;
 
 	/** Minimum amount of historical data needed for back testing. */
-	private static final int HISTORY_REQUIRED = 5 * DAYS_IN_A_YEAR;
+	private static final int HISTORY_REQUIRED = 2 * DAYS_IN_A_YEAR;
 
 	public static void main( final String... args ) {
 
@@ -87,9 +89,11 @@ public class Backtest {
 
 		// TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
 
-		//TODO add $100 weekly
-		//TODO add output
-		
+		// TODO add $100 weekly
+		// TODO add output
+
+		final EventRecorder eventRecorder = new ConsoleEventRecorder();
+
 		// Weekly purchase of $100
 		final Period weekly = Period.ofDays( 7 );
 		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
@@ -101,8 +105,9 @@ public class Backtest {
 		// Cash account with flat interest of 1.5% - 50K starting balance
 		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ) );
 		final BigDecimal openingFunds = BigDecimal.valueOf( 50000 );
-		final LocalDate openingDate = data[0].getDate();
-		final CashAccount cashAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds, openingDate );
+		final LocalDate openingDate = getEarliestDate( data );
+		final CashAccount cashAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds, openingDate,
+				eventRecorder );
 
 		// ETF Broker with Bell Direct fees
 		final BrokerageFeeStructure fees = new BellDirectFees();
@@ -117,5 +122,17 @@ public class Backtest {
 		simulation.run();
 
 		HibernateUtil.getSessionFactory().close();
+	}
+
+	private static LocalDate getEarliestDate( final DataPoint[] data ) {
+		LocalDate earliest = data[0].getDate();
+
+		for (final DataPoint today : data) {
+			if (earliest.isAfter( today.getDate() )) {
+				earliest = today.getDate();
+			}
+		}
+
+		return earliest;
 	}
 }

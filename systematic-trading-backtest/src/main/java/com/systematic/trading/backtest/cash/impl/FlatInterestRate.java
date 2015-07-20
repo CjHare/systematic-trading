@@ -39,6 +39,7 @@ public class FlatInterestRate implements InterestRate {
 
 	private static final BigDecimal DAYS_IN_LEAP_YEAR = BigDecimal.valueOf( 366 );
 	private static final BigDecimal DAYS_IN_YEAR = BigDecimal.valueOf( 365 );
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
 
 	/** Interest applied daily in a non-leap year. */
 	private final BigDecimal dailyInterestRate;
@@ -47,15 +48,25 @@ public class FlatInterestRate implements InterestRate {
 	private final BigDecimal dailyInterestRateLeapYear;
 
 	/**
-	 * @param annualInterestRate rate of interest applied over the course of a year.
+	 * @param annualInterestRate rate of interest applied over the course of a year, where 2% is
+	 *            2.0.
 	 */
 	public FlatInterestRate( final BigDecimal annualInterestRate ) {
-		this.dailyInterestRate = annualInterestRate.divide( DAYS_IN_YEAR, RoundingMode.HALF_EVEN );
-		this.dailyInterestRateLeapYear = annualInterestRate.divide( DAYS_IN_LEAP_YEAR, RoundingMode.HALF_EVEN );
+
+		// Small numbers for the daily interest rate
+		final BigDecimal scaledAnnualInterestRate = annualInterestRate.setScale( 16, RoundingMode.HALF_EVEN ).divide(
+				ONE_HUNDRED, RoundingMode.HALF_EVEN );
+
+		this.dailyInterestRate = scaledAnnualInterestRate.divide( DAYS_IN_YEAR, RoundingMode.HALF_EVEN );
+		this.dailyInterestRateLeapYear = scaledAnnualInterestRate.divide( DAYS_IN_LEAP_YEAR, RoundingMode.HALF_EVEN );
 	}
 
 	@Override
 	public BigDecimal interest( final BigDecimal funds, final int days, final boolean isLeapYear ) {
+		if (days == 0) {
+			return BigDecimal.ZERO;
+		}
+
 		if (isLeapYear) {
 			dailyInterestRateLeapYear.multiply( funds ).multiply( BigDecimal.valueOf( days ) );
 		}
