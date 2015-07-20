@@ -35,7 +35,6 @@ import com.systematic.trading.backtest.event.impl.CashAccounEvent;
 import com.systematic.trading.backtest.event.impl.CashAccounEvent.CashAccountEventType;
 import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.data.DataPoint;
 
 /**
  * Flat interest rates calculated daily, paid monthly.
@@ -63,7 +62,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	 * @param rate calculated daily to the funds and paid monthly, cannot be <code>null</code>.
 	 * @param openingFunds starting balance for the account, cannot be <code>null</code>.
 	 * @param openingDate date to start calculating interest from, cannot be <code>null</code>.
-	 * @param event record keeper for deposits, withdrawals and interest from the Cas hAccount.
+	 * @param event record keeper for deposits, withdrawals and interest from the Cash Account.
 	 */
 	public CalculatedDailyPaidMonthlyCashAccount( final InterestRate rate, final BigDecimal openingFunds,
 			final LocalDate openingDate, final EventRecorder event ) {
@@ -75,9 +74,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	}
 
 	@Override
-	public void update( final DataPoint data ) {
-
-		final LocalDate tradingDate = data.getDate();
+	public void update( final LocalDate tradingDate ) {
 
 		// Any trading date earlier in time then our last interest is a mistake
 		if (tradingDate.isBefore( lastInterestCalculation )) {
@@ -91,7 +88,8 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 
 		// Remaining days of interest to escrow
 		final boolean isLeapYear = tradingDate.isLeapYear();
-		final int daysInterest = tradingDate.getDayOfMonth() - lastInterestCalculation.getDayOfMonth();
+		final int daysInterest = Period.between( lastInterestCalculation, tradingDate ).getDays();
+
 		escrow = escrow.add( rate.interest( funds, daysInterest, isLeapYear ) );
 
 		// Update the interest date marker
@@ -101,7 +99,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	private LocalDate applyFullMonthInterest( final LocalDate last ) {
 
 		// Number of days interest this month
-		final int daysInterest = last.getMonth().length( last.isLeapYear() ) - last.getDayOfMonth();
+		final int daysInterest = last.getMonth().length( last.isLeapYear() ) - last.getDayOfMonth() + 1;
 
 		// Calculate and pay the interest
 		final BigDecimal fundsBefore = funds;

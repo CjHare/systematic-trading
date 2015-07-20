@@ -98,7 +98,7 @@ public class Simulation {
 		for (final DataPoint data : chronologicalData) {
 
 			// Financial activity of deposits, withdrawal and interest
-			funds.update( data );
+			funds.update( data.getDate() );
 
 			// Attempt to execute the queued orders
 			orders = processOutstandingOrders( orders, data );

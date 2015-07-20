@@ -69,12 +69,12 @@ public class Backtest {
 	private static final int DAYS_IN_A_YEAR = 365;
 
 	/** Minimum amount of historical data needed for back testing. */
-	private static final int HISTORY_REQUIRED = 2 * DAYS_IN_A_YEAR;
+	private static final int HISTORY_REQUIRED = 1 * DAYS_IN_A_YEAR;
 
 	public static void main( final String... args ) {
 
 		final LocalDate endDate = LocalDate.now();
-		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS );
+		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
 
 		final String tickerSymbol = "^GSPC";
 		// final String tickerSymbol = "USD";

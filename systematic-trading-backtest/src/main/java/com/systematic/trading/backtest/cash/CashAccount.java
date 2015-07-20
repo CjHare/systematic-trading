@@ -29,7 +29,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.data.DataPoint;
 
 /**
  * Cash flow and interest management.
@@ -41,9 +40,9 @@ public interface CashAccount {
 	/**
 	 * Applies relevant interest calculations and payments based on the passage of time.
 	 * 
-	 * @param data the next day of trading data to add.
+	 * @param tradingDate the next day of trading data to add.
 	 */
-	void update( DataPoint data );
+	void update( final LocalDate tradingDate );
 
 	/**
 	 * Removes funds from an account.
