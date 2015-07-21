@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.brokerage.impl;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 /**
  * Utility class for operations and constants related to fees.
@@ -50,11 +51,12 @@ public class BrokerageFeeUtil {
 	 * @param tradeValue sum of the equity trade whose brokerage is being calculated.
 	 * @param absoluteFee absolute amount for brokerage.
 	 * @param percentage relative amount based of the tradeValue.
+	 * @param context math context defining the scale and precision to apply to operations.
 	 * @return the larger between the absolute and relative given the specific trade value.
 	 */
 	public static BigDecimal applyLargest( final BigDecimal tradeValue, final BigDecimal absoluteFee,
-			final BigDecimal percentage ) {
-		final BigDecimal relativeFee = tradeValue.multiply( percentage );
+			final BigDecimal percentage, final MathContext context ) {
+		final BigDecimal relativeFee = tradeValue.multiply( percentage, context );
 		return absoluteFee.compareTo( relativeFee ) > 0 ? absoluteFee : relativeFee;
 	}
 }

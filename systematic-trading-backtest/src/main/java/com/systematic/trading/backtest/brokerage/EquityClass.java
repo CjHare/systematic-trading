@@ -33,7 +33,6 @@ package com.systematic.trading.backtest.brokerage;
 public enum EquityClass {
 	BOND,
 	CFD,
-	ETF,
 	FUTURE,
 	FOREX,
 	METAL,

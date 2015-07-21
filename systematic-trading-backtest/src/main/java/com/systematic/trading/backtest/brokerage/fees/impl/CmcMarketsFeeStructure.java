@@ -33,6 +33,7 @@ import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.TE
 import static com.systematic.trading.backtest.brokerage.impl.BrokerageFeeUtil.applyLargest;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
@@ -43,7 +44,17 @@ import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
  * 
  * @author CJ Hare
  */
-public class CmcMarketsFees implements BrokerageFeeStructure {
+public class CmcMarketsFeeStructure implements BrokerageFeeStructure {
+
+	/** Scale and precision to apply to mathematical operations. */
+	private final MathContext context;
+
+	/**
+	 * @param context math context defining the scale and precision to apply to operations.
+	 */
+	public CmcMarketsFeeStructure( final MathContext context ) {
+		this.context = context;
+	}
 
 	@Override
 	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
@@ -56,15 +67,15 @@ public class CmcMarketsFees implements BrokerageFeeStructure {
 			case STOCK:
 				// Your first 10 trades per month = $11 or 0.1%
 				if (tradesThisMonth < 11) {
-					brokerage = applyLargest( tradeValue, ELEVEN, TEN_BASIS_POINTS );
+					brokerage = applyLargest( tradeValue, ELEVEN, TEN_BASIS_POINTS, context );
 				}
 				// Your 11th to 30th trades per month = $9.90 or 0.8%
 				else if (tradesThisMonth < 31) {
-					brokerage = applyLargest( tradeValue, NINE_NINTY, EIGHT_BASIS_POINTS );
+					brokerage = applyLargest( tradeValue, NINE_NINTY, EIGHT_BASIS_POINTS, context );
 				}
 				// Your 31st trade onwards per month = $9.90 or 0.75%
 				else {
-					brokerage = applyLargest( tradeValue, NINE_NINTY, SEVENTY_FIVE_BASIS_POINTS );
+					brokerage = applyLargest( tradeValue, NINE_NINTY, SEVENTY_FIVE_BASIS_POINTS, context );
 				}
 
 				break;

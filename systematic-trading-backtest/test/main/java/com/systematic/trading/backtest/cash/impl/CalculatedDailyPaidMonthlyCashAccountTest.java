@@ -34,6 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -54,6 +55,7 @@ import com.systematic.trading.backtest.exception.InsufficientFundsException;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CalculatedDailyPaidMonthlyCashAccountTest {
+	private final MathContext mc = MathContext.DECIMAL64;
 
 	@Mock
 	private InterestRate rate;
@@ -64,7 +66,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 	@Test
 	public void credit() {
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), event );
+				BigDecimal.ZERO, LocalDate.now(), event, mc );
 
 		final BigDecimal credit = BigDecimal.valueOf( 1.23456789 );
 
@@ -80,7 +82,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 	public void debit() throws InsufficientFundsException {
 		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, LocalDate.now(), event );
+				openingFunds, LocalDate.now(), event, mc );
 
 		final BigDecimal debit = BigDecimal.valueOf( 1.23456789 );
 
@@ -95,7 +97,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 	@Test(expected = InsufficientFundsException.class)
 	public void debitInsufficientFunds() throws InsufficientFundsException {
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), event );
+				BigDecimal.ZERO, LocalDate.now(), event, mc );
 
 		final BigDecimal debit = BigDecimal.valueOf( 1.23456789 );
 
@@ -105,7 +107,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void updateDateTooEarly() {
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), event );
+				BigDecimal.ZERO, LocalDate.now(), event, mc );
 
 		account.update( LocalDate.now().minus( Period.ofDays( 1 ) ) );
 	}
@@ -119,7 +121,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		when( rate.interest( any( BigDecimal.class ), anyInt(), anyBoolean() ) ).thenReturn( interest );
 
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, event );
+				openingFunds, openingDate, event, mc );
 
 		account.update( tradingDate );
 
@@ -135,7 +137,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		when( rate.interest( any( BigDecimal.class ), anyInt(), anyBoolean() ) ).thenReturn( interest );
 
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, event );
+				openingFunds, openingDate, event, mc );
 
 		account.update( tradingDate );
 
@@ -154,7 +156,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 				.thenReturn( secondInterest );
 
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, event );
+				openingFunds, openingDate, event, mc );
 
 		account.update( tradingDate );
 
@@ -173,7 +175,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 				.thenReturn( secondInterest );
 
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, event );
+				openingFunds, openingDate, event, mc );
 
 		final LocalDate firstTradingDate = LocalDate.of( 2015, 3, 31 );
 		account.update( firstTradingDate );

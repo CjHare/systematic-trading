@@ -26,7 +26,7 @@
 package com.systematic.trading.backtest.cash.impl;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 
 import com.systematic.trading.backtest.cash.InterestRate;
 
@@ -47,18 +47,23 @@ public class FlatInterestRate implements InterestRate {
 	/** Interest applied daily in a leap year. */
 	private final BigDecimal dailyInterestRateLeapYear;
 
+	/** Scale and precision to apply to mathematical operations. */
+	private final MathContext context;
+
 	/**
 	 * @param annualInterestRate rate of interest applied over the course of a year, where 2% is
 	 *            2.0.
+	 * @param context math context defining the scale and precision to apply to operations.
 	 */
-	public FlatInterestRate( final BigDecimal annualInterestRate ) {
+	public FlatInterestRate( final BigDecimal annualInterestRate, final MathContext context ) {
+
+		this.context = context;
 
 		// Small numbers for the daily interest rate
-		final BigDecimal scaledAnnualInterestRate = annualInterestRate.setScale( 16, RoundingMode.HALF_EVEN ).divide(
-				ONE_HUNDRED, RoundingMode.HALF_EVEN );
+		final BigDecimal scaledAnnualInterestRate = annualInterestRate.divide( ONE_HUNDRED, this.context );
 
-		this.dailyInterestRate = scaledAnnualInterestRate.divide( DAYS_IN_YEAR, RoundingMode.HALF_EVEN );
-		this.dailyInterestRateLeapYear = scaledAnnualInterestRate.divide( DAYS_IN_LEAP_YEAR, RoundingMode.HALF_EVEN );
+		this.dailyInterestRate = scaledAnnualInterestRate.divide( DAYS_IN_YEAR, this.context );
+		this.dailyInterestRateLeapYear = scaledAnnualInterestRate.divide( DAYS_IN_LEAP_YEAR, this.context );
 	}
 
 	@Override
@@ -68,9 +73,9 @@ public class FlatInterestRate implements InterestRate {
 		}
 
 		if (isLeapYear) {
-			dailyInterestRateLeapYear.multiply( funds ).multiply( BigDecimal.valueOf( days ) );
+			return dailyInterestRateLeapYear.multiply( funds, context ).multiply( BigDecimal.valueOf( days ), context );
 		}
 
-		return dailyInterestRate.multiply( funds ).multiply( BigDecimal.valueOf( days ) );
+		return dailyInterestRate.multiply( funds, context ).multiply( BigDecimal.valueOf( days ), context );
 	}
 }

@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
@@ -36,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.backtest.brokerage.fees.impl.BellDirectFees;
+import com.systematic.trading.backtest.brokerage.fees.impl.BellDirectFeeStructure;
 import com.systematic.trading.backtest.brokerage.impl.SingleEquityClassBroker;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.cash.InterestRate;
@@ -65,6 +66,8 @@ import com.systematic.trading.data.util.HibernateUtil;
 public class Backtest {
 
 	private static final Logger LOG = LogManager.getLogger( Backtest.class );
+
+	private static final MathContext context = MathContext.DECIMAL64;
 
 	private static final int DAYS_IN_A_YEAR = 365;
 
@@ -103,15 +106,15 @@ public class Backtest {
 		final ExitLogic exit = new HoldForeverExitLogic();
 
 		// Cash account with flat interest of 1.5% - 50K starting balance
-		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ) );
+		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), context );
 		final BigDecimal openingFunds = BigDecimal.valueOf( 50000 );
 		final LocalDate openingDate = getEarliestDate( data );
 		final CashAccount cashAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds, openingDate,
-				eventRecorder );
+				eventRecorder, context );
 
 		// ETF Broker with Bell Direct fees
-		final BrokerageFeeStructure fees = new BellDirectFees();
-		final Brokerage broker = new SingleEquityClassBroker( fees, EquityClass.ETF );
+		final BrokerageFeeStructure fees = new BellDirectFeeStructure( context );
+		final Brokerage broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, context );
 
 		final Simulation simulation = new Simulation( data, broker, cashAccount, entry, exit );
 

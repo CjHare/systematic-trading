@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.cash.impl;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -58,19 +59,24 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	/** Record keeper for transactions from the Cash Account. */
 	private final EventRecorder event;
 
+	/** Scale and precision to apply to mathematical operations. */
+	private final MathContext context;
+
 	/**
 	 * @param rate calculated daily to the funds and paid monthly, cannot be <code>null</code>.
 	 * @param openingFunds starting balance for the account, cannot be <code>null</code>.
 	 * @param openingDate date to start calculating interest from, cannot be <code>null</code>.
 	 * @param event record keeper for deposits, withdrawals and interest from the Cash Account.
+	 * @param context math context defining the scale and precision to apply to operations.
 	 */
 	public CalculatedDailyPaidMonthlyCashAccount( final InterestRate rate, final BigDecimal openingFunds,
-			final LocalDate openingDate, final EventRecorder event ) {
+			final LocalDate openingDate, final EventRecorder event, final MathContext context ) {
 		this.rate = rate;
 		this.funds = openingFunds;
 		this.lastInterestCalculation = openingDate;
 		this.escrow = BigDecimal.ZERO;
 		this.event = event;
+		this.context = context;
 	}
 
 	@Override
@@ -90,7 +96,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		final boolean isLeapYear = tradingDate.isLeapYear();
 		final int daysInterest = Period.between( lastInterestCalculation, tradingDate ).getDays();
 
-		escrow = escrow.add( rate.interest( funds, daysInterest, isLeapYear ) );
+		escrow = escrow.add( rate.interest( funds, daysInterest, isLeapYear ), context );
 
 		// Update the interest date marker
 		lastInterestCalculation = tradingDate;
@@ -104,8 +110,8 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		// Calculate and pay the interest
 		final BigDecimal fundsBefore = funds;
 		final boolean isLeapYear = last.isLeapYear();
-		final BigDecimal interest = rate.interest( funds, daysInterest, isLeapYear ).add( escrow );
-		funds = funds.add( interest );
+		final BigDecimal interest = rate.interest( funds, daysInterest, isLeapYear ).add( escrow, context );
+		funds = funds.add( interest, context );
 		escrow = BigDecimal.ZERO;
 
 		// Next month begins on the first day
