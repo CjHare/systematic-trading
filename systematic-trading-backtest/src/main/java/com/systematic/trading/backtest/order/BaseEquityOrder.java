@@ -53,7 +53,7 @@ public abstract class BaseEquityOrder {
 		this.volume = volume;
 	}
 
-	public boolean isNotExpired( final DataPoint todaysTrading ) {
+	public boolean isValid( final DataPoint todaysTrading ) {
 		return todaysTrading.getDate().isBefore( expiryDate );
 	}
 

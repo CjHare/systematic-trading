@@ -45,9 +45,9 @@ public class BuyTomorrowAtAnyPriceOrder implements EquityOrder {
 	}
 
 	@Override
-	public boolean isNotExpired( final DataPoint todaysTrading ) {
+	public boolean isValid( final DataPoint todaysTrading ) {
 		// Never expire
-		return false;
+		return true;
 	}
 
 	@Override

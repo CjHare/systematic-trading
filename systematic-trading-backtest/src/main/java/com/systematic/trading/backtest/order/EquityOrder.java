@@ -38,13 +38,13 @@ import com.systematic.trading.data.DataPoint;
 public interface EquityOrder {
 
 	/**
-	 * Whether the order has expire.
+	 * Whether the order has yet to expire.
 	 * 
 	 * @param todaysTrading the price action for today.
 	 * @return <code>true</code> has expire and should not be executed, <code>false</code>
 	 *         otherwise.
 	 */
-	boolean isNotExpired( DataPoint todaysTrading );
+	boolean isValid( DataPoint todaysTrading );
 
 	/**
 	 * Whether the day's trading movement satisfied the execution criteria for the order.

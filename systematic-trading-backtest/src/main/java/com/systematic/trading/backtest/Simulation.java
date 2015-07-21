@@ -153,7 +153,7 @@ public class Simulation {
 
 		for (final EquityOrder order : orders) {
 
-			if (!order.isNotExpired( data )) {
+			if (!order.isValid( data )) {
 				final EquityOrder processedOrder = processOutstandingValidOrder( order, data );
 
 				// Add the original / altered order back to try again

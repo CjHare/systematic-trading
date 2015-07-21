@@ -97,10 +97,12 @@ public class Backtest {
 
 		final EventRecorder eventRecorder = new ConsoleEventRecorder();
 
+		final LocalDate openingDate = getEarliestDate( data );
+
 		// Weekly purchase of $100
 		final Period weekly = Period.ofDays( 7 );
 		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		final EntryLogic entry = new DateTriggeredEntryLogic( data[0].getDate(), weekly, oneHundredDollars );
+		final EntryLogic entry = new DateTriggeredEntryLogic( openingDate, weekly, oneHundredDollars );
 
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();
@@ -108,7 +110,6 @@ public class Backtest {
 		// Cash account with flat interest of 1.5% - 50K starting balance
 		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), context );
 		final BigDecimal openingFunds = BigDecimal.valueOf( 50000 );
-		final LocalDate openingDate = getEarliestDate( data );
 		final CashAccount cashAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds, openingDate,
 				eventRecorder, context );
 
