@@ -23,62 +23,44 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.backtest.order.impl;
 
-import java.time.LocalDate;
-import java.time.Period;
-
+import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
+import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.exception.OrderException;
+import com.systematic.trading.backtest.order.EquityOrder;
+import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.data.DataPoint;
-import com.systematic.trading.data.price.Price;
 
 /**
- * The basis of a trading order.
+ * Placing an order to purchase an equity.
  * 
  * @author CJ Hare
  */
-public abstract class BaseEquityOrder {
+public class BuyTomorrowAtAnyPriceOrder implements EquityOrder {
 
-	/** The date that the entry order expires. */
-	private final LocalDate expiryDate;
-
-	/** Target price for entry order. */
-	private final Price price;
-
-	/** The number of equities, possibly a fraction for unit trusts. */
+	/** Number of equities to purchase. */
 	private final EquityOrderVolume volume;
 
-	public BaseEquityOrder( final LocalDate creationDate, final Price price, final Period expiry, final EquityOrderVolume volume ) {
-		this.expiryDate = creationDate.plus( expiry );
-		this.price = price;
+	public BuyTomorrowAtAnyPriceOrder( final EquityOrderVolume volume ) {
 		this.volume = volume;
 	}
 
+	@Override
 	public boolean isValid( final DataPoint todaysTrading ) {
-		return todaysTrading.getDate().isBefore( expiryDate );
+		// Never expire
+		return true;
 	}
 
+	@Override
 	public boolean areExecutionConditionsMet( final DataPoint todaysTrading ) {
-
-		// Is the range of todays trading including the entry price
-		return price.isGreaterThan( todaysTrading.getLowestPrice() )
-				&& price.isLessThan( todaysTrading.getHighestPrice() );
+		// Buy irrespective of the date or price
+		return true;
 	}
 
-	/**
-	 * Retrieves the price to execute the order at.
-	 * 
-	 * @return order execution price.
-	 */
-	protected Price getPrice() {
-		return price;
-	}
-
-	/**
-	 * Retrieve the number of equities to execute on.
-	 * 
-	 * @return the number of equities the order applies.
-	 */
-	protected EquityOrderVolume getVolume() {
-		return volume;
+	@Override
+	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrade )
+			throws OrderException {
+		broker.buy( todaysTrade.getClosingPrice(), volume, todaysTrade.getDate() );
 	}
 }

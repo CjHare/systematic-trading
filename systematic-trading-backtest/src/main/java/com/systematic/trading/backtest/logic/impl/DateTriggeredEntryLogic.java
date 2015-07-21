@@ -32,10 +32,10 @@ import java.time.Period;
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.logic.EntryLogic;
-import com.systematic.trading.backtest.order.BuyTomorrowAtAnyPriceOrder;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
+import com.systematic.trading.backtest.order.impl.BuyTomorrowAtAnyPriceOrder;
 import com.systematic.trading.data.DataPoint;
 
 /**
