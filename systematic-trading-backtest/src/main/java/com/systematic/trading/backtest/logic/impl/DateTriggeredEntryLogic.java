@@ -35,7 +35,7 @@ import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
-import com.systematic.trading.backtest.order.impl.BuyTomorrowAtAnyPriceOrder;
+import com.systematic.trading.backtest.order.impl.BuyTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.data.DataPoint;
 
 /**
@@ -62,7 +62,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 
 		if (data.getDate().isAfter( lastOrder.plus( interval ) )) {
 			final EquityOrderVolume volume = EquityOrderVolume.valueOf( amount );
-			return new BuyTomorrowAtAnyPriceOrder( volume );
+			return new BuyTomorrowAtOpeningPriceOrder( volume );
 		}
 
 		return null;

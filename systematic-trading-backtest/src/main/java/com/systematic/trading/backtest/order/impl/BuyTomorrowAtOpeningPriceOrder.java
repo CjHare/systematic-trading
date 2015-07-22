@@ -25,37 +25,42 @@
  */
 package com.systematic.trading.backtest.order.impl;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Period;
-
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.data.DataPoint;
-import com.systematic.trading.data.price.Price;
 
 /**
- * Order to sell a number of equities, at a certain price, within a specific time frame.
+ * Placing an order to purchase an equity.
  * 
  * @author CJ Hare
  */
-public class ExitEquityOrder extends BaseEquityOrder implements EquityOrder {
+public class BuyTomorrowAtOpeningPriceOrder implements EquityOrder {
 
-	public ExitEquityOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
-			final EquityOrderVolume volume ) {
-		super( creationDate, entryPrice, expiry, volume );
+	/** Number of equities to purchase. */
+	private final EquityOrderVolume volume;
+
+	public BuyTomorrowAtOpeningPriceOrder( final EquityOrderVolume volume ) {
+		this.volume = volume;
 	}
 
 	@Override
-	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrading )
+	public boolean isValid( final DataPoint todaysTrading ) {
+		// Never expire
+		return true;
+	}
+
+	@Override
+	public boolean areExecutionConditionsMet( final DataPoint todaysTrading ) {
+		// Buy irrespective of the date or price
+		return true;
+	}
+
+	@Override
+	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrade )
 			throws OrderException {
-
-		// Total cost of executing the order
-		final BigDecimal orderCost = broker.sell( getPrice(), getVolume(), todaysTrading.getDate() );
-
-		cashAccount.credit( orderCost, todaysTrading.getDate() );
+		broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
 	}
 }

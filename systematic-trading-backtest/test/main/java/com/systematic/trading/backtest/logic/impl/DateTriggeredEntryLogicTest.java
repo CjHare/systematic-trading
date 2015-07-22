@@ -23,44 +23,39 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order.impl;
+package com.systematic.trading.backtest.logic.impl;
 
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
+
+import org.junit.Test;
+
 import com.systematic.trading.backtest.order.EquityOrder;
-import com.systematic.trading.backtest.order.EquityOrderVolume;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 
 /**
- * Placing an order to purchase an equity.
+ * Entry logic triggered by date.
  * 
  * @author CJ Hare
  */
-public class BuyTomorrowAtAnyPriceOrder implements EquityOrder {
+public class DateTriggeredEntryLogicTest {
 
-	/** Number of equities to purchase. */
-	private final EquityOrderVolume volume;
+	@Test
+	public void actionOnInsufficentFunds() {
+		final LocalDate firstOrder = LocalDate.now();
+		final Period interval = Period.ofDays( 1 );
+		final BigDecimal amount = BigDecimal.ONE;
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount );
 
-	public BuyTomorrowAtAnyPriceOrder( final EquityOrderVolume volume ) {
-		this.volume = volume;
+		final EquityOrder order = mock( EquityOrder.class );
+
+		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds( order );
+
+		assertEquals( EquityOrderInsufficientFundsAction.RESUMIT, action );
 	}
 
-	@Override
-	public boolean isValid( final DataPoint todaysTrading ) {
-		// Never expire
-		return true;
-	}
-
-	@Override
-	public boolean areExecutionConditionsMet( final DataPoint todaysTrading ) {
-		// Buy irrespective of the date or price
-		return true;
-	}
-
-	@Override
-	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrade )
-			throws OrderException {
-		broker.buy( todaysTrade.getClosingPrice(), volume, todaysTrade.getDate() );
-	}
 }

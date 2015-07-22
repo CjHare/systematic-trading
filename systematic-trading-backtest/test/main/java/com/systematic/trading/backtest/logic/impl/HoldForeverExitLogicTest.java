@@ -23,39 +23,39 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order.impl;
+package com.systematic.trading.backtest.logic.impl;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Period;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.order.EquityOrder;
-import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.data.DataPoint;
-import com.systematic.trading.data.price.Price;
 
 /**
- * Order to purchase a number of equities, at a certain price, within a specific time frame.
+ * Testing the hold forever exit logic.
  * 
  * @author CJ Hare
  */
-public class EntryEquityOrder extends BaseEquityOrder implements EquityOrder {
+@RunWith(MockitoJUnitRunner.class)
+public class HoldForeverExitLogicTest {
 
-	public EntryEquityOrder( final LocalDate creationDate, final Price entryPrice, final Period expiry,
-			final EquityOrderVolume volume ) {
-		super( creationDate, entryPrice, expiry, volume );
-	}
+	@Mock
+	private BrokerageTransaction broker;
 
-	@Override
-	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrading )
-			throws OrderException {
+	@Mock
+	private DataPoint data;
 
-		// Total cost of executing the order
-		final BigDecimal orderCost = broker.buy( getPrice(), getVolume(), todaysTrading.getDate() );
+	@Test
+	public void execute() {
+		final HoldForeverExitLogic logic = new HoldForeverExitLogic();
 
-		cashAccount.debit( orderCost, todaysTrading.getDate() );
+		final EquityOrder update = logic.udpate( broker, data );
+
+		assertEquals( null, update );
 	}
 }
