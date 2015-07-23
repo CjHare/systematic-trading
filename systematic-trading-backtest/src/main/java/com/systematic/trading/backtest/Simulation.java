@@ -117,7 +117,7 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the exit logic.
 	 */
 	private List<EquityOrder> addExitOrderForToday( final DataPoint data, final List<EquityOrder> openOrders ) {
-		final EquityOrder order = exit.udpate( broker, data );
+		final EquityOrder order = exit.update( broker, data );
 
 		if (order != null) {
 			openOrders.add( order );
@@ -153,7 +153,7 @@ public class Simulation {
 
 		for (final EquityOrder order : orders) {
 
-			if (!order.isValid( data )) {
+			if (order.isValid( data )) {
 				final EquityOrder processedOrder = processOutstandingValidOrder( order, data );
 
 				// Add the original / altered order back to try again

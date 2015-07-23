@@ -38,7 +38,7 @@ import com.systematic.trading.data.DataPoint;
 public class HoldForeverExitLogic implements ExitLogic {
 
 	@Override
-	public EquityOrder udpate( final BrokerageTransaction broker, final DataPoint data ) {
+	public EquityOrder update( final BrokerageTransaction broker, final DataPoint data ) {
 		// There's never an order to place :. return null
 		return null;
 	}

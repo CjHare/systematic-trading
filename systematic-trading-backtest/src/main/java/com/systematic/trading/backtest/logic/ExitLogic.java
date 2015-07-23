@@ -45,5 +45,5 @@ public interface ExitLogic {
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
 	 *         be placed.
 	 */
-	EquityOrder udpate( BrokerageTransaction broker, DataPoint data );
+	EquityOrder update( BrokerageTransaction broker, DataPoint data );
 }

@@ -63,4 +63,8 @@ public class BuyTomorrowAtOpeningPriceOrder implements EquityOrder {
 			throws OrderException {
 		broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
 	}
+
+	public EquityOrderVolume getVolume() {
+		return volume;
+	}
 }

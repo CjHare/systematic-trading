@@ -51,10 +51,10 @@ public class HoldForeverExitLogicTest {
 	private DataPoint data;
 
 	@Test
-	public void execute() {
+	public void update() {
 		final HoldForeverExitLogic logic = new HoldForeverExitLogic();
 
-		final EquityOrder update = logic.udpate( broker, data );
+		final EquityOrder update = logic.update( broker, data );
 
 		assertEquals( null, update );
 	}

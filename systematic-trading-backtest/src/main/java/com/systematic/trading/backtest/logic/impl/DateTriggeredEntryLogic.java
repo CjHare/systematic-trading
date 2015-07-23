@@ -47,7 +47,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 
 	private final Period interval;
 	private final BigDecimal amount;
-	private final LocalDate lastOrder;
+	private LocalDate lastOrder;
 
 	public DateTriggeredEntryLogic( final LocalDate firstOrder, final Period interval, final BigDecimal amount ) {
 		this.interval = interval;
@@ -60,8 +60,11 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	@Override
 	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final DataPoint data ) {
 
-		if (data.getDate().isAfter( lastOrder.plus( interval ) )) {
+		final LocalDate todaysDate = data.getDate();
+
+		if (todaysDate.isAfter( lastOrder.plus( interval ) )) {
 			final EquityOrderVolume volume = EquityOrderVolume.valueOf( amount );
+			lastOrder = todaysDate;
 			return new BuyTomorrowAtOpeningPriceOrder( volume );
 		}
 
