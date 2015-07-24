@@ -25,8 +25,10 @@
  */
 package com.systematic.trading.backtest;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -40,8 +42,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
+import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.data.DataPoint;
 
 /**
@@ -109,5 +113,22 @@ public class SimulationExitLogicTest {
 		for (int i = 0; i < sortedPoints.length; i++) {
 			inOrder.verify( exit ).update( broker, sortedPoints[i] );
 		}
+	}
+
+	@Test
+	public void processOrder() throws OrderException {
+		final DataPoint[] sortedPoints = createOrderedDataPoints( createUnorderedDataPoints() );
+		final Simulation simulation = new Simulation( sortedPoints, broker, funds, entry, exit );
+
+		final EquityOrder order = mock( EquityOrder.class );
+		when( order.areExecutionConditionsMet( any( DataPoint.class ) ) ).thenReturn( true );
+		when( order.isValid( any( DataPoint.class ) ) ).thenReturn( true );
+		when( exit.update( broker, sortedPoints[1] ) ).thenReturn( order );
+
+		simulation.run();
+
+		verify( order ).areExecutionConditionsMet( sortedPoints[2] );
+		verify( order ).isValid( sortedPoints[2] );
+		verify( order ).execute( broker, funds, sortedPoints[2] );
 	}
 }

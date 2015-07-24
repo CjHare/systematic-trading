@@ -102,7 +102,7 @@ public class Backtest {
 		// Weekly purchase of $100
 		final Period weekly = Period.ofDays( 7 );
 		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		final EntryLogic entry = new DateTriggeredEntryLogic( openingDate, weekly, oneHundredDollars );
+		final EntryLogic entry = new DateTriggeredEntryLogic( openingDate, weekly, oneHundredDollars, eventRecorder );
 
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();

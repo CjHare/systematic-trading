@@ -31,6 +31,9 @@ import java.time.Period;
 
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.event.impl.PlaceOrderEvent;
+import com.systematic.trading.backtest.event.impl.PlaceOrderEvent.OrderType;
+import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
@@ -49,9 +52,14 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	private final BigDecimal amount;
 	private LocalDate lastOrder;
 
-	public DateTriggeredEntryLogic( final LocalDate firstOrder, final Period interval, final BigDecimal amount ) {
+	/** Record keeper for transactions from the Cash Account. */
+	private final EventRecorder event;
+
+	public DateTriggeredEntryLogic( final LocalDate firstOrder, final Period interval, final BigDecimal amount,
+			final EventRecorder event ) {
 		this.interval = interval;
 		this.amount = amount;
+		this.event = event;
 
 		// The first order needs to be on that date, not interval after
 		lastOrder = LocalDate.from( firstOrder ).minus( interval );
@@ -65,6 +73,9 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 		if (todaysDate.isAfter( lastOrder.plus( interval ) )) {
 			final EquityOrderVolume volume = EquityOrderVolume.valueOf( amount );
 			lastOrder = todaysDate;
+
+			event.record( new PlaceOrderEvent( volume, todaysDate, OrderType.ENTRY ) );
+
 			return new BuyTomorrowAtOpeningPriceOrder( volume );
 		}
 
