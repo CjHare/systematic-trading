@@ -43,6 +43,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
@@ -66,12 +67,15 @@ public class DateTriggeredEntryLogicTest {
 	@Mock
 	private BrokerageFees fees;
 
+	@Mock
+	private EventRecorder recorder;
+
 	@Test
 	public void actionOnInsufficentFunds() {
 		final LocalDate firstOrder = LocalDate.now();
 		final Period interval = Period.ofDays( 1 );
 		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount, recorder );
 
 		final EquityOrder order = mock( EquityOrder.class );
 
@@ -85,7 +89,7 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = LocalDate.now();
 		final Period interval = Period.ofDays( 1 );
 		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount, recorder );
 		when( data.getDate() ).thenReturn( firstOrder );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -98,7 +102,7 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 1 );
 		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount, recorder );
 		when( data.getDate() ).thenReturn( LocalDate.now() );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -115,7 +119,7 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = LocalDate.now();
 		final Period interval = Period.ofDays( 2 );
 		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount, recorder );
 		when( data.getDate() ).thenReturn( LocalDate.now() );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -128,7 +132,7 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 2 );
 		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount, recorder );
 		when( data.getDate() ).thenReturn( LocalDate.now() );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -145,7 +149,7 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 2 );
 		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( firstOrder, interval, amount, recorder );
 		when( data.getDate() ).thenReturn( LocalDate.now() );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
