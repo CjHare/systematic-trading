@@ -48,13 +48,24 @@ import com.systematic.trading.data.DataPoint;
  */
 public class DateTriggeredEntryLogic implements EntryLogic {
 
+	/** Time between creation of entry orders. */
 	private final Period interval;
+
+	/** Amount to buy in with. */
 	private final BigDecimal amount;
+
+	/** The last date purchase order was created. */
 	private LocalDate lastOrder;
 
 	/** Record keeper for transactions from the Cash Account. */
 	private final EventRecorder event;
 
+	/**
+	 * @param firstOrder date to place the first order.
+	 * @param interval time between creation of entry orders.
+	 * @param amount total to spend on a single purchase order, including fees.
+	 * @param event recorder of the order creation.
+	 */
 	public DateTriggeredEntryLogic( final LocalDate firstOrder, final Period interval, final BigDecimal amount,
 			final EventRecorder event ) {
 		this.interval = interval;
