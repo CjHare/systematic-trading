@@ -67,7 +67,7 @@ public class Backtest {
 
 	private static final Logger LOG = LogManager.getLogger( Backtest.class );
 
-	private static final MathContext context = MathContext.DECIMAL64;
+	private static final MathContext CONTEXT = MathContext.DECIMAL64;
 
 	private static final int DAYS_IN_A_YEAR = 365;
 
@@ -95,6 +95,8 @@ public class Backtest {
 		// TODO add $100 weekly
 		// TODO add output
 
+		final EquityClass equityType = EquityClass.STOCK;
+
 		final EventRecorder eventRecorder = new ConsoleEventRecorder();
 
 		final LocalDate openingDate = getEarliestDate( data );
@@ -102,20 +104,21 @@ public class Backtest {
 		// Weekly purchase of $100
 		final Period weekly = Period.ofDays( 7 );
 		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		final EntryLogic entry = new DateTriggeredEntryLogic( openingDate, weekly, oneHundredDollars, eventRecorder );
+		final EntryLogic entry = new DateTriggeredEntryLogic( oneHundredDollars, eventRecorder, equityType,
+				openingDate, weekly, CONTEXT );
 
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();
 
 		// Cash account with flat interest of 1.5% - 50K starting balance
-		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), context );
+		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), CONTEXT );
 		final BigDecimal openingFunds = BigDecimal.valueOf( 50000 );
 		final CashAccount cashAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds, openingDate,
-				eventRecorder, context );
+				eventRecorder, CONTEXT );
 
 		// ETF Broker with Bell Direct fees
-		final BrokerageFeeStructure fees = new BellDirectFeeStructure( context );
-		final Brokerage broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, context );
+		final BrokerageFeeStructure fees = new BellDirectFeeStructure( CONTEXT );
+		final Brokerage broker = new SingleEquityClassBroker( fees, equityType, CONTEXT );
 
 		final Simulation simulation = new Simulation( data, broker, cashAccount, entry, exit );
 

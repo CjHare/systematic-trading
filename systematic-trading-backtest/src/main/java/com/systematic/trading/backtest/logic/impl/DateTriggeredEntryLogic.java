@@ -26,10 +26,12 @@
 package com.systematic.trading.backtest.logic.impl;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
+import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.event.impl.PlaceOrderEvent;
 import com.systematic.trading.backtest.event.impl.PlaceOrderEvent.OrderType;
@@ -60,17 +62,26 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	/** Record keeper for transactions from the Cash Account. */
 	private final EventRecorder event;
 
+	/** Scale and precision to apply to mathematical operations. */
+	private final MathContext context;
+
+	/** The type of equity being traded. */
+	private final EquityClass type;
+
 	/**
-	 * @param firstOrder date to place the first order.
-	 * @param interval time between creation of entry orders.
 	 * @param amount total to spend on a single purchase order, including fees.
 	 * @param event recorder of the order creation.
+	 * @param firstOrder date to place the first order.
+	 * @param interval time between creation of entry orders.
+	 * @param context scale and precision to apply to mathematical operations.
 	 */
-	public DateTriggeredEntryLogic( final LocalDate firstOrder, final Period interval, final BigDecimal amount,
-			final EventRecorder event ) {
+	public DateTriggeredEntryLogic( final BigDecimal amount, final EventRecorder event, final EquityClass equityType,
+			final LocalDate firstOrder, final Period interval, final MathContext context ) {
 		this.interval = interval;
 		this.amount = amount;
 		this.event = event;
+		this.context = context;
+		this.type = equityType;
 
 		// The first order needs to be on that date, not interval after
 		lastOrder = LocalDate.from( firstOrder ).minus( interval );
@@ -82,12 +93,19 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 		final LocalDate todaysDate = data.getDate();
 
 		if (todaysDate.isAfter( lastOrder.plus( interval ) )) {
-			final EquityOrderVolume volume = EquityOrderVolume.valueOf( amount );
-			lastOrder = todaysDate;
 
-			event.record( new PlaceOrderEvent( volume, todaysDate, OrderType.ENTRY ) );
+			final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, data.getDate() );
+			final BigDecimal closingPrice = data.getClosingPrice().getPrice();
+			final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, context ).divide(
+					closingPrice, context );
 
-			return new BuyTomorrowAtOpeningPriceOrder( volume );
+			if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
+				
+				final EquityOrderVolume volume = EquityOrderVolume.valueOf( numberOfEquities );
+				lastOrder = todaysDate;
+				event.record( new PlaceOrderEvent( volume, todaysDate, OrderType.ENTRY ) );
+				return new BuyTomorrowAtOpeningPriceOrder( volume );
+			}
 		}
 
 		return null;
