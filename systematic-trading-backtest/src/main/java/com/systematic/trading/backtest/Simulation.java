@@ -197,6 +197,7 @@ public class Simulation {
 				case DELETE:
 					// Discard the order
 					return null;
+				case RESUMIT:
 				default:
 					throw new IllegalArgumentException( String.format( "Unsupported insufficient funds action: %s",
 							action ) );

@@ -111,7 +111,7 @@ public class Backtest {
 
 		// Cash account with flat interest of 1.5% - 50K starting balance
 		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), MATH_CONTEXT );
-		final BigDecimal openingFunds = BigDecimal.valueOf( 50000 );
+		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
 		final CashAccount cashAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds, openingDate,
 				eventRecorder, MATH_CONTEXT );
 
