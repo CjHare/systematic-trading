@@ -32,8 +32,8 @@ import java.time.Period;
 
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.cash.InterestRate;
-import com.systematic.trading.backtest.event.impl.CashAccounEvent;
-import com.systematic.trading.backtest.event.impl.CashAccounEvent.CashAccountEventType;
+import com.systematic.trading.backtest.event.impl.CashAccountEvent;
+import com.systematic.trading.backtest.event.impl.CashAccountEvent.CashAccountEventType;
 import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
 
@@ -119,7 +119,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		firstDayOfNextMonth = firstDayOfNextMonth.plus( Period.ofMonths( 1 ) );
 
 		// Record the credit transaction
-		event.record( new CashAccounEvent( fundsBefore, funds, interest, CashAccountEventType.INTEREST,
+		event.record( new CashAccountEvent( fundsBefore, funds, interest, CashAccountEventType.INTEREST,
 				firstDayOfNextMonth ) );
 
 		return firstDayOfNextMonth;
@@ -137,7 +137,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		funds = funds.subtract( debit );
 
 		// Record the debit transaction
-		event.record( new CashAccounEvent( fundsBefore, funds, debit, CashAccountEventType.DEBIT, transactionDate ) );
+		event.record( new CashAccountEvent( fundsBefore, funds, debit, CashAccountEventType.DEBIT, transactionDate ) );
 	}
 
 	@Override
@@ -147,7 +147,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		funds = funds.add( credit );
 
 		// Record the credit transaction
-		event.record( new CashAccounEvent( fundsBefore, funds, credit, CashAccountEventType.CREDIT, transactionDate ) );
+		event.record( new CashAccountEvent( fundsBefore, funds, credit, CashAccountEventType.CREDIT, transactionDate ) );
 	}
 
 	@Override

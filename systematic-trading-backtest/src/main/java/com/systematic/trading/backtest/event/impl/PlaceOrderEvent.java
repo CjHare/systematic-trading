@@ -56,4 +56,16 @@ public class PlaceOrderEvent implements Event {
 	public String toString() {
 		return String.format( "Place Order - %s volume %s created after c.o.b on %s", type, volume.getVolume(), date );
 	}
+
+	public OrderType getType() {
+		return type;
+	}
+
+	public EquityOrderVolume getVolume() {
+		return volume;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
 }

@@ -29,22 +29,26 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.cash.InterestRate;
-import com.systematic.trading.backtest.event.Event;
+import com.systematic.trading.backtest.event.impl.CashAccountEvent;
+import com.systematic.trading.backtest.event.impl.CashAccountEvent.CashAccountEventType;
 import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
 
@@ -56,6 +60,14 @@ import com.systematic.trading.backtest.exception.InsufficientFundsException;
 @RunWith(MockitoJUnitRunner.class)
 public class CalculatedDailyPaidMonthlyCashAccountTest {
 	private final MathContext mc = MathContext.DECIMAL64;
+	private static final DecimalFormat TWO_DECIMAL_PLACES;
+
+	static {
+		TWO_DECIMAL_PLACES = new DecimalFormat();
+		TWO_DECIMAL_PLACES.setMaximumFractionDigits( 2 );
+		TWO_DECIMAL_PLACES.setMinimumFractionDigits( 2 );
+		TWO_DECIMAL_PLACES.setGroupingUsed( false );
+	}
 
 	@Mock
 	private InterestRate rate;
@@ -72,10 +84,12 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 		assertEquals( BigDecimal.ZERO, account.getBalance() );
 
-		account.credit( credit, LocalDate.now() );
+		final LocalDate date = LocalDate.now();
+		account.credit( credit, date );
 
 		assertEquals( credit, account.getBalance() );
-		verify( event ).record( any( Event.class ) );
+		verify( event )
+				.record( isCashAccountEvent( BigDecimal.ZERO, credit, credit, CashAccountEventType.CREDIT, date ) );
 	}
 
 	@Test
@@ -88,10 +102,14 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 		assertEquals( openingFunds, account.getBalance() );
 
-		account.debit( debit, LocalDate.now() );
+		final LocalDate date = LocalDate.now();
+		account.debit( debit, date );
 
 		assertEquals( openingFunds.subtract( debit ), account.getBalance() );
-		verify( event ).record( any( Event.class ) );
+
+		verify( event ).record(
+				isCashAccountEvent( openingFunds, openingFunds.subtract( debit, mc ), debit,
+						CashAccountEventType.DEBIT, date ) );
 	}
 
 	@Test(expected = InsufficientFundsException.class)
@@ -126,6 +144,10 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account.update( tradingDate );
 
 		assertEquals( openingFunds.add( interest ), account.getBalance() );
+
+		verify( event ).record(
+				isCashAccountEvent( openingFunds, BigDecimal.valueOf( 101 ), BigDecimal.valueOf( 1 ),
+						CashAccountEventType.INTEREST, tradingDate ) );
 	}
 
 	@Test
@@ -187,4 +209,39 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		verify( rate, times( 2 ) ).interest( openingFunds, 1, false );
 	}
 
+	private CashAccountEvent isCashAccountEvent( final BigDecimal fundsBefore, final BigDecimal fundsAfter,
+			final BigDecimal interest, final CashAccountEventType type, final LocalDate transactionDate ) {
+		return argThat( new IsCashAccounEventArgument( fundsBefore, fundsAfter, interest, type, transactionDate ) );
+	}
+
+	class IsCashAccounEventArgument extends ArgumentMatcher<CashAccountEvent> {
+
+		private final String amount;
+		private final String fundsBefore;
+		private final String fundsAfter;
+		private final LocalDate transactionDate;
+		private final CashAccountEventType type;
+
+		public IsCashAccounEventArgument( final BigDecimal fundsBefore, final BigDecimal fundsAfter,
+				final BigDecimal amount, final CashAccountEventType type, final LocalDate transactionDate ) {
+			this.fundsBefore = TWO_DECIMAL_PLACES.format( fundsBefore );
+			this.fundsAfter = TWO_DECIMAL_PLACES.format( fundsAfter );
+			this.amount = TWO_DECIMAL_PLACES.format( amount );
+			this.transactionDate = transactionDate;
+			this.type = type;
+		}
+
+		@Override
+		public boolean matches( final Object argument ) {
+
+			if (argument instanceof CashAccountEvent) {
+				final CashAccountEvent event = (CashAccountEvent) argument;
+				return amount.equals( event.getAmount() ) && fundsBefore.equals( event.getFundsBefore() )
+						&& fundsAfter.equals( event.getFundsAfter() )
+						&& transactionDate.equals( event.getTransactionDate() ) && type == event.getType();
+			}
+
+			return false;
+		}
+	}
 }

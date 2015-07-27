@@ -30,7 +30,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -40,15 +42,19 @@ import java.time.Period;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.event.impl.PlaceOrderEvent;
+import com.systematic.trading.backtest.event.impl.PlaceOrderEvent.OrderType;
 import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.backtest.order.impl.BuyTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.data.DataPoint;
 import com.systematic.trading.data.price.ClosingPrice;
@@ -111,7 +117,8 @@ public class DateTriggeredEntryLogicTest {
 		final BigDecimal amount = BigDecimal.valueOf( 100 );
 		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
 				firstOrder, interval, context );
-		when( data.getDate() ).thenReturn( LocalDate.now() );
+		final LocalDate date = LocalDate.now();
+		when( data.getDate() ).thenReturn( date );
 
 		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( closingPrice ) );
@@ -127,8 +134,9 @@ public class DateTriggeredEntryLogicTest {
 
 		// Ensure correct volume of orders
 		final BuyTomorrowAtOpeningPriceOrder buyTomorrowOrder = (BuyTomorrowAtOpeningPriceOrder) order;
-		assertEquals( amount.subtract( transactionCost, context ).divide( closingPrice, context ), buyTomorrowOrder
-				.getVolume().getVolume() );
+		final BigDecimal volume = amount.subtract( transactionCost, context ).divide( closingPrice, context );
+		assertEquals( volume, buyTomorrowOrder.getVolume().getVolume() );
+		verify( recorder ).record( isPlaceOrder( volume, date ) );
 	}
 
 	@Test
@@ -176,7 +184,8 @@ public class DateTriggeredEntryLogicTest {
 		final BigDecimal amount = BigDecimal.valueOf( 100 );
 		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
 				firstOrder, interval, context );
-		when( data.getDate() ).thenReturn( LocalDate.now() );
+		final LocalDate date = LocalDate.now();
+		when( data.getDate() ).thenReturn( date );
 
 		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( closingPrice ) );
@@ -192,8 +201,9 @@ public class DateTriggeredEntryLogicTest {
 
 		// Ensure correct volume of orders
 		final BuyTomorrowAtOpeningPriceOrder buyTomorrowOrder = (BuyTomorrowAtOpeningPriceOrder) order;
-		assertEquals( amount.subtract( transactionCost, context ).divide( closingPrice, context ), buyTomorrowOrder
-				.getVolume().getVolume() );
+		final BigDecimal volume = amount.subtract( transactionCost, context ).divide( closingPrice, context );
+		assertEquals( volume, buyTomorrowOrder.getVolume().getVolume() );
+		verify( recorder ).record( isPlaceOrder( volume, date ) );
 	}
 
 	@Test
@@ -203,7 +213,8 @@ public class DateTriggeredEntryLogicTest {
 		final BigDecimal amount = BigDecimal.valueOf( 100 );
 		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
 				firstOrder, interval, context );
-		when( data.getDate() ).thenReturn( LocalDate.now() );
+		final LocalDate date = LocalDate.now();
+		when( data.getDate() ).thenReturn( date );
 
 		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( closingPrice ) );
@@ -218,9 +229,10 @@ public class DateTriggeredEntryLogicTest {
 		assertTrue( order instanceof BuyTomorrowAtOpeningPriceOrder );
 
 		// Ensure correct volume of orders
-		BuyTomorrowAtOpeningPriceOrder buyTomorrowOrder = (BuyTomorrowAtOpeningPriceOrder) order;
-		assertEquals( amount.subtract( transactionCost, context ).divide( closingPrice, context ), buyTomorrowOrder
-				.getVolume().getVolume() );
+		final BuyTomorrowAtOpeningPriceOrder buyTomorrowOrder = (BuyTomorrowAtOpeningPriceOrder) order;
+		final BigDecimal volume = amount.subtract( transactionCost, context ).divide( closingPrice, context );
+		assertEquals( volume, buyTomorrowOrder.getVolume().getVolume() );
+		verify( recorder ).record( isPlaceOrder( volume, date ) );
 
 		// Change the trading day to tomorrow - should not have an order
 		when( data.getDate() ).thenReturn( LocalDate.now().plus( Period.ofDays( 1 ) ) );
@@ -228,11 +240,34 @@ public class DateTriggeredEntryLogicTest {
 		final EquityOrder secondOrder = logic.update( fees, cashAccount, data );
 
 		assertNull( secondOrder );
-		// Ensure correct volume of orders
-		buyTomorrowOrder = (BuyTomorrowAtOpeningPriceOrder) order;
-		assertEquals( amount.subtract( transactionCost, context ).divide( closingPrice, context ), buyTomorrowOrder
-				.getVolume().getVolume() );
-
 	}
 
+	private PlaceOrderEvent isPlaceOrder( final BigDecimal volume, final LocalDate date ) {
+		return argThat( new IsPlaceOrderArgument( EquityOrderVolume.valueOf( volume ), date, OrderType.ENTRY ) );
+	}
+
+	class IsPlaceOrderArgument extends ArgumentMatcher<PlaceOrderEvent> {
+
+		private final OrderType type;
+		private final EquityOrderVolume volume;
+		private final LocalDate date;
+
+		public IsPlaceOrderArgument( final EquityOrderVolume volume, final LocalDate date, final OrderType type ) {
+			this.volume = volume;
+			this.date = date;
+			this.type = type;
+		}
+
+		@Override
+		public boolean matches( final Object argument ) {
+
+			if (argument instanceof PlaceOrderEvent) {
+				final PlaceOrderEvent event = (PlaceOrderEvent) argument;
+				return type == event.getType() && date.equals( event.getDate() )
+						&& volume.getVolume().compareTo( event.getVolume().getVolume() ) == 0;
+			}
+
+			return false;
+		}
+	}
 }

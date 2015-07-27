@@ -36,7 +36,7 @@ import com.systematic.trading.backtest.event.Event;
  * 
  * @author CJ Hare
  */
-public class CashAccounEvent implements Event {
+public class CashAccountEvent implements Event {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES;
 
@@ -63,24 +63,44 @@ public class CashAccounEvent implements Event {
 		}
 	}
 
-	private final String interest;
+	private final String amount;
 	private final String fundsBefore;
 	private final String fundsAfter;
 	private final LocalDate transactionDate;
 	private final CashAccountEventType type;
 
-	public CashAccounEvent( final BigDecimal fundsBefore, final BigDecimal fundsAfter, final BigDecimal interest,
+	public CashAccountEvent( final BigDecimal fundsBefore, final BigDecimal fundsAfter, final BigDecimal amount,
 			final CashAccountEventType type, final LocalDate transactionDate ) {
 		this.fundsBefore = TWO_DECIMAL_PLACES.format( fundsBefore );
 		this.fundsAfter = TWO_DECIMAL_PLACES.format( fundsAfter );
-		this.interest = TWO_DECIMAL_PLACES.format( interest );
+		this.amount = TWO_DECIMAL_PLACES.format( amount );
 		this.transactionDate = transactionDate;
 		this.type = type;
 	}
 
 	@Override
 	public String toString() {
-		return String.format( "Cash Account - %s: %s - funds %s -> %s on %s", type.getDisplay(), interest,
-				fundsBefore, fundsAfter, transactionDate );
+		return String.format( "Cash Account - %s: %s - funds %s -> %s on %s", type.getDisplay(), amount, fundsBefore,
+				fundsAfter, transactionDate );
+	}
+
+	public String getAmount() {
+		return amount;
+	}
+
+	public String getFundsBefore() {
+		return fundsBefore;
+	}
+
+	public String getFundsAfter() {
+		return fundsAfter;
+	}
+
+	public LocalDate getTransactionDate() {
+		return transactionDate;
+	}
+
+	public CashAccountEventType getType() {
+		return type;
 	}
 }
