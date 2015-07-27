@@ -45,7 +45,7 @@ public interface BrokerageTransaction {
 	 * @param price mean price paid for the equity.
 	 * @param volume number of equities being purchased.
 	 * @param tradeDate date of execution.
-	 * @return total cost of the purchase.
+	 * @return total cost of the trade to be deducted from the cash account.
 	 */
 	BigDecimal buy( Price price, EquityOrderVolume volume, LocalDate tradeDate );
 

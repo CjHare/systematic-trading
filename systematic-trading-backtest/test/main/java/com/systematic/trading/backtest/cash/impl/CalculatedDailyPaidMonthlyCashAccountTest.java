@@ -40,6 +40,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 
+import org.hamcrest.Description;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
@@ -242,6 +243,12 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 			}
 
 			return false;
+		}
+
+		@Override
+		public void describeTo( final Description description ) {
+			description.appendText( String.format( "%s, %s, %s, %s, %s", fundsBefore, fundsAfter, amount, type,
+					transactionDate ) );
 		}
 	}
 }

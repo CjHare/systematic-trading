@@ -40,6 +40,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
+import org.hamcrest.Description;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
@@ -268,6 +269,11 @@ public class DateTriggeredEntryLogicTest {
 			}
 
 			return false;
+		}
+
+		@Override
+		public void describeTo( final Description description ) {
+			description.appendText( String.format( "Type: %s, Volume: %s, Date: %s", type, volume, date ) );
 		}
 	}
 }

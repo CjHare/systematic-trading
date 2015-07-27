@@ -67,7 +67,7 @@ public class Backtest {
 
 	private static final Logger LOG = LogManager.getLogger( Backtest.class );
 
-	private static final MathContext CONTEXT = MathContext.DECIMAL64;
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	private static final int DAYS_IN_A_YEAR = 365;
 
@@ -105,20 +105,20 @@ public class Backtest {
 		final Period weekly = Period.ofDays( 7 );
 		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
 		final EntryLogic entry = new DateTriggeredEntryLogic( oneHundredDollars, eventRecorder, equityType,
-				openingDate, weekly, CONTEXT );
+				openingDate, weekly, MATH_CONTEXT );
 
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();
 
 		// Cash account with flat interest of 1.5% - 50K starting balance
-		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), CONTEXT );
+		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), MATH_CONTEXT );
 		final BigDecimal openingFunds = BigDecimal.valueOf( 50000 );
 		final CashAccount cashAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds, openingDate,
-				eventRecorder, CONTEXT );
+				eventRecorder, MATH_CONTEXT );
 
 		// ETF Broker with Bell Direct fees
-		final BrokerageFeeStructure fees = new BellDirectFeeStructure( CONTEXT );
-		final Brokerage broker = new SingleEquityClassBroker( fees, equityType, CONTEXT );
+		final BrokerageFeeStructure fees = new BellDirectFeeStructure( MATH_CONTEXT );
+		final Brokerage broker = new SingleEquityClassBroker( fees, equityType, eventRecorder, MATH_CONTEXT );
 
 		final Simulation simulation = new Simulation( data, broker, cashAccount, entry, exit );
 

@@ -62,4 +62,9 @@ public class EquityOrderVolume {
 	public BigDecimal getVolume() {
 		return volume;
 	}
+
+	@Override
+	public String toString() {
+		return String.valueOf( volume );
+	}
 }

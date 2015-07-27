@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.order.impl;
 
+import java.math.BigDecimal;
+
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.OrderException;
@@ -61,7 +63,8 @@ public class BuyTomorrowAtOpeningPriceOrder implements EquityOrder {
 	@Override
 	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrade )
 			throws OrderException {
-		broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
+		final BigDecimal totalCost = broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
+		cashAccount.debit( totalCost, todaysTrade.getDate() );
 	}
 
 	public EquityOrderVolume getVolume() {
