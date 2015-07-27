@@ -48,22 +48,22 @@ public class FlatInterestRate implements InterestRate {
 	private final BigDecimal dailyInterestRateLeapYear;
 
 	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext context;
+	private final MathContext mathContext;
 
 	/**
 	 * @param annualInterestRate rate of interest applied over the course of a year, where 2% is
 	 *            2.0.
-	 * @param context math context defining the scale and precision to apply to operations.
+	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	public FlatInterestRate( final BigDecimal annualInterestRate, final MathContext context ) {
+	public FlatInterestRate( final BigDecimal annualInterestRate, final MathContext mathContext ) {
 
-		this.context = context;
+		this.mathContext = mathContext;
 
 		// Small numbers for the daily interest rate
-		final BigDecimal scaledAnnualInterestRate = annualInterestRate.divide( ONE_HUNDRED, this.context );
+		final BigDecimal scaledAnnualInterestRate = annualInterestRate.divide( ONE_HUNDRED, this.mathContext );
 
-		this.dailyInterestRate = scaledAnnualInterestRate.divide( DAYS_IN_YEAR, this.context );
-		this.dailyInterestRateLeapYear = scaledAnnualInterestRate.divide( DAYS_IN_LEAP_YEAR, this.context );
+		this.dailyInterestRate = scaledAnnualInterestRate.divide( DAYS_IN_YEAR, this.mathContext );
+		this.dailyInterestRateLeapYear = scaledAnnualInterestRate.divide( DAYS_IN_LEAP_YEAR, this.mathContext );
 	}
 
 	@Override
@@ -73,9 +73,9 @@ public class FlatInterestRate implements InterestRate {
 		}
 
 		if (isLeapYear) {
-			return dailyInterestRateLeapYear.multiply( funds, context ).multiply( BigDecimal.valueOf( days ), context );
+			return dailyInterestRateLeapYear.multiply( funds, mathContext ).multiply( BigDecimal.valueOf( days ), mathContext );
 		}
 
-		return dailyInterestRate.multiply( funds, context ).multiply( BigDecimal.valueOf( days ), context );
+		return dailyInterestRate.multiply( funds, mathContext ).multiply( BigDecimal.valueOf( days ), mathContext );
 	}
 }

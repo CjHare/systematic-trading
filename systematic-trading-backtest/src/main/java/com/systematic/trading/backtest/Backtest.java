@@ -93,7 +93,6 @@ public class Backtest {
 		// TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
 
 		// TODO add $100 weekly
-		// TODO add output
 
 		final EquityClass equityType = EquityClass.STOCK;
 

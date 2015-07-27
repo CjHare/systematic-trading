@@ -63,7 +63,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	private final EventRecorder event;
 
 	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext context;
+	private final MathContext mathContext;
 
 	/** The type of equity being traded. */
 	private final EquityClass type;
@@ -73,14 +73,14 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	 * @param event recorder of the order creation.
 	 * @param firstOrder date to place the first order.
 	 * @param interval time between creation of entry orders.
-	 * @param context scale and precision to apply to mathematical operations.
+	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
 	public DateTriggeredEntryLogic( final BigDecimal amount, final EventRecorder event, final EquityClass equityType,
-			final LocalDate firstOrder, final Period interval, final MathContext context ) {
+			final LocalDate firstOrder, final Period interval, final MathContext mathContext ) {
 		this.interval = interval;
 		this.amount = amount;
 		this.event = event;
-		this.context = context;
+		this.mathContext = mathContext;
 		this.type = equityType;
 
 		// The first order needs to be on that date, not interval after
@@ -96,8 +96,8 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 
 			final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, data.getDate() );
 			final BigDecimal closingPrice = data.getClosingPrice().getPrice();
-			final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, context ).divide(
-					closingPrice, context );
+			final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext ).divide(
+					closingPrice, mathContext );
 
 			if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
 				
