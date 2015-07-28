@@ -77,6 +77,7 @@ public class Backtest {
 
 	public static void main( final String... args ) {
 
+		// Date range is from the first of the starting month until now
 		final LocalDate endDate = LocalDate.now();
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
 

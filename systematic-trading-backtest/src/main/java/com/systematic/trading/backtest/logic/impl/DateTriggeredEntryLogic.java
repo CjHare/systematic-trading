@@ -90,9 +90,9 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	@Override
 	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final DataPoint data ) {
 
-		final LocalDate todaysDate = data.getDate();
+		final LocalDate tradingDate = data.getDate();
 
-		if (todaysDate.isAfter( lastOrder.plus( interval ) )) {
+		if (isOrderTime( tradingDate )) {
 
 			final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, data.getDate() );
 			final BigDecimal closingPrice = data.getClosingPrice().getPrice();
@@ -100,15 +100,20 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 					closingPrice, mathContext );
 
 			if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
-				
+
+				// Places the order based on todays price not the execution date's price
 				final EquityOrderVolume volume = EquityOrderVolume.valueOf( numberOfEquities );
-				lastOrder = todaysDate;
-				event.record( new PlaceOrderEvent( volume, todaysDate, OrderType.ENTRY ) );
+				lastOrder = lastOrder.plus( interval );
+				event.record( new PlaceOrderEvent( volume, tradingDate, OrderType.ENTRY ) );
 				return new BuyTomorrowAtOpeningPriceOrder( volume );
 			}
 		}
 
 		return null;
+	}
+
+	private boolean isOrderTime( final LocalDate tradingDate ) {
+		return tradingDate.isAfter( lastOrder.plus( interval ) );
 	}
 
 	@Override

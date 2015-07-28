@@ -62,7 +62,7 @@ public class BuyTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	@Override
 	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrade )
-			throws OrderException {
+			throws OrderException {		
 		final BigDecimal totalCost = broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
 		cashAccount.debit( totalCost, todaysTrade.getDate() );
 	}
