@@ -131,6 +131,8 @@ public class Backtest {
 		simulation.run();
 
 		HibernateUtil.getSessionFactory().close();
+
+		((ConsoleEventRecorder) eventRecorder).summary();
 	}
 
 	private static LocalDate getEarliestDate( final DataPoint[] data ) {

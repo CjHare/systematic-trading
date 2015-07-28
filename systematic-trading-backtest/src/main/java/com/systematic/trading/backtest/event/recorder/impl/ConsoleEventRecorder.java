@@ -25,7 +25,13 @@
  */
 package com.systematic.trading.backtest.event.recorder.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.systematic.trading.backtest.event.Event;
+import com.systematic.trading.backtest.event.impl.BrokerageAccountEvent;
+import com.systematic.trading.backtest.event.impl.CashAccountEvent;
+import com.systematic.trading.backtest.event.impl.PlaceOrderEvent;
 import com.systematic.trading.backtest.event.recorder.EventRecorder;
 
 /**
@@ -35,9 +41,61 @@ import com.systematic.trading.backtest.event.recorder.EventRecorder;
  */
 public class ConsoleEventRecorder implements EventRecorder {
 
+	private final List<BrokerageAccountEvent> brokerage;
+	private final List<CashAccountEvent> cash;
+	private final List<PlaceOrderEvent> orders;
+
+	public ConsoleEventRecorder() {
+		this.brokerage = new ArrayList<BrokerageAccountEvent>();
+		this.cash = new ArrayList<CashAccountEvent>();
+		this.orders = new ArrayList<PlaceOrderEvent>();
+	}
+
 	@Override
 	public void record( final Event event ) {
+
+		if (event instanceof BrokerageAccountEvent) {
+			brokerage.add( (BrokerageAccountEvent) event );
+		} else if (event instanceof CashAccountEvent) {
+			cash.add( (CashAccountEvent) event );
+		} else if (event instanceof PlaceOrderEvent) {
+			orders.add( (PlaceOrderEvent) event );
+		}
+
 		System.out.println( event );
 	}
 
+	public void summary() {
+
+		System.out.println( String.format( "# Brokerage events: %s", brokerage.size() ) );
+		System.out.println( String.format( "# Order events: %s", orders.size() ) );
+
+		System.out.println( "--- Cash Account events ---" );
+		int creditCount = 0, debitCount = 0, depositCount = 0, interestCount = 0;
+		for (final CashAccountEvent event : cash) {
+			switch (event.getType()) {
+				case CREDIT:
+					creditCount++;
+					break;
+				case DEBIT:
+					debitCount++;
+					break;
+				case DEPOSIT:
+					depositCount++;
+					break;
+				case INTEREST:
+					interestCount++;
+					break;
+				default:
+					throw new IllegalArgumentException( String.format( "Cash Account event type %s not catered for",
+							event.getType() ) );
+			}
+		}
+
+		System.out.println( String.format( "# Cash account credit events: %s", creditCount ) );
+		System.out.println( String.format( "# Cash account debit events: %s", debitCount ) );
+		System.out.println( String.format( "# Cash account interest events: %s", interestCount ) );
+		System.out.println( String.format( "# Cash account deposit events: %s", depositCount ) );
+
+	}
 }
