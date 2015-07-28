@@ -155,4 +155,14 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		// Only available funds count, not those in escrow
 		return funds;
 	}
+
+	@Override
+	public void deposit( final BigDecimal deposit, final LocalDate transactionDate ) {
+		final BigDecimal fundsBefore = funds;
+
+		funds = funds.add( deposit );
+
+		// Record the credit transaction
+		event.record( new CashAccountEvent( fundsBefore, funds, deposit, CashAccountEventType.DEPOSIT, transactionDate ) );
+	}
 }

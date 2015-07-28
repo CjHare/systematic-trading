@@ -47,19 +47,19 @@ public interface CashAccount {
 	/**
 	 * Removes funds from an account.
 	 * 
-	 * @param amount sum to be removed from the account.
+	 * @param debitAmount sum to be removed from the account.
 	 * @param transactionDate date of the debit.
 	 * @throws InsufficientFundsException encountered when the funds cannot be debited.
 	 */
-	void debit( BigDecimal amount, LocalDate transactionDate ) throws InsufficientFundsException;
+	void debit( BigDecimal debitAmount, LocalDate transactionDate ) throws InsufficientFundsException;
 
 	/**
 	 * Adds funds to an account.
 	 * 
-	 * @param amount sum to be added to the account.
+	 * @param creditAmount sum to be added to the account.
 	 * @param transactionDate date of the credit.
 	 */
-	void credit( BigDecimal amount, LocalDate transactionDate );
+	void credit( BigDecimal creditAmount, LocalDate transactionDate );
 
 	/**
 	 * Retrieves the current balance of the account.
@@ -67,4 +67,13 @@ public interface CashAccount {
 	 * @return positive number when the account is credit, negative otherwise.
 	 */
 	BigDecimal getBalance();
+
+	/**
+	 * Adds funds to an account that is considered a deposit, where the funds come from an outside
+	 * source rather then from a trading activity.
+	 * 
+	 * @param depositAmount sum to be added to the account.
+	 * @param transactionDate date of the deposit.
+	 */
+	void deposit( BigDecimal depositAmount, LocalDate transactionDate );
 }

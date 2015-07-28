@@ -43,6 +43,7 @@ import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
+import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
 import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.event.recorder.impl.ConsoleEventRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
@@ -109,11 +110,13 @@ public class Backtest {
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();
 
-		// Cash account with flat interest of 1.5% - 50K starting balance
+		// Cash account with flat interest of 1.5% - $100 deposit weekly, zero starting balance
 		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), MATH_CONTEXT );
 		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
-		final CashAccount cashAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds, openingDate,
-				eventRecorder, MATH_CONTEXT );
+		final CashAccount underlyingAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds,
+				openingDate, eventRecorder, MATH_CONTEXT );
+		final CashAccount cashAccount = new RegularDepositCashAccountDecorator( oneHundredDollars, underlyingAccount,
+				openingDate, weekly );
 
 		// ETF Broker with Bell Direct fees
 		final BrokerageFeeStructure fees = new BellDirectFeeStructure( MATH_CONTEXT );

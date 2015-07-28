@@ -50,6 +50,7 @@ public class CashAccountEvent implements Event {
 	public enum CashAccountEventType {
 		CREDIT( "Credit" ),
 		DEBIT( "Debit" ),
+		DEPOSIT( "Deposit" ),
 		INTEREST( "Interest" );
 
 		private final String display;

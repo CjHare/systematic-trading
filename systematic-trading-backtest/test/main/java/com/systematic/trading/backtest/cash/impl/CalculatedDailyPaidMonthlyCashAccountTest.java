@@ -94,6 +94,23 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 	}
 
 	@Test
+	public void deposit() {
+		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
+				BigDecimal.ZERO, LocalDate.now(), event, mc );
+
+		final BigDecimal deposit = BigDecimal.valueOf( 1.23456789 );
+
+		assertEquals( BigDecimal.ZERO, account.getBalance() );
+
+		final LocalDate date = LocalDate.now();
+		account.deposit( deposit, date );
+
+		assertEquals( deposit, account.getBalance() );
+		verify( event ).record(
+				isCashAccountEvent( BigDecimal.ZERO, deposit, deposit, CashAccountEventType.DEPOSIT, date ) );
+	}
+
+	@Test
 	public void debit() throws InsufficientFundsException {
 		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
