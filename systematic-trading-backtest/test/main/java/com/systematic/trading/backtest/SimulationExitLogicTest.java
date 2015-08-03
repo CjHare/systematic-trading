@@ -129,6 +129,6 @@ public class SimulationExitLogicTest {
 
 		verify( order ).areExecutionConditionsMet( sortedPoints[2] );
 		verify( order ).isValid( sortedPoints[2] );
-		verify( order ).execute( broker, funds, sortedPoints[2] );
+		verify( order ).execute( broker, broker, funds, sortedPoints[2] );
 	}
 }

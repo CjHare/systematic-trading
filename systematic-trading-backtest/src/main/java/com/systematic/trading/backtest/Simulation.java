@@ -184,7 +184,7 @@ public class Simulation {
 	 */
 	private EquityOrder executeOrder( final EquityOrder order, final DataPoint data ) {
 		try {
-			order.execute( broker, funds, data );
+			order.execute( broker, broker, funds, data );
 
 			// Discard the order, as it's processed
 			return null;

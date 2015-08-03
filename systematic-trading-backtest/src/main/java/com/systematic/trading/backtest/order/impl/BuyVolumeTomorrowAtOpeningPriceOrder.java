@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.order.impl;
 
 import java.math.BigDecimal;
 
+import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.OrderException;
@@ -39,12 +40,12 @@ import com.systematic.trading.data.DataPoint;
  * 
  * @author CJ Hare
  */
-public class BuyTomorrowAtOpeningPriceOrder implements EquityOrder {
+public class BuyVolumeTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	/** Number of equities to purchase. */
 	private final EquityOrderVolume volume;
 
-	public BuyTomorrowAtOpeningPriceOrder( final EquityOrderVolume volume ) {
+	public BuyVolumeTomorrowAtOpeningPriceOrder( final EquityOrderVolume volume ) {
 		this.volume = volume;
 	}
 
@@ -61,8 +62,9 @@ public class BuyTomorrowAtOpeningPriceOrder implements EquityOrder {
 	}
 
 	@Override
-	public void execute( final BrokerageTransaction broker, final CashAccount cashAccount, final DataPoint todaysTrade )
-			throws OrderException {		
+	public void execute( final BrokerageFees fees, final BrokerageTransaction broker, final CashAccount cashAccount,
+			final DataPoint todaysTrade ) throws OrderException {
+
 		final BigDecimal totalCost = broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
 		cashAccount.debit( totalCost, todaysTrade.getDate() );
 	}

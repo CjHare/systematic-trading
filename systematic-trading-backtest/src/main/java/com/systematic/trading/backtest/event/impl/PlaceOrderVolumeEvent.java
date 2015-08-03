@@ -23,47 +23,44 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.backtest.event.impl;
 
-import com.systematic.trading.backtest.brokerage.BrokerageFees;
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
-import com.systematic.trading.data.DataPoint;
+import java.time.LocalDate;
+
+import com.systematic.trading.backtest.event.Event;
+import com.systematic.trading.backtest.order.EquityOrderVolume;
 
 /**
- * The trading order that can be executed by a specific brokerage.
+ * An order created on advice from the simulation logic.
  * 
  * @author CJ Hare
  */
-public interface EquityOrder {
+public class PlaceOrderVolumeEvent implements Event {
 
-	/**
-	 * Whether the order has yet to expire.
-	 * 
-	 * @param todaysTrading the price action for today.
-	 * @return <code>true</code> has expire and should not be executed, <code>false</code>
-	 *         otherwise.
-	 */
-	boolean isValid( DataPoint todaysTrading );
+	private final EquityOrderType type;
+	private final EquityOrderVolume volume;
+	private final LocalDate date;
 
-	/**
-	 * Whether the day's trading movement satisfied the execution criteria for the order.
-	 * 
-	 * @param todaysTrading the price action for today.
-	 * @return <code>true</code> the conditions are met, <code>false</code> otherwise.
-	 */
-	boolean areExecutionConditionsMet( DataPoint todaysTrading );
+	public PlaceOrderVolumeEvent( final EquityOrderVolume volume, final LocalDate date, final EquityOrderType type ) {
+		this.volume = volume;
+		this.date = date;
+		this.type = type;
+	}
 
-	/**
-	 * Executes the trade, side affecting the broker and cash account.
-	 * 
-	 * @param fees costs associated with performing transactions.
-	 * @param broker performs the execution of the order.
-	 * @param cashAccount where the money for the transaction is withdrawn.
-	 * @param todaysTrading the price action for today.
-	 * @throws OrderException when the order fails.
-	 */
-	void execute( BrokerageFees fees, BrokerageTransaction broker, CashAccount cashAccount, DataPoint todaysTrading )
-			throws OrderException;
+	@Override
+	public String toString() {
+		return String.format( "Place Order - %s volume %s created after c.o.b on %s", type, volume.getVolume(), date );
+	}
+
+	public EquityOrderType getType() {
+		return type;
+	}
+
+	public EquityOrderVolume getVolume() {
+		return volume;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
 }

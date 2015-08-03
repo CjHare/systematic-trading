@@ -31,7 +31,7 @@ import java.util.List;
 import com.systematic.trading.backtest.event.Event;
 import com.systematic.trading.backtest.event.impl.BrokerageAccountEvent;
 import com.systematic.trading.backtest.event.impl.CashAccountEvent;
-import com.systematic.trading.backtest.event.impl.PlaceOrderEvent;
+import com.systematic.trading.backtest.event.impl.PlaceOrderVolumeEvent;
 import com.systematic.trading.backtest.event.recorder.EventRecorder;
 
 /**
@@ -43,12 +43,12 @@ public class ConsoleEventRecorder implements EventRecorder {
 
 	private final List<BrokerageAccountEvent> brokerage;
 	private final List<CashAccountEvent> cash;
-	private final List<PlaceOrderEvent> orders;
+	private final List<PlaceOrderVolumeEvent> orders;
 
 	public ConsoleEventRecorder() {
 		this.brokerage = new ArrayList<BrokerageAccountEvent>();
 		this.cash = new ArrayList<CashAccountEvent>();
-		this.orders = new ArrayList<PlaceOrderEvent>();
+		this.orders = new ArrayList<PlaceOrderVolumeEvent>();
 	}
 
 	@Override
@@ -58,8 +58,8 @@ public class ConsoleEventRecorder implements EventRecorder {
 			brokerage.add( (BrokerageAccountEvent) event );
 		} else if (event instanceof CashAccountEvent) {
 			cash.add( (CashAccountEvent) event );
-		} else if (event instanceof PlaceOrderEvent) {
-			orders.add( (PlaceOrderEvent) event );
+		} else if (event instanceof PlaceOrderVolumeEvent) {
+			orders.add( (PlaceOrderVolumeEvent) event );
 		}
 
 		System.out.println( event );

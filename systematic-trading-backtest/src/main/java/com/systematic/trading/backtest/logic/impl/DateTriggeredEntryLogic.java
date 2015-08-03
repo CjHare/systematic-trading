@@ -33,14 +33,13 @@ import java.time.Period;
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.impl.PlaceOrderEvent;
-import com.systematic.trading.backtest.event.impl.PlaceOrderEvent.OrderType;
+import com.systematic.trading.backtest.event.impl.EquityOrderType;
+import com.systematic.trading.backtest.event.impl.PlaceOrderTotalCostEvent;
 import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
-import com.systematic.trading.backtest.order.EquityOrderVolume;
-import com.systematic.trading.backtest.order.impl.BuyTomorrowAtOpeningPriceOrder;
+import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.data.DataPoint;
 
 /**
@@ -100,12 +99,9 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 					closingPrice, mathContext );
 
 			if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
-
-				// Places the order based on todays price not the execution date's price
-				final EquityOrderVolume volume = EquityOrderVolume.valueOf( numberOfEquities );
-				lastOrder = lastOrder.plus( interval );
-				event.record( new PlaceOrderEvent( volume, tradingDate, OrderType.ENTRY ) );
-				return new BuyTomorrowAtOpeningPriceOrder( volume );
+				lastOrder = tradingDate;
+				event.record( new PlaceOrderTotalCostEvent( amount, tradingDate, EquityOrderType.ENTRY ) );
+				return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, mathContext );
 			}
 		}
 

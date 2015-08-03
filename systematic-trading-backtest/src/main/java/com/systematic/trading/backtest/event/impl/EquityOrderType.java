@@ -23,47 +23,14 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
-
-import com.systematic.trading.backtest.brokerage.BrokerageFees;
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
-import com.systematic.trading.data.DataPoint;
+package com.systematic.trading.backtest.event.impl;
 
 /**
- * The trading order that can be executed by a specific brokerage.
+ * All the different event types for equity orders.
  * 
  * @author CJ Hare
  */
-public interface EquityOrder {
-
-	/**
-	 * Whether the order has yet to expire.
-	 * 
-	 * @param todaysTrading the price action for today.
-	 * @return <code>true</code> has expire and should not be executed, <code>false</code>
-	 *         otherwise.
-	 */
-	boolean isValid( DataPoint todaysTrading );
-
-	/**
-	 * Whether the day's trading movement satisfied the execution criteria for the order.
-	 * 
-	 * @param todaysTrading the price action for today.
-	 * @return <code>true</code> the conditions are met, <code>false</code> otherwise.
-	 */
-	boolean areExecutionConditionsMet( DataPoint todaysTrading );
-
-	/**
-	 * Executes the trade, side affecting the broker and cash account.
-	 * 
-	 * @param fees costs associated with performing transactions.
-	 * @param broker performs the execution of the order.
-	 * @param cashAccount where the money for the transaction is withdrawn.
-	 * @param todaysTrading the price action for today.
-	 * @throws OrderException when the order fails.
-	 */
-	void execute( BrokerageFees fees, BrokerageTransaction broker, CashAccount cashAccount, DataPoint todaysTrading )
-			throws OrderException;
+public enum EquityOrderType {
+	ENTRY,
+	EXIT
 }

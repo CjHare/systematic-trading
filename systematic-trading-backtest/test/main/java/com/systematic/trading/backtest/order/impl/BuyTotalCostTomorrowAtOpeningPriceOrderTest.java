@@ -26,11 +26,14 @@
 package com.systematic.trading.backtest.order.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 
 import org.junit.Test;
@@ -38,7 +41,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
+import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
@@ -51,15 +56,19 @@ import com.systematic.trading.data.price.OpeningPrice;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class BuyTomorrowAtOpeningPriceOrderTest {
+public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
+
+	private static final MathContext context = MathContext.DECIMAL64;
+
+	private final EquityClass type = EquityClass.STOCK;
 
 	@Mock
 	private DataPoint todaysTrading;
 
 	@Test
 	public void isValid() {
-		final BuyTomorrowAtOpeningPriceOrder buy = new BuyTomorrowAtOpeningPriceOrder(
-				EquityOrderVolume.valueOf( BigDecimal.ONE ) );
+		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
+				BigDecimal.valueOf( 44 ), type, context );
 
 		final boolean isValid = buy.isValid( todaysTrading );
 
@@ -68,8 +77,8 @@ public class BuyTomorrowAtOpeningPriceOrderTest {
 
 	@Test
 	public void areExecutionConditionsMet() {
-		final BuyTomorrowAtOpeningPriceOrder buy = new BuyTomorrowAtOpeningPriceOrder(
-				EquityOrderVolume.valueOf( BigDecimal.ONE ) );
+		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
+				BigDecimal.valueOf( 44 ), type, context );
 
 		final boolean areConditionMet = buy.areExecutionConditionsMet( todaysTrading );
 
@@ -78,21 +87,27 @@ public class BuyTomorrowAtOpeningPriceOrderTest {
 
 	@Test
 	public void execute() throws OrderException {
-		final EquityOrderVolume volume = EquityOrderVolume.valueOf( BigDecimal.ONE );
 		final BrokerageTransaction broker = mock( BrokerageTransaction.class );
+		final BrokerageFees fees = mock( BrokerageFees.class );
 		final CashAccount cashAccount = mock( CashAccount.class );
-		final BuyTomorrowAtOpeningPriceOrder buy = new BuyTomorrowAtOpeningPriceOrder( volume );
+		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
+				BigDecimal.valueOf( 44 ), type, context );
 
 		final OpeningPrice price = mock( OpeningPrice.class );
+		when( price.getPrice() ).thenReturn( BigDecimal.valueOf( 5 ) );
 		when( todaysTrading.getOpeningPrice() ).thenReturn( price );
 
 		final LocalDate date = LocalDate.now();
 		when( todaysTrading.getDate() ).thenReturn( date );
 
-		buy.execute( broker, cashAccount, todaysTrading );
+		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
+				.thenReturn( BigDecimal.valueOf( 3 ) );
 
-		verify( broker ).buy( price, volume, date );
-		verify( todaysTrading ).getDate();
-		verify( todaysTrading ).getOpeningPrice();
+		buy.execute( fees, broker, cashAccount, todaysTrading );
+
+		final EquityOrderVolume expectedVolume = EquityOrderVolume.valueOf( BigDecimal.valueOf( 8.2 ) );
+		verify( broker ).buy( price, expectedVolume, date );
+		verify( todaysTrading, atLeastOnce() ).getDate();
+		verify( todaysTrading, atLeastOnce() ).getOpeningPrice();
 	}
 }

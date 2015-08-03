@@ -25,47 +25,42 @@
  */
 package com.systematic.trading.backtest.event.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.backtest.event.Event;
-import com.systematic.trading.backtest.order.EquityOrderVolume;
 
 /**
- * An order created on adivce from the simulation logic.
+ * An order created on advice from the simulation logic.
  * 
  * @author CJ Hare
  */
-public class PlaceOrderEvent implements Event {
+public class PlaceOrderTotalCostEvent implements Event {
 
-	public enum OrderType {
-		ENTRY,
-		EXIT
-	}
-
-	private final OrderType type;
-	private final EquityOrderVolume volume;
+	private final EquityOrderType type;
+	private final BigDecimal totalCost;
 	private final LocalDate date;
 
-	public PlaceOrderEvent( final EquityOrderVolume volume, final LocalDate date, final OrderType type ) {
-		this.volume = volume;
+	public PlaceOrderTotalCostEvent( final BigDecimal totalCost, final LocalDate date, final EquityOrderType type ) {
+		this.totalCost = totalCost;
 		this.date = date;
 		this.type = type;
 	}
 
 	@Override
 	public String toString() {
-		return String.format( "Place Order - %s volume %s created after c.o.b on %s", type, volume.getVolume(), date );
+		return String.format( "Place Order - %s total cost %s created after c.o.b on %s", type, totalCost, date );
 	}
 
-	public OrderType getType() {
+	public EquityOrderType getType() {
 		return type;
-	}
-
-	public EquityOrderVolume getVolume() {
-		return volume;
 	}
 
 	public LocalDate getDate() {
 		return date;
+	}
+
+	public BigDecimal getTotalCost() {
+		return totalCost;
 	}
 }

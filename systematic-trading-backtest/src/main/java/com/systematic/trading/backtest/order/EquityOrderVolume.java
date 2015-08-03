@@ -67,4 +67,9 @@ public class EquityOrderVolume {
 	public String toString() {
 		return String.valueOf( volume );
 	}
+
+	@Override
+	public boolean equals( final Object obj ) {
+		return obj instanceof EquityOrderVolume && getVolume().equals( ((EquityOrderVolume) obj).getVolume() );
+	}
 }
