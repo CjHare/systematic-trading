@@ -48,8 +48,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.cash.InterestRate;
+import com.systematic.trading.backtest.event.CashEvent.CashEventType;
 import com.systematic.trading.backtest.event.impl.CashAccountEvent;
-import com.systematic.trading.backtest.event.impl.CashAccountEvent.CashAccountEventType;
 import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
 
@@ -90,7 +90,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 		assertEquals( credit, account.getBalance() );
 		verify( event )
-				.record( isCashAccountEvent( BigDecimal.ZERO, credit, credit, CashAccountEventType.CREDIT, date ) );
+				.record( isCashAccountEvent( BigDecimal.ZERO, credit, credit, CashEventType.CREDIT, date ) );
 	}
 
 	@Test
@@ -107,7 +107,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 		assertEquals( deposit, account.getBalance() );
 		verify( event ).record(
-				isCashAccountEvent( BigDecimal.ZERO, deposit, deposit, CashAccountEventType.DEPOSIT, date ) );
+				isCashAccountEvent( BigDecimal.ZERO, deposit, deposit, CashEventType.DEPOSIT, date ) );
 	}
 
 	@Test
@@ -127,7 +127,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 		verify( event ).record(
 				isCashAccountEvent( openingFunds, openingFunds.subtract( debit, mc ), debit,
-						CashAccountEventType.DEBIT, date ) );
+						CashEventType.DEBIT, date ) );
 	}
 
 	@Test(expected = InsufficientFundsException.class)
@@ -165,7 +165,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 		verify( event ).record(
 				isCashAccountEvent( openingFunds, BigDecimal.valueOf( 101 ), BigDecimal.valueOf( 1 ),
-						CashAccountEventType.INTEREST, tradingDate ) );
+						CashEventType.INTEREST, tradingDate ) );
 	}
 
 	@Test
@@ -228,7 +228,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 	}
 
 	private CashAccountEvent isCashAccountEvent( final BigDecimal fundsBefore, final BigDecimal fundsAfter,
-			final BigDecimal interest, final CashAccountEventType type, final LocalDate transactionDate ) {
+			final BigDecimal interest, final CashEventType type, final LocalDate transactionDate ) {
 		return argThat( new IsCashAccounEventArgument( fundsBefore, fundsAfter, interest, type, transactionDate ) );
 	}
 
@@ -238,10 +238,10 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		private final String fundsBefore;
 		private final String fundsAfter;
 		private final LocalDate transactionDate;
-		private final CashAccountEventType type;
+		private final CashEventType type;
 
 		public IsCashAccounEventArgument( final BigDecimal fundsBefore, final BigDecimal fundsAfter,
-				final BigDecimal amount, final CashAccountEventType type, final LocalDate transactionDate ) {
+				final BigDecimal amount, final CashEventType type, final LocalDate transactionDate ) {
 			this.fundsBefore = TWO_DECIMAL_PLACES.format( fundsBefore );
 			this.fundsAfter = TWO_DECIMAL_PLACES.format( fundsAfter );
 			this.amount = TWO_DECIMAL_PLACES.format( amount );

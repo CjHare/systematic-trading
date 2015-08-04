@@ -29,14 +29,14 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 
-import com.systematic.trading.backtest.event.Event;
+import com.systematic.trading.backtest.event.BrokerageEvent;
 
 /**
  * Broker Account events, buying and selling equities.
  * 
  * @author CJ Hare
  */
-public class BrokerageAccountEvent implements Event {
+public class BrokerageAccountEvent implements BrokerageEvent {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES;
 

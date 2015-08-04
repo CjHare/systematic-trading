@@ -28,10 +28,10 @@ package com.systematic.trading.backtest.event.recorder.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.backtest.event.BrokerageEvent;
+import com.systematic.trading.backtest.event.CashEvent;
 import com.systematic.trading.backtest.event.Event;
-import com.systematic.trading.backtest.event.impl.BrokerageAccountEvent;
-import com.systematic.trading.backtest.event.impl.CashAccountEvent;
-import com.systematic.trading.backtest.event.impl.PlaceOrderVolumeEvent;
+import com.systematic.trading.backtest.event.OrderEvent;
 import com.systematic.trading.backtest.event.recorder.EventRecorder;
 
 /**
@@ -41,25 +41,27 @@ import com.systematic.trading.backtest.event.recorder.EventRecorder;
  */
 public class ConsoleEventRecorder implements EventRecorder {
 
-	private final List<BrokerageAccountEvent> brokerage;
-	private final List<CashAccountEvent> cash;
-	private final List<PlaceOrderVolumeEvent> orders;
+	private final List<BrokerageEvent> brokerage;
+	private final List<CashEvent> cash;
+	private final List<OrderEvent> orders;
 
 	public ConsoleEventRecorder() {
-		this.brokerage = new ArrayList<BrokerageAccountEvent>();
-		this.cash = new ArrayList<CashAccountEvent>();
-		this.orders = new ArrayList<PlaceOrderVolumeEvent>();
+		this.brokerage = new ArrayList<BrokerageEvent>();
+		this.cash = new ArrayList<CashEvent>();
+		this.orders = new ArrayList<OrderEvent>();
 	}
 
 	@Override
 	public void record( final Event event ) {
 
-		if (event instanceof BrokerageAccountEvent) {
-			brokerage.add( (BrokerageAccountEvent) event );
-		} else if (event instanceof CashAccountEvent) {
-			cash.add( (CashAccountEvent) event );
-		} else if (event instanceof PlaceOrderVolumeEvent) {
-			orders.add( (PlaceOrderVolumeEvent) event );
+		if (event instanceof BrokerageEvent) {
+			brokerage.add( (BrokerageEvent) event );
+		} else if (event instanceof CashEvent) {
+			cash.add( (CashEvent) event );
+		} else if (event instanceof OrderEvent) {
+			orders.add( (OrderEvent) event );
+		} else {
+			throw new IllegalArgumentException( String.format( "Unsupported event class: %s", event.getClass() ) );
 		}
 
 		System.out.println( event );
@@ -72,7 +74,7 @@ public class ConsoleEventRecorder implements EventRecorder {
 
 		System.out.println( "--- Cash Account events ---" );
 		int creditCount = 0, debitCount = 0, depositCount = 0, interestCount = 0;
-		for (final CashAccountEvent event : cash) {
+		for (final CashEvent event : cash) {
 			switch (event.getType()) {
 				case CREDIT:
 					creditCount++;

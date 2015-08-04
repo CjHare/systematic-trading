@@ -29,14 +29,14 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 
-import com.systematic.trading.backtest.event.Event;
+import com.systematic.trading.backtest.event.CashEvent;
 
 /**
  * Cash Account events, such as credit, debit and interest.
  * 
  * @author CJ Hare
  */
-public class CashAccountEvent implements Event {
+public class CashAccountEvent implements CashEvent {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES;
 
@@ -47,31 +47,14 @@ public class CashAccountEvent implements Event {
 		TWO_DECIMAL_PLACES.setGroupingUsed( false );
 	}
 
-	public enum CashAccountEventType {
-		CREDIT( "Credit" ),
-		DEBIT( "Debit" ),
-		DEPOSIT( "Deposit" ),
-		INTEREST( "Interest" );
-
-		private final String display;
-
-		private CashAccountEventType( final String display ) {
-			this.display = display;
-		}
-
-		public String getDisplay() {
-			return display;
-		}
-	}
-
 	private final String amount;
 	private final String fundsBefore;
 	private final String fundsAfter;
 	private final LocalDate transactionDate;
-	private final CashAccountEventType type;
+	private final CashEventType type;
 
 	public CashAccountEvent( final BigDecimal fundsBefore, final BigDecimal fundsAfter, final BigDecimal amount,
-			final CashAccountEventType type, final LocalDate transactionDate ) {
+			final CashEventType type, final LocalDate transactionDate ) {
 		this.fundsBefore = TWO_DECIMAL_PLACES.format( fundsBefore );
 		this.fundsAfter = TWO_DECIMAL_PLACES.format( fundsAfter );
 		this.amount = TWO_DECIMAL_PLACES.format( amount );
@@ -101,7 +84,8 @@ public class CashAccountEvent implements Event {
 		return transactionDate;
 	}
 
-	public CashAccountEventType getType() {
+	@Override
+	public CashEventType getType() {
 		return type;
 	}
 }

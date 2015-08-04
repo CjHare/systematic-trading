@@ -28,14 +28,14 @@ package com.systematic.trading.backtest.event.impl;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.backtest.event.Event;
+import com.systematic.trading.backtest.event.OrderEvent;
 
 /**
  * An order created on advice from the simulation logic.
  * 
  * @author CJ Hare
  */
-public class PlaceOrderTotalCostEvent implements Event {
+public class PlaceOrderTotalCostEvent implements OrderEvent {
 
 	private final EquityOrderType type;
 	private final BigDecimal totalCost;

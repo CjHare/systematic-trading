@@ -23,44 +23,40 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event.impl;
-
-import java.time.LocalDate;
-
-import com.systematic.trading.backtest.event.OrderEvent;
-import com.systematic.trading.backtest.order.EquityOrderVolume;
+package com.systematic.trading.backtest.event;
 
 /**
- * An order created on advice from the simulation logic.
+ * A cash event that warrants being recorded.
  * 
  * @author CJ Hare
  */
-public class PlaceOrderVolumeEvent implements OrderEvent {
+public interface CashEvent extends Event {
 
-	private final EquityOrderType type;
-	private final EquityOrderVolume volume;
-	private final LocalDate date;
+	enum CashEventType {
+		/** From the sale of equities. */
+		CREDIT( "Credit" ),
+		/** From the purchase of equities. */
+		DEBIT( "Debit" ),
+		/** Non-equity source of funds being credited. */
+		DEPOSIT( "Deposit" ),
+		/** Interest paid on cash held in transactional account. */
+		INTEREST( "Interest" );
 
-	public PlaceOrderVolumeEvent( final EquityOrderVolume volume, final LocalDate date, final EquityOrderType type ) {
-		this.volume = volume;
-		this.date = date;
-		this.type = type;
+		private final String display;
+
+		private CashEventType( final String display ) {
+			this.display = display;
+		}
+
+		public String getDisplay() {
+			return display;
+		}
 	}
 
-	@Override
-	public String toString() {
-		return String.format( "Place Order - %s volume %s created after c.o.b on %s", type, volume.getVolume(), date );
-	}
-
-	public EquityOrderType getType() {
-		return type;
-	}
-
-	public EquityOrderVolume getVolume() {
-		return volume;
-	}
-
-	public LocalDate getDate() {
-		return date;
-	}
+	/**
+	 * Retrieves the classification of cash event.
+	 * 
+	 * @return general category the cash event falls within.
+	 */
+	CashEventType getType();
 }
