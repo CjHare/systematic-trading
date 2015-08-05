@@ -68,11 +68,18 @@ public class ConsoleEventRecorder implements EventRecorder {
 	}
 
 	public void summary() {
+		System.out.println( "###############" );
+		System.out.println( "### Summary ###" );
+		System.out.println( "###############" );
 
+		System.out.println( "" );
 		System.out.println( String.format( "# Brokerage events: %s", brokerage.size() ) );
+
+		System.out.println( "" );
 		System.out.println( String.format( "# Order events: %s", orders.size() ) );
 
-		System.out.println( "--- Cash Account events ---" );
+		System.out.println( "" );
+		System.out.println( "Cash Account events" );
 		int creditCount = 0, debitCount = 0, depositCount = 0, interestCount = 0;
 		for (final CashEvent event : cash) {
 			switch (event.getType()) {

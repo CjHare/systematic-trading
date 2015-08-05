@@ -202,12 +202,12 @@ public class DateTriggeredEntryLogicTest {
 
 	@Test
 	public void updateBuyTwoDaysRolling() {
-		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
+		final LocalDate date = LocalDate.now();
+		final LocalDate firstOrder = date.minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 2 );
 		final BigDecimal amount = BigDecimal.valueOf( 100 );
 		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
 				firstOrder, interval, context );
-		final LocalDate date = LocalDate.now();
 		when( data.getDate() ).thenReturn( date );
 
 		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
@@ -230,6 +230,44 @@ public class DateTriggeredEntryLogicTest {
 		final EquityOrder secondOrder = logic.update( fees, cashAccount, data );
 
 		assertNull( secondOrder );
+	}
+
+	@Test
+	/**
+	 * Make sure there is no drift in the order date.
+	 */
+	public void updateEnsureNoDrift() {
+		final LocalDate date = LocalDate.now();
+		final LocalDate firstOrder = date.minus( Period.ofDays( 1 ) );
+		final Period interval = Period.ofDays( 1 );
+		final BigDecimal amount = BigDecimal.valueOf( 100 );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
+				firstOrder, interval, context );
+		when( data.getDate() ).thenReturn( date );
+
+		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
+		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( closingPrice ) );
+
+		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
+		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
+				.thenReturn( transactionCost );
+
+		final EquityOrder order = logic.update( fees, cashAccount, data );
+
+		assertNotNull( order );
+		assertTrue( order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
+
+		verify( recorder ).record( isPlaceOrder( amount, date ) );
+
+		// Change the trading day to tomorrow - should not have an order
+		when( data.getDate() ).thenReturn( LocalDate.now().plus( Period.ofDays( 1 ) ) );
+
+		final EquityOrder secondOrder = logic.update( fees, cashAccount, data );
+
+		assertNotNull( secondOrder );
+		assertTrue( secondOrder instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
+
+		verify( recorder ).record( isPlaceOrder( amount, date ) );
 	}
 
 	private PlaceOrderVolumeEvent isPlaceOrder( final BigDecimal amount, final LocalDate date ) {

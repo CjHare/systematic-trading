@@ -99,7 +99,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 					closingPrice, mathContext );
 
 			if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
-				lastOrder = tradingDate;
+				lastOrder = tradingDate.minus( Period.ofDays( 1 ) );
 				event.record( new PlaceOrderTotalCostEvent( amount, tradingDate, EquityOrderType.ENTRY ) );
 				return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, mathContext );
 			}

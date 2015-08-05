@@ -73,7 +73,7 @@ public class Backtest {
 	private static final int DAYS_IN_A_YEAR = 365;
 
 	/** Minimum amount of historical data needed for back testing. */
-	private static final int HISTORY_REQUIRED = 1 * DAYS_IN_A_YEAR;
+	private static final int HISTORY_REQUIRED = 5 * DAYS_IN_A_YEAR;
 
 	public static void main( final String... args ) {
 
@@ -93,8 +93,6 @@ public class Backtest {
 		final DataPoint[] data = service.get( tickerSymbol, startDate, endDate );
 
 		// TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
-
-		// TODO add $100 weekly
 
 		final EquityClass equityType = EquityClass.STOCK;
 
