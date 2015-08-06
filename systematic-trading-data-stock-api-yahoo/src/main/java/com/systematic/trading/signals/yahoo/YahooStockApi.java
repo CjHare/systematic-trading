@@ -72,13 +72,12 @@ public class YahooStockApi implements StockApi {
 			query.append( API_PART_TWO );
 			query.append( startDate.toString() );
 			query.append( API_PART_THREE );
-			query.append( endDate.toString() );
+			query.append( endDate.minus( Period.ofDays( 1 ) ).toString() );
 			query.append( API_PART_FOUR );
 			return query.toString();
 		} catch (final UnsupportedEncodingException e) {
 			throw new CannotRetrieveDataException( "URL encoding failed", e );
 		}
-
 	}
 
 	private DataPoint[] parseJson( final String tickerSymbol, final String result ) throws CannotRetrieveDataException {
@@ -135,9 +134,9 @@ public class YahooStockApi implements StockApi {
 	}
 
 	@Override
-	public DataPoint[] getStockData( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate )
-			throws CannotRetrieveDataException {
-		final String uri = getJsonUrl( tickerSymbol, startDate, endDate );
+	public DataPoint[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
+			final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+		final String uri = getJsonUrl( tickerSymbol, inclusiveStartDate, exclusiveEndDate );
 		LOG.info( String.format( "%s API call to: %s", tickerSymbol, uri ) );
 
 		final String json = HTTP_UTILS.httpGet( uri );

@@ -61,10 +61,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	public void get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 
 		// Ensure there's a table for the data
-		dao.createTable( tickerSymbol );
+		dao.createTableIfAbsent( tickerSymbol );
 
 		// TODO of partial data, retrieve & discard
-		// TODO delete requests after processing
 
 		final List<HistoryRetrievalRequest> unfilteredRequests = sliceHistoryRetrievalRequest( tickerSymbol, startDate,
 				endDate );
@@ -107,13 +106,13 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		for (final HistoryRetrievalRequest request : requests) {
 
 			final String tickerSymbol = request.getTickerSymbol();
-			final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
-			final LocalDate endDate = request.getInclusiveEndDate().toLocalDate();
+			final LocalDate inclusiveStartDate = request.getInclusiveStartDate().toLocalDate();
+			final LocalDate exclusiveEndDate = request.getExclusiveEndDate().toLocalDate();
 
 			try {
 
 				// Pull the data from the Stock API
-				final DataPoint[] tradingData = api.getStockData( tickerSymbol, startDate, endDate );
+				final DataPoint[] tradingData = api.getStockData( tickerSymbol, inclusiveStartDate, exclusiveEndDate );
 
 				// Push to the data source
 				dao.create( tradingData );
@@ -150,7 +149,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 				requests.add( new HistoryRetrievalRequest( tickerSymbol, movedStartDate, movedEndDate ) );
 
-				movedStartDate = movedEndDate.plus( 1, ChronoUnit.DAYS );
+				movedStartDate = movedEndDate;
 				movedEndDate = movedStartDate.plus( maximum );
 				actual = Period.between( movedStartDate, movedEndDate );
 			}
@@ -173,7 +172,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 			final String tickerSymbol = request.getTickerSymbol();
 			final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
-			final LocalDate endDate = request.getInclusiveEndDate().toLocalDate();
+			final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
 
 			final long count = dao.count( tickerSymbol, startDate, endDate );
 			final Period interval = Period.between( startDate, endDate );

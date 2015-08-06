@@ -59,7 +59,7 @@ public interface DataPointDao {
 	 * @param tickerSymbol to create.
 	 * @return The number of entities updated or deleted.
 	 */
-	void createTable( String tickerSymbol );
+	void createTableIfAbsent( String tickerSymbol );
 
 	/**
 	 * Retrieves the set of data points within the given dates.

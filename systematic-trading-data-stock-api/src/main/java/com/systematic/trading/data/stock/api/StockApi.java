@@ -36,12 +36,12 @@ public interface StockApi {
 	/**
 	 * 
 	 * @param symbol ticker symbol for the stock to retrieve data on.
-	 * @param startDate the inclusive start date for the data points.
-	 * @param endDate the inclusive end date for the data points.
+	 * @param inclusiveStartDate the inclusive start date for the data points.
+	 * @param exclusiveEndDate the exclusive end date for the data points.
 	 * @return the given data parsed into domain objects.
 	 * @throws CannotRetrieveDataException problem encountered in retrieving the stock data.
 	 */
-	DataPoint[] getStockData( String symbol, LocalDate startDate, LocalDate endDate )
+	DataPoint[] getStockData( String symbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate )
 			throws CannotRetrieveDataException;
 
 	/**

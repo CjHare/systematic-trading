@@ -58,7 +58,7 @@ public class HistoryRetrievalRequest implements Serializable {
 
 	@Id
 	@Column(name = "end", nullable = false)
-	private Date inclusiveEndDate;
+	private Date exclusiveEndDate;
 
 	public HistoryRetrievalRequest() {
 	}
@@ -67,7 +67,7 @@ public class HistoryRetrievalRequest implements Serializable {
 			final LocalDate exclusiveEndDate ) {
 		this.tickerSymbol = tickerSymbol;
 		this.inclusiveStartDate = Date.valueOf( inclusiveStartDate );
-		this.inclusiveEndDate = Date.valueOf( exclusiveEndDate );
+		this.exclusiveEndDate = Date.valueOf( exclusiveEndDate );
 	}
 
 	public String getTickerSymbol() {
@@ -86,12 +86,11 @@ public class HistoryRetrievalRequest implements Serializable {
 		this.inclusiveStartDate = inclusiveStartDate;
 	}
 
-	public Date getInclusiveEndDate() {
-		return inclusiveEndDate;
+	public Date getExclusiveEndDate() {
+		return exclusiveEndDate;
 	}
 
-	public void setInclusiveEndDate( final Date inclusiveEndDate ) {
-		this.inclusiveEndDate = inclusiveEndDate;
+	public void setExclusiveEndDate( final Date exclusiveEndDate ) {
+		this.exclusiveEndDate = exclusiveEndDate;
 	}
-
 }

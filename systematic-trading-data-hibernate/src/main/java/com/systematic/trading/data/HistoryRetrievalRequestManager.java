@@ -65,7 +65,7 @@ public class HistoryRetrievalRequestManager {
 			} catch (final HibernateException e) {
 				LOG.info(
 						String.format( "Duplicate entry for %s %s %s", request.getTickerSymbol(),
-								request.getInclusiveStartDate(), request.getInclusiveEndDate() ), e );
+								request.getInclusiveStartDate(), request.getExclusiveEndDate() ), e );
 			}
 		}
 
@@ -114,7 +114,7 @@ public class HistoryRetrievalRequestManager {
 		} catch (final HibernateException e) {
 			LOG.info(
 					String.format( "Error deleting entry for %s %s %s", request.getTickerSymbol(),
-							request.getInclusiveStartDate(), request.getInclusiveEndDate() ), e );
+							request.getInclusiveStartDate(), request.getExclusiveEndDate() ), e );
 		}
 
 		tx.commit();

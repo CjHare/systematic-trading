@@ -84,7 +84,7 @@ public class DataPointDaoImpl implements DataPointDao {
 	}
 
 	@Override
-	public void createTable( final String tickerSymbol ) {
+	public void createTableIfAbsent( final String tickerSymbol ) {
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		createTable( tickerSymbol, session );
