@@ -23,61 +23,32 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.analysis.view;
+package com.systematic.trading.signals.model.filter;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.model.BuySignal;
+import com.systematic.trading.signals.model.BuySignalDateComparator;
 
-public class DisplayBuySignals {
+/**
+ * Signal generated when there is a RSI and MACD filter on the same day.
+ * 
+ * @author CJ Hare
+ */
+public class RsiWithMacdSignalFilter implements SignalFilter {
 
-	/** The oldest signal date (inclusive) from today to report. */
-	private final int oldestSignal;
+	@Override
+	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals ) {
+		final SortedSet<BuySignal> passedSignals = new TreeSet<BuySignal>( new BuySignalDateComparator() );
 
-	public DisplayBuySignals( final int oldestSignal ) {
-		this.oldestSignal = oldestSignal;
+		// TODO code
+
+		return passedSignals;
 	}
 
-	public void displayBuySignals( final String symbol, final List<BuySignal> buySignals ) {
-
-		// Only display if within range
-		if (!hasBuySignalsWithinDateRange( buySignals )) {
-			return;
-		}
-
-		final LocalDate earliestSignal = getEarliestSignalDate();
-
-		System.out.println( "--- " );
-		System.out.println( symbol );
-
-		for (final BuySignal buySignal : buySignals) {
-			if (buySignal.getDate().compareTo( earliestSignal ) >= 0) {
-				System.out.println( String.format( "%s", buySignal.getDate() ) );
-			}
-		}
-
-		System.out.println( "---" );
-	}
-
-	private boolean hasBuySignalsWithinDateRange( final List<BuySignal> buySignals ) {
-		final LocalDate earliestSignal = getEarliestSignalDate();
-		return hasBuySignalsWithinDateRange( earliestSignal, buySignals );
-	}
-
-	private boolean hasBuySignalsWithinDateRange( final LocalDate earliestSignal, final List<BuySignal> signals ) {
-		int index = 0;
-		while (index < signals.size()) {
-			if (signals.get( index ).getDate().compareTo( earliestSignal ) >= 0) {
-				return true;
-			}
-			index++;
-		}
-		return false;
-	}
-
-	private LocalDate getEarliestSignalDate() {
-		return LocalDate.now().minus( oldestSignal, ChronoUnit.DAYS );
-	}
 }

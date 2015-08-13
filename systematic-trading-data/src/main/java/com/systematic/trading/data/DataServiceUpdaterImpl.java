@@ -27,7 +27,6 @@ package com.systematic.trading.data;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +39,6 @@ import com.systematic.trading.signals.yahoo.YahooStockApi;
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private static final DataServiceUpdater INSTANCE = new DataServiceUpdaterImpl();
-
-	/* Days data needed - 20 + 20 for the MACD part EMA(20), Weekend and bank holidays */
-	private static final int HISTORY_REQUIRED = 50 + 16 + 5;
 
 	/** Average number of data points above which assumes the month already retrieve covered. */
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
@@ -73,28 +69,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests( tickerSymbol );
 
 		processHistoryRetrievalRequests( outstandingRequests );
-	}
-
-	@Override
-	public void get( final String tickerSymbol ) {
-		final LocalDate endDate = LocalDate.now();
-		final LocalDate startDate = getMinimumStartDate( tickerSymbol, endDate );
-
-		get( tickerSymbol, startDate, endDate );
-	};
-
-	/**
-	 * Determine the minimum start date to retrieve, based on the currently stored data.
-	 */
-	private LocalDate getMinimumStartDate( final String tickerSymbol, final LocalDate endDate ) {
-		final DataPoint mostRecent = dao.getMostRecent( tickerSymbol );
-
-		// Alter the start date to be the day after the most recent
-		if (mostRecent == null) {
-			return endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS );
-		} else {
-			return endDate.plus( 1, ChronoUnit.DAYS );
-		}
 	}
 
 	/**

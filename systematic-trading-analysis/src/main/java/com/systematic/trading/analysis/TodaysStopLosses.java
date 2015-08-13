@@ -65,8 +65,11 @@ public class TodaysStopLosses {
 
 	private static void updateEquities() {
 		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
+		final LocalDate endDate = LocalDate.now();
+		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS );
+
 		for (final Equity equity : Equity.values()) {
-			updateService.get( equity.getSymbol() );
+			updateService.get( equity.getSymbol(), startDate, endDate );
 		}
 	}
 

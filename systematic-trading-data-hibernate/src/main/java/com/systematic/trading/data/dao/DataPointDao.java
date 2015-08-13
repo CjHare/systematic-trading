@@ -86,7 +86,7 @@ public interface DataPointDao {
 	 * 
 	 * @param tickerSymbol symbol of the equity to retrieve.
 	 * @return the most trading data point since the given date, or <code>null</code> if there are
-	 *         none.
+	 *         none or the table does not exist.
 	 */
 	DataPoint getMostRecent( String tickerSymbol );
 }
