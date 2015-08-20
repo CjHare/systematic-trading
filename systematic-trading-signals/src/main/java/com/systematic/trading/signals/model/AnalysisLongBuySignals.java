@@ -27,6 +27,7 @@ package com.systematic.trading.signals.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,8 @@ public class AnalysisLongBuySignals {
 		this.filters = filters;
 	}
 
-	public List<BuySignal> analyse( final DataPoint[] data ) throws TooFewDataPoints {
+	public List<BuySignal> analyse( final DataPoint[] data, final Comparator<BuySignal> ordering )
+			throws TooFewDataPoints {
 
 		// Correct the ordering from earliest to latest
 		Arrays.sort( data, DATA_POINT_COMPARATOR );
@@ -73,7 +75,7 @@ public class AnalysisLongBuySignals {
 		final List<BuySignal> signals = new ArrayList<BuySignal>();
 
 		for (final SignalFilter filter : filters) {
-			signals.addAll( filter.apply( indicatorSignals ) );
+			signals.addAll( filter.apply( indicatorSignals, ordering ) );
 		}
 
 		return signals;

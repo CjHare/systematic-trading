@@ -23,23 +23,17 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.analysis.filter;
+package com.systematic.trading.signals.model;
 
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
+import java.util.Comparator;
 
 import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.indicator.IndicatorSignalType;
-import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.filter.SignalFilter;
 
-public class CustomSignalFilter implements SignalFilter {
+public class IndicatorSignalDateComparator implements Comparator<IndicatorSignal> {
 
 	@Override
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals ) {
-
-		return null;
+	public int compare( final IndicatorSignal a, final IndicatorSignal b ) {
+		return a.getDate().compareTo( b.getDate() );
 	}
 
 }

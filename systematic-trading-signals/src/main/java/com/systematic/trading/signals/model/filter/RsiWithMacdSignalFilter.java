@@ -25,6 +25,9 @@
  */
 package com.systematic.trading.signals.model.filter;
 
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -33,7 +36,7 @@ import java.util.TreeSet;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.BuySignalDateComparator;
+import com.systematic.trading.signals.model.IndicatorSignalDateComparator;
 
 /**
  * Signal generated when there is a RSI and MACD filter on the same day.
@@ -42,13 +45,42 @@ import com.systematic.trading.signals.model.BuySignalDateComparator;
  */
 public class RsiWithMacdSignalFilter implements SignalFilter {
 
-	@Override
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals ) {
-		final SortedSet<BuySignal> passedSignals = new TreeSet<BuySignal>( new BuySignalDateComparator() );
+	private static final IndicatorSignalDateComparator ORDER_BY_DATE = new IndicatorSignalDateComparator();
 
-		// TODO code
+	@Override
+	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
+			final Comparator<BuySignal> ordering ) {
+		validateInput( signals );
+
+		final SortedSet<BuySignal> passedSignals = new TreeSet<BuySignal>( ordering );
+
+		final List<IndicatorSignal> macd = signals.get( IndicatorSignalType.MACD );
+		Collections.sort( macd, ORDER_BY_DATE );
+
+		final List<IndicatorSignal> rsi = signals.get( IndicatorSignalType.RSI );
+		Collections.sort( rsi, ORDER_BY_DATE );
+
+		for (final IndicatorSignal macdSignal : macd) {
+
+			final LocalDate date = macdSignal.getDate();
+			for (final IndicatorSignal rsiSignal : rsi) {
+
+				if (date.equals( rsiSignal.getDate() )) {
+					passedSignals.add( new BuySignal( date ) );
+					break;
+				}
+			}
+		}
 
 		return passedSignals;
 	}
 
+	private void validateInput( final Map<IndicatorSignalType, List<IndicatorSignal>> signals ) {
+		if (signals.get( IndicatorSignalType.MACD ) == null) {
+			throw new IllegalArgumentException( "Expecting a non-null MACD list" );
+		}
+		if (signals.get( IndicatorSignalType.RSI ) == null) {
+			throw new IllegalArgumentException( "Expecting a non-null MACD list" );
+		}
+	}
 }

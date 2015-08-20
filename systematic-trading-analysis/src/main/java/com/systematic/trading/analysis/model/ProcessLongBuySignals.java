@@ -26,6 +26,7 @@
 package com.systematic.trading.analysis.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -52,12 +53,12 @@ public class ProcessLongBuySignals {
 		this.filters = filters;
 	}
 
-	public List<BuySignal> process( final Equity equity, final DataPoint[] data ) {
+	public List<BuySignal> process( final Equity equity, final DataPoint[] data, final Comparator<BuySignal> ordering ) {
 
 		final AnalysisLongBuySignals buyLong = new AnalysisLongBuySignals( configuration, filters );
 
 		try {
-			return buyLong.analyse( data );
+			return buyLong.analyse( data, ordering );
 		} catch (final TooFewDataPoints e) {
 			LOG.error( String.format( "Too few data points for: %s", equity.getSymbol() ), e );
 		}

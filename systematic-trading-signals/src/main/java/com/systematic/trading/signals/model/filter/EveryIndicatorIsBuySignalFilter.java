@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.signals.model.filter;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -46,7 +47,8 @@ public class EveryIndicatorIsBuySignalFilter implements SignalFilter {
 	/**
 	 * Just pass through the indicators given as signals
 	 */
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals ) {
+	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
+			final Comparator<BuySignal> ordering ) {
 
 		final SortedSet<BuySignal> passedSignals = new TreeSet<BuySignal>( new BuySignalDateComparator() );
 
