@@ -90,7 +90,7 @@ public class Backtest {
 		updateService.get( tickerSymbol, startDate, endDate );
 
 		final DataService service = DataServiceImpl.getInstance();
-		final DataPoint[] data = service.get( tickerSymbol, startDate, endDate );
+		final DataPoint[] tradingDate = service.get( tickerSymbol, startDate, endDate );
 
 		// TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
 
@@ -98,7 +98,7 @@ public class Backtest {
 
 		final EventRecorder eventRecorder = new ConsoleEventRecorder();
 
-		final LocalDate openingDate = getEarliestDate( data );
+		final LocalDate openingDate = getEarliestDate( tradingDate );
 
 		// Weekly purchase of $100
 		final Period weekly = Period.ofDays( 7 );
@@ -121,7 +121,7 @@ public class Backtest {
 		final BrokerageFeeStructure fees = new BellDirectFeeStructure( MATH_CONTEXT );
 		final Brokerage broker = new SingleEquityClassBroker( fees, equityType, eventRecorder, MATH_CONTEXT );
 
-		final Simulation simulation = new Simulation( data, broker, cashAccount, entry, exit );
+		final Simulation simulation = new Simulation( startDate, endDate, tradingDate, broker, cashAccount, entry, exit );
 
 		// TODO metrics, time in / out market etc
 

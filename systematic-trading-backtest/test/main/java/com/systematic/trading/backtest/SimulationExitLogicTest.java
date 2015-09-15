@@ -62,6 +62,9 @@ public class SimulationExitLogicTest {
 			LocalDate.of( 2000, Month.APRIL, 8 ), LocalDate.of( 2000, Month.APRIL, 6 ),
 			LocalDate.of( 2000, Month.APRIL, 7 ), LocalDate.of( 2000, Month.APRIL, 5 ) };
 
+	private static final LocalDate startDate = LocalDate.of( 2000, Month.APRIL, 1 );
+	private static final LocalDate endDate = LocalDate.of( 2000, Month.APRIL, 9 );
+
 	@Mock
 	private Brokerage broker;
 	@Mock
@@ -104,7 +107,7 @@ public class SimulationExitLogicTest {
 		final DataPoint[] unorderedPoints = createUnorderedDataPoints();
 		final InOrder inOrder = inOrder( broker, funds, entry, exit );
 
-		final Simulation simulation = new Simulation( unorderedPoints, broker, funds, entry, exit );
+		final Simulation simulation = new Simulation( startDate, endDate, unorderedPoints, broker, funds, entry, exit );
 
 		simulation.run();
 
@@ -118,7 +121,7 @@ public class SimulationExitLogicTest {
 	@Test
 	public void processOrder() throws OrderException {
 		final DataPoint[] sortedPoints = createOrderedDataPoints( createUnorderedDataPoints() );
-		final Simulation simulation = new Simulation( sortedPoints, broker, funds, entry, exit );
+		final Simulation simulation = new Simulation( startDate, endDate, sortedPoints, broker, funds, entry, exit );
 
 		final EquityOrder order = mock( EquityOrder.class );
 		when( order.areExecutionConditionsMet( any( DataPoint.class ) ) ).thenReturn( true );

@@ -25,12 +25,12 @@
  */
 package com.systematic.trading.backtest;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,9 +57,6 @@ public class Simulation {
 
 	private static final Logger LOG = LogManager.getLogger( Simulation.class );
 
-	/** Data set to feed into the trading behaviour. */
-	private final SortedSet<DataPoint> chronologicalData;
-
 	/** Makes the decision on whether entry action is required. */
 	private final EntryLogic entry;
 
@@ -72,41 +69,79 @@ public class Simulation {
 	/** Dealer of equities, manages the equity balance. */
 	private final Brokerage broker;
 
-	public Simulation( final DataPoint[] unordered, final Brokerage broker, final CashAccount funds,
-			final EntryLogic entry, final ExitLogic exit ) {
+	/** Beginning date of the simulation. */
+	private final LocalDate endDate;
 
-		// Correctly order the data set with the oldest entry first
-		this.chronologicalData = new TreeSet<DataPoint>( new Comparator<DataPoint>() {
-			@Override
-			public int compare( final DataPoint a, final DataPoint b ) {
-				return a.getDate().compareTo( b.getDate() );
-			}
-		} );
-		this.chronologicalData.addAll( Arrays.asList( unordered ) );
+	/** Last date of the simulation. */
+	private final LocalDate startDate;
 
+	/** The trading data to feed into the simulation. */
+	private final Map<LocalDate, DataPoint> tradingData;
+
+	/** Time between deposit events. */
+	private final Period interval = Period.ofDays( 1 );
+
+	public Simulation( final LocalDate startDate, final LocalDate endDate, final DataPoint[] unordered,
+			final Brokerage broker, final CashAccount funds, final EntryLogic entry, final ExitLogic exit ) {
+
+		this.startDate = startDate;
+		this.endDate = endDate;
 		this.entry = entry;
 		this.exit = exit;
 		this.funds = funds;
 		this.broker = broker;
+
+		this.tradingData = new HashMap<LocalDate, DataPoint>();
+
+		for (final DataPoint data : unordered) {
+			this.tradingData.put( data.getDate(), data );
+		}
+
+		if (this.tradingData.size() != unordered.length) {
+			throw new IllegalArgumentException( "Duplicate trading dates provided" );
+		}
 	}
 
 	public void run() {
 
 		List<EquityOrder> orders = new ArrayList<EquityOrder>();
+		LocalDate currentDate = startDate;
 
-		// Iterating through the chronologically ordered data points from the youngest
-		for (final DataPoint data : chronologicalData) {
+		while (currentDate.isBefore( endDate )) {
 
 			// Financial activity of deposits, withdrawal and interest
-			funds.update( data.getDate() );
+			funds.update( currentDate );
+
+			// Process orders and add those from the day's trading data
+			orders = processTradingData( tradingData.get( currentDate ), orders );
+
+			// Move to tomorrow
+			currentDate = currentDate.plus( interval );
+		}
+	}
+
+	/**
+	 * Processes any outstanding orders when their execution criteria and add any additional orders
+	 * based on the day's trading data.
+	 * 
+	 * @param tradingDataToday trading data for today.
+	 * @param orders orders carried over from yesterday.
+	 * @return the outstanding orders to carry over to tomorrow.
+	 */
+	private List<EquityOrder> processTradingData( final DataPoint tradingDataToday, List<EquityOrder> orders ) {
+
+		// Only when there is trading data for today
+		if (tradingDataToday != null) {
 
 			// Attempt to execute the queued orders
-			orders = processOutstandingOrders( orders, data );
+			orders = processOutstandingOrders( orders, tradingDataToday );
 
 			// Apply analysis to generate more orders
-			orders = addExitOrderForToday( data, orders );
-			orders = addEntryOrderForToday( data, orders );
+			orders = addExitOrderForToday( tradingDataToday, orders );
+			orders = addEntryOrderForToday( tradingDataToday, orders );
 		}
+
+		return orders;
 	}
 
 	/**
@@ -166,6 +201,11 @@ public class Simulation {
 		return remainingOrders;
 	}
 
+	/**
+	 * Processes the order based on whether the execution criteria are met.
+	 * 
+	 * @return the order that may or may not have been executed.
+	 */
 	private EquityOrder processOutstandingValidOrder( final EquityOrder order, final DataPoint data ) {
 
 		if (order.areExecutionConditionsMet( data )) {
