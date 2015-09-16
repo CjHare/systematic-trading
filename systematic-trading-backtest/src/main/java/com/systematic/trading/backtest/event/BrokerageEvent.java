@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.event;
 
+import com.systematic.trading.event.Event;
+
 /**
  * A brokerage event that warrants being recorded.
  * 

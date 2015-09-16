@@ -47,11 +47,6 @@ public class RelativeStrengthIndexSignals {
 		this.overbought = BigDecimal.valueOf( overbought );
 	}
 
-	public RelativeStrengthIndexSignals() {
-		this.oversold = BigDecimal.valueOf( 30 );
-		this.overbought = BigDecimal.valueOf( 70 );
-	}
-
 	public List<IndicatorSignal> calculate( final DataPoint[] data ) throws TooFewDataPoints {
 		// 5 day RSI
 		final BigDecimal[] fiveDayRsi = new RelativeStrengthIndex( 5 ).rsi( data );
@@ -59,7 +54,7 @@ public class RelativeStrengthIndexSignals {
 		// 14 day RSI
 		final BigDecimal[] tenDayRsi = new RelativeStrengthIndex( 10 ).rsi( data );
 
-		/* RSI triggers a buy signal when crossing the over brought level (30) */
+		/* RSI triggers a buy signal when crossing the over brought level (e.g. 30) */
 		final List<IndicatorSignal> tenDayBuy = buySignals( tenDayRsi, data );
 		final List<IndicatorSignal> fiveDayBuy = buySignals( fiveDayRsi, data );
 
@@ -101,7 +96,7 @@ public class RelativeStrengthIndexSignals {
 			final LocalDate aDate = signal.getDate();
 			if (contains( aDate, larger )) {
 				intersection.add( signal );
-			}
+				}
 		}
 
 		return intersection;

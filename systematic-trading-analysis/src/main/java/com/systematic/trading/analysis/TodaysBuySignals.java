@@ -35,6 +35,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.analysis.event.ConsoleEventRecorder;
 import com.systematic.trading.analysis.model.ProcessLongBuySignals;
 import com.systematic.trading.analysis.view.DisplayBuySignals;
 import com.systematic.trading.data.DataPoint;
@@ -43,6 +44,7 @@ import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.util.HibernateUtil;
+import com.systematic.trading.event.recorder.EventRecorder;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
@@ -73,7 +75,7 @@ public class TodaysBuySignals {
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS );
 
 		// TODO input from somewhere?
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals();
+		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
 		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 10, 3, 3 );
 
@@ -81,6 +83,8 @@ public class TodaysBuySignals {
 
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
 		filters.add( new RsiWithMacdSignalFilter() );
+
+		final EventRecorder eventRecorder = new ConsoleEventRecorder();
 
 		final ProcessLongBuySignals buyLong = new ProcessLongBuySignals( configuration, filters );
 
@@ -90,6 +94,8 @@ public class TodaysBuySignals {
 			final DataPoint[] dataPoints = getDataPoints( equity, startDate, endDate );
 			final List<BuySignal> signals = buyLong.process( equity, dataPoints, ORDER_BY_DATE );
 			buyLongSignals.put( equity, signals );
+			
+			//TODO event
 		}
 
 		displayBuySignals( buyLongSignals );

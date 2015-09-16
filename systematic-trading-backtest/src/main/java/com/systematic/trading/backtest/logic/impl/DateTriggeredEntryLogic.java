@@ -35,12 +35,12 @@ import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.event.impl.EquityOrderType;
 import com.systematic.trading.backtest.event.impl.PlaceOrderTotalCostEvent;
-import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.event.recorder.EventRecorder;
 
 /**
  * Frequent purchases of a fixed amount at regular intervals.

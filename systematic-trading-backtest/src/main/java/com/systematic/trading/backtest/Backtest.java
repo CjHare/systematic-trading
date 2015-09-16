@@ -44,7 +44,6 @@ import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.event.recorder.impl.ConsoleEventRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
@@ -56,6 +55,7 @@ import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.util.HibernateUtil;
+import com.systematic.trading.event.recorder.EventRecorder;
 
 /**
  * Performs back testing of trading logic over a historical data set.

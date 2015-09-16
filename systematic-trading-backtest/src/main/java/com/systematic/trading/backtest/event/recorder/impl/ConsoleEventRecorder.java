@@ -30,9 +30,9 @@ import java.util.List;
 
 import com.systematic.trading.backtest.event.BrokerageEvent;
 import com.systematic.trading.backtest.event.CashEvent;
-import com.systematic.trading.backtest.event.Event;
 import com.systematic.trading.backtest.event.OrderEvent;
-import com.systematic.trading.backtest.event.recorder.EventRecorder;
+import com.systematic.trading.event.Event;
+import com.systematic.trading.event.recorder.EventRecorder;
 
 /**
  * Simple output to the console for the events.

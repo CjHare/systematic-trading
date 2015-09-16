@@ -23,15 +23,25 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event;
+package com.systematic.trading.analysis.event;
 
 import com.systematic.trading.event.Event;
+import com.systematic.trading.event.recorder.EventRecorder;
 
 /**
- * An order event that warrants being recorded.
+ * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public interface OrderEvent extends Event {
+public class ConsoleEventRecorder implements EventRecorder {
 
+	public ConsoleEventRecorder() {
+
+	}
+
+	@Override
+	public void record( final Event event ) {
+
+		System.out.println( event );
+	}
 }

@@ -23,19 +23,13 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event;
+package com.systematic.trading.analysis.event;
+
+import com.systematic.trading.event.Event;
 
 /**
- * An event that warrants being recorded.
- * 
  * @author CJ Hare
  */
-public interface Event {
+public class RelativeStrengthIndexEvent implements Event {
 
-	/**
-	 * Textual representation of the event.
-	 * 
-	 * @return all the details of the event, as a String.
-	 */
-	String toString();
 }

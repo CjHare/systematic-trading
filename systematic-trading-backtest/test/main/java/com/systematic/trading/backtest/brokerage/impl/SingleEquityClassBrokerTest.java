@@ -48,10 +48,10 @@ import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.backtest.event.impl.BrokerageAccountEvent;
 import com.systematic.trading.backtest.event.impl.BrokerageAccountEvent.BrokerageAccountEventType;
-import com.systematic.trading.backtest.event.recorder.EventRecorder;
 import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.data.price.Price;
+import com.systematic.trading.event.recorder.EventRecorder;
 
 /**
  * Single Equity Class Broker test.

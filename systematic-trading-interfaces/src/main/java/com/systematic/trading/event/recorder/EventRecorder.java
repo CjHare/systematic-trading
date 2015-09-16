@@ -23,15 +23,23 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event;
+package com.systematic.trading.event.recorder;
 
 import com.systematic.trading.event.Event;
 
 /**
- * An order event that warrants being recorded.
+ * Records interesting events.
+ * <p/>
+ * Records can be used to discover what happened during the simulation and any needed statistics.
  * 
  * @author CJ Hare
  */
-public interface OrderEvent extends Event {
+public interface EventRecorder {
 
+	/**
+	 * Records an event to the interest source.
+	 * 
+	 * @param event that which is going to be recorded.
+	 */
+	void record( Event event );
 }
