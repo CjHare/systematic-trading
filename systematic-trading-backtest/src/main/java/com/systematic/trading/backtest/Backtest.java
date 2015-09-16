@@ -44,7 +44,7 @@ import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.event.recorder.impl.ConsoleEventRecorder;
+import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleEventRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.DateTriggeredEntryLogic;
@@ -96,7 +96,7 @@ public class Backtest {
 
 		final EquityClass equityType = EquityClass.STOCK;
 
-		final EventRecorder eventRecorder = new ConsoleEventRecorder();
+		final EventRecorder eventRecorder = new BacktestConsoleEventRecorder();
 
 		final LocalDate openingDate = getEarliestDate( tradingDate );
 
@@ -131,7 +131,7 @@ public class Backtest {
 
 		HibernateUtil.getSessionFactory().close();
 
-		((ConsoleEventRecorder) eventRecorder).summary();
+		((BacktestConsoleEventRecorder) eventRecorder).summary();
 	}
 
 	private static LocalDate getEarliestDate( final DataPoint[] data ) {

@@ -39,13 +39,13 @@ import com.systematic.trading.event.recorder.EventRecorder;
  * 
  * @author CJ Hare
  */
-public class ConsoleEventRecorder implements EventRecorder {
+public class BacktestConsoleEventRecorder implements EventRecorder {
 
 	private final List<BrokerageEvent> brokerage;
 	private final List<CashEvent> cash;
 	private final List<OrderEvent> orders;
 
-	public ConsoleEventRecorder() {
+	public BacktestConsoleEventRecorder() {
 		this.brokerage = new ArrayList<BrokerageEvent>();
 		this.cash = new ArrayList<CashEvent>();
 		this.orders = new ArrayList<OrderEvent>();
