@@ -125,4 +125,8 @@ public class SingleEquityClassBroker implements Brokerage {
 			throws UnsupportedEquityClass {
 		return fees.calculateFee( tradeValue, type, monthlyTradeCounter.get( tradeDate ) );
 	}
+
+	public BigDecimal getBalance() {
+		return balance;
+	}
 }

@@ -132,6 +132,8 @@ public class Backtest {
 		HibernateUtil.getSessionFactory().close();
 
 		((BacktestConsoleEventRecorder) eventRecorder).summary();
+
+		summaryNetWorth( broker, tradingDate, cashAccount );
 	}
 
 	private static LocalDate getEarliestDate( final DataPoint[] data ) {
@@ -145,4 +147,33 @@ public class Backtest {
 
 		return earliest;
 	}
+
+	private static DataPoint getLatestDataPoint( final DataPoint[] tradingDate ) {
+		DataPoint latest = tradingDate[0];
+
+		for (int i = 1; i < tradingDate.length; i++) {
+			if (tradingDate[i].getDate().isAfter( latest.getDate() )) {
+				latest = tradingDate[i];
+			}
+		}
+
+		return latest;
+	}
+
+	private static void summaryNetWorth( final Brokerage broker, final DataPoint[] tradingDate,
+			final CashAccount cashAccount ) {
+		final DataPoint latest = getLatestDataPoint( tradingDate );
+		final BigDecimal balance = ((SingleEquityClassBroker) broker).getBalance();
+		final BigDecimal lastClosingPrice = latest.getClosingPrice().getPrice();
+		final BigDecimal holdingValue = balance.multiply( lastClosingPrice );
+
+		System.out.println( "\n=== Net Worth Summary ===" );
+		System.out.println( String.format( "Number of equities: %s", balance ) );
+		System.out.println( String.format( "Last closing price: %s", lastClosingPrice ) );
+		System.out.println( String.format( "Holdings value: %s", holdingValue ) );
+		System.out.println( String.format( "Cash account: %s", cashAccount.getBalance() ) );
+
+		System.out.println( String.format( "\nNet Wortht: %s", cashAccount.getBalance().add( holdingValue ) ) );
+	}
+
 }
