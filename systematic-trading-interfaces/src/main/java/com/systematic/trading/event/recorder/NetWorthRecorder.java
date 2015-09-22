@@ -25,26 +25,15 @@
  */
 package com.systematic.trading.event.recorder;
 
-import com.systematic.trading.event.Event;
-
 /**
- * Records interesting events.
- * <p/>
- * Records can be used to discover what happened during the simulation and any needed statistics.
+ * Progression of net worth during the ages.
  * 
  * @author CJ Hare
  */
-public interface EventRecorder {
+public interface NetWorthRecorder {
 
 	/**
-	 * Records an event to the interest source.
-	 * 
-	 * @param event that which is going to be recorded.
+	 * Summary of the current Net Worth.
 	 */
-	void record( Event event );
-
-	/**
-	 * Summary of the events encountered is produced.
-	 */
-	void eventSummary();
+	void netWorthSummary();
 }

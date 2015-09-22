@@ -45,17 +45,19 @@ import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashA
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
 import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleEventRecorder;
+import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleNetWorthRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.DateTriggeredEntryLogic;
 import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.event.recorder.EventRecorder;
+import com.systematic.trading.event.recorder.NetWorthRecorder;
 
 /**
  * Performs back testing of trading logic over a historical data set.
@@ -133,7 +135,8 @@ public class Backtest {
 
 		((BacktestConsoleEventRecorder) eventRecorder).eventSummary();
 
-		summaryNetWorth( broker, tradingDate, cashAccount );
+		final NetWorthRecorder netWorth = new BacktestConsoleNetWorthRecorder( broker, tradingDate, cashAccount );
+		netWorth.netWorthSummary();
 	}
 
 	private static LocalDate getEarliestDate( final TradingDayPrices[] data ) {
@@ -146,34 +149,6 @@ public class Backtest {
 		}
 
 		return earliest;
-	}
-
-	private static TradingDayPrices getLatestDataPoint( final TradingDayPrices[] tradingDate ) {
-		TradingDayPrices latest = tradingDate[0];
-
-		for (int i = 1; i < tradingDate.length; i++) {
-			if (tradingDate[i].getDate().isAfter( latest.getDate() )) {
-				latest = tradingDate[i];
-			}
-		}
-
-		return latest;
-	}
-
-	private static void summaryNetWorth( final Brokerage broker, final TradingDayPrices[] tradingDate,
-			final CashAccount cashAccount ) {
-		final TradingDayPrices latest = getLatestDataPoint( tradingDate );
-		final BigDecimal balance = ((SingleEquityClassBroker) broker).getBalance();
-		final BigDecimal lastClosingPrice = latest.getClosingPrice().getPrice();
-		final BigDecimal holdingValue = balance.multiply( lastClosingPrice );
-
-		System.out.println( "\n\n=== Net Worth Summary ===" );
-		System.out.println( String.format( "Number of equities: %s", balance ) );
-		System.out.println( String.format( "Last closing price: %s", lastClosingPrice ) );
-		System.out.println( String.format( "Holdings value: %s", holdingValue ) );
-		System.out.println( String.format( "Cash account: %s", cashAccount.getBalance() ) );
-
-		System.out.println( String.format( "\nNet Worth: %s", cashAccount.getBalance().add( holdingValue ) ) );
 	}
 
 }

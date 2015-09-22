@@ -67,6 +67,7 @@ public class BacktestConsoleEventRecorder implements EventRecorder {
 		System.out.println( event );
 	}
 
+	@Override
 	public void eventSummary() {
 		System.out.println( "#####################" );
 		System.out.println( "### Event Summary ###" );
