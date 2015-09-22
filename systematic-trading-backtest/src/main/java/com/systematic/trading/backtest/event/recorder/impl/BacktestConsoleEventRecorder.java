@@ -67,10 +67,10 @@ public class BacktestConsoleEventRecorder implements EventRecorder {
 		System.out.println( event );
 	}
 
-	public void summary() {
-		System.out.println( "###############" );
-		System.out.println( "### Summary ###" );
-		System.out.println( "###############" );
+	public void eventSummary() {
+		System.out.println( "#####################" );
+		System.out.println( "### Event Summary ###" );
+		System.out.println( "#####################" );
 
 		System.out.println( "" );
 		System.out.println( String.format( "# Brokerage events: %s", brokerage.size() ) );

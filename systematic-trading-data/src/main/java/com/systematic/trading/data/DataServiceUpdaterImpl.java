@@ -86,7 +86,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			try {
 
 				// Pull the data from the Stock API
-				final DataPoint[] tradingData = api.getStockData( tickerSymbol, inclusiveStartDate, exclusiveEndDate );
+				final TradingDayPrices[] tradingData = api.getStockData( tickerSymbol, inclusiveStartDate, exclusiveEndDate );
 
 				// Push to the data source
 				dao.create( tradingData );

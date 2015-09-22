@@ -32,7 +32,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
@@ -58,7 +58,7 @@ public class AnalysisLongBuySignals {
 		this.filters = filters;
 	}
 
-	public List<BuySignal> analyse( final DataPoint[] data, final Comparator<BuySignal> ordering )
+	public List<BuySignal> analyse( final TradingDayPrices[] data, final Comparator<BuySignal> ordering )
 			throws TooFewDataPoints {
 
 		// Correct the ordering from earliest to latest

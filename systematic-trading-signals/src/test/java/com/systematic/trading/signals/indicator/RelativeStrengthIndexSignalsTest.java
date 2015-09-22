@@ -34,7 +34,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
@@ -52,7 +52,7 @@ public class RelativeStrengthIndexSignalsTest {
 	@Test
 	public void oversold() throws TooFewDataPoints {
 		final BigDecimal[] rsiValue = new BigDecimal[rsi.length];
-		final DataPoint[] dates = new DataPoint[rsi.length];
+		final TradingDayPrices[] dates = new TradingDayPrices[rsi.length];
 
 		for (int i = 0; i < rsiValue.length; i++) {
 			rsiValue[i] = BigDecimal.valueOf( rsi[i] );
@@ -72,7 +72,7 @@ public class RelativeStrengthIndexSignalsTest {
 		assertEquals( LocalDate.now().plusDays( 26 ), signals.get( 2 ).getDate() );
 	}
 
-	class DataPointImpl implements DataPoint {
+	class DataPointImpl implements TradingDayPrices {
 
 		private final LocalDate date;
 		private final OpeningPrice openingPrice;

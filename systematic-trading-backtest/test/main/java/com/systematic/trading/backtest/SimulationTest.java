@@ -41,7 +41,7 @@ import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * Testing the basic functionality of the simulation.
@@ -69,11 +69,11 @@ public class SimulationTest {
 	@Mock
 	private ExitLogic exit;
 
-	private DataPoint[] createUnorderedDataPoints() {
-		final DataPoint[] unordered = new DataPoint[UNORDERED_DATE.length];
+	private TradingDayPrices[] createUnorderedDataPoints() {
+		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
 
 		for (int i = 0; i < unordered.length; i++) {
-			unordered[i] = mock( DataPoint.class );
+			unordered[i] = mock( TradingDayPrices.class );
 			when( unordered[i].getDate() ).thenReturn( UNORDERED_DATE[i] );
 			when( unordered[i].toString() ).thenReturn( UNORDERED_DATE[i].toString() );
 		}
@@ -83,14 +83,14 @@ public class SimulationTest {
 
 	@Test
 	public void create() {
-		final DataPoint[] unorderedPoints = createUnorderedDataPoints();
+		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
 
 		new Simulation( startDate, endDate, unorderedPoints, broker, funds, entry, exit );
 	}
 
 	@Test
 	public void createWithException() {
-		final DataPoint[] unorderedPoints = createUnorderedDataPoints();
+		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
 		unorderedPoints[1] = unorderedPoints[0];
 
 		try {

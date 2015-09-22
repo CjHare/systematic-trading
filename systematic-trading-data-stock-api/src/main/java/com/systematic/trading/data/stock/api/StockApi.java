@@ -28,7 +28,7 @@ package com.systematic.trading.data.stock.api;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
 
 public interface StockApi {
@@ -41,7 +41,7 @@ public interface StockApi {
 	 * @return the given data parsed into domain objects.
 	 * @throws CannotRetrieveDataException problem encountered in retrieving the stock data.
 	 */
-	DataPoint[] getStockData( String symbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate )
+	TradingDayPrices[] getStockData( String symbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate )
 			throws CannotRetrieveDataException;
 
 	/**

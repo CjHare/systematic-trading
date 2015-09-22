@@ -43,7 +43,7 @@ import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * The application of the chosen trading logic over a given set of data is performed in the
@@ -76,12 +76,12 @@ public class Simulation {
 	private final LocalDate startDate;
 
 	/** The trading data to feed into the simulation. */
-	private final Map<LocalDate, DataPoint> tradingData;
+	private final Map<LocalDate, TradingDayPrices> tradingData;
 
 	/** Time between deposit events. */
 	private final Period interval = Period.ofDays( 1 );
 
-	public Simulation( final LocalDate startDate, final LocalDate endDate, final DataPoint[] unordered,
+	public Simulation( final LocalDate startDate, final LocalDate endDate, final TradingDayPrices[] unordered,
 			final Brokerage broker, final CashAccount funds, final EntryLogic entry, final ExitLogic exit ) {
 
 		this.startDate = startDate;
@@ -91,9 +91,9 @@ public class Simulation {
 		this.funds = funds;
 		this.broker = broker;
 
-		this.tradingData = new HashMap<LocalDate, DataPoint>();
+		this.tradingData = new HashMap<LocalDate, TradingDayPrices>();
 
-		for (final DataPoint data : unordered) {
+		for (final TradingDayPrices data : unordered) {
 			this.tradingData.put( data.getDate(), data );
 		}
 
@@ -128,7 +128,7 @@ public class Simulation {
 	 * @param orders orders carried over from yesterday.
 	 * @return the outstanding orders to carry over to tomorrow.
 	 */
-	private List<EquityOrder> processTradingData( final DataPoint tradingDataToday, List<EquityOrder> orders ) {
+	private List<EquityOrder> processTradingData( final TradingDayPrices tradingDataToday, List<EquityOrder> orders ) {
 
 		// Only when there is trading data for today
 		if (tradingDataToday != null) {
@@ -151,7 +151,7 @@ public class Simulation {
 	 * @param openOrders the existing trading orders unfulfilled.
 	 * @return the given list of open orders, plus any order added by the exit logic.
 	 */
-	private List<EquityOrder> addExitOrderForToday( final DataPoint data, final List<EquityOrder> openOrders ) {
+	private List<EquityOrder> addExitOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
 		final EquityOrder order = exit.update( broker, data );
 
 		if (order != null) {
@@ -168,7 +168,7 @@ public class Simulation {
 	 * @param openOrders the existing trading orders unfulfilled.
 	 * @return the given list of open orders, plus any order added by the entry logic.
 	 */
-	private List<EquityOrder> addEntryOrderForToday( final DataPoint data, final List<EquityOrder> openOrders ) {
+	private List<EquityOrder> addEntryOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
 		final EquityOrder order = entry.update( broker, funds, data );
 
 		if (order != null) {
@@ -183,7 +183,7 @@ public class Simulation {
 	 * 
 	 * @return orders that were not executed as their conditions were not met.
 	 */
-	private List<EquityOrder> processOutstandingOrders( final List<EquityOrder> orders, final DataPoint data ) {
+	private List<EquityOrder> processOutstandingOrders( final List<EquityOrder> orders, final TradingDayPrices data ) {
 		final List<EquityOrder> remainingOrders = new ArrayList<EquityOrder>( orders.size() );
 
 		for (final EquityOrder order : orders) {
@@ -206,7 +206,7 @@ public class Simulation {
 	 * 
 	 * @return the order that may or may not have been executed.
 	 */
-	private EquityOrder processOutstandingValidOrder( final EquityOrder order, final DataPoint data ) {
+	private EquityOrder processOutstandingValidOrder( final EquityOrder order, final TradingDayPrices data ) {
 
 		if (order.areExecutionConditionsMet( data )) {
 			return executeOrder( order, data );
@@ -222,7 +222,7 @@ public class Simulation {
 	 * @return <code>null</code> on success, or an order to re-attempt next cycle.
 	 * @throws OrderException
 	 */
-	private EquityOrder executeOrder( final EquityOrder order, final DataPoint data ) {
+	private EquityOrder executeOrder( final EquityOrder order, final TradingDayPrices data ) {
 		try {
 			order.execute( broker, broker, funds, data );
 

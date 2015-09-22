@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.SimpleMovingAverage;
@@ -59,7 +59,7 @@ public class StochasticOscillatorSignals {
 		this.smaK = smaK;
 	}
 
-	public List<IndicatorSignal> calculate( final DataPoint[] data ) throws TooFewDataPoints {
+	public List<IndicatorSignal> calculate( final TradingDayPrices[] data ) throws TooFewDataPoints {
 		final StochasticPercentageK percentageK = new StochasticPercentageK( lookback );
 
 		final BigDecimal[] fastK = percentageK.percentageK( data );
@@ -73,7 +73,7 @@ public class StochasticOscillatorSignals {
 		return buySignals( merge( data, fullK ), fullD );
 	}
 
-	private ValueWithDate[] merge( final DataPoint[] dates, final BigDecimal[] values ) {
+	private ValueWithDate[] merge( final TradingDayPrices[] dates, final BigDecimal[] values ) {
 		final ValueWithDate[] merged = new ValueWithDate[dates.length];
 
 		for (int i = 0; i < dates.length; i++) {

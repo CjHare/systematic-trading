@@ -49,7 +49,7 @@ import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.DateTriggeredEntryLogic;
 import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
@@ -81,7 +81,7 @@ public class Backtest {
 		final LocalDate endDate = LocalDate.now();
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
 
-		final String tickerSymbol = "^GSPC";
+		final String tickerSymbol = "^GSPC"; 	// S&P 500 - price return index
 		// final String tickerSymbol = "USD";
 
 		LOG.info( String.format( "Including data set for %s from %s to %s", tickerSymbol, startDate, endDate ) );
@@ -90,7 +90,7 @@ public class Backtest {
 		updateService.get( tickerSymbol, startDate, endDate );
 
 		final DataService service = DataServiceImpl.getInstance();
-		final DataPoint[] tradingDate = service.get( tickerSymbol, startDate, endDate );
+		final TradingDayPrices[] tradingDate = service.get( tickerSymbol, startDate, endDate );
 
 		// TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
 
@@ -131,15 +131,15 @@ public class Backtest {
 
 		HibernateUtil.getSessionFactory().close();
 
-		((BacktestConsoleEventRecorder) eventRecorder).summary();
+		((BacktestConsoleEventRecorder) eventRecorder).eventSummary();
 
 		summaryNetWorth( broker, tradingDate, cashAccount );
 	}
 
-	private static LocalDate getEarliestDate( final DataPoint[] data ) {
+	private static LocalDate getEarliestDate( final TradingDayPrices[] data ) {
 		LocalDate earliest = data[0].getDate();
 
-		for (final DataPoint today : data) {
+		for (final TradingDayPrices today : data) {
 			if (earliest.isAfter( today.getDate() )) {
 				earliest = today.getDate();
 			}
@@ -148,8 +148,8 @@ public class Backtest {
 		return earliest;
 	}
 
-	private static DataPoint getLatestDataPoint( final DataPoint[] tradingDate ) {
-		DataPoint latest = tradingDate[0];
+	private static TradingDayPrices getLatestDataPoint( final TradingDayPrices[] tradingDate ) {
+		TradingDayPrices latest = tradingDate[0];
 
 		for (int i = 1; i < tradingDate.length; i++) {
 			if (tradingDate[i].getDate().isAfter( latest.getDate() )) {
@@ -160,20 +160,20 @@ public class Backtest {
 		return latest;
 	}
 
-	private static void summaryNetWorth( final Brokerage broker, final DataPoint[] tradingDate,
+	private static void summaryNetWorth( final Brokerage broker, final TradingDayPrices[] tradingDate,
 			final CashAccount cashAccount ) {
-		final DataPoint latest = getLatestDataPoint( tradingDate );
+		final TradingDayPrices latest = getLatestDataPoint( tradingDate );
 		final BigDecimal balance = ((SingleEquityClassBroker) broker).getBalance();
 		final BigDecimal lastClosingPrice = latest.getClosingPrice().getPrice();
 		final BigDecimal holdingValue = balance.multiply( lastClosingPrice );
 
-		System.out.println( "\n=== Net Worth Summary ===" );
+		System.out.println( "\n\n=== Net Worth Summary ===" );
 		System.out.println( String.format( "Number of equities: %s", balance ) );
 		System.out.println( String.format( "Last closing price: %s", lastClosingPrice ) );
 		System.out.println( String.format( "Holdings value: %s", holdingValue ) );
 		System.out.println( String.format( "Cash account: %s", cashAccount.getBalance() ) );
 
-		System.out.println( String.format( "\nNet Wortht: %s", cashAccount.getBalance().add( holdingValue ) ) );
+		System.out.println( String.format( "\nNet Worth: %s", cashAccount.getBalance().add( holdingValue ) ) );
 	}
 
 }

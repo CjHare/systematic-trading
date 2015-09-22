@@ -29,7 +29,7 @@ import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.OrderException;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * The trading order that can be executed by a specific brokerage.
@@ -45,7 +45,7 @@ public interface EquityOrder {
 	 * @return <code>true</code> has expire and should not be executed, <code>false</code>
 	 *         otherwise.
 	 */
-	boolean isValid( DataPoint todaysTrading );
+	boolean isValid( TradingDayPrices todaysTrading );
 
 	/**
 	 * Whether the day's trading movement satisfied the execution criteria for the order.
@@ -53,7 +53,7 @@ public interface EquityOrder {
 	 * @param todaysTrading the price action for today.
 	 * @return <code>true</code> the conditions are met, <code>false</code> otherwise.
 	 */
-	boolean areExecutionConditionsMet( DataPoint todaysTrading );
+	boolean areExecutionConditionsMet( TradingDayPrices todaysTrading );
 
 	/**
 	 * Executes the trade, side affecting the broker and cash account.
@@ -64,6 +64,6 @@ public interface EquityOrder {
 	 * @param todaysTrading the price action for today.
 	 * @throws OrderException when the order fails.
 	 */
-	void execute( BrokerageFees fees, BrokerageTransaction broker, CashAccount cashAccount, DataPoint todaysTrading )
+	void execute( BrokerageFees fees, BrokerageTransaction broker, CashAccount cashAccount, TradingDayPrices todaysTrading )
 			throws OrderException;
 }

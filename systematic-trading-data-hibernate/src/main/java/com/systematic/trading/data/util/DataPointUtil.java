@@ -29,8 +29,8 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 
-import com.systematic.trading.data.DataPoint;
-import com.systematic.trading.data.DataPointImpl;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.TradingDayPricesImpl;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
@@ -38,7 +38,7 @@ import com.systematic.trading.data.price.OpeningPrice;
 
 public class DataPointUtil {
 
-	public static DataPoint parseDataPoint( final String tickerSymbol, final Object uncast ) {
+	public static TradingDayPrices parseDataPoint( final String tickerSymbol, final Object uncast ) {
 		final Object[] data = (Object[]) uncast;
 		final LocalDate date = parseDate( data[0] );
 
@@ -47,7 +47,7 @@ public class DataPointUtil {
 		final HighestPrice highestPrice = HighestPrice.valueOf( parseBigDecimal( data[2] ) );
 		final ClosingPrice closingPrice = ClosingPrice.valueOf( parseBigDecimal( data[4] ) );
 
-		return new DataPointImpl( tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice );
+		return new TradingDayPricesImpl( tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice );
 	}
 
 	private static LocalDate parseDate( final Object o ) {

@@ -44,7 +44,7 @@ import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.OpeningPrice;
 
 /**
@@ -56,7 +56,7 @@ import com.systematic.trading.data.price.OpeningPrice;
 public class BuyVolumeTomorrowAtOpeningPriceOrderTest {
 
 	@Mock
-	private DataPoint todaysTrading;
+	private TradingDayPrices todaysTrading;
 
 	@Test
 	public void isValid() {

@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.ExponentialMovingAverage;
@@ -47,7 +47,7 @@ public class MovingAveragingConvergeDivergenceSignals {
 		this.signalTimePeriods = signalTimePeriods;
 	}
 
-	public List<IndicatorSignal> calculate( final DataPoint[] data ) throws TooFewDataPoints {
+	public List<IndicatorSignal> calculate( final TradingDayPrices[] data ) throws TooFewDataPoints {
 
 		final ExponentialMovingAverage slowEma = new ExponentialMovingAverage( slowTimePeriods );
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverage( fastTimePeriods );
@@ -117,7 +117,7 @@ public class MovingAveragingConvergeDivergenceSignals {
 		return crossingSignalLine( yesterdayMacd, todayMacd, BigDecimal.ZERO, BigDecimal.ZERO );
 	}
 
-	private ValueWithDate[] convertToClosingPriceAndDate( final DataPoint[] data ) {
+	private ValueWithDate[] convertToClosingPriceAndDate( final TradingDayPrices[] data ) {
 		final ValueWithDate[] vd = new ValueWithDate[data.length];
 		for (int i = 0; i < vd.length; i++) {
 			vd[i] = new ValueWithDate( data[i].getDate(), data[i].getClosingPrice().getPrice() );

@@ -44,7 +44,7 @@ public class DataServiceImpl implements DataService {
 	}
 
 	@Override
-	public DataPoint[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
+	public TradingDayPrices[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 		return dao.get( tickerSymbol, startDate, endDate );
 	}
 

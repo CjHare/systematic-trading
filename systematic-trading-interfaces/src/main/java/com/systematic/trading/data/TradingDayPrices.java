@@ -32,52 +32,52 @@ import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 
-public class DataPointImpl implements DataPoint {
+/**
+ * Data points for a single day of trading.
+ * 
+ * @author CJ Hare
+ */
+public interface TradingDayPrices {
 
-	private final String tickerSymbol;
-	private final LocalDate date;
-	private final ClosingPrice closingPrice;
-	private final LowestPrice lowestPrice;
-	private final HighestPrice highestPrice;
-	private final OpeningPrice openingPrice;
+	/**
+	 * The calendar date for the day's trading.
+	 * 
+	 * @return date of the trading data.
+	 */
+	LocalDate getDate();
 
-	public DataPointImpl( final String tickerSymbol, final LocalDate date, final OpeningPrice openingPrice,
-			final LowestPrice lowestPrice, final HighestPrice highestPrice, final ClosingPrice closingPrice ) {
-		this.tickerSymbol = tickerSymbol;
-		this.date = date;
-		this.openingPrice = openingPrice;
-		this.closingPrice = closingPrice;
-		this.lowestPrice = lowestPrice;
-		this.highestPrice = highestPrice;
-	}
+	/**
+	 * Price at the market close.
+	 * 
+	 * @return price of the equity at the close of trading.
+	 */
+	ClosingPrice getClosingPrice();
 
-	@Override
-	public LocalDate getDate() {
-		return date;
-	}
+	/**
+	 * Lowest price of the equity during the day.
+	 * 
+	 * @return lowest price of the equity during the day's trading.
+	 */
+	LowestPrice getLowestPrice();
 
-	@Override
-	public ClosingPrice getClosingPrice() {
-		return closingPrice;
-	}
+	/**
+	 * Highest price of the equity during the day.
+	 * 
+	 * @return highest price of the equity during the day's trading.
+	 */
+	HighestPrice getHighestPrice();
 
-	@Override
-	public LowestPrice getLowestPrice() {
-		return lowestPrice;
-	}
+	/**
+	 * Price of the equity at the start of trading.
+	 * 
+	 * @return opening price of the equity during the day's trading.
+	 */
+	OpeningPrice getOpeningPrice();
 
-	@Override
-	public HighestPrice getHighestPrice() {
-		return highestPrice;
-	}
-
-	@Override
-	public String getTickerSymbol() {
-		return tickerSymbol;
-	}
-
-	@Override
-	public OpeningPrice getOpeningPrice() {
-		return openingPrice;
-	}
+	/**
+	 * The abbreviation used in markets for the equity.
+	 * 
+	 * @return market abbreviation.
+	 */
+	String getTickerSymbol();
 }

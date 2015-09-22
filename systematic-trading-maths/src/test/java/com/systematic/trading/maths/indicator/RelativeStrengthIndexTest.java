@@ -33,8 +33,8 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
-import com.systematic.trading.data.DataPoint;
-import com.systematic.trading.maths.DataPointImpl;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 public class RelativeStrengthIndexTest {
@@ -43,9 +43,9 @@ public class RelativeStrengthIndexTest {
 		final double[] prices = { 15.55, 15.70, 15.80, 15.98, 16.20, 16.15, 16.15, 16.25, 16.12, 16.40, 16.67, 16.22,
 				16.43, 16.20, 15.93, 15.80, 15.90, 16.00, 15.80, 15.76, 15.82, 15.40, 15.55, 15.48, 15.28, 15.35,
 				15.41, 15.46, 15.50, 15.63, 15.50, 15.51, 15.42, 15.38, 15.24, 15.26, 15.29, 15.25, 15.05 };
-		final DataPoint[] closingPrices = new DataPoint[prices.length];
+		final TradingDayPrices[] closingPrices = new TradingDayPrices[prices.length];
 		for (int i = 0; i < closingPrices.length; i++) {
-			closingPrices[i] = new DataPointImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+			closingPrices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
 					BigDecimal.valueOf( prices[i] ) );
 		}
 
@@ -98,9 +98,9 @@ public class RelativeStrengthIndexTest {
 				BigDecimal.valueOf( 90.68 ), BigDecimal.valueOf( 90.52 ), BigDecimal.valueOf( 91.82 ),
 				BigDecimal.valueOf( 91.32 ) };
 
-		final DataPoint[] closingPrices = new DataPoint[closingPricesDb.length];
+		final TradingDayPrices[] closingPrices = new TradingDayPrices[closingPricesDb.length];
 		for (int i = 0; i < closingPrices.length; i++) {
-			closingPrices[i] = new DataPointImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+			closingPrices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
 					closingPricesDb[i] );
 
 		}
@@ -136,10 +136,10 @@ public class RelativeStrengthIndexTest {
 	public void tooFewPrices() throws TooFewDataPoints {
 		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10 );
 
-		final DataPoint[] closingPrices = {
-				new DataPointImpl( LocalDate.now(), BigDecimal.valueOf( 93.15 ), BigDecimal.ZERO, BigDecimal.ZERO,
+		final TradingDayPrices[] closingPrices = {
+				new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 93.15 ), BigDecimal.ZERO, BigDecimal.ZERO,
 						BigDecimal.ZERO ),
-				new DataPointImpl( LocalDate.now(), BigDecimal.valueOf( 93.47 ), BigDecimal.ZERO, BigDecimal.ZERO,
+				new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 93.47 ), BigDecimal.ZERO, BigDecimal.ZERO,
 						BigDecimal.ZERO ) };
 
 		rsi.rsi( closingPrices );
@@ -156,9 +156,9 @@ public class RelativeStrengthIndexTest {
 				BigDecimal.valueOf( 20 ), BigDecimal.valueOf( 25 ), BigDecimal.valueOf( 30 ),
 				BigDecimal.valueOf( 30.1 ), BigDecimal.valueOf( 40 ), BigDecimal.valueOf( 50 ), BigDecimal.valueOf( 60 ) };
 
-		final DataPoint[] closingPrices = new DataPoint[closingPricesDb.length];
+		final TradingDayPrices[] closingPrices = new TradingDayPrices[closingPricesDb.length];
 		for (int i = 0; i < closingPrices.length; i++) {
-			closingPrices[i] = new DataPointImpl( LocalDate.now(), closingPricesDb[i], BigDecimal.ZERO,
+			closingPrices[i] = new TradingDayPricesImpl( LocalDate.now(), closingPricesDb[i], BigDecimal.ZERO,
 					BigDecimal.ZERO, BigDecimal.ZERO );
 		}
 

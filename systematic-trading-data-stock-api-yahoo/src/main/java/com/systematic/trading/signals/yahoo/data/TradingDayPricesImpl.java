@@ -23,56 +23,62 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data;
+package com.systematic.trading.signals.yahoo.data;
 
 import java.time.LocalDate;
 
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 
-/**
- * Data point for a single day of trading.
- * 
- * @author CJ Hare
- */
-public interface DataPoint {
+public class TradingDayPricesImpl implements TradingDayPrices {
 
-	/**
-	 * The calendar date for the day's trading.
-	 * 
-	 * @return date of the trading data.
-	 */
-	LocalDate getDate();
+	private final String tickerSymbol;
+	private final LocalDate date;
+	private final OpeningPrice openingPrice;
+	private final LowestPrice lowestPrice;
+	private final HighestPrice highestPrice;
+	private final ClosingPrice closingPrice;
 
-	/**
-	 * Price at the market close.
-	 * 
-	 * @return price of the equity at the close of trading.
-	 */
-	ClosingPrice getClosingPrice();
+	public TradingDayPricesImpl( final String tickerSymbol, final LocalDate date, final OpeningPrice openingPrice,
+			final LowestPrice lowestPrice, final HighestPrice highestPrice, final ClosingPrice closingPrice ) {
+		this.tickerSymbol = tickerSymbol;
+		this.date = date;
+		this.closingPrice = closingPrice;
+		this.lowestPrice = lowestPrice;
+		this.highestPrice = highestPrice;
+		this.openingPrice = openingPrice;
+	}
 
-	/**
-	 * Lowest price of the equity during the day.
-	 * 
-	 * @return lowest price of the equity during the day's trading.
-	 */
-	LowestPrice getLowestPrice();
+	@Override
+	public LocalDate getDate() {
+		return date;
+	}
 
-	/**
-	 * Highest price of the equity during the day.
-	 * 
-	 * @return highest price of the equity during the day's trading.
-	 */
-	HighestPrice getHighestPrice();
+	@Override
+	public ClosingPrice getClosingPrice() {
+		return closingPrice;
+	}
 
-	/**
-	 * Price of the equity at the start of trading.
-	 * 
-	 * @return opening price of the equity during the day's trading.
-	 */
-	OpeningPrice getOpeningPrice();
+	@Override
+	public LowestPrice getLowestPrice() {
+		return lowestPrice;
+	}
 
-	String getTickerSymbol();
+	@Override
+	public HighestPrice getHighestPrice() {
+		return highestPrice;
+	}
+
+	@Override
+	public String getTickerSymbol() {
+		return tickerSymbol;
+	}
+
+	@Override
+	public OpeningPrice getOpeningPrice() {
+		return openingPrice;
+	}
 }

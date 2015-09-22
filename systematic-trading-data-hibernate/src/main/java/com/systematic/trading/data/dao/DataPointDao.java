@@ -27,7 +27,7 @@ package com.systematic.trading.data.dao;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * DataPoint management outside of ORM, for better database performance.
@@ -42,7 +42,7 @@ public interface DataPointDao {
 	 * @param data to create.
 	 * @return The number of entities updated or deleted.
 	 */
-	void create( DataPoint data );
+	void create( TradingDayPrices data );
 
 	/**
 	 * Inserts DataPoint into the appropriate ticker symbol table.
@@ -51,7 +51,7 @@ public interface DataPointDao {
 	 * @param session transaction to perform he insert query within.
 	 * @return The number of entities updated or deleted.
 	 */
-	void create( DataPoint[] data );
+	void create( TradingDayPrices[] data );
 
 	/**
 	 * If not already present creates the appropriate data point table.
@@ -69,7 +69,7 @@ public interface DataPointDao {
 	 * @param endDate inclusive end date for the data range.
 	 * @return the set of trading data points within the given dates.
 	 */
-	DataPoint[] get( String tickerSymbol, LocalDate startDate, LocalDate endDate );
+	TradingDayPrices[] get( String tickerSymbol, LocalDate startDate, LocalDate endDate );
 
 	/**
 	 * Counts the number of data points within the given range
@@ -88,5 +88,5 @@ public interface DataPointDao {
 	 * @return the most trading data point since the given date, or <code>null</code> if there are
 	 *         none or the table does not exist.
 	 */
-	DataPoint getMostRecent( String tickerSymbol );
+	TradingDayPrices getMostRecent( String tickerSymbol );
 }

@@ -35,7 +35,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.dao.DataPointDao;
 import com.systematic.trading.data.util.DataPointUtil;
 import com.systematic.trading.data.util.HibernateUtil;
@@ -43,11 +43,11 @@ import com.systematic.trading.data.util.HibernateUtil;
 public class DataPointDaoImpl implements DataPointDao {
 
 	@Override
-	public void create( final DataPoint[] data ) {
+	public void create( final TradingDayPrices[] data ) {
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		final Transaction tx = session.beginTransaction();
 
-		for (final DataPoint d : data) {
+		for (final TradingDayPrices d : data) {
 			create( d, session );
 		}
 
@@ -55,14 +55,14 @@ public class DataPointDaoImpl implements DataPointDao {
 	}
 
 	@Override
-	public void create( final DataPoint data ) {
+	public void create( final TradingDayPrices data ) {
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		create( data, session );
 		session.getTransaction().commit();
 	}
 
-	public void create( final DataPoint data, final Session session ) {
+	public void create( final TradingDayPrices data, final Session session ) {
 		final String sql = String
 				.format(
 						"INSERT INTO history_%s (date, opening_price, lowest_price, highest_price, closing_price) VALUES (:date, :opening_price, :lowest_price, :highest_price, :closing_price)",
@@ -109,7 +109,7 @@ public class DataPointDaoImpl implements DataPointDao {
 	}
 
 	@Override
-	public DataPoint getMostRecent( final String tickerSymbol ) {
+	public TradingDayPrices getMostRecent( final String tickerSymbol ) {
 		final String sql = String
 				.format(
 						"SELECT date, opening_price, lowest_price, highest_price, closing_price FROM history_%s ORDER BY date DESC LIMIT 1",
@@ -133,7 +133,7 @@ public class DataPointDaoImpl implements DataPointDao {
 	}
 
 	@Override
-	public DataPoint[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
+	public TradingDayPrices[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 
 		final String sql = String
 				.format(
@@ -152,11 +152,11 @@ public class DataPointDaoImpl implements DataPointDao {
 		session.getTransaction().commit();
 
 		if (result.isEmpty()) {
-			return new DataPoint[0];
+			return new TradingDayPrices[0];
 		}
 
 		// Convert result entries into the DataPoint
-		final DataPoint[] data = new DataPoint[result.size()];
+		final TradingDayPrices[] data = new TradingDayPrices[result.size()];
 		for (int i = 0; i < data.length; i++) {
 			data[i] = DataPointUtil.parseDataPoint( tickerSymbol, result.get( i ) );
 		}

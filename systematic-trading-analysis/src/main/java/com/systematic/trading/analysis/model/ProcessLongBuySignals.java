@@ -33,7 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.analysis.Equity;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
@@ -53,7 +53,7 @@ public class ProcessLongBuySignals {
 		this.filters = filters;
 	}
 
-	public List<BuySignal> process( final Equity equity, final DataPoint[] data, final Comparator<BuySignal> ordering ) {
+	public List<BuySignal> process( final Equity equity, final TradingDayPrices[] data, final Comparator<BuySignal> ordering ) {
 
 		final AnalysisLongBuySignals buyLong = new AnalysisLongBuySignals( configuration, filters );
 

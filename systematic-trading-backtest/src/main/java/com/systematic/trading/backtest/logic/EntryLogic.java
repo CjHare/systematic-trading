@@ -29,7 +29,7 @@ import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * Encapsulates the trading behaviour that decides whether an action shall be taken given a rolling
@@ -49,7 +49,7 @@ public interface EntryLogic {
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
 	 *         be placed.
 	 */
-	EquityOrder update( BrokerageFees fees, CashAccount cashAccount, DataPoint data );
+	EquityOrder update( BrokerageFees fees, CashAccount cashAccount, TradingDayPrices data );
 
 	/**
 	 * Action to take on the order when the triggering conditions are met, however there are

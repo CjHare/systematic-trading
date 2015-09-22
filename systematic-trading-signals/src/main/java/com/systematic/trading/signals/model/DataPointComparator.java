@@ -27,11 +27,11 @@ package com.systematic.trading.signals.model;
 
 import java.util.Comparator;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
-public class DataPointComparator implements Comparator<DataPoint> {
+public class DataPointComparator implements Comparator<TradingDayPrices> {
 	@Override
-	public int compare( final DataPoint a, final DataPoint b ) {
+	public int compare( final TradingDayPrices a, final TradingDayPrices b ) {
 		return a.getDate().compareTo( b.getDate() );
 	}
 }

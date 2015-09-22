@@ -28,7 +28,7 @@ package com.systematic.trading.maths.indicator;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 /**
@@ -78,22 +78,22 @@ public class AverageTrueRange {
         this.lookbackDivider = BigDecimal.valueOf(lookback);
     }
 
-    private BigDecimal trueRangeMethodOne(final DataPoint today) {
+    private BigDecimal trueRangeMethodOne(final TradingDayPrices today) {
         return today.getHighestPrice().subtract(today.getLowestPrice());
     }
 
-    private BigDecimal trueRangeMethodTwo(final DataPoint today, final DataPoint yesterday) {
+    private BigDecimal trueRangeMethodTwo(final TradingDayPrices today, final TradingDayPrices yesterday) {
         return today.getHighestPrice().subtract(yesterday.getClosingPrice());
     }
 
-    private BigDecimal trueRangeMethodThree(final DataPoint today, final DataPoint yesterday) {
+    private BigDecimal trueRangeMethodThree(final TradingDayPrices today, final TradingDayPrices yesterday) {
         return today.getLowestPrice().subtract(yesterday.getClosingPrice());
     }
 
     /**
      * @return highest value of the three true range methods.
      */
-    private BigDecimal getTrueRange(final DataPoint today, final DataPoint yesterday) {
+    private BigDecimal getTrueRange(final TradingDayPrices today, final TradingDayPrices yesterday) {
         final BigDecimal one = trueRangeMethodOne(today);
         final BigDecimal two = trueRangeMethodTwo(today, yesterday);
         final BigDecimal three = trueRangeMethodThree(today, yesterday);
@@ -120,7 +120,7 @@ public class AverageTrueRange {
      * @param closePrices ordered chronologically, from oldest to youngest (most recent first).
      * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
      */
-    public BigDecimal[] atr(final DataPoint[] data) throws TooFewDataPoints {
+    public BigDecimal[] atr(final TradingDayPrices[] data) throws TooFewDataPoints {
 
         // Need at least one RSI value
         if (data.length < lookback + 1) {

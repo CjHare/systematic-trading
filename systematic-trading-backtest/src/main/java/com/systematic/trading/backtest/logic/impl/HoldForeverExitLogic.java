@@ -28,7 +28,7 @@ package com.systematic.trading.backtest.logic.impl;
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * One half of the buy and hold forever strategy.
@@ -38,7 +38,7 @@ import com.systematic.trading.data.DataPoint;
 public class HoldForeverExitLogic implements ExitLogic {
 
 	@Override
-	public EquityOrder update( final BrokerageTransaction broker, final DataPoint data ) {
+	public EquityOrder update( final BrokerageTransaction broker, final TradingDayPrices data ) {
 		// There's never an order to place :. return null
 		return null;
 	}

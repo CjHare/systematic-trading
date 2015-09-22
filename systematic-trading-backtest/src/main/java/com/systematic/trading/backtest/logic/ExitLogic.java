@@ -27,7 +27,7 @@ package com.systematic.trading.backtest.logic;
 
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.order.EquityOrder;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * Encapsulates the trading behaviour that decides whether an action shall be taken given a rolling
@@ -45,5 +45,5 @@ public interface ExitLogic {
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
 	 *         be placed.
 	 */
-	EquityOrder update( BrokerageTransaction broker, DataPoint data );
+	EquityOrder update( BrokerageTransaction broker, TradingDayPrices data );
 }

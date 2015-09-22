@@ -46,7 +46,7 @@ import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * Tests the Cash Account component of the simulation class.
@@ -74,11 +74,11 @@ public class SimulationEntryLogicTest {
 	@Mock
 	private ExitLogic exit;
 
-	private DataPoint[] createUnorderedDataPoints() {
-		final DataPoint[] unordered = new DataPoint[UNORDERED_DATE.length];
+	private TradingDayPrices[] createUnorderedDataPoints() {
+		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
 
 		for (int i = 0; i < unordered.length; i++) {
-			unordered[i] = mock( DataPoint.class );
+			unordered[i] = mock( TradingDayPrices.class );
 			when( unordered[i].getDate() ).thenReturn( UNORDERED_DATE[i] );
 			when( unordered[i].toString() ).thenReturn( UNORDERED_DATE[i].toString() );
 		}
@@ -86,8 +86,8 @@ public class SimulationEntryLogicTest {
 		return unordered;
 	}
 
-	private DataPoint[] createOrderedDataPoints( final DataPoint[] unordered ) {
-		final DataPoint[] ordered = new DataPoint[unordered.length];
+	private TradingDayPrices[] createOrderedDataPoints( final TradingDayPrices[] unordered ) {
+		final TradingDayPrices[] ordered = new TradingDayPrices[unordered.length];
 
 		ordered[0] = unordered[0];
 		ordered[1] = unordered[2];
@@ -104,14 +104,14 @@ public class SimulationEntryLogicTest {
 
 	@Test
 	public void runChronoligicallyOrderedDates() {
-		final DataPoint[] unorderedPoints = createUnorderedDataPoints();
+		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
 		final InOrder inOrder = inOrder( broker, funds, entry, exit );
 
 		final Simulation simulation = new Simulation( startDate, endDate, unorderedPoints, broker, funds, entry, exit );
 
 		simulation.run();
 
-		final DataPoint[] sortedPoints = createOrderedDataPoints( unorderedPoints );
+		final TradingDayPrices[] sortedPoints = createOrderedDataPoints( unorderedPoints );
 
 		for (int i = 0; i < sortedPoints.length; i++) {
 			inOrder.verify( entry ).update( broker, funds, sortedPoints[i] );
@@ -120,12 +120,12 @@ public class SimulationEntryLogicTest {
 
 	@Test
 	public void processOrder() throws OrderException {
-		final DataPoint[] sortedPoints = createOrderedDataPoints( createUnorderedDataPoints() );
+		final TradingDayPrices[] sortedPoints = createOrderedDataPoints( createUnorderedDataPoints() );
 		final Simulation simulation = new Simulation( startDate, endDate, sortedPoints, broker, funds, entry, exit );
 
 		final EquityOrder order = mock( EquityOrder.class );
-		when( order.areExecutionConditionsMet( any( DataPoint.class ) ) ).thenReturn( true );
-		when( order.isValid( any( DataPoint.class ) ) ).thenReturn( true );
+		when( order.areExecutionConditionsMet( any( TradingDayPrices.class ) ) ).thenReturn( true );
+		when( order.isValid( any( TradingDayPrices.class ) ) ).thenReturn( true );
 
 		when( entry.update( broker, funds, sortedPoints[1] ) ).thenReturn( order );
 

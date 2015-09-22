@@ -42,14 +42,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.data.stock.api.StockApi;
 import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.yahoo.data.DataPointImpl;
+import com.systematic.trading.signals.yahoo.data.TradingDayPricesImpl;
 import com.systematic.trading.signals.yahoo.util.HttpUtil;
 
 public class YahooStockApi implements StockApi {
@@ -60,6 +60,9 @@ public class YahooStockApi implements StockApi {
 	private static final String API_PART_THREE = "%22%20and%20endDate=%22";
 	private static final String API_PART_FOUR = "%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 
+	// Dividend API
+//	http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.dividendhistory%20where%20symbol=%22VGS.AX%22%20and%20startDate=%222015-01-01%22%20and%20endDate=%222015-02-01%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys
+	
 	private static final HttpUtil HTTP_UTILS = new HttpUtil();
 
 	private String getJsonUrl( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate )
@@ -80,8 +83,8 @@ public class YahooStockApi implements StockApi {
 		}
 	}
 
-	private DataPoint[] parseJson( final String tickerSymbol, final String result ) throws CannotRetrieveDataException {
-		List<DataPoint> data = new ArrayList<DataPoint>();
+	private TradingDayPrices[] parseJson( final String tickerSymbol, final String result ) throws CannotRetrieveDataException {
+		List<TradingDayPrices> data = new ArrayList<TradingDayPrices>();
 
 		try {
 			final JSONObject json = new JSONObject( result );
@@ -118,10 +121,10 @@ public class YahooStockApi implements StockApi {
 			throw new CannotRetrieveDataException( message, e );
 		}
 
-		return data.toArray( new DataPoint[0] );
+		return data.toArray( new TradingDayPrices[0] );
 	}
 
-	private DataPointImpl parseQuote( final String tickerSymbol, final JSONObject quote ) throws ParseException {
+	private TradingDayPricesImpl parseQuote( final String tickerSymbol, final JSONObject quote ) throws ParseException {
 
 		final String unparseDdate = quote.getString( "Date" );
 		final LocalDate date = LocalDate.from( DateTimeFormatter.ISO_LOCAL_DATE.parse( unparseDdate ) );
@@ -130,11 +133,11 @@ public class YahooStockApi implements StockApi {
 		final HighestPrice highestPrice = HighestPrice.valueOf( BigDecimal.valueOf( quote.getDouble( "High" ) ) );
 		final OpeningPrice openingPrice = OpeningPrice.valueOf( BigDecimal.valueOf( quote.getDouble( "Open" ) ) );
 
-		return new DataPointImpl( tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice );
+		return new TradingDayPricesImpl( tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice );
 	}
 
 	@Override
-	public DataPoint[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
+	public TradingDayPrices[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
 			final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 		final String uri = getJsonUrl( tickerSymbol, inclusiveStartDate, exclusiveEndDate );
 		LOG.info( String.format( "%s API call to: %s", tickerSymbol, uri ) );

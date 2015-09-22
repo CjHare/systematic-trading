@@ -33,7 +33,7 @@ import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * Placing an order to purchase an equity.
@@ -50,20 +50,20 @@ public class BuyVolumeTomorrowAtOpeningPriceOrder implements EquityOrder {
 	}
 
 	@Override
-	public boolean isValid( final DataPoint todaysTrading ) {
+	public boolean isValid( final TradingDayPrices todaysTrading ) {
 		// Never expire
 		return true;
 	}
 
 	@Override
-	public boolean areExecutionConditionsMet( final DataPoint todaysTrading ) {
+	public boolean areExecutionConditionsMet( final TradingDayPrices todaysTrading ) {
 		// Buy irrespective of the date or price
 		return true;
 	}
 
 	@Override
 	public void execute( final BrokerageFees fees, final BrokerageTransaction broker, final CashAccount cashAccount,
-			final DataPoint todaysTrade ) throws OrderException {
+			final TradingDayPrices todaysTrade ) throws OrderException {
 
 		final BigDecimal totalCost = broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
 		cashAccount.debit( totalCost, todaysTrade.getDate() );

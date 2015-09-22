@@ -28,7 +28,7 @@ package com.systematic.trading.maths.indicator;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
@@ -62,7 +62,7 @@ public class RelativeStrengthIndex {
 	 * @param closePrices ordered chronologically, from oldest to youngest (most recent first).
 	 * @throws TooFewDataPoints not enough closing prices to perform RSI calculations.
 	 */
-	public BigDecimal[] rsi( final DataPoint[] data ) throws TooFewDataPoints {
+	public BigDecimal[] rsi( final TradingDayPrices[] data ) throws TooFewDataPoints {
 
 		// Need at least one RSI value
 		if (data.length < lookback + 1) {

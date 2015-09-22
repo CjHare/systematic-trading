@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.analysis.event.ConsoleEventRecorder;
 import com.systematic.trading.analysis.model.ProcessLongBuySignals;
 import com.systematic.trading.analysis.view.DisplayBuySignals;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
@@ -91,7 +91,7 @@ public class TodaysBuySignals {
 		final Map<Equity, List<BuySignal>> buyLongSignals = new EnumMap<Equity, List<BuySignal>>( Equity.class );
 
 		for (final Equity equity : Equity.values()) {
-			final DataPoint[] dataPoints = getDataPoints( equity, startDate, endDate );
+			final TradingDayPrices[] dataPoints = getDataPoints( equity, startDate, endDate );
 			final List<BuySignal> signals = buyLong.process( equity, dataPoints, ORDER_BY_DATE );
 			buyLongSignals.put( equity, signals );
 			
@@ -122,10 +122,10 @@ public class TodaysBuySignals {
 		}
 	}
 
-	private static DataPoint[] getDataPoints( final Equity equity, final LocalDate startDate, final LocalDate endDate ) {
+	private static TradingDayPrices[] getDataPoints( final Equity equity, final LocalDate startDate, final LocalDate endDate ) {
 		final DataService service = DataServiceImpl.getInstance();
 		final String tickerSymbol = equity.getSymbol();
-		final DataPoint[] data = service.get( tickerSymbol, startDate, endDate );
+		final TradingDayPrices[] data = service.get( tickerSymbol, startDate, endDate );
 
 		LOG.info( String.format( "%s data points returned: %s", tickerSymbol, data == null ? null : data.length ) );
 

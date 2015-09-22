@@ -43,5 +43,5 @@ public interface DataService {
 	 * @return all the trading days data points, when none are available size if zero will be
 	 *         returned.
 	 */
-	DataPoint[] get( String tickerSymbol, LocalDate startDate, LocalDate endDate );
+	TradingDayPrices[] get( String tickerSymbol, LocalDate startDate, LocalDate endDate );
 }

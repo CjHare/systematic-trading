@@ -34,7 +34,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
@@ -86,7 +86,7 @@ public class TodaysStopLosses {
 
 		for (final EquityHeld equity : EquityHeld.values()) {
 			final String symbol = equity.getSymbol();
-			final DataPoint[] data = service.get( symbol, startDate, endDate );
+			final TradingDayPrices[] data = service.get( symbol, startDate, endDate );
 
 			// Correct the ordering from earliest to latest
 			Arrays.sort( data, new DataPointComparator() );

@@ -28,7 +28,7 @@ package com.systematic.trading.maths.indicator;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
@@ -53,7 +53,7 @@ public class StochasticPercentageK {
         this.lookback = lookback;
     }
 
-    public BigDecimal[] percentageK(final DataPoint[] data) {
+    public BigDecimal[] percentageK(final TradingDayPrices[] data) {
         final BigDecimal[] pK = new BigDecimal[data.length];
         LowestPrice lowestLow;
         HighestPrice highestHigh;
@@ -88,7 +88,7 @@ public class StochasticPercentageK {
         return highestHigh.getPrice().subtract(lowestLow.getPrice());
     }
 
-    private LowestPrice lowestLow(final DataPoint[] data, final int inclusiveStart) {
+    private LowestPrice lowestLow(final TradingDayPrices[] data, final int inclusiveStart) {
         LowestPrice contender, lowest = data[inclusiveStart].getLowestPrice();
 
         for (int i = inclusiveStart - lookback; i < inclusiveStart; i++) {
@@ -101,7 +101,7 @@ public class StochasticPercentageK {
         return lowest;
     }
 
-    private HighestPrice highestHigh(final DataPoint[] data, final int inclusiveStart) {
+    private HighestPrice highestHigh(final TradingDayPrices[] data, final int inclusiveStart) {
         HighestPrice contender, highest = data[inclusiveStart].getHighestPrice();
 
         for (int i = inclusiveStart - lookback; i < inclusiveStart; i++) {

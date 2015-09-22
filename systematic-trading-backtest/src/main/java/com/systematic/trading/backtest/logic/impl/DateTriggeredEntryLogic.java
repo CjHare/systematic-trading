@@ -39,7 +39,7 @@ import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.recorder.EventRecorder;
 
 /**
@@ -87,7 +87,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	}
 
 	@Override
-	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final DataPoint data ) {
+	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();
 

@@ -34,7 +34,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.order.EquityOrder;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * Testing the hold forever exit logic.
@@ -48,7 +48,7 @@ public class HoldForeverExitLogicTest {
 	private BrokerageTransaction broker;
 
 	@Mock
-	private DataPoint data;
+	private TradingDayPrices data;
 
 	@Test
 	public void update() {

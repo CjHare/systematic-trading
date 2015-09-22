@@ -23,32 +23,32 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths;
+package com.systematic.trading.data;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.data.DataPoint;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 
-public class DataPointImpl implements DataPoint {
+public class TradingDayPricesImpl implements TradingDayPrices {
 
+	private final String tickerSymbol;
 	private final LocalDate date;
-	private final OpeningPrice openingPrice;
+	private final ClosingPrice closingPrice;
 	private final LowestPrice lowestPrice;
 	private final HighestPrice highestPrice;
-	private final ClosingPrice closingPrice;
+	private final OpeningPrice openingPrice;
 
-	public DataPointImpl( final LocalDate date, final BigDecimal openingPrice, final BigDecimal lowestPrice,
-			final BigDecimal highestPrice, final BigDecimal closingPrice ) {
+	public TradingDayPricesImpl( final String tickerSymbol, final LocalDate date, final OpeningPrice openingPrice,
+			final LowestPrice lowestPrice, final HighestPrice highestPrice, final ClosingPrice closingPrice ) {
+		this.tickerSymbol = tickerSymbol;
 		this.date = date;
-		this.openingPrice = OpeningPrice.valueOf( openingPrice );
-		this.lowestPrice = LowestPrice.valueOf( lowestPrice );
-		this.highestPrice = HighestPrice.valueOf( highestPrice );
-		this.closingPrice = ClosingPrice.valueOf( closingPrice );
+		this.openingPrice = openingPrice;
+		this.closingPrice = closingPrice;
+		this.lowestPrice = lowestPrice;
+		this.highestPrice = highestPrice;
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class DataPointImpl implements DataPoint {
 
 	@Override
 	public String getTickerSymbol() {
-		return null;
+		return tickerSymbol;
 	}
 
 	@Override

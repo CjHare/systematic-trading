@@ -43,7 +43,7 @@ import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * Tests the Cash Account component of the simulation class.
@@ -71,11 +71,11 @@ public class SimulationCashAccountTest {
 	@Mock
 	private ExitLogic exit;
 
-	private DataPoint[] createUnorderedDataPoints() {
-		final DataPoint[] unordered = new DataPoint[UNORDERED_DATE.length];
+	private TradingDayPrices[] createUnorderedDataPoints() {
+		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
 
 		for (int i = 0; i < unordered.length; i++) {
-			unordered[i] = mock( DataPoint.class );
+			unordered[i] = mock( TradingDayPrices.class );
 			when( unordered[i].getDate() ).thenReturn( UNORDERED_DATE[i] );
 			when( unordered[i].toString() ).thenReturn( UNORDERED_DATE[i].toString() );
 		}
@@ -85,7 +85,7 @@ public class SimulationCashAccountTest {
 
 	@Test
 	public void runChronoligicallyOrderedDates() {
-		final DataPoint[] unorderedPoints = createUnorderedDataPoints();
+		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
 		final InOrder inOrder = inOrder( broker, funds, entry, exit );
 
 		final Simulation simulation = new Simulation( startDate, endDate, unorderedPoints, broker, funds, entry, exit );

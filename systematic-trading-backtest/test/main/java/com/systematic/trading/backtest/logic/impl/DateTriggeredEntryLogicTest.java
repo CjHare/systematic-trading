@@ -56,7 +56,7 @@ import com.systematic.trading.backtest.event.impl.PlaceOrderVolumeEvent;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.event.recorder.EventRecorder;
 
@@ -69,7 +69,7 @@ import com.systematic.trading.event.recorder.EventRecorder;
 public class DateTriggeredEntryLogicTest {
 
 	@Mock
-	private DataPoint data;
+	private TradingDayPrices data;
 
 	@Mock
 	private CashAccount cashAccount;

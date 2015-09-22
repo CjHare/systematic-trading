@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.data.DataPoint;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.RelativeStrengthIndex;
 
@@ -47,7 +47,7 @@ public class RelativeStrengthIndexSignals {
 		this.overbought = BigDecimal.valueOf( overbought );
 	}
 
-	public List<IndicatorSignal> calculate( final DataPoint[] data ) throws TooFewDataPoints {
+	public List<IndicatorSignal> calculate( final TradingDayPrices[] data ) throws TooFewDataPoints {
 		// 5 day RSI
 		final BigDecimal[] fiveDayRsi = new RelativeStrengthIndex( 5 ).rsi( data );
 
@@ -62,7 +62,7 @@ public class RelativeStrengthIndexSignals {
 		return intersection( fiveDayBuy, tenDayBuy );
 	}
 
-	protected List<IndicatorSignal> buySignals( final BigDecimal[] rsi, final DataPoint[] data ) {
+	protected List<IndicatorSignal> buySignals( final BigDecimal[] rsi, final TradingDayPrices[] data ) {
 		final List<IndicatorSignal> buySignals = new ArrayList<IndicatorSignal>();
 
 		// Skip the initial null entries from the RSI array
