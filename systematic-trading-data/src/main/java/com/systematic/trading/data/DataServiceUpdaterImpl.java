@@ -86,7 +86,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			try {
 
 				// Pull the data from the Stock API
-				final TradingDayPrices[] tradingData = api.getStockData( tickerSymbol, inclusiveStartDate, exclusiveEndDate );
+				final TradingDayPrices[] tradingData = api.getStockData( tickerSymbol, inclusiveStartDate,
+						exclusiveEndDate );
 
 				// Push to the data source
 				dao.create( tradingData );
@@ -109,23 +110,20 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			final LocalDate startDate, final LocalDate endDate ) {
 
 		final Period maximum = api.getMaximumDurationInSingleUpdate();
-		Period actual = Period.between( startDate, endDate );
-
 		final List<HistoryRetrievalRequest> requests = new ArrayList<HistoryRetrievalRequest>();
 
-		if (isDurationTooLong( maximum, actual )) {
+		if (isDurationTooLong( maximum, Period.between( startDate, endDate ) )) {
 
 			// Split up the requests for processing
 			LocalDate movedStartDate = startDate;
 			LocalDate movedEndDate = startDate.plus( maximum );
 
-			while (endDate.isAfter( movedEndDate )) {
+			while (endDate.isAfter( movedStartDate )) {
 
 				requests.add( new HistoryRetrievalRequest( tickerSymbol, movedStartDate, movedEndDate ) );
 
 				movedStartDate = movedEndDate;
 				movedEndDate = movedStartDate.plus( maximum );
-				actual = Period.between( movedStartDate, movedEndDate );
 			}
 
 		} else {

@@ -90,9 +90,9 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();
-
+		
 		if (isOrderTime( tradingDate )) {
-
+			
 			final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, data.getDate() );
 			final BigDecimal closingPrice = data.getClosingPrice().getPrice();
 			final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext ).divide(

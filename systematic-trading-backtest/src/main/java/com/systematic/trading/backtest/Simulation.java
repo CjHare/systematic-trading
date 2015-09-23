@@ -129,7 +129,7 @@ public class Simulation {
 	 * @return the outstanding orders to carry over to tomorrow.
 	 */
 	private List<EquityOrder> processTradingData( final TradingDayPrices tradingDataToday, List<EquityOrder> orders ) {
-
+		
 		// Only when there is trading data for today
 		if (tradingDataToday != null) {
 
