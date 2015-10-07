@@ -26,6 +26,7 @@
 package com.systematic.trading.event.recorder;
 
 import com.systematic.trading.event.Event;
+import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
 
 /**
  * Records interesting events.
@@ -35,6 +36,17 @@ import com.systematic.trading.event.Event;
  * @author CJ Hare
  */
 public interface EventRecorder {
+	/**
+	 * Display the header for the event recorder.
+	 */
+	void header();
+
+	/**
+	 * Displays the details for a single ticker symbol prior to output of events.
+	 * 
+	 * @param range information summary of the trading data used.
+	 */
+	void header( TickerSymbolTradingRange range );
 
 	/**
 	 * Records an event to the interest source.

@@ -23,38 +23,42 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.util;
+package com.systematic.trading.event.recorder.data;
 
-import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.TradingDayPricesImpl;
-import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestPrice;
-import com.systematic.trading.data.price.LowestPrice;
-import com.systematic.trading.data.price.OpeningPrice;
+/**
+ * Details for the trading range, per a specific ticker symbol.
+ * 
+ * @author CJ Hare
+ */
+public interface TickerSymbolTradingRange {
 
-public class DataPointUtil {
+	/**
+	 * The ticker symbol for the equity.
+	 * 
+	 * @return symbol as defined by the underlying source for the trading data.
+	 */
+	String getTickerSymbol();
 
-	public static TradingDayPrices parseDataPoint( final String tickerSymbol, final Object uncast ) {
-		final Object[] data = (Object[]) uncast;
-		final LocalDate date = parseDate( data[0] );
+	/**
+	 * Marks the beginning of the trading data range.
+	 * 
+	 * @return Inclusive date for the beginning of the data set.
+	 */
+	LocalDate getStartDate();
 
-		final OpeningPrice openingPrice = OpeningPrice.valueOf( parseBigDecimal( data[3] ) );
-		final LowestPrice lowestPrice = LowestPrice.valueOf( parseBigDecimal( data[1] ) );
-		final HighestPrice highestPrice = HighestPrice.valueOf( parseBigDecimal( data[2] ) );
-		final ClosingPrice closingPrice = ClosingPrice.valueOf( parseBigDecimal( data[4] ) );
+	/**
+	 * Marks the end of the trading data range.
+	 * 
+	 * @return Inclusive date for the end of the data set.
+	 */
+	LocalDate getEndDate();
 
-		return new TradingDayPricesImpl( tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice );
-	}
-
-	private static LocalDate parseDate( final Object o ) {
-		return Date.valueOf( o.toString() ).toLocalDate();
-	}
-
-	private static BigDecimal parseBigDecimal( final Object o ) {
-		return BigDecimal.valueOf( Double.valueOf( o.toString() ) );
-	}
+	/**
+	 * Retrieve the number of trading days data.
+	 * 
+	 * @return the number of trading data points within the defined start and end dates.
+	 */
+	int getNumberOfTradingDays();
 }

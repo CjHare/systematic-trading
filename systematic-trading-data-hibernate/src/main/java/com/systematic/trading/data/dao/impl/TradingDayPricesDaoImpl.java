@@ -30,17 +30,22 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.exception.ConstraintViolationException;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.dao.DataPointDao;
-import com.systematic.trading.data.util.DataPointUtil;
+import com.systematic.trading.data.dao.TradingDayPricesDao;
+import com.systematic.trading.data.util.TradingDayPricesUtil;
 import com.systematic.trading.data.util.HibernateUtil;
 
-public class DataPointDaoImpl implements DataPointDao {
+public class TradingDayPricesDaoImpl implements TradingDayPricesDao {
+
+	private static final Logger LOG = LogManager.getLogger( TradingDayPricesDaoImpl.class );
 
 	@Override
 	public void create( final TradingDayPrices[] data ) {
@@ -48,7 +53,17 @@ public class DataPointDaoImpl implements DataPointDao {
 		final Transaction tx = session.beginTransaction();
 
 		for (final TradingDayPrices d : data) {
-			create( d, session );
+			try {
+				create( d, session );
+			} catch (final HibernateException e) {
+
+				if (e.getCause() instanceof ConstraintViolationException) {
+					LOG.info( e.getMessage() );
+				} else {
+					throw e;
+				}
+
+			}
 		}
 
 		tx.commit();
@@ -129,7 +144,7 @@ public class DataPointDaoImpl implements DataPointDao {
 		}
 
 		// Convert result entries into the DataPoint
-		return DataPointUtil.parseDataPoint( tickerSymbol, result.get( 0 ) );
+		return TradingDayPricesUtil.parseDataPoint( tickerSymbol, result.get( 0 ) );
 	}
 
 	@Override
@@ -158,7 +173,7 @@ public class DataPointDaoImpl implements DataPointDao {
 		// Convert result entries into the DataPoint
 		final TradingDayPrices[] data = new TradingDayPrices[result.size()];
 		for (int i = 0; i < data.length; i++) {
-			data[i] = DataPointUtil.parseDataPoint( tickerSymbol, result.get( i ) );
+			data[i] = TradingDayPricesUtil.parseDataPoint( tickerSymbol, result.get( i ) );
 		}
 
 		return data;

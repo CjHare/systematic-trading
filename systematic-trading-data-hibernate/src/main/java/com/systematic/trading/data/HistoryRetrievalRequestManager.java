@@ -54,22 +54,26 @@ public class HistoryRetrievalRequestManager {
 	 */
 	public void create( final List<HistoryRetrievalRequest> requests ) {
 
-		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		final Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = null;
-
-		tx = session.beginTransaction();
 
 		for (final HistoryRetrievalRequest request : requests) {
 			try {
+				tx = session.beginTransaction();
 				session.save( request );
+				tx.commit();
 			} catch (final HibernateException e) {
-				LOG.info(
-						String.format( "Duplicate entry for %s %s %s", request.getTickerSymbol(),
-								request.getInclusiveStartDate(), request.getExclusiveEndDate() ), e );
+				// May already have the record inserted
+				LOG.info( String.format( "Failed to save request for %s %s %s", request.getTickerSymbol(),
+						request.getInclusiveStartDate(), request.getExclusiveEndDate() ) );
+
+				if (tx != null && tx.isActive()) {
+					tx.rollback();
+				}
 			}
 		}
 
-		tx.commit();
+		session.close();
 	}
 
 	public List<HistoryRetrievalRequest> get( final String tickerSymbol ) {

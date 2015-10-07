@@ -30,8 +30,8 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.data.dao.DataPointDao;
-import com.systematic.trading.data.dao.impl.DataPointDaoImpl;
+import com.systematic.trading.data.dao.TradingDayPricesDao;
+import com.systematic.trading.data.dao.impl.TradingDayPricesDaoImpl;
 import com.systematic.trading.data.stock.api.StockApi;
 import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.yahoo.YahooStockApi;
@@ -47,7 +47,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		return INSTANCE;
 	}
 
-	private final DataPointDao dao = new DataPointDaoImpl();
+	private final TradingDayPricesDao dao = new TradingDayPricesDaoImpl();
 	private final StockApi api = new YahooStockApi();
 
 	private DataServiceUpdaterImpl() {

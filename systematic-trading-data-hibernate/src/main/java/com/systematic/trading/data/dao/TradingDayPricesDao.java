@@ -34,7 +34,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public interface DataPointDao {
+public interface TradingDayPricesDao {
 
 	/**
 	 * Inserts a new DataPoint into it's appropriate ticker symbol table.

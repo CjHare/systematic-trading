@@ -27,6 +27,7 @@ package com.systematic.trading.analysis.event;
 
 import com.systematic.trading.event.Event;
 import com.systematic.trading.event.recorder.EventRecorder;
+import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
 
 /**
  * Simple output to the console for the events.
@@ -43,5 +44,17 @@ public class ConsoleEventRecorder implements EventRecorder {
 	public void record( final Event event ) {
 
 		System.out.println( event );
+	}
+
+	@Override
+	public void eventSummary() {
+	}
+
+	@Override
+	public void header() {
+	}
+
+	@Override
+	public void header( final TickerSymbolTradingRange range ) {
 	}
 }

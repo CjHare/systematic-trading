@@ -31,9 +31,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
@@ -44,6 +41,7 @@ import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
+import com.systematic.trading.backtest.event.recorder.data.impl.BacktestTickerSymbolTradingRange;
 import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleEventRecorder;
 import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleNetWorthRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
@@ -58,6 +56,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.event.recorder.EventRecorder;
 import com.systematic.trading.event.recorder.NetWorthRecorder;
+import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
 
 /**
  * Performs back testing of trading logic over a historical data set.
@@ -67,8 +66,6 @@ import com.systematic.trading.event.recorder.NetWorthRecorder;
  * @author CJ Hare
  */
 public class Backtest {
-
-	private static final Logger LOG = LogManager.getLogger( Backtest.class );
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
@@ -84,15 +81,15 @@ public class Backtest {
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
 
 		final String tickerSymbol = "^GSPC"; 	// S&P 500 - price return index
-		// final String tickerSymbol = "USD";
-
-		LOG.info( String.format( "Including data set for %s from %s to %s", tickerSymbol, startDate, endDate ) );
 
 		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
 		updateService.get( tickerSymbol, startDate, endDate );
 
 		final DataService service = DataServiceImpl.getInstance();
 		final TradingDayPrices[] tradingData = service.get( tickerSymbol, startDate, endDate );
+
+		final TickerSymbolTradingRange tickerSymbolTradingRange = new BacktestTickerSymbolTradingRange( tickerSymbol,
+				startDate, endDate, tradingData.length );
 
 		// TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
 
@@ -125,15 +122,22 @@ public class Backtest {
 
 		final Simulation simulation = new Simulation( startDate, endDate, tradingData, broker, cashAccount, entry, exit );
 
-		// TODO metrics, time in / out market etc
-
-		// TODO metrics of accounts, cash flow, share purchases
+		
+		// TODO number of each brokerage type event
+		// TODO number of each order type event
+		// TODO total amount earned in interest
+		// TODO total amount on brokerage fees		
+		// TODO % actual return
+		// TODO & yearly return
+		
+		eventRecorder.header();
+		eventRecorder.header( tickerSymbolTradingRange );
 
 		simulation.run();
 
 		HibernateUtil.getSessionFactory().close();
 
-		((BacktestConsoleEventRecorder) eventRecorder).eventSummary();
+		eventRecorder.eventSummary();
 
 		final NetWorthRecorder netWorth = new BacktestConsoleNetWorthRecorder( broker, tradingData, cashAccount );
 		netWorth.netWorthSummary();

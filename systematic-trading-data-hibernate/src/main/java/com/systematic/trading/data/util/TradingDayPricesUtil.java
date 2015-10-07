@@ -23,29 +23,38 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data;
+package com.systematic.trading.data.util;
 
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 
-import com.systematic.trading.data.dao.TradingDayPricesDao;
-import com.systematic.trading.data.dao.impl.TradingDayPricesDaoImpl;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.TradingDayPricesImpl;
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.LowestPrice;
+import com.systematic.trading.data.price.OpeningPrice;
 
-public class DataServiceImpl implements DataService {
+public class TradingDayPricesUtil {
 
-	private static final DataServiceImpl INSTANCE = new DataServiceImpl();
+	public static TradingDayPrices parseDataPoint( final String tickerSymbol, final Object uncast ) {
+		final Object[] data = (Object[]) uncast;
+		final LocalDate date = parseDate( data[0] );
 
-	public static DataService getInstance() {
-		return INSTANCE;
+		final OpeningPrice openingPrice = OpeningPrice.valueOf( parseBigDecimal( data[3] ) );
+		final LowestPrice lowestPrice = LowestPrice.valueOf( parseBigDecimal( data[1] ) );
+		final HighestPrice highestPrice = HighestPrice.valueOf( parseBigDecimal( data[2] ) );
+		final ClosingPrice closingPrice = ClosingPrice.valueOf( parseBigDecimal( data[4] ) );
+
+		return new TradingDayPricesImpl( tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice );
 	}
 
-	private final TradingDayPricesDao dao = new TradingDayPricesDaoImpl();
-
-	private DataServiceImpl() {
+	private static LocalDate parseDate( final Object o ) {
+		return Date.valueOf( o.toString() ).toLocalDate();
 	}
 
-	@Override
-	public TradingDayPrices[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
-		return dao.get( tickerSymbol, startDate, endDate );
+	private static BigDecimal parseBigDecimal( final Object o ) {
+		return BigDecimal.valueOf( Double.valueOf( o.toString() ) );
 	}
-
 }
