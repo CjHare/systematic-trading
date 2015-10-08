@@ -117,16 +117,14 @@ public class Backtest {
 				openingDate, weekly );
 
 		// ETF Broker with Bell Direct fees
-		final BrokerageFeeStructure fees = new BellDirectFeeStructure( MATH_CONTEXT );
-		final Brokerage broker = new SingleEquityClassBroker( fees, equityType, eventRecorder, MATH_CONTEXT );
+		final BrokerageFeeStructure tradingFeeStructure = new BellDirectFeeStructure( MATH_CONTEXT );
+		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, eventRecorder, MATH_CONTEXT );
 
 		final Simulation simulation = new Simulation( startDate, endDate, tradingData, broker, cashAccount, entry, exit );
 
 		
-		// TODO number of each brokerage type event
+
 		// TODO number of each order type event
-		// TODO total amount earned in interest
-		// TODO total amount on brokerage fees		
 		// TODO % actual return
 		// TODO & yearly return
 		

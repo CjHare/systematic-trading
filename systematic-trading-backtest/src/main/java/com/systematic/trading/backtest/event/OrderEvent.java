@@ -33,5 +33,13 @@ import com.systematic.trading.event.Event;
  * @author CJ Hare
  */
 public interface OrderEvent extends Event {
-
+	/**
+	 * All the different event types for equity orders.
+	 * 
+	 * @author CJ Hare
+	 */
+	public enum EquityOrderType {
+		ENTRY,
+		EXIT
+	}
 }

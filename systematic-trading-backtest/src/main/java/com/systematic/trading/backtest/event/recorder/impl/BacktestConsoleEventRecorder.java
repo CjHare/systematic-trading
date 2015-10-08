@@ -34,7 +34,6 @@ import java.util.List;
 import com.systematic.trading.backtest.event.BrokerageEvent;
 import com.systematic.trading.backtest.event.CashEvent;
 import com.systematic.trading.backtest.event.OrderEvent;
-import com.systematic.trading.backtest.event.impl.CashAccountEvent;
 import com.systematic.trading.event.Event;
 import com.systematic.trading.event.recorder.EventRecorder;
 import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
@@ -50,7 +49,7 @@ public class BacktestConsoleEventRecorder implements EventRecorder {
 	private final List<CashEvent> cash;
 	private final List<OrderEvent> orders;
 
-	private static final DecimalFormat FORMAT_TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
 	public BacktestConsoleEventRecorder() {
 		this.brokerage = new ArrayList<BrokerageEvent>();
@@ -77,20 +76,26 @@ public class BacktestConsoleEventRecorder implements EventRecorder {
 	@Override
 	public void eventSummary() {
 		System.out.println( "\n" );
-
 		System.out.println( "#####################" );
 		System.out.println( "### Event Summary ###" );
 		System.out.println( "#####################" );
 
-		System.out.println( "" );
-		System.out.println( String.format( "# Brokerage events: %s", brokerage.size() ) );
+		summariseOrderEvents( orders );
+		summariseCashAccount( cash );
+		summariseBrokerage( brokerage );
+	}
 
-		System.out.println( "" );
+	private void summariseOrderEvents( final List<OrderEvent> orders ) {
+
+		System.out.println( "\n=== Order events ===" );
 		System.out.println( String.format( "# Order events: %s", orders.size() ) );
+	}
 
-		System.out.println( "" );
-		System.out.println( "Cash Account events" );
+	private void summariseCashAccount( final List<CashEvent> cash ) {
+		BigDecimal sumDeposit = BigDecimal.ZERO;
+		BigDecimal sumInterest = BigDecimal.ZERO;
 		int creditCount = 0, debitCount = 0, depositCount = 0, interestCount = 0;
+
 		for (final CashEvent event : cash) {
 			switch (event.getType()) {
 				case CREDIT:
@@ -101,47 +106,53 @@ public class BacktestConsoleEventRecorder implements EventRecorder {
 					break;
 				case DEPOSIT:
 					depositCount++;
+					sumDeposit = sumDeposit.add( event.getAmount() );
 					break;
 				case INTEREST:
 					interestCount++;
+					sumInterest = sumInterest.add( event.getAmount() );
 					break;
 				default:
-					throw new IllegalArgumentException( String.format( "Cash Account event type %s not catered for",
+					throw new IllegalArgumentException( String.format( "Cash event type %s is unexpected",
 							event.getType() ) );
 			}
 		}
 
+		System.out.println( "\n=== Cash events ===" );
 		System.out.println( String.format( "# Cash account credit events: %s", creditCount ) );
 		System.out.println( String.format( "# Cash account debit events: %s", debitCount ) );
 		System.out.println( String.format( "# Cash account interest events: %s", interestCount ) );
 		System.out.println( String.format( "# Cash account deposit events: %s", depositCount ) );
-
-		summariseCashAccount( cash );
+		System.out.println( String.format( "Total interest earned: %s", sumInterest ) );
+		System.out.println( String.format( "Total amount deposited: %s", sumDeposit ) );
 	}
 
-	private void summariseCashAccount( final List<CashEvent> cash ) {
-		BigDecimal depositSum = BigDecimal.ZERO;
+	private void summariseBrokerage( final List<BrokerageEvent> brokerage ) {
+		BigDecimal sumFees = BigDecimal.ZERO;
+		int buyCount = 0;
+		int sellCount = 0;
 
-		for (final CashEvent event : cash) {
+		for (final BrokerageEvent event : brokerage) {
+			sumFees = sumFees.add( event.getTransactionFee() );
+
 			switch (event.getType()) {
-				case CREDIT:
+				case BUY:
+					buyCount++;
 					break;
-				case DEBIT:
-					break;
-				case DEPOSIT:
-					final BigDecimal amount = BigDecimal.valueOf( Double.valueOf( ((CashAccountEvent) event)
-							.getAmount() ) );
-					depositSum = depositSum.add( amount );
-					break;
-				case INTEREST:
+				case SELL:
+					sellCount++;
 					break;
 				default:
-					throw new IllegalArgumentException( String.format( "Cash Account event type %s not catered for",
+					throw new IllegalArgumentException( String.format( "Brokerage event type %s is unexpected",
 							event.getType() ) );
 			}
 		}
 
-		System.out.println( String.format( "Total Cash deposit amount: %s", depositSum ) );
+		System.out.println( "\n=== Brokerage events ===" );
+		System.out.println( String.format( "# Brokerage events: %s", brokerage.size() ) );
+		System.out.println( String.format( "# Sell events: %s", sellCount ) );
+		System.out.println( String.format( "# Buy events: %s", buyCount ) );
+		System.out.println( String.format( "Total amount paid in brokerage: %s", sumFees ) );
 	}
 
 	@Override
@@ -150,7 +161,7 @@ public class BacktestConsoleEventRecorder implements EventRecorder {
 		System.out.println( "#######################" );
 		System.out.println( "### Backtest Events ###" );
 		System.out.println( "#######################" );
-		System.out.println( "" );
+		System.out.println( "\n" );
 	}
 
 	@Override
@@ -162,10 +173,8 @@ public class BacktestConsoleEventRecorder implements EventRecorder {
 		final long daysBetween = ChronoUnit.DAYS.between( range.getStartDate(), range.getEndDate() );
 		final double percentageTradingDays = ((double) range.getNumberOfTradingDays() / daysBetween) * 100;
 
-		System.out
-				.println( String.format( "# trading days: %s over %s days (%s percentage trading days)",
-						range.getNumberOfTradingDays(), daysBetween,
-						FORMAT_TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
+		System.out.println( String.format( "# trading days: %s over %s days (%s percentage trading days)",
+				range.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
 
 		System.out.println( "\n" );
 	}

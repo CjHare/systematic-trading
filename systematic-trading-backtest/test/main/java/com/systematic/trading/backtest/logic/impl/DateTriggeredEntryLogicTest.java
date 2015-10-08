@@ -50,7 +50,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.impl.EquityOrderType;
+import com.systematic.trading.backtest.event.OrderEvent.EquityOrderType;
 import com.systematic.trading.backtest.event.impl.PlaceOrderTotalCostEvent;
 import com.systematic.trading.backtest.event.impl.PlaceOrderVolumeEvent;
 import com.systematic.trading.backtest.order.EquityOrder;

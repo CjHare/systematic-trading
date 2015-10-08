@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.event.impl;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 
 import com.systematic.trading.backtest.event.BrokerageEvent;
@@ -38,68 +37,59 @@ import com.systematic.trading.backtest.event.BrokerageEvent;
  */
 public class BrokerageAccountEvent implements BrokerageEvent {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES;
-
-	static {
-		TWO_DECIMAL_PLACES = new DecimalFormat();
-		TWO_DECIMAL_PLACES.setMaximumFractionDigits( 2 );
-		TWO_DECIMAL_PLACES.setMinimumFractionDigits( 2 );
-		TWO_DECIMAL_PLACES.setGroupingUsed( false );
-	}
-
-	public enum BrokerageAccountEventType {
-		BUY( "Buy" ),
-		SELL( "Sell" );
-
-		private final String display;
-
-		private BrokerageAccountEventType( final String display ) {
-			this.display = display;
-		}
-
-		public String getDisplay() {
-			return display;
-		}
-	}
-
-	private final String amount;
-	private final String balanceBefore;
-	private final String balanceAfter;
+	private final BigDecimal equityAmount;
+	private final BigDecimal startingEquityBalance;
+	private final BigDecimal endEquityBalance;
 	private final LocalDate transactionDate;
 	private final BrokerageAccountEventType type;
+	private final BigDecimal transactionFee;
+	private final BigDecimal transactionValue;
 
-	public BrokerageAccountEvent( final BigDecimal balanceBefore, final BigDecimal balanceAfter,
-			final BigDecimal amount, final BrokerageAccountEventType type, final LocalDate transactionDate ) {
-		this.balanceBefore = TWO_DECIMAL_PLACES.format( balanceBefore );
-		this.balanceAfter = TWO_DECIMAL_PLACES.format( balanceAfter );
-		this.amount = TWO_DECIMAL_PLACES.format( amount );
+	public BrokerageAccountEvent( final BigDecimal startingEquityBalance, final BigDecimal endEquityBalance,
+			final BigDecimal amount, final BrokerageAccountEventType type, final LocalDate transactionDate,
+			final BigDecimal transactionValue, final BigDecimal transactionFee ) {
+		this.startingEquityBalance = startingEquityBalance;
+		this.endEquityBalance = endEquityBalance;
+		this.equityAmount = amount;
 		this.transactionDate = transactionDate;
 		this.type = type;
+		this.transactionValue = transactionValue;
+		this.transactionFee = transactionFee;
 	}
 
 	@Override
 	public String toString() {
-		return String.format( "Brokerage Account - %s: %s - balance %s -> %s on %s", type.getDisplay(), amount,
-				balanceBefore, balanceAfter, transactionDate );
+		return String.format( "Brokerage Account - %s: %s - equity balance %s -> %s on %s", type.getDisplay(),
+				equityAmount, startingEquityBalance, endEquityBalance, transactionDate );
 	}
 
-	public String getAmount() {
-		return amount;
+	public BigDecimal getEquityAmount() {
+		return equityAmount;
 	}
 
-	public String getFundsBefore() {
-		return balanceBefore;
+	public BigDecimal getStartingEquityBalance() {
+		return startingEquityBalance;
 	}
 
-	public String getFundsAfter() {
-		return balanceAfter;
+	public BigDecimal getEndEquityBalance() {
+		return endEquityBalance;
 	}
 
 	public LocalDate getTransactionDate() {
 		return transactionDate;
 	}
 
+	@Override
 	public BrokerageAccountEventType getType() {
 		return type;
+	}
+
+	@Override
+	public BigDecimal getTransactionFee() {
+		return transactionFee;
+	}
+
+	public BigDecimal getTransactionValue() {
+		return transactionValue;
 	}
 }

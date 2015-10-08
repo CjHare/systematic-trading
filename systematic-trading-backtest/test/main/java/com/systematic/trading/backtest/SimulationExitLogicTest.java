@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,7 +35,6 @@ import java.time.Month;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -100,22 +98,6 @@ public class SimulationExitLogicTest {
 		ordered[8] = unordered[1];
 
 		return ordered;
-	}
-
-	@Test
-	public void runChronoligicallyOrderedDates() {
-		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
-		final InOrder inOrder = inOrder( broker, funds, entry, exit );
-
-		final Simulation simulation = new Simulation( startDate, endDate, unorderedPoints, broker, funds, entry, exit );
-
-		simulation.run();
-
-		final TradingDayPrices[] sortedPoints = createOrderedDataPoints( unorderedPoints );
-
-		for (int i = 0; i < sortedPoints.length; i++) {
-			inOrder.verify( exit ).update( broker, sortedPoints[i] );
-		}
 	}
 
 	@Test

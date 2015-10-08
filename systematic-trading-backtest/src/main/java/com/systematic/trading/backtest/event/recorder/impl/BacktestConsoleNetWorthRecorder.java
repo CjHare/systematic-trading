@@ -59,7 +59,7 @@ public class BacktestConsoleNetWorthRecorder implements NetWorthRecorder {
 		final BigDecimal lastClosingPrice = latest.getClosingPrice().getPrice();
 		final BigDecimal holdingValue = balance.multiply( lastClosingPrice );
 
-		System.out.println( "\n\n=== Net Worth Summary ===\n" );
+		System.out.println( "\n=== Net Worth Summary ===" );
 		System.out.println( String.format( "Number of equities: %s", balance ) );
 		System.out.println( String.format( "Last closing price: %s", lastClosingPrice ) );
 		System.out.println( String.format( "Holdings value: %s", holdingValue ) );

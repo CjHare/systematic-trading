@@ -32,8 +32,8 @@ import java.time.LocalDate;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.backtest.event.BrokerageEvent.BrokerageAccountEventType;
 import com.systematic.trading.backtest.event.impl.BrokerageAccountEvent;
-import com.systematic.trading.backtest.event.impl.BrokerageAccountEvent.BrokerageAccountEventType;
 import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
 import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
@@ -54,7 +54,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	private final EquityClass type;
 
 	/** Number of equities held. */
-	private BigDecimal balance;
+	private BigDecimal equityBalance;
 
 	/** Deals with keeping track of the number of trades on a rolling basis. */
 	private final MonthlyRollingCounter monthlyTradeCounter;
@@ -70,7 +70,7 @@ public class SingleEquityClassBroker implements Brokerage {
 		this.fees = fees;
 		this.type = type;
 		this.monthlyTradeCounter = new MonthlyRollingCounter();
-		this.balance = BigDecimal.ZERO;
+		this.equityBalance = BigDecimal.ZERO;
 		this.mathContext = mathContext;
 		this.event = recorder;
 	}
@@ -80,44 +80,44 @@ public class SingleEquityClassBroker implements Brokerage {
 
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), mathContext );
 		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
-		final BigDecimal transactionCost = fees.calculateFee( tradeValue, type, tradesThisMonth );
+		final BigDecimal tradeFee = fees.calculateFee( tradeValue, type, tradesThisMonth );
 
 		// Adding the equity purchases to the balance
-		final BigDecimal beforeBalance = balance;
-		balance = balance.add( volume.getVolume(), mathContext );
+		final BigDecimal startingEquityBalance = equityBalance;
+		equityBalance = equityBalance.add( volume.getVolume(), mathContext );
 
 		// Record of the buy transaction
-		event.record( new BrokerageAccountEvent( beforeBalance, balance, volume.getVolume(),
-				BrokerageAccountEventType.BUY, tradeDate ) );
+		event.record( new BrokerageAccountEvent( startingEquityBalance, equityBalance, volume.getVolume(),
+				BrokerageAccountEventType.BUY, tradeDate, tradeValue, tradeFee ) );
 
-		return tradeValue.add( transactionCost, mathContext );
+		return tradeValue.add( tradeFee, mathContext );
 	}
 
 	@Override
 	public BigDecimal sell( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate )
 			throws InsufficientEquitiesException {
 
-		final BigDecimal beforeBalance = balance;
-		balance = balance.subtract( volume.getVolume(), mathContext );
+		final BigDecimal startingEquityBalance = equityBalance;
+		equityBalance = equityBalance.subtract( volume.getVolume(), mathContext );
 
-		if (balance.compareTo( BigDecimal.ZERO ) < 0) {
+		if (equityBalance.compareTo( BigDecimal.ZERO ) < 0) {
 			throw new InsufficientEquitiesException();
 		}
 
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), mathContext );
 		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
-		final BigDecimal transactionCost = fees.calculateFee( tradeValue, type, tradesThisMonth );
+		final BigDecimal tradeFee = fees.calculateFee( tradeValue, type, tradesThisMonth );
 
-		// Record of the buy transaction
-		event.record( new BrokerageAccountEvent( beforeBalance, balance, volume.getVolume(),
-				BrokerageAccountEventType.SELL, tradeDate ) );
+		// Record of the sell transaction
+		event.record( new BrokerageAccountEvent( startingEquityBalance, equityBalance, volume.getVolume(),
+				BrokerageAccountEventType.SELL, tradeDate, tradeValue, tradeFee ) );
 
-		return tradeValue.subtract( transactionCost, mathContext );
+		return tradeValue.subtract( tradeFee, mathContext );
 	}
 
 	@Override
 	public BigDecimal getEquityBalance() {
-		return balance;
+		return equityBalance;
 	}
 
 	@Override
@@ -127,6 +127,6 @@ public class SingleEquityClassBroker implements Brokerage {
 	}
 
 	public BigDecimal getBalance() {
-		return balance;
+		return equityBalance;
 	}
 }

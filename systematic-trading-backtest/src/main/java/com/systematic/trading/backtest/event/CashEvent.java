@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.event;
 
+import java.math.BigDecimal;
+
 import com.systematic.trading.event.Event;
 
 /**
@@ -61,4 +63,11 @@ public interface CashEvent extends Event {
 	 * @return general category the cash event falls within.
 	 */
 	CashEventType getType();
+
+	/**
+	 * Value of the cash event.
+	 * 
+	 * @return amount of cash involved in the event.
+	 */
+	BigDecimal getAmount();
 }

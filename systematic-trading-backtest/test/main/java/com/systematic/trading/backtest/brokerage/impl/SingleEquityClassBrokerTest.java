@@ -34,7 +34,6 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 
 import org.hamcrest.Description;
@@ -46,8 +45,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.backtest.event.BrokerageEvent.BrokerageAccountEventType;
 import com.systematic.trading.backtest.event.impl.BrokerageAccountEvent;
-import com.systematic.trading.backtest.event.impl.BrokerageAccountEvent.BrokerageAccountEventType;
 import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.data.price.Price;
@@ -61,14 +60,6 @@ import com.systematic.trading.event.recorder.EventRecorder;
 @RunWith(MockitoJUnitRunner.class)
 public class SingleEquityClassBrokerTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
-	private static final DecimalFormat TWO_DECIMAL_PLACES;
-
-	static {
-		TWO_DECIMAL_PLACES = new DecimalFormat();
-		TWO_DECIMAL_PLACES.setMaximumFractionDigits( 2 );
-		TWO_DECIMAL_PLACES.setMinimumFractionDigits( 2 );
-		TWO_DECIMAL_PLACES.setGroupingUsed( false );
-	}
 
 	@Mock
 	private BrokerageFeeStructure fees;
@@ -196,17 +187,17 @@ public class SingleEquityClassBrokerTest {
 
 	class IsBrokerageAccountEventArgument extends ArgumentMatcher<BrokerageAccountEvent> {
 
-		private final String volume;
-		private final String balanceBefore;
-		private final String balanceAfter;
+		private final BigDecimal volume;
+		private final BigDecimal balanceBefore;
+		private final BigDecimal balanceAfter;
 		private final LocalDate transactionDate;
 		private final BrokerageAccountEventType type;
 
 		public IsBrokerageAccountEventArgument( final BigDecimal balanceBefore, final BigDecimal balanceAfter,
 				final BigDecimal volume, final BrokerageAccountEventType type, final LocalDate transactionDate ) {
-			this.balanceBefore = TWO_DECIMAL_PLACES.format( balanceBefore );
-			this.balanceAfter = TWO_DECIMAL_PLACES.format( balanceAfter );
-			this.volume = TWO_DECIMAL_PLACES.format( volume );
+			this.balanceBefore = balanceBefore;
+			this.balanceAfter = balanceAfter;
+			this.volume = volume;
 			this.transactionDate = transactionDate;
 			this.type = type;
 		}
@@ -216,8 +207,9 @@ public class SingleEquityClassBrokerTest {
 
 			if (argument instanceof BrokerageAccountEvent) {
 				final BrokerageAccountEvent event = (BrokerageAccountEvent) argument;
-				return volume.equals( event.getAmount() ) && balanceBefore.equals( event.getFundsBefore() )
-						&& balanceAfter.equals( event.getFundsAfter() )
+				return volume.equals( event.getEquityAmount() )
+						&& balanceBefore.equals( event.getStartingEquityBalance() )
+						&& balanceAfter.equals( event.getEndEquityBalance() )
 						&& transactionDate.equals( event.getTransactionDate() ) && type == event.getType();
 			}
 

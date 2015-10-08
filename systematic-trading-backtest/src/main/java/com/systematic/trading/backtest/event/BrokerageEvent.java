@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.event;
 
+import java.math.BigDecimal;
+
 import com.systematic.trading.event.Event;
 
 /**
@@ -34,4 +36,32 @@ import com.systematic.trading.event.Event;
  */
 public interface BrokerageEvent extends Event {
 
+	public enum BrokerageAccountEventType {
+		BUY( "Buy" ),
+		SELL( "Sell" );
+
+		private final String display;
+
+		private BrokerageAccountEventType( final String display ) {
+			this.display = display;
+		}
+
+		public String getDisplay() {
+			return display;
+		}
+	}
+
+	/**
+	 * Retrieves the classification for the brokerage event.
+	 * 
+	 * @return general category the event falls within.
+	 */
+	BrokerageAccountEventType getType();
+
+	/**
+	 * Brokers fee for performing the trade.
+	 * 
+	 * @return amount paid to the broker to facilitate the trade.
+	 */
+	BigDecimal getTransactionFee();
 }

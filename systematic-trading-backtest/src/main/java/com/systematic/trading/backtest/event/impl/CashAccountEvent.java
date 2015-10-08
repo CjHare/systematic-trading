@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.event.impl;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 
 import com.systematic.trading.backtest.event.CashEvent;
@@ -38,26 +37,17 @@ import com.systematic.trading.backtest.event.CashEvent;
  */
 public class CashAccountEvent implements CashEvent {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES;
-
-	static {
-		TWO_DECIMAL_PLACES = new DecimalFormat();
-		TWO_DECIMAL_PLACES.setMaximumFractionDigits( 2 );
-		TWO_DECIMAL_PLACES.setMinimumFractionDigits( 2 );
-		TWO_DECIMAL_PLACES.setGroupingUsed( false );
-	}
-
-	private final String amount;
-	private final String fundsBefore;
-	private final String fundsAfter;
+	private final BigDecimal amount;
+	private final BigDecimal fundsBefore;
+	private final BigDecimal fundsAfter;
 	private final LocalDate transactionDate;
 	private final CashEventType type;
 
 	public CashAccountEvent( final BigDecimal fundsBefore, final BigDecimal fundsAfter, final BigDecimal amount,
 			final CashEventType type, final LocalDate transactionDate ) {
-		this.fundsBefore = TWO_DECIMAL_PLACES.format( fundsBefore );
-		this.fundsAfter = TWO_DECIMAL_PLACES.format( fundsAfter );
-		this.amount = TWO_DECIMAL_PLACES.format( amount );
+		this.fundsBefore = fundsBefore;
+		this.fundsAfter = fundsAfter;
+		this.amount = amount;
 		this.transactionDate = transactionDate;
 		this.type = type;
 	}
@@ -68,15 +58,16 @@ public class CashAccountEvent implements CashEvent {
 				fundsAfter, transactionDate );
 	}
 
-	public String getAmount() {
+	@Override
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public String getFundsBefore() {
+	public BigDecimal getFundsBefore() {
 		return fundsBefore;
 	}
 
-	public String getFundsAfter() {
+	public BigDecimal getFundsAfter() {
 		return fundsAfter;
 	}
 

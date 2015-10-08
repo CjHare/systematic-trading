@@ -36,7 +36,6 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -61,14 +60,6 @@ import com.systematic.trading.event.recorder.EventRecorder;
 @RunWith(MockitoJUnitRunner.class)
 public class CalculatedDailyPaidMonthlyCashAccountTest {
 	private final MathContext mc = MathContext.DECIMAL64;
-	private static final DecimalFormat TWO_DECIMAL_PLACES;
-
-	static {
-		TWO_DECIMAL_PLACES = new DecimalFormat();
-		TWO_DECIMAL_PLACES.setMaximumFractionDigits( 2 );
-		TWO_DECIMAL_PLACES.setMinimumFractionDigits( 2 );
-		TWO_DECIMAL_PLACES.setGroupingUsed( false );
-	}
 
 	@Mock
 	private InterestRate rate;
@@ -89,8 +80,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account.credit( credit, date );
 
 		assertEquals( credit, account.getBalance() );
-		verify( event )
-				.record( isCashAccountEvent( BigDecimal.ZERO, credit, credit, CashEventType.CREDIT, date ) );
+		verify( event ).record( isCashAccountEvent( BigDecimal.ZERO, credit, credit, CashEventType.CREDIT, date ) );
 	}
 
 	@Test
@@ -106,8 +96,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account.deposit( deposit, date );
 
 		assertEquals( deposit, account.getBalance() );
-		verify( event ).record(
-				isCashAccountEvent( BigDecimal.ZERO, deposit, deposit, CashEventType.DEPOSIT, date ) );
+		verify( event ).record( isCashAccountEvent( BigDecimal.ZERO, deposit, deposit, CashEventType.DEPOSIT, date ) );
 	}
 
 	@Test
@@ -125,9 +114,10 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 		assertEquals( openingFunds.subtract( debit ), account.getBalance() );
 
-		verify( event ).record(
-				isCashAccountEvent( openingFunds, openingFunds.subtract( debit, mc ), debit,
-						CashEventType.DEBIT, date ) );
+		verify( event )
+				.record(
+						isCashAccountEvent( openingFunds, openingFunds.subtract( debit, mc ), debit,
+								CashEventType.DEBIT, date ) );
 	}
 
 	@Test(expected = InsufficientFundsException.class)
@@ -164,7 +154,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		assertEquals( openingFunds.add( interest ), account.getBalance() );
 
 		verify( event ).record(
-				isCashAccountEvent( openingFunds, BigDecimal.valueOf( 101 ), BigDecimal.valueOf( 1 ),
+				isCashAccountEvent( openingFunds, BigDecimal.valueOf( 101.000045 ), BigDecimal.valueOf( 1.000045 ),
 						CashEventType.INTEREST, tradingDate ) );
 	}
 
@@ -234,17 +224,17 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 	class IsCashAccounEventArgument extends ArgumentMatcher<CashAccountEvent> {
 
-		private final String amount;
-		private final String fundsBefore;
-		private final String fundsAfter;
+		private final BigDecimal amount;
+		private final BigDecimal fundsBefore;
+		private final BigDecimal fundsAfter;
 		private final LocalDate transactionDate;
 		private final CashEventType type;
 
 		public IsCashAccounEventArgument( final BigDecimal fundsBefore, final BigDecimal fundsAfter,
 				final BigDecimal amount, final CashEventType type, final LocalDate transactionDate ) {
-			this.fundsBefore = TWO_DECIMAL_PLACES.format( fundsBefore );
-			this.fundsAfter = TWO_DECIMAL_PLACES.format( fundsAfter );
-			this.amount = TWO_DECIMAL_PLACES.format( amount );
+			this.fundsBefore = fundsBefore;
+			this.fundsAfter = fundsAfter;
+			this.amount = amount;
 			this.transactionDate = transactionDate;
 			this.type = type;
 		}
