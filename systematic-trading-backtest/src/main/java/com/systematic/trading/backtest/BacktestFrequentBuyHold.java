@@ -65,7 +65,7 @@ import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
  * 
  * @author CJ Hare
  */
-public class Backtest {
+public class BacktestFrequentBuyHold {
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
@@ -90,8 +90,6 @@ public class Backtest {
 
 		final TickerSymbolTradingRange tickerSymbolTradingRange = new BacktestTickerSymbolTradingRange( tickerSymbol,
 				startDate, endDate, tradingData.length );
-
-		// TODO 1st question) returns of $100 weekly DCA via ETF vs Retail fund
 
 		final EquityClass equityType = EquityClass.STOCK;
 
@@ -118,16 +116,15 @@ public class Backtest {
 
 		// ETF Broker with Bell Direct fees
 		final BrokerageFeeStructure tradingFeeStructure = new BellDirectFeeStructure( MATH_CONTEXT );
-		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, eventRecorder, MATH_CONTEXT );
+		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, eventRecorder,
+				MATH_CONTEXT );
 
 		final Simulation simulation = new Simulation( startDate, endDate, tradingData, broker, cashAccount, entry, exit );
-
-		
 
 		// TODO number of each order type event
 		// TODO % actual return
 		// TODO & yearly return
-		
+
 		eventRecorder.header();
 		eventRecorder.header( tickerSymbolTradingRange );
 
