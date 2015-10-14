@@ -34,7 +34,7 @@ import java.time.temporal.ChronoUnit;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.backtest.brokerage.fees.impl.BellDirectFeeStructure;
+import com.systematic.trading.backtest.brokerage.fees.impl.VanguardRetailFeeStructure;
 import com.systematic.trading.backtest.brokerage.impl.SingleEquityClassBroker;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.cash.InterestRate;
@@ -115,7 +115,7 @@ public class BacktestFrequentBuyHold {
 				openingDate, weekly );
 
 		// ETF Broker with Bell Direct fees
-		final BrokerageFeeStructure tradingFeeStructure = new BellDirectFeeStructure( MATH_CONTEXT );
+		final BrokerageFeeStructure tradingFeeStructure = new VanguardRetailFeeStructure( MATH_CONTEXT );
 		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, eventRecorder,
 				MATH_CONTEXT );
 

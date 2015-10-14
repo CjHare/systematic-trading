@@ -114,7 +114,7 @@ public class BacktestTimingBuyHold {
 		final CashAccount cashAccount = new RegularDepositCashAccountDecorator( oneHundredDollars, underlyingAccount,
 				openingDate, weekly );
 
-		// ETF Broker with Bell Direct fees
+		// ETF Broker with CmC markets fees
 		final BrokerageFeeStructure tradingFeeStructure = new CmcMarketsFeeStructure( MATH_CONTEXT );
 		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, eventRecorder,
 				MATH_CONTEXT );
