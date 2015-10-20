@@ -46,8 +46,8 @@ import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleEventR
 import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleNetWorthRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.backtest.logic.impl.DateTriggeredEntryLogic;
 import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
+import com.systematic.trading.backtest.logic.impl.RsiWithMacdEntryLogic;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
@@ -97,16 +97,15 @@ public class BacktestTimingBuyHold {
 
 		final LocalDate openingDate = getEarliestDate( tradingData );
 
-		// Weekly purchase of $100
-		final Period weekly = Period.ofDays( 7 );
-		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		final EntryLogic entry = new DateTriggeredEntryLogic( oneHundredDollars, eventRecorder, equityType,
-				openingDate, weekly, MATH_CONTEXT );
+		// Indicator triggered purchases
+		final EntryLogic entry = new RsiWithMacdEntryLogic( eventRecorder, equityType, MATH_CONTEXT );
 
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();
 
 		// Cash account with flat interest of 1.5% - $100 deposit weekly, zero starting balance
+		final Period weekly = Period.ofDays( 7 );
+		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
 		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), MATH_CONTEXT );
 		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
 		final CashAccount underlyingAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds,

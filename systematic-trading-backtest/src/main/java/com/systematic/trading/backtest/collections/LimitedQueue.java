@@ -23,13 +23,29 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.analysis.event;
+package com.systematic.trading.backtest.collections;
 
-import com.systematic.trading.event.Event;
+import java.util.LinkedList;
 
 /**
+ * Queue that keep the size to a limit.
+ * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexEvent implements Event {
+public class LimitedQueue<E> extends LinkedList<E> {
+	private static final long serialVersionUID = 1L;
+	private int limit;
 
+	public LimitedQueue( int limit ) {
+		this.limit = limit;
+	}
+
+	@Override
+	public boolean add( E o ) {
+		super.add( o );
+		while (size() > limit) {
+			super.remove();
+		}
+		return true;
+	}
 }

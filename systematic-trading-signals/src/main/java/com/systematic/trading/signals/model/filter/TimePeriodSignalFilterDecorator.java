@@ -26,61 +26,58 @@
 package com.systematic.trading.signals.model.filter;
 
 import java.time.LocalDate;
-import java.util.Collections;
+import java.time.Period;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.IndicatorSignalDateComparator;
 
 /**
- * Signal generated when there is a RSI and MACD filter on the same day.
+ * Decorator to apply to filters that excludes signals dated outside a time period from the latest
+ * trading day date.
+ * <p/>
+ * Restriction on date relative to the latest data point is useful when analysing years of data and
+ * only being interested in recent signals.
  * 
  * @author CJ Hare
  */
-public class RsiWithMacdSignalFilter implements SignalFilter {
+public class TimePeriodSignalFilterDecorator implements SignalFilter {
 
-	private static final IndicatorSignalDateComparator ORDER_BY_DATE = new IndicatorSignalDateComparator();
+	/** Signal filter that has the date restriction applied. */
+	private final SignalFilter filter;
+
+	/** Period of time from the latest date to accept signals. */
+	private final Period inclusiveWithin;
+
+	public TimePeriodSignalFilterDecorator( final SignalFilter filter, final Period withinInclusive ) {
+		this.filter = filter;
+		this.inclusiveWithin = withinInclusive;
+	}
 
 	@Override
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
-			final Comparator<BuySignal> ordering ) {
-		validateInput( signals );
+			final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
 
-		final SortedSet<BuySignal> passedSignals = new TreeSet<BuySignal>( ordering );
+		final SortedSet<BuySignal> signalSet = filter.apply( signals, ordering, latestTradingDate );
 
-		final List<IndicatorSignal> macd = signals.get( IndicatorSignalType.MACD );
-		Collections.sort( macd, ORDER_BY_DATE );
+		final Set<BuySignal> toRemove = new HashSet<BuySignal>();
 
-		final List<IndicatorSignal> rsi = signals.get( IndicatorSignalType.RSI );
-		Collections.sort( rsi, ORDER_BY_DATE );
+		for (final BuySignal signal : signalSet) {
 
-		for (final IndicatorSignal macdSignal : macd) {
-
-			final LocalDate date = macdSignal.getDate();
-			for (final IndicatorSignal rsiSignal : rsi) {
-
-				if (date.equals( rsiSignal.getDate() )) {
-					passedSignals.add( new BuySignal( date ) );
-					break;
-				}
+			// When the date is outside the desired range remove the signal
+			if (Period.between( latestTradingDate, signal.getDate() ).plus( inclusiveWithin ).isNegative()) {
+				toRemove.add( signal );
 			}
 		}
 
-		return passedSignals;
-	}
+		signalSet.removeAll( toRemove );
 
-	private void validateInput( final Map<IndicatorSignalType, List<IndicatorSignal>> signals ) {
-		if (signals.get( IndicatorSignalType.MACD ) == null) {
-			throw new IllegalArgumentException( "Expecting a non-null MACD list" );
-		}
-		if (signals.get( IndicatorSignalType.RSI ) == null) {
-			throw new IllegalArgumentException( "Expecting a non-null MACD list" );
-		}
+		return signalSet;
 	}
 }

@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.signals.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -71,11 +72,12 @@ public class AnalysisLongBuySignals {
 		indicatorSignals.put( IndicatorSignalType.RSI, rsi.calculate( data ) );
 		indicatorSignals.put( IndicatorSignalType.STOCHASTIC, stochastic.calculate( data ) );
 
-		// Apply the rule filters
+		final LocalDate latestTradingDate = data[data.length - 1].getDate();
 		final List<BuySignal> signals = new ArrayList<BuySignal>();
 
+		// Apply the rule filters
 		for (final SignalFilter filter : filters) {
-			signals.addAll( filter.apply( indicatorSignals, ordering ) );
+			signals.addAll( filter.apply( indicatorSignals, ordering, latestTradingDate ) );
 		}
 
 		return signals;

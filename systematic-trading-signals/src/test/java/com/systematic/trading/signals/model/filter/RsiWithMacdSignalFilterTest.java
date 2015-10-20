@@ -49,8 +49,9 @@ import com.systematic.trading.signals.model.BuySignalDateComparator;
  */
 public class RsiWithMacdSignalFilterTest {
 
-	private final RsiWithMacdSignalFilter filter = new RsiWithMacdSignalFilter();
+	private final RsiMacdOnSameDaySignalFilter filter = new RsiMacdOnSameDaySignalFilter();
 	private final BuySignalDateComparator ordering = new BuySignalDateComparator();
+	private final LocalDate latestTradingDate = null;
 
 	@Test
 	public void rsiAndMacdSameDay() {
@@ -66,7 +67,7 @@ public class RsiWithMacdSignalFilterTest {
 		signals.put( IndicatorSignalType.MACD, macd );
 		signals.put( IndicatorSignalType.RSI, rsi );
 
-		final SortedSet<BuySignal> results = filter.apply( signals, ordering );
+		final SortedSet<BuySignal> results = filter.apply( signals, ordering, latestTradingDate );
 
 		assertNotNull( "Expecting a non-null result set", results );
 		assertEquals( "Expecting a single filtered signal", 1, results.size() );
@@ -88,7 +89,7 @@ public class RsiWithMacdSignalFilterTest {
 		signals.put( IndicatorSignalType.MACD, macd );
 		signals.put( IndicatorSignalType.RSI, rsi );
 
-		final SortedSet<BuySignal> results = filter.apply( signals, ordering );
+		final SortedSet<BuySignal> results = filter.apply( signals, ordering, latestTradingDate );
 
 		assertNotNull( "Expecting a non-null result set", results );
 		assertEquals( "Expecting no filtered signal", 0, results.size() );
@@ -106,7 +107,7 @@ public class RsiWithMacdSignalFilterTest {
 		signals.put( IndicatorSignalType.MACD, macd );
 		signals.put( IndicatorSignalType.RSI, rsi );
 
-		final SortedSet<BuySignal> results = filter.apply( signals, ordering );
+		final SortedSet<BuySignal> results = filter.apply( signals, ordering, latestTradingDate );
 
 		assertNotNull( "Expecting a non-null result set", results );
 		assertEquals( "Expecting no filtered signal", 0, results.size() );
@@ -118,7 +119,7 @@ public class RsiWithMacdSignalFilterTest {
 		signals.put( IndicatorSignalType.MACD, new ArrayList<IndicatorSignal>() );
 		signals.put( IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>() );
 
-		final SortedSet<BuySignal> results = filter.apply( signals, ordering );
+		final SortedSet<BuySignal> results = filter.apply( signals, ordering, latestTradingDate );
 
 		assertNotNull( "Expecting a non-null result set", results );
 		assertEquals( "Expecting no filtered signals", 0, results.size() );
@@ -129,7 +130,7 @@ public class RsiWithMacdSignalFilterTest {
 		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
 		signals.put( IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>() );
 
-		filter.apply( signals, ordering );
+		filter.apply( signals, ordering, latestTradingDate );
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -137,7 +138,7 @@ public class RsiWithMacdSignalFilterTest {
 		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
 		signals.put( IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>() );
 
-		filter.apply( signals, ordering );
+		filter.apply( signals, ordering, latestTradingDate );
 	}
 
 }

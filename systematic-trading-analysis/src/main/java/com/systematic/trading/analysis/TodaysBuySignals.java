@@ -35,16 +35,14 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.analysis.event.ConsoleEventRecorder;
 import com.systematic.trading.analysis.model.ProcessLongBuySignals;
 import com.systematic.trading.analysis.view.DisplayBuySignals;
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
-import com.systematic.trading.event.recorder.EventRecorder;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
@@ -52,7 +50,7 @@ import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.configuration.AllSignalsConfiguration;
 import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
-import com.systematic.trading.signals.model.filter.RsiWithMacdSignalFilter;
+import com.systematic.trading.signals.model.filter.RsiMacdOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class TodaysBuySignals {
@@ -82,9 +80,7 @@ public class TodaysBuySignals {
 		final LongBuySignalConfiguration configuration = new AllSignalsConfiguration( rsi, macd, stochastic );
 
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		filters.add( new RsiWithMacdSignalFilter() );
-
-		final EventRecorder eventRecorder = new ConsoleEventRecorder();
+		filters.add( new RsiMacdOnSameDaySignalFilter() );
 
 		final ProcessLongBuySignals buyLong = new ProcessLongBuySignals( configuration, filters );
 
@@ -94,8 +90,8 @@ public class TodaysBuySignals {
 			final TradingDayPrices[] dataPoints = getDataPoints( equity, startDate, endDate );
 			final List<BuySignal> signals = buyLong.process( equity, dataPoints, ORDER_BY_DATE );
 			buyLongSignals.put( equity, signals );
-			
-			//TODO event
+
+			// TODO event
 		}
 
 		displayBuySignals( buyLongSignals );
@@ -122,7 +118,8 @@ public class TodaysBuySignals {
 		}
 	}
 
-	private static TradingDayPrices[] getDataPoints( final Equity equity, final LocalDate startDate, final LocalDate endDate ) {
+	private static TradingDayPrices[] getDataPoints( final Equity equity, final LocalDate startDate,
+			final LocalDate endDate ) {
 		final DataService service = DataServiceImpl.getInstance();
 		final String tickerSymbol = equity.getSymbol();
 		final TradingDayPrices[] data = service.get( tickerSymbol, startDate, endDate );

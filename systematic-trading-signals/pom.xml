@@ -11,6 +11,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<junit.version>4.12</junit.version>
+		<mockito.version>1.10.19</mockito.version>
 
 		<systematic.trading.maths.version>0.0.1-SNAPSHOT</systematic.trading.maths.version>
 	</properties>
@@ -29,6 +30,12 @@
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
