@@ -25,7 +25,9 @@
  */
 package com.systematic.trading.backtest.logic.impl;
 
+import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +37,13 @@ import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.collections.LimitedQueue;
+import com.systematic.trading.backtest.event.OrderEvent.EquityOrderType;
+import com.systematic.trading.backtest.event.impl.PlaceOrderTotalCostEvent;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
+import com.systematic.trading.backtest.util.LimitedLinkedList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.recorder.EventRecorder;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
@@ -79,18 +85,26 @@ public class RsiWithMacdEntryLogic implements EntryLogic {
 	/** The trading data as it rolled through the set. */
 	private final Queue<TradingDayPrices> tradingData;
 
+	/** Signals that have already been submitted as orders. */
+	private final Queue<BuySignal> previousSignals;
+
+	/** Minimum value of the trade excluding the fee amount */
+	private final BigDecimal minimumTradeValue;
+
 	/**
 	 * @param event recorder of the order creation.
 	 * @param interval time between creation of entry orders.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-
-	public RsiWithMacdEntryLogic( final EventRecorder event, final EquityClass equityType, final MathContext mathContext ) {
+	public RsiWithMacdEntryLogic( final EventRecorder event, final EquityClass equityType,
+			final BigDecimal minimumTradeValue, final MathContext mathContext ) {
 		this.event = event;
 		this.mathContext = mathContext;
 		this.type = equityType;
+		this.minimumTradeValue = minimumTradeValue;
 
 		// TODO remove magic numbers
+		this.previousSignals = new LimitedLinkedList<BuySignal>( 20 );
 
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
@@ -124,46 +138,42 @@ public class RsiWithMacdEntryLogic implements EntryLogic {
 			return null;
 		}
 
-		// TODO filter buy signals by date, i.e. exclude when outside range
-		// TODO correct analyse to use the filters as a sequential processing
-
 		if (!signals.isEmpty()) {
-			System.err.println( "BUY " + data.getDate() );
-			
-			System.err.println( "BUY " + signals.size() );
-			
+
+			// Only one order at a day
+			final BuySignal signal = signals.get( 0 );
+
+			if (!previousSignals.contains( signal )) {
+
+				if (cashAccount.getBalance().compareTo( minimumTradeValue ) > 0) {
+
+					// Order placed, put on the ignore list
+					previousSignals.add( signal );
+
+					// Everything into the trade
+					final BigDecimal amount = cashAccount.getBalance();
+
+					return createOrder( fees, amount, data );
+				}
+			}
 		}
 
-
-		// TODO use signals to buy
-
-		// TODO amount?????
-
-		// TODO indicators
-
-		// final LocalDate tradingDate = data.getDate();
-		//
-		// if (isOrderTime( tradingDate )) {
-		//
-		// final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type,
-		// data.getDate()
-		// );
-		// final BigDecimal closingPrice = data.getClosingPrice().getPrice();
-		// final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost,
-		// mathContext
-		// ).divide(
-		// closingPrice, mathContext );
-		//
-		// if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
-		// lastOrder = tradingDate.minus( Period.ofDays( 1 ) );
-		// event.record( new PlaceOrderTotalCostEvent( amount, tradingDate,
-		// EquityOrderType.ENTRY )
-		// );
-		// return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, mathContext );
-		// }
-		// }
-
 		return null;
+	}
+
+	private EquityOrder createOrder( final BrokerageFees fees, final BigDecimal amount, final TradingDayPrices data ) {
+
+		final LocalDate tradingDate = data.getDate();
+		final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, tradingDate );
+		final BigDecimal closingPrice = data.getClosingPrice().getPrice();
+		final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext ).divide(
+				closingPrice, mathContext );
+
+		if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
+			event.record( new PlaceOrderTotalCostEvent( amount, tradingDate, EquityOrderType.ENTRY ) );
+		}
+
+		return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, mathContext );
 	}
 
 	@Override

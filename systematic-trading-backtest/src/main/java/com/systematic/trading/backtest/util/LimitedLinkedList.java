@@ -23,23 +23,30 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.model;
+package com.systematic.trading.backtest.util;
 
-import java.time.LocalDate;
+import java.util.LinkedList;
 
-public class BuySignal {
-	private final LocalDate date;
+/**
+ * @author CJ Hare
+ */
+public class LimitedLinkedList<E> extends LinkedList<E> {
+	/** Serialisation ID */
+	private static final long serialVersionUID = 1L;
 
-	public BuySignal( final LocalDate date ) {
-		this.date = date;
-	}
+	/** Maximum size of the underlying linked list */
+	private final int limit;
 
-	public LocalDate getDate() {
-		return date;
+	public LimitedLinkedList( final int limit ) {
+		this.limit = limit;
 	}
 
 	@Override
-	public boolean equals( final Object o ) {
-		return o instanceof BuySignal && ((BuySignal) o).getDate().equals( date );
+	public boolean add( final E o ) {
+		super.add( o );
+		while (size() > limit) {
+			super.remove();
+		}
+		return true;
 	}
 }

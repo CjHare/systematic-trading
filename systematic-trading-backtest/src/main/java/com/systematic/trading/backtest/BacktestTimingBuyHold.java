@@ -98,7 +98,8 @@ public class BacktestTimingBuyHold {
 		final LocalDate openingDate = getEarliestDate( tradingData );
 
 		// Indicator triggered purchases
-		final EntryLogic entry = new RsiWithMacdEntryLogic( eventRecorder, equityType, MATH_CONTEXT );
+		final EntryLogic entry = new RsiWithMacdEntryLogic( eventRecorder, equityType, BigDecimal.valueOf( 1000 ),
+				MATH_CONTEXT );
 
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();
