@@ -23,46 +23,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.analysis.model;
+package com.systematic.trading.signals.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.analysis.Equity;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.signals.AnalysisBuySignals;
-import com.systematic.trading.signals.model.AnalysisLongBuySignals;
-import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
-import com.systematic.trading.signals.model.filter.SignalFilter;
 
-public class ProcessLongBuySignals {
+/**
+ * Compares TradingDayPrices, ordering by date.
+ * 
+ * @author CJ Hare
+ */
+public class TradingDayPricesDateOrder implements Comparator<TradingDayPrices> {
 
-	private static final Logger LOG = LogManager.getLogger( ProcessLongBuySignals.class );
-
-	private final LongBuySignalConfiguration configuration;
-
-	private final List<SignalFilter> filters;
-
-	public ProcessLongBuySignals( final LongBuySignalConfiguration configuration, final List<SignalFilter> filters ) {
-		this.configuration = configuration;
-		this.filters = filters;
-	}
-
-	public List<BuySignal> process( final Equity equity, final TradingDayPrices[] data ) {
-
-		final AnalysisBuySignals buyLong = new AnalysisLongBuySignals( configuration, filters );
-
-		try {
-			return buyLong.analyse( data );
-		} catch (final TooFewDataPoints e) {
-			LOG.error( String.format( "Too few data points for: %s", equity.getSymbol() ), e );
-		}
-
-		return new ArrayList<BuySignal>( 0 );
+	@Override
+	public int compare( final TradingDayPrices a, final TradingDayPrices b ) {
+		return a.getDate().compareTo( b.getDate() );
 	}
 }

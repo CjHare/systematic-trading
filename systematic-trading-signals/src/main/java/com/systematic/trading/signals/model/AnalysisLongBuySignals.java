@@ -28,13 +28,13 @@ package com.systematic.trading.signals.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
+import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
@@ -43,9 +43,16 @@ import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
 import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
-public class AnalysisLongBuySignals {
+public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
-	private static final DataPointComparator DATA_POINT_COMPARATOR = new DataPointComparator();
+	/** Most number of trading day data used by the signal generators. */
+	private static final int MAXIMUM_NUMBER_OF_TRADING_DAYS = 50;
+
+	/** Default ordering of signals. */
+	private static final BuySignalDateComparator BUY_SIGNAL_ORDER_BY_DATE = new BuySignalDateComparator();
+
+	/** Default ordering of prices. */
+	private static final TradingDayPricesDateOrder TRADING_DAY_ORDER_BY_DATE = new TradingDayPricesDateOrder();
 
 	private final RelativeStrengthIndexSignals rsi;
 	private final MovingAveragingConvergeDivergenceSignals macd;
@@ -59,11 +66,11 @@ public class AnalysisLongBuySignals {
 		this.filters = filters;
 	}
 
-	public List<BuySignal> analyse( final TradingDayPrices[] data, final Comparator<BuySignal> ordering )
-			throws TooFewDataPoints {
+	@Override
+	public List<BuySignal> analyse( final TradingDayPrices[] data ) throws TooFewDataPoints {
 
 		// Correct the ordering from earliest to latest
-		Arrays.sort( data, DATA_POINT_COMPARATOR );
+		Arrays.sort( data, TRADING_DAY_ORDER_BY_DATE );
 
 		// Generate the indicator signals
 		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = new EnumMap<IndicatorSignalType, List<IndicatorSignal>>(
@@ -77,10 +84,15 @@ public class AnalysisLongBuySignals {
 
 		// Apply the rule filters
 		for (final SignalFilter filter : filters) {
-			signals.addAll( filter.apply( indicatorSignals, ordering, latestTradingDate ) );
+			signals.addAll( filter.apply( indicatorSignals, BUY_SIGNAL_ORDER_BY_DATE, latestTradingDate ) );
 		}
 
 		return signals;
+	}
+
+	@Override
+	public int getMaximumNumberOfTradingDays() {
+		return MAXIMUM_NUMBER_OF_TRADING_DAYS;
 	}
 
 }

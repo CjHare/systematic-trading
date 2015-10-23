@@ -28,8 +28,6 @@ package com.systematic.trading.backtest.logic.impl;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
@@ -43,32 +41,18 @@ import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
-import com.systematic.trading.backtest.util.LimitedLinkedList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.recorder.EventRecorder;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
-import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
-import com.systematic.trading.signals.model.AnalysisLongBuySignals;
+import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.BuySignalDateComparator;
-import com.systematic.trading.signals.model.configuration.AllSignalsConfiguration;
-import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
-import com.systematic.trading.signals.model.filter.RsiMacdOnSameDaySignalFilter;
-import com.systematic.trading.signals.model.filter.SignalFilter;
-import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 
 /**
- * Entry logic using a combination of the stochastic, relative strength index and moving average,
- * convergence, divergence indicators.
+ * Entry logic using indicator signals to decide when to create orders.
  * 
  * @author CJ Hare
  */
-public class RsiWithMacdEntryLogic implements EntryLogic {
-
-	/** Default ordering of signals. */
-	private static final BuySignalDateComparator ORDER_BY_DATE = new BuySignalDateComparator();
+public class SignalTriggeredEntryLogic implements EntryLogic {
 
 	/** Record keeper for transactions from the Cash Account. */
 	private final EventRecorder event;
@@ -80,7 +64,7 @@ public class RsiWithMacdEntryLogic implements EntryLogic {
 	private final EquityClass type;
 
 	/** Generates buy signals. */
-	private final AnalysisLongBuySignals buyLongAnalysis;
+	private final AnalysisBuySignals buyLongAnalysis;
 
 	/** The trading data as it rolled through the set. */
 	private final Queue<TradingDayPrices> tradingData;
@@ -94,33 +78,21 @@ public class RsiWithMacdEntryLogic implements EntryLogic {
 	/**
 	 * @param event recorder of the order creation.
 	 * @param interval time between creation of entry orders.
+	 * @param buyLongAnalysis analyser of trading data to generate buy signals.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public RsiWithMacdEntryLogic( final EventRecorder event, final EquityClass equityType,
-			final BigDecimal minimumTradeValue, final MathContext mathContext ) {
+	public SignalTriggeredEntryLogic( final EventRecorder event, final EquityClass equityType,
+			final BigDecimal minimumTradeValue, final AnalysisBuySignals buyLongAnalysis, final MathContext mathContext ) {
 		this.event = event;
 		this.mathContext = mathContext;
 		this.type = equityType;
 		this.minimumTradeValue = minimumTradeValue;
+		this.buyLongAnalysis = buyLongAnalysis;
 
-		// TODO remove magic numbers
-		this.previousSignals = new LimitedLinkedList<BuySignal>( 20 );
+		this.tradingData = new LimitedQueue<TradingDayPrices>( buyLongAnalysis.getMaximumNumberOfTradingDays() );
 
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );
-		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
-		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 10, 3, 3 );
-		final LongBuySignalConfiguration configuration = new AllSignalsConfiguration( rsi, macd, stochastic );
-		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-
-		// Only signals from the last two days are of interest
-		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new RsiMacdOnSameDaySignalFilter(),
-				Period.ofDays( 5 ) );
-		filters.add( filter );
-
-		this.buyLongAnalysis = new AnalysisLongBuySignals( configuration, filters );
-
-		// TODO 200 value should be the largest data needed for the indicators :. calculate
-		this.tradingData = new LimitedQueue<TradingDayPrices>( 200 );
+		// There can only ever be as many signals as trading days stored
+		this.previousSignals = new LimitedQueue<BuySignal>( buyLongAnalysis.getMaximumNumberOfTradingDays() );
 	}
 
 	@Override
@@ -132,7 +104,7 @@ public class RsiWithMacdEntryLogic implements EntryLogic {
 		// Create signals from the available trading data
 		final List<BuySignal> signals;
 		try {
-			signals = buyLongAnalysis.analyse( tradingData.toArray( new TradingDayPrices[0] ), ORDER_BY_DATE );
+			signals = buyLongAnalysis.analyse( tradingData.toArray( new TradingDayPrices[0] ) );
 		} catch (final TooFewDataPoints e) {
 			// Until there are enough data points, no signals can be generated
 			return null;
@@ -171,9 +143,10 @@ public class RsiWithMacdEntryLogic implements EntryLogic {
 
 		if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
 			event.record( new PlaceOrderTotalCostEvent( amount, tradingDate, EquityOrderType.ENTRY ) );
+			return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, mathContext );
 		}
 
-		return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, mathContext );
+		return null;
 	}
 
 	@Override

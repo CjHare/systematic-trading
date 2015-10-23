@@ -30,6 +30,8 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
@@ -47,7 +49,7 @@ import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleNetWor
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
-import com.systematic.trading.backtest.logic.impl.RsiWithMacdEntryLogic;
+import com.systematic.trading.backtest.logic.impl.SignalTriggeredEntryLogic;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
@@ -57,6 +59,16 @@ import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.event.recorder.EventRecorder;
 import com.systematic.trading.event.recorder.NetWorthRecorder;
 import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
+import com.systematic.trading.signals.AnalysisBuySignals;
+import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
+import com.systematic.trading.signals.model.AnalysisLongBuySignals;
+import com.systematic.trading.signals.model.configuration.AllSignalsConfiguration;
+import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
+import com.systematic.trading.signals.model.filter.RsiMacdOnSameDaySignalFilter;
+import com.systematic.trading.signals.model.filter.SignalFilter;
+import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 
 /**
  * Performs back testing of trading logic over a historical data set.
@@ -65,7 +77,7 @@ import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
  * 
  * @author CJ Hare
  */
-public class BacktestTimingBuyHold {
+public class BacktestSignalTriggeredBuyHold {
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
@@ -98,8 +110,21 @@ public class BacktestTimingBuyHold {
 		final LocalDate openingDate = getEarliestDate( tradingData );
 
 		// Indicator triggered purchases
-		final EntryLogic entry = new RsiWithMacdEntryLogic( eventRecorder, equityType, BigDecimal.valueOf( 1000 ),
-				MATH_CONTEXT );
+		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );
+		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
+		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 10, 3, 3 );
+		final LongBuySignalConfiguration configuration = new AllSignalsConfiguration( rsi, macd, stochastic );
+		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
+
+		// Only signals from the last two days are of interest
+		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new RsiMacdOnSameDaySignalFilter(),
+				Period.ofDays( 5 ) );
+		filters.add( filter );
+
+		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( configuration, filters );
+
+		final EntryLogic entry = new SignalTriggeredEntryLogic( eventRecorder, equityType, BigDecimal.valueOf( 1000 ),
+				buyLongAnalysis, MATH_CONTEXT );
 
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();

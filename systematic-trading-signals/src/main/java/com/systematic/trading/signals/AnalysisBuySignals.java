@@ -23,30 +23,34 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.util;
+package com.systematic.trading.signals;
 
-import java.util.LinkedList;
+import java.util.List;
+
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.exception.TooFewDataPoints;
+import com.systematic.trading.signals.model.BuySignal;
 
 /**
+ * Analysis of buy signals.
+ * 
  * @author CJ Hare
  */
-public class LimitedLinkedList<E> extends LinkedList<E> {
-	/** Serialisation ID */
-	private static final long serialVersionUID = 1L;
+public interface AnalysisBuySignals {
 
-	/** Maximum size of the underlying linked list */
-	private final int limit;
+	/**
+	 * Given a set of trading data, parses with indicators to generate buy signals.
+	 * 
+	 * @param data trading day data.
+	 * @return any signals generated over the given data.
+	 * @throws TooFewDataPoints not enough data points given to perform correct analysis.
+	 */
+	List<BuySignal> analyse( TradingDayPrices[] data ) throws TooFewDataPoints;
 
-	public LimitedLinkedList( final int limit ) {
-		this.limit = limit;
-	}
-
-	@Override
-	public boolean add( final E o ) {
-		super.add( o );
-		while (size() > limit) {
-			super.remove();
-		}
-		return true;
-	}
+	/**
+	 * The maximum number of trading days data used by the signal analysers.
+	 * 
+	 * @return maximum number of data to provide to the analysis.
+	 */
+	int getMaximumNumberOfTradingDays();
 }

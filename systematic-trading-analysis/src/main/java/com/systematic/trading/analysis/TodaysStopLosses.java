@@ -42,7 +42,7 @@ import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.AverageTrueRange;
-import com.systematic.trading.signals.model.DataPointComparator;
+import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 
 public class TodaysStopLosses {
 
@@ -89,7 +89,7 @@ public class TodaysStopLosses {
 			final TradingDayPrices[] data = service.get( symbol, startDate, endDate );
 
 			// Correct the ordering from earliest to latest
-			Arrays.sort( data, new DataPointComparator() );
+			Arrays.sort( data, new TradingDayPricesDateOrder() );
 
 			try {
 				final BigDecimal[] averageTrueRanges = atr.atr( data );

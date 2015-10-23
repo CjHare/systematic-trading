@@ -47,7 +47,6 @@ import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenc
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.configuration.AllSignalsConfiguration;
 import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
 import com.systematic.trading.signals.model.filter.RsiMacdOnSameDaySignalFilter;
@@ -62,8 +61,6 @@ public class TodaysBuySignals {
 
 	/* Days data needed - 20 + 20 for the MACD part EMA(20), Weekend and bank holidays */
 	private static final int HISTORY_REQUIRED = 50 + 16 + 5;
-
-	private static final BuySignalDateComparator ORDER_BY_DATE = new BuySignalDateComparator();
 
 	public static void main( final String... args ) {
 
@@ -88,7 +85,7 @@ public class TodaysBuySignals {
 
 		for (final Equity equity : Equity.values()) {
 			final TradingDayPrices[] dataPoints = getDataPoints( equity, startDate, endDate );
-			final List<BuySignal> signals = buyLong.process( equity, dataPoints, ORDER_BY_DATE );
+			final List<BuySignal> signals = buyLong.process( equity, dataPoints );
 			buyLongSignals.put( equity, signals );
 
 			// TODO event

@@ -23,15 +23,69 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.model;
+package com.systematic.trading.backtest.collections;
 
-import java.util.Comparator;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import com.systematic.trading.data.TradingDayPrices;
+import org.junit.Test;
 
-public class DataPointComparator implements Comparator<TradingDayPrices> {
-	@Override
-	public int compare( final TradingDayPrices a, final TradingDayPrices b ) {
-		return a.getDate().compareTo( b.getDate() );
+/**
+ * Tests the limited size implementation of LinkedList
+ * 
+ * @author CJ Hare
+ */
+public class LimitedQueueTest {
+
+	@Test
+	public void addUnderLimit() {
+		final int limit = 5;
+		final LimitedQueue<String> list = new LimitedQueue<String>( limit );
+		final String one = "one";
+
+		// Add the data to the list
+		list.add( one );
+
+		assertEquals( 1, list.size() );
+		assertNotNull( list.get( 0 ) );
+		assertEquals( one, list.get( 0 ) );
+	}
+
+	@Test
+	public void addOnLimit() {
+		final int limit = 2;
+		final LimitedQueue<String> list = new LimitedQueue<String>( limit );
+		final String one = "one";
+		final String two = "two";
+
+		// Add the data to the list
+		list.add( one );
+		list.add( two );
+
+		assertEquals( 2, list.size() );
+		assertNotNull( list.get( 0 ) );
+		assertNotNull( list.get( 1 ) );
+		assertEquals( one, list.get( 0 ) );
+		assertEquals( two, list.get( 1 ) );
+	}
+
+	@Test
+	public void addOverLimit() {
+		final int limit = 2;
+		final LimitedQueue<String> list = new LimitedQueue<String>( limit );
+		final String one = "one";
+		final String two = "two";
+		final String three = "three";
+
+		// Add the data to the list
+		list.add( one );
+		list.add( two );
+		list.add( three );
+
+		assertEquals( 2, list.size() );
+		assertNotNull( list.get( 0 ) );
+		assertNotNull( list.get( 1 ) );
+		assertEquals( two, list.get( 0 ) );
+		assertEquals( three, list.get( 1 ) );
 	}
 }
