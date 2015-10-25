@@ -23,17 +23,17 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.event.recorder;
+package com.systematic.trading.backtest.event.recorder;
 
 /**
  * Progression of net worth during the ages.
  * 
  * @author CJ Hare
  */
-public interface NetWorthRecorder {
+public interface NetWorthSummary {
 
 	/**
 	 * Summary of the current Net Worth.
 	 */
-	void netWorthSummary();
+	void display();
 }

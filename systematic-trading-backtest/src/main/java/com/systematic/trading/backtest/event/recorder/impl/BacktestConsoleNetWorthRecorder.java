@@ -30,15 +30,15 @@ import java.math.BigDecimal;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.impl.SingleEquityClassBroker;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.event.recorder.NetWorthSummary;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.recorder.NetWorthRecorder;
 
 /**
  * Displays to the console the net worth.
  * 
  * @author CJ Hare
  */
-public class BacktestConsoleNetWorthRecorder implements NetWorthRecorder {
+public class BacktestConsoleNetWorthRecorder implements NetWorthSummary {
 
 	private final Brokerage broker;
 	private final TradingDayPrices[] tradingDate;
@@ -52,7 +52,7 @@ public class BacktestConsoleNetWorthRecorder implements NetWorthRecorder {
 	}
 
 	@Override
-	public void netWorthSummary() {
+	public void display() {
 
 		final TradingDayPrices latest = getLatestDataPoint( tradingDate );
 		final BigDecimal balance = ((SingleEquityClassBroker) broker).getBalance();

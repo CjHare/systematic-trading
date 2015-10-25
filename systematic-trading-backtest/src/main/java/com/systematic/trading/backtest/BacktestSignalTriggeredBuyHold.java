@@ -43,6 +43,7 @@ import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
+import com.systematic.trading.backtest.event.recorder.NetWorthSummary;
 import com.systematic.trading.backtest.event.recorder.data.impl.BacktestTickerSymbolTradingRange;
 import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleEventRecorder;
 import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleNetWorthRecorder;
@@ -57,7 +58,6 @@ import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.event.recorder.EventRecorder;
-import com.systematic.trading.event.recorder.NetWorthRecorder;
 import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
@@ -159,8 +159,8 @@ public class BacktestSignalTriggeredBuyHold {
 
 		eventRecorder.eventSummary();
 
-		final NetWorthRecorder netWorth = new BacktestConsoleNetWorthRecorder( broker, tradingData, cashAccount );
-		netWorth.netWorthSummary();
+		final NetWorthSummary netWorth = new BacktestConsoleNetWorthRecorder( broker, tradingData, cashAccount );
+		netWorth.display();
 	}
 
 	private static LocalDate getEarliestDate( final TradingDayPrices[] data ) {

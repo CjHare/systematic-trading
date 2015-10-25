@@ -55,6 +55,7 @@ import com.systematic.trading.data.TradingDayPrices;
  */
 public class Simulation {
 
+	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger( Simulation.class );
 
 	/** Makes the decision on whether entry action is required. */
@@ -129,7 +130,7 @@ public class Simulation {
 	 * @return the outstanding orders to carry over to tomorrow.
 	 */
 	private List<EquityOrder> processTradingData( final TradingDayPrices tradingDataToday, List<EquityOrder> orders ) {
-		
+
 		// Only when there is trading data for today
 		if (tradingDataToday != null) {
 
