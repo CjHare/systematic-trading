@@ -23,26 +23,17 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event.recorder;
-
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.data.TradingDayPrices;
+package com.systematic.trading.backtest.analysis;
 
 /**
- * Calculates and records the return on investment (ROI) at periodic intervals.
+ * Progression of net worth during the ages.
  * 
  * @author CJ Hare
  */
-public interface ReturnOnInvestmentCalculator {
+public interface NetWorthSummary {
 
 	/**
-	 * Updates the recording of the ROI.
-	 * 
-	 * @param broker manages the number of equities currently held.
-	 * @param cashAccount manages the available cash balance.
-	 * @param tradingData the day's trading price action.
+	 * Summary of the current Net Worth.
 	 */
-	void update( Brokerage broker, CashAccount cashAccount, TradingDayPrices tradingData );
-
+	void display();
 }

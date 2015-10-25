@@ -43,7 +43,7 @@ import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
  * 
  * @author CJ Hare
  */
-public class BacktestConsoleEventRecorder implements EventRecorder {
+public class ConsoleDisplayEventRecorder implements EventRecorder {
 
 	private final List<BrokerageEvent> brokerage;
 	private final List<CashEvent> cash;
@@ -51,7 +51,7 @@ public class BacktestConsoleEventRecorder implements EventRecorder {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
-	public BacktestConsoleEventRecorder() {
+	public ConsoleDisplayEventRecorder() {
 		this.brokerage = new ArrayList<BrokerageEvent>();
 		this.cash = new ArrayList<CashEvent>();
 		this.orders = new ArrayList<OrderEvent>();

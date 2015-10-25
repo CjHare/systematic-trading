@@ -27,9 +27,9 @@ package com.systematic.trading.backtest.event.recorder.impl;
 
 import java.math.BigDecimal;
 
+import com.systematic.trading.backtest.analysis.NetWorthSummary;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.recorder.NetWorthSummary;
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
@@ -37,13 +37,13 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public class BacktestConsoleNetWorthSummary implements NetWorthSummary {
+public class ConsoleDisplayNetWorthSummary implements NetWorthSummary {
 
 	private final Brokerage broker;
 	private final TradingDayPrices[] tradingData;
 	private final CashAccount cashAccount;
 
-	public BacktestConsoleNetWorthSummary( final Brokerage broker, final TradingDayPrices[] tradingData,
+	public ConsoleDisplayNetWorthSummary( final Brokerage broker, final TradingDayPrices[] tradingData,
 			final CashAccount cashAccount ) {
 		this.broker = broker;
 		this.tradingData = tradingData;

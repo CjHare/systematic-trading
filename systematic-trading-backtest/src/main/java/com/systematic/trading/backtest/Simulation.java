@@ -35,9 +35,9 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.recorder.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.logic.EntryLogic;

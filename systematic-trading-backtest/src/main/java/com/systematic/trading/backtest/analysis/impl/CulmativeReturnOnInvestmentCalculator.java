@@ -23,16 +23,16 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event.recorder.impl;
+package com.systematic.trading.backtest.analysis.impl;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
+import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.recorder.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.event.recorder.ReturnOnInvestmentRecorder;
 import com.systematic.trading.data.TradingDayPrices;
 
@@ -41,7 +41,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public class BacktestCulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator {
+public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator {
 
 	/** Used for the conversion to percentage. */
 	private static BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
@@ -58,7 +58,7 @@ public class BacktestCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 	/** Date of the last update on recording of net worth. */
 	private LocalDate previousDate;
 
-	public BacktestCulmativeReturnOnInvestmentCalculator( final ReturnOnInvestmentRecorder eventRecorder,
+	public CulmativeReturnOnInvestmentCalculator( final ReturnOnInvestmentRecorder eventRecorder,
 			final MathContext context ) {
 		this.eventRecorer = eventRecorder;
 		this.context = context;

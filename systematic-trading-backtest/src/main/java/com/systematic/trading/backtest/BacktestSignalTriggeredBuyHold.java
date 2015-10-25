@@ -33,6 +33,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.backtest.analysis.NetWorthSummary;
+import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
@@ -43,14 +46,11 @@ import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.event.recorder.NetWorthSummary;
-import com.systematic.trading.backtest.event.recorder.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.event.recorder.ReturnOnInvestmentRecorder;
 import com.systematic.trading.backtest.event.recorder.data.impl.BacktestTickerSymbolTradingRange;
-import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleEventRecorder;
-import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleNetWorthSummary;
-import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleReturnOnInvestmentRecorder;
-import com.systematic.trading.backtest.event.recorder.impl.BacktestCulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.event.recorder.impl.ConsoleDisplayEventRecorder;
+import com.systematic.trading.backtest.event.recorder.impl.ConsoleDisplayNetWorthSummary;
+import com.systematic.trading.backtest.event.recorder.impl.ConsoleDisplayReturnOnInvestmentRecorder;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
@@ -109,7 +109,7 @@ public class BacktestSignalTriggeredBuyHold {
 
 		final EquityClass equityType = EquityClass.STOCK;
 
-		final EventRecorder eventRecorder = new BacktestConsoleEventRecorder();
+		final EventRecorder eventRecorder = new ConsoleDisplayEventRecorder();
 
 		final LocalDate openingDate = getEarliestDate( tradingData );
 
@@ -149,8 +149,8 @@ public class BacktestSignalTriggeredBuyHold {
 				MATH_CONTEXT );
 
 		// Cumulative recording of investment progression
-		final ReturnOnInvestmentRecorder roiEventRecorder = new BacktestConsoleReturnOnInvestmentRecorder();
-		final ReturnOnInvestmentCalculator roi = new BacktestCulmativeReturnOnInvestmentCalculator( roiEventRecorder,
+		final ReturnOnInvestmentRecorder roiEventRecorder = new ConsoleDisplayReturnOnInvestmentRecorder();
+		final ReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( roiEventRecorder,
 				MATH_CONTEXT );
 
 		final Simulation simulation = new Simulation( startDate, endDate, tradingData, broker, cashAccount, roi, entry,
@@ -169,7 +169,7 @@ public class BacktestSignalTriggeredBuyHold {
 
 		eventRecorder.eventSummary();
 
-		final NetWorthSummary netWorth = new BacktestConsoleNetWorthSummary( broker, tradingData, cashAccount );
+		final NetWorthSummary netWorth = new ConsoleDisplayNetWorthSummary( broker, tradingData, cashAccount );
 		netWorth.display();
 	}
 
