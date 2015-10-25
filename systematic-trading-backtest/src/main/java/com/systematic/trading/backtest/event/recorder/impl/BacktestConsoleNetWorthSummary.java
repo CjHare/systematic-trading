@@ -28,7 +28,6 @@ package com.systematic.trading.backtest.event.recorder.impl;
 import java.math.BigDecimal;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.brokerage.impl.SingleEquityClassBroker;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.event.recorder.NetWorthSummary;
 import com.systematic.trading.data.TradingDayPrices;
@@ -41,21 +40,21 @@ import com.systematic.trading.data.TradingDayPrices;
 public class BacktestConsoleNetWorthSummary implements NetWorthSummary {
 
 	private final Brokerage broker;
-	private final TradingDayPrices[] tradingDate;
+	private final TradingDayPrices[] tradingData;
 	private final CashAccount cashAccount;
 
-	public BacktestConsoleNetWorthSummary( final Brokerage broker, final TradingDayPrices[] tradingDate,
+	public BacktestConsoleNetWorthSummary( final Brokerage broker, final TradingDayPrices[] tradingData,
 			final CashAccount cashAccount ) {
 		this.broker = broker;
-		this.tradingDate = tradingDate;
+		this.tradingData = tradingData;
 		this.cashAccount = cashAccount;
 	}
 
 	@Override
 	public void display() {
 
-		final TradingDayPrices latest = getLatestDataPoint( tradingDate );
-		final BigDecimal balance = ((SingleEquityClassBroker) broker).getBalance();
+		final TradingDayPrices latest = getLatestDataPoint( tradingData );
+		final BigDecimal balance = broker.getEquityBalance();
 		final BigDecimal lastClosingPrice = latest.getClosingPrice().getPrice();
 		final BigDecimal holdingValue = balance.multiply( lastClosingPrice );
 

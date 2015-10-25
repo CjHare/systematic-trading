@@ -37,6 +37,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.event.recorder.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.logic.EntryLogic;
@@ -82,8 +83,12 @@ public class Simulation {
 	/** Time between deposit events. */
 	private final Period interval = Period.ofDays( 1 );
 
+	/** Return on investment calculator. */
+	private final ReturnOnInvestmentCalculator roi;
+
 	public Simulation( final LocalDate startDate, final LocalDate endDate, final TradingDayPrices[] unordered,
-			final Brokerage broker, final CashAccount funds, final EntryLogic entry, final ExitLogic exit ) {
+			final Brokerage broker, final CashAccount funds, final ReturnOnInvestmentCalculator roi,
+			final EntryLogic entry, final ExitLogic exit ) {
 
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -91,6 +96,7 @@ public class Simulation {
 		this.exit = exit;
 		this.funds = funds;
 		this.broker = broker;
+		this.roi = roi;
 
 		this.tradingData = new HashMap<LocalDate, TradingDayPrices>();
 
@@ -113,10 +119,19 @@ public class Simulation {
 			// Financial activity of deposits, withdrawal and interest
 			funds.update( currentDate );
 
-			// Process orders and add those from the day's trading data
-			orders = processTradingData( tradingData.get( currentDate ), orders );
+			final TradingDayPrices currentTradingData = tradingData.get( currentDate );
 
-			// Move to tomorrow
+			// Only when there is trading data for today
+			if (currentTradingData != null) {
+
+				// Process orders and add those from the day's trading data
+				orders = processTradingData( currentTradingData, orders );
+
+				// Update the return on investment calculator
+				roi.update( broker, funds, currentTradingData );
+			}
+
+			// Move date to tomorrow
 			currentDate = currentDate.plus( interval );
 		}
 	}
@@ -131,16 +146,12 @@ public class Simulation {
 	 */
 	private List<EquityOrder> processTradingData( final TradingDayPrices tradingDataToday, List<EquityOrder> orders ) {
 
-		// Only when there is trading data for today
-		if (tradingDataToday != null) {
+		// Attempt to execute the queued orders
+		orders = processOutstandingOrders( orders, tradingDataToday );
 
-			// Attempt to execute the queued orders
-			orders = processOutstandingOrders( orders, tradingDataToday );
-
-			// Apply analysis to generate more orders
-			orders = addExitOrderForToday( tradingDataToday, orders );
-			orders = addEntryOrderForToday( tradingDataToday, orders );
-		}
+		// Apply analysis to generate more orders
+		orders = addExitOrderForToday( tradingDataToday, orders );
+		orders = addEntryOrderForToday( tradingDataToday, orders );
 
 		return orders;
 	}

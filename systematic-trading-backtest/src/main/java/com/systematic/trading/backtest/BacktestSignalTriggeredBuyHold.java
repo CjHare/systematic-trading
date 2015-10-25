@@ -44,9 +44,13 @@ import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashA
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
 import com.systematic.trading.backtest.event.recorder.NetWorthSummary;
+import com.systematic.trading.backtest.event.recorder.ReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.event.recorder.ReturnOnInvestmentRecorder;
 import com.systematic.trading.backtest.event.recorder.data.impl.BacktestTickerSymbolTradingRange;
 import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleEventRecorder;
 import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleNetWorthSummary;
+import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleReturnOnInvestmentRecorder;
+import com.systematic.trading.backtest.event.recorder.impl.BacktestCulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
@@ -144,7 +148,13 @@ public class BacktestSignalTriggeredBuyHold {
 		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, eventRecorder,
 				MATH_CONTEXT );
 
-		final Simulation simulation = new Simulation( startDate, endDate, tradingData, broker, cashAccount, entry, exit );
+		// Cumulative recording of investment progression
+		final ReturnOnInvestmentRecorder roiEventRecorder = new BacktestConsoleReturnOnInvestmentRecorder();
+		final ReturnOnInvestmentCalculator roi = new BacktestCulmativeReturnOnInvestmentCalculator( roiEventRecorder,
+				MATH_CONTEXT );
+
+		final Simulation simulation = new Simulation( startDate, endDate, tradingData, broker, cashAccount, roi, entry,
+				exit );
 
 		// TODO number of each order type event
 		// TODO % actual return
