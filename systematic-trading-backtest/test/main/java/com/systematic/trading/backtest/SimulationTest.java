@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.logic.EntryLogic;
@@ -68,6 +69,8 @@ public class SimulationTest {
 	private EntryLogic entry;
 	@Mock
 	private ExitLogic exit;
+	@Mock
+	private ReturnOnInvestmentCalculator roiCalculator;
 
 	private TradingDayPrices[] createUnorderedDataPoints() {
 		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
@@ -85,7 +88,7 @@ public class SimulationTest {
 	public void create() {
 		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
 
-		new Simulation( startDate, endDate, unorderedPoints, broker, funds, entry, exit );
+		new Simulation( startDate, endDate, unorderedPoints, broker, funds, roiCalculator, entry, exit );
 	}
 
 	@Test
@@ -94,7 +97,7 @@ public class SimulationTest {
 		unorderedPoints[1] = unorderedPoints[0];
 
 		try {
-			new Simulation( startDate, endDate, unorderedPoints, broker, funds, entry, exit );
+			new Simulation( startDate, endDate, unorderedPoints, broker, funds, roiCalculator, entry, exit );
 
 			fail( "Expecting exception for duplicate data point date" );
 		} catch (final IllegalArgumentException e) {

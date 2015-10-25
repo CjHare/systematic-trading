@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.OrderException;
@@ -71,6 +72,8 @@ public class SimulationEntryLogicTest {
 	private EntryLogic entry;
 	@Mock
 	private ExitLogic exit;
+	@Mock
+	private ReturnOnInvestmentCalculator roiCalculator;
 
 	private TradingDayPrices[] createUnorderedDataPoints() {
 		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
@@ -103,7 +106,8 @@ public class SimulationEntryLogicTest {
 	@Test
 	public void processOrder() throws OrderException {
 		final TradingDayPrices[] sortedPoints = createOrderedDataPoints( createUnorderedDataPoints() );
-		final Simulation simulation = new Simulation( startDate, endDate, sortedPoints, broker, funds, entry, exit );
+		final Simulation simulation = new Simulation( startDate, endDate, sortedPoints, broker, funds, roiCalculator,
+				entry, exit );
 
 		final EquityOrder order = mock( EquityOrder.class );
 		when( order.areExecutionConditionsMet( any( TradingDayPrices.class ) ) ).thenReturn( true );
