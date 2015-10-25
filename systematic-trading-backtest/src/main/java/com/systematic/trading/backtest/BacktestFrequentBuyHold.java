@@ -125,7 +125,8 @@ public class BacktestFrequentBuyHold {
 
 		// Cumulative recording of investment progression
 		final ReturnOnInvestmentRecorder roiEventRecorder = new BacktestConsoleReturnOnInvestmentRecorder();
-		final ReturnOnInvestmentCalculator roi = new BacktestCulmativeReturnOnInvestmentCalculator( roiEventRecorder );
+		final ReturnOnInvestmentCalculator roi = new BacktestCulmativeReturnOnInvestmentCalculator( roiEventRecorder,
+				MATH_CONTEXT );
 
 		final Simulation simulation = new Simulation( startDate, endDate, tradingData, broker, cashAccount, roi, entry,
 				exit );
