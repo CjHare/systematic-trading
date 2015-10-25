@@ -38,13 +38,13 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public class BacktestConsoleNetWorthRecorder implements NetWorthSummary {
+public class BacktestConsoleNetWorthSummary implements NetWorthSummary {
 
 	private final Brokerage broker;
 	private final TradingDayPrices[] tradingDate;
 	private final CashAccount cashAccount;
 
-	public BacktestConsoleNetWorthRecorder( final Brokerage broker, final TradingDayPrices[] tradingDate,
+	public BacktestConsoleNetWorthSummary( final Brokerage broker, final TradingDayPrices[] tradingDate,
 			final CashAccount cashAccount ) {
 		this.broker = broker;
 		this.tradingDate = tradingDate;

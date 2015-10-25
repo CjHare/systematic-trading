@@ -44,7 +44,7 @@ import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecora
 import com.systematic.trading.backtest.event.recorder.NetWorthSummary;
 import com.systematic.trading.backtest.event.recorder.data.impl.BacktestTickerSymbolTradingRange;
 import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleEventRecorder;
-import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleNetWorthRecorder;
+import com.systematic.trading.backtest.event.recorder.impl.BacktestConsoleNetWorthSummary;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.DateTriggeredEntryLogic;
@@ -134,7 +134,7 @@ public class BacktestFrequentBuyHold {
 
 		eventRecorder.eventSummary();
 
-		final NetWorthSummary netWorth = new BacktestConsoleNetWorthRecorder( broker, tradingData, cashAccount );
+		final NetWorthSummary netWorth = new BacktestConsoleNetWorthSummary( broker, tradingData, cashAccount );
 		netWorth.display();
 	}
 
