@@ -23,22 +23,51 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event.recorder.impl;
+package com.systematic.trading.backtest.analysis.impl;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
 
 /**
- * Outputs the ROI to the console.
+ * Creates monthly cumulative ROI events.
  * 
  * @author CJ Hare
  */
-public class ConsoleDisplayReturnOnInvestmentRecorder implements ReturnOnInvestmentListener {
+public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInvestmentListener {
+
+	/** Context for BigDecimal operations. */
+	private final MathContext context;
+
+	/** Deals with the recording the changes in the ROI. */
+	private final ReturnOnInvestmentListener eventRecorer;
+
+	/** The running date for calculating when the months have passed. */
+	private LocalDate date;
+
+	/** Running total of the ROI for the month so far. */
+	private BigDecimal cumulativeROI = BigDecimal.ZERO;
+
+	public MonthlyCulmativeReturnOnInvestmentDecorator( final LocalDate startingDate,
+			final ReturnOnInvestmentListener eventRecorder, final MathContext context ) {
+		this.eventRecorer = eventRecorder;
+		this.date = startingDate;
+		this.context = context;
+	}
 
 	@Override
 	public void record( final BigDecimal percentageChange, final Period elapsed ) {
-		System.out.println( String.format( "%s percent over %s days", percentageChange, elapsed.getDays() ) );
+
+		eventRecorer.record( percentageChange, elapsed );
+
+		date = date.plus( elapsed );
+		cumulativeROI = cumulativeROI.add( percentageChange, context );
+
+		System.err.println( date + "  " + cumulativeROI );
+
+		// TODO output somewhere, but where? another listener?
 	}
 }

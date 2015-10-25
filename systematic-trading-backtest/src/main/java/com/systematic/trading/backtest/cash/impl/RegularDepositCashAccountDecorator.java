@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.cash.CashAccountListener;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
 
 /**
@@ -111,5 +112,10 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 	@Override
 	public void deposit( final BigDecimal depositAmount, final LocalDate transactionDate ) {
 		account.deposit( depositAmount, transactionDate );
+	}
+
+	@Override
+	public void addListener( final CashAccountListener listener ) {
+		account.addListener( listener );
 	}
 }

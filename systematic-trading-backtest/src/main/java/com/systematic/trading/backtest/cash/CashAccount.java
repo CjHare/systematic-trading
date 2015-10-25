@@ -62,13 +62,6 @@ public interface CashAccount {
 	void credit( BigDecimal creditAmount, LocalDate transactionDate );
 
 	/**
-	 * Retrieves the current balance of the account.
-	 * 
-	 * @return positive number when the account is credit, negative otherwise.
-	 */
-	BigDecimal getBalance();
-
-	/**
 	 * Adds funds to an account that is considered a deposit, where the funds come from an outside
 	 * source rather then from a trading activity.
 	 * 
@@ -76,4 +69,18 @@ public interface CashAccount {
 	 * @param transactionDate date of the deposit.
 	 */
 	void deposit( BigDecimal depositAmount, LocalDate transactionDate );
+
+	/**
+	 * Retrieves the current balance of the account.
+	 * 
+	 * @return positive number when the account is credit, negative otherwise.
+	 */
+	BigDecimal getBalance();
+
+	/**
+	 * Adds a listener that is interested in cash account events.
+	 * 
+	 * @param listener adds the listener to those notified on account events.
+	 */
+	void addListener( CashAccountListener listener );
 }

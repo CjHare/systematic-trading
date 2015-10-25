@@ -33,7 +33,8 @@ import java.time.Period;
 import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.recorder.ReturnOnInvestmentRecorder;
+import com.systematic.trading.backtest.cash.CashAccountListener;
+import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
@@ -41,7 +42,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator {
+public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator, CashAccountListener {
 
 	/** Used for the conversion to percentage. */
 	private static BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
@@ -50,7 +51,7 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	private final MathContext context;
 
 	/** Deals with the recording the changes in the ROI. */
-	private final ReturnOnInvestmentRecorder eventRecorer;
+	private final ReturnOnInvestmentListener eventRecorer;
 
 	/** Net Worth as recorded on previous update. */
 	private BigDecimal previousNetWorth;
@@ -58,7 +59,10 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	/** Date of the last update on recording of net worth. */
 	private LocalDate previousDate;
 
-	public CulmativeReturnOnInvestmentCalculator( final ReturnOnInvestmentRecorder eventRecorder,
+	/** Running total of the amount deposited since the last net worth calculation. */
+	private BigDecimal depositedSincePreviousNetWorth = BigDecimal.ZERO;
+
+	public CulmativeReturnOnInvestmentCalculator( final ReturnOnInvestmentListener eventRecorder,
 			final MathContext context ) {
 		this.eventRecorer = eventRecorder;
 		this.context = context;
@@ -93,10 +97,11 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	private BigDecimal calculatePercentageChangeInNetWorth( final Brokerage broker, final CashAccount cashAccount,
 			final TradingDayPrices tradingData ) {
 
-		final BigDecimal balance = broker.getEquityBalance();
+		final BigDecimal equityBalance = broker.getEquityBalance();
 		final BigDecimal lastClosingPrice = tradingData.getClosingPrice().getPrice();
-		final BigDecimal holdingsValue = balance.multiply( lastClosingPrice );
-		final BigDecimal netWorth = cashAccount.getBalance().add( holdingsValue );
+		final BigDecimal holdingsValue = equityBalance.multiply( lastClosingPrice, context );
+		final BigDecimal cashBalance = cashAccount.getBalance();
+		final BigDecimal netWorth = cashBalance.add( holdingsValue, context );
 
 		final BigDecimal percentageChange;
 
@@ -105,12 +110,31 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 			percentageChange = BigDecimal.ZERO;
 		} else {
 			// Difference / previous worth
-			percentageChange = netWorth.subtract( previousNetWorth ).divide( previousNetWorth, context )
-					.multiply( ONE_HUNDRED, context );
+			final BigDecimal absoluteChange = netWorth.subtract( previousNetWorth, context ).subtract(
+					depositedSincePreviousNetWorth, context );
+			percentageChange = absoluteChange.divide( previousNetWorth, context ).multiply( ONE_HUNDRED, context );
 		}
 
+		// Reset the counters
 		previousNetWorth = netWorth;
+		depositedSincePreviousNetWorth = BigDecimal.ZERO;
 
 		return percentageChange;
+	}
+
+	@Override
+	public void debit( final BigDecimal debitAmount, final LocalDate transactionDate ) {
+		// Not interested in debit events
+	}
+
+	public void credit( final BigDecimal creditAmount, final LocalDate transactionDate ) {
+		// Not interested in credit events
+	}
+
+	@Override
+	public void deposit( final BigDecimal depositAmount, final LocalDate transactionDate ) {
+
+		// Add the deposit to the running total
+		depositedSincePreviousNetWorth = depositedSincePreviousNetWorth.add( depositAmount, context );
 	}
 }

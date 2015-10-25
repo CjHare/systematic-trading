@@ -36,6 +36,7 @@ import java.util.List;
 import com.systematic.trading.backtest.analysis.NetWorthSummary;
 import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.impl.MonthlyCulmativeReturnOnInvestmentDecorator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
@@ -46,7 +47,7 @@ import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.event.recorder.ReturnOnInvestmentRecorder;
+import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
 import com.systematic.trading.backtest.event.recorder.data.impl.BacktestTickerSymbolTradingRange;
 import com.systematic.trading.backtest.event.recorder.impl.ConsoleDisplayEventRecorder;
 import com.systematic.trading.backtest.event.recorder.impl.ConsoleDisplayNetWorthSummary;
@@ -113,6 +114,12 @@ public class BacktestSignalTriggeredBuyHold {
 
 		final LocalDate openingDate = getEarliestDate( tradingData );
 
+		// Cumulative recording of investment progression
+		final ReturnOnInvestmentListener roiEventRecorder = new MonthlyCulmativeReturnOnInvestmentDecorator(
+				startDate, new ConsoleDisplayReturnOnInvestmentRecorder(), MATH_CONTEXT );
+		final ReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( roiEventRecorder,
+				MATH_CONTEXT );
+
 		// Indicator triggered purchases
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
@@ -140,17 +147,13 @@ public class BacktestSignalTriggeredBuyHold {
 		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
 		final CashAccount underlyingAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds,
 				openingDate, eventRecorder, MATH_CONTEXT );
+		underlyingAccount.addListener( roi );
 		final CashAccount cashAccount = new RegularDepositCashAccountDecorator( oneHundredDollars, underlyingAccount,
 				openingDate, weekly );
 
 		// ETF Broker with CmC markets fees
 		final BrokerageFeeStructure tradingFeeStructure = new CmcMarketsFeeStructure( MATH_CONTEXT );
 		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, eventRecorder,
-				MATH_CONTEXT );
-
-		// Cumulative recording of investment progression
-		final ReturnOnInvestmentRecorder roiEventRecorder = new ConsoleDisplayReturnOnInvestmentRecorder();
-		final ReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( roiEventRecorder,
 				MATH_CONTEXT );
 
 		final Simulation simulation = new Simulation( startDate, endDate, tradingData, broker, cashAccount, roi, entry,
