@@ -39,7 +39,7 @@ import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener
  * 
  * @author CJ Hare
  */
-public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInvestmentListener {
+public class MonthlyCulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentListener {
 
 	/** Context for BigDecimal operations. */
 	private final MathContext mathContext;
@@ -53,7 +53,7 @@ public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInve
 	/** Running total of the ROI for the month so far. */
 	private BigDecimal cumulativeROI = BigDecimal.ZERO;
 
-	public MonthlyCulmativeReturnOnInvestmentDecorator( final LocalDate startingDate, final MathContext mathContext ) {
+	public MonthlyCulmativeReturnOnInvestmentCalculator( final LocalDate startingDate, final MathContext mathContext ) {
 		this.date = startingDate;
 		this.mathContext = mathContext;
 	}
@@ -61,14 +61,14 @@ public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInve
 	@Override
 	public void record( final BigDecimal percentageChange, final Period elapsed ) {
 
-		notifyListeners( percentageChange, elapsed );
-
+		final int monthBeforeUpdate = date.getMonthValue();
 		date = date.plus( elapsed );
 		cumulativeROI = cumulativeROI.add( percentageChange, mathContext );
 
-		System.err.println( date + "  " + cumulativeROI );
-
-		// TODO output somewhere, but where? another listener?
+		if (monthBeforeUpdate < date.getMonthValue()) {
+			notifyListeners( cumulativeROI, Period.ofMonths( 1 ) );
+			cumulativeROI = BigDecimal.ZERO;
+		}
 	}
 
 	private void notifyListeners( final BigDecimal percentageChange, final Period elapsed ) {

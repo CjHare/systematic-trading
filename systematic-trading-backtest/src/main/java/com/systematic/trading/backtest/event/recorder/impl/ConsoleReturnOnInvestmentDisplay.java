@@ -39,6 +39,18 @@ public class ConsoleReturnOnInvestmentDisplay implements ReturnOnInvestmentListe
 
 	@Override
 	public void record( final BigDecimal percentageChange, final Period elapsed ) {
-		System.out.println( String.format( "%s percent over %s days", percentageChange, elapsed.getDays() ) );
+
+		if (elapsed.getDays() > 0) {
+			System.out.println( String.format( "%s percent over %s day(s)", percentageChange, elapsed.getDays() ) );
+		}
+
+		if (elapsed.getMonths() > 0) {
+			System.out.println( String.format( "%s percent over %s month(s)", percentageChange, elapsed.getMonths() ) );
+		}
+
+		if (elapsed.getYears() > 0) {
+			System.out.println( String.format( "%s percent over %s year(s)", percentageChange, elapsed.getYears() ) );
+		}
+
 	}
 }

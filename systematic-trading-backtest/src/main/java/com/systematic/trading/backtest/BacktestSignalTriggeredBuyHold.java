@@ -35,7 +35,7 @@ import java.util.List;
 
 import com.systematic.trading.backtest.analysis.NetWorthSummary;
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.impl.MonthlyCulmativeReturnOnInvestmentDecorator;
+import com.systematic.trading.backtest.analysis.impl.MonthlyCulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
@@ -116,11 +116,12 @@ public class BacktestSignalTriggeredBuyHold {
 
 		// Cumulative recording of investment progression
 		final ReturnOnInvestmentListener roiListener = new ConsoleReturnOnInvestmentDisplay();
-		final MonthlyCulmativeReturnOnInvestmentDecorator roiEventRecorder = new MonthlyCulmativeReturnOnInvestmentDecorator(
-				startDate, MATH_CONTEXT );
-		roiEventRecorder.addListener( roiListener );
 		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
-		roi.addListener( roiEventRecorder );
+		final MonthlyCulmativeReturnOnInvestmentCalculator monthlyRoiCalculator = new MonthlyCulmativeReturnOnInvestmentCalculator(
+				startDate, MATH_CONTEXT );
+		monthlyRoiCalculator.addListener( roiListener );
+		roi.addListener( monthlyRoiCalculator );
+		roi.addListener( roiListener );
 
 		// Indicator triggered purchases
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );
