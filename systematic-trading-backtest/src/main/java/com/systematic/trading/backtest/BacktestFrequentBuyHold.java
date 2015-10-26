@@ -34,6 +34,7 @@ import java.time.temporal.ChronoUnit;
 import com.systematic.trading.backtest.analysis.NetWorthSummary;
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.impl.MonthlyCulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.impl.YearlyCulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
@@ -107,8 +108,12 @@ public class BacktestFrequentBuyHold {
 		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
 		final MonthlyCulmativeReturnOnInvestmentCalculator monthlyRoiCalculator = new MonthlyCulmativeReturnOnInvestmentCalculator(
 				startDate, MATH_CONTEXT );
+		final YearlyCulmativeReturnOnInvestmentCalculator yearlyRoiCalculator = new YearlyCulmativeReturnOnInvestmentCalculator(
+				startDate, MATH_CONTEXT );
+		yearlyRoiCalculator.addListener( roiListener );
 		monthlyRoiCalculator.addListener( roiListener );
 		roi.addListener( monthlyRoiCalculator );
+		roi.addListener( yearlyRoiCalculator );
 		roi.addListener( roiListener );
 
 		// Weekly purchase of $100
