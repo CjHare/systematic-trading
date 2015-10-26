@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.event.recorder.impl;
 
 import java.math.BigDecimal;
 
+import com.systematic.trading.backtest.analysis.CumulativeReturnOnInvestment;
 import com.systematic.trading.backtest.analysis.NetWorthSummary;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
@@ -42,12 +43,14 @@ public class ConsoleDisplayNetWorthSummary implements NetWorthSummary {
 	private final Brokerage broker;
 	private final TradingDayPrices[] tradingData;
 	private final CashAccount cashAccount;
+	private final CumulativeReturnOnInvestment cumulativeRoi;
 
 	public ConsoleDisplayNetWorthSummary( final Brokerage broker, final TradingDayPrices[] tradingData,
-			final CashAccount cashAccount ) {
+			final CashAccount cashAccount, final CumulativeReturnOnInvestment cumulativeRoi ) {
 		this.broker = broker;
 		this.tradingData = tradingData;
 		this.cashAccount = cashAccount;
+		this.cumulativeRoi = cumulativeRoi;
 	}
 
 	@Override
@@ -65,6 +68,8 @@ public class ConsoleDisplayNetWorthSummary implements NetWorthSummary {
 		System.out.println( String.format( "Cash account: %s", cashAccount.getBalance() ) );
 
 		System.out.println( String.format( "\nTotal Net Worth: %s", cashAccount.getBalance().add( holdingValue ) ) );
+
+		System.out.println( String.format( "\nInvestment Cumulative ROI: %s", cumulativeRoi.getCumulativeReturnOnInvestment() ) );
 
 	}
 

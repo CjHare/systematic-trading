@@ -33,6 +33,7 @@ import java.time.temporal.ChronoUnit;
 
 import com.systematic.trading.backtest.analysis.NetWorthSummary;
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculatorListener;
 import com.systematic.trading.backtest.analysis.impl.PeriodicCulmativeReturnOnInvestmentCalculatorListener;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
@@ -105,18 +106,21 @@ public class BacktestFrequentBuyHold {
 		// Cumulative recording of investment progression
 		final ReturnOnInvestmentListener roiListener = new ConsoleReturnOnInvestmentDisplay();
 		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener dailyRoiCalculator = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
 				startDate, Period.ofDays( 1 ), MATH_CONTEXT );
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener monthlyRoiCalculator = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
 				startDate, Period.ofMonths( 1 ), MATH_CONTEXT );
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener yearlyRoiCalculator = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
 				startDate, Period.ofYears( 1 ), MATH_CONTEXT );
-		yearlyRoiCalculator.addListener( roiListener );
-		monthlyRoiCalculator.addListener( roiListener );
-		dailyRoiCalculator.addListener( roiListener );
-		roi.addListener( dailyRoiCalculator );
-		roi.addListener( monthlyRoiCalculator );
-		roi.addListener( yearlyRoiCalculator );
+		final CulmativeReturnOnInvestmentCalculatorListener cumulativeRoi = new CulmativeReturnOnInvestmentCalculatorListener(
+				MATH_CONTEXT );
+		yearlyRoi.addListener( roiListener );
+		monthlyRoi.addListener( roiListener );
+		dailyRoi.addListener( roiListener );
+		roi.addListener( dailyRoi );
+		roi.addListener( monthlyRoi );
+		roi.addListener( yearlyRoi );
+		roi.addListener( cumulativeRoi );
 
 		// Weekly purchase of $100
 		final Period weekly = Period.ofDays( 7 );
@@ -160,7 +164,8 @@ public class BacktestFrequentBuyHold {
 
 		consoleEventDisplay.eventSummary();
 
-		final NetWorthSummary netWorth = new ConsoleDisplayNetWorthSummary( broker, tradingData, cashAccount );
+		final NetWorthSummary netWorth = new ConsoleDisplayNetWorthSummary( broker, tradingData, cashAccount,
+				cumulativeRoi );
 		netWorth.display();
 	}
 
