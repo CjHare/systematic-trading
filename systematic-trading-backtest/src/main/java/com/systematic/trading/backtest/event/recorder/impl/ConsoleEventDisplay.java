@@ -45,11 +45,11 @@ import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
  */
 public class ConsoleEventDisplay implements EventListener {
 
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+
 	private final List<BrokerageEvent> brokerage;
 	private final List<CashEvent> cash;
 	private final List<OrderEvent> orders;
-
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
 	public ConsoleEventDisplay() {
 		this.brokerage = new ArrayList<BrokerageEvent>();
@@ -147,8 +147,8 @@ public class ConsoleEventDisplay implements EventListener {
 		System.out.println( String.format( "# Cash account debit events: %s", debitCount ) );
 		System.out.println( String.format( "# Cash account interest events: %s", interestCount ) );
 		System.out.println( String.format( "# Cash account deposit events: %s", depositCount ) );
-		System.out.println( String.format( "Total interest earned: %s", sumInterest ) );
-		System.out.println( String.format( "Total amount deposited: %s", sumDeposit ) );
+		System.out.println( String.format( "Total interest earned: %s", TWO_DECIMAL_PLACES.format( sumInterest ) ) );
+		System.out.println( String.format( "Total amount deposited: %s", TWO_DECIMAL_PLACES.format( sumDeposit ) ) );
 	}
 
 	private void summariseBrokerage( final List<BrokerageEvent> brokerage ) {
@@ -176,7 +176,8 @@ public class ConsoleEventDisplay implements EventListener {
 		System.out.println( String.format( "# Brokerage events: %s", brokerage.size() ) );
 		System.out.println( String.format( "# Sell events: %s", sellCount ) );
 		System.out.println( String.format( "# Buy events: %s", buyCount ) );
-		System.out.println( String.format( "Total amount paid in brokerage: %s", sumFees ) );
+		System.out
+				.println( String.format( "Total amount paid in brokerage: %s", TWO_DECIMAL_PLACES.format( sumFees ) ) );
 	}
 
 	public void header() {

@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.event.recorder.impl;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import com.systematic.trading.backtest.analysis.CumulativeReturnOnInvestment;
 import com.systematic.trading.backtest.analysis.NetWorthSummary;
@@ -39,6 +40,8 @@ import com.systematic.trading.data.TradingDayPrices;
  * @author CJ Hare
  */
 public class ConsoleDisplayNetWorthSummary implements NetWorthSummary {
+
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
 	private final Brokerage broker;
 	private final TradingDayPrices[] tradingData;
@@ -62,14 +65,16 @@ public class ConsoleDisplayNetWorthSummary implements NetWorthSummary {
 		final BigDecimal holdingValue = balance.multiply( lastClosingPrice );
 
 		System.out.println( "\n=== Net Worth Summary ===" );
-		System.out.println( String.format( "Number of equities: %s", balance ) );
-		System.out.println( String.format( "Last closing price: %s", lastClosingPrice ) );
-		System.out.println( String.format( "Holdings value: %s", holdingValue ) );
-		System.out.println( String.format( "Cash account: %s", cashAccount.getBalance() ) );
+		System.out.println( String.format( "Number of equities: %s", TWO_DECIMAL_PLACES.format( balance ) ) );
+		System.out.println( String.format( "Last closing price: %s", TWO_DECIMAL_PLACES.format( lastClosingPrice ) ) );
+		System.out.println( String.format( "Holdings value: %s", TWO_DECIMAL_PLACES.format( holdingValue ) ) );
+		System.out.println( String.format( "Cash account: %s", TWO_DECIMAL_PLACES.format( cashAccount.getBalance() ) ) );
 
-		System.out.println( String.format( "\nTotal Net Worth: %s", cashAccount.getBalance().add( holdingValue ) ) );
+		System.out.println( String.format( "\nTotal Net Worth: %s",
+				TWO_DECIMAL_PLACES.format( cashAccount.getBalance().add( holdingValue ) ) ) );
 
-		System.out.println( String.format( "\nInvestment Cumulative ROI: %s", cumulativeRoi.getCumulativeReturnOnInvestment() ) );
+		System.out.println( String.format( "\nInvestment Cumulative ROI: %s",
+				TWO_DECIMAL_PLACES.format( cumulativeRoi.getCumulativeReturnOnInvestment() ) ) );
 
 	}
 

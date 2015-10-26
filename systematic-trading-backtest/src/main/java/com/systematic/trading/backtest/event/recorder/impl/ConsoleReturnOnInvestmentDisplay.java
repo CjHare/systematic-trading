@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.event.recorder.impl;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -38,25 +39,28 @@ import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener
  */
 public class ConsoleReturnOnInvestmentDisplay implements ReturnOnInvestmentListener {
 
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( "#.##" );
+
 	@Override
 	public void record( final BigDecimal percentageChange, final LocalDate startDateInclusive,
 			final LocalDate endDateExclusive ) {
 
+		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format( percentageChange );
 		final Period elapsed = Period.between( startDateInclusive, endDateExclusive );
 
 		if (elapsed.getDays() > 0) {
-			System.out.println( String.format( "%s percent over %s day(s), from %s to %s", percentageChange,
-					elapsed.getDays(), startDateInclusive, endDateExclusive ) );
+			System.out.println( String.format( "Daily - ROI: %s percent over %s day(s), from %s to %s",
+					formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive ) );
 		}
 
 		if (elapsed.getMonths() > 0) {
-			System.out.println( String.format( "%s percent over %s month(s), from %s to %s", percentageChange,
-					elapsed.getMonths(), startDateInclusive, endDateExclusive ) );
+			System.out.println( String.format( "Monthly - ROI: %s percent over %s month(s), from %s to %s",
+					formattedPercentageChange, elapsed.getMonths(), startDateInclusive, endDateExclusive ) );
 		}
 
 		if (elapsed.getYears() > 0) {
-			System.out.println( String.format( "%s percent over %s year(s), from %s to %s", percentageChange,
-					elapsed.getYears(), startDateInclusive, endDateExclusive ) );
+			System.out.println( String.format( "Yearly - ROI: %s percent over %s year(s), from %s to %s",
+					formattedPercentageChange, elapsed.getYears(), startDateInclusive, endDateExclusive ) );
 		}
 
 	}
