@@ -115,10 +115,12 @@ public class BacktestSignalTriggeredBuyHold {
 		final LocalDate openingDate = getEarliestDate( tradingData );
 
 		// Cumulative recording of investment progression
-		final ReturnOnInvestmentListener roiEventRecorder = new MonthlyCulmativeReturnOnInvestmentDecorator( startDate,
-				new ConsoleReturnOnInvestmentDisplay(), MATH_CONTEXT );
-		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( roiEventRecorder,
-				MATH_CONTEXT );
+		final ReturnOnInvestmentListener roiListener = new ConsoleReturnOnInvestmentDisplay();
+		final MonthlyCulmativeReturnOnInvestmentDecorator roiEventRecorder = new MonthlyCulmativeReturnOnInvestmentDecorator(
+				startDate, MATH_CONTEXT );
+		roiEventRecorder.addListener( roiListener );
+		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
+		roi.addListener( roiEventRecorder );
 
 		// Indicator triggered purchases
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );

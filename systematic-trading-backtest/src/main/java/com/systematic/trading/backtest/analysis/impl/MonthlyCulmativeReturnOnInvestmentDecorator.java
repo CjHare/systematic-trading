@@ -29,6 +29,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
 
@@ -42,8 +44,8 @@ public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInve
 	/** Context for BigDecimal operations. */
 	private final MathContext mathContext;
 
-	/** Deals with the recording the changes in the ROI. */
-	private final ReturnOnInvestmentListener eventRecorer;
+	/** Parties interested in ROI events. */
+	private final List<ReturnOnInvestmentListener> listeners = new ArrayList<ReturnOnInvestmentListener>();
 
 	/** The running date for calculating when the months have passed. */
 	private LocalDate date;
@@ -51,9 +53,7 @@ public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInve
 	/** Running total of the ROI for the month so far. */
 	private BigDecimal cumulativeROI = BigDecimal.ZERO;
 
-	public MonthlyCulmativeReturnOnInvestmentDecorator( final LocalDate startingDate,
-			final ReturnOnInvestmentListener eventRecorder, final MathContext mathContext ) {
-		this.eventRecorer = eventRecorder;
+	public MonthlyCulmativeReturnOnInvestmentDecorator( final LocalDate startingDate, final MathContext mathContext ) {
 		this.date = startingDate;
 		this.mathContext = mathContext;
 	}
@@ -61,7 +61,7 @@ public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInve
 	@Override
 	public void record( final BigDecimal percentageChange, final Period elapsed ) {
 
-		eventRecorer.record( percentageChange, elapsed );
+		notifyListeners( percentageChange, elapsed );
 
 		date = date.plus( elapsed );
 		cumulativeROI = cumulativeROI.add( percentageChange, mathContext );
@@ -69,5 +69,17 @@ public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInve
 		System.err.println( date + "  " + cumulativeROI );
 
 		// TODO output somewhere, but where? another listener?
+	}
+
+	private void notifyListeners( final BigDecimal percentageChange, final Period elapsed ) {
+		for (final ReturnOnInvestmentListener listener : listeners) {
+			listener.record( percentageChange, elapsed );
+		}
+	}
+
+	public void addListener( final ReturnOnInvestmentListener listener ) {
+		if (!listeners.contains( listener )) {
+			listeners.add( listener );
+		}
 	}
 }

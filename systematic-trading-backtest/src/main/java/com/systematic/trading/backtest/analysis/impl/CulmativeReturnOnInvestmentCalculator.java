@@ -29,6 +29,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
@@ -53,8 +55,8 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	/** Context for BigDecimal operations. */
 	private final MathContext mathContext;
 
-	/** Deals with the recording the changes in the ROI. */
-	private final ReturnOnInvestmentListener eventRecorer;
+	/** Parties interested in ROI events. */
+	private final List<ReturnOnInvestmentListener> listeners = new ArrayList<ReturnOnInvestmentListener>();
 
 	/** Net Worth as recorded on previous update. */
 	private BigDecimal previousNetWorth;
@@ -65,9 +67,7 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	/** Running total of the amount deposited since the last net worth calculation. */
 	private BigDecimal depositedSincePreviousNetWorth = BigDecimal.ZERO;
 
-	public CulmativeReturnOnInvestmentCalculator( final ReturnOnInvestmentListener eventRecorder,
-			final MathContext mathContext ) {
-		this.eventRecorer = eventRecorder;
+	public CulmativeReturnOnInvestmentCalculator( final MathContext mathContext ) {
 		this.mathContext = mathContext;
 	}
 
@@ -77,7 +77,19 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 		final BigDecimal percentageChange = calculatePercentageChangeInNetWorth( broker, cashAccount, tradingData );
 		final Period elapsed = calculateElapsedDuration( tradingData.getDate() );
 
-		eventRecorer.record( percentageChange, elapsed );
+		notifyListeners( percentageChange, elapsed );
+	}
+
+	private void notifyListeners( final BigDecimal percentageChange, final Period elapsed ) {
+		for (final ReturnOnInvestmentListener listener : listeners) {
+			listener.record( percentageChange, elapsed );
+		}
+	}
+
+	public void addListener( final ReturnOnInvestmentListener listener ) {
+		if (!listeners.contains( listener )) {
+			listeners.add( listener );
+		}
 	}
 
 	private Period calculateElapsedDuration( final LocalDate latestDate ) {
