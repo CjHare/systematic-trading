@@ -44,7 +44,10 @@ import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.backtest.order.event.impl.EquityOrderDeletedDueToInsufficentFundsEvent;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.event.Event;
+import com.systematic.trading.event.recorder.EventListener;
 
 /**
  * The application of the chosen trading logic over a given set of data is performed in the
@@ -85,6 +88,9 @@ public class Simulation {
 
 	/** Return on investment calculator. */
 	private final ReturnOnInvestmentCalculator roi;
+
+	/** Listeners interested in entry events. */
+	private final List<EventListener> listeners = new ArrayList<EventListener>();
 
 	public Simulation( final LocalDate startDate, final LocalDate endDate, final TradingDayPrices[] unordered,
 			final Brokerage broker, final CashAccount funds, final ReturnOnInvestmentCalculator roi,
@@ -167,6 +173,7 @@ public class Simulation {
 		final EquityOrder order = exit.update( broker, data );
 
 		if (order != null) {
+			notifyListeners( order.getOrderEvent() );
 			openOrders.add( order );
 		}
 
@@ -184,6 +191,7 @@ public class Simulation {
 		final EquityOrder order = entry.update( broker, funds, data );
 
 		if (order != null) {
+			notifyListeners( order.getOrderEvent() );
 			openOrders.add( order );
 		}
 
@@ -245,9 +253,11 @@ public class Simulation {
 			LOG.warn( String.format( "Insufficient funds to execute order %s", order.toString() ) );
 
 			final EquityOrderInsufficientFundsAction action = entry.actionOnInsufficentFunds( order );
+
 			switch (action) {
 				case DELETE:
 					// Discard the order
+					notifyListeners( new EquityOrderDeletedDueToInsufficentFundsEvent( order.getOrderEvent().getType() ) );
 					return null;
 				case RESUMIT:
 				default:
@@ -258,6 +268,23 @@ public class Simulation {
 			LOG.error( e );
 			// TODO handle?
 			throw new IllegalArgumentException( "Unhandled Order exception", e );
+		}
+	}
+
+	private void notifyListeners( final Event event ) {
+		for (final EventListener listener : listeners) {
+			listener.event( event );
+		}
+	}
+
+	/**
+	 * Adds the listener to the set of event listeners.
+	 * 
+	 * @param listener will receive notification of event occurrences.
+	 */
+	public void addListener( final EventListener listener ) {
+		if (!listeners.contains( listener )) {
+			listeners.add( listener );
 		}
 	}
 }

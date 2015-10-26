@@ -29,7 +29,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,18 +38,13 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
-import org.hamcrest.Description;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.cash.InterestRate;
-import com.systematic.trading.backtest.event.CashEvent.CashEventType;
-import com.systematic.trading.backtest.event.impl.CashAccountEvent;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.event.recorder.EventRecorder;
 
 /**
  * Testing the calculate daily paid monthly cash account.
@@ -64,13 +58,10 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 	@Mock
 	private InterestRate rate;
 
-	@Mock
-	private EventRecorder event;
-
 	@Test
 	public void credit() {
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), event, mc );
+				BigDecimal.ZERO, LocalDate.now(), mc );
 
 		final BigDecimal credit = BigDecimal.valueOf( 1.23456789 );
 
@@ -80,13 +71,12 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account.credit( credit, date );
 
 		assertEquals( credit, account.getBalance() );
-		verify( event ).record( isCashAccountEvent( BigDecimal.ZERO, credit, credit, CashEventType.CREDIT, date ) );
 	}
 
 	@Test
 	public void deposit() {
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), event, mc );
+				BigDecimal.ZERO, LocalDate.now(), mc );
 
 		final BigDecimal deposit = BigDecimal.valueOf( 1.23456789 );
 
@@ -96,14 +86,13 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account.deposit( deposit, date );
 
 		assertEquals( deposit, account.getBalance() );
-		verify( event ).record( isCashAccountEvent( BigDecimal.ZERO, deposit, deposit, CashEventType.DEPOSIT, date ) );
 	}
 
 	@Test
 	public void debit() throws InsufficientFundsException {
 		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, LocalDate.now(), event, mc );
+				openingFunds, LocalDate.now(), mc );
 
 		final BigDecimal debit = BigDecimal.valueOf( 1.23456789 );
 
@@ -113,17 +102,12 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account.debit( debit, date );
 
 		assertEquals( openingFunds.subtract( debit ), account.getBalance() );
-
-		verify( event )
-				.record(
-						isCashAccountEvent( openingFunds, openingFunds.subtract( debit, mc ), debit,
-								CashEventType.DEBIT, date ) );
 	}
 
 	@Test(expected = InsufficientFundsException.class)
 	public void debitInsufficientFunds() throws InsufficientFundsException {
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), event, mc );
+				BigDecimal.ZERO, LocalDate.now(), mc );
 
 		final BigDecimal debit = BigDecimal.valueOf( 1.23456789 );
 
@@ -133,7 +117,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void updateDateTooEarly() {
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), event, mc );
+				BigDecimal.ZERO, LocalDate.now(), mc );
 
 		account.update( LocalDate.now().minus( Period.ofDays( 1 ) ) );
 	}
@@ -147,15 +131,11 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		when( rate.interest( any( BigDecimal.class ), anyInt(), anyBoolean() ) ).thenReturn( interest );
 
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, event, mc );
+				openingFunds, openingDate, mc );
 
 		account.update( tradingDate );
 
 		assertEquals( openingFunds.add( interest ), account.getBalance() );
-
-		verify( event ).record(
-				isCashAccountEvent( openingFunds, BigDecimal.valueOf( 101.000045 ), BigDecimal.valueOf( 1.000045 ),
-						CashEventType.INTEREST, tradingDate ) );
 	}
 
 	@Test
@@ -167,7 +147,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		when( rate.interest( any( BigDecimal.class ), anyInt(), anyBoolean() ) ).thenReturn( interest );
 
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, event, mc );
+				openingFunds, openingDate, mc );
 
 		account.update( tradingDate );
 
@@ -186,7 +166,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 				.thenReturn( secondInterest );
 
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, event, mc );
+				openingFunds, openingDate, mc );
 
 		account.update( tradingDate );
 
@@ -205,7 +185,7 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 				.thenReturn( secondInterest );
 
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, event, mc );
+				openingFunds, openingDate, mc );
 
 		final LocalDate firstTradingDate = LocalDate.of( 2015, 3, 31 );
 		account.update( firstTradingDate );
@@ -215,47 +195,5 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 		assertEquals( openingFunds.add( firstInterest ).add( secondInterest ), account.getBalance() );
 		verify( rate, times( 2 ) ).interest( openingFunds, 1, false );
-	}
-
-	private CashAccountEvent isCashAccountEvent( final BigDecimal fundsBefore, final BigDecimal fundsAfter,
-			final BigDecimal interest, final CashEventType type, final LocalDate transactionDate ) {
-		return argThat( new IsCashAccounEventArgument( fundsBefore, fundsAfter, interest, type, transactionDate ) );
-	}
-
-	class IsCashAccounEventArgument extends ArgumentMatcher<CashAccountEvent> {
-
-		private final BigDecimal amount;
-		private final BigDecimal fundsBefore;
-		private final BigDecimal fundsAfter;
-		private final LocalDate transactionDate;
-		private final CashEventType type;
-
-		public IsCashAccounEventArgument( final BigDecimal fundsBefore, final BigDecimal fundsAfter,
-				final BigDecimal amount, final CashEventType type, final LocalDate transactionDate ) {
-			this.fundsBefore = fundsBefore;
-			this.fundsAfter = fundsAfter;
-			this.amount = amount;
-			this.transactionDate = transactionDate;
-			this.type = type;
-		}
-
-		@Override
-		public boolean matches( final Object argument ) {
-
-			if (argument instanceof CashAccountEvent) {
-				final CashAccountEvent event = (CashAccountEvent) argument;
-				return amount.equals( event.getAmount() ) && fundsBefore.equals( event.getFundsBefore() )
-						&& fundsAfter.equals( event.getFundsAfter() )
-						&& transactionDate.equals( event.getTransactionDate() ) && type == event.getType();
-			}
-
-			return false;
-		}
-
-		@Override
-		public void describeTo( final Description description ) {
-			description.appendText( String.format( "%s, %s, %s, %s, %s", fundsBefore, fundsAfter, amount, type,
-					transactionDate ) );
-		}
 	}
 }

@@ -23,40 +23,22 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.cash;
+package com.systematic.trading.backtest.event.recorder.impl;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Period;
+
+import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
 
 /**
- * Interested in the events the occur to a Cash Account.
+ * Outputs the ROI to the console.
  * 
  * @author CJ Hare
  */
-public interface CashAccountListener {
+public class ConsoleReturnOnInvestmentDisplay implements ReturnOnInvestmentListener {
 
-	/**
-	 * Removes funds from an account.
-	 * 
-	 * @param debitAmount sum to be removed from the account.
-	 * @param transactionDate date of the debit.
-	 */
-	void debit( BigDecimal debitAmount, LocalDate transactionDate );
-
-	/**
-	 * Adds funds to an account.
-	 * 
-	 * @param creditAmount sum to be added to the account.
-	 * @param transactionDate date of the credit.
-	 */
-	void credit( BigDecimal creditAmount, LocalDate transactionDate );
-
-	/**
-	 * Adds funds to an account that is considered a deposit, where the funds come from an outside
-	 * source rather then from a trading activity.
-	 * 
-	 * @param depositAmount sum to be added to the account.
-	 * @param transactionDate date of the deposit.
-	 */
-	void deposit( BigDecimal depositAmount, LocalDate transactionDate );
+	@Override
+	public void record( final BigDecimal percentageChange, final Period elapsed ) {
+		System.out.println( String.format( "%s percent over %s days", percentageChange, elapsed.getDays() ) );
+	}
 }

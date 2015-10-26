@@ -33,14 +33,11 @@ import java.time.Period;
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.OrderEvent.EquityOrderType;
-import com.systematic.trading.backtest.event.impl.PlaceOrderTotalCostEvent;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.recorder.EventRecorder;
 
 /**
  * Frequent purchases of a fixed amount at regular intervals.
@@ -58,9 +55,6 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	/** The last date purchase order was created. */
 	private LocalDate lastOrder;
 
-	/** Record keeper for transactions from the Cash Account. */
-	private final EventRecorder event;
-
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
@@ -69,16 +63,14 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 
 	/**
 	 * @param amount total to spend on a single purchase order, including fees.
-	 * @param event recorder of the order creation.
 	 * @param firstOrder date to place the first order.
 	 * @param interval time between creation of entry orders.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public DateTriggeredEntryLogic( final BigDecimal amount, final EventRecorder event, final EquityClass equityType,
-			final LocalDate firstOrder, final Period interval, final MathContext mathContext ) {
+	public DateTriggeredEntryLogic( final BigDecimal amount, final EquityClass equityType, final LocalDate firstOrder,
+			final Period interval, final MathContext mathContext ) {
 		this.interval = interval;
 		this.amount = amount;
-		this.event = event;
 		this.mathContext = mathContext;
 		this.type = equityType;
 
@@ -90,9 +82,9 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();
-		
+
 		if (isOrderTime( tradingDate )) {
-			
+
 			final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, data.getDate() );
 			final BigDecimal closingPrice = data.getClosingPrice().getPrice();
 			final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext ).divide(
@@ -100,8 +92,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 
 			if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
 				lastOrder = tradingDate.minus( Period.ofDays( 1 ) );
-				event.record( new PlaceOrderTotalCostEvent( amount, tradingDate, EquityOrderType.ENTRY ) );
-				return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, mathContext );
+				return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, tradingDate, mathContext );
 			}
 		}
 

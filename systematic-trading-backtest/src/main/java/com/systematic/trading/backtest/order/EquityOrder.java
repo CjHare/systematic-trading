@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.order;
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.event.OrderEvent;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.data.TradingDayPrices;
 
@@ -64,6 +65,13 @@ public interface EquityOrder {
 	 * @param todaysTrading the price action for today.
 	 * @throws OrderException when the order fails.
 	 */
-	void execute( BrokerageFees fees, BrokerageTransaction broker, CashAccount cashAccount, TradingDayPrices todaysTrading )
-			throws OrderException;
+	void execute( BrokerageFees fees, BrokerageTransaction broker, CashAccount cashAccount,
+			TradingDayPrices todaysTrading ) throws OrderException;
+
+	/**
+	 * The type, or details of event that the equity order should be recorded as.
+	 * 
+	 * @return details of the order for statistical and recording purposes.
+	 */
+	OrderEvent getOrderEvent();
 }

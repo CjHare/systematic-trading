@@ -23,38 +23,45 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.analysis.event;
+package com.systematic.trading.backtest.order.event.impl;
 
-import com.systematic.trading.event.Event;
-import com.systematic.trading.event.recorder.EventRecorder;
-import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
+import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.backtest.order.event.EquityOrderInsufficientFundsEvent;
 
 /**
- * Simple output to the console for the events.
+ * Equity order is cancelled due to insufficient funds to execute.
  * 
  * @author CJ Hare
  */
-public class ConsoleEventRecorder implements EventRecorder {
+public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrderInsufficientFundsEvent {
 
-	public ConsoleEventRecorder() {
+	private final EquityOrderType type;
 
+	/**
+	 * @param originalOrderType order prior to being deleted.
+	 */
+	public EquityOrderDeletedDueToInsufficentFundsEvent( final EquityOrderType originalOrderType ) {
+
+		// Convert into the delete version
+		switch (originalOrderType) {
+			case ENTRY:
+				this.type = EquityOrderType.DELETE_ENTRY;
+				break;
+			case EXIT:
+				this.type = EquityOrderType.DELETE_EXIT;
+				break;
+			default:
+				throw new IllegalArgumentException( String.format( "Unexpected order type %s", originalOrderType ) );
+		}
 	}
 
 	@Override
-	public void record( final Event event ) {
-
-		System.out.println( event );
+	public EquityOrderInsufficientFundsAction getInsufficientFundsAction() {
+		return EquityOrderInsufficientFundsAction.DELETE;
 	}
 
 	@Override
-	public void eventSummary() {
-	}
-
-	@Override
-	public void header() {
-	}
-
-	@Override
-	public void header( final TickerSymbolTradingRange range ) {
+	public EquityOrderType getType() {
+		return type;
 	}
 }

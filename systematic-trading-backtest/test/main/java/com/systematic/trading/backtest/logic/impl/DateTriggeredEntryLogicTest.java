@@ -30,9 +30,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -58,7 +56,6 @@ import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.event.recorder.EventRecorder;
 
 /**
  * Entry logic triggered by date.
@@ -77,18 +74,15 @@ public class DateTriggeredEntryLogicTest {
 	@Mock
 	private BrokerageFees fees;
 
-	@Mock
-	private EventRecorder recorder;
-
-	private static final MathContext context = MathContext.DECIMAL64;
+	private static final MathContext mc = MathContext.DECIMAL64;
 
 	@Test
 	public void actionOnInsufficentFunds() {
 		final LocalDate firstOrder = LocalDate.now();
 		final Period interval = Period.ofDays( 1 );
 		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
-				firstOrder, interval, context );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
+				interval, mc );
 
 		final EquityOrder order = mock( EquityOrder.class );
 
@@ -102,8 +96,8 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = LocalDate.now();
 		final Period interval = Period.ofDays( 1 );
 		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
-				firstOrder, interval, context );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
+				interval, mc );
 		when( data.getDate() ).thenReturn( firstOrder );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -116,8 +110,8 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 1 );
 		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
-				firstOrder, interval, context );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
+				interval, mc );
 		final LocalDate date = LocalDate.now();
 		when( data.getDate() ).thenReturn( date );
 
@@ -132,9 +126,6 @@ public class DateTriggeredEntryLogicTest {
 
 		assertNotNull( order );
 		assertTrue( order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
-
-		// Ensure correct volume of orders
-		verify( recorder ).record( isPlaceOrder( amount, date ) );
 	}
 
 	@Test
@@ -145,8 +136,8 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 1 );
 		final BigDecimal amount = BigDecimal.valueOf( 4 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
-				firstOrder, interval, context );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
+				interval, mc );
 		when( data.getDate() ).thenReturn( LocalDate.now() );
 
 		final BigDecimal closingPrice = BigDecimal.valueOf( 1 );
@@ -166,8 +157,8 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = LocalDate.now();
 		final Period interval = Period.ofDays( 2 );
 		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
-				firstOrder, interval, context );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
+				interval, mc );
 		when( data.getDate() ).thenReturn( LocalDate.now() );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -180,8 +171,8 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 2 );
 		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
-				firstOrder, interval, context );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
+				interval, mc );
 		final LocalDate date = LocalDate.now();
 		when( data.getDate() ).thenReturn( date );
 
@@ -196,8 +187,6 @@ public class DateTriggeredEntryLogicTest {
 
 		assertNotNull( order );
 		assertTrue( order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
-
-		verify( recorder ).record( isPlaceOrder( amount, date ) );
 	}
 
 	@Test
@@ -206,8 +195,8 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = date.minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 2 );
 		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
-				firstOrder, interval, context );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
+				interval, mc );
 		when( data.getDate() ).thenReturn( date );
 
 		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
@@ -221,8 +210,6 @@ public class DateTriggeredEntryLogicTest {
 
 		assertNotNull( order );
 		assertTrue( order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
-
-		verify( recorder ).record( isPlaceOrder( amount, date ) );
 
 		// Change the trading day to tomorrow - should not have an order
 		when( data.getDate() ).thenReturn( LocalDate.now().plus( Period.ofDays( 1 ) ) );
@@ -241,8 +228,8 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate firstOrder = date.minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 1 );
 		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, recorder, EquityClass.STOCK,
-				firstOrder, interval, context );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
+				interval, mc );
 		when( data.getDate() ).thenReturn( date );
 
 		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
@@ -257,8 +244,6 @@ public class DateTriggeredEntryLogicTest {
 		assertNotNull( order );
 		assertTrue( order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
 
-		verify( recorder ).record( isPlaceOrder( amount, date ) );
-
 		// Change the trading day to tomorrow - should not have an order
 		when( data.getDate() ).thenReturn( LocalDate.now().plus( Period.ofDays( 1 ) ) );
 
@@ -266,12 +251,6 @@ public class DateTriggeredEntryLogicTest {
 
 		assertNotNull( secondOrder );
 		assertTrue( secondOrder instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
-
-		verify( recorder ).record( isPlaceOrder( amount, date ) );
-	}
-
-	private PlaceOrderVolumeEvent isPlaceOrder( final BigDecimal amount, final LocalDate date ) {
-		return argThat( new IsPlaceOrderArgument( amount, date, EquityOrderType.ENTRY ) );
 	}
 
 	class IsPlaceOrderArgument extends ArgumentMatcher<PlaceOrderVolumeEvent> {

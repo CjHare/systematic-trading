@@ -27,11 +27,15 @@ package com.systematic.trading.backtest.order.impl;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.LocalDate;
 
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.event.OrderEvent;
+import com.systematic.trading.backtest.event.OrderEvent.EquityOrderType;
+import com.systematic.trading.backtest.event.impl.PlaceOrderTotalCostEvent;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
@@ -53,9 +57,13 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	/** The type of equity being traded. */
 	private final EquityClass type;
 
+	/** Date on which the order was created. */
+	private final LocalDate creationDate;
+
 	public BuyTotalCostTomorrowAtOpeningPriceOrder( final BigDecimal targetTotalCost, final EquityClass type,
-			final MathContext mathContext ) {
+			final LocalDate creationDate, final MathContext mathContext ) {
 		this.targetTotalCost = targetTotalCost;
+		this.creationDate = creationDate;
 		this.mathContext = mathContext;
 		this.type = type;
 	}
@@ -85,5 +93,10 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 		final BigDecimal actualTotalCost = broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
 
 		cashAccount.debit( actualTotalCost, todaysTrade.getDate() );
+	}
+
+	@Override
+	public OrderEvent getOrderEvent() {
+		return new PlaceOrderTotalCostEvent( targetTotalCost, creationDate, EquityOrderType.ENTRY );
 	}
 }

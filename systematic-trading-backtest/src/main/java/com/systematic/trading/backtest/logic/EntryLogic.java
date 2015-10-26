@@ -42,8 +42,8 @@ public interface EntryLogic {
 	/**
 	 * Updates the trading logic with a subsequent trading point.
 	 * 
-	 * @param fees the brokerage to execute the order with, and whose fees are to be included in
-	 *            the transaction.
+	 * @param fees the brokerage to execute the order with, and whose fees are to be included in the
+	 *            transaction.
 	 * @param cashAccount currently available funds.
 	 * @param data next day of trading to add, also applying logic for trade signals.
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to

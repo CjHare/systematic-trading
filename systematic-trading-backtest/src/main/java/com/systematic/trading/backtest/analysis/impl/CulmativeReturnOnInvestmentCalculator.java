@@ -33,22 +33,25 @@ import java.time.Period;
 import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.cash.CashAccountListener;
+import com.systematic.trading.backtest.event.CashEvent;
+import com.systematic.trading.backtest.event.CashEvent.CashEventType;
 import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.event.Event;
+import com.systematic.trading.event.recorder.EventListener;
 
 /**
  * Calculates and records the return on investment (ROI) at periodic intervals.
  * 
  * @author CJ Hare
  */
-public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator, CashAccountListener {
+public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator, EventListener {
 
 	/** Used for the conversion to percentage. */
 	private static BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
 
 	/** Context for BigDecimal operations. */
-	private final MathContext context;
+	private final MathContext mathContext;
 
 	/** Deals with the recording the changes in the ROI. */
 	private final ReturnOnInvestmentListener eventRecorer;
@@ -63,9 +66,9 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	private BigDecimal depositedSincePreviousNetWorth = BigDecimal.ZERO;
 
 	public CulmativeReturnOnInvestmentCalculator( final ReturnOnInvestmentListener eventRecorder,
-			final MathContext context ) {
+			final MathContext mathContext ) {
 		this.eventRecorer = eventRecorder;
-		this.context = context;
+		this.mathContext = mathContext;
 	}
 
 	@Override
@@ -99,9 +102,9 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 
 		final BigDecimal equityBalance = broker.getEquityBalance();
 		final BigDecimal lastClosingPrice = tradingData.getClosingPrice().getPrice();
-		final BigDecimal holdingsValue = equityBalance.multiply( lastClosingPrice, context );
+		final BigDecimal holdingsValue = equityBalance.multiply( lastClosingPrice, mathContext );
 		final BigDecimal cashBalance = cashAccount.getBalance();
-		final BigDecimal netWorth = cashBalance.add( holdingsValue, context );
+		final BigDecimal netWorth = cashBalance.add( holdingsValue, mathContext );
 
 		final BigDecimal percentageChange;
 
@@ -110,9 +113,10 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 			percentageChange = BigDecimal.ZERO;
 		} else {
 			// Difference / previous worth
-			final BigDecimal absoluteChange = netWorth.subtract( previousNetWorth, context ).subtract(
-					depositedSincePreviousNetWorth, context );
-			percentageChange = absoluteChange.divide( previousNetWorth, context ).multiply( ONE_HUNDRED, context );
+			final BigDecimal absoluteChange = netWorth.subtract( previousNetWorth, mathContext ).subtract(
+					depositedSincePreviousNetWorth, mathContext );
+			percentageChange = absoluteChange.divide( previousNetWorth, mathContext ).multiply( ONE_HUNDRED,
+					mathContext );
 		}
 
 		// Reset the counters
@@ -123,18 +127,17 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	}
 
 	@Override
-	public void debit( final BigDecimal debitAmount, final LocalDate transactionDate ) {
-		// Not interested in debit events
-	}
+	public void event( final Event event ) {
 
-	public void credit( final BigDecimal creditAmount, final LocalDate transactionDate ) {
-		// Not interested in credit events
-	}
+		if (event instanceof CashEvent) {
+			final CashEvent cashEvent = (CashEvent) event;
 
-	@Override
-	public void deposit( final BigDecimal depositAmount, final LocalDate transactionDate ) {
+			if (CashEventType.DEPOSIT.equals( cashEvent.getType() )) {
+				// Add the deposit to the running total
+				depositedSincePreviousNetWorth = depositedSincePreviousNetWorth
+						.add( cashEvent.getAmount(), mathContext );
+			}
+		}
 
-		// Add the deposit to the running total
-		depositedSincePreviousNetWorth = depositedSincePreviousNetWorth.add( depositAmount, context );
 	}
 }

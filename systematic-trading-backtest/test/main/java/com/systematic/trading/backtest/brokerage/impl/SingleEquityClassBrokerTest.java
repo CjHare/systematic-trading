@@ -28,29 +28,22 @@ package com.systematic.trading.backtest.brokerage.impl;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 
-import org.hamcrest.Description;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.backtest.event.BrokerageEvent.BrokerageAccountEventType;
-import com.systematic.trading.backtest.event.impl.BrokerageAccountEvent;
 import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.data.price.Price;
-import com.systematic.trading.event.recorder.EventRecorder;
 
 /**
  * Single Equity Class Broker test.
@@ -64,13 +57,9 @@ public class SingleEquityClassBrokerTest {
 	@Mock
 	private BrokerageFeeStructure fees;
 
-	@Mock
-	private EventRecorder recorder;
-
 	@Test
 	public void getEquityBalance() {
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, recorder,
-				MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
 
 		final BigDecimal balance = broker.getEquityBalance();
 
@@ -82,8 +71,7 @@ public class SingleEquityClassBrokerTest {
 		final Price price = Price.valueOf( BigDecimal.valueOf( 101 ) );
 		final BigDecimal equityVolume = BigDecimal.valueOf( 11 );
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( equityVolume );
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, recorder,
-				MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
 		final BigDecimal transactionCost = BigDecimal.valueOf( 10.99 );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) ).thenReturn(
 				transactionCost );
@@ -94,10 +82,6 @@ public class SingleEquityClassBrokerTest {
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), MATH_CONTEXT );
 		assertEquals( tradeValue.add( transactionCost, MATH_CONTEXT ), cost );
 		assertEquals( 11, broker.getEquityBalance().intValue() );
-
-		verify( recorder ).record(
-				isBrokerageAccountEvent( BigDecimal.ZERO, equityVolume, equityVolume, BrokerageAccountEventType.BUY,
-						date ) );
 	}
 
 	@Test
@@ -108,8 +92,7 @@ public class SingleEquityClassBrokerTest {
 		final Price price = Price.valueOf( BigDecimal.valueOf( 101 ) );
 		final BigDecimal equityVolume = BigDecimal.valueOf( 11 );
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( equityVolume );
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, recorder,
-				MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
 		final BigDecimal transactionCost = BigDecimal.valueOf( 10.99 );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) ).thenReturn(
 				transactionCost );
@@ -122,10 +105,6 @@ public class SingleEquityClassBrokerTest {
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), MATH_CONTEXT );
 		assertEquals( tradeValue.add( transactionCost, MATH_CONTEXT ), cost );
 		assertEquals( 33, broker.getEquityBalance().intValue() );
-
-		verify( recorder ).record(
-				isBrokerageAccountEvent( startingBalance, startingBalance.add( equityVolume, MATH_CONTEXT ),
-						equityVolume, BrokerageAccountEventType.BUY, date ) );
 	}
 
 	@Test
@@ -133,8 +112,7 @@ public class SingleEquityClassBrokerTest {
 		final Price price = Price.valueOf( BigDecimal.valueOf( 101 ) );
 		final BigDecimal equityVolume = BigDecimal.valueOf( 11 );
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( equityVolume );
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, recorder,
-				MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
 		final BigDecimal transactionCost = BigDecimal.valueOf( 10.99 );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) ).thenReturn(
 				transactionCost );
@@ -147,20 +125,13 @@ public class SingleEquityClassBrokerTest {
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), MATH_CONTEXT );
 		assertEquals( tradeValue.subtract( transactionCost, MATH_CONTEXT ), cost );
 		assertEquals( 7, broker.getEquityBalance().intValue() );
-		verify( recorder ).record(
-				isBrokerageAccountEvent( BigDecimal.ZERO, startingBalance, startingBalance,
-						BrokerageAccountEventType.BUY, date ) );
-		verify( recorder ).record(
-				isBrokerageAccountEvent( startingBalance, startingBalance.subtract( equityVolume, MATH_CONTEXT ),
-						equityVolume, BrokerageAccountEventType.SELL, date ) );
 	}
 
 	@Test(expected = InsufficientEquitiesException.class)
 	public void sellWithException() throws InsufficientEquitiesException {
 		final Price price = Price.valueOf( BigDecimal.valueOf( 101 ) );
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( BigDecimal.valueOf( 12 ) );
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, recorder,
-				MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
 
 		broker.sell( price, volume, LocalDate.now() );
 	}
@@ -172,54 +143,10 @@ public class SingleEquityClassBrokerTest {
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) ).thenReturn(
 				transactionCost );
 
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, recorder,
-				MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
 
 		final BigDecimal fees = broker.calculateFee( tradeValue, EquityClass.STOCK, LocalDate.now() );
 
 		assertEquals( transactionCost, fees );
-	}
-
-	private BrokerageAccountEvent isBrokerageAccountEvent( final BigDecimal fundsBefore, final BigDecimal fundsAfter,
-			final BigDecimal volume, final BrokerageAccountEventType type, final LocalDate transactionDate ) {
-		return argThat( new IsBrokerageAccountEventArgument( fundsBefore, fundsAfter, volume, type, transactionDate ) );
-	}
-
-	class IsBrokerageAccountEventArgument extends ArgumentMatcher<BrokerageAccountEvent> {
-
-		private final BigDecimal volume;
-		private final BigDecimal balanceBefore;
-		private final BigDecimal balanceAfter;
-		private final LocalDate transactionDate;
-		private final BrokerageAccountEventType type;
-
-		public IsBrokerageAccountEventArgument( final BigDecimal balanceBefore, final BigDecimal balanceAfter,
-				final BigDecimal volume, final BrokerageAccountEventType type, final LocalDate transactionDate ) {
-			this.balanceBefore = balanceBefore;
-			this.balanceAfter = balanceAfter;
-			this.volume = volume;
-			this.transactionDate = transactionDate;
-			this.type = type;
-		}
-
-		@Override
-		public boolean matches( final Object argument ) {
-
-			if (argument instanceof BrokerageAccountEvent) {
-				final BrokerageAccountEvent event = (BrokerageAccountEvent) argument;
-				return volume.equals( event.getEquityAmount() )
-						&& balanceBefore.equals( event.getStartingEquityBalance() )
-						&& balanceAfter.equals( event.getEndEquityBalance() )
-						&& transactionDate.equals( event.getTransactionDate() ) && type == event.getType();
-			}
-
-			return false;
-		}
-
-		@Override
-		public void describeTo( final Description description ) {
-			description.appendText( String.format( "Before: %s, After: %s, Volume: %s, Type: %s, Date: %s",
-					balanceBefore, balanceAfter, volume, type, transactionDate ) );
-		}
 	}
 }

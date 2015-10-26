@@ -23,22 +23,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event.recorder.impl;
+package com.systematic.trading.analysis.event;
 
-import java.math.BigDecimal;
-import java.time.Period;
-
-import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
+import com.systematic.trading.event.Event;
+import com.systematic.trading.event.recorder.EventListener;
 
 /**
- * Outputs the ROI to the console.
+ * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public class ConsoleDisplayReturnOnInvestmentRecorder implements ReturnOnInvestmentListener {
+public class ConsoleEventDisplay implements EventListener {
 
 	@Override
-	public void record( final BigDecimal percentageChange, final Period elapsed ) {
-		System.out.println( String.format( "%s percent over %s days", percentageChange, elapsed.getDays() ) );
+	public void event( final Event event ) {
+
+		System.out.println( event );
 	}
 }

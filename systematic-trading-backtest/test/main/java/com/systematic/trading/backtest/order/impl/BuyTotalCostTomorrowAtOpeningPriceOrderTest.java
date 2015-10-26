@@ -58,7 +58,7 @@ import com.systematic.trading.data.price.OpeningPrice;
 @RunWith(MockitoJUnitRunner.class)
 public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 
-	private static final MathContext context = MathContext.DECIMAL64;
+	private static final MathContext mc = MathContext.DECIMAL64;
 
 	private final EquityClass type = EquityClass.STOCK;
 
@@ -68,7 +68,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	@Test
 	public void isValid() {
 		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
-				BigDecimal.valueOf( 44 ), type, context );
+				BigDecimal.valueOf( 44 ), type, LocalDate.now(), mc );
 
 		final boolean isValid = buy.isValid( todaysTrading );
 
@@ -78,7 +78,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	@Test
 	public void areExecutionConditionsMet() {
 		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
-				BigDecimal.valueOf( 44 ), type, context );
+				BigDecimal.valueOf( 44 ), type, LocalDate.now(), mc );
 
 		final boolean areConditionMet = buy.areExecutionConditionsMet( todaysTrading );
 
@@ -91,7 +91,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 		final BrokerageFees fees = mock( BrokerageFees.class );
 		final CashAccount cashAccount = mock( CashAccount.class );
 		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
-				BigDecimal.valueOf( 44 ), type, context );
+				BigDecimal.valueOf( 44 ), type, LocalDate.now(), mc );
 
 		final OpeningPrice price = mock( OpeningPrice.class );
 		when( price.getPrice() ).thenReturn( BigDecimal.valueOf( 5 ) );

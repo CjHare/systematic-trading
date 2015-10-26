@@ -28,6 +28,8 @@ package com.systematic.trading.backtest.brokerage.impl;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
@@ -38,7 +40,8 @@ import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
 import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.data.price.Price;
-import com.systematic.trading.event.recorder.EventRecorder;
+import com.systematic.trading.event.Event;
+import com.systematic.trading.event.recorder.EventListener;
 
 /**
  * Handles execution of trades and maintains the balance of equities.
@@ -62,17 +65,16 @@ public class SingleEquityClassBroker implements Brokerage {
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	/** Record keeper for transactions from the Cash Account. */
-	private final EventRecorder event;
+	/** Parties interested in listening to events. */
+	private final List<EventListener> listeners = new ArrayList<EventListener>();
 
-	public SingleEquityClassBroker( final BrokerageFeeStructure fees, final EquityClass type, EventRecorder recorder,
+	public SingleEquityClassBroker( final BrokerageFeeStructure fees, final EquityClass type,
 			final MathContext mathContext ) {
 		this.fees = fees;
 		this.type = type;
 		this.monthlyTradeCounter = new MonthlyRollingCounter();
 		this.equityBalance = BigDecimal.ZERO;
 		this.mathContext = mathContext;
-		this.event = recorder;
 	}
 
 	@Override
@@ -87,7 +89,7 @@ public class SingleEquityClassBroker implements Brokerage {
 		equityBalance = equityBalance.add( volume.getVolume(), mathContext );
 
 		// Record of the buy transaction
-		event.record( new BrokerageAccountEvent( startingEquityBalance, equityBalance, volume.getVolume(),
+		notifyListeners( new BrokerageAccountEvent( startingEquityBalance, equityBalance, volume.getVolume(),
 				BrokerageAccountEventType.BUY, tradeDate, tradeValue, tradeFee ) );
 
 		return tradeValue.add( tradeFee, mathContext );
@@ -109,7 +111,7 @@ public class SingleEquityClassBroker implements Brokerage {
 		final BigDecimal tradeFee = fees.calculateFee( tradeValue, type, tradesThisMonth );
 
 		// Record of the sell transaction
-		event.record( new BrokerageAccountEvent( startingEquityBalance, equityBalance, volume.getVolume(),
+		notifyListeners( new BrokerageAccountEvent( startingEquityBalance, equityBalance, volume.getVolume(),
 				BrokerageAccountEventType.SELL, tradeDate, tradeValue, tradeFee ) );
 
 		return tradeValue.subtract( tradeFee, mathContext );
@@ -126,7 +128,25 @@ public class SingleEquityClassBroker implements Brokerage {
 		return fees.calculateFee( tradeValue, type, monthlyTradeCounter.get( tradeDate ) );
 	}
 
+	/**
+	 * Retrieves the current number of equities held.
+	 * 
+	 * @return the number of single type equities held, including any fractions.
+	 */
 	public BigDecimal getBalance() {
 		return equityBalance;
+	}
+
+	@Override
+	public void addListener( final EventListener listener ) {
+		if (!listeners.contains( listener )) {
+			listeners.add( listener );
+		}
+	}
+
+	private void notifyListeners( final Event event ) {
+		for (final EventListener listener : listeners) {
+			listener.event( event );
+		}
 	}
 }

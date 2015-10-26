@@ -33,12 +33,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.cash.CashAccountListener;
 import com.systematic.trading.backtest.cash.InterestRate;
+import com.systematic.trading.backtest.event.CashEvent;
 import com.systematic.trading.backtest.event.CashEvent.CashEventType;
 import com.systematic.trading.backtest.event.impl.CashAccountEvent;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.event.recorder.EventRecorder;
+import com.systematic.trading.event.recorder.EventListener;
 
 /**
  * Flat interest rates calculated daily, paid monthly.
@@ -59,29 +59,25 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	/** Interest awarded, yet to be realised (paid out). */
 	private BigDecimal escrow;
 
-	/** Record keeper for transactions from the Cash Account. */
-	private final EventRecorder event;
-
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	/** Listeners interested in the account events. */
-	private final List<CashAccountListener> listeners = new ArrayList<CashAccountListener>();
+	/** Parties interested in the account events. */
+	private final List<EventListener> listeners = new ArrayList<EventListener>();
 
 	/**
 	 * @param rate calculated daily to the funds and paid monthly, cannot be <code>null</code>.
 	 * @param openingFunds starting balance for the account, cannot be <code>null</code>.
 	 * @param openingDate date to start calculating interest from, cannot be <code>null</code>.
-	 * @param event record keeper for deposits, withdrawals and interest from the Cash Account.
 	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
 	public CalculatedDailyPaidMonthlyCashAccount( final InterestRate rate, final BigDecimal openingFunds,
-			final LocalDate openingDate, final EventRecorder event, final MathContext mathContext ) {
+			final LocalDate openingDate, final MathContext mathContext ) {
 		this.rate = rate;
 		this.funds = openingFunds;
 		this.lastInterestCalculation = openingDate;
 		this.escrow = BigDecimal.ZERO;
-		this.event = event;
+
 		this.mathContext = mathContext;
 	}
 
@@ -125,7 +121,8 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		firstDayOfNextMonth = firstDayOfNextMonth.plus( Period.ofMonths( 1 ) );
 
 		// Record the credit transaction
-		event.record( new CashAccountEvent( fundsBefore, funds, interest, CashEventType.INTEREST, firstDayOfNextMonth ) );
+		notifyListeners( new CashAccountEvent( fundsBefore, funds, interest, CashEventType.INTEREST,
+				firstDayOfNextMonth ) );
 
 		return firstDayOfNextMonth;
 	}
@@ -142,12 +139,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		funds = funds.subtract( debit );
 
 		// Record the debit transaction
-		event.record( new CashAccountEvent( fundsBefore, funds, debit, CashEventType.DEBIT, transactionDate ) );
-
-		// Notify listeners of the debit event
-		for (final CashAccountListener listner : listeners) {
-			listner.debit( debit, transactionDate );
-		}
+		notifyListeners( new CashAccountEvent( fundsBefore, funds, debit, CashEventType.DEBIT, transactionDate ) );
 	}
 
 	@Override
@@ -157,12 +149,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		funds = funds.add( credit );
 
 		// Record the credit transaction
-		event.record( new CashAccountEvent( fundsBefore, funds, credit, CashEventType.CREDIT, transactionDate ) );
-
-		// Notify listeners of the credit event
-		for (final CashAccountListener listner : listeners) {
-			listner.credit( credit, transactionDate );
-		}
+		notifyListeners( new CashAccountEvent( fundsBefore, funds, credit, CashEventType.CREDIT, transactionDate ) );
 	}
 
 	@Override
@@ -178,19 +165,19 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		funds = funds.add( deposit );
 
 		// Record the credit transaction
-		event.record( new CashAccountEvent( fundsBefore, funds, deposit, CashEventType.DEPOSIT, transactionDate ) );
-
-		// Notify listeners of the deposit event
-		for (final CashAccountListener listner : listeners) {
-			listner.deposit( deposit, transactionDate );
-		}
+		notifyListeners( new CashAccountEvent( fundsBefore, funds, deposit, CashEventType.DEPOSIT, transactionDate ) );
 	}
 
 	@Override
-	public void addListener( final CashAccountListener listener ) {
-
+	public void addListener( final EventListener listener ) {
 		if (!listeners.contains( listener )) {
 			listeners.add( listener );
+		}
+	}
+
+	private void notifyListeners( final CashEvent event ) {
+		for (final EventListener listener : listeners) {
+			listener.event( event );
 		}
 	}
 }

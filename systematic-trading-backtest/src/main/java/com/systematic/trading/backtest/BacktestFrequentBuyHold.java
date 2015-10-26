@@ -32,7 +32,6 @@ import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 import com.systematic.trading.backtest.analysis.NetWorthSummary;
-import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.impl.MonthlyCulmativeReturnOnInvestmentDecorator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
@@ -47,9 +46,9 @@ import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
 import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
 import com.systematic.trading.backtest.event.recorder.data.impl.BacktestTickerSymbolTradingRange;
-import com.systematic.trading.backtest.event.recorder.impl.ConsoleDisplayEventRecorder;
 import com.systematic.trading.backtest.event.recorder.impl.ConsoleDisplayNetWorthSummary;
-import com.systematic.trading.backtest.event.recorder.impl.ConsoleDisplayReturnOnInvestmentRecorder;
+import com.systematic.trading.backtest.event.recorder.impl.ConsoleEventDisplay;
+import com.systematic.trading.backtest.event.recorder.impl.ConsoleReturnOnInvestmentDisplay;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.DateTriggeredEntryLogic;
@@ -60,7 +59,7 @@ import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
-import com.systematic.trading.event.recorder.EventRecorder;
+import com.systematic.trading.event.recorder.EventListener;
 import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
 
 /**
@@ -98,21 +97,22 @@ public class BacktestFrequentBuyHold {
 
 		final EquityClass equityType = EquityClass.STOCK;
 
-		final EventRecorder eventRecorder = new ConsoleDisplayEventRecorder();
+		final ConsoleEventDisplay consoleEventDisplay = new ConsoleEventDisplay();
+		final EventListener eventListener = consoleEventDisplay;
 
 		final LocalDate openingDate = getEarliestDate( tradingData );
 
 		// Cumulative recording of investment progression
-		final ReturnOnInvestmentListener roiEventRecorder = new MonthlyCulmativeReturnOnInvestmentDecorator(
-				startDate, new ConsoleDisplayReturnOnInvestmentRecorder(), MATH_CONTEXT );
-		final ReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( roiEventRecorder,
+		final ReturnOnInvestmentListener roiEventRecorder = new MonthlyCulmativeReturnOnInvestmentDecorator( startDate,
+				new ConsoleReturnOnInvestmentDisplay(), MATH_CONTEXT );
+		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( roiEventRecorder,
 				MATH_CONTEXT );
 
 		// Weekly purchase of $100
 		final Period weekly = Period.ofDays( 7 );
 		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		final EntryLogic entry = new DateTriggeredEntryLogic( oneHundredDollars, eventRecorder, equityType,
-				openingDate, weekly, MATH_CONTEXT );
+		final EntryLogic entry = new DateTriggeredEntryLogic( oneHundredDollars, equityType, openingDate, weekly,
+				MATH_CONTEXT );
 
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();
@@ -121,31 +121,34 @@ public class BacktestFrequentBuyHold {
 		final InterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), MATH_CONTEXT );
 		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
 		final CashAccount underlyingAccount = new CalculatedDailyPaidMonthlyCashAccount( rate, openingFunds,
-				openingDate, eventRecorder, MATH_CONTEXT );
-		underlyingAccount.addListener( roi );
+				openingDate, MATH_CONTEXT );
 		final CashAccount cashAccount = new RegularDepositCashAccountDecorator( oneHundredDollars, underlyingAccount,
 				openingDate, weekly );
+		cashAccount.addListener( eventListener );
+		cashAccount.addListener( roi );
 
 		// ETF Broker with Bell Direct fees
 		final BrokerageFeeStructure tradingFeeStructure = new VanguardRetailFeeStructure( MATH_CONTEXT );
-		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, eventRecorder,
-				MATH_CONTEXT );
+		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, MATH_CONTEXT );
+		((SingleEquityClassBroker) broker).addListener( eventListener );
 
 		final Simulation simulation = new Simulation( startDate, endDate, tradingData, broker, cashAccount, roi, entry,
 				exit );
+		simulation.addListener( eventListener );
 
 		// TODO number of each order type event
 		// TODO % actual return
 		// TODO & yearly return
 
-		eventRecorder.header();
-		eventRecorder.header( tickerSymbolTradingRange );
+		// TODO move these output operations onto another object
+		consoleEventDisplay.header();
+		consoleEventDisplay.header( tickerSymbolTradingRange );
 
 		simulation.run();
 
 		HibernateUtil.getSessionFactory().close();
 
-		eventRecorder.eventSummary();
+		consoleEventDisplay.eventSummary();
 
 		final NetWorthSummary netWorth = new ConsoleDisplayNetWorthSummary( broker, tradingData, cashAccount );
 		netWorth.display();

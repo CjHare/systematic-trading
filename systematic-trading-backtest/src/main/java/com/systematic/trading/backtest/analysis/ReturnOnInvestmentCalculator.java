@@ -27,7 +27,6 @@ package com.systematic.trading.backtest.analysis;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.cash.CashAccountListener;
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
@@ -35,7 +34,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public interface ReturnOnInvestmentCalculator extends CashAccountListener {
+public interface ReturnOnInvestmentCalculator {
 
 	/**
 	 * Updates the recording of the ROI.

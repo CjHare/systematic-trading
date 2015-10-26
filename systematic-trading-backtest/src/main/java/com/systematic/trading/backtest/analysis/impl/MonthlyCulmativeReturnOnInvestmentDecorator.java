@@ -40,7 +40,7 @@ import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener
 public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInvestmentListener {
 
 	/** Context for BigDecimal operations. */
-	private final MathContext context;
+	private final MathContext mathContext;
 
 	/** Deals with the recording the changes in the ROI. */
 	private final ReturnOnInvestmentListener eventRecorer;
@@ -52,10 +52,10 @@ public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInve
 	private BigDecimal cumulativeROI = BigDecimal.ZERO;
 
 	public MonthlyCulmativeReturnOnInvestmentDecorator( final LocalDate startingDate,
-			final ReturnOnInvestmentListener eventRecorder, final MathContext context ) {
+			final ReturnOnInvestmentListener eventRecorder, final MathContext mathContext ) {
 		this.eventRecorer = eventRecorder;
 		this.date = startingDate;
-		this.context = context;
+		this.mathContext = mathContext;
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class MonthlyCulmativeReturnOnInvestmentDecorator implements ReturnOnInve
 		eventRecorer.record( percentageChange, elapsed );
 
 		date = date.plus( elapsed );
-		cumulativeROI = cumulativeROI.add( percentageChange, context );
+		cumulativeROI = cumulativeROI.add( percentageChange, mathContext );
 
 		System.err.println( date + "  " + cumulativeROI );
 

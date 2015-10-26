@@ -26,37 +26,20 @@
 package com.systematic.trading.event.recorder;
 
 import com.systematic.trading.event.Event;
-import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
 
 /**
- * Records interesting events.
+ * Listens for interesting events.
  * <p/>
  * Records can be used to discover what happened during the simulation and any needed statistics.
  * 
  * @author CJ Hare
  */
-public interface EventRecorder {
-	/**
-	 * Display the header for the event recorder.
-	 */
-	void header();
-
-	/**
-	 * Displays the details for a single ticker symbol prior to output of events.
-	 * 
-	 * @param range information summary of the trading data used.
-	 */
-	void header( TickerSymbolTradingRange range );
+public interface EventListener {
 
 	/**
 	 * Records an event to the interest source.
 	 * 
 	 * @param event that which is going to be recorded.
 	 */
-	void record( Event event );
-
-	/**
-	 * Summary of the events encountered is produced.
-	 */
-	void eventSummary();
+	void event( Event event );
 }

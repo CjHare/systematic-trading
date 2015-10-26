@@ -23,53 +23,22 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order.impl;
+package com.systematic.trading.backtest.order.event;
 
-import java.math.BigDecimal;
-
-import com.systematic.trading.backtest.brokerage.BrokerageFees;
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
-import com.systematic.trading.backtest.order.EquityOrder;
-import com.systematic.trading.backtest.order.EquityOrderVolume;
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.backtest.event.OrderEvent;
+import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 
 /**
- * Placing an order to purchase an equity.
+ * Attempted to process an equity order, however there were inadequate funds to execute.
  * 
  * @author CJ Hare
  */
-public class BuyVolumeTomorrowAtOpeningPriceOrder implements EquityOrder {
+public interface EquityOrderInsufficientFundsEvent extends OrderEvent {
 
-	/** Number of equities to purchase. */
-	private final EquityOrderVolume volume;
-
-	public BuyVolumeTomorrowAtOpeningPriceOrder( final EquityOrderVolume volume ) {
-		this.volume = volume;
-	}
-
-	@Override
-	public boolean isValid( final TradingDayPrices todaysTrading ) {
-		// Never expire
-		return true;
-	}
-
-	@Override
-	public boolean areExecutionConditionsMet( final TradingDayPrices todaysTrading ) {
-		// Buy irrespective of the date or price
-		return true;
-	}
-
-	@Override
-	public void execute( final BrokerageFees fees, final BrokerageTransaction broker, final CashAccount cashAccount,
-			final TradingDayPrices todaysTrade ) throws OrderException {
-
-		final BigDecimal totalCost = broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
-		cashAccount.debit( totalCost, todaysTrade.getDate() );
-	}
-
-	public EquityOrderVolume getVolume() {
-		return volume;
-	}
+	/**
+	 * Retrieves the classification of the event.
+	 * 
+	 * @return general category the cash event falls within.
+	 */
+	EquityOrderInsufficientFundsAction getInsufficientFundsAction();
 }

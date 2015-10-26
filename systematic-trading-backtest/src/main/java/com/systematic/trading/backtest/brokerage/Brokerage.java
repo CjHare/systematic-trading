@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.brokerage;
 
+import com.systematic.trading.event.recorder.EventListener;
+
 /**
  * The bringing together of the different aspects of a brokerage house.
  * 
@@ -32,4 +34,10 @@ package com.systematic.trading.backtest.brokerage;
  */
 public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageFees {
 
+	/**
+	 * Adds a listener to the set of parties that receive notifications on event occurrences.
+	 * 
+	 * @param listener another one for the set.
+	 */
+	void addListener( EventListener listener );
 }

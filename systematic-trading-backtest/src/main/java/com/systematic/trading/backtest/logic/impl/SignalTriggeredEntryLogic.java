@@ -35,14 +35,11 @@ import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.collections.LimitedQueue;
-import com.systematic.trading.backtest.event.OrderEvent.EquityOrderType;
-import com.systematic.trading.backtest.event.impl.PlaceOrderTotalCostEvent;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.recorder.EventRecorder;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
@@ -53,9 +50,6 @@ import com.systematic.trading.signals.model.BuySignal;
  * @author CJ Hare
  */
 public class SignalTriggeredEntryLogic implements EntryLogic {
-
-	/** Record keeper for transactions from the Cash Account. */
-	private final EventRecorder event;
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -76,14 +70,12 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	private final BigDecimal minimumTradeValue;
 
 	/**
-	 * @param event recorder of the order creation.
 	 * @param interval time between creation of entry orders.
 	 * @param buyLongAnalysis analyser of trading data to generate buy signals.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public SignalTriggeredEntryLogic( final EventRecorder event, final EquityClass equityType,
-			final BigDecimal minimumTradeValue, final AnalysisBuySignals buyLongAnalysis, final MathContext mathContext ) {
-		this.event = event;
+	public SignalTriggeredEntryLogic( final EquityClass equityType, final BigDecimal minimumTradeValue,
+			final AnalysisBuySignals buyLongAnalysis, final MathContext mathContext ) {
 		this.mathContext = mathContext;
 		this.type = equityType;
 		this.minimumTradeValue = minimumTradeValue;
@@ -142,8 +134,7 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 				closingPrice, mathContext );
 
 		if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
-			event.record( new PlaceOrderTotalCostEvent( amount, tradingDate, EquityOrderType.ENTRY ) );
-			return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, mathContext );
+			return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, tradingDate, mathContext );
 		}
 
 		return null;

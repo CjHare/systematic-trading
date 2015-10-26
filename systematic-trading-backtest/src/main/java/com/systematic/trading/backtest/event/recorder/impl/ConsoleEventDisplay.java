@@ -35,7 +35,7 @@ import com.systematic.trading.backtest.event.BrokerageEvent;
 import com.systematic.trading.backtest.event.CashEvent;
 import com.systematic.trading.backtest.event.OrderEvent;
 import com.systematic.trading.event.Event;
-import com.systematic.trading.event.recorder.EventRecorder;
+import com.systematic.trading.event.recorder.EventListener;
 import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
 
 /**
@@ -43,7 +43,7 @@ import com.systematic.trading.event.recorder.data.TickerSymbolTradingRange;
  * 
  * @author CJ Hare
  */
-public class ConsoleDisplayEventRecorder implements EventRecorder {
+public class ConsoleEventDisplay implements EventListener {
 
 	private final List<BrokerageEvent> brokerage;
 	private final List<CashEvent> cash;
@@ -51,14 +51,14 @@ public class ConsoleDisplayEventRecorder implements EventRecorder {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
-	public ConsoleDisplayEventRecorder() {
+	public ConsoleEventDisplay() {
 		this.brokerage = new ArrayList<BrokerageEvent>();
 		this.cash = new ArrayList<CashEvent>();
 		this.orders = new ArrayList<OrderEvent>();
 	}
 
 	@Override
-	public void record( final Event event ) {
+	public void event( final Event event ) {
 
 		if (event instanceof BrokerageEvent) {
 			brokerage.add( (BrokerageEvent) event );
@@ -73,7 +73,6 @@ public class ConsoleDisplayEventRecorder implements EventRecorder {
 		System.out.println( event );
 	}
 
-	@Override
 	public void eventSummary() {
 		System.out.println( "\n" );
 		System.out.println( "#####################" );
@@ -87,8 +86,33 @@ public class ConsoleDisplayEventRecorder implements EventRecorder {
 
 	private void summariseOrderEvents( final List<OrderEvent> orders ) {
 
+		int entryCount = 0, deleteEntryCount = 0, exitCount = 0, deleteExitCount = 0;
+
+		for (final OrderEvent event : orders) {
+			switch (event.getType()) {
+				case ENTRY:
+					entryCount++;
+					break;
+				case DELETE_ENTRY:
+					deleteEntryCount++;
+					break;
+				case EXIT:
+					exitCount++;
+					break;
+				case DELETE_EXIT:
+					deleteExitCount++;
+					break;
+				default:
+					throw new IllegalArgumentException( String.format( "Order event type %s is unexpected",
+							event.getType() ) );
+			}
+		}
+
 		System.out.println( "\n=== Order events ===" );
-		System.out.println( String.format( "# Order events: %s", orders.size() ) );
+		System.out.println( String.format( "# Entry Order events: %s", entryCount ) );
+		System.out.println( String.format( "# Delete Entry Order events: %s", deleteEntryCount ) );
+		System.out.println( String.format( "# Exit Order events: %s", exitCount ) );
+		System.out.println( String.format( "# Delete Exit Order events: %s", deleteExitCount ) );
 	}
 
 	private void summariseCashAccount( final List<CashEvent> cash ) {
@@ -155,7 +179,6 @@ public class ConsoleDisplayEventRecorder implements EventRecorder {
 		System.out.println( String.format( "Total amount paid in brokerage: %s", sumFees ) );
 	}
 
-	@Override
 	public void header() {
 		System.out.println( "\n" );
 		System.out.println( "#######################" );
@@ -164,7 +187,6 @@ public class ConsoleDisplayEventRecorder implements EventRecorder {
 		System.out.println( "\n" );
 	}
 
-	@Override
 	public void header( final TickerSymbolTradingRange range ) {
 
 		System.out.println( String.format( "Data set for %s from %s to %s", range.getTickerSymbol(),

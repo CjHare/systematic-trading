@@ -29,7 +29,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -46,21 +45,17 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.OrderEvent.EquityOrderType;
-import com.systematic.trading.backtest.event.impl.PlaceOrderTotalCostEvent;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.event.recorder.EventRecorder;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
@@ -77,9 +72,6 @@ public class SignalTriggeredEntryLogicTest {
 	private static final EquityClass EQUITY_STOCK = EquityClass.STOCK;
 
 	@Mock
-	private EventRecorder event;
-
-	@Mock
 	private BrokerageFees fees;
 
 	@Mock
@@ -94,7 +86,7 @@ public class SignalTriggeredEntryLogicTest {
 	@Test
 	public void actionOnInsufficientFunds() {
 		final BigDecimal minimumTradeValue = BigDecimal.ONE;
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( event, EQUITY_STOCK, minimumTradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds( mock( EquityOrder.class ) );
@@ -102,7 +94,6 @@ public class SignalTriggeredEntryLogicTest {
 		assertEquals( EquityOrderInsufficientFundsAction.DELETE, action );
 		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
 		verifyNoMoreInteractions( buyLongAnalysis );
-		verifyZeroInteractions( event );
 		verifyZeroInteractions( fees );
 		verifyZeroInteractions( cashAccount );
 	}
@@ -110,7 +101,7 @@ public class SignalTriggeredEntryLogicTest {
 	@Test
 	public void updateNoOrder() throws TooFewDataPoints {
 		final BigDecimal minimumTradeValue = BigDecimal.ONE;
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( event, EQUITY_STOCK, minimumTradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -119,7 +110,6 @@ public class SignalTriggeredEntryLogicTest {
 		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
 		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
 		verifyNoMoreInteractions( buyLongAnalysis );
-		verifyZeroInteractions( event );
 		verifyZeroInteractions( fees );
 		verifyZeroInteractions( cashAccount );
 	}
@@ -129,7 +119,7 @@ public class SignalTriggeredEntryLogicTest {
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenThrow(
 				new TooFewDataPoints( "expected exception" ) );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( event, EQUITY_STOCK, BigDecimal.ZERO,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, BigDecimal.ZERO,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -138,7 +128,6 @@ public class SignalTriggeredEntryLogicTest {
 		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
 		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
 		verifyNoMoreInteractions( buyLongAnalysis );
-		verifyZeroInteractions( event );
 		verifyZeroInteractions( fees );
 		verifyZeroInteractions( cashAccount );
 	}
@@ -159,7 +148,7 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( now ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( event, EQUITY_STOCK, minimumTradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -170,7 +159,6 @@ public class SignalTriggeredEntryLogicTest {
 		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verifyNoMoreInteractions( fees );
-		verifyZeroInteractions( event );
 		verify( cashAccount, atLeastOnce() ).getBalance();
 		verifyNoMoreInteractions( cashAccount );
 	}
@@ -185,7 +173,7 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( LocalDate.now() ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( event, EQUITY_STOCK, BigDecimal.ONE,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, BigDecimal.ONE,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -195,7 +183,6 @@ public class SignalTriggeredEntryLogicTest {
 		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verifyZeroInteractions( fees );
-		verifyZeroInteractions( event );
 		verify( cashAccount, atLeastOnce() ).getBalance();
 		verifyNoMoreInteractions( cashAccount );
 	}
@@ -217,7 +204,7 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( now ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( event, EQUITY_STOCK, minimumTradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -230,9 +217,6 @@ public class SignalTriggeredEntryLogicTest {
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
 		verifyNoMoreInteractions( fees );
-		verify( event ).record(
-				argThat( new PlaceOrderTotalCostEventMatcher( accountBalance, now, EquityOrderType.ENTRY ) ) );
-		verifyNoMoreInteractions( event );
 		verify( cashAccount, atLeastOnce() ).getBalance();
 		verifyNoMoreInteractions( cashAccount );
 	}
@@ -254,48 +238,20 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( now ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( event, EQUITY_STOCK, minimumTradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		logic.update( fees, cashAccount, data );
 		final EquityOrder order = logic.update( fees, cashAccount, data );
 
 		assertNull( order );
-		verify( buyLongAnalysis, times(2) ).analyse( any( TradingDayPrices[].class ) );
+		verify( buyLongAnalysis, times( 2 ) ).analyse( any( TradingDayPrices[].class ) );
 		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
 		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
 		verifyNoMoreInteractions( fees );
-		verify( event ).record(
-				argThat( new PlaceOrderTotalCostEventMatcher( accountBalance, now, EquityOrderType.ENTRY ) ) );
-		verifyNoMoreInteractions( event );
 		verify( cashAccount, atLeastOnce() ).getBalance();
 		verifyNoMoreInteractions( cashAccount );
-	}
-
-	class PlaceOrderTotalCostEventMatcher extends ArgumentMatcher<PlaceOrderTotalCostEvent> {
-		final BigDecimal totalCost;
-		final LocalDate date;
-		final EquityOrderType type;
-
-		public PlaceOrderTotalCostEventMatcher( final BigDecimal totalCost, final LocalDate date,
-				final EquityOrderType type ) {
-			this.totalCost = totalCost;
-			this.date = date;
-			this.type = type;
-		}
-
-		@Override
-		public boolean matches( final Object o ) {
-
-			if (o instanceof PlaceOrderTotalCostEvent) {
-				final PlaceOrderTotalCostEvent order = (PlaceOrderTotalCostEvent) o;
-				return (totalCost.compareTo( order.getTotalCost() ) == 0) && (date.isEqual( order.getDate() ))
-						&& (type.equals( order.getType() ));
-			}
-
-			return false;
-		}
 	}
 }

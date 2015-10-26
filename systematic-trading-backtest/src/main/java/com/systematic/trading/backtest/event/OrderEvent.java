@@ -40,6 +40,15 @@ public interface OrderEvent extends Event {
 	 */
 	public enum EquityOrderType {
 		ENTRY,
-		EXIT
+		EXIT,
+		DELETE_ENTRY,
+		DELETE_EXIT
 	}
+
+	/**
+	 * Retrieve the type of the order.
+	 * 
+	 * @return purpose of the order that triggered the event recording.
+	 */
+	EquityOrderType getType();
 }
