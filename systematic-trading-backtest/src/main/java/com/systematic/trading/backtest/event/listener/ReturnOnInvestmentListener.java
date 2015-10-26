@@ -26,7 +26,7 @@
 package com.systematic.trading.backtest.event.listener;
 
 import java.math.BigDecimal;
-import java.time.Period;
+import java.time.LocalDate;
 
 /**
  * Records the return on investment events.
@@ -39,7 +39,9 @@ public interface ReturnOnInvestmentListener {
 	 * Records a change in the state of the return on investment
 	 * 
 	 * @param percentageChange amount the net worth has relatively changed by in the given time.
-	 * @param elapsed amount of time elapsed.
+	 * @param startDateInclusive the beginning of the elapsed time the percentage change occurred.
+	 * @param endDateInclusive the last day of the elapsed time where the percentage change
+	 *            occurred.
 	 */
-	void record( BigDecimal percentageChange, Period elapsed );
+	void record( BigDecimal percentageChange, LocalDate startDateInclusive, LocalDate endDateInclusive );
 }

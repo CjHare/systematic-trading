@@ -32,6 +32,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculatorListener;
 import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
 
 /**
@@ -39,7 +40,7 @@ import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener
  * 
  * @author CJ Hare
  */
-public class YearlyCulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentListener {
+public class PeriodicCulmativeReturnOnInvestmentCalculatorListener implements ReturnOnInvestmentCalculatorListener {
 
 	/** Context for BigDecimal operations. */
 	private final MathContext mathContext;
@@ -47,33 +48,46 @@ public class YearlyCulmativeReturnOnInvestmentCalculator implements ReturnOnInve
 	/** Parties interested in ROI events. */
 	private final List<ReturnOnInvestmentListener> listeners = new ArrayList<ReturnOnInvestmentListener>();
 
-	/** The running date for calculating when the months have passed. */
+	/** Aggregates the cumulative ROI for every summary period. */
+	private final Period summaryPeriod;
+
+	/** Date of the last summary event. */
+	private LocalDate lastSummaryDate, nextSummaryDate;
+
+	/** The running date for calculating when the summary period has passed. */
 	private LocalDate date;
 
 	/** Running total of the ROI for the month so far. */
 	private BigDecimal cumulativeROI = BigDecimal.ZERO;
 
-	public YearlyCulmativeReturnOnInvestmentCalculator( final LocalDate startingDate, final MathContext mathContext ) {
+	public PeriodicCulmativeReturnOnInvestmentCalculatorListener( final LocalDate startingDate,
+			final Period summaryPeriod, final MathContext mathContext ) {
 		this.date = startingDate;
 		this.mathContext = mathContext;
+		this.summaryPeriod = summaryPeriod;
+
+		lastSummaryDate = startingDate;
+		nextSummaryDate = lastSummaryDate.plus( summaryPeriod );
 	}
 
 	@Override
 	public void record( final BigDecimal percentageChange, final Period elapsed ) {
 
-		final int yearBeforeUpdate = date.getYear();
 		date = date.plus( elapsed );
 		cumulativeROI = cumulativeROI.add( percentageChange, mathContext );
 
-		if (yearBeforeUpdate < date.getYear()) {
-			notifyListeners( cumulativeROI, Period.ofYears( 1 ) );
+		if (date.isAfter( nextSummaryDate ) || date.isEqual( nextSummaryDate )) {
+			notifyListeners( cumulativeROI, lastSummaryDate, date );
 			cumulativeROI = BigDecimal.ZERO;
+			lastSummaryDate = date;
+			nextSummaryDate = nextSummaryDate.plus( summaryPeriod );
 		}
 	}
 
-	private void notifyListeners( final BigDecimal percentageChange, final Period elapsed ) {
+	private void notifyListeners( final BigDecimal percentageChange, final LocalDate startDateInclusive,
+			final LocalDate endFDateInclusive ) {
 		for (final ReturnOnInvestmentListener listener : listeners) {
-			listener.record( percentageChange, elapsed );
+			listener.record( percentageChange, startDateInclusive, endFDateInclusive );
 		}
 	}
 

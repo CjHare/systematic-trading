@@ -23,41 +23,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event.recorder.impl;
+package com.systematic.trading.backtest.analysis;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
-
 /**
- * Outputs the ROI to the console.
- * 
  * @author CJ Hare
  */
-public class ConsoleReturnOnInvestmentDisplay implements ReturnOnInvestmentListener {
+public interface ReturnOnInvestmentCalculatorListener {
 
-	@Override
-	public void record( final BigDecimal percentageChange, final LocalDate startDateInclusive,
-			final LocalDate endDateExclusive ) {
-
-		final Period elapsed = Period.between( startDateInclusive, endDateExclusive );
-
-		if (elapsed.getDays() > 0) {
-			System.out.println( String.format( "%s percent over %s day(s), from %s to %s", percentageChange,
-					elapsed.getDays(), startDateInclusive, endDateExclusive ) );
-		}
-
-		if (elapsed.getMonths() > 0) {
-			System.out.println( String.format( "%s percent over %s month(s), from %s to %s", percentageChange,
-					elapsed.getMonths(), startDateInclusive, endDateExclusive ) );
-		}
-
-		if (elapsed.getYears() > 0) {
-			System.out.println( String.format( "%s percent over %s year(s), from %s to %s", percentageChange,
-					elapsed.getYears(), startDateInclusive, endDateExclusive ) );
-		}
-
-	}
+	/**
+	 * Records a change in the state of the return on investment
+	 * 
+	 * @param percentageChange amount the net worth has relatively changed by in the given time.
+	 * @param elapsed the amount of time over which the percentage change occurred.
+	 */
+	void record( BigDecimal percentageChange, Period elapsed );
 }

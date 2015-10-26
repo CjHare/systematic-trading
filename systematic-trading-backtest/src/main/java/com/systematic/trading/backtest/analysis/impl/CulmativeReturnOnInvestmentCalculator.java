@@ -33,21 +33,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculatorListener;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.event.CashEvent;
 import com.systematic.trading.backtest.event.CashEvent.CashEventType;
-import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.Event;
-import com.systematic.trading.event.recorder.EventListener;
 
 /**
  * Calculates and records the return on investment (ROI) at periodic intervals.
  * 
  * @author CJ Hare
  */
-public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator, EventListener {
+public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator {
 
 	/** Used for the conversion to percentage. */
 	private static BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
@@ -56,7 +55,7 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	private final MathContext mathContext;
 
 	/** Parties interested in ROI events. */
-	private final List<ReturnOnInvestmentListener> listeners = new ArrayList<ReturnOnInvestmentListener>();
+	private final List<ReturnOnInvestmentCalculatorListener> listeners = new ArrayList<ReturnOnInvestmentCalculatorListener>();
 
 	/** Net Worth as recorded on previous update. */
 	private BigDecimal previousNetWorth;
@@ -81,12 +80,12 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	}
 
 	private void notifyListeners( final BigDecimal percentageChange, final Period elapsed ) {
-		for (final ReturnOnInvestmentListener listener : listeners) {
+		for (final ReturnOnInvestmentCalculatorListener listener : listeners) {
 			listener.record( percentageChange, elapsed );
 		}
 	}
 
-	public void addListener( final ReturnOnInvestmentListener listener ) {
+	public void addListener( final ReturnOnInvestmentCalculatorListener listener ) {
 		if (!listeners.contains( listener )) {
 			listeners.add( listener );
 		}

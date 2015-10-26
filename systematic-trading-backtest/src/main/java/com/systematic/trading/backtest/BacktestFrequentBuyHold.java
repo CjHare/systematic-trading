@@ -33,8 +33,7 @@ import java.time.temporal.ChronoUnit;
 
 import com.systematic.trading.backtest.analysis.NetWorthSummary;
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.impl.MonthlyCulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.impl.YearlyCulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.impl.PeriodicCulmativeReturnOnInvestmentCalculatorListener;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
@@ -106,15 +105,18 @@ public class BacktestFrequentBuyHold {
 		// Cumulative recording of investment progression
 		final ReturnOnInvestmentListener roiListener = new ConsoleReturnOnInvestmentDisplay();
 		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
-		final MonthlyCulmativeReturnOnInvestmentCalculator monthlyRoiCalculator = new MonthlyCulmativeReturnOnInvestmentCalculator(
-				startDate, MATH_CONTEXT );
-		final YearlyCulmativeReturnOnInvestmentCalculator yearlyRoiCalculator = new YearlyCulmativeReturnOnInvestmentCalculator(
-				startDate, MATH_CONTEXT );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener dailyRoiCalculator = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				startDate, Period.ofDays( 1 ), MATH_CONTEXT );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener monthlyRoiCalculator = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				startDate, Period.ofMonths( 1 ), MATH_CONTEXT );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener yearlyRoiCalculator = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				startDate, Period.ofYears( 1 ), MATH_CONTEXT );
 		yearlyRoiCalculator.addListener( roiListener );
 		monthlyRoiCalculator.addListener( roiListener );
+		dailyRoiCalculator.addListener( roiListener );
+		roi.addListener( dailyRoiCalculator );
 		roi.addListener( monthlyRoiCalculator );
 		roi.addListener( yearlyRoiCalculator );
-		roi.addListener( roiListener );
 
 		// Weekly purchase of $100
 		final Period weekly = Period.ofDays( 7 );
