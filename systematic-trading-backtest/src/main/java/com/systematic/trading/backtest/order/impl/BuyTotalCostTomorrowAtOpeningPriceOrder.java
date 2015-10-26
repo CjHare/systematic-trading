@@ -90,9 +90,13 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 				openingPrice, mathContext );
 
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( numberOfEquities );
-		final BigDecimal actualTotalCost = broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
+
+		final BigDecimal actualTotalCost = broker.calculateBuy( todaysTrade.getOpeningPrice(), volume,
+				todaysTrade.getDate() );
 
 		cashAccount.debit( actualTotalCost, todaysTrade.getDate() );
+
+		broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
 	}
 
 	@Override

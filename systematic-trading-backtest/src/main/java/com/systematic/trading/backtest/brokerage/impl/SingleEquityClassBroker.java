@@ -78,7 +78,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	}
 
 	@Override
-	public BigDecimal buy( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
+	public void buy( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
 
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), mathContext );
 		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
@@ -91,8 +91,6 @@ public class SingleEquityClassBroker implements Brokerage {
 		// Record of the buy transaction
 		notifyListeners( new BrokerageAccountEvent( startingEquityBalance, equityBalance, volume.getVolume(),
 				BrokerageAccountEventType.BUY, tradeDate, tradeValue, tradeFee ) );
-
-		return tradeValue.add( tradeFee, mathContext );
 	}
 
 	@Override
@@ -148,5 +146,14 @@ public class SingleEquityClassBroker implements Brokerage {
 		for (final EventListener listener : listeners) {
 			listener.event( event );
 		}
+	}
+
+	@Override
+	public BigDecimal calculateBuy( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
+		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), mathContext );
+		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
+		final BigDecimal tradeFee = fees.calculateFee( tradeValue, type, tradesThisMonth );
+
+		return tradeValue.add( tradeFee, mathContext );
 	}
 }

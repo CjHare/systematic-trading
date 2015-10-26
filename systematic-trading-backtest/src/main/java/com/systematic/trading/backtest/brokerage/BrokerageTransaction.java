@@ -40,6 +40,16 @@ import com.systematic.trading.data.price.Price;
 public interface BrokerageTransaction {
 
 	/**
+	 * Calculates the total cost of performing a purchase.
+	 * 
+	 * @param price mean price paid for the equity.
+	 * @param volume number of equities being purchased.
+	 * @param tradeDate date of execution.
+	 * @return total cost of the trade to be deducted from the cash account.
+	 */
+	BigDecimal calculateBuy( Price price, EquityOrderVolume volume, LocalDate tradeDate );
+
+	/**
 	 * Performs a purchase, applying the corresponding brokers fees.
 	 * 
 	 * @param price mean price paid for the equity.
@@ -47,7 +57,7 @@ public interface BrokerageTransaction {
 	 * @param tradeDate date of execution.
 	 * @return total cost of the trade to be deducted from the cash account.
 	 */
-	BigDecimal buy( Price price, EquityOrderVolume volume, LocalDate tradeDate );
+	void buy( Price price, EquityOrderVolume volume, LocalDate tradeDate );
 
 	/**
 	 * Performs a liquidation, applying the corresponding brokers fees.
