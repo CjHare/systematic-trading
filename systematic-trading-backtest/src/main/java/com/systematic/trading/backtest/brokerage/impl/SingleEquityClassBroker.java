@@ -41,7 +41,7 @@ import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.data.price.Price;
 import com.systematic.trading.event.Event;
-import com.systematic.trading.event.recorder.EventListener;
+import com.systematic.trading.event.EventListener;
 
 /**
  * Handles execution of trades and maintains the balance of equities.

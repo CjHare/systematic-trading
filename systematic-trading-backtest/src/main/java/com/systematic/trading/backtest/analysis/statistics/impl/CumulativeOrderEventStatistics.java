@@ -23,25 +23,62 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event.listener;
+package com.systematic.trading.backtest.analysis.statistics.impl;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import com.systematic.trading.backtest.analysis.statistics.OrderEventStatistics;
+import com.systematic.trading.backtest.event.OrderEvent;
 
 /**
- * Records the return on investment events.
+ * Cumulative recording of the order events for statistical purposes.
  * 
  * @author CJ Hare
  */
-public interface ReturnOnInvestmentListener {
+public class CumulativeOrderEventStatistics implements OrderEventStatistics {
 
-	/**
-	 * Records a change in the state of the return on investment
-	 * 
-	 * @param percentageChange amount the net worth has relatively changed by in the given time.
-	 * @param startDateInclusive the beginning of the elapsed time the percentage change occurred.
-	 * @param endDateInclusive the last day of the elapsed time where the percentage change
-	 *            occurred.
-	 */
-	void record( BigDecimal percentageChange, LocalDate startDateInclusive, LocalDate endDateInclusive );
+	private int entryEventCount = 0;
+	private int deleteEntryEventCount = 0;
+	private int exitEventCount = 0;
+	private int deleteExitEventCount = 0;
+
+	@Override
+	public void event( final OrderEvent event ) {
+
+		switch (event.getType()) {
+			case ENTRY:
+				entryEventCount++;
+				break;
+			case DELETE_ENTRY:
+				deleteEntryEventCount++;
+				break;
+			case EXIT:
+				exitEventCount++;
+				break;
+			case DELETE_EXIT:
+				deleteExitEventCount++;
+				break;
+			default:
+				throw new IllegalArgumentException(
+						String.format( "Order event type %s is unexpected", event.getType() ) );
+		}
+	}
+
+	@Override
+	public int getEntryEventCount() {
+		return entryEventCount;
+	}
+
+	@Override
+	public int getDeleteEntryEventCount() {
+		return deleteEntryEventCount;
+	}
+
+	@Override
+	public int getExitEventCount() {
+		return exitEventCount;
+	}
+
+	@Override
+	public int getDeleteExitEventCount() {
+		return deleteExitEventCount;
+	}
 }

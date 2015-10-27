@@ -23,21 +23,22 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage;
+package com.systematic.trading.event;
 
-import com.systematic.trading.event.EventListener;
 
 /**
- * The bringing together of the different aspects of a brokerage house.
+ * Listens for interesting events.
+ * <p/>
+ * Records can be used to discover what happened during the simulation and any needed statistics.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageFees {
+public interface EventListener {
 
 	/**
-	 * Adds a listener to the set of parties that receive notifications on event occurrences.
+	 * Records an event to the interest source.
 	 * 
-	 * @param listener another one for the set.
+	 * @param event that which is going to be recorded.
 	 */
-	void addListener( EventListener listener );
+	void event( Event event );
 }

@@ -23,21 +23,39 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage;
+package com.systematic.trading.backtest.display.console;
 
-import com.systematic.trading.event.EventListener;
+import java.text.DecimalFormat;
+import java.time.temporal.ChronoUnit;
+
+import com.systematic.trading.event.data.TickerSymbolTradingRange;
 
 /**
- * The bringing together of the different aspects of a brokerage house.
+ * Displays the header text in the console.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageFees {
+public class ConsoleHeaderDisplay {
 
-	/**
-	 * Adds a listener to the set of parties that receive notifications on event occurrences.
-	 * 
-	 * @param listener another one for the set.
-	 */
-	void addListener( EventListener listener );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+
+	public void displayHeader( final TickerSymbolTradingRange range ) {
+
+		System.out.println( "\n" );
+		System.out.println( "#######################" );
+		System.out.println( "### Backtest Events ###" );
+		System.out.println( "#######################" );
+		System.out.println( "\n" );
+
+		System.out.println( String.format( "Data set for %s from %s to %s", range.getTickerSymbol(),
+				range.getStartDate(), range.getEndDate() ) );
+
+		final long daysBetween = ChronoUnit.DAYS.between( range.getStartDate(), range.getEndDate() );
+		final double percentageTradingDays = ((double) range.getNumberOfTradingDays() / daysBetween) * 100;
+
+		System.out.println( String.format( "# trading days: %s over %s days (%s percentage trading days)",
+				range.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
+
+		System.out.println( "\n" );
+	}
 }

@@ -23,21 +23,51 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage;
+package com.systematic.trading.backtest.event.impl;
 
-import com.systematic.trading.event.EventListener;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
 
 /**
- * The bringing together of the different aspects of a brokerage house.
+ * Concrete implementation of the ROI event.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageFees {
+public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
+
+	private final BigDecimal percentageChange;
+	private final LocalDate startDateInclusive;
+	private final LocalDate endDateInclusive;
 
 	/**
-	 * Adds a listener to the set of parties that receive notifications on event occurrences.
+	 * Records a change in the state of the return on investment
 	 * 
-	 * @param listener another one for the set.
+	 * @param percentageChange amount the net worth has relatively changed by in the given time.
+	 * @param startDateInclusive the beginning of the elapsed time the percentage change occurred.
+	 * @param endDateInclusive the last day of the elapsed time where the percentage change
+	 *            occurred.
 	 */
-	void addListener( EventListener listener );
+	public ReturnOnInvestmentEventImpl( final BigDecimal percentageChange, final LocalDate startDateInclusive,
+			final LocalDate endDateInclusiv ) {
+		this.percentageChange = percentageChange;
+		this.startDateInclusive = startDateInclusive;
+		this.endDateInclusive = endDateInclusiv;
+	}
+
+	@Override
+	public BigDecimal getPercentageChange() {
+		return percentageChange;
+	}
+
+	@Override
+	public LocalDate getStartDateInclusive() {
+		return startDateInclusive;
+	}
+
+	@Override
+	public LocalDate getEndDateInclusive() {
+		return endDateInclusive;
+	}
 }

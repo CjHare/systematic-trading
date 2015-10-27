@@ -23,13 +23,12 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event.recorder.impl;
+package com.systematic.trading.backtest.display.console;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 import com.systematic.trading.backtest.analysis.CumulativeReturnOnInvestment;
-import com.systematic.trading.backtest.analysis.NetWorthSummary;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.data.TradingDayPrices;
@@ -39,7 +38,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public class ConsoleDisplayNetWorthSummary implements NetWorthSummary {
+public class ConsoleNetWorthSummaryDisplay {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
@@ -48,7 +47,7 @@ public class ConsoleDisplayNetWorthSummary implements NetWorthSummary {
 	private final CashAccount cashAccount;
 	private final CumulativeReturnOnInvestment cumulativeRoi;
 
-	public ConsoleDisplayNetWorthSummary( final Brokerage broker, final TradingDayPrices[] tradingData,
+	public ConsoleNetWorthSummaryDisplay( final Brokerage broker, final TradingDayPrices[] tradingData,
 			final CashAccount cashAccount, final CumulativeReturnOnInvestment cumulativeRoi ) {
 		this.broker = broker;
 		this.tradingData = tradingData;
@@ -56,8 +55,7 @@ public class ConsoleDisplayNetWorthSummary implements NetWorthSummary {
 		this.cumulativeRoi = cumulativeRoi;
 	}
 
-	@Override
-	public void display() {
+	public void displayNetWorth() {
 
 		final TradingDayPrices latest = getLatestDataPoint( tradingData );
 		final BigDecimal balance = broker.getEquityBalance();

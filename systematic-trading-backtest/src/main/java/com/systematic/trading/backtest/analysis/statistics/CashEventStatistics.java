@@ -23,17 +23,65 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.analysis;
+package com.systematic.trading.backtest.analysis.statistics;
+
+import java.math.BigDecimal;
+
+import com.systematic.trading.backtest.event.CashEvent;
 
 /**
- * Progression of net worth during the ages.
+ * Statistics over the occurring cash events.
  * 
  * @author CJ Hare
  */
-public interface NetWorthSummary {
+public interface CashEventStatistics {
 
 	/**
-	 * Summary of the current Net Worth.
+	 * Cash event that merits the attention of the statistical recording.
+	 * 
+	 * @param event details of the cash event to record.
 	 */
-	void display();
+	void event( CashEvent event );
+
+	/**
+	 * Retrieves the sum of the deposit events.
+	 * 
+	 * @return total of the deposit events currently received.
+	 */
+	BigDecimal getAmountDeposited();
+
+	/**
+	 * Retrieves the sum of the interest events.
+	 * 
+	 * @return total of the interest events currently received.
+	 */
+	BigDecimal getInterestEarned();
+
+	/**
+	 * Number of credit transactions recorded.
+	 * 
+	 * @return number of cash credit actions carried out.
+	 */
+	int getCreditEventCount();
+
+	/**
+	 * Number of debit transactions recorded.
+	 * 
+	 * @return number of cash bedbit actions carried out.
+	 */
+	int getDebitEventCount();
+
+	/**
+	 * Number of deposit transactions recorded.
+	 * 
+	 * @return number of cash desposit actions carried out.
+	 */
+	int getDepositEventCount();
+
+	/**
+	 * Number of interest transactions recorded.
+	 * 
+	 * @return number of interest credit actions carried out.
+	 */
+	int getInterestEventCount();
 }

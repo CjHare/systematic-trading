@@ -23,23 +23,44 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.event.recorder;
+package com.systematic.trading.backtest.analysis.statistics;
 
-import com.systematic.trading.event.Event;
+import java.math.BigDecimal;
+
+import com.systematic.trading.backtest.event.BrokerageEvent;
 
 /**
- * Listens for interesting events.
- * <p/>
- * Records can be used to discover what happened during the simulation and any needed statistics.
+ * Statistics over the occurring brokerage events.
  * 
  * @author CJ Hare
  */
-public interface EventListener {
+public interface BrokerageEventStatistics {
 
 	/**
-	 * Records an event to the interest source.
+	 * Brokerage event has occurred and merits recording.
 	 * 
-	 * @param event that which is going to be recorded.
+	 * @param event brokerage related event warranting attention of the statistics.
 	 */
-	void event( Event event );
+	void event( BrokerageEvent event );
+
+	/**
+	 * The amount to date paid in brokerage fees.
+	 * 
+	 * @return sum of the brokerage fees for the purchases and sales performed.
+	 */
+	BigDecimal getBrokerageFees();
+
+	/**
+	 * Number of purchase transactions performed.
+	 * 
+	 * @return number of brokerage purchase actions carried out.
+	 */
+	int getBuyEventCount();
+
+	/**
+	 * Number of sale transactions performed.
+	 * 
+	 * @return number of brokerage sale actions carried out.
+	 */
+	int getSellEventCount();
 }

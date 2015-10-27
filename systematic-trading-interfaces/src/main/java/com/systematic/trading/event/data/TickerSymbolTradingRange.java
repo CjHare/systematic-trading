@@ -23,21 +23,42 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage;
+package com.systematic.trading.event.data;
 
-import com.systematic.trading.event.EventListener;
+import java.time.LocalDate;
 
 /**
- * The bringing together of the different aspects of a brokerage house.
+ * Details for the trading range, per a specific ticker symbol.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageFees {
+public interface TickerSymbolTradingRange {
 
 	/**
-	 * Adds a listener to the set of parties that receive notifications on event occurrences.
+	 * The ticker symbol for the equity.
 	 * 
-	 * @param listener another one for the set.
+	 * @return symbol as defined by the underlying source for the trading data.
 	 */
-	void addListener( EventListener listener );
+	String getTickerSymbol();
+
+	/**
+	 * Marks the beginning of the trading data range.
+	 * 
+	 * @return Inclusive date for the beginning of the data set.
+	 */
+	LocalDate getStartDate();
+
+	/**
+	 * Marks the end of the trading data range.
+	 * 
+	 * @return Inclusive date for the end of the data set.
+	 */
+	LocalDate getEndDate();
+
+	/**
+	 * Retrieve the number of trading days data.
+	 * 
+	 * @return the number of trading data points within the defined start and end dates.
+	 */
+	int getNumberOfTradingDays();
 }

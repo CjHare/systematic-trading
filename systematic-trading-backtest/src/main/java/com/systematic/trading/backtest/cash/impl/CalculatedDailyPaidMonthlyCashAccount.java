@@ -38,7 +38,7 @@ import com.systematic.trading.backtest.event.CashEvent;
 import com.systematic.trading.backtest.event.CashEvent.CashEventType;
 import com.systematic.trading.backtest.event.impl.CashAccountEvent;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.event.recorder.EventListener;
+import com.systematic.trading.event.EventListener;
 
 /**
  * Flat interest rates calculated daily, paid monthly.

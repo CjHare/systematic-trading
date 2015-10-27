@@ -23,42 +23,54 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.event.recorder.data;
+package com.systematic.trading.backtest.analysis.statistics.impl;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+
+import com.systematic.trading.backtest.analysis.statistics.BrokerageEventStatistics;
+import com.systematic.trading.backtest.event.BrokerageEvent;
 
 /**
- * Details for the trading range, per a specific ticker symbol.
+ * Cumulative recording of the brokerage events for statistical purposes.
  * 
  * @author CJ Hare
  */
-public interface TickerSymbolTradingRange {
+public class CumulativeBrokerageEventStatistics implements BrokerageEventStatistics {
 
-	/**
-	 * The ticker symbol for the equity.
-	 * 
-	 * @return symbol as defined by the underlying source for the trading data.
-	 */
-	String getTickerSymbol();
+	private BigDecimal brokerageFees = BigDecimal.ZERO;
+	private int buyEventCount = 0;
+	private int sellEventCount = 0;
 
-	/**
-	 * Marks the beginning of the trading data range.
-	 * 
-	 * @return Inclusive date for the beginning of the data set.
-	 */
-	LocalDate getStartDate();
+	@Override
+	public void event( final BrokerageEvent event ) {
 
-	/**
-	 * Marks the end of the trading data range.
-	 * 
-	 * @return Inclusive date for the end of the data set.
-	 */
-	LocalDate getEndDate();
+		brokerageFees = brokerageFees.add( event.getTransactionFee() );
 
-	/**
-	 * Retrieve the number of trading days data.
-	 * 
-	 * @return the number of trading data points within the defined start and end dates.
-	 */
-	int getNumberOfTradingDays();
+		switch (event.getType()) {
+			case BUY:
+				buyEventCount++;
+				break;
+			case SELL:
+				sellEventCount++;
+				break;
+			default:
+				throw new IllegalArgumentException( String.format( "Brokerage event type %s is unexpected",
+						event.getType() ) );
+		}
+	}
+
+	@Override
+	public BigDecimal getBrokerageFees() {
+		return brokerageFees;
+	}
+
+	@Override
+	public int getBuyEventCount() {
+		return buyEventCount;
+	}
+
+	@Override
+	public int getSellEventCount() {
+		return sellEventCount;
+	}
 }

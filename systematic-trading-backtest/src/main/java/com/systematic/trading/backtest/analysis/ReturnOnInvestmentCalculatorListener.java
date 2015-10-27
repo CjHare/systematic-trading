@@ -29,6 +29,8 @@ import java.math.BigDecimal;
 import java.time.Period;
 
 /**
+ * Records the return on investment events.
+ * 
  * @author CJ Hare
  */
 public interface ReturnOnInvestmentCalculatorListener {

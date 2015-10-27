@@ -23,45 +23,49 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event.recorder.impl;
+package com.systematic.trading.backtest.analysis.statistics;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.Period;
-
-import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
+import com.systematic.trading.backtest.event.OrderEvent;
 
 /**
- * Outputs the ROI to the console.
+ * Statistics over the occurring order events.
  * 
  * @author CJ Hare
  */
-public class ConsoleReturnOnInvestmentDisplay implements ReturnOnInvestmentListener {
+public interface OrderEventStatistics {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( "#.##" );
+	/**
+	 * Order event has occurred and merits recording.
+	 * 
+	 * @param event order related event warranting attention of the statistics.
+	 */
+	void event( OrderEvent event );
 
-	@Override
-	public void record( final BigDecimal percentageChange, final LocalDate startDateInclusive,
-			final LocalDate endDateExclusive ) {
+	/**
+	 * Number of entry events recorded.
+	 * 
+	 * @return number of entry events events recorded.
+	 */
+	int getEntryEventCount();
 
-		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format( percentageChange );
-		final Period elapsed = Period.between( startDateInclusive, endDateExclusive );
+	/**
+	 * Number of delete entry events recorded.
+	 * 
+	 * @return number of delete entry events events recorded.
+	 */
+	int getDeleteEntryEventCount();
 
-		if (elapsed.getDays() > 0) {
-			System.out.println( String.format( "Daily - ROI: %s percent over %s day(s), from %s to %s",
-					formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive ) );
-		}
+	/**
+	 * Number of exit events recorded.
+	 * 
+	 * @return number of exit events events recorded.
+	 */
+	int getExitEventCount();
 
-		if (elapsed.getMonths() > 0) {
-			System.out.println( String.format( "Monthly - ROI: %s percent over %s month(s), from %s to %s",
-					formattedPercentageChange, elapsed.getMonths(), startDateInclusive, endDateExclusive ) );
-		}
-
-		if (elapsed.getYears() > 0) {
-			System.out.println( String.format( "Yearly - ROI: %s percent over %s year(s), from %s to %s",
-					formattedPercentageChange, elapsed.getYears(), startDateInclusive, endDateExclusive ) );
-		}
-
-	}
+	/**
+	 * Number of delete exit events recorded.
+	 * 
+	 * @return number of delete exit events events recorded.
+	 */
+	int getDeleteExitEventCount();
 }

@@ -33,7 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculatorListener;
-import com.systematic.trading.backtest.event.listener.ReturnOnInvestmentListener;
+import com.systematic.trading.backtest.event.impl.ReturnOnInvestmentEventImpl;
+import com.systematic.trading.event.EventListener;
 
 /**
  * Creates periodic cumulative ROI events.
@@ -46,7 +47,7 @@ public class PeriodicCulmativeReturnOnInvestmentCalculatorListener implements Re
 	private final MathContext mathContext;
 
 	/** Parties interested in ROI events. */
-	private final List<ReturnOnInvestmentListener> listeners = new ArrayList<ReturnOnInvestmentListener>();
+	private final List<EventListener> listeners = new ArrayList<EventListener>();
 
 	/** Aggregates the cumulative ROI for every summary period. */
 	private final Period summaryPeriod;
@@ -86,12 +87,12 @@ public class PeriodicCulmativeReturnOnInvestmentCalculatorListener implements Re
 
 	private void notifyListeners( final BigDecimal percentageChange, final LocalDate startDateInclusive,
 			final LocalDate endFDateInclusive ) {
-		for (final ReturnOnInvestmentListener listener : listeners) {
-			listener.record( percentageChange, startDateInclusive, endFDateInclusive );
+		for (final EventListener listener : listeners) {
+			listener.event( new ReturnOnInvestmentEventImpl( percentageChange, startDateInclusive, endFDateInclusive ) );
 		}
 	}
 
-	public void addListener( final ReturnOnInvestmentListener listener ) {
+	public void addListener( final EventListener listener ) {
 		if (!listeners.contains( listener )) {
 			listeners.add( listener );
 		}

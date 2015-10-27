@@ -23,65 +23,35 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.cash;
+package com.systematic.trading.backtest.analysis.statistics;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
 import com.systematic.trading.event.EventListener;
 
 /**
- * Cash flow and interest management.
+ * Records the data produced during process, making the statistics easily accessible.
  * 
  * @author CJ Hare
  */
-public interface CashAccount {
+public interface EventStatistics extends EventListener {
 
 	/**
-	 * Applies relevant interest calculations and payments based on the passage of time.
+	 * Retrieves the recorded order event statistics.
 	 * 
-	 * @param tradingDate the next day of trading data to add.
+	 * @return order events recorded to date.
 	 */
-	void update( final LocalDate tradingDate );
+	OrderEventStatistics getOrderEventStatistics();
 
 	/**
-	 * Removes funds from an account.
+	 * Retrieves the recorded brokerage event statistics.
 	 * 
-	 * @param debitAmount sum to be removed from the account.
-	 * @param transactionDate date of the debit.
-	 * @throws InsufficientFundsException encountered when the funds cannot be debited.
+	 * @return brokerage events recorded to date.
 	 */
-	void debit( BigDecimal debitAmount, LocalDate transactionDate ) throws InsufficientFundsException;
+	BrokerageEventStatistics getBrokerageEventStatistics();
 
 	/**
-	 * Adds funds to an account.
+	 * Retrieves the recorded cash event statistics.
 	 * 
-	 * @param creditAmount sum to be added to the account.
-	 * @param transactionDate date of the credit.
+	 * @return cash events recorded to date.
 	 */
-	void credit( BigDecimal creditAmount, LocalDate transactionDate );
-
-	/**
-	 * Adds funds to an account that is considered a deposit, where the funds come from an outside
-	 * source rather then from a trading activity.
-	 * 
-	 * @param depositAmount sum to be added to the account.
-	 * @param transactionDate date of the deposit.
-	 */
-	void deposit( BigDecimal depositAmount, LocalDate transactionDate );
-
-	/**
-	 * Retrieves the current balance of the account.
-	 * 
-	 * @return positive number when the account is credit, negative otherwise.
-	 */
-	BigDecimal getBalance();
-
-	/**
-	 * Adds a listener that is interested in cash account events.
-	 * 
-	 * @param listener adds the listener to those notified on account events.
-	 */
-	void addListener( EventListener listener );
+	CashEventStatistics getCashEventStatistics();
 }

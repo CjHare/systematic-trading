@@ -47,7 +47,7 @@ import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.event.impl.EquityOrderDeletedDueToInsufficentFundsEvent;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.Event;
-import com.systematic.trading.event.recorder.EventListener;
+import com.systematic.trading.event.EventListener;
 
 /**
  * The application of the chosen trading logic over a given set of data is performed in the
@@ -266,7 +266,6 @@ public class Simulation {
 			}
 		} catch (final OrderException e) {
 			LOG.error( e );
-			// TODO handle?
 			throw new IllegalArgumentException( "Unhandled Order exception", e );
 		}
 	}

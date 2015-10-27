@@ -23,21 +23,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage;
+package com.systematic.trading.analysis.display.console;
 
+import com.systematic.trading.event.Event;
 import com.systematic.trading.event.EventListener;
 
 /**
- * The bringing together of the different aspects of a brokerage house.
+ * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageFees {
+public class ConsoleEventDisplay implements EventListener {
 
-	/**
-	 * Adds a listener to the set of parties that receive notifications on event occurrences.
-	 * 
-	 * @param listener another one for the set.
-	 */
-	void addListener( EventListener listener );
+	@Override
+	public void event( final Event event ) {
+
+		System.out.println( event );
+	}
 }

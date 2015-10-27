@@ -31,7 +31,7 @@ import java.time.Period;
 
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.event.recorder.EventListener;
+import com.systematic.trading.event.EventListener;
 
 /**
  * Adds frequent deposits to an underlying Cash Account.
