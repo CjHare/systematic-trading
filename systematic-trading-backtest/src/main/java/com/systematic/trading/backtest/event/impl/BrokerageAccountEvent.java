@@ -58,23 +58,21 @@ public class BrokerageAccountEvent implements BrokerageEvent {
 	}
 
 	@Override
-	public String toString() {
-		return String.format( "Brokerage Account - %s: %s - equity balance %s -> %s on %s", type.getDisplay(),
-				equityAmount, startingEquityBalance, endEquityBalance, transactionDate );
-	}
-
 	public BigDecimal getEquityAmount() {
 		return equityAmount;
 	}
 
+	@Override
 	public BigDecimal getStartingEquityBalance() {
 		return startingEquityBalance;
 	}
 
+	@Override
 	public BigDecimal getEndEquityBalance() {
 		return endEquityBalance;
 	}
 
+	@Override
 	public LocalDate getTransactionDate() {
 		return transactionDate;
 	}

@@ -257,7 +257,7 @@ public class Simulation {
 			switch (action) {
 				case DELETE:
 					// Discard the order
-					notifyListeners( new EquityOrderDeletedDueToInsufficentFundsEvent( order.getOrderEvent().getType() ) );
+					notifyListeners( new EquityOrderDeletedDueToInsufficentFundsEvent( order.getOrderEvent() ) );
 					return null;
 				case RESUMIT:
 				default:

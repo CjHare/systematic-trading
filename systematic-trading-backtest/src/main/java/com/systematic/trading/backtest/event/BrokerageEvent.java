@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.event;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import com.systematic.trading.event.Event;
 
@@ -64,4 +65,32 @@ public interface BrokerageEvent extends Event {
 	 * @return amount paid to the broker to facilitate the trade.
 	 */
 	BigDecimal getTransactionFee();
+
+	/**
+	 * Number of equities prior to the brokerage event.
+	 * 
+	 * @return quantities of equities prior to the brokerage event.
+	 */
+	BigDecimal getStartingEquityBalance();
+
+	/**
+	 * Number of equities after the brokerage event.
+	 * 
+	 * @return quantities of equities after the brokerage event.
+	 */
+	BigDecimal getEndEquityBalance();
+
+	/**
+	 * Date of brokerage event.
+	 * 
+	 * @return when the brokerage event occurred.
+	 */
+	LocalDate getTransactionDate();
+
+	/**
+	 * The number of equities involved in the brokerage transaction.
+	 * 
+	 * @return number of equities being brokered.
+	 */
+	BigDecimal getEquityAmount();
 }

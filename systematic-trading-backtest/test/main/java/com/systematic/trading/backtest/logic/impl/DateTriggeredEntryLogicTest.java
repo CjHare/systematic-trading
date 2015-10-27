@@ -38,19 +38,14 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
-import org.hamcrest.Description;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.OrderEvent.EquityOrderType;
-import com.systematic.trading.backtest.event.impl.PlaceOrderTotalCostEvent;
-import com.systematic.trading.backtest.event.impl.PlaceOrderVolumeEvent;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
@@ -251,35 +246,5 @@ public class DateTriggeredEntryLogicTest {
 
 		assertNotNull( secondOrder );
 		assertTrue( secondOrder instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
-	}
-
-	class IsPlaceOrderArgument extends ArgumentMatcher<PlaceOrderVolumeEvent> {
-
-		private final EquityOrderType type;
-		private final BigDecimal amount;
-		private final LocalDate date;
-
-		public IsPlaceOrderArgument( final BigDecimal amount, final LocalDate date, final EquityOrderType type ) {
-			this.amount = amount;
-			this.date = date;
-			this.type = type;
-		}
-
-		@Override
-		public boolean matches( final Object argument ) {
-
-			if (argument instanceof PlaceOrderTotalCostEvent) {
-				final PlaceOrderTotalCostEvent event = (PlaceOrderTotalCostEvent) argument;
-				return type == event.getType() && date.equals( event.getDate() )
-						&& amount.compareTo( event.getTotalCost() ) == 0;
-			}
-
-			return false;
-		}
-
-		@Override
-		public void describeTo( final Description description ) {
-			description.appendText( String.format( "Type: %s, TotalCost: %s, Date: %s", type, amount, date ) );
-		}
 	}
 }

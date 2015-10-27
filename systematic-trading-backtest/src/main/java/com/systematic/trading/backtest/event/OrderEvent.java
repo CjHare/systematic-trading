@@ -25,6 +25,9 @@
  */
 package com.systematic.trading.backtest.event;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import com.systematic.trading.event.Event;
 
 /**
@@ -51,4 +54,18 @@ public interface OrderEvent extends Event {
 	 * @return purpose of the order that triggered the event recording.
 	 */
 	EquityOrderType getType();
+
+	/**
+	 * Date of cash event.
+	 * 
+	 * @return when the cash event occurred.
+	 */
+	LocalDate getTransactionDate();
+
+	/**
+	 * Total cost of the order.
+	 * 
+	 * @return cost of the order including any fees.
+	 */
+	BigDecimal getTotalCost();
 }

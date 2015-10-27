@@ -25,6 +25,11 @@
  */
 package com.systematic.trading.backtest.display.console;
 
+import java.text.DecimalFormat;
+
+import com.systematic.trading.backtest.event.BrokerageEvent;
+import com.systematic.trading.backtest.event.CashEvent;
+import com.systematic.trading.backtest.event.OrderEvent;
 import com.systematic.trading.event.Event;
 import com.systematic.trading.event.EventListener;
 
@@ -35,9 +40,37 @@ import com.systematic.trading.event.EventListener;
  */
 public class ConsoleEventDisplay implements EventListener {
 
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+
 	@Override
 	public void event( final Event event ) {
 
-		System.out.println( event );
+		final String output;
+
+		if (event instanceof BrokerageEvent) {
+			final BrokerageEvent brokerageEvent = (BrokerageEvent) event;
+			output = String.format( "Brokerage Account - %s: %s - equity balance %s -> %s on %s",
+					brokerageEvent.getType(), TWO_DECIMAL_PLACES.format( brokerageEvent.getEquityAmount() ),
+					TWO_DECIMAL_PLACES.format( brokerageEvent.getStartingEquityBalance() ),
+					TWO_DECIMAL_PLACES.format( brokerageEvent.getEndEquityBalance() ),
+					brokerageEvent.getTransactionDate() );
+
+		} else if (event instanceof CashEvent) {
+			final CashEvent cashEvent = (CashEvent) event;
+			output = String.format( "Cash Account - %s: %s - funds %s -> %s on %s", cashEvent.getType(),
+					TWO_DECIMAL_PLACES.format( cashEvent.getAmount() ),
+					TWO_DECIMAL_PLACES.format( cashEvent.getFundsBefore() ),
+					TWO_DECIMAL_PLACES.format( cashEvent.getFundsAfter() ), cashEvent.getTransactionDate() );
+
+		} else if (event instanceof OrderEvent) {
+			final OrderEvent orderEvent = (OrderEvent) event;
+			output = String.format( "Place Order - %s total cost %s created after c.o.b on %s", orderEvent.getType(),
+					TWO_DECIMAL_PLACES.format( orderEvent.getTotalCost() ), orderEvent.getTransactionDate() );
+
+		} else {
+			throw new IllegalArgumentException( String.format( "Unsupported event class: %s", event.getClass() ) );
+		}
+
+		System.out.println( output );
 	}
 }

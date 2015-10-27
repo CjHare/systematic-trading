@@ -39,27 +39,26 @@ public class PlaceOrderTotalCostEvent implements OrderEvent {
 
 	private final EquityOrderType type;
 	private final BigDecimal totalCost;
-	private final LocalDate date;
+	private final LocalDate transactionDate;
 
-	public PlaceOrderTotalCostEvent( final BigDecimal totalCost, final LocalDate date, final EquityOrderType type ) {
+	public PlaceOrderTotalCostEvent( final BigDecimal totalCost, final LocalDate transactionDate,
+			final EquityOrderType type ) {
 		this.totalCost = totalCost;
-		this.date = date;
+		this.transactionDate = transactionDate;
 		this.type = type;
 	}
 
 	@Override
-	public String toString() {
-		return String.format( "Place Order - %s total cost %s created after c.o.b on %s", type, totalCost, date );
-	}
-
 	public EquityOrderType getType() {
 		return type;
 	}
 
-	public LocalDate getDate() {
-		return date;
+	@Override
+	public LocalDate getTransactionDate() {
+		return transactionDate;
 	}
 
+	@Override
 	public BigDecimal getTotalCost() {
 		return totalCost;
 	}

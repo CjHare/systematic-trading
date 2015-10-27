@@ -53,24 +53,21 @@ public class CashAccountEvent implements CashEvent {
 	}
 
 	@Override
-	public String toString() {
-		return String.format( "Cash Account - %s: %s - funds %s -> %s on %s", type.getDisplay(), amount, fundsBefore,
-				fundsAfter, transactionDate );
-	}
-
-	@Override
 	public BigDecimal getAmount() {
 		return amount;
 	}
 
+	@Override
 	public BigDecimal getFundsBefore() {
 		return fundsBefore;
 	}
 
+	@Override
 	public BigDecimal getFundsAfter() {
 		return fundsAfter;
 	}
 
+	@Override
 	public LocalDate getTransactionDate() {
 		return transactionDate;
 	}

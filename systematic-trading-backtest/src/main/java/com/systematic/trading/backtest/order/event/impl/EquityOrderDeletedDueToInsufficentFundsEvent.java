@@ -25,6 +25,10 @@
  */
 package com.systematic.trading.backtest.order.event.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.backtest.event.OrderEvent;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.event.EquityOrderInsufficientFundsEvent;
 
@@ -36,14 +40,15 @@ import com.systematic.trading.backtest.order.event.EquityOrderInsufficientFundsE
 public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrderInsufficientFundsEvent {
 
 	private final EquityOrderType type;
+	private final OrderEvent orderEvent;
 
 	/**
 	 * @param originalOrderType order prior to being deleted.
 	 */
-	public EquityOrderDeletedDueToInsufficentFundsEvent( final EquityOrderType originalOrderType ) {
+	public EquityOrderDeletedDueToInsufficentFundsEvent( final OrderEvent order ) {
 
 		// Convert into the delete version
-		switch (originalOrderType) {
+		switch (order.getType()) {
 			case ENTRY:
 				this.type = EquityOrderType.DELETE_ENTRY;
 				break;
@@ -51,8 +56,10 @@ public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrder
 				this.type = EquityOrderType.DELETE_EXIT;
 				break;
 			default:
-				throw new IllegalArgumentException( String.format( "Unexpected order type %s", originalOrderType ) );
+				throw new IllegalArgumentException( String.format( "Unexpected order type %s", order.getType() ) );
 		}
+
+		this.orderEvent = order;
 	}
 
 	@Override
@@ -63,5 +70,15 @@ public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrder
 	@Override
 	public EquityOrderType getType() {
 		return type;
+	}
+
+	@Override
+	public LocalDate getTransactionDate() {
+		return orderEvent.getTransactionDate();
+	}
+
+	@Override
+	public BigDecimal getTotalCost() {
+		return orderEvent.getTotalCost();
 	}
 }

@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.event;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import com.systematic.trading.event.Event;
 
@@ -70,4 +71,25 @@ public interface CashEvent extends Event {
 	 * @return amount of cash involved in the event.
 	 */
 	BigDecimal getAmount();
+
+	/**
+	 * Available fund prior to the cash event.
+	 * 
+	 * @return funds available before the cash event.
+	 */
+	BigDecimal getFundsBefore();
+
+	/**
+	 * Available funds after the cash event.
+	 * 
+	 * @return funds available after the cash event.
+	 */
+	BigDecimal getFundsAfter();
+
+	/**
+	 * Date of cash event.
+	 * 
+	 * @return when the cash event occurred.
+	 */
+	LocalDate getTransactionDate();
 }
