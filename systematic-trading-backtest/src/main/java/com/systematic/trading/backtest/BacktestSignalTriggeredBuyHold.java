@@ -47,11 +47,10 @@ import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.display.console.ConsoleEventDisplay;
-import com.systematic.trading.backtest.display.console.ConsoleEventStatisticsDisplay;
-import com.systematic.trading.backtest.display.console.ConsoleHeaderDisplay;
-import com.systematic.trading.backtest.display.console.ConsoleNetWorthSummaryDisplay;
-import com.systematic.trading.backtest.display.console.ConsoleReturnOnInvestmentDisplay;
+import com.systematic.trading.backtest.display.file.FileEventDisplay;
+import com.systematic.trading.backtest.display.file.FileEventStatisticsDisplay;
+import com.systematic.trading.backtest.display.file.FileNetWorthSummaryDisplay;
+import com.systematic.trading.backtest.display.file.FileReturnOnInvestmentDisplay;
 import com.systematic.trading.backtest.event.data.TickerSymbolTradingRangeImpl;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
@@ -86,6 +85,11 @@ public class BacktestSignalTriggeredBuyHold {
 
 	public static void main( final String... args ) {
 
+		final String eventStatisticsFilename = "a/event-statistics.txt";
+		final String netWorthFilename = "a/net-worth.txt";
+		final String returnOnInvestmentFilename = "a/return-on-investment.txt";
+		final String eventFilename = "a/events.txt";
+
 		final String tickerSymbol = "^GSPC"; 	// S&P 500 - price return index
 		final EquityClass equityType = EquityClass.STOCK;
 
@@ -98,7 +102,7 @@ public class BacktestSignalTriggeredBuyHold {
 		final LocalDate earliestDate = BacktestCommon.getEarliestDate( tradingData );
 
 		// Cumulative recording of investment progression
-		final EventListener roiDisplay = new ConsoleReturnOnInvestmentDisplay();
+		final EventListener roiDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentFilename );
 		final CulmativeReturnOnInvestmentCalculator roi = BacktestCommon.createRoiCalculator( earliestDate, roiDisplay,
 				MATH_CONTEXT );
 		final CulmativeReturnOnInvestmentCalculatorListener cumulativeRoi = new CulmativeReturnOnInvestmentCalculatorListener(
@@ -120,7 +124,9 @@ public class BacktestSignalTriggeredBuyHold {
 				buyLongAnalysis, MATH_CONTEXT );
 
 		// Displays the events as they are generated
-		final EventListener eventDisplay = new ConsoleEventDisplay();
+		final TickerSymbolTradingRange tickerSymbolTradingRange = new TickerSymbolTradingRangeImpl( tickerSymbol,
+				startDate, endDate, tradingData.length );
+		final EventListener eventDisplay = new FileEventDisplay( eventFilename, tickerSymbolTradingRange );
 
 		// Statistics recorder for the various cash account, brokerage and order events
 		final EventStatistics eventStatistics = new CumulativeEventStatistics();
@@ -145,17 +151,14 @@ public class BacktestSignalTriggeredBuyHold {
 		simulation.addListener( eventDisplay );
 		simulation.addListener( eventStatistics );
 
-		final TickerSymbolTradingRange tickerSymbolTradingRange = new TickerSymbolTradingRangeImpl( tickerSymbol,
-				startDate, endDate, tradingData.length );
-		new ConsoleHeaderDisplay().displayHeader( tickerSymbolTradingRange );
-
 		simulation.run();
 
 		HibernateUtil.getSessionFactory().close();
 
 		// Display summaries
-		new ConsoleEventStatisticsDisplay( eventStatistics ).displayEventSummary();
-		new ConsoleNetWorthSummaryDisplay( broker, tradingData, cashAccount, cumulativeRoi ).displayNetWorth();
+		new FileEventStatisticsDisplay( eventStatistics, eventStatisticsFilename ).displayEventSummary();
+		new FileNetWorthSummaryDisplay( broker, tradingData, cashAccount, cumulativeRoi, netWorthFilename )
+				.displayNetWorth();
 	}
 
 	private static CashAccount createCashAccountWeeklyDepositFlatInterestRate( final LocalDate earliestDate ) {
