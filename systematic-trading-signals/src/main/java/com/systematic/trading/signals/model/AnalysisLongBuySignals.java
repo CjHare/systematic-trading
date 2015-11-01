@@ -94,5 +94,4 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	public int getMaximumNumberOfTradingDays() {
 		return MAXIMUM_NUMBER_OF_TRADING_DAYS;
 	}
-
 }

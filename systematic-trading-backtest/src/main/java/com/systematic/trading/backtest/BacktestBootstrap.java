@@ -26,13 +26,10 @@
 package com.systematic.trading.backtest;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculatorListener;
@@ -40,39 +37,28 @@ import com.systematic.trading.backtest.analysis.impl.PeriodicCulmativeReturnOnIn
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.analysis.statistics.impl.CumulativeEventStatistics;
 import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.brokerage.EquityClass;
-import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.backtest.brokerage.fees.impl.CmcMarketsFeeStructure;
-import com.systematic.trading.backtest.brokerage.impl.SingleEquityClassBroker;
+import com.systematic.trading.backtest.brokerage.EquityIdentity;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.cash.InterestRate;
-import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
-import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
-import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
+import com.systematic.trading.backtest.configuration.BootstrapConfiguration;
+import com.systematic.trading.backtest.configuration.impl.WeeklyBuyWeeklyDespoitConfiguration;
 import com.systematic.trading.backtest.display.file.FileDisplay;
 import com.systematic.trading.backtest.event.data.TickerSymbolTradingRangeImpl;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
-import com.systematic.trading.backtest.logic.impl.SignalTriggeredEntryLogic;
+import com.systematic.trading.data.DataService;
+import com.systematic.trading.data.DataServiceImpl;
+import com.systematic.trading.data.DataServiceUpdater;
+import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.event.data.TickerSymbolTradingRange;
-import com.systematic.trading.signals.AnalysisBuySignals;
-import com.systematic.trading.signals.model.AnalysisLongBuySignals;
-import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
-import com.systematic.trading.signals.model.filter.RsiMacdOnSameDaySignalFilter;
-import com.systematic.trading.signals.model.filter.SignalFilter;
-import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 
 /**
  * Performs back testing of trading logic over a historical data set.
- * <p/>
- * Assumption: no liquidity issues == can always execute a trade.
  * 
  * @author CJ Hare
  */
-public class BacktestSignalTriggeredBuyHold {
+public class BacktestBootstrap {
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
@@ -83,61 +69,72 @@ public class BacktestSignalTriggeredBuyHold {
 
 	public static void main( final String... args ) throws IOException {
 
-		final String tickerSymbol = "^GSPC"; 	// S&P 500 - price return index
-		final String displayDirectory = String.format( "../../simulations/%s_MacdRsiHoldForever", tickerSymbol );
-		final EquityClass equityType = EquityClass.STOCK;
+		// final BootstrapConfiguration configuration = new
+		// MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration(
+		// MATH_CONTEXT );
+
+		final BootstrapConfiguration configuration = new WeeklyBuyWeeklyDespoitConfiguration( MATH_CONTEXT );
+
+		final EquityIdentity equity = configuration.getEquityIdentity();
 
 		// Date range is from the first of the starting month until now
 		final LocalDate endDate = LocalDate.now();
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
-		final TradingDayPrices[] tradingData = BacktestCommon.getTradingData( tickerSymbol, startDate, endDate );
+		final TradingDayPrices[] tradingData = getTradingData( equity, startDate, endDate );
 
 		// First data point may not be the requested start date
-		final LocalDate earliestDate = BacktestCommon.getEarliestDate( tradingData );
+		final LocalDate earliestDate = getEarliestDate( tradingData );
 
 		// Displays the events as they are generated
-		final TickerSymbolTradingRange tickerSymbolTradingRange = new TickerSymbolTradingRangeImpl( tickerSymbol,
-				startDate, endDate, tradingData.length );
-
-		// Statistics recorder for the various cash account, brokerage and order events
-		final EventStatistics eventStatistics = new CumulativeEventStatistics();
+		final TickerSymbolTradingRange tickerSymbolTradingRange = new TickerSymbolTradingRangeImpl( equity, startDate,
+				endDate, tradingData.length );
 
 		// Cumulative recording of investment progression
 		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
+
 		final PeriodicCulmativeReturnOnInvestmentCalculatorListener dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
 				earliestDate, Period.ofDays( 1 ), MATH_CONTEXT );
 		roi.addListener( dailyRoi );
+
 		final PeriodicCulmativeReturnOnInvestmentCalculatorListener monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
 				earliestDate, Period.ofMonths( 1 ), MATH_CONTEXT );
 		roi.addListener( monthlyRoi );
+
 		final PeriodicCulmativeReturnOnInvestmentCalculatorListener yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
 				earliestDate, Period.ofYears( 1 ), MATH_CONTEXT );
 		roi.addListener( yearlyRoi );
+
 		final CulmativeReturnOnInvestmentCalculatorListener cumulativeRoi = new CulmativeReturnOnInvestmentCalculatorListener(
 				MATH_CONTEXT );
 		roi.addListener( cumulativeRoi );
 
 		// Indicator triggered purchases
-		final EntryLogic entry = createMacdRsiOnSameDayOneThousandMinumumTradeEntryLogic( equityType );
+		final EntryLogic entry = configuration.getEntryLogic( equity, earliestDate );
 
 		// Never sell
-		final ExitLogic exit = new HoldForeverExitLogic();
+		final ExitLogic exit = configuration.getExitLogic();
 
 		// Cash account with flat interest of 1.5% - $100 deposit weekly, zero starting balance
-		final CashAccount cashAccount = createCashAccountWeeklyDepositFlatInterestRate( earliestDate );
+		final CashAccount cashAccount = configuration.getCashAccount( earliestDate );
 		cashAccount.addListener( roi );
-		cashAccount.addListener( eventStatistics );
 
 		// ETF Broker with CmC markets fees
-		final Brokerage broker = createCmcMarketsBroker( equityType );
-		broker.addListener( eventStatistics );
+		final Brokerage broker = configuration.getBroker( equity );
 
+		// Engine dealing with the event flow
 		final Simulation simulation = new Simulation( earliestDate, endDate, tradingData, broker, cashAccount, roi,
 				entry, exit );
-		simulation.addListener( eventStatistics );
 
+		// Statistics recorder for the various cash account, brokerage and order events
+		final EventStatistics eventStatistics = new CumulativeEventStatistics();
+		simulation.addListener( eventStatistics );
+		broker.addListener( eventStatistics );
+		cashAccount.addListener( eventStatistics );
+
+		// Output display to files to analysis later
+		final String outputDirectory = configuration.getOutputDirectory( equity );
 		final FileDisplay display = new FileDisplay( tickerSymbolTradingRange, eventStatistics, broker, cashAccount,
-				cumulativeRoi, tradingData, displayDirectory );
+				cumulativeRoi, tradingData, outputDirectory );
 		simulation.addListener( display );
 		broker.addListener( display );
 		cashAccount.addListener( display );
@@ -149,36 +146,29 @@ public class BacktestSignalTriggeredBuyHold {
 
 		HibernateUtil.getSessionFactory().close();
 
-		// Display summaries
+		// Display summaries files
 		display.simulationCompleted();
 	}
 
-	private static Brokerage createCmcMarketsBroker( final EquityClass equityType ) {
-		final BrokerageFeeStructure tradingFeeStructure = new CmcMarketsFeeStructure( MATH_CONTEXT );
-		return new SingleEquityClassBroker( tradingFeeStructure, equityType, MATH_CONTEXT );
+	private static TradingDayPrices[] getTradingData( final EquityIdentity equity, final LocalDate startDate,
+			final LocalDate endDate ) {
+
+		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
+		updateService.get( equity.getTickerSymbol(), startDate, endDate );
+
+		final DataService service = DataServiceImpl.getInstance();
+		return service.get( equity.getTickerSymbol(), startDate, endDate );
 	}
 
-	private static CashAccount createCashAccountWeeklyDepositFlatInterestRate( final LocalDate earliestDate ) {
-		final Period weekly = Period.ofDays( 7 );
-		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		final InterestRate annualInterestRate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), MATH_CONTEXT );
-		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
-		final CashAccount underlyingAccount = new CalculatedDailyPaidMonthlyCashAccount( annualInterestRate,
-				openingFunds, earliestDate, MATH_CONTEXT );
-		return new RegularDepositCashAccountDecorator( oneHundredDollars, underlyingAccount, earliestDate, weekly );
-	}
+	private static LocalDate getEarliestDate( final TradingDayPrices[] data ) {
+		LocalDate earliest = data[0].getDate();
 
-	private static EntryLogic createMacdRsiOnSameDayOneThousandMinumumTradeEntryLogic( final EquityClass equityType ) {
-		final LongBuySignalConfiguration configuration = BacktestCommon.getStandardSignalConfiguration();
-		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
+		for (final TradingDayPrices today : data) {
+			if (earliest.isAfter( today.getDate() )) {
+				earliest = today.getDate();
+			}
+		}
 
-		// Only signals from the last two days are of interest
-		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new RsiMacdOnSameDaySignalFilter(),
-				Period.ofDays( 5 ) );
-		filters.add( filter );
-
-		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( configuration, filters );
-		final BigDecimal minimumTradeValue = BigDecimal.valueOf( 1000 );
-		return new SignalTriggeredEntryLogic( equityType, minimumTradeValue, buyLongAnalysis, MATH_CONTEXT );
+		return earliest;
 	}
 }

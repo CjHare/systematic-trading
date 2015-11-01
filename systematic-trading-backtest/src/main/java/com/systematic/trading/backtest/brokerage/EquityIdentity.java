@@ -23,23 +23,45 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.logic.impl;
-
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.backtest.order.EquityOrder;
-import com.systematic.trading.data.TradingDayPrices;
+package com.systematic.trading.backtest.brokerage;
 
 /**
- * One half of the buy and hold forever strategy.
+ * Highest level of unique identifier for an equity within the wider simulation.
  * 
  * @author CJ Hare
  */
-public class HoldForeverExitLogic implements ExitLogic {
+public class EquityIdentity {
 
-	@Override
-	public EquityOrder update( final BrokerageTransaction broker, final TradingDayPrices data ) {
-		// There's never an order to place :. return null
-		return null;
+	/** How the equity is treated. */
+	private final EquityClass type;
+
+	/** Symbol used to identify the equity in the source of the trading data. */
+	private final String tickerSymbol;
+
+	/**
+	 * @param tickerSymbol identity of the equity within the source of the trading data.
+	 * @param type determines how the equity is treated.
+	 */
+	public EquityIdentity( final String tickerSymbol, final EquityClass type ) {
+		this.tickerSymbol = tickerSymbol;
+		this.type = type;
+	}
+
+	/**
+	 * Retrieves the type of equity.
+	 * 
+	 * @return how to treat the equity.
+	 */
+	public EquityClass getType() {
+		return type;
+	}
+
+	/**
+	 * Retrieves the identity of the equity.
+	 * 
+	 * @return ticker symbol used to identify the equity by the trading data source.
+	 */
+	public String getTickerSymbol() {
+		return tickerSymbol;
 	}
 }
