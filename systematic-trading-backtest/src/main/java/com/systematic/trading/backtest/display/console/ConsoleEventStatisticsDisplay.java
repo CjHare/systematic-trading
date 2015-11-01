@@ -31,13 +31,14 @@ import com.systematic.trading.backtest.analysis.statistics.BrokerageEventStatist
 import com.systematic.trading.backtest.analysis.statistics.CashEventStatistics;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.analysis.statistics.OrderEventStatistics;
+import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 
 /**
  * Displays the summary of the events that occurred during processing.
  * 
  * @author CJ Hare
  */
-public class ConsoleEventStatisticsDisplay {
+public class ConsoleEventStatisticsDisplay implements EventStatisticsDisplay {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
@@ -47,7 +48,8 @@ public class ConsoleEventStatisticsDisplay {
 		this.statistics = statistics;
 	}
 
-	public void displayEventSummary() {
+	@Override
+	public void displayEventStatistics() {
 		System.out.println( "\n" );
 		System.out.println( "#####################" );
 		System.out.println( "### Event Summary ###" );
@@ -96,5 +98,4 @@ public class ConsoleEventStatisticsDisplay {
 		System.out.println( String.format( "Total amount paid in brokerage: %s",
 				TWO_DECIMAL_PLACES.format( brokerageStatistics.getBrokerageFees() ) ) );
 	}
-
 }

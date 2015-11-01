@@ -39,13 +39,14 @@ import com.systematic.trading.backtest.analysis.statistics.BrokerageEventStatist
 import com.systematic.trading.backtest.analysis.statistics.CashEventStatistics;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.analysis.statistics.OrderEventStatistics;
+import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 
 /**
  * Displays the summary of the events that occurred during processing.
  * 
  * @author CJ Hare
  */
-public class FileEventStatisticsDisplay {
+public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger( FileEventStatisticsDisplay.class );
@@ -66,7 +67,8 @@ public class FileEventStatisticsDisplay {
 		}
 	}
 
-	public void displayEventSummary() {
+	@Override
+	public void displayEventStatistics() {
 
 		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
 			out.println( createOutput() );
@@ -126,4 +128,5 @@ public class FileEventStatisticsDisplay {
 		output.append( String.format( "Total amount paid in brokerage: %s\n",
 				TWO_DECIMAL_PLACES.format( brokerageStatistics.getBrokerageFees() ) ) );
 	}
+
 }

@@ -33,6 +33,7 @@ import java.time.temporal.ChronoUnit;
 
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculatorListener;
+import com.systematic.trading.backtest.analysis.impl.PeriodicCulmativeReturnOnInvestmentCalculatorListener;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.analysis.statistics.impl.CumulativeEventStatistics;
 import com.systematic.trading.backtest.brokerage.Brokerage;
@@ -91,8 +92,19 @@ public class BacktestFrequentBuyHold {
 
 		// Cumulative recording of investment progression
 		final EventListener roiDisplay = new ConsoleReturnOnInvestmentDisplay();
-		final CulmativeReturnOnInvestmentCalculator roi = BacktestCommon.createRoiCalculator( earliestDate, roiDisplay,
-				MATH_CONTEXT );
+		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				earliestDate, Period.ofDays( 1 ), MATH_CONTEXT );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				earliestDate, Period.ofMonths( 1 ), MATH_CONTEXT );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				earliestDate, Period.ofYears( 1 ), MATH_CONTEXT );
+		yearlyRoi.addListener( roiDisplay );
+		monthlyRoi.addListener( roiDisplay );
+		dailyRoi.addListener( roiDisplay );
+		roi.addListener( dailyRoi );
+		roi.addListener( monthlyRoi );
+		roi.addListener( yearlyRoi );
 		final CulmativeReturnOnInvestmentCalculatorListener cumulativeRoi = new CulmativeReturnOnInvestmentCalculatorListener(
 				MATH_CONTEXT );
 		roi.addListener( cumulativeRoi );
@@ -138,7 +150,7 @@ public class BacktestFrequentBuyHold {
 		HibernateUtil.getSessionFactory().close();
 
 		// Display summaries
-		new ConsoleEventStatisticsDisplay( eventStatistics ).displayEventSummary();
+		new ConsoleEventStatisticsDisplay( eventStatistics ).displayEventStatistics();
 		new ConsoleNetWorthSummaryDisplay( broker, tradingData, cashAccount, cumulativeRoi ).displayNetWorth();
 	}
 

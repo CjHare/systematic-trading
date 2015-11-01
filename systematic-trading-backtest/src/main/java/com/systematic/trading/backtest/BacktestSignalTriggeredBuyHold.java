@@ -35,6 +35,7 @@ import java.util.List;
 
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculatorListener;
+import com.systematic.trading.backtest.analysis.impl.PeriodicCulmativeReturnOnInvestmentCalculatorListener;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.analysis.statistics.impl.CumulativeEventStatistics;
 import com.systematic.trading.backtest.brokerage.Brokerage;
@@ -47,10 +48,7 @@ import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.display.file.FileEventDisplay;
-import com.systematic.trading.backtest.display.file.FileEventStatisticsDisplay;
-import com.systematic.trading.backtest.display.file.FileNetWorthSummaryDisplay;
-import com.systematic.trading.backtest.display.file.FileReturnOnInvestmentDisplay;
+import com.systematic.trading.backtest.display.file.FileDisplay;
 import com.systematic.trading.backtest.event.data.TickerSymbolTradingRangeImpl;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
@@ -58,7 +56,6 @@ import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
 import com.systematic.trading.backtest.logic.impl.SignalTriggeredEntryLogic;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
-import com.systematic.trading.event.EventListener;
 import com.systematic.trading.event.data.TickerSymbolTradingRange;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
@@ -85,11 +82,6 @@ public class BacktestSignalTriggeredBuyHold {
 
 	public static void main( final String... args ) {
 
-		final String eventStatisticsFilename = "a/event-statistics.txt";
-		final String netWorthFilename = "a/net-worth.txt";
-		final String returnOnInvestmentFilename = "a/return-on-investment.txt";
-		final String eventFilename = "a/events.txt";
-
 		final String tickerSymbol = "^GSPC"; 	// S&P 500 - price return index
 		final EquityClass equityType = EquityClass.STOCK;
 
@@ -102,9 +94,16 @@ public class BacktestSignalTriggeredBuyHold {
 		final LocalDate earliestDate = BacktestCommon.getEarliestDate( tradingData );
 
 		// Cumulative recording of investment progression
-		final EventListener roiDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentFilename );
-		final CulmativeReturnOnInvestmentCalculator roi = BacktestCommon.createRoiCalculator( earliestDate, roiDisplay,
-				MATH_CONTEXT );
+		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				earliestDate, Period.ofDays( 1 ), MATH_CONTEXT );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				earliestDate, Period.ofMonths( 1 ), MATH_CONTEXT );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				earliestDate, Period.ofYears( 1 ), MATH_CONTEXT );
+		roi.addListener( dailyRoi );
+		roi.addListener( monthlyRoi );
+		roi.addListener( yearlyRoi );
 		final CulmativeReturnOnInvestmentCalculatorListener cumulativeRoi = new CulmativeReturnOnInvestmentCalculatorListener(
 				MATH_CONTEXT );
 		roi.addListener( cumulativeRoi );
@@ -126,7 +125,6 @@ public class BacktestSignalTriggeredBuyHold {
 		// Displays the events as they are generated
 		final TickerSymbolTradingRange tickerSymbolTradingRange = new TickerSymbolTradingRangeImpl( tickerSymbol,
 				startDate, endDate, tradingData.length );
-		final EventListener eventDisplay = new FileEventDisplay( eventFilename, tickerSymbolTradingRange );
 
 		// Statistics recorder for the various cash account, brokerage and order events
 		final EventStatistics eventStatistics = new CumulativeEventStatistics();
@@ -137,28 +135,32 @@ public class BacktestSignalTriggeredBuyHold {
 		// Cash account with flat interest of 1.5% - $100 deposit weekly, zero starting balance
 		final CashAccount cashAccount = createCashAccountWeeklyDepositFlatInterestRate( earliestDate );
 		cashAccount.addListener( roi );
-		cashAccount.addListener( eventDisplay );
 		cashAccount.addListener( eventStatistics );
 
 		// ETF Broker with CmC markets fees
 		final BrokerageFeeStructure tradingFeeStructure = new CmcMarketsFeeStructure( MATH_CONTEXT );
 		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, MATH_CONTEXT );
-		broker.addListener( eventDisplay );
 		broker.addListener( eventStatistics );
 
 		final Simulation simulation = new Simulation( earliestDate, endDate, tradingData, broker, cashAccount, roi,
 				entry, exit );
-		simulation.addListener( eventDisplay );
 		simulation.addListener( eventStatistics );
+
+		final FileDisplay display = new FileDisplay( tickerSymbolTradingRange, eventStatistics, broker, cashAccount,
+				cumulativeRoi, tradingData );
+		simulation.addListener( display );
+		broker.addListener( display );
+		cashAccount.addListener( display );
+		yearlyRoi.addListener( display );
+		monthlyRoi.addListener( display );
+		dailyRoi.addListener( display );
 
 		simulation.run();
 
 		HibernateUtil.getSessionFactory().close();
 
 		// Display summaries
-		new FileEventStatisticsDisplay( eventStatistics, eventStatisticsFilename ).displayEventSummary();
-		new FileNetWorthSummaryDisplay( broker, tradingData, cashAccount, cumulativeRoi, netWorthFilename )
-				.displayNetWorth();
+		display.simulationCompleted();
 	}
 
 	private static CashAccount createCashAccountWeeklyDepositFlatInterestRate( final LocalDate earliestDate ) {

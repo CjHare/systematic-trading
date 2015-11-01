@@ -39,6 +39,7 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.backtest.analysis.CumulativeReturnOnInvestment;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
@@ -46,7 +47,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public class FileNetWorthSummaryDisplay {
+public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger( FileNetWorthSummaryDisplay.class );
@@ -74,6 +75,7 @@ public class FileNetWorthSummaryDisplay {
 		}
 	}
 
+	@Override
 	public void displayNetWorth() {
 		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
 			out.println( createOutput() );

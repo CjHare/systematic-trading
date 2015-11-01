@@ -25,18 +25,13 @@
  */
 package com.systematic.trading.backtest;
 
-import java.math.MathContext;
 import java.time.LocalDate;
-import java.time.Period;
 
-import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.impl.PeriodicCulmativeReturnOnInvestmentCalculatorListener;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
@@ -65,26 +60,6 @@ public class BacktestCommon {
 
 		final DataService service = DataServiceImpl.getInstance();
 		return service.get( tickerSymbol, startDate, endDate );
-	}
-
-	public static CulmativeReturnOnInvestmentCalculator createRoiCalculator( final LocalDate earliestDate,
-			final EventListener roiDisplay, final MathContext MATH_CONTEXT ) {
-
-		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
-				earliestDate, Period.ofDays( 1 ), MATH_CONTEXT );
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
-				earliestDate, Period.ofMonths( 1 ), MATH_CONTEXT );
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
-				earliestDate, Period.ofYears( 1 ), MATH_CONTEXT );
-		yearlyRoi.addListener( roiDisplay );
-		monthlyRoi.addListener( roiDisplay );
-		dailyRoi.addListener( roiDisplay );
-		roi.addListener( dailyRoi );
-		roi.addListener( monthlyRoi );
-		roi.addListener( yearlyRoi );
-
-		return roi;
 	}
 
 	public static LocalDate getEarliestDate( final TradingDayPrices[] data ) {

@@ -31,6 +31,7 @@ import java.text.DecimalFormat;
 import com.systematic.trading.backtest.analysis.CumulativeReturnOnInvestment;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
@@ -38,7 +39,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public class ConsoleNetWorthSummaryDisplay {
+public class ConsoleNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
@@ -55,6 +56,7 @@ public class ConsoleNetWorthSummaryDisplay {
 		this.cumulativeRoi = cumulativeRoi;
 	}
 
+	@Override
 	public void displayNetWorth() {
 
 		final TradingDayPrices latest = getLatestDataPoint( tradingData );
