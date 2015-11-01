@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
@@ -80,10 +81,12 @@ public class BacktestSignalTriggeredBuyHold {
 	/** Minimum amount of historical data needed for back testing. */
 	private static final int HISTORY_REQUIRED = 5 * DAYS_IN_A_YEAR;
 
-	public static void main( final String... args ) {
+	public static void main( final String... args ) throws IOException {
 
 		final String tickerSymbol = "^GSPC"; 	// S&P 500 - price return index
 		final EquityClass equityType = EquityClass.STOCK;
+
+		final String displayDirectory = String.format( "../../simulations/%s_MacdRsiHoldForever", tickerSymbol );
 
 		// Date range is from the first of the starting month until now
 		final LocalDate endDate = LocalDate.now();
@@ -147,7 +150,7 @@ public class BacktestSignalTriggeredBuyHold {
 		simulation.addListener( eventStatistics );
 
 		final FileDisplay display = new FileDisplay( tickerSymbolTradingRange, eventStatistics, broker, cashAccount,
-				cumulativeRoi, tradingData );
+				cumulativeRoi, tradingData, displayDirectory );
 		simulation.addListener( display );
 		broker.addListener( display );
 		cashAccount.addListener( display );

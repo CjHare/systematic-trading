@@ -25,6 +25,9 @@
  */
 package com.systematic.trading.backtest.display.file;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculatorListener;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.brokerage.Brokerage;
@@ -53,11 +56,22 @@ public class FileDisplay implements EventListener {
 
 	public FileDisplay( final TickerSymbolTradingRange tickerSymbolTradingRange, final EventStatistics eventStatistics,
 			final Brokerage broker, final CashAccount cashAccount,
-			final CulmativeReturnOnInvestmentCalculatorListener cumulativeRoi, final TradingDayPrices[] tradingData ) {
-		final String eventStatisticsFilename = "a/event-statistics.txt";
-		final String netWorthFilename = "a/net-worth.txt";
-		final String returnOnInvestmentFilename = "a/return-on-investment.txt";
-		final String eventFilename = "a/events.txt";
+			final CulmativeReturnOnInvestmentCalculatorListener cumulativeRoi, final TradingDayPrices[] tradingData,
+			final String outputDirectory ) throws IOException {
+
+		final File outputDirectoryFile = new File( outputDirectory );
+		if (!outputDirectoryFile.exists()) {
+			if (!outputDirectoryFile.mkdirs()) {
+				throw new IllegalArgumentException( String.format( "Failed to create / access directory: %s",
+						outputDirectory ) );
+			}
+		}
+
+		final String parentDirectory = outputDirectoryFile.getCanonicalPath();
+		final String eventStatisticsFilename = parentDirectory + "/event-statistics.txt";
+		final String netWorthFilename = parentDirectory + "/net-worth.txt";
+		final String returnOnInvestmentFilename = parentDirectory + "/return-on-investment.txt";
+		final String eventFilename = parentDirectory + "/events.txt";
 
 		this.roiDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentFilename );
 		this.eventDisplay = new FileEventDisplay( eventFilename, tickerSymbolTradingRange );

@@ -70,7 +70,7 @@ public class FileReturnOnInvestmentDisplay implements EventListener {
 		if (event instanceof ReturnOnInvestmentEvent) {
 
 			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				out.println( createOutput( (ReturnOnInvestmentEvent) event ) );
+				out.print( createOutput( (ReturnOnInvestmentEvent) event ) );
 			} catch (final IOException e) {
 				LOG.error( e );
 			}
