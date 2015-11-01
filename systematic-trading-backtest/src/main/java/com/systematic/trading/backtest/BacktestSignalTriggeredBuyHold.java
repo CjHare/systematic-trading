@@ -84,9 +84,8 @@ public class BacktestSignalTriggeredBuyHold {
 	public static void main( final String... args ) throws IOException {
 
 		final String tickerSymbol = "^GSPC"; 	// S&P 500 - price return index
-		final EquityClass equityType = EquityClass.STOCK;
-
 		final String displayDirectory = String.format( "../../simulations/%s_MacdRsiHoldForever", tickerSymbol );
+		final EquityClass equityType = EquityClass.STOCK;
 
 		// Date range is from the first of the starting month until now
 		final LocalDate endDate = LocalDate.now();
@@ -96,41 +95,30 @@ public class BacktestSignalTriggeredBuyHold {
 		// First data point may not be the requested start date
 		final LocalDate earliestDate = BacktestCommon.getEarliestDate( tradingData );
 
-		// Cumulative recording of investment progression
-		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
-				earliestDate, Period.ofDays( 1 ), MATH_CONTEXT );
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
-				earliestDate, Period.ofMonths( 1 ), MATH_CONTEXT );
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
-				earliestDate, Period.ofYears( 1 ), MATH_CONTEXT );
-		roi.addListener( dailyRoi );
-		roi.addListener( monthlyRoi );
-		roi.addListener( yearlyRoi );
-		final CulmativeReturnOnInvestmentCalculatorListener cumulativeRoi = new CulmativeReturnOnInvestmentCalculatorListener(
-				MATH_CONTEXT );
-		roi.addListener( cumulativeRoi );
-
-		// Indicator triggered purchases
-		final LongBuySignalConfiguration configuration = BacktestCommon.getStandardSignalConfiguration();
-		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-
-		// Only signals from the last two days are of interest
-		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new RsiMacdOnSameDaySignalFilter(),
-				Period.ofDays( 5 ) );
-		filters.add( filter );
-
-		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( configuration, filters );
-
-		final EntryLogic entry = new SignalTriggeredEntryLogic( equityType, BigDecimal.valueOf( 1000 ),
-				buyLongAnalysis, MATH_CONTEXT );
-
 		// Displays the events as they are generated
 		final TickerSymbolTradingRange tickerSymbolTradingRange = new TickerSymbolTradingRangeImpl( tickerSymbol,
 				startDate, endDate, tradingData.length );
 
 		// Statistics recorder for the various cash account, brokerage and order events
 		final EventStatistics eventStatistics = new CumulativeEventStatistics();
+
+		// Cumulative recording of investment progression
+		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( MATH_CONTEXT );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				earliestDate, Period.ofDays( 1 ), MATH_CONTEXT );
+		roi.addListener( dailyRoi );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				earliestDate, Period.ofMonths( 1 ), MATH_CONTEXT );
+		roi.addListener( monthlyRoi );
+		final PeriodicCulmativeReturnOnInvestmentCalculatorListener yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+				earliestDate, Period.ofYears( 1 ), MATH_CONTEXT );
+		roi.addListener( yearlyRoi );
+		final CulmativeReturnOnInvestmentCalculatorListener cumulativeRoi = new CulmativeReturnOnInvestmentCalculatorListener(
+				MATH_CONTEXT );
+		roi.addListener( cumulativeRoi );
+
+		// Indicator triggered purchases
+		final EntryLogic entry = createMacdRsiOnSameDayOneThousandMinumumTradeEntryLogic( equityType );
 
 		// Never sell
 		final ExitLogic exit = new HoldForeverExitLogic();
@@ -141,8 +129,7 @@ public class BacktestSignalTriggeredBuyHold {
 		cashAccount.addListener( eventStatistics );
 
 		// ETF Broker with CmC markets fees
-		final BrokerageFeeStructure tradingFeeStructure = new CmcMarketsFeeStructure( MATH_CONTEXT );
-		final Brokerage broker = new SingleEquityClassBroker( tradingFeeStructure, equityType, MATH_CONTEXT );
+		final Brokerage broker = createCmcMarketsBroker( equityType );
 		broker.addListener( eventStatistics );
 
 		final Simulation simulation = new Simulation( earliestDate, endDate, tradingData, broker, cashAccount, roi,
@@ -166,6 +153,11 @@ public class BacktestSignalTriggeredBuyHold {
 		display.simulationCompleted();
 	}
 
+	private static Brokerage createCmcMarketsBroker( final EquityClass equityType ) {
+		final BrokerageFeeStructure tradingFeeStructure = new CmcMarketsFeeStructure( MATH_CONTEXT );
+		return new SingleEquityClassBroker( tradingFeeStructure, equityType, MATH_CONTEXT );
+	}
+
 	private static CashAccount createCashAccountWeeklyDepositFlatInterestRate( final LocalDate earliestDate ) {
 		final Period weekly = Period.ofDays( 7 );
 		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
@@ -176,4 +168,17 @@ public class BacktestSignalTriggeredBuyHold {
 		return new RegularDepositCashAccountDecorator( oneHundredDollars, underlyingAccount, earliestDate, weekly );
 	}
 
+	private static EntryLogic createMacdRsiOnSameDayOneThousandMinumumTradeEntryLogic( final EquityClass equityType ) {
+		final LongBuySignalConfiguration configuration = BacktestCommon.getStandardSignalConfiguration();
+		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
+
+		// Only signals from the last two days are of interest
+		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new RsiMacdOnSameDaySignalFilter(),
+				Period.ofDays( 5 ) );
+		filters.add( filter );
+
+		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( configuration, filters );
+		final BigDecimal minimumTradeValue = BigDecimal.valueOf( 1000 );
+		return new SignalTriggeredEntryLogic( equityType, minimumTradeValue, buyLongAnalysis, MATH_CONTEXT );
+	}
 }
