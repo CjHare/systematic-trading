@@ -28,6 +28,8 @@ package com.systematic.trading.backtest;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
@@ -61,21 +63,29 @@ public class SystematicTradingBacktest {
 		// Date range is from the first of the starting month until now
 		final LocalDate endDate = LocalDate.now();
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
+		final List<BacktestBootstrapConfiguration> configurations = getConfigurations( startDate, endDate );
 
-		final BacktestBootstrapConfiguration configuration = new WeeklyBuyWeeklyDespoitConfiguration( startDate,
-				endDate, MATH_CONTEXT );
-		final BacktestBootstrapConfiguration configuration2 = new MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration(
-				startDate, endDate, MATH_CONTEXT );
+		for (final BacktestBootstrapConfiguration configuration : configurations) {
+			final String outputDirectory = getOutputDirectory( equity, configuration );
+			final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory );
 
-		final String outputDirectory = getOutputDirectory( equity, configuration );
-		final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory );
+			final BacktestBootstrap bootstrap = new BacktestBootstrap( equity, configuration, fileDisplay, MATH_CONTEXT );
 
-		final BacktestBootstrap bootstrap = new BacktestBootstrap( equity, configuration, fileDisplay, MATH_CONTEXT );
-
-		bootstrap.run();
+			bootstrap.run();
+		}
 
 		HibernateUtil.getSessionFactory().close();
+	}
 
+	private static List<BacktestBootstrapConfiguration> getConfigurations( final LocalDate startDate,
+			final LocalDate endDate ) {
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
+
+		configurations.add( new WeeklyBuyWeeklyDespoitConfiguration( startDate, endDate, MATH_CONTEXT ) );
+		configurations.add( new MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
+				MATH_CONTEXT ) );
+
+		return configurations;
 	}
 
 	private static EquityIdentity getEquityIdentity() {
