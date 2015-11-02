@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.impl;
+package com.systematic.trading.backtest.configuration;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -32,8 +32,8 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.backtest.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.backtest.brokerage.fees.impl.CmcMarketsFeeStructure;
@@ -43,7 +43,6 @@ import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.configuration.BootstrapConfiguration;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
@@ -70,25 +69,16 @@ import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorat
  * 
  * @author CJ Hare
  */
-public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration implements BootstrapConfiguration {
+public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
+		BacktestBootstrapConfiguration {
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	public MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( final MathContext mathContext ) {
+	public MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
+			final LocalDate endDate, final MathContext mathContext ) {
+		super( startDate, endDate );
 		this.mathContext = mathContext;
-	}
-
-	@Override
-	public EquityIdentity getEquityIdentity() {
-		final String tickerSymbol = "^GSPC"; 	// S&P 500 - price return index
-		final EquityClass equityType = EquityClass.STOCK;
-		return new EquityIdentity( tickerSymbol, equityType );
-	}
-
-	@Override
-	public String getOutputDirectory( final EquityIdentity equity ) {
-		return String.format( "../../simulations/%s_MacdRsiHoldForever", equity.getTickerSymbol() );
 	}
 
 	@Override
@@ -130,5 +120,10 @@ public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration implement
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( configuration, filters );
 		final BigDecimal minimumTradeValue = BigDecimal.valueOf( 1000 );
 		return new SignalTriggeredEntryLogic( equity.getType(), minimumTradeValue, buyLongAnalysis, mathContext );
+	}
+
+	@Override
+	public String getDescription() {
+		return "Macd-Rsi-SameDay-Buy_HoldForever";
 	}
 }

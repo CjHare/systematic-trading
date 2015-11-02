@@ -82,9 +82,9 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		final StringBuilder output = new StringBuilder();
 
 		output.append( "\n" );
-		output.append( "#####################\n" );
-		output.append( "### Event Summary ###\n" );
-		output.append( "#####################\n" );
+		output.append( "##########################\n" );
+		output.append( "### Summary Statistics ###\n" );
+		output.append( "##########################\n" );
 
 		displayOrderStatistics( statistics.getOrderEventStatistics(), output );
 		displayCashStatistics( statistics.getCashEventStatistics(), output );

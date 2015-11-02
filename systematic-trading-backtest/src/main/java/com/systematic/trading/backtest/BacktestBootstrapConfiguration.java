@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration;
+package com.systematic.trading.backtest;
 
 import java.time.LocalDate;
 
@@ -40,22 +40,23 @@ import com.systematic.trading.backtest.logic.ExitLogic;
  * 
  * @author CJ Hare
  */
-public interface BootstrapConfiguration {
+public interface BacktestBootstrapConfiguration {
 
 	/**
-	 * Identity for the equity.
+	 * First day to begin the back testing.
 	 * 
-	 * @return equity that will subject to the simulation.
+	 * @return inclusive date of the first trading day, or closest following day to begin back
+	 *         testing.
 	 */
-	EquityIdentity getEquityIdentity();
+	LocalDate getStartDate();
 
 	/**
-	 * Location for the results of the simulation.
+	 * Last day for the back testing.
 	 * 
-	 * @param equity subject of the back testing.
-	 * @return path to the directory to receive the output files.
+	 * @return inclusive date of the last trading day, or closest preceding day to cease back
+	 *         testing.
 	 */
-	String getOutputDirectory( EquityIdentity equity );
+	LocalDate getEndDate();
 
 	/**
 	 * Exit logic used to generate sell orders.
@@ -88,4 +89,11 @@ public interface BootstrapConfiguration {
 	 * @return input to the simulation that provides buy orders.
 	 */
 	EntryLogic getEntryLogic( EquityIdentity equity, LocalDate openingDate );
+
+	/**
+	 * Describes the behaviour of the configuration.
+	 * 
+	 * @return unique description of the configurations behaviour, a meaningful key.
+	 */
+	String getDescription();
 }

@@ -23,13 +23,14 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.impl;
+package com.systematic.trading.backtest.configuration;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
+import com.systematic.trading.backtest.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
@@ -41,7 +42,6 @@ import com.systematic.trading.backtest.cash.InterestRate;
 import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
 import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.configuration.BootstrapConfiguration;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.DateTriggeredEntryLogic;
@@ -58,25 +58,15 @@ import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
  * 
  * @author CJ Hare
  */
-public class WeeklyBuyWeeklyDespoitConfiguration implements BootstrapConfiguration {
+public class WeeklyBuyWeeklyDespoitConfiguration extends DefaultConfiguration implements BacktestBootstrapConfiguration {
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	public WeeklyBuyWeeklyDespoitConfiguration( final MathContext mathContext ) {
+	public WeeklyBuyWeeklyDespoitConfiguration( final LocalDate startDate, final LocalDate endDate,
+			final MathContext mathContext ) {
+		super( startDate, endDate );
 		this.mathContext = mathContext;
-	}
-
-	@Override
-	public EquityIdentity getEquityIdentity() {
-		final String tickerSymbol = "^GSPC"; 	// S&P 500 - price return index
-		final EquityClass equityType = EquityClass.STOCK;
-		return new EquityIdentity( tickerSymbol, equityType );
-	}
-
-	@Override
-	public String getOutputDirectory( final EquityIdentity equity ) {
-		return String.format( "../../simulations/%s_WeeklyBuyHoldForever", equity.getTickerSymbol() );
 	}
 
 	@Override
@@ -108,5 +98,10 @@ public class WeeklyBuyWeeklyDespoitConfiguration implements BootstrapConfigurati
 		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
 		return new DateTriggeredEntryLogic( oneHundredDollars, EquityClass.STOCK, openingDate, weekly, mathContext );
 
+	}
+
+	@Override
+	public String getDescription() {
+		return "WeeklyBuy_HoldForever";
 	}
 }

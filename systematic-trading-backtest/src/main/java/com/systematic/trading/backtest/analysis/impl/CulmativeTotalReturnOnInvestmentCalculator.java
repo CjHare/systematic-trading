@@ -37,7 +37,7 @@ import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculatorList
  * 
  * @author CJ Hare
  */
-public class CulmativeReturnOnInvestmentCalculatorListener implements ReturnOnInvestmentCalculatorListener,
+public class CulmativeTotalReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculatorListener,
 		CumulativeReturnOnInvestment {
 
 	/** Context for BigDecimal operations. */
@@ -46,7 +46,7 @@ public class CulmativeReturnOnInvestmentCalculatorListener implements ReturnOnIn
 	/** Running total of the ROI. */
 	private BigDecimal cumulativeROI = BigDecimal.ZERO;
 
-	public CulmativeReturnOnInvestmentCalculatorListener( final MathContext mathContext ) {
+	public CulmativeTotalReturnOnInvestmentCalculator( final MathContext mathContext ) {
 		this.mathContext = mathContext;
 	}
 

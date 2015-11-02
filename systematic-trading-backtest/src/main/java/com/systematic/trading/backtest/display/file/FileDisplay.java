@@ -28,10 +28,11 @@ package com.systematic.trading.backtest.display.file;
 import java.io.File;
 import java.io.IOException;
 
-import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculatorListener;
+import com.systematic.trading.backtest.analysis.impl.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.backtest.event.BrokerageEvent;
@@ -47,18 +48,17 @@ import com.systematic.trading.event.data.TickerSymbolTradingRange;
  * 
  * @author CJ Hare
  */
-public class FileDisplay implements EventListener {
+public class FileDisplay implements BacktestDisplay {
 
-	private final EventListener roiDisplay;
-	private final EventListener eventDisplay;
-	private final EventStatisticsDisplay statisticsDisplay;
-	private final NetWorthSummaryDisplay netWorthDisplay;
+	private final String parentDirectory;
+	private EventListener roiDisplay;
+	private EventListener eventDisplay;
+	private EventStatisticsDisplay statisticsDisplay;
+	private NetWorthSummaryDisplay netWorthDisplay;
 
-	public FileDisplay( final TickerSymbolTradingRange tickerSymbolTradingRange, final EventStatistics eventStatistics,
-			final Brokerage broker, final CashAccount cashAccount,
-			final CulmativeReturnOnInvestmentCalculatorListener cumulativeRoi, final TradingDayPrices[] tradingData,
-			final String outputDirectory ) throws IOException {
+	public FileDisplay( final String outputDirectory ) throws IOException {
 
+		// Ensure the directory exists
 		final File outputDirectoryFile = new File( outputDirectory );
 		if (!outputDirectoryFile.exists()) {
 			if (!outputDirectoryFile.mkdirs()) {
@@ -67,17 +67,29 @@ public class FileDisplay implements EventListener {
 			}
 		}
 
-		final String parentDirectory = outputDirectoryFile.getCanonicalPath();
-		final String eventStatisticsFilename = parentDirectory + "/event-statistics.txt";
-		final String netWorthFilename = parentDirectory + "/net-worth.txt";
+		// Ensure the directory is empty
+		for (final File file : outputDirectoryFile.listFiles()) {
+			file.delete();
+		}
+
+		parentDirectory = outputDirectoryFile.getCanonicalPath();
+	}
+
+	@Override
+	public void init( final TickerSymbolTradingRange tickerSymbolTradingRange, final EventStatistics eventStatistics,
+			final Brokerage broker, final CashAccount cashAccount,
+			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
+			throws Exception {
+
+		final String statisticsFilename = parentDirectory + "/statistics.txt";
 		final String returnOnInvestmentFilename = parentDirectory + "/return-on-investment.txt";
 		final String eventFilename = parentDirectory + "/events.txt";
 
 		this.roiDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentFilename );
 		this.eventDisplay = new FileEventDisplay( eventFilename, tickerSymbolTradingRange );
-		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, eventStatisticsFilename );
-		this.netWorthDisplay = new FileNetWorthSummaryDisplay( broker, tradingData, cashAccount, cumulativeRoi,
-				netWorthFilename );
+		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename );
+		this.netWorthDisplay = new FileNetWorthSummaryDisplay( broker, lastTradingDay, cashAccount, cumulativeRoi,
+				statisticsFilename );
 	}
 
 	@Override
@@ -96,4 +108,5 @@ public class FileDisplay implements EventListener {
 		statisticsDisplay.displayEventStatistics();
 		netWorthDisplay.displayNetWorth();
 	}
+
 }

@@ -55,16 +55,16 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
 	private final Brokerage broker;
-	private final TradingDayPrices[] tradingData;
+	private final TradingDayPrices lastTradingDay;
 	private final CashAccount cashAccount;
 	private final CumulativeReturnOnInvestment cumulativeRoi;
 
 	private final String outputFilename;
 
-	public FileNetWorthSummaryDisplay( final Brokerage broker, final TradingDayPrices[] tradingData,
+	public FileNetWorthSummaryDisplay( final Brokerage broker, final TradingDayPrices lastTradingDay,
 			final CashAccount cashAccount, final CumulativeReturnOnInvestment cumulativeRoi, final String outputFilename ) {
 		this.broker = broker;
-		this.tradingData = tradingData;
+		this.lastTradingDay = lastTradingDay;
 		this.cashAccount = cashAccount;
 		this.cumulativeRoi = cumulativeRoi;
 		this.outputFilename = outputFilename;
@@ -86,9 +86,8 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 	private String createOutput() {
 
-		final TradingDayPrices latest = getLatestDataPoint( tradingData );
 		final BigDecimal balance = broker.getEquityBalance();
-		final BigDecimal lastClosingPrice = latest.getClosingPrice().getPrice();
+		final BigDecimal lastClosingPrice = lastTradingDay.getClosingPrice().getPrice();
 		final BigDecimal holdingValue = balance.multiply( lastClosingPrice );
 		final StringBuilder output = new StringBuilder();
 
@@ -107,15 +106,4 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 		return output.toString();
 	}
 
-	private TradingDayPrices getLatestDataPoint( final TradingDayPrices[] tradingDate ) {
-		TradingDayPrices latest = tradingDate[0];
-
-		for (int i = 1; i < tradingDate.length; i++) {
-			if (tradingDate[i].getDate().isAfter( latest.getDate() )) {
-				latest = tradingDate[i];
-			}
-		}
-
-		return latest;
-	}
 }
