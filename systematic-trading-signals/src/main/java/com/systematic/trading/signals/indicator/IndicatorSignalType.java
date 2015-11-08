@@ -28,5 +28,6 @@ package com.systematic.trading.signals.indicator;
 public enum IndicatorSignalType {
 	MACD,
 	RSI,
+	SMA,
 	STOCHASTIC;
 }

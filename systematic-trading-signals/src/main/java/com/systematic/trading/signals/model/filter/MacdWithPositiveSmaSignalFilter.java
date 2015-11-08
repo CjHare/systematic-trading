@@ -43,7 +43,7 @@ import com.systematic.trading.signals.model.IndicatorSignalDateComparator;
  * 
  * @author CJ Hare
  */
-public class RsiMacdOnSameDaySignalFilter implements SignalFilter {
+public class MacdWithPositiveSmaSignalFilter implements SignalFilter {
 
 	private static final IndicatorSignalDateComparator ORDER_BY_DATE = new IndicatorSignalDateComparator();
 
@@ -57,13 +57,13 @@ public class RsiMacdOnSameDaySignalFilter implements SignalFilter {
 		final List<IndicatorSignal> macd = signals.get( IndicatorSignalType.MACD );
 		Collections.sort( macd, ORDER_BY_DATE );
 
-		final List<IndicatorSignal> rsi = signals.get( IndicatorSignalType.RSI );
-		Collections.sort( rsi, ORDER_BY_DATE );
+		final List<IndicatorSignal> sma = signals.get( IndicatorSignalType.SMA );
+		Collections.sort( sma, ORDER_BY_DATE );
 
 		for (final IndicatorSignal macdSignal : macd) {
 
 			final LocalDate date = macdSignal.getDate();
-			for (final IndicatorSignal rsiSignal : rsi) {
+			for (final IndicatorSignal rsiSignal : sma) {
 
 				if (date.equals( rsiSignal.getDate() )) {
 					passedSignals.add( new BuySignal( date ) );
@@ -79,8 +79,8 @@ public class RsiMacdOnSameDaySignalFilter implements SignalFilter {
 		if (signals.get( IndicatorSignalType.MACD ) == null) {
 			throw new IllegalArgumentException( "Expecting a non-null MACD list" );
 		}
-		if (signals.get( IndicatorSignalType.RSI ) == null) {
-			throw new IllegalArgumentException( "Expecting a non-null RSI list" );
+		if (signals.get( IndicatorSignalType.SMA ) == null) {
+			throw new IllegalArgumentException( "Expecting a non-null SMA list" );
 		}
 	}
 }

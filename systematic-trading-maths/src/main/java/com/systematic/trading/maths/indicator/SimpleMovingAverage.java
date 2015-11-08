@@ -81,7 +81,6 @@ public class SimpleMovingAverage {
 	}
 
 	/**
-	 * 
 	 * Calculate the average from this value and the previous look back amount.
 	 */
 	private BigDecimal simpleAverage( final int startIndex, final ValueWithDate[] data ) {

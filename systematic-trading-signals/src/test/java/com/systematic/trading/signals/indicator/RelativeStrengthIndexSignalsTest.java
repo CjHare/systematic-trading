@@ -35,10 +35,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestPrice;
-import com.systematic.trading.data.price.LowestPrice;
-import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 public class RelativeStrengthIndexSignalsTest {
@@ -57,8 +53,8 @@ public class RelativeStrengthIndexSignalsTest {
 		for (int i = 0; i < rsiValue.length; i++) {
 			rsiValue[i] = BigDecimal.valueOf( rsi[i] );
 
-			dates[i] = new DataPointImpl( LocalDate.now().plusDays( dateValues[i] ), BigDecimal.ZERO, BigDecimal.ZERO,
-					BigDecimal.ZERO, BigDecimal.ZERO );
+			dates[i] = new TradingDayPricesImpl( LocalDate.now().plusDays( dateValues[i] ), BigDecimal.ZERO,
+					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO );
 		}
 
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 30, 70 );
@@ -70,53 +66,5 @@ public class RelativeStrengthIndexSignalsTest {
 		assertEquals( LocalDate.now().plusDays( 12 ), signals.get( 0 ).getDate() );
 		assertEquals( LocalDate.now().plusDays( 15 ), signals.get( 1 ).getDate() );
 		assertEquals( LocalDate.now().plusDays( 26 ), signals.get( 2 ).getDate() );
-	}
-
-	class DataPointImpl implements TradingDayPrices {
-
-		private final LocalDate date;
-		private final OpeningPrice openingPrice;
-		private final LowestPrice lowestPrice;
-		private final HighestPrice highestPrice;
-		private final ClosingPrice closingPrice;
-
-		public DataPointImpl( final LocalDate date, final BigDecimal openingPrice, final BigDecimal lowestPrice,
-				final BigDecimal highestPrice, final BigDecimal closingPrice ) {
-			this.date = date;
-			this.openingPrice = OpeningPrice.valueOf( openingPrice );
-			this.lowestPrice = LowestPrice.valueOf( lowestPrice );
-			this.highestPrice = HighestPrice.valueOf( highestPrice );
-			this.closingPrice = ClosingPrice.valueOf( closingPrice );
-		}
-
-		@Override
-		public LocalDate getDate() {
-			return date;
-		}
-
-		@Override
-		public ClosingPrice getClosingPrice() {
-			return closingPrice;
-		}
-
-		@Override
-		public LowestPrice getLowestPrice() {
-			return lowestPrice;
-		}
-
-		@Override
-		public HighestPrice getHighestPrice() {
-			return highestPrice;
-		}
-
-		@Override
-		public String getTickerSymbol() {
-			return "";
-		}
-
-		@Override
-		public OpeningPrice getOpeningPrice() {
-			return openingPrice;
-		}
 	}
 }

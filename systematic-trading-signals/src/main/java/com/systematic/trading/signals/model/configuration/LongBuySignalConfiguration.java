@@ -27,6 +27,7 @@ package com.systematic.trading.signals.model.configuration;
 
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradient;
 import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
 
 public interface LongBuySignalConfiguration {
@@ -36,4 +37,6 @@ public interface LongBuySignalConfiguration {
 	MovingAveragingConvergeDivergenceSignals getMovingAveragingConvergeDivergenceSignals();
 
 	StochasticOscillatorSignals getStochasticOscillatorSignals();
+
+	SimpleMovingAverageGradient getSimpleMovingAverageGradient();
 }

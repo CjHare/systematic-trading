@@ -23,49 +23,66 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.model.configuration;
+package com.systematic.trading.signals.indicator;
 
-import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradient;
-import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
-public class AllSignalsConfiguration implements LongBuySignalConfiguration {
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.LowestPrice;
+import com.systematic.trading.data.price.OpeningPrice;
 
-	private final RelativeStrengthIndexSignals rsi;
+/**
+ * Trading day prices implementation for test usage.
+ * 
+ * @author CJ Hare
+ */
+public class TradingDayPricesImpl implements TradingDayPrices {
 
-	private final MovingAveragingConvergeDivergenceSignals macd;
+	private final LocalDate date;
+	private final OpeningPrice openingPrice;
+	private final LowestPrice lowestPrice;
+	private final HighestPrice highestPrice;
+	private final ClosingPrice closingPrice;
 
-	private final StochasticOscillatorSignals stochastic;
-
-	private final SimpleMovingAverageGradient sma;
-
-	public AllSignalsConfiguration( final RelativeStrengthIndexSignals rsi,
-			final MovingAveragingConvergeDivergenceSignals macd, final SimpleMovingAverageGradient sma,
-			final StochasticOscillatorSignals stochastic ) {
-		this.rsi = rsi;
-		this.macd = macd;
-		this.sma = sma;
-		this.stochastic = stochastic;
+	public TradingDayPricesImpl( final LocalDate date, final BigDecimal openingPrice, final BigDecimal lowestPrice,
+			final BigDecimal highestPrice, final BigDecimal closingPrice ) {
+		this.date = date;
+		this.openingPrice = OpeningPrice.valueOf( openingPrice );
+		this.lowestPrice = LowestPrice.valueOf( lowestPrice );
+		this.highestPrice = HighestPrice.valueOf( highestPrice );
+		this.closingPrice = ClosingPrice.valueOf( closingPrice );
 	}
 
 	@Override
-	public RelativeStrengthIndexSignals getRelativeStrengthIndexSignals() {
-		return rsi;
+	public LocalDate getDate() {
+		return date;
 	}
 
 	@Override
-	public MovingAveragingConvergeDivergenceSignals getMovingAveragingConvergeDivergenceSignals() {
-		return macd;
+	public ClosingPrice getClosingPrice() {
+		return closingPrice;
 	}
 
 	@Override
-	public StochasticOscillatorSignals getStochasticOscillatorSignals() {
-		return stochastic;
+	public LowestPrice getLowestPrice() {
+		return lowestPrice;
 	}
 
 	@Override
-	public SimpleMovingAverageGradient getSimpleMovingAverageGradient() {
-		return sma;
+	public HighestPrice getHighestPrice() {
+		return highestPrice;
+	}
+
+	@Override
+	public String getTickerSymbol() {
+		return "";
+	}
+
+	@Override
+	public OpeningPrice getOpeningPrice() {
+		return openingPrice;
 	}
 }

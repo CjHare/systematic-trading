@@ -39,6 +39,7 @@ import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradient;
 import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
 import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
 import com.systematic.trading.signals.model.filter.SignalFilter;
@@ -57,12 +58,14 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	private final RelativeStrengthIndexSignals rsi;
 	private final MovingAveragingConvergeDivergenceSignals macd;
 	private final StochasticOscillatorSignals stochastic;
+	private final SimpleMovingAverageGradient sma;
 	private final List<SignalFilter> filters;
 
 	public AnalysisLongBuySignals( final LongBuySignalConfiguration configuration, final List<SignalFilter> filters ) {
 		this.rsi = configuration.getRelativeStrengthIndexSignals();
 		this.macd = configuration.getMovingAveragingConvergeDivergenceSignals();
 		this.stochastic = configuration.getStochasticOscillatorSignals();
+		this.sma = configuration.getSimpleMovingAverageGradient();
 		this.filters = filters;
 	}
 
@@ -77,6 +80,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 				IndicatorSignalType.class );
 		indicatorSignals.put( IndicatorSignalType.MACD, macd.calculate( data ) );
 		indicatorSignals.put( IndicatorSignalType.RSI, rsi.calculate( data ) );
+		indicatorSignals.put( IndicatorSignalType.SMA, sma.calculate( data ) );
 		indicatorSignals.put( IndicatorSignalType.STOCHASTIC, stochastic.calculate( data ) );
 
 		final LocalDate latestTradingDate = data[data.length - 1].getDate();
