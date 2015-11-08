@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.analysis;
 
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -45,7 +46,9 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradient;
 import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradient.Gradient;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.configuration.AllSignalsConfiguration;
 import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
@@ -54,6 +57,7 @@ import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class TodaysBuySignals {
 
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 	private static final Logger LOG = LogManager.getLogger( TodaysBuySignals.class );
 
 	/** The oldest signal date (inclusive) from today to report, includes non-trading days. */
@@ -73,8 +77,8 @@ public class TodaysBuySignals {
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
 		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 10, 3, 3 );
-
-		final LongBuySignalConfiguration configuration = new AllSignalsConfiguration( rsi, macd, stochastic );
+		final SimpleMovingAverageGradient sma = new SimpleMovingAverageGradient( 200, Gradient.POSITIVE, MATH_CONTEXT );
+		final LongBuySignalConfiguration configuration = new AllSignalsConfiguration( rsi, macd, sma, stochastic );
 
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
 		filters.add( new RsiMacdOnSameDaySignalFilter() );
