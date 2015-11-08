@@ -33,6 +33,7 @@ import java.util.List;
 
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
+import com.systematic.trading.backtest.configuration.MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
@@ -83,6 +84,8 @@ public class SystematicTradingBacktest {
 
 		configurations.add( new WeeklyBuyWeeklyDespoitConfiguration( startDate, endDate, MATH_CONTEXT ) );
 		configurations.add( new MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
+				MATH_CONTEXT ) );
+		configurations.add( new MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
 				MATH_CONTEXT ) );
 
 		return configurations;

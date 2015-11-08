@@ -62,7 +62,7 @@ import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorat
  * Configuration for signal triggered entry logic.
  * <p/>
  * <ul>
- * <li>Entry logic: MACD & RSI on same day triggered</li>
+ * <li>Entry logic: MACD buy trigger when the 200 day Sma is a positive gradient</li>
  * <li>Exit logic: never sell</li>
  * <li>Cash account: zero starting, weekly 100 dollar deposit</li>
  * <li>Broker transaction: minimum 1000, use full cash balance</li>
@@ -70,13 +70,13 @@ import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorat
  * 
  * @author CJ Hare
  */
-public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
+public class MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
 		BacktestBootstrapConfiguration {
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	public MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
+	public MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
 			final LocalDate endDate, final MathContext mathContext ) {
 		super( startDate, endDate );
 		this.mathContext = mathContext;
@@ -113,6 +113,10 @@ public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends D
 		final LongBuySignalConfiguration configuration = new AllSignalsConfiguration( rsi, macd, stochastic );
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
 
+		//TODO sma????
+
+		
+		//TODO new filter bring together sma and macd
 		// Only signals from the last two days are of interest
 		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new RsiMacdOnSameDaySignalFilter(),
 				Period.ofDays( 5 ) );
@@ -125,6 +129,6 @@ public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends D
 
 	@Override
 	public String getDescription() {
-		return "Macd-Rsi-SameDay-Buy_HoldForever";
+		return "Macd-PositiveSma-Buy_HoldForever";
 	}
 }
