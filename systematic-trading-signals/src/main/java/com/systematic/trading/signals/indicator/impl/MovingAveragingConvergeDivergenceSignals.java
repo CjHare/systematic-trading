@@ -39,6 +39,8 @@ import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 
 public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignalGenerator {
 
+	private static final int DAYS_OF_MACD = 3;
+
 	private final int slowTimePeriods;
 	private final int fastTimePeriods;
 	private final int signalTimePeriods;
@@ -132,7 +134,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 	@Override
 	public int getRequiredNumberOfTradingDays() {
-		return slowTimePeriods;
+		return slowTimePeriods + signalTimePeriods + DAYS_OF_MACD;
 	}
 
 	@Override

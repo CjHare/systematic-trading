@@ -103,6 +103,8 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 			try {
 				signals = generator.calculateSignals( data );
 
+				// TODO events for signals generated
+
 			} catch (final TooFewDataPoints e) {
 				// TODO events for the too few data points
 				// TODO log / record - may be of interested when there's too little data

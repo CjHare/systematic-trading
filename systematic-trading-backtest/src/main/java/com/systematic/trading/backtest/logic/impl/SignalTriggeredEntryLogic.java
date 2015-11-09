@@ -70,20 +70,20 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 
 	/**
 	 * @param interval time between creation of entry orders.
-	 * @param buyLongAnalysis analyser of trading data to generate buy signals.
+	 * @param analysis analyser of trading data to generate buy signals.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
 	public SignalTriggeredEntryLogic( final EquityClass equityType, final BigDecimal minimumTradeValue,
-			final AnalysisBuySignals buyLongAnalysis, final MathContext mathContext ) {
+			final AnalysisBuySignals analysis, final MathContext mathContext ) {
 		this.mathContext = mathContext;
 		this.type = equityType;
 		this.minimumTradeValue = minimumTradeValue;
-		this.buyLongAnalysis = buyLongAnalysis;
+		this.buyLongAnalysis = analysis;
 
-		this.tradingData = new LimitedQueue<TradingDayPrices>( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() );
+		this.tradingData = new LimitedQueue<TradingDayPrices>( analysis.getMaximumNumberOfTradingDaysRequired() );
 
 		// There can only ever be as many signals as trading days stored
-		this.previousSignals = new LimitedQueue<BuySignal>( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() );
+		this.previousSignals = new LimitedQueue<BuySignal>( analysis.getMaximumNumberOfTradingDaysRequired() );
 	}
 
 	@Override

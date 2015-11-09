@@ -44,8 +44,9 @@ import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
  */
 public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
-	private static int FIVE_TRADING_DAYS = 5;
-	private static int TEN_TRADING_DAYS = 10;
+	private static final int DAYS_OF_RSI_VALUES = 1;
+	private static final int FIVE_TRADING_DAYS = 5;
+	private static final int TEN_TRADING_DAYS = 10;
 
 	private final BigDecimal oversold, overbought;
 
@@ -122,7 +123,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 	@Override
 	public int getRequiredNumberOfTradingDays() {
-		return TEN_TRADING_DAYS;
+		return TEN_TRADING_DAYS + DAYS_OF_RSI_VALUES;
 	}
 
 	@Override
