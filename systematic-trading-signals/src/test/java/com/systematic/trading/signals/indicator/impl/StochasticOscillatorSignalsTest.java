@@ -106,7 +106,7 @@ public class StochasticOscillatorSignalsTest {
 	public void getMaximumNumberOfTradingDaysRequired() {
 		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 2, 1, 1 );
 
-		assertEquals( 2, stochastic.getMaximumNumberOfTradingDaysRequired() );
+		assertEquals( 2, stochastic.getRequiredNumberOfTradingDays() );
 	}
 
 }

@@ -35,14 +35,14 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.RelativeStrengthIndex;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
-import com.systematic.trading.signals.indicator.SignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 
 /**
  * Takes the output from RSI and identifies any buy signals.
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexSignals implements SignalGenerator {
+public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 	private static int FIVE_TRADING_DAYS = 5;
 	private static int TEN_TRADING_DAYS = 10;
@@ -54,7 +54,8 @@ public class RelativeStrengthIndexSignals implements SignalGenerator {
 		this.overbought = BigDecimal.valueOf( overbought );
 	}
 
-	public List<IndicatorSignal> calculate( final TradingDayPrices[] data ) throws TooFewDataPoints {
+	@Override
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints {
 		// 5 day RSI
 		final BigDecimal[] fiveDayRsi = new RelativeStrengthIndex( FIVE_TRADING_DAYS ).rsi( data );
 
@@ -120,7 +121,12 @@ public class RelativeStrengthIndexSignals implements SignalGenerator {
 	}
 
 	@Override
-	public int getMaximumNumberOfTradingDaysRequired() {
+	public int getRequiredNumberOfTradingDays() {
 		return TEN_TRADING_DAYS;
+	}
+
+	@Override
+	public IndicatorSignalType getSignalType() {
+		return IndicatorSignalType.RSI;
 	}
 }

@@ -25,18 +25,39 @@
  */
 package com.systematic.trading.signals.indicator;
 
+import java.util.List;
+
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.exception.TooFewDataPoints;
+
 /**
  * Responsible for generation of signals from analysis of the trading data.
  * 
  * @author CJ Hare
  */
-public interface SignalGenerator {
+public interface IndicatorSignalGenerator {
 
 	/**
 	 * The maximum number of trading days data used by the signal analysers.
 	 * 
 	 * @return maximum number of data to provide to the analysis.
 	 */
-	int getMaximumNumberOfTradingDaysRequired();
+	int getRequiredNumberOfTradingDays();
 
+	/**
+	 * Perform the analysis of trading prices for the generation of signals.
+	 * 
+	 * @param data trading prices for calculation of signals.
+	 * @return signals generated from the given trading data, empty list means zero, never
+	 *         <code>null</code>.
+	 * @throws TooFewDataPoints not enough trading day prices were provided for signal generation.
+	 */
+	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data ) throws TooFewDataPoints;
+
+	/**
+	 * The type of signals that are generated.
+	 * 
+	 * @return the type of indicator signals generated.
+	 */
+	IndicatorSignalType getSignalType();
 }

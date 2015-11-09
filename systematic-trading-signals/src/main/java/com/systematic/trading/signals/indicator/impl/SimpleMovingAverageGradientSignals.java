@@ -36,7 +36,7 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.SimpleMovingAverage;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
-import com.systematic.trading.signals.indicator.SignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 
 /**
  * Interested in the Simple Moving Average (SMA) gradient, whether it is negative (downward),flat
@@ -44,7 +44,7 @@ import com.systematic.trading.signals.indicator.SignalGenerator;
  * 
  * @author CJ Hare
  */
-public class SimpleMovingAverageGradientSignals implements SignalGenerator {
+public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenerator {
 
 	public enum GradientType {
 		NEGATIVE,
@@ -72,7 +72,8 @@ public class SimpleMovingAverageGradientSignals implements SignalGenerator {
 		this.daysOfGradient = daysOfGradient;
 	}
 
-	public List<IndicatorSignal> calculate( final TradingDayPrices[] data ) throws TooFewDataPoints {
+	@Override
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints {
 
 		final ValueWithDate[] vd = convertToClosingPriceAndDate( data );
 		final BigDecimal[] sma = new SimpleMovingAverage( lookback ).sma( vd );
@@ -148,7 +149,12 @@ public class SimpleMovingAverageGradientSignals implements SignalGenerator {
 	}
 
 	@Override
-	public int getMaximumNumberOfTradingDaysRequired() {
+	public int getRequiredNumberOfTradingDays() {
 		return lookback + daysOfGradient;
+	}
+
+	@Override
+	public IndicatorSignalType getSignalType() {
+		return IndicatorSignalType.SMA;
 	}
 }

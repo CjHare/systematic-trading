@@ -38,11 +38,7 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
-import com.systematic.trading.signals.indicator.impl.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.impl.RelativeStrengthIndexSignals;
-import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals;
-import com.systematic.trading.signals.indicator.impl.StochasticOscillatorSignals;
-import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class AnalysisLongBuySignals implements AnalysisBuySignals {
@@ -56,30 +52,24 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	/** Most number of trading day data used by the signal generators. */
 	private final int maximumNumberOfTradingDaysRequired;
 
-	private final RelativeStrengthIndexSignals rsi;
-	private final MovingAveragingConvergeDivergenceSignals macd;
-	private final StochasticOscillatorSignals stochastic;
-	private final SimpleMovingAverageGradientSignals sma;
 	private final List<SignalFilter> filters;
+	private final List<IndicatorSignalGenerator> generators;
 
-	public AnalysisLongBuySignals( final LongBuySignalConfiguration configuration, final List<SignalFilter> filters ) {
-		this.rsi = configuration.getRelativeStrengthIndexSignals();
-		this.macd = configuration.getMovingAveragingConvergeDivergenceSignals();
-		this.stochastic = configuration.getStochasticOscillatorSignals();
-		this.sma = configuration.getSimpleMovingAverageGradient();
+	public AnalysisLongBuySignals( final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters ) {
+		this.generators = generators;
 		this.filters = filters;
-
-		this.maximumNumberOfTradingDaysRequired = getLargestMaximumNumberOfTradingDaysRequired();
+		this.maximumNumberOfTradingDaysRequired = getRequiredNumberOfTradingDays();
 	}
 
-	private int getLargestMaximumNumberOfTradingDaysRequired() {
+	// TODO test
+	private int getRequiredNumberOfTradingDays() {
 
-		final List<Integer> maximumTradingDays = new ArrayList<Integer>();
-		maximumTradingDays.add( rsi.getMaximumNumberOfTradingDaysRequired() );
-		maximumTradingDays.add( macd.getMaximumNumberOfTradingDaysRequired() );
-		maximumTradingDays.add( stochastic.getMaximumNumberOfTradingDaysRequired() );
-		maximumTradingDays.add( sma.getMaximumNumberOfTradingDaysRequired() );
-		return Collections.max( maximumTradingDays );
+		final List<Integer> requiredTradingDays = new ArrayList<Integer>();
+		for (final IndicatorSignalGenerator generator : generators) {
+			requiredTradingDays.add( generator.getRequiredNumberOfTradingDays() );
+		}
+
+		return Collections.max( requiredTradingDays );
 	}
 
 	@Override
@@ -89,13 +79,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		Arrays.sort( data, TRADING_DAY_ORDER_BY_DATE );
 
 		// Generate the indicator signals
-		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = new EnumMap<IndicatorSignalType, List<IndicatorSignal>>(
-				IndicatorSignalType.class );
-
-		addMacdSignals( indicatorSignals, data );
-		addRsiSignals( indicatorSignals, data );
-		addSmaSignals( indicatorSignals, data );
-		addStochasticSignals( indicatorSignals, data );
+		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = addSignals( data );
 
 		final LocalDate latestTradingDate = data[data.length - 1].getDate();
 		final List<BuySignal> signals = new ArrayList<BuySignal>();
@@ -108,73 +92,30 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		return signals;
 	}
 
-	private void addMacdSignals( final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals,
-			final TradingDayPrices[] data ) {
+	private Map<IndicatorSignalType, List<IndicatorSignal>> addSignals( final TradingDayPrices[] data ) {
+
+		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = new EnumMap<IndicatorSignalType, List<IndicatorSignal>>(
+				IndicatorSignalType.class );
+
 		List<IndicatorSignal> signals;
+		for (final IndicatorSignalGenerator generator : generators) {
 
-		try {
-			signals = macd.calculate( data );
-		} catch (final TooFewDataPoints e) {
-			// TODO log / record - may be of interested when there's too little data
-			System.err.println( e.getMessage() );
+			try {
+				signals = generator.calculateSignals( data );
 
-			// No signals generated
-			signals = new ArrayList<IndicatorSignal>();
+			} catch (final TooFewDataPoints e) {
+				// TODO events for the too few data points
+				// TODO log / record - may be of interested when there's too little data
+				System.err.println( e.getMessage() );
+
+				// No signals generated
+				signals = new ArrayList<IndicatorSignal>();
+			}
+
+			indicatorSignals.put( generator.getSignalType(), signals );
 		}
 
-		indicatorSignals.put( IndicatorSignalType.MACD, signals );
-	}
-
-	private void addRsiSignals( final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals,
-			final TradingDayPrices[] data ) {
-		List<IndicatorSignal> signals;
-
-		try {
-			signals = rsi.calculate( data );
-		} catch (final TooFewDataPoints e) {
-			// TODO log / record - may be of interested when there's too little data
-			System.err.println( e.getMessage() );
-
-			// No signals generated
-			signals = new ArrayList<IndicatorSignal>();
-		}
-
-		indicatorSignals.put( IndicatorSignalType.RSI, signals );
-	}
-
-	private void addSmaSignals( final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals,
-			final TradingDayPrices[] data ) {
-		List<IndicatorSignal> signals;
-
-		try {
-			signals = sma.calculate( data );
-
-		} catch (final TooFewDataPoints e) {
-			// TODO log / record - may be of interested when there's too little data
-			System.err.println( e.getMessage() );
-
-			// No signals generated
-			signals = new ArrayList<IndicatorSignal>();
-		}
-
-		indicatorSignals.put( IndicatorSignalType.SMA, signals );
-	}
-
-	private void addStochasticSignals( final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals,
-			final TradingDayPrices[] data ) {
-		List<IndicatorSignal> signals;
-
-		try {
-			signals = stochastic.calculate( data );
-		} catch (final TooFewDataPoints e) {
-			// TODO log / record - may be of interested when there's too little data
-			System.err.println( e.getMessage() );
-
-			// No signals generated
-			signals = new ArrayList<IndicatorSignal>();
-		}
-
-		indicatorSignals.put( IndicatorSignalType.STOCHASTIC, signals );
+		return indicatorSignals;
 	}
 
 	@Override

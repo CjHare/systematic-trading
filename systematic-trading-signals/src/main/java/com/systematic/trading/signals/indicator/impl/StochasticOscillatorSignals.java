@@ -36,7 +36,7 @@ import com.systematic.trading.maths.indicator.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.StochasticPercentageK;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
-import com.systematic.trading.signals.indicator.SignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 
 /**
  * Stochastic Oscillator is a momentum indicator that shows the location of the close relative to
@@ -48,7 +48,7 @@ import com.systematic.trading.signals.indicator.SignalGenerator;
  * 
  * @author CJ Hare
  */
-public class StochasticOscillatorSignals implements SignalGenerator {
+public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 
 	/** Number of trading days to read the ranges on. */
 	private final int lookback;
@@ -62,7 +62,8 @@ public class StochasticOscillatorSignals implements SignalGenerator {
 		this.smaK = smaK;
 	}
 
-	public List<IndicatorSignal> calculate( final TradingDayPrices[] data ) throws TooFewDataPoints {
+	@Override
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints {
 		final StochasticPercentageK percentageK = new StochasticPercentageK( lookback );
 
 		final BigDecimal[] fastK = percentageK.percentageK( data );
@@ -128,7 +129,12 @@ public class StochasticOscillatorSignals implements SignalGenerator {
 	}
 
 	@Override
-	public int getMaximumNumberOfTradingDaysRequired() {
+	public int getRequiredNumberOfTradingDays() {
 		return lookback;
+	}
+
+	@Override
+	public IndicatorSignalType getSignalType() {
+		return IndicatorSignalType.STOCHASTIC;
 	}
 }

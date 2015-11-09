@@ -29,24 +29,24 @@ import java.util.List;
 
 import com.systematic.trading.analysis.Equity;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class ProcessLongBuySignals {
 
-	private final LongBuySignalConfiguration configuration;
+	private final List<IndicatorSignalGenerator> generators;
 
 	private final List<SignalFilter> filters;
 
-	public ProcessLongBuySignals( final LongBuySignalConfiguration configuration, final List<SignalFilter> filters ) {
-		this.configuration = configuration;
+	public ProcessLongBuySignals( final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters ) {
+		this.generators = generators;
 		this.filters = filters;
 	}
 
 	public List<BuySignal> process( final Equity equity, final TradingDayPrices[] data ) {
 
-		return new AnalysisLongBuySignals( configuration, filters ).analyse( data );
+		return new AnalysisLongBuySignals( generators, filters ).analyse( data );
 	}
 }

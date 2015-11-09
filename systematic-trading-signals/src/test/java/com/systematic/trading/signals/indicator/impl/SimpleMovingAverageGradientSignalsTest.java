@@ -72,7 +72,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf( closingPrice[i] ) );
 		}
 
-		smaGradient.calculate( data );
+		smaGradient.calculateSignals( data );
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -81,7 +81,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 				daysGradient, null, MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
-		smaGradient.calculate( data );
+		smaGradient.calculateSignals( data );
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 				daysGradient, GradientType.POSITIVE, MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
-		final List<IndicatorSignal> signals = smaGradient.calculate( data );
+		final List<IndicatorSignal> signals = smaGradient.calculateSignals( data );
 
 		assertNotNull( signals );
 		assertEquals( 5, signals.size() );
@@ -107,7 +107,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 				GradientType.FLAT, MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
-		final List<IndicatorSignal> signals = smaGradient.calculate( data );
+		final List<IndicatorSignal> signals = smaGradient.calculateSignals( data );
 
 		assertNotNull( signals );
 		assertEquals( 2, signals.size() );
@@ -121,7 +121,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 				daysGradient, GradientType.NEGATIVE, MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
-		final List<IndicatorSignal> signals = smaGradient.calculate( data );
+		final List<IndicatorSignal> signals = smaGradient.calculateSignals( data );
 
 		assertNotNull( signals );
 		assertEquals( 5, signals.size() );
@@ -147,6 +147,6 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
 				daysGradient, GradientType.NEGATIVE, MATH_CONTEXT );
 
-		assertEquals( lookback + daysGradient, smaGradient.getMaximumNumberOfTradingDaysRequired() );
+		assertEquals( lookback + daysGradient, smaGradient.getRequiredNumberOfTradingDays() );
 	}
 }

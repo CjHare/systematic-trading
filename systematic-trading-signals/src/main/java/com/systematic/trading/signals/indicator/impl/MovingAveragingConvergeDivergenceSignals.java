@@ -35,9 +35,9 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.ExponentialMovingAverage;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
-import com.systematic.trading.signals.indicator.SignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 
-public class MovingAveragingConvergeDivergenceSignals implements SignalGenerator {
+public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignalGenerator {
 
 	private final int slowTimePeriods;
 	private final int fastTimePeriods;
@@ -50,7 +50,8 @@ public class MovingAveragingConvergeDivergenceSignals implements SignalGenerator
 		this.signalTimePeriods = signalTimePeriods;
 	}
 
-	public List<IndicatorSignal> calculate( final TradingDayPrices[] data ) throws TooFewDataPoints {
+	@Override
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints {
 
 		final ExponentialMovingAverage slowEma = new ExponentialMovingAverage( slowTimePeriods );
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverage( fastTimePeriods );
@@ -130,7 +131,12 @@ public class MovingAveragingConvergeDivergenceSignals implements SignalGenerator
 	}
 
 	@Override
-	public int getMaximumNumberOfTradingDaysRequired() {
+	public int getRequiredNumberOfTradingDays() {
 		return slowTimePeriods;
+	}
+
+	@Override
+	public IndicatorSignalType getSignalType() {
+		return IndicatorSignalType.MACD;
 	}
 }

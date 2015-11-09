@@ -48,14 +48,10 @@ import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
 import com.systematic.trading.backtest.logic.impl.SignalTriggeredEntryLogic;
 import com.systematic.trading.signals.AnalysisBuySignals;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.impl.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.impl.RelativeStrengthIndexSignals;
-import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals;
-import com.systematic.trading.signals.indicator.impl.StochasticOscillatorSignals;
-import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
-import com.systematic.trading.signals.model.configuration.AllSignalsConfiguration;
-import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
 import com.systematic.trading.signals.model.filter.RsiMacdOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
@@ -111,10 +107,10 @@ public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends D
 
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
-		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 10, 3, 3 );
-		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 0,
-				GradientType.POSITIVE, mathContext );
-		final LongBuySignalConfiguration configuration = new AllSignalsConfiguration( rsi, macd, sma, stochastic );
+
+		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>();
+		generators.add( macd );
+		generators.add( rsi );
 
 		// Only signals from the last two days are of interest
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
@@ -122,7 +118,7 @@ public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends D
 				Period.ofDays( 5 ) );
 		filters.add( filter );
 
-		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( configuration, filters );
+		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
 		final BigDecimal minimumTradeValue = BigDecimal.valueOf( 1000 );
 		return new SignalTriggeredEntryLogic( equity.getType(), minimumTradeValue, buyLongAnalysis, mathContext );
 	}
