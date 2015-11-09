@@ -28,6 +28,7 @@ package com.systematic.trading.signals.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,17 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		this.sma = configuration.getSimpleMovingAverageGradient();
 		this.filters = filters;
 
-		this.maximumNumberOfTradingDaysRequired = 200;
+		this.maximumNumberOfTradingDaysRequired = getLargestMaximumNumberOfTradingDaysRequired();
+	}
+
+	private int getLargestMaximumNumberOfTradingDaysRequired() {
+
+		final List<Integer> maximumTradingDays = new ArrayList<Integer>();
+		maximumTradingDays.add( rsi.getMaximumNumberOfTradingDaysRequired() );
+		maximumTradingDays.add( macd.getMaximumNumberOfTradingDaysRequired() );
+		maximumTradingDays.add( stochastic.getMaximumNumberOfTradingDaysRequired() );
+		maximumTradingDays.add( sma.getMaximumNumberOfTradingDaysRequired() );
+		return Collections.max( maximumTradingDays );
 	}
 
 	@Override
@@ -137,6 +148,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 		try {
 			signals = sma.calculate( data );
+
 		} catch (final TooFewDataPoints e) {
 			// TODO log / record - may be of interested when there's too little data
 			System.err.println( e.getMessage() );

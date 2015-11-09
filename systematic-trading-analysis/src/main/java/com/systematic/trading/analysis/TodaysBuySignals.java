@@ -48,7 +48,7 @@ import com.systematic.trading.signals.indicator.impl.MovingAveragingConvergeDive
 import com.systematic.trading.signals.indicator.impl.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals;
 import com.systematic.trading.signals.indicator.impl.StochasticOscillatorSignals;
-import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals.Gradient;
+import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.configuration.AllSignalsConfiguration;
 import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
@@ -77,7 +77,8 @@ public class TodaysBuySignals {
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
 		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 10, 3, 3 );
-		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, Gradient.POSITIVE, MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
+				GradientType.POSITIVE, MATH_CONTEXT );
 		final LongBuySignalConfiguration configuration = new AllSignalsConfiguration( rsi, macd, sma, stochastic );
 
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();

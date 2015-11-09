@@ -63,9 +63,10 @@ public class MacdWithPositiveSmaSignalFilter implements SignalFilter {
 		for (final IndicatorSignal macdSignal : macd) {
 
 			final LocalDate date = macdSignal.getDate();
-			for (final IndicatorSignal rsiSignal : sma) {
 
-				if (date.equals( rsiSignal.getDate() )) {
+			for (final IndicatorSignal smaSignal : sma) {
+
+				if (date.equals( smaSignal.getDate() )) {
 					passedSignals.add( new BuySignal( date ) );
 					break;
 				}

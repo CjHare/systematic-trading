@@ -46,7 +46,7 @@ import com.systematic.trading.signals.indicator.SignalGenerator;
  */
 public class SimpleMovingAverageGradientSignals implements SignalGenerator {
 
-	public enum Gradient {
+	public enum GradientType {
 		NEGATIVE,
 		FLAT,
 		POSITIVE
@@ -56,20 +56,23 @@ public class SimpleMovingAverageGradientSignals implements SignalGenerator {
 	private final MathContext mathContext;
 
 	/** On which type of gradient does a signal get generated. */
-	private final Gradient signalGenerated;
+	private final GradientType signalGenerated;
 
 	/** Number of days to average the value on. */
 	private final int lookback;
 
-	public SimpleMovingAverageGradientSignals( final int lookback, final Gradient signalGenerated,
-			final MathContext mathContext ) {
+	/** The number of days the SMA gradient covers. */
+	private final int daysOfGradient;
+
+	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
+			final GradientType signalGenerated, final MathContext mathContext ) {
 		this.signalGenerated = signalGenerated;
 		this.lookback = lookback;
 		this.mathContext = mathContext;
+		this.daysOfGradient = daysOfGradient;
 	}
 
 	public List<IndicatorSignal> calculate( final TradingDayPrices[] data ) throws TooFewDataPoints {
-		final List<IndicatorSignal> signals = new ArrayList<IndicatorSignal>();
 
 		final ValueWithDate[] vd = convertToClosingPriceAndDate( data );
 		final BigDecimal[] sma = new SimpleMovingAverage( lookback ).sma( vd );
@@ -80,7 +83,21 @@ public class SimpleMovingAverageGradientSignals implements SignalGenerator {
 			index++;
 		}
 
+		// Only look at the gradient if there's more than one sma result
+		if (index < sma.length) {
+			return analysisGradient( data, sma, index );
+		}
+
+		return new ArrayList<IndicatorSignal>();
+	}
+
+	private List<IndicatorSignal> analysisGradient( final TradingDayPrices[] data, final BigDecimal[] sma, int index ) {
+		final List<IndicatorSignal> signals = new ArrayList<IndicatorSignal>();
+
+		// Initialise to the first value, bump the index
 		BigDecimal previous = sma[index];
+		index++;
+
 		for (; index < sma.length; index++) {
 
 			switch (signalGenerated) {
@@ -132,6 +149,6 @@ public class SimpleMovingAverageGradientSignals implements SignalGenerator {
 
 	@Override
 	public int getMaximumNumberOfTradingDaysRequired() {
-		return lookback;
+		return lookback + daysOfGradient;
 	}
 }

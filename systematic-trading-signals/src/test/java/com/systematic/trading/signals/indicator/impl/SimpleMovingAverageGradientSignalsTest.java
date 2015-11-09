@@ -40,7 +40,7 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.TradingDayPricesImpl;
 import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals;
-import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals.Gradient;
+import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals.GradientType;
 
 /**
  * Verifies the behaviour of SimpleMovingAverageGradient.
@@ -58,10 +58,12 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 	private final long[] dateValues = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
+	private final int daysGradient = 2;
+
 	@Test(expected = TooFewDataPoints.class)
 	public void tooFewDataPoints() throws TooFewDataPoints {
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback, Gradient.POSITIVE,
-				MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
+				daysGradient, GradientType.POSITIVE, MATH_CONTEXT );
 
 		final int tooFewDataPoints = lookback - 1;
 		final TradingDayPrices[] data = new TradingDayPrices[tooFewDataPoints];
@@ -75,7 +77,8 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 	@Test(expected = NullPointerException.class)
 	public void unexpectedDataPoint() throws TooFewDataPoints {
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback, null, MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
+				daysGradient, null, MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
 		smaGradient.calculate( data );
@@ -83,8 +86,8 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 	@Test
 	public void signalsPositive() throws TooFewDataPoints {
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback, Gradient.POSITIVE,
-				MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
+				daysGradient, GradientType.POSITIVE, MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
 		final List<IndicatorSignal> signals = smaGradient.calculate( data );
@@ -100,21 +103,22 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 	@Test
 	public void signalsFlat() throws TooFewDataPoints {
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback, Gradient.FLAT,
-				MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( 1, daysGradient,
+				GradientType.FLAT, MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
 		final List<IndicatorSignal> signals = smaGradient.calculate( data );
 
 		assertNotNull( signals );
-		assertEquals( 1, signals.size() );
-		assertEquals( data[9].getDate(), signals.get( 0 ).getDate() );
+		assertEquals( 2, signals.size() );
+		assertEquals( data[11].getDate(), signals.get( 0 ).getDate() );
+		assertEquals( data[13].getDate(), signals.get( 1 ).getDate() );
 	}
 
 	@Test
 	public void signalsNegative() throws TooFewDataPoints {
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback, Gradient.NEGATIVE,
-				MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
+				daysGradient, GradientType.NEGATIVE, MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
 		final List<IndicatorSignal> signals = smaGradient.calculate( data );
@@ -137,12 +141,12 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 		return data;
 	}
-	
+
 	@Test
 	public void getMaximumNumberOfTradingDaysRequired() {
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
-				Gradient.NEGATIVE, MATH_CONTEXT );
+				daysGradient, GradientType.NEGATIVE, MATH_CONTEXT );
 
-		assertEquals( lookback, smaGradient.getMaximumNumberOfTradingDaysRequired() );
+		assertEquals( lookback + daysGradient, smaGradient.getMaximumNumberOfTradingDaysRequired() );
 	}
 }
