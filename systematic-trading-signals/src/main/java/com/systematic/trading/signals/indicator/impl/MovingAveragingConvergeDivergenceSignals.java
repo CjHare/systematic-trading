@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,8 +33,11 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.ExponentialMovingAverage;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalType;
+import com.systematic.trading.signals.indicator.SignalGenerator;
 
-public class MovingAveragingConvergeDivergenceSignals {
+public class MovingAveragingConvergeDivergenceSignals implements SignalGenerator {
 
 	private final int slowTimePeriods;
 	private final int fastTimePeriods;
@@ -124,5 +127,10 @@ public class MovingAveragingConvergeDivergenceSignals {
 		}
 
 		return vd;
+	}
+
+	@Override
+	public int getMaximumNumberOfTradingDaysRequired() {
+		return slowTimePeriods;
 	}
 }

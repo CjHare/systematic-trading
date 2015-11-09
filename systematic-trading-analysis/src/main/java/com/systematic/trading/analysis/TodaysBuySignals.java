@@ -44,11 +44,11 @@ import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
-import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradient;
-import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradient.Gradient;
+import com.systematic.trading.signals.indicator.impl.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.impl.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.signals.indicator.impl.StochasticOscillatorSignals;
+import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals.Gradient;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.configuration.AllSignalsConfiguration;
 import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
@@ -77,7 +77,7 @@ public class TodaysBuySignals {
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30 );
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
 		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 10, 3, 3 );
-		final SimpleMovingAverageGradient sma = new SimpleMovingAverageGradient( 200, Gradient.POSITIVE, MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, Gradient.POSITIVE, MATH_CONTEXT );
 		final LongBuySignalConfiguration configuration = new AllSignalsConfiguration( rsi, macd, sma, stochastic );
 
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();

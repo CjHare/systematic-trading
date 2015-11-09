@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,6 +36,9 @@ import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.TradingDayPricesImpl;
+import com.systematic.trading.signals.indicator.impl.RelativeStrengthIndexSignals;
 
 public class RelativeStrengthIndexSignalsTest {
 	private final double[] rsi = { 88.89, 52.83, 61.83, 49.49, 38.27, 33.77, 40.48, 46.81, 37.11, 35.06, 40.48, 23.66,
@@ -66,5 +69,12 @@ public class RelativeStrengthIndexSignalsTest {
 		assertEquals( LocalDate.now().plusDays( 12 ), signals.get( 0 ).getDate() );
 		assertEquals( LocalDate.now().plusDays( 15 ), signals.get( 1 ).getDate() );
 		assertEquals( LocalDate.now().plusDays( 26 ), signals.get( 2 ).getDate() );
+	}
+
+	@Test
+	public void getMaximumNumberOfTradingDaysRequired() {
+		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 30, 70 );
+
+		assertEquals( 10, rsi.getMaximumNumberOfTradingDaysRequired() );
 	}
 }

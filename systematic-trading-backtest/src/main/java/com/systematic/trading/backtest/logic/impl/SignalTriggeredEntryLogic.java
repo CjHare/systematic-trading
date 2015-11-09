@@ -40,7 +40,6 @@ import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.impl.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
 
@@ -81,10 +80,10 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		this.minimumTradeValue = minimumTradeValue;
 		this.buyLongAnalysis = buyLongAnalysis;
 
-		this.tradingData = new LimitedQueue<TradingDayPrices>( buyLongAnalysis.getMaximumNumberOfTradingDays() );
+		this.tradingData = new LimitedQueue<TradingDayPrices>( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() );
 
 		// There can only ever be as many signals as trading days stored
-		this.previousSignals = new LimitedQueue<BuySignal>( buyLongAnalysis.getMaximumNumberOfTradingDays() );
+		this.previousSignals = new LimitedQueue<BuySignal>( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() );
 	}
 
 	@Override
@@ -94,13 +93,7 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		tradingData.add( data );
 
 		// Create signals from the available trading data
-		final List<BuySignal> signals;
-		try {
-			signals = buyLongAnalysis.analyse( tradingData.toArray( new TradingDayPrices[0] ) );
-		} catch (final TooFewDataPoints e) {
-			// Until there are enough data points, no signals can be generated
-			return null;
-		}
+		final List<BuySignal> signals = buyLongAnalysis.analyse( tradingData.toArray( new TradingDayPrices[0] ) );
 
 		if (!signals.isEmpty()) {
 

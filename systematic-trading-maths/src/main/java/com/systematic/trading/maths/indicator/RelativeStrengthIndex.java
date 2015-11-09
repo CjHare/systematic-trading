@@ -66,8 +66,9 @@ public class RelativeStrengthIndex {
 
 		// Need at least one RSI value
 		if (data.length < lookback + 1) {
-			throw new TooFewDataPoints( String.format( "At least %s data points are needed, only %s given",
-					lookback + 1, data.length ) );
+			throw new TooFewDataPoints( String.format(
+					"At least %s data points are needed for Relative Strength Index, only %s given", lookback + 1,
+					data.length ) );
 		}
 
 		/* For the first zero - time period entries calculate the SMA based on up to down movement

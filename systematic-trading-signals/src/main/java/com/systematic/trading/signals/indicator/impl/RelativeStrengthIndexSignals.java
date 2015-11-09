@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,13 +33,20 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.RelativeStrengthIndex;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalType;
+import com.systematic.trading.signals.indicator.SignalGenerator;
 
 /**
  * Takes the output from RSI and identifies any buy signals.
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexSignals {
+public class RelativeStrengthIndexSignals implements SignalGenerator {
+
+	private static int FIVE_TRADING_DAYS = 5;
+	private static int TEN_TRADING_DAYS = 10;
+
 	private final BigDecimal oversold, overbought;
 
 	public RelativeStrengthIndexSignals( final int oversold, final int overbought ) {
@@ -49,10 +56,10 @@ public class RelativeStrengthIndexSignals {
 
 	public List<IndicatorSignal> calculate( final TradingDayPrices[] data ) throws TooFewDataPoints {
 		// 5 day RSI
-		final BigDecimal[] fiveDayRsi = new RelativeStrengthIndex( 5 ).rsi( data );
+		final BigDecimal[] fiveDayRsi = new RelativeStrengthIndex( FIVE_TRADING_DAYS ).rsi( data );
 
 		// 14 day RSI
-		final BigDecimal[] tenDayRsi = new RelativeStrengthIndex( 10 ).rsi( data );
+		final BigDecimal[] tenDayRsi = new RelativeStrengthIndex( TEN_TRADING_DAYS ).rsi( data );
 
 		/* RSI triggers a buy signal when crossing the over brought level (e.g. 30) */
 		final List<IndicatorSignal> tenDayBuy = buySignals( tenDayRsi, data );
@@ -96,7 +103,7 @@ public class RelativeStrengthIndexSignals {
 			final LocalDate aDate = signal.getDate();
 			if (contains( aDate, larger )) {
 				intersection.add( signal );
-				}
+			}
 		}
 
 		return intersection;
@@ -110,5 +117,10 @@ public class RelativeStrengthIndexSignals {
 		}
 
 		return false;
+	}
+
+	@Override
+	public int getMaximumNumberOfTradingDaysRequired() {
+		return TEN_TRADING_DAYS;
 	}
 }

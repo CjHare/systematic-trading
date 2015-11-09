@@ -52,8 +52,9 @@ public class ExponentialMovingAverage {
 
 		// Need at least one RSI value
 		if (data.length < lookback + 1) {
-			throw new TooFewDataPoints( String.format( "At least %s data points are needed, only %s given",
-					lookback + 1, data.length ) );
+			throw new TooFewDataPoints( String.format(
+					"At least %s data points are needed for Exponential Moving Average, only %s given", lookback + 1,
+					data.length ) );
 		}
 
 		// Skip any null entries
@@ -65,8 +66,9 @@ public class ExponentialMovingAverage {
 		/* SMA for the initial time periods */
 		final int endSmaIndex = startSmaIndex + lookback;
 		if (data.length < endSmaIndex) {
-			throw new TooFewDataPoints( String.format( "At least %s data points are needed, only %s given",
-					endSmaIndex, data.length ) );
+			throw new TooFewDataPoints( String.format(
+					"At least %s data points are needed for Exponential Moving Average, only %s given", endSmaIndex,
+					data.length ) );
 		}
 
 		BigDecimal simpleMovingAverage = BigDecimal.ZERO;

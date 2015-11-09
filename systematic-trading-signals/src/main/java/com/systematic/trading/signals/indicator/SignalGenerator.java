@@ -23,30 +23,20 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.analysis.model;
+package com.systematic.trading.signals.indicator;
 
-import java.util.List;
+/**
+ * Responsible for generation of signals from analysis of the trading data.
+ * 
+ * @author CJ Hare
+ */
+public interface SignalGenerator {
 
-import com.systematic.trading.analysis.Equity;
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signals.model.AnalysisLongBuySignals;
-import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
-import com.systematic.trading.signals.model.filter.SignalFilter;
+	/**
+	 * The maximum number of trading days data used by the signal analysers.
+	 * 
+	 * @return maximum number of data to provide to the analysis.
+	 */
+	int getMaximumNumberOfTradingDaysRequired();
 
-public class ProcessLongBuySignals {
-
-	private final LongBuySignalConfiguration configuration;
-
-	private final List<SignalFilter> filters;
-
-	public ProcessLongBuySignals( final LongBuySignalConfiguration configuration, final List<SignalFilter> filters ) {
-		this.configuration = configuration;
-		this.filters = filters;
-	}
-
-	public List<BuySignal> process( final Equity equity, final TradingDayPrices[] data ) {
-
-		return new AnalysisLongBuySignals( configuration, filters ).analyse( data );
-	}
 }

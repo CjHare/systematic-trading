@@ -92,7 +92,7 @@ public class SignalTriggeredEntryLogicTest {
 		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds( mock( EquityOrder.class ) );
 
 		assertEquals( EquityOrderInsufficientFundsAction.DELETE, action );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
+		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verifyZeroInteractions( fees );
 		verifyZeroInteractions( cashAccount );
@@ -108,7 +108,7 @@ public class SignalTriggeredEntryLogicTest {
 
 		assertNull( order );
 		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
+		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verifyZeroInteractions( fees );
 		verifyZeroInteractions( cashAccount );
@@ -126,7 +126,7 @@ public class SignalTriggeredEntryLogicTest {
 
 		assertNull( order );
 		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
+		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verifyZeroInteractions( fees );
 		verifyZeroInteractions( cashAccount );
@@ -134,7 +134,7 @@ public class SignalTriggeredEntryLogicTest {
 
 	@Test
 	public void updateOrderNotCreatedTooFewFundsToBuyStock() throws TooFewDataPoints {
-		when( buyLongAnalysis.getMaximumNumberOfTradingDays() ).thenReturn( 10 );
+		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
 
 		final LocalDate now = LocalDate.now();
@@ -155,7 +155,7 @@ public class SignalTriggeredEntryLogicTest {
 
 		assertNull( order );
 		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
+		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
 		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verifyNoMoreInteractions( fees );
@@ -165,7 +165,7 @@ public class SignalTriggeredEntryLogicTest {
 
 	@Test
 	public void updateOrderNotCreatedFundsBelowMinimumOrderThreshold() throws TooFewDataPoints {
-		when( buyLongAnalysis.getMaximumNumberOfTradingDays() ).thenReturn( 10 );
+		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
 
 		when( cashAccount.getBalance() ).thenReturn( BigDecimal.ZERO );
@@ -180,7 +180,7 @@ public class SignalTriggeredEntryLogicTest {
 
 		assertNull( order );
 		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
+		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verifyZeroInteractions( fees );
 		verify( cashAccount, atLeastOnce() ).getBalance();
@@ -190,7 +190,7 @@ public class SignalTriggeredEntryLogicTest {
 	@Test
 	public void updateOrderCreated() throws TooFewDataPoints {
 
-		when( buyLongAnalysis.getMaximumNumberOfTradingDays() ).thenReturn( 10 );
+		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
 
 		final LocalDate now = LocalDate.now();
@@ -212,7 +212,7 @@ public class SignalTriggeredEntryLogicTest {
 		assertNotNull( order );
 		assertEquals( true, order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
 		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
+		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
 		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
@@ -224,7 +224,7 @@ public class SignalTriggeredEntryLogicTest {
 	@Test
 	public void updateOrderNotCreatedPreviouslyTriggered() throws TooFewDataPoints {
 
-		when( buyLongAnalysis.getMaximumNumberOfTradingDays() ).thenReturn( 10 );
+		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
 
 		final LocalDate now = LocalDate.now();
@@ -246,7 +246,7 @@ public class SignalTriggeredEntryLogicTest {
 
 		assertNull( order );
 		verify( buyLongAnalysis, times( 2 ) ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDays();
+		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
 		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
 		verifyNoMoreInteractions( buyLongAnalysis );
 		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );

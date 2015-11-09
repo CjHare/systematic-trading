@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.impl;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -34,6 +34,9 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.SimpleMovingAverage;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalType;
+import com.systematic.trading.signals.indicator.SignalGenerator;
 
 /**
  * Interested in the Simple Moving Average (SMA) gradient, whether it is negative (downward),flat
@@ -41,7 +44,7 @@ import com.systematic.trading.maths.indicator.SimpleMovingAverage;
  * 
  * @author CJ Hare
  */
-public class SimpleMovingAverageGradient {
+public class SimpleMovingAverageGradientSignals implements SignalGenerator {
 
 	public enum Gradient {
 		NEGATIVE,
@@ -58,7 +61,7 @@ public class SimpleMovingAverageGradient {
 	/** Number of days to average the value on. */
 	private final int lookback;
 
-	public SimpleMovingAverageGradient( final int lookback, final Gradient signalGenerated,
+	public SimpleMovingAverageGradientSignals( final int lookback, final Gradient signalGenerated,
 			final MathContext mathContext ) {
 		this.signalGenerated = signalGenerated;
 		this.lookback = lookback;
@@ -125,5 +128,10 @@ public class SimpleMovingAverageGradient {
 		}
 
 		return vd;
+	}
+
+	@Override
+	public int getMaximumNumberOfTradingDaysRequired() {
+		return lookback;
 	}
 }

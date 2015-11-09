@@ -25,10 +25,10 @@
  */
 package com.systematic.trading.signals.model.configuration;
 
-import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradient;
-import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
+import com.systematic.trading.signals.indicator.impl.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.impl.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.signals.indicator.impl.StochasticOscillatorSignals;
 
 public class AllSignalsConfiguration implements LongBuySignalConfiguration {
 
@@ -38,10 +38,10 @@ public class AllSignalsConfiguration implements LongBuySignalConfiguration {
 
 	private final StochasticOscillatorSignals stochastic;
 
-	private final SimpleMovingAverageGradient sma;
+	private final SimpleMovingAverageGradientSignals sma;
 
 	public AllSignalsConfiguration( final RelativeStrengthIndexSignals rsi,
-			final MovingAveragingConvergeDivergenceSignals macd, final SimpleMovingAverageGradient sma,
+			final MovingAveragingConvergeDivergenceSignals macd, final SimpleMovingAverageGradientSignals sma,
 			final StochasticOscillatorSignals stochastic ) {
 		this.rsi = rsi;
 		this.macd = macd;
@@ -65,7 +65,7 @@ public class AllSignalsConfiguration implements LongBuySignalConfiguration {
 	}
 
 	@Override
-	public SimpleMovingAverageGradient getSimpleMovingAverageGradient() {
+	public SimpleMovingAverageGradientSignals getSimpleMovingAverageGradient() {
 		return sma;
 	}
 }

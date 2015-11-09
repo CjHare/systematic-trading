@@ -28,7 +28,6 @@ package com.systematic.trading.signals;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.signals.model.BuySignal;
 
 /**
@@ -43,14 +42,13 @@ public interface AnalysisBuySignals {
 	 * 
 	 * @param data trading day data.
 	 * @return any signals generated over the given data.
-	 * @throws TooFewDataPoints not enough data points given to perform correct analysis.
 	 */
-	List<BuySignal> analyse( TradingDayPrices[] data ) throws TooFewDataPoints;
+	List<BuySignal> analyse( TradingDayPrices[] data );
 
 	/**
 	 * The maximum number of trading days data used by the signal analysers.
 	 * 
 	 * @return maximum number of data to provide to the analysis.
 	 */
-	int getMaximumNumberOfTradingDays();
+	int getMaximumNumberOfTradingDaysRequired();
 }

@@ -59,94 +59,95 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
  */
 public class AverageTrueRange {
 
-    /** Number of decimal places for scaling. */
-    private static final int ROUNDING_SCALE = 2;
+	/** Number of decimal places for scaling. */
+	private static final int ROUNDING_SCALE = 2;
 
-    /** The number of trading days to look back for calculation. */
-    private final int lookback;
+	/** The number of trading days to look back for calculation. */
+	private final int lookback;
 
-    private final BigDecimal priorMultiplier;
-    private final BigDecimal lookbackDivider;
+	private final BigDecimal priorMultiplier;
+	private final BigDecimal lookbackDivider;
 
-    /**
-     * @param lookback the number of days to use when calculating the ATR, also the number of days
-     *            prior to the averaging becoming correct.
-     */
-    public AverageTrueRange(final int lookback) {
-        this.lookback = lookback;
-        this.priorMultiplier = BigDecimal.valueOf(lookback - 1);
-        this.lookbackDivider = BigDecimal.valueOf(lookback);
-    }
+	/**
+	 * @param lookback the number of days to use when calculating the ATR, also the number of days
+	 *            prior to the averaging becoming correct.
+	 */
+	public AverageTrueRange( final int lookback ) {
+		this.lookback = lookback;
+		this.priorMultiplier = BigDecimal.valueOf( lookback - 1 );
+		this.lookbackDivider = BigDecimal.valueOf( lookback );
+	}
 
-    private BigDecimal trueRangeMethodOne(final TradingDayPrices today) {
-        return today.getHighestPrice().subtract(today.getLowestPrice());
-    }
+	private BigDecimal trueRangeMethodOne( final TradingDayPrices today ) {
+		return today.getHighestPrice().subtract( today.getLowestPrice() );
+	}
 
-    private BigDecimal trueRangeMethodTwo(final TradingDayPrices today, final TradingDayPrices yesterday) {
-        return today.getHighestPrice().subtract(yesterday.getClosingPrice());
-    }
+	private BigDecimal trueRangeMethodTwo( final TradingDayPrices today, final TradingDayPrices yesterday ) {
+		return today.getHighestPrice().subtract( yesterday.getClosingPrice() );
+	}
 
-    private BigDecimal trueRangeMethodThree(final TradingDayPrices today, final TradingDayPrices yesterday) {
-        return today.getLowestPrice().subtract(yesterday.getClosingPrice());
-    }
+	private BigDecimal trueRangeMethodThree( final TradingDayPrices today, final TradingDayPrices yesterday ) {
+		return today.getLowestPrice().subtract( yesterday.getClosingPrice() );
+	}
 
-    /**
-     * @return highest value of the three true range methods.
-     */
-    private BigDecimal getTrueRange(final TradingDayPrices today, final TradingDayPrices yesterday) {
-        final BigDecimal one = trueRangeMethodOne(today);
-        final BigDecimal two = trueRangeMethodTwo(today, yesterday);
-        final BigDecimal three = trueRangeMethodThree(today, yesterday);
+	/**
+	 * @return highest value of the three true range methods.
+	 */
+	private BigDecimal getTrueRange( final TradingDayPrices today, final TradingDayPrices yesterday ) {
+		final BigDecimal one = trueRangeMethodOne( today );
+		final BigDecimal two = trueRangeMethodTwo( today, yesterday );
+		final BigDecimal three = trueRangeMethodThree( today, yesterday );
 
-        if (one.compareTo(two) >= 0 && one.compareTo(three) >= 0) {
-            return one;
-        }
+		if (one.compareTo( two ) >= 0 && one.compareTo( three ) >= 0) {
+			return one;
+		}
 
-        if (two.compareTo(three) >= 0) {
-            return two;
-        }
+		if (two.compareTo( three ) >= 0) {
+			return two;
+		}
 
-        return three;
-    }
+		return three;
+	}
 
-    private BigDecimal average(final BigDecimal currentTrueRange, final BigDecimal priorAverageTrueRange) {
-        /* For a look back of 14: Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the
-         * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14 */
-        return priorAverageTrueRange.multiply(priorMultiplier).add(currentTrueRange)
-                .divide(lookbackDivider, ROUNDING_SCALE, RoundingMode.HALF_UP);
-    }
+	private BigDecimal average( final BigDecimal currentTrueRange, final BigDecimal priorAverageTrueRange ) {
+		/* For a look back of 14: Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the
+		 * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14 */
+		return priorAverageTrueRange.multiply( priorMultiplier ).add( currentTrueRange )
+				.divide( lookbackDivider, ROUNDING_SCALE, RoundingMode.HALF_UP );
+	}
 
-    /**
-     * @param closePrices ordered chronologically, from oldest to youngest (most recent first).
-     * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
-     */
-    public BigDecimal[] atr(final TradingDayPrices[] data) throws TooFewDataPoints {
+	/**
+	 * @param closePrices ordered chronologically, from oldest to youngest (most recent first).
+	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
+	 */
+	public BigDecimal[] atr( final TradingDayPrices[] data ) throws TooFewDataPoints {
 
-        // Need at least one RSI value
-        if (data.length < lookback + 1) {
-            throw new TooFewDataPoints(String.format("At least %s data points are needed, only %s given", lookback + 1,
-                    data.length));
-        }
+		// Need at least one RSI value
+		if (data.length < lookback + 1) {
+			throw new TooFewDataPoints( String.format(
+					"At least %s data points are needed for Average True Range, only %s given", lookback + 1,
+					data.length ) );
+		}
 
-        // Skip any null entries
-        int startAtrIndex = 0;
-        while (data[startAtrIndex] == null) {
-            startAtrIndex++;
-        }
+		// Skip any null entries
+		int startAtrIndex = 0;
+		while (data[startAtrIndex] == null) {
+			startAtrIndex++;
+		}
 
-        // For the first value just use the TR
-        final BigDecimal[] atr = new BigDecimal[data.length];
+		// For the first value just use the TR
+		final BigDecimal[] atr = new BigDecimal[data.length];
 
-        atr[startAtrIndex] = trueRangeMethodOne(data[startAtrIndex]);
+		atr[startAtrIndex] = trueRangeMethodOne( data[startAtrIndex] );
 
-        // Starting atr is just the first value
-        BigDecimal priorAtr = atr[startAtrIndex];
+		// Starting atr is just the first value
+		BigDecimal priorAtr = atr[startAtrIndex];
 
-        for (int i = startAtrIndex + 1; i < atr.length; i++) {
-            atr[i] = average(getTrueRange(data[i], data[i - 1]), priorAtr);
-            priorAtr = atr[i];
-        }
+		for (int i = startAtrIndex + 1; i < atr.length; i++) {
+			atr[i] = average( getTrueRange( data[i], data[i - 1] ), priorAtr );
+			priorAtr = atr[i];
+		}
 
-        return atr;
-    }
+		return atr;
+	}
 }

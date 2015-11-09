@@ -56,13 +56,13 @@ public class SimpleMovingAverage {
 
 		// Skip any null entries
 		int startSmaIndex = 0;
-		while (data[startSmaIndex] == null || data[startSmaIndex].geValue() == null) {
+		while (isNullEntryWithinArray( data, startSmaIndex )) {
 			startSmaIndex++;
 		}
 
 		// Have we the minimum number of values
 		if (data.length < startSmaIndex + lookback) {
-			throw new TooFewDataPoints( String.format( "At least %s data points are needed, only %s given", lookback,
+			throw new TooFewDataPoints( String.format( "At least %s data points are needed for Simple Moving Average, only %s given", lookback,
 					data.length ) );
 		}
 
@@ -78,6 +78,15 @@ public class SimpleMovingAverage {
 		}
 
 		return sma;
+	}
+
+	private boolean isNullEntryWithinArray( final ValueWithDate[] data, final int index ) {
+
+		if (index < data.length) {
+			return data[index] == null || data[index].geValue() == null;
+		}
+
+		return false;
 	}
 
 	/**

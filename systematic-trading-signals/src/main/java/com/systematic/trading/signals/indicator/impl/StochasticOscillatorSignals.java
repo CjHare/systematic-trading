@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,6 +34,9 @@ import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.StochasticPercentageK;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalType;
+import com.systematic.trading.signals.indicator.SignalGenerator;
 
 /**
  * Stochastic Oscillator is a momentum indicator that shows the location of the close relative to
@@ -45,7 +48,7 @@ import com.systematic.trading.maths.indicator.StochasticPercentageK;
  * 
  * @author CJ Hare
  */
-public class StochasticOscillatorSignals {
+public class StochasticOscillatorSignals implements SignalGenerator {
 
 	/** Number of trading days to read the ranges on. */
 	private final int lookback;
@@ -122,5 +125,10 @@ public class StochasticOscillatorSignals {
 		 * above today's signal line - yesterday's MACD needs to be below yesterday's signal line */
 		return pointToday.compareTo( pointYesterday ) > 0 && pointToday.compareTo( signalLineToday ) > 0
 				&& signalLineYesterday.compareTo( pointYesterday ) > 0;
+	}
+
+	@Override
+	public int getMaximumNumberOfTradingDaysRequired() {
+		return lookback;
 	}
 }

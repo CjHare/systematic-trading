@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,14 +37,17 @@ import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradient.Gradient;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.TradingDayPricesImpl;
+import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals.Gradient;
 
 /**
  * Verifies the behaviour of SimpleMovingAverageGradient.
  * 
  * @author CJ Hare
  */
-public class SimpleMovingAverageGradientTest {
+public class SimpleMovingAverageGradientSignalsTest {
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
@@ -57,7 +60,7 @@ public class SimpleMovingAverageGradientTest {
 
 	@Test(expected = TooFewDataPoints.class)
 	public void tooFewDataPoints() throws TooFewDataPoints {
-		final SimpleMovingAverageGradient smaGradient = new SimpleMovingAverageGradient( lookback, Gradient.POSITIVE,
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback, Gradient.POSITIVE,
 				MATH_CONTEXT );
 
 		final int tooFewDataPoints = lookback - 1;
@@ -72,7 +75,7 @@ public class SimpleMovingAverageGradientTest {
 
 	@Test(expected = NullPointerException.class)
 	public void unexpectedDataPoint() throws TooFewDataPoints {
-		final SimpleMovingAverageGradient smaGradient = new SimpleMovingAverageGradient( lookback, null, MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback, null, MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
 		smaGradient.calculate( data );
@@ -80,7 +83,7 @@ public class SimpleMovingAverageGradientTest {
 
 	@Test
 	public void signalsPositive() throws TooFewDataPoints {
-		final SimpleMovingAverageGradient smaGradient = new SimpleMovingAverageGradient( lookback, Gradient.POSITIVE,
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback, Gradient.POSITIVE,
 				MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
@@ -97,7 +100,7 @@ public class SimpleMovingAverageGradientTest {
 
 	@Test
 	public void signalsFlat() throws TooFewDataPoints {
-		final SimpleMovingAverageGradient smaGradient = new SimpleMovingAverageGradient( lookback, Gradient.FLAT,
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback, Gradient.FLAT,
 				MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
@@ -110,7 +113,7 @@ public class SimpleMovingAverageGradientTest {
 
 	@Test
 	public void signalsNegative() throws TooFewDataPoints {
-		final SimpleMovingAverageGradient smaGradient = new SimpleMovingAverageGradient( lookback, Gradient.NEGATIVE,
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback, Gradient.NEGATIVE,
 				MATH_CONTEXT );
 
 		final TradingDayPrices[] data = createTradingPrices();
@@ -133,5 +136,13 @@ public class SimpleMovingAverageGradientTest {
 		}
 
 		return data;
+	}
+	
+	@Test
+	public void getMaximumNumberOfTradingDaysRequired() {
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
+				Gradient.NEGATIVE, MATH_CONTEXT );
+
+		assertEquals( lookback, smaGradient.getMaximumNumberOfTradingDaysRequired() );
 	}
 }

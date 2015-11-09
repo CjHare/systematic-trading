@@ -37,17 +37,14 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
-import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradient;
-import com.systematic.trading.signals.indicator.StochasticOscillatorSignals;
+import com.systematic.trading.signals.indicator.impl.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.impl.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.signals.indicator.impl.StochasticOscillatorSignals;
 import com.systematic.trading.signals.model.configuration.LongBuySignalConfiguration;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class AnalysisLongBuySignals implements AnalysisBuySignals {
-
-	/** Most number of trading day data used by the signal generators. */
-	private static final int MAXIMUM_NUMBER_OF_TRADING_DAYS = 50;
 
 	/** Default ordering of signals. */
 	private static final BuySignalDateComparator BUY_SIGNAL_ORDER_BY_DATE = new BuySignalDateComparator();
@@ -55,10 +52,13 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	/** Default ordering of prices. */
 	private static final TradingDayPricesDateOrder TRADING_DAY_ORDER_BY_DATE = new TradingDayPricesDateOrder();
 
+	/** Most number of trading day data used by the signal generators. */
+	private final int maximumNumberOfTradingDaysRequired;
+
 	private final RelativeStrengthIndexSignals rsi;
 	private final MovingAveragingConvergeDivergenceSignals macd;
 	private final StochasticOscillatorSignals stochastic;
-	private final SimpleMovingAverageGradient sma;
+	private final SimpleMovingAverageGradientSignals sma;
 	private final List<SignalFilter> filters;
 
 	public AnalysisLongBuySignals( final LongBuySignalConfiguration configuration, final List<SignalFilter> filters ) {
@@ -67,10 +67,12 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		this.stochastic = configuration.getStochasticOscillatorSignals();
 		this.sma = configuration.getSimpleMovingAverageGradient();
 		this.filters = filters;
+
+		this.maximumNumberOfTradingDaysRequired = 200;
 	}
 
 	@Override
-	public List<BuySignal> analyse( final TradingDayPrices[] data ) throws TooFewDataPoints {
+	public List<BuySignal> analyse( final TradingDayPrices[] data ) {
 
 		// Correct the ordering from earliest to latest
 		Arrays.sort( data, TRADING_DAY_ORDER_BY_DATE );
@@ -78,10 +80,11 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		// Generate the indicator signals
 		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = new EnumMap<IndicatorSignalType, List<IndicatorSignal>>(
 				IndicatorSignalType.class );
-		indicatorSignals.put( IndicatorSignalType.MACD, macd.calculate( data ) );
-		indicatorSignals.put( IndicatorSignalType.RSI, rsi.calculate( data ) );
-		indicatorSignals.put( IndicatorSignalType.SMA, sma.calculate( data ) );
-		indicatorSignals.put( IndicatorSignalType.STOCHASTIC, stochastic.calculate( data ) );
+
+		addMacdSignals( indicatorSignals, data );
+		addRsiSignals( indicatorSignals, data );
+		addSmaSignals( indicatorSignals, data );
+		addStochasticSignals( indicatorSignals, data );
 
 		final LocalDate latestTradingDate = data[data.length - 1].getDate();
 		final List<BuySignal> signals = new ArrayList<BuySignal>();
@@ -94,8 +97,76 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		return signals;
 	}
 
+	private void addMacdSignals( final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals,
+			final TradingDayPrices[] data ) {
+		List<IndicatorSignal> signals;
+
+		try {
+			signals = macd.calculate( data );
+		} catch (final TooFewDataPoints e) {
+			// TODO log / record - may be of interested when there's too little data
+			System.err.println( e.getMessage() );
+
+			// No signals generated
+			signals = new ArrayList<IndicatorSignal>();
+		}
+
+		indicatorSignals.put( IndicatorSignalType.MACD, signals );
+	}
+
+	private void addRsiSignals( final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals,
+			final TradingDayPrices[] data ) {
+		List<IndicatorSignal> signals;
+
+		try {
+			signals = rsi.calculate( data );
+		} catch (final TooFewDataPoints e) {
+			// TODO log / record - may be of interested when there's too little data
+			System.err.println( e.getMessage() );
+
+			// No signals generated
+			signals = new ArrayList<IndicatorSignal>();
+		}
+
+		indicatorSignals.put( IndicatorSignalType.RSI, signals );
+	}
+
+	private void addSmaSignals( final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals,
+			final TradingDayPrices[] data ) {
+		List<IndicatorSignal> signals;
+
+		try {
+			signals = sma.calculate( data );
+		} catch (final TooFewDataPoints e) {
+			// TODO log / record - may be of interested when there's too little data
+			System.err.println( e.getMessage() );
+
+			// No signals generated
+			signals = new ArrayList<IndicatorSignal>();
+		}
+
+		indicatorSignals.put( IndicatorSignalType.SMA, signals );
+	}
+
+	private void addStochasticSignals( final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals,
+			final TradingDayPrices[] data ) {
+		List<IndicatorSignal> signals;
+
+		try {
+			signals = stochastic.calculate( data );
+		} catch (final TooFewDataPoints e) {
+			// TODO log / record - may be of interested when there's too little data
+			System.err.println( e.getMessage() );
+
+			// No signals generated
+			signals = new ArrayList<IndicatorSignal>();
+		}
+
+		indicatorSignals.put( IndicatorSignalType.STOCHASTIC, signals );
+	}
+
 	@Override
-	public int getMaximumNumberOfTradingDays() {
-		return MAXIMUM_NUMBER_OF_TRADING_DAYS;
+	public int getMaximumNumberOfTradingDaysRequired() {
+		return maximumNumberOfTradingDaysRequired;
 	}
 }

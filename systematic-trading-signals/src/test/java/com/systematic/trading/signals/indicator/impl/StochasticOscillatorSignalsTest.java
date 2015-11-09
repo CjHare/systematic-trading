@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -35,6 +35,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.systematic.trading.maths.ValueWithDate;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
 
 public class StochasticOscillatorSignalsTest {
 
@@ -100,4 +101,12 @@ public class StochasticOscillatorSignalsTest {
 		assertEquals( dataPoint[1].getDate(), signals.get( 0 ).getDate() );
 		assertEquals( dataPoint[3].getDate(), signals.get( 1 ).getDate() );
 	}
+
+	@Test
+	public void getMaximumNumberOfTradingDaysRequired() {
+		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 2, 1, 1 );
+
+		assertEquals( 2, stochastic.getMaximumNumberOfTradingDaysRequired() );
+	}
+
 }
