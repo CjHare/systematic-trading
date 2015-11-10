@@ -26,7 +26,7 @@
 package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
@@ -59,8 +59,8 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
  */
 public class AverageTrueRange {
 
-	/** Number of decimal places for scaling. */
-	private static final int ROUNDING_SCALE = 2;
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private final MathContext mathContext;
 
 	/** The number of trading days to look back for calculation. */
 	private final int lookback;
@@ -71,23 +71,25 @@ public class AverageTrueRange {
 	/**
 	 * @param lookback the number of days to use when calculating the ATR, also the number of days
 	 *            prior to the averaging becoming correct.
+	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public AverageTrueRange( final int lookback ) {
+	public AverageTrueRange( final int lookback, final MathContext mathContext ) {
 		this.lookback = lookback;
 		this.priorMultiplier = BigDecimal.valueOf( lookback - 1 );
 		this.lookbackDivider = BigDecimal.valueOf( lookback );
+		this.mathContext = mathContext;
 	}
 
 	private BigDecimal trueRangeMethodOne( final TradingDayPrices today ) {
-		return today.getHighestPrice().subtract( today.getLowestPrice() );
+		return today.getHighestPrice().subtract( today.getLowestPrice(), mathContext );
 	}
 
 	private BigDecimal trueRangeMethodTwo( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		return today.getHighestPrice().subtract( yesterday.getClosingPrice() );
+		return today.getHighestPrice().subtract( yesterday.getClosingPrice(), mathContext );
 	}
 
 	private BigDecimal trueRangeMethodThree( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		return today.getLowestPrice().subtract( yesterday.getClosingPrice() );
+		return today.getLowestPrice().subtract( yesterday.getClosingPrice(), mathContext );
 	}
 
 	/**
@@ -113,7 +115,7 @@ public class AverageTrueRange {
 		/* For a look back of 14: Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the
 		 * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14 */
 		return priorAverageTrueRange.multiply( priorMultiplier ).add( currentTrueRange )
-				.divide( lookbackDivider, ROUNDING_SCALE, RoundingMode.HALF_UP );
+				.divide( lookbackDivider, mathContext );
 	}
 
 	/**

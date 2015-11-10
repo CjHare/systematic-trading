@@ -26,7 +26,7 @@
 package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 
 import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
@@ -38,14 +38,19 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
  */
 public class SimpleMovingAverage {
 
-	/** Number of decimal places for scaling. */
-	private static final int ROUNDING_SCALE = 2;
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private final MathContext mathContext;
 
 	/** Number of days to average the value on. */
 	private final int lookback;
 
-	public SimpleMovingAverage( final int lookback ) {
+	/**
+	 * @param lookback the number of days to use when calculating the SMA.
+	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
+	 */
+	public SimpleMovingAverage( final int lookback, final MathContext mathContext ) {
 		this.lookback = lookback;
+		this.mathContext = mathContext;
 	}
 
 	/**
@@ -62,7 +67,8 @@ public class SimpleMovingAverage {
 
 		// Have we the minimum number of values
 		if (data.length < startSmaIndex + lookback) {
-			throw new TooFewDataPoints( String.format( "At least %s data points are needed for Simple Moving Average, only %s given", lookback,
+			throw new TooFewDataPoints( String.format(
+					"At least %s data points are needed for Simple Moving Average, only %s given", lookback,
 					data.length ) );
 		}
 
@@ -100,6 +106,6 @@ public class SimpleMovingAverage {
 			average = average.add( data[i].geValue() );
 		}
 
-		return average.divide( BigDecimal.valueOf( lookback ), ROUNDING_SCALE, RoundingMode.HALF_UP );
+		return average.divide( BigDecimal.valueOf( lookback ), mathContext );
 	}
 }

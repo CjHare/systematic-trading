@@ -23,40 +23,50 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.analysis.statistics;
 
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import com.systematic.trading.backtest.event.BrokerageEvent;
+import com.systematic.trading.backtest.event.CashEvent;
+import com.systematic.trading.backtest.event.OrderEvent;
+import com.systematic.trading.event.Event;
 
 /**
- * Output from back testing.
+ * Statistics recorded cumulatively, being updated when the events are received.
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends EventListener {
+public class CumulativeEventStatistics implements EventStatistics {
 
-	/**
-	 * All the interesting data points for displaying.
-	 * 
-	 * @param tickerSymbolTradingRange summary of the data set analysed.
-	 * @param eventStatistics record of various event occurrences.
-	 * @param broker manager for the equity transactions.
-	 * @param cashAccount account managing the cash transactions.
-	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
-	 * @param lastTradingDay prices from the last day in the back test.
-	 * @throws Exception problem encountered during the initialisation of the display.
-	 */
-	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics, Brokerage broker,
-			CashAccount cashAccount, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			TradingDayPrices lastTradingDay ) throws Exception;
+	private final BrokerageEventStatistics brokerageStatistics = new CumulativeBrokerageEventStatistics();
+	private final CashEventStatistics cashStatistics = new CumulativeCashEventStatistics();
+	private final OrderEventStatistics orderStatistics = new CumulativeOrderEventStatistics();
 
-	/**
-	 * Event notification that the simulation is now completed.
-	 */
-	void simulationCompleted();
+	@Override
+	public void event( final Event event ) {
+
+		if (event instanceof BrokerageEvent) {
+			brokerageStatistics.event( (BrokerageEvent) event );
+		} else if (event instanceof CashEvent) {
+			cashStatistics.event( (CashEvent) event );
+		} else if (event instanceof OrderEvent) {
+			orderStatistics.event( (OrderEvent) event );
+		} else {
+			throw new IllegalArgumentException( String.format( "Unsupported event class: %s", event.getClass() ) );
+		}
+	}
+
+	@Override
+	public OrderEventStatistics getOrderEventStatistics() {
+		return orderStatistics;
+	}
+
+	@Override
+	public BrokerageEventStatistics getBrokerageEventStatistics() {
+		return brokerageStatistics;
+	}
+
+	@Override
+	public CashEventStatistics getCashEventStatistics() {
+		return cashStatistics;
+	}
 }

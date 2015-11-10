@@ -23,40 +23,37 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.analysis;
 
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.time.Period;
 
 /**
- * Output from back testing.
+ * Just tally's up the cumulative ROI, never creating any events.
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends EventListener {
+public class CulmativeTotalReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculatorListener,
+		CumulativeReturnOnInvestment {
 
-	/**
-	 * All the interesting data points for displaying.
-	 * 
-	 * @param tickerSymbolTradingRange summary of the data set analysed.
-	 * @param eventStatistics record of various event occurrences.
-	 * @param broker manager for the equity transactions.
-	 * @param cashAccount account managing the cash transactions.
-	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
-	 * @param lastTradingDay prices from the last day in the back test.
-	 * @throws Exception problem encountered during the initialisation of the display.
-	 */
-	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics, Brokerage broker,
-			CashAccount cashAccount, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			TradingDayPrices lastTradingDay ) throws Exception;
+	/** Context for BigDecimal operations. */
+	private final MathContext mathContext;
 
-	/**
-	 * Event notification that the simulation is now completed.
-	 */
-	void simulationCompleted();
+	/** Running total of the ROI. */
+	private BigDecimal cumulativeROI = BigDecimal.ZERO;
+
+	public CulmativeTotalReturnOnInvestmentCalculator( final MathContext mathContext ) {
+		this.mathContext = mathContext;
+	}
+
+	@Override
+	public void record( final BigDecimal percentageChange, final Period elapsed ) {
+		cumulativeROI = cumulativeROI.add( percentageChange, mathContext );
+	}
+
+	@Override
+	public BigDecimal getCumulativeReturnOnInvestment() {
+		return cumulativeROI;
+	}
 }

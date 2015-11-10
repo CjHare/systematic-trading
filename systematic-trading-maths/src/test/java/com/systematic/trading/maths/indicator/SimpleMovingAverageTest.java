@@ -30,6 +30,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 
 import org.junit.Test;
@@ -39,10 +40,12 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 public class SimpleMovingAverageTest {
 
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+
 	@Test
 	public void sma() throws TooFewDataPoints {
 		final int smoothingRange = 3;
-		final SimpleMovingAverage sma = new SimpleMovingAverage( smoothingRange );
+		final SimpleMovingAverage sma = new SimpleMovingAverage( smoothingRange, MATH_CONTEXT );
 
 		final ValueWithDate[] data = { null, null, null, null, null,
 				new ValueWithDate( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 10 ) ),
@@ -70,7 +73,7 @@ public class SimpleMovingAverageTest {
 	@Test
 	public void smaMinimal() throws TooFewDataPoints {
 		final int smoothingRange = 2;
-		final SimpleMovingAverage sma = new SimpleMovingAverage( smoothingRange );
+		final SimpleMovingAverage sma = new SimpleMovingAverage( smoothingRange, MATH_CONTEXT );
 
 		final ValueWithDate[] data = { null, null, null, null, null,
 				new ValueWithDate( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 10 ) ),

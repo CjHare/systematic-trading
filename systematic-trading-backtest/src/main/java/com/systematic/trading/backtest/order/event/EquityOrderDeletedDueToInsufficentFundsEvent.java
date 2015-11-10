@@ -23,40 +23,61 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.order.event;
 
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.backtest.event.OrderEvent;
+import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 
 /**
- * Output from back testing.
+ * Equity order is cancelled due to insufficient funds to execute.
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends EventListener {
+public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrderInsufficientFundsEvent {
+
+	private final EquityOrderType type;
+	private final OrderEvent orderEvent;
 
 	/**
-	 * All the interesting data points for displaying.
-	 * 
-	 * @param tickerSymbolTradingRange summary of the data set analysed.
-	 * @param eventStatistics record of various event occurrences.
-	 * @param broker manager for the equity transactions.
-	 * @param cashAccount account managing the cash transactions.
-	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
-	 * @param lastTradingDay prices from the last day in the back test.
-	 * @throws Exception problem encountered during the initialisation of the display.
+	 * @param originalOrderType order prior to being deleted.
 	 */
-	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics, Brokerage broker,
-			CashAccount cashAccount, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			TradingDayPrices lastTradingDay ) throws Exception;
+	public EquityOrderDeletedDueToInsufficentFundsEvent( final OrderEvent order ) {
 
-	/**
-	 * Event notification that the simulation is now completed.
-	 */
-	void simulationCompleted();
+		// Convert into the delete version
+		switch (order.getType()) {
+			case ENTRY:
+				this.type = EquityOrderType.DELETE_ENTRY;
+				break;
+			case EXIT:
+				this.type = EquityOrderType.DELETE_EXIT;
+				break;
+			default:
+				throw new IllegalArgumentException( String.format( "Unexpected order type %s", order.getType() ) );
+		}
+
+		this.orderEvent = order;
+	}
+
+	@Override
+	public EquityOrderInsufficientFundsAction getInsufficientFundsAction() {
+		return EquityOrderInsufficientFundsAction.DELETE;
+	}
+
+	@Override
+	public EquityOrderType getType() {
+		return type;
+	}
+
+	@Override
+	public LocalDate getTransactionDate() {
+		return orderEvent.getTransactionDate();
+	}
+
+	@Override
+	public BigDecimal getTotalCost() {
+		return orderEvent.getTotalCost();
+	}
 }

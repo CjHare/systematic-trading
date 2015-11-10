@@ -29,11 +29,11 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.backtest.analysis.impl.CulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.impl.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.impl.PeriodicCulmativeReturnOnInvestmentCalculatorListener;
+import com.systematic.trading.backtest.analysis.CulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.PeriodicCulmativeReturnOnInvestmentCalculatorListener;
+import com.systematic.trading.backtest.analysis.statistics.CumulativeEventStatistics;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.analysis.statistics.impl.CumulativeEventStatistics;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
 import com.systematic.trading.backtest.cash.CashAccount;
@@ -42,7 +42,7 @@ import com.systematic.trading.backtest.event.data.TickerSymbolTradingRangeImpl;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.data.DataService;
-import com.systematic.trading.data.DataServiceImpl;
+import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.TradingDayPrices;
@@ -153,7 +153,7 @@ public class BacktestBootstrap {
 		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
 		updateService.get( equity.getTickerSymbol(), startDate, endDate );
 
-		final DataService service = DataServiceImpl.getInstance();
+		final DataService service = HibernateDataService.getInstance();
 		return service.get( equity.getTickerSymbol(), startDate, endDate );
 	}
 

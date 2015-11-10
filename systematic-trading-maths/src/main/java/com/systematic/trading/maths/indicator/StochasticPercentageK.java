@@ -26,7 +26,7 @@
 package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
@@ -40,77 +40,82 @@ import com.systematic.trading.data.price.LowestPrice;
  */
 public class StochasticPercentageK {
 
-    /** Number of decimal places for scaling. */
-    private static final int ROUNDING_SCALE = 2;
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private final MathContext mathContext;
 
-    private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
-    private static final BigDecimal ONE_HUNDREDTH = BigDecimal.valueOf(0.01);
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
+	private static final BigDecimal ONE_HUNDREDTH = BigDecimal.valueOf( 0.01 );
 
-    /** Number of days to read the ranges on. */
-    private final int lookback;
+	/** Number of days to read the ranges on. */
+	private final int lookback;
 
-    public StochasticPercentageK(final int lookback) {
-        this.lookback = lookback;
-    }
+	/**
+	 * @param lookback the number of days to use when calculating the Stochastic%K.
+	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
+	 */
+	public StochasticPercentageK( final int lookback, final MathContext mathContext ) {
+		this.lookback = lookback;
+		this.mathContext = mathContext;
+	}
 
-    public BigDecimal[] percentageK(final TradingDayPrices[] data) {
-        final BigDecimal[] pK = new BigDecimal[data.length];
-        LowestPrice lowestLow;
-        HighestPrice highestHigh;
-        ClosingPrice currentClose;
-        BigDecimal lowestHighestDifference;
+	public BigDecimal[] percentageK( final TradingDayPrices[] data ) {
+		final BigDecimal[] pK = new BigDecimal[data.length];
+		LowestPrice lowestLow;
+		HighestPrice highestHigh;
+		ClosingPrice currentClose;
+		BigDecimal lowestHighestDifference;
 
-        for (int i = lookback; i < data.length; i++) {
-            currentClose = data[i].getClosingPrice();
-            lowestLow = lowestLow(data, i);
-            highestHigh = highestHigh(data, i);
-            lowestHighestDifference = differenceBetweenHighestHighAndLowestLow(lowestLow, highestHigh);
+		for (int i = lookback; i < data.length; i++) {
+			currentClose = data[i].getClosingPrice();
+			lowestLow = lowestLow( data, i );
+			highestHigh = highestHigh( data, i );
+			lowestHighestDifference = differenceBetweenHighestHighAndLowestLow( lowestLow, highestHigh );
 
-            pK[i] = calculatePercentageK(lowestLow, highestHigh, currentClose, lowestHighestDifference);
-        }
+			pK[i] = calculatePercentageK( lowestLow, highestHigh, currentClose, lowestHighestDifference );
+		}
 
-        return pK;
-    }
+		return pK;
+	}
 
-    private BigDecimal calculatePercentageK(final LowestPrice lowestLow, final HighestPrice highestHigh,
-            final ClosingPrice currentClose, final BigDecimal lowestHighestDifference) {
-        // %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
-        return ((currentClose.subtract(lowestLow))
-                .divide(lowestHighestDifference, ROUNDING_SCALE, RoundingMode.HALF_UP)).multiply(ONE_HUNDRED);
-    }
+	private BigDecimal calculatePercentageK( final LowestPrice lowestLow, final HighestPrice highestHigh,
+			final ClosingPrice currentClose, final BigDecimal lowestHighestDifference ) {
+		// %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
+		return ((currentClose.subtract( lowestLow, mathContext )).divide( lowestHighestDifference, mathContext ))
+				.multiply( ONE_HUNDRED, mathContext );
+	}
 
-    private BigDecimal differenceBetweenHighestHighAndLowestLow(final LowestPrice lowestLow,
-            final HighestPrice highestHigh) {
-        if (lowestLow.isEqaul(highestHigh)) {
-            return ONE_HUNDREDTH;
-        }
+	private BigDecimal differenceBetweenHighestHighAndLowestLow( final LowestPrice lowestLow,
+			final HighestPrice highestHigh ) {
+		if (lowestLow.isEqaul( highestHigh )) {
+			return ONE_HUNDREDTH;
+		}
 
-        return highestHigh.getPrice().subtract(lowestLow.getPrice());
-    }
+		return highestHigh.getPrice().subtract( lowestLow.getPrice(), mathContext );
+	}
 
-    private LowestPrice lowestLow(final TradingDayPrices[] data, final int inclusiveStart) {
-        LowestPrice contender, lowest = data[inclusiveStart].getLowestPrice();
+	private LowestPrice lowestLow( final TradingDayPrices[] data, final int inclusiveStart ) {
+		LowestPrice contender, lowest = data[inclusiveStart].getLowestPrice();
 
-        for (int i = inclusiveStart - lookback; i < inclusiveStart; i++) {
-            contender = data[i].getLowestPrice();
-            if (contender.isLessThan(lowest)) {
-                lowest = contender;
-            }
-        }
+		for (int i = inclusiveStart - lookback; i < inclusiveStart; i++) {
+			contender = data[i].getLowestPrice();
+			if (contender.isLessThan( lowest )) {
+				lowest = contender;
+			}
+		}
 
-        return lowest;
-    }
+		return lowest;
+	}
 
-    private HighestPrice highestHigh(final TradingDayPrices[] data, final int inclusiveStart) {
-        HighestPrice contender, highest = data[inclusiveStart].getHighestPrice();
+	private HighestPrice highestHigh( final TradingDayPrices[] data, final int inclusiveStart ) {
+		HighestPrice contender, highest = data[inclusiveStart].getHighestPrice();
 
-        for (int i = inclusiveStart - lookback; i < inclusiveStart; i++) {
-            contender = data[i].getHighestPrice();
-            if (contender.isGreaterThan(highest)) {
-                highest = contender;
-            }
-        }
+		for (int i = inclusiveStart - lookback; i < inclusiveStart; i++) {
+			contender = data[i].getHighestPrice();
+			if (contender.isGreaterThan( highest )) {
+				highest = contender;
+			}
+		}
 
-        return highest;
-    }
+		return highest;
+	}
 }

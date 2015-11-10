@@ -26,7 +26,7 @@
 package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
@@ -48,14 +48,19 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
  */
 public class RelativeStrengthIndex {
 
-	/** Number of decimal places for scaling. */
-	private static final int ROUNDING_SCALE = 2;
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private final MathContext mathContext;
 
 	/** The number of trading days to look back for calculation. */
 	private final int lookback;
 
-	public RelativeStrengthIndex( final int lookback ) {
+	/**
+	 * @param lookback the number of days to use when calculating the RSI.
+	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
+	 */
+	public RelativeStrengthIndex( final int lookback, final MathContext mathContext ) {
 		this.lookback = lookback;
+		this.mathContext = mathContext;
 	}
 
 	/**
@@ -86,12 +91,12 @@ public class RelativeStrengthIndex {
 
 			// Today's price is higher then yesterdays
 				case 1:
-					upward = upward.add( closeToday.subtract( closeYesterday ) );
+					upward = upward.add( closeToday.subtract( closeYesterday, mathContext ) );
 					break;
 
 				// Today's price is lower then yesterdays
 				case -1:
-					downward = downward.add( closeYesterday.subtract( closeToday ) );
+					downward = downward.add( closeYesterday.subtract( closeToday, mathContext ) );
 					break;
 
 				// When equal there's no movement, both are zero
@@ -104,8 +109,8 @@ public class RelativeStrengthIndex {
 		}
 
 		// Dividing by the number of time periods for a SMA
-		upward = upward.divide( BigDecimal.valueOf( warmUpTimePeriod ), 2, RoundingMode.HALF_UP );
-		downward = downward.divide( BigDecimal.valueOf( warmUpTimePeriod ), 2, RoundingMode.HALF_UP );
+		upward = upward.divide( BigDecimal.valueOf( warmUpTimePeriod ), mathContext );
+		downward = downward.divide( BigDecimal.valueOf( warmUpTimePeriod ), mathContext );
 
 		/* RS = EMA(U,n) / EMA(D,n) (smoothing constant) multiplier: (2 / (Time periods + 1) ) EMA:
 		 * {Close - EMA(previous day)} x multiplier + EMA(previous day). */
@@ -121,18 +126,18 @@ public class RelativeStrengthIndex {
 
 			// Today's price is higher then yesterdays
 				case 1:
-					upward = (closeToday.subtract( closeYesterday ).subtract( upward )).multiply( multiplier ).add(
-							upward );
+					upward = (closeToday.subtract( closeYesterday, mathContext ).subtract( upward, mathContext ))
+							.multiply( multiplier, mathContext ).add( upward, mathContext );
 
-					downward = downward.negate().multiply( multiplier ).add( downward );
+					downward = downward.negate().multiply( multiplier, mathContext ).add( downward, mathContext );
 					break;
 
 				// Today's price is lower then yesterdays
 				case -1:
-					upward = upward.negate().multiply( multiplier ).add( upward );
+					upward = upward.negate().multiply( multiplier, mathContext ).add( upward, mathContext );
 
-					downward = (closeYesterday.subtract( closeToday ).subtract( downward )).multiply( multiplier ).add(
-							downward );
+					downward = (closeYesterday.subtract( closeToday, mathContext ).subtract( downward, mathContext ))
+							.multiply( multiplier, mathContext ).add( downward, mathContext );
 					break;
 
 				// When equal there's no movement, both are zero
@@ -145,7 +150,7 @@ public class RelativeStrengthIndex {
 			if (downward.compareTo( BigDecimal.ZERO ) <= 0) {
 				relativeStrength[i] = BigDecimal.valueOf( 100 );
 			} else {
-				relativeStrength[i] = upward.divide( downward, ROUNDING_SCALE, RoundingMode.HALF_UP );
+				relativeStrength[i] = upward.divide( downward, mathContext );
 			}
 		}
 
@@ -155,7 +160,7 @@ public class RelativeStrengthIndex {
 
 		for (int i = warmUpTimePeriod; i < rsiValues.length; i++) {
 			rsiValues[i] = oneHundred.subtract( oneHundred.divide( BigDecimal.ONE.add( relativeStrength[i] ),
-					ROUNDING_SCALE, RoundingMode.HALF_UP ) );
+					mathContext ) );
 		}
 
 		return rsiValues;

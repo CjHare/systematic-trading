@@ -28,7 +28,7 @@ package com.systematic.trading.backtest.display.file;
 import java.io.File;
 import java.io.IOException;
 
-import com.systematic.trading.backtest.analysis.impl.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;

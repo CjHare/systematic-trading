@@ -39,15 +39,15 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.analysis.model.ProcessLongBuySignals;
 import com.systematic.trading.analysis.view.DisplayBuySignals;
 import com.systematic.trading.data.DataService;
-import com.systematic.trading.data.DataServiceImpl;
+import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.indicator.impl.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals;
-import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals.GradientType;
+import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.filter.RsiMacdOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
@@ -71,7 +71,8 @@ public class TodaysBuySignals {
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS );
 
 		// TODO input from somewhere?
-		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
+		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
+				MATH_CONTEXT );
 		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
 				GradientType.POSITIVE, MATH_CONTEXT );
 
@@ -120,7 +121,7 @@ public class TodaysBuySignals {
 
 	private static TradingDayPrices[] getDataPoints( final Equity equity, final LocalDate startDate,
 			final LocalDate endDate ) {
-		final DataService service = DataServiceImpl.getInstance();
+		final DataService service = HibernateDataService.getInstance();
 		final String tickerSymbol = equity.getSymbol();
 		final TradingDayPrices[] data = service.get( tickerSymbol, startDate, endDate );
 

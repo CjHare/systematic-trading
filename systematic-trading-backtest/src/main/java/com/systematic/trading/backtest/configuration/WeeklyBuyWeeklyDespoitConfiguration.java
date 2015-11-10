@@ -34,18 +34,18 @@ import com.systematic.trading.backtest.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
+import com.systematic.trading.backtest.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.backtest.brokerage.fees.impl.VanguardRetailFeeStructure;
-import com.systematic.trading.backtest.brokerage.impl.SingleEquityClassBroker;
+import com.systematic.trading.backtest.brokerage.fees.VanguardRetailFeeStructure;
+import com.systematic.trading.backtest.cash.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.cash.FlatInterestRate;
 import com.systematic.trading.backtest.cash.InterestRate;
-import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
-import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
-import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
+import com.systematic.trading.backtest.cash.RegularDepositCashAccountDecorator;
+import com.systematic.trading.backtest.logic.DateTriggeredEntryLogic;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.backtest.logic.impl.DateTriggeredEntryLogic;
-import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
+import com.systematic.trading.backtest.logic.HoldForeverExitLogic;
 
 /**
  * Configuration for a weekly timed purchase entry logic.

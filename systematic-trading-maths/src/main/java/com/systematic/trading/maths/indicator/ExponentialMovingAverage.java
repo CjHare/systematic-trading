@@ -26,7 +26,7 @@
 package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 
 import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
@@ -38,10 +38,19 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
  */
 public class ExponentialMovingAverage {
 
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private final MathContext mathContext;
+
+	/** The number of trading days to look back for calculation. */
 	private final int lookback;
 
-	public ExponentialMovingAverage( final int lookback ) {
+	/**
+	 * @param lookback the number of days to use when calculating the EMA.
+	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
+	 */
+	public ExponentialMovingAverage( final int lookback, final MathContext mathContext ) {
 		this.lookback = lookback;
+		this.mathContext = mathContext;
 	}
 
 	/**
@@ -75,7 +84,7 @@ public class ExponentialMovingAverage {
 		for (int i = startSmaIndex; i < endSmaIndex; i++) {
 			simpleMovingAverage = simpleMovingAverage.add( data[i].geValue() );
 		}
-		simpleMovingAverage = simpleMovingAverage.divide( BigDecimal.valueOf( lookback ), 2, RoundingMode.HALF_UP );
+		simpleMovingAverage = simpleMovingAverage.divide( BigDecimal.valueOf( lookback ), mathContext );
 
 		/* EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) */
 		final BigDecimal[] emaValues = new BigDecimal[data.length];
@@ -86,7 +95,8 @@ public class ExponentialMovingAverage {
 		for (int i = endSmaIndex; i < data.length; i++) {
 			today = data[i].geValue();
 
-			emaValues[i] = (today.subtract( yesterday )).multiply( multiplier ).add( yesterday );
+			emaValues[i] = (today.subtract( yesterday, mathContext )).multiply( multiplier, mathContext ).add(
+					yesterday, mathContext );
 
 			yesterday = today;
 		}

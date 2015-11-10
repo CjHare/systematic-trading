@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 
 import org.junit.Test;
@@ -38,6 +39,9 @@ import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 public class RelativeStrengthIndexTest {
+
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+
 	@Test
 	public void anotherRsi() throws TooFewDataPoints {
 		final double[] prices = { 15.55, 15.70, 15.80, 15.98, 16.20, 16.15, 16.15, 16.25, 16.12, 16.40, 16.67, 16.22,
@@ -45,11 +49,11 @@ public class RelativeStrengthIndexTest {
 				15.41, 15.46, 15.50, 15.63, 15.50, 15.51, 15.42, 15.38, 15.24, 15.26, 15.29, 15.25, 15.05 };
 		final TradingDayPrices[] closingPrices = new TradingDayPrices[prices.length];
 		for (int i = 0; i < closingPrices.length; i++) {
-			closingPrices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-					BigDecimal.valueOf( prices[i] ) );
+			closingPrices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO,
+					BigDecimal.ZERO, BigDecimal.valueOf( prices[i] ) );
 		}
 
-		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10 );
+		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10, MATH_CONTEXT );
 		final BigDecimal[] rsiValues = rsi.rsi( closingPrices );
 
 		assertNotNull( rsiValues );
@@ -100,12 +104,12 @@ public class RelativeStrengthIndexTest {
 
 		final TradingDayPrices[] closingPrices = new TradingDayPrices[closingPricesDb.length];
 		for (int i = 0; i < closingPrices.length; i++) {
-			closingPrices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-					closingPricesDb[i] );
+			closingPrices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO,
+					BigDecimal.ZERO, closingPricesDb[i] );
 
 		}
 
-		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10 );
+		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10, MATH_CONTEXT );
 		final BigDecimal[] rsiValues = rsi.rsi( closingPrices );
 
 		assertNotNull( rsiValues );
@@ -134,13 +138,13 @@ public class RelativeStrengthIndexTest {
 
 	@Test(expected = TooFewDataPoints.class)
 	public void tooFewPrices() throws TooFewDataPoints {
-		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10 );
+		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10, MATH_CONTEXT );
 
 		final TradingDayPrices[] closingPrices = {
-				new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 93.15 ), BigDecimal.ZERO, BigDecimal.ZERO,
-						BigDecimal.ZERO ),
-				new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 93.47 ), BigDecimal.ZERO, BigDecimal.ZERO,
-						BigDecimal.ZERO ) };
+				new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 93.15 ), BigDecimal.ZERO,
+						BigDecimal.ZERO, BigDecimal.ZERO ),
+				new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 93.47 ), BigDecimal.ZERO,
+						BigDecimal.ZERO, BigDecimal.ZERO ) };
 
 		rsi.rsi( closingPrices );
 	}
@@ -162,7 +166,7 @@ public class RelativeStrengthIndexTest {
 					BigDecimal.ZERO, BigDecimal.ZERO );
 		}
 
-		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10 );
+		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10, MATH_CONTEXT );
 		final BigDecimal[] rsiValues = rsi.rsi( closingPrices );
 
 		assertNotNull( rsiValues );

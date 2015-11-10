@@ -23,40 +23,49 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.event;
 
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
- * Output from back testing.
+ * Concrete implementation of the ROI event.
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends EventListener {
+public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
+
+	private final BigDecimal percentageChange;
+	private final LocalDate startDateInclusive;
+	private final LocalDate endDateInclusive;
 
 	/**
-	 * All the interesting data points for displaying.
+	 * Records a change in the state of the return on investment
 	 * 
-	 * @param tickerSymbolTradingRange summary of the data set analysed.
-	 * @param eventStatistics record of various event occurrences.
-	 * @param broker manager for the equity transactions.
-	 * @param cashAccount account managing the cash transactions.
-	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
-	 * @param lastTradingDay prices from the last day in the back test.
-	 * @throws Exception problem encountered during the initialisation of the display.
+	 * @param percentageChange amount the net worth has relatively changed by in the given time.
+	 * @param startDateInclusive the beginning of the elapsed time the percentage change occurred.
+	 * @param endDateInclusive the last day of the elapsed time where the percentage change
+	 *            occurred.
 	 */
-	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics, Brokerage broker,
-			CashAccount cashAccount, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			TradingDayPrices lastTradingDay ) throws Exception;
+	public ReturnOnInvestmentEventImpl( final BigDecimal percentageChange, final LocalDate startDateInclusive,
+			final LocalDate endDateInclusiv ) {
+		this.percentageChange = percentageChange;
+		this.startDateInclusive = startDateInclusive;
+		this.endDateInclusive = endDateInclusiv;
+	}
 
-	/**
-	 * Event notification that the simulation is now completed.
-	 */
-	void simulationCompleted();
+	@Override
+	public BigDecimal getPercentageChange() {
+		return percentageChange;
+	}
+
+	@Override
+	public LocalDate getStartDateInclusive() {
+		return startDateInclusive;
+	}
+
+	@Override
+	public LocalDate getEndDateInclusive() {
+		return endDateInclusive;
+	}
 }

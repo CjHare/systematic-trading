@@ -23,40 +23,48 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.brokerage.fees;
 
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import static com.systematic.trading.backtest.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+
+import com.systematic.trading.backtest.brokerage.EquityClass;
+import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 
 /**
- * Output from back testing.
+ * Fees for the online broker Bell Direct.
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends EventListener {
+public class VanguardRetailFeeStructure implements BrokerageFeeStructure {
+
+	/** Scale and precision to apply to mathematical operations. */
+	private final MathContext mathContext;
 
 	/**
-	 * All the interesting data points for displaying.
-	 * 
-	 * @param tickerSymbolTradingRange summary of the data set analysed.
-	 * @param eventStatistics record of various event occurrences.
-	 * @param broker manager for the equity transactions.
-	 * @param cashAccount account managing the cash transactions.
-	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
-	 * @param lastTradingDay prices from the last day in the back test.
-	 * @throws Exception problem encountered during the initialisation of the display.
+	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics, Brokerage broker,
-			CashAccount cashAccount, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			TradingDayPrices lastTradingDay ) throws Exception;
+	public VanguardRetailFeeStructure( final MathContext mathContext ) {
+		this.mathContext = mathContext;
+	}
 
-	/**
-	 * Event notification that the simulation is now completed.
-	 */
-	void simulationCompleted();
+	@Override
+	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
+			throws UnsupportedEquityClass {
+
+		final BigDecimal brokerage;
+
+		switch (type) {
+			case BOND:
+			case STOCK:
+				brokerage = tradeValue.multiply( TEN_BASIS_POINTS, mathContext );
+				break;
+			default:
+				throw new UnsupportedEquityClass( type );
+		}
+
+		return brokerage;
+	}
 }

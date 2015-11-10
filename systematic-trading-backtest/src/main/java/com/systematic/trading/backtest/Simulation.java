@@ -44,7 +44,7 @@ import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
-import com.systematic.trading.backtest.order.event.impl.EquityOrderDeletedDueToInsufficentFundsEvent;
+import com.systematic.trading.backtest.order.event.EquityOrderDeletedDueToInsufficentFundsEvent;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.Event;
 import com.systematic.trading.event.EventListener;

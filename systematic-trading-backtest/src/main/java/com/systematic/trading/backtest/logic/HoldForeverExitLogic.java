@@ -23,40 +23,22 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.logic;
 
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
+import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
 
 /**
- * Output from back testing.
+ * One half of the buy and hold forever strategy.
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends EventListener {
+public class HoldForeverExitLogic implements ExitLogic {
 
-	/**
-	 * All the interesting data points for displaying.
-	 * 
-	 * @param tickerSymbolTradingRange summary of the data set analysed.
-	 * @param eventStatistics record of various event occurrences.
-	 * @param broker manager for the equity transactions.
-	 * @param cashAccount account managing the cash transactions.
-	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
-	 * @param lastTradingDay prices from the last day in the back test.
-	 * @throws Exception problem encountered during the initialisation of the display.
-	 */
-	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics, Brokerage broker,
-			CashAccount cashAccount, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			TradingDayPrices lastTradingDay ) throws Exception;
-
-	/**
-	 * Event notification that the simulation is now completed.
-	 */
-	void simulationCompleted();
+	@Override
+	public EquityOrder update( final BrokerageTransaction broker, final TradingDayPrices data ) {
+		// There's never an order to place :. return null
+		return null;
+	}
 }

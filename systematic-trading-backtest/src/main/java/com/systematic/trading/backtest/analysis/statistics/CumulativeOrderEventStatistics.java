@@ -23,40 +23,61 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.analysis.statistics;
 
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import com.systematic.trading.backtest.event.OrderEvent;
 
 /**
- * Output from back testing.
+ * Cumulative recording of the order events for statistical purposes.
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends EventListener {
+public class CumulativeOrderEventStatistics implements OrderEventStatistics {
 
-	/**
-	 * All the interesting data points for displaying.
-	 * 
-	 * @param tickerSymbolTradingRange summary of the data set analysed.
-	 * @param eventStatistics record of various event occurrences.
-	 * @param broker manager for the equity transactions.
-	 * @param cashAccount account managing the cash transactions.
-	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
-	 * @param lastTradingDay prices from the last day in the back test.
-	 * @throws Exception problem encountered during the initialisation of the display.
-	 */
-	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics, Brokerage broker,
-			CashAccount cashAccount, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			TradingDayPrices lastTradingDay ) throws Exception;
+	private int entryEventCount = 0;
+	private int deleteEntryEventCount = 0;
+	private int exitEventCount = 0;
+	private int deleteExitEventCount = 0;
 
-	/**
-	 * Event notification that the simulation is now completed.
-	 */
-	void simulationCompleted();
+	@Override
+	public void event( final OrderEvent event ) {
+
+		switch (event.getType()) {
+			case ENTRY:
+				entryEventCount++;
+				break;
+			case DELETE_ENTRY:
+				deleteEntryEventCount++;
+				break;
+			case EXIT:
+				exitEventCount++;
+				break;
+			case DELETE_EXIT:
+				deleteExitEventCount++;
+				break;
+			default:
+				throw new IllegalArgumentException(
+						String.format( "Order event type %s is unexpected", event.getType() ) );
+		}
+	}
+
+	@Override
+	public int getEntryEventCount() {
+		return entryEventCount;
+	}
+
+	@Override
+	public int getDeleteEntryEventCount() {
+		return deleteEntryEventCount;
+	}
+
+	@Override
+	public int getExitEventCount() {
+		return exitEventCount;
+	}
+
+	@Override
+	public int getDeleteExitEventCount() {
+		return deleteExitEventCount;
+	}
 }

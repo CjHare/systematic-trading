@@ -26,6 +26,7 @@
 package com.systematic.trading.analysis;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -34,11 +35,11 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.DataService;
-import com.systematic.trading.data.DataServiceImpl;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
+import com.systematic.trading.data.HibernateDataService;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.AverageTrueRange;
@@ -47,6 +48,8 @@ import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 public class TodaysStopLosses {
 
 	private static final Logger LOG = LogManager.getLogger( TodaysStopLosses.class );
+
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	/* Days data needed - 20 + 20 for the MACD part EMA(20), Weekend and bank holidays */
 	private static final int HISTORY_REQUIRED = 50 + 16 + 5;
@@ -74,8 +77,8 @@ public class TodaysStopLosses {
 	}
 
 	private static void averageTrueRange( final LocalDate startDate, final LocalDate endDate ) {
-		final DataService service = DataServiceImpl.getInstance();
-		final AverageTrueRange atr = new AverageTrueRange( 14 );
+		final DataService service = HibernateDataService.getInstance();
+		final AverageTrueRange atr = new AverageTrueRange( 14, MATH_CONTEXT );
 		final BigDecimal threeQuaterMultiplier = BigDecimal.valueOf( 3.25 );
 		final BigDecimal threeHalfMultiplier = BigDecimal.valueOf( 3.5 );
 

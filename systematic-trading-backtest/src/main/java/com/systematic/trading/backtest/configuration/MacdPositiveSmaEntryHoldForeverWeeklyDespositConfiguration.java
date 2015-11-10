@@ -35,23 +35,23 @@ import java.util.List;
 import com.systematic.trading.backtest.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
+import com.systematic.trading.backtest.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.backtest.brokerage.fees.impl.CmcMarketsFeeStructure;
-import com.systematic.trading.backtest.brokerage.impl.SingleEquityClassBroker;
+import com.systematic.trading.backtest.brokerage.fees.CmcMarketsFeeStructure;
+import com.systematic.trading.backtest.cash.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.cash.FlatInterestRate;
 import com.systematic.trading.backtest.cash.InterestRate;
-import com.systematic.trading.backtest.cash.impl.CalculatedDailyPaidMonthlyCashAccount;
-import com.systematic.trading.backtest.cash.impl.FlatInterestRate;
-import com.systematic.trading.backtest.cash.impl.RegularDepositCashAccountDecorator;
+import com.systematic.trading.backtest.cash.RegularDepositCashAccountDecorator;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.backtest.logic.impl.HoldForeverExitLogic;
-import com.systematic.trading.backtest.logic.impl.SignalTriggeredEntryLogic;
+import com.systematic.trading.backtest.logic.HoldForeverExitLogic;
+import com.systematic.trading.backtest.logic.SignalTriggeredEntryLogic;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.indicator.impl.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals;
-import com.systematic.trading.signals.indicator.impl.SimpleMovingAverageGradientSignals.GradientType;
+import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
 import com.systematic.trading.signals.model.filter.MacdWithPositiveSmaSignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
@@ -106,7 +106,8 @@ public class MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration extends 
 	@Override
 	public EntryLogic getEntryLogic( final EquityIdentity equity, final LocalDate openingDate ) {
 
-		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7 );
+		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
+				mathContext );
 		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
 				GradientType.POSITIVE, mathContext );
 

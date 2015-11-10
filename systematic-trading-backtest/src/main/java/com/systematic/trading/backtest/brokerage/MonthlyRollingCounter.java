@@ -23,40 +23,67 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.brokerage;
 
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import java.time.LocalDate;
+import java.time.Month;
 
 /**
- * Output from back testing.
+ * Keeps a count on a monthly rolling basis.
+ * <p/>
+ * The counter resets when a trade is received in a different month to the last addition.
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends EventListener {
+public class MonthlyRollingCounter {
+
+	/** Year of the last addition to the counter. */
+	private int yearOfLastAddition;
+
+	/** Month of the last addition to the counter. */
+	private Month monthOfLastAddition;
+
+	/** Counter for number of additions. */
+	private int additionsThisMonth = 0;
 
 	/**
-	 * All the interesting data points for displaying.
+	 * Increments the counter for the given month.
 	 * 
-	 * @param tickerSymbolTradingRange summary of the data set analysed.
-	 * @param eventStatistics record of various event occurrences.
-	 * @param broker manager for the equity transactions.
-	 * @param cashAccount account managing the cash transactions.
-	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
-	 * @param lastTradingDay prices from the last day in the back test.
-	 * @throws Exception problem encountered during the initialisation of the display.
+	 * @param date date of the counter increment.
+	 * @return count for the month of the given date.
 	 */
-	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics, Brokerage broker,
-			CashAccount cashAccount, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			TradingDayPrices lastTradingDay ) throws Exception;
+	public int add( final LocalDate date ) {
+
+		if (isSameMonthAsLastAddition( date )) {
+			additionsThisMonth++;
+		} else {
+			resetCounter( date );
+		}
+
+		return additionsThisMonth;
+	}
 
 	/**
-	 * Event notification that the simulation is now completed.
+	 * The number of transactions.
+	 * 
+	 * @return number of transaction in the given month.
 	 */
-	void simulationCompleted();
+	public int get( final LocalDate date ) {
+
+		if (isSameMonthAsLastAddition( date )) {
+			return additionsThisMonth;
+		}
+
+		return 0;
+	}
+
+	private boolean isSameMonthAsLastAddition( final LocalDate tradeDate ) {
+		return yearOfLastAddition == tradeDate.getYear() && monthOfLastAddition == tradeDate.getMonth();
+	}
+
+	private void resetCounter( final LocalDate tradeDate ) {
+		yearOfLastAddition = tradeDate.getYear();
+		monthOfLastAddition = tradeDate.getMonth();
+		additionsThisMonth = 1;
+	}
 }

@@ -26,6 +26,7 @@
 package com.systematic.trading.data.price;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 /**
  * Price for an equity.
@@ -109,9 +110,10 @@ public class Price {
 	 * Result of subtracting the other price from this one.
 	 * 
 	 * @param other the price to subtract.
+	 * @param mathContext scale, precision and rounding to apply to mathematical operations.
 	 * @return the result of the subtraction, not side effecting this Price.
 	 */
-	public BigDecimal subtract( final Price other ) {
-		return getPrice().subtract( other.getPrice() );
+	public BigDecimal subtract( final Price other, final MathContext mathContext ) {
+		return getPrice().subtract( other.getPrice(), mathContext );
 	}
 }
