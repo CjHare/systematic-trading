@@ -23,50 +23,73 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.analysis.statistics;
+package com.systematic.trading.event.cash;
 
-import com.systematic.trading.event.brokerage.BrokerageEvent;
-import com.systematic.trading.event.cash.CashEvent;
-import com.systematic.trading.event.order.OrderEvent;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.event.Event;
 
 /**
- * Statistics recorded cumulatively, being updated when the events are received.
+ * A cash event that warrants being recorded.
  * 
  * @author CJ Hare
  */
-public class CumulativeEventStatistics implements EventStatistics {
+public interface CashEvent extends Event {
 
-	private final BrokerageEventStatistics brokerageStatistics = new CumulativeBrokerageEventStatistics();
-	private final CashEventStatistics cashStatistics = new CumulativeCashEventStatistics();
-	private final OrderEventStatistics orderStatistics = new CumulativeOrderEventStatistics();
+	enum CashEventType {
+		/** From the sale of equities. */
+		CREDIT( "Credit" ),
+		/** From the purchase of equities. */
+		DEBIT( "Debit" ),
+		/** Non-equity source of funds being credited. */
+		DEPOSIT( "Deposit" ),
+		/** Interest paid on cash held in transactional account. */
+		INTEREST( "Interest" );
 
-	@Override
-	public OrderEventStatistics getOrderEventStatistics() {
-		return orderStatistics;
+		private final String display;
+
+		private CashEventType( final String display ) {
+			this.display = display;
+		}
+
+		public String getDisplay() {
+			return display;
+		}
 	}
 
-	@Override
-	public BrokerageEventStatistics getBrokerageEventStatistics() {
-		return brokerageStatistics;
-	}
+	/**
+	 * Retrieves the classification of cash event.
+	 * 
+	 * @return general category the cash event falls within.
+	 */
+	CashEventType getType();
 
-	@Override
-	public CashEventStatistics getCashEventStatistics() {
-		return cashStatistics;
-	}
+	/**
+	 * Value of the cash event.
+	 * 
+	 * @return amount of cash involved in the event.
+	 */
+	BigDecimal getAmount();
 
-	@Override
-	public void event( final CashEvent event ) {
-		cashStatistics.event( event );
-	}
+	/**
+	 * Available fund prior to the cash event.
+	 * 
+	 * @return funds available before the cash event.
+	 */
+	BigDecimal getFundsBefore();
 
-	@Override
-	public void event( final BrokerageEvent event ) {
-		brokerageStatistics.event( event );
-	}
+	/**
+	 * Available funds after the cash event.
+	 * 
+	 * @return funds available after the cash event.
+	 */
+	BigDecimal getFundsAfter();
 
-	@Override
-	public void event( final OrderEvent event ) {
-		orderStatistics.event( event );
-	}
+	/**
+	 * Date of cash event.
+	 * 
+	 * @return when the cash event occurred.
+	 */
+	LocalDate getTransactionDate();
 }

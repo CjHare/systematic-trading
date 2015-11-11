@@ -33,13 +33,13 @@ import java.util.List;
 
 import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.backtest.event.BrokerageAccountEvent;
-import com.systematic.trading.backtest.event.BrokerageEvent.BrokerageAccountEventType;
 import com.systematic.trading.backtest.exception.InsufficientEquitiesException;
 import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
 import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.data.price.Price;
-import com.systematic.trading.event.Event;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.brokerage.BrokerageEvent;
+import com.systematic.trading.event.brokerage.BrokerageEventListener;
+import com.systematic.trading.event.brokerage.BrokerageEvent.BrokerageAccountEventType;
 
 /**
  * Handles execution of trades and maintains the balance of equities.
@@ -64,7 +64,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	private final MathContext mathContext;
 
 	/** Parties interested in listening to events. */
-	private final List<EventListener> listeners = new ArrayList<EventListener>();
+	private final List<BrokerageEventListener> listeners = new ArrayList<BrokerageEventListener>();
 
 	public SingleEquityClassBroker( final BrokerageFeeStructure fees, final EquityClass type,
 			final MathContext mathContext ) {
@@ -133,15 +133,8 @@ public class SingleEquityClassBroker implements Brokerage {
 		return equityBalance;
 	}
 
-	@Override
-	public void addListener( final EventListener listener ) {
-		if (!listeners.contains( listener )) {
-			listeners.add( listener );
-		}
-	}
-
-	private void notifyListeners( final Event event ) {
-		for (final EventListener listener : listeners) {
+	private void notifyListeners( final BrokerageEvent event ) {
+		for (final BrokerageEventListener listener : listeners) {
 			listener.event( event );
 		}
 	}
@@ -153,5 +146,12 @@ public class SingleEquityClassBroker implements Brokerage {
 		final BigDecimal tradeFee = fees.calculateFee( tradeValue, type, tradesThisMonth );
 
 		return tradeValue.add( tradeFee, mathContext );
+	}
+
+	@Override
+	public void addListener( final BrokerageEventListener listener ) {
+		if (!listeners.contains( listener )) {
+			listeners.add( listener );
+		}
 	}
 }

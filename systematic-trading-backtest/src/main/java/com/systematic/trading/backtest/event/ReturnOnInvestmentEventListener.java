@@ -23,23 +23,19 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.analysis;
-
-import java.math.BigDecimal;
-import java.time.Period;
+package com.systematic.trading.backtest.event;
 
 /**
- * Records the return on investment events.
+ * A listener interested in cash event notifications.
  * 
  * @author CJ Hare
  */
-public interface ReturnOnInvestmentCalculatorListener {
+public interface ReturnOnInvestmentEventListener {
 
 	/**
-	 * Records a change in the state of the return on investment
+	 * A Return On Investment event has occurred.
 	 * 
-	 * @param percentageChange amount the net worth has relatively changed by in the given time.
-	 * @param elapsed the amount of time over which the percentage change occurred.
+	 * @param event the type of event that the listener is interested.
 	 */
-	void record( BigDecimal percentageChange, Period elapsed );
+	void event( ReturnOnInvestmentEvent event );
 }

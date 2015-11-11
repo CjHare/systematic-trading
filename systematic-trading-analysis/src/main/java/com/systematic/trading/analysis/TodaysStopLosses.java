@@ -99,13 +99,12 @@ public class TodaysStopLosses {
 				final int lastDate = averageTrueRanges.length - 1;
 				final BigDecimal averageTrueRange = averageTrueRanges[lastDate];
 
-				// TODO 2dp
 				System.out.println( "--- " );
 				System.out.println( symbol );
 				System.out.println( twoDecimalPlaces.format( data[lastDate].getClosingPrice().getPrice()
-						.subtract( averageTrueRange.multiply( threeQuaterMultiplier ) ) ) );
+						.subtract( averageTrueRange.multiply( threeQuaterMultiplier, MATH_CONTEXT ), MATH_CONTEXT ) ) );
 				System.out.println( twoDecimalPlaces.format( data[lastDate].getClosingPrice().getPrice()
-						.subtract( averageTrueRange.multiply( threeHalfMultiplier ) ) ) );
+						.subtract( averageTrueRange.multiply( threeHalfMultiplier, MATH_CONTEXT ), MATH_CONTEXT ) ) );
 				System.out.println( "--- " );
 
 			} catch (final TooFewDataPoints e) {

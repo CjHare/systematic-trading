@@ -23,50 +23,49 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.analysis.statistics;
+package com.systematic.trading.event.order;
 
-import com.systematic.trading.event.brokerage.BrokerageEvent;
-import com.systematic.trading.event.cash.CashEvent;
-import com.systematic.trading.event.order.OrderEvent;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.event.Event;
 
 /**
- * Statistics recorded cumulatively, being updated when the events are received.
+ * An order event that warrants being recorded.
  * 
  * @author CJ Hare
  */
-public class CumulativeEventStatistics implements EventStatistics {
-
-	private final BrokerageEventStatistics brokerageStatistics = new CumulativeBrokerageEventStatistics();
-	private final CashEventStatistics cashStatistics = new CumulativeCashEventStatistics();
-	private final OrderEventStatistics orderStatistics = new CumulativeOrderEventStatistics();
-
-	@Override
-	public OrderEventStatistics getOrderEventStatistics() {
-		return orderStatistics;
+public interface OrderEvent extends Event {
+	/**
+	 * All the different event types for equity orders.
+	 * 
+	 * @author CJ Hare
+	 */
+	public enum EquityOrderType {
+		ENTRY,
+		EXIT,
+		DELETE_ENTRY,
+		DELETE_EXIT
 	}
 
-	@Override
-	public BrokerageEventStatistics getBrokerageEventStatistics() {
-		return brokerageStatistics;
-	}
+	/**
+	 * Retrieve the type of the order.
+	 * 
+	 * @return purpose of the order that triggered the event recording.
+	 */
+	EquityOrderType getType();
 
-	@Override
-	public CashEventStatistics getCashEventStatistics() {
-		return cashStatistics;
-	}
+	/**
+	 * Date of cash event.
+	 * 
+	 * @return when the cash event occurred.
+	 */
+	LocalDate getTransactionDate();
 
-	@Override
-	public void event( final CashEvent event ) {
-		cashStatistics.event( event );
-	}
-
-	@Override
-	public void event( final BrokerageEvent event ) {
-		brokerageStatistics.event( event );
-	}
-
-	@Override
-	public void event( final OrderEvent event ) {
-		orderStatistics.event( event );
-	}
+	/**
+	 * Total cost of the order.
+	 * 
+	 * @return cost of the order including any fees.
+	 */
+	BigDecimal getTotalCost();
 }

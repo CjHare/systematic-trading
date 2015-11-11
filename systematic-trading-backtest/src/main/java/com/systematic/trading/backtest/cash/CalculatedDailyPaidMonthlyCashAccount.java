@@ -33,10 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.backtest.event.CashAccountEvent;
-import com.systematic.trading.backtest.event.CashEvent;
-import com.systematic.trading.backtest.event.CashEvent.CashEventType;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.cash.CashEvent;
+import com.systematic.trading.event.cash.CashEventListener;
+import com.systematic.trading.event.cash.CashEvent.CashEventType;
 
 /**
  * Flat interest rates calculated daily, paid monthly.
@@ -61,7 +61,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	private final MathContext mathContext;
 
 	/** Parties interested in the account events. */
-	private final List<EventListener> listeners = new ArrayList<EventListener>();
+	private final List<CashEventListener> listeners = new ArrayList<CashEventListener>();
 
 	/**
 	 * @param rate calculated daily to the funds and paid monthly, cannot be <code>null</code>.
@@ -166,16 +166,16 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		notifyListeners( new CashAccountEvent( fundsBefore, funds, deposit, CashEventType.DEPOSIT, transactionDate ) );
 	}
 
-	@Override
-	public void addListener( final EventListener listener ) {
-		if (!listeners.contains( listener )) {
-			listeners.add( listener );
+	private void notifyListeners( final CashEvent event ) {
+		for (final CashEventListener listener : listeners) {
+			listener.event( event );
 		}
 	}
 
-	private void notifyListeners( final CashEvent event ) {
-		for (final EventListener listener : listeners) {
-			listener.event( event );
+	@Override
+	public void addListener( final CashEventListener listener ) {
+		if (!listeners.contains( listener )) {
+			listeners.add( listener );
 		}
 	}
 }

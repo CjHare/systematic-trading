@@ -28,9 +28,9 @@ package com.systematic.trading.backtest.order;
 import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.OrderEvent;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.event.order.OrderEvent;
 
 /**
  * The trading order that can be executed by a specific brokerage.

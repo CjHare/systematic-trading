@@ -36,19 +36,20 @@ import java.time.temporal.ChronoUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.event.BrokerageEvent;
-import com.systematic.trading.backtest.event.CashEvent;
-import com.systematic.trading.backtest.event.OrderEvent;
-import com.systematic.trading.event.Event;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.brokerage.BrokerageEvent;
+import com.systematic.trading.event.brokerage.BrokerageEventListener;
+import com.systematic.trading.event.cash.CashEvent;
+import com.systematic.trading.event.cash.CashEventListener;
 import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import com.systematic.trading.event.order.OrderEvent;
+import com.systematic.trading.event.order.OrderEventListener;
 
 /**
  * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public class FileEventDisplay implements EventListener {
+public class FileEventDisplay implements CashEventListener, OrderEventListener, BrokerageEventListener {
 
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger( FileEventDisplay.class );
@@ -67,16 +68,6 @@ public class FileEventDisplay implements EventListener {
 
 		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
 			out.println( createHeaderOutput( range ) );
-		} catch (final IOException e) {
-			LOG.error( e );
-		}
-	}
-
-	@Override
-	public void event( final Event event ) {
-
-		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			out.println( createOutput( event ) );
 		} catch (final IOException e) {
 			LOG.error( e );
 		}
@@ -105,33 +96,49 @@ public class FileEventDisplay implements EventListener {
 		return output.toString();
 	}
 
-	private String createOutput( final Event event ) {
-		final String output;
+	@Override
+	public void event( final BrokerageEvent event ) {
 
-		if (event instanceof BrokerageEvent) {
-			final BrokerageEvent brokerageEvent = (BrokerageEvent) event;
-			output = String.format( "Brokerage Account - %s: %s - equity balance %s -> %s on %s",
-					brokerageEvent.getType(), TWO_DECIMAL_PLACES.format( brokerageEvent.getEquityAmount() ),
-					TWO_DECIMAL_PLACES.format( brokerageEvent.getStartingEquityBalance() ),
-					TWO_DECIMAL_PLACES.format( brokerageEvent.getEndEquityBalance() ),
-					brokerageEvent.getTransactionDate() );
+		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+			final String output = String.format( "Brokerage Account - %s: %s - equity balance %s -> %s on %s",
+					event.getType(), TWO_DECIMAL_PLACES.format( event.getEquityAmount() ),
+					TWO_DECIMAL_PLACES.format( event.getStartingEquityBalance() ),
+					TWO_DECIMAL_PLACES.format( event.getEndEquityBalance() ), event.getTransactionDate() );
 
-		} else if (event instanceof CashEvent) {
-			final CashEvent cashEvent = (CashEvent) event;
-			output = String.format( "Cash Account - %s: %s - funds %s -> %s on %s", cashEvent.getType(),
-					TWO_DECIMAL_PLACES.format( cashEvent.getAmount() ),
-					TWO_DECIMAL_PLACES.format( cashEvent.getFundsBefore() ),
-					TWO_DECIMAL_PLACES.format( cashEvent.getFundsAfter() ), cashEvent.getTransactionDate() );
-
-		} else if (event instanceof OrderEvent) {
-			final OrderEvent orderEvent = (OrderEvent) event;
-			output = String.format( "Place Order - %s total cost %s created after c.o.b on %s", orderEvent.getType(),
-					TWO_DECIMAL_PLACES.format( orderEvent.getTotalCost() ), orderEvent.getTransactionDate() );
-
-		} else {
-			throw new IllegalArgumentException( String.format( "Unsupported event class: %s", event.getClass() ) );
+			out.println( output );
+		} catch (final IOException e) {
+			LOG.error( e );
 		}
 
-		return output;
+	}
+
+	@Override
+	public void event( final OrderEvent event ) {
+
+		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+			final String output = String.format( "Place Order - %s total cost %s created after c.o.b on %s",
+					event.getType(), TWO_DECIMAL_PLACES.format( event.getTotalCost() ), event.getTransactionDate() );
+
+			out.println( output );
+		} catch (final IOException e) {
+			LOG.error( e );
+		}
+
+	}
+
+	@Override
+	public void event( final CashEvent event ) {
+
+		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+			final String output = String.format( "Cash Account - %s: %s - funds %s -> %s on %s", event.getType(),
+					TWO_DECIMAL_PLACES.format( event.getAmount() ),
+					TWO_DECIMAL_PLACES.format( event.getFundsBefore() ),
+					TWO_DECIMAL_PLACES.format( event.getFundsAfter() ), event.getTransactionDate() );
+
+			out.println( output );
+		} catch (final IOException e) {
+			LOG.error( e );
+		}
+
 	}
 }

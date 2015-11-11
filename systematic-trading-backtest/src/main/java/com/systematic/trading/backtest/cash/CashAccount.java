@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.cash.CashEventListener;
 
 /**
  * Cash flow and interest management.
@@ -79,9 +79,9 @@ public interface CashAccount {
 	BigDecimal getBalance();
 
 	/**
-	 * Adds a listener that is interested in cash account events.
+	 * Adds a listener that is interested in CashEvents.
 	 * 
-	 * @param listener adds the listener to those notified on account events.
+	 * @param listener to receive cash event notifications.
 	 */
-	void addListener( EventListener listener );
+	void addListener( CashEventListener listener );
 }

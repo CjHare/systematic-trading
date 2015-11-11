@@ -29,16 +29,20 @@ import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestment
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.brokerage.BrokerageEventListener;
+import com.systematic.trading.event.cash.CashEventListener;
 import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import com.systematic.trading.event.order.OrderEventListener;
 
 /**
  * Output from back testing.
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends EventListener {
+public interface BacktestDisplay extends CashEventListener, OrderEventListener, BrokerageEventListener,
+		ReturnOnInvestmentEventListener {
 
 	/**
 	 * All the interesting data points for displaying.

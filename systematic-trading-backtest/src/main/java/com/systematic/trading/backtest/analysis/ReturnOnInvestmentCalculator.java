@@ -28,14 +28,14 @@ package com.systematic.trading.backtest.analysis;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.cash.CashEventListener;
 
 /**
  * Calculates and records the return on investment (ROI) at periodic intervals.
  * 
  * @author CJ Hare
  */
-public interface ReturnOnInvestmentCalculator extends EventListener {
+public interface ReturnOnInvestmentCalculator extends CashEventListener {
 
 	/**
 	 * Updates the recording of the ROI.

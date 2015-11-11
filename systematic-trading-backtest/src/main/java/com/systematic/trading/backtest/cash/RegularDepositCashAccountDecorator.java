@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.cash.CashEventListener;
 
 /**
  * Adds frequent deposits to an underlying Cash Account.
@@ -114,7 +114,7 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 	}
 
 	@Override
-	public void addListener( final EventListener listener ) {
+	public void addListener( final CashEventListener listener ) {
 		account.addListener( listener );
 	}
 }

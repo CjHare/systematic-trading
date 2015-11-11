@@ -70,7 +70,6 @@ public class TodaysBuySignals {
 		final LocalDate endDate = LocalDate.now();
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS );
 
-		// TODO input from somewhere?
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
 				MATH_CONTEXT );
 		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
@@ -91,8 +90,6 @@ public class TodaysBuySignals {
 			final TradingDayPrices[] dataPoints = getDataPoints( equity, startDate, endDate );
 			final List<BuySignal> signals = buyLong.process( equity, dataPoints );
 			buyLongSignals.put( equity, signals );
-
-			// TODO event
 		}
 
 		displayBuySignals( buyLongSignals );

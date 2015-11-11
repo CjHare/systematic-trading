@@ -27,14 +27,16 @@ package com.systematic.trading.backtest.analysis;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.time.Period;
+
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 
 /**
  * Just tally's up the cumulative ROI, never creating any events.
  * 
  * @author CJ Hare
  */
-public class CulmativeTotalReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculatorListener,
+public class CulmativeTotalReturnOnInvestmentCalculator implements ReturnOnInvestmentEventListener,
 		CumulativeReturnOnInvestment {
 
 	/** Context for BigDecimal operations. */
@@ -48,12 +50,12 @@ public class CulmativeTotalReturnOnInvestmentCalculator implements ReturnOnInves
 	}
 
 	@Override
-	public void record( final BigDecimal percentageChange, final Period elapsed ) {
-		cumulativeROI = cumulativeROI.add( percentageChange, mathContext );
+	public BigDecimal getCumulativeReturnOnInvestment() {
+		return cumulativeROI;
 	}
 
 	@Override
-	public BigDecimal getCumulativeReturnOnInvestment() {
-		return cumulativeROI;
+	public void event( final ReturnOnInvestmentEvent event ) {
+		cumulativeROI = cumulativeROI.add( event.getPercentageChange(), mathContext );
 	}
 }

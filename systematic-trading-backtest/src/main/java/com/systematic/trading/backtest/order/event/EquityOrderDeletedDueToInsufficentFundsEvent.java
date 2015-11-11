@@ -28,8 +28,8 @@ package com.systematic.trading.backtest.order.event;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.backtest.event.OrderEvent;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.event.order.OrderEvent;
 
 /**
  * Equity order is cancelled due to insufficient funds to execute.

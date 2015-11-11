@@ -46,8 +46,8 @@ import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.backtest.order.event.EquityOrderDeletedDueToInsufficentFundsEvent;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.Event;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.order.OrderEvent;
+import com.systematic.trading.event.order.OrderEventListener;
 
 /**
  * The application of the chosen trading logic over a given set of data is performed in the
@@ -90,7 +90,7 @@ public class Simulation {
 	private final ReturnOnInvestmentCalculator roi;
 
 	/** Listeners interested in entry events. */
-	private final List<EventListener> listeners = new ArrayList<EventListener>();
+	private final List<OrderEventListener> listeners = new ArrayList<OrderEventListener>();
 
 	public Simulation( final LocalDate startDate, final LocalDate endDate, final TradingDayPrices[] unordered,
 			final Brokerage broker, final CashAccount funds, final ReturnOnInvestmentCalculator roi,
@@ -270,8 +270,8 @@ public class Simulation {
 		}
 	}
 
-	private void notifyListeners( final Event event ) {
-		for (final EventListener listener : listeners) {
+	private void notifyListeners( final OrderEvent event ) {
+		for (final OrderEventListener listener : listeners) {
 			listener.event( event );
 		}
 	}
@@ -281,7 +281,7 @@ public class Simulation {
 	 * 
 	 * @param listener will receive notification of event occurrences.
 	 */
-	public void addListener( final EventListener listener ) {
+	public void addListener( final OrderEventListener listener ) {
 		if (!listeners.contains( listener )) {
 			listeners.add( listener );
 		}

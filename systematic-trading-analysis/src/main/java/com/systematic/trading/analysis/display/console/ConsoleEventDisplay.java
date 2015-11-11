@@ -25,19 +25,32 @@
  */
 package com.systematic.trading.analysis.display.console;
 
-import com.systematic.trading.event.Event;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.brokerage.BrokerageEvent;
+import com.systematic.trading.event.brokerage.BrokerageEventListener;
+import com.systematic.trading.event.cash.CashEvent;
+import com.systematic.trading.event.cash.CashEventListener;
+import com.systematic.trading.event.order.OrderEvent;
+import com.systematic.trading.event.order.OrderEventListener;
 
 /**
  * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public class ConsoleEventDisplay implements EventListener {
+public class ConsoleEventDisplay implements CashEventListener, OrderEventListener, BrokerageEventListener {
 
 	@Override
-	public void event( final Event event ) {
+	public void event( BrokerageEvent event ) {
+		System.out.println( event );
+	}
 
+	@Override
+	public void event( OrderEvent event ) {
+		System.out.println( event );
+	}
+
+	@Override
+	public void event( CashEvent event ) {
 		System.out.println( event );
 	}
 }

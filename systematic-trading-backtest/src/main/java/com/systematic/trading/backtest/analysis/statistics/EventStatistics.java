@@ -25,14 +25,16 @@
  */
 package com.systematic.trading.backtest.analysis.statistics;
 
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.brokerage.BrokerageEventListener;
+import com.systematic.trading.event.cash.CashEventListener;
+import com.systematic.trading.event.order.OrderEventListener;
 
 /**
  * Records the data produced during process, making the statistics easily accessible.
  * 
  * @author CJ Hare
  */
-public interface EventStatistics extends EventListener {
+public interface EventStatistics extends CashEventListener, BrokerageEventListener, OrderEventListener {
 
 	/**
 	 * Retrieves the recorded order event statistics.

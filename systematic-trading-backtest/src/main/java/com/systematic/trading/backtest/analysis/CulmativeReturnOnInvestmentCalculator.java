@@ -34,10 +34,12 @@ import java.util.List;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.CashEvent;
-import com.systematic.trading.backtest.event.CashEvent.CashEventType;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEventImpl;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.Event;
+import com.systematic.trading.event.cash.CashEvent;
+import com.systematic.trading.event.cash.CashEvent.CashEventType;
 
 /**
  * Calculates and records the return on investment (ROI) at periodic intervals.
@@ -53,7 +55,7 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	private final MathContext mathContext;
 
 	/** Parties interested in ROI events. */
-	private final List<ReturnOnInvestmentCalculatorListener> listeners = new ArrayList<ReturnOnInvestmentCalculatorListener>();
+	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<ReturnOnInvestmentEventListener>();
 
 	/** Net Worth as recorded on previous update. */
 	private BigDecimal previousNetWorth;
@@ -72,38 +74,40 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	public void update( final Brokerage broker, final CashAccount cashAccount, final TradingDayPrices tradingData ) {
 
 		final BigDecimal percentageChange = calculatePercentageChangeInNetWorth( broker, cashAccount, tradingData );
-		final Period elapsed = calculateElapsedDuration( tradingData.getDate() );
+		final ReturnOnInvestmentEvent event = createEvent( percentageChange, tradingData.getDate() );
 
-		notifyListeners( percentageChange, elapsed );
+		notifyListeners( event );
+
+		// Move the previous date to now
+		previousDate = tradingData.getDate();
 	}
 
-	private void notifyListeners( final BigDecimal percentageChange, final Period elapsed ) {
-		for (final ReturnOnInvestmentCalculatorListener listener : listeners) {
-			listener.record( percentageChange, elapsed );
+	private void notifyListeners( final ReturnOnInvestmentEvent event ) {
+		for (final ReturnOnInvestmentEventListener listener : listeners) {
+			listener.event( event );
 		}
 	}
 
-	public void addListener( final ReturnOnInvestmentCalculatorListener listener ) {
+	public void addListener( final ReturnOnInvestmentEventListener listener ) {
 		if (!listeners.contains( listener )) {
 			listeners.add( listener );
 		}
 	}
 
-	private Period calculateElapsedDuration( final LocalDate latestDate ) {
-
-		final Period elapsed;
+	private ReturnOnInvestmentEvent createEvent( final BigDecimal percentageChange, final LocalDate latestDate ) {
 
 		if (previousDate == null) {
 			// No previous data, the change is ONE
-			elapsed = Period.ofDays( 1 );
-		} else {
-			elapsed = Period.between( previousDate, latestDate );
+			previousDate = latestDate.minus( Period.ofDays( 1 ) );
 		}
+
+		final ReturnOnInvestmentEvent event = new ReturnOnInvestmentEventImpl( percentageChange, previousDate,
+				latestDate );
 
 		// Move the previous date to now
 		previousDate = latestDate;
 
-		return elapsed;
+		return event;
 	}
 
 	private BigDecimal calculatePercentageChangeInNetWorth( final Brokerage broker, final CashAccount cashAccount,
@@ -136,17 +140,11 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	}
 
 	@Override
-	public void event( final Event event ) {
+	public void event( final CashEvent cashEvent ) {
 
-		if (event instanceof CashEvent) {
-			final CashEvent cashEvent = (CashEvent) event;
-
-			if (CashEventType.DEPOSIT.equals( cashEvent.getType() )) {
-				// Add the deposit to the running total
-				depositedSincePreviousNetWorth = depositedSincePreviousNetWorth
-						.add( cashEvent.getAmount(), mathContext );
-			}
+		if (CashEventType.DEPOSIT.equals( cashEvent.getType() )) {
+			// Add the deposit to the running total
+			depositedSincePreviousNetWorth = depositedSincePreviousNetWorth.add( cashEvent.getAmount(), mathContext );
 		}
-
 	}
 }

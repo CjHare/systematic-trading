@@ -33,11 +33,11 @@ import com.systematic.trading.backtest.brokerage.BrokerageFees;
 import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.OrderEvent;
 import com.systematic.trading.backtest.event.PlaceOrderTotalCostEvent;
-import com.systematic.trading.backtest.event.OrderEvent.EquityOrderType;
 import com.systematic.trading.backtest.exception.OrderException;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.event.order.OrderEvent;
+import com.systematic.trading.event.order.OrderEvent.EquityOrderType;
 
 /**
  * Placing an order to purchase an equity.

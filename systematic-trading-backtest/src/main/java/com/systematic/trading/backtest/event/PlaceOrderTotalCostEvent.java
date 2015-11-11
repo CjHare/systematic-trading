@@ -28,6 +28,8 @@ package com.systematic.trading.backtest.event;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.systematic.trading.event.order.OrderEvent;
+
 /**
  * An order created on advice from the simulation logic.
  * 

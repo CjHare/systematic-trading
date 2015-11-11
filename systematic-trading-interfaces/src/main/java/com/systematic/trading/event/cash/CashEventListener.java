@@ -23,22 +23,20 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.event;
+package com.systematic.trading.event.cash;
 
 
 /**
- * Listens for interesting events.
- * <p/>
- * Records can be used to discover what happened during the simulation and any needed statistics.
+ * A listener interested in cash event notifications.
  * 
  * @author CJ Hare
  */
-public interface EventListener {
-
+public interface CashEventListener {
+	
 	/**
-	 * Records an event to the interest source.
+	 * Notification that an Cash Event has occurred.
 	 * 
-	 * @param event that which is going to be recorded.
+	 * @param event the type of event that the listener is interested.
 	 */
-	void event( Event event );
+	void event( CashEvent event );
 }

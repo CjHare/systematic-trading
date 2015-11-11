@@ -28,6 +28,8 @@ package com.systematic.trading.backtest.event;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.systematic.trading.event.cash.CashEvent;
+
 /**
  * Cash Account events, such as credit, debit and interest.
  * 

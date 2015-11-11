@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event;
+package com.systematic.trading.event.brokerage;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,25 +31,19 @@ import java.time.LocalDate;
 import com.systematic.trading.event.Event;
 
 /**
- * A cash event that warrants being recorded.
+ * A brokerage event that warrants being recorded.
  * 
  * @author CJ Hare
  */
-public interface CashEvent extends Event {
+public interface BrokerageEvent extends Event {
 
-	enum CashEventType {
-		/** From the sale of equities. */
-		CREDIT( "Credit" ),
-		/** From the purchase of equities. */
-		DEBIT( "Debit" ),
-		/** Non-equity source of funds being credited. */
-		DEPOSIT( "Deposit" ),
-		/** Interest paid on cash held in transactional account. */
-		INTEREST( "Interest" );
+	public enum BrokerageAccountEventType {
+		BUY( "Buy" ),
+		SELL( "Sell" );
 
 		private final String display;
 
-		private CashEventType( final String display ) {
+		private BrokerageAccountEventType( final String display ) {
 			this.display = display;
 		}
 
@@ -59,37 +53,44 @@ public interface CashEvent extends Event {
 	}
 
 	/**
-	 * Retrieves the classification of cash event.
+	 * Retrieves the classification for the brokerage event.
 	 * 
-	 * @return general category the cash event falls within.
+	 * @return general category the event falls within.
 	 */
-	CashEventType getType();
+	BrokerageAccountEventType getType();
 
 	/**
-	 * Value of the cash event.
+	 * Brokers fee for performing the trade.
 	 * 
-	 * @return amount of cash involved in the event.
+	 * @return amount paid to the broker to facilitate the trade.
 	 */
-	BigDecimal getAmount();
+	BigDecimal getTransactionFee();
 
 	/**
-	 * Available fund prior to the cash event.
+	 * Number of equities prior to the brokerage event.
 	 * 
-	 * @return funds available before the cash event.
+	 * @return quantities of equities prior to the brokerage event.
 	 */
-	BigDecimal getFundsBefore();
+	BigDecimal getStartingEquityBalance();
 
 	/**
-	 * Available funds after the cash event.
+	 * Number of equities after the brokerage event.
 	 * 
-	 * @return funds available after the cash event.
+	 * @return quantities of equities after the brokerage event.
 	 */
-	BigDecimal getFundsAfter();
+	BigDecimal getEndEquityBalance();
 
 	/**
-	 * Date of cash event.
+	 * Date of brokerage event.
 	 * 
-	 * @return when the cash event occurred.
+	 * @return when the brokerage event occurred.
 	 */
 	LocalDate getTransactionDate();
+
+	/**
+	 * The number of equities involved in the brokerage transaction.
+	 * 
+	 * @return number of equities being brokered.
+	 */
+	BigDecimal getEquityAmount();
 }

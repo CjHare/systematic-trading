@@ -27,7 +27,7 @@ package com.systematic.trading.backtest.analysis.statistics;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.backtest.event.CashEvent;
+import com.systematic.trading.event.cash.CashEvent;
 
 /**
  * Cumulative recording of the cash events for statistical purposes.

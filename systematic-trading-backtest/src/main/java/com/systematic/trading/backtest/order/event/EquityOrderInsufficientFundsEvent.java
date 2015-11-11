@@ -25,8 +25,8 @@
  */
 package com.systematic.trading.backtest.order.event;
 
-import com.systematic.trading.backtest.event.OrderEvent;
 import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.event.order.OrderEvent;
 
 /**
  * Attempted to process an equity order, however there were inadequate funds to execute.

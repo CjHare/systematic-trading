@@ -32,21 +32,22 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.backtest.event.ReturnOnInvestmentEventImpl;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 
 /**
  * Creates periodic cumulative ROI events.
  * 
  * @author CJ Hare
  */
-public class PeriodicCulmativeReturnOnInvestmentCalculatorListener implements ReturnOnInvestmentCalculatorListener {
+public class PeriodicCulmativeReturnOnInvestmentCalculatorListener implements ReturnOnInvestmentEventListener {
 
 	/** Context for BigDecimal operations. */
 	private final MathContext mathContext;
 
 	/** Parties interested in ROI events. */
-	private final List<EventListener> listeners = new ArrayList<EventListener>();
+	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<ReturnOnInvestmentEventListener>();
 
 	/** Aggregates the cumulative ROI for every summary period. */
 	private final Period summaryPeriod;
@@ -70,10 +71,23 @@ public class PeriodicCulmativeReturnOnInvestmentCalculatorListener implements Re
 		nextSummaryDate = lastSummaryDate.plus( summaryPeriod );
 	}
 
-	@Override
-	public void record( final BigDecimal percentageChange, final Period elapsed ) {
+	private void notifyListeners( final BigDecimal percentageChange, final LocalDate startDateInclusive,
+			final LocalDate endFDateInclusive ) {
+		for (final ReturnOnInvestmentEventListener listener : listeners) {
+			listener.event( new ReturnOnInvestmentEventImpl( percentageChange, startDateInclusive, endFDateInclusive ) );
+		}
+	}
 
-		date = date.plus( elapsed );
+	public void addListener( final ReturnOnInvestmentEventListener listener ) {
+		if (!listeners.contains( listener )) {
+			listeners.add( listener );
+		}
+	}
+
+	@Override
+	public void event( final ReturnOnInvestmentEvent event ) {
+		final BigDecimal percentageChange = event.getPercentageChange();
+		date = event.getEndDateInclusive();
 		cumulativeROI = cumulativeROI.add( percentageChange, mathContext );
 
 		if (date.isAfter( nextSummaryDate ) || date.isEqual( nextSummaryDate )) {
@@ -81,19 +95,6 @@ public class PeriodicCulmativeReturnOnInvestmentCalculatorListener implements Re
 			cumulativeROI = BigDecimal.ZERO;
 			lastSummaryDate = date;
 			nextSummaryDate = nextSummaryDate.plus( summaryPeriod );
-		}
-	}
-
-	private void notifyListeners( final BigDecimal percentageChange, final LocalDate startDateInclusive,
-			final LocalDate endFDateInclusive ) {
-		for (final EventListener listener : listeners) {
-			listener.event( new ReturnOnInvestmentEventImpl( percentageChange, startDateInclusive, endFDateInclusive ) );
-		}
-	}
-
-	public void addListener( final EventListener listener ) {
-		if (!listeners.contains( listener )) {
-			listeners.add( listener );
 		}
 	}
 }

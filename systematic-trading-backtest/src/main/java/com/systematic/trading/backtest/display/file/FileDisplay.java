@@ -35,13 +35,13 @@ import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
-import com.systematic.trading.backtest.event.BrokerageEvent;
-import com.systematic.trading.backtest.event.CashEvent;
-import com.systematic.trading.backtest.event.OrderEvent;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.Event;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.brokerage.BrokerageEvent;
+import com.systematic.trading.event.cash.CashEvent;
 import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import com.systematic.trading.event.order.OrderEvent;
 
 /**
  * Single entry point to output a simulation run into files.
@@ -51,8 +51,10 @@ import com.systematic.trading.event.data.TickerSymbolTradingRange;
 public class FileDisplay implements BacktestDisplay {
 
 	private final String parentDirectory;
-	private EventListener roiDisplay;
-	private EventListener eventDisplay;
+	private ReturnOnInvestmentEventListener roiDisplay;
+	private FileEventDisplay cashDisplay;
+	private FileEventDisplay brokerageDisplay;
+	private FileEventDisplay ordertDisplay;
 	private EventStatisticsDisplay statisticsDisplay;
 	private NetWorthSummaryDisplay netWorthDisplay;
 
@@ -86,22 +88,13 @@ public class FileDisplay implements BacktestDisplay {
 		final String eventFilename = parentDirectory + "/events.txt";
 
 		this.roiDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentFilename );
-		this.eventDisplay = new FileEventDisplay( eventFilename, tickerSymbolTradingRange );
+		final FileEventDisplay displays = new FileEventDisplay( eventFilename, tickerSymbolTradingRange );
+		this.cashDisplay = displays;
+		this.ordertDisplay = displays;
+		this.brokerageDisplay = displays;
 		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename );
 		this.netWorthDisplay = new FileNetWorthSummaryDisplay( broker, lastTradingDay, cashAccount, cumulativeRoi,
 				statisticsFilename );
-	}
-
-	@Override
-	public void event( final Event event ) {
-		roiDisplay.event( event );
-
-		// TODO refactoring the events to use explicit types instead of a single higher level one is
-		// needed
-
-		if (event instanceof BrokerageEvent || event instanceof CashEvent || event instanceof OrderEvent) {
-			eventDisplay.event( event );
-		}
 	}
 
 	public void simulationCompleted() {
@@ -109,4 +102,23 @@ public class FileDisplay implements BacktestDisplay {
 		netWorthDisplay.displayNetWorth();
 	}
 
+	@Override
+	public void event( final CashEvent event ) {
+		cashDisplay.event( event );
+	}
+
+	@Override
+	public void event( final OrderEvent event ) {
+		ordertDisplay.event( event );
+	}
+
+	@Override
+	public void event( final BrokerageEvent event ) {
+		brokerageDisplay.event( event );
+	}
+
+	@Override
+	public void event( final ReturnOnInvestmentEvent event ) {
+		roiDisplay.event( event );
+	}
 }

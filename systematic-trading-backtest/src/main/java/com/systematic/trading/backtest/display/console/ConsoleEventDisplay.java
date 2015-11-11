@@ -27,49 +27,48 @@ package com.systematic.trading.backtest.display.console;
 
 import java.text.DecimalFormat;
 
-import com.systematic.trading.backtest.event.BrokerageEvent;
-import com.systematic.trading.backtest.event.CashEvent;
-import com.systematic.trading.backtest.event.OrderEvent;
-import com.systematic.trading.event.Event;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.event.brokerage.BrokerageEvent;
+import com.systematic.trading.event.brokerage.BrokerageEventListener;
+import com.systematic.trading.event.cash.CashEvent;
+import com.systematic.trading.event.cash.CashEventListener;
+import com.systematic.trading.event.order.OrderEvent;
+import com.systematic.trading.event.order.OrderEventListener;
 
 /**
  * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public class ConsoleEventDisplay implements EventListener {
+public class ConsoleEventDisplay implements CashEventListener, BrokerageEventListener, OrderEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
 	@Override
-	public void event( final Event event ) {
+	public void event( final OrderEvent event ) {
 
-		final String output;
+		final String output = String.format( "Place Order - %s total cost %s created after c.o.b on %s",
+				event.getType(), TWO_DECIMAL_PLACES.format( event.getTotalCost() ), event.getTransactionDate() );
 
-		if (event instanceof BrokerageEvent) {
-			final BrokerageEvent brokerageEvent = (BrokerageEvent) event;
-			output = String.format( "Brokerage Account - %s: %s - equity balance %s -> %s on %s",
-					brokerageEvent.getType(), TWO_DECIMAL_PLACES.format( brokerageEvent.getEquityAmount() ),
-					TWO_DECIMAL_PLACES.format( brokerageEvent.getStartingEquityBalance() ),
-					TWO_DECIMAL_PLACES.format( brokerageEvent.getEndEquityBalance() ),
-					brokerageEvent.getTransactionDate() );
+		System.out.println( output );
+	}
 
-		} else if (event instanceof CashEvent) {
-			final CashEvent cashEvent = (CashEvent) event;
-			output = String.format( "Cash Account - %s: %s - funds %s -> %s on %s", cashEvent.getType(),
-					TWO_DECIMAL_PLACES.format( cashEvent.getAmount() ),
-					TWO_DECIMAL_PLACES.format( cashEvent.getFundsBefore() ),
-					TWO_DECIMAL_PLACES.format( cashEvent.getFundsAfter() ), cashEvent.getTransactionDate() );
+	@Override
+	public void event( final BrokerageEvent event ) {
 
-		} else if (event instanceof OrderEvent) {
-			final OrderEvent orderEvent = (OrderEvent) event;
-			output = String.format( "Place Order - %s total cost %s created after c.o.b on %s", orderEvent.getType(),
-					TWO_DECIMAL_PLACES.format( orderEvent.getTotalCost() ), orderEvent.getTransactionDate() );
+		final String output = String.format( "Brokerage Account - %s: %s - equity balance %s -> %s on %s",
+				event.getType(), TWO_DECIMAL_PLACES.format( event.getEquityAmount() ),
+				TWO_DECIMAL_PLACES.format( event.getStartingEquityBalance() ),
+				TWO_DECIMAL_PLACES.format( event.getEndEquityBalance() ), event.getTransactionDate() );
 
-		} else {
-			throw new IllegalArgumentException( String.format( "Unsupported event class: %s", event.getClass() ) );
-		}
+		System.out.println( output );
+	}
+
+	@Override
+	public void event( final CashEvent event ) {
+
+		final String output = String.format( "Cash Account - %s: %s - funds %s -> %s on %s", event.getType(),
+				TWO_DECIMAL_PLACES.format( event.getAmount() ), TWO_DECIMAL_PLACES.format( event.getFundsBefore() ),
+				TWO_DECIMAL_PLACES.format( event.getFundsAfter() ), event.getTransactionDate() );
 
 		System.out.println( output );
 	}

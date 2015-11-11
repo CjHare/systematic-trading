@@ -31,25 +31,16 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.event.Event;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 
 /**
  * Outputs the ROI to the console.
  * 
  * @author CJ Hare
  */
-public class ConsoleReturnOnInvestmentDisplay implements EventListener {
+public class ConsoleReturnOnInvestmentDisplay implements ReturnOnInvestmentEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( "#.##" );
-
-	@Override
-	public void event( final Event event ) {
-
-		if (event instanceof ReturnOnInvestmentEvent) {
-			record( (ReturnOnInvestmentEvent) event );
-		}
-	}
 
 	public void record( final ReturnOnInvestmentEvent event ) {
 
@@ -74,5 +65,10 @@ public class ConsoleReturnOnInvestmentDisplay implements EventListener {
 			System.out.println( String.format( "Yearly - ROI: %s percent over %s year(s), from %s to %s",
 					formattedPercentageChange, elapsed.getYears(), startDateInclusive, endDateExclusive ) );
 		}
+	}
+
+	@Override
+	public void event( final ReturnOnInvestmentEvent event ) {
+		record( (ReturnOnInvestmentEvent) event );
 	}
 }

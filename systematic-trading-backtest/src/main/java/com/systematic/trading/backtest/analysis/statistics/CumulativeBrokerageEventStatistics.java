@@ -27,7 +27,7 @@ package com.systematic.trading.backtest.analysis.statistics;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.backtest.event.BrokerageEvent;
+import com.systematic.trading.event.brokerage.BrokerageEvent;
 
 /**
  * Cumulative recording of the brokerage events for statistical purposes.

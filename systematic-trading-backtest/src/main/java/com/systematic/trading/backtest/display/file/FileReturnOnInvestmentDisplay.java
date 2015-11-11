@@ -39,15 +39,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.event.Event;
-import com.systematic.trading.event.EventListener;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 
 /**
  * Outputs the ROI to the console.
  * 
  * @author CJ Hare
  */
-public class FileReturnOnInvestmentDisplay implements EventListener {
+public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventListener {
 
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger( FileReturnOnInvestmentDisplay.class );
@@ -62,18 +61,6 @@ public class FileReturnOnInvestmentDisplay implements EventListener {
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
 			outputFile.getParentFile().mkdirs();
-		}
-	}
-
-	@Override
-	public void event( final Event event ) {
-		if (event instanceof ReturnOnInvestmentEvent) {
-
-			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				out.print( createOutput( (ReturnOnInvestmentEvent) event ) );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
 		}
 	}
 
@@ -103,5 +90,15 @@ public class FileReturnOnInvestmentDisplay implements EventListener {
 		}
 
 		return output.toString();
+	}
+
+	@Override
+	public void event( final ReturnOnInvestmentEvent event ) {
+
+		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+			out.print( createOutput( (ReturnOnInvestmentEvent) event ) );
+		} catch (final IOException e) {
+			LOG.error( e );
+		}
 	}
 }

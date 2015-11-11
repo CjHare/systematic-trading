@@ -23,49 +23,20 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.event;
+package com.systematic.trading.event.order;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import com.systematic.trading.event.Event;
 
 /**
- * An order event that warrants being recorded.
+ * A listener interested in order event notifications.
  * 
  * @author CJ Hare
  */
-public interface OrderEvent extends Event {
+public interface OrderEventListener {
+	
 	/**
-	 * All the different event types for equity orders.
+	 * Notification that an Order Event has occurred.
 	 * 
-	 * @author CJ Hare
+	 * @param event the type of event that the listener is interested.
 	 */
-	public enum EquityOrderType {
-		ENTRY,
-		EXIT,
-		DELETE_ENTRY,
-		DELETE_EXIT
-	}
-
-	/**
-	 * Retrieve the type of the order.
-	 * 
-	 * @return purpose of the order that triggered the event recording.
-	 */
-	EquityOrderType getType();
-
-	/**
-	 * Date of cash event.
-	 * 
-	 * @return when the cash event occurred.
-	 */
-	LocalDate getTransactionDate();
-
-	/**
-	 * Total cost of the order.
-	 * 
-	 * @return cost of the order including any fees.
-	 */
-	BigDecimal getTotalCost();
+	void event( OrderEvent event );
 }

@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.analysis.statistics;
 
-import com.systematic.trading.backtest.event.OrderEvent;
+import com.systematic.trading.event.order.OrderEvent;
 
 /**
  * Cumulative recording of the order events for statistical purposes.
