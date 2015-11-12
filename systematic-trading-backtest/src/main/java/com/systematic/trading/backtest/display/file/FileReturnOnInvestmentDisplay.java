@@ -74,22 +74,38 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format( percentageChange );
 		final Period elapsed = Period.between( startDateInclusive, endDateExclusive );
 
-		if (elapsed.getDays() > 0) {
+		if (hasMostlyDays( elapsed )) {
 			output.append( String.format( "Daily - ROI: %s percent over %s day(s), from %s to %s\n",
 					formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive ) );
 		}
 
-		if (elapsed.getMonths() > 0) {
+		if (hasMostlyMonths( elapsed )) {
 			output.append( String.format( "Monthly - ROI: %s percent over %s month(s), from %s to %s\n",
-					formattedPercentageChange, elapsed.getMonths(), startDateInclusive, endDateExclusive ) );
+					formattedPercentageChange, getRoundedMonths( elapsed ), startDateInclusive, endDateExclusive ) );
 		}
 
-		if (elapsed.getYears() > 0) {
+		if (getRoundedYears( elapsed ) > 0) {
 			output.append( String.format( "Yearly - ROI: %s percent over %s year(s), from %s to %s\n",
-					formattedPercentageChange, elapsed.getYears(), startDateInclusive, endDateExclusive ) );
+					formattedPercentageChange, getRoundedYears( elapsed ), startDateInclusive, endDateExclusive ) );
 		}
 
 		return output.toString();
+	}
+
+	private boolean hasMostlyDays( final Period elapsed ) {
+		return elapsed.getDays() > 0 && getRoundedMonths( elapsed ) == 0 && getRoundedYears( elapsed ) == 0;
+	}
+
+	private boolean hasMostlyMonths( final Period elapsed ) {
+		return getRoundedMonths( elapsed ) > 0 && getRoundedYears( elapsed ) == 0;
+	}
+
+	private int getRoundedMonths( final Period elapsed ) {
+		return elapsed.getDays() > 20 ? elapsed.getMonths() + 1 : elapsed.getMonths();
+	}
+
+	private int getRoundedYears( final Period elapsed ) {
+		return elapsed.getDays() > 20 && elapsed.getMonths() == 11 ? elapsed.getYears() + 1 : elapsed.getYears();
 	}
 
 	@Override
