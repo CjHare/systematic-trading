@@ -36,7 +36,7 @@ import java.time.LocalDate;
 public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
 
 	private final BigDecimal percentageChange;
-	private final LocalDate startDateInclusive;
+	private final LocalDate startDateExclusive;
 	private final LocalDate endDateInclusive;
 
 	/**
@@ -50,7 +50,7 @@ public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
 	public ReturnOnInvestmentEventImpl( final BigDecimal percentageChange, final LocalDate startDateInclusive,
 			final LocalDate endDateInclusiv ) {
 		this.percentageChange = percentageChange;
-		this.startDateInclusive = startDateInclusive;
+		this.startDateExclusive = startDateInclusive;
 		this.endDateInclusive = endDateInclusiv;
 	}
 
@@ -60,12 +60,18 @@ public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
 	}
 
 	@Override
-	public LocalDate getStartDateInclusive() {
-		return startDateInclusive;
+	public LocalDate getExclusiveStartDate() {
+		return startDateExclusive;
 	}
 
 	@Override
-	public LocalDate getEndDateInclusive() {
+	public LocalDate getInclusiveEndDate() {
 		return endDateInclusive;
+	}
+
+	@Override
+	public String toString() {
+		return String.format( "Percentage change: %s, Exclusive start date: %s, Inclusive end date: %s",
+				percentageChange, startDateExclusive, endDateInclusive );
 	}
 }

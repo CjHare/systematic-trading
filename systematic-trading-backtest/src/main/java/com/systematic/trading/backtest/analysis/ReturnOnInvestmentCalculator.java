@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.analysis;
 
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.cash.CashEventListener;
 
@@ -46,4 +47,10 @@ public interface ReturnOnInvestmentCalculator extends CashEventListener {
 	 */
 	void update( Brokerage broker, CashAccount cashAccount, TradingDayPrices tradingData );
 
+	/**
+	 * Adds a listener interested in calculator events.
+	 * 
+	 * @param listener will receive notification ReturnOnInvestment events.
+	 */
+	void addListener( final ReturnOnInvestmentEventListener listener );
 }

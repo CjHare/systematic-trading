@@ -68,8 +68,8 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 
 		final StringBuilder output = new StringBuilder();
 		final BigDecimal percentageChange = event.getPercentageChange();
-		final LocalDate startDateInclusive = event.getStartDateInclusive();
-		final LocalDate endDateExclusive = event.getEndDateInclusive();
+		final LocalDate startDateInclusive = event.getExclusiveStartDate();
+		final LocalDate endDateExclusive = event.getInclusiveEndDate();
 
 		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format( percentageChange );
 		final Period elapsed = Period.between( startDateInclusive, endDateExclusive );

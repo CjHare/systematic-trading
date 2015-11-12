@@ -88,6 +88,7 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 		}
 	}
 
+	@Override
 	public void addListener( final ReturnOnInvestmentEventListener listener ) {
 		if (!listeners.contains( listener )) {
 			listeners.add( listener );
