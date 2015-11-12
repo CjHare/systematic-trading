@@ -41,7 +41,7 @@ import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
  * 
  * @author CJ Hare
  */
-public class PeriodicCulmativeReturnOnInvestmentCalculatorListener implements ReturnOnInvestmentEventListener {
+public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentEventListener {
 
 	/** Context for BigDecimal operations. */
 	private final MathContext mathContext;
@@ -61,20 +61,20 @@ public class PeriodicCulmativeReturnOnInvestmentCalculatorListener implements Re
 	/** Running total of the ROI for the period so far. */
 	private BigDecimal cumulativeROI = BigDecimal.ZERO;
 
-	public PeriodicCulmativeReturnOnInvestmentCalculatorListener( final LocalDate startingDate,
-			final Period summaryPeriod, final MathContext mathContext ) {
+	public PeriodicCulmativeReturnOnInvestmentCalculator( final LocalDate startingDate, final Period summaryPeriod,
+			final MathContext mathContext ) {
 		this.date = startingDate;
 		this.mathContext = mathContext;
 		this.summaryPeriod = summaryPeriod;
 
 		lastSummaryDate = startingDate;
-		nextSummaryDate = lastSummaryDate.plus( summaryPeriod );
+		nextSummaryDate = startingDate.plus( summaryPeriod );
 	}
 
-	private void notifyListeners( final BigDecimal percentageChange, final LocalDate startDateInclusive,
-			final LocalDate endFDateInclusive ) {
+	private void notifyListeners( final BigDecimal percentageChange, final LocalDate exclusiveStartDate,
+			final LocalDate inclusiveEndDate ) {
 		for (final ReturnOnInvestmentEventListener listener : listeners) {
-			listener.event( new ReturnOnInvestmentEventImpl( percentageChange, startDateInclusive, endFDateInclusive ) );
+			listener.event( new ReturnOnInvestmentEventImpl( percentageChange, exclusiveStartDate, inclusiveEndDate ) );
 		}
 	}
 

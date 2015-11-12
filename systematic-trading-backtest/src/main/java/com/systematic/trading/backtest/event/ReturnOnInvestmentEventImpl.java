@@ -36,22 +36,22 @@ import java.time.LocalDate;
 public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
 
 	private final BigDecimal percentageChange;
-	private final LocalDate startDateExclusive;
-	private final LocalDate endDateInclusive;
+	private final LocalDate exclusiveStartDate;
+	private final LocalDate inclusiveEndDate;
 
 	/**
 	 * Records a change in the state of the return on investment
 	 * 
 	 * @param percentageChange amount the net worth has relatively changed by in the given time.
-	 * @param startDateInclusive the beginning of the elapsed time the percentage change occurred.
-	 * @param endDateInclusive the last day of the elapsed time where the percentage change
+	 * @param exclusiveStartDate the beginning of the elapsed time the percentage change occurred.
+	 * @param inclusiveEndDate the last day of the elapsed time where the percentage change
 	 *            occurred.
 	 */
-	public ReturnOnInvestmentEventImpl( final BigDecimal percentageChange, final LocalDate startDateInclusive,
-			final LocalDate endDateInclusiv ) {
+	public ReturnOnInvestmentEventImpl( final BigDecimal percentageChange, final LocalDate exclusiveStartDate,
+			final LocalDate inclusiveEndDate ) {
 		this.percentageChange = percentageChange;
-		this.startDateExclusive = startDateInclusive;
-		this.endDateInclusive = endDateInclusiv;
+		this.exclusiveStartDate = exclusiveStartDate;
+		this.inclusiveEndDate = inclusiveEndDate;
 	}
 
 	@Override
@@ -61,17 +61,17 @@ public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
 
 	@Override
 	public LocalDate getExclusiveStartDate() {
-		return startDateExclusive;
+		return exclusiveStartDate;
 	}
 
 	@Override
 	public LocalDate getInclusiveEndDate() {
-		return endDateInclusive;
+		return inclusiveEndDate;
 	}
 
 	@Override
 	public String toString() {
 		return String.format( "Percentage change: %s, Exclusive start date: %s, Inclusive end date: %s",
-				percentageChange, startDateExclusive, endDateInclusive );
+				percentageChange, exclusiveStartDate, inclusiveEndDate );
 	}
 }

@@ -31,7 +31,7 @@ import java.time.Period;
 
 import com.systematic.trading.backtest.analysis.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.PeriodicCulmativeReturnOnInvestmentCalculatorListener;
+import com.systematic.trading.backtest.analysis.PeriodicCulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.statistics.CumulativeEventStatistics;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.brokerage.Brokerage;
@@ -94,15 +94,15 @@ public class BacktestBootstrap {
 		// Cumulative recording of investment progression
 		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( mathContext );
 
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+		final PeriodicCulmativeReturnOnInvestmentCalculator dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
 				earliestDate, Period.ofDays( 1 ), mathContext );
 		roi.addListener( dailyRoi );
 
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+		final PeriodicCulmativeReturnOnInvestmentCalculator monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
 				earliestDate, Period.ofMonths( 1 ), mathContext );
 		roi.addListener( monthlyRoi );
 
-		final PeriodicCulmativeReturnOnInvestmentCalculatorListener yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculatorListener(
+		final PeriodicCulmativeReturnOnInvestmentCalculator yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
 				earliestDate, Period.ofYears( 1 ), mathContext );
 		roi.addListener( yearlyRoi );
 
