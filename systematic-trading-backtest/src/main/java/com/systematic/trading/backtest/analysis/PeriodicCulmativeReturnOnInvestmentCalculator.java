@@ -90,7 +90,7 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 		date = event.getInclusiveEndDate();
 		cumulativeROI = cumulativeROI.add( percentageChange, mathContext );
 
-		if (date.isAfter( nextSummaryDate ) || date.isEqual( nextSummaryDate )) {
+		if (nextSummaryDate.isBefore( date )) {
 			notifyListeners( cumulativeROI, lastSummaryDate, date );
 			cumulativeROI = BigDecimal.ZERO;
 			lastSummaryDate = date;
