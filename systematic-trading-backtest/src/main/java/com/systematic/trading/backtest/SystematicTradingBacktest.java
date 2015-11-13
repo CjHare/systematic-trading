@@ -35,6 +35,8 @@ import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
 import com.systematic.trading.backtest.configuration.MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.MacdRsiSameDayPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.file.FileDisplay;
@@ -87,6 +89,12 @@ public class SystematicTradingBacktest {
 				MATH_CONTEXT ) );
 		configurations.add( new MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
 				MATH_CONTEXT ) );
+
+		//TODO uncomment after filters are created
+//		configurations.add( new RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
+//				MATH_CONTEXT ) );
+//		configurations.add( new MacdRsiSameDayPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate,
+//				endDate, MATH_CONTEXT ) );
 
 		return configurations;
 	}

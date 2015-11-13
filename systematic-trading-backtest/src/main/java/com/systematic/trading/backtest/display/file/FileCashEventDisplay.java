@@ -31,88 +31,48 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
-import java.time.temporal.ChronoUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.event.brokerage.BrokerageEvent;
-import com.systematic.trading.event.brokerage.BrokerageEventListener;
 import com.systematic.trading.event.cash.CashEvent;
 import com.systematic.trading.event.cash.CashEventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
-import com.systematic.trading.event.order.OrderEvent;
-import com.systematic.trading.event.order.OrderEventListener;
 
 /**
  * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public class FileEventDisplay implements CashEventListener, OrderEventListener, BrokerageEventListener {
+public class FileCashEventDisplay implements CashEventListener {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileEventDisplay.class );
+	private static final Logger LOG = LogManager.getLogger( FileCashEventDisplay.class );
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
-	private final CashEventListener cashEventListener;
-	private final OrderEventListener orderEventListener;
-	private final BrokerageEventListener brokerageEventListener;
+	private final String outputFilename;
 
-	public FileEventDisplay( final String outputFilename, final TickerSymbolTradingRange range ) {
+	public FileCashEventDisplay( final String outputFilename ) {
+		this.outputFilename = outputFilename;
 
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
 			outputFile.getParentFile().mkdirs();
 		}
-
-		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			out.println( createHeaderOutput( range ) );
-		} catch (final IOException e) {
-			LOG.error( e );
-		}
-
-		this.cashEventListener = new FileCashEventDisplay( outputFilename );
-		this.orderEventListener = new FileOrderEventDisplay( outputFilename );
-		this.brokerageEventListener = new FileBrokerageEventDisplay( outputFilename );
-	}
-
-	private String createHeaderOutput( final TickerSymbolTradingRange range ) {
-
-		final StringBuilder output = new StringBuilder();
-		output.append( "\n" );
-		output.append( "#######################\n" );
-		output.append( "### Backtest Events ###\n" );
-		output.append( "#######################\n" );
-		output.append( "\n" );
-
-		output.append( String.format( "Data set for %s from %s to %s\n", range.getTickerSymbol(), range.getStartDate(),
-				range.getEndDate() ) );
-
-		final long daysBetween = ChronoUnit.DAYS.between( range.getStartDate(), range.getEndDate() );
-		final double percentageTradingDays = ((double) range.getNumberOfTradingDays() / daysBetween) * 100;
-
-		output.append( String.format( "# trading days: %s over %s days (%s percentage trading days)\n",
-				range.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
-
-		output.append( "\n" );
-
-		return output.toString();
-	}
-
-	@Override
-	public void event( final BrokerageEvent event ) {
-		brokerageEventListener.event( event );
-	}
-
-	@Override
-	public void event( final OrderEvent event ) {
-		orderEventListener.event( event );
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
-		cashEventListener.event( event );
+
+		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+			final String output = String.format( "Cash Account - %s: %s - funds %s -> %s on %s", event.getType(),
+					TWO_DECIMAL_PLACES.format( event.getAmount() ),
+					TWO_DECIMAL_PLACES.format( event.getFundsBefore() ),
+					TWO_DECIMAL_PLACES.format( event.getFundsAfter() ), event.getTransactionDate() );
+
+			out.println( output );
+		} catch (final IOException e) {
+			LOG.error( e );
+		}
 	}
 }

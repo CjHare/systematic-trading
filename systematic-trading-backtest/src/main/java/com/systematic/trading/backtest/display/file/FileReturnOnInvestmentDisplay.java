@@ -48,15 +48,25 @@ import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
  */
 public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventListener {
 
+	enum RETURN_ON_INVESTMENT_DISPLAY {
+		DAILY,
+		MONTHLY,
+		YEARLY,
+		ALL;
+	}
+
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger( FileReturnOnInvestmentDisplay.class );
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( "#.##" );
 
+	private final RETURN_ON_INVESTMENT_DISPLAY roiType;
+
 	private final String outputFilename;
 
-	public FileReturnOnInvestmentDisplay( final String outputFilename ) {
+	public FileReturnOnInvestmentDisplay( final String outputFilename, final RETURN_ON_INVESTMENT_DISPLAY roiType ) {
 		this.outputFilename = outputFilename;
+		this.roiType = roiType;
 
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
@@ -74,17 +84,17 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format( percentageChange );
 		final Period elapsed = Period.between( startDateInclusive, endDateExclusive );
 
-		if (hasMostlyDays( elapsed )) {
+		if (isDailyRoiOutput( elapsed )) {
 			output.append( String.format( "Daily - ROI: %s percent over %s day(s), from %s to %s\n",
 					formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive ) );
 		}
 
-		if (hasMostlyMonths( elapsed )) {
+		if (isMonthlyRoiOutput( elapsed )) {
 			output.append( String.format( "Monthly - ROI: %s percent over %s month(s), from %s to %s\n",
 					formattedPercentageChange, getRoundedMonths( elapsed ), startDateInclusive, endDateExclusive ) );
 		}
 
-		if (getRoundedYears( elapsed ) > 0) {
+		if (isYearlyRoiOutput( elapsed )) {
 			output.append( String.format( "Yearly - ROI: %s percent over %s year(s), from %s to %s\n",
 					formattedPercentageChange, getRoundedYears( elapsed ), startDateInclusive, endDateExclusive ) );
 		}
@@ -92,8 +102,28 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		return output.toString();
 	}
 
+	private boolean isDailyRoiOutput( final Period elapsed ) {
+		switch (roiType) {
+			case ALL:
+			case DAILY:
+				return hasMostlyDays( elapsed );
+			default:
+				return false;
+		}
+	}
+
 	private boolean hasMostlyDays( final Period elapsed ) {
 		return elapsed.getDays() > 0 && getRoundedMonths( elapsed ) == 0 && getRoundedYears( elapsed ) == 0;
+	}
+
+	private boolean isMonthlyRoiOutput( final Period elapsed ) {
+		switch (roiType) {
+			case ALL:
+			case MONTHLY:
+				return hasMostlyMonths( elapsed );
+			default:
+				return false;
+		}
 	}
 
 	private boolean hasMostlyMonths( final Period elapsed ) {
@@ -102,6 +132,16 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 
 	private int getRoundedMonths( final Period elapsed ) {
 		return elapsed.getDays() > 20 ? elapsed.getMonths() + 1 : elapsed.getMonths();
+	}
+
+	private boolean isYearlyRoiOutput( final Period elapsed ) {
+		switch (roiType) {
+			case ALL:
+			case YEARLY:
+				return getRoundedYears( elapsed ) > 0;
+			default:
+				return false;
+		}
 	}
 
 	private int getRoundedYears( final Period elapsed ) {
