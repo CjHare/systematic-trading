@@ -49,10 +49,11 @@ import com.systematic.trading.backtest.logic.HoldForeverExitLogic;
 import com.systematic.trading.backtest.logic.SignalTriggeredEntryLogic;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
-import com.systematic.trading.signals.model.filter.RsiMacdOnSameDaySignalFilter;
+import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 
@@ -115,8 +116,8 @@ public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends D
 
 		// Only signals from the last two days are of interest
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new RsiMacdOnSameDaySignalFilter(),
-				Period.ofDays( 5 ) );
+		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter(
+				IndicatorSignalType.MACD, IndicatorSignalType.RSI ), Period.ofDays( 5 ) );
 		filters.add( filter );
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );

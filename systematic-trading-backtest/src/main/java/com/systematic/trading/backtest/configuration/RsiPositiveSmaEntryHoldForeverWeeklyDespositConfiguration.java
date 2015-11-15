@@ -49,11 +49,12 @@ import com.systematic.trading.backtest.logic.HoldForeverExitLogic;
 import com.systematic.trading.backtest.logic.SignalTriggeredEntryLogic;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
-import com.systematic.trading.signals.model.filter.MacdWithPositiveSmaSignalFilter;
+import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 
@@ -116,12 +117,10 @@ public class RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration extends D
 
 		// Only signals from the last two days are of interest
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new MacdWithPositiveSmaSignalFilter(),
-				Period.ofDays( 5 ) );
+		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter(
+				IndicatorSignalType.RSI, IndicatorSignalType.SMA ), Period.ofDays( 5 ) );
 		filters.add( filter );
 
-		//TODO fine grain filters: one for SMA, MACD, RSI
-		
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
 		final BigDecimal minimumTradeValue = BigDecimal.valueOf( 1000 );
 		return new SignalTriggeredEntryLogic( equity.getType(), minimumTradeValue, buyLongAnalysis, mathContext );

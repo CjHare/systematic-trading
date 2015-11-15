@@ -26,7 +26,6 @@
 package com.systematic.trading.signals.model.filter;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -36,16 +35,30 @@ import java.util.TreeSet;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.IndicatorSignalDateComparator;
 
 /**
  * Signal generated when there is a RSI and MACD filter on the same day.
  * 
  * @author CJ Hare
  */
-public class RsiMacdOnSameDaySignalFilter implements SignalFilter {
+public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 
-	private static final IndicatorSignalDateComparator ORDER_BY_DATE = new IndicatorSignalDateComparator();
+	/** The signals we will be looking for on each application. */
+	private IndicatorSignalType[] indicators;
+
+	/**
+	 * @param indicators all the indicators expected in an application, those all required on the
+	 *            same date to pass the filtering.
+	 */
+	public IndicatorsOnSameDaySignalFilter( final IndicatorSignalType... indicators ) {
+
+		// There'll be NullPointers unless we have an array of IndicatorSignalType
+		if (indicators == null || indicators.length == 0) {
+			throw new IllegalArgumentException( "Expecting at least one IndicatorSignalType" );
+		}
+
+		this.indicators = indicators;
+	}
 
 	@Override
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
@@ -54,33 +67,48 @@ public class RsiMacdOnSameDaySignalFilter implements SignalFilter {
 
 		final SortedSet<BuySignal> passedSignals = new TreeSet<BuySignal>( ordering );
 
-		final List<IndicatorSignal> macd = signals.get( IndicatorSignalType.MACD );
-		Collections.sort( macd, ORDER_BY_DATE );
+		final List<IndicatorSignal> firstIndicatorSignals = signals.get( indicators[0] );
 
-		final List<IndicatorSignal> rsi = signals.get( IndicatorSignalType.RSI );
-		Collections.sort( rsi, ORDER_BY_DATE );
+		for (final IndicatorSignal firstIndicatorSignal : firstIndicatorSignals) {
+			final LocalDate date = firstIndicatorSignal.getDate();
 
-		for (final IndicatorSignal macdSignal : macd) {
-
-			final LocalDate date = macdSignal.getDate();
-			for (final IndicatorSignal rsiSignal : rsi) {
-
-				if (date.equals( rsiSignal.getDate() )) {
-					passedSignals.add( new BuySignal( date ) );
-					break;
+			// Discover how many of the indicator signals also match on that date
+			int matches = 1;
+			for (int i = 1; i < indicators.length; i++) {
+				if (hasSignalOnSameDay( date, signals.get( indicators[i] ) )) {
+					matches++;
+				} else {
+					// We need a match across all indicators, missed one :. don't continue
+					i = indicators.length;
 				}
+			}
+
+			// Buy when all have a signal on the same date
+			if (matches == indicators.length) {
+				passedSignals.add( new BuySignal( date ) );
 			}
 		}
 
 		return passedSignals;
 	}
 
-	private void validateInput( final Map<IndicatorSignalType, List<IndicatorSignal>> signals ) {
-		if (signals.get( IndicatorSignalType.MACD ) == null) {
-			throw new IllegalArgumentException( "Expecting a non-null MACD list" );
+	private boolean hasSignalOnSameDay( final LocalDate date, final List<IndicatorSignal> signals ) {
+
+		for (final IndicatorSignal signal : signals) {
+			if (date.equals( signal.getDate() )) {
+				return true;
+			}
 		}
-		if (signals.get( IndicatorSignalType.RSI ) == null) {
-			throw new IllegalArgumentException( "Expecting a non-null RSI list" );
+
+		return false;
+	}
+
+	private void validateInput( final Map<IndicatorSignalType, List<IndicatorSignal>> signals ) {
+
+		for (final IndicatorSignalType indicator : indicators) {
+			if (signals.get( indicator ) == null) {
+				throw new IllegalArgumentException( String.format( "Expecting a non-null %s list", indicator ) );
+			}
 		}
 	}
 }
