@@ -46,6 +46,7 @@ import com.systematic.trading.backtest.cash.RegularDepositCashAccountDecorator;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.backtest.logic.HoldForeverExitLogic;
+import com.systematic.trading.backtest.logic.MinimumTradeValue;
 import com.systematic.trading.backtest.logic.SignalTriggeredEntryLogic;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
@@ -77,9 +78,13 @@ public class MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguratio
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
+	/** Input for the trading logic, determines the minimum value for transactions. */
+	private final MinimumTradeValue minimumTrade;
+
 	public MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
-			final LocalDate endDate, final MathContext mathContext ) {
+			final LocalDate endDate, final MinimumTradeValue minimumTrade, final MathContext mathContext ) {
 		super( startDate, endDate );
+		this.minimumTrade = minimumTrade;
 		this.mathContext = mathContext;
 	}
 
@@ -126,12 +131,12 @@ public class MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguratio
 		filters.add( filter );
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
-		final BigDecimal minimumTradeValue = BigDecimal.valueOf( 1000 );
-		return new SignalTriggeredEntryLogic( equity.getType(), minimumTradeValue, buyLongAnalysis, mathContext );
+		return new SignalTriggeredEntryLogic( equity.getType(), minimumTrade, buyLongAnalysis, mathContext );
 	}
 
 	@Override
 	public String getDescription() {
-		return "Macd-Rsi-PositiveSma-SameDay-Buy_HoldForever";
+		return String.format( "Macd-Rsi-PositiveSma-SameDay-Buy-Minimum-%s_HoldForever", minimumTrade.getValue()
+				.longValue() );
 	}
 }

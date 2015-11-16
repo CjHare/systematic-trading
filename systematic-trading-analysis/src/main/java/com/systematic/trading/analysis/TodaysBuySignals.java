@@ -27,6 +27,7 @@ package com.systematic.trading.analysis;
 
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -39,18 +40,20 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.analysis.model.ProcessLongBuySignals;
 import com.systematic.trading.analysis.view.DisplayBuySignals;
 import com.systematic.trading.data.DataService;
-import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
+import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.filter.RsiMacdOnSameDaySignalFilter;
+import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
+import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 
 public class TodaysBuySignals {
 
@@ -80,7 +83,9 @@ public class TodaysBuySignals {
 		generators.add( sma );
 
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		filters.add( new RsiMacdOnSameDaySignalFilter() );
+		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter(
+				IndicatorSignalType.MACD, IndicatorSignalType.RSI ), Period.ofDays( 5 ) );
+		filters.add( filter );
 
 		final ProcessLongBuySignals buyLong = new ProcessLongBuySignals( generators, filters );
 

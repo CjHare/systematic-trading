@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest;
 
+import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -34,12 +35,13 @@ import java.util.List;
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
 import com.systematic.trading.backtest.configuration.MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
-import com.systematic.trading.backtest.configuration.MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.file.FileDisplay;
+import com.systematic.trading.backtest.logic.MinimumTradeValue;
 import com.systematic.trading.data.util.HibernateUtil;
 
 /**
@@ -57,7 +59,7 @@ public class SystematicTradingBacktest {
 	private static final int DAYS_IN_A_YEAR = 365;
 
 	/** Minimum amount of historical data needed for back testing. */
-	private static final int HISTORY_REQUIRED = 5 * DAYS_IN_A_YEAR;
+	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
 
 	public static void main( final String... args ) throws Exception {
 
@@ -77,6 +79,9 @@ public class SystematicTradingBacktest {
 			bootstrap.run();
 		}
 
+		// TODO create single summary file from all the bootstraps, hook into the simulation
+		// complete - convert to event
+
 		HibernateUtil.getSessionFactory().close();
 	}
 
@@ -85,14 +90,23 @@ public class SystematicTradingBacktest {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
 
 		configurations.add( new WeeklyBuyWeeklyDespoitConfiguration( startDate, endDate, MATH_CONTEXT ) );
-		configurations.add( new MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
-				MATH_CONTEXT ) );
-		configurations.add( new MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
-				MATH_CONTEXT ) );
-		configurations.add( new RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
-				MATH_CONTEXT ) );
-		configurations.add( new MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration( startDate,
-				endDate, MATH_CONTEXT ) );
+
+		// Configuration with different entry values
+		final BigDecimal[] minimumTradeValues = { BigDecimal.valueOf( 500 ), BigDecimal.valueOf( 1000 ),
+				BigDecimal.valueOf( 1500 ), BigDecimal.valueOf( 2000 ) };
+
+		for (final BigDecimal minimumTradeValue : minimumTradeValues) {
+
+			final MinimumTradeValue minimumTrade = new MinimumTradeValue( minimumTradeValue );
+			configurations.add( new MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
+					minimumTrade, MATH_CONTEXT ) );
+			configurations.add( new MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
+					minimumTrade, MATH_CONTEXT ) );
+			configurations.add( new RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
+					minimumTrade, MATH_CONTEXT ) );
+			configurations.add( new MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration( startDate,
+					endDate, minimumTrade, MATH_CONTEXT ) );
+		}
 
 		return configurations;
 	}

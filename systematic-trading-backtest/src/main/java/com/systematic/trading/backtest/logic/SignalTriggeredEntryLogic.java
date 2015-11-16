@@ -65,14 +65,14 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	private final Queue<BuySignal> previousSignals;
 
 	/** Minimum value of the trade excluding the fee amount */
-	private final BigDecimal minimumTradeValue;
+	private final MinimumTradeValue minimumTradeValue;
 
 	/**
 	 * @param interval time between creation of entry orders.
 	 * @param analysis analyser of trading data to generate buy signals.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public SignalTriggeredEntryLogic( final EquityClass equityType, final BigDecimal minimumTradeValue,
+	public SignalTriggeredEntryLogic( final EquityClass equityType, final MinimumTradeValue minimumTradeValue,
 			final AnalysisBuySignals analysis, final MathContext mathContext ) {
 		this.mathContext = mathContext;
 		this.type = equityType;
@@ -101,7 +101,7 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 
 			if (!previousSignals.contains( signal )) {
 
-				if (cashAccount.getBalance().compareTo( minimumTradeValue ) > 0) {
+				if (minimumTradeValue.isLessThan( cashAccount.getBalance() )) {
 
 					// Order placed, put on the ignore list
 					previousSignals.add( signal );
