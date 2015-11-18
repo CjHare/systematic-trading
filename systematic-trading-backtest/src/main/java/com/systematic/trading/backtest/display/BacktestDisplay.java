@@ -25,10 +25,10 @@
  */
 package com.systematic.trading.backtest.display;
 
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.SimulationStateListener;
+import com.systematic.trading.backtest.analysis.networth.NetWorthEventListener;
+import com.systematic.trading.backtest.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.brokerage.BrokerageEventListener;
@@ -42,25 +42,18 @@ import com.systematic.trading.event.order.OrderEventListener;
  * @author CJ Hare
  */
 public interface BacktestDisplay extends CashEventListener, OrderEventListener, BrokerageEventListener,
-		ReturnOnInvestmentEventListener {
+		ReturnOnInvestmentEventListener, SimulationStateListener, NetWorthEventListener {
 
 	/**
 	 * All the interesting data points for displaying.
 	 * 
 	 * @param tickerSymbolTradingRange summary of the data set analysed.
 	 * @param eventStatistics record of various event occurrences.
-	 * @param broker manager for the equity transactions.
-	 * @param cashAccount account managing the cash transactions.
 	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
 	 * @param lastTradingDay prices from the last day in the back test.
 	 * @throws Exception problem encountered during the initialisation of the display.
 	 */
-	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics, Brokerage broker,
-			CashAccount cashAccount, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			TradingDayPrices lastTradingDay ) throws Exception;
-
-	/**
-	 * Event notification that the simulation is now completed.
-	 */
-	void simulationCompleted();
+	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics,
+			CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, TradingDayPrices lastTradingDay )
+			throws Exception;
 }

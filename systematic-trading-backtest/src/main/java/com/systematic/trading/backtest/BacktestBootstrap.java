@@ -29,9 +29,9 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.backtest.analysis.CulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.PeriodicCulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.roi.CulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.roi.PeriodicCulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.statistics.CumulativeEventStatistics;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.brokerage.Brokerage;
@@ -42,11 +42,12 @@ import com.systematic.trading.backtest.event.data.TickerSymbolTradingRangeImpl;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.data.DataService;
-import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
+import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import com.systematic.trading.event.order.OrderEventListener;
 
 /**
  * Bootstraps the back test.
@@ -131,8 +132,9 @@ public class BacktestBootstrap {
 
 		// Display for simulation output
 		final TradingDayPrices lastTradingDay = getLatestDataPoint( tradingData );
-		display.init( tickerSymbolTradingRange, eventStatistics, broker, cashAccount, cumulativeRoi, lastTradingDay );
-		simulation.addListener( display );
+		display.init( tickerSymbolTradingRange, eventStatistics, cumulativeRoi, lastTradingDay );
+		simulation.addListener( (OrderEventListener) display );
+		simulation.addListener( (SimulationStateListener) display );
 		broker.addListener( display );
 		cashAccount.addListener( display );
 		yearlyRoi.addListener( display );
@@ -141,10 +143,6 @@ public class BacktestBootstrap {
 
 		// Run the simulation until completion
 		simulation.run();
-
-		// TODO move this into the simulation
-		// Notify the display of completion
-		display.simulationCompleted();
 	}
 
 	private TradingDayPrices[] getTradingData( final EquityIdentity equity, final LocalDate startDate,

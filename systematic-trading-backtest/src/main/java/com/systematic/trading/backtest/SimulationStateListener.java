@@ -23,16 +23,24 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
-
-import com.systematic.trading.backtest.analysis.networth.NetWorthEventListener;
+package com.systematic.trading.backtest;
 
 /**
- * Output of the net worth at any point during of the simulation, including after the completion.
+ * Listener interested in a state change of the simulation.
  * 
  * @author CJ Hare
  */
-public interface NetWorthSummaryDisplay extends NetWorthEventListener {
+public interface SimulationStateListener {
 
-	void displayNetWorth();
+	public enum SimulationState {
+		COMPLETE;
+	}
+
+	/**
+	 * Notification that the simulation has moved from one state into another.
+	 * 
+	 * @param transitionedState the new state the simulation has entered.
+	 */
+	void stateChanged( SimulationState transitionedState );
+
 }

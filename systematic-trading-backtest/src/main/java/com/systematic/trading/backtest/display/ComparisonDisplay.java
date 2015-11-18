@@ -25,14 +25,11 @@
  */
 package com.systematic.trading.backtest.display;
 
-import com.systematic.trading.backtest.analysis.networth.NetWorthEventListener;
-
 /**
- * Output of the net worth at any point during of the simulation, including after the completion.
+ * Displays a summary for each of the back tests in one place.
  * 
  * @author CJ Hare
  */
-public interface NetWorthSummaryDisplay extends NetWorthEventListener {
+public interface ComparisonDisplay {
 
-	void displayNetWorth();
 }

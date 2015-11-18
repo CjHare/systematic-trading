@@ -36,11 +36,9 @@ import java.text.DecimalFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.analysis.CumulativeReturnOnInvestment;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.analysis.networth.NetWorthEvent;
+import com.systematic.trading.backtest.analysis.roi.CumulativeReturnOnInvestment;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
-import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * Displays to the console the net worth.
@@ -54,18 +52,14 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
-	private final Brokerage broker;
-	private final TradingDayPrices lastTradingDay;
-	private final CashAccount cashAccount;
 	private final CumulativeReturnOnInvestment cumulativeRoi;
 
 	private final String outputFilename;
 
-	public FileNetWorthSummaryDisplay( final Brokerage broker, final TradingDayPrices lastTradingDay,
-			final CashAccount cashAccount, final CumulativeReturnOnInvestment cumulativeRoi, final String outputFilename ) {
-		this.broker = broker;
-		this.lastTradingDay = lastTradingDay;
-		this.cashAccount = cashAccount;
+	/** The last net worth recording, which makes it into the summary. */
+	private NetWorthEvent lastEvent;
+
+	public FileNetWorthSummaryDisplay( final CumulativeReturnOnInvestment cumulativeRoi, final String outputFilename ) {
 		this.cumulativeRoi = cumulativeRoi;
 		this.outputFilename = outputFilename;
 
@@ -86,24 +80,28 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 	private String createOutput() {
 
-		final BigDecimal balance = broker.getEquityBalance();
-		final BigDecimal lastClosingPrice = lastTradingDay.getClosingPrice().getPrice();
-		final BigDecimal holdingValue = balance.multiply( lastClosingPrice );
+		final BigDecimal balance = lastEvent.getEquityBalance();
+		final BigDecimal holdingValue = lastEvent.getEquityBalanceValue();
+		final BigDecimal cashBalance = lastEvent.getCashBalance();
+		final BigDecimal netWorth = lastEvent.getNetWorth();
+
 		final StringBuilder output = new StringBuilder();
 
 		output.append( "\n=== Net Worth Summary ===\n" );
 		output.append( String.format( "Number of equities: %s\n", TWO_DECIMAL_PLACES.format( balance ) ) );
-		output.append( String.format( "Last closing price: %s\n", TWO_DECIMAL_PLACES.format( lastClosingPrice ) ) );
 		output.append( String.format( "Holdings value: %s\n", TWO_DECIMAL_PLACES.format( holdingValue ) ) );
-		output.append( String.format( "Cash account: %s\n", TWO_DECIMAL_PLACES.format( cashAccount.getBalance() ) ) );
+		output.append( String.format( "Cash account: %s\n", TWO_DECIMAL_PLACES.format( cashBalance ) ) );
+		output.append( String.format( "\nTotal Net Worth: %s\n", TWO_DECIMAL_PLACES.format( netWorth ) ) );
 
-		output.append( String.format( "\nTotal Net Worth: %s\n",
-				TWO_DECIMAL_PLACES.format( cashAccount.getBalance().add( holdingValue ) ) ) );
-
+		// TODO this value is of dubious value, needs weighting (plus pusing into summary)
 		output.append( String.format( "\nInvestment Cumulative ROI: %s\n",
 				TWO_DECIMAL_PLACES.format( cumulativeRoi.getCumulativeReturnOnInvestment() ) ) );
 
 		return output.toString();
 	}
 
+	@Override
+	public void event( final NetWorthEvent event ) {
+		lastEvent = event;
+	}
 }

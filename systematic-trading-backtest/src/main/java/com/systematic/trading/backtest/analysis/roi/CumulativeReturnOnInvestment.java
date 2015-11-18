@@ -23,16 +23,19 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.analysis.roi;
 
-import com.systematic.trading.backtest.analysis.networth.NetWorthEventListener;
+import java.math.BigDecimal;
 
 /**
- * Output of the net worth at any point during of the simulation, including after the completion.
- * 
  * @author CJ Hare
  */
-public interface NetWorthSummaryDisplay extends NetWorthEventListener {
+public interface CumulativeReturnOnInvestment {
 
-	void displayNetWorth();
+	/**
+	 * Retrieves the cumulative ROI over so far.
+	 * 
+	 * @return gross return on investment.
+	 */
+	BigDecimal getCumulativeReturnOnInvestment();
 }

@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.roi.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.logic.EntryLogic;

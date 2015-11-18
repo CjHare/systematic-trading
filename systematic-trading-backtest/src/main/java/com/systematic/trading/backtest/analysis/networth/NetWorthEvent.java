@@ -23,19 +23,43 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.analysis;
+package com.systematic.trading.backtest.analysis.networth;
 
 import java.math.BigDecimal;
 
 /**
+ * Data pertaining to the net worth.
+ * 
  * @author CJ Hare
  */
-public interface CumulativeReturnOnInvestment {
+public interface NetWorthEvent {
 
 	/**
-	 * Retrieves the cumulative ROI over so far.
+	 * Retrieve the brokerage's balance of equities.
 	 * 
-	 * @return gross return on investment.
+	 * @return number of equities held.
 	 */
-	BigDecimal getCumulativeReturnOnInvestment();
+	BigDecimal getEquityBalance();
+
+	/**
+	 * Retrieve the value of the balance of equities.
+	 * 
+	 * @return how much the equities held are worth.
+	 */
+	BigDecimal getEquityBalanceValue();
+
+	/**
+	 * Balance held in the cash account.
+	 * 
+	 * @return funds not invested in equities.
+	 */
+	BigDecimal getCashBalance();
+
+	/**
+	 * Retrieve the total net worth.
+	 * 
+	 * @return sum of the cash balance(s) and equities value, exclusive of any transaction fee, or
+	 *         capital gains tax for liquidation.
+	 */
+	BigDecimal getNetWorth();
 }

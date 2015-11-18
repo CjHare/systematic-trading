@@ -28,10 +28,9 @@ package com.systematic.trading.backtest.display.file;
 import java.io.File;
 import java.io.IOException;
 
-import com.systematic.trading.backtest.analysis.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.analysis.networth.NetWorthEvent;
+import com.systematic.trading.backtest.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
@@ -87,8 +86,8 @@ public class FileDisplay implements BacktestDisplay {
 
 	@Override
 	public void init( final TickerSymbolTradingRange tickerSymbolTradingRange, final EventStatistics eventStatistics,
-			final Brokerage broker, final CashAccount cashAccount,
-			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
+
+	final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 			throws Exception {
 
 		final String returnOnInvestmentFilename = parentDirectory + "/return-on-investment.txt";
@@ -121,13 +120,7 @@ public class FileDisplay implements BacktestDisplay {
 
 		final String statisticsFilename = parentDirectory + "/statistics.txt";
 		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename );
-		this.netWorthDisplay = new FileNetWorthSummaryDisplay( broker, lastTradingDay, cashAccount, cumulativeRoi,
-				statisticsFilename );
-	}
-
-	public void simulationCompleted() {
-		statisticsDisplay.displayEventStatistics();
-		netWorthDisplay.displayNetWorth();
+		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFilename );
 	}
 
 	@Override
@@ -154,5 +147,26 @@ public class FileDisplay implements BacktestDisplay {
 		roiDailyDisplay.event( event );
 		roiMonthlyDisplay.event( event );
 		roiYearlyDisplay.event( event );
+	}
+
+	@Override
+	public void stateChanged( final SimulationState transitionedState ) {
+
+		switch (transitionedState) {
+			case COMPLETE:
+				simulationCompleted();
+			default:
+				break;
+		}
+	}
+
+	private void simulationCompleted() {
+		statisticsDisplay.displayEventStatistics();
+		netWorthDisplay.displayNetWorth();
+	}
+
+	@Override
+	public void event( final NetWorthEvent event ) {
+		netWorthDisplay.event( event );
 	}
 }

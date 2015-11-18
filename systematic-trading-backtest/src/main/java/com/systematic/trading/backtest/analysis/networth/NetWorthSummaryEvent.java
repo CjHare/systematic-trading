@@ -23,16 +23,47 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.analysis.networth;
 
-import com.systematic.trading.backtest.analysis.networth.NetWorthEventListener;
+import java.math.BigDecimal;
 
 /**
- * Output of the net worth at any point during of the simulation, including after the completion.
+ * Data pertaining to the net worth.
  * 
  * @author CJ Hare
  */
-public interface NetWorthSummaryDisplay extends NetWorthEventListener {
+public class NetWorthSummaryEvent implements NetWorthEvent {
 
-	void displayNetWorth();
+	private final BigDecimal equityBalance;
+	private final BigDecimal equityBalanceValue;
+	private final BigDecimal cashBalance;
+	private final BigDecimal networth;
+
+	public NetWorthSummaryEvent( final BigDecimal equityBalance, final BigDecimal equityBalanceValue,
+			final BigDecimal cashBalance, final BigDecimal networth ) {
+		this.equityBalance = equityBalance;
+		this.equityBalanceValue = equityBalanceValue;
+		this.cashBalance = cashBalance;
+		this.networth = networth;
+	}
+
+	@Override
+	public BigDecimal getEquityBalance() {
+		return equityBalance;
+	}
+
+	@Override
+	public BigDecimal getEquityBalanceValue() {
+		return equityBalanceValue;
+	}
+
+	@Override
+	public BigDecimal getCashBalance() {
+		return cashBalance;
+	}
+
+	@Override
+	public BigDecimal getNetWorth() {
+		return networth;
+	}
 }

@@ -23,16 +23,34 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.analysis.roi;
 
-import com.systematic.trading.backtest.analysis.networth.NetWorthEventListener;
+import com.systematic.trading.backtest.brokerage.Brokerage;
+import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.event.cash.CashEventListener;
 
 /**
- * Output of the net worth at any point during of the simulation, including after the completion.
+ * Calculates and records the return on investment (ROI) at periodic intervals.
  * 
  * @author CJ Hare
  */
-public interface NetWorthSummaryDisplay extends NetWorthEventListener {
+public interface ReturnOnInvestmentCalculator extends CashEventListener {
 
-	void displayNetWorth();
+	/**
+	 * Updates the recording of the ROI.
+	 * 
+	 * @param broker manages the number of equities currently held.
+	 * @param cashAccount manages the available cash balance.
+	 * @param tradingData the day's trading price action.
+	 */
+	void update( Brokerage broker, CashAccount cashAccount, TradingDayPrices tradingData );
+
+	/**
+	 * Adds a listener interested in calculator events.
+	 * 
+	 * @param listener will receive notification ReturnOnInvestment events.
+	 */
+	void addListener( final ReturnOnInvestmentEventListener listener );
 }

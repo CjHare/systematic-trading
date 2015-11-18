@@ -35,7 +35,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.analysis.ReturnOnInvestmentCalculator;
+import com.systematic.trading.backtest.SimulationStateListener.SimulationState;
+import com.systematic.trading.backtest.analysis.roi.ReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.exception.InsufficientFundsException;
@@ -90,7 +91,10 @@ public class Simulation {
 	private final ReturnOnInvestmentCalculator roi;
 
 	/** Listeners interested in entry events. */
-	private final List<OrderEventListener> listeners = new ArrayList<OrderEventListener>();
+	private final List<OrderEventListener> orderEventListeners = new ArrayList<OrderEventListener>();
+
+	/** Listeners interested in state transition events. */
+	private final List<SimulationStateListener> stateListeners = new ArrayList<SimulationStateListener>();
 
 	public Simulation( final LocalDate startDate, final LocalDate endDate, final TradingDayPrices[] unordered,
 			final Brokerage broker, final CashAccount funds, final ReturnOnInvestmentCalculator roi,
@@ -140,6 +144,8 @@ public class Simulation {
 			// Move date to tomorrow
 			currentDate = currentDate.plus( interval );
 		}
+
+		notifyListeners( SimulationState.COMPLETE );
 	}
 
 	/**
@@ -271,19 +277,36 @@ public class Simulation {
 	}
 
 	private void notifyListeners( final OrderEvent event ) {
-		for (final OrderEventListener listener : listeners) {
+		for (final OrderEventListener listener : orderEventListeners) {
 			listener.event( event );
 		}
 	}
 
+	private void notifyListeners( final SimulationState event ) {
+		for (final SimulationStateListener listener : stateListeners) {
+			listener.stateChanged( event );
+		}
+	}
+
 	/**
-	 * Adds the listener to the set of event listeners.
+	 * Adds the listener to the set of order event listeners.
 	 * 
-	 * @param listener will receive notification of event occurrences.
+	 * @param listener will receive notification of order event occurrences.
 	 */
 	public void addListener( final OrderEventListener listener ) {
-		if (!listeners.contains( listener )) {
-			listeners.add( listener );
+		if (!orderEventListeners.contains( listener )) {
+			orderEventListeners.add( listener );
+		}
+	}
+
+	/**
+	 * Adds the listener to the set of state transition listeners.
+	 * 
+	 * @param listener will receive notification of simulation state change occurrences.
+	 */
+	public void addListener( final SimulationStateListener listener ) {
+		if (!stateListeners.contains( listener )) {
+			stateListeners.add( listener );
 		}
 	}
 }
