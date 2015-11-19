@@ -25,11 +25,14 @@
  */
 package com.systematic.trading.backtest.display;
 
+import com.systematic.trading.backtest.analysis.networth.NetWorthEventListener;
+
 /**
- * Displays a summary for each of the back tests in one place.
+ * Summary for each of the back tests in one place.
  * 
  * @author CJ Hare
  */
-public interface ComparisonDisplay {
+public interface NetWorthComparisonDisplay extends NetWorthEventListener {
 
+	void setDescription( String description );
 }

@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.display.console;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
+import com.systematic.trading.backtest.SimulationStateListener.SimulationState;
 import com.systematic.trading.backtest.analysis.networth.NetWorthEvent;
 import com.systematic.trading.backtest.analysis.roi.CumulativeReturnOnInvestment;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
@@ -74,7 +75,7 @@ public class ConsoleNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 	}
 
 	@Override
-	public void event( final NetWorthEvent event ) {
+	public void event( final NetWorthEvent event, final SimulationState state ) {
 		lastEvent = event;
 	}
 }

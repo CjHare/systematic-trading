@@ -35,7 +35,7 @@ import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
- * Displays to the console the net worth.
+ * Displays the the net worth.
  * 
  * @author CJ Hare
  */
@@ -67,7 +67,7 @@ public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 		final NetWorthEvent event = new NetWorthSummaryEvent( equityBalance, equityBalanceValue, cashBalance, networth );
 
 		for (final NetWorthEventListener listener : listeners) {
-			listener.event( event );
+			listener.event( event, transitionedState );
 		}
 	}
 

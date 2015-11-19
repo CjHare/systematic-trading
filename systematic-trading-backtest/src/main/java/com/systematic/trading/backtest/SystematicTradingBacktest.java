@@ -40,7 +40,8 @@ import com.systematic.trading.backtest.configuration.MacdRsiSameDayEntryHoldFore
 import com.systematic.trading.backtest.configuration.RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
-import com.systematic.trading.backtest.display.ComparisonDisplay;
+import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
+import com.systematic.trading.backtest.display.file.FileNetWorthComparisonDisplay;
 import com.systematic.trading.backtest.display.file.FileDisplay;
 import com.systematic.trading.backtest.logic.MinimumTradeValue;
 import com.systematic.trading.data.util.HibernateUtil;
@@ -71,20 +72,20 @@ public class SystematicTradingBacktest {
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
 		final List<BacktestBootstrapConfiguration> configurations = getConfigurations( startDate, endDate );
 
-		// TODO create single summary file from all the bootstraps, hook into the simulation
-		// complete - convert to event
-		// TODO code class to record
-		final ComparisonDisplay allRunsFileDisplay = null;
+		// Arrange output to files
+		final NetWorthComparisonDisplay netWorthComparisonDisplay = new FileNetWorthComparisonDisplay( "../../simulations/summary.txt" );
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final String outputDirectory = getOutputDirectory( equity, configuration );
 			final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory );
 
-			final BacktestBootstrap bootstrap = new BacktestBootstrap( equity, configuration, fileDisplay, MATH_CONTEXT );
+			netWorthComparisonDisplay.setDescription( configuration.getDescription() );
+
+			final BacktestBootstrap bootstrap = new BacktestBootstrap( equity, configuration, fileDisplay,
+					netWorthComparisonDisplay, MATH_CONTEXT );
 
 			bootstrap.run();
 		}
-
 
 		HibernateUtil.getSessionFactory().close();
 	}

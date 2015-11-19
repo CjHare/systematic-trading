@@ -53,7 +53,7 @@ import com.systematic.trading.event.order.OrderEventListener;
 public class FileDisplay implements BacktestDisplay {
 
 	// TODO aggregate displays into arrays
-	private final String parentDirectory;
+	private final String baseDirectory;
 	private ReturnOnInvestmentEventListener roiDisplay;
 	private ReturnOnInvestmentEventListener roiDailyDisplay;
 	private ReturnOnInvestmentEventListener roiMonthlyDisplay;
@@ -81,7 +81,7 @@ public class FileDisplay implements BacktestDisplay {
 			file.delete();
 		}
 
-		parentDirectory = outputDirectoryFile.getCanonicalPath();
+		baseDirectory = outputDirectoryFile.getCanonicalPath();
 	}
 
 	@Override
@@ -90,35 +90,35 @@ public class FileDisplay implements BacktestDisplay {
 	final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 			throws Exception {
 
-		final String returnOnInvestmentFilename = parentDirectory + "/return-on-investment.txt";
+		final String returnOnInvestmentFilename = baseDirectory + "/return-on-investment.txt";
 		this.roiDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentFilename,
 				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.ALL );
 
-		final String returnOnInvestmentDailyFilename = parentDirectory + "/return-on-investment-daily.txt";
+		final String returnOnInvestmentDailyFilename = baseDirectory + "/return-on-investment-daily.txt";
 		this.roiDailyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentDailyFilename,
 				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.DAILY );
 
-		final String returnOnInvestmentMonthlyFilename = parentDirectory + "/return-on-investment-monthly.txt";
+		final String returnOnInvestmentMonthlyFilename = baseDirectory + "/return-on-investment-monthly.txt";
 		this.roiMonthlyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentMonthlyFilename,
 				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.MONTHLY );
 
-		final String returnOnInvestmentYearlyFilename = parentDirectory + "/return-on-investment-yearly.txt";
+		final String returnOnInvestmentYearlyFilename = baseDirectory + "/return-on-investment-yearly.txt";
 		this.roiYearlyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentYearlyFilename,
 				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.YEARLY );
 
-		final String eventFilename = parentDirectory + "/events.txt";
+		final String eventFilename = baseDirectory + "/events.txt";
 		this.eventDisplay = new FileEventDisplay( eventFilename, tickerSymbolTradingRange );
 
-		final String cashEventFilename = parentDirectory + "/events-cash.txt";
+		final String cashEventFilename = baseDirectory + "/events-cash.txt";
 		this.cashEventDisplay = new FileCashEventDisplay( cashEventFilename );
 
-		final String orderEventFilename = parentDirectory + "/events-order.txt";
+		final String orderEventFilename = baseDirectory + "/events-order.txt";
 		this.ordertEventDisplay = new FileOrderEventDisplay( orderEventFilename );
 
-		final String brokerageEventFilename = parentDirectory + "/events-brokerage.txt";
+		final String brokerageEventFilename = baseDirectory + "/events-brokerage.txt";
 		this.brokerageEventDisplay = new FileBrokerageEventDisplay( brokerageEventFilename );
 
-		final String statisticsFilename = parentDirectory + "/statistics.txt";
+		final String statisticsFilename = baseDirectory + "/statistics.txt";
 		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename );
 		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFilename );
 	}
@@ -166,7 +166,7 @@ public class FileDisplay implements BacktestDisplay {
 	}
 
 	@Override
-	public void event( final NetWorthEvent event ) {
-		netWorthDisplay.event( event );
+	public void event( final NetWorthEvent event, final SimulationState state ) {
+		netWorthDisplay.event( event, state );
 	}
 }

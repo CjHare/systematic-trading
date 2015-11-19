@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.analysis.networth;
 
+import com.systematic.trading.backtest.SimulationStateListener.SimulationState;
+
 /**
  * Interested in net worth summary events
  * 
@@ -36,6 +38,7 @@ public interface NetWorthEventListener {
 	 * Notification of a net worth event.
 	 * 
 	 * @param event details of the current state of the net worth.
+	 * @param state simulation state for the context of the net worth.
 	 */
-	void event( NetWorthEvent event );
+	void event( NetWorthEvent event, SimulationState state );
 }

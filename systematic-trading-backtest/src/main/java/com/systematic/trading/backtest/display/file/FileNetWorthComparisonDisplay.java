@@ -38,74 +38,77 @@ import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.SimulationStateListener.SimulationState;
 import com.systematic.trading.backtest.analysis.networth.NetWorthEvent;
-import com.systematic.trading.backtest.analysis.roi.CumulativeReturnOnInvestment;
-import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
+import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
 
 /**
- * Displays the the net worth.
+ * Persists the comparison displays into a file.
  * 
  * @author CJ Hare
  */
-public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
+public class FileNetWorthComparisonDisplay implements NetWorthComparisonDisplay {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileNetWorthSummaryDisplay.class );
+	private static final Logger LOG = LogManager.getLogger( FileNetWorthComparisonDisplay.class );
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
-
-	private final CumulativeReturnOnInvestment cumulativeRoi;
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".00" );
 
 	private final String outputFilename;
 
-	/** The last net worth recording, which makes it into the summary. */
-	private NetWorthEvent lastEvent;
+	private String description;
 
-	public FileNetWorthSummaryDisplay( final CumulativeReturnOnInvestment cumulativeRoi, final String outputFilename ) {
-		this.cumulativeRoi = cumulativeRoi;
-		this.outputFilename = outputFilename;
+	public FileNetWorthComparisonDisplay( final String outputFilename ) {
+
+		// Ensure the directory exists
+		final File outputDirectoryFile = new File( outputFilename ).getParentFile();
+		if (!outputDirectoryFile.exists()) {
+			if (!outputDirectoryFile.mkdirs()) {
+				throw new IllegalArgumentException( String.format(
+						"Failed to create / access directory parent directory: %s", outputFilename ) );
+			}
+		}
+
+		// Ensure the directory is empty
+		for (final File file : outputDirectoryFile.listFiles()) {
+			file.delete();
+		}
 
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
 			outputFile.getParentFile().mkdirs();
 		}
+
+		this.outputFilename = outputFilename;
 	}
 
-	@Override
-	public void displayNetWorth() {
-		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			out.println( createOutput() );
-		} catch (final IOException e) {
-			LOG.error( e );
-		}
-	}
-
-	private String createOutput() {
-
-		final BigDecimal balance = lastEvent.getEquityBalance();
-		final BigDecimal holdingValue = lastEvent.getEquityBalanceValue();
-		final BigDecimal cashBalance = lastEvent.getCashBalance();
-		final BigDecimal netWorth = lastEvent.getNetWorth();
-
-		final StringBuilder output = new StringBuilder();
-
-		output.append( "\n=== Net Worth Summary ===\n" );
-		output.append( String.format( "Number of equities: %s\n", TWO_DECIMAL_PLACES.format( balance ) ) );
-		output.append( String.format( "Holdings value: %s\n", TWO_DECIMAL_PLACES.format( holdingValue ) ) );
-		output.append( String.format( "Cash account: %s\n", TWO_DECIMAL_PLACES.format( cashBalance ) ) );
-		output.append( String.format( "\nTotal Net Worth: %s\n", TWO_DECIMAL_PLACES.format( netWorth ) ) );
-
-		// TODO this value is of dubious value, needs weighting (plus passing into summary)
-		output.append( String.format( "\nInvestment Cumulative ROI: %s\n",
-				TWO_DECIMAL_PLACES.format( cumulativeRoi.getCumulativeReturnOnInvestment() ) ) );
-
-		return output.toString();
+	public void setDescription( final String description ) {
+		this.description = description;
 	}
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
 
+		// Only interested in the net worth when the simulation is complete
 		if (SimulationState.COMPLETE.equals( state )) {
-			lastEvent = event;
+
+			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+				out.println( createOutput( event ) );
+			} catch (final IOException e) {
+				LOG.error( e );
+			}
 		}
 	}
+
+	private String createOutput( final NetWorthEvent event ) {
+
+		final BigDecimal balance = event.getEquityBalance();
+		final BigDecimal holdingValue = event.getEquityBalanceValue();
+		final BigDecimal cashBalance = event.getCashBalance();
+		final BigDecimal netWorth = event.getNetWorth();
+
+		return String.format(
+				"Total Net Worth: %s   Number of equities: %s   Holdings value: %s   Cash account: %s   ==  %s",
+				TWO_DECIMAL_PLACES.format( netWorth ), TWO_DECIMAL_PLACES.format( balance ),
+				TWO_DECIMAL_PLACES.format( holdingValue ), TWO_DECIMAL_PLACES.format( cashBalance ), description );
+	}
+
 }

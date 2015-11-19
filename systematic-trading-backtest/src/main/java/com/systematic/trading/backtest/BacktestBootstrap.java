@@ -29,6 +29,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
+import com.systematic.trading.backtest.analysis.networth.NetWorthSummaryEventGenerator;
 import com.systematic.trading.backtest.analysis.roi.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.backtest.analysis.roi.PeriodicCulmativeReturnOnInvestmentCalculator;
@@ -38,6 +39,7 @@ import com.systematic.trading.backtest.brokerage.Brokerage;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
 import com.systematic.trading.backtest.cash.CashAccount;
 import com.systematic.trading.backtest.display.BacktestDisplay;
+import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
 import com.systematic.trading.backtest.event.data.TickerSymbolTradingRangeImpl;
 import com.systematic.trading.backtest.logic.EntryLogic;
 import com.systematic.trading.backtest.logic.ExitLogic;
@@ -68,10 +70,14 @@ public class BacktestBootstrap {
 	private final BacktestDisplay display;
 
 	/** Configuration for the back test. */
-	final BacktestBootstrapConfiguration configuration;
+	private final BacktestBootstrapConfiguration configuration;
+
+	/** Rolling summary of the net worth outcomes. */
+	private final NetWorthComparisonDisplay comparisonDisplay;
 
 	public BacktestBootstrap( final EquityIdentity equity, final BacktestBootstrapConfiguration configuration,
-			final BacktestDisplay display, final MathContext mathContext ) {
+			final BacktestDisplay display, final NetWorthComparisonDisplay comparisonDisplay, final MathContext mathContext ) {
+		this.comparisonDisplay = comparisonDisplay;
 		this.configuration = configuration;
 		this.mathContext = mathContext;
 		this.display = display;
@@ -87,6 +93,9 @@ public class BacktestBootstrap {
 
 		// First data point may not be the requested start date
 		final LocalDate earliestDate = getEarliestDate( tradingData );
+
+		// Final trading day data point, may not be be requested end date
+		final TradingDayPrices lastTradingDay = getLatestDataPoint( tradingData );
 
 		// Displays the events as they are generated
 		final TickerSymbolTradingRange tickerSymbolTradingRange = new TickerSymbolTradingRangeImpl( equity, startDate,
@@ -130,16 +139,24 @@ public class BacktestBootstrap {
 		broker.addListener( eventStatistics );
 		cashAccount.addListener( eventStatistics );
 
+		// Creates the net worth events
+		final NetWorthSummaryEventGenerator networthSummay = new NetWorthSummaryEventGenerator( broker, lastTradingDay,
+				cashAccount );
+		simulation.addListener( networthSummay );
+
 		// Display for simulation output
-		final TradingDayPrices lastTradingDay = getLatestDataPoint( tradingData );
 		display.init( tickerSymbolTradingRange, eventStatistics, cumulativeRoi, lastTradingDay );
 		simulation.addListener( (OrderEventListener) display );
 		simulation.addListener( (SimulationStateListener) display );
-		broker.addListener( display );
+		networthSummay.addListener( display );
 		cashAccount.addListener( display );
 		yearlyRoi.addListener( display );
 		monthlyRoi.addListener( display );
 		dailyRoi.addListener( display );
+		broker.addListener( display );
+
+		// Wire up the over arching summary report
+		networthSummay.addListener( comparisonDisplay );
 
 		// Run the simulation until completion
 		simulation.run();
