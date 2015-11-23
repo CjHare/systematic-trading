@@ -34,15 +34,17 @@ import java.util.List;
 
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
-import com.systematic.trading.backtest.configuration.MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
-import com.systematic.trading.backtest.configuration.MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration;
-import com.systematic.trading.backtest.configuration.MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.MacdLongPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.MacdStandardPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.MacdStandardRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.MacdStandardRsiSameDayEntryHoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
-import com.systematic.trading.backtest.display.file.FileNetWorthComparisonDisplay;
 import com.systematic.trading.backtest.display.file.FileDisplay;
+import com.systematic.trading.backtest.display.file.FileNetWorthComparisonDisplay;
 import com.systematic.trading.backtest.logic.MinimumTradeValue;
 import com.systematic.trading.data.util.HibernateUtil;
 
@@ -73,7 +75,8 @@ public class SystematicTradingBacktest {
 		final List<BacktestBootstrapConfiguration> configurations = getConfigurations( startDate, endDate );
 
 		// Arrange output to files
-		final NetWorthComparisonDisplay netWorthComparisonDisplay = new FileNetWorthComparisonDisplay( "../../simulations/summary.txt" );
+		final NetWorthComparisonDisplay netWorthComparisonDisplay = new FileNetWorthComparisonDisplay(
+				"../../simulations/summary.txt" );
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final String outputDirectory = getOutputDirectory( equity, configuration );
@@ -103,14 +106,18 @@ public class SystematicTradingBacktest {
 		for (final BigDecimal minimumTradeValue : minimumTradeValues) {
 
 			final MinimumTradeValue minimumTrade = new MinimumTradeValue( minimumTradeValue );
-			configurations.add( new MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
-					minimumTrade, MATH_CONTEXT ) );
-			configurations.add( new MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
-					minimumTrade, MATH_CONTEXT ) );
+			configurations.add( new MacdStandardRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( startDate,
+					endDate, minimumTrade, MATH_CONTEXT ) );
+			configurations.add( new MacdStandardPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate,
+					endDate, minimumTrade, MATH_CONTEXT ) );
+			configurations.add( new MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate,
+					endDate, minimumTrade, MATH_CONTEXT ) );
+			configurations.add( new MacdLongPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate,
+					endDate, minimumTrade, MATH_CONTEXT ) );
 			configurations.add( new RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
 					minimumTrade, MATH_CONTEXT ) );
-			configurations.add( new MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration( startDate,
-					endDate, minimumTrade, MATH_CONTEXT ) );
+			configurations.add( new MacdStandardRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration(
+					startDate, endDate, minimumTrade, MATH_CONTEXT ) );
 		}
 
 		return configurations;

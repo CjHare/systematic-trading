@@ -53,8 +53,6 @@ import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
@@ -72,8 +70,8 @@ import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorat
  * 
  * @author CJ Hare
  */
-public class MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
-		implements BacktestBootstrapConfiguration {
+public class MacdStandardRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
+		BacktestBootstrapConfiguration {
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -81,7 +79,7 @@ public class MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguratio
 	/** Input for the trading logic, determines the minimum value for transactions. */
 	private final MinimumTradeValue minimumTrade;
 
-	public MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
+	public MacdStandardRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
 			final LocalDate endDate, final MinimumTradeValue minimumTrade, final MathContext mathContext ) {
 		super( startDate, endDate );
 		this.minimumTrade = minimumTrade;
@@ -116,18 +114,15 @@ public class MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguratio
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30, mathContext );
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
 				mathContext );
-		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
-				GradientType.POSITIVE, mathContext );
 
 		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>();
 		generators.add( macd );
 		generators.add( rsi );
-		generators.add( sma );
 
 		// Only signals from the last two days are of interest
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
 		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter(
-				IndicatorSignalType.MACD, IndicatorSignalType.RSI, IndicatorSignalType.SMA ), Period.ofDays( 5 ) );
+				IndicatorSignalType.MACD, IndicatorSignalType.RSI ), Period.ofDays( 5 ) );
 		filters.add( filter );
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
@@ -136,7 +131,6 @@ public class MacdRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguratio
 
 	@Override
 	public String getDescription() {
-		return String.format( "Macd-Rsi-PositiveSma-SameDay-Buy-Minimum-%s_HoldForever", minimumTrade.getValue()
-				.longValue() );
+		return String.format( "MacdStandard-Rsi-SameDay-Buy-Minimum-%s_HoldForever", minimumTrade.getValue().longValue() );
 	}
 }

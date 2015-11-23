@@ -52,7 +52,8 @@ import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
@@ -62,7 +63,7 @@ import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorat
  * Configuration for signal triggered entry logic.
  * <p/>
  * <ul>
- * <li>Entry logic: MACD & RSI on same day triggered</li>
+ * <li>Entry logic: MACD buy trigger when the 200 day Sma is a positive gradient</li>
  * <li>Exit logic: never sell</li>
  * <li>Cash account: zero starting, weekly 100 dollar deposit</li>
  * <li>Broker transaction: minimum 1000, use full cash balance</li>
@@ -70,7 +71,7 @@ import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorat
  * 
  * @author CJ Hare
  */
-public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
+public class MacdLongPositiveSmaEntryHoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
 		BacktestBootstrapConfiguration {
 
 	/** Scale and precision to apply to mathematical operations. */
@@ -79,7 +80,7 @@ public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends D
 	/** Input for the trading logic, determines the minimum value for transactions. */
 	private final MinimumTradeValue minimumTrade;
 
-	public MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
+	public MacdLongPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
 			final LocalDate endDate, final MinimumTradeValue minimumTrade, final MathContext mathContext ) {
 		super( startDate, endDate );
 		this.minimumTrade = minimumTrade;
@@ -111,18 +112,19 @@ public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends D
 	@Override
 	public EntryLogic getEntryLogic( final EquityIdentity equity, final LocalDate openingDate ) {
 
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 70, 30, mathContext );
-		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
-				mathContext );
+		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 50, 100,
+				35, mathContext );
+		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
+				GradientType.POSITIVE, mathContext );
 
 		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>();
 		generators.add( macd );
-		generators.add( rsi );
+		generators.add( sma );
 
 		// Only signals from the last two days are of interest
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
 		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter(
-				IndicatorSignalType.MACD, IndicatorSignalType.RSI ), Period.ofDays( 5 ) );
+				IndicatorSignalType.MACD, IndicatorSignalType.SMA ), Period.ofDays( 5 ) );
 		filters.add( filter );
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
@@ -131,6 +133,7 @@ public class MacdRsiSameDayEntryHoldForeverWeeklyDespositConfiguration extends D
 
 	@Override
 	public String getDescription() {
-		return String.format( "Macd-Rsi-SameDay-Buy-Minimum-%s_HoldForever", minimumTrade.getValue().longValue() );
+		return String.format( "MacdStandard-PositiveSma-Buy-Minimum-%s_HoldForever", minimumTrade.getValue()
+				.longValue() );
 	}
 }

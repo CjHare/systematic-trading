@@ -105,10 +105,8 @@ public class FileNetWorthComparisonDisplay implements NetWorthComparisonDisplay 
 		final BigDecimal cashBalance = event.getCashBalance();
 		final BigDecimal netWorth = event.getNetWorth();
 
-		return String.format(
-				"Total Net Worth: %s   Number of equities: %s   Holdings value: %s   Cash account: %s   ==  %s",
+		return String.format( "Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, %s",
 				TWO_DECIMAL_PLACES.format( netWorth ), TWO_DECIMAL_PLACES.format( balance ),
 				TWO_DECIMAL_PLACES.format( holdingValue ), TWO_DECIMAL_PLACES.format( cashBalance ), description );
 	}
-
 }

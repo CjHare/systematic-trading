@@ -71,7 +71,7 @@ import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorat
  * 
  * @author CJ Hare
  */
-public class MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
+public class MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
 		BacktestBootstrapConfiguration {
 
 	/** Scale and precision to apply to mathematical operations. */
@@ -80,7 +80,7 @@ public class MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration extends 
 	/** Input for the trading logic, determines the minimum value for transactions. */
 	private final MinimumTradeValue minimumTrade;
 
-	public MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
+	public MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
 			final LocalDate endDate, final MinimumTradeValue minimumTrade, final MathContext mathContext ) {
 		super( startDate, endDate );
 		this.minimumTrade = minimumTrade;
@@ -112,7 +112,7 @@ public class MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration extends 
 	@Override
 	public EntryLogic getEntryLogic( final EquityIdentity equity, final LocalDate openingDate ) {
 
-		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
+		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 25, 50, 10,
 				mathContext );
 		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
 				GradientType.POSITIVE, mathContext );
@@ -133,6 +133,7 @@ public class MacdPositiveSmaEntryHoldForeverWeeklyDespositConfiguration extends 
 
 	@Override
 	public String getDescription() {
-		return String.format( "Macd-PositiveSma-Buy-Minimum-%s_HoldForever", minimumTrade.getValue().longValue() );
+		return String.format( "MacdStandard-PositiveSma-Buy-Minimum-%s_HoldForever", minimumTrade.getValue()
+				.longValue() );
 	}
 }
