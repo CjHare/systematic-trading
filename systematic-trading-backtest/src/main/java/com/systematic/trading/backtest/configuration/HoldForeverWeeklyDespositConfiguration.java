@@ -51,27 +51,22 @@ import com.systematic.trading.backtest.logic.SignalTriggeredEntryLogic;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
-import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 
 /**
- * Configuration for signal triggered entry logic.
+ * Configuration for signal triggered entry logic, with weekly contribution to cash account.
  * <p/>
  * <ul>
- * <li>Entry logic: MACD buy trigger when the 200 day Sma is a positive gradient</li>
  * <li>Exit logic: never sell</li>
  * <li>Cash account: zero starting, weekly 100 dollar deposit</li>
- * <li>Broker transaction: minimum 1000, use full cash balance</li>
  * </ul>
  * 
  * @author CJ Hare
  */
-public class MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
+public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
 		BacktestBootstrapConfiguration {
 
 	/** Scale and precision to apply to mathematical operations. */
@@ -80,10 +75,24 @@ public class MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration ex
 	/** Input for the trading logic, determines the minimum value for transactions. */
 	private final MinimumTradeValue minimumTrade;
 
-	public MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( final LocalDate startDate,
-			final LocalDate endDate, final MinimumTradeValue minimumTrade, final MathContext mathContext ) {
+	/** Signal generator for the entry logic. */
+	private final IndicatorSignalGenerator[] entrySignals;
+
+	/** Description used for uniquely identifying the configuration. */
+	private final String description;
+
+	public HoldForeverWeeklyDespositConfiguration( final LocalDate startDate, final LocalDate endDate,
+			final MinimumTradeValue minimumTrade, final String description, final MathContext mathContext,
+			final IndicatorSignalGenerator... entrySignals ) {
 		super( startDate, endDate );
+
+		if (entrySignals == null) {
+			throw new IllegalArgumentException( "Indicator signal generators are needed for entry logic" );
+		}
+
+		this.entrySignals = entrySignals;
 		this.minimumTrade = minimumTrade;
+		this.description = description;
 		this.mathContext = mathContext;
 	}
 
@@ -112,19 +121,19 @@ public class MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration ex
 	@Override
 	public EntryLogic getEntryLogic( final EquityIdentity equity, final LocalDate openingDate ) {
 
-		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 25, 50, 10,
-				mathContext );
-		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
-				GradientType.POSITIVE, mathContext );
+		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>( entrySignals.length );
+		final IndicatorSignalType[] types = new IndicatorSignalType[entrySignals.length];
 
-		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>();
-		generators.add( macd );
-		generators.add( sma );
+		for (int i = 0; i < entrySignals.length; i++) {
+			final IndicatorSignalGenerator entrySignal = entrySignals[i];
+			generators.add( entrySignal );
+			types[i] = entrySignal.getSignalType();
+		}
 
 		// Only signals from the last two days are of interest
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter(
-				IndicatorSignalType.MACD, IndicatorSignalType.SMA ), Period.ofDays( 5 ) );
+		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter( types ),
+				Period.ofDays( 5 ) );
 		filters.add( filter );
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
@@ -133,7 +142,6 @@ public class MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration ex
 
 	@Override
 	public String getDescription() {
-		return String.format( "MacdStandard-PositiveSma-Buy-Minimum-%s_HoldForever", minimumTrade.getValue()
-				.longValue() );
+		return description;
 	}
 }

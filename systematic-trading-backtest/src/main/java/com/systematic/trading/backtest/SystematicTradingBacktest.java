@@ -34,12 +34,7 @@ import java.util.List;
 
 import com.systematic.trading.backtest.brokerage.EquityClass;
 import com.systematic.trading.backtest.brokerage.EquityIdentity;
-import com.systematic.trading.backtest.configuration.MacdLongPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
-import com.systematic.trading.backtest.configuration.MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
-import com.systematic.trading.backtest.configuration.MacdStandardPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
-import com.systematic.trading.backtest.configuration.MacdStandardRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration;
-import com.systematic.trading.backtest.configuration.MacdStandardRsiSameDayEntryHoldForeverWeeklyDespositConfiguration;
-import com.systematic.trading.backtest.configuration.RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.HoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
@@ -47,6 +42,10 @@ import com.systematic.trading.backtest.display.file.FileDisplay;
 import com.systematic.trading.backtest.display.file.FileNetWorthComparisonDisplay;
 import com.systematic.trading.backtest.logic.MinimumTradeValue;
 import com.systematic.trading.data.util.HibernateUtil;
+import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 
 /**
  * Performs back testing of trading logic over a historical data set.
@@ -103,21 +102,46 @@ public class SystematicTradingBacktest {
 		final BigDecimal[] minimumTradeValues = { BigDecimal.valueOf( 500 ), BigDecimal.valueOf( 1000 ),
 				BigDecimal.valueOf( 1500 ), BigDecimal.valueOf( 2000 ) };
 
+		final RelativeStrengthIndexSignals rsiStandard = new RelativeStrengthIndexSignals( 70, 30, MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaLong = new SimpleMovingAverageGradientSignals( 200, 10,
+				GradientType.POSITIVE, MATH_CONTEXT );
+
+		String description;
+
+		// TODO tidy up
 		for (final BigDecimal minimumTradeValue : minimumTradeValues) {
 
 			final MinimumTradeValue minimumTrade = new MinimumTradeValue( minimumTradeValue );
-			configurations.add( new MacdStandardRsiSameDayEntryHoldForeverWeeklyDespositConfiguration( startDate,
-					endDate, minimumTrade, MATH_CONTEXT ) );
-			configurations.add( new MacdStandardPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate,
-					endDate, minimumTrade, MATH_CONTEXT ) );
-			configurations.add( new MacdMediumPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate,
-					endDate, minimumTrade, MATH_CONTEXT ) );
-			configurations.add( new MacdLongPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate,
-					endDate, minimumTrade, MATH_CONTEXT ) );
-			configurations.add( new RsiPositiveSmaEntryHoldForeverWeeklyDespositConfiguration( startDate, endDate,
-					minimumTrade, MATH_CONTEXT ) );
-			configurations.add( new MacdStandardRsiPositiveSmaSameDayEntryHoldForeverWeeklyDespositConfiguration(
-					startDate, endDate, minimumTrade, MATH_CONTEXT ) );
+			final String minimumTradeDescription = String.valueOf( minimumTrade.getValue().longValue() );
+
+			for (final MacdConfiguration macd : MacdConfiguration.values()) {
+
+				description = String.format( "%s_Minimum-%s_HoldForever", macd.getDescription(),
+						minimumTradeDescription );
+				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+						description, MATH_CONTEXT, macd.getMacd() ) );
+
+				description = String.format( "%s-Positive-Long-Sma_SameDay_Minimum-%s_HoldForever",
+						macd.getDescription(), minimumTradeDescription );
+				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+						description, MATH_CONTEXT, smaLong, macd.getMacd() ) );
+
+				description = String.format( "%s-Standard-Rsi_SameDay_Minimum-%s_HoldForever", macd.getDescription(),
+						minimumTradeDescription );
+				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+						description, MATH_CONTEXT, rsiStandard, macd.getMacd() ) );
+
+				description = String.format( "%s-Standard-Rsi-Positive-Long-Sma_SameDay_Minimum-%s_HoldForever",
+						macd.getDescription(), minimumTradeDescription );
+				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+						description, MATH_CONTEXT, rsiStandard, smaLong, macd.getMacd() ) );
+			}
+
+			description = String.format( "Standard-Rsi-Positive-Long-Sma_SameDay_Minimum-%s_HoldForever",
+					minimumTradeDescription );
+			configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+					description, MATH_CONTEXT, rsiStandard, smaLong ) );
+
 		}
 
 		return configurations;
@@ -134,4 +158,28 @@ public class SystematicTradingBacktest {
 		return String.format( "../../simulations/%s_%s", equity.getTickerSymbol(), configuration.getDescription() );
 	}
 
+	// TODO separate classes?
+	private enum MacdConfiguration {
+
+		SHORT( new MovingAveragingConvergeDivergenceSignals( 5, 10, 3, MATH_CONTEXT ), "Short-Macd" ),
+		STANDARD( new MovingAveragingConvergeDivergenceSignals( 10, 20, 7, MATH_CONTEXT ), "Medium-Macd" ),
+		MEDIUM( new MovingAveragingConvergeDivergenceSignals( 25, 50, 10, MATH_CONTEXT ), "Long-Macd" ),
+		LONG( new MovingAveragingConvergeDivergenceSignals( 50, 100, 35, MATH_CONTEXT ), "Longest-Macd" );
+
+		private final MovingAveragingConvergeDivergenceSignals macd;
+		private final String description;
+
+		private MacdConfiguration( final MovingAveragingConvergeDivergenceSignals macd, final String description ) {
+			this.macd = macd;
+			this.description = description;
+		}
+
+		public MovingAveragingConvergeDivergenceSignals getMacd() {
+			return macd;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+	}
 }
