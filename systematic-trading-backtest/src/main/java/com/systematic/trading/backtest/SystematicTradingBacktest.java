@@ -103,8 +103,6 @@ public class SystematicTradingBacktest {
 				BigDecimal.valueOf( 1500 ), BigDecimal.valueOf( 2000 ) };
 
 		final RelativeStrengthIndexSignals rsiStandard = new RelativeStrengthIndexSignals( 70, 30, MATH_CONTEXT );
-		final SimpleMovingAverageGradientSignals smaLong = new SimpleMovingAverageGradientSignals( 200, 10,
-				GradientType.POSITIVE, MATH_CONTEXT );
 
 		String description;
 
@@ -121,27 +119,31 @@ public class SystematicTradingBacktest {
 				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
 						description, MATH_CONTEXT, macd.getMacd() ) );
 
-				description = String.format( "%s-Positive-Long-Sma_SameDay_Minimum-%s_HoldForever",
-						macd.getDescription(), minimumTradeDescription );
-				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
-						description, MATH_CONTEXT, smaLong, macd.getMacd() ) );
-
-				description = String.format( "%s-Standard-Rsi_SameDay_Minimum-%s_HoldForever", macd.getDescription(),
+				description = String.format( "%s-Rsi_SameDay_Minimum-%s_HoldForever", macd.getDescription(),
 						minimumTradeDescription );
 				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
 						description, MATH_CONTEXT, rsiStandard, macd.getMacd() ) );
 
-				description = String.format( "%s-Standard-Rsi-Positive-Long-Sma_SameDay_Minimum-%s_HoldForever",
-						macd.getDescription(), minimumTradeDescription );
-				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
-						description, MATH_CONTEXT, rsiStandard, smaLong, macd.getMacd() ) );
+				for (final SmaConfiguration sma : SmaConfiguration.values()) {
+
+					description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever", macd.getDescription(),
+							sma.getDescription(), minimumTradeDescription );
+					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+							description, MATH_CONTEXT, sma.getSma(), macd.getMacd() ) );
+
+					description = String.format( "%s-%s-Rsi_SameDay_Minimum-%s_HoldForever", macd.getDescription(),
+							sma.getDescription(), minimumTradeDescription );
+					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+							description, MATH_CONTEXT, rsiStandard, sma.getSma(), macd.getMacd() ) );
+				}
 			}
 
-			description = String.format( "Standard-Rsi-Positive-Long-Sma_SameDay_Minimum-%s_HoldForever",
-					minimumTradeDescription );
-			configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
-					description, MATH_CONTEXT, rsiStandard, smaLong ) );
-
+			for (final SmaConfiguration sma : SmaConfiguration.values()) {
+				description = String.format( "%s-Rsi_SameDay_Minimum-%s_HoldForever", sma.getDescription(),
+						minimumTradeDescription );
+				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+						description, MATH_CONTEXT, rsiStandard, sma.getSma() ) );
+			}
 		}
 
 		return configurations;
@@ -162,9 +164,9 @@ public class SystematicTradingBacktest {
 	private enum MacdConfiguration {
 
 		SHORT( new MovingAveragingConvergeDivergenceSignals( 5, 10, 3, MATH_CONTEXT ), "Short-Macd" ),
-		STANDARD( new MovingAveragingConvergeDivergenceSignals( 10, 20, 7, MATH_CONTEXT ), "Medium-Macd" ),
-		MEDIUM( new MovingAveragingConvergeDivergenceSignals( 25, 50, 10, MATH_CONTEXT ), "Long-Macd" ),
-		LONG( new MovingAveragingConvergeDivergenceSignals( 50, 100, 35, MATH_CONTEXT ), "Longest-Macd" );
+		MEDIUM( new MovingAveragingConvergeDivergenceSignals( 10, 20, 7, MATH_CONTEXT ), "Medium-Macd" ),
+		LONG( new MovingAveragingConvergeDivergenceSignals( 25, 50, 10, MATH_CONTEXT ), "Long-Macd" ),
+		LONGEST( new MovingAveragingConvergeDivergenceSignals( 50, 100, 35, MATH_CONTEXT ), "Longest-Macd" );
 
 		private final MovingAveragingConvergeDivergenceSignals macd;
 		private final String description;
@@ -176,6 +178,30 @@ public class SystematicTradingBacktest {
 
 		public MovingAveragingConvergeDivergenceSignals getMacd() {
 			return macd;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+	}
+
+	private enum SmaConfiguration {
+
+		SHORT( new SimpleMovingAverageGradientSignals( 20, 5, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Short-Sma" ),
+		MEDIUM( new SimpleMovingAverageGradientSignals( 50, 7, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Medium-Sma" ),
+		LONG( new SimpleMovingAverageGradientSignals( 100, 10, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Medium-Sma" ),
+		LONGEST( new SimpleMovingAverageGradientSignals( 200, 20, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Long-Sma" );
+
+		private final SimpleMovingAverageGradientSignals sma;
+		private final String description;
+
+		private SmaConfiguration( final SimpleMovingAverageGradientSignals sma, final String description ) {
+			this.sma = sma;
+			this.description = description;
+		}
+
+		public SimpleMovingAverageGradientSignals getSma() {
+			return sma;
 		}
 
 		public String getDescription() {
