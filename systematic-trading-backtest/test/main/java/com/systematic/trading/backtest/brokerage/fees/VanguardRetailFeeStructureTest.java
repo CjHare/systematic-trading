@@ -32,10 +32,10 @@ import java.math.MathContext;
 
 import org.junit.Test;
 
-import com.systematic.trading.backtest.brokerage.EquityClass;
-import com.systematic.trading.backtest.brokerage.fees.BellDirectFeeStructure;
-import com.systematic.trading.backtest.brokerage.fees.VanguardRetailFeeStructure;
-import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
+import com.systematic.trading.simulation.brokerage.EquityClass;
+import com.systematic.trading.simulation.brokerage.fees.BellDirectFeeStructure;
+import com.systematic.trading.simulation.brokerage.fees.VanguardRetailFeeStructure;
+import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
  * Test the fee structure for Bell Direct.

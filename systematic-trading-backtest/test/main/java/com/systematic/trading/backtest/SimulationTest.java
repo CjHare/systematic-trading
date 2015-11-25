@@ -37,12 +37,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.analysis.roi.ReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.logic.EntryLogic;
-import com.systematic.trading.backtest.logic.ExitLogic;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.Simulation;
+import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.logic.EntryLogic;
+import com.systematic.trading.simulation.logic.ExitLogic;
 
 /**
  * Testing the basic functionality of the simulation.

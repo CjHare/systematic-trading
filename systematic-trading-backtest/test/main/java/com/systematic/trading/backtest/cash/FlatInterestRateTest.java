@@ -32,7 +32,7 @@ import java.math.MathContext;
 
 import org.junit.Test;
 
-import com.systematic.trading.backtest.cash.FlatInterestRate;
+import com.systematic.trading.simulation.cash.FlatInterestRate;
 
 /**
  * Testing the flat interest rate.

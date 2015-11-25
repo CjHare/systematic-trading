@@ -36,10 +36,10 @@ import java.text.DecimalFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.SimulationStateListener.SimulationState;
-import com.systematic.trading.backtest.analysis.networth.NetWorthEvent;
-import com.systematic.trading.backtest.analysis.roi.CumulativeReturnOnInvestment;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
+import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;
 
 /**
  * Displays the the net worth.

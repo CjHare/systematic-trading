@@ -32,22 +32,6 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.backtest.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.brokerage.EquityIdentity;
-import com.systematic.trading.backtest.brokerage.SingleEquityClassBroker;
-import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.backtest.brokerage.fees.CmcMarketsFeeStructure;
-import com.systematic.trading.backtest.cash.CalculatedDailyPaidMonthlyCashAccount;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.cash.FlatInterestRate;
-import com.systematic.trading.backtest.cash.InterestRate;
-import com.systematic.trading.backtest.cash.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.logic.EntryLogic;
-import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.backtest.logic.HoldForeverExitLogic;
-import com.systematic.trading.backtest.logic.MinimumTradeValue;
-import com.systematic.trading.backtest.logic.SignalTriggeredEntryLogic;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.IndicatorSignalType;
@@ -55,6 +39,21 @@ import com.systematic.trading.signals.model.AnalysisLongBuySignals;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
+import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.brokerage.EquityIdentity;
+import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
+import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.simulation.brokerage.fees.CmcMarketsFeeStructure;
+import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAccount;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.FlatInterestRate;
+import com.systematic.trading.simulation.cash.InterestRate;
+import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
+import com.systematic.trading.simulation.logic.EntryLogic;
+import com.systematic.trading.simulation.logic.ExitLogic;
+import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
+import com.systematic.trading.simulation.logic.MinimumTradeValue;
+import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
 
 /**
  * Configuration for signal triggered entry logic, with weekly contribution to cash account.

@@ -43,9 +43,9 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.analysis.roi.PeriodicCulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
+import com.systematic.trading.simulation.analysis.roi.PeriodicCulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 
 /**
  * Tests the PeriodicCulmativeReturnOnInvestmentCalculator.

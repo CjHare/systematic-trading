@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.display;
 
-import com.systematic.trading.backtest.analysis.networth.NetWorthEventListener;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 
 /**
  * Summary for each of the back tests in one place.

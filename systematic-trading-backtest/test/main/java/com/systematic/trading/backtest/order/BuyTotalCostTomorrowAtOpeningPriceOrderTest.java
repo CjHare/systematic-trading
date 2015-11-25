@@ -41,15 +41,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.brokerage.BrokerageFees;
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.brokerage.EquityClass;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.exception.OrderException;
-import com.systematic.trading.backtest.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
-import com.systematic.trading.backtest.order.EquityOrderVolume;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.OpeningPrice;
+import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
+import com.systematic.trading.simulation.brokerage.EquityClass;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
+import com.systematic.trading.simulation.order.EquityOrderVolume;
+import com.systematic.trading.simulation.order.exception.OrderException;
 
 /**
  * Buy tomorrow at the opening price.

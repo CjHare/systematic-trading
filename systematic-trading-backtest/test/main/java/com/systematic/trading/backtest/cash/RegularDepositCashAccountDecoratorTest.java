@@ -41,9 +41,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.cash.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.exception.InsufficientFundsException;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
+import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
 
 /**
  * Ensures the decorator does act in accordance to expectations.

@@ -29,20 +29,10 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.backtest.analysis.networth.NetWorthSummaryEventGenerator;
-import com.systematic.trading.backtest.analysis.roi.CulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.roi.PeriodicCulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.statistics.CumulativeEventStatistics;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.brokerage.EquityIdentity;
-import com.systematic.trading.backtest.cash.CashAccount;
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
-import com.systematic.trading.backtest.event.data.TickerSymbolTradingRangeImpl;
-import com.systematic.trading.backtest.logic.EntryLogic;
-import com.systematic.trading.backtest.logic.ExitLogic;
+import com.systematic.trading.backtest.model.TickerSymbolTradingRangeImpl;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
@@ -50,6 +40,19 @@ import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.data.TickerSymbolTradingRange;
 import com.systematic.trading.event.order.OrderEventListener;
+import com.systematic.trading.simulation.Simulation;
+import com.systematic.trading.simulation.SimulationStateListener;
+import com.systematic.trading.simulation.analysis.networth.NetWorthSummaryEventGenerator;
+import com.systematic.trading.simulation.analysis.roi.CulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.PeriodicCulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.statistics.CumulativeEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
+import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.brokerage.EquityIdentity;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.logic.EntryLogic;
+import com.systematic.trading.simulation.logic.ExitLogic;
 
 /**
  * Bootstraps the back test.

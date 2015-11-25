@@ -28,14 +28,9 @@ package com.systematic.trading.backtest.display.file;
 import java.io.File;
 import java.io.IOException;
 
-import com.systematic.trading.backtest.analysis.networth.NetWorthEvent;
-import com.systematic.trading.backtest.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.event.brokerage.BrokerageEvent;
 import com.systematic.trading.event.brokerage.BrokerageEventListener;
@@ -44,6 +39,11 @@ import com.systematic.trading.event.cash.CashEventListener;
 import com.systematic.trading.event.data.TickerSymbolTradingRange;
 import com.systematic.trading.event.order.OrderEvent;
 import com.systematic.trading.event.order.OrderEventListener;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
+import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 
 /**
  * Single entry point to output a simulation run into files.

@@ -36,9 +36,9 @@ import java.text.DecimalFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.SimulationStateListener.SimulationState;
-import com.systematic.trading.backtest.analysis.networth.NetWorthEvent;
 import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
+import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 
 /**
  * Persists the comparison displays into a file.

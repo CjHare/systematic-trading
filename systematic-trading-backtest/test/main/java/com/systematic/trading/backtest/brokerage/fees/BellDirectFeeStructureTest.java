@@ -25,11 +25,11 @@
  */
 package com.systematic.trading.backtest.brokerage.fees;
 
-import static com.systematic.trading.backtest.brokerage.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
-import static com.systematic.trading.backtest.brokerage.BrokerageFeeUtil.FIFTEEN;
-import static com.systematic.trading.backtest.brokerage.BrokerageFeeUtil.TEN;
-import static com.systematic.trading.backtest.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
-import static com.systematic.trading.backtest.brokerage.BrokerageFeeUtil.THIRTEEN;
+import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
+import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.FIFTEEN;
+import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN;
+import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
+import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.THIRTEEN;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
@@ -37,9 +37,9 @@ import java.math.MathContext;
 
 import org.junit.Test;
 
-import com.systematic.trading.backtest.brokerage.EquityClass;
-import com.systematic.trading.backtest.brokerage.fees.BellDirectFeeStructure;
-import com.systematic.trading.backtest.exception.UnsupportedEquityClass;
+import com.systematic.trading.simulation.brokerage.EquityClass;
+import com.systematic.trading.simulation.brokerage.fees.BellDirectFeeStructure;
+import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
  * Test the fee structure for Bell Direct.

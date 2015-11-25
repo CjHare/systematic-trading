@@ -28,10 +28,10 @@ package com.systematic.trading.backtest.display.console;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
-import com.systematic.trading.backtest.SimulationStateListener.SimulationState;
-import com.systematic.trading.backtest.analysis.networth.NetWorthEvent;
-import com.systematic.trading.backtest.analysis.roi.CumulativeReturnOnInvestment;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
+import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;
 
 /**
  * Displays to the console the net worth.

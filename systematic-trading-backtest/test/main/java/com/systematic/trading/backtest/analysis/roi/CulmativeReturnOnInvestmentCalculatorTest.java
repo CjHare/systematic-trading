@@ -41,16 +41,16 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.analysis.roi.CulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.analysis.roi.ReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.event.CashAccountEvent;
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.event.cash.CashEvent.CashEventType;
+import com.systematic.trading.simulation.analysis.roi.CulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
+import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.event.CashAccountEvent;
 
 /**
  * Tests the CulmativeReturnOnInvestmentCalculator.

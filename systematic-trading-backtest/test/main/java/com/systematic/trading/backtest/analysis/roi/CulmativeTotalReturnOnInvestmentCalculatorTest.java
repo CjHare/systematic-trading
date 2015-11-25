@@ -36,8 +36,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 
 /**
  * Tests the behaviour of the CulmativeTotalReturnOnInvestmentCalculator.

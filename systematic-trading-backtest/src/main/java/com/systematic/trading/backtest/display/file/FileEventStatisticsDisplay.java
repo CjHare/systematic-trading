@@ -35,11 +35,11 @@ import java.text.DecimalFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.analysis.statistics.BrokerageEventStatistics;
-import com.systematic.trading.backtest.analysis.statistics.CashEventStatistics;
-import com.systematic.trading.backtest.analysis.statistics.EventStatistics;
-import com.systematic.trading.backtest.analysis.statistics.OrderEventStatistics;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
+import com.systematic.trading.simulation.analysis.statistics.BrokerageEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.CashEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistics;
 
 /**
  * Displays the summary of the events that occurred during processing.

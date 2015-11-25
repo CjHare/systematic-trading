@@ -32,20 +32,21 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.backtest.brokerage.EquityClass;
-import com.systematic.trading.backtest.brokerage.EquityIdentity;
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.HoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
 import com.systematic.trading.backtest.display.file.FileDisplay;
 import com.systematic.trading.backtest.display.file.FileNetWorthComparisonDisplay;
-import com.systematic.trading.backtest.logic.MinimumTradeValue;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
+import com.systematic.trading.simulation.brokerage.EquityClass;
+import com.systematic.trading.simulation.brokerage.EquityIdentity;
+import com.systematic.trading.simulation.logic.MinimumTradeValue;
 
 /**
  * Performs back testing of trading logic over a historical data set.

@@ -30,22 +30,21 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.backtest.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.brokerage.Brokerage;
-import com.systematic.trading.backtest.brokerage.EquityClass;
-import com.systematic.trading.backtest.brokerage.EquityIdentity;
-import com.systematic.trading.backtest.brokerage.SingleEquityClassBroker;
-import com.systematic.trading.backtest.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.backtest.brokerage.fees.VanguardRetailFeeStructure;
-import com.systematic.trading.backtest.cash.CalculatedDailyPaidMonthlyCashAccount;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.cash.FlatInterestRate;
-import com.systematic.trading.backtest.cash.InterestRate;
-import com.systematic.trading.backtest.cash.RegularDepositCashAccountDecorator;
-import com.systematic.trading.backtest.logic.DateTriggeredEntryLogic;
-import com.systematic.trading.backtest.logic.EntryLogic;
-import com.systematic.trading.backtest.logic.ExitLogic;
-import com.systematic.trading.backtest.logic.HoldForeverExitLogic;
+import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.brokerage.EquityClass;
+import com.systematic.trading.simulation.brokerage.EquityIdentity;
+import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
+import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.simulation.brokerage.fees.VanguardRetailFeeStructure;
+import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAccount;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.FlatInterestRate;
+import com.systematic.trading.simulation.cash.InterestRate;
+import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
+import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
+import com.systematic.trading.simulation.logic.EntryLogic;
+import com.systematic.trading.simulation.logic.ExitLogic;
+import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
 
 /**
  * Configuration for a weekly timed purchase entry logic.

@@ -32,6 +32,8 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 
+import com.systematic.trading.simulation.logic.MinimumTradeValue;
+
 /**
  * MinimumTradeValue test.
  * 

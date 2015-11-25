@@ -38,8 +38,8 @@ import java.time.Period;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 
 /**
  * Outputs the ROI to the console.

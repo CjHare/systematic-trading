@@ -43,15 +43,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.brokerage.BrokerageFees;
-import com.systematic.trading.backtest.brokerage.EquityClass;
-import com.systematic.trading.backtest.cash.CashAccount;
-import com.systematic.trading.backtest.logic.DateTriggeredEntryLogic;
-import com.systematic.trading.backtest.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
-import com.systematic.trading.backtest.order.EquityOrder;
-import com.systematic.trading.backtest.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.EquityClass;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
+import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
+import com.systematic.trading.simulation.order.EquityOrder;
+import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 
 /**
  * Entry logic triggered by date.

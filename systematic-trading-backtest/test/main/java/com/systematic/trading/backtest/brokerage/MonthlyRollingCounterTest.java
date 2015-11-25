@@ -32,7 +32,7 @@ import java.time.Period;
 
 import org.junit.Test;
 
-import com.systematic.trading.backtest.brokerage.MonthlyRollingCounter;
+import com.systematic.trading.simulation.brokerage.MonthlyRollingCounter;
 
 /**
  * Ensuring the Monthly Rolling Counter behaves correctly.

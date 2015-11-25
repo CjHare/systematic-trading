@@ -30,8 +30,8 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.backtest.event.ReturnOnInvestmentEventListener;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 
 /**
  * Outputs the ROI to the console.

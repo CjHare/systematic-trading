@@ -32,10 +32,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.brokerage.BrokerageTransaction;
-import com.systematic.trading.backtest.logic.HoldForeverExitLogic;
-import com.systematic.trading.backtest.order.EquityOrder;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
+import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
+import com.systematic.trading.simulation.order.EquityOrder;
 
 /**
  * Testing the hold forever exit logic.

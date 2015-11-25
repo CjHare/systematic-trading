@@ -14,21 +14,15 @@
 		<jna.version>4.1.0</jna.version>
 		<mockito.version>1.10.19</mockito.version>
 
-		<systematic.trading.signals.version>0.0.1-SNAPSHOT</systematic.trading.signals.version>
-		<systematic.trading.data.version>0.0.1-SNAPSHOT</systematic.trading.data.version>
+		<systematic.trading.simulation.version>0.0.1-SNAPSHOT</systematic.trading.simulation.version>
 	</properties>
 
 	<dependencies>
 
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-signals</artifactId>
-			<version>${systematic.trading.signals.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data</artifactId>
-			<version>${systematic.trading.data.version}</version>
+			<artifactId>systematic-trading-simulation</artifactId>
+			<version>${systematic.trading.simulation.version}</version>
 		</dependency>
 
 		<!-- These JNA are used by Android API -->
