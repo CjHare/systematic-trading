@@ -25,12 +25,12 @@
  */
 package com.systematic.trading.analysis.display.console;
 
-import com.systematic.trading.event.brokerage.BrokerageEvent;
-import com.systematic.trading.event.brokerage.BrokerageEventListener;
-import com.systematic.trading.event.cash.CashEvent;
-import com.systematic.trading.event.cash.CashEventListener;
-import com.systematic.trading.event.order.OrderEvent;
-import com.systematic.trading.event.order.OrderEventListener;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
+import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
  * Simple output to the console for the events.

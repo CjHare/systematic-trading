@@ -37,8 +37,10 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.model.event.NotEnoughDataPointsEvent;
+import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class AnalysisLongBuySignals implements AnalysisBuySignals {
@@ -51,6 +53,9 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 	/** Most number of trading day data used by the signal generators. */
 	private final int maximumNumberOfTradingDaysRequired;
+
+	/** Listeners interested in signal analysis events. */
+	private final List<SignalAnalysisListener> listeners = new ArrayList<SignalAnalysisListener>();
 
 	private final List<SignalFilter> filters;
 	private final List<IndicatorSignalGenerator> generators;
@@ -104,11 +109,11 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 				signals = generator.calculateSignals( data );
 
 				// TODO events for signals generated
+				// TODO currently no listeners
 
 			} catch (final TooFewDataPoints e) {
-				// TODO events for the too few data points
-				// TODO log / record - may be of interested when there's too little data
-				System.err.println( e.getMessage() );
+
+				notifyTooFewDataPoints( generator.getSignalType() );
 
 				// No signals generated
 				signals = new ArrayList<IndicatorSignal>();
@@ -123,5 +128,20 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	@Override
 	public int getMaximumNumberOfTradingDaysRequired() {
 		return maximumNumberOfTradingDaysRequired;
+	}
+
+	public void addListener( final SignalAnalysisListener listener ) {
+		listeners.add( listener );
+	}
+
+	private void notifyTooFewDataPoints( final IndicatorSignalType type ) {
+
+		// Create the event only when there are listeners
+		if (!listeners.isEmpty()) {
+			final SignalAnalysisEvent event = new NotEnoughDataPointsEvent( type );
+			for (final SignalAnalysisListener listener : listeners) {
+				listener.event( event );
+			}
+		}
 	}
 }

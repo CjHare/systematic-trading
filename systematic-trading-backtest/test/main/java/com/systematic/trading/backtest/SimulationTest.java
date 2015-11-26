@@ -25,9 +25,10 @@
  */
 package com.systematic.trading.backtest;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -37,7 +38,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;
 import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.brokerage.Brokerage;
@@ -87,9 +92,12 @@ public class SimulationTest {
 
 	@Test
 	public void create() {
+		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK );
 		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
+		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, startDate, endDate,
+				unorderedPoints );
 
-		new Simulation( startDate, endDate, unorderedPoints, broker, funds, roiCalculator, entry, exit );
+		new Simulation( tradingData, broker, funds, roiCalculator, entry, exit );
 	}
 
 	@Test
@@ -97,8 +105,12 @@ public class SimulationTest {
 		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
 		unorderedPoints[1] = unorderedPoints[0];
 
+		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK );
+
 		try {
-			new Simulation( startDate, endDate, unorderedPoints, broker, funds, roiCalculator, entry, exit );
+			final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, startDate, endDate,
+					unorderedPoints );
+			new Simulation( tradingData, broker, funds, roiCalculator, entry, exit );
 
 			fail( "Expecting exception for duplicate data point date" );
 		} catch (final IllegalArgumentException e) {

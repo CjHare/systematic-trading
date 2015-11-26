@@ -23,45 +23,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage;
+package com.systematic.trading.simulation.order.event;
+
+
 
 /**
- * Highest level of unique identifier for an equity within the wider simulation.
+ * A listener interested in order event notifications.
  * 
  * @author CJ Hare
  */
-public class EquityIdentity {
-
-	/** How the equity is treated. */
-	private final EquityClass type;
-
-	/** Symbol used to identify the equity in the source of the trading data. */
-	private final String tickerSymbol;
-
+public interface OrderEventListener {
+	
 	/**
-	 * @param tickerSymbol identity of the equity within the source of the trading data.
-	 * @param type determines how the equity is treated.
-	 */
-	public EquityIdentity( final String tickerSymbol, final EquityClass type ) {
-		this.tickerSymbol = tickerSymbol;
-		this.type = type;
-	}
-
-	/**
-	 * Retrieves the type of equity.
+	 * Notification that an Order Event has occurred.
 	 * 
-	 * @return how to treat the equity.
+	 * @param event the type of event that the listener is interested.
 	 */
-	public EquityClass getType() {
-		return type;
-	}
-
-	/**
-	 * Retrieves the identity of the equity.
-	 * 
-	 * @return ticker symbol used to identify the equity by the trading data source.
-	 */
-	public String getTickerSymbol() {
-		return tickerSymbol;
-	}
+	void event( OrderEvent event );
 }

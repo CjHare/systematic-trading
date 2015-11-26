@@ -36,13 +36,13 @@ import java.time.temporal.ChronoUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.event.brokerage.BrokerageEvent;
-import com.systematic.trading.event.brokerage.BrokerageEventListener;
-import com.systematic.trading.event.cash.CashEvent;
-import com.systematic.trading.event.cash.CashEventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
-import com.systematic.trading.event.order.OrderEvent;
-import com.systematic.trading.event.order.OrderEventListener;
+import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
+import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
  * Simple output to the console for the events.
@@ -60,7 +60,7 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 	private final OrderEventListener orderEventListener;
 	private final BrokerageEventListener brokerageEventListener;
 
-	public FileEventDisplay( final String outputFilename, final TickerSymbolTradingRange range ) {
+	public FileEventDisplay( final String outputFilename, final TickerSymbolTradingData range ) {
 
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
@@ -78,7 +78,7 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 		this.brokerageEventListener = new FileBrokerageEventDisplay( outputFilename );
 	}
 
-	private String createHeaderOutput( final TickerSymbolTradingRange range ) {
+	private String createHeaderOutput( final TickerSymbolTradingData tradingData ) {
 
 		final StringBuilder output = new StringBuilder();
 		output.append( "\n" );
@@ -87,14 +87,14 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 		output.append( "#######################\n" );
 		output.append( "\n" );
 
-		output.append( String.format( "Data set for %s from %s to %s\n", range.getTickerSymbol(), range.getStartDate(),
-				range.getEndDate() ) );
+		output.append( String.format( "Data set for %s from %s to %s\n", tradingData.getEquityIdentity().getTickerSymbol(),
+				tradingData.getStartDate(), tradingData.getEndDate() ) );
 
-		final long daysBetween = ChronoUnit.DAYS.between( range.getStartDate(), range.getEndDate() );
-		final double percentageTradingDays = ((double) range.getNumberOfTradingDays() / daysBetween) * 100;
+		final long daysBetween = ChronoUnit.DAYS.between( tradingData.getStartDate(), tradingData.getEndDate() );
+		final double percentageTradingDays = ((double) tradingData.getNumberOfTradingDays() / daysBetween) * 100;
 
 		output.append( String.format( "# trading days: %s over %s days (%s percentage trading days)\n",
-				range.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
+				tradingData.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
 
 		output.append( "\n" );
 

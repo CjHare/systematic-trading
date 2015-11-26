@@ -23,20 +23,19 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage;
+package com.systematic.trading.signals.model.event;
 
 /**
- * The different ways the equity classes are viewed by brokers.
+ * Interested in events created during analysis to generate signals.
  * 
  * @author CJ Hare
  */
-public enum EquityClass {
-	BOND,
-	CFD,
-	FUTURE,
-	FOREX,
-	METAL,
-	OPTION,
-	STOCK,
-	WARRENT,
+public interface SignalAnalysisListener {
+
+	/**
+	 * Event has occurred that may be of interest to the listener.
+	 * 
+	 * @param event something wicked this way comes.
+	 */
+	void event( SignalAnalysisEvent event );
 }

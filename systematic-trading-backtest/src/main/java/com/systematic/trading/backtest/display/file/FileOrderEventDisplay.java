@@ -35,8 +35,8 @@ import java.text.DecimalFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.event.order.OrderEvent;
-import com.systematic.trading.event.order.OrderEventListener;
+import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
  * Simple output to the console for the events.

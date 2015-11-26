@@ -43,9 +43,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.OpeningPrice;
+import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.brokerage.BrokerageFees;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
-import com.systematic.trading.simulation.brokerage.EquityClass;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrderVolume;

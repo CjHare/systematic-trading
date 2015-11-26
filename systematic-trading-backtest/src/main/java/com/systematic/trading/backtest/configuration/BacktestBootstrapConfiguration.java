@@ -27,8 +27,8 @@ package com.systematic.trading.backtest.configuration;
 
 import java.time.LocalDate;
 
+import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.Brokerage;
-import com.systematic.trading.simulation.brokerage.EquityIdentity;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
@@ -41,22 +41,6 @@ import com.systematic.trading.simulation.logic.ExitLogic;
  * @author CJ Hare
  */
 public interface BacktestBootstrapConfiguration {
-
-	/**
-	 * First day to begin the back testing.
-	 * 
-	 * @return inclusive date of the first trading day, or closest following day to begin back
-	 *         testing.
-	 */
-	LocalDate getStartDate();
-
-	/**
-	 * Last day for the back testing.
-	 * 
-	 * @return inclusive date of the last trading day, or closest preceding day to cease back
-	 *         testing.
-	 */
-	LocalDate getEndDate();
 
 	/**
 	 * Exit logic used to generate sell orders.

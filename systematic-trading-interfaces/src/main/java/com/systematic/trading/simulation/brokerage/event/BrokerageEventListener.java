@@ -23,74 +23,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.event.brokerage;
+package com.systematic.trading.simulation.brokerage.event;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
-import com.systematic.trading.event.Event;
 
 /**
- * A brokerage event that warrants being recorded.
+ * A listener interested in brokerage event notifications.
  * 
  * @author CJ Hare
  */
-public interface BrokerageEvent extends Event {
-
-	public enum BrokerageAccountEventType {
-		BUY( "Buy" ),
-		SELL( "Sell" );
-
-		private final String display;
-
-		private BrokerageAccountEventType( final String display ) {
-			this.display = display;
-		}
-
-		public String getDisplay() {
-			return display;
-		}
-	}
+public interface BrokerageEventListener {
 
 	/**
-	 * Retrieves the classification for the brokerage event.
+	 * Notification that an Brokerage Event has occurred.
 	 * 
-	 * @return general category the event falls within.
+	 * @param event the type of event that the listener is interested.
 	 */
-	BrokerageAccountEventType getType();
-
-	/**
-	 * Brokers fee for performing the trade.
-	 * 
-	 * @return amount paid to the broker to facilitate the trade.
-	 */
-	BigDecimal getTransactionFee();
-
-	/**
-	 * Number of equities prior to the brokerage event.
-	 * 
-	 * @return quantities of equities prior to the brokerage event.
-	 */
-	BigDecimal getStartingEquityBalance();
-
-	/**
-	 * Number of equities after the brokerage event.
-	 * 
-	 * @return quantities of equities after the brokerage event.
-	 */
-	BigDecimal getEndEquityBalance();
-
-	/**
-	 * Date of brokerage event.
-	 * 
-	 * @return when the brokerage event occurred.
-	 */
-	LocalDate getTransactionDate();
-
-	/**
-	 * The number of equities involved in the brokerage transaction.
-	 * 
-	 * @return number of equities being brokered.
-	 */
-	BigDecimal getEquityAmount();
+	void event( BrokerageEvent event );
 }

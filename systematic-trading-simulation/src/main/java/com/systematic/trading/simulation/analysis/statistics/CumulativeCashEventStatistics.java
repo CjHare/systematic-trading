@@ -27,7 +27,7 @@ package com.systematic.trading.simulation.analysis.statistics;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.event.cash.CashEvent;
+import com.systematic.trading.simulation.cash.event.CashEvent;
 
 /**
  * Cumulative recording of the cash events for statistical purposes.

@@ -35,8 +35,8 @@ import java.text.DecimalFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.event.cash.CashEvent;
-import com.systematic.trading.event.cash.CashEventListener;
+import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.cash.event.CashEventListener;
 
 /**
  * Simple output to the console for the events.

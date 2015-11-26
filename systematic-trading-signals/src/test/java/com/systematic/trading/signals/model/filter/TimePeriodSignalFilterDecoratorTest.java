@@ -48,9 +48,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
+import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
  * TimePeriodSignalFilterDecorator test.

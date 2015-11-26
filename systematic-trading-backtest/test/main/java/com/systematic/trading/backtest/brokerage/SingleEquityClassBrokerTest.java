@@ -40,7 +40,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.price.Price;
-import com.systematic.trading.simulation.brokerage.EquityClass;
+import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.simulation.order.EquityOrderVolume;

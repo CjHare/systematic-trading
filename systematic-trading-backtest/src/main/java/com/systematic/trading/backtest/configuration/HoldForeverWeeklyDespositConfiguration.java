@@ -32,15 +32,15 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.model.AnalysisLongBuySignals;
+import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 import com.systematic.trading.simulation.brokerage.Brokerage;
-import com.systematic.trading.simulation.brokerage.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.simulation.brokerage.fees.CmcMarketsFeeStructure;

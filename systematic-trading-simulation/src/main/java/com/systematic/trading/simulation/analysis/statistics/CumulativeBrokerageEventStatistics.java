@@ -27,7 +27,7 @@ package com.systematic.trading.simulation.analysis.statistics;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.event.brokerage.BrokerageEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 
 /**
  * Cumulative recording of the brokerage events for statistical purposes.

@@ -28,6 +28,7 @@ package com.systematic.trading.simulation.brokerage;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**

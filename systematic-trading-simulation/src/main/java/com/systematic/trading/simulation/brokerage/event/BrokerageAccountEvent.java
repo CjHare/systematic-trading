@@ -28,8 +28,6 @@ package com.systematic.trading.simulation.brokerage.event;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.event.brokerage.BrokerageEvent;
-
 /**
  * Broker Account events, buying and selling equities.
  * 

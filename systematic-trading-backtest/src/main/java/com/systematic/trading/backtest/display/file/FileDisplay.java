@@ -32,18 +32,18 @@ import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.brokerage.BrokerageEvent;
-import com.systematic.trading.event.brokerage.BrokerageEventListener;
-import com.systematic.trading.event.cash.CashEvent;
-import com.systematic.trading.event.cash.CashEventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
-import com.systematic.trading.event.order.OrderEvent;
-import com.systematic.trading.event.order.OrderEventListener;
+import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
+import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
  * Single entry point to output a simulation run into files.
@@ -85,7 +85,7 @@ public class FileDisplay implements BacktestDisplay {
 	}
 
 	@Override
-	public void init( final TickerSymbolTradingRange tickerSymbolTradingRange, final EventStatistics eventStatistics,
+	public void init( final TickerSymbolTradingData tickerSymbolTradingRange, final EventStatistics eventStatistics,
 
 	final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 			throws Exception {

@@ -35,7 +35,7 @@ import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.apply
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import com.systematic.trading.simulation.brokerage.EquityClass;
+import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**

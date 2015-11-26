@@ -26,10 +26,10 @@
 package com.systematic.trading.simulation.analysis.roi;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.cash.CashEventListener;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.event.CashEventListener;
 
 /**
  * Calculates and records the return on investment (ROI) at periodic intervals.

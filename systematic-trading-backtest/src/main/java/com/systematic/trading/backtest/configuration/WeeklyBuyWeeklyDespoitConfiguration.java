@@ -30,9 +30,9 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
+import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.Brokerage;
-import com.systematic.trading.simulation.brokerage.EquityClass;
-import com.systematic.trading.simulation.brokerage.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.simulation.brokerage.fees.VanguardRetailFeeStructure;

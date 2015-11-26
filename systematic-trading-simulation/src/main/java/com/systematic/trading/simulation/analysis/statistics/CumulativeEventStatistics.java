@@ -25,9 +25,9 @@
  */
 package com.systematic.trading.simulation.analysis.statistics;
 
-import com.systematic.trading.event.brokerage.BrokerageEvent;
-import com.systematic.trading.event.cash.CashEvent;
-import com.systematic.trading.event.order.OrderEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
  * Statistics recorded cumulatively, being updated when the events are received.

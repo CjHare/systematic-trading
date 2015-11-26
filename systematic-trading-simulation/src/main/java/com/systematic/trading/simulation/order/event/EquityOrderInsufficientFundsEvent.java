@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.simulation.order.event;
 
-import com.systematic.trading.event.order.OrderEvent;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 
 /**

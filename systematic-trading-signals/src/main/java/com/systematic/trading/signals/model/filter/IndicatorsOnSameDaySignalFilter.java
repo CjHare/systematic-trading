@@ -33,8 +33,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.model.BuySignal;
+import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
  * Signal generated when there is a RSI and MACD filter on the same day.

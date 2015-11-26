@@ -28,18 +28,14 @@ package com.systematic.trading.backtest;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Map;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
-import com.systematic.trading.backtest.model.TickerSymbolTradingRangeImpl;
-import com.systematic.trading.data.DataService;
-import com.systematic.trading.data.DataServiceUpdater;
-import com.systematic.trading.data.DataServiceUpdaterImpl;
-import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
-import com.systematic.trading.event.order.OrderEventListener;
+import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;
 import com.systematic.trading.simulation.SimulationStateListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthSummaryEventGenerator;
@@ -49,10 +45,10 @@ import com.systematic.trading.simulation.analysis.roi.PeriodicCulmativeReturnOnI
 import com.systematic.trading.simulation.analysis.statistics.CumulativeEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.Brokerage;
-import com.systematic.trading.simulation.brokerage.EquityIdentity;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
+import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
  * Bootstraps the back test.
@@ -66,9 +62,6 @@ public class BacktestBootstrap {
 	/** Context for BigDecimal operations. */
 	private final MathContext mathContext;
 
-	/** Equity being subjected to back testing. */
-	private final EquityIdentity equity;
-
 	/** Display information from the back testing. */
 	private final BacktestDisplay display;
 
@@ -78,31 +71,29 @@ public class BacktestBootstrap {
 	/** Rolling summary of the net worth outcomes. */
 	private final NetWorthComparisonDisplay comparisonDisplay;
 
-	public BacktestBootstrap( final EquityIdentity equity, final BacktestBootstrapConfiguration configuration,
-			final BacktestDisplay display, final NetWorthComparisonDisplay comparisonDisplay, final MathContext mathContext ) {
+	/** Unmodifiable trading data for input to the back test. */
+	private final TickerSymbolTradingData tradingData;
+
+	public BacktestBootstrap( final TickerSymbolTradingData tradingData,
+			final BacktestBootstrapConfiguration configuration, final BacktestDisplay display,
+			final NetWorthComparisonDisplay comparisonDisplay, final MathContext mathContext ) {
 		this.comparisonDisplay = comparisonDisplay;
 		this.configuration = configuration;
 		this.mathContext = mathContext;
 		this.display = display;
-		this.equity = equity;
+		this.tradingData = tradingData;
 	}
 
 	public void run() throws Exception {
 
 		// Date range is from the first of the starting month until now
-		final LocalDate endDate = configuration.getEndDate();
-		final LocalDate startDate = configuration.getStartDate();
-		final TradingDayPrices[] tradingData = getTradingData( equity, startDate, endDate );
+		final EquityIdentity equity = tradingData.getEquityIdentity();
 
 		// First data point may not be the requested start date
-		final LocalDate earliestDate = getEarliestDate( tradingData );
+		final LocalDate earliestDate = getEarliestDate( tradingData.getTradingDayPrices() );
 
 		// Final trading day data point, may not be be requested end date
-		final TradingDayPrices lastTradingDay = getLatestDataPoint( tradingData );
-
-		// Displays the events as they are generated
-		final TickerSymbolTradingRange tickerSymbolTradingRange = new TickerSymbolTradingRangeImpl( equity, startDate,
-				endDate, tradingData.length );
+		final TradingDayPrices lastTradingDay = getLatestDataPoint( tradingData.getTradingDayPrices() );
 
 		// Cumulative recording of investment progression
 		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( mathContext );
@@ -133,8 +124,7 @@ public class BacktestBootstrap {
 		cashAccount.addListener( roi );
 
 		// Engine dealing with the event flow
-		final Simulation simulation = new Simulation( earliestDate, endDate, tradingData, broker, cashAccount, roi,
-				entry, exit );
+		final Simulation simulation = new Simulation( tradingData, broker, cashAccount, roi, entry, exit );
 
 		// Statistics recorder for the various cash account, brokerage and order events
 		final EventStatistics eventStatistics = new CumulativeEventStatistics();
@@ -148,7 +138,7 @@ public class BacktestBootstrap {
 		simulation.addListener( networthSummay );
 
 		// Display for simulation output
-		display.init( tickerSymbolTradingRange, eventStatistics, cumulativeRoi, lastTradingDay );
+		display.init( tradingData, eventStatistics, cumulativeRoi, lastTradingDay );
 		simulation.addListener( (OrderEventListener) display );
 		simulation.addListener( (SimulationStateListener) display );
 		networthSummay.addListener( display );
@@ -165,34 +155,24 @@ public class BacktestBootstrap {
 		simulation.run();
 	}
 
-	private TradingDayPrices[] getTradingData( final EquityIdentity equity, final LocalDate startDate,
-			final LocalDate endDate ) {
+	private LocalDate getEarliestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
+		LocalDate earliest = tradingData.values().iterator().next().getDate();
 
-		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
-		updateService.get( equity.getTickerSymbol(), startDate, endDate );
-
-		final DataService service = HibernateDataService.getInstance();
-		return service.get( equity.getTickerSymbol(), startDate, endDate );
-	}
-
-	private LocalDate getEarliestDate( final TradingDayPrices[] data ) {
-		LocalDate earliest = data[0].getDate();
-
-		for (final TradingDayPrices today : data) {
-			if (earliest.isAfter( today.getDate() )) {
-				earliest = today.getDate();
+		for (final TradingDayPrices contender : tradingData.values()) {
+			if (earliest.isAfter( contender.getDate() )) {
+				earliest = contender.getDate();
 			}
 		}
 
 		return earliest;
 	}
 
-	private TradingDayPrices getLatestDataPoint( final TradingDayPrices[] tradingDate ) {
-		TradingDayPrices latest = tradingDate[0];
+	private TradingDayPrices getLatestDataPoint( final Map<LocalDate, TradingDayPrices> tradingData ) {
+		TradingDayPrices latest = tradingData.values().iterator().next();
 
-		for (int i = 1; i < tradingDate.length; i++) {
-			if (tradingDate[i].getDate().isAfter( latest.getDate() )) {
-				latest = tradingDate[i];
+		for (final TradingDayPrices contender : tradingData.values()) {
+			if (contender.getDate().isAfter( latest.getDate() )) {
+				latest = contender;
 			}
 		}
 

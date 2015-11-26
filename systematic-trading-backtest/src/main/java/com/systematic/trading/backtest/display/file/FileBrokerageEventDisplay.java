@@ -35,8 +35,8 @@ import java.text.DecimalFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.event.brokerage.BrokerageEvent;
-import com.systematic.trading.event.brokerage.BrokerageEventListener;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 
 /**
  * Simple output to the console for the events.

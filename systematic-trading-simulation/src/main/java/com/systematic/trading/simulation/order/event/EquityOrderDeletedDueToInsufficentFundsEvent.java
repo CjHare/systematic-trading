@@ -28,7 +28,6 @@ package com.systematic.trading.simulation.order.event;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.event.order.OrderEvent;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 
 /**

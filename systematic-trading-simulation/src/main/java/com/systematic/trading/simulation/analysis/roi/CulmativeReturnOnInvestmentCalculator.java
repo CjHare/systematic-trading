@@ -33,13 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.cash.CashEvent;
-import com.systematic.trading.event.cash.CashEvent.CashEventType;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventImpl;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
 
 /**
  * Calculates and records the return on investment (ROI) at periodic intervals.

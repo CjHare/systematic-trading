@@ -23,50 +23,74 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.model;
+package com.systematic.trading.simulation.brokerage.event;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
-import com.systematic.trading.simulation.brokerage.EquityIdentity;
+import com.systematic.trading.event.Event;
 
 /**
- * Summary details for the trading data used for a single ticker symbol.
+ * A brokerage event that warrants being recorded.
  * 
  * @author CJ Hare
  */
-public class TickerSymbolTradingRangeImpl implements TickerSymbolTradingRange {
+public interface BrokerageEvent extends Event {
 
-	private final String tickerSymbol;
-	private final LocalDate startDate;
-	private final LocalDate endDate;
-	private final int numberOfDataPoints;
+	public enum BrokerageAccountEventType {
+		BUY( "Buy" ),
+		SELL( "Sell" );
 
-	public TickerSymbolTradingRangeImpl( final EquityIdentity equity, final LocalDate startDate,
-			final LocalDate endDate, final int numberOfDataPoints ) {
-		this.tickerSymbol = equity.getTickerSymbol();
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.numberOfDataPoints = numberOfDataPoints;
+		private final String display;
+
+		private BrokerageAccountEventType( final String display ) {
+			this.display = display;
+		}
+
+		public String getDisplay() {
+			return display;
+		}
 	}
 
-	@Override
-	public String getTickerSymbol() {
-		return tickerSymbol;
-	}
+	/**
+	 * Retrieves the classification for the brokerage event.
+	 * 
+	 * @return general category the event falls within.
+	 */
+	BrokerageAccountEventType getType();
 
-	@Override
-	public LocalDate getStartDate() {
-		return startDate;
-	}
+	/**
+	 * Brokers fee for performing the trade.
+	 * 
+	 * @return amount paid to the broker to facilitate the trade.
+	 */
+	BigDecimal getTransactionFee();
 
-	@Override
-	public LocalDate getEndDate() {
-		return endDate;
-	}
+	/**
+	 * Number of equities prior to the brokerage event.
+	 * 
+	 * @return quantities of equities prior to the brokerage event.
+	 */
+	BigDecimal getStartingEquityBalance();
 
-	@Override
-	public int getNumberOfTradingDays() {
-		return numberOfDataPoints;
-	}
+	/**
+	 * Number of equities after the brokerage event.
+	 * 
+	 * @return quantities of equities after the brokerage event.
+	 */
+	BigDecimal getEndEquityBalance();
+
+	/**
+	 * Date of brokerage event.
+	 * 
+	 * @return when the brokerage event occurred.
+	 */
+	LocalDate getTransactionDate();
+
+	/**
+	 * The number of equities involved in the brokerage transaction.
+	 * 
+	 * @return number of equities being brokered.
+	 */
+	BigDecimal getEquityAmount();
 }

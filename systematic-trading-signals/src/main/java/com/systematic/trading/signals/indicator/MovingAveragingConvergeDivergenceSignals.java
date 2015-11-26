@@ -34,6 +34,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.ExponentialMovingAverage;
+import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignalGenerator {
 

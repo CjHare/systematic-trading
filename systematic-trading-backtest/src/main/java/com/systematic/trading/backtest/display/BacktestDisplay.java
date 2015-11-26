@@ -26,15 +26,15 @@
 package com.systematic.trading.backtest.display;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.brokerage.BrokerageEventListener;
-import com.systematic.trading.event.cash.CashEventListener;
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
-import com.systematic.trading.event.order.OrderEventListener;
+import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.SimulationStateListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
+import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
  * Output from back testing.
@@ -47,13 +47,13 @@ public interface BacktestDisplay extends CashEventListener, OrderEventListener, 
 	/**
 	 * All the interesting data points for displaying.
 	 * 
-	 * @param tickerSymbolTradingRange summary of the data set analysed.
+	 * @param tradingData summary of the data set analysed.
 	 * @param eventStatistics record of various event occurrences.
 	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
 	 * @param lastTradingDay prices from the last day in the back test.
 	 * @throws Exception problem encountered during the initialisation of the display.
 	 */
-	void init( TickerSymbolTradingRange tickerSymbolTradingRange, EventStatistics eventStatistics,
+	void init( TickerSymbolTradingData tradingData, EventStatistics eventStatistics,
 			CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, TradingDayPrices lastTradingDay )
 			throws Exception;
 }

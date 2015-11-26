@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.simulation.analysis.statistics;
 
-import com.systematic.trading.event.order.OrderEvent;
+import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
  * Statistics over the occurring order events.

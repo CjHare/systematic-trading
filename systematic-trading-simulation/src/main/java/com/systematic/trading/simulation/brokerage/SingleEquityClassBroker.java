@@ -32,10 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.price.Price;
-import com.systematic.trading.event.brokerage.BrokerageEvent;
-import com.systematic.trading.event.brokerage.BrokerageEventListener;
-import com.systematic.trading.event.brokerage.BrokerageEvent.BrokerageAccountEventType;
+import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.brokerage.event.BrokerageAccountEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent.BrokerageAccountEventType;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 import com.systematic.trading.simulation.order.EquityOrderVolume;

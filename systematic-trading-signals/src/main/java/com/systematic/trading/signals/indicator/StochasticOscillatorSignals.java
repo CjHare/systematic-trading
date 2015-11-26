@@ -35,6 +35,7 @@ import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.StochasticPercentageK;
+import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
  * Stochastic Oscillator is a momentum indicator that shows the location of the close relative to

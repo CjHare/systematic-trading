@@ -23,20 +23,73 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.event.brokerage;
+package com.systematic.trading.simulation.cash.event;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.event.Event;
 
 /**
- * A listener interested in brokerage event notifications.
+ * A cash event that warrants being recorded.
  * 
  * @author CJ Hare
  */
-public interface BrokerageEventListener {
+public interface CashEvent extends Event {
+
+	enum CashEventType {
+		/** From the sale of equities. */
+		CREDIT( "Credit" ),
+		/** From the purchase of equities. */
+		DEBIT( "Debit" ),
+		/** Non-equity source of funds being credited. */
+		DEPOSIT( "Deposit" ),
+		/** Interest paid on cash held in transactional account. */
+		INTEREST( "Interest" );
+
+		private final String display;
+
+		private CashEventType( final String display ) {
+			this.display = display;
+		}
+
+		public String getDisplay() {
+			return display;
+		}
+	}
 
 	/**
-	 * Notification that an Brokerage Event has occurred.
+	 * Retrieves the classification of cash event.
 	 * 
-	 * @param event the type of event that the listener is interested.
+	 * @return general category the cash event falls within.
 	 */
-	void event( BrokerageEvent event );
+	CashEventType getType();
+
+	/**
+	 * Value of the cash event.
+	 * 
+	 * @return amount of cash involved in the event.
+	 */
+	BigDecimal getAmount();
+
+	/**
+	 * Available fund prior to the cash event.
+	 * 
+	 * @return funds available before the cash event.
+	 */
+	BigDecimal getFundsBefore();
+
+	/**
+	 * Available funds after the cash event.
+	 * 
+	 * @return funds available after the cash event.
+	 */
+	BigDecimal getFundsAfter();
+
+	/**
+	 * Date of cash event.
+	 * 
+	 * @return when the cash event occurred.
+	 */
+	LocalDate getTransactionDate();
 }

@@ -23,42 +23,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.event.data;
+package com.systematic.trading.simulation.cash.event;
 
-import java.time.LocalDate;
+
 
 /**
- * Details for the trading range, per a specific ticker symbol.
+ * A listener interested in cash event notifications.
  * 
  * @author CJ Hare
  */
-public interface TickerSymbolTradingRange {
-
+public interface CashEventListener {
+	
 	/**
-	 * The ticker symbol for the equity.
+	 * Notification that an Cash Event has occurred.
 	 * 
-	 * @return symbol as defined by the underlying source for the trading data.
+	 * @param event the type of event that the listener is interested.
 	 */
-	String getTickerSymbol();
-
-	/**
-	 * Marks the beginning of the trading data range.
-	 * 
-	 * @return Inclusive date for the beginning of the data set.
-	 */
-	LocalDate getStartDate();
-
-	/**
-	 * Marks the end of the trading data range.
-	 * 
-	 * @return Inclusive date for the end of the data set.
-	 */
-	LocalDate getEndDate();
-
-	/**
-	 * Retrieve the number of trading days data.
-	 * 
-	 * @return the number of trading data points within the defined start and end dates.
-	 */
-	int getNumberOfTradingDays();
+	void event( CashEvent event );
 }

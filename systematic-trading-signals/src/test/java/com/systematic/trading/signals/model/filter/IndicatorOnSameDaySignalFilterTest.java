@@ -38,9 +38,9 @@ import java.util.SortedSet;
 import org.junit.Test;
 
 import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.indicator.IndicatorSignalType;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
+import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
  * IndicatorsOnSameDaySignalFilter Test

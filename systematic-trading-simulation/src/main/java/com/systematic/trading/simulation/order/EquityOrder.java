@@ -26,10 +26,10 @@
 package com.systematic.trading.simulation.order;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.order.OrderEvent;
 import com.systematic.trading.simulation.brokerage.BrokerageFees;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.exception.OrderException;
 
 /**

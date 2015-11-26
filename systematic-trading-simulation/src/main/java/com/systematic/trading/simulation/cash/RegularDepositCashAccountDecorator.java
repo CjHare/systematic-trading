@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.event.cash.CashEventListener;
+import com.systematic.trading.simulation.cash.event.CashEventListener;
 import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
 
 /**

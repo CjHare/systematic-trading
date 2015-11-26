@@ -34,6 +34,7 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.RelativeStrengthIndex;
+import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
  * Takes the output from RSI and identifies any buy signals.

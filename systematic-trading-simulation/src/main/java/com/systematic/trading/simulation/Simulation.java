@@ -28,7 +28,6 @@ package com.systematic.trading.simulation;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.event.order.OrderEvent;
-import com.systematic.trading.event.order.OrderEventListener;
+import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.brokerage.Brokerage;
@@ -47,6 +45,8 @@ import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.simulation.order.event.EquityOrderDeletedDueToInsufficentFundsEvent;
+import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.simulation.order.event.OrderEventListener;
 import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
 import com.systematic.trading.simulation.order.exception.OrderException;
 
@@ -75,15 +75,6 @@ public class Simulation {
 	/** Dealer of equities, manages the equity balance. */
 	private final Brokerage broker;
 
-	/** Beginning date of the simulation. */
-	private final LocalDate endDate;
-
-	/** Last date of the simulation. */
-	private final LocalDate startDate;
-
-	/** The trading data to feed into the simulation. */
-	private final Map<LocalDate, TradingDayPrices> tradingData;
-
 	/** Time between deposit events. */
 	private final Period interval = Period.ofDays( 1 );
 
@@ -96,40 +87,34 @@ public class Simulation {
 	/** Listeners interested in state transition events. */
 	private final List<SimulationStateListener> stateListeners = new ArrayList<SimulationStateListener>();
 
-	public Simulation( final LocalDate startDate, final LocalDate endDate, final TradingDayPrices[] unordered,
-			final Brokerage broker, final CashAccount funds, final ReturnOnInvestmentCalculator roi,
-			final EntryLogic entry, final ExitLogic exit ) {
+	/** Trading data to use for the simulation. */
+	private final TickerSymbolTradingData tradingData;
 
-		this.startDate = startDate;
-		this.endDate = endDate;
+	public Simulation( final TickerSymbolTradingData tradingData, final Brokerage broker, final CashAccount funds,
+			final ReturnOnInvestmentCalculator roi, final EntryLogic entry, final ExitLogic exit ) {
+
 		this.entry = entry;
 		this.exit = exit;
 		this.funds = funds;
 		this.broker = broker;
 		this.roi = roi;
-
-		this.tradingData = new HashMap<LocalDate, TradingDayPrices>();
-
-		for (final TradingDayPrices data : unordered) {
-			this.tradingData.put( data.getDate(), data );
-		}
-
-		if (this.tradingData.size() != unordered.length) {
-			throw new IllegalArgumentException( "Duplicate trading dates provided" );
-		}
+		this.tradingData = tradingData;
 	}
 
 	public void run() {
 
+		final Map<LocalDate, TradingDayPrices> tradingDayPrices = tradingData.getTradingDayPrices();
+		final LocalDate endDate = tradingData.getEndDate();
+
 		List<EquityOrder> orders = new ArrayList<EquityOrder>();
-		LocalDate currentDate = startDate;
+		LocalDate currentDate = tradingData.getStartDate();
 
 		while (currentDate.isBefore( endDate )) {
 
 			// Financial activity of deposits, withdrawal and interest
 			funds.update( currentDate );
 
-			final TradingDayPrices currentTradingData = tradingData.get( currentDate );
+			final TradingDayPrices currentTradingData = tradingDayPrices.get( currentDate );
 
 			// Only when there is trading data for today
 			if (currentTradingData != null) {
@@ -256,7 +241,6 @@ public class Simulation {
 			return null;
 
 		} catch (final InsufficientFundsException e) {
-			LOG.warn( String.format( "Insufficient funds to execute order %s", order.toString() ) );
 
 			final EquityOrderInsufficientFundsAction action = entry.actionOnInsufficentFunds( order );
 

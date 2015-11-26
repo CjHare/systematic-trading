@@ -25,9 +25,9 @@
  */
 package com.systematic.trading.simulation.analysis.statistics;
 
-import com.systematic.trading.event.brokerage.BrokerageEventListener;
-import com.systematic.trading.event.cash.CashEventListener;
-import com.systematic.trading.event.order.OrderEventListener;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
+import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
  * Records the data produced during process, making the statistics easily accessible.

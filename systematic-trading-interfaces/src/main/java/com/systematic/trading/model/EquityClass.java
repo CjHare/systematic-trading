@@ -23,73 +23,20 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.event.cash;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import com.systematic.trading.event.Event;
+package com.systematic.trading.model;
 
 /**
- * A cash event that warrants being recorded.
+ * The different ways the equity classes are viewed by brokers.
  * 
  * @author CJ Hare
  */
-public interface CashEvent extends Event {
-
-	enum CashEventType {
-		/** From the sale of equities. */
-		CREDIT( "Credit" ),
-		/** From the purchase of equities. */
-		DEBIT( "Debit" ),
-		/** Non-equity source of funds being credited. */
-		DEPOSIT( "Deposit" ),
-		/** Interest paid on cash held in transactional account. */
-		INTEREST( "Interest" );
-
-		private final String display;
-
-		private CashEventType( final String display ) {
-			this.display = display;
-		}
-
-		public String getDisplay() {
-			return display;
-		}
-	}
-
-	/**
-	 * Retrieves the classification of cash event.
-	 * 
-	 * @return general category the cash event falls within.
-	 */
-	CashEventType getType();
-
-	/**
-	 * Value of the cash event.
-	 * 
-	 * @return amount of cash involved in the event.
-	 */
-	BigDecimal getAmount();
-
-	/**
-	 * Available fund prior to the cash event.
-	 * 
-	 * @return funds available before the cash event.
-	 */
-	BigDecimal getFundsBefore();
-
-	/**
-	 * Available funds after the cash event.
-	 * 
-	 * @return funds available after the cash event.
-	 */
-	BigDecimal getFundsAfter();
-
-	/**
-	 * Date of cash event.
-	 * 
-	 * @return when the cash event occurred.
-	 */
-	LocalDate getTransactionDate();
+public enum EquityClass {
+	BOND,
+	CFD,
+	FUTURE,
+	FOREX,
+	METAL,
+	OPTION,
+	STOCK,
+	WARRENT,
 }

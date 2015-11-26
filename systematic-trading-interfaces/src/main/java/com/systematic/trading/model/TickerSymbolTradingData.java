@@ -23,49 +23,52 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.event.order;
+package com.systematic.trading.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
-import com.systematic.trading.event.Event;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
- * An order event that warrants being recorded.
+ * Details for the trading range, per a specific ticker symbol.
  * 
  * @author CJ Hare
  */
-public interface OrderEvent extends Event {
-	/**
-	 * All the different event types for equity orders.
-	 * 
-	 * @author CJ Hare
-	 */
-	public enum EquityOrderType {
-		ENTRY,
-		EXIT,
-		DELETE_ENTRY,
-		DELETE_EXIT
-	}
+public interface TickerSymbolTradingData {
 
 	/**
-	 * Retrieve the type of the order.
+	 * Identity of the equity across the universe of equities.
 	 * 
-	 * @return purpose of the order that triggered the event recording.
+	 * @return never <code>null</code>.
 	 */
-	EquityOrderType getType();
+	EquityIdentity getEquityIdentity();
 
 	/**
-	 * Date of cash event.
+	 * Marks the beginning of the trading data range.
 	 * 
-	 * @return when the cash event occurred.
+	 * @return Inclusive date for the beginning of the data set.
 	 */
-	LocalDate getTransactionDate();
+	LocalDate getStartDate();
 
 	/**
-	 * Total cost of the order.
+	 * Marks the end of the trading data range.
 	 * 
-	 * @return cost of the order including any fees.
+	 * @return Inclusive date for the end of the data set.
 	 */
-	BigDecimal getTotalCost();
+	LocalDate getEndDate();
+
+	/**
+	 * Retrieve the number of trading days data.
+	 * 
+	 * @return the number of trading data points within the defined start and end dates.
+	 */
+	int getNumberOfTradingDays();
+
+	/**
+	 * Retrieves the map of trading days to their prices.
+	 * 
+	 * @return trading prices keyed by the date they correspond with.
+	 */
+	Map<LocalDate, TradingDayPrices> getTradingDayPrices();
 }

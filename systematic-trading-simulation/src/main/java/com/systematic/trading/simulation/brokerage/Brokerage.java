@@ -26,7 +26,7 @@
  */
 package com.systematic.trading.simulation.brokerage;
 
-import com.systematic.trading.event.brokerage.BrokerageEventListener;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 
 /**
  * The bringing together of the different aspects of a brokerage house.

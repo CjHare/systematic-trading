@@ -28,7 +28,7 @@ package com.systematic.trading.backtest.display.console;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
-import com.systematic.trading.event.data.TickerSymbolTradingRange;
+import com.systematic.trading.model.TickerSymbolTradingData;
 
 /**
  * Displays the header text in the console.
@@ -39,7 +39,7 @@ public class ConsoleHeaderDisplay {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
-	public void displayHeader( final TickerSymbolTradingRange range ) {
+	public void displayHeader( final TickerSymbolTradingData tradingData ) {
 
 		System.out.println( "\n" );
 		System.out.println( "#######################" );
@@ -47,14 +47,14 @@ public class ConsoleHeaderDisplay {
 		System.out.println( "#######################" );
 		System.out.println( "\n" );
 
-		System.out.println( String.format( "Data set for %s from %s to %s", range.getTickerSymbol(),
-				range.getStartDate(), range.getEndDate() ) );
+		System.out.println( String.format( "Data set for %s from %s to %s",
+				tradingData.getEquityIdentity().getTickerSymbol(), tradingData.getStartDate(), tradingData.getEndDate() ) );
 
-		final long daysBetween = ChronoUnit.DAYS.between( range.getStartDate(), range.getEndDate() );
-		final double percentageTradingDays = ((double) range.getNumberOfTradingDays() / daysBetween) * 100;
+		final long daysBetween = ChronoUnit.DAYS.between( tradingData.getStartDate(), tradingData.getEndDate() );
+		final double percentageTradingDays = ((double) tradingData.getNumberOfTradingDays() / daysBetween) * 100;
 
 		System.out.println( String.format( "# trading days: %s over %s days (%s percentage trading days)",
-				range.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
+				tradingData.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
 
 		System.out.println( "\n" );
 	}

@@ -43,7 +43,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.event.cash.CashEvent.CashEventType;
 import com.systematic.trading.simulation.analysis.roi.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
@@ -51,6 +50,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.event.CashAccountEvent;
+import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
 
 /**
  * Tests the CulmativeReturnOnInvestmentCalculator.

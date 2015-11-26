@@ -39,13 +39,20 @@ import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
 import com.systematic.trading.backtest.display.file.FileDisplay;
 import com.systematic.trading.backtest.display.file.FileNetWorthComparisonDisplay;
+import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
+import com.systematic.trading.data.DataService;
+import com.systematic.trading.data.DataServiceUpdater;
+import com.systematic.trading.data.DataServiceUpdaterImpl;
+import com.systematic.trading.data.HibernateDataService;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
+import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
-import com.systematic.trading.simulation.brokerage.EquityClass;
-import com.systematic.trading.simulation.brokerage.EquityIdentity;
 import com.systematic.trading.simulation.logic.MinimumTradeValue;
 
 /**
@@ -74,6 +81,8 @@ public class SystematicTradingBacktest {
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
 		final List<BacktestBootstrapConfiguration> configurations = getConfigurations( startDate, endDate );
 
+		final TickerSymbolTradingData tradingData = getTradingData( equity, startDate, endDate );
+
 		// Arrange output to files
 		final NetWorthComparisonDisplay netWorthComparisonDisplay = new FileNetWorthComparisonDisplay(
 				"../../simulations/summary.txt" );
@@ -84,13 +93,29 @@ public class SystematicTradingBacktest {
 
 			netWorthComparisonDisplay.setDescription( configuration.getDescription() );
 
-			final BacktestBootstrap bootstrap = new BacktestBootstrap( equity, configuration, fileDisplay,
+			final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
 					netWorthComparisonDisplay, MATH_CONTEXT );
 
 			bootstrap.run();
 		}
 
 		HibernateUtil.getSessionFactory().close();
+	}
+
+	private static TickerSymbolTradingData getTradingData( final EquityIdentity equity, final LocalDate startDate,
+			final LocalDate endDate ) {
+
+		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
+		updateService.get( equity.getTickerSymbol(), startDate, endDate );
+
+		final DataService service = HibernateDataService.getInstance();
+		final TradingDayPrices[] data = service.get( equity.getTickerSymbol(), startDate, endDate );
+
+		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, startDate, endDate,
+				data );
+
+		return tradingData;
+
 	}
 
 	private static List<BacktestBootstrapConfiguration> getConfigurations( final LocalDate startDate,
