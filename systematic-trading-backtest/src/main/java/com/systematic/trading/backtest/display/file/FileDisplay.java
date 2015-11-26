@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.display.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
@@ -64,8 +65,9 @@ public class FileDisplay implements BacktestDisplay {
 	private OrderEventListener ordertEventDisplay;
 	private EventStatisticsDisplay statisticsDisplay;
 	private NetWorthSummaryDisplay netWorthDisplay;
+	private final ExecutorService pool;
 
-	public FileDisplay( final String outputDirectory ) throws IOException {
+	public FileDisplay( final String outputDirectory, final ExecutorService pool ) throws IOException {
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File( outputDirectory );
@@ -82,45 +84,45 @@ public class FileDisplay implements BacktestDisplay {
 		}
 
 		baseDirectory = outputDirectoryFile.getCanonicalPath();
+		this.pool = pool;
 	}
 
 	@Override
-	public void init( final TickerSymbolTradingData tickerSymbolTradingRange, final EventStatistics eventStatistics,
-
-	final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
+	public void init( final TickerSymbolTradingData tradingData, final EventStatistics eventStatistics,
+			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 			throws Exception {
 
 		final String returnOnInvestmentFilename = baseDirectory + "/return-on-investment.txt";
 		this.roiDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.ALL );
+				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.ALL, pool );
 
 		final String returnOnInvestmentDailyFilename = baseDirectory + "/return-on-investment-daily.txt";
 		this.roiDailyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentDailyFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.DAILY );
+				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.DAILY, pool );
 
 		final String returnOnInvestmentMonthlyFilename = baseDirectory + "/return-on-investment-monthly.txt";
 		this.roiMonthlyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentMonthlyFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.MONTHLY );
+				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.MONTHLY, pool );
 
 		final String returnOnInvestmentYearlyFilename = baseDirectory + "/return-on-investment-yearly.txt";
 		this.roiYearlyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentYearlyFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.YEARLY );
+				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.YEARLY, pool );
 
 		final String eventFilename = baseDirectory + "/events.txt";
-		this.eventDisplay = new FileEventDisplay( eventFilename, tickerSymbolTradingRange );
+		this.eventDisplay = new FileEventDisplay( eventFilename, tradingData, pool );
 
 		final String cashEventFilename = baseDirectory + "/events-cash.txt";
-		this.cashEventDisplay = new FileCashEventDisplay( cashEventFilename );
+		this.cashEventDisplay = new FileCashEventDisplay( cashEventFilename, pool );
 
 		final String orderEventFilename = baseDirectory + "/events-order.txt";
-		this.ordertEventDisplay = new FileOrderEventDisplay( orderEventFilename );
+		this.ordertEventDisplay = new FileOrderEventDisplay( orderEventFilename, pool );
 
 		final String brokerageEventFilename = baseDirectory + "/events-brokerage.txt";
-		this.brokerageEventDisplay = new FileBrokerageEventDisplay( brokerageEventFilename );
+		this.brokerageEventDisplay = new FileBrokerageEventDisplay( brokerageEventFilename, pool );
 
 		final String statisticsFilename = baseDirectory + "/statistics.txt";
-		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename );
-		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFilename );
+		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename, pool );
+		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFilename, pool );
 	}
 
 	@Override

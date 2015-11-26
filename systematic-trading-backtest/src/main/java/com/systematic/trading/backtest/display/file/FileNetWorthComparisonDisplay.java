@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,7 +57,10 @@ public class FileNetWorthComparisonDisplay implements NetWorthComparisonDisplay 
 
 	private String description;
 
-	public FileNetWorthComparisonDisplay( final String outputFilename ) {
+	/** Pool of execution threads to delegate IO operations. */
+	private final ExecutorService pool;
+
+	public FileNetWorthComparisonDisplay( final String outputFilename, final ExecutorService pool ) {
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File( outputFilename ).getParentFile();
@@ -78,6 +82,7 @@ public class FileNetWorthComparisonDisplay implements NetWorthComparisonDisplay 
 		}
 
 		this.outputFilename = outputFilename;
+		this.pool = pool;
 	}
 
 	public void setDescription( final String description ) {
@@ -90,11 +95,16 @@ public class FileNetWorthComparisonDisplay implements NetWorthComparisonDisplay 
 		// Only interested in the net worth when the simulation is complete
 		if (SimulationState.COMPLETE.equals( state )) {
 
-			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				out.println( createOutput( event ) );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
+			final Runnable task = ( ) -> {
+				try (final PrintWriter out = new PrintWriter(
+						new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+					out.println( createOutput( event ) );
+				} catch (final IOException e) {
+					LOG.error( e );
+				}
+			};
+
+			pool.execute( task );
 		}
 	}
 

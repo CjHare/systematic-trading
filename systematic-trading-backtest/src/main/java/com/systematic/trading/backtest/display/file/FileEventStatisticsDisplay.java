@@ -31,6 +31,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,9 +58,14 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 
 	private final String outputFilename;
 
-	public FileEventStatisticsDisplay( final EventStatistics statistics, final String outputFilename ) {
+	/** Pool of execution threads to delegate IO operations. */
+	private final ExecutorService pool;
+
+	public FileEventStatisticsDisplay( final EventStatistics statistics, final String outputFilename,
+			final ExecutorService pool ) {
 		this.statistics = statistics;
 		this.outputFilename = outputFilename;
+		this.pool = pool;
 
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
@@ -70,11 +76,15 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 	@Override
 	public void displayEventStatistics() {
 
-		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			out.println( createOutput() );
-		} catch (final IOException e) {
-			LOG.error( e );
-		}
+		final Runnable task = ( ) -> {
+			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+				out.println( createOutput() );
+			} catch (final IOException e) {
+				LOG.error( e );
+			}
+		};
+
+		pool.execute( task );
 	}
 
 	private String createOutput() {
@@ -86,14 +96,14 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		output.append( "### Summary Statistics ###\n" );
 		output.append( "##########################\n" );
 
-		displayOrderStatistics( statistics.getOrderEventStatistics(), output );
-		displayCashStatistics( statistics.getCashEventStatistics(), output );
-		displayBrokerageStatistics( statistics.getBrokerageEventStatistics(), output );
+		addOrderStatistics( statistics.getOrderEventStatistics(), output );
+		addCashStatistics( statistics.getCashEventStatistics(), output );
+		addBrokerageStatistics( statistics.getBrokerageEventStatistics(), output );
 
 		return output.toString();
 	}
 
-	private void displayOrderStatistics( final OrderEventStatistics orderStatistics, final StringBuilder output ) {
+	private void addOrderStatistics( final OrderEventStatistics orderStatistics, final StringBuilder output ) {
 
 		output.append( "\n=== Order events ===\n" );
 		output.append( String.format( "# Entry Order events: %s\n", orderStatistics.getEntryEventCount() ) );
@@ -102,7 +112,7 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		output.append( String.format( "# Delete Exit Order events: %s\n", orderStatistics.getDeleteExitEventCount() ) );
 	}
 
-	private void displayCashStatistics( final CashEventStatistics cashStatistics, final StringBuilder output ) {
+	private void addCashStatistics( final CashEventStatistics cashStatistics, final StringBuilder output ) {
 
 		output.append( "\n=== Cash events ===\n" );
 		output.append( String.format( "# Cash account credit events: %s\n", cashStatistics.getCreditEventCount() ) );
@@ -115,8 +125,7 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 				TWO_DECIMAL_PLACES.format( cashStatistics.getAmountDeposited() ) ) );
 	}
 
-	private void displayBrokerageStatistics( final BrokerageEventStatistics brokerageStatistics,
-			final StringBuilder output ) {
+	private void addBrokerageStatistics( final BrokerageEventStatistics brokerageStatistics, final StringBuilder output ) {
 
 		final long sumBrokerageEvents = brokerageStatistics.getSellEventCount()
 				+ brokerageStatistics.getBuyEventCount();
@@ -128,5 +137,4 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		output.append( String.format( "Total amount paid in brokerage: %s\n",
 				TWO_DECIMAL_PLACES.format( brokerageStatistics.getBrokerageFees() ) ) );
 	}
-
 }

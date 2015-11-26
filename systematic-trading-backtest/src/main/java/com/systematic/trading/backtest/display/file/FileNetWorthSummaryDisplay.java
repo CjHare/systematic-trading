@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,9 +61,14 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 	/** The last net worth recording, which makes it into the summary. */
 	private NetWorthEvent lastEvent;
 
-	public FileNetWorthSummaryDisplay( final CumulativeReturnOnInvestment cumulativeRoi, final String outputFilename ) {
+	/** Pool of execution threads to delegate IO operations. */
+	private final ExecutorService pool;
+
+	public FileNetWorthSummaryDisplay( final CumulativeReturnOnInvestment cumulativeRoi, final String outputFilename,
+			final ExecutorService pool ) {
 		this.cumulativeRoi = cumulativeRoi;
 		this.outputFilename = outputFilename;
+		this.pool = pool;
 
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
@@ -72,11 +78,16 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 	@Override
 	public void displayNetWorth() {
-		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			out.println( createOutput() );
-		} catch (final IOException e) {
-			LOG.error( e );
-		}
+
+		final Runnable task = ( ) -> {
+			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+				out.println( createOutput() );
+			} catch (final IOException e) {
+				LOG.error( e );
+			}
+		};
+
+		pool.execute( task );
 	}
 
 	private String createOutput() {

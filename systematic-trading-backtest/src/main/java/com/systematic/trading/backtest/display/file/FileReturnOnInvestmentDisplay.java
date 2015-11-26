@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,9 +65,14 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 
 	private final String outputFilename;
 
-	public FileReturnOnInvestmentDisplay( final String outputFilename, final RETURN_ON_INVESTMENT_DISPLAY roiType ) {
+	/** Pool of execution threads to delegate IO operations. */
+	private final ExecutorService pool;
+
+	public FileReturnOnInvestmentDisplay( final String outputFilename, final RETURN_ON_INVESTMENT_DISPLAY roiType,
+			final ExecutorService pool ) {
 		this.outputFilename = outputFilename;
 		this.roiType = roiType;
+		this.pool = pool;
 
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
@@ -151,10 +157,14 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
 
-		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			out.print( createOutput( (ReturnOnInvestmentEvent) event ) );
-		} catch (final IOException e) {
-			LOG.error( e );
-		}
+		final Runnable task = ( ) -> {
+			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+				out.print( createOutput( (ReturnOnInvestmentEvent) event ) );
+			} catch (final IOException e) {
+				LOG.error( e );
+			}
+		};
+
+		pool.execute( task );
 	}
 }

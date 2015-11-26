@@ -31,6 +31,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,8 +53,12 @@ public class FileOrderEventDisplay implements OrderEventListener {
 
 	private final String outputFilename;
 
-	public FileOrderEventDisplay( final String outputFilename ) {
+	/** Pool of execution threads to delegate IO operations. */
+	private final ExecutorService pool;
+
+	public FileOrderEventDisplay( final String outputFilename, final ExecutorService pool ) {
 		this.outputFilename = outputFilename;
+		this.pool = pool;
 
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
@@ -65,13 +70,17 @@ public class FileOrderEventDisplay implements OrderEventListener {
 	@Override
 	public void event( final OrderEvent event ) {
 
-		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			final String output = String.format( "Place Order - %s total cost %s created after c.o.b on %s",
-					event.getType(), TWO_DECIMAL_PLACES.format( event.getTotalCost() ), event.getTransactionDate() );
+		final Runnable task = ( ) -> {
+			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+				final String output = String.format( "Place Order - %s total cost %s created after c.o.b on %s",
+						event.getType(), TWO_DECIMAL_PLACES.format( event.getTotalCost() ), event.getTransactionDate() );
 
-			out.println( output );
-		} catch (final IOException e) {
-			LOG.error( e );
-		}
+				out.println( output );
+			} catch (final IOException e) {
+				LOG.error( e );
+			}
+		};
+
+		pool.execute( task );
 	}
 }

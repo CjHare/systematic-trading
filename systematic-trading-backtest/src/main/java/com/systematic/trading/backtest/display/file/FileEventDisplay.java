@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,7 +61,8 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 	private final OrderEventListener orderEventListener;
 	private final BrokerageEventListener brokerageEventListener;
 
-	public FileEventDisplay( final String outputFilename, final TickerSymbolTradingData range ) {
+	public FileEventDisplay( final String outputFilename, final TickerSymbolTradingData tradingData,
+			final ExecutorService pool ) {
 
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
@@ -68,14 +70,14 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 		}
 
 		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			out.println( createHeaderOutput( range ) );
+			out.println( createHeaderOutput( tradingData ) );
 		} catch (final IOException e) {
 			LOG.error( e );
 		}
 
-		this.cashEventListener = new FileCashEventDisplay( outputFilename );
-		this.orderEventListener = new FileOrderEventDisplay( outputFilename );
-		this.brokerageEventListener = new FileBrokerageEventDisplay( outputFilename );
+		this.cashEventListener = new FileCashEventDisplay( outputFilename, pool );
+		this.orderEventListener = new FileOrderEventDisplay( outputFilename, pool );
+		this.brokerageEventListener = new FileBrokerageEventDisplay( outputFilename, pool );
 	}
 
 	private String createHeaderOutput( final TickerSymbolTradingData tradingData ) {
@@ -87,8 +89,8 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 		output.append( "#######################\n" );
 		output.append( "\n" );
 
-		output.append( String.format( "Data set for %s from %s to %s\n", tradingData.getEquityIdentity().getTickerSymbol(),
-				tradingData.getStartDate(), tradingData.getEndDate() ) );
+		output.append( String.format( "Data set for %s from %s to %s\n", tradingData.getEquityIdentity()
+				.getTickerSymbol(), tradingData.getStartDate(), tradingData.getEndDate() ) );
 
 		final long daysBetween = ChronoUnit.DAYS.between( tradingData.getStartDate(), tradingData.getEndDate() );
 		final double percentageTradingDays = ((double) tradingData.getNumberOfTradingDays() / daysBetween) * 100;

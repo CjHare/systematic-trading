@@ -31,6 +31,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,8 +53,12 @@ public class FileBrokerageEventDisplay implements BrokerageEventListener {
 
 	private final String outputFilename;
 
-	public FileBrokerageEventDisplay( final String outputFilename ) {
+	/** Pool of execution threads to delegate IO operations. */
+	private final ExecutorService pool;
+
+	public FileBrokerageEventDisplay( final String outputFilename, final ExecutorService pool ) {
 		this.outputFilename = outputFilename;
+		this.pool = pool;
 
 		final File outputFile = new File( outputFilename );
 		if (!outputFile.getParentFile().exists()) {
@@ -64,15 +69,19 @@ public class FileBrokerageEventDisplay implements BrokerageEventListener {
 	@Override
 	public void event( final BrokerageEvent event ) {
 
-		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			final String output = String.format( "Brokerage Account - %s: %s - equity balance %s -> %s on %s",
-					event.getType(), TWO_DECIMAL_PLACES.format( event.getEquityAmount() ),
-					TWO_DECIMAL_PLACES.format( event.getStartingEquityBalance() ),
-					TWO_DECIMAL_PLACES.format( event.getEndEquityBalance() ), event.getTransactionDate() );
+		final Runnable task = ( ) -> {
+			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+				final String output = String.format( "Brokerage Account - %s: %s - equity balance %s -> %s on %s",
+						event.getType(), TWO_DECIMAL_PLACES.format( event.getEquityAmount() ),
+						TWO_DECIMAL_PLACES.format( event.getStartingEquityBalance() ),
+						TWO_DECIMAL_PLACES.format( event.getEndEquityBalance() ), event.getTransactionDate() );
 
-			out.println( output );
-		} catch (final IOException e) {
-			LOG.error( e );
-		}
+				out.println( output );
+			} catch (final IOException e) {
+				LOG.error( e );
+			}
+		};
+
+		pool.execute( task );
 	}
 }

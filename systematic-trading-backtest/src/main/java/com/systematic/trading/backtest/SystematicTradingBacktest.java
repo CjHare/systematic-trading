@@ -31,6 +31,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.HoldForeverWeeklyDespositConfiguration;
@@ -83,13 +85,15 @@ public class SystematicTradingBacktest {
 
 		final TickerSymbolTradingData tradingData = getTradingData( equity, startDate, endDate );
 
+		final ExecutorService pool = Executors.newCachedThreadPool();
+
 		// Arrange output to files
 		final NetWorthComparisonDisplay netWorthComparisonDisplay = new FileNetWorthComparisonDisplay(
-				"../../simulations/summary.txt" );
+				"../../simulations/summary.txt", pool );
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final String outputDirectory = getOutputDirectory( equity, configuration );
-			final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory );
+			final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool );
 
 			netWorthComparisonDisplay.setDescription( configuration.getDescription() );
 
@@ -100,6 +104,7 @@ public class SystematicTradingBacktest {
 		}
 
 		HibernateUtil.getSessionFactory().close();
+		pool.shutdown();
 	}
 
 	private static TickerSymbolTradingData getTradingData( final EquityIdentity equity, final LocalDate startDate,
