@@ -28,7 +28,7 @@ package com.systematic.trading.maths.indicator;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import com.systematic.trading.maths.ValueWithDate;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 /**
@@ -57,7 +57,7 @@ public class SimpleMovingAverage {
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
 	 */
-	public BigDecimal[] sma( final ValueWithDate[] data ) throws TooFewDataPoints {
+	public BigDecimal[] sma( final TradingDayPrices[] data ) throws TooFewDataPoints {
 
 		// Skip any null entries
 		int startSmaIndex = 0;
@@ -86,10 +86,11 @@ public class SimpleMovingAverage {
 		return sma;
 	}
 
-	private boolean isNullEntryWithinArray( final ValueWithDate[] data, final int index ) {
+	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
 
 		if (index < data.length) {
-			return data[index] == null || data[index].geValue() == null;
+			return data[index] == null || data[index].getClosingPrice() == null
+					|| data[index].getClosingPrice().getPrice() == null;
 		}
 
 		return false;
@@ -98,12 +99,12 @@ public class SimpleMovingAverage {
 	/**
 	 * Calculate the average from this value and the previous look back amount.
 	 */
-	private BigDecimal simpleAverage( final int startIndex, final ValueWithDate[] data ) {
-		BigDecimal average = data[startIndex].geValue();
+	private BigDecimal simpleAverage( final int startIndex, final TradingDayPrices[] data ) {
+		BigDecimal average = data[startIndex].getClosingPrice().getPrice();
 		final int endIndex = startIndex - lookback;
 
 		for (int i = startIndex - 1; i > endIndex; i--) {
-			average = average.add( data[i].geValue() );
+			average = average.add( data[i].getClosingPrice().getPrice() );
 		}
 
 		return average.divide( BigDecimal.valueOf( lookback ), mathContext );

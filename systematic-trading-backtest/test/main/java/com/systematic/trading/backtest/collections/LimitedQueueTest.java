@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class LimitedQueueTest {
 	@Test
 	public void addUnderLimit() {
 		final int limit = 5;
-		final LimitedQueue<String> list = new LimitedQueue<String>( limit );
+		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, limit );
 		final String one = "one";
 
 		// Add the data to the list
@@ -56,7 +57,7 @@ public class LimitedQueueTest {
 	@Test
 	public void addOnLimit() {
 		final int limit = 2;
-		final LimitedQueue<String> list = new LimitedQueue<String>( limit );
+		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, limit );
 		final String one = "one";
 		final String two = "two";
 
@@ -74,7 +75,7 @@ public class LimitedQueueTest {
 	@Test
 	public void addOverLimit() {
 		final int limit = 2;
-		final LimitedQueue<String> list = new LimitedQueue<String>( limit );
+		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, limit );
 		final String one = "one";
 		final String two = "two";
 		final String three = "three";
@@ -90,4 +91,36 @@ public class LimitedQueueTest {
 		assertEquals( two, list.get( 0 ) );
 		assertEquals( three, list.get( 1 ) );
 	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void toArrayException() {
+		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, 1 );
+
+		list.toArray( new String[0] );
+
+		fail( "Expecting exception" );
+	}
+
+	@Test
+	public void toArraySizeOne() {
+		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, 1 );
+		list.add( "first" );
+
+		final String[] a = list.toArray();
+
+		assertEquals( 1, a.length );
+		assertEquals( "first", a[0] );
+	}
+
+	@Test
+	public void toArraySizeTwoPopulationOne() {
+		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, 2 );
+		list.add( "first" );
+
+		final String[] a = list.toArray();
+
+		assertEquals( 1, a.length );
+		assertEquals( "first", a[0] );
+	}
+
 }

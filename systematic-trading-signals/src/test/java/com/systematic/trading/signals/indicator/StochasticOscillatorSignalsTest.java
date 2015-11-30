@@ -35,7 +35,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.systematic.trading.maths.ValueWithDate;
+import com.systematic.trading.signals.model.DatedValue;
 
 public class StochasticOscillatorSignalsTest {
 
@@ -45,12 +45,11 @@ public class StochasticOscillatorSignalsTest {
 	public void buySignalsFlatLine() {
 		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 1, 1, 1, MATH_CONTEXT );
 
-		final ValueWithDate[] dataPoint = {
-				new ValueWithDate( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 25 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 1 ), BigDecimal.valueOf( 31 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 2 ), BigDecimal.valueOf( 28 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 3 ), BigDecimal.valueOf( 34 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 4 ), BigDecimal.valueOf( 60 ) ) };
+		final DatedValue[] dataPoint = { new DatedValue( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 25 ) ),
+				new DatedValue( LocalDate.now().plusDays( 1 ), BigDecimal.valueOf( 31 ) ),
+				new DatedValue( LocalDate.now().plusDays( 2 ), BigDecimal.valueOf( 28 ) ),
+				new DatedValue( LocalDate.now().plusDays( 3 ), BigDecimal.valueOf( 34 ) ),
+				new DatedValue( LocalDate.now().plusDays( 4 ), BigDecimal.valueOf( 60 ) ) };
 		final BigDecimal[] signaline = { BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 30 ),
 				BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 30 ) };
 
@@ -66,12 +65,11 @@ public class StochasticOscillatorSignalsTest {
 	public void buySignalsTrendingUp() {
 		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 1, 1, 1, MATH_CONTEXT );
 
-		final ValueWithDate[] dataPoint = {
-				new ValueWithDate( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 25 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 1 ), BigDecimal.valueOf( 32 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 2 ), BigDecimal.valueOf( 28 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 3 ), BigDecimal.valueOf( 34 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 4 ), BigDecimal.valueOf( 60 ) ) };
+		final DatedValue[] dataPoint = { new DatedValue( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 25 ) ),
+				new DatedValue( LocalDate.now().plusDays( 1 ), BigDecimal.valueOf( 32 ) ),
+				new DatedValue( LocalDate.now().plusDays( 2 ), BigDecimal.valueOf( 28 ) ),
+				new DatedValue( LocalDate.now().plusDays( 3 ), BigDecimal.valueOf( 34 ) ),
+				new DatedValue( LocalDate.now().plusDays( 4 ), BigDecimal.valueOf( 60 ) ) };
 		final BigDecimal[] signaline = { BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 31 ), BigDecimal.valueOf( 32 ),
 				BigDecimal.valueOf( 33 ), BigDecimal.valueOf( 34 ) };
 
@@ -87,12 +85,11 @@ public class StochasticOscillatorSignalsTest {
 	public void buySignalsTrendingDown() {
 		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 1, 1, 1, MATH_CONTEXT );
 
-		final ValueWithDate[] dataPoint = {
-				new ValueWithDate( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 25 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 1 ), BigDecimal.valueOf( 32 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 2 ), BigDecimal.valueOf( 24 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 3 ), BigDecimal.valueOf( 34 ) ),
-				new ValueWithDate( LocalDate.now().plusDays( 4 ), BigDecimal.valueOf( 60 ) ) };
+		final DatedValue[] dataPoint = { new DatedValue( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 25 ) ),
+				new DatedValue( LocalDate.now().plusDays( 1 ), BigDecimal.valueOf( 32 ) ),
+				new DatedValue( LocalDate.now().plusDays( 2 ), BigDecimal.valueOf( 24 ) ),
+				new DatedValue( LocalDate.now().plusDays( 3 ), BigDecimal.valueOf( 34 ) ),
+				new DatedValue( LocalDate.now().plusDays( 4 ), BigDecimal.valueOf( 60 ) ) };
 		final BigDecimal[] signaline = { BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 29 ), BigDecimal.valueOf( 28 ),
 				BigDecimal.valueOf( 27 ), BigDecimal.valueOf( 26 ) };
 

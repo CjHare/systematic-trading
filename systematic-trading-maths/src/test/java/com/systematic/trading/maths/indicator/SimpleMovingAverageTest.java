@@ -35,7 +35,11 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
-import com.systematic.trading.maths.ValueWithDate;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.LowestPrice;
+import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 public class SimpleMovingAverageTest {
@@ -90,5 +94,46 @@ public class SimpleMovingAverageTest {
 		assertNull( simpleMovingAverage[4] );
 		assertNull( simpleMovingAverage[5] );
 		assertEquals( 0, BigDecimal.valueOf( 15 ).compareTo( simpleMovingAverage[6] ) );
+	}
+
+	class ValueWithDate implements TradingDayPrices {
+
+		private final LocalDate date;
+		private final ClosingPrice value;
+
+		public ValueWithDate( final LocalDate date, final BigDecimal value ) {
+			this.date = date;
+			this.value = ClosingPrice.valueOf( value );
+		}
+
+		@Override
+		public LocalDate getDate() {
+			return date;
+		}
+
+		@Override
+		public ClosingPrice getClosingPrice() {
+			return value;
+		}
+
+		@Override
+		public LowestPrice getLowestPrice() {
+			return null;
+		}
+
+		@Override
+		public HighestPrice getHighestPrice() {
+			return null;
+		}
+
+		@Override
+		public OpeningPrice getOpeningPrice() {
+			return null;
+		}
+
+		@Override
+		public String getTickerSymbol() {
+			return null;
+		}
 	}
 }

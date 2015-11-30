@@ -29,7 +29,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Queue;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
@@ -59,10 +58,10 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	private final AnalysisBuySignals buyLongAnalysis;
 
 	/** The trading data as it rolled through the set. */
-	private final Queue<TradingDayPrices> tradingData;
+	private final LimitedQueue<TradingDayPrices> tradingData;
 
 	/** Signals that have already been submitted as orders. */
-	private final Queue<BuySignal> previousSignals;
+	private final LimitedQueue<BuySignal> previousSignals;
 
 	/** Minimum value of the trade excluding the fee amount */
 	private final MinimumTradeValue minimumTradeValue;
@@ -79,10 +78,12 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		this.minimumTradeValue = minimumTradeValue;
 		this.buyLongAnalysis = analysis;
 
-		this.tradingData = new LimitedQueue<TradingDayPrices>( analysis.getMaximumNumberOfTradingDaysRequired() );
+		this.tradingData = new LimitedQueue<TradingDayPrices>( TradingDayPrices.class,
+				analysis.getMaximumNumberOfTradingDaysRequired() );
 
 		// There can only ever be as many signals as trading days stored
-		this.previousSignals = new LimitedQueue<BuySignal>( analysis.getMaximumNumberOfTradingDaysRequired() );
+		this.previousSignals = new LimitedQueue<BuySignal>( BuySignal.class,
+				analysis.getMaximumNumberOfTradingDaysRequired() );
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		tradingData.add( data );
 
 		// Create signals from the available trading data
-		final List<BuySignal> signals = buyLongAnalysis.analyse( tradingData.toArray( new TradingDayPrices[0] ) );
+		final List<BuySignal> signals = buyLongAnalysis.analyse( tradingData.toArray() );
 
 		if (!signals.isEmpty()) {
 

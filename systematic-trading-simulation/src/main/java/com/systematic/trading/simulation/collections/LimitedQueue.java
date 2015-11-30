@@ -34,18 +34,52 @@ import java.util.LinkedList;
  */
 public class LimitedQueue<E> extends LinkedList<E> {
 	private static final long serialVersionUID = 1L;
-	private int limit;
 
-	public LimitedQueue( int limit ) {
+	/** Maximum size of the queue. */
+	private final int limit;
+
+	/** Array to use when the limit is not yet reached. */
+	private final E[] empty;
+
+	/** Array re-used when invoking toArray . */
+	private final E[] items;
+
+	@SuppressWarnings("unchecked")
+	public LimitedQueue( final Class<E> clazz, final int limit ) {
 		this.limit = limit;
+
+		// Occur the reflection cost here once
+		this.items = (E[]) java.lang.reflect.Array.newInstance( clazz, limit );
+
+		this.empty = (E[]) java.lang.reflect.Array.newInstance( clazz, 0 );
+
 	}
 
 	@Override
-	public boolean add( E o ) {
+	public boolean add( final E o ) {
 		super.add( o );
+
 		while (size() > limit) {
 			super.remove();
 		}
+
 		return true;
+	}
+
+	@Override
+	/**
+	 * More efficient implementation, with regard to memory usage.
+	 */
+	public E[] toArray() {
+		if (size() >= limit) {
+			return super.toArray( items );
+		} else {
+			return super.toArray( empty );
+		}
+	}
+
+	@Override
+	public <T> T[] toArray( final T[] a ) {
+		throw new UnsupportedOperationException( "Please use LimitedQueue.toArray() instead" );
 	}
 }

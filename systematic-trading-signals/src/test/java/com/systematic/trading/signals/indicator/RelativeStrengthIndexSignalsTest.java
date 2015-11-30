@@ -78,6 +78,6 @@ public class RelativeStrengthIndexSignalsTest {
 	public void getMaximumNumberOfTradingDaysRequired() {
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 30, 70, MATH_CONTEXT );
 
-		assertEquals( 10, rsi.getRequiredNumberOfTradingDays() );
+		assertEquals( 11, rsi.getRequiredNumberOfTradingDays() );
 	}
 }

@@ -31,9 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.ExponentialMovingAverage;
+import com.systematic.trading.signals.model.DatedValue;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignalGenerator {
@@ -43,27 +43,27 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
 
+	private final ExponentialMovingAverage slowEma;
+	private final ExponentialMovingAverage fastEma;
+
 	private final int slowTimePeriods;
-	private final int fastTimePeriods;
 	private final int signalTimePeriods;
 
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
 			final int signalTimePeriods, final MathContext mathContext ) {
 		this.slowTimePeriods = slowTimePeriods;
-		this.fastTimePeriods = fastTimePeriods;
 		this.signalTimePeriods = signalTimePeriods;
 		this.mathContext = mathContext;
+
+		this.slowEma = new ExponentialMovingAverage( slowTimePeriods, mathContext );
+		this.fastEma = new ExponentialMovingAverage( fastTimePeriods, mathContext );
 	}
 
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints {
 
-		final ExponentialMovingAverage slowEma = new ExponentialMovingAverage( slowTimePeriods, mathContext );
-		final ExponentialMovingAverage fastEma = new ExponentialMovingAverage( fastTimePeriods, mathContext );
-
-		final ValueWithDate[] vd = convertToClosingPriceAndDate( data );
-		final BigDecimal[] slowEmaValues = slowEma.ema( vd );
-		final BigDecimal[] fastEmaValues = fastEma.ema( vd );
+		final BigDecimal[] slowEmaValues = slowEma.ema( data );
+		final BigDecimal[] fastEmaValues = fastEma.ema( data );
 		final BigDecimal[] macd = new BigDecimal[data.length];
 
 		// MACD is the fast - slow EMAs
@@ -73,16 +73,16 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		// Signal line
 		final ExponentialMovingAverage signalEma = new ExponentialMovingAverage( signalTimePeriods, mathContext );
-		final ValueWithDate[] macdDataPoint = new ValueWithDate[macd.length];
+		final DatedValue[] macdDataPoint = new DatedValue[macd.length];
 		for (int i = 0; i < macd.length; i++) {
-			macdDataPoint[i] = new ValueWithDate( data[i].getDate(), macd[i] );
+			macdDataPoint[i] = new DatedValue( data[i].getDate(), macd[i] );
 		}
 
 		final BigDecimal[] signaline = signalEma.ema( macdDataPoint );
 		return buySignals( macdDataPoint, signaline );
 	}
 
-	protected List<IndicatorSignal> buySignals( final ValueWithDate[] macdDataPoint, final BigDecimal[] signaline ) {
+	protected List<IndicatorSignal> buySignals( final DatedValue[] macdDataPoint, final BigDecimal[] signaline ) {
 		final List<IndicatorSignal> buySignals = new ArrayList<IndicatorSignal>();
 
 		// Skip the initial null entries from the MACD array
@@ -99,8 +99,8 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		BigDecimal todayMacd, yesterdayMacd;
 
 		for (; index < signaline.length - 1; index++) {
-			todayMacd = macdDataPoint[index].geValue();
-			yesterdayMacd = macdDataPoint[index - 1].geValue();
+			todayMacd = macdDataPoint[index].getValue();
+			yesterdayMacd = macdDataPoint[index - 1].getValue();
 
 			// The MACD trends up, with crossing the signal line
 			// OR trending up and crossing the zero line
@@ -124,15 +124,6 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 	private boolean crossingOrigin( final BigDecimal yesterdayMacd, final BigDecimal todayMacd ) {
 		return crossingSignalLine( yesterdayMacd, todayMacd, BigDecimal.ZERO, BigDecimal.ZERO );
-	}
-
-	private ValueWithDate[] convertToClosingPriceAndDate( final TradingDayPrices[] data ) {
-		final ValueWithDate[] vd = new ValueWithDate[data.length];
-		for (int i = 0; i < vd.length; i++) {
-			vd[i] = new ValueWithDate( data[i].getDate(), data[i].getClosingPrice().getPrice() );
-		}
-
-		return vd;
 	}
 
 	@Override

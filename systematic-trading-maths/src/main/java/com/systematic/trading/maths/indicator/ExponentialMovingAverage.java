@@ -28,7 +28,7 @@ package com.systematic.trading.maths.indicator;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import com.systematic.trading.maths.ValueWithDate;
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 /**
@@ -57,7 +57,7 @@ public class ExponentialMovingAverage {
 	 * @param closePrices ordered chronologically, from oldest to youngest (most recent first).
 	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
 	 */
-	public BigDecimal[] ema( final ValueWithDate[] data ) throws TooFewDataPoints {
+	public BigDecimal[] ema( final TradingDayPrices[] data ) throws TooFewDataPoints {
 
 		// Need at least one RSI value
 		if (data.length < lookback + 1) {
@@ -68,7 +68,7 @@ public class ExponentialMovingAverage {
 
 		// Skip any null entries
 		int startSmaIndex = 0;
-		while (data[startSmaIndex] == null || data[startSmaIndex].geValue() == null) {
+		while (data[startSmaIndex] == null || data[startSmaIndex].getClosingPrice() == null) {
 			startSmaIndex++;
 		}
 
@@ -82,7 +82,7 @@ public class ExponentialMovingAverage {
 
 		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
 		for (int i = startSmaIndex; i < endSmaIndex; i++) {
-			simpleMovingAverage = simpleMovingAverage.add( data[i].geValue() );
+			simpleMovingAverage = simpleMovingAverage.add( data[i].getClosingPrice().getPrice(), mathContext );
 		}
 		simpleMovingAverage = simpleMovingAverage.divide( BigDecimal.valueOf( lookback ), mathContext );
 
@@ -93,7 +93,7 @@ public class ExponentialMovingAverage {
 		BigDecimal today;
 
 		for (int i = endSmaIndex; i < data.length; i++) {
-			today = data[i].geValue();
+			today = data[i].getClosingPrice().getPrice();
 
 			emaValues[i] = (today.subtract( yesterday, mathContext )).multiply( multiplier, mathContext ).add(
 					yesterday, mathContext );

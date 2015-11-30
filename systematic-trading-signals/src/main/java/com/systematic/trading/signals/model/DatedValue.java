@@ -23,27 +23,62 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths;
+package com.systematic.trading.signals.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class ValueWithDate {
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.LowestPrice;
+import com.systematic.trading.data.price.OpeningPrice;
+
+/**
+ * Data object pairing a date and a value.
+ * 
+ * @author CJ Hare
+ */
+public class DatedValue implements TradingDayPrices {
 
 	private final LocalDate date;
 	private final BigDecimal value;
 
-	public ValueWithDate( final LocalDate date, final BigDecimal value ) {
+	public DatedValue( final LocalDate date, final BigDecimal value ) {
 		this.date = date;
 		this.value = value;
-
 	}
 
 	public LocalDate getDate() {
 		return date;
 	}
 
-	public BigDecimal geValue() {
+	public BigDecimal getValue() {
 		return value;
+	}
+
+	@Override
+	public ClosingPrice getClosingPrice() {
+		return value == null ? null : ClosingPrice.valueOf( value );
+	}
+
+	@Override
+	public LowestPrice getLowestPrice() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public HighestPrice getHighestPrice() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public OpeningPrice getOpeningPrice() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String getTickerSymbol() {
+		throw new UnsupportedOperationException();
 	}
 }

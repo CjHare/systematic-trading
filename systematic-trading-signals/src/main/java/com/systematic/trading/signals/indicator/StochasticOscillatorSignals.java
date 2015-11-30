@@ -31,10 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.StochasticPercentageK;
+import com.systematic.trading.signals.model.DatedValue;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -55,15 +55,20 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 	/** Number of trading days to read the ranges on. */
 	private final int lookback;
 
-	/** Number of days for the simple moving average to smmooth the %K and %D. */
-	private final int smaK, smaD;
+	/** Number of days for the simple moving average to smooth the %K. */
+	final SimpleMovingAverage smaFullK;
+
+	/** Number of days for the simple moving average to smooth the %D. */
+	final SimpleMovingAverage smaFullD;
 
 	public StochasticOscillatorSignals( final int lookback, final int smaK, final int smaD,
 			final MathContext mathContext ) {
 		this.lookback = lookback;
-		this.smaD = smaD;
-		this.smaK = smaK;
 		this.mathContext = mathContext;
+
+		this.smaFullK = new SimpleMovingAverage( smaK, mathContext );
+		this.smaFullD = new SimpleMovingAverage( smaD, mathContext );
+
 	}
 
 	@Override
@@ -71,27 +76,23 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 		final StochasticPercentageK percentageK = new StochasticPercentageK( lookback, mathContext );
 
 		final BigDecimal[] fastK = percentageK.percentageK( data );
-
-		final SimpleMovingAverage smaFullK = new SimpleMovingAverage( smaK, mathContext );
 		final BigDecimal[] fullK = smaFullK.sma( merge( data, fastK ) );
-
-		final SimpleMovingAverage smaFullD = new SimpleMovingAverage( smaD, mathContext );
 		final BigDecimal[] fullD = smaFullD.sma( merge( data, fullK ) );
 
 		return buySignals( merge( data, fullK ), fullD );
 	}
 
-	private ValueWithDate[] merge( final TradingDayPrices[] dates, final BigDecimal[] values ) {
-		final ValueWithDate[] merged = new ValueWithDate[dates.length];
+	private DatedValue[] merge( final TradingDayPrices[] dates, final BigDecimal[] values ) {
+		final DatedValue[] merged = new DatedValue[dates.length];
 
 		for (int i = 0; i < dates.length; i++) {
-			merged[i] = new ValueWithDate( dates[i].getDate(), values[i] );
+			merged[i] = new DatedValue( dates[i].getDate(), values[i] );
 		}
 
 		return merged;
 	}
 
-	protected List<IndicatorSignal> buySignals( final ValueWithDate[] dataPoint, final BigDecimal[] signaline ) {
+	protected List<IndicatorSignal> buySignals( final DatedValue[] dataPoint, final BigDecimal[] signaline ) {
 		final List<IndicatorSignal> buySignals = new ArrayList<IndicatorSignal>();
 
 		// Skip the initial null entries from the array
@@ -108,8 +109,8 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 		BigDecimal pointToday, pointYesterday, signalLineToday, signalLineYesterday;
 
 		for (; index < signaline.length - 1; index++) {
-			pointToday = dataPoint[index].geValue();
-			pointYesterday = dataPoint[index - 1].geValue();
+			pointToday = dataPoint[index].getValue();
+			pointYesterday = dataPoint[index - 1].getValue();
 			signalLineToday = signaline[index - 1];
 			signalLineYesterday = signaline[index];
 

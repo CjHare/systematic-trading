@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.ValueWithDate;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.indicator.SimpleMovingAverage;
 import com.systematic.trading.signals.model.IndicatorSignalType;
@@ -62,19 +61,23 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	/** The number of days the SMA gradient covers. */
 	private final int daysOfGradient;
 
+	/** Responsible for calculating the simple moving average. */
+	private final SimpleMovingAverage movingAverage;
+
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
 			final GradientType signalGenerated, final MathContext mathContext ) {
 		this.signalGenerated = signalGenerated;
 		this.lookback = lookback;
 		this.mathContext = mathContext;
 		this.daysOfGradient = daysOfGradient;
+
+		this.movingAverage = new SimpleMovingAverage( lookback, mathContext );
 	}
 
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints {
 
-		final ValueWithDate[] vd = convertToClosingPriceAndDate( data );
-		final BigDecimal[] sma = new SimpleMovingAverage( lookback, mathContext ).sma( vd );
+		final BigDecimal[] sma = movingAverage.sma( data );
 
 		// Find the first non-null value
 		int index = 0;
@@ -135,15 +138,6 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 
 	private boolean isFlatGardient( final BigDecimal previous, final BigDecimal current ) {
 		return current.subtract( previous, mathContext ).compareTo( BigDecimal.ZERO ) == 0;
-	}
-
-	private ValueWithDate[] convertToClosingPriceAndDate( final TradingDayPrices[] data ) {
-		final ValueWithDate[] vd = new ValueWithDate[data.length];
-		for (int i = 0; i < vd.length; i++) {
-			vd[i] = new ValueWithDate( data[i].getDate(), data[i].getClosingPrice().getPrice() );
-		}
-
-		return vd;
 	}
 
 	@Override
