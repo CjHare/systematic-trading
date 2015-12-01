@@ -23,45 +23,57 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.maths.indicator.rsi;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
- * Responsible for generation of signals from analysis of the trading data.
+ * Relative Strength Index - RSI implementation without restriction on the number of trading days
+ * passed in for RSI calculation.
  * 
  * @author CJ Hare
  */
-public interface IndicatorSignalGenerator {
+public class RelativeStrengthIndexBounded implements RelativeStrengthIndex {
+
+	/** Delegate that deals with calculating the relative strength index. */
+	private final RelativeStrengthIndexCalculator calculator;
+
+	/** Maximum number of trading days to calculate the RSI on. */
+	private final int maximum;
+
+	/** Reused store for the relative strength calculations. */
+	private final BigDecimal[] relativeStrength;
+
+	/** Reused store for the relative strength index values. */
+	private final BigDecimal[] rsiValues;
 
 	/**
-	 * The maximum number of trading days data used by the signal analysers.
-	 * 
-	 * @return maximum number of data to provide to the analysis.
+	 * @param lookback the number of days to use when calculating the RSI.
+	 * @param maximum number of days to calculate the RSI on.
+	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	int getRequiredNumberOfTradingDays();
+	public RelativeStrengthIndexBounded( final int lookback, final int maximum, final MathContext mathContext ) {
+		this.calculator = new RelativeStrengthIndexCalculator( lookback, mathContext );
+		this.relativeStrength = new BigDecimal[maximum];
+		this.rsiValues = new BigDecimal[maximum];
+		this.maximum = maximum;
+	}
 
-	/**
-	 * Perform the analysis of trading prices for the generation of signals.
-	 * 
-	 * @param data trading prices for calculation of signals.
-	 * @return signals generated from the given trading data, empty list means zero, never
-	 *         <code>null</code>.
-	 * @throws TooFewDataPoints not enough trading day prices were provided for signal generation.
-	 * @throws TooManyDataPoints too many trading day prices have been provided for signal
-	 *             generation.
-	 */
-	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	@Override
+	public BigDecimal[] rsi( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
-	/**
-	 * The type of signals that are generated.
-	 * 
-	 * @return the type of indicator signals generated.
-	 */
-	IndicatorSignalType getSignalType();
+		// Restrict on the number of trading days
+		if (data.length > maximum) {
+			throw new TooManyDataPoints( String.format(
+					"At most %s data points are needed for Relative Strength Index, %s given", maximum, data.length ) );
+		}
+
+		return calculator.rsi( data, relativeStrength, rsiValues );
+	}
+
 }

@@ -35,6 +35,7 @@ import java.util.Map;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
@@ -52,7 +53,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	private static final TradingDayPricesDateOrder TRADING_DAY_ORDER_BY_DATE = new TradingDayPricesDateOrder();
 
 	/** Most number of trading day data used by the signal generators. */
-	private final int maximumNumberOfTradingDaysRequired;
+	private final int requiredNumberOfTradingDays;
 
 	/** Listeners interested in signal analysis events. */
 	private final List<SignalAnalysisListener> listeners = new ArrayList<SignalAnalysisListener>();
@@ -63,7 +64,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	public AnalysisLongBuySignals( final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters ) {
 		this.generators = generators;
 		this.filters = filters;
-		this.maximumNumberOfTradingDaysRequired = getRequiredNumberOfTradingDays();
+		this.requiredNumberOfTradingDays = getRequiredNumberOfTradingDays();
 	}
 
 	// TODO test
@@ -117,6 +118,13 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 				// No signals generated
 				signals = new ArrayList<IndicatorSignal>();
+
+			} catch (final TooManyDataPoints e) {
+
+				notifyTooManyDataPoints( generator.getSignalType() );
+
+				// No signals generated
+				signals = new ArrayList<IndicatorSignal>();
 			}
 
 			indicatorSignals.put( generator.getSignalType(), signals );
@@ -127,7 +135,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 	@Override
 	public int getMaximumNumberOfTradingDaysRequired() {
-		return maximumNumberOfTradingDaysRequired;
+		return requiredNumberOfTradingDays;
 	}
 
 	public void addListener( final SignalAnalysisListener listener ) {
@@ -135,6 +143,17 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	}
 
 	private void notifyTooFewDataPoints( final IndicatorSignalType type ) {
+
+		// Create the event only when there are listeners
+		if (!listeners.isEmpty()) {
+			final SignalAnalysisEvent event = new NotEnoughDataPointsEvent( type );
+			for (final SignalAnalysisListener listener : listeners) {
+				listener.event( event );
+			}
+		}
+	}
+
+	private void notifyTooManyDataPoints( final IndicatorSignalType type ) {
 
 		// Create the event only when there are listeners
 		if (!listeners.isEmpty()) {

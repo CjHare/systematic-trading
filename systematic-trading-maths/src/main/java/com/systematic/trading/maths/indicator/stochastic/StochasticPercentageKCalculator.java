@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator;
+package com.systematic.trading.maths.indicator.stochastic;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -32,13 +32,14 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
+import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 /**
  * %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
  * 
  * @author CJ Hare
  */
-public class StochasticPercentageK {
+public class StochasticPercentageKCalculator {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -53,17 +54,28 @@ public class StochasticPercentageK {
 	 * @param lookback the number of days to use when calculating the Stochastic%K.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public StochasticPercentageK( final int lookback, final MathContext mathContext ) {
+	public StochasticPercentageKCalculator( final int lookback, final MathContext mathContext ) {
 		this.lookback = lookback;
 		this.mathContext = mathContext;
 	}
 
-	public BigDecimal[] percentageK( final TradingDayPrices[] data ) {
-		final BigDecimal[] pK = new BigDecimal[data.length];
+	public BigDecimal[] percentageK( final TradingDayPrices[] data, final BigDecimal[] pK ) throws TooFewDataPoints {
+
+		// Expecting the same number of input data points as outputs
+		if (data.length != pK.length) {
+			throw new TooFewDataPoints( String.format(
+					"The number of data points given: %s does not match the expected size: %s", data.length, pK.length ) );
+		}
+
 		LowestPrice lowestLow;
 		HighestPrice highestHigh;
 		ClosingPrice currentClose;
 		BigDecimal lowestHighestDifference;
+
+		// Initialise the start of results with null
+		for (int i = 0; i < lookback; i++) {
+			pK[i] = null;
+		}
 
 		for (int i = lookback; i < data.length; i++) {
 			currentClose = data[i].getClosingPrice();

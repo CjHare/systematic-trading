@@ -23,45 +23,54 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.maths.indicator.atr;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
- * Responsible for generation of signals from analysis of the trading data.
+ * ATR implementation with restriction on the upper bounds for the size of values to calculate the
+ * average true range on.
  * 
  * @author CJ Hare
  */
-public interface IndicatorSignalGenerator {
+public class AverageTrueRangeBounded implements AverageTrueRange {
+
+	/** Delegate the performs the ATR calculations. */
+	private final AverageTrueRangeCalculator caclulator;
+
+	/** Maximum number of trading days to calculate the ATR on. */
+	private final int maximum;
+
+	/** Reused array to hold the average true range values. */
+	private final BigDecimal[] atr;
 
 	/**
-	 * The maximum number of trading days data used by the signal analysers.
-	 * 
-	 * @return maximum number of data to provide to the analysis.
+	 * @param lookback the number of days to use when calculating the ATR, also the number of days
+	 *            prior to the averaging becoming correct.
+	 * @param maximum number of days to calculate the ATR on.
+	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	int getRequiredNumberOfTradingDays();
+	public AverageTrueRangeBounded( final int lookback, final int maximum, final MathContext mathContext ) {
+		this.caclulator = new AverageTrueRangeCalculator( lookback, mathContext );
 
-	/**
-	 * Perform the analysis of trading prices for the generation of signals.
-	 * 
-	 * @param data trading prices for calculation of signals.
-	 * @return signals generated from the given trading data, empty list means zero, never
-	 *         <code>null</code>.
-	 * @throws TooFewDataPoints not enough trading day prices were provided for signal generation.
-	 * @throws TooManyDataPoints too many trading day prices have been provided for signal
-	 *             generation.
-	 */
-	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+		this.maximum = maximum;
+		this.atr = new BigDecimal[maximum];
+	}
 
-	/**
-	 * The type of signals that are generated.
-	 * 
-	 * @return the type of indicator signals generated.
-	 */
-	IndicatorSignalType getSignalType();
+	@Override
+	public BigDecimal[] atr( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
+
+		// Restrict on the number of trading days
+		if (data.length > maximum) {
+			throw new TooManyDataPoints( String.format(
+					"At most %s data points are needed for Average True Range, %s given", maximum, data.length ) );
+		}
+
+		return caclulator.atr( data, atr );
+	}
 }

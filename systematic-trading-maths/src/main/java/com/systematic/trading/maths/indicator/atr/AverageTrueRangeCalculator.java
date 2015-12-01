@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator;
+package com.systematic.trading.maths.indicator.atr;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -32,32 +32,11 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 /**
- * Developed by J. Welles Wilder, the Average True Range (ATR) is an indicator that measures
- * volatility.
- * <p/>
- * A volatility formula based only on the high-low range would fail to capture volatility from gap
- * or limit moves. ATR captures this �missing� volatility, where it is important to remember that
- * ATR does not provide an indication of price direction, merely volatility.
- * <p/>
- * Wilder started with a concept called True Range (TR), which is defined as the greatest of the
- * following:
- * <ul>
- * <li>Method 1: Current High less the current Low</li>
- * <li>Method 2: Current High less the previous Close (absolute value)</li>
- * <li>Method 3: Current Low less the previous Close (absolute value)</li>
- * </ul>
- * If the current period's high is above the prior period's high and the low is below the prior
- * period's low, then the current period's high-low range will be used as the True Range. This is an
- * outside day that would use Method 1 to calculate the TR. This is pretty straight forward. Methods
- * 2 and 3 are used when there is a gap or an inside day. A gap occurs when the previous close is
- * greater than the current high (signaling a potential gap down or limit move) or the previous
- * close is lower than the current low (signaling a potential gap up or limit move)
- * <p/>
- * The average true range is simple the averaged TR.
+ * Generic calculator logic for the ATR.
  * 
  * @author CJ Hare
  */
-public class AverageTrueRange {
+public class AverageTrueRangeCalculator {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -73,7 +52,7 @@ public class AverageTrueRange {
 	 *            prior to the averaging becoming correct.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public AverageTrueRange( final int lookback, final MathContext mathContext ) {
+	public AverageTrueRangeCalculator( final int lookback, final MathContext mathContext ) {
 		this.lookback = lookback;
 		this.priorMultiplier = BigDecimal.valueOf( lookback - 1 );
 		this.lookbackDivider = BigDecimal.valueOf( lookback );
@@ -119,10 +98,21 @@ public class AverageTrueRange {
 	}
 
 	/**
-	 * @param closePrices ordered chronologically, from oldest to youngest (most recent first).
-	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
+	 * Calculates the average true range values.
+	 * 
+	 * @param data ordered chronologically, from oldest to youngest (most recent first).
+	 * @param atrValues array to store and return the average true range values.
+	 * @return average true range values.
+	 * @throws TooFewDataPoints not enough closing prices to perform ATR calculations.
 	 */
-	public BigDecimal[] atr( final TradingDayPrices[] data ) throws TooFewDataPoints {
+	public BigDecimal[] atr( final TradingDayPrices[] data, final BigDecimal[] atrValues ) throws TooFewDataPoints {
+
+		// Expecting the same number of input data points as outputs
+		if (data.length != atrValues.length) {
+			throw new TooFewDataPoints(
+					String.format( "The number of data points given: %s does not match the expected size: %s",
+							data.length, atrValues.length ) );
+		}
 
 		// Need at least one RSI value
 		if (data.length < lookback + 1) {
@@ -137,19 +127,22 @@ public class AverageTrueRange {
 			startAtrIndex++;
 		}
 
-		// For the first value just use the TR
-		final BigDecimal[] atr = new BigDecimal[data.length];
-
-		atr[startAtrIndex] = trueRangeMethodOne( data[startAtrIndex] );
-
-		// Starting atr is just the first value
-		BigDecimal priorAtr = atr[startAtrIndex];
-
-		for (int i = startAtrIndex + 1; i < atr.length; i++) {
-			atr[i] = average( getTrueRange( data[i], data[i - 1] ), priorAtr );
-			priorAtr = atr[i];
+		// Initialise the return array with null to the start ATR
+		for (int i = 0; i < startAtrIndex; i++) {
+			atrValues[i] = null;
 		}
 
-		return atr;
+		// For the first value just use the TR
+		atrValues[startAtrIndex] = trueRangeMethodOne( data[startAtrIndex] );
+
+		// Starting atr is just the first value
+		BigDecimal priorAtr = atrValues[startAtrIndex];
+
+		for (int i = startAtrIndex + 1; i < atrValues.length; i++) {
+			atrValues[i] = average( getTrueRange( data[i], data[i - 1] ), priorAtr );
+			priorAtr = atrValues[i];
+		}
+
+		return atrValues;
 	}
 }

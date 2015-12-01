@@ -37,8 +37,7 @@ import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 
 /**
@@ -60,7 +59,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	private final int daysGradient = 2;
 
 	@Test(expected = TooFewDataPoints.class)
-	public void tooFewDataPoints() throws TooFewDataPoints {
+	public void tooFewDataPoints() throws TooFewDataPoints, TooManyDataPoints {
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
 				daysGradient, GradientType.POSITIVE, MATH_CONTEXT );
 
@@ -75,7 +74,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void unexpectedDataPoint() throws TooFewDataPoints {
+	public void unexpectedDataPoint() throws TooFewDataPoints, TooManyDataPoints {
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
 				daysGradient, null, MATH_CONTEXT );
 
@@ -84,7 +83,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	@Test
-	public void signalsPositive() throws TooFewDataPoints {
+	public void signalsPositive() throws TooFewDataPoints, TooManyDataPoints {
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
 				daysGradient, GradientType.POSITIVE, MATH_CONTEXT );
 
@@ -101,7 +100,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	@Test
-	public void signalsFlat() throws TooFewDataPoints {
+	public void signalsFlat() throws TooFewDataPoints, TooManyDataPoints {
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( 1, daysGradient,
 				GradientType.FLAT, MATH_CONTEXT );
 
@@ -115,7 +114,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	@Test
-	public void signalsNegative() throws TooFewDataPoints {
+	public void signalsNegative() throws TooFewDataPoints, TooManyDataPoints {
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
 				daysGradient, GradientType.NEGATIVE, MATH_CONTEXT );
 

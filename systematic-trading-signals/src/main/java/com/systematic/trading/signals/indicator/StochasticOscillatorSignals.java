@@ -32,8 +32,11 @@ import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.indicator.SimpleMovingAverage;
-import com.systematic.trading.maths.indicator.StochasticPercentageK;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageBounded;
+import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageK;
+import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageKBounded;
 import com.systematic.trading.signals.model.DatedValue;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
@@ -49,9 +52,6 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
  */
 public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 
-	/** Scale, precision and rounding to apply to mathematical operations. */
-	private final MathContext mathContext;
-
 	/** Number of trading days to read the ranges on. */
 	private final int lookback;
 
@@ -61,19 +61,22 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 	/** Number of days for the simple moving average to smooth the %D. */
 	final SimpleMovingAverage smaFullD;
 
+	/** Stochastic %K calculator */
+	final StochasticPercentageK percentageK;
+
 	public StochasticOscillatorSignals( final int lookback, final int smaK, final int smaD,
 			final MathContext mathContext ) {
 		this.lookback = lookback;
-		this.mathContext = mathContext;
 
-		this.smaFullK = new SimpleMovingAverage( smaK, mathContext );
-		this.smaFullD = new SimpleMovingAverage( smaD, mathContext );
-
+		final int requiredNumberOfTradingDays = getRequiredNumberOfTradingDays();
+		this.smaFullK = new SimpleMovingAverageBounded( smaK, requiredNumberOfTradingDays, mathContext );
+		this.smaFullD = new SimpleMovingAverageBounded( smaD, requiredNumberOfTradingDays, mathContext );
+		this.percentageK = new StochasticPercentageKBounded( lookback, requiredNumberOfTradingDays, mathContext );
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints {
-		final StochasticPercentageK percentageK = new StochasticPercentageK( lookback, mathContext );
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints,
+			TooManyDataPoints {
 
 		final BigDecimal[] fastK = percentageK.percentageK( data );
 		final BigDecimal[] fullK = smaFullK.sma( merge( data, fastK ) );

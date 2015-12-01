@@ -33,11 +33,14 @@ import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.indicator.RelativeStrengthIndex;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexBounded;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
- * Takes the output from RSI and identifies any buy signals.
+ * Takes the output from RSI and identifies any buy signals using a double cross over of RSI
+ * signals.
  * 
  * @author CJ Hare
  */
@@ -47,24 +50,30 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	private static final int FIVE_TRADING_DAYS = 5;
 	private static final int TEN_TRADING_DAYS = 10;
 
-	/** Scale, precision and rounding to apply to mathematical operations. */
-	private final MathContext mathContext;
+	private RelativeStrengthIndex shortSignal;
+
+	private RelativeStrengthIndex longSignal;
 
 	private final BigDecimal oversold, overbought;
 
 	public RelativeStrengthIndexSignals( final int oversold, final int overbought, final MathContext mathContext ) {
 		this.oversold = BigDecimal.valueOf( oversold );
 		this.overbought = BigDecimal.valueOf( overbought );
-		this.mathContext = mathContext;
+
+		this.shortSignal = new RelativeStrengthIndexBounded( FIVE_TRADING_DAYS, FIVE_TRADING_DAYS + DAYS_OF_RSI_VALUES,
+				mathContext );
+		this.longSignal = new RelativeStrengthIndexBounded( TEN_TRADING_DAYS, TEN_TRADING_DAYS + DAYS_OF_RSI_VALUES,
+				mathContext );
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints {
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints,
+			TooManyDataPoints {
 		// 5 day RSI
-		final BigDecimal[] fiveDayRsi = new RelativeStrengthIndex( FIVE_TRADING_DAYS, mathContext ).rsi( data );
+		final BigDecimal[] fiveDayRsi = shortSignal.rsi( data );
 
 		// 14 day RSI
-		final BigDecimal[] tenDayRsi = new RelativeStrengthIndex( TEN_TRADING_DAYS, mathContext ).rsi( data );
+		final BigDecimal[] tenDayRsi = longSignal.rsi( data );
 
 		/* RSI triggers a buy signal when crossing the over brought level (e.g. 30) */
 		final List<IndicatorSignal> tenDayBuy = buySignals( tenDayRsi, data );

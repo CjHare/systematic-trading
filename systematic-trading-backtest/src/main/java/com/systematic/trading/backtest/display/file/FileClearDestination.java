@@ -23,45 +23,50 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.backtest.display.file;
 
-import java.util.List;
-
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.signals.model.IndicatorSignalType;
+import java.io.File;
 
 /**
- * Responsible for generation of signals from analysis of the trading data.
+ * Empties the destination directory of all files and folders.
  * 
  * @author CJ Hare
  */
-public interface IndicatorSignalGenerator {
+public class FileClearDestination {
 
-	/**
-	 * The maximum number of trading days data used by the signal analysers.
-	 * 
-	 * @return maximum number of data to provide to the analysis.
-	 */
-	int getRequiredNumberOfTradingDays();
+	public FileClearDestination( final String outputDirectory ) {
 
-	/**
-	 * Perform the analysis of trading prices for the generation of signals.
-	 * 
-	 * @param data trading prices for calculation of signals.
-	 * @return signals generated from the given trading data, empty list means zero, never
-	 *         <code>null</code>.
-	 * @throws TooFewDataPoints not enough trading day prices were provided for signal generation.
-	 * @throws TooManyDataPoints too many trading day prices have been provided for signal
-	 *             generation.
-	 */
-	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+		// Ensure the directory exists
+		final File outputDirectoryFile = new File( outputDirectory );
 
-	/**
-	 * The type of signals that are generated.
-	 * 
-	 * @return the type of indicator signals generated.
-	 */
-	IndicatorSignalType getSignalType();
+		if (!outputDirectoryFile.exists()) {
+			if (!outputDirectoryFile.mkdirs()) {
+				throw new IllegalArgumentException( String.format(
+						"Failed to create / access directory parent directory: %s", outputDirectory ) );
+			}
+		}
+
+		// Ensure the directory is empty
+		for (final File file : outputDirectoryFile.listFiles()) {
+			if (file.isDirectory()) {
+				deleteDirectory( file );
+			}
+
+			file.delete();
+		}
+	}
+
+	private void deleteDirectory( final File directory ) {
+
+		for (final File file : directory.listFiles()) {
+
+			if (file.isDirectory()) {
+				deleteDirectory( file );
+			}
+
+			file.delete();
+		}
+
+	}
+
 }

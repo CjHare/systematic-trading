@@ -32,7 +32,10 @@ import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.indicator.ExponentialMovingAverage;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageBounded;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageUnbounded;
 import com.systematic.trading.signals.model.DatedValue;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
@@ -55,12 +58,14 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		this.signalTimePeriods = signalTimePeriods;
 		this.mathContext = mathContext;
 
-		this.slowEma = new ExponentialMovingAverage( slowTimePeriods, mathContext );
-		this.fastEma = new ExponentialMovingAverage( fastTimePeriods, mathContext );
+		final int requiredNumberOfTradingDays = getRequiredNumberOfTradingDays();
+		this.slowEma = new ExponentialMovingAverageBounded( slowTimePeriods, requiredNumberOfTradingDays, mathContext );
+		this.fastEma = new ExponentialMovingAverageBounded( fastTimePeriods, requiredNumberOfTradingDays, mathContext );
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints {
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints,
+			TooManyDataPoints {
 
 		final BigDecimal[] slowEmaValues = slowEma.ema( data );
 		final BigDecimal[] fastEmaValues = fastEma.ema( data );
@@ -72,7 +77,8 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		}
 
 		// Signal line
-		final ExponentialMovingAverage signalEma = new ExponentialMovingAverage( signalTimePeriods, mathContext );
+		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageUnbounded( signalTimePeriods,
+				mathContext );
 		final DatedValue[] macdDataPoint = new DatedValue[macd.length];
 		for (int i = 0; i < macd.length; i++) {
 			macdDataPoint[i] = new DatedValue( data[i].getDate(), macd[i] );

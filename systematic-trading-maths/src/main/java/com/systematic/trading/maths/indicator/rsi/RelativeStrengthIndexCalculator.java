@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator;
+package com.systematic.trading.maths.indicator.rsi;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -46,7 +46,7 @@ import com.systematic.trading.maths.exception.TooFewDataPoints;
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndex {
+public class RelativeStrengthIndexCalculator {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -58,16 +58,33 @@ public class RelativeStrengthIndex {
 	 * @param lookback the number of days to use when calculating the RSI.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthIndex( final int lookback, final MathContext mathContext ) {
+	public RelativeStrengthIndexCalculator( final int lookback, final MathContext mathContext ) {
 		this.lookback = lookback;
 		this.mathContext = mathContext;
 	}
 
 	/**
-	 * @param closePrices ordered chronologically, from oldest to youngest (most recent first).
+	 * @param data ordered chronologically, from oldest to youngest (most recent first).
+	 * @param relativeStrength store for the relative strength values.
+	 * @param rsiValues store for the RSI values calculated, also the array returned.
 	 * @throws TooFewDataPoints not enough closing prices to perform RSI calculations.
 	 */
-	public BigDecimal[] rsi( final TradingDayPrices[] data ) throws TooFewDataPoints {
+	public BigDecimal[] rsi( final TradingDayPrices[] data, final BigDecimal[] relativeStrength,
+			final BigDecimal[] rsiValues ) throws TooFewDataPoints {
+
+		// Expecting the same number of input data points as outputs
+		if (data.length != relativeStrength.length) {
+			throw new TooFewDataPoints( String.format(
+					"The number of data points given: %s does not match the expected size: %s", data.length,
+					relativeStrength.length ) );
+		}
+
+		// Expecting the same number of input data points as outputs
+		if (data.length != rsiValues.length) {
+			throw new TooFewDataPoints( String.format(
+					"The number of data points given: %s does not match the expected size: %s", data.length,
+					rsiValues.length ) );
+		}
 
 		// Need at least one RSI value
 		if (data.length < lookback + 1) {
@@ -116,7 +133,6 @@ public class RelativeStrengthIndex {
 		 * {Close - EMA(previous day)} x multiplier + EMA(previous day). */
 
 		final BigDecimal multiplier = calculateSmoothingConstant();
-		final BigDecimal[] relativeStrength = new BigDecimal[data.length];
 
 		for (int i = warmUpTimePeriod; i < relativeStrength.length; i++) {
 			closeToday = data[i].getClosingPrice();
@@ -155,8 +171,12 @@ public class RelativeStrengthIndex {
 		}
 
 		/* RSI = 100 / 1 + RS */
-		final BigDecimal[] rsiValues = new BigDecimal[relativeStrength.length];
 		final BigDecimal oneHundred = BigDecimal.valueOf( 100 );
+
+		// Initialise the start of the return array with nulls
+		for (int i = 0; i < warmUpTimePeriod; i++) {
+			rsiValues[i] = null;
+		}
 
 		for (int i = warmUpTimePeriod; i < rsiValues.length; i++) {
 			rsiValues[i] = oneHundred.subtract( oneHundred.divide( BigDecimal.ONE.add( relativeStrength[i] ),

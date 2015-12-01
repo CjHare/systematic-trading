@@ -37,13 +37,16 @@ import org.junit.Test;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexUnbounded;
 
 public class RelativeStrengthIndexTest {
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Test
-	public void anotherRsi() throws TooFewDataPoints {
+	public void anotherRsi() throws TooFewDataPoints, TooManyDataPoints {
 		final double[] prices = { 15.55, 15.70, 15.80, 15.98, 16.20, 16.15, 16.15, 16.25, 16.12, 16.40, 16.67, 16.22,
 				16.43, 16.20, 15.93, 15.80, 15.90, 16.00, 15.80, 15.76, 15.82, 15.40, 15.55, 15.48, 15.28, 15.35,
 				15.41, 15.46, 15.50, 15.63, 15.50, 15.51, 15.42, 15.38, 15.24, 15.26, 15.29, 15.25, 15.05 };
@@ -53,7 +56,7 @@ public class RelativeStrengthIndexTest {
 					BigDecimal.ZERO, BigDecimal.valueOf( prices[i] ) );
 		}
 
-		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10, MATH_CONTEXT );
+		final RelativeStrengthIndex rsi = new RelativeStrengthIndexUnbounded( 10, MATH_CONTEXT );
 		final BigDecimal[] rsiValues = rsi.rsi( closingPrices );
 
 		assertNotNull( rsiValues );
@@ -92,7 +95,7 @@ public class RelativeStrengthIndexTest {
 	}
 
 	@Test
-	public void rsi() throws TooFewDataPoints {
+	public void rsi() throws TooFewDataPoints, TooManyDataPoints {
 		final BigDecimal[] closingPricesDb = { BigDecimal.valueOf( 93.15 ), BigDecimal.valueOf( 93.47 ),
 				BigDecimal.valueOf( 90.00 ), BigDecimal.valueOf( 90.71 ), BigDecimal.valueOf( 91.14 ),
 				BigDecimal.valueOf( 90.21 ), BigDecimal.valueOf( 90.41 ), BigDecimal.valueOf( 91.04 ),
@@ -109,7 +112,7 @@ public class RelativeStrengthIndexTest {
 
 		}
 
-		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10, MATH_CONTEXT );
+		final RelativeStrengthIndex rsi = new RelativeStrengthIndexUnbounded( 10, MATH_CONTEXT );
 		final BigDecimal[] rsiValues = rsi.rsi( closingPrices );
 
 		assertNotNull( rsiValues );
@@ -137,8 +140,8 @@ public class RelativeStrengthIndexTest {
 	}
 
 	@Test(expected = TooFewDataPoints.class)
-	public void tooFewPrices() throws TooFewDataPoints {
-		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10, MATH_CONTEXT );
+	public void tooFewPrices() throws TooFewDataPoints, TooManyDataPoints {
+		final RelativeStrengthIndex rsi = new RelativeStrengthIndexUnbounded( 10, MATH_CONTEXT );
 
 		final TradingDayPrices[] closingPrices = {
 				new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 93.15 ), BigDecimal.ZERO,
@@ -150,7 +153,7 @@ public class RelativeStrengthIndexTest {
 	}
 
 	@Test
-	public void divideByZero() throws TooFewDataPoints {
+	public void divideByZero() throws TooFewDataPoints, TooManyDataPoints {
 		// Never any downward momentum
 		final BigDecimal[] closingPricesDb = { BigDecimal.valueOf( 1.1 ), BigDecimal.valueOf( 2.2 ),
 				BigDecimal.valueOf( 3.3 ), BigDecimal.valueOf( 4.4 ), BigDecimal.valueOf( 5.5 ),
@@ -166,7 +169,7 @@ public class RelativeStrengthIndexTest {
 					BigDecimal.ZERO, BigDecimal.ZERO );
 		}
 
-		final RelativeStrengthIndex rsi = new RelativeStrengthIndex( 10, MATH_CONTEXT );
+		final RelativeStrengthIndex rsi = new RelativeStrengthIndexUnbounded( 10, MATH_CONTEXT );
 		final BigDecimal[] rsiValues = rsi.rsi( closingPrices );
 
 		assertNotNull( rsiValues );

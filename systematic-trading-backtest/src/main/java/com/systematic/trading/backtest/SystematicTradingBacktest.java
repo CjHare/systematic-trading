@@ -34,11 +34,15 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.HoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
+import com.systematic.trading.backtest.display.file.FileClearDestination;
 import com.systematic.trading.backtest.display.file.FileDisplay;
 import com.systematic.trading.backtest.display.file.FileNetWorthComparisonDisplay;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
@@ -67,6 +71,9 @@ import com.systematic.trading.simulation.logic.MinimumTradeValue;
  */
 public class SystematicTradingBacktest {
 
+	/** Classes logger. */
+	private static final Logger LOG = LogManager.getLogger( SystematicTradingBacktest.class );
+
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	private static final int DAYS_IN_A_YEAR = 365;
@@ -85,9 +92,12 @@ public class SystematicTradingBacktest {
 
 		final TickerSymbolTradingData tradingData = getTradingData( equity, startDate, endDate );
 
-		final ExecutorService pool = Executors.newCachedThreadPool();
+		final int cores = Runtime.getRuntime().availableProcessors();
+		final ExecutorService pool = Executors.newFixedThreadPool( cores );
 
 		// Arrange output to files
+		new FileClearDestination( "../../simulations/" );
+
 		final NetWorthComparisonDisplay netWorthComparisonDisplay = new FileNetWorthComparisonDisplay(
 				"../../simulations/summary.txt", pool );
 
@@ -101,10 +111,14 @@ public class SystematicTradingBacktest {
 					netWorthComparisonDisplay, MATH_CONTEXT );
 
 			bootstrap.run();
+
+			LOG.info( String.format( "Backtesting complete for: %s", configuration.getDescription() ) );
 		}
 
 		HibernateUtil.getSessionFactory().close();
 		pool.shutdown();
+
+		LOG.info( "All Simulations have been completed" );
 	}
 
 	private static TickerSymbolTradingData getTradingData( final EquityIdentity equity, final LocalDate startDate,
@@ -220,8 +234,8 @@ public class SystematicTradingBacktest {
 
 		SHORT( new SimpleMovingAverageGradientSignals( 20, 5, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Short-Sma" ),
 		MEDIUM( new SimpleMovingAverageGradientSignals( 50, 7, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Medium-Sma" ),
-		LONG( new SimpleMovingAverageGradientSignals( 100, 10, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Medium-Sma" ),
-		LONGEST( new SimpleMovingAverageGradientSignals( 200, 20, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Long-Sma" );
+		LONG( new SimpleMovingAverageGradientSignals( 100, 10, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Long-Sma" ),
+		LONGEST( new SimpleMovingAverageGradientSignals( 200, 20, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Longest-Sma" );
 
 		private final SimpleMovingAverageGradientSignals sma;
 		private final String description;

@@ -32,7 +32,9 @@ import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.indicator.SimpleMovingAverage;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageBounded;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -71,11 +73,13 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 		this.mathContext = mathContext;
 		this.daysOfGradient = daysOfGradient;
 
-		this.movingAverage = new SimpleMovingAverage( lookback, mathContext );
+		final int requiredNumberOfTradingDays = getRequiredNumberOfTradingDays();
+		this.movingAverage = new SimpleMovingAverageBounded( lookback, requiredNumberOfTradingDays, mathContext );
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints {
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints,
+			TooManyDataPoints {
 
 		final BigDecimal[] sma = movingAverage.sma( data );
 

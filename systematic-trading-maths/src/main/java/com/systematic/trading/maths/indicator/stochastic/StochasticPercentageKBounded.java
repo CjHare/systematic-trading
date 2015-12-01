@@ -23,45 +23,51 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.maths.indicator.stochastic;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
- * Responsible for generation of signals from analysis of the trading data.
+ * Stochastic implementation with restriction on the number of trading days analysed.
  * 
  * @author CJ Hare
  */
-public interface IndicatorSignalGenerator {
+public class StochasticPercentageKBounded implements StochasticPercentageK {
+
+	/** Delegate that deals with calculating the stochastic. */
+	private final StochasticPercentageKCalculator calculator;
+
+	/** Maximum number of trading days to calculate the Stochastic%K on. */
+	private final int maximum;
+
+	/** Reused store for the stochastic percentage K values. */
+	private final BigDecimal[] pK;
 
 	/**
-	 * The maximum number of trading days data used by the signal analysers.
-	 * 
-	 * @return maximum number of data to provide to the analysis.
+	 * @param lookback the number of days to use when calculating the Stochastic%K.
+	 * @param maximum number of days to calculate the Stochastic%K on.
+	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	int getRequiredNumberOfTradingDays();
+	public StochasticPercentageKBounded( final int lookback, final int maximum, final MathContext mathContext ) {
+		this.calculator = new StochasticPercentageKCalculator( lookback, mathContext );
+		this.maximum = maximum;
+		this.pK = new BigDecimal[maximum];
+	}
 
-	/**
-	 * Perform the analysis of trading prices for the generation of signals.
-	 * 
-	 * @param data trading prices for calculation of signals.
-	 * @return signals generated from the given trading data, empty list means zero, never
-	 *         <code>null</code>.
-	 * @throws TooFewDataPoints not enough trading day prices were provided for signal generation.
-	 * @throws TooManyDataPoints too many trading day prices have been provided for signal
-	 *             generation.
-	 */
-	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	@Override
+	public BigDecimal[] percentageK( final TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints {
 
-	/**
-	 * The type of signals that are generated.
-	 * 
-	 * @return the type of indicator signals generated.
-	 */
-	IndicatorSignalType getSignalType();
+		// Restrict on the number of trading days
+		if (data.length > maximum) {
+			throw new TooManyDataPoints( String.format(
+					"At most %s data points are needed for Stochastic Percentage K, %s given", maximum, data.length ) );
+		}
+
+		return calculator.percentageK( data, pK );
+	}
 }

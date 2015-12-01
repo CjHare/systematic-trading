@@ -41,15 +41,18 @@ import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageUnbounded;
 
 public class SimpleMovingAverageTest {
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Test
-	public void sma() throws TooFewDataPoints {
+	public void sma() throws TooFewDataPoints, TooManyDataPoints {
 		final int smoothingRange = 3;
-		final SimpleMovingAverage sma = new SimpleMovingAverage( smoothingRange, MATH_CONTEXT );
+		final SimpleMovingAverage sma = new SimpleMovingAverageUnbounded( smoothingRange, MATH_CONTEXT );
 
 		final ValueWithDate[] data = { null, null, null, null, null,
 				new ValueWithDate( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 10 ) ),
@@ -75,9 +78,9 @@ public class SimpleMovingAverageTest {
 	}
 
 	@Test
-	public void smaMinimal() throws TooFewDataPoints {
+	public void smaMinimal() throws TooFewDataPoints, TooManyDataPoints {
 		final int smoothingRange = 2;
-		final SimpleMovingAverage sma = new SimpleMovingAverage( smoothingRange, MATH_CONTEXT );
+		final SimpleMovingAverage sma = new SimpleMovingAverageUnbounded( smoothingRange, MATH_CONTEXT );
 
 		final ValueWithDate[] data = { null, null, null, null, null,
 				new ValueWithDate( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 10 ) ),

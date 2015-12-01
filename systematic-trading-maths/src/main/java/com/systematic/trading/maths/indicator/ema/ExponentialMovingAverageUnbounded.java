@@ -23,45 +23,35 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.maths.indicator.ema;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
- * Responsible for generation of signals from analysis of the trading data.
+ * Exponential Moving Average (EMA) implementation without restriction on maximum number of trading
+ * days to analyse.
  * 
  * @author CJ Hare
  */
-public interface IndicatorSignalGenerator {
+public class ExponentialMovingAverageUnbounded implements ExponentialMovingAverage {
+
+	/** Delegate for the exponential moving average calculations. */
+	private final ExponentialMovingAverageCalculator calculator;
 
 	/**
-	 * The maximum number of trading days data used by the signal analysers.
-	 * 
-	 * @return maximum number of data to provide to the analysis.
+	 * @param lookback the number of days to use when calculating the EMA.
+	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	int getRequiredNumberOfTradingDays();
+	public ExponentialMovingAverageUnbounded( final int lookback, final MathContext mathContext ) {
+		this.calculator = new ExponentialMovingAverageCalculator( lookback, mathContext );
+	}
 
-	/**
-	 * Perform the analysis of trading prices for the generation of signals.
-	 * 
-	 * @param data trading prices for calculation of signals.
-	 * @return signals generated from the given trading data, empty list means zero, never
-	 *         <code>null</code>.
-	 * @throws TooFewDataPoints not enough trading day prices were provided for signal generation.
-	 * @throws TooManyDataPoints too many trading day prices have been provided for signal
-	 *             generation.
-	 */
-	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
-
-	/**
-	 * The type of signals that are generated.
-	 * 
-	 * @return the type of indicator signals generated.
-	 */
-	IndicatorSignalType getSignalType();
+	@Override
+	public BigDecimal[] ema( final TradingDayPrices[] data ) throws TooFewDataPoints {
+		return calculator.ema( data, new BigDecimal[data.length] );
+	}
 }
