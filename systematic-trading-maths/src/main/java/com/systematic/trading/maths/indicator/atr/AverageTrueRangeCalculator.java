@@ -32,7 +32,11 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 
 /**
- * Generic calculator logic for the ATR.
+ * Average true range (ATR) is a technical analysis volatility indicator originally developed by J.
+ * Welles Wilder, Jr. for commodities. <br/>
+ * ATR does not provide an indication of price trend, simply the degree of price volatility. The
+ * average true range is an N-day smoothed moving average (SMMA) of the true range values. Wilder
+ * recommended a 14-period smoothing.
  * 
  * @author CJ Hare
  */
@@ -41,11 +45,14 @@ public class AverageTrueRangeCalculator {
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	/** The number of trading days to look back for calculation. */
-	private final int lookback;
-
+	/** Constant used for multiplying the previous ATR in the average calculation. */
 	private final BigDecimal priorMultiplier;
+
+	/** Constant used for dividing during the average calculation. */
 	private final BigDecimal lookbackDivider;
+
+	/** Required number of data points required for ATR calculation. */
+	private final int minimumNumberOfPrices;
 
 	/**
 	 * @param lookback the number of days to use when calculating the ATR, also the number of days
@@ -53,22 +60,22 @@ public class AverageTrueRangeCalculator {
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
 	public AverageTrueRangeCalculator( final int lookback, final MathContext mathContext ) {
-		this.lookback = lookback;
 		this.priorMultiplier = BigDecimal.valueOf( lookback - 1 );
 		this.lookbackDivider = BigDecimal.valueOf( lookback );
 		this.mathContext = mathContext;
+		this.minimumNumberOfPrices = lookback + 1;
 	}
 
 	private BigDecimal trueRangeMethodOne( final TradingDayPrices today ) {
-		return today.getHighestPrice().subtract( today.getLowestPrice(), mathContext );
+		return today.getHighestPrice().subtract( today.getLowestPrice(), mathContext ).abs();
 	}
 
 	private BigDecimal trueRangeMethodTwo( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		return today.getHighestPrice().subtract( yesterday.getClosingPrice(), mathContext );
+		return today.getHighestPrice().subtract( yesterday.getClosingPrice(), mathContext ).abs();
 	}
 
 	private BigDecimal trueRangeMethodThree( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		return today.getLowestPrice().subtract( yesterday.getClosingPrice(), mathContext );
+		return today.getLowestPrice().subtract( yesterday.getClosingPrice(), mathContext ).abs();
 	}
 
 	/**
@@ -109,22 +116,22 @@ public class AverageTrueRangeCalculator {
 
 		// Expecting the same number of input data points as outputs
 		if (data.length != atrValues.length) {
-			throw new TooFewDataPoints(
-					String.format( "The number of data points given: %s does not match the expected size: %s",
-							data.length, atrValues.length ) );
-		}
-
-		// Need at least one RSI value
-		if (data.length < lookback + 1) {
-			throw new TooFewDataPoints( String.format(
-					"At least %s data points are needed for Average True Range, only %s given", lookback + 1,
-					data.length ) );
+			throw new IllegalArgumentException( String.format(
+					"The number of data points given: %s does not match the expected size: %s", data.length,
+					atrValues.length ) );
 		}
 
 		// Skip any null entries
 		int startAtrIndex = 0;
-		while (data[startAtrIndex] == null) {
+		while (startAtrIndex < data.length && data[startAtrIndex] == null) {
 			startAtrIndex++;
+		}
+
+		// Enough data to calculate ATR?
+		if (data.length - startAtrIndex < minimumNumberOfPrices) {
+			throw new TooFewDataPoints( String.format(
+					"At least %s non null data points for Average True Range, only %s given", minimumNumberOfPrices,
+					data.length ) );
 		}
 
 		// Initialise the return array with null to the start ATR
@@ -135,7 +142,7 @@ public class AverageTrueRangeCalculator {
 		// For the first value just use the TR
 		atrValues[startAtrIndex] = trueRangeMethodOne( data[startAtrIndex] );
 
-		// Starting atr is just the first value
+		// Starting ATR is just the first value
 		BigDecimal priorAtr = atrValues[startAtrIndex];
 
 		for (int i = startAtrIndex + 1; i < atrValues.length; i++) {
