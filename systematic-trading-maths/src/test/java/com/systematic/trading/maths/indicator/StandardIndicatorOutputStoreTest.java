@@ -25,20 +25,31 @@
  */
 package com.systematic.trading.maths.indicator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.math.BigDecimal;
+
+import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
- * No restriction on the upper bounds for the size of values to calculate on, just providing a new
- * store every time.
+ * Tests the StandardIndicatorOutputStore.
  * 
  * @author CJ Hare
  */
-public class StandardIndicatorOutputStore implements IndicatorOutputStore {
+public class StandardIndicatorOutputStoreTest {
 
-	@Override
-	public BigDecimal[] getStore( final TradingDayPrices[] data ) {
-		return new BigDecimal[data.length];
+	@Test
+	public void getStore() {
+		final StandardIndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int expectedLength = 6;
+		final TradingDayPrices[] data = new TradingDayPrices[expectedLength];
+
+		final BigDecimal[] output = store.getStore( data );
+
+		assertNotNull( output );
+		assertEquals( expectedLength, output.length );
 	}
 }
