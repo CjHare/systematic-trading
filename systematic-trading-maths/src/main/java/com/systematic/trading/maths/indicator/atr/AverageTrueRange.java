@@ -60,10 +60,12 @@ import com.systematic.trading.maths.exception.TooManyDataPoints;
 public interface AverageTrueRange {
 
 	/**
+	 * Calculates the average true range values.
+	 * 
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return average true range values.
 	 * @throws TooFewDataPoints not enough closing prices to perform ATR calculations.
-	 * @throws TooManyDataPoints too many days of closing prices have been provided.
+	 * @throws TooManyDataPoints too many prices have been provided to perform ATR calculations.
 	 */
 	BigDecimal[] atr( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
 

@@ -23,36 +23,45 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator.atr;
+package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
 
 /**
- * ATR implementation that has no restriction on the upper bounds for the size of values to
- * calculate the average true range on.
+ * ATR implementation with restriction on the upper bounds for the size of values to calculate the
+ * average true range on.
  * 
  * @author CJ Hare
  */
-public class AverageTrueRangeUnbounded implements AverageTrueRange {
+public class ReuseIndicatorOutputStore implements IndicatorOutputStore {
 
-	/** Delegate the performs the ATR calculations. */
-	private final AverageTrueRangeCalculator caclulator;
+	/** Maximum number of trading days to calculate on. */
+	private final int maximum;
+
+	/** Reused array to hold the indicator values. */
+	private final BigDecimal[] store;
 
 	/**
-	 * @param lookback the number of days to use when calculating the ATR, also the number of days
-	 *            prior to the averaging becoming correct.
-	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
+	 * @param maximum number of days to that will be provided to the indicator calculator.
 	 */
-	public AverageTrueRangeUnbounded( final int lookback, final MathContext mathContext ) {
-		this.caclulator = new AverageTrueRangeCalculator( lookback, mathContext );
+	public ReuseIndicatorOutputStore( final int maximum ) {
+		this.maximum = maximum;
+		this.store = new BigDecimal[maximum];
 	}
 
 	@Override
-	public BigDecimal[] atr( final TradingDayPrices[] data ) throws TooFewDataPoints {
-		return caclulator.atr( data, new BigDecimal[data.length] );
+	public BigDecimal[] getStore( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
+
+		// Restrict on the number of trading days
+		if (data.length > maximum) {
+			throw new TooManyDataPoints( String.format( "At most %s data points are needed, however %s are given",
+					maximum, data.length ) );
+		}
+
+		return store;
 	}
 }

@@ -43,8 +43,10 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.IndicatorOutputStore;
+import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.atr.AverageTrueRange;
-import com.systematic.trading.maths.indicator.atr.AverageTrueRangeUnbounded;
+import com.systematic.trading.maths.indicator.atr.AverageTrueRangeCalculator;
 import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 
 public class TodaysStopLosses {
@@ -80,7 +82,8 @@ public class TodaysStopLosses {
 
 	private static void averageTrueRange( final LocalDate startDate, final LocalDate endDate ) {
 		final DataService service = HibernateDataService.getInstance();
-		final AverageTrueRange atr = new AverageTrueRangeUnbounded( 14, MATH_CONTEXT );
+		final IndicatorOutputStore indicatorStore = new StandardIndicatorOutputStore();
+		final AverageTrueRange atr = new AverageTrueRangeCalculator( 14, indicatorStore, MATH_CONTEXT );
 		final BigDecimal threeQuaterMultiplier = BigDecimal.valueOf( 3.25 );
 		final BigDecimal threeHalfMultiplier = BigDecimal.valueOf( 3.5 );
 

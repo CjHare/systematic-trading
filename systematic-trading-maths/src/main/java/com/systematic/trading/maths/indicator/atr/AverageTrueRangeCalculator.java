@@ -30,17 +30,15 @@ import java.math.MathContext;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.IndicatorOutputStore;
 
 /**
- * Average true range (ATR) is a technical analysis volatility indicator originally developed by J.
- * Welles Wilder, Jr. for commodities. <br/>
- * ATR does not provide an indication of price trend, simply the degree of price volatility. The
- * average true range is an N-day smoothed moving average (SMMA) of the true range values. Wilder
- * recommended a 14-period smoothing.
+ * Standard ATR implementation.
  * 
  * @author CJ Hare
  */
-public class AverageTrueRangeCalculator {
+public class AverageTrueRangeCalculator implements AverageTrueRange {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -54,16 +52,22 @@ public class AverageTrueRangeCalculator {
 	/** Required number of data points required for ATR calculation. */
 	private final int minimumNumberOfPrices;
 
+	/** Provides the array to store the result in. */
+	private final IndicatorOutputStore store;
+
 	/**
 	 * @param lookback the number of days to use when calculating the ATR, also the number of days
 	 *            prior to the averaging becoming correct.
+	 * @param store source for the storage array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public AverageTrueRangeCalculator( final int lookback, final MathContext mathContext ) {
+	public AverageTrueRangeCalculator( final int lookback, final IndicatorOutputStore store,
+			final MathContext mathContext ) {
 		this.priorMultiplier = BigDecimal.valueOf( lookback - 1 );
 		this.lookbackDivider = BigDecimal.valueOf( lookback );
 		this.mathContext = mathContext;
 		this.minimumNumberOfPrices = lookback + 1;
+		this.store = store;
 	}
 
 	private BigDecimal trueRangeMethodOne( final TradingDayPrices today ) {
@@ -104,15 +108,10 @@ public class AverageTrueRangeCalculator {
 				.divide( lookbackDivider, mathContext );
 	}
 
-	/**
-	 * Calculates the average true range values.
-	 * 
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @param atrValues array to store and return the average true range values.
-	 * @return average true range values.
-	 * @throws TooFewDataPoints not enough closing prices to perform ATR calculations.
-	 */
-	public BigDecimal[] atr( final TradingDayPrices[] data, final BigDecimal[] atrValues ) throws TooFewDataPoints {
+	@Override
+	public BigDecimal[] atr( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
+
+		final BigDecimal[] atrValues = store.getStore( data );
 
 		// Expecting the same number of input data points as outputs
 		if (data.length != atrValues.length) {

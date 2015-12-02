@@ -23,54 +23,29 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator.atr;
+package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
 
 /**
- * ATR implementation with restriction on the upper bounds for the size of values to calculate the
- * average true range on.
+ * Restrictions on the input accepted by indicators, also deciding how the results store is
+ * acquired.
  * 
  * @author CJ Hare
  */
-public class AverageTrueRangeBounded implements AverageTrueRange {
-
-	/** Delegate the performs the ATR calculations. */
-	private final AverageTrueRangeCalculator caclulator;
-
-	/** Maximum number of trading days to calculate the ATR on. */
-	private final int maximum;
-
-	/** Reused array to hold the average true range values. */
-	private final BigDecimal[] atr;
+public interface IndicatorOutputStore {
 
 	/**
-	 * @param lookback the number of days to use when calculating the ATR, also the number of days
-	 *            prior to the averaging becoming correct.
-	 * @param maximum number of days to calculate the ATR on.
-	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
+	 * Obtains the array to store the results from the indicator.
+	 * 
+	 * @param data ordered chronologically, from oldest to youngest (most recent first).
+	 * @return array to store the indicator output.
+	 * @throws TooFewDataPoints not enough closing prices to perform calculations.
+	 * @throws TooManyDataPoints too many days of closing prices have been provided.
 	 */
-	public AverageTrueRangeBounded( final int lookback, final int maximum, final MathContext mathContext ) {
-		this.caclulator = new AverageTrueRangeCalculator( lookback, mathContext );
-
-		this.maximum = maximum;
-		this.atr = new BigDecimal[maximum];
-	}
-
-	@Override
-	public BigDecimal[] atr( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
-
-		// Restrict on the number of trading days
-		if (data.length > maximum) {
-			throw new TooManyDataPoints( String.format(
-					"At most %s data points are needed for Average True Range, %s given", maximum, data.length ) );
-		}
-
-		return caclulator.atr( data, atr );
-	}
+	BigDecimal[] getStore( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
 }

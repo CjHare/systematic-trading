@@ -28,6 +28,7 @@ package com.systematic.trading.maths.indicator.atr;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -38,6 +39,9 @@ import org.junit.Test;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.IndicatorOutputStore;
+import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
 
 /**
  * Tests the behaviour of the AverageTrueRangeCalculator.
@@ -90,37 +94,38 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	@Test(expected = TooFewDataPoints.class)
-	public void fewerDataPointsThenLookback() throws TooFewDataPoints {
+	public void fewerDataPointsThenLookback() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 4;
 		final TradingDayPrices[] data = createPrices( lookback );
-		final BigDecimal[] atrValues = new BigDecimal[lookback];
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, MATH_CONTEXT );
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, store, MATH_CONTEXT );
 
-		calculator.atr( data, atrValues );
+		calculator.atr( data );
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void mismatchedParameterLengths() throws TooFewDataPoints {
+	public void mismatchedParameterLengths() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 4;
 		final TradingDayPrices[] data = createPrices( lookback );
-		final BigDecimal[] atrValues = new BigDecimal[lookback - 1];
+		final IndicatorOutputStore store = mock( StandardIndicatorOutputStore.class );
+		when( store.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback - 1] );
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, MATH_CONTEXT );
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, store, MATH_CONTEXT );
 
-		calculator.atr( data, atrValues );
+		calculator.atr( data );
 	}
 
 	@Test
-	public void atrFlat() throws TooFewDataPoints {
+	public void atrFlat() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
-		final BigDecimal[] atrValues = new BigDecimal[numberDataPoints];
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, MATH_CONTEXT );
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, store, MATH_CONTEXT );
 
-		final BigDecimal[] atr = calculator.atr( data, atrValues );
+		final BigDecimal[] atr = calculator.atr( data );
 
 		assertNotNull( atr );
 		assertEquals( numberDataPoints, atr.length );
@@ -130,15 +135,15 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	@Test
-	public void atrIncreasing() throws TooFewDataPoints {
+	public void atrIncreasing() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 4;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
-		final BigDecimal[] atrValues = new BigDecimal[numberDataPoints];
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, MATH_CONTEXT );
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, store, MATH_CONTEXT );
 
-		final BigDecimal[] atr = calculator.atr( data, atrValues );
+		final BigDecimal[] atr = calculator.atr( data );
 
 		assertNotNull( atr );
 		assertEquals( numberDataPoints, atr.length );
@@ -150,16 +155,16 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	@Test
-	public void atrInitialNullEntry() throws TooFewDataPoints {
+	public void atrInitialNullEntry() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
 		final int numberDataPoints = 4;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[0] = null;
-		final BigDecimal[] atrValues = new BigDecimal[numberDataPoints];
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, MATH_CONTEXT );
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, store, MATH_CONTEXT );
 
-		final BigDecimal[] atr = calculator.atr( data, atrValues );
+		final BigDecimal[] atr = calculator.atr( data );
 
 		assertNotNull( atr );
 		assertEquals( numberDataPoints, atr.length );
@@ -169,34 +174,34 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	@Test(expected = TooFewDataPoints.class)
-	public void atrAllNull() throws TooFewDataPoints {
+	public void atrAllNull() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 4;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = new TradingDayPrices[numberDataPoints];
-		final BigDecimal[] atrValues = new BigDecimal[numberDataPoints];
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, MATH_CONTEXT );
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, store, MATH_CONTEXT );
 
-		calculator.atr( data, atrValues );
+		calculator.atr( data );
 	}
 
 	@Test
-	public void atrThreeRangeTypes() throws TooFewDataPoints {
+	public void atrThreeRangeTypes() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 4;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createThreeTypesOfVolatility( numberDataPoints );
-		final BigDecimal[] atrValues = new BigDecimal[numberDataPoints];
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, MATH_CONTEXT );
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, store, MATH_CONTEXT );
 
-		final BigDecimal[] atr = calculator.atr( data, atrValues );
+		final BigDecimal[] atr = calculator.atr( data );
 
 		assertNotNull( atr );
-		// assertEquals( numberDataPoints, atr.length );
-		// assertEquals( BigDecimal.valueOf( 5 ), atr[0] );
-		// assertEquals( BigDecimal.valueOf( 6.25 ), atr[1] );
-		// assertEquals( BigDecimal.valueOf( 8.4375 ), atr[2] );
-		// assertEquals( BigDecimal.valueOf( 11.328125 ), atr[3] );
-		// assertEquals( BigDecimal.valueOf( 14.74609375 ), atr[4] );
+		assertEquals( numberDataPoints, atr.length );
+		assertEquals( BigDecimal.valueOf( 5 ), atr[0] );
+		assertEquals( BigDecimal.valueOf( 5 ), atr[1] );
+		assertEquals( BigDecimal.valueOf( 5 ), atr[2] );
+		assertEquals( BigDecimal.valueOf( 8.75 ), atr[3] );
+		assertEquals( BigDecimal.valueOf( 9.0625 ), atr[4] );
 	}
 }
