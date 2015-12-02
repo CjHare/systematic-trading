@@ -33,9 +33,9 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.ReuseIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
-import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageBounded;
-import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageUnbounded;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
 import com.systematic.trading.signals.model.DatedValue;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
@@ -43,24 +43,26 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 	private static final int DAYS_OF_MACD = 3;
 
-	/** Scale, precision and rounding to apply to mathematical operations. */
-	private final MathContext mathContext;
-
 	private final ExponentialMovingAverage slowEma;
 	private final ExponentialMovingAverage fastEma;
 
 	private final int slowTimePeriods;
 	private final int signalTimePeriods;
 
+	private final ExponentialMovingAverage signalEma;
+
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
 			final int signalTimePeriods, final MathContext mathContext ) {
 		this.slowTimePeriods = slowTimePeriods;
 		this.signalTimePeriods = signalTimePeriods;
-		this.mathContext = mathContext;
 
 		final int requiredNumberOfTradingDays = getRequiredNumberOfTradingDays();
-		this.slowEma = new ExponentialMovingAverageBounded( slowTimePeriods, requiredNumberOfTradingDays, mathContext );
-		this.fastEma = new ExponentialMovingAverageBounded( fastTimePeriods, requiredNumberOfTradingDays, mathContext );
+		this.slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods, new ReuseIndicatorOutputStore(
+				requiredNumberOfTradingDays ), mathContext );
+		this.fastEma = new ExponentialMovingAverageCalculator( fastTimePeriods, new ReuseIndicatorOutputStore(
+				requiredNumberOfTradingDays ), mathContext );
+		this.signalEma = new ExponentialMovingAverageCalculator( signalTimePeriods, new ReuseIndicatorOutputStore(
+				requiredNumberOfTradingDays ), mathContext );
 	}
 
 	@Override
@@ -77,8 +79,6 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		}
 
 		// Signal line
-		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageUnbounded( signalTimePeriods,
-				mathContext );
 		final DatedValue[] macdDataPoint = new DatedValue[macd.length];
 		for (int i = 0; i < macd.length; i++) {
 			macdDataPoint[i] = new DatedValue( data[i].getDate(), macd[i] );
