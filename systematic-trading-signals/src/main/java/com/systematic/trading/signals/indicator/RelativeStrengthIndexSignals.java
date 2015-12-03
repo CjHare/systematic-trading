@@ -34,8 +34,9 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexBounded;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -60,15 +61,16 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		this.oversold = BigDecimal.valueOf( oversold );
 		this.overbought = BigDecimal.valueOf( overbought );
 
-		this.shortSignal = new RelativeStrengthIndexBounded( FIVE_TRADING_DAYS, FIVE_TRADING_DAYS + DAYS_OF_RSI_VALUES,
-				mathContext );
-		this.longSignal = new RelativeStrengthIndexBounded( TEN_TRADING_DAYS, TEN_TRADING_DAYS + DAYS_OF_RSI_VALUES,
-				mathContext );
+		// TODO maximum number of trading days? from where & use the Reuse stores
+		this.shortSignal = new RelativeStrengthIndexCalculator( FIVE_TRADING_DAYS, new StandardIndicatorOutputStore(),
+				new StandardIndicatorOutputStore(), mathContext );
+		this.longSignal = new RelativeStrengthIndexCalculator( TEN_TRADING_DAYS, new StandardIndicatorOutputStore(),
+				new StandardIndicatorOutputStore(), mathContext );
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints,
-			TooManyDataPoints {
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data )
+			throws TooFewDataPoints, TooManyDataPoints {
 		// 5 day RSI
 		final BigDecimal[] fiveDayRsi = shortSignal.rsi( data );
 

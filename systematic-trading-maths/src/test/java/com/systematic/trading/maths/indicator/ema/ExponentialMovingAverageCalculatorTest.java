@@ -47,11 +47,11 @@ import com.systematic.trading.maths.indicator.IndicatorOutputStore;
 import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
 
 /**
- * Test the ExponentialMovingAverage.
+ * Test the ExponentialMovingAverageCalculator.
  * 
  * @author CJ Hare
  */
-public class ExponentialMovingAverageTest {
+public class ExponentialMovingAverageCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	private TradingDayPrices[] createPrices( final int count ) {
@@ -69,8 +69,8 @@ public class ExponentialMovingAverageTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( i + 1 ),
-					BigDecimal.valueOf( i ), BigDecimal.valueOf( i + 2 ), BigDecimal.valueOf( i + 1 ) );
+			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( i + 1 ), BigDecimal.valueOf( i ),
+					BigDecimal.valueOf( i + 2 ), BigDecimal.valueOf( i + 1 ) );
 		}
 
 		return prices;
@@ -137,8 +137,8 @@ public class ExponentialMovingAverageTest {
 		assertNull( ema[0] );
 		assertNull( ema[1] );
 		assertNull( ema[2] );
-		assertEquals( 0, ema[3].compareTo( BigDecimal.ONE ) );
-		assertEquals( 0, ema[4].compareTo( BigDecimal.ONE ) );
+		assertEquals( BigDecimal.ONE, ema[3].setScale( 0, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.ONE, ema[4].setScale( 0, RoundingMode.HALF_EVEN ) );
 	}
 
 	@Test
@@ -160,7 +160,7 @@ public class ExponentialMovingAverageTest {
 		assertNull( ema[1] );
 		assertNull( ema[2] );
 		assertNull( ema[3] );
-		assertEquals( 0, ema[4].compareTo( BigDecimal.ONE ) );
+		assertEquals( BigDecimal.ONE, ema[4].setScale( 0, RoundingMode.HALF_EVEN ) );
 	}
 
 	@Test
@@ -180,8 +180,8 @@ public class ExponentialMovingAverageTest {
 		assertNull( ema[0] );
 		assertNull( ema[1] );
 		assertNull( ema[2] );
-		assertEquals( 0, ema[3].setScale( 2, RoundingMode.CEILING ).compareTo( BigDecimal.valueOf( 3.34 ) ) );
-		assertEquals( 0, ema[4].setScale( 2, RoundingMode.CEILING ).compareTo( BigDecimal.valueOf( 4.67 ) ) );
-		assertEquals( 0, ema[5].setScale( 2, RoundingMode.CEILING ).compareTo( BigDecimal.valueOf( 5.67 ) ) );
+		assertEquals( BigDecimal.valueOf( 3.33 ), ema[3].setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 4.67 ), ema[4].setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 5.67 ), ema[5].setScale( 2, RoundingMode.HALF_EVEN ) );
 	}
 }

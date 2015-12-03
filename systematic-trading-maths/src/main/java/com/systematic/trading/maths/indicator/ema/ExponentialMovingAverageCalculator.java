@@ -59,11 +59,10 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	 */
 	public ExponentialMovingAverageCalculator( final int lookback, final IndicatorOutputStore store,
 			final MathContext mathContext ) {
-		this.mathContext = mathContext;
 		this.minimumNumberOfPrices = lookback + 1;
+		this.mathContext = mathContext;
+		this.smoothingConstant = calculateSmoothingConstant( lookback );
 		this.store = store;
-
-		smoothingConstant = calculateSmoothingConstant();
 	}
 
 	@Override
@@ -73,9 +72,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 
 		// Expecting the same number of input data points as outputs
 		if (data.length != emaValues.length) {
-			throw new IllegalArgumentException( String.format(
-					"The number of data points given: %s does not match the expected size: %s", data.length,
-					emaValues.length ) );
+			throw new IllegalArgumentException(
+					String.format( "The number of data points given: %s does not match the expected size: %s",
+							data.length, emaValues.length ) );
 		}
 
 		// Skip any null entries
@@ -87,9 +86,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 
 		// Enough data to calculate EMA?
 		if (data.length - startSmaIndex < minimumNumberOfPrices) {
-			throw new TooFewDataPoints( String.format(
-					"At least %s data points are needed for Exponential Moving Average, only %s given",
-					minimumNumberOfPrices, data.length ) );
+			throw new TooFewDataPoints(
+					String.format( "At least %s data points are needed for Exponential Moving Average, only %s given",
+							minimumNumberOfPrices, data.length ) );
 		}
 
 		// Initialise the return array with null to the start Sma
@@ -115,8 +114,8 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		for (int i = endSmaIndex; i < data.length; i++) {
 			today = data[i].getClosingPrice().getPrice();
 
-			emaValues[i] = (today.subtract( yesterday, mathContext )).multiply( smoothingConstant, mathContext ).add(
-					yesterday, mathContext );
+			emaValues[i] = (today.subtract( yesterday, mathContext )).multiply( smoothingConstant, mathContext )
+					.add( yesterday, mathContext );
 
 			yesterday = today;
 		}
@@ -124,7 +123,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		return emaValues;
 	}
 
-	private BigDecimal calculateSmoothingConstant() {
-		return BigDecimal.valueOf( 2d / (minimumNumberOfPrices) );
+	private BigDecimal calculateSmoothingConstant( final int lookback ) {
+		return BigDecimal.valueOf( 2d / (lookback + 1) );
 	}
 }
