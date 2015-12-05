@@ -81,7 +81,11 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		// Signal line
 		final DatedValue[] macdDataPoint = new DatedValue[macd.length];
 		for (int i = 0; i < macd.length; i++) {
-			macdDataPoint[i] = new DatedValue( data[i].getDate(), macd[i] );
+
+			// Only create a dated value when there's an actual value
+			if (macd[i] != null) {
+				macdDataPoint[i] = new DatedValue( data[i].getDate(), macd[i] );
+			}
 		}
 
 		final BigDecimal[] signaline = signalEma.ema( macdDataPoint );

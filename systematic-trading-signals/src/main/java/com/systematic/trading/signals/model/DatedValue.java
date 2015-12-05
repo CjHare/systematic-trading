@@ -45,6 +45,12 @@ public class DatedValue implements TradingDayPrices {
 	private final BigDecimal value;
 
 	public DatedValue( final LocalDate date, final BigDecimal value ) {
+
+		if (date == null || value == null) {
+			throw new IllegalArgumentException(
+					String.format( "Expecting non null date and value, given Date: %s and Value: %s", date, value ) );
+		}
+
 		this.date = date;
 		this.value = value;
 	}
