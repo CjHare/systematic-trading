@@ -74,6 +74,7 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 		this.mathContext = mathContext;
 		this.daysOfGradient = daysOfGradient;
 
+		//TODO reuse indicator
 		this.movingAverage = new SimpleMovingAverageCalculator( lookback, new StandardIndicatorOutputStore(),
 				mathContext );
 	}

@@ -65,8 +65,11 @@ import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
  * 
  * @author CJ Hare
  */
-public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration implements
-		BacktestBootstrapConfiguration {
+public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
+		implements BacktestBootstrapConfiguration {
+
+	/** Number of days of signals to use when triggering signals. */
+	private static final int DAYS_ACCEPTING_SIGNALS = 3;
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -120,7 +123,8 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 	@Override
 	public EntryLogic getEntryLogic( final EquityIdentity equity, final LocalDate openingDate ) {
 
-		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>( entrySignals.length );
+		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>(
+				entrySignals.length );
 		final IndicatorSignalType[] types = new IndicatorSignalType[entrySignals.length];
 
 		for (int i = 0; i < entrySignals.length; i++) {
@@ -129,10 +133,10 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 			types[i] = entrySignal.getSignalType();
 		}
 
-		// Only signals from the last two days are of interest
+		// Only signals from the last few days are of interest
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
 		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter( types ),
-				Period.ofDays( 5 ) );
+				Period.ofDays( DAYS_ACCEPTING_SIGNALS ) );
 		filters.add( filter );
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
@@ -142,5 +146,14 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 	@Override
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * The most number of days of signals used when analysing signals.
+	 * 
+	 * @return most number of days of signals analysed.
+	 */
+	public static int maximumDaysOfSignalsAnalysed() {
+		return DAYS_ACCEPTING_SIGNALS;
 	}
 }
