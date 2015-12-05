@@ -33,10 +33,11 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
-import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageBounded;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageK;
-import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageKBounded;
+import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageKCalculator;
 import com.systematic.trading.signals.model.DatedValue;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
@@ -68,15 +69,16 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 			final MathContext mathContext ) {
 		this.lookback = lookback;
 
-		final int requiredNumberOfTradingDays = getRequiredNumberOfTradingDays();
-		this.smaFullK = new SimpleMovingAverageBounded( smaK, requiredNumberOfTradingDays, mathContext );
-		this.smaFullD = new SimpleMovingAverageBounded( smaD, requiredNumberOfTradingDays, mathContext );
-		this.percentageK = new StochasticPercentageKBounded( lookback, requiredNumberOfTradingDays, mathContext );
+		// TODO convert to reuse ouptut
+		this.smaFullK = new SimpleMovingAverageCalculator( smaK, new StandardIndicatorOutputStore(), mathContext );
+		this.smaFullD = new SimpleMovingAverageCalculator( smaD, new StandardIndicatorOutputStore(), mathContext );
+		this.percentageK = new StochasticPercentageKCalculator( lookback, new StandardIndicatorOutputStore(),
+				mathContext );
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints,
-			TooManyDataPoints {
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data )
+			throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] fastK = percentageK.percentageK( data );
 		final BigDecimal[] fullK = smaFullK.sma( merge( data, fastK ) );

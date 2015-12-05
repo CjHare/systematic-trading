@@ -79,8 +79,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 
 		// Skip any null entries
 		int startSmaIndex = 0;
-		while (startSmaIndex < data.length
-				&& (data[startSmaIndex] == null || data[startSmaIndex].getClosingPrice() == null)) {
+		while (isNullEntryWithinArray( data, startSmaIndex )) {
 			startSmaIndex++;
 		}
 
@@ -121,6 +120,10 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		}
 
 		return emaValues;
+	}
+
+	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
+		return (index < data.length) && (data[index] == null);
 	}
 
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {

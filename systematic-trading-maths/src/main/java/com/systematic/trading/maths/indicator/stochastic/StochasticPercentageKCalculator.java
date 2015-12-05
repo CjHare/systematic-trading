@@ -33,13 +33,15 @@ import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
+import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.IndicatorOutputStore;
 
 /**
  * %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
  * 
  * @author CJ Hare
  */
-public class StochasticPercentageKCalculator {
+public class StochasticPercentageKCalculator implements StochasticPercentageK {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -50,34 +52,58 @@ public class StochasticPercentageKCalculator {
 	/** Number of days to read the ranges on. */
 	private final int lookback;
 
+	/** Provides the array to store the result in. */
+	private final IndicatorOutputStore store;
+
 	/**
 	 * @param lookback the number of days to use when calculating the Stochastic%K.
+	 * @param store memory allocator for the result array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public StochasticPercentageKCalculator( final int lookback, final MathContext mathContext ) {
+	public StochasticPercentageKCalculator( final int lookback, final IndicatorOutputStore store,
+			final MathContext mathContext ) {
 		this.lookback = lookback;
 		this.mathContext = mathContext;
+		this.store = store;
 	}
 
-	public BigDecimal[] percentageK( final TradingDayPrices[] data, final BigDecimal[] pK ) throws TooFewDataPoints {
+	@Override
+	public BigDecimal[] percentageK( final TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints {
+
+		final BigDecimal[] pK = store.getStore( data );
 
 		// Expecting the same number of input data points as outputs
 		if (data.length != pK.length) {
-			throw new TooFewDataPoints( String.format(
-					"The number of data points given: %s does not match the expected size: %s", data.length, pK.length ) );
+			throw new IllegalArgumentException(
+					String.format( "The number of data points given: %s does not match the expected size: %s",
+							data.length, pK.length ) );
+		}
+
+		// Skip any null entries
+		int pkSmaIndex = 0;
+		while (isNullEntryWithinArray( data, pkSmaIndex )) {
+			pkSmaIndex++;
+		}
+
+		// Have we the minimum number of values
+		if (data.length < pkSmaIndex + lookback) {
+			throw new TooFewDataPoints(
+					String.format( "At least %s data points are needed for Simple Moving Average, only %s given",
+							pkSmaIndex + lookback, data.length ) );
 		}
 
 		LowestPrice lowestLow;
 		HighestPrice highestHigh;
 		ClosingPrice currentClose;
 		BigDecimal lowestHighestDifference;
+		pkSmaIndex += lookback;
 
 		// Initialise the start of results with null
-		for (int i = 0; i < lookback; i++) {
+		for (int i = 0; i < pkSmaIndex; i++) {
 			pK[i] = null;
 		}
 
-		for (int i = lookback; i < data.length; i++) {
+		for (int i = pkSmaIndex; i < data.length; i++) {
 			currentClose = data[i].getClosingPrice();
 			lowestLow = lowestLow( data, i );
 			highestHigh = highestHigh( data, i );
@@ -89,11 +115,18 @@ public class StochasticPercentageKCalculator {
 		return pK;
 	}
 
+	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
+		return (index < data.length) && (data[index] == null);
+	}
+
 	private BigDecimal calculatePercentageK( final LowestPrice lowestLow, final HighestPrice highestHigh,
 			final ClosingPrice currentClose, final BigDecimal lowestHighestDifference ) {
 		// %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
-		return ((currentClose.subtract( lowestLow, mathContext )).divide( lowestHighestDifference, mathContext ))
-				.multiply( ONE_HUNDRED, mathContext );
+		final BigDecimal pK = ((currentClose.subtract( lowestLow, mathContext )).divide( lowestHighestDifference,
+				mathContext )).multiply( ONE_HUNDRED, mathContext );
+
+		// Cap output at 100
+		return (pK.compareTo( ONE_HUNDRED ) > 0) ? ONE_HUNDRED : pK;
 	}
 
 	private BigDecimal differenceBetweenHighestHighAndLowestLow( final LowestPrice lowestLow,
@@ -105,10 +138,11 @@ public class StochasticPercentageKCalculator {
 		return highestHigh.getPrice().subtract( lowestLow.getPrice(), mathContext );
 	}
 
-	private LowestPrice lowestLow( final TradingDayPrices[] data, final int inclusiveStart ) {
+	private LowestPrice lowestLow( final TradingDayPrices[] data, final int exclusiveEnd ) {
+		final int inclusiveStart = exclusiveEnd - lookback;
 		LowestPrice contender, lowest = data[inclusiveStart].getLowestPrice();
 
-		for (int i = inclusiveStart - lookback; i < inclusiveStart; i++) {
+		for (int i = inclusiveStart + 1; i < exclusiveEnd; i++) {
 			contender = data[i].getLowestPrice();
 			if (contender.isLessThan( lowest )) {
 				lowest = contender;
@@ -118,10 +152,11 @@ public class StochasticPercentageKCalculator {
 		return lowest;
 	}
 
-	private HighestPrice highestHigh( final TradingDayPrices[] data, final int inclusiveStart ) {
+	private HighestPrice highestHigh( final TradingDayPrices[] data, final int exclusiveEnd ) {
+		final int inclusiveStart = exclusiveEnd - lookback;
 		HighestPrice contender, highest = data[inclusiveStart].getHighestPrice();
 
-		for (int i = inclusiveStart - lookback; i < inclusiveStart; i++) {
+		for (int i = inclusiveStart + 1; i < exclusiveEnd; i++) {
 			contender = data[i].getHighestPrice();
 			if (contender.isGreaterThan( highest )) {
 				highest = contender;

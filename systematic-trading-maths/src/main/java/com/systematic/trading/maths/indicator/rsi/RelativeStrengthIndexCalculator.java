@@ -108,8 +108,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 		// Skip any null entries
 		int startRsiIndex = 0;
-		while (startRsiIndex < data.length
-				&& (data[startRsiIndex] == null || data[startRsiIndex].getClosingPrice() == null)) {
+		while (isNullEntryWithinArray( data, startRsiIndex )) {
 			startRsiIndex++;
 		}
 
@@ -210,6 +209,10 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 		}
 
 		return rsiValues;
+	}
+
+	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
+		return (index < data.length) && (data[index] == null);
 	}
 
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {

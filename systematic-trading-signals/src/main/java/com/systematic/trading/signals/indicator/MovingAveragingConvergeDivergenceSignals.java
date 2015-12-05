@@ -33,7 +33,7 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.ReuseIndicatorOutputStore;
+import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
 import com.systematic.trading.signals.model.DatedValue;
@@ -56,18 +56,18 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		this.slowTimePeriods = slowTimePeriods;
 		this.signalTimePeriods = signalTimePeriods;
 
-		final int requiredNumberOfTradingDays = getRequiredNumberOfTradingDays();
-		this.slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods, new ReuseIndicatorOutputStore(
-				requiredNumberOfTradingDays ), mathContext );
-		this.fastEma = new ExponentialMovingAverageCalculator( fastTimePeriods, new ReuseIndicatorOutputStore(
-				requiredNumberOfTradingDays ), mathContext );
-		this.signalEma = new ExponentialMovingAverageCalculator( signalTimePeriods, new ReuseIndicatorOutputStore(
-				requiredNumberOfTradingDays ), mathContext );
+		// TODO switch over to reuse
+		this.slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods, new StandardIndicatorOutputStore(),
+				mathContext );
+		this.fastEma = new ExponentialMovingAverageCalculator( fastTimePeriods, new StandardIndicatorOutputStore(),
+				mathContext );
+		this.signalEma = new ExponentialMovingAverageCalculator( signalTimePeriods, new StandardIndicatorOutputStore(),
+				mathContext );
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) throws TooFewDataPoints,
-			TooManyDataPoints {
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data )
+			throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] slowEmaValues = slowEma.ema( data );
 		final BigDecimal[] fastEmaValues = fastEma.ema( data );

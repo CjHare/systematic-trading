@@ -104,8 +104,8 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	private BigDecimal average( final BigDecimal currentTrueRange, final BigDecimal priorAverageTrueRange ) {
 		/* For a look back of 14: Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the
 		 * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14 */
-		return priorAverageTrueRange.multiply( priorMultiplier ).add( currentTrueRange )
-				.divide( lookbackDivider, mathContext );
+		return priorAverageTrueRange.multiply( priorMultiplier ).add( currentTrueRange ).divide( lookbackDivider,
+				mathContext );
 	}
 
 	@Override
@@ -115,22 +115,22 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 
 		// Expecting the same number of input data points as outputs
 		if (data.length != atrValues.length) {
-			throw new IllegalArgumentException( String.format(
-					"The number of data points given: %s does not match the expected size: %s", data.length,
-					atrValues.length ) );
+			throw new IllegalArgumentException(
+					String.format( "The number of data points given: %s does not match the expected size: %s",
+							data.length, atrValues.length ) );
 		}
 
 		// Skip any null entries
 		int startAtrIndex = 0;
-		while (startAtrIndex < data.length && data[startAtrIndex] == null) {
+		while (isNullEntryWithinArray( data, startAtrIndex )) {
 			startAtrIndex++;
 		}
 
 		// Enough data to calculate ATR?
 		if (data.length - startAtrIndex < minimumNumberOfPrices) {
-			throw new TooFewDataPoints( String.format(
-					"At least %s non null data points for Average True Range, only %s given", minimumNumberOfPrices,
-					data.length ) );
+			throw new TooFewDataPoints(
+					String.format( "At least %s non null data points for Average True Range, only %s given",
+							minimumNumberOfPrices, data.length ) );
 		}
 
 		// Initialise the return array with null to the start ATR
@@ -150,5 +150,9 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 		}
 
 		return atrValues;
+	}
+
+	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
+		return (index < data.length) && (data[index] == null);
 	}
 }
