@@ -50,8 +50,11 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/** Provides the array to store the result in. */
 	private final IndicatorOutputStore store;
 
-	/** Required number of data points required for ATR calculation. */
+	/** Required number of data points required for EMA calculation. */
 	private final int minimumNumberOfPrices;
+
+	/** The number of previous data points used in EMA calculation. */
+	private final int lookback;
 
 	/**
 	 * @param lookback the number of days to use when calculating the EMA.
@@ -61,6 +64,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 			final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + 1;
 		this.mathContext = mathContext;
+		this.lookback = lookback;
 		this.smoothingConstant = calculateSmoothingConstant( lookback );
 		this.store = store;
 	}
@@ -96,7 +100,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		}
 
 		/* SMA for the initial time periods */
-		final int endSmaIndex = startSmaIndex + minimumNumberOfPrices;
+		final int endSmaIndex = startSmaIndex + lookback;
 		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
 
 		for (int i = startSmaIndex; i < endSmaIndex; i++) {
@@ -123,7 +127,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
-		return (index < data.length) && (data[index] == null);
+		return (index < data.length) && (data[index] == null || data[index].getClosingPrice() == null);
 	}
 
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {

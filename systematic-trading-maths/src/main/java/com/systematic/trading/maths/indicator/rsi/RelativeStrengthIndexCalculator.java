@@ -212,7 +212,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	}
 
 	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
-		return (index < data.length) && (data[index] == null);
+		return (index < data.length) && (data[index] == null || data[index].getClosingPrice() == null);
 	}
 
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {

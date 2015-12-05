@@ -83,6 +83,9 @@ public class SystematicTradingBacktest {
 
 	public static void main( final String... args ) throws Exception {
 
+		final int cores = Runtime.getRuntime().availableProcessors();
+		final ExecutorService pool = Executors.newFixedThreadPool( cores );
+
 		final EquityIdentity equity = getEquityIdentity();
 
 		// Date range is from the first of the starting month until now
@@ -90,35 +93,35 @@ public class SystematicTradingBacktest {
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
 		final List<BacktestBootstrapConfiguration> configurations = getConfigurations( startDate, endDate );
 
-		final TickerSymbolTradingData tradingData = getTradingData( equity, startDate, endDate );
+		try {
+			final TickerSymbolTradingData tradingData = getTradingData( equity, startDate, endDate );
 
-		final int cores = Runtime.getRuntime().availableProcessors();
-		final ExecutorService pool = Executors.newFixedThreadPool( cores );
+			// Arrange output to files
+			new FileClearDestination( "../../simulations/" );
 
-		// Arrange output to files
-		new FileClearDestination( "../../simulations/" );
+			final NetWorthComparisonDisplay netWorthComparisonDisplay = new FileNetWorthComparisonDisplay(
+					"../../simulations/summary.txt", pool );
 
-		final NetWorthComparisonDisplay netWorthComparisonDisplay = new FileNetWorthComparisonDisplay(
-				"../../simulations/summary.txt", pool );
+			for (final BacktestBootstrapConfiguration configuration : configurations) {
+				final String outputDirectory = getOutputDirectory( equity, configuration );
+				final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool );
 
-		for (final BacktestBootstrapConfiguration configuration : configurations) {
-			final String outputDirectory = getOutputDirectory( equity, configuration );
-			final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool );
+				netWorthComparisonDisplay.setDescription( configuration.getDescription() );
 
-			netWorthComparisonDisplay.setDescription( configuration.getDescription() );
+				final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
+						netWorthComparisonDisplay, MATH_CONTEXT );
 
-			final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
-					netWorthComparisonDisplay, MATH_CONTEXT );
+				bootstrap.run();
 
-			bootstrap.run();
+				LOG.info( String.format( "Backtesting complete for: %s", configuration.getDescription() ) );
+			}
 
-			LOG.info( String.format( "Backtesting complete for: %s", configuration.getDescription() ) );
+			LOG.info( "All Simulations have been completed" );
+
+		} finally {
+			HibernateUtil.getSessionFactory().close();
+			pool.shutdown();
 		}
-
-		HibernateUtil.getSessionFactory().close();
-		pool.shutdown();
-
-		LOG.info( "All Simulations have been completed" );
 	}
 
 	private static TickerSymbolTradingData getTradingData( final EquityIdentity equity, final LocalDate startDate,
@@ -232,10 +235,14 @@ public class SystematicTradingBacktest {
 
 	private enum SmaConfiguration {
 
-		SHORT( new SimpleMovingAverageGradientSignals( 20, 5, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Short-Sma" ),
-		MEDIUM( new SimpleMovingAverageGradientSignals( 50, 7, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Medium-Sma" ),
-		LONG( new SimpleMovingAverageGradientSignals( 100, 10, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Long-Sma" ),
-		LONGEST( new SimpleMovingAverageGradientSignals( 200, 20, GradientType.POSITIVE, MATH_CONTEXT ), "Positive-Longest-Sma" );
+		SHORT( new SimpleMovingAverageGradientSignals( 20, 5, GradientType.POSITIVE,
+				MATH_CONTEXT ), "Positive-Short-Sma" ),
+		MEDIUM( new SimpleMovingAverageGradientSignals( 50, 7, GradientType.POSITIVE,
+				MATH_CONTEXT ), "Positive-Medium-Sma" ),
+		LONG( new SimpleMovingAverageGradientSignals( 100, 10, GradientType.POSITIVE,
+				MATH_CONTEXT ), "Positive-Long-Sma" ),
+		LONGEST( new SimpleMovingAverageGradientSignals( 200, 20, GradientType.POSITIVE,
+				MATH_CONTEXT ), "Positive-Longest-Sma" );
 
 		private final SimpleMovingAverageGradientSignals sma;
 		private final String description;

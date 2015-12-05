@@ -102,7 +102,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	@Test
-	public void emaZeroPoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void emaOnePoints() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -117,13 +117,14 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertEquals( numberDataPoints, ema.length );
 		assertNull( ema[0] );
 		assertNull( ema[1] );
-		assertNull( ema[2] );
+		assertNotNull( ema[2] );
+		assertEquals( BigDecimal.ONE, ema[2].setScale( 0, RoundingMode.HALF_EVEN ) );
 	}
 
 	@Test
 	public void emaTwoPoints() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
-		final int numberDataPoints = lookback + 3;
+		final int numberDataPoints = lookback + 2;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
@@ -136,9 +137,8 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertEquals( numberDataPoints, ema.length );
 		assertNull( ema[0] );
 		assertNull( ema[1] );
-		assertNull( ema[2] );
+		assertEquals( BigDecimal.ONE, ema[2].setScale( 0, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.ONE, ema[3].setScale( 0, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.ONE, ema[4].setScale( 0, RoundingMode.HALF_EVEN ) );
 	}
 
 	@Test
@@ -159,14 +159,13 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertNull( ema[0] );
 		assertNull( ema[1] );
 		assertNull( ema[2] );
-		assertNull( ema[3] );
-		assertEquals( BigDecimal.ONE, ema[4].setScale( 0, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.ONE, ema[3].setScale( 0, RoundingMode.HALF_EVEN ) );
 	}
 
 	@Test
 	public void emaThreePoints() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
-		final int numberDataPoints = lookback + 4;
+		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
@@ -179,9 +178,8 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertEquals( numberDataPoints, ema.length );
 		assertNull( ema[0] );
 		assertNull( ema[1] );
-		assertNull( ema[2] );
-		assertEquals( BigDecimal.valueOf( 3.33 ), ema[3].setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 2.5 ), ema[2].setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 3.67 ), ema[3].setScale( 2, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.valueOf( 4.67 ), ema[4].setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 5.67 ), ema[5].setScale( 2, RoundingMode.HALF_EVEN ) );
 	}
 }

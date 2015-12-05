@@ -153,6 +153,6 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	}
 
 	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
-		return (index < data.length) && (data[index] == null);
+		return (index < data.length) && (data[index] == null || data[index].getClosingPrice() == null);
 	}
 }
