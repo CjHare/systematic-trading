@@ -73,10 +73,9 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		final BigDecimal[] pK = store.getStore( data );
 
 		// Expecting the same number of input data points as outputs
-		if (data.length != pK.length) {
-			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s does not match the expected size: %s",
-							data.length, pK.length ) );
+		if (data.length > pK.length) {
+			throw new IllegalArgumentException( String.format(
+					"The number of data points given: %s exceeds the size of the store: %s", data.length, pK.length ) );
 		}
 
 		// Skip any null entries

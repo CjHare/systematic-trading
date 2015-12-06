@@ -67,10 +67,10 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 		final BigDecimal[] smaValues = store.getStore( data );
 
 		// Expecting the same number of input data points as outputs
-		if (data.length != smaValues.length) {
+		if (data.length > smaValues.length) {
 			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s does not match the expected size: %s",
-							data.length, smaValues.length ) );
+					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
+							smaValues.length ) );
 		}
 
 		// Skip any null entries

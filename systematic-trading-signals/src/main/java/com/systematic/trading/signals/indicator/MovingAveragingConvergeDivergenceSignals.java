@@ -136,6 +136,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		return crossingSignalLine( yesterdayMacd, todayMacd, BigDecimal.ZERO, BigDecimal.ZERO );
 	}
 
+	//TODO still needed?
 	@Override
 	public int getRequiredNumberOfTradingDays() {
 		return slowTimePeriods + signalTimePeriods + DAYS_OF_MACD;

@@ -114,10 +114,10 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 		final BigDecimal[] atrValues = store.getStore( data );
 
 		// Expecting the same number of input data points as outputs
-		if (data.length != atrValues.length) {
+		if (data.length > atrValues.length) {
 			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s does not match the expected size: %s",
-							data.length, atrValues.length ) );
+					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
+							atrValues.length ) );
 		}
 
 		// Skip any null entries

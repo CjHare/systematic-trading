@@ -93,10 +93,10 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 		final BigDecimal[] rsiValues = relativeStrengthIndexStore.getStore( data );
 
 		// Expecting the same number of input data points as outputs
-		if (data.length != relativeStrength.length) {
+		if (data.length > relativeStrength.length) {
 			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s does not match the expected size: %s",
-							data.length, relativeStrength.length ) );
+					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
+							relativeStrength.length ) );
 		}
 
 		// Expecting the same number of input data points as outputs

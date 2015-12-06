@@ -33,6 +33,7 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.ReuseIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
@@ -68,13 +69,21 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	private final SimpleMovingAverage movingAverage;
 
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
+			final GradientType signalGenerated, final int maximumTradingDays, final MathContext mathContext ) {
+		this.signalGenerated = signalGenerated;
+		this.lookback = lookback;
+		this.mathContext = mathContext;
+		this.daysOfGradient = daysOfGradient;
+		this.movingAverage = new SimpleMovingAverageCalculator( lookback,
+				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
+	}
+
+	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
 			final GradientType signalGenerated, final MathContext mathContext ) {
 		this.signalGenerated = signalGenerated;
 		this.lookback = lookback;
 		this.mathContext = mathContext;
 		this.daysOfGradient = daysOfGradient;
-
-		//TODO reuse indicator
 		this.movingAverage = new SimpleMovingAverageCalculator( lookback, new StandardIndicatorOutputStore(),
 				mathContext );
 	}
@@ -102,11 +111,14 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	private List<IndicatorSignal> analysisGradient( final TradingDayPrices[] data, final BigDecimal[] sma, int index ) {
 		final List<IndicatorSignal> signals = new ArrayList<IndicatorSignal>();
 
+		// Results store may be larger then the data set
+		final int smaLength = data.length < sma.length ? data.length : sma.length;
+
 		// Initialise to the first value, bump the index
 		BigDecimal previous = sma[index];
 		index++;
 
-		for (; index < sma.length; index++) {
+		for (; index < smaLength; index++) {
 
 			switch (signalGenerated) {
 				case POSITIVE:

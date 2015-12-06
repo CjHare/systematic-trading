@@ -75,10 +75,10 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		final BigDecimal[] emaValues = store.getStore( data );
 
 		// Expecting the same number of input data points as outputs
-		if (data.length != emaValues.length) {
+		if (data.length > emaValues.length) {
 			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s does not match the expected size: %s",
-							data.length, emaValues.length ) );
+					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
+							emaValues.length ) );
 		}
 
 		// Skip any null entries

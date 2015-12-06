@@ -106,28 +106,34 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		List<IndicatorSignal> signals;
 		for (final IndicatorSignalGenerator generator : generators) {
 
-			try {
-				signals = generator.calculateSignals( data );
+			if (generator.getRequiredNumberOfTradingDays() <= data.length) {
+				try {
+					signals = generator.calculateSignals( data );
 
-				// TODO events for signals generated
-				// TODO currently no listeners
+					// TODO events for signals generated
+					// TODO currently no listeners
 
-			} catch (final TooFewDataPoints e) {
+				} catch (final TooFewDataPoints e) {
 
-				notifyTooFewDataPoints( generator.getSignalType() );
+					notifyTooFewDataPoints( generator.getSignalType() );
 
-				// No signals generated
-				signals = new ArrayList<IndicatorSignal>();
+					// No signals generated
+					signals = new ArrayList<IndicatorSignal>();
 
-			} catch (final TooManyDataPoints e) {
+				} catch (final TooManyDataPoints e) {
 
-				notifyTooManyDataPoints( generator.getSignalType() );
+					notifyTooManyDataPoints( generator.getSignalType() );
 
-				// No signals generated
-				signals = new ArrayList<IndicatorSignal>();
+					// No signals generated
+					signals = new ArrayList<IndicatorSignal>();
+				}
+
+				indicatorSignals.put( generator.getSignalType(), signals );
+			} else {
+
+				// The signal generator could not run :. no signals
+				indicatorSignals.put( generator.getSignalType(), new ArrayList<IndicatorSignal>() );
 			}
-
-			indicatorSignals.put( generator.getSignalType(), signals );
 		}
 
 		return indicatorSignals;
