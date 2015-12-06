@@ -63,7 +63,7 @@ public class RelativeStrengthIndexSignalsTest {
 					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO );
 		}
 
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 30, 70, MATH_CONTEXT );
+		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 5, 10, 30, 70, MATH_CONTEXT );
 
 		final List<IndicatorSignal> signals = rsi.buySignals( rsiValue, dates );
 
@@ -76,7 +76,7 @@ public class RelativeStrengthIndexSignalsTest {
 
 	@Test
 	public void getMaximumNumberOfTradingDaysRequired() {
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 30, 70, MATH_CONTEXT );
+		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 5, 10, 30, 70, MATH_CONTEXT );
 
 		assertEquals( 11, rsi.getRequiredNumberOfTradingDays() );
 	}

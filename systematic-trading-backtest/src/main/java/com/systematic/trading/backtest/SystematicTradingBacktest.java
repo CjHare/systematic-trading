@@ -172,7 +172,7 @@ public class SystematicTradingBacktest {
 
 			for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 
-				macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods();
+				macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods() + 3;
 				maximumTradingDays = macdTradingDays + days;
 
 				macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
@@ -185,7 +185,7 @@ public class SystematicTradingBacktest {
 						description, MATH_CONTEXT, macd ) );
 
 				// Largest of the MACD, RSI
-				macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods();
+				macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods() + 3;
 				rsiTradingDays = RsiConfiguration.MEDIUM.getSlowRsi() + 1;
 				maximumTradingDays = macdTradingDays > rsiTradingDays ? macdTradingDays : rsiTradingDays;
 				maximumTradingDays += days;
@@ -206,13 +206,15 @@ public class SystematicTradingBacktest {
 				for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 
 					// Largest of the MACD, SMA
-					macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods();
+					macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods()
+							+ 3;
 					smaTradingDays = smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient();
 					maximumTradingDays = smaTradingDays > macdTradingDays ? smaTradingDays : macdTradingDays;
 					maximumTradingDays += days;
 
 					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-							smaConfiguration.getType(), maximumTradingDays, MATH_CONTEXT );
+							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), maximumTradingDays,
+							MATH_CONTEXT );
 
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
@@ -225,7 +227,8 @@ public class SystematicTradingBacktest {
 							description, MATH_CONTEXT, sma, macd ) );
 
 					// Largest of the MACD, RSI, SMA
-					macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods();
+					macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods()
+							+ 3;
 					smaTradingDays = smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient();
 					maximumTradingDays = smaTradingDays > macdTradingDays ? smaTradingDays : macdTradingDays;
 					rsiTradingDays = RsiConfiguration.MEDIUM.getSlowRsi() + 1;
@@ -233,7 +236,8 @@ public class SystematicTradingBacktest {
 					maximumTradingDays += days;
 
 					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-							smaConfiguration.getType(), maximumTradingDays, MATH_CONTEXT );
+							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), maximumTradingDays,
+							MATH_CONTEXT );
 
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
@@ -265,7 +269,8 @@ public class SystematicTradingBacktest {
 						MATH_CONTEXT );
 
 				sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-						smaConfiguration.getType(), maximumTradingDays, MATH_CONTEXT );
+						smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), maximumTradingDays,
+						MATH_CONTEXT );
 
 				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
 						description, MATH_CONTEXT, rsi, sma ) );

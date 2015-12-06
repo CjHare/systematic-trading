@@ -75,7 +75,7 @@ public class TodaysBuySignals {
 
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
 				MATH_CONTEXT );
-		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200,
+		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
 				GradientType.POSITIVE, MATH_CONTEXT );
 
 		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>();

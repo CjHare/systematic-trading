@@ -159,7 +159,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 		/* RS = EMA(U,n) / EMA(D,n) (smoothing constant) multiplier: (2 / (Time periods + 1) ) EMA:
 		 * {Close - EMA(previous day)} x multiplier + EMA(previous day). */
 
-		for (int i = endInitialLookback; i < relativeStrength.length; i++) {
+		for (int i = endInitialLookback; i < relativeStrength.length && i < data.length; i++) {
+
 			closeToday = data[i].getClosingPrice();
 			closeYesterday = data[i - 1].getClosingPrice();
 

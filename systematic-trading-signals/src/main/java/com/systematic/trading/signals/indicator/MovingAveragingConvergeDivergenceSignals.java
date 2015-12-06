@@ -42,9 +42,6 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignalGenerator {
 
-	// TODO this has to come from input
-	private static final int DAYS_OF_MACD = 3;
-
 	private final ExponentialMovingAverage slowEma;
 	private final ExponentialMovingAverage fastEma;
 
@@ -169,7 +166,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 	@Override
 	public int getRequiredNumberOfTradingDays() {
-		return slowTimePeriods + signalTimePeriods + DAYS_OF_MACD;
+		return slowTimePeriods + signalTimePeriods;
 	}
 
 	@Override
