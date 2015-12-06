@@ -97,11 +97,6 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		BigDecimal lowestHighestDifference;
 		pkSmaIndex += lookback;
 
-		// Initialise the start of results with null
-		for (int i = 0; i < pkSmaIndex; i++) {
-			pK[i] = null;
-		}
-
 		for (int i = pkSmaIndex; i < data.length; i++) {
 			currentClose = data[i].getClosingPrice();
 			lowestLow = lowestLow( data, i );

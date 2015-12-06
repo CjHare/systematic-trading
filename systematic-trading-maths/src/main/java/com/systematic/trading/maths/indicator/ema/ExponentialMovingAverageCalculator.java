@@ -94,11 +94,6 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 							minimumNumberOfPrices, data.length ) );
 		}
 
-		// Initialise the return array with null to the start Sma
-		for (int i = 0; i < startSmaIndex; i++) {
-			emaValues[i] = null;
-		}
-
 		/* SMA for the initial time periods */
 		final int endSmaIndex = startSmaIndex + lookback;
 		BigDecimal simpleMovingAverage = BigDecimal.ZERO;

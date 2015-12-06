@@ -57,8 +57,13 @@ public class ReuseIndicatorOutputStore implements IndicatorOutputStore {
 
 		// Restrict on the number of trading days
 		if (data.length > maximum) {
-			throw new TooManyDataPoints( String.format( "At most %s data points are needed, however %s are given",
-					maximum, data.length ) );
+			throw new TooManyDataPoints(
+					String.format( "At most %s data points are needed, however %s are given", maximum, data.length ) );
+		}
+
+		// Clean the array
+		for (int i = 0; i < store.length; i++) {
+			store[i] = null;
 		}
 
 		return store;

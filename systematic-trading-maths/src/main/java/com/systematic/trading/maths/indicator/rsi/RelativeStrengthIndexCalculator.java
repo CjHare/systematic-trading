@@ -197,12 +197,6 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 		}
 
 		/* RSI = 100 / 1 + RS */
-
-		// Initialise the start of the return array with nulls
-		for (int i = 0; i < endInitialLookback; i++) {
-			rsiValues[i] = null;
-		}
-
 		for (int i = endInitialLookback; i < rsiValues.length; i++) {
 			rsiValues[i] = ONE_HUNDRED
 					.subtract( ONE_HUNDRED.divide( BigDecimal.ONE.add( relativeStrength[i] ), mathContext ) );

@@ -133,11 +133,6 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 							minimumNumberOfPrices, data.length ) );
 		}
 
-		// Initialise the return array with null to the start ATR
-		for (int i = 0; i < startAtrIndex; i++) {
-			atrValues[i] = null;
-		}
-
 		// For the first value just use the TR
 		atrValues[startAtrIndex] = trueRangeMethodOne( data[startAtrIndex] );
 

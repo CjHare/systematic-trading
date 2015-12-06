@@ -43,7 +43,7 @@ public interface IndicatorOutputStore {
 	 * Obtains the array to store the results from the indicator.
 	 * 
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @return array to store the indicator output.
+	 * @return an empty (<code>null</code> entries) array to store the indicator output.
 	 * @throws TooFewDataPoints not enough closing prices to perform calculations.
 	 * @throws TooManyDataPoints too many days of closing prices have been provided.
 	 */

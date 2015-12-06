@@ -90,11 +90,6 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 		startSmaIndex += lookback;
 		startSmaIndex--;
 
-		// Initialise the beginning of the return array
-		for (int i = 0; i < startSmaIndex; i++) {
-			smaValues[i] = null;
-		}
-
 		// Start at the end and work towards the origin
 		for (int i = data.length - 1; i >= startSmaIndex; i--) {
 			smaValues[i] = simpleAverage( i, data );
