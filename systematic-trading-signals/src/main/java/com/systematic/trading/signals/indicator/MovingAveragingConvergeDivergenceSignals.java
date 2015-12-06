@@ -33,6 +33,7 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.ReuseIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
@@ -52,11 +53,23 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	private final ExponentialMovingAverage signalEma;
 
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
+			final int signalTimePeriods, final int maximumTradingDays, final MathContext mathContext ) {
+		this.slowTimePeriods = slowTimePeriods;
+		this.signalTimePeriods = signalTimePeriods;
+
+		this.slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods,
+				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
+		this.fastEma = new ExponentialMovingAverageCalculator( fastTimePeriods,
+				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
+		this.signalEma = new ExponentialMovingAverageCalculator( signalTimePeriods,
+				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
+	}
+
+	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
 			final int signalTimePeriods, final MathContext mathContext ) {
 		this.slowTimePeriods = slowTimePeriods;
 		this.signalTimePeriods = signalTimePeriods;
 
-		// TODO switch over to reuse
 		this.slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods, new StandardIndicatorOutputStore(),
 				mathContext );
 		this.fastEma = new ExponentialMovingAverageCalculator( fastTimePeriods, new StandardIndicatorOutputStore(),
@@ -78,8 +91,11 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 			macd[i] = fastEmaValues[i].subtract( slowEmaValues[i] );
 		}
 
+		// Results store may be larger then the data set
+		final int macdLength = data.length < macd.length ? data.length : macd.length;
+
 		// Signal line
-		final DatedValue[] macdDataPoint = new DatedValue[macd.length];
+		final DatedValue[] macdDataPoint = new DatedValue[macdLength];
 		for (int i = 0; i < macd.length; i++) {
 
 			// Only create a dated value when there's an actual value
@@ -88,18 +104,31 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 			}
 		}
 
-		final BigDecimal[] signaline = signalEma.ema( macdDataPoint );
-		return buySignals( macdDataPoint, signaline );
+		final BigDecimal[] signaLine = signalEma.ema( macdDataPoint );
+		return buySignals( macdDataPoint, signaLine );
 	}
 
 	protected List<IndicatorSignal> buySignals( final DatedValue[] macdDataPoint, final BigDecimal[] signaline ) {
 		final List<IndicatorSignal> buySignals = new ArrayList<IndicatorSignal>();
 
-		// Skip the initial null entries from the MACD array
-		int index = 1;
-		for (; index < signaline.length - 1; index++) {
+		// Skip the initial null entries from the signal line array
+		int index = 0;
+		for (; index < signaline.length; index++) {
+
+			// Early exit if the entry is not null
 			if (signaline[index] != null) {
-				// Increment the index to avoid comparison against null
+				// Increment the index to avoid comparison against previous null
+				index++;
+				break;
+			}
+		}
+
+		// Skip the initial null entries from the MACD line array
+		for (; index < macdDataPoint.length; index++) {
+
+			// Early exit if the entry is not null
+			if (macdDataPoint[index] != null) {
+				// Increment the index to avoid comparison against previous null
 				index++;
 				break;
 			}
@@ -108,7 +137,8 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		// Buy signal is from a cross over of the signal line, for crossing over the origin
 		BigDecimal todayMacd, yesterdayMacd;
 
-		for (; index < signaline.length - 1; index++) {
+		for (; index < signaline.length && index < macdDataPoint.length; index++) {
+
 			todayMacd = macdDataPoint[index].getValue();
 			yesterdayMacd = macdDataPoint[index - 1].getValue();
 
@@ -136,7 +166,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		return crossingSignalLine( yesterdayMacd, todayMacd, BigDecimal.ZERO, BigDecimal.ZERO );
 	}
 
-	//TODO still needed?
+	// TODO still needed?
 	@Override
 	public int getRequiredNumberOfTradingDays() {
 		return slowTimePeriods + signalTimePeriods + DAYS_OF_MACD;

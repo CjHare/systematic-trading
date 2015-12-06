@@ -70,22 +70,26 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
 			final GradientType signalGenerated, final int maximumTradingDays, final MathContext mathContext ) {
-		this.signalGenerated = signalGenerated;
-		this.lookback = lookback;
-		this.mathContext = mathContext;
-		this.daysOfGradient = daysOfGradient;
-		this.movingAverage = new SimpleMovingAverageCalculator( lookback,
-				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
+
+		this( lookback, daysOfGradient, signalGenerated, mathContext, new SimpleMovingAverageCalculator( lookback,
+				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext ) );
 	}
 
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
 			final GradientType signalGenerated, final MathContext mathContext ) {
+
+		this( lookback, daysOfGradient, signalGenerated, mathContext,
+				new SimpleMovingAverageCalculator( lookback, new StandardIndicatorOutputStore(), mathContext ) );
+	}
+
+	private SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
+			final GradientType signalGenerated, final MathContext mathContext,
+			final SimpleMovingAverageCalculator movingAverage ) {
 		this.signalGenerated = signalGenerated;
-		this.lookback = lookback;
-		this.mathContext = mathContext;
 		this.daysOfGradient = daysOfGradient;
-		this.movingAverage = new SimpleMovingAverageCalculator( lookback, new StandardIndicatorOutputStore(),
-				mathContext );
+		this.movingAverage = movingAverage;
+		this.mathContext = mathContext;
+		this.lookback = lookback;
 	}
 
 	@Override
