@@ -43,7 +43,6 @@ import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfi
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
-import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
 import com.systematic.trading.backtest.display.file.FileDisplay;
 import com.systematic.trading.backtest.display.file.FileNetWorthComparisonDisplay;
@@ -60,6 +59,7 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.logic.MinimumTradeValue;
 
 /**
@@ -100,14 +100,12 @@ public class SystematicTradingBacktest {
 			// Arrange output to files
 			new FileClearDestination( "../../simulations/" );
 
-			final NetWorthComparisonDisplay netWorthComparisonDisplay = new FileNetWorthComparisonDisplay(
+			final NetWorthEventListener netWorthComparisonDisplay = new FileNetWorthComparisonDisplay(
 					"../../simulations/summary.txt", pool );
 
 			for (final BacktestBootstrapConfiguration configuration : configurations) {
 				final String outputDirectory = getOutputDirectory( equity, configuration );
 				final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool );
-
-				netWorthComparisonDisplay.setDescription( configuration.getDescription() );
 
 				final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
 						netWorthComparisonDisplay, MATH_CONTEXT );
@@ -218,7 +216,7 @@ public class SystematicTradingBacktest {
 					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
 							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), maximumTradingDays,
 							MATH_CONTEXT );
-					
+
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 							MATH_CONTEXT );
@@ -242,7 +240,6 @@ public class SystematicTradingBacktest {
 						smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), maximumTradingDays,
 						MATH_CONTEXT );
 
-				
 				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
 						description, MATH_CONTEXT, rsiStandard, sma ) );
 			}

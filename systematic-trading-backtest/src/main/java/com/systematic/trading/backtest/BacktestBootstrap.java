@@ -32,12 +32,12 @@ import java.util.Map;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
-import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;
 import com.systematic.trading.simulation.SimulationStateListener;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthSummaryEventGenerator;
 import com.systematic.trading.simulation.analysis.roi.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
@@ -69,14 +69,14 @@ public class BacktestBootstrap {
 	private final BacktestBootstrapConfiguration configuration;
 
 	/** Rolling summary of the net worth outcomes. */
-	private final NetWorthComparisonDisplay comparisonDisplay;
+	private final NetWorthEventListener comparisonDisplay;
 
 	/** Unmodifiable trading data for input to the back test. */
 	private final TickerSymbolTradingData tradingData;
 
 	public BacktestBootstrap( final TickerSymbolTradingData tradingData,
 			final BacktestBootstrapConfiguration configuration, final BacktestDisplay display,
-			final NetWorthComparisonDisplay comparisonDisplay, final MathContext mathContext ) {
+			final NetWorthEventListener comparisonDisplay, final MathContext mathContext ) {
 		this.comparisonDisplay = comparisonDisplay;
 		this.configuration = configuration;
 		this.mathContext = mathContext;
@@ -134,7 +134,7 @@ public class BacktestBootstrap {
 
 		// Creates the net worth events
 		final NetWorthSummaryEventGenerator networthSummay = new NetWorthSummaryEventGenerator( broker, lastTradingDay,
-				cashAccount );
+				cashAccount, configuration.getDescription() );
 		simulation.addListener( networthSummay );
 
 		// Display for simulation output

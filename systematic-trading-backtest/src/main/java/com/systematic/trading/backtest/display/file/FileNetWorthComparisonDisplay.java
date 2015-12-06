@@ -37,16 +37,16 @@ import java.util.concurrent.ExecutorService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.display.NetWorthComparisonDisplay;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 
 /**
  * Persists the comparison displays into a file.
  * 
  * @author CJ Hare
  */
-public class FileNetWorthComparisonDisplay implements NetWorthComparisonDisplay {
+public class FileNetWorthComparisonDisplay implements NetWorthEventListener {
 
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger( FileNetWorthComparisonDisplay.class );
@@ -54,8 +54,6 @@ public class FileNetWorthComparisonDisplay implements NetWorthComparisonDisplay 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".00" );
 
 	private final String outputFilename;
-
-	private String description;
 
 	/** Pool of execution threads to delegate IO operations. */
 	private final ExecutorService pool;
@@ -66,8 +64,8 @@ public class FileNetWorthComparisonDisplay implements NetWorthComparisonDisplay 
 		final File outputDirectoryFile = new File( outputFilename ).getParentFile();
 		if (!outputDirectoryFile.exists()) {
 			if (!outputDirectoryFile.mkdirs()) {
-				throw new IllegalArgumentException( String.format(
-						"Failed to create / access directory parent directory: %s", outputFilename ) );
+				throw new IllegalArgumentException(
+						String.format( "Failed to create / access directory parent directory: %s", outputFilename ) );
 			}
 		}
 
@@ -85,17 +83,13 @@ public class FileNetWorthComparisonDisplay implements NetWorthComparisonDisplay 
 		this.pool = pool;
 	}
 
-	public void setDescription( final String description ) {
-		this.description = description;
-	}
-
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
 
 		// Only interested in the net worth when the simulation is complete
 		if (SimulationState.COMPLETE.equals( state )) {
 
-			final Runnable task = ( ) -> {
+			final Runnable task = () -> {
 				try (final PrintWriter out = new PrintWriter(
 						new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
 					out.println( createOutput( event ) );
@@ -117,6 +111,7 @@ public class FileNetWorthComparisonDisplay implements NetWorthComparisonDisplay 
 
 		return String.format( "Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, %s",
 				TWO_DECIMAL_PLACES.format( netWorth ), TWO_DECIMAL_PLACES.format( balance ),
-				TWO_DECIMAL_PLACES.format( holdingValue ), TWO_DECIMAL_PLACES.format( cashBalance ), description );
+				TWO_DECIMAL_PLACES.format( holdingValue ), TWO_DECIMAL_PLACES.format( cashBalance ),
+				event.getDescription() );
 	}
 }

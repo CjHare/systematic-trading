@@ -38,12 +38,14 @@ public class NetWorthSummaryEvent implements NetWorthEvent {
 	private final BigDecimal equityBalanceValue;
 	private final BigDecimal cashBalance;
 	private final BigDecimal networth;
+	private final String description;
 
 	public NetWorthSummaryEvent( final BigDecimal equityBalance, final BigDecimal equityBalanceValue,
-			final BigDecimal cashBalance, final BigDecimal networth ) {
+			final BigDecimal cashBalance, final BigDecimal networth, final String description ) {
 		this.equityBalance = equityBalance;
 		this.equityBalanceValue = equityBalanceValue;
 		this.cashBalance = cashBalance;
+		this.description = description;
 		this.networth = networth;
 	}
 
@@ -65,5 +67,10 @@ public class NetWorthSummaryEvent implements NetWorthEvent {
 	@Override
 	public BigDecimal getNetWorth() {
 		return networth;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
 	}
 }
