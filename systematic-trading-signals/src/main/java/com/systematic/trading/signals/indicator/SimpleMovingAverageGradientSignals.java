@@ -59,28 +59,37 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	/** On which type of gradient does a signal get generated. */
 	private final GradientType signalGenerated;
 
+	/** Number of days to average the value on. */
+	private final int lookback;
+
+	/** The number of days the SMA gradient covers. */
+	private final int daysOfGradient;
+
 	/** Responsible for calculating the simple moving average. */
 	private final SimpleMovingAverage movingAverage;
 
-	public SimpleMovingAverageGradientSignals( final int lookback, final GradientType signalGenerated,
-			final int maximumTradingDays, final MathContext mathContext ) {
+	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
+			final GradientType signalGenerated, final int maximumTradingDays, final MathContext mathContext ) {
 
-		this( signalGenerated, mathContext, new SimpleMovingAverageCalculator( lookback,
+		this( lookback, daysOfGradient, signalGenerated, mathContext, new SimpleMovingAverageCalculator( lookback,
 				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext ) );
 	}
 
-	public SimpleMovingAverageGradientSignals( final int lookback, final GradientType signalGenerated,
-			final MathContext mathContext ) {
+	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
+			final GradientType signalGenerated, final MathContext mathContext ) {
 
-		this( signalGenerated, mathContext,
+		this( lookback, daysOfGradient, signalGenerated, mathContext,
 				new SimpleMovingAverageCalculator( lookback, new StandardIndicatorOutputStore(), mathContext ) );
 	}
 
-	private SimpleMovingAverageGradientSignals( final GradientType signalGenerated, final MathContext mathContext,
+	private SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
+			final GradientType signalGenerated, final MathContext mathContext,
 			final SimpleMovingAverageCalculator movingAverage ) {
 		this.signalGenerated = signalGenerated;
+		this.daysOfGradient = daysOfGradient;
 		this.movingAverage = movingAverage;
 		this.mathContext = mathContext;
+		this.lookback = lookback;
 	}
 
 	@Override
@@ -151,6 +160,11 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 
 	private boolean isFlatGardient( final BigDecimal previous, final BigDecimal current ) {
 		return current.subtract( previous, mathContext ).compareTo( BigDecimal.ZERO ) == 0;
+	}
+
+	@Override
+	public int getRequiredNumberOfTradingDays() {
+		return lookback + daysOfGradient;
 	}
 
 	@Override

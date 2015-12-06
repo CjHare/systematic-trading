@@ -42,16 +42,21 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignalGenerator {
 
+	// TODO this has to come from input
+	private static final int DAYS_OF_MACD = 3;
+
 	private final ExponentialMovingAverage slowEma;
 	private final ExponentialMovingAverage fastEma;
 
 	private final int slowTimePeriods;
+	private final int signalTimePeriods;
 
 	private final ExponentialMovingAverage signalEma;
 
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
 			final int signalTimePeriods, final int maximumTradingDays, final MathContext mathContext ) {
 		this.slowTimePeriods = slowTimePeriods;
+		this.signalTimePeriods = signalTimePeriods;
 
 		this.slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods,
 				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
@@ -64,6 +69,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
 			final int signalTimePeriods, final MathContext mathContext ) {
 		this.slowTimePeriods = slowTimePeriods;
+		this.signalTimePeriods = signalTimePeriods;
 
 		this.slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods, new StandardIndicatorOutputStore(),
 				mathContext );
@@ -159,6 +165,11 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 	private boolean crossingOrigin( final BigDecimal yesterdayMacd, final BigDecimal todayMacd ) {
 		return crossingSignalLine( yesterdayMacd, todayMacd, BigDecimal.ZERO, BigDecimal.ZERO );
+	}
+
+	@Override
+	public int getRequiredNumberOfTradingDays() {
+		return slowTimePeriods + signalTimePeriods + DAYS_OF_MACD;
 	}
 
 	@Override

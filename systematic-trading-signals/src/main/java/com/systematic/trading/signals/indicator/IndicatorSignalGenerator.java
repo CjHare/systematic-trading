@@ -40,6 +40,13 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
 public interface IndicatorSignalGenerator {
 
 	/**
+	 * The maximum number of trading days data used by the signal analysers.
+	 * 
+	 * @return maximum number of data to provide to the analysis.
+	 */
+	int getRequiredNumberOfTradingDays();
+
+	/**
 	 * Perform the analysis of trading prices for the generation of signals.
 	 * 
 	 * @param data trading prices for calculation of signals.

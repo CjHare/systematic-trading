@@ -34,7 +34,6 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.ReuseIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
@@ -48,34 +47,25 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
  */
 public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
+	private static final int DAYS_OF_RSI_VALUES = 1;
+	private static final int FIVE_TRADING_DAYS = 5;
+	private static final int TEN_TRADING_DAYS = 10;
+
 	private RelativeStrengthIndex shortSignal;
 
 	private RelativeStrengthIndex longSignal;
 
 	private final BigDecimal oversold, overbought;
 
-	// TODO pass in the short & long RSI
-
-	public RelativeStrengthIndexSignals( final int fastRsi, final int slowRsi, final int oversold, final int overbought,
-			final MathContext mathContext ) {
+	public RelativeStrengthIndexSignals( final int oversold, final int overbought, final MathContext mathContext ) {
 		this.oversold = BigDecimal.valueOf( oversold );
 		this.overbought = BigDecimal.valueOf( overbought );
 
-		this.shortSignal = new RelativeStrengthIndexCalculator( fastRsi, new StandardIndicatorOutputStore(),
+		// TODO maximum number of trading days? from where & use the Reuse stores
+		this.shortSignal = new RelativeStrengthIndexCalculator( FIVE_TRADING_DAYS, new StandardIndicatorOutputStore(),
 				new StandardIndicatorOutputStore(), mathContext );
-		this.longSignal = new RelativeStrengthIndexCalculator( slowRsi, new StandardIndicatorOutputStore(),
+		this.longSignal = new RelativeStrengthIndexCalculator( TEN_TRADING_DAYS, new StandardIndicatorOutputStore(),
 				new StandardIndicatorOutputStore(), mathContext );
-	}
-
-	public RelativeStrengthIndexSignals( final int fastRsi, final int slowRsi, final int oversold, final int overbought,
-			final int maximumTradingDays, final MathContext mathContext ) {
-		this.oversold = BigDecimal.valueOf( oversold );
-		this.overbought = BigDecimal.valueOf( overbought );
-
-		this.shortSignal = new RelativeStrengthIndexCalculator( fastRsi,
-				new ReuseIndicatorOutputStore( maximumTradingDays ), new StandardIndicatorOutputStore(), mathContext );
-		this.longSignal = new RelativeStrengthIndexCalculator( slowRsi,
-				new ReuseIndicatorOutputStore( maximumTradingDays ), new StandardIndicatorOutputStore(), mathContext );
 	}
 
 	@Override
@@ -143,6 +133,11 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		}
 
 		return false;
+	}
+
+	@Override
+	public int getRequiredNumberOfTradingDays() {
+		return TEN_TRADING_DAYS + DAYS_OF_RSI_VALUES;
 	}
 
 	@Override
