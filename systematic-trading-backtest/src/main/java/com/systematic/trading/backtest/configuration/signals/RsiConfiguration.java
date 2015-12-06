@@ -23,38 +23,49 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
-
-import java.util.List;
-
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.signals.model.IndicatorSignalType;
+package com.systematic.trading.backtest.configuration.signals;
 
 /**
- * Responsible for generation of signals from analysis of the trading data.
+ * Configuration for the MACD signal calculator.
  * 
  * @author CJ Hare
  */
-public interface IndicatorSignalGenerator {
+public enum RsiConfiguration {
 
-	/**
-	 * Perform the analysis of trading prices for the generation of signals.
-	 * 
-	 * @param data trading prices for calculation of signals.
-	 * @return signals generated from the given trading data, empty list means zero, never
-	 *         <code>null</code>.
-	 * @throws TooFewDataPoints not enough trading day prices were provided for signal generation.
-	 * @throws TooManyDataPoints too many trading day prices have been provided for signal
-	 *             generation.
-	 */
-	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	MEDIUM( 5, 10, 70, 30, "Medium-Rsi" );
 
-	/**
-	 * The type of signals that are generated.
-	 * 
-	 * @return the type of indicator signals generated.
-	 */
-	IndicatorSignalType getSignalType();
+	private final String description;
+	private final int fastRsi;
+	private final int slowRsi;
+	private final int oversold;
+	private final int overbought;
+
+	private RsiConfiguration( final int fastRsi, final int slowRsi, final int oversold, final int overbought,
+			final String description ) {
+		this.description = description;
+		this.fastRsi = fastRsi;
+		this.slowRsi = slowRsi;
+		this.oversold = oversold;
+		this.overbought = overbought;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public int getFastRsi() {
+		return fastRsi;
+	}
+
+	public int getSlowRsi() {
+		return slowRsi;
+	}
+
+	public int getOversold() {
+		return oversold;
+	}
+
+	public int getOverbought() {
+		return overbought;
+	}
 }

@@ -53,9 +53,6 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
  */
 public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 
-	/** Number of trading days to read the ranges on. */
-	private final int lookback;
-
 	/** Number of days for the simple moving average to smooth the %K. */
 	final SimpleMovingAverage smaFullK;
 
@@ -67,7 +64,6 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 
 	public StochasticOscillatorSignals( final int lookback, final int smaK, final int smaD,
 			final MathContext mathContext ) {
-		this.lookback = lookback;
 
 		// TODO convert to reuse ouptut
 		this.smaFullK = new SimpleMovingAverageCalculator( smaK, new StandardIndicatorOutputStore(), mathContext );
@@ -136,11 +132,6 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 		 * above today's signal line - yesterday's MACD needs to be below yesterday's signal line */
 		return pointToday.compareTo( pointYesterday ) > 0 && pointToday.compareTo( signalLineToday ) > 0
 				&& signalLineYesterday.compareTo( pointYesterday ) > 0;
-	}
-
-	@Override
-	public int getRequiredNumberOfTradingDays() {
-		return lookback;
 	}
 
 	@Override

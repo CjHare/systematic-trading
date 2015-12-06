@@ -75,7 +75,7 @@ public class TodaysBuySignals {
 
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
 				MATH_CONTEXT );
-		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
+		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200,
 				GradientType.POSITIVE, MATH_CONTEXT );
 
 		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>();
@@ -83,8 +83,9 @@ public class TodaysBuySignals {
 		generators.add( sma );
 
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter(
-				IndicatorSignalType.MACD, IndicatorSignalType.RSI ), Period.ofDays( 5 ) );
+		final SignalFilter filter = new TimePeriodSignalFilterDecorator(
+				new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD, IndicatorSignalType.RSI ),
+				Period.ofDays( 5 ) );
 		filters.add( filter );
 
 		final ProcessLongBuySignals buyLong = new ProcessLongBuySignals( generators, filters );
