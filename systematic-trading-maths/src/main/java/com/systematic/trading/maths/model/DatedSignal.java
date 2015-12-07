@@ -23,39 +23,30 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator.ema;
+package com.systematic.trading.maths.model;
 
-import java.math.BigDecimal;
-
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
+import java.time.LocalDate;
 
 /**
- * Exponential Moving Average (EMA), a moving average with greater weighting given to recent data
- * points.
+ * Tuple of a date and a signal type.
  * 
  * @author CJ Hare
  */
-public interface ExponentialMovingAverage {
+public class DatedSignal {
 
-	/**
-	 * Calculates the exponential moving average.
-	 * 
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @return exponential moving average values.
-	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
-	 * @throws TooManyDataPoints too many closing prices provided to perform EMA calculations.
-	 */
-	BigDecimal[] ema( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	private final LocalDate date;
+	private final SignalType type;
 
-	/**
-	 * Calculates the exponential moving average.
-	 * 
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @return exponential moving average values.
-	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
-	 * @throws TooManyDataPoints too many closing prices provided to perform EMA calculations.
-	 */
-	BigDecimal[] ema( BigDecimal[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	public DatedSignal( final LocalDate date, final SignalType type ) {
+		this.date = date;
+		this.type = type;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public SignalType getType() {
+		return type;
+	}
 }

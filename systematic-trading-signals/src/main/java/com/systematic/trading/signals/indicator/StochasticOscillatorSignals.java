@@ -38,7 +38,7 @@ import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageK;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageKCalculator;
-import com.systematic.trading.signals.model.DatedValue;
+import com.systematic.trading.maths.model.DatedValue;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**

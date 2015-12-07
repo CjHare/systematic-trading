@@ -37,7 +37,7 @@ import com.systematic.trading.maths.indicator.ReuseIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
-import com.systematic.trading.signals.model.DatedValue;
+import com.systematic.trading.maths.model.DatedValue;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignalGenerator {

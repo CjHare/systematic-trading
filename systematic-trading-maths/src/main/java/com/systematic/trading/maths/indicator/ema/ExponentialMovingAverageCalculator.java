@@ -128,4 +128,10 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {
 		return BigDecimal.valueOf( 2d / (lookback + 1) );
 	}
+
+	@Override
+	public BigDecimal[] ema( final BigDecimal[] data ) throws TooFewDataPoints, TooManyDataPoints {
+		// TODO implement
+		return null;
+	}
 }
