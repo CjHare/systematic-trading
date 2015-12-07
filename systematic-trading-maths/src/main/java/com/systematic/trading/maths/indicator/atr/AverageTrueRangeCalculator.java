@@ -111,7 +111,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	@Override
 	public BigDecimal[] atr( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
-		final BigDecimal[] atrValues = store.getStore( data );
+		final BigDecimal[] atrValues = store.getStore( data.length );
 
 		// Expecting the same number of input data points as outputs
 		if (data.length > atrValues.length) {

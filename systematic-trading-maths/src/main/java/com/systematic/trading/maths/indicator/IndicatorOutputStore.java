@@ -27,7 +27,6 @@ package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
 
@@ -42,10 +41,10 @@ public interface IndicatorOutputStore {
 	/**
 	 * Obtains the array to store the results from the indicator.
 	 * 
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
+	 * @param size, the number of elements that require storing.
 	 * @return an empty (<code>null</code> entries) array to store the indicator output.
 	 * @throws TooFewDataPoints not enough closing prices to perform calculations.
 	 * @throws TooManyDataPoints too many days of closing prices have been provided.
 	 */
-	BigDecimal[] getStore( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	BigDecimal[] getStore( int size ) throws TooFewDataPoints, TooManyDataPoints;
 }

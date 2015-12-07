@@ -89,8 +89,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	@Override
 	public BigDecimal[] rsi( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
-		final BigDecimal[] relativeStrength = relativeStrengthStore.getStore( data );
-		final BigDecimal[] rsiValues = relativeStrengthIndexStore.getStore( data );
+		final BigDecimal[] relativeStrength = relativeStrengthStore.getStore( data.length );
+		final BigDecimal[] rsiValues = relativeStrengthIndexStore.getStore( data.length );
 
 		// Expecting the same number of input data points as outputs
 		if (data.length > relativeStrength.length) {

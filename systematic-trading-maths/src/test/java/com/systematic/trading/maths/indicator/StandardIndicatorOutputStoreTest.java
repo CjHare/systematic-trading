@@ -47,7 +47,7 @@ public class StandardIndicatorOutputStoreTest {
 		final int expectedLength = 6;
 		final TradingDayPrices[] data = new TradingDayPrices[expectedLength];
 
-		final BigDecimal[] output = store.getStore( data );
+		final BigDecimal[] output = store.getStore( data.length );
 
 		assertNotNull( output );
 		assertEquals( expectedLength, output.length );

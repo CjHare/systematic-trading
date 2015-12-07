@@ -28,7 +28,7 @@ package com.systematic.trading.maths.indicator.rsi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -110,8 +110,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback - 1] );
-		when( rsiStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
+		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback - 1] );
+		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
 
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
 				rsiStore, MATH_CONTEXT );
@@ -126,8 +126,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( rsiStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback - 1] );
+		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
+		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback - 1] );
 
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
 				rsiStore, MATH_CONTEXT );
@@ -142,8 +142,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[dataSize] );
-		when( rsiStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[dataSize] );
+		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
 
 		final int lookback = 4;
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
@@ -171,8 +171,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[dataSize] );
-		when( rsiStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[dataSize] );
+		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
 
 		final int lookback = 4;
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
@@ -199,8 +199,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[dataSize] );
-		when( rsiStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[dataSize] );
+		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
 
 		final int lookback = 4;
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
@@ -228,8 +228,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[dataSize] );
-		when( rsiStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[dataSize] );
+		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
 
 		final int lookback = 4;
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
@@ -267,8 +267,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[2 * dataSize] );
-		when( rsiStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[2 * dataSize] );
+		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[2 * dataSize] );
+		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[2 * dataSize] );
 
 		final int lookback = 4;
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
@@ -314,8 +314,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[2 * dataSize] );
-		when( rsiStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[2 * dataSize] );
+		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[2 * dataSize] );
+		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[2 * dataSize] );
 
 		final int lookback = 4;
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,

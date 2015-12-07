@@ -27,7 +27,6 @@ package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
 
 /**
@@ -53,15 +52,15 @@ public class ReuseIndicatorOutputStore implements IndicatorOutputStore {
 	}
 
 	@Override
-	public BigDecimal[] getStore( final TradingDayPrices[] data ) throws TooManyDataPoints {
+	public BigDecimal[] getStore( final int size ) throws TooManyDataPoints {
 
 		// Restrict on the number of trading days
-		if (data.length > maximum) {
+		if (size > maximum) {
 			throw new TooManyDataPoints(
-					String.format( "At most %s data points are needed, however %s are given", maximum, data.length ) );
+					String.format( "At most %s data points are needed, however %s are given", maximum, size ) );
 		}
 
-		// Clean the array
+		// Clear the return array
 		for (int i = 0; i < store.length; i++) {
 			store[i] = null;
 		}

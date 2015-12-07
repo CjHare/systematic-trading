@@ -70,7 +70,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	@Override
 	public BigDecimal[] percentageK( final TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints {
 
-		final BigDecimal[] pK = store.getStore( data );
+		final BigDecimal[] pK = store.getStore( data.length );
 
 		// Expecting the same number of input data points as outputs
 		if (data.length > pK.length) {

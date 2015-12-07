@@ -48,7 +48,7 @@ public class ReuseIndicatorOutputStoreTest {
 		final ReuseIndicatorOutputStore store = new ReuseIndicatorOutputStore( expectedLength );
 		final TradingDayPrices[] data = new TradingDayPrices[expectedLength];
 
-		final BigDecimal[] output = store.getStore( data );
+		final BigDecimal[] output = store.getStore( data.length );
 
 		assertNotNull( output );
 		assertEquals( expectedLength, output.length );
@@ -60,7 +60,7 @@ public class ReuseIndicatorOutputStoreTest {
 		final ReuseIndicatorOutputStore store = new ReuseIndicatorOutputStore( expectedLength );
 		final TradingDayPrices[] data = new TradingDayPrices[expectedLength + 1];
 
-		store.getStore( data );
+		store.getStore( data.length );
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class ReuseIndicatorOutputStoreTest {
 		final ReuseIndicatorOutputStore store = new ReuseIndicatorOutputStore( expectedLength );
 		final TradingDayPrices[] data = new TradingDayPrices[expectedLength - 1];
 
-		final BigDecimal[] output = store.getStore( data );
+		final BigDecimal[] output = store.getStore( data.length );
 
 		assertNotNull( output );
 		assertEquals( expectedLength, output.length );

@@ -28,7 +28,9 @@ package com.systematic.trading.maths.indicator.atr;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -109,7 +111,7 @@ public class AverageTrueRangeCalculatorTest {
 		final int lookback = 4;
 		final TradingDayPrices[] data = createPrices( lookback );
 		final IndicatorOutputStore store = mock( StandardIndicatorOutputStore.class );
-		when( store.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback - 1] );
+		when( store.getStore( anyInt( ) ) ).thenReturn( new BigDecimal[lookback - 1] );
 
 		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, store, MATH_CONTEXT );
 

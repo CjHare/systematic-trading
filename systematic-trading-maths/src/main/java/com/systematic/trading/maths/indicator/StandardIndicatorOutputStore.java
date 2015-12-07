@@ -27,8 +27,6 @@ package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.data.TradingDayPrices;
-
 /**
  * No restriction on the upper bounds for the size of values to calculate on, just providing a new
  * store every time.
@@ -38,7 +36,7 @@ import com.systematic.trading.data.TradingDayPrices;
 public class StandardIndicatorOutputStore implements IndicatorOutputStore {
 
 	@Override
-	public BigDecimal[] getStore( final TradingDayPrices[] data ) {
-		return new BigDecimal[data.length];
+	public BigDecimal[] getStore( final int size ) {
+		return new BigDecimal[size];
 	}
 }

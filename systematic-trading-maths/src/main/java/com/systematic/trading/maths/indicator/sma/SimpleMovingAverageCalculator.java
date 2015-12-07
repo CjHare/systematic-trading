@@ -64,7 +64,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	@Override
 	public BigDecimal[] sma( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
-		final BigDecimal[] smaValues = store.getStore( data );
+		final BigDecimal[] smaValues = store.getStore( data.length );
 
 		// Expecting the same number of input data points as outputs
 		if (data.length > smaValues.length) {

@@ -70,7 +70,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 
 		final BigDecimal[] slowEmaValues = slowEma.ema( data );
 		final BigDecimal[] fastEmaValues = fastEma.ema( data );
-		final BigDecimal[] macd = signalStore.getStore( data );
+		final BigDecimal[] macd = signalStore.getStore( data.length );
 
 		// Expecting the same number of input data points as outputs
 		if (data.length > slowEmaValues.length) {
@@ -143,8 +143,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 			final BigDecimal yesterdaySignalLine, final BigDecimal todaySignalLine ) {
 		/* Between yesterday and today: - MACD need to be moving upwards - today's MACD needs to be
 		 * above today's signal line - yesterday's MACD needs to be below yesterday's signal line */
-		return todayMacd.compareTo( yesterdayMacd ) > 0 
-				&& todayMacd.compareTo( todaySignalLine ) >= 0
+		return todayMacd.compareTo( yesterdayMacd ) > 0 && todayMacd.compareTo( todaySignalLine ) >= 0
 				&& yesterdaySignalLine.compareTo( yesterdayMacd ) > 0;
 	}
 

@@ -28,6 +28,7 @@ package com.systematic.trading.maths.indicator.macd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -90,7 +91,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		final TradingDayPrices[] data = new TradingDayPrices[lookback];
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( signalStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback - 1] );
+		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback - 1] );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, signalStore );
@@ -105,7 +106,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback - 1] );
 		when( signalEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( signalStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
+		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, signalStore );
@@ -120,7 +121,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback - 1] );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
 		when( signalEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( signalStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
+		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, signalStore );
@@ -135,7 +136,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( signalStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
+		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, signalStore );
@@ -146,7 +147,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		assertEquals( 0, signals.size() );
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
-		verify( signalStore ).getStore( data );
+		verify( signalStore ).getStore( data.length );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
 	}
 
@@ -178,7 +179,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createIncreasingValues( lookback, 2 ) );
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( new BigDecimal[lookback] );
 		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( signalValues );
+		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, signalStore );
@@ -195,7 +196,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify( signalEma ).ema( isBigDecimalArrayOf( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ),
 				BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) );
 
-		verify( signalStore ).getStore( data );
+		verify( signalStore ).getStore( data.length );
 	}
 
 	@Test
@@ -210,7 +211,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( new BigDecimal[lookback] );
 		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( signalValues );
+		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, signalStore );
@@ -227,7 +228,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify( signalEma ).ema( isBigDecimalArrayOf( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ),
 				BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) );
 
-		verify( signalStore ).getStore( data );
+		verify( signalStore ).getStore( data.length );
 	}
 
 	@Test
@@ -237,7 +238,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValues( lookback, 1 ) );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createIncreasingValues( lookback, 2 ) );
 		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( signalValues );
+		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
 
 		final BigDecimal[] signalEmaValues = createFlatValues( 5, 1 );
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
@@ -254,7 +255,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify( slowEma ).ema( data );
 		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-		verify( signalStore ).getStore( data );
+		verify( signalStore ).getStore( data.length );
 	}
 
 	@Test
@@ -264,7 +265,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValues( lookback, 1 ) );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createIncreasingValues( lookback, 2 ) );
 		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( signalValues );
+		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
 
 		final BigDecimal[] signalEmaValues = createFlatValues( 5, 2 );
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
@@ -283,7 +284,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify( slowEma ).ema( data );
 		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-		verify( signalStore ).getStore( data );
+		verify( signalStore ).getStore( data.length );
 	}
 
 	@Test
@@ -293,7 +294,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValues( lookback, 0 ) );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createIncreasingValues( lookback, -1 ) );
 		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( signalValues );
+		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
 
 		final BigDecimal[] signalEmaValues = createFlatValues( 5, 8 );
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
@@ -312,7 +313,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify( slowEma ).ema( data );
 		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-		verify( signalStore ).getStore( data );
+		verify( signalStore ).getStore( data.length );
 	}
 
 	@Test
@@ -322,7 +323,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValues( lookback, 0 ) );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createIncreasingValues( lookback, -1 ) );
 		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( any( TradingDayPrices[].class ) ) ).thenReturn( signalValues );
+		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
 
 		final BigDecimal[] signalEmaValues = createFlatValues( 5, 1 );
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
@@ -341,7 +342,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify( slowEma ).ema( data );
 		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-		verify( signalStore ).getStore( data );
+		verify( signalStore ).getStore( data.length );
 	}
 
 	private BigDecimal[] isBigDecimalArrayOf( final BigDecimal... bigDecimals ) {

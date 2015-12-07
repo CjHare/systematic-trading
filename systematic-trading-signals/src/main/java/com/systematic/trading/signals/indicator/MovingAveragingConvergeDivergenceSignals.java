@@ -76,6 +76,8 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 				mathContext );
 	}
 
+	// TODO re-code using the MACD calculator
+
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data )
 			throws TooFewDataPoints, TooManyDataPoints {

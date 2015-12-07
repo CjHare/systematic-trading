@@ -72,7 +72,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	@Override
 	public BigDecimal[] ema( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
-		final BigDecimal[] emaValues = store.getStore( data );
+		final BigDecimal[] emaValues = store.getStore( data.length );
 
 		// Expecting the same number of input data points as outputs
 		if (data.length > emaValues.length) {
@@ -125,13 +125,66 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		return (index < data.length) && (data[index] == null || data[index].getClosingPrice() == null);
 	}
 
+	private boolean isNullEntryWithinArray( final BigDecimal[] data, final int index ) {
+		return (index < data.length) && (data[index] == null);
+	}
+
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {
 		return BigDecimal.valueOf( 2d / (lookback + 1) );
 	}
 
 	@Override
 	public BigDecimal[] ema( final BigDecimal[] data ) throws TooFewDataPoints, TooManyDataPoints {
-		// TODO implement
-		return null;
+
+		// TODO add tests
+		// TODO refactor shared logic
+
+		final BigDecimal[] emaValues = store.getStore( data.length );
+
+		// Expecting the same number of input data points as outputs
+		if (data.length > emaValues.length) {
+			throw new IllegalArgumentException(
+					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
+							emaValues.length ) );
+		}
+
+		// Skip any null entries
+		int startSmaIndex = 0;
+		while (isNullEntryWithinArray( data, startSmaIndex )) {
+			startSmaIndex++;
+		}
+
+		// Enough data to calculate EMA?
+		if (data.length - startSmaIndex < minimumNumberOfPrices) {
+			throw new TooFewDataPoints(
+					String.format( "At least %s data points are needed for Exponential Moving Average, only %s given",
+							minimumNumberOfPrices, data.length ) );
+		}
+
+		/* SMA for the initial time periods */
+		final int endSmaIndex = startSmaIndex + lookback;
+		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
+
+		for (int i = startSmaIndex; i < endSmaIndex; i++) {
+			simpleMovingAverage = simpleMovingAverage.add( data[i], mathContext );
+		}
+
+		simpleMovingAverage = simpleMovingAverage.divide( BigDecimal.valueOf( endSmaIndex - startSmaIndex ),
+				mathContext );
+
+		/* EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) */
+		BigDecimal yesterday = simpleMovingAverage;
+		BigDecimal today;
+
+		for (int i = endSmaIndex; i < data.length; i++) {
+			today = data[i];
+
+			emaValues[i] = (today.subtract( yesterday, mathContext )).multiply( smoothingConstant, mathContext )
+					.add( yesterday, mathContext );
+
+			yesterday = today;
+		}
+
+		return emaValues;
 	}
 }
