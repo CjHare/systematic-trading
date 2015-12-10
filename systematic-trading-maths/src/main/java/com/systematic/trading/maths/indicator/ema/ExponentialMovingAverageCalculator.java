@@ -31,7 +31,8 @@ import java.math.MathContext;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorOutputStore;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * Exponential Moving Average (EMA) implementation without restriction on maximum number of trading
@@ -56,16 +57,22 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/** The number of previous data points used in EMA calculation. */
 	private final int lookback;
 
+	/** Responsible for parsing and validating the input. */
+	private final IndicatorInputValidator validator;
+
 	/**
 	 * @param lookback the number of days to use when calculating the EMA.
+	 * @param validator validates and parses input.
+	 * @param store source for the storage array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public ExponentialMovingAverageCalculator( final int lookback, final IndicatorOutputStore store,
-			final MathContext mathContext ) {
+	public ExponentialMovingAverageCalculator( final int lookback, final IndicatorInputValidator validator,
+			final IndicatorOutputStore store, final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + 1;
-		this.mathContext = mathContext;
-		this.lookback = lookback;
 		this.smoothingConstant = calculateSmoothingConstant( lookback );
+		this.mathContext = mathContext;
+		this.validator = validator;
+		this.lookback = lookback;
 		this.store = store;
 	}
 
@@ -73,60 +80,10 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	public BigDecimal[] ema( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] emaValues = store.getStore( data.length );
+		final int startSmaIndex = validator.getFirstNonNullIndex( data, emaValues.length, minimumNumberOfPrices );
+		final int endEmaIndex = validator.getLastNonNullIndex( data );
 
-		// Expecting the same number of input data points as outputs
-		if (data.length > emaValues.length) {
-			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
-							emaValues.length ) );
-		}
-
-		// Skip any null entries
-		int startSmaIndex = 0;
-		while (isNullEntryWithinArray( data, startSmaIndex )) {
-			startSmaIndex++;
-		}
-
-		// Enough data to calculate EMA?
-		if (data.length - startSmaIndex < minimumNumberOfPrices) {
-			throw new TooFewDataPoints(
-					String.format( "At least %s data points are needed for Exponential Moving Average, only %s given",
-							minimumNumberOfPrices, data.length ) );
-		}
-
-		/* SMA for the initial time periods */
-		final int endSmaIndex = startSmaIndex + lookback;
-		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
-
-		for (int i = startSmaIndex; i < endSmaIndex; i++) {
-			simpleMovingAverage = simpleMovingAverage.add( data[i].getClosingPrice().getPrice(), mathContext );
-		}
-
-		simpleMovingAverage = simpleMovingAverage.divide( BigDecimal.valueOf( endSmaIndex - startSmaIndex ),
-				mathContext );
-
-		/* EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) */
-		BigDecimal yesterday = simpleMovingAverage;
-		BigDecimal today;
-
-		for (int i = endSmaIndex; i < data.length; i++) {
-			today = data[i].getClosingPrice().getPrice();
-
-			emaValues[i] = (today.subtract( yesterday, mathContext )).multiply( smoothingConstant, mathContext )
-					.add( yesterday, mathContext );
-
-			yesterday = today;
-		}
-
-		return emaValues;
-	}
-
-	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
-		return (index < data.length) && (data[index] == null || data[index].getClosingPrice() == null);
-	}
-
-	private boolean isNullEntryWithinArray( final BigDecimal[] data, final int index ) {
-		return (index < data.length) && (data[index] == null);
+		return ema( new Data( data ), startSmaIndex, endEmaIndex, emaValues );
 	}
 
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {
@@ -136,37 +93,22 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	@Override
 	public BigDecimal[] ema( final BigDecimal[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
-		// TODO add tests
-		// TODO refactor shared logic
-
 		final BigDecimal[] emaValues = store.getStore( data.length );
+		final int startSmaIndex = validator.getFirstNonNullIndex( data, emaValues.length, minimumNumberOfPrices );
+		final int endEmaIndex = validator.getLastNonNullIndex( data );
 
-		// Expecting the same number of input data points as outputs
-		if (data.length > emaValues.length) {
-			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
-							emaValues.length ) );
-		}
+		return ema( new Data( data ), startSmaIndex, endEmaIndex, emaValues );
+	}
 
-		// Skip any null entries
-		int startSmaIndex = 0;
-		while (isNullEntryWithinArray( data, startSmaIndex )) {
-			startSmaIndex++;
-		}
-
-		// Enough data to calculate EMA?
-		if (data.length - startSmaIndex < minimumNumberOfPrices) {
-			throw new TooFewDataPoints(
-					String.format( "At least %s data points are needed for Exponential Moving Average, only %s given",
-							minimumNumberOfPrices, data.length ) );
-		}
+	private BigDecimal[] ema( final Data data, final int startSmaIndex, final int endEmaIndex,
+			final BigDecimal[] emaValues ) {
 
 		/* SMA for the initial time periods */
 		final int endSmaIndex = startSmaIndex + lookback;
 		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
 
 		for (int i = startSmaIndex; i < endSmaIndex; i++) {
-			simpleMovingAverage = simpleMovingAverage.add( data[i], mathContext );
+			simpleMovingAverage = simpleMovingAverage.add( data.getPrice( i ), mathContext );
 		}
 
 		simpleMovingAverage = simpleMovingAverage.divide( BigDecimal.valueOf( endSmaIndex - startSmaIndex ),
@@ -176,8 +118,8 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		BigDecimal yesterday = simpleMovingAverage;
 		BigDecimal today;
 
-		for (int i = endSmaIndex; i < data.length; i++) {
-			today = data[i];
+		for (int i = endSmaIndex; i <= endEmaIndex; i++) {
+			today = data.getPrice( i );
 
 			emaValues[i] = (today.subtract( yesterday, mathContext )).multiply( smoothingConstant, mathContext )
 					.add( yesterday, mathContext );
@@ -186,5 +128,24 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		}
 
 		return emaValues;
+	}
+
+	class Data {
+		private final BigDecimal[] dataDecimal;
+		private final TradingDayPrices[] dataPrices;
+
+		public Data( final BigDecimal[] data ) {
+			this.dataDecimal = data;
+			this.dataPrices = null;
+		}
+
+		public Data( final TradingDayPrices[] data ) {
+			this.dataDecimal = null;
+			this.dataPrices = data;
+		}
+
+		public BigDecimal getPrice( final int index ) {
+			return dataDecimal == null ? dataPrices[index].getClosingPrice().getPrice() : dataDecimal[index];
+		}
 	}
 }

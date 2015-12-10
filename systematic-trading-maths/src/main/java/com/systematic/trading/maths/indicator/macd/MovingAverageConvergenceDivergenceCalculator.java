@@ -32,10 +32,10 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorOutputStore;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
+import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * Moving Average Convergence Divergence (MACD) only using the crossover for signals.
@@ -98,18 +98,28 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 			startMacdIndex++;
 		}
 
+		// The arrays may not be entirely filled i.e. end contains nulls
+		int endIndex = slowEmaValues.length;
+		do {
+			endIndex--;
+		} while (endIndex > 0 && slowEmaValues[endIndex] == null);
+
+		while (endIndex > 0 && fastEmaValues[endIndex] == null) {
+			endIndex--;
+		}
+
 		// MACD is the fast - slow EMAs
-		for (int i = startMacdIndex; i < macd.length; i++) {
+		for (int i = startMacdIndex; i < endIndex; i++) {
 			macd[i] = fastEmaValues[i].subtract( slowEmaValues[i] );
 		}
 
 		final BigDecimal[] signaLine = signalEma.ema( macd );
 
-		return calculateBullishSignals( data, macd, signaLine );
+		return calculateBullishSignals( data, macd, endIndex, signaLine );
 	}
 
 	private List<DatedSignal> calculateBullishSignals( final TradingDayPrices[] data, final BigDecimal[] macdValues,
-			final BigDecimal[] signaLine ) {
+			final int macdValueEndIndex, final BigDecimal[] signaLine ) {
 
 		final List<DatedSignal> signals = new ArrayList<DatedSignal>();
 
@@ -119,10 +129,12 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 			index++;
 		}
 
+		//TODO signal line may contain nulls?
+		
 		// Buy signal is from a cross over of the signal line, for crossing over the origin
 		BigDecimal todayMacd, yesterdayMacd;
 
-		for (; index < signaLine.length && index < macdValues.length; index++) {
+		for (; index < signaLine.length && index < macdValueEndIndex; index++) {
 
 			todayMacd = macdValues[index];
 			yesterdayMacd = macdValues[index - 1];

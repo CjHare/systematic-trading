@@ -28,8 +28,10 @@ package com.systematic.trading.maths.indicator.rsi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -38,21 +40,29 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorOutputStore;
-import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.store.IndicatorOutputStore;
+import com.systematic.trading.maths.store.StandardIndicatorOutputStore;
 
 /**
  * Verifies the behaviour of RelativeStrengthIndexCalculator.
  * 
  * @author CJ Hare
  */
+@RunWith(MockitoJUnitRunner.class)
 public class RelativeStrengthIndexCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+
+	@Mock
+	private IndicatorInputValidator validator;
 
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
@@ -90,51 +100,6 @@ public class RelativeStrengthIndexCalculatorTest {
 		return prices;
 	}
 
-	@Test(expected = TooFewDataPoints.class)
-	public void fewerDataPointsThenLookback() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 4;
-		final TradingDayPrices[] data = createPrices( lookback );
-		final IndicatorOutputStore rsStore = new StandardIndicatorOutputStore();
-		final IndicatorOutputStore rsiStore = new StandardIndicatorOutputStore();
-
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
-				rsiStore, MATH_CONTEXT );
-
-		calculator.rsi( data );
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void mismatchedParameterDataRsLengths() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 4;
-		final TradingDayPrices[] data = createPrices( lookback );
-		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
-		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
-
-		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback - 1] );
-		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
-
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
-				rsiStore, MATH_CONTEXT );
-
-		calculator.rsi( data );
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void mismatchedParameterDataRsiLengths() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 4;
-		final TradingDayPrices[] data = createPrices( lookback );
-		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
-		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
-
-		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
-		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback - 1] );
-
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
-				rsiStore, MATH_CONTEXT );
-
-		calculator.rsi( data );
-	}
-
 	@Test
 	public void rsiFlat() throws TooFewDataPoints, TooManyDataPoints {
 		final int dataSize = 8;
@@ -142,14 +107,20 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		final BigDecimal[] rsArray = new BigDecimal[dataSize];
+		when( rsStore.getStore( anyInt() ) ).thenReturn( rsArray );
 		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		when( validator.getLastNonNullIndex( rsArray ) ).thenReturn( rsArray.length - 1 );
+		when( validator.getLastNonNullIndex( data ) ).thenReturn( data.length - 1 );
 
 		final int lookback = 4;
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
-				rsiStore, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, validator,
+				rsStore, rsiStore, MATH_CONTEXT );
 
 		final BigDecimal[] rsi = calculator.rsi( data );
+
+		verify( validator ).getLastNonNullIndex( rsArray );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( rsi );
 		assertEquals( dataSize, rsi.length );
@@ -171,14 +142,22 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		final BigDecimal[] rsArray = new BigDecimal[dataSize];
+		when( rsStore.getStore( anyInt() ) ).thenReturn( rsArray );
 		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 1 );
+		when( validator.getLastNonNullIndex( rsArray ) ).thenReturn( rsArray.length - 1 );
+		when( validator.getLastNonNullIndex( data ) ).thenReturn( data.length - 1 );
 
 		final int lookback = 4;
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
-				rsiStore, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, validator,
+				rsStore, rsiStore, MATH_CONTEXT );
 
 		final BigDecimal[] rsi = calculator.rsi( data );
+
+		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( rsArray );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( rsi );
 		assertEquals( dataSize, rsi.length );
@@ -193,20 +172,63 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	@Test
+	public void rsiFlatEndingNull() throws TooFewDataPoints, TooManyDataPoints {
+		final int dataSize = 8;
+		final TradingDayPrices[] data = createPrices( dataSize );
+		data[data.length - 1] = null;
+		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
+		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
+
+		final BigDecimal[] rsArray = new BigDecimal[dataSize];
+		when( rsStore.getStore( anyInt() ) ).thenReturn( rsArray );
+		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 1 );
+		when( validator.getLastNonNullIndex( rsArray ) ).thenReturn( rsArray.length - 2 );
+		when( validator.getLastNonNullIndex( data ) ).thenReturn( data.length - 2 );
+
+		final int lookback = 4;
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, validator,
+				rsStore, rsiStore, MATH_CONTEXT );
+
+		final BigDecimal[] rsi = calculator.rsi( data );
+
+		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( rsArray );
+		verify( validator ).getLastNonNullIndex( data );
+
+		assertNotNull( rsi );
+		assertEquals( dataSize, rsi.length );
+		assertNull( rsi[0] );
+		assertNull( rsi[1] );
+		assertNull( rsi[2] );
+		assertNull( rsi[3] );
+		assertNull( rsi[4] );
+		assertEquals( BigDecimal.valueOf( 99.01 ), rsi[5].setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 99.01 ), rsi[6].setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertNull( rsi[7] );
+	}
+
+	@Test
 	public void rsiIncreasing() throws TooFewDataPoints, TooManyDataPoints {
 		final int dataSize = 8;
 		final TradingDayPrices[] data = createIncreasingPrices( dataSize );
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		final BigDecimal[] rsArray = new BigDecimal[dataSize];
+		when( rsStore.getStore( anyInt() ) ).thenReturn( rsArray );
 		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		when( validator.getLastNonNullIndex( rsArray ) ).thenReturn( rsArray.length - 1 );
+		when( validator.getLastNonNullIndex( data ) ).thenReturn( data.length - 1 );
 
 		final int lookback = 4;
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
-				rsiStore, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, validator,
+				rsStore, rsiStore, MATH_CONTEXT );
 
 		final BigDecimal[] rsi = calculator.rsi( data );
+
+		verify( validator ).getLastNonNullIndex( rsArray );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( rsi );
 		assertEquals( dataSize, rsi.length );
@@ -228,14 +250,20 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		final BigDecimal[] rsArray = new BigDecimal[dataSize];
+		when( rsStore.getStore( anyInt() ) ).thenReturn( rsArray );
 		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[dataSize] );
+		when( validator.getLastNonNullIndex( rsArray ) ).thenReturn( rsArray.length - 1 );
+		when( validator.getLastNonNullIndex( data ) ).thenReturn( data.length - 1 );
 
 		final int lookback = 4;
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
-				rsiStore, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, validator,
+				rsStore, rsiStore, MATH_CONTEXT );
 
 		final BigDecimal[] rsi = calculator.rsi( data );
+
+		verify( validator ).getLastNonNullIndex( rsArray );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( rsi );
 		assertEquals( dataSize, rsi.length );
@@ -267,14 +295,20 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[2 * dataSize] );
+		final BigDecimal[] rsArray = new BigDecimal[2 * dataSize];
+		when( rsStore.getStore( anyInt() ) ).thenReturn( rsArray );
 		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[2 * dataSize] );
+		when( validator.getLastNonNullIndex( rsArray ) ).thenReturn( rsArray.length - 1 );
+		when( validator.getLastNonNullIndex( data ) ).thenReturn( data.length - 1 );
 
 		final int lookback = 4;
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
-				rsiStore, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, validator,
+				rsStore, rsiStore, MATH_CONTEXT );
 
 		final BigDecimal[] rsi = calculator.rsi( data );
+
+		verify( validator ).getLastNonNullIndex( rsArray );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( rsi );
 		assertEquals( 2 * dataSize, rsi.length );
@@ -314,14 +348,20 @@ public class RelativeStrengthIndexCalculatorTest {
 		final IndicatorOutputStore rsStore = mock( StandardIndicatorOutputStore.class );
 		final IndicatorOutputStore rsiStore = mock( StandardIndicatorOutputStore.class );
 
-		when( rsStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[2 * dataSize] );
+		final BigDecimal[] rsArray = new BigDecimal[2 * dataSize];
+		when( rsStore.getStore( anyInt() ) ).thenReturn( rsArray );
 		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[2 * dataSize] );
+		when( validator.getLastNonNullIndex( rsArray ) ).thenReturn( rsArray.length - 1 );
+		when( validator.getLastNonNullIndex( data ) ).thenReturn( data.length - 1 );
 
 		final int lookback = 4;
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, rsStore,
-				rsiStore, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback, validator,
+				rsStore, rsiStore, MATH_CONTEXT );
 
 		final BigDecimal[] rsi = calculator.rsi( data );
+
+		verify( validator ).getLastNonNullIndex( rsArray );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( rsi );
 		assertEquals( 2 * dataSize, rsi.length );

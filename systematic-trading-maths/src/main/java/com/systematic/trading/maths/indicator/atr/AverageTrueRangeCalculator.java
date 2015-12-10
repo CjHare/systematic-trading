@@ -31,7 +31,8 @@ import java.math.MathContext;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorOutputStore;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * Standard ATR implementation.
@@ -55,18 +56,23 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	/** Provides the array to store the result in. */
 	private final IndicatorOutputStore store;
 
+	/** Responsible for parsing and validating the input. */
+	private final IndicatorInputValidator validator;
+
 	/**
 	 * @param lookback the number of days to use when calculating the ATR, also the number of days
 	 *            prior to the averaging becoming correct.
+	 * @param validator validates and parses input.
 	 * @param store source for the storage array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public AverageTrueRangeCalculator( final int lookback, final IndicatorOutputStore store,
-			final MathContext mathContext ) {
+	public AverageTrueRangeCalculator( final int lookback, final IndicatorInputValidator validator,
+			final IndicatorOutputStore store, final MathContext mathContext ) {
+		this.minimumNumberOfPrices = lookback + 1;
 		this.priorMultiplier = BigDecimal.valueOf( lookback - 1 );
 		this.lookbackDivider = BigDecimal.valueOf( lookback );
 		this.mathContext = mathContext;
-		this.minimumNumberOfPrices = lookback + 1;
+		this.validator = validator;
 		this.store = store;
 	}
 
@@ -112,42 +118,20 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	public BigDecimal[] atr( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] atrValues = store.getStore( data.length );
-
-		// Expecting the same number of input data points as outputs
-		if (data.length > atrValues.length) {
-			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
-							atrValues.length ) );
-		}
-
-		// Skip any null entries
-		int startAtrIndex = 0;
-		while (isNullEntryWithinArray( data, startAtrIndex )) {
-			startAtrIndex++;
-		}
-
-		// Enough data to calculate ATR?
-		if (data.length - startAtrIndex < minimumNumberOfPrices) {
-			throw new TooFewDataPoints(
-					String.format( "At least %s non null data points for Average True Range, only %s given",
-							minimumNumberOfPrices, data.length ) );
-		}
+		final int startAtrIndex = validator.getFirstNonNullIndex( data, atrValues.length, minimumNumberOfPrices );
 
 		// For the first value just use the TR
 		atrValues[startAtrIndex] = trueRangeMethodOne( data[startAtrIndex] );
 
 		// Starting ATR is just the first value
 		BigDecimal priorAtr = atrValues[startAtrIndex];
+		final int endAtrIndex = validator.getLastNonNullIndex( data );
 
-		for (int i = startAtrIndex + 1; i < atrValues.length; i++) {
+		for (int i = startAtrIndex + 1; i <= endAtrIndex; i++) {
 			atrValues[i] = average( getTrueRange( data[i], data[i - 1] ), priorAtr );
 			priorAtr = atrValues[i];
 		}
 
 		return atrValues;
-	}
-
-	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
-		return (index < data.length) && (data[index] == null || data[index].getClosingPrice() == null);
 	}
 }

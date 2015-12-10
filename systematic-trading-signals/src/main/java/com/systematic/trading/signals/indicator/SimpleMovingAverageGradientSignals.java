@@ -33,10 +33,11 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.ReuseIndicatorOutputStore;
-import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
+import com.systematic.trading.maths.store.ReuseIndicatorOutputStore;
+import com.systematic.trading.maths.store.StandardIndicatorOutputStore;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -72,14 +73,14 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 			final GradientType signalGenerated, final int maximumTradingDays, final MathContext mathContext ) {
 
 		this( lookback, daysOfGradient, signalGenerated, mathContext, new SimpleMovingAverageCalculator( lookback,
-				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext ) );
+				new IndicatorInputValidator(), new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext ) );
 	}
 
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
 			final GradientType signalGenerated, final MathContext mathContext ) {
 
-		this( lookback, daysOfGradient, signalGenerated, mathContext,
-				new SimpleMovingAverageCalculator( lookback, new StandardIndicatorOutputStore(), mathContext ) );
+		this( lookback, daysOfGradient, signalGenerated, mathContext, new SimpleMovingAverageCalculator( lookback,
+				new IndicatorInputValidator(), new StandardIndicatorOutputStore(), mathContext ) );
 	}
 
 	private SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,

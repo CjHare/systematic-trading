@@ -32,7 +32,8 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorOutputStore;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * Relative Strength Index - RSI
@@ -71,18 +72,24 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	/** Constant used for smoothing the moving average. */
 	private final BigDecimal smoothingConstant;
 
+	/** Responsible for parsing and validating the input. */
+	private final IndicatorInputValidator validator;
+
 	/**
 	 * @param lookback the number of days to use when calculating the RSI.
+	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthIndexCalculator( final int lookback, final IndicatorOutputStore relativeStrengthStore,
-			final IndicatorOutputStore relativeStrengthIndexStore, final MathContext mathContext ) {
-		this.lookback = lookback;
-		this.minimumNumberOfPrices = lookback + 1;
-		this.mathContext = mathContext;
-		this.relativeStrengthStore = relativeStrengthStore;
+	public RelativeStrengthIndexCalculator( final int lookback, final IndicatorInputValidator validator,
+			final IndicatorOutputStore relativeStrengthStore, final IndicatorOutputStore relativeStrengthIndexStore,
+			final MathContext mathContext ) {
 		this.relativeStrengthIndexStore = relativeStrengthIndexStore;
+		this.relativeStrengthStore = relativeStrengthStore;
+		this.minimumNumberOfPrices = lookback + 1;
 		this.smoothingConstant = calculateSmoothingConstant( lookback );
+		this.mathContext = mathContext;
+		this.validator = validator;
+		this.lookback = lookback;
 
 	}
 
@@ -91,33 +98,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 		final BigDecimal[] relativeStrength = relativeStrengthStore.getStore( data.length );
 		final BigDecimal[] rsiValues = relativeStrengthIndexStore.getStore( data.length );
-
-		// Expecting the same number of input data points as outputs
-		if (data.length > relativeStrength.length) {
-			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
-							relativeStrength.length ) );
-		}
-
-		// Expecting the same number of input data points as outputs
-		if (data.length != rsiValues.length) {
-			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s does not match the expected size: %s",
-							data.length, rsiValues.length ) );
-		}
-
-		// Skip any null entries
-		int startRsiIndex = 0;
-		while (isNullEntryWithinArray( data, startRsiIndex )) {
-			startRsiIndex++;
-		}
-
-		// Need at least one RSI value
-		if (data.length - startRsiIndex < minimumNumberOfPrices) {
-			throw new TooFewDataPoints(
-					String.format( "At least %s data points are needed for Relative Strength Index, only %s given",
-							minimumNumberOfPrices, data.length ) );
-		}
+		final int startRsiIndex = validator.getFirstNonNullIndex( data, relativeStrength.length,
+				minimumNumberOfPrices );
 
 		/* For the first zero - time period entries calculate the SMA based on up to down movement
 		 * Upwards movement upward = closeToday - closeYesterday downward = 0 Downwards movement
@@ -158,8 +140,9 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 		/* RS = EMA(U,n) / EMA(D,n) (smoothing constant) multiplier: (2 / (Time periods + 1) ) EMA:
 		 * {Close - EMA(previous day)} x multiplier + EMA(previous day). */
+		final int endDataIndex = validator.getLastNonNullIndex( data );
 
-		for (int i = endInitialLookback; i < relativeStrength.length && i < data.length; i++) {
+		for (int i = endInitialLookback; i <= endDataIndex; i++) {
 
 			closeToday = data[i].getClosingPrice();
 			closeYesterday = data[i - 1].getClosingPrice();
@@ -198,16 +181,13 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 		}
 
 		/* RSI = 100 / 1 + RS */
-		for (int i = endInitialLookback; i < rsiValues.length; i++) {
+		final int endRelativeStrengthIndex = validator.getLastNonNullIndex( relativeStrength );
+		for (int i = endInitialLookback; i <= endRelativeStrengthIndex; i++) {
 			rsiValues[i] = ONE_HUNDRED
 					.subtract( ONE_HUNDRED.divide( BigDecimal.ONE.add( relativeStrength[i] ), mathContext ) );
 		}
 
 		return rsiValues;
-	}
-
-	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
-		return (index < data.length) && (data[index] == null || data[index].getClosingPrice() == null);
 	}
 
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {

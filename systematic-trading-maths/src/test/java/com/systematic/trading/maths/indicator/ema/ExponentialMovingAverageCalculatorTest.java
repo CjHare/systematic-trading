@@ -28,8 +28,9 @@ package com.systematic.trading.maths.indicator.ema;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -38,21 +39,29 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorOutputStore;
-import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.store.IndicatorOutputStore;
+import com.systematic.trading.maths.store.StandardIndicatorOutputStore;
 
 /**
  * Test the ExponentialMovingAverageCalculator.
  * 
  * @author CJ Hare
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ExponentialMovingAverageCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+
+	@Mock
+	private IndicatorInputValidator validator;
 
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
@@ -76,29 +85,24 @@ public class ExponentialMovingAverageCalculatorTest {
 		return prices;
 	}
 
-	@Test(expected = TooFewDataPoints.class)
-	public void fewerDataPointsThenLookback() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 4;
-		final TradingDayPrices[] data = createPrices( lookback );
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+	private BigDecimal[] createIncreasingDecimalPrices( final int count ) {
+		final BigDecimal[] prices = new BigDecimal[count];
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback, store,
-				MATH_CONTEXT );
+		for (int i = 0; i < count; i++) {
+			prices[i] = BigDecimal.valueOf( i );
+		}
 
-		calculator.ema( data );
+		return prices;
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void mismatchedParameterLengths() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 4;
-		final TradingDayPrices[] data = createPrices( lookback );
-		final IndicatorOutputStore store = mock( StandardIndicatorOutputStore.class );
-		when( store.getStore( anyInt(  ) ) ).thenReturn( new BigDecimal[lookback - 1] );
+	private BigDecimal[] createDecimalPrices( final int count ) {
+		final BigDecimal[] prices = new BigDecimal[count];
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback, store,
-				MATH_CONTEXT );
+		for (int i = 0; i < count; i++) {
+			prices[i] = BigDecimal.valueOf( 1 );
+		}
 
-		calculator.ema( data );
+		return prices;
 	}
 
 	@Test
@@ -108,10 +112,15 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback, store,
-				MATH_CONTEXT );
+		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
+
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] ema = calculator.ema( data );
+
+		verify( validator ).getFirstNonNullIndex( data, numberDataPoints, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( ema );
 		assertEquals( numberDataPoints, ema.length );
@@ -128,15 +137,21 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback, store,
-				MATH_CONTEXT );
+		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
+
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] ema = calculator.ema( data );
+
+		verify( validator ).getFirstNonNullIndex( data, numberDataPoints, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( ema );
 		assertEquals( numberDataPoints, ema.length );
 		assertNull( ema[0] );
 		assertNull( ema[1] );
+		assertNotNull( ema[2] );
 		assertEquals( BigDecimal.ONE, ema[2].setScale( 0, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.ONE, ema[3].setScale( 0, RoundingMode.HALF_EVEN ) );
 	}
@@ -148,17 +163,23 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[0] = null;
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 1 );
+		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback, store,
-				MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] ema = calculator.ema( data );
+
+		verify( validator ).getFirstNonNullIndex( data, numberDataPoints, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( ema );
 		assertEquals( numberDataPoints, ema.length );
 		assertNull( ema[0] );
 		assertNull( ema[1] );
 		assertNull( ema[2] );
+		assertNotNull( ema[3] );
 		assertEquals( BigDecimal.ONE, ema[3].setScale( 0, RoundingMode.HALF_EVEN ) );
 	}
 
@@ -168,18 +189,156 @@ public class ExponentialMovingAverageCalculatorTest {
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback, store,
-				MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] ema = calculator.ema( data );
+
+		verify( validator ).getFirstNonNullIndex( data, numberDataPoints, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( ema );
 		assertEquals( numberDataPoints, ema.length );
 		assertNull( ema[0] );
 		assertNull( ema[1] );
+		assertNotNull( ema[2] );
 		assertEquals( BigDecimal.valueOf( 2.5 ), ema[2].setScale( 1, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.valueOf( 3.67 ), ema[3].setScale( 2, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.valueOf( 4.67 ), ema[4].setScale( 2, RoundingMode.HALF_EVEN ) );
+	}
+
+	@Test
+	public void emaTwoPointsLastNull() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 2;
+		final int numberDataPoints = lookback + 3;
+		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
+		data[data.length - 1] = null;
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 2 );
+
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, store, MATH_CONTEXT );
+
+		final BigDecimal[] ema = calculator.ema( data );
+
+		verify( validator ).getFirstNonNullIndex( data, numberDataPoints, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
+
+		assertNotNull( ema );
+		assertEquals( numberDataPoints, ema.length );
+		assertNull( ema[0] );
+		assertNull( ema[1] );
+		assertNotNull( ema[2] );
+		assertEquals( BigDecimal.valueOf( 2.5 ), ema[2].setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 3.67 ), ema[3].setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertNull( ema[4] );
+	}
+
+	@Test
+	public void emaTwoPointsDecimal() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 2;
+		final int numberDataPoints = lookback + 2;
+		final BigDecimal[] data = createDecimalPrices( numberDataPoints );
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+
+		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( numberDataPoints - 1 );
+
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, store, MATH_CONTEXT );
+
+		final BigDecimal[] ema = calculator.ema( data );
+
+		verify( validator ).getFirstNonNullIndex( data, numberDataPoints, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
+
+		assertNotNull( ema );
+		assertEquals( numberDataPoints, ema.length );
+		assertNull( ema[0] );
+		assertNull( ema[1] );
+		assertNotNull( ema[2] );
+		assertEquals( BigDecimal.ONE, ema[2].setScale( 0, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.ONE, ema[3].setScale( 0, RoundingMode.HALF_EVEN ) );
+	}
+
+	@Test
+	public void emaFirstPointNullDecimal() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 2;
+		final int numberDataPoints = lookback + 3;
+		final BigDecimal[] data = createDecimalPrices( numberDataPoints );
+		data[0] = null;
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		when( validator.getFirstNonNullIndex( any( BigDecimal[].class ), anyInt(), anyInt() ) ).thenReturn( 1 );
+		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( numberDataPoints - 1 );
+
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, store, MATH_CONTEXT );
+
+		final BigDecimal[] ema = calculator.ema( data );
+
+		verify( validator ).getFirstNonNullIndex( data, numberDataPoints, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
+
+		assertNotNull( ema );
+		assertEquals( numberDataPoints, ema.length );
+		assertNull( ema[0] );
+		assertNull( ema[1] );
+		assertNull( ema[2] );
+		assertNotNull( ema[3] );
+		assertEquals( BigDecimal.ONE, ema[3].setScale( 0, RoundingMode.HALF_EVEN ) );
+	}
+
+	@Test
+	public void emaThreePointsDecimal() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 2;
+		final int numberDataPoints = lookback + 3;
+		final BigDecimal[] data = createIncreasingDecimalPrices( numberDataPoints );
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( numberDataPoints - 1 );
+
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, store, MATH_CONTEXT );
+
+		final BigDecimal[] ema = calculator.ema( data );
+
+		verify( validator ).getFirstNonNullIndex( data, numberDataPoints, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
+
+		assertNotNull( ema );
+		assertEquals( numberDataPoints, ema.length );
+		assertNull( ema[0] );
+		assertNull( ema[1] );
+		assertNotNull( ema[2] );
+		assertEquals( BigDecimal.valueOf( 1.5 ), ema[2].setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 2.67 ), ema[3].setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 3.67 ), ema[4].setScale( 2, RoundingMode.HALF_EVEN ) );
+	}
+
+	@Test
+	public void emaTwoPointsLastNullDecimal() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 2;
+		final int numberDataPoints = lookback + 3;
+		final BigDecimal[] data = createIncreasingDecimalPrices( numberDataPoints );
+		data[data.length - 1] = null;
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( numberDataPoints - 2 );
+
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, store, MATH_CONTEXT );
+
+		final BigDecimal[] ema = calculator.ema( data );
+
+		verify( validator ).getFirstNonNullIndex( data, numberDataPoints, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
+
+		assertNotNull( ema );
+		assertEquals( numberDataPoints, ema.length );
+		assertNull( ema[0] );
+		assertNull( ema[1] );
+		assertNotNull( ema[2] );
+		assertEquals( BigDecimal.valueOf( 1.5 ), ema[2].setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 2.67 ), ema[3].setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertNull( ema[4] );
 	}
 }

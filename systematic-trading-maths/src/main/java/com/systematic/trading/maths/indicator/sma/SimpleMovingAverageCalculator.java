@@ -31,7 +31,8 @@ import java.math.MathContext;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorOutputStore;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * The mean for a consecutive set of numbers.
@@ -43,21 +44,30 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
 
+	/** Required number of data points required for SMA calculation. */
+	private final int minimumNumberOfPrices;
+
 	/** Number of days to average the value on. */
 	private final int lookback;
 
 	/** Provides the array to store the result in. */
 	private final IndicatorOutputStore store;
 
+	/** Responsible for parsing and validating the input. */
+	private final IndicatorInputValidator validator;
+
 	/**
 	 * @param lookback the number of days to use when calculating the SMA.
-	 * @param store memory allocator for the result array.
+	 * @param validator validates and parses input.
+	 * @param store source for the storage array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public SimpleMovingAverageCalculator( final int lookback, final IndicatorOutputStore store,
-			final MathContext mathContext ) {
-		this.lookback = lookback;
+	public SimpleMovingAverageCalculator( final int lookback, final IndicatorInputValidator validator,
+			final IndicatorOutputStore store, final MathContext mathContext ) {
+		this.minimumNumberOfPrices = lookback + 1;
 		this.mathContext = mathContext;
+		this.validator = validator;
+		this.lookback = lookback;
 		this.store = store;
 	}
 
@@ -65,41 +75,20 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	public BigDecimal[] sma( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] smaValues = store.getStore( data.length );
-
-		// Expecting the same number of input data points as outputs
-		if (data.length > smaValues.length) {
-			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
-							smaValues.length ) );
-		}
-
-		// Skip any null entries
-		int startSmaIndex = 0;
-		while (isNullEntryWithinArray( data, startSmaIndex )) {
-			startSmaIndex++;
-		}
-
-		// Have we the minimum number of values
-		if (data.length < startSmaIndex + lookback) {
-			throw new TooFewDataPoints(
-					String.format( "At least %s data points are needed for Simple Moving Average, only %s given",
-							lookback, data.length ) );
-		}
+		int startSmaIndex = validator.getFirstNonNullIndex( data, smaValues.length, minimumNumberOfPrices );
 
 		// No values without the full look back range
 		startSmaIndex += lookback;
 		startSmaIndex--;
 
+		final int endSmaIndex = validator.getLastNonNullIndex( data );
+
 		// Start at the end and work towards the origin
-		for (int i = data.length - 1; i >= startSmaIndex; i--) {
+		for (int i = endSmaIndex; i >= startSmaIndex; i--) {
 			smaValues[i] = simpleAverage( i, data );
 		}
 
 		return smaValues;
-	}
-
-	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
-		return (index < data.length) && (data[index] == null || data[index].getClosingPrice() == null);
 	}
 
 	/**

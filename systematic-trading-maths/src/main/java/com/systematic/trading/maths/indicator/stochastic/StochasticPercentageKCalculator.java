@@ -34,7 +34,8 @@ import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorOutputStore;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
@@ -49,21 +50,30 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
 	private static final BigDecimal ONE_HUNDREDTH = BigDecimal.valueOf( 0.01 );
 
+	/** Required number of data points required for ATR calculation. */
+	private final int minimumNumberOfPrices;
+
 	/** Number of days to read the ranges on. */
 	private final int lookback;
 
 	/** Provides the array to store the result in. */
 	private final IndicatorOutputStore store;
 
+	/** Responsible for parsing and validating the input. */
+	private final IndicatorInputValidator validator;
+
 	/**
 	 * @param lookback the number of days to use when calculating the Stochastic%K.
+	 * @param validator validates and parses input.
 	 * @param store memory allocator for the result array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public StochasticPercentageKCalculator( final int lookback, final IndicatorOutputStore store,
-			final MathContext mathContext ) {
-		this.lookback = lookback;
+	public StochasticPercentageKCalculator( final int lookback, final IndicatorInputValidator validator,
+			final IndicatorOutputStore store, final MathContext mathContext ) {
+		this.minimumNumberOfPrices = lookback + 1;
 		this.mathContext = mathContext;
+		this.validator = validator;
+		this.lookback = lookback;
 		this.store = store;
 	}
 
@@ -71,25 +81,8 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	public BigDecimal[] percentageK( final TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints {
 
 		final BigDecimal[] pK = store.getStore( data.length );
-
-		// Expecting the same number of input data points as outputs
-		if (data.length > pK.length) {
-			throw new IllegalArgumentException( String.format(
-					"The number of data points given: %s exceeds the size of the store: %s", data.length, pK.length ) );
-		}
-
-		// Skip any null entries
-		int pkSmaIndex = 0;
-		while (isNullEntryWithinArray( data, pkSmaIndex )) {
-			pkSmaIndex++;
-		}
-
-		// Have we the minimum number of values
-		if (data.length < pkSmaIndex + lookback) {
-			throw new TooFewDataPoints(
-					String.format( "At least %s data points are needed for Simple Moving Average, only %s given",
-							pkSmaIndex + lookback, data.length ) );
-		}
+		int pkSmaIndex = validator.getFirstNonNullIndex( data, pK.length, minimumNumberOfPrices );
+		final int pkEndIndex = validator.getLastNonNullIndex( data );
 
 		LowestPrice lowestLow;
 		HighestPrice highestHigh;
@@ -97,7 +90,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		BigDecimal lowestHighestDifference;
 		pkSmaIndex += lookback;
 
-		for (int i = pkSmaIndex; i < data.length; i++) {
+		for (int i = pkSmaIndex; i <= pkEndIndex; i++) {
 			currentClose = data[i].getClosingPrice();
 			lowestLow = lowestLow( data, i );
 			highestHigh = highestHigh( data, i );
@@ -107,10 +100,6 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		}
 
 		return pK;
-	}
-
-	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
-		return (index < data.length) && (data[index] == null || data[index].getClosingPrice() == null);
 	}
 
 	private BigDecimal calculatePercentageK( final LowestPrice lowestLow, final HighestPrice highestHigh,

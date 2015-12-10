@@ -33,12 +33,13 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageK;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageKCalculator;
 import com.systematic.trading.maths.model.DatedValue;
+import com.systematic.trading.maths.store.StandardIndicatorOutputStore;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -70,10 +71,12 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 		this.lookback = lookback;
 
 		// TODO convert to reuse ouptut
-		this.smaFullK = new SimpleMovingAverageCalculator( smaK, new StandardIndicatorOutputStore(), mathContext );
-		this.smaFullD = new SimpleMovingAverageCalculator( smaD, new StandardIndicatorOutputStore(), mathContext );
-		this.percentageK = new StochasticPercentageKCalculator( lookback, new StandardIndicatorOutputStore(),
-				mathContext );
+		this.smaFullK = new SimpleMovingAverageCalculator( smaK, new IndicatorInputValidator(),
+				new StandardIndicatorOutputStore(), mathContext );
+		this.smaFullD = new SimpleMovingAverageCalculator( smaD, new IndicatorInputValidator(),
+				new StandardIndicatorOutputStore(), mathContext );
+		this.percentageK = new StochasticPercentageKCalculator( lookback, new IndicatorInputValidator(),
+				new StandardIndicatorOutputStore(), mathContext );
 	}
 
 	@Override

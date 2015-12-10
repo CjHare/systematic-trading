@@ -49,10 +49,10 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorOutputStore;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
+import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * Verifies the behaviour of the MovingAverageConvergenceDivergenceCalculator.
@@ -207,6 +207,72 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final BigDecimal[] fastEmaValues = createIncreasingValues( lookback, 2 );
 		fastEmaValues[0] = null;
+		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
+
+		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( new BigDecimal[lookback] );
+		final BigDecimal[] signalValues = new BigDecimal[lookback];
+		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
+
+		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
+				fastEma, slowEma, signalEma, signalStore );
+
+		final List<DatedSignal> signals = calculator.macd( data );
+
+		assertNotNull( signals );
+		assertEquals( 0, signals.size() );
+		verify( fastEma ).ema( data );
+		verify( slowEma ).ema( data );
+		verify( signalEma ).ema( signalValues );
+		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
+
+		verify( signalEma ).ema( isBigDecimalArrayOf( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ),
+				BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) );
+
+		verify( signalStore ).getStore( data.length );
+	}
+
+	@Test
+	public void signalLineInputFastEmaLastNull() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 5;
+		final TradingDayPrices[] data = createPrices( lookback );
+		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValues( lookback, 1 ) );
+
+		final BigDecimal[] fastEmaValues = createIncreasingValues( lookback, 2 );
+		fastEmaValues[fastEmaValues.length - 1] = null;
+		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
+
+		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( new BigDecimal[lookback] );
+		final BigDecimal[] signalValues = new BigDecimal[lookback];
+		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
+
+		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
+				fastEma, slowEma, signalEma, signalStore );
+
+		final List<DatedSignal> signals = calculator.macd( data );
+
+		assertNotNull( signals );
+		assertEquals( 0, signals.size() );
+		verify( fastEma ).ema( data );
+		verify( slowEma ).ema( data );
+		verify( signalEma ).ema( signalValues );
+		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
+
+		verify( signalEma ).ema( isBigDecimalArrayOf( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ),
+				BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) );
+
+		verify( signalStore ).getStore( data.length );
+	}
+
+	@Test
+	public void signalLineInputSlowEmaLastNull() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 5;
+		final TradingDayPrices[] data = createPrices( lookback );
+
+		final BigDecimal[] slowEmaValues = createFlatValues( lookback, 1 );
+		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( slowEmaValues );
+		slowEmaValues[slowEmaValues.length - 1] = null;
+
+		final BigDecimal[] fastEmaValues = createIncreasingValues( lookback, 2 );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
 
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( new BigDecimal[lookback] );

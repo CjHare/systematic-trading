@@ -28,8 +28,9 @@ package com.systematic.trading.maths.indicator.sma;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -37,21 +38,29 @@ import java.math.MathContext;
 import java.time.LocalDate;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorOutputStore;
-import com.systematic.trading.maths.indicator.StandardIndicatorOutputStore;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.store.IndicatorOutputStore;
+import com.systematic.trading.maths.store.StandardIndicatorOutputStore;
 
 /**
  * Verifying the behaviour for a SimpleMovingAverageCalculator.
  * 
  * @author CJ Hare
  */
+@RunWith(MockitoJUnitRunner.class)
 public class SimpleMovingAverageCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+
+	@Mock
+	private IndicatorInputValidator validator;
 
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
@@ -75,31 +84,6 @@ public class SimpleMovingAverageCalculatorTest {
 		return prices;
 	}
 
-	@Test(expected = TooFewDataPoints.class)
-	public void fewerDataPointsThenLookback() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 4;
-		final TradingDayPrices[] data = new TradingDayPrices[lookback - 1];
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
-
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, store,
-				MATH_CONTEXT );
-
-		calculator.sma( data );
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void mismatchedParameterLengths() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 4;
-		final TradingDayPrices[] data = createPrices( lookback );
-		final IndicatorOutputStore store = mock( StandardIndicatorOutputStore.class );
-		when( store.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback - 1] );
-
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, store,
-				MATH_CONTEXT );
-
-		calculator.sma( data );
-	}
-
 	@Test
 	public void smaTwoPoints() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
@@ -107,10 +91,16 @@ public class SimpleMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, store,
+		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 0 );
+		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
+
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, validator, store,
 				MATH_CONTEXT );
 
 		final BigDecimal[] sma = calculator.sma( data );
+
+		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( sma );
 		assertEquals( numberDataPoints, sma.length );
@@ -129,10 +119,16 @@ public class SimpleMovingAverageCalculatorTest {
 		data[0] = null;
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, store,
+		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 1 );
+		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
+
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, validator, store,
 				MATH_CONTEXT );
 
 		final BigDecimal[] sma = calculator.sma( data );
+
+		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( sma );
 		assertEquals( numberDataPoints, sma.length );
@@ -144,16 +140,50 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	@Test
+	public void smaLastPointNull() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 2;
+		final int numberDataPoints = lookback + 3;
+		final TradingDayPrices[] data = createPrices( numberDataPoints );
+		data[lookback + 2] = null;
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+
+		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 1 );
+		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 2 );
+
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, validator, store,
+				MATH_CONTEXT );
+
+		final BigDecimal[] sma = calculator.sma( data );
+
+		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
+
+		assertNotNull( sma );
+		assertEquals( numberDataPoints, sma.length );
+		assertNull( sma[0] );
+		assertNull( sma[1] );
+		assertEquals( BigDecimal.ONE, sma[2] );
+		assertEquals( BigDecimal.ONE, sma[3] );
+		assertNull( sma[4] );
+	}
+
+	@Test
 	public void smaThreePoints() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, store,
+		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 0 );
+		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
+
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, validator, store,
 				MATH_CONTEXT );
 
 		final BigDecimal[] sma = calculator.sma( data );
+
+		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( sma );
 		assertEquals( numberDataPoints, sma.length );
