@@ -198,7 +198,7 @@ public class SystematicTradingBacktest {
 						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), maximumTradingDays,
 						MATH_CONTEXT );
 
-				description = String.format( "%s-$s_SameDay_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
+				description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
 						rsiConfiguration.getDescription(), minimumTradeDescription );
 				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
 						description, MATH_CONTEXT, rsi, macd ) );
