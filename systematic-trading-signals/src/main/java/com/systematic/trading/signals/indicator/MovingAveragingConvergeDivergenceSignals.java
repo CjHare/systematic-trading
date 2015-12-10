@@ -97,7 +97,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 	@Override
 	public int getRequiredNumberOfTradingDays() {
-		return slowTimePeriods + signalTimePeriods;
+		return slowTimePeriods + signalTimePeriods + 2;
 	}
 
 	@Override

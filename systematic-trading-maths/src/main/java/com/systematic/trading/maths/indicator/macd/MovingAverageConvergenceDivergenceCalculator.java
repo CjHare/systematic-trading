@@ -131,6 +131,9 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		final int endSignalLineIndex = validator.getLastNonNullIndex( signaLine );
 		int index = validator.getFirstNonNullIndex( signaLine );
 
+		// Yesterday need not be null
+		index++;
+
 		// Buy signal is from a cross over of the signal line, for crossing over the origin
 		BigDecimal todayMacd, yesterdayMacd;
 
