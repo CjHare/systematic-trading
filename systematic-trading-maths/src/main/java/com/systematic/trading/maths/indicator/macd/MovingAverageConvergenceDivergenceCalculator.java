@@ -32,6 +32,7 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
@@ -56,13 +57,17 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	/** Provides the array to put the slow-fast ema value for feeding to the signal ema. */
 	private final IndicatorOutputStore signalStore;
 
+	/** Responsible for parsing and validating the input. */
+	private final IndicatorInputValidator validator;
+
 	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverage fastEma,
 			final ExponentialMovingAverage slowEma, final ExponentialMovingAverage signalEma,
-			final IndicatorOutputStore signalStore ) {
+			final IndicatorInputValidator validator, final IndicatorOutputStore signalStore ) {
+		this.signalStore = signalStore;
+		this.validator = validator;
+		this.signalEma = signalEma;
 		this.slowEma = slowEma;
 		this.fastEma = fastEma;
-		this.signalEma = signalEma;
-		this.signalStore = signalStore;
 	}
 
 	@Override
@@ -123,18 +128,13 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 
 		final List<DatedSignal> signals = new ArrayList<DatedSignal>();
 
-		// Skip the initial null entries from the signal line array
-		int index = 1;
-		while (index < signaLine.length && signaLine[index] == null) {
-			index++;
-		}
+		final int endSignalLineIndex = validator.getLastNonNullIndex( signaLine );
+		int index = validator.getFirstNonNullIndex( signaLine );
 
-		//TODO signal line may contain nulls?
-		
 		// Buy signal is from a cross over of the signal line, for crossing over the origin
 		BigDecimal todayMacd, yesterdayMacd;
 
-		for (; index < signaLine.length && index < macdValueEndIndex; index++) {
+		for (; index < endSignalLineIndex && index < macdValueEndIndex; index++) {
 
 			todayMacd = macdValues[index];
 			yesterdayMacd = macdValues[index - 1];

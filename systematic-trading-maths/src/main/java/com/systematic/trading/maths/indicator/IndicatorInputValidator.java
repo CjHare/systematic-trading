@@ -71,6 +71,36 @@ public class IndicatorInputValidator {
 	}
 
 	/**
+	 * Retrieves the first non-null entry in the given data array.
+	 * 
+	 * @param data array to find the first non-null index within.
+	 */
+	public int getFirstNonNullIndex( final TradingDayPrices[] data ) {
+		// Skip any null entries
+		int firstNonNullItem = 0;
+		while (isNullEntryWithinArray( data, firstNonNullItem )) {
+			firstNonNullItem++;
+		}
+
+		return firstNonNullItem;
+	}
+
+	/**
+	 * Retrieves the first non-null entry in the given data array.
+	 * 
+	 * @param data array to find the first non-null index within.
+	 */
+	public int getFirstNonNullIndex( final BigDecimal[] data ) {
+		// Skip any null entries
+		int firstNonNullItem = 0;
+		while (isNullEntryWithinArray( data, firstNonNullItem )) {
+			firstNonNullItem++;
+		}
+
+		return firstNonNullItem;
+	}
+
+	/**
 	 * Retrieves the first non-null entry in the given data array, with the additional constraint
 	 * the index must be within the store size.
 	 * 

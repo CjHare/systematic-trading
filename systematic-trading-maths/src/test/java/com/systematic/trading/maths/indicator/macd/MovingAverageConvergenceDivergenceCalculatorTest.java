@@ -49,6 +49,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
+import com.systematic.trading.maths.indicator.IndicatorInputValidator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
@@ -74,6 +75,9 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	@Mock
 	private IndicatorOutputStore signalStore;
 
+	@Mock
+	private IndicatorInputValidator validator;
+
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
@@ -94,7 +98,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback - 1] );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		calculator.macd( data );
 	}
@@ -109,7 +113,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		calculator.macd( data );
 	}
@@ -124,7 +128,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		calculator.macd( data );
 	}
@@ -139,7 +143,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		final List<DatedSignal> signals = calculator.macd( data );
 
@@ -182,7 +186,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		final List<DatedSignal> signals = calculator.macd( data );
 
@@ -214,7 +218,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		final List<DatedSignal> signals = calculator.macd( data );
 
@@ -246,7 +250,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		final List<DatedSignal> signals = calculator.macd( data );
 
@@ -280,7 +284,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		final List<DatedSignal> signals = calculator.macd( data );
 
@@ -310,7 +314,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		final List<DatedSignal> signals = calculator.macd( data );
 
@@ -335,11 +339,16 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final BigDecimal[] signalEmaValues = createFlatValues( 5, 2 );
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
+		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( data.length - 1 );
+		when( validator.getFirstNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( 1 );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		final List<DatedSignal> signals = calculator.macd( data );
+
+		verify( validator ).getLastNonNullIndex( signalEmaValues );
+		verify( validator ).getFirstNonNullIndex( signalEmaValues );
 
 		assertNotNull( signals );
 		assertEquals( 1, signals.size() );
@@ -364,11 +373,16 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final BigDecimal[] signalEmaValues = createFlatValues( 5, 8 );
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
+		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( data.length - 1 );
+		when( validator.getFirstNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( 1 );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		final List<DatedSignal> signals = calculator.macd( data );
+
+		verify( validator ).getLastNonNullIndex( signalEmaValues );
+		verify( validator ).getFirstNonNullIndex( signalEmaValues );
 
 		assertNotNull( signals );
 		assertEquals( 1, signals.size() );
@@ -393,11 +407,16 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final BigDecimal[] signalEmaValues = createFlatValues( 5, 1 );
 		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
+		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( data.length - 1 );
+		when( validator.getFirstNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( 1 );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, signalStore );
+				fastEma, slowEma, signalEma, validator, signalStore );
 
 		final List<DatedSignal> signals = calculator.macd( data );
+
+		verify( validator ).getLastNonNullIndex( signalEmaValues );
+		verify( validator ).getFirstNonNullIndex( signalEmaValues );
 
 		assertNotNull( signals );
 		assertEquals( 2, signals.size() );
