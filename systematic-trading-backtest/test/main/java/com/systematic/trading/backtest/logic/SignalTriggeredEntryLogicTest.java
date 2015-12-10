@@ -117,24 +117,6 @@ public class SignalTriggeredEntryLogicTest {
 	}
 
 	@Test
-	public void updateTooFewDataPoints() throws TooFewDataPoints {
-		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenThrow(
-				new TooFewDataPoints( "expected exception" ) );
-
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, new MinimumTradeValue(
-				BigDecimal.ZERO ), buyLongAnalysis, MATH_CONTEXT );
-
-		final EquityOrder order = logic.update( fees, cashAccount, data );
-
-		assertNull( order );
-		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
-		verifyNoMoreInteractions( buyLongAnalysis );
-		verifyZeroInteractions( fees );
-		verifyZeroInteractions( cashAccount );
-	}
-
-	@Test
 	public void updateOrderNotCreatedTooFewFundsToBuyStock() throws TooFewDataPoints {
 		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
@@ -175,8 +157,8 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( LocalDate.now() ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, new MinimumTradeValue(
-				BigDecimal.ONE ), buyLongAnalysis, MATH_CONTEXT );
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK,
+				new MinimumTradeValue( BigDecimal.ONE ), buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
 

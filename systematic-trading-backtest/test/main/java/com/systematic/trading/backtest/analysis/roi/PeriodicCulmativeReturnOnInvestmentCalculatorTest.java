@@ -156,8 +156,8 @@ public class PeriodicCulmativeReturnOnInvestmentCalculatorTest {
 		verify( eventTwo ).getInclusiveEndDate();
 
 		final BigDecimal expectedChange = firstChange.add( secondChange, MATH_CONTEXT );
-		verify( listener ).event(
-				isExpectedRoiEvent( expectedChange, startingDate, startingDate.plus( Period.ofDays( 2 ) ) ) );
+		verify( listener )
+				.event( isExpectedRoiEvent( expectedChange, startingDate, startingDate.plus( Period.ofDays( 2 ) ) ) );
 		verifyNoMoreInteractions( listener );
 	}
 
@@ -191,8 +191,8 @@ public class PeriodicCulmativeReturnOnInvestmentCalculatorTest {
 		verify( eventTwo ).getInclusiveEndDate();
 
 		final BigDecimal expectedChange = firstChange.add( secondChange, MATH_CONTEXT );
-		verify( listener ).event(
-				isExpectedRoiEvent( expectedChange, startingDate, startingDate.plus( Period.ofDays( 2 ) ) ) );
+		verify( listener )
+				.event( isExpectedRoiEvent( expectedChange, startingDate, startingDate.plus( Period.ofDays( 2 ) ) ) );
 		verifyNoMoreInteractions( listener );
 	}
 
@@ -224,9 +224,9 @@ public class PeriodicCulmativeReturnOnInvestmentCalculatorTest {
 
 		@Override
 		public void describeTo( Description description ) {
-			description.appendText( String.format(
-					"Percentage change: %s, Exclusive start date: %s, Inclusive end date: %s", percentageChange,
-					startDateExclusive, endDateInclusive ) );
+			description.appendText(
+					String.format( "Percentage change: %s, Exclusive start date: %s, Inclusive end date: %s",
+							percentageChange, startDateExclusive, endDateInclusive ) );
 		}
 	}
 }

@@ -58,7 +58,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 	private final int daysGradient = 2;
 
-	@Test(expected = TooFewDataPoints.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void tooFewDataPoints() throws TooFewDataPoints, TooManyDataPoints {
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
 				daysGradient, GradientType.POSITIVE, MATH_CONTEXT );
