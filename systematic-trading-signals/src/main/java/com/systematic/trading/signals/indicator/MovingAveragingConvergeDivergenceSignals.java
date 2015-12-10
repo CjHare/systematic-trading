@@ -45,21 +45,18 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
 public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignalGenerator {
 
 	private final MovingAverageConvergenceDivergence macd;
-
-	private final int slowTimePeriods;
-	private final int signalTimePeriods;
+	private final ExponentialMovingAverage signalEma;
+	private final ExponentialMovingAverage slowEma;
 
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
 			final int signalTimePeriods, final int maximumTradingDays, final MathContext mathContext ) {
-		this.slowTimePeriods = slowTimePeriods;
-		this.signalTimePeriods = signalTimePeriods;
 
-		final ExponentialMovingAverage slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods,
-				new IndicatorInputValidator(), new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator( fastTimePeriods,
 				new IndicatorInputValidator(), new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
-		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator( signalTimePeriods,
-				new IndicatorInputValidator(), new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
+		slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods, new IndicatorInputValidator(),
+				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
+		signalEma = new ExponentialMovingAverageCalculator( signalTimePeriods, new IndicatorInputValidator(),
+				new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
 
 		this.macd = new MovingAverageConvergenceDivergenceCalculator( fastEma, slowEma, signalEma,
 				new IndicatorInputValidator(), new ReuseIndicatorOutputStore( maximumTradingDays ) );
@@ -67,15 +64,13 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
 			final int signalTimePeriods, final MathContext mathContext ) {
-		this.slowTimePeriods = slowTimePeriods;
-		this.signalTimePeriods = signalTimePeriods;
 
-		final ExponentialMovingAverage slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods,
-				new IndicatorInputValidator(), new StandardIndicatorOutputStore(), mathContext );
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator( fastTimePeriods,
 				new IndicatorInputValidator(), new StandardIndicatorOutputStore(), mathContext );
-		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator( signalTimePeriods,
-				new IndicatorInputValidator(), new StandardIndicatorOutputStore(), mathContext );
+		slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods, new IndicatorInputValidator(),
+				new StandardIndicatorOutputStore(), mathContext );
+		signalEma = new ExponentialMovingAverageCalculator( signalTimePeriods, new IndicatorInputValidator(),
+				new StandardIndicatorOutputStore(), mathContext );
 
 		this.macd = new MovingAverageConvergenceDivergenceCalculator( fastEma, slowEma, signalEma,
 				new IndicatorInputValidator(), new StandardIndicatorOutputStore() );
@@ -97,7 +92,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 	@Override
 	public int getRequiredNumberOfTradingDays() {
-		return slowTimePeriods + signalTimePeriods + 2;
+		return signalEma.getMinimumNumberOfPrices() + signalEma.getMinimumNumberOfPrices();
 	}
 
 	@Override

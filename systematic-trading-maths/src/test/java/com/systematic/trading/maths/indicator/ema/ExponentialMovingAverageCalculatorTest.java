@@ -341,4 +341,17 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertEquals( BigDecimal.valueOf( 2.67 ), ema[3].setScale( 2, RoundingMode.HALF_EVEN ) );
 		assertNull( ema[4] );
 	}
+
+	@Test
+	public void getMinimumNumberOfPrices() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 2;
+		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, store, MATH_CONTEXT );
+
+		final int requiredDays = calculator.getMinimumNumberOfPrices();
+
+		assertEquals( lookback + 1, requiredDays );
+	}
 }

@@ -58,4 +58,11 @@ public interface ExponentialMovingAverage {
 	 * @throws TooManyDataPoints too many closing prices provided to perform EMA calculations.
 	 */
 	BigDecimal[] ema( BigDecimal[] data ) throws TooFewDataPoints, TooManyDataPoints;
+
+	/**
+	 * Minimum number of prices required for calculating the EMA.
+	 * 
+	 * @return the number of trading days data needed for the EMA.
+	 */
+	int getMinimumNumberOfPrices();
 }

@@ -77,6 +77,11 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	@Override
+	public int getMinimumNumberOfPrices() {
+		return minimumNumberOfPrices;
+	}
+
+	@Override
 	public BigDecimal[] ema( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] emaValues = store.getStore( data.length );
