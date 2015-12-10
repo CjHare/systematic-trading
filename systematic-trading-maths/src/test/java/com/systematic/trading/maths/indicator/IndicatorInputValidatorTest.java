@@ -268,5 +268,29 @@ public class IndicatorInputValidatorTest {
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
 		validator.getFirstNonNullIndex( data, data.length, numberDataPoints );
-	}	
+	}
+
+	@Test
+	public void getFirstNonNullIndexDecimals() {
+		final int numberDataPoints = 5;
+		final IndicatorInputValidator validator = new IndicatorInputValidator();
+		final BigDecimal[] data = createDecimals( numberDataPoints );
+		data[0] = null;
+
+		final int index = validator.getFirstNonNullIndex( data );
+
+		assertEquals( 1, index );
+	}
+
+	@Test
+	public void getFirstNonNullIndex() {
+		final int numberDataPoints = 5;
+		final IndicatorInputValidator validator = new IndicatorInputValidator();
+		final TradingDayPrices[] data = createPrices( numberDataPoints );
+		data[0] = null;
+
+		final int index = validator.getFirstNonNullIndex( data );
+
+		assertEquals( 1, index );
+	}
 }
