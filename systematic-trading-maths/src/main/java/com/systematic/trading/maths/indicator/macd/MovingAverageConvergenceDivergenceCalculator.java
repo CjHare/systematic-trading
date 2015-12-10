@@ -73,6 +73,8 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	@Override
 	public List<DatedSignal> macd( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
+		// TODO use the validator
+
 		final BigDecimal[] slowEmaValues = slowEma.ema( data );
 		final BigDecimal[] fastEmaValues = fastEma.ema( data );
 		final BigDecimal[] macd = signalStore.getStore( data.length );
@@ -95,32 +97,23 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		}
 
 		// Skip the null entries of the slow EMA
-		int startMacdIndex = 0;
-		while (startMacdIndex < slowEmaValues.length && slowEmaValues[startMacdIndex] == null) {
-			startMacdIndex++;
-		}
-		while (startMacdIndex < fastEmaValues.length && fastEmaValues[startMacdIndex] == null) {
-			startMacdIndex++;
-		}
+		final int slowEmaStartIndex = validator.getFirstNonNullIndex( slowEmaValues );
+		final int fastEmaStartIndex = validator.getFirstNonNullIndex( fastEmaValues );
+		final int emaStartIndex = slowEmaStartIndex > fastEmaStartIndex ? slowEmaStartIndex : fastEmaStartIndex;
 
 		// The arrays may not be entirely filled i.e. end contains nulls
-		int endIndex = slowEmaValues.length;
-		do {
-			endIndex--;
-		} while (endIndex > 0 && slowEmaValues[endIndex] == null);
-
-		while (endIndex > 0 && fastEmaValues[endIndex] == null) {
-			endIndex--;
-		}
+		final int slowEmaEndIndex = validator.getLastNonNullIndex( slowEmaValues );
+		final int fastEmaEndIndex = validator.getLastNonNullIndex( fastEmaValues );
+		final int emaEndIndex = slowEmaEndIndex < fastEmaEndIndex ? slowEmaEndIndex : fastEmaEndIndex;
 
 		// MACD is the fast - slow EMAs
-		for (int i = startMacdIndex; i < endIndex; i++) {
+		for (int i = emaStartIndex; i <= emaEndIndex; i++) {
 			macd[i] = fastEmaValues[i].subtract( slowEmaValues[i] );
 		}
 
 		final BigDecimal[] signaLine = signalEma.ema( macd );
 
-		return calculateBullishSignals( data, macd, endIndex, signaLine );
+		return calculateBullishSignals( data, macd, emaEndIndex, signaLine );
 	}
 
 	private List<DatedSignal> calculateBullishSignals( final TradingDayPrices[] data, final BigDecimal[] macdValues,
@@ -137,7 +130,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		// Buy signal is from a cross over of the signal line, for crossing over the origin
 		BigDecimal todayMacd, yesterdayMacd;
 
-		for (; index < endSignalLineIndex && index < macdValueEndIndex; index++) {
+		for (; index <= endSignalLineIndex && index <= macdValueEndIndex; index++) {
 
 			todayMacd = macdValues[index];
 			yesterdayMacd = macdValues[index - 1];
