@@ -62,7 +62,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 				new IndicatorInputValidator(), new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext );
 
 		this.macd = new MovingAverageConvergenceDivergenceCalculator( fastEma, slowEma, signalEma,
-				new ReuseIndicatorOutputStore( maximumTradingDays ) );
+				new IndicatorInputValidator(), new ReuseIndicatorOutputStore( maximumTradingDays ) );
 	}
 
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
@@ -78,7 +78,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 				new IndicatorInputValidator(), new StandardIndicatorOutputStore(), mathContext );
 
 		this.macd = new MovingAverageConvergenceDivergenceCalculator( fastEma, slowEma, signalEma,
-				new StandardIndicatorOutputStore() );
+				new IndicatorInputValidator(), new StandardIndicatorOutputStore() );
 	}
 
 	@Override
