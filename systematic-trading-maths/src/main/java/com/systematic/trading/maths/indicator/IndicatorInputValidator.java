@@ -36,11 +36,14 @@ import com.systematic.trading.data.TradingDayPrices;
  */
 public class IndicatorInputValidator {
 
-	// TODO abstract & condense logic, lots of shared
-
-	// TODO test
-
+	/**
+	 * The last index in the given array that contains an element.
+	 * 
+	 * @param data array to find the last non-null item.
+	 * @return index of the last item in the array, always < data.length.
+	 */
 	public int getLastNonNullIndex( final TradingDayPrices[] data ) {
+		// Find last non-null index
 		int lastNonNullItem = data.length - 1;
 
 		while (isNullEntryWithinArray( data, lastNonNullItem )) {
@@ -50,7 +53,14 @@ public class IndicatorInputValidator {
 		return lastNonNullItem;
 	}
 
+	/**
+	 * The last index in the given array that contains an element.
+	 * 
+	 * @param data array to find the last non-null item.
+	 * @return index of the last item in the array, always < data.length.
+	 */
 	public int getLastNonNullIndex( final BigDecimal[] data ) {
+		// Find last non-null index
 		int lastNonNullItem = data.length - 1;
 
 		while (isNullEntryWithinArray( data, lastNonNullItem )) {
@@ -75,12 +85,7 @@ public class IndicatorInputValidator {
 	public int getFirstNonNullIndex( final TradingDayPrices[] data, final int maximumIndex,
 			final int minimumNumberOfPrices ) {
 
-		// Expecting the same number of input data points as outputs
-		if (data.length > maximumIndex) {
-			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
-							maximumIndex ) );
-		}
+		validateSizeOfStore( data.length, maximumIndex );
 
 		// Skip any null entries
 		int firstNonNullItem = 0;
@@ -88,39 +93,16 @@ public class IndicatorInputValidator {
 			firstNonNullItem++;
 		}
 
-		if (firstNonNullItem >= maximumIndex) {
-			throw new IllegalArgumentException( String.format(
-					"The index of the first non-null item index of: %s exceeds the maximum allowed index of: %s",
-					firstNonNullItem, maximumIndex ) );
-		}
+		validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
 
-		// Find last non-null index
 		final int lastNonNullItem = getLastNonNullIndex( data );
+		final int numberOfItems = getNumberOfItems( firstNonNullItem, lastNonNullItem );
 
-		// Number of items, accounting for zero indexed array
-		final int numberOfItems = lastNonNullItem - firstNonNullItem + 1;
+		validateNumberOfItems( numberOfItems, minimumNumberOfPrices );
 
-		// Enough data to calculate indicator?
-		if (numberOfItems < minimumNumberOfPrices) {
-			throw new IllegalArgumentException(
-					String.format( "At least %s non null data points are needed, only %s given", minimumNumberOfPrices,
-							numberOfItems ) );
-		}
+		final int numberOfConsecutiveItems = getNumberOfConsectiveItems( data, firstNonNullItem, lastNonNullItem );
 
-		// Are the items consecutively populated (as expected)
-		int numberOfConsecutiveItems = firstNonNullItem;
-		while (numberOfConsecutiveItems < lastNonNullItem && !isNullEntry( data, numberOfConsecutiveItems )) {
-			numberOfConsecutiveItems++;
-		}
-
-		// Account for zero index of array
-		numberOfConsecutiveItems++;
-
-		if (numberOfConsecutiveItems < minimumNumberOfPrices) {
-			throw new IllegalArgumentException(
-					String.format( "At least %s consecutive non null data points are needed, only %s given",
-							minimumNumberOfPrices, numberOfConsecutiveItems ) );
-		}
+		validateEnoughConsecutiveItems( numberOfConsecutiveItems, minimumNumberOfPrices );
 
 		return firstNonNullItem;
 	}
@@ -140,12 +122,7 @@ public class IndicatorInputValidator {
 	public int getFirstNonNullIndex( final BigDecimal[] data, final int maximumIndex,
 			final int minimumNumberOfPrices ) {
 
-		// Expecting the same number of input data points as outputs
-		if (data.length > maximumIndex) {
-			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
-							maximumIndex ) );
-		}
+		validateSizeOfStore( data.length, maximumIndex );
 
 		// Skip any null entries
 		int firstNonNullItem = 0;
@@ -153,24 +130,60 @@ public class IndicatorInputValidator {
 			firstNonNullItem++;
 		}
 
-		if (firstNonNullItem >= maximumIndex) {
-			throw new IllegalArgumentException( String.format(
-					"The index of the first non-null item index of: %s exceeds the maximum allowed index of: %s",
-					firstNonNullItem, maximumIndex ) );
-		}
+		validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
 
-		// Find last non-null index
 		final int lastNonNullItem = getLastNonNullIndex( data );
+		final int numberOfItems = getNumberOfItems( firstNonNullItem, lastNonNullItem );
 
-		// Number of items, accounting for zero indexed array
-		final int numberOfItems = lastNonNullItem - firstNonNullItem + 1;
+		validateNumberOfItems( numberOfItems, minimumNumberOfPrices );
 
+		final int numberOfConsecutiveItems = getNumberOfConsectiveItems( data, firstNonNullItem, lastNonNullItem );
+
+		validateEnoughConsecutiveItems( numberOfConsecutiveItems, minimumNumberOfPrices );
+
+		return firstNonNullItem;
+	}
+
+	private void validateEnoughConsecutiveItems( final int numberOfConsecutiveItems, final int minimumNumberOfPrices ) {
+		if (numberOfConsecutiveItems < minimumNumberOfPrices) {
+			throw new IllegalArgumentException(
+					String.format( "At least %s consecutive non null data points are needed, only %s given",
+							minimumNumberOfPrices, numberOfConsecutiveItems ) );
+		}
+	}
+
+	private void validateNumberOfItems( final int numberOfItems, final int minimumNumberOfPrices ) {
 		// Enough data to calculate indicator?
 		if (numberOfItems < minimumNumberOfPrices) {
 			throw new IllegalArgumentException(
 					String.format( "At least %s non null data points are needed, only %s given", minimumNumberOfPrices,
 							numberOfItems ) );
 		}
+	}
+
+	private void validateFirstItemInMaximumIndex( final int firstNonNullItem, final int maximumIndex ) {
+		if (firstNonNullItem >= maximumIndex) {
+			throw new IllegalArgumentException( String.format(
+					"The index of the first non-null item index of: %s exceeds the maximum allowed index of: %s",
+					firstNonNullItem, maximumIndex ) );
+		}
+	}
+
+	private void validateSizeOfStore( final int storeSize, final int maximumIndex ) {
+		if (storeSize > maximumIndex) {
+			throw new IllegalArgumentException(
+					String.format( "The number of data points given: %s exceeds the size of the store: %s", storeSize,
+							maximumIndex ) );
+		}
+	}
+
+	private int getNumberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {
+		// Number of items, accounting for zero indexed array
+		return lastNonNullItem - firstNonNullItem + 1;
+	}
+
+	private int getNumberOfConsectiveItems( final TradingDayPrices[] data, final int firstNonNullItem,
+			final int lastNonNullItem ) {
 
 		// Are the items consecutively populated (as expected)
 		int numberOfConsecutiveItems = firstNonNullItem;
@@ -181,13 +194,22 @@ public class IndicatorInputValidator {
 		// Account for zero index of array
 		numberOfConsecutiveItems++;
 
-		if (numberOfConsecutiveItems < minimumNumberOfPrices) {
-			throw new IllegalArgumentException(
-					String.format( "At least %s consecutive non null data points are needed, only %s given",
-							minimumNumberOfPrices, numberOfConsecutiveItems ) );
+		return numberOfConsecutiveItems;
+	}
+
+	private int getNumberOfConsectiveItems( final BigDecimal[] data, final int firstNonNullItem,
+			final int lastNonNullItem ) {
+
+		// Are the items consecutively populated (as expected)
+		int numberOfConsecutiveItems = firstNonNullItem;
+		while (numberOfConsecutiveItems < lastNonNullItem && !isNullEntry( data, numberOfConsecutiveItems )) {
+			numberOfConsecutiveItems++;
 		}
 
-		return firstNonNullItem;
+		// Account for zero index of array
+		numberOfConsecutiveItems++;
+
+		return numberOfConsecutiveItems;
 	}
 
 	private boolean isNullEntryWithinArray( final BigDecimal[] data, final int index ) {
