@@ -69,7 +69,7 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 		implements BacktestBootstrapConfiguration {
 
 	/** Number of days of signals to use when triggering signals. */
-	private static final int DAYS_ACCEPTING_SIGNALS = 3;
+	private static final int DAYS_ACCEPTING_SIGNALS = 5;
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
