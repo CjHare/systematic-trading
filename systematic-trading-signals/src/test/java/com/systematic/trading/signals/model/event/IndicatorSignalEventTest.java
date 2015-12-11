@@ -25,28 +25,45 @@
  */
 package com.systematic.trading.signals.model.event;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.time.LocalDate;
 
+import org.junit.Test;
+
+import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
- * An interesting event that occurs when analysing data to generate signals.
+ * Verifies the IndicatorSignalEvent.
  * 
  * @author CJ Hare
  */
-public interface SignalAnalysisEvent {
+public class IndicatorSignalEventTest {
 
-	/**
-	 * The type of signals that were being analysed.
-	 * 
-	 * @return the type of indicator signals generated.
-	 */
-	IndicatorSignalType getSignalType();
+	@Test
+	public void getSignalType() {
+		final LocalDate date = LocalDate.now();
+		final IndicatorSignalType type = IndicatorSignalType.RSI;
+		final IndicatorSignal signal = new IndicatorSignal( date, type );
 
-	/**
-	 * Date of the signal event occurrence.
-	 * 
-	 * @return date of the signal, when there is one.
-	 */
-	LocalDate getDate();
+		final IndicatorSignalEvent event = new IndicatorSignalEvent( signal );
+
+		assertNotNull( event );
+		assertEquals( type, event.getSignalType() );
+	}
+
+	@Test
+	public void getDate() {
+		final LocalDate date = LocalDate.now();
+		final IndicatorSignalType type = IndicatorSignalType.RSI;
+		final IndicatorSignal signal = new IndicatorSignal( date, type );
+
+		final IndicatorSignalEvent event = new IndicatorSignalEvent( signal );
+
+		assertNotNull( event );
+		assertEquals( date, event.getDate() );
+	}
+
 }

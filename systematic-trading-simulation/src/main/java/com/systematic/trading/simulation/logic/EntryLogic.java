@@ -26,6 +26,7 @@
 package com.systematic.trading.simulation.logic;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.brokerage.BrokerageFees;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.EquityOrder;
@@ -59,4 +60,12 @@ public interface EntryLogic {
 	 * @return action to take in this situation.
 	 */
 	EquityOrderInsufficientFundsAction actionOnInsufficentFunds( EquityOrder order );
+
+	/**
+	 * Adds an interested party to those notified for signal analysis events.
+	 * 
+	 * @param listener will receive signal events that occur during analysis.
+	 */
+	void addListener( SignalAnalysisListener listener );
+
 }

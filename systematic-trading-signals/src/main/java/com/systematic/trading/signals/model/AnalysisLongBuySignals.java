@@ -39,9 +39,11 @@ import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.model.event.IndicatorSignalEvent;
 import com.systematic.trading.signals.model.event.NotEnoughDataPointsEvent;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
+import com.systematic.trading.signals.model.event.TooManyDataPointsEvent;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class AnalysisLongBuySignals implements AnalysisBuySignals {
@@ -103,40 +105,36 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = new EnumMap<IndicatorSignalType, List<IndicatorSignal>>(
 				IndicatorSignalType.class );
 
-		List<IndicatorSignal> signals;
 		for (final IndicatorSignalGenerator generator : generators) {
-
-			if (generator.getRequiredNumberOfTradingDays() <= data.length) {
-				try {
-					signals = generator.calculateSignals( data );
-
-					// TODO events for signals generated
-					// TODO currently no listeners
-
-				} catch (final TooFewDataPoints e) {
-
-					notifyTooFewDataPoints( generator.getSignalType() );
-
-					// No signals generated
-					signals = new ArrayList<IndicatorSignal>();
-
-				} catch (final TooManyDataPoints e) {
-
-					notifyTooManyDataPoints( generator.getSignalType() );
-
-					// No signals generated
-					signals = new ArrayList<IndicatorSignal>();
-				}
-
-				indicatorSignals.put( generator.getSignalType(), signals );
-			} else {
-
-				// The signal generator could not run :. no signals
-				indicatorSignals.put( generator.getSignalType(), new ArrayList<IndicatorSignal>() );
-			}
+			final List<IndicatorSignal> signals = calculateSignals( data, generator );
+			final IndicatorSignalType type = generator.getSignalType();
+			indicatorSignals.put( type, signals );
 		}
 
 		return indicatorSignals;
+	}
+
+	private List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data,
+			final IndicatorSignalGenerator generator ) {
+
+		final List<IndicatorSignal> signals;
+
+		if (generator.getRequiredNumberOfTradingDays() <= data.length) {
+			try {
+				signals = generator.calculateSignals( data );
+				notifyIndicatorEvent( signals );
+				return signals;
+
+			} catch (final TooFewDataPoints e) {
+				notifyTooFewDataPoints( generator.getSignalType(), data[data.length - 1].getDate() );
+
+			} catch (final TooManyDataPoints e) {
+				notifyTooManyDataPoints( generator.getSignalType(), data[data.length - 1].getDate() );
+			}
+		}
+
+		// Only here on error :. no signals
+		return new ArrayList<IndicatorSignal>();
 	}
 
 	@Override
@@ -148,24 +146,37 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		listeners.add( listener );
 	}
 
-	private void notifyTooFewDataPoints( final IndicatorSignalType type ) {
+	private void notifyTooFewDataPoints( final IndicatorSignalType type, final LocalDate date ) {
 
 		// Create the event only when there are listeners
 		if (!listeners.isEmpty()) {
-			final SignalAnalysisEvent event = new NotEnoughDataPointsEvent( type );
+			final SignalAnalysisEvent event = new NotEnoughDataPointsEvent( type, date );
 			for (final SignalAnalysisListener listener : listeners) {
 				listener.event( event );
 			}
 		}
 	}
 
-	private void notifyTooManyDataPoints( final IndicatorSignalType type ) {
+	private void notifyTooManyDataPoints( final IndicatorSignalType type, final LocalDate date ) {
 
 		// Create the event only when there are listeners
 		if (!listeners.isEmpty()) {
-			final SignalAnalysisEvent event = new NotEnoughDataPointsEvent( type );
+			final SignalAnalysisEvent event = new TooManyDataPointsEvent( type, date );
 			for (final SignalAnalysisListener listener : listeners) {
 				listener.event( event );
+			}
+		}
+	}
+
+	private void notifyIndicatorEvent( final List<IndicatorSignal> signals ) {
+
+		// Create the event only when there are listeners
+		if (!listeners.isEmpty()) {
+			for (final IndicatorSignal signal : signals) {
+				final SignalAnalysisEvent event = new IndicatorSignalEvent( signal );
+				for (final SignalAnalysisListener listener : listeners) {
+					listener.event( event );
+				}
 			}
 		}
 	}

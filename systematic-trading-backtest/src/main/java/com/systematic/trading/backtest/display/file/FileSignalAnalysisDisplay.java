@@ -23,34 +23,60 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.model.event;
+package com.systematic.trading.backtest.display.file;
 
-import java.time.LocalDate;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.concurrent.ExecutorService;
 
-import com.systematic.trading.signals.model.IndicatorSignalType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 
 /**
- * There were not enough data points to perform the desired analysis.
+ * Interested in displaying signal analysis events.
  * 
  * @author CJ Hare
  */
-public class NotEnoughDataPointsEvent implements SignalAnalysisEvent {
+public class FileSignalAnalysisDisplay implements SignalAnalysisListener {
+	/** Classes logger. */
+	private static final Logger LOG = LogManager.getLogger( FileSignalAnalysisDisplay.class );
 
-	private final IndicatorSignalType type;
-	private final LocalDate date;
+	private final String outputFilename;
 
-	public NotEnoughDataPointsEvent( final IndicatorSignalType type, final LocalDate date ) {
-		this.type = type;
-		this.date = date;
+	/** Pool of execution threads to delegate IO operations. */
+	private final ExecutorService pool;
+
+	public FileSignalAnalysisDisplay( final String outputFilename, final ExecutorService pool ) {
+		this.outputFilename = outputFilename;
+		this.pool = pool;
+
+		final File outputFile = new File( outputFilename );
+		if (!outputFile.getParentFile().exists()) {
+			outputFile.getParentFile().mkdirs();
+		}
 	}
 
 	@Override
-	public IndicatorSignalType getSignalType() {
-		return type;
-	}
+	public void event( final SignalAnalysisEvent event ) {
 
-	@Override
-	public LocalDate getDate() {
-		return date;
+		final Runnable task = () -> {
+			try (final PrintWriter out = new PrintWriter(
+					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+				final String output = String.format( "Signal event: %s on date: %s", event.getSignalType(),
+						event.getDate() );
+
+				out.println( output );
+			} catch (final IOException e) {
+				LOG.error( e );
+			}
+		};
+
+		pool.execute( task );
 	}
 }

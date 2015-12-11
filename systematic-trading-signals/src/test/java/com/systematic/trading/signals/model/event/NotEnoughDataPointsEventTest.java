@@ -25,28 +25,40 @@
  */
 package com.systematic.trading.signals.model.event;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.time.LocalDate;
+
+import org.junit.Test;
 
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
- * An interesting event that occurs when analysing data to generate signals.
+ * Verify the NotEnoughDataPointsEvent.
  * 
  * @author CJ Hare
  */
-public interface SignalAnalysisEvent {
+public class NotEnoughDataPointsEventTest {
+	@Test
+	public void getSignalType() {
+		final IndicatorSignalType type = IndicatorSignalType.RSI;
+		final LocalDate date = LocalDate.now();
 
-	/**
-	 * The type of signals that were being analysed.
-	 * 
-	 * @return the type of indicator signals generated.
-	 */
-	IndicatorSignalType getSignalType();
+		final NotEnoughDataPointsEvent event = new NotEnoughDataPointsEvent( type, date );
 
-	/**
-	 * Date of the signal event occurrence.
-	 * 
-	 * @return date of the signal, when there is one.
-	 */
-	LocalDate getDate();
+		assertNotNull( event );
+		assertEquals( type, event.getSignalType() );
+	}
+
+	@Test
+	public void getDate() {
+		final IndicatorSignalType type = IndicatorSignalType.RSI;
+		final LocalDate date = LocalDate.now();
+
+		final NotEnoughDataPointsEvent event = new NotEnoughDataPointsEvent( type, date );
+
+		assertNotNull( event );
+		assertEquals( date, event.getDate() );
+	}
 }

@@ -34,6 +34,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
+import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.brokerage.BrokerageFees;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.collections.LimitedQueue;
@@ -123,8 +124,8 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		final LocalDate tradingDate = data.getDate();
 		final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, tradingDate );
 		final BigDecimal closingPrice = data.getClosingPrice().getPrice();
-		final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext ).divide(
-				closingPrice, mathContext );
+		final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext ).divide( closingPrice,
+				mathContext );
 
 		if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
 			return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, tradingDate, mathContext );
@@ -136,5 +137,10 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	@Override
 	public EquityOrderInsufficientFundsAction actionOnInsufficentFunds( final EquityOrder order ) {
 		return EquityOrderInsufficientFundsAction.DELETE;
+	}
+
+	@Override
+	public void addListener( final SignalAnalysisListener listener ) {
+		buyLongAnalysis.addListener( listener );
 	}
 }

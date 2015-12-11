@@ -115,6 +115,7 @@ public class BacktestBootstrap {
 		roi.addListener( cumulativeRoi );
 
 		final EntryLogic entry = configuration.getEntryLogic( equity, earliestDate );
+		entry.addListener( display );
 
 		final ExitLogic exit = configuration.getExitLogic();
 

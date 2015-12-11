@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.signals.model.event;
 
+import java.time.LocalDate;
+
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -35,13 +37,20 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
 public class TooManyDataPointsEvent implements SignalAnalysisEvent {
 
 	private final IndicatorSignalType type;
+	private final LocalDate date;
 
-	public TooManyDataPointsEvent( final IndicatorSignalType type ) {
+	public TooManyDataPointsEvent( final IndicatorSignalType type, final LocalDate date ) {
 		this.type = type;
+		this.date = date;
 	}
 
 	@Override
 	public IndicatorSignalType getSignalType() {
 		return type;
+	}
+
+	@Override
+	public LocalDate getDate() {
+		return date;
 	}
 }

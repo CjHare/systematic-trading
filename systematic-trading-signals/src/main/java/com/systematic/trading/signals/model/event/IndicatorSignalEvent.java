@@ -27,26 +27,29 @@ package com.systematic.trading.signals.model.event;
 
 import java.time.LocalDate;
 
+import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
- * An interesting event that occurs when analysing data to generate signals.
+ * There were too many data points to perform the desired analysis.
  * 
  * @author CJ Hare
  */
-public interface SignalAnalysisEvent {
+public class IndicatorSignalEvent implements SignalAnalysisEvent {
 
-	/**
-	 * The type of signals that were being analysed.
-	 * 
-	 * @return the type of indicator signals generated.
-	 */
-	IndicatorSignalType getSignalType();
+	private final IndicatorSignal signal;
 
-	/**
-	 * Date of the signal event occurrence.
-	 * 
-	 * @return date of the signal, when there is one.
-	 */
-	LocalDate getDate();
+	public IndicatorSignalEvent( final IndicatorSignal signal ) {
+		this.signal = signal;
+	}
+
+	@Override
+	public IndicatorSignalType getSignalType() {
+		return signal.getType();
+	}
+
+	@Override
+	public LocalDate getDate() {
+		return signal.getDate();
+	}
 }

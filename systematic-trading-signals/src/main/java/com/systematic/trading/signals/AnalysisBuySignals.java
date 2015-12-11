@@ -29,6 +29,7 @@ import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signals.model.BuySignal;
+import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 
 /**
  * Analysis of buy signals.
@@ -51,4 +52,11 @@ public interface AnalysisBuySignals {
 	 * @return maximum number of data to provide to the analysis.
 	 */
 	int getMaximumNumberOfTradingDaysRequired();
+
+	/**
+	 * Adds an interested party to those notified for signal analysis events.
+	 * 
+	 * @param listener will receive signal events.
+	 */
+	void addListener( SignalAnalysisListener listener );
 }

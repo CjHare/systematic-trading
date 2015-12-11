@@ -34,6 +34,8 @@ import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
@@ -63,6 +65,7 @@ public class FileDisplay implements BacktestDisplay {
 	private CashEventListener cashEventDisplay;
 	private BrokerageEventListener brokerageEventDisplay;
 	private OrderEventListener ordertEventDisplay;
+	private SignalAnalysisListener signalAnalysisDisplay;
 	private EventStatisticsDisplay statisticsDisplay;
 	private NetWorthSummaryDisplay netWorthDisplay;
 	private final ExecutorService pool;
@@ -73,8 +76,8 @@ public class FileDisplay implements BacktestDisplay {
 		final File outputDirectoryFile = new File( outputDirectory );
 		if (!outputDirectoryFile.exists()) {
 			if (!outputDirectoryFile.mkdirs()) {
-				throw new IllegalArgumentException( String.format( "Failed to create / access directory: %s",
-						outputDirectory ) );
+				throw new IllegalArgumentException(
+						String.format( "Failed to create / access directory: %s", outputDirectory ) );
 			}
 		}
 
@@ -90,7 +93,7 @@ public class FileDisplay implements BacktestDisplay {
 	@Override
 	public void init( final TickerSymbolTradingData tradingData, final EventStatistics eventStatistics,
 			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
-			throws Exception {
+					throws Exception {
 
 		final String returnOnInvestmentFilename = baseDirectory + "/return-on-investment.txt";
 		this.roiDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentFilename,
@@ -123,6 +126,10 @@ public class FileDisplay implements BacktestDisplay {
 		final String statisticsFilename = baseDirectory + "/statistics.txt";
 		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename, pool );
 		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFilename, pool );
+
+		final String signalAnalysisFilename = baseDirectory + "/signals.txt";
+
+		this.signalAnalysisDisplay = new FileSignalAnalysisDisplay( signalAnalysisFilename, pool );
 	}
 
 	@Override
@@ -170,5 +177,10 @@ public class FileDisplay implements BacktestDisplay {
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
 		netWorthDisplay.event( event, state );
+	}
+
+	@Override
+	public void event( final SignalAnalysisEvent event ) {
+		signalAnalysisDisplay.event( event );
 	}
 }

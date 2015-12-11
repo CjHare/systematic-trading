@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.display;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.SimulationStateListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
@@ -42,7 +43,7 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * @author CJ Hare
  */
 public interface BacktestDisplay extends CashEventListener, OrderEventListener, BrokerageEventListener,
-		ReturnOnInvestmentEventListener, SimulationStateListener, NetWorthEventListener {
+		ReturnOnInvestmentEventListener, SimulationStateListener, NetWorthEventListener, SignalAnalysisListener {
 
 	/**
 	 * All the interesting data points for displaying.
@@ -55,5 +56,5 @@ public interface BacktestDisplay extends CashEventListener, OrderEventListener, 
 	 */
 	void init( TickerSymbolTradingData tradingData, EventStatistics eventStatistics,
 			CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, TradingDayPrices lastTradingDay )
-			throws Exception;
+					throws Exception;
 }
