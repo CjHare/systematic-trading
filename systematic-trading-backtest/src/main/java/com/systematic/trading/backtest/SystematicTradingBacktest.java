@@ -191,7 +191,8 @@ public class SystematicTradingBacktest {
 				// Largest of the MACD, RSI
 				macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods()
 						+ macdAdditionalDays + 3;
-				rsiTradingDays = RsiConfiguration.MEDIUM.getSlowRsi() + 1;
+				// TODO #days in config
+				rsiTradingDays = RsiConfiguration.MEDIUM.getLookback() + 1;
 				maximumTradingDays = macdTradingDays > rsiTradingDays ? macdTradingDays : rsiTradingDays;
 				maximumTradingDays += days;
 
@@ -199,7 +200,7 @@ public class SystematicTradingBacktest {
 						macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 						maximumTradingDays, MATH_CONTEXT );
 
-				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getFastRsi(), rsiConfiguration.getSlowRsi(),
+				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
 						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), maximumTradingDays,
 						MATH_CONTEXT );
 
@@ -236,7 +237,7 @@ public class SystematicTradingBacktest {
 							+ macdAdditionalDays + 3;
 					smaTradingDays = smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient();
 					maximumTradingDays = smaTradingDays > macdTradingDays ? smaTradingDays : macdTradingDays;
-					rsiTradingDays = RsiConfiguration.MEDIUM.getSlowRsi() + 1;
+					rsiTradingDays = RsiConfiguration.MEDIUM.getLookback() + 1;
 					maximumTradingDays = maximumTradingDays > rsiTradingDays ? maximumTradingDays : rsiTradingDays;
 					maximumTradingDays += days;
 
@@ -248,9 +249,9 @@ public class SystematicTradingBacktest {
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 							maximumTradingDays, MATH_CONTEXT );
 
-					rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getFastRsi(),
-							rsiConfiguration.getSlowRsi(), rsiConfiguration.getOverbought(),
-							rsiConfiguration.getOversold(), maximumTradingDays, MATH_CONTEXT );
+					rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
+							rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), maximumTradingDays,
+							MATH_CONTEXT );
 
 					description = String.format( "%s-%s-%s_SameDay_Minimum-%s_HoldForever",
 							macdConfiguration.getDescription(), smaConfiguration.getDescription(),
@@ -264,12 +265,12 @@ public class SystematicTradingBacktest {
 				description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever", smaConfiguration.getDescription(),
 						rsiConfiguration.getDescription(), minimumTradeDescription );
 
-				rsiTradingDays = RsiConfiguration.MEDIUM.getSlowRsi() + 1;
+				rsiTradingDays = RsiConfiguration.MEDIUM.getLookback() + 1;
 				smaTradingDays = smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient();
 				maximumTradingDays = smaTradingDays > rsiTradingDays ? smaTradingDays : rsiTradingDays;
 				maximumTradingDays += days;
 
-				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getFastRsi(), rsiConfiguration.getSlowRsi(),
+				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
 						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), maximumTradingDays,
 						MATH_CONTEXT );
 

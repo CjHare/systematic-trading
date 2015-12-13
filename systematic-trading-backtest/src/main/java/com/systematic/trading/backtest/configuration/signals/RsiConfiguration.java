@@ -32,19 +32,16 @@ package com.systematic.trading.backtest.configuration.signals;
  */
 public enum RsiConfiguration {
 
-	MEDIUM( 5, 10, 70, 30, "Medium-Rsi" );
+	MEDIUM( 10, 70, 30, "Medium-Rsi" );
 
 	private final String description;
-	private final int fastRsi;
-	private final int slowRsi;
+	private final int lookback;
 	private final int oversold;
 	private final int overbought;
 
-	private RsiConfiguration( final int fastRsi, final int slowRsi, final int oversold, final int overbought,
-			final String description ) {
+	private RsiConfiguration( final int lookback, final int oversold, final int overbought, final String description ) {
 		this.description = description;
-		this.fastRsi = fastRsi;
-		this.slowRsi = slowRsi;
+		this.lookback = lookback;
 		this.oversold = oversold;
 		this.overbought = overbought;
 	}
@@ -53,12 +50,8 @@ public enum RsiConfiguration {
 		return description;
 	}
 
-	public int getFastRsi() {
-		return fastRsi;
-	}
-
-	public int getSlowRsi() {
-		return slowRsi;
+	public int getLookback() {
+		return lookback;
 	}
 
 	public int getOversold() {
