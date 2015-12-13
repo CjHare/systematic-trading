@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.model;
+package com.systematic.trading.signals;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,9 +36,12 @@ import java.util.Map;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.model.BuySignal;
+import com.systematic.trading.signals.model.BuySignalDateComparator;
+import com.systematic.trading.signals.model.IndicatorSignalType;
+import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 import com.systematic.trading.signals.model.event.IndicatorSignalEvent;
 import com.systematic.trading.signals.model.event.NotEnoughDataPointsEvent;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
@@ -77,7 +80,8 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 			requiredTradingDays.add( generator.getRequiredNumberOfTradingDays() );
 		}
 
-		return Collections.max( requiredTradingDays );
+		// 't be magicTODO the plus one shouldn't be magic
+		return Collections.max( requiredTradingDays ) + 1;
 	}
 
 	@Override
@@ -119,7 +123,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 		final List<IndicatorSignal> signals;
 
-		if (generator.getRequiredNumberOfTradingDays() <= data.length) {
+		if (generator.getRequiredNumberOfTradingDays() < data.length) {
 			try {
 				signals = generator.calculateSignals( data );
 				notifyIndicatorEvent( signals );
@@ -151,6 +155,16 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		// Create the event only when there are listeners
 		if (!listeners.isEmpty()) {
 			final SignalAnalysisEvent event = new NotEnoughDataPointsEvent( type, date );
+
+			if (IndicatorSignalType.RSI.equals( event.getSignalType() )) {
+				System.out.println( "RSI -tooFew " );
+			}
+			if (IndicatorSignalType.MACD.equals( event.getSignalType() )) {
+				System.out.println( "MACD -tooFew " );
+			}
+
+			// TODO deal with error - needs separate output to a normal signal
+
 			for (final SignalAnalysisListener listener : listeners) {
 				listener.event( event );
 			}
@@ -162,6 +176,16 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		// Create the event only when there are listeners
 		if (!listeners.isEmpty()) {
 			final SignalAnalysisEvent event = new TooManyDataPointsEvent( type, date );
+
+			// TODO deal with error - needs separate output to a normal signal
+
+			if (IndicatorSignalType.RSI.equals( event.getSignalType() )) {
+				System.out.println( "RSI - TooMany" );
+			}
+			if (IndicatorSignalType.MACD.equals( event.getSignalType() )) {
+				System.out.println( "MACD - TooMany" );
+			}
+
 			for (final SignalAnalysisListener listener : listeners) {
 				listener.event( event );
 			}

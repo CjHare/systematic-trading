@@ -77,15 +77,16 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 	/**
 	 * @param lookback the number of days to use when calculating the RSI.
+	 * @param daysOfRsiValues the number of trading days to calculate the RSI value.
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthIndexCalculator( final int lookback, final IndicatorInputValidator validator,
-			final IndicatorOutputStore relativeStrengthStore, final IndicatorOutputStore relativeStrengthIndexStore,
-			final MathContext mathContext ) {
+	public RelativeStrengthIndexCalculator( final int lookback, final int daysOfRsiValues,
+			final IndicatorInputValidator validator, final IndicatorOutputStore relativeStrengthStore,
+			final IndicatorOutputStore relativeStrengthIndexStore, final MathContext mathContext ) {
 		this.relativeStrengthIndexStore = relativeStrengthIndexStore;
 		this.relativeStrengthStore = relativeStrengthStore;
-		this.minimumNumberOfPrices = lookback + 1;
+		this.minimumNumberOfPrices = lookback + daysOfRsiValues;
 		this.smoothingConstant = calculateSmoothingConstant( lookback );
 		this.mathContext = mathContext;
 		this.validator = validator;
@@ -98,7 +99,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 		final BigDecimal[] relativeStrength = relativeStrengthStore.getStore( data.length );
 		final BigDecimal[] rsiValues = relativeStrengthIndexStore.getStore( data.length );
-		final int startRsiIndex = validator.getFirstNonNullIndex( data, relativeStrength.length,
+		final int startRsiIndex = validator.getStartingNonNullIndex( data, relativeStrength.length,
 				minimumNumberOfPrices );
 
 		/* For the first zero - time period entries calculate the SMA based on up to down movement

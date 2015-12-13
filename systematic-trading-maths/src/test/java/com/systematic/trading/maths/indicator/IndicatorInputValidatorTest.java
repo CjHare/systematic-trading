@@ -73,7 +73,7 @@ public class IndicatorInputValidatorTest {
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
-		validator.getFirstNonNullIndex( data, data.length, lookback + 1 );
+		validator.getStartingNonNullIndex( data, data.length, lookback + 1 );
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -83,7 +83,7 @@ public class IndicatorInputValidatorTest {
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
-		validator.getFirstNonNullIndex( data, lookback - 1, lookback + 1 );
+		validator.getStartingNonNullIndex( data, lookback - 1, lookback + 1 );
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -94,17 +94,17 @@ public class IndicatorInputValidatorTest {
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
-		validator.getFirstNonNullIndex( data, data.length, numberDataPoints );
+		validator.getStartingNonNullIndex( data, data.length, numberDataPoints );
 	}
 
 	@Test
 	public void noNullValues() {
 		final int numberDataPoints = 5;
-		final TradingDayPrices[] data = createPrices( numberDataPoints );
+		final TradingDayPrices[] data = createPrices( numberDataPoints +1);
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
-		final int index = validator.getFirstNonNullIndex( data, data.length, numberDataPoints );
+		final int index = validator.getStartingNonNullIndex( data, data.length, numberDataPoints );
 
 		assertEquals( 0, index );
 	}
@@ -117,7 +117,7 @@ public class IndicatorInputValidatorTest {
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
-		final int index = validator.getFirstNonNullIndex( data, data.length, numberDataPoints );
+		final int index = validator.getStartingNonNullIndex( data, data.length, numberDataPoints );
 
 		assertEquals( 1, index );
 	}
@@ -130,7 +130,7 @@ public class IndicatorInputValidatorTest {
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
-		final int index = validator.getFirstNonNullIndex( data, data.length, numberDataPoints );
+		final int index = validator.getStartingNonNullIndex( data, data.length, numberDataPoints );
 
 		assertEquals( 0, index );
 	}
@@ -143,7 +143,7 @@ public class IndicatorInputValidatorTest {
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
-		validator.getFirstNonNullIndex( data, data.length, numberDataPoints );
+		validator.getStartingNonNullIndex( data, data.length, numberDataPoints );
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -154,7 +154,7 @@ public class IndicatorInputValidatorTest {
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
-		validator.getFirstNonNullIndex( data, data.length, numberDataPoints );
+		validator.getStartingNonNullIndex( data, data.length, numberDataPoints );
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -165,7 +165,7 @@ public class IndicatorInputValidatorTest {
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
-		validator.getFirstNonNullIndex( data, data.length, numberDataPoints );
+		validator.getStartingNonNullIndex( data, data.length, numberDataPoints );
 	}
 
 	@Test(expected = IllegalArgumentException.class)

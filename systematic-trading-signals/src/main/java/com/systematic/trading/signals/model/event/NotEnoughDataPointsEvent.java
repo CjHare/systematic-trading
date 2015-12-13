@@ -50,7 +50,7 @@ public class NotEnoughDataPointsEvent implements SignalAnalysisEvent {
 	}
 
 	@Override
-	public LocalDate getDate() {
+	public LocalDate getSignalDate() {
 		return date;
 	}
 }

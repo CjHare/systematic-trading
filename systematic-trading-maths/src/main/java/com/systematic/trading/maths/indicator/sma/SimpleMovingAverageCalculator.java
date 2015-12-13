@@ -58,13 +58,14 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 
 	/**
 	 * @param lookback the number of days to use when calculating the SMA.
+	 * @param daysOfSmaValues the number of trading days to calculate the RSI value.
 	 * @param validator validates and parses input.
 	 * @param store source for the storage array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public SimpleMovingAverageCalculator( final int lookback, final IndicatorInputValidator validator,
-			final IndicatorOutputStore store, final MathContext mathContext ) {
-		this.minimumNumberOfPrices = lookback + 1;
+	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues,
+			final IndicatorInputValidator validator, final IndicatorOutputStore store, final MathContext mathContext ) {
+		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
@@ -75,7 +76,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	public BigDecimal[] sma( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] smaValues = store.getStore( data.length );
-		int startSmaIndex = validator.getFirstNonNullIndex( data, smaValues.length, minimumNumberOfPrices );
+		int startSmaIndex = validator.getStartingNonNullIndex( data, smaValues.length, minimumNumberOfPrices );
 
 		// No values without the full look back range
 		startSmaIndex += lookback;

@@ -73,9 +73,14 @@ public class TodaysBuySignals {
 		final LocalDate endDate = LocalDate.now();
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS );
 
+		final int daysOfMacd = 500;
+
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
-				MATH_CONTEXT );
-		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, 10,
+				daysOfMacd, MATH_CONTEXT );
+
+		final int daysOfSma = 500;
+
+		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, daysOfSma,
 				GradientType.POSITIVE, MATH_CONTEXT );
 
 		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>();

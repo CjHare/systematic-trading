@@ -62,13 +62,14 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	/**
 	 * @param lookback the number of days to use when calculating the ATR, also the number of days
 	 *            prior to the averaging becoming correct.
+	 * @param daysOfAtrValues the number of trading days to calculate the ATR value.
 	 * @param validator validates and parses input.
 	 * @param store source for the storage array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public AverageTrueRangeCalculator( final int lookback, final IndicatorInputValidator validator,
-			final IndicatorOutputStore store, final MathContext mathContext ) {
-		this.minimumNumberOfPrices = lookback + 1;
+	public AverageTrueRangeCalculator( final int lookback, final int daysOfAtrValues,
+			final IndicatorInputValidator validator, final IndicatorOutputStore store, final MathContext mathContext ) {
+		this.minimumNumberOfPrices = lookback + daysOfAtrValues;
 		this.priorMultiplier = BigDecimal.valueOf( lookback - 1 );
 		this.lookbackDivider = BigDecimal.valueOf( lookback );
 		this.mathContext = mathContext;
@@ -118,7 +119,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	public BigDecimal[] atr( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] atrValues = store.getStore( data.length );
-		final int startAtrIndex = validator.getFirstNonNullIndex( data, atrValues.length, minimumNumberOfPrices );
+		final int startAtrIndex = validator.getStartingNonNullIndex( data, atrValues.length, minimumNumberOfPrices );
 
 		// For the first value just use the TR
 		atrValues[startAtrIndex] = trueRangeMethodOne( data[startAtrIndex] );

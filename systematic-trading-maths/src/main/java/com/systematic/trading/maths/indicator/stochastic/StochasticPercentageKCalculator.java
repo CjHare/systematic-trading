@@ -64,13 +64,14 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 
 	/**
 	 * @param lookback the number of days to use when calculating the Stochastic%K.
+	 * @param daysOfPercentageKValues the number of trading days to calculate the RSI value.
 	 * @param validator validates and parses input.
 	 * @param store memory allocator for the result array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public StochasticPercentageKCalculator( final int lookback, final IndicatorInputValidator validator,
-			final IndicatorOutputStore store, final MathContext mathContext ) {
-		this.minimumNumberOfPrices = lookback + 1;
+	public StochasticPercentageKCalculator( final int lookback, final int daysOfPercentageKValues,
+			final IndicatorInputValidator validator, final IndicatorOutputStore store, final MathContext mathContext ) {
+		this.minimumNumberOfPrices = lookback + daysOfPercentageKValues;
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
@@ -81,7 +82,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	public BigDecimal[] percentageK( final TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints {
 
 		final BigDecimal[] pK = store.getStore( data.length );
-		int pkSmaIndex = validator.getFirstNonNullIndex( data, pK.length, minimumNumberOfPrices );
+		int pkSmaIndex = validator.getStartingNonNullIndex( data, pK.length, minimumNumberOfPrices );
 		final int pkEndIndex = validator.getLastNonNullIndex( data );
 
 		LowestPrice lowestLow;

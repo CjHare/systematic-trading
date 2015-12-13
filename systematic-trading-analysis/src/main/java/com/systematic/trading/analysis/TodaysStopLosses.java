@@ -85,7 +85,6 @@ public class TodaysStopLosses {
 		final DataService service = HibernateDataService.getInstance();
 		final IndicatorOutputStore indicatorStore = new StandardIndicatorOutputStore();
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
-		final AverageTrueRange atr = new AverageTrueRangeCalculator( 14, validator, indicatorStore, MATH_CONTEXT );
 		final BigDecimal threeQuaterMultiplier = BigDecimal.valueOf( 3.25 );
 		final BigDecimal threeHalfMultiplier = BigDecimal.valueOf( 3.5 );
 
@@ -94,9 +93,13 @@ public class TodaysStopLosses {
 		twoDecimalPlaces.setMinimumFractionDigits( 0 );
 		twoDecimalPlaces.setGroupingUsed( false );
 
+		final int atrLookback = 10;
+
 		for (final EquityHeld equity : EquityHeld.values()) {
 			final String symbol = equity.getSymbol();
 			final TradingDayPrices[] data = service.get( symbol, startDate, endDate );
+			final AverageTrueRange atr = new AverageTrueRangeCalculator( atrLookback, data.length - 1, validator,
+					indicatorStore, MATH_CONTEXT );
 
 			// Correct the ordering from earliest to latest
 			Arrays.sort( data, new TradingDayPricesDateOrder() );

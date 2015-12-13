@@ -69,18 +69,21 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	/** Responsible for calculating the simple moving average. */
 	private final SimpleMovingAverage movingAverage;
 
+	// TODO only one constructor
+
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
 			final GradientType signalGenerated, final int maximumTradingDays, final MathContext mathContext ) {
 
-		this( lookback, daysOfGradient, signalGenerated, mathContext, new SimpleMovingAverageCalculator( lookback,
-				new IndicatorInputValidator(), new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext ) );
+		this( lookback, daysOfGradient, signalGenerated, mathContext,
+				new SimpleMovingAverageCalculator( lookback, daysOfGradient, new IndicatorInputValidator(),
+						new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext ) );
 	}
 
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
 			final GradientType signalGenerated, final MathContext mathContext ) {
 
 		this( lookback, daysOfGradient, signalGenerated, mathContext, new SimpleMovingAverageCalculator( lookback,
-				new IndicatorInputValidator(), new StandardIndicatorOutputStore(), mathContext ) );
+				daysOfGradient, new IndicatorInputValidator(), new StandardIndicatorOutputStore(), mathContext ) );
 	}
 
 	private SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,

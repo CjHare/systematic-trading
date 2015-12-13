@@ -49,8 +49,6 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
  */
 public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
-	private static final int DAYS_OF_RSI_VALUES = 1;
-
 	private final RelativeStrengthIndex rsi;
 
 	private final int requiredNumberOfTradingDays;
@@ -59,23 +57,24 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 	// TODO enums for configuration
 
-	public RelativeStrengthIndexSignals( final int lookback, final int oversold, final int overbought,
-			final MathContext mathContext ) {
+	// TODO only one constructor
+	public RelativeStrengthIndexSignals( final int lookback, final int daysOfRsi, final int oversold,
+			final int overbought, final MathContext mathContext ) {
 		this.oversold = BigDecimal.valueOf( oversold );
 		this.overbought = BigDecimal.valueOf( overbought );
-		this.requiredNumberOfTradingDays = lookback + DAYS_OF_RSI_VALUES;
+		this.requiredNumberOfTradingDays = lookback + daysOfRsi;
 
-		this.rsi = new RelativeStrengthIndexCalculator( lookback, new IndicatorInputValidator(),
+		this.rsi = new RelativeStrengthIndexCalculator( lookback, daysOfRsi, new IndicatorInputValidator(),
 				new StandardIndicatorOutputStore(), new StandardIndicatorOutputStore(), mathContext );
 	}
 
-	public RelativeStrengthIndexSignals( final int lookback, final int oversold, final int overbought,
-			final int maximumTradingDays, final MathContext mathContext ) {
+	public RelativeStrengthIndexSignals( final int lookback, final int daysOfRsi, final int oversold,
+			final int overbought, final int maximumTradingDays, final MathContext mathContext ) {
 		this.oversold = BigDecimal.valueOf( oversold );
 		this.overbought = BigDecimal.valueOf( overbought );
-		this.requiredNumberOfTradingDays = lookback + DAYS_OF_RSI_VALUES;
+		this.requiredNumberOfTradingDays = lookback + daysOfRsi;
 
-		this.rsi = new RelativeStrengthIndexCalculator( lookback, new IndicatorInputValidator(),
+		this.rsi = new RelativeStrengthIndexCalculator( lookback, daysOfRsi, new IndicatorInputValidator(),
 				new ReuseIndicatorOutputStore( maximumTradingDays ), new StandardIndicatorOutputStore(), mathContext );
 	}
 

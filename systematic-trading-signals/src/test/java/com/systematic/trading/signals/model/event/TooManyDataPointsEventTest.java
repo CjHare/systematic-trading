@@ -59,6 +59,6 @@ public class TooManyDataPointsEventTest {
 		final TooManyDataPointsEvent event = new TooManyDataPointsEvent( type, date );
 
 		assertNotNull( event );
-		assertEquals( date, event.getDate() );
+		assertEquals( date, event.getSignalDate() );
 	}
 }

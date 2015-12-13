@@ -63,7 +63,7 @@ public class IndicatorSignalEventTest {
 		final IndicatorSignalEvent event = new IndicatorSignalEvent( signal );
 
 		assertNotNull( event );
-		assertEquals( date, event.getDate() );
+		assertEquals( date, event.getSignalDate() );
 	}
 
 }

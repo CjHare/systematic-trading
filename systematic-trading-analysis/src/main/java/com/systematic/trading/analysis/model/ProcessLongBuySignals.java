@@ -29,8 +29,8 @@ import java.util.List;
 
 import com.systematic.trading.analysis.Equity;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.AnalysisLongBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.model.AnalysisLongBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 

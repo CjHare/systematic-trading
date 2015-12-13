@@ -90,16 +90,18 @@ public class SimpleMovingAverageCalculatorTest {
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int daysOfSmaValues = numberDataPoints - lookback;
 
-		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 0 );
+		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
+				.thenReturn( 0 );
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, validator, store,
-				MATH_CONTEXT );
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, daysOfSmaValues,
+				validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] sma = calculator.sma( data );
 
-		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfSmaValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( sma );
@@ -118,16 +120,18 @@ public class SimpleMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[0] = null;
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int daysOfSmaValues = numberDataPoints - lookback;
 
-		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 1 );
+		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
+				.thenReturn( 1 );
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, validator, store,
-				MATH_CONTEXT );
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, daysOfSmaValues,
+				validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] sma = calculator.sma( data );
 
-		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfSmaValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( sma );
@@ -146,16 +150,18 @@ public class SimpleMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[lookback + 2] = null;
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int daysOfSmaValues = numberDataPoints - lookback;
 
-		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 1 );
+		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
+				.thenReturn( 1 );
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 2 );
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, validator, store,
-				MATH_CONTEXT );
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, daysOfSmaValues,
+				validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] sma = calculator.sma( data );
 
-		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfSmaValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( sma );
@@ -173,16 +179,18 @@ public class SimpleMovingAverageCalculatorTest {
 		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int daysOfSmaValues = numberDataPoints - lookback;
 
-		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 0 );
+		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
+				.thenReturn( 0 );
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, validator, store,
-				MATH_CONTEXT );
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, daysOfSmaValues,
+				validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] sma = calculator.sma( data );
 
-		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfSmaValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( sma );

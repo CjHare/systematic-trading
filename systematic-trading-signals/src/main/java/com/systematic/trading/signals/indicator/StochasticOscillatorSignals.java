@@ -66,17 +66,17 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 	/** Stochastic %K calculator */
 	final StochasticPercentageK percentageK;
 
-	public StochasticOscillatorSignals( final int lookback, final int smaK, final int smaD,
+	public StochasticOscillatorSignals( final int lookback, final int daysOfStocastic, final int smaK, final int smaD,
 			final MathContext mathContext ) {
 		this.lookback = lookback;
 
 		// TODO convert to reuse ouptut
-		this.smaFullK = new SimpleMovingAverageCalculator( smaK, new IndicatorInputValidator(),
+		this.smaFullK = new SimpleMovingAverageCalculator( smaK, daysOfStocastic, new IndicatorInputValidator(),
 				new StandardIndicatorOutputStore(), mathContext );
-		this.smaFullD = new SimpleMovingAverageCalculator( smaD, new IndicatorInputValidator(),
+		this.smaFullD = new SimpleMovingAverageCalculator( smaD, daysOfStocastic, new IndicatorInputValidator(),
 				new StandardIndicatorOutputStore(), mathContext );
-		this.percentageK = new StochasticPercentageKCalculator( lookback, new IndicatorInputValidator(),
-				new StandardIndicatorOutputStore(), mathContext );
+		this.percentageK = new StochasticPercentageKCalculator( lookback, daysOfStocastic,
+				new IndicatorInputValidator(), new StandardIndicatorOutputStore(), mathContext );
 	}
 
 	@Override

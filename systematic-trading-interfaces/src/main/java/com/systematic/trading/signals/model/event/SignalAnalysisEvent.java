@@ -48,5 +48,5 @@ public interface SignalAnalysisEvent {
 	 * 
 	 * @return date of the signal, when there is one.
 	 */
-	LocalDate getDate();
+	LocalDate getSignalDate();
 }

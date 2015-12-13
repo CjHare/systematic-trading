@@ -102,15 +102,16 @@ public class StochasticPercentageKCalculatorTest {
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
 
-		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback, validator,
-				store, MATH_CONTEXT );
+		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
+				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] pk = calculator.percentageK( data );
 
-		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfPercentageKValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( pk );
@@ -128,15 +129,16 @@ public class StochasticPercentageKCalculatorTest {
 		final int numberDataPoints = lookback + 2;
 		final TradingDayPrices[] data = createFlatPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
 
-		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback, validator,
-				store, MATH_CONTEXT );
+		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
+				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] pk = calculator.percentageK( data );
 
-		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfPercentageKValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( pk );
@@ -154,16 +156,18 @@ public class StochasticPercentageKCalculatorTest {
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[0] = null;
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
-		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 1 );
+		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
+				.thenReturn( 1 );
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
 
-		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback, validator,
-				store, MATH_CONTEXT );
+		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
+				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] pk = calculator.percentageK( data );
 
-		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfPercentageKValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( pk );
@@ -182,16 +186,18 @@ public class StochasticPercentageKCalculatorTest {
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[data.length - 1] = null;
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
-		when( validator.getFirstNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) ).thenReturn( 0 );
+		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
+				.thenReturn( 0 );
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 2 );
 
-		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback, validator,
-				store, MATH_CONTEXT );
+		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
+				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] pk = calculator.percentageK( data );
 
-		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfPercentageKValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( pk );
@@ -209,15 +215,16 @@ public class StochasticPercentageKCalculatorTest {
 		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
 
-		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback, validator,
-				store, MATH_CONTEXT );
+		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
+				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] pk = calculator.percentageK( data );
 
-		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfPercentageKValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( pk );
@@ -236,15 +243,16 @@ public class StochasticPercentageKCalculatorTest {
 		final int numberDataPoints = lookback + 6;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
+		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
 
-		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback, validator,
-				store, MATH_CONTEXT );
+		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
+				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
 
 		final BigDecimal[] pk = calculator.percentageK( data );
 
-		verify( validator ).getFirstNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfPercentageKValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( pk );

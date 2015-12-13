@@ -59,6 +59,6 @@ public class NotEnoughDataPointsEventTest {
 		final NotEnoughDataPointsEvent event = new NotEnoughDataPointsEvent( type, date );
 
 		assertNotNull( event );
-		assertEquals( date, event.getDate() );
+		assertEquals( date, event.getSignalDate() );
 	}
 }

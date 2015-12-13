@@ -50,7 +50,7 @@ public class TooManyDataPointsEvent implements SignalAnalysisEvent {
 	}
 
 	@Override
-	public LocalDate getDate() {
+	public LocalDate getSignalDate() {
 		return date;
 	}
 }

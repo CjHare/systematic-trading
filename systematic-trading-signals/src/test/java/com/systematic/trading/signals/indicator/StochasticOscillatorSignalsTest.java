@@ -43,7 +43,9 @@ public class StochasticOscillatorSignalsTest {
 
 	@Test
 	public void buySignalsFlatLine() {
-		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 1, 1, 1, MATH_CONTEXT );
+		final int daysOfStochastic = 1;
+		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 1, daysOfStochastic, 1, 1,
+				MATH_CONTEXT );
 
 		final DatedValue[] dataPoint = { new DatedValue( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 25 ) ),
 				new DatedValue( LocalDate.now().plusDays( 1 ), BigDecimal.valueOf( 31 ) ),
@@ -63,7 +65,9 @@ public class StochasticOscillatorSignalsTest {
 
 	@Test
 	public void buySignalsTrendingUp() {
-		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 1, 1, 1, MATH_CONTEXT );
+		final int daysOfStochastic = 1;
+		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 1, daysOfStochastic, 1, 1,
+				MATH_CONTEXT );
 
 		final DatedValue[] dataPoint = { new DatedValue( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 25 ) ),
 				new DatedValue( LocalDate.now().plusDays( 1 ), BigDecimal.valueOf( 32 ) ),
@@ -83,7 +87,9 @@ public class StochasticOscillatorSignalsTest {
 
 	@Test
 	public void buySignalsTrendingDown() {
-		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 1, 1, 1, MATH_CONTEXT );
+		final int daysOfStochastic = 1;
+		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 1, daysOfStochastic, 1, 1,
+				MATH_CONTEXT );
 
 		final DatedValue[] dataPoint = { new DatedValue( LocalDate.now().plusDays( 0 ), BigDecimal.valueOf( 25 ) ),
 				new DatedValue( LocalDate.now().plusDays( 1 ), BigDecimal.valueOf( 32 ) ),
@@ -103,7 +109,9 @@ public class StochasticOscillatorSignalsTest {
 
 	@Test
 	public void getMaximumNumberOfTradingDaysRequired() {
-		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 2, 1, 1, MATH_CONTEXT );
+		final int daysOfStochastic = 1;
+		final StochasticOscillatorSignals stochastic = new StochasticOscillatorSignals( 2, daysOfStochastic, 1, 1,
+				MATH_CONTEXT );
 
 		assertEquals( 2, stochastic.getRequiredNumberOfTradingDays() );
 	}

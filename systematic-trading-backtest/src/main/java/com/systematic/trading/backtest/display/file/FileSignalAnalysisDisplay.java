@@ -69,7 +69,7 @@ public class FileSignalAnalysisDisplay implements SignalAnalysisListener {
 			try (final PrintWriter out = new PrintWriter(
 					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
 				final String output = String.format( "Signal event: %s on date: %s", event.getSignalType(),
-						event.getDate() );
+						event.getSignalDate() );
 
 				out.println( output );
 			} catch (final IOException e) {

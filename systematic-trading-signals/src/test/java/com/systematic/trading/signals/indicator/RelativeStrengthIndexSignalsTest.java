@@ -53,6 +53,7 @@ public class RelativeStrengthIndexSignalsTest {
 
 	@Test
 	public void oversold() throws TooFewDataPoints {
+		final int daysOfRsi = 1;
 		final BigDecimal[] rsiValue = new BigDecimal[rsi.length];
 		final TradingDayPrices[] dates = new TradingDayPrices[rsi.length];
 
@@ -63,7 +64,7 @@ public class RelativeStrengthIndexSignalsTest {
 					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO );
 		}
 
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 5, 30, 70, MATH_CONTEXT );
+		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 5, daysOfRsi, 30, 70, MATH_CONTEXT );
 
 		final List<IndicatorSignal> signals = rsi.buySignals( rsiValue, dates );
 
@@ -76,7 +77,8 @@ public class RelativeStrengthIndexSignalsTest {
 
 	@Test
 	public void getMaximumNumberOfTradingDaysRequired() {
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 5, 30, 70, MATH_CONTEXT );
+		final int daysOfRsi = 1;
+		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 5, daysOfRsi, 30, 70, MATH_CONTEXT );
 
 		assertEquals( 6, rsi.getRequiredNumberOfTradingDays() );
 	}

@@ -49,7 +49,7 @@ public class IndicatorSignalEvent implements SignalAnalysisEvent {
 	}
 
 	@Override
-	public LocalDate getDate() {
+	public LocalDate getSignalDate() {
 		return signal.getDate();
 	}
 }
