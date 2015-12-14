@@ -31,8 +31,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.validator.ValidateWith;
-
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
@@ -117,14 +115,20 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		// TODO assuming the last entries from data are those being used, should shift * use array?
 		// Moving from below over brought to above
 		for (; index < endRsiIndex; index++) {
-			if (rsi[index].compareTo( rsi[index - 1] ) > 0 && oversold.compareTo( rsi[index] ) <= 0
-					&& oversold.compareTo( rsi[index - 1] ) > 0) {
+			if (isOversold( rsi[index] )) {
 				buySignals.add( new IndicatorSignal( data[data.length - endRsiIndex + index].getDate(),
 						IndicatorSignalType.RSI ) );
 			}
 		}
 
 		return buySignals;
+	}
+
+	/**
+	 * Security is considered over sold when the RSI meet or falls below the threshold
+F	 */
+	private boolean isOversold( final BigDecimal rsi ) {
+		return oversold.compareTo( rsi ) <= 0;
 	}
 
 	protected List<IndicatorSignal> intersection( final List<IndicatorSignal> a, final List<IndicatorSignal> b ) {
