@@ -111,6 +111,8 @@ public class SystematicTradingBacktest {
 				final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
 						netWorthComparisonDisplay, MATH_CONTEXT );
 
+				LOG.info( String.format( "Backtesting beginning for: %s", configuration.getDescription() ) );
+
 				bootstrap.run();
 
 				LOG.info( String.format( "Backtesting complete for: %s", configuration.getDescription() ) );

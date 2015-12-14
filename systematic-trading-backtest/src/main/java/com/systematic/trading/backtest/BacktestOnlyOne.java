@@ -166,27 +166,28 @@ public class BacktestOnlyOne {
 		final MinimumTradeValue minimumTrade = new MinimumTradeValue( minimumTradeValue );
 		final String minimumTradeDescription = String.valueOf( minimumTrade.getValue().longValue() );
 
-		final MacdConfiguration macdConfiguration = MacdConfiguration.LONGEST;
+		final MacdConfiguration macdConfiguration = MacdConfiguration.SHORT;
 
 		// Largest of the MACD, RSI
 		macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods()
 				+ macdAdditionalDays + 3;
 		// TODO #days in config
-		rsiTradingDays = RsiConfiguration.MEDIUM.getLookback() + 1;
-		maximumTradingDays = macdTradingDays > rsiTradingDays ? macdTradingDays : rsiTradingDays;
+//		rsiTradingDays = RsiConfiguration.MEDIUM.getLookback() + 1;
+//		maximumTradingDays = macdTradingDays > rsiTradingDays ? macdTradingDays : rsiTradingDays;
+		maximumTradingDays = macdTradingDays;
 		maximumTradingDays += days;
 
 		macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 				macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(), maximumTradingDays,
 				aaaa, MATH_CONTEXT );
 
-		rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),aaaa, rsiConfiguration.getOverbought(),
-				rsiConfiguration.getOversold(), maximumTradingDays,  MATH_CONTEXT );
+//		rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),aaaa, rsiConfiguration.getOverbought(),
+//				rsiConfiguration.getOversold(), maximumTradingDays,  MATH_CONTEXT );
 
-		description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
-				rsiConfiguration.getDescription(), minimumTradeDescription );
+		description = String.format( "%s_SameDay_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
+				 minimumTradeDescription );
 		configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade, description,
-				MATH_CONTEXT, rsi, macd ) );
+				MATH_CONTEXT,  macd ) );
 
 		return configurations;
 	}
