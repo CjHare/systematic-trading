@@ -127,8 +127,8 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		for (int i = endSmaIndex; i <= endEmaIndex; i++) {
 			today = data.getPrice( i );
 
-			emaValues[i] = (today.subtract( yesterday, mathContext )).multiply( smoothingConstant, mathContext )
-					.add( yesterday, mathContext );
+			emaValues[i - endSmaIndex] = (today.subtract( yesterday, mathContext ))
+					.multiply( smoothingConstant, mathContext ).add( yesterday, mathContext );
 
 			yesterday = today;
 		}

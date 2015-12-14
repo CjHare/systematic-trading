@@ -119,8 +119,6 @@ public class IndicatorInputValidator {
 
 		// TODO may not need maximum index
 
-		validateSizeOfStore( data.length, maximumIndex );
-
 		// Skip any null entries
 		int firstNonNullItem = data.length - 1 - requiredNumberOfPrices;
 		while (isNullEntryWithinArray( data, firstNonNullItem )) {
@@ -128,12 +126,13 @@ public class IndicatorInputValidator {
 		}
 
 		validateIndexInArray( data, firstNonNullItem, requiredNumberOfPrices );
-		validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
+//		validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
 
 		final int lastNonNullItem = getLastNonNullIndex( data );
 		final int numberOfItems = getNumberOfItems( firstNonNullItem, lastNonNullItem );
 
 		validateNumberOfItems( numberOfItems, requiredNumberOfPrices );
+//		validateSizeOfStore( numberOfItems, maximumIndex );
 
 		final int numberOfConsecutiveItems = getNumberOfConsectiveItems( data, firstNonNullItem, lastNonNullItem );
 
@@ -157,7 +156,7 @@ public class IndicatorInputValidator {
 	public int getFirstNonNullIndex( final BigDecimal[] data, final int maximumIndex,
 			final int minimumNumberOfPrices ) {
 
-		validateSizeOfStore( data.length, maximumIndex );
+		// validateSizeOfStore( data.length, maximumIndex );
 
 		// Skip any null entries
 		int firstNonNullItem = 0;
@@ -165,7 +164,7 @@ public class IndicatorInputValidator {
 			firstNonNullItem++;
 		}
 
-		validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
+//		validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
 
 		final int lastNonNullItem = getLastNonNullIndex( data );
 		final int numberOfItems = getNumberOfItems( firstNonNullItem, lastNonNullItem );
@@ -196,30 +195,30 @@ public class IndicatorInputValidator {
 		}
 	}
 
-	private void validateFirstItemInMaximumIndex( final int firstNonNullItem, final int maximumIndex ) {
-		if (firstNonNullItem >= maximumIndex) {
-			throw new IllegalArgumentException( String.format(
-					"The index of the first non-null item index of: %s exceeds the maximum allowed index of: %s",
-					firstNonNullItem, maximumIndex ) );
-		}
-	}
+//	private void validateFirstItemInMaximumIndex( final int firstNonNullItem, final int maximumIndex ) {
+//		if (firstNonNullItem >= maximumIndex) {
+//			throw new IllegalArgumentException( String.format(
+//					"The index of the first non-null item index of: %s exceeds the maximum allowed index of: %s",
+//					firstNonNullItem, maximumIndex ) );
+//		}
+//	}
 
 	private void validateIndexInArray( final TradingDayPrices[] data, final int firstNonNullItem,
 			final int requiredNumberOfPrices ) {
 		if (firstNonNullItem < 0) {
 			throw new IllegalArgumentException(
 					String.format( "There are not enough non-null items in array of size: %s requiring: %s items",
-							data.length-1, requiredNumberOfPrices ) );
+							data.length - 1, requiredNumberOfPrices ) );
 		}
 	}
 
-	private void validateSizeOfStore( final int storeSize, final int maximumIndex ) {
-		if (storeSize > maximumIndex) {
-			throw new IllegalArgumentException(
-					String.format( "The number of data points given: %s exceeds the size of the store: %s", storeSize,
-							maximumIndex ) );
-		}
-	}
+//	private void validateSizeOfStore( final int storeSize, final int maximumIndex ) {
+//		if (storeSize > maximumIndex) {
+//			throw new IllegalArgumentException(
+//					String.format( "The number of data points given: %s exceeds the size of the store: %s", storeSize,
+//							maximumIndex ) );
+//		}
+//	}
 
 	private int getNumberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {
 		// Number of items, accounting for zero indexed array

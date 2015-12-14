@@ -166,7 +166,7 @@ public class BacktestOnlyOne {
 		final MinimumTradeValue minimumTrade = new MinimumTradeValue( minimumTradeValue );
 		final String minimumTradeDescription = String.valueOf( minimumTrade.getValue().longValue() );
 
-		final MacdConfiguration macdConfiguration = MacdConfiguration.SHORT;
+		final MacdConfiguration macdConfiguration = MacdConfiguration.LONGEST;
 
 		// Largest of the MACD, RSI
 		macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods()

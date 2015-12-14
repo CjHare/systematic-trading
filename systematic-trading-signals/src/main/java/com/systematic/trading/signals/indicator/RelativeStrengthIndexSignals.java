@@ -31,6 +31,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.validator.ValidateWith;
+
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
@@ -49,6 +51,9 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
  */
 public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
+	/** To provide accuracy with the smoothing more then the minimum data points are needed. */
+	private static final int MINIMUM_PRICES_FOR_ACCURACY = 50;
+
 	private final RelativeStrengthIndex rsi;
 
 	private final int requiredNumberOfTradingDays;
@@ -62,7 +67,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 			final int overbought, final MathContext mathContext ) {
 		this.oversold = BigDecimal.valueOf( oversold );
 		this.overbought = BigDecimal.valueOf( overbought );
-		this.requiredNumberOfTradingDays = lookback + daysOfRsi;
+		this.requiredNumberOfTradingDays = lookback + daysOfRsi + MINIMUM_PRICES_FOR_ACCURACY;
 
 		this.rsi = new RelativeStrengthIndexCalculator( lookback, daysOfRsi, new IndicatorInputValidator(),
 				new StandardIndicatorOutputStore(), new StandardIndicatorOutputStore(), mathContext );
@@ -72,10 +77,11 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 			final int overbought, final int maximumTradingDays, final MathContext mathContext ) {
 		this.oversold = BigDecimal.valueOf( oversold );
 		this.overbought = BigDecimal.valueOf( overbought );
-		this.requiredNumberOfTradingDays = lookback + daysOfRsi;
+		this.requiredNumberOfTradingDays = lookback + daysOfRsi + MINIMUM_PRICES_FOR_ACCURACY;
 
 		this.rsi = new RelativeStrengthIndexCalculator( lookback, daysOfRsi, new IndicatorInputValidator(),
-				new ReuseIndicatorOutputStore( maximumTradingDays ), new StandardIndicatorOutputStore(), mathContext );
+				new ReuseIndicatorOutputStore( lookback + MINIMUM_PRICES_FOR_ACCURACY ),
+				new ReuseIndicatorOutputStore( lookback + MINIMUM_PRICES_FOR_ACCURACY ), mathContext );
 	}
 
 	@Override
@@ -83,7 +89,10 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 			throws TooFewDataPoints, TooManyDataPoints {
 
 		// Calculate the RSI signals
+		// TODO convert return type to value with date
 		final BigDecimal[] tenDayRsi = rsi.rsi( data );
+
+		// TODO - which dates do the tenDayRSI map onto?
 
 		/* RSI triggers a buy signal when crossing the over brought level (e.g. 30) */
 		final List<IndicatorSignal> tenDayBuy = buySignals( tenDayRsi, data );
@@ -96,19 +105,22 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		// Skip the initial null entries from the RSI array
 		int index = 1;
-		for (; index < rsi.length - 1; index++) {
-			if (rsi[index] != null) {
-				// Increment the index to avoid comparison against null
-				index++;
-				break;
-			}
+		while (index < rsi.length && rsi[index] == null) {
+			index++;
 		}
 
+		int endRsiIndex = rsi.length - 1;
+		while (endRsiIndex > 0 && rsi[endRsiIndex] == null) {
+			endRsiIndex--;
+		}
+
+		// TODO assuming the last entries from data are those being used, should shift * use array?
 		// Moving from below over brought to above
-		for (; index < rsi.length - 1; index++) {
+		for (; index < endRsiIndex; index++) {
 			if (rsi[index].compareTo( rsi[index - 1] ) > 0 && oversold.compareTo( rsi[index] ) <= 0
 					&& oversold.compareTo( rsi[index - 1] ) > 0) {
-				buySignals.add( new IndicatorSignal( data[index].getDate(), IndicatorSignalType.RSI ) );
+				buySignals.add( new IndicatorSignal( data[data.length - endRsiIndex + index].getDate(),
+						IndicatorSignalType.RSI ) );
 			}
 		}
 

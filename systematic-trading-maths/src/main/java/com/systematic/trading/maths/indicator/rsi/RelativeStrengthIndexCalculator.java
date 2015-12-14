@@ -47,12 +47,16 @@ import com.systematic.trading.maths.store.IndicatorOutputStore;
  * 
  * Uses the EMA in calculation of the relative strength (J. Welles Wilder approach), not the SMA.
  * 
+ * Taking the prior value plus the current value is a smoothing technique similar to that used in
+ * exponential moving average calculation. This also means that RSI values become more accurate as
+ * the calculation period extends.
+ * 
  * @author CJ Hare
  */
 public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 	/** Constant for the value of 100. */
-	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 50 );
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -175,15 +179,15 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 			// When downward approaches zero, RSI approaches 100
 			if (downward.compareTo( BigDecimal.ZERO ) <= 0) {
-				relativeStrength[i] = ONE_HUNDRED;
+				relativeStrength[i - endInitialLookback] = ONE_HUNDRED;
 			} else {
-				relativeStrength[i] = upward.divide( downward, mathContext );
+				relativeStrength[i - endInitialLookback] = upward.divide( downward, mathContext );
 			}
 		}
 
 		/* RSI = 100 / 1 + RS */
 		final int endRelativeStrengthIndex = validator.getLastNonNullIndex( relativeStrength );
-		for (int i = endInitialLookback; i <= endRelativeStrengthIndex; i++) {
+		for (int i = 0; i <= endRelativeStrengthIndex; i++) {
 			rsiValues[i] = ONE_HUNDRED
 					.subtract( ONE_HUNDRED.divide( BigDecimal.ONE.add( relativeStrength[i] ), mathContext ) );
 		}

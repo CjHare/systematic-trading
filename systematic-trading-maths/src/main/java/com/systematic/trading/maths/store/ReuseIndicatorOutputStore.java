@@ -54,11 +54,13 @@ public class ReuseIndicatorOutputStore implements IndicatorOutputStore {
 	@Override
 	public BigDecimal[] getStore( final int size ) throws TooManyDataPoints {
 
+		//TODO no need to care about the size
+		
 		// Restrict on the number of trading days
-		if (size > maximum) {
-			throw new TooManyDataPoints(
-					String.format( "At most %s data points are needed, however %s are given", maximum, size ) );
-		}
+//		if (size > maximum) {
+//			throw new TooManyDataPoints(
+//					String.format( "At most %s data points are needed, however %s are given", maximum, size ) );
+//		}
 
 		// Clear the return array
 		for (int i = 0; i < store.length; i++) {

@@ -157,10 +157,10 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 			final SignalAnalysisEvent event = new NotEnoughDataPointsEvent( type, date );
 
 			if (IndicatorSignalType.RSI.equals( event.getSignalType() )) {
-				System.out.println( "RSI -tooFew " );
+				System.out.println( "RSI - tooFew " + date );
 			}
 			if (IndicatorSignalType.MACD.equals( event.getSignalType() )) {
-				System.out.println( "MACD -tooFew " );
+				System.out.println( "MACD - tooFew " + date );
 			}
 
 			// TODO deal with error - needs separate output to a normal signal
@@ -180,10 +180,10 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 			// TODO deal with error - needs separate output to a normal signal
 
 			if (IndicatorSignalType.RSI.equals( event.getSignalType() )) {
-				System.out.println( "RSI - TooMany" );
+				System.out.println( "RSI - TooMany " + date );
 			}
 			if (IndicatorSignalType.MACD.equals( event.getSignalType() )) {
-				System.out.println( "MACD - TooMany" );
+				System.out.println( "MACD - TooMany " + date );
 			}
 
 			for (final SignalAnalysisListener listener : listeners) {

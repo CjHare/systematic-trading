@@ -82,4 +82,8 @@ public class LimitedQueue<E> extends LinkedList<E> {
 	public <T> T[] toArray( final T[] a ) {
 		throw new UnsupportedOperationException( "Please use LimitedQueue.toArray() instead" );
 	}
+
+	public int getLimit() {
+		return limit;
+	}
 }
