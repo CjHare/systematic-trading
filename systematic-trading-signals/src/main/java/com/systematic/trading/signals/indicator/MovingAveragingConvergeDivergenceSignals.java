@@ -83,7 +83,8 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		this.macd = new MovingAverageConvergenceDivergenceCalculator( fastEma, slowEma, signalEma,
 				new IndicatorInputValidator(), new StandardIndicatorOutputStore() );
 
-		this.requiredNumberOfTradingDays = slowEma.getMinimumNumberOfPrices() + signalEma.getMinimumNumberOfPrices();
+		this.requiredNumberOfTradingDays = slowEma.getMinimumNumberOfPrices() + signalEma.getMinimumNumberOfPrices()
+				+ signalTimePeriods;
 	}
 
 	@Override
