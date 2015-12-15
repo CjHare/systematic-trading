@@ -60,6 +60,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/** Responsible for parsing and validating the input. */
 	private final IndicatorInputValidator validator;
 
+	/** Number of days to calculate the EMA on. */
+	private final int daysOfEmaValues;
+
 	/**
 	 * @param lookback the number of days to use when calculating the EMA.
 	 * @param daysOfEmaValues the number of trading days to calculate the EMA value.
@@ -71,6 +74,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 			final IndicatorInputValidator validator, final IndicatorOutputStore store, final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + daysOfEmaValues;
 		this.smoothingConstant = calculateSmoothingConstant( lookback );
+		this.daysOfEmaValues = daysOfEmaValues;
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
@@ -86,10 +90,10 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	public BigDecimal[] ema( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] emaValues = store.getStore( data.length );
-		final int startSmaIndex = validator.getStartingNonNullIndex( data, emaValues.length, minimumNumberOfPrices );
+		validator.getStartingNonNullIndex( data, emaValues.length, minimumNumberOfPrices );
 		final int endEmaIndex = validator.getLastNonNullIndex( data );
 
-		return ema( new Data( data ), startSmaIndex, endEmaIndex, emaValues );
+		return ema( new Data( data ), endEmaIndex, emaValues );
 	}
 
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {
@@ -100,16 +104,16 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	public BigDecimal[] ema( final BigDecimal[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] emaValues = store.getStore( data.length );
-		final int startSmaIndex = validator.getFirstNonNullIndex( data, emaValues.length, minimumNumberOfPrices );
+		validator.getFirstNonNullIndex( data, emaValues.length, minimumNumberOfPrices );
 		final int endEmaIndex = validator.getLastNonNullIndex( data );
 
-		return ema( new Data( data ), startSmaIndex, endEmaIndex, emaValues );
+		return ema( new Data( data ), endEmaIndex, emaValues );
 	}
 
-	private BigDecimal[] ema( final Data data, final int startSmaIndex, final int endEmaIndex,
-			final BigDecimal[] emaValues ) {
+	private BigDecimal[] ema( final Data data, final int endEmaIndex, final BigDecimal[] emaValues ) {
 
 		/* SMA for the initial time periods */
+		final int startSmaIndex = endEmaIndex - lookback - daysOfEmaValues + 1;
 		final int endSmaIndex = startSmaIndex + lookback;
 		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
 
@@ -121,13 +125,14 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 				mathContext );
 
 		/* EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) */
+		final int startEmaIndex = endSmaIndex;
 		BigDecimal yesterday = simpleMovingAverage;
 		BigDecimal today;
 
-		for (int i = endSmaIndex; i <= endEmaIndex; i++) {
+		for (int i = startEmaIndex; i <= endEmaIndex; i++) {
 			today = data.getPrice( i );
 
-			emaValues[i - endSmaIndex] = (today.subtract( yesterday, mathContext ))
+			emaValues[i - startEmaIndex] = (today.subtract( yesterday, mathContext ))
 					.multiply( smoothingConstant, mathContext ).add( yesterday, mathContext );
 
 			yesterday = today;

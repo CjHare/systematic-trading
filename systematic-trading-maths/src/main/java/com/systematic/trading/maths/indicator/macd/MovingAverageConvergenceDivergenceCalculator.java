@@ -74,27 +74,9 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	public List<DatedSignal> macd( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		// TODO use the validator
-
 		final BigDecimal[] slowEmaValues = slowEma.ema( data );
 		final BigDecimal[] fastEmaValues = fastEma.ema( data );
 		final BigDecimal[] macd = signalStore.getStore( data.length );
-
-		// Expecting the same number of input data points as outputs
-//		if (data.length > slowEmaValues.length) {
-//			throw new IllegalArgumentException(
-//					String.format( "The number of data points given: %s exceeds the size of the store: %s", data.length,
-//							slowEmaValues.length ) );
-//		}
-//		if (fastEmaValues.length != slowEmaValues.length) {
-//			throw new IllegalArgumentException(
-//					String.format( "The number of fast EMA points: %s must match the number of slow EMA ones: %s",
-//							fastEmaValues.length, slowEmaValues.length ) );
-//		}
-//		if (fastEmaValues.length != macd.length) {
-//			throw new IllegalArgumentException(
-//					String.format( "The number of fast EMA points: %s must match the number of Signal store ones: %s",
-//							fastEmaValues.length, slowEmaValues.length ) );
-//		}
 
 		// Skip the null entries of the slow EMA
 		final int slowEmaStartIndex = validator.getFirstNonNullIndex( slowEmaValues );

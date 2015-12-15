@@ -89,50 +89,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		return prices;
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void signalStoreTooSmall() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 4;
-		final TradingDayPrices[] data = new TradingDayPrices[lookback];
-		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback - 1] );
-
-		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
-
-		calculator.macd( data );
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void slowEmaTooSmall() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 4;
-		final TradingDayPrices[] data = new TradingDayPrices[lookback];
-		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback - 1] );
-		when( signalEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
-
-		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
-
-		calculator.macd( data );
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void fastEmaTooSmall() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 4;
-		final TradingDayPrices[] data = new TradingDayPrices[lookback];
-		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback - 1] );
-		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( signalEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
-
-		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
-
-		calculator.macd( data );
-	}
-
 	@Test
 	public void noResults() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 10;
