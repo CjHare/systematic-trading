@@ -222,9 +222,12 @@ public class SystematicTradingBacktest {
 					maximumTradingDays = smaTradingDays > macdTradingDays ? smaTradingDays : macdTradingDays;
 					maximumTradingDays += maximumDaysToAnalyse;
 
+					// sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
+					// smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(),
+					// maximumTradingDays,
+					// MATH_CONTEXT );
 					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), maximumTradingDays,
-							MATH_CONTEXT );
+							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
@@ -245,9 +248,12 @@ public class SystematicTradingBacktest {
 					maximumTradingDays = maximumTradingDays > rsiTradingDays ? maximumTradingDays : rsiTradingDays;
 					maximumTradingDays += maximumDaysToAnalyse;
 
+					// sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
+					// smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(),
+					// maximumTradingDays,
+					// MATH_CONTEXT );
 					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), maximumTradingDays,
-							MATH_CONTEXT );
+							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
@@ -278,9 +284,12 @@ public class SystematicTradingBacktest {
 						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), maximumTradingDays,
 						MATH_CONTEXT );
 
+				// sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
+				// smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(),
+				// maximumTradingDays,
+				// MATH_CONTEXT );
 				sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-						smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), maximumTradingDays,
-						MATH_CONTEXT );
+						smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 
 				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
 						description, MATH_CONTEXT, rsi, sma ) );

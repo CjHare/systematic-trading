@@ -116,11 +116,11 @@ public class SimpleMovingAverageCalculatorTest {
 	@Test
 	public void smaFirstPointNull() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
-		final int numberDataPoints = lookback + 3;
+		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[0] = null;
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
-		final int daysOfSmaValues = numberDataPoints - lookback;
+		final int daysOfSmaValues = numberDataPoints - lookback - 1;
 
 		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
 				.thenReturn( 1 );
@@ -146,15 +146,15 @@ public class SimpleMovingAverageCalculatorTest {
 	@Test
 	public void smaLastPointNull() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
-		final int numberDataPoints = lookback + 3;
+		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[lookback + 2] = null;
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
-		final int daysOfSmaValues = numberDataPoints - lookback;
+		final int daysOfSmaValues = numberDataPoints - lookback - 2;
 
 		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
 				.thenReturn( 1 );
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 2 );
+		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 3 );
 
 		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, daysOfSmaValues,
 				validator, store, MATH_CONTEXT );
@@ -167,7 +167,7 @@ public class SimpleMovingAverageCalculatorTest {
 		assertNotNull( sma );
 		assertEquals( numberDataPoints, sma.length );
 		assertNull( sma[0] );
-		assertNull( sma[1] );
+		assertEquals( BigDecimal.ONE, sma[1] );
 		assertEquals( BigDecimal.ONE, sma[2] );
 		assertEquals( BigDecimal.ONE, sma[3] );
 		assertNull( sma[4] );

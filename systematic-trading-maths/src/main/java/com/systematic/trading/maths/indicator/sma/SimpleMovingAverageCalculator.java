@@ -56,6 +56,9 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	/** Responsible for parsing and validating the input. */
 	private final IndicatorInputValidator validator;
 
+	/** Number of days to calculate the SMA value on. */
+	private final int daysOfSmaValues;
+
 	/**
 	 * @param lookback the number of days to use when calculating the SMA.
 	 * @param daysOfSmaValues the number of trading days to calculate the RSI value.
@@ -66,6 +69,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues,
 			final IndicatorInputValidator validator, final IndicatorOutputStore store, final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
+		this.daysOfSmaValues = daysOfSmaValues;
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
@@ -76,16 +80,13 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	public BigDecimal[] sma( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] smaValues = store.getStore( data.length );
-		int startSmaIndex = validator.getStartingNonNullIndex( data, smaValues.length, minimumNumberOfPrices );
-
-		// No values without the full look back range
-		startSmaIndex += lookback;
-		startSmaIndex--;
+		validator.getStartingNonNullIndex( data, smaValues.length, minimumNumberOfPrices );
 
 		final int endSmaIndex = validator.getLastNonNullIndex( data );
+		final int startSmaIndex = endSmaIndex - daysOfSmaValues;
 
 		// Start at the end and work towards the origin
-		for (int i = endSmaIndex; i >= startSmaIndex; i--) {
+		for (int i = startSmaIndex; i <= endSmaIndex; i++) {
 			smaValues[i] = simpleAverage( i, data );
 		}
 
@@ -95,11 +96,11 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	/**
 	 * Calculate the average from this value and the previous look back amount.
 	 */
-	private BigDecimal simpleAverage( final int startIndex, final TradingDayPrices[] data ) {
-		BigDecimal average = data[startIndex].getClosingPrice().getPrice();
-		final int endIndex = startIndex - lookback;
+	private BigDecimal simpleAverage( final int endIndex, final TradingDayPrices[] data ) {
+		final int startIndex = endIndex - lookback + 1;
+		BigDecimal average = data[endIndex].getClosingPrice().getPrice();
 
-		for (int i = startIndex - 1; i > endIndex; i--) {
+		for (int i = startIndex; i < endIndex; i++) {
 			average = average.add( data[i].getClosingPrice().getPrice() );
 		}
 
