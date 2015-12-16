@@ -65,6 +65,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/** Responsible for parsing and validating the input. */
 	private final IndicatorInputValidator validator;
 
+	/** Provides generic access to different array types. */
+	private final Data wrapper;
+
 	/**
 	 * @param lookback the number of days to use when calculating the EMA.
 	 * @param validator validates and parses input.
@@ -79,6 +82,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		this.emaValues = new ArrayList<BigDecimal>();
 		this.validator = validator;
 		this.lookback = lookback;
+		this.wrapper = new Data();
 	}
 
 	@Override
@@ -92,7 +96,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		final int startSmaIndex = validator.getStartingNonNullIndex( data, lookback );
 		final int endEmaIndex = validator.getLastNonNullIndex( data );
 
-		return ema( new Data( data ), startSmaIndex, endEmaIndex );
+		wrapper.set( data );
+
+		return ema( wrapper, startSmaIndex, endEmaIndex );
 	}
 
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {
@@ -105,7 +111,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		final int startSmaIndex = validator.getFirstNonNullIndex( data, lookback );
 		final int endEmaIndex = validator.getLastNonNullIndex( data );
 
-		return ema( new Data( data ), startSmaIndex, endEmaIndex );
+		wrapper.set( data );
+
+		return ema( wrapper, startSmaIndex, endEmaIndex );
 	}
 
 	private List<BigDecimal> ema( final Data data, final int startSmaIndex, final int endEmaIndex ) {
@@ -143,15 +151,15 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	class Data {
-		private final BigDecimal[] dataDecimal;
-		private final TradingDayPrices[] dataPrices;
+		private BigDecimal[] dataDecimal;
+		private TradingDayPrices[] dataPrices;
 
-		public Data( final BigDecimal[] data ) {
+		public void set( final BigDecimal[] data ) {
 			this.dataDecimal = data;
 			this.dataPrices = null;
 		}
 
-		public Data( final TradingDayPrices[] data ) {
+		public void set( final TradingDayPrices[] data ) {
 			this.dataDecimal = null;
 			this.dataPrices = data;
 		}
