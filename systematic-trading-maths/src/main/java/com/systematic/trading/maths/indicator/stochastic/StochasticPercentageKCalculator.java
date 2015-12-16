@@ -82,7 +82,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	public BigDecimal[] percentageK( final TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints {
 
 		final BigDecimal[] pK = store.getStore( data.length );
-		int pkSmaIndex = validator.getStartingNonNullIndex( data, pK.length, minimumNumberOfPrices );
+		int pkSmaIndex = validator.getStartingNonNullIndex( data, minimumNumberOfPrices );
 		final int pkEndIndex = validator.getLastNonNullIndex( data );
 
 		LowestPrice lowestLow;

@@ -23,47 +23,28 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator.ema;
+package com.systematic.trading.collection;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
+import java.util.ArrayList;
 
 /**
- * Exponential Moving Average (EMA), a moving average with greater weighting given to recent data
- * points.
+ * ArrayList extension that forbids adding <code>null</code> items, failing hard.
  * 
  * @author CJ Hare
  */
-public interface ExponentialMovingAverage {
+public class NonNullableArrayList<T> extends ArrayList<T> {
 
-	/**
-	 * Calculates the exponential moving average.
-	 * 
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @return exponential moving average values.
-	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
-	 * @throws TooManyDataPoints too many closing prices provided to perform EMA calculations.
-	 */
-	List<BigDecimal> ema( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	/** Serialisation ID. */
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Calculates the exponential moving average.
-	 * 
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @return exponential moving average values.
-	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
-	 * @throws TooManyDataPoints too many closing prices provided to perform EMA calculations.
-	 */
-	List<BigDecimal> ema( List<BigDecimal> data ) throws TooFewDataPoints, TooManyDataPoints;
+	@Override
+	public boolean add( final T item ) {
+		if (item == null) {
+			throw new IllegalArgumentException( "NonNullableArrayList Does not accept null" );
+		}
 
-	/**
-	 * Minimum number of prices required for calculating the EMA.
-	 * 
-	 * @return the number of trading days data needed for the EMA.
-	 */
-	int getMinimumNumberOfPrices();
+		return super.add( item );
+	}
+
+	// TODO extend & test the other add methods
 }

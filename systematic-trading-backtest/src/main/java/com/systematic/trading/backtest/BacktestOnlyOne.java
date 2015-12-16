@@ -178,8 +178,8 @@ public class BacktestOnlyOne {
 		maximumTradingDays += days;
 
 		macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
-				macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(), maximumTradingDays,
-				aaaa, MATH_CONTEXT );
+				macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(), 
+				 MATH_CONTEXT );
 
 //		rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),aaaa, rsiConfiguration.getOverbought(),
 //				rsiConfiguration.getOversold(), maximumTradingDays,  MATH_CONTEXT );

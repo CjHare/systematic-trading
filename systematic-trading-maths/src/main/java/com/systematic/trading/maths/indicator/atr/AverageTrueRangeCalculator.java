@@ -119,7 +119,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	public BigDecimal[] atr( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] atrValues = store.getStore( data.length );
-		final int startAtrIndex = validator.getStartingNonNullIndex( data, atrValues.length, minimumNumberOfPrices );
+		final int startAtrIndex = validator.getStartingNonNullIndex( data, minimumNumberOfPrices );
 
 		// For the first value just use the TR
 		atrValues[startAtrIndex] = trueRangeMethodOne( data[startAtrIndex] );

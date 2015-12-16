@@ -28,7 +28,7 @@ package com.systematic.trading.maths.indicator.macd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -36,6 +36,7 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hamcrest.Description;
@@ -53,7 +54,6 @@ import com.systematic.trading.maths.indicator.IndicatorInputValidator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
-import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * Verifies the behaviour of the MovingAverageConvergenceDivergenceCalculator.
@@ -71,9 +71,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Mock
 	private ExponentialMovingAverage signalEma;
-
-	@Mock
-	private IndicatorOutputStore signalStore;
 
 	@Mock
 	private IndicatorInputValidator validator;
@@ -94,20 +91,16 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		final int lookback = 10;
 		final TradingDayPrices[] data = new TradingDayPrices[lookback];
 
-		final BigDecimal[] fastEmaValues = createIncreasingValues( lookback, 2 );
+		final List<BigDecimal> fastEmaValues = createIncreasingValuesList( lookback, 2 );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
-		when( validator.getLastNonNullIndex( fastEmaValues ) ).thenReturn( fastEmaValues.length - 1 );
-		when( validator.getFirstNonNullIndex( fastEmaValues ) ).thenReturn( 1 );
 
-		final BigDecimal[] slowEmaValues = createFlatValues( lookback, 0 );
+		final List<BigDecimal> slowEmaValues = createFlatValuesList( lookback, 0 );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( slowEmaValues );
-		when( validator.getLastNonNullIndex( slowEmaValues ) ).thenReturn( slowEmaValues.length - 1 );
 
-		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		when( signalStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[lookback] );
+		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( new ArrayList<BigDecimal>( lookback ) );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
+				fastEma, slowEma, signalEma, validator );
 
 		final List<DatedSignal> signals = calculator.macd( data );
 
@@ -115,25 +108,24 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		assertEquals( 0, signals.size() );
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
-		verify( signalStore ).getStore( data.length );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
 	}
 
-	private BigDecimal[] createFlatValues( final int size, final int value ) {
-		final BigDecimal[] values = new BigDecimal[size];
+	private List<BigDecimal> createFlatValuesList( final int size, final int value ) {
+		final List<BigDecimal> values = new ArrayList<BigDecimal>( size );
 
-		for (int i = 0; i < values.length; i++) {
-			values[i] = BigDecimal.valueOf( value );
+		for (int i = 0; i < size; i++) {
+			values.add( BigDecimal.valueOf( value ) );
 		}
 
 		return values;
 	}
 
-	private BigDecimal[] createIncreasingValues( final int size, final int startingValue ) {
-		final BigDecimal[] values = new BigDecimal[size];
+	private List<BigDecimal> createIncreasingValuesList( final int size, final int startingValue ) {
+		final List<BigDecimal> values = new ArrayList<BigDecimal>( size );
 
-		for (int i = 0; i < values.length; i++) {
-			values[i] = BigDecimal.valueOf( startingValue + i );
+		for (int i = 0; i < size; i++) {
+			values.add( BigDecimal.valueOf( startingValue + i ) );
 		}
 
 		return values;
@@ -143,14 +135,12 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	public void signalLineInput() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 5;
 		final TradingDayPrices[] data = createPrices( lookback );
-		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValues( lookback, 1 ) );
-		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createIncreasingValues( lookback, 2 ) );
-		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
+		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValuesList( lookback, 1 ) );
+		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createIncreasingValuesList( lookback, 2 ) );
+		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( new ArrayList<BigDecimal>( lookback ) );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
+				fastEma, slowEma, signalEma, validator );
 
 		final List<DatedSignal> signals = calculator.macd( data );
 
@@ -158,132 +148,25 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		assertEquals( 0, signals.size() );
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
-		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
 
-		verify( signalEma ).ema( isBigDecimalArrayOf( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ),
+		verify( signalEma ).ema( isBigDecimalListOf( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ),
 				BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) );
-
-		verify( signalStore ).getStore( data.length );
-	}
-
-	@Test
-	public void signalLineInputFastEmaFirstNull() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 5;
-		final TradingDayPrices[] data = createPrices( lookback );
-		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValues( lookback, 1 ) );
-
-		final BigDecimal[] fastEmaValues = createIncreasingValues( lookback, 2 );
-		fastEmaValues[0] = null;
-		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
-		when( validator.getLastNonNullIndex( fastEmaValues ) ).thenReturn( fastEmaValues.length - 1 );
-		when( validator.getFirstNonNullIndex( fastEmaValues ) ).thenReturn( 1 );
-
-		final BigDecimal[] slowEmaValues = createFlatValues( lookback, 0 );
-		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( slowEmaValues );
-		when( validator.getLastNonNullIndex( slowEmaValues ) ).thenReturn( slowEmaValues.length - 1 );
-
-		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
-
-		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
-
-		final List<DatedSignal> signals = calculator.macd( data );
-
-		assertNotNull( signals );
-		assertEquals( 0, signals.size() );
-		verify( fastEma ).ema( data );
-		verify( slowEma ).ema( data );
-		verify( signalEma ).ema( signalValues );
-		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-
-		verify( signalEma ).ema( isBigDecimalArrayOf( null, BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ),
-				BigDecimal.valueOf( 5 ), BigDecimal.valueOf( 6 ) ) );
-
-		verify( signalStore ).getStore( data.length );
-	}
-
-	@Test
-	public void signalLineInputFastEmaLastNull() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 5;
-		final TradingDayPrices[] data = createPrices( lookback );
-		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValues( lookback, 1 ) );
-
-		final BigDecimal[] fastEmaValues = createIncreasingValues( lookback, 2 );
-		fastEmaValues[fastEmaValues.length - 1] = null;
-		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
-
-		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
-
-		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
-
-		final List<DatedSignal> signals = calculator.macd( data );
-
-		assertNotNull( signals );
-		assertEquals( 0, signals.size() );
-		verify( fastEma ).ema( data );
-		verify( slowEma ).ema( data );
-		verify( signalEma ).ema( signalValues );
-		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-
-		verify( signalEma ).ema( isBigDecimalArrayOf( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ),
-				BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) );
-
-		verify( signalStore ).getStore( data.length );
-	}
-
-	@Test
-	public void signalLineInputSlowEmaLastNull() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 5;
-		final TradingDayPrices[] data = createPrices( lookback );
-
-		final BigDecimal[] slowEmaValues = createFlatValues( lookback, 1 );
-		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( slowEmaValues );
-		slowEmaValues[slowEmaValues.length - 1] = null;
-
-		final BigDecimal[] fastEmaValues = createIncreasingValues( lookback, 2 );
-		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
-
-		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( new BigDecimal[lookback] );
-		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
-
-		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
-
-		final List<DatedSignal> signals = calculator.macd( data );
-
-		assertNotNull( signals );
-		assertEquals( 0, signals.size() );
-		verify( fastEma ).ema( data );
-		verify( slowEma ).ema( data );
-		verify( signalEma ).ema( signalValues );
-		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-
-		verify( signalEma ).ema( isBigDecimalArrayOf( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ),
-				BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) );
-
-		verify( signalStore ).getStore( data.length );
 	}
 
 	@Test
 	public void noCrossover() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 5;
 		final TradingDayPrices[] data = createPrices( lookback );
-		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValues( lookback, 1 ) );
-		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createIncreasingValues( lookback, 2 ) );
-		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
+		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValuesList( lookback, 1 ) );
+		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createIncreasingValuesList( lookback, 2 ) );
+		final List<BigDecimal> signalValues = new ArrayList<BigDecimal>();
 
-		final BigDecimal[] signalEmaValues = createFlatValues( 5, 1 );
-		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
+		final List<BigDecimal> signalEmaValues = createFlatValuesList( 5, 1 );
+		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( signalEmaValues );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
+				fastEma, slowEma, signalEma, validator );
 
 		final List<DatedSignal> signals = calculator.macd( data );
 
@@ -294,7 +177,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify( slowEma ).ema( data );
 		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-		verify( signalStore ).getStore( data.length );
 	}
 
 	@Test
@@ -302,29 +184,21 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		final int lookback = 5;
 		final TradingDayPrices[] data = createPrices( lookback );
 
-		final BigDecimal[] slowEmaValues = createFlatValues( lookback, 1 );
+		final List<BigDecimal> slowEmaValues = createFlatValuesList( lookback, 1 );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( slowEmaValues );
-		when( validator.getLastNonNullIndex( slowEmaValues ) ).thenReturn( slowEmaValues.length - 1 );
 
-		final BigDecimal[] fastEmaValues = createIncreasingValues( lookback, 2 );
+		final List<BigDecimal> fastEmaValues = createIncreasingValuesList( lookback, 2 );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
-		when( validator.getLastNonNullIndex( fastEmaValues ) ).thenReturn( fastEmaValues.length - 1 );
 
-		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
+		final List<BigDecimal> signalValues = new ArrayList<BigDecimal>();
 
-		final BigDecimal[] signalEmaValues = createFlatValues( 5, 2 );
-		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
-		when( validator.getLastNonNullIndex( signalEmaValues ) ).thenReturn( data.length - 1 );
-		when( validator.getFirstNonNullIndex( signalEmaValues ) ).thenReturn( 0 );
+		final List<BigDecimal> signalEmaValues = createFlatValuesList( 5, 2 );
+		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( signalEmaValues );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
+				fastEma, slowEma, signalEma, validator );
 
 		final List<DatedSignal> signals = calculator.macd( data );
-
-		verify( validator ).getLastNonNullIndex( signalEmaValues );
-		verify( validator ).getFirstNonNullIndex( signalEmaValues );
 
 		assertNotNull( signals );
 		assertEquals( 1, signals.size() );
@@ -335,7 +209,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify( slowEma ).ema( data );
 		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-		verify( signalStore ).getStore( data.length );
 	}
 
 	@Test
@@ -343,29 +216,23 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		final int lookback = 5;
 		final TradingDayPrices[] data = createPrices( lookback );
 
-		final BigDecimal[] slowEmaValues = createFlatValues( lookback, 0 );
+		final List<BigDecimal> slowEmaValues = createFlatValuesList( lookback, 0 );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( slowEmaValues );
-		when( validator.getLastNonNullIndex( slowEmaValues ) ).thenReturn( slowEmaValues.length - 1 );
 
-		final BigDecimal[] fastEmaValues = createIncreasingValues( lookback, -1 );
+		final List<BigDecimal> fastEmaValues = createIncreasingValuesList( lookback, -1 );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
-		when( validator.getLastNonNullIndex( fastEmaValues ) ).thenReturn( fastEmaValues.length - 1 );
 
-		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
+		final List<BigDecimal> signalValues = new ArrayList<BigDecimal>();
 
-		final BigDecimal[] signalEmaValues = createFlatValues( 5, 8 );
-		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
+		final List<BigDecimal> signalEmaValues = createFlatValuesList( 5, 8 );
+		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( signalEmaValues );
 		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( data.length - 1 );
 		when( validator.getFirstNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( 0 );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
+				fastEma, slowEma, signalEma, validator );
 
 		final List<DatedSignal> signals = calculator.macd( data );
-
-		verify( validator ).getLastNonNullIndex( signalEmaValues );
-		verify( validator ).getFirstNonNullIndex( signalEmaValues );
 
 		assertNotNull( signals );
 		assertEquals( 1, signals.size() );
@@ -376,7 +243,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify( slowEma ).ema( data );
 		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-		verify( signalStore ).getStore( data.length );
 	}
 
 	@Test
@@ -384,29 +250,23 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		final int lookback = 5;
 		final TradingDayPrices[] data = createPrices( lookback );
 
-		final BigDecimal[] slowEmaValues = createFlatValues( lookback, 0 );
+		final List<BigDecimal> slowEmaValues = createFlatValuesList( lookback, 0 );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( slowEmaValues );
-		when( validator.getLastNonNullIndex( slowEmaValues ) ).thenReturn( slowEmaValues.length - 1 );
 
-		final BigDecimal[] fastEmaValues = createIncreasingValues( lookback, -1 );
+		final List<BigDecimal> fastEmaValues = createIncreasingValuesList( lookback, -1 );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
-		when( validator.getLastNonNullIndex( fastEmaValues ) ).thenReturn( fastEmaValues.length - 1 );
 
-		final BigDecimal[] signalValues = new BigDecimal[lookback];
-		when( signalStore.getStore( anyInt() ) ).thenReturn( signalValues );
+		final List<BigDecimal> signalValues = new ArrayList<BigDecimal>();
 
-		final BigDecimal[] signalEmaValues = createFlatValues( 5, 1 );
-		when( signalEma.ema( any( BigDecimal[].class ) ) ).thenReturn( signalEmaValues );
+		final List<BigDecimal> signalEmaValues = createFlatValuesList( 5, 1 );
+		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( signalEmaValues );
 		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( data.length - 1 );
 		when( validator.getFirstNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( 0 );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
-				fastEma, slowEma, signalEma, validator, signalStore );
+				fastEma, slowEma, signalEma, validator );
 
 		final List<DatedSignal> signals = calculator.macd( data );
-
-		verify( validator ).getLastNonNullIndex( signalEmaValues );
-		verify( validator ).getFirstNonNullIndex( signalEmaValues );
 
 		assertNotNull( signals );
 		assertEquals( 2, signals.size() );
@@ -417,30 +277,30 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify( slowEma ).ema( data );
 		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-		verify( signalStore ).getStore( data.length );
 	}
 
-	private BigDecimal[] isBigDecimalArrayOf( final BigDecimal... bigDecimals ) {
-		return argThat( new IsBigDecimalArray( bigDecimals ) );
+	private List<BigDecimal> isBigDecimalListOf( final BigDecimal... bigDecimals ) {
+		return argThat( new IsBigDecimalList( bigDecimals ) );
 	}
 
-	class IsBigDecimalArray extends ArgumentMatcher<BigDecimal[]> {
+	class IsBigDecimalList extends ArgumentMatcher<List<BigDecimal>> {
 
 		final BigDecimal[] expected;
 
-		public IsBigDecimalArray( final BigDecimal... bigDecimals ) {
+		public IsBigDecimalList( final BigDecimal... bigDecimals ) {
 			this.expected = bigDecimals;
 		}
 
 		@Override
 		public boolean matches( final Object argument ) {
 
-			if (argument instanceof BigDecimal[]) {
+			if (argument instanceof List<?>) {
 
-				final BigDecimal[] given = (BigDecimal[]) argument;
+				@SuppressWarnings("unchecked")
+				final List<BigDecimal> given = (List<BigDecimal>) argument;
 
 				for (int i = 0; i < expected.length; i++) {
-					if (given[i] != null && given[i].compareTo( expected[i] ) != 0)
+					if (given.get( i ) != null && given.get( i ).compareTo( expected[i] ) != 0)
 						return false;
 				}
 

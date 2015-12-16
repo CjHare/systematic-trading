@@ -185,7 +185,7 @@ public class SystematicTradingBacktest {
 
 				macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 						macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
-						maximumTradingDays, daysOfSignals, MATH_CONTEXT );
+						MATH_CONTEXT );
 
 				description = String.format( "%s_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
 						minimumTradeDescription );
@@ -202,7 +202,7 @@ public class SystematicTradingBacktest {
 
 				macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 						macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
-						maximumTradingDays, daysOfSignals, MATH_CONTEXT );
+						MATH_CONTEXT );
 
 				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(), daysOfSignals,
 						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), maximumTradingDays,
@@ -231,7 +231,7 @@ public class SystematicTradingBacktest {
 
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
-							maximumTradingDays, daysOfSignals, MATH_CONTEXT );
+							MATH_CONTEXT );
 
 					description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever",
 							macdConfiguration.getDescription(), smaConfiguration.getDescription(),
@@ -257,7 +257,7 @@ public class SystematicTradingBacktest {
 
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
-							maximumTradingDays, daysOfSignals, MATH_CONTEXT );
+							MATH_CONTEXT );
 
 					rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(), daysOfSignals,
 							rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), maximumTradingDays,

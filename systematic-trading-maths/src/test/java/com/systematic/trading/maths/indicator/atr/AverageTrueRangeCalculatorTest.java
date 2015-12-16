@@ -119,7 +119,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		final BigDecimal[] atr = calculator.atr( data );
 
-		verify( validator ).getStartingNonNullIndex( data, numberDataPoints, numberDataPoints );
+		verify( validator ).getStartingNonNullIndex( data, numberDataPoints );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( atr );
@@ -144,7 +144,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		final BigDecimal[] atr = calculator.atr( data );
 
-		verify( validator ).getStartingNonNullIndex( data, numberDataPoints, numberDataPoints );
+		verify( validator ).getStartingNonNullIndex( data, numberDataPoints );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( atr );
@@ -165,8 +165,7 @@ public class AverageTrueRangeCalculatorTest {
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfAtrValues = numberDataPoints - lookback;
 
-		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
-				.thenReturn( 1 );
+		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt() ) ).thenReturn( 1 );
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
 
 		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
@@ -174,7 +173,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		final BigDecimal[] atr = calculator.atr( data );
 
-		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfAtrValues );
+		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfAtrValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( atr );
@@ -194,8 +193,7 @@ public class AverageTrueRangeCalculatorTest {
 		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfAtrValues = numberDataPoints - lookback;
 
-		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
-				.thenReturn( 1 );
+		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt() ) ).thenReturn( 1 );
 		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 2 );
 
 		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
@@ -203,7 +201,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		final BigDecimal[] atr = calculator.atr( data );
 
-		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + daysOfAtrValues );
+		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfAtrValues );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( atr );
@@ -229,7 +227,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		final BigDecimal[] atr = calculator.atr( data );
 
-		verify( validator ).getStartingNonNullIndex( data, data.length, lookback + 1 );
+		verify( validator ).getStartingNonNullIndex( data, lookback + 1 );
 		verify( validator ).getLastNonNullIndex( data );
 
 		assertNotNull( atr );

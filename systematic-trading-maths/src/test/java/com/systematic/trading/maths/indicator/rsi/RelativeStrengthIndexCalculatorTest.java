@@ -146,8 +146,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		final BigDecimal[] rsArray = new BigDecimal[daysOfRsiValues];
 		when( rsStore.getStore( anyInt() ) ).thenReturn( rsArray );
 		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[daysOfRsiValues] );
-		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
-				.thenReturn( 1 );
+		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt() ) ).thenReturn( 1 );
 		when( validator.getLastNonNullIndex( rsArray ) ).thenReturn( daysOfRsiValues - 2 );
 		when( validator.getLastNonNullIndex( data ) ).thenReturn( dataSize - 1 );
 
@@ -156,7 +155,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 		final BigDecimal[] rsi = calculator.rsi( data );
 
-		verify( validator ).getStartingNonNullIndex( data, daysOfRsiValues, lookback + daysOfRsiValues );
+		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfRsiValues );
 		verify( validator ).getLastNonNullIndex( rsArray );
 		verify( validator ).getLastNonNullIndex( data );
 
@@ -182,8 +181,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		final BigDecimal[] rsArray = new BigDecimal[daysOfRsiValues];
 		when( rsStore.getStore( anyInt() ) ).thenReturn( rsArray );
 		when( rsiStore.getStore( anyInt() ) ).thenReturn( new BigDecimal[daysOfRsiValues] );
-		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt(), anyInt() ) )
-				.thenReturn( 0 );
+		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt() ) ).thenReturn( 0 );
 		when( validator.getLastNonNullIndex( rsArray ) ).thenReturn( daysOfRsiValues - 2 );
 		when( validator.getLastNonNullIndex( data ) ).thenReturn( dataSize - 2 );
 
@@ -192,7 +190,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 		final BigDecimal[] rsi = calculator.rsi( data );
 
-		verify( validator ).getStartingNonNullIndex( data, daysOfRsiValues, lookback + daysOfRsiValues );
+		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfRsiValues );
 		verify( validator ).getLastNonNullIndex( rsArray );
 		verify( validator ).getLastNonNullIndex( data );
 

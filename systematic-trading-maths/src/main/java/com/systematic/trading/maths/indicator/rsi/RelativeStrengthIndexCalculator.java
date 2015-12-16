@@ -103,8 +103,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 		final BigDecimal[] relativeStrength = relativeStrengthStore.getStore( data.length );
 		final BigDecimal[] rsiValues = relativeStrengthIndexStore.getStore( data.length );
-		final int startRsiIndex = validator.getStartingNonNullIndex( data, relativeStrength.length,
-				minimumNumberOfPrices );
+		final int startRsiIndex = validator.getStartingNonNullIndex( data, minimumNumberOfPrices );
 
 		/* For the first zero - time period entries calculate the SMA based on up to down movement
 		 * Upwards movement upward = closeToday - closeYesterday downward = 0 Downwards movement

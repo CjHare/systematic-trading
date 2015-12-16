@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.collection.LimitedSizeList;
+import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
@@ -37,7 +37,6 @@ import com.systematic.trading.maths.indicator.IndicatorInputValidator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
-import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * Moving Average Convergence Divergence (MACD) only using the crossover for signals.
@@ -56,15 +55,15 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	private final ExponentialMovingAverage signalEma;
 
 	/** Provides the array to put the slow-fast ema value for feeding to the signal ema. */
-	private final IndicatorOutputStore signalStore;
+	private final List<BigDecimal> macdValues;
 
 	/** Responsible for parsing and validating the input. */
 	private final IndicatorInputValidator validator;
 
 	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverage fastEma,
 			final ExponentialMovingAverage slowEma, final ExponentialMovingAverage signalEma,
-			final IndicatorInputValidator validator, final IndicatorOutputStore signalStore ) {
-		this.signalStore = signalStore;
+			final IndicatorInputValidator validator ) {
+		this.macdValues = new NonNullableArrayList<BigDecimal>();
 		this.validator = validator;
 		this.signalEma = signalEma;
 		this.slowEma = slowEma;
@@ -75,50 +74,46 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	public List<DatedSignal> macd( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		// TODO use the validator
-		final LimitedSizeList<BigDecimal> slowEmaValues = slowEma.ema( data );
-		final LimitedSizeList<BigDecimal> fastEmaValues = fastEma.ema( data );
-		final BigDecimal[] macd = signalStore.getStore( data.length );
+		final List<BigDecimal> slowEmaValues = slowEma.ema( data );
+		final List<BigDecimal> fastEmaValues = fastEma.ema( data );
+		macdValues.clear();
 
-		// Skip the null entries of the slow EMA
-//		final int slowEmaStartIndex = validator.getFirstNonNullIndex( slowEmaValues );
-//		final int fastEmaStartIndex = validator.getFirstNonNullIndex( fastEmaValues );
-//		final int emaStartIndex = slowEmaStartIndex > fastEmaStartIndex ? slowEmaStartIndex : fastEmaStartIndex;
-
-		// The arrays may not be entirely filled i.e. end contains nulls
-//		final int slowEmaEndIndex = validator.getLastNonNullIndex( slowEmaValues );
-//		final int fastEmaEndIndex = validator.getLastNonNullIndex( fastEmaValues );
-//		final int emaEndIndex = slowEmaEndIndex < fastEmaEndIndex ? slowEmaEndIndex : fastEmaEndIndex;
+		// We're only interested in shared indexes, both right most aligned with data[]
+		final int slowEmaOffset = Math.max( 0, slowEmaValues.size() - fastEmaValues.size() );
+		final int fastEmaOffset = Math.max( 0, fastEmaValues.size() - slowEmaValues.size() );
+		final int emaEndIndex = Math.min( slowEmaValues.size(), fastEmaValues.size() );
 
 		// MACD is the fast - slow EMAs
-		for (int i = emaStartIndex; i <= emaEndIndex; i++) {
-			macd[i] = fastEmaValues[i].subtract( slowEmaValues[i] );
+		for (int i = 0; i <= emaEndIndex; i++) {
+			macdValues.add( fastEmaValues.get( i + fastEmaOffset ).subtract( slowEmaValues.get( i + slowEmaOffset ) ) );
 		}
 
-		final LimitedSizeList<BigDecimal> signaLine = signalEma.ema( macd );
+		final List<BigDecimal> signaLine = signalEma.ema( macdValues );
 
-		return calculateBullishSignals( data, macd, emaEndIndex, signaLine );
+		// TODO validate / enforce data is not null
+
+		return calculateBullishSignals( data, signaLine );
 	}
 
-	private List<DatedSignal> calculateBullishSignals( final TradingDayPrices[] data, final BigDecimal[] macdValues,
-			final int macdValueEndIndex, final BigDecimal[] signaLine ) {
+	private List<DatedSignal> calculateBullishSignals( final TradingDayPrices[] data,
+			final List<BigDecimal> signaLine ) {
 
 		final List<DatedSignal> signals = new ArrayList<DatedSignal>();
 
-		final int endSignalLineIndex = validator.getLastNonNullIndex( signaLine );
-		int index = validator.getFirstNonNullIndex( signaLine );
-
-		// Yesterday need not be null
-		index++;
+		// We're only interested in shared indexes, both right most aligned with data[]
+		final int macdValuesOffset = Math.max( 0, macdValues.size() - signaLine.size() );
+		final int signalLineOffset = Math.max( 0, signaLine.size() - macdValues.size() );
+		final int endIndex = Math.min( signaLine.size(), macdValues.size() );
 
 		// Buy signal is from a cross over of the signal line, for crossing over the origin
-		BigDecimal todayMacd, yesterdayMacd, todaySignalLine, yesterdaySignalLine;
+		BigDecimal todayMacd, todaySignalLine;
+		BigDecimal yesterdayMacd = macdValues.get( 0 );
+		BigDecimal yesterdaySignalLine = signaLine.get( 0 );
 
-		for (; index <= endSignalLineIndex && index <= macdValueEndIndex; index++) {
+		for (int index = 1; index < endIndex; index++) {
 
-			todayMacd = macdValues[index];
-			yesterdayMacd = macdValues[index - 1];
-			todaySignalLine = signaLine[index];
-			yesterdaySignalLine = signaLine[index - 1];
+			todayMacd = macdValues.get( index + macdValuesOffset );
+			todaySignalLine = signaLine.get( index + signalLineOffset );
 
 			// The MACD trends up, with crossing the signal line
 			// OR trending up and crossing the zero line
@@ -126,6 +121,11 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 					|| crossingOrigin( yesterdayMacd, todayMacd )) {
 				signals.add( new DatedSignal( data[index].getDate(), SignalType.BULLISH ) );
 			}
+
+			// Bump the days
+			yesterdayMacd = todayMacd;
+			yesterdaySignalLine = todaySignalLine;
+
 		}
 
 		return signals;

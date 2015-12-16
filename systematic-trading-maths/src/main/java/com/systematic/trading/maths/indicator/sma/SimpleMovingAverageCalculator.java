@@ -80,7 +80,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	public BigDecimal[] sma( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		final BigDecimal[] smaValues = store.getStore( data.length );
-		validator.getStartingNonNullIndex( data, smaValues.length, minimumNumberOfPrices );
+		validator.getStartingNonNullIndex( data, minimumNumberOfPrices );
 
 		final int endSmaIndex = validator.getLastNonNullIndex( data );
 		final int startSmaIndex = endSmaIndex - daysOfSmaValues;

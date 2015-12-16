@@ -27,9 +27,9 @@ package com.systematic.trading.maths.indicator.ema;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
@@ -79,7 +79,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		// Look back provides one of the days of EMA values
 		this.smoothingConstant = calculateSmoothingConstant( lookback );
 		this.mathContext = mathContext;
-		this.emaValues = new ArrayList<BigDecimal>();
+		this.emaValues = new NonNullableArrayList<BigDecimal>();
 		this.validator = validator;
 		this.lookback = lookback;
 		this.wrapper = new Data();
@@ -106,14 +106,13 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	@Override
-	public List<BigDecimal> ema( final BigDecimal[] data ) throws TooFewDataPoints, TooManyDataPoints {
+	public List<BigDecimal> ema( final List<BigDecimal> data ) throws TooFewDataPoints, TooManyDataPoints {
 
-		final int startSmaIndex = validator.getFirstNonNullIndex( data, lookback );
-		final int endEmaIndex = validator.getLastNonNullIndex( data );
-
+		//TODO validate - enforce no null entries
+		
 		wrapper.set( data );
 
-		return ema( wrapper, startSmaIndex, endEmaIndex );
+		return ema( wrapper, 0, data.size() - 1 );
 	}
 
 	private List<BigDecimal> ema( final Data data, final int startSmaIndex, final int endEmaIndex ) {
@@ -151,10 +150,10 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	class Data {
-		private BigDecimal[] dataDecimal;
+		private List<BigDecimal> dataDecimal;
 		private TradingDayPrices[] dataPrices;
 
-		public void set( final BigDecimal[] data ) {
+		public void set( final List<BigDecimal> data ) {
 			this.dataDecimal = data;
 			this.dataPrices = null;
 		}
@@ -165,7 +164,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		}
 
 		public BigDecimal getPrice( final int index ) {
-			return dataDecimal == null ? dataPrices[index].getClosingPrice().getPrice() : dataDecimal[index];
+			return dataDecimal == null ? dataPrices[index].getClosingPrice().getPrice() : dataDecimal.get( index );
 		}
 	}
 }
