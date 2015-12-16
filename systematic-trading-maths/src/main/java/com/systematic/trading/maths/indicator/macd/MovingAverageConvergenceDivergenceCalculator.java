@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.collection.LimitedSizeList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
@@ -74,26 +75,26 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	public List<DatedSignal> macd( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
 		// TODO use the validator
-		final BigDecimal[] slowEmaValues = slowEma.ema( data );
-		final BigDecimal[] fastEmaValues = fastEma.ema( data );
+		final LimitedSizeList<BigDecimal> slowEmaValues = slowEma.ema( data );
+		final LimitedSizeList<BigDecimal> fastEmaValues = fastEma.ema( data );
 		final BigDecimal[] macd = signalStore.getStore( data.length );
 
 		// Skip the null entries of the slow EMA
-		final int slowEmaStartIndex = validator.getFirstNonNullIndex( slowEmaValues );
-		final int fastEmaStartIndex = validator.getFirstNonNullIndex( fastEmaValues );
-		final int emaStartIndex = slowEmaStartIndex > fastEmaStartIndex ? slowEmaStartIndex : fastEmaStartIndex;
+//		final int slowEmaStartIndex = validator.getFirstNonNullIndex( slowEmaValues );
+//		final int fastEmaStartIndex = validator.getFirstNonNullIndex( fastEmaValues );
+//		final int emaStartIndex = slowEmaStartIndex > fastEmaStartIndex ? slowEmaStartIndex : fastEmaStartIndex;
 
 		// The arrays may not be entirely filled i.e. end contains nulls
-		final int slowEmaEndIndex = validator.getLastNonNullIndex( slowEmaValues );
-		final int fastEmaEndIndex = validator.getLastNonNullIndex( fastEmaValues );
-		final int emaEndIndex = slowEmaEndIndex < fastEmaEndIndex ? slowEmaEndIndex : fastEmaEndIndex;
+//		final int slowEmaEndIndex = validator.getLastNonNullIndex( slowEmaValues );
+//		final int fastEmaEndIndex = validator.getLastNonNullIndex( fastEmaValues );
+//		final int emaEndIndex = slowEmaEndIndex < fastEmaEndIndex ? slowEmaEndIndex : fastEmaEndIndex;
 
 		// MACD is the fast - slow EMAs
 		for (int i = emaStartIndex; i <= emaEndIndex; i++) {
 			macd[i] = fastEmaValues[i].subtract( slowEmaValues[i] );
 		}
 
-		final BigDecimal[] signaLine = signalEma.ema( macd );
+		final LimitedSizeList<BigDecimal> signaLine = signalEma.ema( macd );
 
 		return calculateBullishSignals( data, macd, emaEndIndex, signaLine );
 	}

@@ -26,6 +26,7 @@
 package com.systematic.trading.maths.indicator.ema;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
@@ -47,7 +48,7 @@ public interface ExponentialMovingAverage {
 	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
 	 * @throws TooManyDataPoints too many closing prices provided to perform EMA calculations.
 	 */
-	BigDecimal[] ema( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	List<BigDecimal> ema( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
 
 	/**
 	 * Calculates the exponential moving average.
@@ -57,7 +58,7 @@ public interface ExponentialMovingAverage {
 	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
 	 * @throws TooManyDataPoints too many closing prices provided to perform EMA calculations.
 	 */
-	BigDecimal[] ema( BigDecimal[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	List<BigDecimal> ema( BigDecimal[] data ) throws TooFewDataPoints, TooManyDataPoints;
 
 	/**
 	 * Minimum number of prices required for calculating the EMA.

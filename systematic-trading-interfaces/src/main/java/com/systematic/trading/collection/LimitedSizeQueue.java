@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.collections;
+package com.systematic.trading.collection;
 
 import java.util.LinkedList;
 
@@ -32,7 +32,7 @@ import java.util.LinkedList;
  * 
  * @author CJ Hare
  */
-public class LimitedQueue<E> extends LinkedList<E> {
+public class LimitedSizeQueue<E> extends LinkedList<E> {
 	private static final long serialVersionUID = 1L;
 
 	/** Maximum size of the queue. */
@@ -45,7 +45,7 @@ public class LimitedQueue<E> extends LinkedList<E> {
 	private final E[] items;
 
 	@SuppressWarnings("unchecked")
-	public LimitedQueue( final Class<E> clazz, final int limit ) {
+	public LimitedSizeQueue( final Class<E> clazz, final int limit ) {
 		this.limit = limit;
 
 		// Occur the reflection cost here once

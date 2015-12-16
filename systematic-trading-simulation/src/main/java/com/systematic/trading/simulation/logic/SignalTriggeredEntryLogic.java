@@ -30,6 +30,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.systematic.trading.collection.LimitedSizeQueue;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signals.AnalysisBuySignals;
@@ -37,7 +38,6 @@ import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.brokerage.BrokerageFees;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.collections.LimitedQueue;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
@@ -59,10 +59,10 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	private final AnalysisBuySignals buyLongAnalysis;
 
 	/** The trading data as it rolled through the set. */
-	private final LimitedQueue<TradingDayPrices> tradingData;
+	private final LimitedSizeQueue<TradingDayPrices> tradingData;
 
 	/** Signals that have already been submitted as orders. */
-	private final LimitedQueue<BuySignal> previousSignals;
+	private final LimitedSizeQueue<BuySignal> previousSignals;
 
 	/** Minimum value of the trade excluding the fee amount */
 	private final MinimumTradeValue minimumTradeValue;
@@ -79,11 +79,11 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		this.minimumTradeValue = minimumTradeValue;
 		this.buyLongAnalysis = analysis;
 
-		this.tradingData = new LimitedQueue<TradingDayPrices>( TradingDayPrices.class,
+		this.tradingData = new LimitedSizeQueue<TradingDayPrices>( TradingDayPrices.class,
 				analysis.getMaximumNumberOfTradingDaysRequired() );
 
 		// There can only ever be as many signals as trading days stored
-		this.previousSignals = new LimitedQueue<BuySignal>( BuySignal.class,
+		this.previousSignals = new LimitedSizeQueue<BuySignal>( BuySignal.class,
 				analysis.getMaximumNumberOfTradingDaysRequired() );
 	}
 

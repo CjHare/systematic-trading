@@ -105,15 +105,13 @@ public class IndicatorInputValidator {
 	 * the index must be within the store size.
 	 * 
 	 * @param data array to find the first non-null index within.
-	 * @param storeSize length of the storage array.
 	 * @param requiredNumberOfPrices the minimum number of consecutive items required in the data
 	 *            set.
 	 * @return maximumIndex of the first non-null entry.
 	 * @throws IllegalArgumentException when the there are no non-null items or the index exceeds
 	 *             the store size.
 	 */
-	public int getStartingNonNullIndex( final TradingDayPrices[] data, final int maximumIndex,
-			final int requiredNumberOfPrices ) {
+	public int getStartingNonNullIndex( final TradingDayPrices[] data, final int requiredNumberOfPrices ) {
 
 		// TODO too few, null at end, null at beginning
 
@@ -126,13 +124,13 @@ public class IndicatorInputValidator {
 		}
 
 		validateIndexInArray( data, firstNonNullItem, requiredNumberOfPrices );
-//		validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
+		// validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
 
 		final int lastNonNullItem = getLastNonNullIndex( data );
 		final int numberOfItems = getNumberOfItems( firstNonNullItem, lastNonNullItem );
 
 		validateNumberOfItems( numberOfItems, requiredNumberOfPrices );
-//		validateSizeOfStore( numberOfItems, maximumIndex );
+		// validateSizeOfStore( numberOfItems, maximumIndex );
 
 		final int numberOfConsecutiveItems = getNumberOfConsectiveItems( data, firstNonNullItem, lastNonNullItem );
 
@@ -146,15 +144,13 @@ public class IndicatorInputValidator {
 	 * the index must be within the store size.
 	 * 
 	 * @param data array to find the first non-null index within.
-	 * @param storeSize length of the storage array.
 	 * @param minimumNumberOfPrices the minimum number of consecutive items required in the data
 	 *            set.
 	 * @return maximumIndex of the first non-null entry.
 	 * @throws IllegalArgumentException when the there are no non-null items or the index exceeds
 	 *             the store size.
 	 */
-	public int getFirstNonNullIndex( final BigDecimal[] data, final int maximumIndex,
-			final int minimumNumberOfPrices ) {
+	public int getFirstNonNullIndex( final BigDecimal[] data, final int minimumNumberOfPrices ) {
 
 		// validateSizeOfStore( data.length, maximumIndex );
 
@@ -164,7 +160,7 @@ public class IndicatorInputValidator {
 			firstNonNullItem++;
 		}
 
-//		validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
+		// validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
 
 		final int lastNonNullItem = getLastNonNullIndex( data );
 		final int numberOfItems = getNumberOfItems( firstNonNullItem, lastNonNullItem );
@@ -195,13 +191,14 @@ public class IndicatorInputValidator {
 		}
 	}
 
-//	private void validateFirstItemInMaximumIndex( final int firstNonNullItem, final int maximumIndex ) {
-//		if (firstNonNullItem >= maximumIndex) {
-//			throw new IllegalArgumentException( String.format(
-//					"The index of the first non-null item index of: %s exceeds the maximum allowed index of: %s",
-//					firstNonNullItem, maximumIndex ) );
-//		}
-//	}
+	// private void validateFirstItemInMaximumIndex( final int firstNonNullItem, final int
+	// maximumIndex ) {
+	// if (firstNonNullItem >= maximumIndex) {
+	// throw new IllegalArgumentException( String.format(
+	// "The index of the first non-null item index of: %s exceeds the maximum allowed index of: %s",
+	// firstNonNullItem, maximumIndex ) );
+	// }
+	// }
 
 	private void validateIndexInArray( final TradingDayPrices[] data, final int firstNonNullItem,
 			final int requiredNumberOfPrices ) {
@@ -212,13 +209,14 @@ public class IndicatorInputValidator {
 		}
 	}
 
-//	private void validateSizeOfStore( final int storeSize, final int maximumIndex ) {
-//		if (storeSize > maximumIndex) {
-//			throw new IllegalArgumentException(
-//					String.format( "The number of data points given: %s exceeds the size of the store: %s", storeSize,
-//							maximumIndex ) );
-//		}
-//	}
+	// private void validateSizeOfStore( final int storeSize, final int maximumIndex ) {
+	// if (storeSize > maximumIndex) {
+	// throw new IllegalArgumentException(
+	// String.format( "The number of data points given: %s exceeds the size of the store: %s",
+	// storeSize,
+	// maximumIndex ) );
+	// }
+	// }
 
 	private int getNumberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {
 		// Number of items, accounting for zero indexed array

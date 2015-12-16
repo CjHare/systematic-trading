@@ -31,7 +31,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import com.systematic.trading.simulation.collections.LimitedQueue;
+import com.systematic.trading.collection.LimitedSizeQueue;
 
 /**
  * Tests the limited size implementation of LinkedList
@@ -43,7 +43,7 @@ public class LimitedQueueTest {
 	@Test
 	public void addUnderLimit() {
 		final int limit = 5;
-		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, limit );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, limit );
 		final String one = "one";
 
 		// Add the data to the list
@@ -57,7 +57,7 @@ public class LimitedQueueTest {
 	@Test
 	public void addOnLimit() {
 		final int limit = 2;
-		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, limit );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, limit );
 		final String one = "one";
 		final String two = "two";
 
@@ -75,7 +75,7 @@ public class LimitedQueueTest {
 	@Test
 	public void addOverLimit() {
 		final int limit = 2;
-		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, limit );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, limit );
 		final String one = "one";
 		final String two = "two";
 		final String three = "three";
@@ -94,7 +94,7 @@ public class LimitedQueueTest {
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void toArrayException() {
-		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, 1 );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, 1 );
 
 		list.toArray( new String[0] );
 
@@ -103,7 +103,7 @@ public class LimitedQueueTest {
 
 	@Test
 	public void toArraySizeOne() {
-		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, 1 );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, 1 );
 		list.add( "first" );
 
 		final String[] a = list.toArray();
@@ -114,7 +114,7 @@ public class LimitedQueueTest {
 
 	@Test
 	public void toArraySizeTwoPopulationOne() {
-		final LimitedQueue<String> list = new LimitedQueue<String>( String.class, 2 );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, 2 );
 		list.add( "first" );
 
 		final String[] a = list.toArray();
