@@ -84,7 +84,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		final int emaEndIndex = Math.min( slowEmaValues.size(), fastEmaValues.size() );
 
 		// MACD is the fast - slow EMAs
-		for (int i = 0; i <= emaEndIndex; i++) {
+		for (int i = 0; i < emaEndIndex; i++) {
 			macdValues.add( fastEmaValues.get( i + fastEmaOffset ).subtract( slowEmaValues.get( i + slowEmaOffset ) ) );
 		}
 
