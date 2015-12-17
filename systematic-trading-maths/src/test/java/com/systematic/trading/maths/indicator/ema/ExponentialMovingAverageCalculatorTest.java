@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -222,7 +223,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final int numberDataPoints = lookback + 2;
 		final List<BigDecimal> data = createDecimalPrices( numberDataPoints );
 
-		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( numberDataPoints - 1 );
+		when( validator.getLastNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( numberDataPoints - 1 );
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
 				validator, MATH_CONTEXT );
@@ -242,7 +243,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final int numberDataPoints = lookback + 2;
 		final List<BigDecimal> data = createIncreasingDecimalPrices( numberDataPoints );
 
-		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( numberDataPoints - 1 );
+		when( validator.getLastNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( numberDataPoints - 1 );
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
 				validator, MATH_CONTEXT );
@@ -254,6 +255,21 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertEquals( BigDecimal.valueOf( 0.5 ), ema.get( 0 ).setScale( 1, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.valueOf( 1.5 ), ema.get( 1 ).setScale( 1, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.valueOf( 2.67 ), ema.get( 2 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void notEnoughDataPointsDecimal() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 2;
+		final int numberDataPoints = lookback - 1;
+		final List<BigDecimal> data = createIncreasingDecimalPrices( numberDataPoints );
+
+		when( validator.getFirstNonNullIndex( anyListOf( BigDecimal.class ), anyInt() ) )
+				.thenThrow( new IllegalArgumentException() );
+
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
+				validator, MATH_CONTEXT );
+
+		calculator.ema( data );
 	}
 
 	@Test

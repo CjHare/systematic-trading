@@ -58,13 +58,14 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		this.macd = new MovingAverageConvergenceDivergenceCalculator( fastEma, slowEma, signalEma,
 				new IndicatorInputValidator() );
 
-		this.requiredNumberOfTradingDays = slowEma.getMinimumNumberOfPrices() + signalEma.getMinimumNumberOfPrices()
-				+ signalTimePeriods;
+		this.requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
+				+ signalEma.getMinimumNumberOfPrices();
 	}
 
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data )
 			throws TooFewDataPoints, TooManyDataPoints {
+
 		final List<DatedSignal> signals = macd.macd( data );
 
 		final List<IndicatorSignal> converted = new ArrayList<IndicatorSignal>( signals.size() );

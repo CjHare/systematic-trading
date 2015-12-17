@@ -29,8 +29,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
 
 /**
  * Exponential Moving Average (EMA), a moving average with greater weighting given to recent data
@@ -45,20 +43,16 @@ public interface ExponentialMovingAverage {
 	 * 
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return exponential moving average values.
-	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
-	 * @throws TooManyDataPoints too many closing prices provided to perform EMA calculations.
 	 */
-	List<BigDecimal> ema( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	List<BigDecimal> ema( TradingDayPrices[] data );
 
 	/**
 	 * Calculates the exponential moving average.
 	 * 
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return exponential moving average values.
-	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
-	 * @throws TooManyDataPoints too many closing prices provided to perform EMA calculations.
 	 */
-	List<BigDecimal> ema( List<BigDecimal> data ) throws TooFewDataPoints, TooManyDataPoints;
+	List<BigDecimal> ema( List<BigDecimal> data );
 
 	/**
 	 * Minimum number of prices required for calculating the EMA.

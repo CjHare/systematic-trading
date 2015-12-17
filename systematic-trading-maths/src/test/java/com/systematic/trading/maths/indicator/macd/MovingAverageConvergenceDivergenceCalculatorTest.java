@@ -160,7 +160,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		final TradingDayPrices[] data = createPrices( lookback );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValuesList( lookback, 1 ) );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createIncreasingValuesList( lookback, 2 ) );
-		final List<BigDecimal> signalValues = new ArrayList<BigDecimal>();
 
 		final List<BigDecimal> signalEmaValues = createFlatValuesList( 5, 1 );
 		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( signalEmaValues );
@@ -175,7 +174,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
-		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
 	}
 
@@ -189,8 +187,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final List<BigDecimal> fastEmaValues = createIncreasingValuesList( lookback, 2 );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
-
-		final List<BigDecimal> signalValues = new ArrayList<BigDecimal>();
 
 		final List<BigDecimal> signalEmaValues = createFlatValuesList( 5, 2 );
 		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( signalEmaValues );
@@ -207,7 +203,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
-		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
 	}
 
@@ -222,12 +217,10 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		final List<BigDecimal> fastEmaValues = createIncreasingValuesList( lookback, -1 );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
 
-		final List<BigDecimal> signalValues = new ArrayList<BigDecimal>();
-
 		final List<BigDecimal> signalEmaValues = createFlatValuesList( 5, 8 );
 		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( signalEmaValues );
-		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( data.length - 1 );
-		when( validator.getFirstNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( 0 );
+		when( validator.getLastNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( data.length - 1 );
+		when( validator.getFirstNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( 0 );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, validator );
@@ -241,7 +234,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
-		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
 	}
 
@@ -256,12 +248,10 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		final List<BigDecimal> fastEmaValues = createIncreasingValuesList( lookback, -1 );
 		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
 
-		final List<BigDecimal> signalValues = new ArrayList<BigDecimal>();
-
 		final List<BigDecimal> signalEmaValues = createFlatValuesList( 5, 1 );
 		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( signalEmaValues );
-		when( validator.getLastNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( data.length - 1 );
-		when( validator.getFirstNonNullIndex( any( BigDecimal[].class ) ) ).thenReturn( 0 );
+		when( validator.getLastNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( data.length - 1 );
+		when( validator.getFirstNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( 0 );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, validator );
@@ -275,7 +265,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
-		verify( signalEma ).ema( signalValues );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
 	}
 

@@ -28,8 +28,6 @@ package com.systematic.trading.maths.indicator.macd;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.maths.model.DatedSignal;
 
 /**
@@ -64,8 +62,6 @@ public interface MovingAverageConvergenceDivergence {
 	 * 
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return signals from the MACD.
-	 * @throws TooFewDataPoints not enough closing prices to perform MACD calculations.
-	 * @throws TooManyDataPoints too many closing prices provided to perform MACD calculations.
 	 */
-	List<DatedSignal> macd( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	List<DatedSignal> macd( TradingDayPrices[] data );
 }

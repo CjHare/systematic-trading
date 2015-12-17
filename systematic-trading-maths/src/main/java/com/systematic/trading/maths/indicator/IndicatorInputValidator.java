@@ -26,6 +26,7 @@
 package com.systematic.trading.maths.indicator;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 
@@ -36,13 +37,33 @@ import com.systematic.trading.data.TradingDayPrices;
  */
 public class IndicatorInputValidator {
 
+	public <T> void verifyZeroNullEntries( final List<T> values ) {
+		for (final T value : values) {
+			if (value == null) {
+				throw new IllegalArgumentException(
+						String.format( "Unexpected null value found in list: %s", values ) );
+			}
+		}
+	}
+
+	public <T> void verifyZeroNullEntries( final T[] values ) {
+		for (final T value : values) {
+			if (value == null) {
+				throw new IllegalArgumentException(
+						String.format( "Unexpected null value found in list: %s", values ) );
+			}
+		}
+	}
+
+	// TODO rename classes methods
+
 	/**
 	 * The last index in the given array that contains an element.
 	 * 
 	 * @param data array to find the last non-null item.
 	 * @return index of the last item in the array, always < data.length.
 	 */
-	public int getLastNonNullIndex( final TradingDayPrices[] data ) {
+	public <T> int getLastNonNullIndex( final T[] data ) {
 		// Find last non-null index
 		int lastNonNullItem = data.length - 1;
 
@@ -59,9 +80,9 @@ public class IndicatorInputValidator {
 	 * @param data array to find the last non-null item.
 	 * @return index of the last item in the array, always < data.length.
 	 */
-	public int getLastNonNullIndex( final BigDecimal[] data ) {
+	public <T> int getLastNonNullIndex( final List<T> data ) {
 		// Find last non-null index
-		int lastNonNullItem = data.length - 1;
+		int lastNonNullItem = data.size() - 1;
 
 		while (isNullEntryWithinArray( data, lastNonNullItem )) {
 			lastNonNullItem--;
@@ -90,7 +111,7 @@ public class IndicatorInputValidator {
 	 * 
 	 * @param data array to find the first non-null index within.
 	 */
-	public int getFirstNonNullIndex( final BigDecimal[] data ) {
+	public int getFirstNonNullIndex( final List<BigDecimal> data ) {
 		// Skip any null entries
 		int firstNonNullItem = 0;
 		while (isNullEntryWithinArray( data, firstNonNullItem )) {
@@ -98,6 +119,42 @@ public class IndicatorInputValidator {
 		}
 
 		return firstNonNullItem;
+	}
+
+	public <T> void verifyEnoughValues( final List<T> data, final int requiredNumberOfPrices ) {
+
+		// Skip any null entries
+		int firstNonNullItem = 0;
+		while (isNullEntryWithinArray( data, firstNonNullItem )) {
+			firstNonNullItem++;
+		}
+
+		final int lastNonNullItem = getLastNonNullIndex( data );
+		final int numberOfItems = getNumberOfItems( firstNonNullItem, lastNonNullItem );
+
+		validateNumberOfItems( numberOfItems, requiredNumberOfPrices );
+
+		final int numberOfConsecutiveItems = getNumberOfConsectiveItems( data, firstNonNullItem, lastNonNullItem );
+
+		validateEnoughConsecutiveItems( numberOfConsecutiveItems, requiredNumberOfPrices );
+	}
+
+	public <T> void verifyEnoughValues( final T[] data, final int requiredNumberOfPrices ) {
+
+		// Skip any null entries
+		int firstNonNullItem = 0;
+		while (isNullEntryWithinArray( data, firstNonNullItem )) {
+			firstNonNullItem++;
+		}
+
+		final int lastNonNullItem = getLastNonNullIndex( data );
+		final int numberOfItems = getNumberOfItems( firstNonNullItem, lastNonNullItem );
+
+		validateNumberOfItems( numberOfItems, requiredNumberOfPrices );
+
+		final int numberOfConsecutiveItems = getNumberOfConsectiveItems( data, firstNonNullItem, lastNonNullItem );
+
+		validateEnoughConsecutiveItems( numberOfConsecutiveItems, requiredNumberOfPrices );
 	}
 
 	/**
@@ -118,7 +175,7 @@ public class IndicatorInputValidator {
 		// TODO may not need maximum index
 
 		// Skip any null entries
-		int firstNonNullItem = data.length - 1 - requiredNumberOfPrices;
+		int firstNonNullItem = 0;
 		while (isNullEntryWithinArray( data, firstNonNullItem )) {
 			firstNonNullItem++;
 		}
@@ -150,7 +207,7 @@ public class IndicatorInputValidator {
 	 * @throws IllegalArgumentException when the there are no non-null items or the index exceeds
 	 *             the store size.
 	 */
-	public int getFirstNonNullIndex( final BigDecimal[] data, final int minimumNumberOfPrices ) {
+	public int getFirstNonNullIndex( final List<BigDecimal> data, final int minimumNumberOfPrices ) {
 
 		// validateSizeOfStore( data.length, maximumIndex );
 
@@ -223,7 +280,7 @@ public class IndicatorInputValidator {
 		return lastNonNullItem - firstNonNullItem + 1;
 	}
 
-	private int getNumberOfConsectiveItems( final TradingDayPrices[] data, final int firstNonNullItem,
+	private <T> int getNumberOfConsectiveItems( final T[] data, final int firstNonNullItem,
 			final int lastNonNullItem ) {
 
 		// Are the items consecutively populated (as expected)
@@ -238,7 +295,7 @@ public class IndicatorInputValidator {
 		return numberOfConsecutiveItems;
 	}
 
-	private int getNumberOfConsectiveItems( final BigDecimal[] data, final int firstNonNullItem,
+	private <T> int getNumberOfConsectiveItems( final List<T> data, final int firstNonNullItem,
 			final int lastNonNullItem ) {
 
 		// Are the items consecutively populated (as expected)
@@ -253,23 +310,23 @@ public class IndicatorInputValidator {
 		return numberOfConsecutiveItems;
 	}
 
-	private boolean isNullEntryWithinArray( final BigDecimal[] data, final int index ) {
-		return isWithinArray( data, index ) && isNullEntry( data, index );
+	private <T> boolean isNullEntryWithinArray( final List<T> data, final int index ) {
+		return isWithinArray( data.size(), index ) && isNullEntry( data, index );
 	}
 
-	private boolean isNullEntryWithinArray( final TradingDayPrices[] data, final int index ) {
-		return isWithinArray( data, index ) && isNullEntry( data, index );
+	private <T> boolean isNullEntryWithinArray( final T[] data, final int index ) {
+		return isWithinArray( data.length, index ) && isNullEntry( data, index );
 	}
 
-	private boolean isNullEntry( final TradingDayPrices[] data, final int index ) {
-		return (data[index] == null || data[index].getClosingPrice() == null);
-	}
-
-	private boolean isNullEntry( final BigDecimal[] data, final int index ) {
+	private <T> boolean isNullEntry( final T[] data, final int index ) {
 		return data[index] == null;
 	}
 
-	private boolean isWithinArray( final Object[] data, final int index ) {
-		return (index >= 0) && (index < data.length);
+	private <T> boolean isNullEntry( final List<T> data, final int index ) {
+		return data.get( index ) == null;
+	}
+
+	private boolean isWithinArray( final int size, final int index ) {
+		return (index >= 0) && (index < size);
 	}
 }

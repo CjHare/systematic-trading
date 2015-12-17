@@ -31,8 +31,6 @@ import java.util.List;
 
 import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.maths.indicator.IndicatorInputValidator;
 
 /**
@@ -91,9 +89,12 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	@Override
-	public List<BigDecimal> ema( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
+	public List<BigDecimal> ema( final TradingDayPrices[] data ) {
 
-		final int startSmaIndex = validator.getStartingNonNullIndex( data, lookback );
+		validator.verifyZeroNullEntries( data );
+		validator.verifyEnoughValues( data, lookback );
+
+		final int startSmaIndex = validator.getFirstNonNullIndex( data );
 		final int endEmaIndex = validator.getLastNonNullIndex( data );
 
 		wrapper.set( data );
@@ -106,10 +107,11 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	@Override
-	public List<BigDecimal> ema( final List<BigDecimal> data ) throws TooFewDataPoints, TooManyDataPoints {
+	public List<BigDecimal> ema( final List<BigDecimal> data ) {
 
-		//TODO validate - enforce no null entries
-		
+		validator.verifyZeroNullEntries( data );
+		validator.verifyEnoughValues( data, lookback );
+
 		wrapper.set( data );
 
 		return ema( wrapper, 0, data.size() - 1 );

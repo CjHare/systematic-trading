@@ -73,10 +73,8 @@ public class TodaysBuySignals {
 		final LocalDate endDate = LocalDate.now();
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS );
 
-		final int daysOfMacd = 500;
-
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
-				daysOfMacd, MATH_CONTEXT );
+				MATH_CONTEXT );
 
 		final int daysOfSma = 500;
 

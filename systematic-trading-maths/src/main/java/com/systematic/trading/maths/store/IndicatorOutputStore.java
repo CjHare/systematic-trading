@@ -38,6 +38,8 @@ import com.systematic.trading.maths.exception.TooManyDataPoints;
  */
 public interface IndicatorOutputStore {
 
+	//TODO delete me!!
+	
 	/**
 	 * Obtains the array to store the results from the indicator.
 	 * 

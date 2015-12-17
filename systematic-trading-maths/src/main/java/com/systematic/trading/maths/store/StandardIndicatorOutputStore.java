@@ -35,6 +35,8 @@ import java.math.BigDecimal;
  */
 public class StandardIndicatorOutputStore implements IndicatorOutputStore {
 
+	// TODO delete me!!
+
 	@Override
 	public BigDecimal[] getStore( final int size ) {
 		return new BigDecimal[size];

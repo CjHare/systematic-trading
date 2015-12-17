@@ -26,13 +26,12 @@
 package com.systematic.trading.maths.indicator.macd;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.maths.indicator.IndicatorInputValidator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.model.DatedSignal;
@@ -54,16 +53,23 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	/** Exponential moving average of the values from slowEma - fastEma. */
 	private final ExponentialMovingAverage signalEma;
 
-	/** Provides the array to put the slow-fast ema value for feeding to the signal ema. */
+	/** Provides a store for the slow-fast ema value for feeding to the signal ema. */
 	private final List<BigDecimal> macdValues;
+
+	/** Provides a store for the dates that match the signal line entries. */
+	private final List<LocalDate> signalLineDates;
 
 	/** Responsible for parsing and validating the input. */
 	private final IndicatorInputValidator validator;
+
+	/** The date of the last processed price data. */
+	private LocalDate lastDateProcessed;
 
 	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverage fastEma,
 			final ExponentialMovingAverage slowEma, final ExponentialMovingAverage signalEma,
 			final IndicatorInputValidator validator ) {
 		this.macdValues = new NonNullableArrayList<BigDecimal>();
+		this.signalLineDates = new NonNullableArrayList<LocalDate>();
 		this.validator = validator;
 		this.signalEma = signalEma;
 		this.slowEma = slowEma;
@@ -71,12 +77,22 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	}
 
 	@Override
-	public List<DatedSignal> macd( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
+	public List<DatedSignal> macd( final TradingDayPrices[] data ) {
 
-		// TODO use the validator
+		// TODO use the validator, all data entries must be non-null
+		// TODO validate enough data points
+		// TODO validate / enforce data is not null
+
+		if (lastDateProcessed == null) {
+			lastDateProcessed = data[0].getDate();
+		}
+
 		final List<BigDecimal> slowEmaValues = slowEma.ema( data );
 		final List<BigDecimal> fastEmaValues = fastEma.ema( data );
+
+		// Clear the stores, readying them for use
 		macdValues.clear();
+		signalLineDates.clear();
 
 		// We're only interested in shared indexes, both right most aligned with data[]
 		final int slowEmaOffset = Math.max( 0, slowEmaValues.size() - fastEmaValues.size() );
@@ -90,13 +106,22 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 
 		final List<BigDecimal> signaLine = signalEma.ema( macdValues );
 
-		// TODO validate / enforce data is not null
+		// The signal line matches with the right most values of the data array
+		for (int i = data.length - signaLine.size(); i < data.length; i++) {
+			signalLineDates.add( data[i].getDate() );
+		}
 
-		return calculateBullishSignals( data, signaLine );
+		final List<DatedSignal> bullishSignals = calculateBullishSignals( macdValues, signaLine, signalLineDates );
+
+		lastDateProcessed = data[data.length - 1].getDate();
+
+		return bullishSignals;
 	}
 
-	private List<DatedSignal> calculateBullishSignals( final TradingDayPrices[] data,
-			final List<BigDecimal> signaLine ) {
+	private List<DatedSignal> calculateBullishSignals( final List<BigDecimal> macdValues,
+			final List<BigDecimal> signaLine, final List<LocalDate> signalLineDates ) {
+
+		// TODO validate date array, same size as signals
 
 		final List<DatedSignal> signals = new ArrayList<DatedSignal>();
 
@@ -106,30 +131,33 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		final int endIndex = Math.min( signaLine.size(), macdValues.size() );
 
 		// Buy signal is from a cross over of the signal line, for crossing over the origin
-		BigDecimal todayMacd, todaySignalLine;
-		BigDecimal yesterdayMacd = macdValues.get( 0 );
-		BigDecimal yesterdaySignalLine = signaLine.get( 0 );
+		BigDecimal todayMacd, todaySignalLine, yesterdayMacd, yesterdaySignalLine;
+		LocalDate todaySignalLineDate;
 
 		for (int index = 1; index < endIndex; index++) {
 
 			todayMacd = macdValues.get( index + macdValuesOffset );
+			yesterdayMacd = macdValues.get( index + macdValuesOffset - 1 );
 			todaySignalLine = signaLine.get( index + signalLineOffset );
+			yesterdaySignalLine = signaLine.get( index + signalLineOffset - 1 );
+			todaySignalLineDate = signalLineDates.get( index + signalLineOffset );
 
-			// The MACD trends up, with crossing the signal line
-			// OR trending up and crossing the zero line
-			if (crossingSignalLine( yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine )
-					|| crossingOrigin( yesterdayMacd, todayMacd )) {
-				signals.add( new DatedSignal( data[index].getDate(), SignalType.BULLISH ) );
+			if (isEAfterLastDateProcessed( todaySignalLineDate )) {
+				// The MACD trends up, with crossing the signal line
+				// OR trending up and crossing the zero line
+				if (crossingSignalLine( yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine )
+						|| crossingOrigin( yesterdayMacd, todayMacd )) {
+					signals.add( new DatedSignal( todaySignalLineDate, SignalType.BULLISH ) );
+				}
 			}
-
-			// Bump the days
-			yesterdayMacd = todayMacd;
-			yesterdaySignalLine = todaySignalLine;
-
 		}
 
 		return signals;
 
+	}
+
+	private boolean isEAfterLastDateProcessed( final LocalDate date ) {
+		return date.isAfter( lastDateProcessed );
 	}
 
 	private boolean crossingSignalLine( final BigDecimal yesterdayMacd, final BigDecimal todayMacd,
