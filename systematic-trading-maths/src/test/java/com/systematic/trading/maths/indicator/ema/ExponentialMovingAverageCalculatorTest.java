@@ -30,6 +30,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -117,12 +118,12 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		final List<BigDecimal> ema = calculator.ema( data );
 
-		verify( validator ).getStartingNonNullIndex( data, lookback );
-		verify( validator ).getLastNonNullIndex( data );
-
 		assertNotNull( ema );
 		assertEquals( 1, ema.size() );
 		assertEquals( BigDecimal.ONE, ema.get( 0 ).setScale( 0, RoundingMode.HALF_EVEN ) );
+
+		verify( validator ).verifyEnoughValues( data, lookback );
+		verify( validator ).verifyZeroNullEntries( data );
 	}
 
 	@Test
@@ -138,37 +139,29 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		final List<BigDecimal> ema = calculator.ema( data );
 
-		verify( validator ).getStartingNonNullIndex( data, lookback );
-		verify( validator ).getLastNonNullIndex( data );
-
 		assertNotNull( ema );
 		assertEquals( 2, ema.size() );
 		assertEquals( BigDecimal.ONE, ema.get( 0 ).setScale( 0, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.ONE, ema.get( 1 ).setScale( 0, RoundingMode.HALF_EVEN ) );
+
+		verify( validator ).verifyEnoughValues( data, lookback );
+		verify( validator ).verifyZeroNullEntries( data );
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void emaFirstPointNull() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 3;
 		final int numberDataPoints = lookback + 2;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[0] = null;
 
-		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt() ) ).thenReturn( 1 );
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
+		doThrow( new IllegalArgumentException() ).when( validator ).verifyEnoughValues( any( TradingDayPrices[].class ),
+				anyInt() );
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
 				validator, MATH_CONTEXT );
 
-		final List<BigDecimal> ema = calculator.ema( data );
-
-		verify( validator ).getStartingNonNullIndex( data, lookback );
-		verify( validator ).getLastNonNullIndex( data );
-
-		assertNotNull( ema );
-		assertEquals( 2, ema.size() );
-		assertEquals( BigDecimal.ONE, ema.get( 0 ).setScale( 0, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.ONE, ema.get( 1 ).setScale( 0, RoundingMode.HALF_EVEN ) );
+		calculator.ema( data );
 	}
 
 	@Test
@@ -184,37 +177,30 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		final List<BigDecimal> ema = calculator.ema( data );
 
-		verify( validator ).getStartingNonNullIndex( data, lookback );
-		verify( validator ).getLastNonNullIndex( data );
-
 		assertNotNull( ema );
 		assertEquals( 3, ema.size() );
 		assertEquals( BigDecimal.valueOf( 1.5 ), ema.get( 0 ).setScale( 1, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.valueOf( 2.5 ), ema.get( 1 ).setScale( 1, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.valueOf( 3.67 ), ema.get( 2 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+
+		verify( validator ).verifyEnoughValues( data, lookback );
+		verify( validator ).verifyZeroNullEntries( data );
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void emaTwoPointsLastNull() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
 		data[data.length - 1] = null;
 
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 2 );
+		doThrow( new IllegalArgumentException() ).when( validator )
+				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
 				validator, MATH_CONTEXT );
 
-		final List<BigDecimal> ema = calculator.ema( data );
-
-		verify( validator ).getStartingNonNullIndex( data, lookback );
-		verify( validator ).getLastNonNullIndex( data );
-
-		assertNotNull( ema );
-		assertEquals( 2, ema.size() );
-		assertEquals( BigDecimal.valueOf( 1.5 ), ema.get( 0 ).setScale( 1, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 2.5 ), ema.get( 1 ).setScale( 1, RoundingMode.HALF_EVEN ) );
+		calculator.ema( data );
 	}
 
 	@Test
@@ -235,6 +221,9 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertEquals( BigDecimal.ONE, ema.get( 0 ).setScale( 0, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.ONE, ema.get( 1 ).setScale( 0, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.ONE, ema.get( 2 ).setScale( 0, RoundingMode.HALF_EVEN ) );
+
+		verify( validator ).verifyEnoughValues( data, lookback );
+		verify( validator ).verifyZeroNullEntries( data );
 	}
 
 	@Test
@@ -255,6 +244,9 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertEquals( BigDecimal.valueOf( 0.5 ), ema.get( 0 ).setScale( 1, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.valueOf( 1.5 ), ema.get( 1 ).setScale( 1, RoundingMode.HALF_EVEN ) );
 		assertEquals( BigDecimal.valueOf( 2.67 ), ema.get( 2 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+
+		verify( validator ).verifyEnoughValues( data, lookback );
+		verify( validator ).verifyZeroNullEntries( data );
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -263,8 +255,8 @@ public class ExponentialMovingAverageCalculatorTest {
 		final int numberDataPoints = lookback - 1;
 		final List<BigDecimal> data = createIncreasingDecimalPrices( numberDataPoints );
 
-		when( validator.getFirstNonNullIndex( anyListOf( BigDecimal.class ), anyInt() ) )
-				.thenThrow( new IllegalArgumentException() );
+		doThrow( new IllegalArgumentException() ).when( validator ).verifyEnoughValues( anyListOf( BigDecimal.class ),
+				anyInt() );
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
 				validator, MATH_CONTEXT );

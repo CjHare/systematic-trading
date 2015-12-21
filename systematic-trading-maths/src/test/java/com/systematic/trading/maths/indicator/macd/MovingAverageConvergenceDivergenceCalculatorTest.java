@@ -28,8 +28,10 @@ package com.systematic.trading.maths.indicator.macd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -86,32 +88,35 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		return prices;
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void noResults() throws TooFewDataPoints, TooManyDataPoints {
-		final int lookback = 10;
+		final int lookback = 0;
 		final TradingDayPrices[] data = new TradingDayPrices[lookback];
 
-		final List<BigDecimal> fastEmaValues = createIncreasingValuesList( lookback, 2 );
-		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( fastEmaValues );
-
-		final List<BigDecimal> slowEmaValues = createFlatValuesList( lookback, 0 );
-		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( slowEmaValues );
-
-		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( new ArrayList<BigDecimal>( lookback ) );
+		doThrow( new IllegalArgumentException() ).when( validator ).verifyEnoughValues( any( TradingDayPrices[].class ),
+				anyInt() );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, validator );
 
-		final List<DatedSignal> signals = calculator.macd( data );
-
-		assertNotNull( signals );
-		assertEquals( 0, signals.size() );
-		verify( fastEma ).ema( data );
-		verify( slowEma ).ema( data );
-		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
+		calculator.macd( data );
 	}
 
-	private List<BigDecimal> createFlatValuesList( final int size, final int value ) {
+	@Test(expected = IllegalArgumentException.class)
+	public void singleNullResult() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 1;
+		final TradingDayPrices[] data = new TradingDayPrices[lookback];
+
+		doThrow( new IllegalArgumentException() ).when( validator ).verifyEnoughValues( any( TradingDayPrices[].class ),
+				anyInt() );
+
+		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
+				fastEma, slowEma, signalEma, validator );
+
+		calculator.macd( data );
+	}
+
+	private List<BigDecimal> createFlatValuesList( final int size, final double value ) {
 		final List<BigDecimal> values = new ArrayList<BigDecimal>( size );
 
 		for (int i = 0; i < size; i++) {
@@ -146,10 +151,12 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		assertNotNull( signals );
 		assertEquals( 0, signals.size() );
+
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, 1 );
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
-
 		verify( signalEma ).ema( isBigDecimalListOf( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ),
 				BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) );
 	}
@@ -172,6 +179,8 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		assertNotNull( signals );
 		assertEquals( 0, signals.size() );
 
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, 1 );
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
@@ -201,9 +210,51 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		assertEquals( SignalType.BULLISH, signals.get( 0 ).getType() );
 		assertEquals( LocalDate.now().plusDays( 1 ), signals.get( 0 ).getDate() );
 
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, 1 );
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
+	}
+
+	@Test
+	public void bullishSignalLineCrossoverTwoDataSets() throws TooFewDataPoints, TooManyDataPoints {
+
+		final int firstLookback = 4;
+		final TradingDayPrices[] firstData = createPrices( firstLookback );
+
+		final int secondLookback = 10;
+		final TradingDayPrices[] secondData = createPrices( secondLookback );
+
+		final List<BigDecimal> firstSlowEmaValues = createFlatValuesList( firstLookback, 1 );
+		final List<BigDecimal> secondSlowEmaValues = createFlatValuesList( secondLookback, 1 );
+		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( firstSlowEmaValues )
+				.thenReturn( secondSlowEmaValues );
+
+		final List<BigDecimal> firstFastEmaValues = createIncreasingValuesList( firstLookback, 2 );
+		final List<BigDecimal> secondFastEmaValues = createIncreasingValuesList( secondLookback, 2 );
+		when( fastEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( firstFastEmaValues )
+				.thenReturn( secondFastEmaValues );
+
+		final List<BigDecimal> firstSignalEmaValues = createFlatValuesList( firstLookback, 4.1 );
+		final List<BigDecimal> secondSignalEmaValues = createFlatValuesList( secondLookback, 4.1 );
+		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( firstSignalEmaValues )
+				.thenReturn( secondSignalEmaValues );
+
+		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
+				fastEma, slowEma, signalEma, validator );
+
+		final List<DatedSignal> firstSignals = calculator.macd( firstData );
+
+		assertNotNull( firstSignals );
+		assertEquals( 0, firstSignals.size() );
+
+		final List<DatedSignal> secondSignals = calculator.macd( secondData );
+
+		assertNotNull( secondSignals );
+		assertEquals( 1, secondSignals.size() );
+		assertEquals( SignalType.BULLISH, secondSignals.get( 0 ).getType() );
+		assertEquals( LocalDate.now().plusDays( 4 ), secondSignals.get( 0 ).getDate() );
 	}
 
 	@Test
@@ -232,6 +283,8 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		assertEquals( SignalType.BULLISH, signals.get( 0 ).getType() );
 		assertEquals( LocalDate.now().plusDays( 1 ), signals.get( 0 ).getDate() );
 
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, 1 );
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );
@@ -263,6 +316,8 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		assertEquals( SignalType.BULLISH, signals.get( 0 ).getType() );
 		assertEquals( LocalDate.now().plusDays( 1 ), signals.get( 0 ).getDate() );
 
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, 1 );
 		verify( fastEma ).ema( data );
 		verify( slowEma ).ema( data );
 		verify( signalEma, never() ).ema( any( TradingDayPrices[].class ) );

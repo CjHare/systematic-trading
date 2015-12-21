@@ -63,7 +63,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	private final IndicatorInputValidator validator;
 
 	/** The date of the last processed price data. */
-	private LocalDate lastDateProcessed;
+	private LocalDate lastDateProcessed = LocalDate.MIN;
 
 	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverage fastEma,
 			final ExponentialMovingAverage slowEma, final ExponentialMovingAverage signalEma,
@@ -79,13 +79,8 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	@Override
 	public List<DatedSignal> macd( final TradingDayPrices[] data ) {
 
-		// TODO use the validator, all data entries must be non-null
-		// TODO validate enough data points
-		// TODO validate / enforce data is not null
-
-		if (lastDateProcessed == null) {
-			lastDateProcessed = data[0].getDate();
-		}
+		validator.verifyZeroNullEntries( data );
+		validator.verifyEnoughValues( data, 1 );
 
 		final List<BigDecimal> slowEmaValues = slowEma.ema( data );
 		final List<BigDecimal> fastEmaValues = fastEma.ema( data );
@@ -121,8 +116,6 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	private List<DatedSignal> calculateBullishSignals( final List<BigDecimal> macdValues,
 			final List<BigDecimal> signaLine, final List<LocalDate> signalLineDates ) {
 
-		// TODO validate date array, same size as signals
-
 		final List<DatedSignal> signals = new ArrayList<DatedSignal>();
 
 		// We're only interested in shared indexes, both right most aligned with data[]
@@ -142,7 +135,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 			yesterdaySignalLine = signaLine.get( index + signalLineOffset - 1 );
 			todaySignalLineDate = signalLineDates.get( index + signalLineOffset );
 
-			if (isEAfterLastDateProcessed( todaySignalLineDate )) {
+			if (isAfterLastDateProcessed( todaySignalLineDate )) {
 				// The MACD trends up, with crossing the signal line
 				// OR trending up and crossing the zero line
 				if (crossingSignalLine( yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine )
@@ -156,7 +149,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 
 	}
 
-	private boolean isEAfterLastDateProcessed( final LocalDate date ) {
+	private boolean isAfterLastDateProcessed( final LocalDate date ) {
 		return date.isAfter( lastDateProcessed );
 	}
 

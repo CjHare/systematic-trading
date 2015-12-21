@@ -29,6 +29,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,11 +58,11 @@ public class IndicatorInputValidatorTest {
 		return prices;
 	}
 
-	private BigDecimal[] createDecimals( final int count ) {
-		final BigDecimal[] prices = new BigDecimal[count];
+	private List<BigDecimal> createDecimals( final int count ) {
+		final List<BigDecimal> prices = new ArrayList<BigDecimal>( count );
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = BigDecimal.valueOf( count );
+			prices.add( BigDecimal.valueOf( count ) );
 		}
 
 		return prices;
@@ -171,7 +173,7 @@ public class IndicatorInputValidatorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void fewerDataPointsThenLookbackDecimals() {
 		final int lookback = 4;
-		final BigDecimal[] data = createDecimals( lookback );
+		final List<BigDecimal> data = createDecimals( lookback );
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
@@ -181,7 +183,7 @@ public class IndicatorInputValidatorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void mismatchedParameterLengthsDecimals() {
 		final int lookback = 4;
-		final BigDecimal[] data = createDecimals( lookback );
+		final List<BigDecimal> data = createDecimals( lookback );
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
@@ -192,7 +194,7 @@ public class IndicatorInputValidatorTest {
 	public void allNullDecimals() {
 		final int lookback = 4;
 		final int numberDataPoints = lookback + 1;
-		final BigDecimal[] data = new BigDecimal[numberDataPoints];
+		final List<BigDecimal> data = new ArrayList<BigDecimal>( numberDataPoints );
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
@@ -202,7 +204,7 @@ public class IndicatorInputValidatorTest {
 	@Test
 	public void noNullValuesDecimals() {
 		final int numberDataPoints = 5;
-		final BigDecimal[] data = createDecimals( numberDataPoints );
+		final List<BigDecimal> data = createDecimals( numberDataPoints );
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
@@ -214,8 +216,8 @@ public class IndicatorInputValidatorTest {
 	@Test
 	public void firstValueIsNullDecimals() {
 		final int numberDataPoints = 5;
-		final BigDecimal[] data = createDecimals( numberDataPoints + 1 );
-		data[0] = null;
+		final List<BigDecimal> data = createDecimals( numberDataPoints + 1 );
+		data.set( 0, null );
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
@@ -227,8 +229,8 @@ public class IndicatorInputValidatorTest {
 	@Test
 	public void lastValueIsNullDecimals() {
 		final int numberDataPoints = 5;
-		final BigDecimal[] data = createDecimals( numberDataPoints + 1 );
-		data[numberDataPoints] = null;
+		final List<BigDecimal> data = createDecimals( numberDataPoints + 1 );
+		data.set( numberDataPoints, null );
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
@@ -240,8 +242,8 @@ public class IndicatorInputValidatorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughConsectiveValuesMidDecimals() {
 		final int numberDataPoints = 5;
-		final BigDecimal[] data = createDecimals( numberDataPoints + 1 );
-		data[3] = null;
+		final List<BigDecimal> data = createDecimals( numberDataPoints + 1 );
+		data.set( 3, null );
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
@@ -251,8 +253,8 @@ public class IndicatorInputValidatorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughConsectiveValuesEndDecimals() {
 		final int numberDataPoints = 5;
-		final BigDecimal[] data = createDecimals( numberDataPoints );
-		data[numberDataPoints - 1] = null;
+		final List<BigDecimal> data = createDecimals( numberDataPoints );
+		data.set( numberDataPoints - 1, null );
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
@@ -262,8 +264,8 @@ public class IndicatorInputValidatorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughConsectiveValuesStartDecimals() {
 		final int numberDataPoints = 5;
-		final BigDecimal[] data = createDecimals( numberDataPoints );
-		data[0] = null;
+		final List<BigDecimal> data = createDecimals( numberDataPoints );
+		data.set( 0, null );
 
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 
@@ -274,8 +276,8 @@ public class IndicatorInputValidatorTest {
 	public void getFirstNonNullIndexDecimals() {
 		final int numberDataPoints = 5;
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
-		final BigDecimal[] data = createDecimals( numberDataPoints );
-		data[0] = null;
+		final List<BigDecimal> data = createDecimals( numberDataPoints );
+		data.set( 0, null );
 
 		final int index = validator.getFirstNonNullIndex( data );
 
