@@ -26,6 +26,7 @@
 package com.systematic.trading.maths.indicator.atr;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
@@ -67,6 +68,6 @@ public interface AverageTrueRange {
 	 * @throws TooFewDataPoints not enough closing prices to perform ATR calculations.
 	 * @throws TooManyDataPoints too many prices have been provided to perform ATR calculations.
 	 */
-	BigDecimal[] atr( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	List<BigDecimal> atr( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
 
 }

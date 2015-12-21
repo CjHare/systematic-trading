@@ -27,15 +27,14 @@ package com.systematic.trading.maths.indicator.atr;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,8 +46,6 @@ import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.maths.indicator.IndicatorInputValidator;
-import com.systematic.trading.maths.store.IndicatorOutputStore;
-import com.systematic.trading.maths.store.StandardIndicatorOutputStore;
 
 /**
  * Tests the behaviour of the AverageTrueRangeCalculator.
@@ -109,24 +106,21 @@ public class AverageTrueRangeCalculatorTest {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfAtrValues = numberDataPoints - lookback;
 
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
-
 		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
-				validator, store, MATH_CONTEXT );
+				validator, MATH_CONTEXT );
 
-		final BigDecimal[] atr = calculator.atr( data );
+		final List<BigDecimal> atr = calculator.atr( data );
 
-		verify( validator ).getStartingNonNullIndex( data, numberDataPoints );
-		verify( validator ).getLastNonNullIndex( data );
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, numberDataPoints );
 
 		assertNotNull( atr );
-		assertEquals( numberDataPoints, atr.length );
-		assertEquals( BigDecimal.valueOf( 2 ), atr[0] );
-		assertEquals( BigDecimal.valueOf( 2 ), atr[1] );
-		assertEquals( BigDecimal.valueOf( 2 ), atr[2] );
+		assertEquals( numberDataPoints, atr.size() );
+		assertEquals( BigDecimal.valueOf( 2 ), atr.get( 0 ) );
+		assertEquals( BigDecimal.valueOf( 2 ), atr.get( 1 ) );
+		assertEquals( BigDecimal.valueOf( 2 ), atr.get( 2 ) );
 	}
 
 	@Test
@@ -134,82 +128,57 @@ public class AverageTrueRangeCalculatorTest {
 		final int lookback = 4;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfAtrValues = numberDataPoints - lookback;
 
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
-
 		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
-				validator, store, MATH_CONTEXT );
+				validator, MATH_CONTEXT );
 
-		final BigDecimal[] atr = calculator.atr( data );
+		final List<BigDecimal> atr = calculator.atr( data );
 
-		verify( validator ).getStartingNonNullIndex( data, numberDataPoints );
-		verify( validator ).getLastNonNullIndex( data );
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, numberDataPoints );
 
 		assertNotNull( atr );
-		assertEquals( numberDataPoints, atr.length );
-		assertEquals( BigDecimal.valueOf( 5 ), atr[0] );
-		assertEquals( BigDecimal.valueOf( 6.25 ), atr[1] );
-		assertEquals( BigDecimal.valueOf( 8.4375 ), atr[2] );
-		assertEquals( BigDecimal.valueOf( 11.328125 ), atr[3] );
-		assertEquals( BigDecimal.valueOf( 14.74609375 ), atr[4] );
+		assertEquals( numberDataPoints, atr.size() );
+		assertEquals( BigDecimal.valueOf( 5 ), atr.get( 0 ) );
+		assertEquals( BigDecimal.valueOf( 6.25 ), atr.get( 1 ) );
+		assertEquals( BigDecimal.valueOf( 8.4375 ), atr.get( 2 ) );
+		assertEquals( BigDecimal.valueOf( 11.328125 ), atr.get( 3 ) );
+		assertEquals( BigDecimal.valueOf( 14.74609375 ), atr.get( 4 ) );
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void atrInitialNullEntry() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
 		final int numberDataPoints = 4;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[0] = null;
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfAtrValues = numberDataPoints - lookback;
 
-		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt() ) ).thenReturn( 1 );
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
+		doThrow( new IllegalArgumentException() ).when( validator )
+				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
 
 		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
-				validator, store, MATH_CONTEXT );
+				validator, MATH_CONTEXT );
 
-		final BigDecimal[] atr = calculator.atr( data );
-
-		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfAtrValues );
-		verify( validator ).getLastNonNullIndex( data );
-
-		assertNotNull( atr );
-		assertEquals( numberDataPoints, atr.length );
-		assertNull( atr[0] );
-		assertEquals( BigDecimal.valueOf( 2 ), atr[1] );
-		assertEquals( BigDecimal.valueOf( 2 ), atr[2] );
-		assertEquals( BigDecimal.valueOf( 2 ), atr[3] );
+		calculator.atr( data );
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void atrLastNullEntry() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
 		final int numberDataPoints = 4;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[data.length - 1] = null;
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfAtrValues = numberDataPoints - lookback;
 
-		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt() ) ).thenReturn( 1 );
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 2 );
+		doThrow( new IllegalArgumentException() ).when( validator )
+				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
 
 		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
-				validator, store, MATH_CONTEXT );
+				validator, MATH_CONTEXT );
 
-		final BigDecimal[] atr = calculator.atr( data );
-
-		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfAtrValues );
-		verify( validator ).getLastNonNullIndex( data );
-
-		assertNotNull( atr );
-		assertEquals( numberDataPoints, atr.length );
-		assertNull( atr[0] );
-		assertEquals( BigDecimal.valueOf( 2 ), atr[1] );
-		assertEquals( BigDecimal.valueOf( 2 ), atr[2] );
-		assertNull( atr[3] );
+		calculator.atr( data );
 	}
 
 	@Test
@@ -217,25 +186,22 @@ public class AverageTrueRangeCalculatorTest {
 		final int lookback = 4;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createThreeTypesOfVolatility( numberDataPoints );
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfAtrValues = numberDataPoints - lookback;
 
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
-
 		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
-				validator, store, MATH_CONTEXT );
+				validator, MATH_CONTEXT );
 
-		final BigDecimal[] atr = calculator.atr( data );
+		final List<BigDecimal> atr = calculator.atr( data );
 
-		verify( validator ).getStartingNonNullIndex( data, lookback + 1 );
-		verify( validator ).getLastNonNullIndex( data );
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, numberDataPoints );
 
 		assertNotNull( atr );
-		assertEquals( numberDataPoints, atr.length );
-		assertEquals( BigDecimal.valueOf( 5 ), atr[0] );
-		assertEquals( BigDecimal.valueOf( 5 ), atr[1] );
-		assertEquals( BigDecimal.valueOf( 5 ), atr[2] );
-		assertEquals( BigDecimal.valueOf( 8.75 ), atr[3] );
-		assertEquals( BigDecimal.valueOf( 9.0625 ), atr[4] );
+		assertEquals( numberDataPoints, atr.size() );
+		assertEquals( BigDecimal.valueOf( 5 ), atr.get( 0 ) );
+		assertEquals( BigDecimal.valueOf( 5 ), atr.get( 1 ) );
+		assertEquals( BigDecimal.valueOf( 5 ), atr.get( 2 ) );
+		assertEquals( BigDecimal.valueOf( 8.75 ), atr.get( 3 ) );
+		assertEquals( BigDecimal.valueOf( 9.0625 ), atr.get( 4 ) );
 	}
 }

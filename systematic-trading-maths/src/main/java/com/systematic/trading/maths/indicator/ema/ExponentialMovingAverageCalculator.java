@@ -54,6 +54,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/** Constant used for smoothing the moving average. */
 	private final BigDecimal smoothingConstant;
 
+	//TODO pass the store in
 	/** Provides the array to store the result in. */
 	private final List<BigDecimal> emaValues;
 
