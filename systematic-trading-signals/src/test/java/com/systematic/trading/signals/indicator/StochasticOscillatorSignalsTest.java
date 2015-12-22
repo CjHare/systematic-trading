@@ -31,6 +31,7 @@ import static org.junit.Assert.assertNotNull;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -52,10 +53,11 @@ public class StochasticOscillatorSignalsTest {
 				new DatedValue( LocalDate.now().plusDays( 2 ), BigDecimal.valueOf( 28 ) ),
 				new DatedValue( LocalDate.now().plusDays( 3 ), BigDecimal.valueOf( 34 ) ),
 				new DatedValue( LocalDate.now().plusDays( 4 ), BigDecimal.valueOf( 60 ) ) };
-		final BigDecimal[] signaline = { BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 30 ),
-				BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 30 ) };
+		final BigDecimal[] signaLineArray = { BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 30 ),
+				BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 30 ) };
+		final List<BigDecimal> signalLine = Arrays.asList( signaLineArray );
 
-		final List<IndicatorSignal> signals = stochastic.buySignals( dataPoint, signaline );
+		final List<IndicatorSignal> signals = stochastic.buySignals( dataPoint, signalLine );
 
 		assertNotNull( signals );
 		assertEquals( 2, signals.size() );
@@ -74,10 +76,11 @@ public class StochasticOscillatorSignalsTest {
 				new DatedValue( LocalDate.now().plusDays( 2 ), BigDecimal.valueOf( 28 ) ),
 				new DatedValue( LocalDate.now().plusDays( 3 ), BigDecimal.valueOf( 34 ) ),
 				new DatedValue( LocalDate.now().plusDays( 4 ), BigDecimal.valueOf( 60 ) ) };
-		final BigDecimal[] signaline = { BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 31 ), BigDecimal.valueOf( 32 ),
-				BigDecimal.valueOf( 33 ), BigDecimal.valueOf( 34 ) };
+		final BigDecimal[] signaLineArray = { BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 31 ),
+				BigDecimal.valueOf( 32 ), BigDecimal.valueOf( 33 ), BigDecimal.valueOf( 34 ) };
+		final List<BigDecimal> signalLine = Arrays.asList( signaLineArray );
 
-		final List<IndicatorSignal> signals = stochastic.buySignals( dataPoint, signaline );
+		final List<IndicatorSignal> signals = stochastic.buySignals( dataPoint, signalLine );
 
 		assertNotNull( signals );
 		assertEquals( 2, signals.size() );
@@ -96,10 +99,11 @@ public class StochasticOscillatorSignalsTest {
 				new DatedValue( LocalDate.now().plusDays( 2 ), BigDecimal.valueOf( 24 ) ),
 				new DatedValue( LocalDate.now().plusDays( 3 ), BigDecimal.valueOf( 34 ) ),
 				new DatedValue( LocalDate.now().plusDays( 4 ), BigDecimal.valueOf( 60 ) ) };
-		final BigDecimal[] signaline = { BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 29 ), BigDecimal.valueOf( 28 ),
-				BigDecimal.valueOf( 27 ), BigDecimal.valueOf( 26 ) };
+		final BigDecimal[] signaLineArray = { BigDecimal.valueOf( 30 ), BigDecimal.valueOf( 29 ),
+				BigDecimal.valueOf( 28 ), BigDecimal.valueOf( 27 ), BigDecimal.valueOf( 26 ) };
+		final List<BigDecimal> signalLine = Arrays.asList( signaLineArray );
 
-		final List<IndicatorSignal> signals = stochastic.buySignals( dataPoint, signaline );
+		final List<IndicatorSignal> signals = stochastic.buySignals( dataPoint, signalLine );
 
 		assertNotNull( signals );
 		assertEquals( 2, signals.size() );

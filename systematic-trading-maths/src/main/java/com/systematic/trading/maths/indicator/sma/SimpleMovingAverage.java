@@ -26,6 +26,7 @@
 package com.systematic.trading.maths.indicator.sma;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
@@ -44,5 +45,5 @@ public interface SimpleMovingAverage {
 	 * @throws TooFewDataPoints not enough closing prices to perform EMA calculations.
 	 * @throws TooManyDataPoints too many days of closing prices have been provided.
 	 */
-	public BigDecimal[] sma( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	public List<BigDecimal> sma( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
 }

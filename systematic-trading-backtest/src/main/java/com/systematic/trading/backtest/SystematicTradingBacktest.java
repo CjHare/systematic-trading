@@ -154,21 +154,12 @@ public class SystematicTradingBacktest {
 
 		String description;
 
-		// TODO reuse stores
-		final int maximumDaysToAnalyse = HoldForeverWeeklyDespositConfiguration.maximumDaysOfSignalsAnalysed();
-		int maximumTradingDays;
 		SimpleMovingAverageGradientSignals sma;
 		MovingAveragingConvergeDivergenceSignals macd;
 		RelativeStrengthIndexSignals rsi;
 
-		int macdTradingDays, smaTradingDays, rsiTradingDays;
-
 		// TODO different RSI values
 		final RsiConfiguration rsiConfiguration = RsiConfiguration.MEDIUM;
-
-		final int macdAdditionalDays = 20;
-
-		final int daysOfSignals = 2;
 
 		// TODO tidy up
 		for (final BigDecimal minimumTradeValue : minimumTradeValues) {
@@ -177,11 +168,6 @@ public class SystematicTradingBacktest {
 			final String minimumTradeDescription = String.valueOf( minimumTrade.getValue().longValue() );
 
 			for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-
-				// TODO get numbers from somewhere
-				macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods()
-						+ macdAdditionalDays + 3;
-				maximumTradingDays = macdTradingDays + maximumDaysToAnalyse;
 
 				macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 						macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
@@ -192,21 +178,12 @@ public class SystematicTradingBacktest {
 				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
 						description, MATH_CONTEXT, macd ) );
 
-				// Largest of the MACD, RSI
-				macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods()
-						+ macdAdditionalDays + 3;
-				// TODO #days in config
-				rsiTradingDays = RsiConfiguration.MEDIUM.getLookback() + 1;
-				maximumTradingDays = macdTradingDays > rsiTradingDays ? macdTradingDays : rsiTradingDays;
-				maximumTradingDays += maximumDaysToAnalyse;
-
 				macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 						macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 						MATH_CONTEXT );
 
-				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(), daysOfSignals,
-						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), maximumTradingDays,
-						MATH_CONTEXT );
+				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
+						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
 
 				description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
 						rsiConfiguration.getDescription(), minimumTradeDescription );
@@ -215,17 +192,6 @@ public class SystematicTradingBacktest {
 
 				for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 
-					// Largest of the MACD, SMA
-					macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods()
-							+ macdAdditionalDays + 3;
-					smaTradingDays = smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient();
-					maximumTradingDays = smaTradingDays > macdTradingDays ? smaTradingDays : macdTradingDays;
-					maximumTradingDays += maximumDaysToAnalyse;
-
-					// sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-					// smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(),
-					// maximumTradingDays,
-					// MATH_CONTEXT );
 					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
 							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 
@@ -239,19 +205,6 @@ public class SystematicTradingBacktest {
 					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
 							description, MATH_CONTEXT, sma, macd ) );
 
-					// Largest of the MACD, RSI, SMA
-					macdTradingDays = macdConfiguration.getSignalTimePeriods() + macdConfiguration.getSlowTimePeriods()
-							+ macdAdditionalDays + 3;
-					smaTradingDays = smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient();
-					maximumTradingDays = smaTradingDays > macdTradingDays ? smaTradingDays : macdTradingDays;
-					rsiTradingDays = RsiConfiguration.MEDIUM.getLookback() + 1;
-					maximumTradingDays = maximumTradingDays > rsiTradingDays ? maximumTradingDays : rsiTradingDays;
-					maximumTradingDays += maximumDaysToAnalyse;
-
-					// sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-					// smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(),
-					// maximumTradingDays,
-					// MATH_CONTEXT );
 					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
 							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 
@@ -259,9 +212,8 @@ public class SystematicTradingBacktest {
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 							MATH_CONTEXT );
 
-					rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(), daysOfSignals,
-							rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), maximumTradingDays,
-							MATH_CONTEXT );
+					rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
+							rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
 
 					description = String.format( "%s-%s-%s_SameDay_Minimum-%s_HoldForever",
 							macdConfiguration.getDescription(), smaConfiguration.getDescription(),
@@ -275,19 +227,8 @@ public class SystematicTradingBacktest {
 				description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever", smaConfiguration.getDescription(),
 						rsiConfiguration.getDescription(), minimumTradeDescription );
 
-				rsiTradingDays = RsiConfiguration.MEDIUM.getLookback() + 1;
-				smaTradingDays = smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient();
-				maximumTradingDays = smaTradingDays > rsiTradingDays ? smaTradingDays : rsiTradingDays;
-				maximumTradingDays += maximumDaysToAnalyse;
-
-				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(), daysOfSignals,
-						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), maximumTradingDays,
-						MATH_CONTEXT );
-
-				// sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-				// smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(),
-				// maximumTradingDays,
-				// MATH_CONTEXT );
+				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
+						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
 				sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
 						smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 

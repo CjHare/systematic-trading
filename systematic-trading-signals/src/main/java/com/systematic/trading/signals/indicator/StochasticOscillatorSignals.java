@@ -39,7 +39,6 @@ import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageK;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageKCalculator;
 import com.systematic.trading.maths.model.DatedValue;
-import com.systematic.trading.maths.store.StandardIndicatorOutputStore;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -70,62 +69,58 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 			final MathContext mathContext ) {
 		this.lookback = lookback;
 
-		// TODO convert to reuse ouptut
 		this.smaFullK = new SimpleMovingAverageCalculator( smaK, daysOfStocastic, new IndicatorInputValidator(),
-				new StandardIndicatorOutputStore(), mathContext );
+				mathContext );
 		this.smaFullD = new SimpleMovingAverageCalculator( smaD, daysOfStocastic, new IndicatorInputValidator(),
-				new StandardIndicatorOutputStore(), mathContext );
+				mathContext );
 		this.percentageK = new StochasticPercentageKCalculator( lookback, daysOfStocastic,
-				new IndicatorInputValidator(), new StandardIndicatorOutputStore(), mathContext );
+				new IndicatorInputValidator(), mathContext );
 	}
 
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data )
 			throws TooFewDataPoints, TooManyDataPoints {
 
-		final BigDecimal[] fastK = percentageK.percentageK( data );
-		final BigDecimal[] fullK = smaFullK.sma( merge( data, fastK ) );
-		final BigDecimal[] fullD = smaFullD.sma( merge( data, fullK ) );
+		final List<BigDecimal> fastK = percentageK.percentageK( data );
+		final List<BigDecimal> fullK = smaFullK.sma( merge( data, fastK ) );
+		final List<BigDecimal> fullD = smaFullD.sma( merge( data, fullK ) );
 
 		return buySignals( merge( data, fullK ), fullD );
 	}
 
-	private DatedValue[] merge( final TradingDayPrices[] dates, final BigDecimal[] values ) {
+	private DatedValue[] merge( final TradingDayPrices[] dates, final List<BigDecimal> values ) {
 		final DatedValue[] merged = new DatedValue[dates.length];
 
-		for (int i = 0; i < dates.length; i++) {
-			merged[i] = new DatedValue( dates[i].getDate(), values[i] );
+		// Use the right most date values
+		final int offset = dates.length - values.size();
+
+		for (int index = 0; index < values.size(); index++) {
+			merged[index] = new DatedValue( dates[index + offset].getDate(), values.get( index ) );
 		}
 
 		return merged;
 	}
 
-	protected List<IndicatorSignal> buySignals( final DatedValue[] dataPoint, final BigDecimal[] signaline ) {
+	protected List<IndicatorSignal> buySignals( final DatedValue[] dataPoint, final List<BigDecimal> signaline ) {
 		final List<IndicatorSignal> buySignals = new ArrayList<IndicatorSignal>();
 
-		// Skip the initial null entries from the array
-		int index = 0;
-		for (; index < signaline.length - 1; index++) {
-			if (signaline[index] != null) {
-				// Increment the index to avoid comparison against null
-				index++;
-				break;
-			}
-		}
+		// Use the right most date values
+		final int offset = dataPoint.length - signaline.size();
 
 		// Buy signal is from a cross over of the signal line
 		BigDecimal pointToday, pointYesterday, signalLineToday, signalLineYesterday;
 
-		for (; index < signaline.length - 1; index++) {
-			pointToday = dataPoint[index].getValue();
-			pointYesterday = dataPoint[index - 1].getValue();
-			signalLineToday = signaline[index - 1];
-			signalLineYesterday = signaline[index];
+		for (int index = 1; index < signaline.size(); index++) {
+			pointToday = dataPoint[index + offset].getValue();
+			pointYesterday = dataPoint[index - 1 + offset].getValue();
+			signalLineToday = signaline.get( index );
+			signalLineYesterday = signaline.get( index );
 
 			// The MACD trends up, with crossing the signal line
 			// OR trending up and crossing the zero line
 			if (crossingSignalLine( pointYesterday, pointToday, signalLineToday, signalLineYesterday )) {
-				buySignals.add( new IndicatorSignal( dataPoint[index].getDate(), IndicatorSignalType.STOCHASTIC ) );
+				buySignals.add(
+						new IndicatorSignal( dataPoint[index + offset].getDate(), IndicatorSignalType.STOCHASTIC ) );
 			}
 
 		}

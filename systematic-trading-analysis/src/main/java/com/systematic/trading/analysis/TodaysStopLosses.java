@@ -31,6 +31,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,8 +47,6 @@ import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.maths.indicator.IndicatorInputValidator;
 import com.systematic.trading.maths.indicator.atr.AverageTrueRange;
 import com.systematic.trading.maths.indicator.atr.AverageTrueRangeCalculator;
-import com.systematic.trading.maths.store.IndicatorOutputStore;
-import com.systematic.trading.maths.store.StandardIndicatorOutputStore;
 import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 
 public class TodaysStopLosses {
@@ -83,7 +82,6 @@ public class TodaysStopLosses {
 
 	private static void averageTrueRange( final LocalDate startDate, final LocalDate endDate ) {
 		final DataService service = HibernateDataService.getInstance();
-		final IndicatorOutputStore indicatorStore = new StandardIndicatorOutputStore();
 		final IndicatorInputValidator validator = new IndicatorInputValidator();
 		final BigDecimal threeQuaterMultiplier = BigDecimal.valueOf( 3.25 );
 		final BigDecimal threeHalfMultiplier = BigDecimal.valueOf( 3.5 );
@@ -99,21 +97,21 @@ public class TodaysStopLosses {
 			final String symbol = equity.getSymbol();
 			final TradingDayPrices[] data = service.get( symbol, startDate, endDate );
 			final AverageTrueRange atr = new AverageTrueRangeCalculator( atrLookback, data.length - 1, validator,
-					indicatorStore, MATH_CONTEXT );
+					MATH_CONTEXT );
 
 			// Correct the ordering from earliest to latest
 			Arrays.sort( data, new TradingDayPricesDateOrder() );
 
 			try {
-				final BigDecimal[] averageTrueRanges = atr.atr( data );
-				final int lastDate = averageTrueRanges.length - 1;
-				final BigDecimal averageTrueRange = averageTrueRanges[lastDate];
+				final List<BigDecimal> averageTrueRanges = atr.atr( data );
+				final int lastAtrValue = averageTrueRanges.size() - 1;
+				final BigDecimal averageTrueRange = averageTrueRanges.get( lastAtrValue );
 
 				System.out.println( "--- " );
 				System.out.println( symbol );
-				System.out.println( twoDecimalPlaces.format( data[lastDate].getClosingPrice().getPrice()
+				System.out.println( twoDecimalPlaces.format( data[lastAtrValue].getClosingPrice().getPrice()
 						.subtract( averageTrueRange.multiply( threeQuaterMultiplier, MATH_CONTEXT ), MATH_CONTEXT ) ) );
-				System.out.println( twoDecimalPlaces.format( data[lastDate].getClosingPrice().getPrice()
+				System.out.println( twoDecimalPlaces.format( data[lastAtrValue].getClosingPrice().getPrice()
 						.subtract( averageTrueRange.multiply( threeHalfMultiplier, MATH_CONTEXT ), MATH_CONTEXT ) ) );
 				System.out.println( "--- " );
 

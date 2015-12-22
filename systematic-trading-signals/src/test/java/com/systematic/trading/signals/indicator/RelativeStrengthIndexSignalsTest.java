@@ -31,6 +31,7 @@ import static org.junit.Assert.assertNotNull;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class RelativeStrengthIndexSignalsTest {
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
-	private final double[] rsi = { 88.89, 52.83, 61.83, 49.49, 38.27, 33.77, 40.48, 46.81, 37.11, 35.06, 40.48, 23.66,
+	private final double[] rs = { 88.89, 52.83, 61.83, 49.49, 38.27, 33.77, 40.48, 46.81, 37.11, 35.06, 40.48, 23.66,
 			35.48, 32.43, 25.37, 31.97, 37.50, 42.20, 46.24, 57.98, 45.95, 46.81, 38.65, 35.06, 25.93, 29.08, 34.64,
 			30.56, 18.03 };
 
@@ -53,33 +54,34 @@ public class RelativeStrengthIndexSignalsTest {
 
 	@Test
 	public void oversold() throws TooFewDataPoints {
-		final int daysOfRsi = 1;
-		final BigDecimal[] rsiValue = new BigDecimal[rsi.length];
-		final TradingDayPrices[] dates = new TradingDayPrices[rsi.length];
+		final List<BigDecimal> rsValue = new ArrayList<BigDecimal>( rs.length );
+		final TradingDayPrices[] dates = new TradingDayPrices[rs.length];
 
-		for (int i = 0; i < rsiValue.length; i++) {
-			rsiValue[i] = BigDecimal.valueOf( rsi[i] );
+		for (int i = 0; i < rs.length; i++) {
+			rsValue.add( BigDecimal.valueOf( rs[i] ) );
 
 			dates[i] = new TradingDayPricesImpl( LocalDate.now().plusDays( dateValues[i] ), BigDecimal.ZERO,
 					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO );
 		}
 
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 5, daysOfRsi, 30, 70, MATH_CONTEXT );
+		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 5, 30, 70, MATH_CONTEXT );
 
-		final List<IndicatorSignal> signals = rsi.buySignals( rsiValue, dates );
+		final List<IndicatorSignal> signals = rsi.buySignals( rsValue, dates );
 
 		assertNotNull( signals );
-		assertEquals( 3, signals.size() );
-		assertEquals( LocalDate.now().plusDays( 12 ), signals.get( 0 ).getDate() );
-		assertEquals( LocalDate.now().plusDays( 15 ), signals.get( 1 ).getDate() );
-		assertEquals( LocalDate.now().plusDays( 26 ), signals.get( 2 ).getDate() );
+		assertEquals( 5, signals.size() );
+
+		assertEquals( LocalDate.now().plusDays( 11 ), signals.get( 0 ).getDate() );
+		assertEquals( LocalDate.now().plusDays( 14 ), signals.get( 1 ).getDate() );
+		assertEquals( LocalDate.now().plusDays( 24 ), signals.get( 2 ).getDate() );
+		assertEquals( LocalDate.now().plusDays( 25 ), signals.get( 3 ).getDate() );
+		assertEquals( LocalDate.now().plusDays( 28 ), signals.get( 4 ).getDate() );
 	}
 
 	@Test
 	public void getMaximumNumberOfTradingDaysRequired() {
-		final int daysOfRsi = 1;
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 5, daysOfRsi, 30, 70, MATH_CONTEXT );
+		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals( 5, 30, 70, MATH_CONTEXT );
 
-		assertEquals( 6, rsi.getRequiredNumberOfTradingDays() );
+		assertEquals( 57, rsi.getRequiredNumberOfTradingDays() );
 	}
 }

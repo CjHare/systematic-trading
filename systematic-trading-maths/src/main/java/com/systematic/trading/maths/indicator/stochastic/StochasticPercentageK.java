@@ -26,6 +26,7 @@
 package com.systematic.trading.maths.indicator.stochastic;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
@@ -38,5 +39,5 @@ import com.systematic.trading.maths.exception.TooManyDataPoints;
  */
 public interface StochasticPercentageK {
 
-	BigDecimal[] percentageK( TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints;
+	List<BigDecimal> percentageK( TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints;
 }

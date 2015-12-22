@@ -27,7 +27,9 @@ package com.systematic.trading.maths.indicator.stochastic;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.List;
 
+import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestPrice;
@@ -35,7 +37,6 @@ import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.maths.indicator.IndicatorInputValidator;
-import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
@@ -56,8 +57,9 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	/** Number of days to read the ranges on. */
 	private final int lookback;
 
+	// TODO pass the store in
 	/** Provides the array to store the result in. */
-	private final IndicatorOutputStore store;
+	private final List<BigDecimal> stochasticValues;
 
 	/** Responsible for parsing and validating the input. */
 	private final IndicatorInputValidator validator;
@@ -66,24 +68,26 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	 * @param lookback the number of days to use when calculating the Stochastic%K.
 	 * @param daysOfPercentageKValues the number of trading days to calculate the RSI value.
 	 * @param validator validates and parses input.
-	 * @param store memory allocator for the result array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
 	public StochasticPercentageKCalculator( final int lookback, final int daysOfPercentageKValues,
-			final IndicatorInputValidator validator, final IndicatorOutputStore store, final MathContext mathContext ) {
+			final IndicatorInputValidator validator, final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + daysOfPercentageKValues;
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
-		this.store = store;
+		this.stochasticValues = new NonNullableArrayList<BigDecimal>();
 	}
 
 	@Override
-	public BigDecimal[] percentageK( final TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints {
+	public List<BigDecimal> percentageK( final TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints {
 
-		final BigDecimal[] pK = store.getStore( data.length );
-		int pkSmaIndex = validator.getStartingNonNullIndex( data, minimumNumberOfPrices );
-		final int pkEndIndex = validator.getLastNonNullIndex( data );
+		validator.verifyZeroNullEntries( data );
+		validator.verifyEnoughValues( data, minimumNumberOfPrices );
+
+		stochasticValues.clear();
+
+		int pkSmaIndex = 0;
 
 		LowestPrice lowestLow;
 		HighestPrice highestHigh;
@@ -91,16 +95,17 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		BigDecimal lowestHighestDifference;
 		pkSmaIndex += lookback;
 
-		for (int i = pkSmaIndex; i <= pkEndIndex; i++) {
+		for (int i = pkSmaIndex; i < data.length; i++) {
 			currentClose = data[i].getClosingPrice();
 			lowestLow = lowestLow( data, i );
 			highestHigh = highestHigh( data, i );
 			lowestHighestDifference = differenceBetweenHighestHighAndLowestLow( lowestLow, highestHigh );
 
-			pK[i] = calculatePercentageK( lowestLow, highestHigh, currentClose, lowestHighestDifference );
+			stochasticValues
+					.add( calculatePercentageK( lowestLow, highestHigh, currentClose, lowestHighestDifference ) );
 		}
 
-		return pK;
+		return stochasticValues;
 	}
 
 	private BigDecimal calculatePercentageK( final LowestPrice lowestLow, final HighestPrice highestHigh,

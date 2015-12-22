@@ -70,7 +70,6 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/**
 	 * @param lookback the number of days to use when calculating the EMA.
 	 * @param validator validates and parses input.
-	 * @param store source for the storage array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
 	public ExponentialMovingAverageCalculator( final int lookback, final IndicatorInputValidator validator,

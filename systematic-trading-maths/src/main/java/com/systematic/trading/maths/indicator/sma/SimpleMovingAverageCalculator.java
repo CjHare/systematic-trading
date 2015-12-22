@@ -27,12 +27,13 @@ package com.systematic.trading.maths.indicator.sma;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.List;
 
+import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.maths.indicator.IndicatorInputValidator;
-import com.systematic.trading.maths.store.IndicatorOutputStore;
 
 /**
  * The mean for a consecutive set of numbers.
@@ -50,8 +51,9 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	/** Number of days to average the value on. */
 	private final int lookback;
 
+	// TODO pass the store in
 	/** Provides the array to store the result in. */
-	private final IndicatorOutputStore store;
+	private final List<BigDecimal> smaValues;
 
 	/** Responsible for parsing and validating the input. */
 	private final IndicatorInputValidator validator;
@@ -67,27 +69,29 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
 	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues,
-			final IndicatorInputValidator validator, final IndicatorOutputStore store, final MathContext mathContext ) {
+			final IndicatorInputValidator validator, final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
 		this.daysOfSmaValues = daysOfSmaValues;
 		this.mathContext = mathContext;
+		this.smaValues = new NonNullableArrayList<BigDecimal>();
 		this.validator = validator;
 		this.lookback = lookback;
-		this.store = store;
 	}
 
 	@Override
-	public BigDecimal[] sma( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
+	public List<BigDecimal> sma( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
 
-		final BigDecimal[] smaValues = store.getStore( data.length );
-		validator.getStartingNonNullIndex( data, minimumNumberOfPrices );
+		validator.verifyZeroNullEntries( data );
+		validator.verifyEnoughValues( data, minimumNumberOfPrices );
 
-		final int endSmaIndex = validator.getLastNonNullIndex( data );
+		smaValues.clear();
+
+		final int endSmaIndex = data.length - 1;
 		final int startSmaIndex = endSmaIndex - daysOfSmaValues;
 
 		// Start at the end and work towards the origin
 		for (int i = startSmaIndex; i <= endSmaIndex; i++) {
-			smaValues[i] = simpleAverage( i, data );
+			smaValues.add( simpleAverage( i, data ) );
 		}
 
 		return smaValues;

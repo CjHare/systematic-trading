@@ -131,9 +131,8 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 
 		// Starting ATR is just the first value
 		BigDecimal priorAtr = atrValues.get( 0 );
-		final int endAtrIndex = validator.getLastNonNullIndex( data );
 
-		for (int i = startAtrIndex + 1; i <= endAtrIndex; i++) {
+		for (int i = startAtrIndex + 1; i < data.length; i++) {
 			atrValues.add( average( getTrueRange( data[i], data[i - 1] ), priorAtr ) );
 			priorAtr = atrValues.get( atrValues.size() - 1 );
 		}

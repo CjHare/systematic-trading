@@ -27,16 +27,16 @@ package com.systematic.trading.maths.indicator.stochastic;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,8 +48,6 @@ import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.maths.indicator.IndicatorInputValidator;
-import com.systematic.trading.maths.store.IndicatorOutputStore;
-import com.systematic.trading.maths.store.StandardIndicatorOutputStore;
 
 /**
  * Verifies the StochasticPercentageKCalculator.
@@ -101,26 +99,21 @@ public class StochasticPercentageKCalculatorTest {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
-
 		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
-				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
+				daysOfPercentageKValues, validator, MATH_CONTEXT );
 
-		final BigDecimal[] pk = calculator.percentageK( data );
-
-		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfPercentageKValues );
-		verify( validator ).getLastNonNullIndex( data );
+		final List<BigDecimal> pk = calculator.percentageK( data );
 
 		assertNotNull( pk );
-		assertEquals( numberDataPoints, pk.length );
-		assertNull( pk[0] );
-		assertNull( pk[1] );
-		assertEquals( BigDecimal.valueOf( 50.0 ), pk[2] );
-		assertEquals( BigDecimal.valueOf( 50.0 ), pk[3] );
-		assertEquals( BigDecimal.valueOf( 50.0 ), pk[4] );
+		assertEquals( numberDataPoints - lookback, pk.size() );
+		assertEquals( BigDecimal.valueOf( 50.0 ), pk.get( 0 ) );
+		assertEquals( BigDecimal.valueOf( 50.0 ), pk.get( 1 ) );
+		assertEquals( BigDecimal.valueOf( 50.0 ), pk.get( 2 ) );
+
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, numberDataPoints );
 	}
 
 	@Test
@@ -128,83 +121,70 @@ public class StochasticPercentageKCalculatorTest {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
 		final TradingDayPrices[] data = createFlatPrices( numberDataPoints );
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
-
 		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
-				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
+				daysOfPercentageKValues, validator, MATH_CONTEXT );
 
-		final BigDecimal[] pk = calculator.percentageK( data );
-
-		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfPercentageKValues );
-		verify( validator ).getLastNonNullIndex( data );
+		final List<BigDecimal> pk = calculator.percentageK( data );
 
 		assertNotNull( pk );
-		assertEquals( numberDataPoints, pk.length );
-		assertNull( pk[0] );
-		assertNull( pk[1] );
-		assertEquals( BigDecimal.valueOf( 0.0 ), pk[2].setScale( 1, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 0.0 ), pk[3].setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertEquals( numberDataPoints - lookback, pk.size() );
+		assertEquals( BigDecimal.valueOf( 0.0 ), pk.get( 0 ).setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 0.0 ), pk.get( 1 ).setScale( 1, RoundingMode.HALF_EVEN ) );
+
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, numberDataPoints );
 	}
 
-	@Test
-	public void percentageKFirstPointNull() throws TooFewDataPoints, TooManyDataPoints {
+	@Test(expected = IllegalArgumentException.class)
+	public void nullFirstDataPoint() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[0] = null;
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
-		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt() ) ).thenReturn( 1 );
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
+		doThrow( new IllegalArgumentException() ).when( validator )
+				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
 
 		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
-				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
+				daysOfPercentageKValues, validator, MATH_CONTEXT );
 
-		final BigDecimal[] pk = calculator.percentageK( data );
-
-		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfPercentageKValues );
-		verify( validator ).getLastNonNullIndex( data );
-
-		assertNotNull( pk );
-		assertEquals( numberDataPoints, pk.length );
-		assertNull( pk[0] );
-		assertNull( pk[1] );
-		assertNull( pk[2] );
-		assertEquals( BigDecimal.valueOf( 50.0 ), pk[3] );
-		assertEquals( BigDecimal.valueOf( 50.0 ), pk[4] );
+		calculator.percentageK( data );
 	}
 
-	@Test
-	public void percentageKLastPointNull() throws TooFewDataPoints, TooManyDataPoints {
+	@Test(expected = IllegalArgumentException.class)
+	public void nullLastDataPoint() throws TooFewDataPoints, TooManyDataPoints {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
 		data[data.length - 1] = null;
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
-		when( validator.getStartingNonNullIndex( any( TradingDayPrices[].class ), anyInt() ) ).thenReturn( 0 );
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 2 );
+		doThrow( new IllegalArgumentException() ).when( validator )
+				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
 
 		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
-				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
+				daysOfPercentageKValues, validator, MATH_CONTEXT );
 
-		final BigDecimal[] pk = calculator.percentageK( data );
+		calculator.percentageK( data );
+	}
 
-		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfPercentageKValues );
-		verify( validator ).getLastNonNullIndex( data );
+	@Test(expected = IllegalArgumentException.class)
+	public void notEnoughDataPoints() throws TooFewDataPoints, TooManyDataPoints {
+		final int lookback = 2;
+		final int numberDataPoints = lookback + 3;
+		final TradingDayPrices[] data = createPrices( numberDataPoints );
+		final int daysOfPercentageKValues = numberDataPoints - lookback + 1;
 
-		assertNotNull( pk );
-		assertEquals( numberDataPoints, pk.length );
-		assertNull( pk[0] );
-		assertNull( pk[1] );
-		assertEquals( BigDecimal.valueOf( 50.0 ), pk[2] );
-		assertEquals( BigDecimal.valueOf( 50.0 ), pk[3] );
-		assertNull( pk[4] );
+		doThrow( new IllegalArgumentException() ).when( validator ).verifyEnoughValues( any( TradingDayPrices[].class ),
+				anyInt() );
+
+		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
+				daysOfPercentageKValues, validator, MATH_CONTEXT );
+
+		calculator.percentageK( data );
 	}
 
 	@Test
@@ -212,27 +192,22 @@ public class StochasticPercentageKCalculatorTest {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
-
 		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
-				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
+				daysOfPercentageKValues, validator, MATH_CONTEXT );
 
-		final BigDecimal[] pk = calculator.percentageK( data );
-
-		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfPercentageKValues );
-		verify( validator ).getLastNonNullIndex( data );
+		final List<BigDecimal> pk = calculator.percentageK( data );
 
 		assertNotNull( pk );
-		assertEquals( numberDataPoints, pk.length );
-		assertNull( pk[0] );
-		assertNull( pk[1] );
-		assertEquals( BigDecimal.valueOf( 100.0 ), pk[2].setScale( 1, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 100.0 ), pk[3].setScale( 1, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 80.0 ), pk[4].setScale( 1, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 71.43 ), pk[5].setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( numberDataPoints - lookback, pk.size() );
+		assertEquals( BigDecimal.valueOf( 100.0 ), pk.get( 0 ).setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 100.0 ), pk.get( 1 ).setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 80.0 ), pk.get( 2 ).setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 71.43 ), pk.get( 3 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, numberDataPoints );
 	}
 
 	@Test
@@ -240,31 +215,24 @@ public class StochasticPercentageKCalculatorTest {
 		final int lookback = 4;
 		final int numberDataPoints = lookback + 6;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
-		final IndicatorOutputStore store = new StandardIndicatorOutputStore();
 		final int daysOfPercentageKValues = numberDataPoints - lookback;
 
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( data.length - 1 );
-
 		final StochasticPercentageKCalculator calculator = new StochasticPercentageKCalculator( lookback,
-				daysOfPercentageKValues, validator, store, MATH_CONTEXT );
+				daysOfPercentageKValues, validator, MATH_CONTEXT );
 
-		final BigDecimal[] pk = calculator.percentageK( data );
-
-		verify( validator ).getStartingNonNullIndex( data, lookback + daysOfPercentageKValues );
-		verify( validator ).getLastNonNullIndex( data );
+		final List<BigDecimal> pk = calculator.percentageK( data );
 
 		assertNotNull( pk );
-		assertEquals( numberDataPoints, pk.length );
-		assertNull( pk[0] );
-		assertNull( pk[1] );
-		assertNull( pk[2] );
-		assertNull( pk[3] );
-		assertEquals( BigDecimal.valueOf( 83.33 ), pk[4].setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 75.0 ), pk[5].setScale( 1, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 66.67 ), pk[6].setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 63.64 ), pk[7].setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 58.33 ), pk[8].setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 57.14 ), pk[9].setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( numberDataPoints - lookback, pk.size() );
+		assertEquals( BigDecimal.valueOf( 83.33 ), pk.get( 0 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 75.0 ), pk.get( 1 ).setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 66.67 ), pk.get( 2 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 63.64 ), pk.get( 3 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 58.33 ), pk.get( 4 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals( BigDecimal.valueOf( 57.14 ), pk.get( 5 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+
+		verify( validator ).verifyZeroNullEntries( data );
+		verify( validator ).verifyEnoughValues( data, numberDataPoints );
 	}
 
 }

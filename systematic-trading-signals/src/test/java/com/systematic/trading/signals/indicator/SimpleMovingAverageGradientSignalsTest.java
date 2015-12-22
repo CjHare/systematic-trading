@@ -56,33 +56,6 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 	private final long[] dateValues = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
-	@Test(expected = IllegalArgumentException.class)
-	public void tooFewDataPoints() throws TooFewDataPoints, TooManyDataPoints {
-		final int tooFewDataPoints = lookback - 1;
-		final TradingDayPrices[] data = new TradingDayPrices[tooFewDataPoints];
-		for (int i = 0; i < tooFewDataPoints; i++) {
-			data[i] = new TradingDayPricesImpl( LocalDate.now().plusDays( dateValues[i] ), BigDecimal.ZERO,
-					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf( closingPrice[i] ) );
-		}
-		final int daysGradient = data.length - lookback;
-
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
-				daysGradient, GradientType.POSITIVE, MATH_CONTEXT );
-
-		smaGradient.calculateSignals( data );
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void unexpectedDataPoint() throws TooFewDataPoints, TooManyDataPoints {
-		final TradingDayPrices[] data = createTradingPrices();
-		final int daysGradient = data.length - lookback;
-
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
-				daysGradient, null, MATH_CONTEXT );
-
-		smaGradient.calculateSignals( data );
-	}
-
 	@Test
 	public void signalsPositive() throws TooFewDataPoints, TooManyDataPoints {
 		final TradingDayPrices[] data = createTradingPrices();
@@ -94,12 +67,11 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final List<IndicatorSignal> signals = smaGradient.calculateSignals( data );
 
 		assertNotNull( signals );
-		assertEquals( 5, signals.size() );
-		assertEquals( data[10].getDate(), signals.get( 0 ).getDate() );
-		assertEquals( data[11].getDate(), signals.get( 1 ).getDate() );
-		assertEquals( data[12].getDate(), signals.get( 2 ).getDate() );
-		assertEquals( data[13].getDate(), signals.get( 3 ).getDate() );
-		assertEquals( data[14].getDate(), signals.get( 4 ).getDate() );
+		assertEquals( 4, signals.size() );
+		assertEquals( data[11].getDate(), signals.get( 0 ).getDate() );
+		assertEquals( data[12].getDate(), signals.get( 1 ).getDate() );
+		assertEquals( data[13].getDate(), signals.get( 2 ).getDate() );
+		assertEquals( data[14].getDate(), signals.get( 3 ).getDate() );
 	}
 
 	@Test

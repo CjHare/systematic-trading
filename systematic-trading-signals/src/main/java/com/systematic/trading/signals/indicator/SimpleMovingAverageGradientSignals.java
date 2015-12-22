@@ -36,8 +36,6 @@ import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.maths.indicator.IndicatorInputValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
-import com.systematic.trading.maths.store.ReuseIndicatorOutputStore;
-import com.systematic.trading.maths.store.StandardIndicatorOutputStore;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -69,21 +67,11 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	/** Responsible for calculating the simple moving average. */
 	private final SimpleMovingAverage movingAverage;
 
-	// TODO only one constructor
-
-//	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
-//			final GradientType signalGenerated, final int maximumTradingDays, final MathContext mathContext ) {
-//
-//		this( lookback, daysOfGradient, signalGenerated, mathContext,
-//				new SimpleMovingAverageCalculator( lookback, daysOfGradient, new IndicatorInputValidator(),
-//						new ReuseIndicatorOutputStore( maximumTradingDays ), mathContext ) );
-//	}
-
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
 			final GradientType signalGenerated, final MathContext mathContext ) {
 
 		this( lookback, daysOfGradient, signalGenerated, mathContext, new SimpleMovingAverageCalculator( lookback,
-				daysOfGradient, new IndicatorInputValidator(), new StandardIndicatorOutputStore(), mathContext ) );
+				daysOfGradient, new IndicatorInputValidator(), mathContext ) );
 	}
 
 	private SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
@@ -100,55 +88,48 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data )
 			throws TooFewDataPoints, TooManyDataPoints {
 
-		final BigDecimal[] sma = movingAverage.sma( data );
-
-		// Find the first non-null value
-		int index = 0;
-		while (index < sma.length && sma[index] == null) {
-			index++;
-		}
+		final List<BigDecimal> sma = movingAverage.sma( data );
 
 		// Only look at the gradient if there's more than one sma result
-		if (index < sma.length) {
-			return analysisGradient( data, sma, index );
+		if (sma.size() > 0) {
+			return analysisGradient( data, sma );
 		}
 
 		return new ArrayList<IndicatorSignal>();
 	}
 
-	private List<IndicatorSignal> analysisGradient( final TradingDayPrices[] data, final BigDecimal[] sma, int index ) {
+	private List<IndicatorSignal> analysisGradient( final TradingDayPrices[] data, final List<BigDecimal> sma ) {
 		final List<IndicatorSignal> signals = new ArrayList<IndicatorSignal>();
 
-		// Results store may be larger then the data set
-		final int smaLength = data.length < sma.length ? data.length : sma.length;
+		// We're only using the right most values of the data
+		final int offset = data.length - sma.size();
 
 		// Initialise to the first value, bump the index
-		BigDecimal previous = sma[index];
-		index++;
+		BigDecimal previous = sma.get( 0 );
 
-		for (; index < smaLength; index++) {
+		for (int index = 1; index < sma.size(); index++) {
 
 			switch (signalGenerated) {
 				case POSITIVE:
-					if (isPositiveGardient( previous, sma[index] )) {
-						signals.add( new IndicatorSignal( data[index].getDate(), IndicatorSignalType.SMA ) );
+					if (isPositiveGardient( previous, sma.get( index ) )) {
+						signals.add( new IndicatorSignal( data[index + offset].getDate(), IndicatorSignalType.SMA ) );
 					}
 					break;
 				case FLAT:
-					if (isFlatGardient( previous, sma[index] )) {
-						signals.add( new IndicatorSignal( data[index].getDate(), IndicatorSignalType.SMA ) );
+					if (isFlatGardient( previous, sma.get( index ) )) {
+						signals.add( new IndicatorSignal( data[index + offset].getDate(), IndicatorSignalType.SMA ) );
 					}
 					break;
 				case NEGATIVE:
-					if (isNegativeGardient( previous, sma[index] )) {
-						signals.add( new IndicatorSignal( data[index].getDate(), IndicatorSignalType.SMA ) );
+					if (isNegativeGardient( previous, sma.get( index ) )) {
+						signals.add( new IndicatorSignal( data[index + offset].getDate(), IndicatorSignalType.SMA ) );
 					}
 					break;
 				default:
 					throw new IllegalArgumentException( String.format( "%s enum is unexpected", signalGenerated ) );
 			}
 
-			previous = sma[index];
+			previous = sma.get( index );
 		}
 
 		return signals;
