@@ -50,7 +50,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
@@ -101,7 +100,7 @@ public class SignalTriggeredEntryLogicTest {
 	}
 
 	@Test
-	public void updateNoOrder() throws TooFewDataPoints {
+	public void updateNoOrder() {
 		final MinimumTradeValue minimumTradeValue = new MinimumTradeValue( BigDecimal.ONE );
 		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
@@ -117,7 +116,7 @@ public class SignalTriggeredEntryLogicTest {
 	}
 
 	@Test
-	public void updateOrderNotCreatedTooFewFundsToBuyStock() throws TooFewDataPoints {
+	public void updateOrderNotCreatedTooFewFundsToBuyStock() {
 		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
 
@@ -148,7 +147,7 @@ public class SignalTriggeredEntryLogicTest {
 	}
 
 	@Test
-	public void updateOrderNotCreatedFundsBelowMinimumOrderThreshold() throws TooFewDataPoints {
+	public void updateOrderNotCreatedFundsBelowMinimumOrderThreshold() {
 		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
 
@@ -172,7 +171,7 @@ public class SignalTriggeredEntryLogicTest {
 	}
 
 	@Test
-	public void updateOrderCreated() throws TooFewDataPoints {
+	public void updateOrderCreated() {
 
 		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
@@ -206,7 +205,7 @@ public class SignalTriggeredEntryLogicTest {
 	}
 
 	@Test
-	public void updateOrderNotCreatedPreviouslyTriggered() throws TooFewDataPoints {
+	public void updateOrderNotCreatedPreviouslyTriggered() {
 
 		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
 		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );

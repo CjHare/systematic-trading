@@ -31,9 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageK;
@@ -69,17 +67,16 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 			final MathContext mathContext ) {
 		this.lookback = lookback;
 
-		this.smaFullK = new SimpleMovingAverageCalculator( smaK, daysOfStocastic, new IndicatorInputValidator(),
+		this.smaFullK = new SimpleMovingAverageCalculator( smaK, daysOfStocastic, new IllegalArgumentThrowingValidator(),
 				mathContext );
-		this.smaFullD = new SimpleMovingAverageCalculator( smaD, daysOfStocastic, new IndicatorInputValidator(),
+		this.smaFullD = new SimpleMovingAverageCalculator( smaD, daysOfStocastic, new IllegalArgumentThrowingValidator(),
 				mathContext );
 		this.percentageK = new StochasticPercentageKCalculator( lookback, daysOfStocastic,
-				new IndicatorInputValidator(), mathContext );
+				new IllegalArgumentThrowingValidator(), mathContext );
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data )
-			throws TooFewDataPoints, TooManyDataPoints {
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
 
 		final List<BigDecimal> fastK = percentageK.percentageK( data );
 		final List<BigDecimal> fullK = smaFullK.sma( merge( data, fastK ) );

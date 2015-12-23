@@ -45,9 +45,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * Verifies the behaviour of RelativeStrengthIndexCalculator.
@@ -59,7 +57,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
-	private IndicatorInputValidator validator;
+	private Validator validator;
 
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
@@ -98,7 +96,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	@Test
-	public void rsiFlat() throws TooFewDataPoints, TooManyDataPoints {
+	public void rsiFlat() {
 		final int dataSize = 8;
 		final TradingDayPrices[] data = createPrices( dataSize );
 		final int lookback = 4;
@@ -118,7 +116,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void startingWithNullDataPoint() throws TooFewDataPoints, TooManyDataPoints {
+	public void startingWithNullDataPoint() {
 		final int dataSize = 8;
 		final TradingDayPrices[] data = createPrices( dataSize );
 		data[0] = null;
@@ -136,7 +134,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void endingWithNullDataPoint() throws TooFewDataPoints, TooManyDataPoints {
+	public void endingWithNullDataPoint() {
 		final int dataSize = 8;
 		final TradingDayPrices[] data = createPrices( dataSize );
 		data[data.length - 1] = null;
@@ -154,7 +152,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void notEnoughDataPoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void notEnoughDataPoints() {
 		final int dataSize = 8;
 		final int lookback = 4;
 		final TradingDayPrices[] data = createPrices( dataSize );
@@ -170,7 +168,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	@Test
-	public void rsiIncreasing() throws TooFewDataPoints, TooManyDataPoints {
+	public void rsiIncreasing() {
 		final int dataSize = 8;
 		final TradingDayPrices[] data = createIncreasingPrices( dataSize );
 
@@ -195,7 +193,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	@Test
-	public void rsiDecreasing() throws TooFewDataPoints, TooManyDataPoints {
+	public void rsiDecreasing() {
 		final int dataSize = 8;
 		final TradingDayPrices[] data = createDecreasingPrices( dataSize );
 
@@ -219,7 +217,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	@Test
-	public void rsiIncreasingThenDecreasing() throws TooFewDataPoints, TooManyDataPoints {
+	public void rsiIncreasingThenDecreasing() {
 		final int dataSize = 8;
 
 		final TradingDayPrices[] dataIncreasing = createIncreasingPrices( dataSize );
@@ -261,7 +259,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	@Test
-	public void rsiDecreasingThenIncreasing() throws TooFewDataPoints, TooManyDataPoints {
+	public void rsiDecreasingThenIncreasing() {
 		final int dataSize = 8;
 
 		final TradingDayPrices[] dataIncreasing = createIncreasingPrices( dataSize );

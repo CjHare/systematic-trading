@@ -32,9 +32,7 @@ import java.util.List;
 import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * Relative Strength Index - RSI
@@ -79,7 +77,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	private final BigDecimal smoothingConstant;
 
 	/** Responsible for parsing and validating the input. */
-	private final IndicatorInputValidator validator;
+	private final Validator validator;
 
 	/**
 	 * @param lookback the number of days to use when calculating the RSI.
@@ -87,8 +85,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthIndexCalculator( final int lookback, final int daysOfRsiValues,
-			final IndicatorInputValidator validator, final MathContext mathContext ) {
+	public RelativeStrengthIndexCalculator( final int lookback, final int daysOfRsiValues, final Validator validator,
+			final MathContext mathContext ) {
 		this.relativeStrengthIndexValues = new NonNullableArrayList<BigDecimal>();
 		this.relativeStrengthValues = new NonNullableArrayList<BigDecimal>();
 		this.minimumNumberOfPrices = lookback + daysOfRsiValues;
@@ -99,7 +97,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	}
 
 	@Override
-	public List<BigDecimal> rsi( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
+	public List<BigDecimal> rsi( final TradingDayPrices[] data ) {
 
 		validator.verifyZeroNullEntries( data );
 		validator.verifyEnoughValues( data, minimumNumberOfPrices );

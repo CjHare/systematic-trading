@@ -28,8 +28,6 @@ package com.systematic.trading.signals.indicator;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -52,11 +50,8 @@ public interface IndicatorSignalGenerator {
 	 * @param data trading prices for calculation of signals.
 	 * @return signals generated from the given trading data, empty list means zero, never
 	 *         <code>null</code>.
-	 * @throws TooFewDataPoints not enough trading day prices were provided for signal generation.
-	 * @throws TooManyDataPoints too many trading day prices have been provided for signal
-	 *             generation.
 	 */
-	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data );
 
 	/**
 	 * The type of signals that are generated.

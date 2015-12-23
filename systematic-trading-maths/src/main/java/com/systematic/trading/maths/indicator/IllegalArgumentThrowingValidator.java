@@ -25,18 +25,16 @@
  */
 package com.systematic.trading.maths.indicator;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import com.systematic.trading.data.TradingDayPrices;
-
 /**
- * Validates the input given to an indicator.
+ * Validates the input given throwing an IllegalArgumentException when expectations are not met.
  * 
  * @author CJ Hare
  */
-public class IndicatorInputValidator {
+public class IllegalArgumentThrowingValidator implements Validator {
 
+	@Override
 	public <T> void verifyZeroNullEntries( final List<T> values ) {
 		for (final T value : values) {
 			if (value == null) {
@@ -46,6 +44,7 @@ public class IndicatorInputValidator {
 		}
 	}
 
+	@Override
 	public <T> void verifyZeroNullEntries( final T[] values ) {
 		for (final T value : values) {
 			if (value == null) {
@@ -55,72 +54,7 @@ public class IndicatorInputValidator {
 		}
 	}
 
-	// TODO rename classes methods
-
-	/**
-	 * The last index in the given array that contains an element.
-	 * 
-	 * @param data array to find the last non-null item.
-	 * @return index of the last item in the array, always < data.length.
-	 */
-	public <T> int getLastNonNullIndex( final T[] data ) {
-		// Find last non-null index
-		int lastNonNullItem = data.length - 1;
-
-		while (isNullEntryWithinArray( data, lastNonNullItem )) {
-			lastNonNullItem--;
-		}
-
-		return lastNonNullItem;
-	}
-
-	/**
-	 * The last index in the given array that contains an element.
-	 * 
-	 * @param data array to find the last non-null item.
-	 * @return index of the last item in the array, always < data.length.
-	 */
-	public <T> int getLastNonNullIndex( final List<T> data ) {
-		// Find last non-null index
-		int lastNonNullItem = data.size() - 1;
-
-		while (isNullEntryWithinArray( data, lastNonNullItem )) {
-			lastNonNullItem--;
-		}
-
-		return lastNonNullItem;
-	}
-
-	/**
-	 * Retrieves the first non-null entry in the given data array.
-	 * 
-	 * @param data array to find the first non-null index within.
-	 */
-	public int getFirstNonNullIndex( final TradingDayPrices[] data ) {
-		// Skip any null entries
-		int firstNonNullItem = 0;
-		while (isNullEntryWithinArray( data, firstNonNullItem )) {
-			firstNonNullItem++;
-		}
-
-		return firstNonNullItem;
-	}
-
-	/**
-	 * Retrieves the first non-null entry in the given data array.
-	 * 
-	 * @param data array to find the first non-null index within.
-	 */
-	public int getFirstNonNullIndex( final List<BigDecimal> data ) {
-		// Skip any null entries
-		int firstNonNullItem = 0;
-		while (isNullEntryWithinArray( data, firstNonNullItem )) {
-			firstNonNullItem++;
-		}
-
-		return firstNonNullItem;
-	}
-
+	@Override
 	public <T> void verifyEnoughValues( final List<T> data, final int requiredNumberOfPrices ) {
 
 		// Skip any null entries
@@ -139,6 +73,7 @@ public class IndicatorInputValidator {
 		validateEnoughConsecutiveItems( numberOfConsecutiveItems, requiredNumberOfPrices );
 	}
 
+	@Override
 	public <T> void verifyEnoughValues( final T[] data, final int requiredNumberOfPrices ) {
 
 		// Skip any null entries
@@ -157,78 +92,26 @@ public class IndicatorInputValidator {
 		validateEnoughConsecutiveItems( numberOfConsecutiveItems, requiredNumberOfPrices );
 	}
 
-	/**
-	 * Retrieves the starting non-null entry in the given data array, with the additional constraint
-	 * the index must be within the store size.
-	 * 
-	 * @param data array to find the first non-null index within.
-	 * @param requiredNumberOfPrices the minimum number of consecutive items required in the data
-	 *            set.
-	 * @return maximumIndex of the first non-null entry.
-	 * @throws IllegalArgumentException when the there are no non-null items or the index exceeds
-	 *             the store size.
-	 */
-	public int getStartingNonNullIndex( final TradingDayPrices[] data, final int requiredNumberOfPrices ) {
+	private <T> int getLastNonNullIndex( final T[] data ) {
+		// Find last non-null index
+		int lastNonNullItem = data.length - 1;
 
-		// TODO too few, null at end, null at beginning
-
-		// TODO may not need maximum index
-
-		// Skip any null entries
-		int firstNonNullItem = 0;
-		while (isNullEntryWithinArray( data, firstNonNullItem )) {
-			firstNonNullItem++;
+		while (isNullEntryWithinArray( data, lastNonNullItem )) {
+			lastNonNullItem--;
 		}
 
-		validateIndexInArray( data, firstNonNullItem, requiredNumberOfPrices );
-		// validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
-
-		final int lastNonNullItem = getLastNonNullIndex( data );
-		final int numberOfItems = getNumberOfItems( firstNonNullItem, lastNonNullItem );
-
-		validateNumberOfItems( numberOfItems, requiredNumberOfPrices );
-		// validateSizeOfStore( numberOfItems, maximumIndex );
-
-		final int numberOfConsecutiveItems = getNumberOfConsectiveItems( data, firstNonNullItem, lastNonNullItem );
-
-		validateEnoughConsecutiveItems( numberOfConsecutiveItems, requiredNumberOfPrices );
-
-		return firstNonNullItem;
+		return lastNonNullItem;
 	}
 
-	/**
-	 * Retrieves the first non-null entry in the given data array, with the additional constraint
-	 * the index must be within the store size.
-	 * 
-	 * @param data array to find the first non-null index within.
-	 * @param minimumNumberOfPrices the minimum number of consecutive items required in the data
-	 *            set.
-	 * @return maximumIndex of the first non-null entry.
-	 * @throws IllegalArgumentException when the there are no non-null items or the index exceeds
-	 *             the store size.
-	 */
-	public int getFirstNonNullIndex( final List<BigDecimal> data, final int minimumNumberOfPrices ) {
+	private <T> int getLastNonNullIndex( final List<T> data ) {
+		// Find last non-null index
+		int lastNonNullItem = data.size() - 1;
 
-		// validateSizeOfStore( data.length, maximumIndex );
-
-		// Skip any null entries
-		int firstNonNullItem = 0;
-		while (isNullEntryWithinArray( data, firstNonNullItem )) {
-			firstNonNullItem++;
+		while (isNullEntryWithinArray( data, lastNonNullItem )) {
+			lastNonNullItem--;
 		}
 
-		// validateFirstItemInMaximumIndex( firstNonNullItem, maximumIndex );
-
-		final int lastNonNullItem = getLastNonNullIndex( data );
-		final int numberOfItems = getNumberOfItems( firstNonNullItem, lastNonNullItem );
-
-		validateNumberOfItems( numberOfItems, minimumNumberOfPrices );
-
-		final int numberOfConsecutiveItems = getNumberOfConsectiveItems( data, firstNonNullItem, lastNonNullItem );
-
-		validateEnoughConsecutiveItems( numberOfConsecutiveItems, minimumNumberOfPrices );
-
-		return firstNonNullItem;
+		return lastNonNullItem;
 	}
 
 	private void validateEnoughConsecutiveItems( final int numberOfConsecutiveItems, final int minimumNumberOfPrices ) {
@@ -247,33 +130,6 @@ public class IndicatorInputValidator {
 							numberOfItems ) );
 		}
 	}
-
-	// private void validateFirstItemInMaximumIndex( final int firstNonNullItem, final int
-	// maximumIndex ) {
-	// if (firstNonNullItem >= maximumIndex) {
-	// throw new IllegalArgumentException( String.format(
-	// "The index of the first non-null item index of: %s exceeds the maximum allowed index of: %s",
-	// firstNonNullItem, maximumIndex ) );
-	// }
-	// }
-
-	private void validateIndexInArray( final TradingDayPrices[] data, final int firstNonNullItem,
-			final int requiredNumberOfPrices ) {
-		if (firstNonNullItem < 0) {
-			throw new IllegalArgumentException(
-					String.format( "There are not enough non-null items in array of size: %s requiring: %s items",
-							data.length - 1, requiredNumberOfPrices ) );
-		}
-	}
-
-	// private void validateSizeOfStore( final int storeSize, final int maximumIndex ) {
-	// if (storeSize > maximumIndex) {
-	// throw new IllegalArgumentException(
-	// String.format( "The number of data points given: %s exceeds the size of the store: %s",
-	// storeSize,
-	// maximumIndex ) );
-	// }
-	// }
 
 	private int getNumberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {
 		// Number of items, accounting for zero indexed array

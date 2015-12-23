@@ -31,7 +31,7 @@ import java.util.List;
 
 import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * Exponential Moving Average (EMA) implementation without restriction on maximum number of trading
@@ -54,7 +54,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/** Constant used for smoothing the moving average. */
 	private final BigDecimal smoothingConstant;
 
-	//TODO pass the store in
+	// TODO pass the store in
 	/** Provides the array to store the result in. */
 	private final List<BigDecimal> emaValues;
 
@@ -62,7 +62,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	private final int lookback;
 
 	/** Responsible for parsing and validating the input. */
-	private final IndicatorInputValidator validator;
+	private final Validator validator;
 
 	/** Provides generic access to different array types. */
 	private final Data wrapper;
@@ -72,7 +72,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public ExponentialMovingAverageCalculator( final int lookback, final IndicatorInputValidator validator,
+	public ExponentialMovingAverageCalculator( final int lookback, final Validator validator,
 			final MathContext mathContext ) {
 		// Look back provides one of the days of EMA values
 		this.smoothingConstant = calculateSmoothingConstant( lookback );
@@ -94,8 +94,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		validator.verifyZeroNullEntries( data );
 		validator.verifyEnoughValues( data, lookback );
 
-		final int startSmaIndex = validator.getFirstNonNullIndex( data );
-		final int endEmaIndex = validator.getLastNonNullIndex( data );
+		// With zero null entries the beginning is zero, then end last index
+		final int startSmaIndex = 0;
+		final int endEmaIndex = data.length - 1;
 
 		wrapper.set( data );
 

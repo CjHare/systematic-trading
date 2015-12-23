@@ -37,9 +37,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 
 public class RelativeStrengthIndexSignalsTest {
 
@@ -53,7 +50,7 @@ public class RelativeStrengthIndexSignalsTest {
 			22, 23, 24, 25, 26, 27, 28 };
 
 	@Test
-	public void oversold() throws TooFewDataPoints {
+	public void oversold() {
 		final List<BigDecimal> rsValue = new ArrayList<BigDecimal>( rs.length );
 		final TradingDayPrices[] dates = new TradingDayPrices[rs.length];
 

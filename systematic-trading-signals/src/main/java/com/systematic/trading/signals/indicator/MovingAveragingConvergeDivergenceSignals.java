@@ -30,9 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
@@ -49,22 +47,21 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 			final int signalTimePeriods, final MathContext mathContext ) {
 
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator( fastTimePeriods,
-				new IndicatorInputValidator(), mathContext );
+				new IllegalArgumentThrowingValidator(), mathContext );
 		final ExponentialMovingAverage slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods,
-				new IndicatorInputValidator(), mathContext );
+				new IllegalArgumentThrowingValidator(), mathContext );
 		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator( signalTimePeriods,
-				new IndicatorInputValidator(), mathContext );
+				new IllegalArgumentThrowingValidator(), mathContext );
 
 		this.macd = new MovingAverageConvergenceDivergenceCalculator( fastEma, slowEma, signalEma,
-				new IndicatorInputValidator() );
+				new IllegalArgumentThrowingValidator() );
 
 		this.requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
 				+ signalEma.getMinimumNumberOfPrices();
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data )
-			throws TooFewDataPoints, TooManyDataPoints {
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
 
 		final List<DatedSignal> signals = macd.macd( data );
 

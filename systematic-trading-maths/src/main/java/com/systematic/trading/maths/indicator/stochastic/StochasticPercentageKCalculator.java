@@ -34,9 +34,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestPrice;
 import com.systematic.trading.data.price.LowestPrice;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
@@ -62,7 +60,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	private final List<BigDecimal> stochasticValues;
 
 	/** Responsible for parsing and validating the input. */
-	private final IndicatorInputValidator validator;
+	private final Validator validator;
 
 	/**
 	 * @param lookback the number of days to use when calculating the Stochastic%K.
@@ -71,7 +69,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
 	public StochasticPercentageKCalculator( final int lookback, final int daysOfPercentageKValues,
-			final IndicatorInputValidator validator, final MathContext mathContext ) {
+			final Validator validator, final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + daysOfPercentageKValues;
 		this.mathContext = mathContext;
 		this.validator = validator;
@@ -80,7 +78,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	}
 
 	@Override
-	public List<BigDecimal> percentageK( final TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints {
+	public List<BigDecimal> percentageK( final TradingDayPrices[] data ) {
 
 		validator.verifyZeroNullEntries( data );
 		validator.verifyEnoughValues( data, minimumNumberOfPrices );

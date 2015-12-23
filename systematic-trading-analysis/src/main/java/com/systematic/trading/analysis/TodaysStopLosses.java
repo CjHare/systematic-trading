@@ -33,25 +33,19 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
+import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.atr.AverageTrueRange;
 import com.systematic.trading.maths.indicator.atr.AverageTrueRangeCalculator;
 import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 
 public class TodaysStopLosses {
-
-	private static final Logger LOG = LogManager.getLogger( TodaysStopLosses.class );
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
@@ -82,7 +76,7 @@ public class TodaysStopLosses {
 
 	private static void averageTrueRange( final LocalDate startDate, final LocalDate endDate ) {
 		final DataService service = HibernateDataService.getInstance();
-		final IndicatorInputValidator validator = new IndicatorInputValidator();
+		final Validator validator = new IllegalArgumentThrowingValidator();
 		final BigDecimal threeQuaterMultiplier = BigDecimal.valueOf( 3.25 );
 		final BigDecimal threeHalfMultiplier = BigDecimal.valueOf( 3.5 );
 
@@ -102,22 +96,17 @@ public class TodaysStopLosses {
 			// Correct the ordering from earliest to latest
 			Arrays.sort( data, new TradingDayPricesDateOrder() );
 
-			try {
-				final List<BigDecimal> averageTrueRanges = atr.atr( data );
-				final int lastAtrValue = averageTrueRanges.size() - 1;
-				final BigDecimal averageTrueRange = averageTrueRanges.get( lastAtrValue );
+			final List<BigDecimal> averageTrueRanges = atr.atr( data );
+			final int lastAtrValue = averageTrueRanges.size() - 1;
+			final BigDecimal averageTrueRange = averageTrueRanges.get( lastAtrValue );
 
-				System.out.println( "--- " );
-				System.out.println( symbol );
-				System.out.println( twoDecimalPlaces.format( data[lastAtrValue].getClosingPrice().getPrice()
-						.subtract( averageTrueRange.multiply( threeQuaterMultiplier, MATH_CONTEXT ), MATH_CONTEXT ) ) );
-				System.out.println( twoDecimalPlaces.format( data[lastAtrValue].getClosingPrice().getPrice()
-						.subtract( averageTrueRange.multiply( threeHalfMultiplier, MATH_CONTEXT ), MATH_CONTEXT ) ) );
-				System.out.println( "--- " );
-
-			} catch (final TooFewDataPoints | TooManyDataPoints e) {
-				LOG.error( String.format( "Wrong number of data points for: %s", equity.getSymbol() ), e );
-			}
+			System.out.println( "--- " );
+			System.out.println( symbol );
+			System.out.println( twoDecimalPlaces.format( data[lastAtrValue].getClosingPrice().getPrice()
+					.subtract( averageTrueRange.multiply( threeQuaterMultiplier, MATH_CONTEXT ), MATH_CONTEXT ) ) );
+			System.out.println( twoDecimalPlaces.format( data[lastAtrValue].getClosingPrice().getPrice()
+					.subtract( averageTrueRange.multiply( threeHalfMultiplier, MATH_CONTEXT ), MATH_CONTEXT ) ) );
+			System.out.println( "--- " );
 		}
 	}
 }

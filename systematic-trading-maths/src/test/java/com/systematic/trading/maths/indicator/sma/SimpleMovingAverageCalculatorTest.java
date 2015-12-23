@@ -44,9 +44,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * Verifying the behaviour for a SimpleMovingAverageCalculator.
@@ -58,7 +56,7 @@ public class SimpleMovingAverageCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
-	private IndicatorInputValidator validator;
+	private Validator validator;
 
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
@@ -83,7 +81,7 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	@Test
-	public void smaTwoPoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void smaTwoPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -106,7 +104,7 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void nullFirstDataPoint() throws TooFewDataPoints, TooManyDataPoints {
+	public void nullFirstDataPoint() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -123,7 +121,7 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void nullLastDataPoint() throws TooFewDataPoints, TooManyDataPoints {
+	public void nullLastDataPoint() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -140,7 +138,7 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void notEnoughDataPoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void notEnoughDataPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -156,7 +154,7 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	@Test
-	public void smaThreePoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void smaThreePoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );

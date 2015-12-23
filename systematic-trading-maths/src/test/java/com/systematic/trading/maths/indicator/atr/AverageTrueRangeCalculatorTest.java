@@ -43,9 +43,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * Tests the behaviour of the AverageTrueRangeCalculator.
@@ -57,7 +55,7 @@ public class AverageTrueRangeCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
-	private IndicatorInputValidator validator;
+	private Validator validator;
 
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
@@ -102,7 +100,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	@Test
-	public void atrFlat() throws TooFewDataPoints, TooManyDataPoints {
+	public void atrFlat() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -124,7 +122,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	@Test
-	public void atrIncreasing() throws TooFewDataPoints, TooManyDataPoints {
+	public void atrIncreasing() {
 		final int lookback = 4;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
@@ -148,7 +146,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void atrInitialNullEntry() throws TooFewDataPoints, TooManyDataPoints {
+	public void atrInitialNullEntry() {
 		final int lookback = 2;
 		final int numberDataPoints = 4;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -165,7 +163,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void atrLastNullEntry() throws TooFewDataPoints, TooManyDataPoints {
+	public void atrLastNullEntry() {
 		final int lookback = 2;
 		final int numberDataPoints = 4;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -182,7 +180,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	@Test
-	public void atrThreeRangeTypes() throws TooFewDataPoints, TooManyDataPoints {
+	public void atrThreeRangeTypes() {
 		final int lookback = 4;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createThreeTypesOfVolatility( numberDataPoints );

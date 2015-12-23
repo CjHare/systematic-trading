@@ -36,8 +36,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 
 /**
@@ -57,7 +55,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	private final long[] dateValues = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
 	@Test
-	public void signalsPositive() throws TooFewDataPoints, TooManyDataPoints {
+	public void signalsPositive() {
 		final TradingDayPrices[] data = createTradingPrices();
 		final int daysGradient = data.length - 1 - lookback;
 
@@ -75,7 +73,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	@Test
-	public void signalsFlat() throws TooFewDataPoints, TooManyDataPoints {
+	public void signalsFlat() {
 		final TradingDayPrices[] data = createTradingPrices();
 		final int daysGradient = data.length - lookback;
 
@@ -91,7 +89,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	@Test
-	public void signalsNegative() throws TooFewDataPoints, TooManyDataPoints {
+	public void signalsNegative() {
 		final TradingDayPrices[] data = createTradingPrices();
 		final int daysGradient = data.length - 1 - lookback;
 

@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.BuySignal;
@@ -43,10 +41,8 @@ import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 import com.systematic.trading.signals.model.event.IndicatorSignalEvent;
-import com.systematic.trading.signals.model.event.NotEnoughDataPointsEvent;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
-import com.systematic.trading.signals.model.event.TooManyDataPointsEvent;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class AnalysisLongBuySignals implements AnalysisBuySignals {
@@ -124,17 +120,9 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		final List<IndicatorSignal> signals;
 
 		if (generator.getRequiredNumberOfTradingDays() < data.length) {
-			try {
-				signals = generator.calculateSignals( data );
-				notifyIndicatorEvent( signals );
-				return signals;
-
-			} catch (final TooFewDataPoints e) {
-				notifyTooFewDataPoints( generator.getSignalType(), data[data.length - 1].getDate() );
-
-			} catch (final TooManyDataPoints e) {
-				notifyTooManyDataPoints( generator.getSignalType(), data[data.length - 1].getDate() );
-			}
+			signals = generator.calculateSignals( data );
+			notifyIndicatorEvent( signals );
+			return signals;
 		}
 
 		// Only here on error :. no signals
@@ -146,50 +134,9 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		return requiredNumberOfTradingDays;
 	}
 
+	@Override
 	public void addListener( final SignalAnalysisListener listener ) {
 		listeners.add( listener );
-	}
-
-	private void notifyTooFewDataPoints( final IndicatorSignalType type, final LocalDate date ) {
-
-		// Create the event only when there are listeners
-		if (!listeners.isEmpty()) {
-			final SignalAnalysisEvent event = new NotEnoughDataPointsEvent( type, date );
-
-			if (IndicatorSignalType.RSI.equals( event.getSignalType() )) {
-				System.out.println( "RSI - tooFew " + date );
-			}
-			if (IndicatorSignalType.MACD.equals( event.getSignalType() )) {
-				System.out.println( "MACD - tooFew " + date );
-			}
-
-			// TODO deal with error - needs separate output to a normal signal
-
-			for (final SignalAnalysisListener listener : listeners) {
-				listener.event( event );
-			}
-		}
-	}
-
-	private void notifyTooManyDataPoints( final IndicatorSignalType type, final LocalDate date ) {
-
-		// Create the event only when there are listeners
-		if (!listeners.isEmpty()) {
-			final SignalAnalysisEvent event = new TooManyDataPointsEvent( type, date );
-
-			// TODO deal with error - needs separate output to a normal signal
-
-			if (IndicatorSignalType.RSI.equals( event.getSignalType() )) {
-				System.out.println( "RSI - TooMany " + date );
-			}
-			if (IndicatorSignalType.MACD.equals( event.getSignalType() )) {
-				System.out.println( "MACD - TooMany " + date );
-			}
-
-			for (final SignalAnalysisListener listener : listeners) {
-				listener.event( event );
-			}
-		}
 	}
 
 	private void notifyIndicatorEvent( final List<IndicatorSignal> signals ) {

@@ -32,7 +32,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -48,9 +47,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * Test the ExponentialMovingAverageCalculator.
@@ -62,7 +59,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
-	private IndicatorInputValidator validator;
+	private Validator validator;
 
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
@@ -107,11 +104,9 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	@Test
-	public void emaOnePoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void emaOnePoints() {
 		final int lookback = 2;
 		final TradingDayPrices[] data = createPrices( lookback );
-
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( lookback - 1 );
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
 				validator, MATH_CONTEXT );
@@ -127,12 +122,10 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	@Test
-	public void emaTwoPoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void emaTwoPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
-
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
 				validator, MATH_CONTEXT );
@@ -149,7 +142,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void emaFirstPointNull() throws TooFewDataPoints, TooManyDataPoints {
+	public void emaFirstPointNull() {
 		final int lookback = 3;
 		final int numberDataPoints = lookback + 2;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -165,12 +158,10 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	@Test
-	public void emaThreePoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void emaThreePoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
-
-		when( validator.getLastNonNullIndex( any( TradingDayPrices[].class ) ) ).thenReturn( numberDataPoints - 1 );
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
 				validator, MATH_CONTEXT );
@@ -188,7 +179,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void emaTwoPointsLastNull() throws TooFewDataPoints, TooManyDataPoints {
+	public void emaTwoPointsLastNull() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
@@ -204,12 +195,10 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	@Test
-	public void emaTwoPointsDecimal() throws TooFewDataPoints, TooManyDataPoints {
+	public void emaTwoPointsDecimal() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
 		final List<BigDecimal> data = createDecimalPrices( numberDataPoints );
-
-		when( validator.getLastNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( numberDataPoints - 1 );
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
 				validator, MATH_CONTEXT );
@@ -227,12 +216,10 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	@Test
-	public void emaThreePointsDecimal() throws TooFewDataPoints, TooManyDataPoints {
+	public void emaThreePointsDecimal() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
 		final List<BigDecimal> data = createIncreasingDecimalPrices( numberDataPoints );
-
-		when( validator.getLastNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( numberDataPoints - 1 );
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
 				validator, MATH_CONTEXT );
@@ -250,7 +237,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void notEnoughDataPointsDecimal() throws TooFewDataPoints, TooManyDataPoints {
+	public void notEnoughDataPointsDecimal() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback - 1;
 		final List<BigDecimal> data = createIncreasingDecimalPrices( numberDataPoints );
@@ -265,7 +252,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	@Test
-	public void getMinimumNumberOfPrices() throws TooFewDataPoints, TooManyDataPoints {
+	public void getMinimumNumberOfPrices() {
 		final int lookback = 2;
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,

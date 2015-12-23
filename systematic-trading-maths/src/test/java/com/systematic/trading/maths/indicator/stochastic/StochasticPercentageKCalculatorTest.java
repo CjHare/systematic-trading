@@ -45,9 +45,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * Verifies the StochasticPercentageKCalculator.
@@ -59,7 +57,7 @@ public class StochasticPercentageKCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
-	private IndicatorInputValidator validator;
+	private Validator validator;
 
 	private TradingDayPrices[] createFlatPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
@@ -95,7 +93,7 @@ public class StochasticPercentageKCalculatorTest {
 	}
 
 	@Test
-	public void percentageKThreePoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void percentageKThreePoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -117,7 +115,7 @@ public class StochasticPercentageKCalculatorTest {
 	}
 
 	@Test
-	public void percentageKThreeFlatPoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void percentageKThreeFlatPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
 		final TradingDayPrices[] data = createFlatPrices( numberDataPoints );
@@ -138,7 +136,7 @@ public class StochasticPercentageKCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void nullFirstDataPoint() throws TooFewDataPoints, TooManyDataPoints {
+	public void nullFirstDataPoint() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -155,7 +153,7 @@ public class StochasticPercentageKCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void nullLastDataPoint() throws TooFewDataPoints, TooManyDataPoints {
+	public void nullLastDataPoint() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -172,7 +170,7 @@ public class StochasticPercentageKCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void notEnoughDataPoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void notEnoughDataPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 3;
 		final TradingDayPrices[] data = createPrices( numberDataPoints );
@@ -188,7 +186,7 @@ public class StochasticPercentageKCalculatorTest {
 	}
 
 	@Test
-	public void percentageKFourPoints() throws TooFewDataPoints, TooManyDataPoints {
+	public void percentageKFourPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
@@ -211,7 +209,7 @@ public class StochasticPercentageKCalculatorTest {
 	}
 
 	@Test
-	public void percentageKIncreasingLargerLookback() throws TooFewDataPoints, TooManyDataPoints {
+	public void percentageKIncreasingLargerLookback() {
 		final int lookback = 4;
 		final int numberDataPoints = lookback + 6;
 		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );

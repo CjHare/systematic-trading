@@ -29,8 +29,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
 
 /**
  * %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
@@ -39,5 +37,5 @@ import com.systematic.trading.maths.exception.TooManyDataPoints;
  */
 public interface StochasticPercentageK {
 
-	List<BigDecimal> percentageK( TradingDayPrices[] data ) throws TooManyDataPoints, TooFewDataPoints;
+	List<BigDecimal> percentageK( TradingDayPrices[] data );
 }

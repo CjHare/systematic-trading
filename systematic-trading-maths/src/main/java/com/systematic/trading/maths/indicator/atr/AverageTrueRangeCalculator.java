@@ -31,9 +31,7 @@ import java.util.List;
 
 import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * Standard ATR implementation.
@@ -55,7 +53,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	private final int minimumNumberOfPrices;
 
 	/** Responsible for parsing and validating the input. */
-	private final IndicatorInputValidator validator;
+	private final Validator validator;
 
 	// TODO pass the store in
 	/** Provides the array to store the result in. */
@@ -68,8 +66,8 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public AverageTrueRangeCalculator( final int lookback, final int daysOfAtrValues,
-			final IndicatorInputValidator validator, final MathContext mathContext ) {
+	public AverageTrueRangeCalculator( final int lookback, final int daysOfAtrValues, final Validator validator,
+			final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + daysOfAtrValues;
 		this.priorMultiplier = BigDecimal.valueOf( lookback - 1 );
 		this.lookbackDivider = BigDecimal.valueOf( lookback );
@@ -117,22 +115,20 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	}
 
 	@Override
-	public List<BigDecimal> atr( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
+	public List<BigDecimal> atr( final TradingDayPrices[] data ) {
 
 		validator.verifyZeroNullEntries( data );
 		validator.verifyEnoughValues( data, minimumNumberOfPrices );
 
 		atrValues.clear();
 
-		final int startAtrIndex = validator.getStartingNonNullIndex( data, minimumNumberOfPrices );
-
 		// For the first value just use the TR
-		atrValues.add( trueRangeMethodOne( data[startAtrIndex] ) );
+		atrValues.add( trueRangeMethodOne( data[0] ) );
 
 		// Starting ATR is just the first value
 		BigDecimal priorAtr = atrValues.get( 0 );
 
-		for (int i = startAtrIndex + 1; i < data.length; i++) {
+		for (int i = 0 + 1; i < data.length; i++) {
 			atrValues.add( average( getTrueRange( data[i], data[i - 1] ), priorAtr ) );
 			priorAtr = atrValues.get( atrValues.size() - 1 );
 		}

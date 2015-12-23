@@ -32,9 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.signals.model.IndicatorSignalType;
@@ -68,13 +66,12 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		this.overbought = BigDecimal.valueOf( overbought );
 		this.requiredNumberOfTradingDays = lookback + DAYS_OF_SIGNALS + MINIMUM_PRICES_FOR_ACCURACY;
 
-		this.rsi = new RelativeStrengthIndexCalculator( lookback, DAYS_OF_SIGNALS, new IndicatorInputValidator(),
+		this.rsi = new RelativeStrengthIndexCalculator( lookback, DAYS_OF_SIGNALS, new IllegalArgumentThrowingValidator(),
 				mathContext );
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data )
-			throws TooFewDataPoints, TooManyDataPoints {
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
 
 		// Calculate the RSI signals
 		// TODO convert return type to value with date

@@ -29,8 +29,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
 
 /**
  * Developed by J. Welles Wilder, the Average True Range (ATR) is an indicator that measures
@@ -65,9 +63,7 @@ public interface AverageTrueRange {
 	 * 
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return average true range values.
-	 * @throws TooFewDataPoints not enough closing prices to perform ATR calculations.
-	 * @throws TooManyDataPoints too many prices have been provided to perform ATR calculations.
 	 */
-	List<BigDecimal> atr( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	List<BigDecimal> atr( TradingDayPrices[] data );
 
 }

@@ -23,12 +23,48 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.exception;
+package com.systematic.trading.maths.indicator;
 
-public class TooManyDataPoints extends Exception {
-	private static final long serialVersionUID = 1L;
+import java.util.List;
 
-	public TooManyDataPoints( final String message ) {
-		super( message );
-	}
+/**
+ * Validation of arrays an list contents.
+ * 
+ * @author CJ Hare
+ */
+public interface Validator {
+
+	/**
+	 * Verifies there are no <code>null</code> entries in the list.
+	 * 
+	 * @param values list of values to parse for the existence of <code>null</code>.
+	 */
+	<T> void verifyZeroNullEntries( List<T> values );
+
+	/**
+	 * Verifies there are no <code>null</code> entries in the array.
+	 * 
+	 * @param values array of values to parse for the existence of <code>null</code>.
+	 */
+	<T> void verifyZeroNullEntries( T[] values );
+
+	/**
+	 * Verifies that there are the expected number of non <code>null</code> sequential entries in
+	 * the list.
+	 * 
+	 * @param values list of values to check for a run of non <code>null</code> entries of the
+	 *            desired size.
+	 * @param numberOfValues minimum number of values expected.
+	 */
+	<T> void verifyEnoughValues( List<T> values, int numberOfValues );
+
+	/**
+	 * Verifies that there are the expected number of non <code>null</code> sequential entries in
+	 * the array.
+	 * 
+	 * @param values array of values to check for a run of non <code>null</code> entries of the
+	 *            desired size.
+	 * @param numberOfValues minimum number of values expected.
+	 */
+	<T> void verifyEnoughValues( T[] values, int numberOfValues );
 }

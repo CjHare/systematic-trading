@@ -32,7 +32,7 @@ import java.util.List;
 
 import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
@@ -53,7 +53,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	/** Exponential moving average of the values from slowEma - fastEma. */
 	private final ExponentialMovingAverage signalEma;
 
-	//TODO pass the store in
+	// TODO pass the store in
 	/** Provides a store for the slow-fast ema value for feeding to the signal ema. */
 	private final List<BigDecimal> macdValues;
 
@@ -61,14 +61,14 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	private final List<LocalDate> signalLineDates;
 
 	/** Responsible for parsing and validating the input. */
-	private final IndicatorInputValidator validator;
+	private final Validator validator;
 
 	/** The date of the last processed price data. */
 	private LocalDate lastDateProcessed = LocalDate.MIN;
 
 	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverage fastEma,
 			final ExponentialMovingAverage slowEma, final ExponentialMovingAverage signalEma,
-			final IndicatorInputValidator validator ) {
+			final Validator validator ) {
 		this.macdValues = new NonNullableArrayList<BigDecimal>();
 		this.signalLineDates = new NonNullableArrayList<LocalDate>();
 		this.validator = validator;

@@ -29,8 +29,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
 
 /**
  * Relative Strength Index - RSI
@@ -51,8 +49,6 @@ public interface RelativeStrengthIndex {
 	/**
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return relative strength index values.
-	 * @throws TooFewDataPoints not enough closing prices to perform RSI calculations.
-	 * @throws TooManyDataPoints too many closing prices provided to perform RSI calculations.
 	 */
-	public List<BigDecimal> rsi( TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints;
+	public List<BigDecimal> rsi( TradingDayPrices[] data );
 }

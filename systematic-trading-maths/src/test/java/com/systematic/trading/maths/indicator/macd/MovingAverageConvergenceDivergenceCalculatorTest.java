@@ -50,9 +50,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.TradingDayPricesImpl;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
@@ -75,7 +73,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	private ExponentialMovingAverage signalEma;
 
 	@Mock
-	private IndicatorInputValidator validator;
+	private Validator validator;
 
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
@@ -89,7 +87,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void noResults() throws TooFewDataPoints, TooManyDataPoints {
+	public void noResults() {
 		final int lookback = 0;
 		final TradingDayPrices[] data = new TradingDayPrices[lookback];
 
@@ -103,7 +101,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void singleNullResult() throws TooFewDataPoints, TooManyDataPoints {
+	public void singleNullResult() {
 		final int lookback = 1;
 		final TradingDayPrices[] data = new TradingDayPrices[lookback];
 
@@ -137,7 +135,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	@Test
-	public void signalLineInput() throws TooFewDataPoints, TooManyDataPoints {
+	public void signalLineInput() {
 		final int lookback = 5;
 		final TradingDayPrices[] data = createPrices( lookback );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValuesList( lookback, 1 ) );
@@ -162,7 +160,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	@Test
-	public void noCrossover() throws TooFewDataPoints, TooManyDataPoints {
+	public void noCrossover() {
 		final int lookback = 5;
 		final TradingDayPrices[] data = createPrices( lookback );
 		when( slowEma.ema( any( TradingDayPrices[].class ) ) ).thenReturn( createFlatValuesList( lookback, 1 ) );
@@ -187,7 +185,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	@Test
-	public void bullishSignalLineCrossover() throws TooFewDataPoints, TooManyDataPoints {
+	public void bullishSignalLineCrossover() {
 		final int lookback = 5;
 		final TradingDayPrices[] data = createPrices( lookback );
 
@@ -218,7 +216,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	@Test
-	public void bullishSignalLineCrossoverTwoDataSets() throws TooFewDataPoints, TooManyDataPoints {
+	public void bullishSignalLineCrossoverTwoDataSets() {
 
 		final int firstLookback = 4;
 		final TradingDayPrices[] firstData = createPrices( firstLookback );
@@ -258,7 +256,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	@Test
-	public void bullishOriginCrossover() throws TooFewDataPoints, TooManyDataPoints {
+	public void bullishOriginCrossover() {
 		final int lookback = 5;
 		final TradingDayPrices[] data = createPrices( lookback );
 
@@ -270,8 +268,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final List<BigDecimal> signalEmaValues = createFlatValuesList( 5, 8 );
 		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( signalEmaValues );
-		when( validator.getLastNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( data.length - 1 );
-		when( validator.getFirstNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( 0 );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, validator );
@@ -291,7 +287,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	@Test
-	public void bullishSignalLineAndOriginCrossover() throws TooFewDataPoints, TooManyDataPoints {
+	public void bullishSignalLineAndOriginCrossover() {
 		final int lookback = 5;
 		final TradingDayPrices[] data = createPrices( lookback );
 
@@ -303,8 +299,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final List<BigDecimal> signalEmaValues = createFlatValuesList( 5, 1 );
 		when( signalEma.ema( anyListOf( BigDecimal.class ) ) ).thenReturn( signalEmaValues );
-		when( validator.getLastNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( data.length - 1 );
-		when( validator.getFirstNonNullIndex( anyListOf( BigDecimal.class ) ) ).thenReturn( 0 );
 
 		final MovingAverageConvergenceDivergenceCalculator calculator = new MovingAverageConvergenceDivergenceCalculator(
 				fastEma, slowEma, signalEma, validator );

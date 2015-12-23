@@ -31,9 +31,7 @@ import java.util.List;
 
 import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.exception.TooFewDataPoints;
-import com.systematic.trading.maths.exception.TooManyDataPoints;
-import com.systematic.trading.maths.indicator.IndicatorInputValidator;
+import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * The mean for a consecutive set of numbers.
@@ -56,7 +54,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	private final List<BigDecimal> smaValues;
 
 	/** Responsible for parsing and validating the input. */
-	private final IndicatorInputValidator validator;
+	private final Validator validator;
 
 	/** Number of days to calculate the SMA value on. */
 	private final int daysOfSmaValues;
@@ -68,8 +66,8 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	 * @param store source for the storage array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues,
-			final IndicatorInputValidator validator, final MathContext mathContext ) {
+	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues, final Validator validator,
+			final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
 		this.daysOfSmaValues = daysOfSmaValues;
 		this.mathContext = mathContext;
@@ -79,7 +77,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	}
 
 	@Override
-	public List<BigDecimal> sma( final TradingDayPrices[] data ) throws TooFewDataPoints, TooManyDataPoints {
+	public List<BigDecimal> sma( final TradingDayPrices[] data ) {
 
 		validator.verifyZeroNullEntries( data );
 		validator.verifyEnoughValues( data, minimumNumberOfPrices );
