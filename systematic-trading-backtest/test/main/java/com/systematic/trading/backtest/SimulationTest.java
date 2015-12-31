@@ -64,9 +64,6 @@ public class SimulationTest {
 			LocalDate.of( 2000, Month.APRIL, 8 ), LocalDate.of( 2000, Month.APRIL, 6 ),
 			LocalDate.of( 2000, Month.APRIL, 7 ), LocalDate.of( 2000, Month.APRIL, 5 ) };
 
-	private static final LocalDate startDate = LocalDate.of( 2000, Month.APRIL, 1 );
-	private static final LocalDate endDate = LocalDate.of( 2000, Month.APRIL, 9 );
-
 	@Mock
 	private Brokerage broker;
 	@Mock
@@ -94,8 +91,7 @@ public class SimulationTest {
 	public void create() {
 		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK );
 		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
-		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, startDate, endDate,
-				unorderedPoints );
+		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, unorderedPoints );
 
 		new Simulation( tradingData, broker, funds, roiCalculator, entry, exit );
 	}
@@ -108,8 +104,7 @@ public class SimulationTest {
 		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK );
 
 		try {
-			final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, startDate, endDate,
-					unorderedPoints );
+			final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, unorderedPoints );
 			new Simulation( tradingData, broker, funds, roiCalculator, entry, exit );
 
 			fail( "Expecting exception for duplicate data point date" );

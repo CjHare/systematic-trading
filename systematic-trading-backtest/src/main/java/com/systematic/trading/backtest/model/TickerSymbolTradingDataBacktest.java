@@ -53,11 +53,11 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 	/** The trading data to feed into the simulation. */
 	private final Map<LocalDate, TradingDayPrices> tradingData;
 
-	public TickerSymbolTradingDataBacktest( final EquityIdentity equity, final LocalDate startDate,
-			final LocalDate endDate, final TradingDayPrices[] data ) {
+	/**
+	 * Restrictions of no duplicate trading dates, applies date ordering on the given data.
+	 */
+	public TickerSymbolTradingDataBacktest( final EquityIdentity equity, final TradingDayPrices[] data ) {
 		this.equity = equity;
-		this.startDate = startDate;
-		this.endDate = endDate;
 
 		final Map<LocalDate, TradingDayPrices> modifiableTradingData = new HashMap<LocalDate, TradingDayPrices>();
 
@@ -70,6 +70,9 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 		}
 
 		this.tradingData = Collections.unmodifiableMap( modifiableTradingData );
+
+		this.startDate = getEarliestDate( tradingData );
+		this.endDate = getLatestDate( tradingData );
 	}
 
 	@Override
@@ -95,5 +98,29 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 	@Override
 	public EquityIdentity getEquityIdentity() {
 		return equity;
+	}
+
+	private LocalDate getEarliestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
+		LocalDate earliest = tradingData.values().iterator().next().getDate();
+
+		for (final TradingDayPrices contender : tradingData.values()) {
+			if (contender.getDate().isBefore( earliest )) {
+				earliest = contender.getDate();
+			}
+		}
+
+		return earliest;
+	}
+
+	private LocalDate getLatestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
+		LocalDate latest = tradingData.values().iterator().next().getDate();
+
+		for (final TradingDayPrices contender : tradingData.values()) {
+			if (contender.getDate().isAfter( latest )) {
+				latest = contender.getDate();
+			}
+		}
+
+		return latest;
 	}
 }

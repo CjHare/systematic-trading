@@ -66,9 +66,6 @@ public class SimulationExitLogicTest {
 			LocalDate.of( 2000, Month.APRIL, 8 ), LocalDate.of( 2000, Month.APRIL, 6 ),
 			LocalDate.of( 2000, Month.APRIL, 7 ), LocalDate.of( 2000, Month.APRIL, 5 ) };
 
-	private static final LocalDate startDate = LocalDate.of( 2000, Month.APRIL, 1 );
-	private static final LocalDate endDate = LocalDate.of( 2000, Month.APRIL, 9 );
-
 	@Mock
 	private Brokerage broker;
 	@Mock
@@ -112,8 +109,7 @@ public class SimulationExitLogicTest {
 	public void processOrder() throws OrderException {
 		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK );
 		final TradingDayPrices[] sortedPoints = createOrderedDataPoints( createUnorderedDataPoints() );
-		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, startDate, endDate,
-				sortedPoints );
+		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, sortedPoints );
 		final Simulation simulation = new Simulation( tradingData, broker, funds, roiCalculator, entry, exit );
 
 		final EquityOrder order = mock( EquityOrder.class );

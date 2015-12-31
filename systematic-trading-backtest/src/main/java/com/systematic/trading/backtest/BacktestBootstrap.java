@@ -28,7 +28,6 @@ package com.systematic.trading.backtest;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Map;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
@@ -90,38 +89,39 @@ public class BacktestBootstrap {
 		final EquityIdentity equity = tradingData.getEquityIdentity();
 
 		// First data point may not be the requested start date
-		final LocalDate earliestDate = getEarliestDate( tradingData.getTradingDayPrices() );
+		final LocalDate startDate = tradingData.getStartDate();
 
 		// Final trading day data point, may not be be requested end date
-		final TradingDayPrices lastTradingDay = getLatestDataPoint( tradingData.getTradingDayPrices() );
+		final LocalDate endDate = tradingData.getEndDate();
+		final TradingDayPrices lastTradingDay = tradingData.getTradingDayPrices().get( endDate );
 
 		// Cumulative recording of investment progression
 		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( mathContext );
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-				earliestDate, Period.ofDays( 1 ), mathContext );
+				startDate, Period.ofDays( 1 ), mathContext );
 		roi.addListener( dailyRoi );
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-				earliestDate, Period.ofMonths( 1 ), mathContext );
+				startDate, Period.ofMonths( 1 ), mathContext );
 		roi.addListener( monthlyRoi );
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-				earliestDate, Period.ofYears( 1 ), mathContext );
+				startDate, Period.ofYears( 1 ), mathContext );
 		roi.addListener( yearlyRoi );
 
 		final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi = new CulmativeTotalReturnOnInvestmentCalculator(
 				mathContext );
 		roi.addListener( cumulativeRoi );
 
-		final EntryLogic entry = configuration.getEntryLogic( equity, earliestDate );
+		final EntryLogic entry = configuration.getEntryLogic( equity, startDate );
 		entry.addListener( display );
 
 		final ExitLogic exit = configuration.getExitLogic();
 
 		final Brokerage broker = configuration.getBroker( equity );
 
-		final CashAccount cashAccount = configuration.getCashAccount( earliestDate );
+		final CashAccount cashAccount = configuration.getCashAccount( startDate );
 		cashAccount.addListener( roi );
 
 		// Engine dealing with the event flow
@@ -154,29 +154,5 @@ public class BacktestBootstrap {
 
 		// Run the simulation until completion
 		simulation.run();
-	}
-
-	private LocalDate getEarliestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
-		LocalDate earliest = tradingData.values().iterator().next().getDate();
-
-		for (final TradingDayPrices contender : tradingData.values()) {
-			if (earliest.isAfter( contender.getDate() )) {
-				earliest = contender.getDate();
-			}
-		}
-
-		return earliest;
-	}
-
-	private TradingDayPrices getLatestDataPoint( final Map<LocalDate, TradingDayPrices> tradingData ) {
-		TradingDayPrices latest = tradingData.values().iterator().next();
-
-		for (final TradingDayPrices contender : tradingData.values()) {
-			if (contender.getDate().isAfter( latest.getDate() )) {
-				latest = contender;
-			}
-		}
-
-		return latest;
 	}
 }
