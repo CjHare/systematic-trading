@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.display.file;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -66,18 +65,14 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		this.statistics = statistics;
 		this.outputFilename = outputFilename;
 		this.pool = pool;
-
-		final File outputFile = new File( outputFilename );
-		if (!outputFile.getParentFile().exists()) {
-			outputFile.getParentFile().mkdirs();
-		}
 	}
 
 	@Override
 	public void displayEventStatistics() {
 
-		final Runnable task = ( ) -> {
-			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+		final Runnable task = () -> {
+			try (final PrintWriter out = new PrintWriter(
+					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
 				out.println( createOutput() );
 			} catch (final IOException e) {
 				LOG.error( e );
@@ -107,7 +102,8 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 
 		output.append( "\n=== Order events ===\n" );
 		output.append( String.format( "# Entry Order events: %s\n", orderStatistics.getEntryEventCount() ) );
-		output.append( String.format( "# Delete Entry Order events: %s\n", orderStatistics.getDeleteEntryEventCount() ) );
+		output.append(
+				String.format( "# Delete Entry Order events: %s\n", orderStatistics.getDeleteEntryEventCount() ) );
 		output.append( String.format( "# Exit Order events: %s\n", orderStatistics.getExitEventCount() ) );
 		output.append( String.format( "# Delete Exit Order events: %s\n", orderStatistics.getDeleteExitEventCount() ) );
 	}
@@ -117,7 +113,8 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		output.append( "\n=== Cash events ===\n" );
 		output.append( String.format( "# Cash account credit events: %s\n", cashStatistics.getCreditEventCount() ) );
 		output.append( String.format( "# Cash account debit events: %s\n", cashStatistics.getDebitEventCount() ) );
-		output.append( String.format( "# Cash account interest events: %s\n", cashStatistics.getInterestEventCount() ) );
+		output.append(
+				String.format( "# Cash account interest events: %s\n", cashStatistics.getInterestEventCount() ) );
 		output.append( String.format( "# Cash account deposit events: %s\n", cashStatistics.getDepositEventCount() ) );
 		output.append( String.format( "Total interest earned: %s\n",
 				TWO_DECIMAL_PLACES.format( cashStatistics.getInterestEarned() ) ) );
@@ -125,7 +122,8 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 				TWO_DECIMAL_PLACES.format( cashStatistics.getAmountDeposited() ) ) );
 	}
 
-	private void addBrokerageStatistics( final BrokerageEventStatistics brokerageStatistics, final StringBuilder output ) {
+	private void addBrokerageStatistics( final BrokerageEventStatistics brokerageStatistics,
+			final StringBuilder output ) {
 
 		final long sumBrokerageEvents = brokerageStatistics.getSellEventCount()
 				+ brokerageStatistics.getBuyEventCount();

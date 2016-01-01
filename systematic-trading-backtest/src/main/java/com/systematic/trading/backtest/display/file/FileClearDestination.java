@@ -39,34 +39,39 @@ public class FileClearDestination {
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File( outputDirectory );
 
-		if (!outputDirectoryFile.exists()) {
+		if (outputDirectoryFile.exists()) {
+			deleteSubDirectories( outputDirectoryFile );
+		} else {
 			if (!outputDirectoryFile.mkdirs()) {
-				throw new IllegalArgumentException( String.format(
-						"Failed to create / access directory parent directory: %s", outputDirectory ) );
+				throw new IllegalArgumentException(
+						String.format( "Failed to create / access directory parent directory: %s", outputDirectory ) );
 			}
 		}
 
-		// Ensure the directory is empty
-		for (final File file : outputDirectoryFile.listFiles()) {
-			if (file.isDirectory()) {
-				deleteDirectory( file );
-			}
+		verifyDirectoryIsEmpty( outputDirectory );
+	}
 
-			file.delete();
+	private void verifyDirectoryIsEmpty( final String outputDirectory ) {
+		final File outputDirectoryFile = new File( outputDirectory );
+
+		if (outputDirectoryFile.listFiles().length != 0) {
+			throw new IllegalArgumentException( String.format( "%s was not successfully emptied, still contains: %s",
+					outputDirectory, outputDirectoryFile.listFiles() ) );
 		}
 	}
 
-	private void deleteDirectory( final File directory ) {
+	private void deleteSubDirectories( final File directory ) {
 
 		for (final File file : directory.listFiles()) {
 
 			if (file.isDirectory()) {
-				deleteDirectory( file );
+				deleteSubDirectories( file );
 			}
 
-			file.delete();
+			if (!file.delete()) {
+				throw new IllegalArgumentException( String.format( "Failed to delete: %s", directory ) );
+			}
 		}
-
 	}
 
 }

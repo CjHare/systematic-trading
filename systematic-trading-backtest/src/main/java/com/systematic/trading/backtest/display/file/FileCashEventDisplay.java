@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.display.file;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -59,11 +58,6 @@ public class FileCashEventDisplay implements CashEventListener {
 	public FileCashEventDisplay( final String outputFilename, final ExecutorService pool ) {
 		this.outputFilename = outputFilename;
 		this.pool = pool;
-
-		final File outputFile = new File( outputFilename );
-		if (!outputFile.getParentFile().exists()) {
-			outputFile.getParentFile().mkdirs();
-		}
 	}
 
 	@Override

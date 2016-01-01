@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.display.file;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -73,11 +72,6 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		this.outputFilename = outputFilename;
 		this.roiType = roiType;
 		this.pool = pool;
-
-		final File outputFile = new File( outputFilename );
-		if (!outputFile.getParentFile().exists()) {
-			outputFile.getParentFile().mkdirs();
-		}
 	}
 
 	public String createOutput( final ReturnOnInvestmentEvent event ) {
@@ -157,8 +151,9 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
 
-		final Runnable task = ( ) -> {
-			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+		final Runnable task = () -> {
+			try (final PrintWriter out = new PrintWriter(
+					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
 				out.print( createOutput( (ReturnOnInvestmentEvent) event ) );
 			} catch (final IOException e) {
 				LOG.error( e );

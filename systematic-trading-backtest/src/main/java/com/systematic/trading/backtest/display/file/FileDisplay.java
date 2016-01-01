@@ -74,9 +74,6 @@ public class FileDisplay implements BacktestDisplay {
 
 	public FileDisplay( final String outputDirectory, final ExecutorService pool ) throws IOException {
 
-		// Arrange output to files
-		new FileClearDestination( "../../simulations/" );
-
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File( outputDirectory );
 		if (!outputDirectoryFile.exists()) {
@@ -84,11 +81,6 @@ public class FileDisplay implements BacktestDisplay {
 				throw new IllegalArgumentException(
 						String.format( "Failed to create / access directory: %s", outputDirectory ) );
 			}
-		}
-
-		// Ensure the directory is empty
-		for (final File file : outputDirectoryFile.listFiles()) {
-			file.delete();
 		}
 
 		baseDirectory = outputDirectoryFile.getCanonicalPath();

@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.display.file;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -69,18 +68,14 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 		this.cumulativeRoi = cumulativeRoi;
 		this.outputFilename = outputFilename;
 		this.pool = pool;
-
-		final File outputFile = new File( outputFilename );
-		if (!outputFile.getParentFile().exists()) {
-			outputFile.getParentFile().mkdirs();
-		}
 	}
 
 	@Override
 	public void displayNetWorth() {
 
-		final Runnable task = ( ) -> {
-			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+		final Runnable task = () -> {
+			try (final PrintWriter out = new PrintWriter(
+					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
 				out.println( createOutput() );
 			} catch (final IOException e) {
 				LOG.error( e );

@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.display.file;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -64,11 +63,6 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 	public FileEventDisplay( final String outputFilename, final TickerSymbolTradingData tradingData,
 			final ExecutorService pool ) {
 
-		final File outputFile = new File( outputFilename );
-		if (!outputFile.getParentFile().exists()) {
-			outputFile.getParentFile().mkdirs();
-		}
-
 		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
 			out.println( createHeaderOutput( tradingData ) );
 		} catch (final IOException e) {
@@ -89,14 +83,16 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 		output.append( "#######################\n" );
 		output.append( "\n" );
 
-		output.append( String.format( "Data set for %s from %s to %s\n", tradingData.getEquityIdentity()
-				.getTickerSymbol(), tradingData.getStartDate(), tradingData.getEndDate() ) );
+		output.append(
+				String.format( "Data set for %s from %s to %s\n", tradingData.getEquityIdentity().getTickerSymbol(),
+						tradingData.getStartDate(), tradingData.getEndDate() ) );
 
 		final long daysBetween = ChronoUnit.DAYS.between( tradingData.getStartDate(), tradingData.getEndDate() );
 		final double percentageTradingDays = ((double) tradingData.getNumberOfTradingDays() / daysBetween) * 100;
 
 		output.append( String.format( "# trading days: %s over %s days (%s percentage trading days)\n",
-				tradingData.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
+				tradingData.getNumberOfTradingDays(), daysBetween,
+				TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
 
 		output.append( "\n" );
 

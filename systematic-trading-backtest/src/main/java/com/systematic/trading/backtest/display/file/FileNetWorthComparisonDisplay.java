@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.display.file;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -45,6 +44,8 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
 
 /**
  * Persists the comparison displays into a file.
+ * <p/>
+ * Assumption is the directory is already empty.
  * 
  * @author CJ Hare
  */
@@ -64,28 +65,7 @@ public class FileNetWorthComparisonDisplay implements NetWorthEventListener {
 
 	public FileNetWorthComparisonDisplay( final EventStatistics statistics, final String outputFilename,
 			final ExecutorService pool ) {
-
 		this.statistics = statistics;
-
-		// Ensure the directory exists
-		final File outputDirectoryFile = new File( outputFilename ).getParentFile();
-		if (!outputDirectoryFile.exists()) {
-			if (!outputDirectoryFile.mkdirs()) {
-				throw new IllegalArgumentException(
-						String.format( "Failed to create / access directory parent directory: %s", outputFilename ) );
-			}
-		}
-
-		// Ensure the directory is empty
-		for (final File file : outputDirectoryFile.listFiles()) {
-			file.delete();
-		}
-
-		final File outputFile = new File( outputFilename );
-		if (!outputFile.getParentFile().exists()) {
-			outputFile.getParentFile().mkdirs();
-		}
-
 		this.outputFilename = outputFilename;
 		this.pool = pool;
 	}
