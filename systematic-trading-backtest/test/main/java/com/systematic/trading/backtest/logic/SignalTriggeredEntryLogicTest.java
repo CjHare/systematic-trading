@@ -147,30 +147,6 @@ public class SignalTriggeredEntryLogicTest {
 	}
 
 	@Test
-	public void updateOrderNotCreatedFundsBelowMinimumOrderThreshold() {
-		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
-		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
-
-		when( cashAccount.getBalance() ).thenReturn( BigDecimal.ZERO );
-		final List<BuySignal> expected = new ArrayList<BuySignal>();
-		expected.add( new BuySignal( LocalDate.now() ) );
-		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
-
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK,
-				new MinimumTradeValue( BigDecimal.ONE ), buyLongAnalysis, MATH_CONTEXT );
-
-		final EquityOrder order = logic.update( fees, cashAccount, data );
-
-		assertNull( order );
-		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
-		verifyNoMoreInteractions( buyLongAnalysis );
-		verifyZeroInteractions( fees );
-		verify( cashAccount, atLeastOnce() ).getBalance();
-		verifyNoMoreInteractions( cashAccount );
-	}
-
-	@Test
 	public void updateOrderCreated() {
 
 		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
