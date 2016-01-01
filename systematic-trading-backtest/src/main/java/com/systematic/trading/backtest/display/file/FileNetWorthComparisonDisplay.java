@@ -100,12 +100,19 @@ public class FileNetWorthComparisonDisplay implements NetWorthEventListener {
 		final BigDecimal netWorth = event.getNetWorth();
 		final OrderEventStatistics orders = statistics.getOrderEventStatistics();
 
-		return String.format(
-				"Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Entry orders placed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders deleted: %s %s",
-				TWO_DECIMAL_PLACES.format( netWorth ), TWO_DECIMAL_PLACES.format( balance ),
-				TWO_DECIMAL_PLACES.format( holdingValue ), TWO_DECIMAL_PLACES.format( cashBalance ),
-				orders.getEntryEventCount(), orders.getDeleteEntryEventCount(),
+		final int entryEventCount = orders.getEntryEventCount();
+		final int entryEventDeletedCount = orders.getDeleteEntryEventCount();
+		final int entryEventExecutedCount = orders.getEntryEventCount() - orders.getDeleteEntryEventCount();
 
-				orders.getExitEventCount(), orders.getDeleteExitEventCount(), event.getDescription() );
+		final int exitEventCount = orders.getExitEventCount();
+		final int exitEventDeletedCount = orders.getDeleteExitEventCount();
+		final int exitEventExecutedCount = orders.getExitEventCount() - orders.getDeleteExitEventCount();
+
+		return String.format(
+				"Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s %s",
+				TWO_DECIMAL_PLACES.format( netWorth ), TWO_DECIMAL_PLACES.format( balance ),
+				TWO_DECIMAL_PLACES.format( holdingValue ), TWO_DECIMAL_PLACES.format( cashBalance ), entryEventCount,
+				entryEventExecutedCount, entryEventDeletedCount, exitEventCount, exitEventExecutedCount,
+				exitEventDeletedCount, event.getDescription() );
 	}
 }

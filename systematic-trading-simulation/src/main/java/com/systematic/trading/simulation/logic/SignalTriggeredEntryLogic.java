@@ -103,16 +103,25 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 
 			if (!previousSignals.contains( signal )) {
 
+				final BigDecimal amount;
+
 				if (minimumTradeValue.isLessThan( cashAccount.getBalance() )) {
 
 					// Order placed, put on the ignore list
 					previousSignals.add( signal );
 
 					// Everything into the trade
-					final BigDecimal amount = cashAccount.getBalance();
+					amount = cashAccount.getBalance();
 
-					return createOrder( fees, amount, data );
+				} else {
+					// Order placed, put on the ignore list
+					previousSignals.add( signal );
+
+					// Minimum trade value
+					amount = minimumTradeValue.getValue();
 				}
+
+				return createOrder( fees, amount, data );
 			}
 		}
 
