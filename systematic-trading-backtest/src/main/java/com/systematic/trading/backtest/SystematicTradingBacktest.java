@@ -44,9 +44,7 @@ import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
-import com.systematic.trading.backtest.display.file.FileClearDestination;
 import com.systematic.trading.backtest.display.file.FileDisplay;
-import com.systematic.trading.backtest.display.file.FileNetWorthComparisonDisplay;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
@@ -60,7 +58,6 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.logic.MinimumTradeValue;
 
 /**
@@ -98,18 +95,12 @@ public class SystematicTradingBacktest {
 		try {
 			final TickerSymbolTradingData tradingData = getTradingData( equity, startDate, endDate );
 
-			// Arrange output to files
-			new FileClearDestination( "../../simulations/" );
-
-			final NetWorthEventListener netWorthComparisonDisplay = new FileNetWorthComparisonDisplay(
-					"../../simulations/summary.txt", pool );
-
 			for (final BacktestBootstrapConfiguration configuration : configurations) {
 				final String outputDirectory = getOutputDirectory( equity, configuration );
 				final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool );
 
 				final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
-						netWorthComparisonDisplay, MATH_CONTEXT );
+						MATH_CONTEXT );
 
 				LOG.info( String.format( "Backtesting beginning for: %s", configuration.getDescription() ) );
 

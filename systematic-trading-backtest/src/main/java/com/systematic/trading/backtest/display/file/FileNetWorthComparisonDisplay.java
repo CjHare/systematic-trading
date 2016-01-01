@@ -40,6 +40,8 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
+import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistics;
 
 /**
  * Persists the comparison displays into a file.
@@ -58,7 +60,12 @@ public class FileNetWorthComparisonDisplay implements NetWorthEventListener {
 	/** Pool of execution threads to delegate IO operations. */
 	private final ExecutorService pool;
 
-	public FileNetWorthComparisonDisplay( final String outputFilename, final ExecutorService pool ) {
+	private final EventStatistics statistics;
+
+	public FileNetWorthComparisonDisplay( final EventStatistics statistics, final String outputFilename,
+			final ExecutorService pool ) {
+
+		this.statistics = statistics;
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File( outputFilename ).getParentFile();
@@ -89,10 +96,13 @@ public class FileNetWorthComparisonDisplay implements NetWorthEventListener {
 		// Only interested in the net worth when the simulation is complete
 		if (SimulationState.COMPLETE.equals( state )) {
 
+			// Create the output now, as it uses a field
+			final String output = createOutput( statistics, event );
+
 			final Runnable task = () -> {
 				try (final PrintWriter out = new PrintWriter(
 						new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-					out.println( createOutput( event ) );
+					out.println( output );
 				} catch (final IOException e) {
 					LOG.error( e );
 				}
@@ -102,16 +112,20 @@ public class FileNetWorthComparisonDisplay implements NetWorthEventListener {
 		}
 	}
 
-	private String createOutput( final NetWorthEvent event ) {
+	private String createOutput( final EventStatistics statistics, final NetWorthEvent event ) {
 
 		final BigDecimal balance = event.getEquityBalance();
 		final BigDecimal holdingValue = event.getEquityBalanceValue();
 		final BigDecimal cashBalance = event.getCashBalance();
 		final BigDecimal netWorth = event.getNetWorth();
+		final OrderEventStatistics orders = statistics.getOrderEventStatistics();
 
-		return String.format( "Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, %s",
+		return String.format(
+				"Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Entry orders placed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders deleted: %s %s",
 				TWO_DECIMAL_PLACES.format( netWorth ), TWO_DECIMAL_PLACES.format( balance ),
 				TWO_DECIMAL_PLACES.format( holdingValue ), TWO_DECIMAL_PLACES.format( cashBalance ),
-				event.getDescription() );
+				orders.getEntryEventCount(), orders.getDeleteEntryEventCount(),
+
+				orders.getExitEventCount(), orders.getDeleteExitEventCount(), event.getDescription() );
 	}
 }

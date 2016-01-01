@@ -37,6 +37,7 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
@@ -68,9 +69,13 @@ public class FileDisplay implements BacktestDisplay {
 	private SignalAnalysisListener signalAnalysisDisplay;
 	private EventStatisticsDisplay statisticsDisplay;
 	private NetWorthSummaryDisplay netWorthDisplay;
+	private NetWorthEventListener netWorthComparisonDisplay;
 	private final ExecutorService pool;
 
 	public FileDisplay( final String outputDirectory, final ExecutorService pool ) throws IOException {
+
+		// Arrange output to files
+		new FileClearDestination( "../../simulations/" );
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File( outputDirectory );
@@ -130,6 +135,9 @@ public class FileDisplay implements BacktestDisplay {
 		final String signalAnalysisFilename = baseDirectory + "/signals.txt";
 
 		this.signalAnalysisDisplay = new FileSignalAnalysisDisplay( signalAnalysisFilename, pool );
+
+		final String comparisonFilename = "../../simulations/summary.txt";
+		netWorthComparisonDisplay = new FileNetWorthComparisonDisplay( eventStatistics, comparisonFilename, pool );
 	}
 
 	@Override
@@ -177,6 +185,7 @@ public class FileDisplay implements BacktestDisplay {
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
 		netWorthDisplay.event( event, state );
+		netWorthComparisonDisplay.event( event, state );
 	}
 
 	@Override

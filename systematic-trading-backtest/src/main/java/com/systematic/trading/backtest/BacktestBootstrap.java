@@ -36,7 +36,6 @@ import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;
 import com.systematic.trading.simulation.SimulationStateListener;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthSummaryEventGenerator;
 import com.systematic.trading.simulation.analysis.roi.CulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
@@ -67,20 +66,16 @@ public class BacktestBootstrap {
 	/** Configuration for the back test. */
 	private final BacktestBootstrapConfiguration configuration;
 
-	/** Rolling summary of the net worth outcomes. */
-	private final NetWorthEventListener comparisonDisplay;
-
 	/** Unmodifiable trading data for input to the back test. */
 	private final TickerSymbolTradingData tradingData;
 
 	public BacktestBootstrap( final TickerSymbolTradingData tradingData,
 			final BacktestBootstrapConfiguration configuration, final BacktestDisplay display,
-			final NetWorthEventListener comparisonDisplay, final MathContext mathContext ) {
-		this.comparisonDisplay = comparisonDisplay;
+			final MathContext mathContext ) {
 		this.configuration = configuration;
 		this.mathContext = mathContext;
-		this.display = display;
 		this.tradingData = tradingData;
+		this.display = display;
 	}
 
 	public void run() throws Exception {
@@ -148,9 +143,6 @@ public class BacktestBootstrap {
 		monthlyRoi.addListener( display );
 		dailyRoi.addListener( display );
 		broker.addListener( display );
-
-		// Wire up the over arching summary report
-		networthSummay.addListener( comparisonDisplay );
 
 		// Run the simulation until completion
 		simulation.run();
