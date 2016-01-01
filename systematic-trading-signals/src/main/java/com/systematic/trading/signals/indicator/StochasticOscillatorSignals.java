@@ -67,10 +67,10 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 			final MathContext mathContext ) {
 		this.lookback = lookback;
 
-		this.smaFullK = new SimpleMovingAverageCalculator( smaK, daysOfStocastic, new IllegalArgumentThrowingValidator(),
-				mathContext );
-		this.smaFullD = new SimpleMovingAverageCalculator( smaD, daysOfStocastic, new IllegalArgumentThrowingValidator(),
-				mathContext );
+		this.smaFullK = new SimpleMovingAverageCalculator( smaK, daysOfStocastic,
+				new IllegalArgumentThrowingValidator(), mathContext );
+		this.smaFullD = new SimpleMovingAverageCalculator( smaD, daysOfStocastic,
+				new IllegalArgumentThrowingValidator(), mathContext );
 		this.percentageK = new StochasticPercentageKCalculator( lookback, daysOfStocastic,
 				new IllegalArgumentThrowingValidator(), mathContext );
 	}
