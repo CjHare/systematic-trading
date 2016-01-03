@@ -54,7 +54,8 @@ import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.simulation.logic.MinimumTradeValue;
+import com.systematic.trading.simulation.logic.RelativeTradeValue;
+import com.systematic.trading.simulation.logic.TradeValue;
 
 /**
  * Performs back testing of trading logic over a historical data set.
@@ -140,8 +141,9 @@ public class BacktestOnlyOne {
 
 		final BigDecimal minimumTradeValue = BigDecimal.valueOf( 500 );
 
-		final MinimumTradeValue minimumTrade = new MinimumTradeValue( minimumTradeValue );
-		final String minimumTradeDescription = String.valueOf( minimumTrade.getValue().longValue() );
+		final TradeValue tradeValue = new RelativeTradeValue( minimumTradeValue, BigDecimal.ONE, MATH_CONTEXT );
+
+		final String minimumTradeDescription = String.valueOf( minimumTradeValue.longValue() );
 
 		final MacdConfiguration macdConfiguration = MacdConfiguration.SHORT;
 
@@ -154,7 +156,7 @@ public class BacktestOnlyOne {
 
 		description = String.format( "%s_SameDay_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
 				minimumTradeDescription );
-		configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade, description,
+		configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue, description,
 				MATH_CONTEXT, macd ) );
 
 		return configurations;

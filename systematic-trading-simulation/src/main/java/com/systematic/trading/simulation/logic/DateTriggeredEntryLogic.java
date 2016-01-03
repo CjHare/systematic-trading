@@ -40,7 +40,7 @@ import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 
 /**
- * Frequent purchases of a fixed amount at regular intervals.
+ * Frequent purchases of a the maximum amount of equities at regular intervals.
  * 
  * @author CJ Hare
  */

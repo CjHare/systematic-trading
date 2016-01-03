@@ -23,50 +23,50 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.logic;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+package com.systematic.trading.simulation.logic;
 
 import java.math.BigDecimal;
-
-import org.junit.Test;
-
-import com.systematic.trading.simulation.logic.MinimumTradeValue;
+import java.math.MathContext;
 
 /**
- * MinimumTradeValue test.
+ * Trade value behaviour with a minimum threshold, with a relative percentage in amounts above.
  * 
  * @author CJ Hare
  */
-public class MinimumTradeValueTest {
+public class RelativeTradeValue implements TradeValue {
 
-	@Test
-	public void getValue() {
-		final BigDecimal expectedValue = BigDecimal.valueOf( 888.2223213212 );
-		final MinimumTradeValue value = new MinimumTradeValue( expectedValue );
+	/** Smallest value to trade. */
+	private final BigDecimal minimumTradeValue;
 
-		assertNotNull( value );
-		assertEquals( expectedValue, value.getValue() );
+	/** Scale and precision to apply to mathematical operations. */
+	private final MathContext mathContext;
+
+	/** Percentage of funds to trade (range of 0-1). */
+	private final BigDecimal maximumPercentage;
+
+	public RelativeTradeValue( final BigDecimal minimumTradeValue, final BigDecimal maximumPercentage,
+			final MathContext mathContext ) {
+		this.minimumTradeValue = minimumTradeValue;
+		this.maximumPercentage = maximumPercentage;
+		this.mathContext = mathContext;
 	}
 
-	@Test
-	public void isLessThanTrue() {
-		final BigDecimal expectedValue = BigDecimal.valueOf( 888.2223213212 );
-		final MinimumTradeValue value = new MinimumTradeValue( expectedValue );
+	@Override
+	public BigDecimal getTradeValue( final BigDecimal availableFunds ) {
 
-		final boolean isLessThan = value.isLessThan( BigDecimal.valueOf( 888.3 ) );
+		BigDecimal tradeValue = minimumTradeValue;
 
-		assertEquals( true, isLessThan );
-	}
+		// If above the minimum there's a chance to use the percentage
+		if (minimumTradeValue.compareTo( availableFunds ) < 0) {
 
-	@Test
-	public void isLessThanFalse() {
-		final BigDecimal expectedValue = BigDecimal.valueOf( 888.2223213212 );
-		final MinimumTradeValue value = new MinimumTradeValue( expectedValue );
+			final BigDecimal maximumTradeValue = availableFunds.multiply( maximumPercentage, mathContext );
 
-		final boolean isLessThan = value.isLessThan( expectedValue );
+			// Only when the maximum is above the threshold, use it
+			if (maximumTradeValue.compareTo( minimumTradeValue ) > 0) {
+				tradeValue = maximumTradeValue;
+			}
+		}
 
-		assertEquals( false, isLessThan );
+		return tradeValue;
 	}
 }

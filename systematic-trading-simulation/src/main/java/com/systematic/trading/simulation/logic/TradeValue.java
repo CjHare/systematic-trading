@@ -28,61 +28,18 @@ package com.systematic.trading.simulation.logic;
 import java.math.BigDecimal;
 
 /**
- * Minimum value of equities that will be traded.
+ * Amounts for trade value minimum and maximum threshold.
  * 
  * @author CJ Hare
  */
-public class MinimumTradeValue {
-
-	/** Smallest value to trade. */
-	private final BigDecimal value;
-
-	public MinimumTradeValue( final BigDecimal value ) {
-		this.value = value;
-	}
+public interface TradeValue {
 
 	/**
-	 * Retrieves the minimum value of equities that may be traded.
+	 * Retrieves the amount to spend on equities.
 	 * 
+	 * @param availableFunds the amount available to trade with.
 	 * @return minimum value, never <code>null</code>
 	 */
-	public BigDecimal getValue() {
-		return value;
-	}
+	BigDecimal getTradeValue( BigDecimal availableFunds );
 
-	/**
-	 * Tests whether the other value is greater then the minimum trade value.
-	 * 
-	 * @param other value to test.
-	 * @return <code>true</code> when the other value is greater then the minimum trade value,
-	 *         <code>false</code> otherwise.
-	 */
-	public boolean isLessThan( final BigDecimal other ) {
-		return other.compareTo( value ) > 0;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals( Object obj ) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		MinimumTradeValue other = (MinimumTradeValue) obj;
-		if (value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!value.equals( other.value ))
-			return false;
-		return true;
-	}
 }

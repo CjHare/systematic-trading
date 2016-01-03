@@ -59,7 +59,8 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
-import com.systematic.trading.simulation.logic.MinimumTradeValue;
+import com.systematic.trading.simulation.logic.RelativeTradeValue;
+import com.systematic.trading.simulation.logic.TradeValue;
 
 /**
  * Performs back testing of trading logic over a historical data set.
@@ -158,8 +159,9 @@ public class SystematicTradingBacktest {
 		// TODO tidy up
 		for (final BigDecimal minimumTradeValue : minimumTradeValues) {
 
-			final MinimumTradeValue minimumTrade = new MinimumTradeValue( minimumTradeValue );
-			final String minimumTradeDescription = String.valueOf( minimumTrade.getValue().longValue() );
+			final TradeValue tradeValue = new RelativeTradeValue( minimumTradeValue, BigDecimal.ONE, MATH_CONTEXT );
+
+			final String minimumTradeDescription = String.valueOf( minimumTradeValue.longValue() );
 
 			for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 
@@ -169,7 +171,7 @@ public class SystematicTradingBacktest {
 
 				description = String.format( "%s_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
 						minimumTradeDescription );
-				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
 						description, MATH_CONTEXT, macd ) );
 
 				macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
@@ -181,7 +183,7 @@ public class SystematicTradingBacktest {
 
 				description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
 						rsiConfiguration.getDescription(), minimumTradeDescription );
-				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
 						description, MATH_CONTEXT, rsi, macd ) );
 
 				for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
@@ -196,7 +198,7 @@ public class SystematicTradingBacktest {
 					description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever",
 							macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 							minimumTradeDescription );
-					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
 							description, MATH_CONTEXT, sma, macd ) );
 
 					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
@@ -212,7 +214,7 @@ public class SystematicTradingBacktest {
 					description = String.format( "%s-%s-%s_SameDay_Minimum-%s_HoldForever",
 							macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 							rsiConfiguration.getDescription(), minimumTradeDescription );
-					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
 							description, MATH_CONTEXT, rsi, sma, macd ) );
 				}
 			}
@@ -226,7 +228,7 @@ public class SystematicTradingBacktest {
 				sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
 						smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 
-				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, minimumTrade,
+				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
 						description, MATH_CONTEXT, rsi, sma ) );
 			}
 		}

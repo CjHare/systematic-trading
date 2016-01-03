@@ -52,8 +52,8 @@ import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
-import com.systematic.trading.simulation.logic.MinimumTradeValue;
 import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
+import com.systematic.trading.simulation.logic.TradeValue;
 
 /**
  * Configuration for signal triggered entry logic, with weekly contribution to cash account.
@@ -74,8 +74,8 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	/** Input for the trading logic, determines the minimum value for transactions. */
-	private final MinimumTradeValue minimumTrade;
+	/** Minimum value of the trade excluding the fee amount */
+	private final TradeValue tradeValue;
 
 	/** Signal generator for the entry logic. */
 	private final IndicatorSignalGenerator[] entrySignals;
@@ -84,7 +84,7 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 	private final String description;
 
 	public HoldForeverWeeklyDespositConfiguration( final LocalDate startDate, final LocalDate endDate,
-			final MinimumTradeValue minimumTrade, final String description, final MathContext mathContext,
+			final TradeValue tradeValue, final String description, final MathContext mathContext,
 			final IndicatorSignalGenerator... entrySignals ) {
 		super( startDate, endDate );
 
@@ -93,9 +93,9 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 		}
 
 		this.entrySignals = entrySignals;
-		this.minimumTrade = minimumTrade;
 		this.description = description;
 		this.mathContext = mathContext;
+		this.tradeValue = tradeValue;
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 		filters.add( filter );
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
-		return new SignalTriggeredEntryLogic( equity.getType(), minimumTrade, buyLongAnalysis, mathContext );
+		return new SignalTriggeredEntryLogic( equity.getType(), tradeValue, buyLongAnalysis, mathContext );
 	}
 
 	@Override

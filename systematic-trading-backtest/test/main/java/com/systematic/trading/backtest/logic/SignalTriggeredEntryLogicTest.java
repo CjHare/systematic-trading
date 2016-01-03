@@ -55,8 +55,9 @@ import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.simulation.brokerage.BrokerageFees;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.logic.MinimumTradeValue;
+import com.systematic.trading.simulation.logic.RelativeTradeValue;
 import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
+import com.systematic.trading.simulation.logic.TradeValue;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
@@ -86,8 +87,8 @@ public class SignalTriggeredEntryLogicTest {
 
 	@Test
 	public void actionOnInsufficientFunds() {
-		final MinimumTradeValue minimumTradeValue = new MinimumTradeValue( BigDecimal.ONE );
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
+		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, tradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds( mock( EquityOrder.class ) );
@@ -101,8 +102,8 @@ public class SignalTriggeredEntryLogicTest {
 
 	@Test
 	public void updateNoOrder() {
-		final MinimumTradeValue minimumTradeValue = new MinimumTradeValue( BigDecimal.ONE );
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
+		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, tradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -122,7 +123,8 @@ public class SignalTriggeredEntryLogicTest {
 
 		final LocalDate now = LocalDate.now();
 		final BigDecimal accountBalance = BigDecimal.valueOf( 1 );
-		final MinimumTradeValue minimumTradeValue = new MinimumTradeValue( BigDecimal.ZERO );
+		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
+
 		when( cashAccount.getBalance() ).thenReturn( accountBalance );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
 				.thenReturn( BigDecimal.valueOf( 2.25 ) );
@@ -131,7 +133,7 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( now ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, tradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -154,7 +156,8 @@ public class SignalTriggeredEntryLogicTest {
 
 		final LocalDate now = LocalDate.now();
 		final BigDecimal accountBalance = BigDecimal.valueOf( 50 );
-		final MinimumTradeValue minimumTradeValue = new MinimumTradeValue( BigDecimal.ZERO );
+		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
+
 		when( cashAccount.getBalance() ).thenReturn( accountBalance );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
 				.thenReturn( BigDecimal.valueOf( 2.25 ) );
@@ -163,7 +166,7 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( now ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, tradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -188,7 +191,8 @@ public class SignalTriggeredEntryLogicTest {
 
 		final LocalDate now = LocalDate.now();
 		final BigDecimal accountBalance = BigDecimal.valueOf( 50 );
-		final MinimumTradeValue minimumTradeValue = new MinimumTradeValue( BigDecimal.ZERO );
+		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
+
 		when( cashAccount.getBalance() ).thenReturn( accountBalance );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
 				.thenReturn( BigDecimal.valueOf( 2.25 ) );
@@ -197,7 +201,7 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( now ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, minimumTradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, tradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		logic.update( fees, cashAccount, data );
