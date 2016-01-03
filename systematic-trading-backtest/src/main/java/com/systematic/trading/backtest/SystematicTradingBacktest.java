@@ -147,6 +147,9 @@ public class SystematicTradingBacktest {
 		final BigDecimal[] minimumTradeValues = { BigDecimal.valueOf( 500 ), BigDecimal.valueOf( 1000 ),
 				BigDecimal.valueOf( 1500 ), BigDecimal.valueOf( 2000 ) };
 
+		final BigDecimal[] maximumTradeValues = { BigDecimal.valueOf( .25 ), BigDecimal.valueOf( .5 ),
+				BigDecimal.valueOf( .75 ), BigDecimal.valueOf( 1 ) };
+
 		String description;
 
 		SimpleMovingAverageGradientSignals sma;
@@ -157,52 +160,26 @@ public class SystematicTradingBacktest {
 		final RsiConfiguration rsiConfiguration = RsiConfiguration.MEDIUM;
 
 		// TODO tidy up
-		for (final BigDecimal minimumTradeValue : minimumTradeValues) {
+		for (final BigDecimal maximumTradeValue : maximumTradeValues) {
 
-			final TradeValue tradeValue = new RelativeTradeValue( minimumTradeValue, BigDecimal.ONE, MATH_CONTEXT );
+			for (final BigDecimal minimumTradeValue : minimumTradeValues) {
 
-			final String minimumTradeDescription = String.valueOf( minimumTradeValue.longValue() );
-
-			for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-
-				macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
-						macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
+				final TradeValue tradeValue = new RelativeTradeValue( minimumTradeValue, maximumTradeValue,
 						MATH_CONTEXT );
 
-				description = String.format( "%s_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
-						minimumTradeDescription );
-				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-						description, MATH_CONTEXT, macd ) );
+				final String minimumTradeDescription = String.valueOf( minimumTradeValue.longValue() );
+				final String maximumTradeDescription = String.valueOf( maximumTradeValue.doubleValue() );
 
-				macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
-						macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
-						MATH_CONTEXT );
-
-				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
-						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
-
-				description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
-						rsiConfiguration.getDescription(), minimumTradeDescription );
-				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-						description, MATH_CONTEXT, rsi, macd ) );
-
-				for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-
-					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
+				for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 							MATH_CONTEXT );
 
-					description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever",
-							macdConfiguration.getDescription(), smaConfiguration.getDescription(),
-							minimumTradeDescription );
+					description = String.format( "%s_Minimum-%s_Maximum-%s_HoldForever",
+							macdConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
 					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-							description, MATH_CONTEXT, sma, macd ) );
-
-					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
+							description, MATH_CONTEXT, macd ) );
 
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
@@ -211,25 +188,58 @@ public class SystematicTradingBacktest {
 					rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
 							rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
 
-					description = String.format( "%s-%s-%s_SameDay_Minimum-%s_HoldForever",
-							macdConfiguration.getDescription(), smaConfiguration.getDescription(),
-							rsiConfiguration.getDescription(), minimumTradeDescription );
+					description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
+							macdConfiguration.getDescription(), rsiConfiguration.getDescription(),
+							minimumTradeDescription, maximumTradeDescription );
 					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-							description, MATH_CONTEXT, rsi, sma, macd ) );
+							description, MATH_CONTEXT, rsi, macd ) );
+
+					for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
+
+						sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
+								smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
+
+						macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
+								macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
+								MATH_CONTEXT );
+
+						description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
+								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
+								minimumTradeDescription, maximumTradeDescription );
+						configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
+								description, MATH_CONTEXT, sma, macd ) );
+
+						sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
+								smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
+
+						macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
+								macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
+								MATH_CONTEXT );
+
+						rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
+								rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
+
+						description = String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
+								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
+								rsiConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
+						configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
+								description, MATH_CONTEXT, rsi, sma, macd ) );
+					}
 				}
-			}
 
-			for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-				description = String.format( "%s-%s_SameDay_Minimum-%s_HoldForever", smaConfiguration.getDescription(),
-						rsiConfiguration.getDescription(), minimumTradeDescription );
+				for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
+					description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
+							smaConfiguration.getDescription(), rsiConfiguration.getDescription(),
+							minimumTradeDescription, maximumTradeDescription );
 
-				rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
-						rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
-				sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
-						smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
+					rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
+							rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
+					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
+							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 
-				configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-						description, MATH_CONTEXT, rsi, sma ) );
+					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
+							description, MATH_CONTEXT, rsi, sma ) );
+				}
 			}
 		}
 
