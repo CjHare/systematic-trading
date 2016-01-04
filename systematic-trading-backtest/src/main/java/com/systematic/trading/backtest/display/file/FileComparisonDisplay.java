@@ -30,6 +30,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 
@@ -39,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
+import com.systematic.trading.simulation.analysis.statistics.CashEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistics;
 
@@ -49,12 +51,16 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  * 
  * @author CJ Hare
  */
-public class FileNetWorthComparisonDisplay implements NetWorthEventListener {
+public class FileComparisonDisplay implements NetWorthEventListener {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileNetWorthComparisonDisplay.class );
+	private static final Logger LOG = LogManager.getLogger( FileComparisonDisplay.class );
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".00" );
+
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
+
+	private final MathContext mathContext;
 
 	private final String outputFilename;
 
@@ -63,10 +69,11 @@ public class FileNetWorthComparisonDisplay implements NetWorthEventListener {
 
 	private final EventStatistics statistics;
 
-	public FileNetWorthComparisonDisplay( final EventStatistics statistics, final String outputFilename,
-			final ExecutorService pool ) {
-		this.statistics = statistics;
+	public FileComparisonDisplay( final EventStatistics statistics, final String outputFilename,
+			final ExecutorService pool, final MathContext mathContext ) {
 		this.outputFilename = outputFilename;
+		this.mathContext = mathContext;
+		this.statistics = statistics;
 		this.pool = pool;
 	}
 
@@ -108,11 +115,17 @@ public class FileNetWorthComparisonDisplay implements NetWorthEventListener {
 		final int exitEventDeletedCount = orders.getDeleteExitEventCount();
 		final int exitEventExecutedCount = orders.getExitEventCount() - orders.getDeleteExitEventCount();
 
+		final CashEventStatistics cash = statistics.getCashEventStatistics();
+		final BigDecimal deposited = cash.getAmountDeposited();
+		final BigDecimal profit = netWorth.subtract( deposited, mathContext );
+		final BigDecimal roi = profit.divide( netWorth, mathContext ).multiply( ONE_HUNDRED, mathContext );
+
 		return String.format(
-				"Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s %s",
-				TWO_DECIMAL_PLACES.format( netWorth ), TWO_DECIMAL_PLACES.format( balance ),
-				TWO_DECIMAL_PLACES.format( holdingValue ), TWO_DECIMAL_PLACES.format( cashBalance ), entryEventCount,
-				entryEventExecutedCount, entryEventDeletedCount, exitEventCount, exitEventExecutedCount,
-				exitEventDeletedCount, event.getDescription() );
+				"ROI: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s %s",
+				TWO_DECIMAL_PLACES.format( roi ), TWO_DECIMAL_PLACES.format( netWorth ),
+				TWO_DECIMAL_PLACES.format( balance ), TWO_DECIMAL_PLACES.format( holdingValue ),
+				TWO_DECIMAL_PLACES.format( cashBalance ), TWO_DECIMAL_PLACES.format( deposited ),
+				TWO_DECIMAL_PLACES.format( profit ), entryEventCount, entryEventExecutedCount, entryEventDeletedCount,
+				exitEventCount, exitEventExecutedCount, exitEventDeletedCount, event.getDescription() );
 	}
 }

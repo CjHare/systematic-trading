@@ -102,7 +102,7 @@ public class SystematicTradingBacktest {
 
 			for (final BacktestBootstrapConfiguration configuration : configurations) {
 				final String outputDirectory = getOutputDirectory( equity, configuration );
-				final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool );
+				final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool, MATH_CONTEXT );
 
 				final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
 						MATH_CONTEXT );

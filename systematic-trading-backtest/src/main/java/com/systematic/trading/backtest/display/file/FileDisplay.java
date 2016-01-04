@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.display.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.MathContext;
 import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.display.BacktestDisplay;
@@ -56,6 +57,8 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  */
 public class FileDisplay implements BacktestDisplay {
 
+	private final MathContext mathContext;
+
 	// TODO aggregate displays into arrays
 	private final String baseDirectory;
 	private ReturnOnInvestmentEventListener roiDisplay;
@@ -72,7 +75,8 @@ public class FileDisplay implements BacktestDisplay {
 	private NetWorthEventListener netWorthComparisonDisplay;
 	private final ExecutorService pool;
 
-	public FileDisplay( final String outputDirectory, final ExecutorService pool ) throws IOException {
+	public FileDisplay( final String outputDirectory, final ExecutorService pool, final MathContext mathContext )
+			throws IOException {
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File( outputDirectory );
@@ -83,7 +87,8 @@ public class FileDisplay implements BacktestDisplay {
 			}
 		}
 
-		baseDirectory = outputDirectoryFile.getCanonicalPath();
+		this.baseDirectory = outputDirectoryFile.getCanonicalPath();
+		this.mathContext = mathContext;
 		this.pool = pool;
 	}
 
@@ -129,7 +134,7 @@ public class FileDisplay implements BacktestDisplay {
 		this.signalAnalysisDisplay = new FileSignalAnalysisDisplay( signalAnalysisFilename, pool );
 
 		final String comparisonFilename = "../../simulations/summary.txt";
-		netWorthComparisonDisplay = new FileNetWorthComparisonDisplay( eventStatistics, comparisonFilename, pool );
+		netWorthComparisonDisplay = new FileComparisonDisplay( eventStatistics, comparisonFilename, pool, mathContext );
 	}
 
 	@Override

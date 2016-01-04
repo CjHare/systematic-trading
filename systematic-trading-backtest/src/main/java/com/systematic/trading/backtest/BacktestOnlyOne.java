@@ -97,7 +97,7 @@ public class BacktestOnlyOne {
 
 			for (final BacktestBootstrapConfiguration configuration : configurations) {
 				final String outputDirectory = getOutputDirectory( equity, configuration );
-				final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool );
+				final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool, MATH_CONTEXT );
 
 				final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
 						MATH_CONTEXT );
@@ -140,22 +140,20 @@ public class BacktestOnlyOne {
 		// RelativeStrengthIndexSignals rsi;
 
 		final BigDecimal minimumTradeValue = BigDecimal.valueOf( 500 );
+		final BigDecimal maximumTradeValue = BigDecimal.valueOf( 0.75 );
 
-		final TradeValue tradeValue = new RelativeTradeValue( minimumTradeValue, BigDecimal.ONE, MATH_CONTEXT );
+		final TradeValue tradeValue = new RelativeTradeValue( minimumTradeValue, maximumTradeValue, MATH_CONTEXT );
 
 		final String minimumTradeDescription = String.valueOf( minimumTradeValue.longValue() );
+		final String maximumTradeDescription = String.valueOf( maximumTradeValue.doubleValue() );
 
 		final MacdConfiguration macdConfiguration = MacdConfiguration.SHORT;
 
 		macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 				macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(), MATH_CONTEXT );
 
-		// rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
-		// rsiConfiguration.getOverbought(),
-		// rsiConfiguration.getOversold(), maximumTradingDays, MATH_CONTEXT );
-
-		description = String.format( "%s_SameDay_Minimum-%s_HoldForever", macdConfiguration.getDescription(),
-				minimumTradeDescription );
+		description = String.format( "%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
+				minimumTradeDescription, maximumTradeDescription );
 		configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue, description,
 				MATH_CONTEXT, macd ) );
 
