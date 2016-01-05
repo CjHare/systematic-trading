@@ -36,46 +36,35 @@ import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
-import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEvent;
-import com.systematic.trading.simulation.cash.event.CashEventListener;
 import com.systematic.trading.simulation.order.event.OrderEvent;
-import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
- * Single entry point to output a simulation run into files, displaying all events.
+ * Single entry point to output a simulation run into files, displaying only the summary and
+ * comparisons.
+ * <p/>
+ * Substantially reduces the number of logged events, hence side stepping the IO bottleneck.
  * 
  * @author CJ Hare
  */
-public class FileDisplay implements BacktestDisplay {
+public class FileMinimalDisplay implements BacktestDisplay {
 
 	private final MathContext mathContext;
 
 	// TODO aggregate displays into arrays
 	private final String baseDirectory;
-	private ReturnOnInvestmentEventListener roiDisplay;
-	private ReturnOnInvestmentEventListener roiDailyDisplay;
-	private ReturnOnInvestmentEventListener roiMonthlyDisplay;
-	private ReturnOnInvestmentEventListener roiYearlyDisplay;
-	private FileEventDisplay eventDisplay;
-	private CashEventListener cashEventDisplay;
-	private BrokerageEventListener brokerageEventDisplay;
-	private OrderEventListener ordertEventDisplay;
-	private SignalAnalysisListener signalAnalysisDisplay;
 	private EventStatisticsDisplay statisticsDisplay;
 	private NetWorthSummaryDisplay netWorthDisplay;
 	private NetWorthEventListener netWorthComparisonDisplay;
 	private final ExecutorService pool;
 
-	public FileDisplay( final String outputDirectory, final ExecutorService pool, final MathContext mathContext )
+	public FileMinimalDisplay( final String outputDirectory, final ExecutorService pool, final MathContext mathContext )
 			throws IOException {
 
 		// Ensure the directory exists
@@ -97,41 +86,9 @@ public class FileDisplay implements BacktestDisplay {
 			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 					throws Exception {
 
-		final String returnOnInvestmentFilename = baseDirectory + "/return-on-investment.txt";
-		this.roiDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.ALL, pool );
-
-		final String returnOnInvestmentDailyFilename = baseDirectory + "/return-on-investment-daily.txt";
-		this.roiDailyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentDailyFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.DAILY, pool );
-
-		final String returnOnInvestmentMonthlyFilename = baseDirectory + "/return-on-investment-monthly.txt";
-		this.roiMonthlyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentMonthlyFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.MONTHLY, pool );
-
-		final String returnOnInvestmentYearlyFilename = baseDirectory + "/return-on-investment-yearly.txt";
-		this.roiYearlyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentYearlyFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.YEARLY, pool );
-
-		final String eventFilename = baseDirectory + "/events.txt";
-		this.eventDisplay = new FileEventDisplay( eventFilename, tradingData, pool );
-
-		final String cashEventFilename = baseDirectory + "/events-cash.txt";
-		this.cashEventDisplay = new FileCashEventDisplay( cashEventFilename, pool );
-
-		final String orderEventFilename = baseDirectory + "/events-order.txt";
-		this.ordertEventDisplay = new FileOrderEventDisplay( orderEventFilename, pool );
-
-		final String brokerageEventFilename = baseDirectory + "/events-brokerage.txt";
-		this.brokerageEventDisplay = new FileBrokerageEventDisplay( brokerageEventFilename, pool );
-
 		final String statisticsFilename = baseDirectory + "/statistics.txt";
 		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename, pool );
 		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFilename, pool );
-
-		final String signalAnalysisFilename = baseDirectory + "/signals.txt";
-
-		this.signalAnalysisDisplay = new FileSignalAnalysisDisplay( signalAnalysisFilename, pool );
 
 		final String comparisonFilename = "../../simulations/summary.txt";
 		netWorthComparisonDisplay = new FileComparisonDisplay( eventStatistics, comparisonFilename, pool, mathContext );
@@ -139,28 +96,18 @@ public class FileDisplay implements BacktestDisplay {
 
 	@Override
 	public void event( final CashEvent event ) {
-		eventDisplay.event( event );
-		cashEventDisplay.event( event );
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		eventDisplay.event( event );
-		ordertEventDisplay.event( event );
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		eventDisplay.event( event );
-		brokerageEventDisplay.event( event );
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		roiDisplay.event( event );
-		roiDailyDisplay.event( event );
-		roiMonthlyDisplay.event( event );
-		roiYearlyDisplay.event( event );
 	}
 
 	@Override
@@ -187,6 +134,5 @@ public class FileDisplay implements BacktestDisplay {
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
-		signalAnalysisDisplay.event( event );
 	}
 }

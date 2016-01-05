@@ -45,7 +45,7 @@ import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
-import com.systematic.trading.backtest.display.file.FileDisplay;
+import com.systematic.trading.backtest.display.file.FileMinimalDisplay;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
@@ -94,15 +94,19 @@ public class SystematicTradingBacktest {
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
 		final List<BacktestBootstrapConfiguration> configurations = getConfigurations( startDate, endDate );
 
+		final String baseOutputDirectory = getBaseOutputDirectory( args );
+
 		// Arrange output to files, only once per a run
-		new FileClearDestination( "../../simulations/" );
+		new FileClearDestination( baseOutputDirectory );
 
 		try {
 			final TickerSymbolTradingData tradingData = getTradingData( equity, startDate, endDate );
 
 			for (final BacktestBootstrapConfiguration configuration : configurations) {
-				final String outputDirectory = getOutputDirectory( equity, configuration );
-				final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool, MATH_CONTEXT );
+				final String outputDirectory = getOutputDirectory( baseOutputDirectory, equity, configuration );
+				// final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool,
+				// MATH_CONTEXT );
+				final BacktestDisplay fileDisplay = new FileMinimalDisplay( outputDirectory, pool, MATH_CONTEXT );
 
 				final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
 						MATH_CONTEXT );
@@ -252,8 +256,18 @@ public class SystematicTradingBacktest {
 		return new EquityIdentity( tickerSymbol, equityType );
 	}
 
-	private static String getOutputDirectory( final EquityIdentity equity,
+	private static String getOutputDirectory( final String baseOutputDirectory, final EquityIdentity equity,
 			final BacktestBootstrapConfiguration configuration ) {
-		return String.format( "../../simulations/%s_%s", equity.getTickerSymbol(), configuration.getDescription() );
+		return String.format( "%s%s_%s", baseOutputDirectory, equity.getTickerSymbol(),
+				configuration.getDescription() );
+	}
+
+	private static String getBaseOutputDirectory( final String... args ) {
+
+		if (args != null && args.length > 0) {
+			return args[0];
+		}
+
+		return "../../simulations/";
 	}
 }

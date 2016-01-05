@@ -89,14 +89,17 @@ public class BacktestOnlyOne {
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
 		final List<BacktestBootstrapConfiguration> configurations = getConfigurations( startDate, endDate );
 
+		final String baseOutputDirectory = getBaseOutputDirectory( args );
+
 		// Arrange output to files, only once per a run
-		new FileClearDestination( "../../simulations/" );
+		new FileClearDestination( baseOutputDirectory );
 
 		try {
 			final TickerSymbolTradingData tradingData = getTradingData( equity, startDate, endDate );
 
 			for (final BacktestBootstrapConfiguration configuration : configurations) {
-				final String outputDirectory = getOutputDirectory( equity, configuration );
+				final String outputDirectory = getOutputDirectory( baseOutputDirectory, equity, configuration );
+
 				final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool, MATH_CONTEXT );
 
 				final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
@@ -166,8 +169,19 @@ public class BacktestOnlyOne {
 		return new EquityIdentity( tickerSymbol, equityType );
 	}
 
-	private static String getOutputDirectory( final EquityIdentity equity,
+	private static String getOutputDirectory( final String baseOutputDirectory, final EquityIdentity equity,
 			final BacktestBootstrapConfiguration configuration ) {
-		return String.format( "../../simulations/%s_%s", equity.getTickerSymbol(), configuration.getDescription() );
+		return String.format( "%s%s_%s", baseOutputDirectory, equity.getTickerSymbol(),
+				configuration.getDescription() );
 	}
+
+	private static String getBaseOutputDirectory( final String... args ) {
+
+		if (args != null && args.length > 0) {
+			return args[0];
+		}
+
+		return "../../simulations/";
+	}
+
 }
