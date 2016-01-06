@@ -25,34 +25,17 @@
  */
 package com.systematic.trading.backtest.configuration;
 
-import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.systematic.trading.model.EquityIdentity;
-import com.systematic.trading.signals.AnalysisBuySignals;
-import com.systematic.trading.signals.AnalysisLongBuySignals;
-import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.model.IndicatorSignalType;
-import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
-import com.systematic.trading.signals.model.filter.SignalFilter;
-import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.cash.FlatInterestRate;
-import com.systematic.trading.simulation.cash.InterestRate;
-import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
-import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
-import com.systematic.trading.simulation.logic.TradeValue;
 
 /**
  * Configuration for signal triggered entry logic, with weekly contribution to cash account.
@@ -67,17 +50,8 @@ import com.systematic.trading.simulation.logic.TradeValue;
 public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 		implements BacktestBootstrapConfiguration {
 
-	/** Number of days of signals to use when triggering signals. */
-	private static final int DAYS_ACCEPTING_SIGNALS = 5;
-
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
-
-	/** Minimum value of the trade excluding the fee amount */
-	private final TradeValue tradeValue;
-
-	/** Signal generator for the entry logic. */
-	private final IndicatorSignalGenerator[] entrySignals;
 
 	/** Description used for uniquely identifying the configuration. */
 	private final String description;
@@ -85,29 +59,31 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 	/** Fees applied to each equity transaction. */
 	private final BrokerageFeeStructure tradingFeeStructure;
 
+	/** Cash account to use during the simulation. */
+	private final CashAccount cashAccount;
+
+	/** Decision maker for when to enter a trade. */
+	private final EntryLogic entryLogic;
+
 	public HoldForeverWeeklyDespositConfiguration( final LocalDate startDate, final LocalDate endDate,
-			final TradeValue tradeValue, final String description, final BrokerageFeeStructure tradingFeeStructure,
-			final MathContext mathContext, final IndicatorSignalGenerator... entrySignals ) {
-		
-		//TODO use a single equity configuration, no abstract parent
+			final String description, final BrokerageFeeStructure tradingFeeStructure, final CashAccount cashAccount,
+			final EntryLogic entryLogic, final MathContext mathContext ) {
+
+		// TODO use a single equity configuration, no abstract parent
 		super( startDate, endDate );
 
-		if (entrySignals == null) {
-			throw new IllegalArgumentException( "Indicator signal generators are needed for entry logic" );
-		}
-
 		this.tradingFeeStructure = tradingFeeStructure;
-		this.entrySignals = entrySignals;
 		this.description = description;
+		this.cashAccount = cashAccount;
 		this.mathContext = mathContext;
-		this.tradeValue = tradeValue;
+		this.entryLogic = entryLogic;
 	}
 
 	@Override
 	public ExitLogic getExitLogic() {
 		return new HoldForeverExitLogic();
 	}
-	
+
 	@Override
 	public Brokerage getBroker( final EquityIdentity equity ) {
 		return new SingleEquityClassBroker( tradingFeeStructure, equity.getType(), mathContext );
@@ -115,52 +91,16 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 
 	@Override
 	public CashAccount getCashAccount( final LocalDate openingDate ) {
-		
-		//TODO all this into a new factory
-		final Period weekly = Period.ofDays( 7 );
-		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		final InterestRate annualInterestRate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), mathContext );
-		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
-		final CashAccount underlyingAccount = new CalculatedDailyPaidMonthlyCashAccount( annualInterestRate,
-				openingFunds, openingDate, mathContext );
-		return new RegularDepositCashAccountDecorator( oneHundredDollars, underlyingAccount, openingDate, weekly );
+		return cashAccount;
 	}
 
 	@Override
 	public EntryLogic getEntryLogic( final EquityIdentity equity, final LocalDate openingDate ) {
-
-		//TODO pass all this in, decide configuration outside, another factory.
-		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>(
-				entrySignals.length );
-		final IndicatorSignalType[] types = new IndicatorSignalType[entrySignals.length];
-
-		for (int i = 0; i < entrySignals.length; i++) {
-			final IndicatorSignalGenerator entrySignal = entrySignals[i];
-			generators.add( entrySignal );
-			types[i] = entrySignal.getSignalType();
-		}
-
-		// Only signals from the last few days are of interest
-		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter( types ),
-				Period.ofDays( DAYS_ACCEPTING_SIGNALS ) );
-		filters.add( filter );
-
-		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
-		return new SignalTriggeredEntryLogic( equity.getType(), tradeValue, buyLongAnalysis, mathContext );
+		return entryLogic;
 	}
 
 	@Override
 	public String getDescription() {
 		return description;
-	}
-
-	/**
-	 * The most number of days of signals used when analysing signals.
-	 * 
-	 * @return most number of days of signals analysed.
-	 */
-	public static int maximumDaysOfSignalsAnalysed() {
-		return DAYS_ACCEPTING_SIGNALS;
 	}
 }

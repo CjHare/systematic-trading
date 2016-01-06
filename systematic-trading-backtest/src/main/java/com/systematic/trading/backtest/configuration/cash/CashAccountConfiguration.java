@@ -23,28 +23,27 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.fee;
+package com.systematic.trading.backtest.configuration.cash;
 
-import com.systematic.trading.simulation.brokerage.fees.CmcMarketsFeeStructure;
-import com.systematic.trading.simulation.brokerage.fees.VanguardRetailFeeStructure;
+import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAccount;
 
 /**
- * Fee structures available for use in configuration.
+ * Cash account configurations available.
  * 
  * @author CJ Hare
  */
-public enum AvailableFeeStructure {
+public enum CashAccountConfiguration {
 
-	CMC_MARKETS( CmcMarketsFeeStructure.class ),
-	VANGUARD_RETAIL( VanguardRetailFeeStructure.class );
+	CALCULATED_DAILY_PAID_MONTHLY( CalculatedDailyPaidMonthlyCashAccount.class );
 
 	private final Class<?> type;
 
-	private AvailableFeeStructure( final Class<?> type ) {
+	private CashAccountConfiguration( final Class<?> type ) {
 		this.type = type;
 	}
 
 	public Class<?> getType() {
 		return type;
 	}
+
 }

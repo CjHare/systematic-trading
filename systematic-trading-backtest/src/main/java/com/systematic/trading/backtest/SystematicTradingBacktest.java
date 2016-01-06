@@ -28,6 +28,7 @@ package com.systematic.trading.backtest;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,11 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.HoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfiguration;
-import com.systematic.trading.backtest.configuration.fee.AvailableFeeStructure;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
+import com.systematic.trading.backtest.configuration.cash.InterestRateConfiguration;
+import com.systematic.trading.backtest.configuration.cash.InterestRateFactory;
+import com.systematic.trading.backtest.configuration.fee.FeeStructureConfiguration;
 import com.systematic.trading.backtest.configuration.fee.FeeStructureFactory;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
@@ -58,11 +63,24 @@ import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.signals.AnalysisBuySignals;
+import com.systematic.trading.signals.AnalysisLongBuySignals;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.signals.model.IndicatorSignalType;
+import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
+import com.systematic.trading.signals.model.filter.SignalFilter;
+import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.InterestRate;
+import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
+import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
+import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.RelativeTradeValue;
+import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
 import com.systematic.trading.simulation.logic.TradeValue;
 
 /**
@@ -144,14 +162,60 @@ public class SystematicTradingBacktest {
 
 	}
 
+	private static CashAccount getCashAccount( final LocalDate startDate ) {
+		// TODO all these into a configuration
+		final BigDecimal annualRate = BigDecimal.valueOf( 1.5 );
+		final Period weekly = Period.ofDays( 7 );
+		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
+		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
+		final InterestRate annualInterestRate = InterestRateFactory
+				.createInterestRate( InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, MATH_CONTEXT );
+		final CashAccount underlyingAccount = CashAccountFactory.createCashAccount(
+				CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, annualInterestRate, openingFunds, startDate,
+				MATH_CONTEXT );
+		return new RegularDepositCashAccountDecorator( oneHundredDollars, underlyingAccount, startDate, weekly );
+	}
+
+	private static EntryLogic getWeeklyEntryLogic( final LocalDate startDate ) {
+		final Period weekly = Period.ofDays( 7 );
+		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
+		return new DateTriggeredEntryLogic( oneHundredDollars, EquityClass.STOCK, startDate, weekly, MATH_CONTEXT );
+	}
+
+	private static EntryLogic getEntryLogic( final LocalDate startDate, final TradeValue tradeValue,
+			final IndicatorSignalGenerator... entrySignals ) {
+		// TODO pass all this in, decide configuration outside, another factory.
+		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>(
+				entrySignals.length );
+		final IndicatorSignalType[] types = new IndicatorSignalType[entrySignals.length];
+
+		for (int i = 0; i < entrySignals.length; i++) {
+			final IndicatorSignalGenerator entrySignal = entrySignals[i];
+			generators.add( entrySignal );
+			types[i] = entrySignal.getSignalType();
+		}
+
+		// Number of days of signals to use when triggering signals.
+		final int DAYS_ACCEPTING_SIGNALS = 5;
+
+		// Only signals from the last few days are of interest
+		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
+		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter( types ),
+				Period.ofDays( DAYS_ACCEPTING_SIGNALS ) );
+		filters.add( filter );
+
+		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
+		return new SignalTriggeredEntryLogic( EquityClass.STOCK, tradeValue, buyLongAnalysis, MATH_CONTEXT );
+	}
+
 	private static List<BacktestBootstrapConfiguration> getConfigurations( final LocalDate startDate,
 			final LocalDate endDate ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
 
 		BrokerageFeeStructure tradingFeeStructure = FeeStructureFactory
-				.createFeeStructure( AvailableFeeStructure.VANGUARD_RETAIL, MATH_CONTEXT );
-		configurations.add(
-				new WeeklyBuyWeeklyDespoitConfiguration( startDate, endDate, tradingFeeStructure, MATH_CONTEXT ) );
+				.createFeeStructure( FeeStructureConfiguration.VANGUARD_RETAIL, MATH_CONTEXT );
+		configurations.add( new WeeklyBuyWeeklyDespoitConfiguration( startDate, endDate, tradingFeeStructure,
+				getCashAccount( startDate ), getWeeklyEntryLogic( startDate ), MATH_CONTEXT ) );
 
 		// Configuration with different entry values
 		final BigDecimal[] minimumTradeValues = { BigDecimal.valueOf( 500 ), BigDecimal.valueOf( 1000 ),
@@ -168,6 +232,8 @@ public class SystematicTradingBacktest {
 
 		// TODO different RSI values
 		final RsiConfiguration rsiConfiguration = RsiConfiguration.MEDIUM;
+
+		EntryLogic entryLogic;
 
 		// TODO tidy up
 		for (final BigDecimal maximumTradeValue : maximumTradeValues) {
@@ -186,12 +252,13 @@ public class SystematicTradingBacktest {
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 							MATH_CONTEXT );
 
-					tradingFeeStructure = FeeStructureFactory.createFeeStructure( AvailableFeeStructure.CMC_MARKETS,
+					entryLogic = getEntryLogic( startDate, tradeValue, macd );
+					tradingFeeStructure = FeeStructureFactory.createFeeStructure( FeeStructureConfiguration.CMC_MARKETS,
 							MATH_CONTEXT );
 					description = String.format( "%s_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
-					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-							description, tradingFeeStructure, MATH_CONTEXT, macd ) );
+					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, description,
+							tradingFeeStructure, getCashAccount( startDate ), entryLogic, MATH_CONTEXT ) );
 
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
@@ -200,13 +267,14 @@ public class SystematicTradingBacktest {
 					rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
 							rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
 
-					tradingFeeStructure = FeeStructureFactory.createFeeStructure( AvailableFeeStructure.CMC_MARKETS,
+					entryLogic = getEntryLogic( startDate, tradeValue, rsi, macd );
+					tradingFeeStructure = FeeStructureFactory.createFeeStructure( FeeStructureConfiguration.CMC_MARKETS,
 							MATH_CONTEXT );
 					description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), rsiConfiguration.getDescription(),
 							minimumTradeDescription, maximumTradeDescription );
-					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-							description, tradingFeeStructure, MATH_CONTEXT, rsi, macd ) );
+					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, description,
+							tradingFeeStructure, getCashAccount( startDate ), entryLogic, MATH_CONTEXT ) );
 
 					for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 
@@ -217,13 +285,14 @@ public class SystematicTradingBacktest {
 								macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 								MATH_CONTEXT );
 
-						tradingFeeStructure = FeeStructureFactory.createFeeStructure( AvailableFeeStructure.CMC_MARKETS,
-								MATH_CONTEXT );
+						entryLogic = getEntryLogic( startDate, tradeValue, sma, macd );
+						tradingFeeStructure = FeeStructureFactory
+								.createFeeStructure( FeeStructureConfiguration.CMC_MARKETS, MATH_CONTEXT );
 						description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 								minimumTradeDescription, maximumTradeDescription );
-						configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-								description, tradingFeeStructure, MATH_CONTEXT, sma, macd ) );
+						configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, description,
+								tradingFeeStructure, getCashAccount( startDate ), entryLogic, MATH_CONTEXT ) );
 
 						sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
 								smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
@@ -235,13 +304,14 @@ public class SystematicTradingBacktest {
 						rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
 								rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
 
-						tradingFeeStructure = FeeStructureFactory.createFeeStructure( AvailableFeeStructure.CMC_MARKETS,
-								MATH_CONTEXT );
+						entryLogic = getEntryLogic( startDate, tradeValue, rsi, sma, macd );
+						tradingFeeStructure = FeeStructureFactory
+								.createFeeStructure( FeeStructureConfiguration.CMC_MARKETS, MATH_CONTEXT );
 						description = String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 								rsiConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
-						configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-								description, tradingFeeStructure, MATH_CONTEXT, rsi, sma, macd ) );
+						configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, description,
+								tradingFeeStructure, getCashAccount( startDate ), entryLogic, MATH_CONTEXT ) );
 					}
 				}
 
@@ -255,10 +325,11 @@ public class SystematicTradingBacktest {
 					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
 							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 
-					tradingFeeStructure = FeeStructureFactory.createFeeStructure( AvailableFeeStructure.CMC_MARKETS,
+					entryLogic = getEntryLogic( startDate, tradeValue, rsi, sma );
+					tradingFeeStructure = FeeStructureFactory.createFeeStructure( FeeStructureConfiguration.CMC_MARKETS,
 							MATH_CONTEXT );
-					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-							description, tradingFeeStructure, MATH_CONTEXT, rsi, sma ) );
+					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, description,
+							tradingFeeStructure, getCashAccount( startDate ), entryLogic, MATH_CONTEXT ) );
 				}
 			}
 		}

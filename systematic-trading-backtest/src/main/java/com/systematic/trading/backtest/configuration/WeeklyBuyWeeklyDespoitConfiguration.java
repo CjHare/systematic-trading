@@ -25,22 +25,14 @@
  */
 package com.systematic.trading.backtest.configuration;
 
-import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
-import java.time.Period;
 
-import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.cash.FlatInterestRate;
-import com.systematic.trading.simulation.cash.InterestRate;
-import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
-import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
@@ -65,11 +57,20 @@ public class WeeklyBuyWeeklyDespoitConfiguration extends DefaultConfiguration
 	/** Fees applied to each equity transaction. */
 	private final BrokerageFeeStructure tradingFeeStructure;
 
+	/** Cash account to use during the simulation. */
+	private final CashAccount cashAccount;
+
+	/** Decision maker for when to enter a trade. */
+	private final EntryLogic entryLogic;
+
 	public WeeklyBuyWeeklyDespoitConfiguration( final LocalDate startDate, final LocalDate endDate,
-			final BrokerageFeeStructure tradingFeeStructure, final MathContext mathContext ) {
+			final BrokerageFeeStructure tradingFeeStructure, final CashAccount cashAccount, final EntryLogic entryLogic,
+			final MathContext mathContext ) {
 		super( startDate, endDate );
 		this.tradingFeeStructure = tradingFeeStructure;
+		this.cashAccount = cashAccount;
 		this.mathContext = mathContext;
+		this.entryLogic = entryLogic;
 	}
 
 	@Override
@@ -84,22 +85,12 @@ public class WeeklyBuyWeeklyDespoitConfiguration extends DefaultConfiguration
 
 	@Override
 	public CashAccount getCashAccount( final LocalDate openingDate ) {
-		final Period weekly = Period.ofDays( 7 );
-		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		final InterestRate annualInterestRate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), mathContext );
-		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
-		final CashAccount underlyingAccount = new CalculatedDailyPaidMonthlyCashAccount( annualInterestRate,
-				openingFunds, openingDate, mathContext );
-		return new RegularDepositCashAccountDecorator( oneHundredDollars, underlyingAccount, openingDate, weekly );
+		return cashAccount;
 	}
 
 	@Override
 	public EntryLogic getEntryLogic( final EquityIdentity equity, final LocalDate openingDate ) {
-		// Buy weekly 100 dollars worth every week
-		final Period weekly = Period.ofDays( 7 );
-		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		return new DateTriggeredEntryLogic( oneHundredDollars, EquityClass.STOCK, openingDate, weekly, mathContext );
-
+		return entryLogic;
 	}
 
 	@Override

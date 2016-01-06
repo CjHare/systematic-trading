@@ -23,40 +23,27 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.fee;
+package com.systematic.trading.backtest.configuration.cash;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.math.MathContext;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.simulation.cash.FlatInterestRate;
 
 /**
- * Creates instances of the available fee structures.
+ * Interest rate configurations available.
  * 
  * @author CJ Hare
  */
-public class FeeStructureFactory {
+public enum InterestRateConfiguration {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FeeStructureFactory.class );
+	FLAT_INTEREST_RATE( FlatInterestRate.class );
 
-	/**
-	 * Create an instance of the fee structure.
-	 */
-	public static BrokerageFeeStructure createFeeStructure( final FeeStructureConfiguration fee, final MathContext mathContext ) {
+	private final Class<?> type;
 
-		try {
-			Constructor<?> cons = fee.getType().getConstructor( MathContext.class );
-			return (BrokerageFeeStructure) cons.newInstance( mathContext );
-		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			LOG.error( e );
-		}
-
-		throw new IllegalArgumentException( String.format( "Could not create the desired fee structure: %s", fee ) );
+	private InterestRateConfiguration( final Class<?> type ) {
+		this.type = type;
 	}
+
+	public Class<?> getType() {
+		return type;
+	}
+
 }

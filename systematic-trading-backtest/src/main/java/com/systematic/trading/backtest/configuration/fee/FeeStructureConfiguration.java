@@ -25,38 +25,26 @@
  */
 package com.systematic.trading.backtest.configuration.fee;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.math.MathContext;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.simulation.brokerage.fees.CmcMarketsFeeStructure;
+import com.systematic.trading.simulation.brokerage.fees.VanguardRetailFeeStructure;
 
 /**
- * Creates instances of the available fee structures.
+ * Fee structures available for use in configuration.
  * 
  * @author CJ Hare
  */
-public class FeeStructureFactory {
+public enum FeeStructureConfiguration {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FeeStructureFactory.class );
+	CMC_MARKETS( CmcMarketsFeeStructure.class ),
+	VANGUARD_RETAIL( VanguardRetailFeeStructure.class );
 
-	/**
-	 * Create an instance of the fee structure.
-	 */
-	public static BrokerageFeeStructure createFeeStructure( final FeeStructureConfiguration fee, final MathContext mathContext ) {
+	private final Class<?> type;
 
-		try {
-			Constructor<?> cons = fee.getType().getConstructor( MathContext.class );
-			return (BrokerageFeeStructure) cons.newInstance( mathContext );
-		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			LOG.error( e );
-		}
+	private FeeStructureConfiguration( final Class<?> type ) {
+		this.type = type;
+	}
 
-		throw new IllegalArgumentException( String.format( "Could not create the desired fee structure: %s", fee ) );
+	public Class<?> getType() {
+		return type;
 	}
 }
