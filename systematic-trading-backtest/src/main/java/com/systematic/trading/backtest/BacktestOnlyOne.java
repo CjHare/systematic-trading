@@ -39,7 +39,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.Configuration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
 import com.systematic.trading.backtest.configuration.cash.InterestRateConfiguration;
@@ -208,13 +207,10 @@ public class BacktestOnlyOne {
 		description = String.format( "%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
 				minimumTradeDescription, maximumTradeDescription );
 
-		final BrokerageFeeStructure tradingFeeStructure = FeeStructureFactory
-				.createFeeStructure( FeeStructureConfiguration.CMC_MARKETS, MATH_CONTEXT );
-
 		EntryLogic entryLogic = getEntryLogic( startDate, tradeValue, macd );
 
-		BacktestBootstrapConfiguration configuration = new Configuration( entryLogic, getExitLogic(), getCmcMarkets(),
-				getCashAccount( startDate ), description );
+		BacktestBootstrapConfiguration configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(),
+				getCmcMarkets(), getCashAccount( startDate ), description );
 		configurations.add( configuration );
 
 		return configurations;

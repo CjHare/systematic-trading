@@ -37,40 +37,78 @@ import com.systematic.trading.simulation.logic.ExitLogic;
  * 
  * @author CJ Hare
  */
-public interface BacktestBootstrapConfiguration {
+public class BacktestBootstrapConfiguration {
+
+	/** Description used for uniquely identifying the configuration. */
+	private final String description;
+
+	/** Applied to each equity transaction. */
+	private final Brokerage brokerage;
+
+	/** Cash account to use during the simulation. */
+	private final CashAccount cashAccount;
+
+	/** Decision maker for when to enter a trade. */
+	private final EntryLogic entryLogic;
+
+	/** Decision maker for when to exit a trade. */
+	private final ExitLogic exitLogic;
+
+	/**
+	 * @param startDate inclusive beginning date for the back testing.
+	 * @param endDate inclusive end date for back testing.
+	 */
+	public BacktestBootstrapConfiguration( final EntryLogic entryLogic, final ExitLogic exitLogic,
+			final Brokerage brokerage, final CashAccount cashAccount, final String description ) {
+		this.cashAccount = cashAccount;
+		this.description = description;
+		this.entryLogic = entryLogic;
+		this.exitLogic = exitLogic;
+		this.brokerage = brokerage;
+	}
 
 	/**
 	 * Exit logic used to generate sell orders.
 	 * 
 	 * @return input to the simulation that provides sell orders.
 	 */
-	ExitLogic getExitLogic();
+	public ExitLogic getExitLogic() {
+		return exitLogic;
+	}
 
 	/**
 	 * Broker that handles equity transactions.
 	 * 
 	 * @return broker that executes buy and sell orders.
 	 */
-	Brokerage getBroker();
+	public Brokerage getBroker() {
+		return brokerage;
+	}
 
 	/**
 	 * Account that manages the cash.
 	 * 
 	 * @return cash account to use during the simulation.
 	 */
-	CashAccount getCashAccount();
+	public CashAccount getCashAccount() {
+		return cashAccount;
+	}
 
 	/**
 	 * Entry logic used to generate buy orders.
 	 * 
 	 * @return input to the simulation that provides buy orders.
 	 */
-	EntryLogic getEntryLogic();
+	public EntryLogic getEntryLogic() {
+		return entryLogic;
+	}
 
 	/**
 	 * Describes the behaviour of the configuration.
 	 * 
 	 * @return unique description of the configurations behaviour, a meaningful key.
 	 */
-	String getDescription();
+	public String getDescription() {
+		return description;
+	}
 }

@@ -39,7 +39,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.Configuration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
 import com.systematic.trading.backtest.configuration.cash.InterestRateConfiguration;
@@ -231,8 +230,9 @@ public class SystematicTradingBacktest {
 			final LocalDate endDate ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
 
-		BacktestBootstrapConfiguration configuration = new Configuration( getWeeklyEntryLogic( startDate ),
-				getExitLogic(), getVanguardRetail(), getCashAccount( startDate ), "BuyWeekly_HoldForever" );
+		BacktestBootstrapConfiguration configuration = new BacktestBootstrapConfiguration(
+				getWeeklyEntryLogic( startDate ), getExitLogic(), getVanguardRetail(), getCashAccount( startDate ),
+				"BuyWeekly_HoldForever" );
 		configurations.add( configuration );
 
 		// Configuration with different entry values
@@ -273,7 +273,7 @@ public class SystematicTradingBacktest {
 					entryLogic = getEntryLogic( startDate, tradeValue, macd );
 					description = String.format( "%s_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
-					configuration = new Configuration( entryLogic, getExitLogic(), getCmcMarkets(),
+					configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), getCmcMarkets(),
 							getCashAccount( startDate ), description );
 					configurations.add( configuration );
 
@@ -288,7 +288,7 @@ public class SystematicTradingBacktest {
 					description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), rsiConfiguration.getDescription(),
 							minimumTradeDescription, maximumTradeDescription );
-					configuration = new Configuration( entryLogic, getExitLogic(), getCmcMarkets(),
+					configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), getCmcMarkets(),
 							getCashAccount( startDate ), description );
 					configurations.add( configuration );
 
@@ -305,7 +305,7 @@ public class SystematicTradingBacktest {
 						description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 								minimumTradeDescription, maximumTradeDescription );
-						configuration = new Configuration( entryLogic, getExitLogic(), getCmcMarkets(),
+						configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), getCmcMarkets(),
 								getCashAccount( startDate ), description );
 						configurations.add( configuration );
 
@@ -323,7 +323,7 @@ public class SystematicTradingBacktest {
 						description = String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 								rsiConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
-						configuration = new Configuration( entryLogic, getExitLogic(), getCmcMarkets(),
+						configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), getCmcMarkets(),
 								getCashAccount( startDate ), description );
 						configurations.add( configuration );
 					}
@@ -340,7 +340,7 @@ public class SystematicTradingBacktest {
 							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 
 					entryLogic = getEntryLogic( startDate, tradeValue, rsi, sma );
-					configuration = new Configuration( entryLogic, getExitLogic(), getCmcMarkets(),
+					configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), getCmcMarkets(),
 							getCashAccount( startDate ), description );
 					configurations.add( configuration );
 				}
