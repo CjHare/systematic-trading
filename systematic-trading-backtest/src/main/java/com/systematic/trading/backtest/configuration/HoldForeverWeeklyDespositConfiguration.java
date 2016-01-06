@@ -43,7 +43,6 @@ import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorat
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.simulation.brokerage.fees.CmcMarketsFeeStructure;
 import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.FlatInterestRate;
@@ -83,15 +82,21 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 	/** Description used for uniquely identifying the configuration. */
 	private final String description;
 
+	/** Fees applied to each equity transaction. */
+	private final BrokerageFeeStructure tradingFeeStructure;
+
 	public HoldForeverWeeklyDespositConfiguration( final LocalDate startDate, final LocalDate endDate,
-			final TradeValue tradeValue, final String description, final MathContext mathContext,
-			final IndicatorSignalGenerator... entrySignals ) {
+			final TradeValue tradeValue, final String description, final BrokerageFeeStructure tradingFeeStructure,
+			final MathContext mathContext, final IndicatorSignalGenerator... entrySignals ) {
+		
+		//TODO use a single equity configuration, no abstract parent
 		super( startDate, endDate );
 
 		if (entrySignals == null) {
 			throw new IllegalArgumentException( "Indicator signal generators are needed for entry logic" );
 		}
 
+		this.tradingFeeStructure = tradingFeeStructure;
 		this.entrySignals = entrySignals;
 		this.description = description;
 		this.mathContext = mathContext;
@@ -102,15 +107,16 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 	public ExitLogic getExitLogic() {
 		return new HoldForeverExitLogic();
 	}
-
+	
 	@Override
 	public Brokerage getBroker( final EquityIdentity equity ) {
-		final BrokerageFeeStructure tradingFeeStructure = new CmcMarketsFeeStructure( mathContext );
 		return new SingleEquityClassBroker( tradingFeeStructure, equity.getType(), mathContext );
 	}
 
 	@Override
 	public CashAccount getCashAccount( final LocalDate openingDate ) {
+		
+		//TODO all this into a new factory
 		final Period weekly = Period.ofDays( 7 );
 		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
 		final InterestRate annualInterestRate = new FlatInterestRate( BigDecimal.valueOf( 1.5 ), mathContext );
@@ -123,6 +129,7 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 	@Override
 	public EntryLogic getEntryLogic( final EquityIdentity equity, final LocalDate openingDate ) {
 
+		//TODO pass all this in, decide configuration outside, another factory.
 		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>(
 				entrySignals.length );
 		final IndicatorSignalType[] types = new IndicatorSignalType[entrySignals.length];

@@ -40,6 +40,8 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.HoldForeverWeeklyDespositConfiguration;
 import com.systematic.trading.backtest.configuration.WeeklyBuyWeeklyDespoitConfiguration;
+import com.systematic.trading.backtest.configuration.fee.AvailableFeeStructure;
+import com.systematic.trading.backtest.configuration.fee.FeeStructureFactory;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
@@ -59,6 +61,7 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.simulation.logic.RelativeTradeValue;
 import com.systematic.trading.simulation.logic.TradeValue;
 
@@ -145,7 +148,10 @@ public class SystematicTradingBacktest {
 			final LocalDate endDate ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
 
-		configurations.add( new WeeklyBuyWeeklyDespoitConfiguration( startDate, endDate, MATH_CONTEXT ) );
+		BrokerageFeeStructure tradingFeeStructure = FeeStructureFactory
+				.createFeeStructure( AvailableFeeStructure.VANGUARD_RETAIL, MATH_CONTEXT );
+		configurations.add(
+				new WeeklyBuyWeeklyDespoitConfiguration( startDate, endDate, tradingFeeStructure, MATH_CONTEXT ) );
 
 		// Configuration with different entry values
 		final BigDecimal[] minimumTradeValues = { BigDecimal.valueOf( 500 ), BigDecimal.valueOf( 1000 ),
@@ -180,10 +186,12 @@ public class SystematicTradingBacktest {
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 							MATH_CONTEXT );
 
+					tradingFeeStructure = FeeStructureFactory.createFeeStructure( AvailableFeeStructure.CMC_MARKETS,
+							MATH_CONTEXT );
 					description = String.format( "%s_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
 					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-							description, MATH_CONTEXT, macd ) );
+							description, tradingFeeStructure, MATH_CONTEXT, macd ) );
 
 					macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
 							macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
@@ -192,11 +200,13 @@ public class SystematicTradingBacktest {
 					rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
 							rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
 
+					tradingFeeStructure = FeeStructureFactory.createFeeStructure( AvailableFeeStructure.CMC_MARKETS,
+							MATH_CONTEXT );
 					description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), rsiConfiguration.getDescription(),
 							minimumTradeDescription, maximumTradeDescription );
 					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-							description, MATH_CONTEXT, rsi, macd ) );
+							description, tradingFeeStructure, MATH_CONTEXT, rsi, macd ) );
 
 					for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 
@@ -207,11 +217,13 @@ public class SystematicTradingBacktest {
 								macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 								MATH_CONTEXT );
 
+						tradingFeeStructure = FeeStructureFactory.createFeeStructure( AvailableFeeStructure.CMC_MARKETS,
+								MATH_CONTEXT );
 						description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 								minimumTradeDescription, maximumTradeDescription );
 						configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-								description, MATH_CONTEXT, sma, macd ) );
+								description, tradingFeeStructure, MATH_CONTEXT, sma, macd ) );
 
 						sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
 								smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
@@ -223,11 +235,13 @@ public class SystematicTradingBacktest {
 						rsi = new RelativeStrengthIndexSignals( rsiConfiguration.getLookback(),
 								rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), MATH_CONTEXT );
 
+						tradingFeeStructure = FeeStructureFactory.createFeeStructure( AvailableFeeStructure.CMC_MARKETS,
+								MATH_CONTEXT );
 						description = String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 								rsiConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
 						configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-								description, MATH_CONTEXT, rsi, sma, macd ) );
+								description, tradingFeeStructure, MATH_CONTEXT, rsi, sma, macd ) );
 					}
 				}
 
@@ -241,8 +255,10 @@ public class SystematicTradingBacktest {
 					sma = new SimpleMovingAverageGradientSignals( smaConfiguration.getLookback(),
 							smaConfiguration.getDaysOfGradient(), smaConfiguration.getType(), MATH_CONTEXT );
 
+					tradingFeeStructure = FeeStructureFactory.createFeeStructure( AvailableFeeStructure.CMC_MARKETS,
+							MATH_CONTEXT );
 					configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue,
-							description, MATH_CONTEXT, rsi, sma ) );
+							description, tradingFeeStructure, MATH_CONTEXT, rsi, sma ) );
 				}
 			}
 		}

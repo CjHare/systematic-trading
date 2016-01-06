@@ -35,7 +35,6 @@ import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
-import com.systematic.trading.simulation.brokerage.fees.VanguardRetailFeeStructure;
 import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.FlatInterestRate;
@@ -57,14 +56,19 @@ import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
  * 
  * @author CJ Hare
  */
-public class WeeklyBuyWeeklyDespoitConfiguration extends DefaultConfiguration implements BacktestBootstrapConfiguration {
+public class WeeklyBuyWeeklyDespoitConfiguration extends DefaultConfiguration
+		implements BacktestBootstrapConfiguration {
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
+	/** Fees applied to each equity transaction. */
+	private final BrokerageFeeStructure tradingFeeStructure;
+
 	public WeeklyBuyWeeklyDespoitConfiguration( final LocalDate startDate, final LocalDate endDate,
-			final MathContext mathContext ) {
+			final BrokerageFeeStructure tradingFeeStructure, final MathContext mathContext ) {
 		super( startDate, endDate );
+		this.tradingFeeStructure = tradingFeeStructure;
 		this.mathContext = mathContext;
 	}
 
@@ -75,7 +79,6 @@ public class WeeklyBuyWeeklyDespoitConfiguration extends DefaultConfiguration im
 
 	@Override
 	public Brokerage getBroker( final EquityIdentity equity ) {
-		final BrokerageFeeStructure tradingFeeStructure = new VanguardRetailFeeStructure( mathContext );
 		return new SingleEquityClassBroker( tradingFeeStructure, equity.getType(), mathContext );
 	}
 

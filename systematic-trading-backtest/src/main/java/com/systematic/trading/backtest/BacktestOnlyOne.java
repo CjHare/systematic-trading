@@ -39,6 +39,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.HoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.fee.AvailableFeeStructure;
+import com.systematic.trading.backtest.configuration.fee.FeeStructureFactory;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
@@ -54,6 +56,7 @@ import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.simulation.logic.RelativeTradeValue;
 import com.systematic.trading.simulation.logic.TradeValue;
 
@@ -157,8 +160,12 @@ public class BacktestOnlyOne {
 
 		description = String.format( "%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
 				minimumTradeDescription, maximumTradeDescription );
+
+		final BrokerageFeeStructure tradingFeeStructure = FeeStructureFactory
+				.createFeeStructure( AvailableFeeStructure.CMC_MARKETS, MATH_CONTEXT );
+
 		configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, tradeValue, description,
-				MATH_CONTEXT, macd ) );
+				tradingFeeStructure, MATH_CONTEXT, macd ) );
 
 		return configurations;
 	}
