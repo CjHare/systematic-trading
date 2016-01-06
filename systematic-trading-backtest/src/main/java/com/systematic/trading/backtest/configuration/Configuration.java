@@ -25,39 +25,23 @@
  */
 package com.systematic.trading.backtest.configuration;
 
-import java.math.MathContext;
-import java.time.LocalDate;
-
-import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.Brokerage;
-import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
-import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
-import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
 
 /**
- * Configuration for signal triggered entry logic, with weekly contribution to cash account.
- * <p/>
- * <ul>
- * <li>Exit logic: never sell</li>
- * <li>Cash account: zero starting, weekly 100 dollar deposit</li>
- * </ul>
+ * Provides some default bootstrap configuration.
  * 
  * @author CJ Hare
  */
-public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
-		implements BacktestBootstrapConfiguration {
-
-	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext mathContext;
+public class Configuration implements BacktestBootstrapConfiguration {
 
 	/** Description used for uniquely identifying the configuration. */
 	private final String description;
 
-	/** Fees applied to each equity transaction. */
-	private final BrokerageFeeStructure tradingFeeStructure;
+	/** Applied to each equity transaction. */
+	private final Brokerage brokerage;
 
 	/** Cash account to use during the simulation. */
 	private final CashAccount cashAccount;
@@ -65,37 +49,39 @@ public class HoldForeverWeeklyDespositConfiguration extends DefaultConfiguration
 	/** Decision maker for when to enter a trade. */
 	private final EntryLogic entryLogic;
 
-	public HoldForeverWeeklyDespositConfiguration( final LocalDate startDate, final LocalDate endDate,
-			final String description, final BrokerageFeeStructure tradingFeeStructure, final CashAccount cashAccount,
-			final EntryLogic entryLogic, final MathContext mathContext ) {
+	/** Decision maker for when to exit a trade. */
+	private final ExitLogic exitLogic;
 
-		// TODO use a single equity configuration, no abstract parent
-		super( startDate, endDate );
-
-		this.tradingFeeStructure = tradingFeeStructure;
-		this.description = description;
+	/**
+	 * @param startDate inclusive beginning date for the back testing.
+	 * @param endDate inclusive end date for back testing.
+	 */
+	public Configuration( final EntryLogic entryLogic, final ExitLogic exitLogic, final Brokerage brokerage,
+			final CashAccount cashAccount, final String description ) {
 		this.cashAccount = cashAccount;
-		this.mathContext = mathContext;
+		this.description = description;
 		this.entryLogic = entryLogic;
+		this.exitLogic = exitLogic;
+		this.brokerage = brokerage;
 	}
 
 	@Override
 	public ExitLogic getExitLogic() {
-		return new HoldForeverExitLogic();
+		return exitLogic;
 	}
 
 	@Override
-	public Brokerage getBroker( final EquityIdentity equity ) {
-		return new SingleEquityClassBroker( tradingFeeStructure, equity.getType(), mathContext );
+	public Brokerage getBroker() {
+		return brokerage;
 	}
 
 	@Override
-	public CashAccount getCashAccount( final LocalDate openingDate ) {
+	public CashAccount getCashAccount() {
 		return cashAccount;
 	}
 
 	@Override
-	public EntryLogic getEntryLogic( final EquityIdentity equity, final LocalDate openingDate ) {
+	public EntryLogic getEntryLogic() {
 		return entryLogic;
 	}
 

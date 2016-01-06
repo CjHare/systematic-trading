@@ -32,7 +32,6 @@ import java.time.Period;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;
 import com.systematic.trading.simulation.SimulationStateListener;
@@ -80,9 +79,6 @@ public class BacktestBootstrap {
 
 	public void run() throws Exception {
 
-		// Date range is from the first of the starting month until now
-		final EquityIdentity equity = tradingData.getEquityIdentity();
-
 		// First data point may not be the requested start date
 		final LocalDate startDate = tradingData.getStartDate();
 
@@ -109,14 +105,14 @@ public class BacktestBootstrap {
 				mathContext );
 		roi.addListener( cumulativeRoi );
 
-		final EntryLogic entry = configuration.getEntryLogic( equity, startDate );
+		final EntryLogic entry = configuration.getEntryLogic();
 		entry.addListener( display );
 
 		final ExitLogic exit = configuration.getExitLogic();
 
-		final Brokerage broker = configuration.getBroker( equity );
+		final Brokerage broker = configuration.getBroker();
 
-		final CashAccount cashAccount = configuration.getCashAccount( startDate );
+		final CashAccount cashAccount = configuration.getCashAccount();
 		cashAccount.addListener( roi );
 
 		// Engine dealing with the event flow

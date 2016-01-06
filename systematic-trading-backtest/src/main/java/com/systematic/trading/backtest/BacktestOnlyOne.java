@@ -39,7 +39,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.HoldForeverWeeklyDespositConfiguration;
+import com.systematic.trading.backtest.configuration.Configuration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
 import com.systematic.trading.backtest.configuration.cash.InterestRateConfiguration;
@@ -68,11 +68,15 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
+import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.InterestRate;
 import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
 import com.systematic.trading.simulation.logic.EntryLogic;
+import com.systematic.trading.simulation.logic.ExitLogic;
+import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
 import com.systematic.trading.simulation.logic.RelativeTradeValue;
 import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
 import com.systematic.trading.simulation.logic.TradeValue;
@@ -209,10 +213,21 @@ public class BacktestOnlyOne {
 
 		EntryLogic entryLogic = getEntryLogic( startDate, tradeValue, macd );
 
-		configurations.add( new HoldForeverWeeklyDespositConfiguration( startDate, endDate, description,
-				tradingFeeStructure, getCashAccount( startDate ), entryLogic, MATH_CONTEXT ) );
+		BacktestBootstrapConfiguration configuration = new Configuration( entryLogic, getExitLogic(), getCmcMarkets(),
+				getCashAccount( startDate ), description );
+		configurations.add( configuration );
 
 		return configurations;
+	}
+
+	private static Brokerage getCmcMarkets() {
+		BrokerageFeeStructure tradingFeeStructure = FeeStructureFactory
+				.createFeeStructure( FeeStructureConfiguration.CMC_MARKETS, MATH_CONTEXT );
+		return new SingleEquityClassBroker( tradingFeeStructure, EquityClass.STOCK, MATH_CONTEXT );
+	}
+
+	private static ExitLogic getExitLogic() {
+		return new HoldForeverExitLogic();
 	}
 
 	private static CashAccount getCashAccount( final LocalDate startDate ) {

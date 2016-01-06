@@ -25,9 +25,6 @@
  */
 package com.systematic.trading.backtest.configuration;
 
-import java.time.LocalDate;
-
-import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.logic.EntryLogic;
@@ -52,27 +49,23 @@ public interface BacktestBootstrapConfiguration {
 	/**
 	 * Broker that handles equity transactions.
 	 * 
-	 * @param equity subject of the back testing.
 	 * @return broker that executes buy and sell orders.
 	 */
-	Brokerage getBroker( EquityIdentity equity );
+	Brokerage getBroker();
 
 	/**
 	 * Account that manages the cash.
 	 * 
-	 * @param openingDate date the cash account is opened, begins interest calculations.
 	 * @return cash account to use during the simulation.
 	 */
-	CashAccount getCashAccount( LocalDate openingDate );
+	CashAccount getCashAccount();
 
 	/**
 	 * Entry logic used to generate buy orders.
 	 * 
-	 * @param equity subject of the back testing.
-	 * @param openingDate date the cash account is opened, begins interest calculations.
 	 * @return input to the simulation that provides buy orders.
 	 */
-	EntryLogic getEntryLogic( EquityIdentity equity, LocalDate openingDate );
+	EntryLogic getEntryLogic();
 
 	/**
 	 * Describes the behaviour of the configuration.
