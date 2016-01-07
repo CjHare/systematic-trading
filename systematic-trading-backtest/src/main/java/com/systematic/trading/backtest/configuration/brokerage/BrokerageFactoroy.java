@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.fee;
+package com.systematic.trading.backtest.configuration.brokerage;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -32,22 +32,26 @@ import java.math.MathContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
 
 /**
- * Creates instances of the available fee structures.
+ * Creates the brokerage instances for use in simulation.
  * 
  * @author CJ Hare
  */
-public class FeeStructureFactory {
+public class BrokerageFactoroy {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FeeStructureFactory.class );
+	private static final Logger LOG = LogManager.getLogger( BrokerageFactoroy.class );
 
 	/**
 	 * Create an instance of the fee structure.
 	 */
-	public static BrokerageFeeStructure createFeeStructure( final FeeStructureConfiguration fee, final MathContext mathContext ) {
+	private static BrokerageFeeStructure createFeeStructure( final BrokerageFeesConfiguration fee,
+			final MathContext mathContext ) {
 
 		try {
 			Constructor<?> cons = fee.getType().getConstructor( MathContext.class );
@@ -58,5 +62,12 @@ public class FeeStructureFactory {
 		}
 
 		throw new IllegalArgumentException( String.format( "Could not create the desired fee structure: %s", fee ) );
+	}
+
+	public static Brokerage create( final EquityIdentity equity, final BrokerageFeesConfiguration fees,
+			final MathContext mathContext ) {
+
+		final BrokerageFeeStructure tradingFeeStructure = createFeeStructure( fees, mathContext );
+		return new SingleEquityClassBroker( tradingFeeStructure, equity.getType(), mathContext );
 	}
 }

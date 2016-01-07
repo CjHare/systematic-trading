@@ -23,44 +23,26 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.cash;
+package com.systematic.trading.backtest.configuration.entry;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.math.MathContext;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.simulation.cash.InterestRate;
+import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 
 /**
- * Creates instances of the available fee structures.
+ * Fee structures available for use in configuration.
  * 
  * @author CJ Hare
  */
-public class InterestRateFactory {
+public enum EntryLogicFilterConfiguration {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( InterestRateFactory.class );
+	SAME_DAY( TimePeriodSignalFilterDecorator.class );
 
-	/**
-	 * Create an instance of the a interest rate.
-	 */
-	public static InterestRate create( final InterestRateConfiguration configuration,
-			final BigDecimal annualRate, final MathContext mathContext ) {
+	private final Class<?> type;
 
-		try {
-			Constructor<?> cons = configuration.getType().getConstructor( BigDecimal.class, MathContext.class );
+	private EntryLogicFilterConfiguration( final Class<?> type ) {
+		this.type = type;
+	}
 
-			return (InterestRate) cons.newInstance( annualRate, mathContext );
-		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			LOG.error( e );
-		}
-
-		throw new IllegalArgumentException(
-				String.format( "Could not create the desired interest rate: %s", configuration ) );
+	public Class<?> getType() {
+		return type;
 	}
 }

@@ -23,44 +23,35 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.cash;
+package com.systematic.trading.backtest.configuration.signals;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.math.MathContext;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.simulation.cash.InterestRate;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 
 /**
- * Creates instances of the available fee structures.
+ * Creates the signal instances.
  * 
  * @author CJ Hare
  */
-public class InterestRateFactory {
+public class IndicatorSignalGeneratorFactory {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( InterestRateFactory.class );
-
-	/**
-	 * Create an instance of the a interest rate.
-	 */
-	public static InterestRate create( final InterestRateConfiguration configuration,
-			final BigDecimal annualRate, final MathContext mathContext ) {
-
-		try {
-			Constructor<?> cons = configuration.getType().getConstructor( BigDecimal.class, MathContext.class );
-
-			return (InterestRate) cons.newInstance( annualRate, mathContext );
-		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			LOG.error( e );
-		}
-
-		throw new IllegalArgumentException(
-				String.format( "Could not create the desired interest rate: %s", configuration ) );
+	public static IndicatorSignalGenerator create( final MacdConfiguration macd, final MathContext mathContext ) {
+		return new MovingAveragingConvergeDivergenceSignals( macd.getFastTimePeriods(), macd.getSlowTimePeriods(),
+				macd.getSignalTimePeriods(), mathContext );
 	}
+
+	public static IndicatorSignalGenerator create( final RsiConfiguration rsi, final MathContext mathContext ) {
+		return new RelativeStrengthIndexSignals( rsi.getLookback(), rsi.getOverbought(), rsi.getOversold(),
+				mathContext );
+	}
+
+	public static IndicatorSignalGenerator create( final SmaConfiguration sma, final MathContext mathContext ) {
+		return new SimpleMovingAverageGradientSignals( sma.getLookback(), sma.getDaysOfGradient(), sma.getType(),
+				mathContext );
+	}
+
 }

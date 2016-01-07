@@ -39,12 +39,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
+import com.systematic.trading.backtest.configuration.brokerage.BrokerageFactoroy;
+import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
-import com.systematic.trading.backtest.configuration.cash.InterestRateConfiguration;
-import com.systematic.trading.backtest.configuration.cash.InterestRateFactory;
-import com.systematic.trading.backtest.configuration.fee.FeeStructureConfiguration;
-import com.systematic.trading.backtest.configuration.fee.FeeStructureFactory;
+import com.systematic.trading.backtest.configuration.entry.EntryLogicFactory;
+import com.systematic.trading.backtest.configuration.entry.EntryLogicFilterConfiguration;
+import com.systematic.trading.backtest.configuration.signals.IndicatorSignalGeneratorFactory;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
@@ -59,25 +59,13 @@ import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
-import com.systematic.trading.signals.AnalysisBuySignals;
-import com.systematic.trading.signals.AnalysisLongBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.model.IndicatorSignalType;
-import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
-import com.systematic.trading.signals.model.filter.SignalFilter;
-import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 import com.systematic.trading.simulation.brokerage.Brokerage;
-import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
-import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.cash.InterestRate;
-import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
 import com.systematic.trading.simulation.logic.RelativeTradeValue;
-import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
 import com.systematic.trading.simulation.logic.TradeValue;
 
 /**
@@ -110,7 +98,7 @@ public class BacktestOnlyOne {
 		// Date range is from the first of the starting month until now
 		final LocalDate endDate = LocalDate.now();
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
-		final List<BacktestBootstrapConfiguration> configurations = getConfigurations( startDate, endDate );
+		final List<BacktestBootstrapConfiguration> configurations = getConfigurations( equity, startDate, endDate );
 
 		final String baseOutputDirectory = getBaseOutputDirectory( args );
 
@@ -156,40 +144,11 @@ public class BacktestOnlyOne {
 
 	}
 
-	private static EntryLogic getEntryLogic( final LocalDate startDate, final TradeValue tradeValue,
-			final IndicatorSignalGenerator... entrySignals ) {
-		// TODO pass all this in, decide configuration outside, another factory.
-		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>(
-				entrySignals.length );
-		final IndicatorSignalType[] types = new IndicatorSignalType[entrySignals.length];
-
-		for (int i = 0; i < entrySignals.length; i++) {
-			final IndicatorSignalGenerator entrySignal = entrySignals[i];
-			generators.add( entrySignal );
-			types[i] = entrySignal.getSignalType();
-		}
-
-		// Number of days of signals to use when triggering signals.
-		final int DAYS_ACCEPTING_SIGNALS = 5;
-
-		// Only signals from the last few days are of interest
-		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		final SignalFilter filter = new TimePeriodSignalFilterDecorator( new IndicatorsOnSameDaySignalFilter( types ),
-				Period.ofDays( DAYS_ACCEPTING_SIGNALS ) );
-		filters.add( filter );
-
-		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
-		return new SignalTriggeredEntryLogic( EquityClass.STOCK, tradeValue, buyLongAnalysis, MATH_CONTEXT );
-	}
-
-	private static List<BacktestBootstrapConfiguration> getConfigurations( final LocalDate startDate,
-			final LocalDate endDate ) {
+	private static List<BacktestBootstrapConfiguration> getConfigurations( final EquityIdentity equity,
+			final LocalDate startDate, final LocalDate endDate ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
 
 		String description;
-
-		MovingAveragingConvergeDivergenceSignals macd;
-		// RelativeStrengthIndexSignals rsi;
 
 		final BigDecimal minimumTradeValue = BigDecimal.valueOf( 500 );
 		final BigDecimal maximumTradeValue = BigDecimal.valueOf( 0.75 );
@@ -201,43 +160,30 @@ public class BacktestOnlyOne {
 
 		final MacdConfiguration macdConfiguration = MacdConfiguration.SHORT;
 
-		macd = new MovingAveragingConvergeDivergenceSignals( macdConfiguration.getFastTimePeriods(),
-				macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(), MATH_CONTEXT );
+		final IndicatorSignalGenerator macd = IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
 
 		description = String.format( "%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
 				minimumTradeDescription, maximumTradeDescription );
 
-		EntryLogic entryLogic = getEntryLogic( startDate, tradeValue, macd );
+		final EntryLogic entryLogic = EntryLogicFactory.create( equity, tradeValue,
+				EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, macd );
+		final Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
+				MATH_CONTEXT );
 
-		BacktestBootstrapConfiguration configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(),
-				getCmcMarkets(), getCashAccount( startDate ), description );
+		final BigDecimal depositAmount = BigDecimal.valueOf( 100 );
+		final Period depositFrequency = Period.ofDays( 7 );
+		final CashAccount cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency,
+				MATH_CONTEXT );
+
+		final BacktestBootstrapConfiguration configuration = new BacktestBootstrapConfiguration( entryLogic,
+				getExitLogic(), cmcMarkets, cashAccount, description );
 		configurations.add( configuration );
 
 		return configurations;
 	}
 
-	private static Brokerage getCmcMarkets() {
-		BrokerageFeeStructure tradingFeeStructure = FeeStructureFactory
-				.createFeeStructure( FeeStructureConfiguration.CMC_MARKETS, MATH_CONTEXT );
-		return new SingleEquityClassBroker( tradingFeeStructure, EquityClass.STOCK, MATH_CONTEXT );
-	}
-
 	private static ExitLogic getExitLogic() {
 		return new HoldForeverExitLogic();
-	}
-
-	private static CashAccount getCashAccount( final LocalDate startDate ) {
-		// TODO all these into a configuration
-		final BigDecimal annualRate = BigDecimal.valueOf( 1.5 );
-		final Period weekly = Period.ofDays( 7 );
-		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
-		final InterestRate annualInterestRate = InterestRateFactory
-				.createInterestRate( InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, MATH_CONTEXT );
-		final CashAccount underlyingAccount = CashAccountFactory.createCashAccount(
-				CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, annualInterestRate, openingFunds, startDate,
-				MATH_CONTEXT );
-		return new RegularDepositCashAccountDecorator( oneHundredDollars, underlyingAccount, startDate, weekly );
 	}
 
 	private static EquityIdentity getEquityIdentity() {

@@ -30,12 +30,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.time.Period;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.InterestRate;
+import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
 
 /**
  * Creates instances of the available fee structures.
@@ -47,10 +49,23 @@ public class CashAccountFactory {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger( CashAccountFactory.class );
 
+	public static CashAccount create( final LocalDate startDate, final BigDecimal depositAmount,
+			final Period depositFrequency, final MathContext mathContext ) {
+
+		// TODO all these into a configuration - interest rate, deposit & frequency
+		final BigDecimal annualRate = BigDecimal.valueOf( 1.5 );
+		final InterestRate annualInterestRate = InterestRateFactory
+				.create( InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, mathContext );
+		final CashAccount underlyingAccount = CashAccountFactory.create(
+				CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, annualInterestRate, BigDecimal.ZERO, startDate,
+				mathContext );
+		return new RegularDepositCashAccountDecorator( depositAmount, underlyingAccount, startDate, depositFrequency );
+	}
+
 	/**
 	 * Create an instance of the a cash account.
 	 */
-	public static CashAccount createCashAccount( final CashAccountConfiguration configuration,
+	public static CashAccount create( final CashAccountConfiguration configuration,
 			final InterestRate annualInterestRate, final BigDecimal openingFunds, final LocalDate openingDate,
 			final MathContext mathContext ) {
 

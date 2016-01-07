@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.fee;
+package com.systematic.trading.backtest.configuration.brokerage;
 
 import com.systematic.trading.simulation.brokerage.fees.CmcMarketsFeeStructure;
 import com.systematic.trading.simulation.brokerage.fees.VanguardRetailFeeStructure;
@@ -33,14 +33,14 @@ import com.systematic.trading.simulation.brokerage.fees.VanguardRetailFeeStructu
  * 
  * @author CJ Hare
  */
-public enum FeeStructureConfiguration {
+public enum BrokerageFeesConfiguration {
 
 	CMC_MARKETS( CmcMarketsFeeStructure.class ),
 	VANGUARD_RETAIL( VanguardRetailFeeStructure.class );
 
 	private final Class<?> type;
 
-	private FeeStructureConfiguration( final Class<?> type ) {
+	private BrokerageFeesConfiguration( final Class<?> type ) {
 		this.type = type;
 	}
 
