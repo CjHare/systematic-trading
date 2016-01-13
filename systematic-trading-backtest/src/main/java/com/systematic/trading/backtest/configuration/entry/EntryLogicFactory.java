@@ -25,8 +25,6 @@
  */
 package com.systematic.trading.backtest.configuration.entry;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
@@ -34,14 +32,12 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.AnalysisLongBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.IndicatorSignalType;
+import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
@@ -55,9 +51,6 @@ import com.systematic.trading.simulation.logic.TradeValue;
  * @author CJ Hare
  */
 public class EntryLogicFactory {
-
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( EntryLogicFactory.class );
 
 	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate,
 			final MathContext mathContext ) {
@@ -97,16 +90,16 @@ public class EntryLogicFactory {
 	private static SignalFilter creatSignalFilter( final EntryLogicFilterConfiguration configuration,
 			final IndicatorSignalGenerator[] entrySignals ) {
 
-		try {
-			Constructor<?> cons = configuration.getType().getConstructor( IndicatorSignalGenerator[].class );
-			final Object[] passed = { entrySignals };
-			return (SignalFilter) cons.newInstance( passed );
-		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			LOG.error( e );
+		switch (configuration) {
+			case SAME_DAY:
+				final IndicatorSignalType[] passed = new IndicatorSignalType[entrySignals.length];
+				for (int i = 0; i < entrySignals.length; i++) {
+					passed[i] = entrySignals[i].getSignalType();
+				}
+				return new IndicatorsOnSameDaySignalFilter( passed );
+			default:
+				throw new IllegalArgumentException(
+						String.format( "Could not create the desired entry logic filter: %s", configuration ) );
 		}
-
-		throw new IllegalArgumentException(
-				String.format( "Could not create the desired entry logic filter: %s", configuration ) );
 	}
 }

@@ -70,8 +70,8 @@ public class CashAccountFactory {
 			final MathContext mathContext ) {
 
 		try {
-			Constructor<?> cons = configuration.getType().getConstructor( CashAccountConfiguration.class,
-					BigDecimal.class, LocalDate.class, MathContext.class );
+			Constructor<?> cons = configuration.getType().getConstructor( InterestRate.class, BigDecimal.class,
+					LocalDate.class, MathContext.class );
 
 			return (CashAccount) cons.newInstance( annualInterestRate, openingFunds, openingDate, mathContext );
 		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException

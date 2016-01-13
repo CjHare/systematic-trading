@@ -25,8 +25,6 @@
  */
 package com.systematic.trading.backtest.configuration.entry;
 
-import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
-
 /**
  * Fee structures available for use in configuration.
  * 
@@ -34,15 +32,6 @@ import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorat
  */
 public enum EntryLogicFilterConfiguration {
 
-	SAME_DAY( TimePeriodSignalFilterDecorator.class );
+	SAME_DAY;
 
-	private final Class<?> type;
-
-	private EntryLogicFilterConfiguration( final Class<?> type ) {
-		this.type = type;
-	}
-
-	public Class<?> getType() {
-		return type;
-	}
 }
