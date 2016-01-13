@@ -42,7 +42,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.price.Price;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
-import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 import com.systematic.trading.simulation.order.EquityOrderVolume;
 import com.systematic.trading.simulation.order.exception.InsufficientEquitiesException;
 
@@ -56,11 +57,15 @@ public class SingleEquityClassBrokerTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
-	private BrokerageFeeStructure fees;
+	private BrokerageTransactionFeeStructure fees;
+
+	@Mock
+	private EquityManagementFeeStructure equityFee;
 
 	@Test
 	public void getEquityBalance() {
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, equityFee, EquityClass.STOCK,
+				LocalDate.now(), MATH_CONTEXT );
 
 		final BigDecimal balance = broker.getEquityBalance();
 
@@ -72,10 +77,11 @@ public class SingleEquityClassBrokerTest {
 		final Price price = Price.valueOf( BigDecimal.valueOf( 101 ) );
 		final BigDecimal equityVolume = BigDecimal.valueOf( 11 );
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( equityVolume );
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, equityFee, EquityClass.STOCK,
+				LocalDate.now(), MATH_CONTEXT );
 		final BigDecimal transactionCost = BigDecimal.valueOf( 10.99 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) ).thenReturn(
-				transactionCost );
+		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) )
+				.thenReturn( transactionCost );
 		final LocalDate date = LocalDate.now();
 
 		broker.buy( price, volume, date );
@@ -88,10 +94,11 @@ public class SingleEquityClassBrokerTest {
 		final Price price = Price.valueOf( BigDecimal.valueOf( 101 ) );
 		final BigDecimal equityVolume = BigDecimal.valueOf( 11 );
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( equityVolume );
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, equityFee, EquityClass.STOCK,
+				LocalDate.now(), MATH_CONTEXT );
 		final BigDecimal transactionCost = BigDecimal.valueOf( 10.99 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) ).thenReturn(
-				transactionCost );
+		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) )
+				.thenReturn( transactionCost );
 		final LocalDate date = LocalDate.now();
 
 		final BigDecimal cost = broker.calculateBuy( price, volume, date );
@@ -109,10 +116,11 @@ public class SingleEquityClassBrokerTest {
 		final Price price = Price.valueOf( BigDecimal.valueOf( 101 ) );
 		final BigDecimal equityVolume = BigDecimal.valueOf( 11 );
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( equityVolume );
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, equityFee, EquityClass.STOCK,
+				LocalDate.now(), MATH_CONTEXT );
 		final BigDecimal transactionCost = BigDecimal.valueOf( 10.99 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) ).thenReturn(
-				transactionCost );
+		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) )
+				.thenReturn( transactionCost );
 		final LocalDate date = LocalDate.now();
 		final BigDecimal startingBalance = BigDecimal.valueOf( 22.5 );
 		broker.buy( price, EquityOrderVolume.valueOf( startingBalance ), date );
@@ -130,10 +138,11 @@ public class SingleEquityClassBrokerTest {
 		final Price price = Price.valueOf( BigDecimal.valueOf( 101 ) );
 		final BigDecimal equityVolume = BigDecimal.valueOf( 11 );
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( equityVolume );
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, equityFee, EquityClass.STOCK,
+				LocalDate.now(), MATH_CONTEXT );
 		final BigDecimal transactionCost = BigDecimal.valueOf( 10.99 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) ).thenReturn(
-				transactionCost );
+		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) )
+				.thenReturn( transactionCost );
 		final LocalDate date = LocalDate.now();
 		final BigDecimal startingBalance = BigDecimal.valueOf( 22.5 );
 		broker.buy( price, EquityOrderVolume.valueOf( startingBalance ), date );
@@ -150,10 +159,11 @@ public class SingleEquityClassBrokerTest {
 		final Price price = Price.valueOf( BigDecimal.valueOf( 101 ) );
 		final BigDecimal equityVolume = BigDecimal.valueOf( 11 );
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( equityVolume );
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, equityFee, EquityClass.STOCK,
+				LocalDate.now(), MATH_CONTEXT );
 		final BigDecimal transactionCost = BigDecimal.valueOf( 10.99 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) ).thenReturn(
-				transactionCost );
+		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) )
+				.thenReturn( transactionCost );
 		final LocalDate date = LocalDate.now();
 		final BigDecimal startingBalance = BigDecimal.valueOf( 18 );
 		broker.buy( price, EquityOrderVolume.valueOf( startingBalance ), date );
@@ -169,7 +179,8 @@ public class SingleEquityClassBrokerTest {
 	public void sellWithException() throws InsufficientEquitiesException {
 		final Price price = Price.valueOf( BigDecimal.valueOf( 101 ) );
 		final EquityOrderVolume volume = EquityOrderVolume.valueOf( BigDecimal.valueOf( 12 ) );
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, equityFee, EquityClass.STOCK,
+				LocalDate.now(), MATH_CONTEXT );
 
 		broker.sell( price, volume, LocalDate.now() );
 	}
@@ -178,10 +189,11 @@ public class SingleEquityClassBrokerTest {
 	public void calculateFee() {
 		final BigDecimal transactionCost = BigDecimal.valueOf( 6.78787 );
 		final BigDecimal tradeValue = BigDecimal.valueOf( 101 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) ).thenReturn(
-				transactionCost );
+		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), anyInt() ) )
+				.thenReturn( transactionCost );
 
-		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, EquityClass.STOCK, MATH_CONTEXT );
+		final SingleEquityClassBroker broker = new SingleEquityClassBroker( fees, equityFee, EquityClass.STOCK,
+				LocalDate.now(), MATH_CONTEXT );
 
 		final BigDecimal fees = broker.calculateFee( tradeValue, EquityClass.STOCK, LocalDate.now() );
 

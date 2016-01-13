@@ -23,10 +23,9 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage;
+package com.systematic.trading.simulation.brokerage.fee;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
@@ -36,17 +35,18 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * 
  * @author CJ Hare
  */
-public interface BrokerageFees {
+public interface BrokerageTransactionFeeStructure {
 
 	/**
 	 * Calculates the brokerage fee based on the given details.
 	 * 
 	 * @param tradeValue sum of the equities being purchased.
 	 * @param type different classes may attract alternative pricing structures.
-	 * @param tradeDate the date for the intended transaction.
+	 * @param tradesThisMonth the number of trades, inclusive of this one per the calendar month
+	 *            e.g. if this is the tenth trade this month the value is ten.
 	 * @return transaction (brokerage) cost.
 	 * @throws UnsupportedEquityClass encountered when the broker does not support the equity type.
 	 */
-	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, LocalDate tradeDate )
+	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, int tradesThisMonth )
 			throws UnsupportedEquityClass;
 }

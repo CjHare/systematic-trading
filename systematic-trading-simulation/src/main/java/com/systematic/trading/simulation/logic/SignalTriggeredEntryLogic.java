@@ -36,7 +36,7 @@ import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
-import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrder;
@@ -88,7 +88,7 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	}
 
 	@Override
-	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final TradingDayPrices data ) {
+	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount, final TradingDayPrices data ) {
 
 		// Add the day's data to the rolling queue
 		tradingData.add( data );
@@ -119,7 +119,7 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		return tradeValue.getTradeValue( availableFunds );
 	}
 
-	private EquityOrder createOrder( final BrokerageFees fees, final BigDecimal amount, final TradingDayPrices data ) {
+	private EquityOrder createOrder( final BrokerageTransactionFee fees, final BigDecimal amount, final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();
 		final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, tradingDate );

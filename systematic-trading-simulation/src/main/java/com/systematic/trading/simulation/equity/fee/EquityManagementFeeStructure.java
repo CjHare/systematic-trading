@@ -23,30 +23,25 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage.fees;
+package com.systematic.trading.simulation.equity.fee;
 
 import java.math.BigDecimal;
-
-import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
+import java.time.LocalDate;
 
 /**
- * Brokerage fees applied to all an equity transaction.
+ * Brokerage funds under management fee.
  * 
  * @author CJ Hare
  */
-public interface BrokerageFeeStructure {
+public interface EquityManagementFeeStructure {
 
 	/**
-	 * Calculates the brokerage fee based on the given details.
+	 * Applies relevant management fee calculations and payments based on the passage of time.
 	 * 
-	 * @param tradeValue sum of the equities being purchased.
-	 * @param type different classes may attract alternative pricing structures.
-	 * @param tradesThisMonth the number of trades, inclusive of this one per the calendar month
-	 *            e.g. if this is the tenth trade this month the value is ten.
-	 * @return transaction (brokerage) cost.
-	 * @throws UnsupportedEquityClass encountered when the broker does not support the equity type.
+	 * @param lastManagementFeeDate the last date there was a non-zero management fee.
+	 * @param tradingDate the next day of trading data.
+	 * @return number of equities that are to be taken as the equity funds under management fee.
 	 */
-	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, int tradesThisMonth )
-			throws UnsupportedEquityClass;
+	BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
+			final LocalDate tradingDate );
 }

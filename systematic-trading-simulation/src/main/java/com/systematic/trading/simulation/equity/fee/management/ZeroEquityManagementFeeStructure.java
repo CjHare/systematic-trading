@@ -1,5 +1,4 @@
 /**
- * 
  * Copyright (c) 2015, CJ Hare All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -24,22 +23,24 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage;
+package com.systematic.trading.simulation.equity.fee.management;
 
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
-import com.systematic.trading.simulation.equity.EquityManagementFee;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 
 /**
- * The bringing together of the different aspects of a brokerage house.
+ * Zero management cost associated with holding the equity.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageTransactionFee, EquityManagementFee {
+public class ZeroEquityManagementFeeStructure implements EquityManagementFeeStructure {
 
-	/**
-	 * Adds a listener interested in brokerage events.
-	 * 
-	 * @param listener to receive brokerage event notifications.
-	 */
-	void addListener( BrokerageEventListener listener );
+	@Override
+	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
+			final LocalDate tradingDate ) {
+		return BigDecimal.ZERO;
+	}
+
 }

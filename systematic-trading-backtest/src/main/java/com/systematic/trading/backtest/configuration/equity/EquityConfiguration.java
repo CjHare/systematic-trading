@@ -23,48 +23,39 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage.fees;
+package com.systematic.trading.backtest.configuration.equity;
 
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-
-import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
+import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 
 /**
- * Fees for the online broker Bell Direct.
+ * An equity is comprised of an identity and management fee.
  * 
  * @author CJ Hare
  */
-public class VanguardRetailFeeStructure implements BrokerageFeeStructure {
+public class EquityConfiguration {
 
-	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext mathContext;
+	/** The equity in question. */
+	private final EquityIdentity identity;
+
+	/** Any possible management fee structure, applied when holding the equity. */
+	private final EquityManagementFeeStructure managementFee;
 
 	/**
-	 * @param mathContext math context defining the scale and precision to apply to operations.
+	 * @param identity the equity in question.
+	 * @param managementFee any possible management fee structure, applied when holding the equity,
+	 *            bar <code>null</code>.
 	 */
-	public VanguardRetailFeeStructure( final MathContext mathContext ) {
-		this.mathContext = mathContext;
+	public EquityConfiguration( final EquityIdentity identity, final EquityManagementFeeStructure managementFee ) {
+		this.managementFee = managementFee;
+		this.identity = identity;
 	}
 
-	@Override
-	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
-			throws UnsupportedEquityClass {
+	public EquityIdentity getIdentity() {
+		return identity;
+	}
 
-		final BigDecimal brokerage;
-
-		switch (type) {
-			case BOND:
-			case STOCK:
-				brokerage = tradeValue.multiply( TEN_BASIS_POINTS, mathContext );
-				break;
-			default:
-				throw new UnsupportedEquityClass( type );
-		}
-
-		return brokerage;
+	public EquityManagementFeeStructure getManagementFee() {
+		return managementFee;
 	}
 }

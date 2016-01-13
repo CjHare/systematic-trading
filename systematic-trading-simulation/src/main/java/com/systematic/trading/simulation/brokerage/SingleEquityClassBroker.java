@@ -35,9 +35,10 @@ import com.systematic.trading.data.price.Price;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.brokerage.event.BrokerageAccountEvent;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent.BrokerageAccountEventType;
-import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 import com.systematic.trading.simulation.order.EquityOrderVolume;
 import com.systematic.trading.simulation.order.exception.InsufficientEquitiesException;
@@ -50,7 +51,13 @@ import com.systematic.trading.simulation.order.exception.InsufficientEquitiesExc
 public class SingleEquityClassBroker implements Brokerage {
 
 	/** Fee structure to apply to equity transactions. */
-	private final BrokerageFeeStructure fees;
+	private final BrokerageTransactionFeeStructure transactionFee;
+
+	/** Fee structure to apply to funds under management. */
+	private final EquityManagementFeeStructure equityManagementFee;
+
+	/** Date of the last non-zero management fee. */
+	private LocalDate lastManagementFee;
 
 	/** Single type of equity class traded in. */
 	private final EquityClass type;
@@ -67,13 +74,17 @@ public class SingleEquityClassBroker implements Brokerage {
 	/** Parties interested in listening to events. */
 	private final List<BrokerageEventListener> listeners = new ArrayList<BrokerageEventListener>();
 
-	public SingleEquityClassBroker( final BrokerageFeeStructure fees, final EquityClass type,
+	public SingleEquityClassBroker( final BrokerageTransactionFeeStructure fees,
+			final EquityManagementFeeStructure managementFees, final EquityClass type, final LocalDate startDate,
 			final MathContext mathContext ) {
-		this.fees = fees;
-		this.type = type;
 		this.monthlyTradeCounter = new MonthlyRollingCounter();
+		this.lastManagementFee = startDate;
+		this.equityManagementFee = managementFees;
+		this.transactionFee = fees;
 		this.equityBalance = BigDecimal.ZERO;
 		this.mathContext = mathContext;
+		this.type = type;
+
 	}
 
 	@Override
@@ -81,7 +92,7 @@ public class SingleEquityClassBroker implements Brokerage {
 
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), mathContext );
 		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
-		final BigDecimal tradeFee = fees.calculateFee( tradeValue, type, tradesThisMonth );
+		final BigDecimal tradeFee = transactionFee.calculateFee( tradeValue, type, tradesThisMonth );
 
 		// Adding the equity purchases to the balance
 		final BigDecimal startingEquityBalance = equityBalance;
@@ -105,7 +116,7 @@ public class SingleEquityClassBroker implements Brokerage {
 
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), mathContext );
 		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
-		final BigDecimal tradeFee = fees.calculateFee( tradeValue, type, tradesThisMonth );
+		final BigDecimal tradeFee = transactionFee.calculateFee( tradeValue, type, tradesThisMonth );
 
 		// Record of the sell transaction
 		notifyListeners( new BrokerageAccountEvent( startingEquityBalance, equityBalance, volume.getVolume(),
@@ -122,7 +133,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	@Override
 	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final LocalDate tradeDate )
 			throws UnsupportedEquityClass {
-		return fees.calculateFee( tradeValue, type, monthlyTradeCounter.get( tradeDate ) );
+		return transactionFee.calculateFee( tradeValue, type, monthlyTradeCounter.get( tradeDate ) );
 	}
 
 	/**
@@ -144,7 +155,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	public BigDecimal calculateBuy( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
 		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), mathContext );
 		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
-		final BigDecimal tradeFee = fees.calculateFee( tradeValue, type, tradesThisMonth );
+		final BigDecimal tradeFee = transactionFee.calculateFee( tradeValue, type, tradesThisMonth );
 
 		return tradeValue.add( tradeFee, mathContext );
 	}
@@ -154,5 +165,14 @@ public class SingleEquityClassBroker implements Brokerage {
 		if (!listeners.contains( listener )) {
 			listeners.add( listener );
 		}
+	}
+
+	@Override
+	public void update( final LocalDate tradingDate ) {
+
+		final BigDecimal fee = equityManagementFee.update( equityBalance, lastManagementFee, tradingDate );
+
+		// Erode the original equity balance with the management fee
+		equityBalance = equityBalance.subtract( fee, mathContext );
 	}
 }

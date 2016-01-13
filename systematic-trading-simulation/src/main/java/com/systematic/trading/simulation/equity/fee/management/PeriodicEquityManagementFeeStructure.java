@@ -1,5 +1,4 @@
 /**
- * 
  * Copyright (c) 2015, CJ Hare All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -24,22 +23,51 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage;
+package com.systematic.trading.simulation.equity.fee.management;
 
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
-import com.systematic.trading.simulation.equity.EquityManagementFee;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.time.LocalDate;
+import java.time.Period;
+
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 
 /**
- * The bringing together of the different aspects of a brokerage house.
+ * Management cost associated with holding the equity applied periodically.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageTransactionFee, EquityManagementFee {
+public class PeriodicEquityManagementFeeStructure implements EquityManagementFeeStructure {
+
+	/** Context to apply to calculations. */
+	private final MathContext mathContext;
+
+	/** How often the management fee is applied. */
+	private final Period frequency;
+
+	/** The percentage of the fee, or the percentage of the holdings taken as the fee. */
+	private final BigDecimal feePercentage;
 
 	/**
-	 * Adds a listener interested in brokerage events.
-	 * 
-	 * @param listener to receive brokerage event notifications.
+	 * @param feePercentage percentage of the holdings taken as the fee.
+	 * @param frequency how often the management fee is applied.
+	 * @param mathContext context to apply to calculations.
 	 */
-	void addListener( BrokerageEventListener listener );
+	public PeriodicEquityManagementFeeStructure( final BigDecimal feePercentage, final Period frequency,
+			final MathContext mathContext ) {
+		this.feePercentage = feePercentage;
+		this.mathContext = mathContext;
+		this.frequency = frequency;
+	}
+
+	@Override
+	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
+			final LocalDate tradingDate ) {
+
+		if (tradingDate.isBefore( lastManagementFeeDate.plus( frequency ) )) {
+			return numberOfEquities.multiply( feePercentage, mathContext );
+		}
+
+		return BigDecimal.ZERO;
+	}
 }

@@ -44,7 +44,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
@@ -89,7 +89,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	@Test
 	public void execute() throws OrderException {
 		final BrokerageTransaction broker = mock( BrokerageTransaction.class );
-		final BrokerageFees fees = mock( BrokerageFees.class );
+		final BrokerageTransactionFee fees = mock( BrokerageTransactionFee.class );
 		final CashAccount cashAccount = mock( CashAccount.class );
 		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
 				BigDecimal.valueOf( 44 ), type, LocalDate.now(), mc );

@@ -1,5 +1,4 @@
 /**
- * 
  * Copyright (c) 2015, CJ Hare All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -24,22 +23,49 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage;
+package com.systematic.trading.simulation.brokerage.fee.transaction;
 
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
-import com.systematic.trading.simulation.equity.EquityManagementFee;
+import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+
+import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
+import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
- * The bringing together of the different aspects of a brokerage house.
+ * Fees for the online broker Bell Direct.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageTransactionFee, EquityManagementFee {
+public class VanguardRetailFeeStructure implements BrokerageTransactionFeeStructure {
+
+	/** Scale and precision to apply to mathematical operations. */
+	private final MathContext mathContext;
 
 	/**
-	 * Adds a listener interested in brokerage events.
-	 * 
-	 * @param listener to receive brokerage event notifications.
+	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	void addListener( BrokerageEventListener listener );
+	public VanguardRetailFeeStructure( final MathContext mathContext ) {
+		this.mathContext = mathContext;
+	}
+
+	@Override
+	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
+			throws UnsupportedEquityClass {
+
+		final BigDecimal brokerage;
+
+		switch (type) {
+			case BOND:
+			case STOCK:
+				brokerage = tradeValue.multiply( TEN_BASIS_POINTS, mathContext );
+				break;
+			default:
+				throw new UnsupportedEquityClass( type );
+		}
+
+		return brokerage;
+	}
 }

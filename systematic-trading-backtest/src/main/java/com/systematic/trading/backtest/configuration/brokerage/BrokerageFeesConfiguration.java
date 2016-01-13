@@ -25,8 +25,8 @@
  */
 package com.systematic.trading.backtest.configuration.brokerage;
 
-import com.systematic.trading.simulation.brokerage.fees.CmcMarketsFeeStructure;
-import com.systematic.trading.simulation.brokerage.fees.VanguardRetailFeeStructure;
+import com.systematic.trading.simulation.brokerage.fee.transaction.CmcMarketsFeeStructure;
+import com.systematic.trading.simulation.brokerage.fee.transaction.VanguardRetailFeeStructure;
 
 /**
  * Fee structures available for use in configuration.

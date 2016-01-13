@@ -26,7 +26,7 @@
 package com.systematic.trading.simulation.order;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.event.OrderEvent;
@@ -65,7 +65,7 @@ public interface EquityOrder {
 	 * @param todaysTrading the price action for today.
 	 * @throws OrderException when the order fails.
 	 */
-	void execute( BrokerageFees fees, BrokerageTransaction broker, CashAccount cashAccount,
+	void execute( BrokerageTransactionFee fees, BrokerageTransaction broker, CashAccount cashAccount,
 			TradingDayPrices todaysTrading ) throws OrderException;
 
 	/**

@@ -53,7 +53,7 @@ import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.logic.RelativeTradeValue;
 import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
@@ -74,7 +74,7 @@ public class SignalTriggeredEntryLogicTest {
 	private static final EquityClass EQUITY_STOCK = EquityClass.STOCK;
 
 	@Mock
-	private BrokerageFees fees;
+	private BrokerageTransactionFee fees;
 
 	@Mock
 	private CashAccount cashAccount;

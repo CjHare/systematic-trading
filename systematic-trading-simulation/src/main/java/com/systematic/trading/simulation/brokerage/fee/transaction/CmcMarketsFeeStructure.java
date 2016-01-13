@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage.fees;
+package com.systematic.trading.simulation.brokerage.fee.transaction;
 
 import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
 import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.ELEVEN;
@@ -36,6 +36,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
@@ -43,7 +44,7 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * 
  * @author CJ Hare
  */
-public class CmcMarketsFeeStructure implements BrokerageFeeStructure {
+public class CmcMarketsFeeStructure implements BrokerageTransactionFeeStructure {
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;

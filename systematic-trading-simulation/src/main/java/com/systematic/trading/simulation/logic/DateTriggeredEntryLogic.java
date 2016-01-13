@@ -33,7 +33,7 @@ import java.time.Period;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
-import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrder;
@@ -79,7 +79,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	}
 
 	@Override
-	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final TradingDayPrices data ) {
+	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount, final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();
 

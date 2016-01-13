@@ -44,6 +44,7 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicFactory;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicFilterConfiguration;
+import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.IndicatorSignalGeneratorFactory;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
@@ -62,6 +63,7 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.equity.fee.management.ZeroEquityManagementFeeStructure;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
@@ -144,7 +146,7 @@ public class BacktestOnlyOne {
 
 	}
 
-	private static List<BacktestBootstrapConfiguration> getConfigurations( final EquityIdentity equity,
+	private static List<BacktestBootstrapConfiguration> getConfigurations( final EquityIdentity equityIdentity,
 			final LocalDate startDate, final LocalDate endDate ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
 
@@ -165,10 +167,11 @@ public class BacktestOnlyOne {
 		description = String.format( "%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
 				minimumTradeDescription, maximumTradeDescription );
 
-		final EntryLogic entryLogic = EntryLogicFactory.create( equity, tradeValue,
+		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
 				EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, macd );
+		final EquityConfiguration equity = new EquityConfiguration( equityIdentity, new ZeroEquityManagementFeeStructure() );
 		final Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
-				MATH_CONTEXT );
+				startDate, MATH_CONTEXT );
 
 		final BigDecimal depositAmount = BigDecimal.valueOf( 100 );
 		final Period depositFrequency = Period.ofDays( 7 );

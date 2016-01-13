@@ -38,8 +38,8 @@ import java.math.MathContext;
 import org.junit.Test;
 
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.brokerage.fees.BellDirectFeeStructure;
-import com.systematic.trading.simulation.brokerage.fees.CmcMarketsFeeStructure;
+import com.systematic.trading.simulation.brokerage.fee.transaction.BellDirectFeeStructure;
+import com.systematic.trading.simulation.brokerage.fee.transaction.CmcMarketsFeeStructure;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**

@@ -28,14 +28,17 @@ package com.systematic.trading.backtest.configuration.brokerage;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.MathContext;
+import java.time.LocalDate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
-import com.systematic.trading.simulation.brokerage.fees.BrokerageFeeStructure;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 
 /**
  * Creates the brokerage instances for use in simulation.
@@ -50,12 +53,12 @@ public class BrokerageFactoroy {
 	/**
 	 * Create an instance of the fee structure.
 	 */
-	private static BrokerageFeeStructure createFeeStructure( final BrokerageFeesConfiguration fee,
+	private static BrokerageTransactionFeeStructure createFeeStructure( final BrokerageFeesConfiguration fee,
 			final MathContext mathContext ) {
 
 		try {
 			Constructor<?> cons = fee.getType().getConstructor( MathContext.class );
-			return (BrokerageFeeStructure) cons.newInstance( mathContext );
+			return (BrokerageTransactionFeeStructure) cons.newInstance( mathContext );
 		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException e) {
 			LOG.error( e );
@@ -64,10 +67,14 @@ public class BrokerageFactoroy {
 		throw new IllegalArgumentException( String.format( "Could not create the desired fee structure: %s", fee ) );
 	}
 
-	public static Brokerage create( final EquityIdentity equity, final BrokerageFeesConfiguration fees,
-			final MathContext mathContext ) {
+	public static Brokerage create( final EquityConfiguration equity, final BrokerageFeesConfiguration fees,
+			final LocalDate startDate, final MathContext mathContext ) {
 
-		final BrokerageFeeStructure tradingFeeStructure = createFeeStructure( fees, mathContext );
-		return new SingleEquityClassBroker( tradingFeeStructure, equity.getType(), mathContext );
+		final BrokerageTransactionFeeStructure tradingFeeStructure = createFeeStructure( fees, mathContext );
+		final EquityManagementFeeStructure equityManagementFee = equity.getManagementFee();
+		final EquityClass equityType = equity.getIdentity().getType();
+
+		return new SingleEquityClassBroker( tradingFeeStructure, equityManagementFee, equityType, startDate,
+				mathContext );
 	}
 }

@@ -1,5 +1,4 @@
 /**
- * 
  * Copyright (c) 2015, CJ Hare All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -24,22 +23,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage;
+package com.systematic.trading.simulation.equity;
 
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
-import com.systematic.trading.simulation.equity.EquityManagementFee;
+import java.time.LocalDate;
 
 /**
- * The bringing together of the different aspects of a brokerage house.
+ * Brokerage funds under management fee.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageTransactionFee, EquityManagementFee {
+public interface EquityManagementFee {
 
 	/**
-	 * Adds a listener interested in brokerage events.
+	 * Applies relevant management fee calculations and payments based on the passage of time.
 	 * 
-	 * @param listener to receive brokerage event notifications.
+	 * @param tradingDate the next day of trading data.
 	 */
-	void addListener( BrokerageEventListener listener );
+	void update( final LocalDate tradingDate );
 }

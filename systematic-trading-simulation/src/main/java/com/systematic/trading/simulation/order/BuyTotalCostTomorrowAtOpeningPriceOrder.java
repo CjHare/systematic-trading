@@ -31,7 +31,7 @@ import java.time.LocalDate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.event.OrderEvent;
@@ -79,7 +79,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	}
 
 	@Override
-	public void execute( final BrokerageFees fees, final BrokerageTransaction broker, final CashAccount cashAccount,
+	public void execute( final BrokerageTransactionFee fees, final BrokerageTransaction broker, final CashAccount cashAccount,
 			final TradingDayPrices todaysTrade ) throws OrderException {
 
 		final BigDecimal maximumTransactionCost = fees.calculateFee( targetTotalCost, type, todaysTrade.getDate() );

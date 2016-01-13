@@ -1,5 +1,4 @@
 /**
- * 
  * Copyright (c) 2015, CJ Hare All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -26,20 +25,28 @@
  */
 package com.systematic.trading.simulation.brokerage;
 
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
-import com.systematic.trading.simulation.equity.EquityManagementFee;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
- * The bringing together of the different aspects of a brokerage house.
+ * Brokerage fees applied to all an equity transaction.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageTransactionFee, EquityManagementFee {
+public interface BrokerageTransactionFee {
 
 	/**
-	 * Adds a listener interested in brokerage events.
+	 * Calculates the brokerage fee based on the given details.
 	 * 
-	 * @param listener to receive brokerage event notifications.
+	 * @param tradeValue sum of the equities being purchased.
+	 * @param type different classes may attract alternative pricing structures.
+	 * @param tradeDate the date for the intended transaction.
+	 * @return transaction (brokerage) cost.
+	 * @throws UnsupportedEquityClass encountered when the broker does not support the equity type.
 	 */
-	void addListener( BrokerageEventListener listener );
+	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, LocalDate tradeDate )
+			throws UnsupportedEquityClass;
 }
