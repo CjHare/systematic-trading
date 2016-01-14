@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.simulation.equity;
 
-import java.time.LocalDate;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
  * Brokerage funds under management fee.
@@ -39,5 +39,5 @@ public interface EquityManagementFee {
 	 * 
 	 * @param tradingDate the next day of trading data.
 	 */
-	void update( final LocalDate tradingDate );
+	void update( final TradingDayPrices tradingData );
 }

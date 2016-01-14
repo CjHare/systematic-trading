@@ -114,9 +114,6 @@ public class Simulation {
 			// Financial activity of deposits, withdrawal and interest
 			funds.update( currentDate );
 
-			// Broker activity of fees, clearing transactions
-			broker.update( currentDate );
-
 			final TradingDayPrices currentTradingData = tradingDayPrices.get( currentDate );
 
 			// Only when there is trading data for today
@@ -127,6 +124,9 @@ public class Simulation {
 
 				// Update the return on investment calculator
 				roi.update( broker, funds, currentTradingData );
+
+				// Broker activity of fees, clearing transactions at the end of the business day
+				broker.update( currentTradingData );
 			}
 
 			// Move date to tomorrow

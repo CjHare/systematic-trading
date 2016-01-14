@@ -43,6 +43,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
@@ -134,5 +135,9 @@ public class FileMinimalDisplay implements BacktestDisplay {
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
+	}
+
+	@Override
+	public void event( EquityEvent event ) {
 	}
 }

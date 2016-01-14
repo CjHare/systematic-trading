@@ -47,6 +47,8 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.equity.event.EquityEvent;
+import com.systematic.trading.simulation.equity.event.EquityEventListener;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
@@ -73,6 +75,7 @@ public class FileDisplay implements BacktestDisplay {
 	private EventStatisticsDisplay statisticsDisplay;
 	private NetWorthSummaryDisplay netWorthDisplay;
 	private NetWorthEventListener netWorthComparisonDisplay;
+	private EquityEventListener equityEventDisplay;
 	private final ExecutorService pool;
 
 	public FileDisplay( final String outputDirectory, final ExecutorService pool, final MathContext mathContext )
@@ -124,6 +127,9 @@ public class FileDisplay implements BacktestDisplay {
 
 		final String brokerageEventFilename = baseDirectory + "/events-brokerage.txt";
 		this.brokerageEventDisplay = new FileBrokerageEventDisplay( brokerageEventFilename, pool );
+
+		final String equityEventFilename = baseDirectory + "/events-equity.txt";
+		this.equityEventDisplay = new FileEquityEventDisplay( equityEventFilename, pool );
 
 		final String statisticsFilename = baseDirectory + "/statistics.txt";
 		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename, pool );
@@ -188,5 +194,10 @@ public class FileDisplay implements BacktestDisplay {
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
 		signalAnalysisDisplay.event( event );
+	}
+
+	@Override
+	public void event( final EquityEvent event ) {
+		equityEventDisplay.event( event );
 	}
 }

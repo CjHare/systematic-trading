@@ -35,6 +35,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.equity.event.EquityEventListener;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
@@ -42,8 +43,9 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends CashEventListener, OrderEventListener, BrokerageEventListener,
-		ReturnOnInvestmentEventListener, SimulationStateListener, NetWorthEventListener, SignalAnalysisListener {
+public interface BacktestDisplay
+		extends CashEventListener, OrderEventListener, BrokerageEventListener, ReturnOnInvestmentEventListener,
+		SimulationStateListener, NetWorthEventListener, SignalAnalysisListener, EquityEventListener {
 
 	/**
 	 * All the interesting data points for displaying.

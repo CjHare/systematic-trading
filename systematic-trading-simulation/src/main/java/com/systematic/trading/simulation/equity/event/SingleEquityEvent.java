@@ -23,28 +23,72 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.equity.fee.management;
+package com.systematic.trading.simulation.equity.event;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
+import com.systematic.trading.model.EquityIdentity;
 
 /**
- * Zero management cost associated with holding the equity.
+ * Equity event for a single equity.
  * 
  * @author CJ Hare
  */
-public class ZeroEquityManagementFeeStructure implements EquityManagementFeeStructure {
+public class SingleEquityEvent implements EquityEvent {
 
-	@Override
-	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
-			final LocalDate tradingDate ) {
-		return BigDecimal.ZERO;
+	private final BigDecimal equityAmount;
+	private final BigDecimal startingEquityBalance;
+	private final BigDecimal endEquityBalance;
+	private final LocalDate transactionDate;
+	private final BigDecimal transactionValue;
+
+	private final EquityEventType type;
+	private final EquityIdentity id;
+
+	public SingleEquityEvent( final EquityIdentity id, final BigDecimal startingEquityBalance,
+			final BigDecimal endEquityBalance, final BigDecimal amount, final EquityEventType type,
+			final LocalDate transactionDate, final BigDecimal transactionValue ) {
+		this.startingEquityBalance = startingEquityBalance;
+		this.endEquityBalance = endEquityBalance;
+		this.transactionValue = transactionValue;
+		this.transactionDate = transactionDate;
+		this.equityAmount = amount;
+		this.type = type;
+		this.id = id;
 	}
 
 	@Override
-	public LocalDate getLastManagementFeeDate( final LocalDate tradingDate ) {
-		return tradingDate;
+	public BigDecimal getEquityAmount() {
+		return equityAmount;
+	}
+
+	@Override
+	public BigDecimal getStartingEquityBalance() {
+		return startingEquityBalance;
+	}
+
+	@Override
+	public BigDecimal getEndEquityBalance() {
+		return endEquityBalance;
+	}
+
+	@Override
+	public LocalDate getTransactionDate() {
+		return transactionDate;
+	}
+
+	public BigDecimal getTransactionValue() {
+		return transactionValue;
+	}
+
+	@Override
+	public EquityEventType getType() {
+		return type;
+	}
+
+	@Override
+	public EquityIdentity getIdentity() {
+		return id;
 	}
 }

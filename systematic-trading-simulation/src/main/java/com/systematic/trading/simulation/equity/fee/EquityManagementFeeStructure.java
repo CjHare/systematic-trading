@@ -44,4 +44,12 @@ public interface EquityManagementFeeStructure {
 	 */
 	BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
 			final LocalDate tradingDate );
+
+	/**
+	 * Calculates the most recent management fee date.
+	 * 
+	 * @param tradingDate today's trading date.
+	 * @return the date of the most recent management fee prior to the given tradingDate.
+	 */
+	LocalDate getLastManagementFeeDate( LocalDate tradingDate );
 }

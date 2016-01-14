@@ -64,10 +64,18 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
 			final LocalDate tradingDate ) {
 
-		if (tradingDate.isBefore( lastManagementFeeDate.plus( frequency ) )) {
+		if (lastManagementFeeDate.plus( frequency ).isBefore( tradingDate )) {
 			return numberOfEquities.multiply( feePercentage, mathContext );
 		}
 
 		return BigDecimal.ZERO;
+	}
+
+	@Override
+	public LocalDate getLastManagementFeeDate( final LocalDate tradingDate ) {
+
+		// TODO implement this correctly - use a template for the day & month & year
+
+		return tradingDate;
 	}
 }

@@ -23,28 +23,19 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.equity.fee.management;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
+package com.systematic.trading.simulation.equity.event;
 
 /**
- * Zero management cost associated with holding the equity.
+ * A listener interested in equity event notifications.
  * 
  * @author CJ Hare
  */
-public class ZeroEquityManagementFeeStructure implements EquityManagementFeeStructure {
+public interface EquityEventListener {
 
-	@Override
-	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
-			final LocalDate tradingDate ) {
-		return BigDecimal.ZERO;
-	}
-
-	@Override
-	public LocalDate getLastManagementFeeDate( final LocalDate tradingDate ) {
-		return tradingDate;
-	}
+	/**
+	 * Notification that an Equity Event has occurred.
+	 * 
+	 * @param event the type of event that the listener is interested.
+	 */
+	void event( EquityEvent event );
 }

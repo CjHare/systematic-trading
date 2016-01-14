@@ -63,7 +63,7 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.equity.fee.management.ZeroEquityManagementFeeStructure;
+import com.systematic.trading.simulation.equity.fee.management.PeriodicEquityManagementFeeStructure;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
@@ -86,6 +86,8 @@ public class BacktestOnlyOne {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	private static final int DAYS_IN_A_YEAR = 365;
+
+	private static final Period ONE_YEAR = Period.ofYears( 1 );
 
 	/** Minimum amount of historical data needed for back testing. */
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
@@ -167,9 +169,13 @@ public class BacktestOnlyOne {
 		description = String.format( "%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
 				minimumTradeDescription, maximumTradeDescription );
 
+		// final BigDecimal vanguardRetailManagementFee = BigDecimal.valueOf( 0.009 );
+		final BigDecimal vanguardEquityManagementFee = BigDecimal.valueOf( 0.0018 );
+
 		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
 				EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, macd );
-		final EquityConfiguration equity = new EquityConfiguration( equityIdentity, new ZeroEquityManagementFeeStructure() );
+		final EquityConfiguration equity = new EquityConfiguration( equityIdentity,
+				new PeriodicEquityManagementFeeStructure( vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
 		final Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
 				startDate, MATH_CONTEXT );
 

@@ -166,8 +166,8 @@ public class SystematicTradingBacktestWithFees {
 		final BigDecimal depositAmount = BigDecimal.valueOf( 100 );
 		final Period depositFrequency = Period.ofDays( 7 );
 
-		final BigDecimal vanguardRetailManagementFee = BigDecimal.valueOf( 0.9 );
-		final BigDecimal vanguardEquityManagementFee = BigDecimal.valueOf( 0.18 );
+		final BigDecimal vanguardRetailManagementFee = BigDecimal.valueOf( 0.009 );
+		final BigDecimal vanguardEquityManagementFee = BigDecimal.valueOf( 0.0018 );
 
 		CashAccount cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
 		// TODO vanguard use a stepped fee :. need another fee structure - or pass in the fee amount

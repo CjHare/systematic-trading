@@ -42,7 +42,9 @@ import com.systematic.trading.simulation.analysis.roi.PeriodicCulmativeReturnOnI
 import com.systematic.trading.simulation.analysis.statistics.CumulativeEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.equity.event.EquityEventListener;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
@@ -138,7 +140,8 @@ public class BacktestBootstrap {
 		yearlyRoi.addListener( display );
 		monthlyRoi.addListener( display );
 		dailyRoi.addListener( display );
-		broker.addListener( display );
+		broker.addListener( (BrokerageEventListener) display );
+		broker.addListener( (EquityEventListener) display );
 
 		// Run the simulation until completion
 		simulation.run();

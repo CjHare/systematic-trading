@@ -23,28 +23,74 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.equity.fee.management;
+package com.systematic.trading.simulation.equity.event;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
+import com.systematic.trading.event.Event;
+import com.systematic.trading.model.EquityIdentity;
 
 /**
- * Zero management cost associated with holding the equity.
+ * A equity event that warrants being recorded.
  * 
  * @author CJ Hare
  */
-public class ZeroEquityManagementFeeStructure implements EquityManagementFeeStructure {
+public interface EquityEvent extends Event {
 
-	@Override
-	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
-			final LocalDate tradingDate ) {
-		return BigDecimal.ZERO;
+	public enum EquityEventType {
+		MANAGEMENT_FEE( "Management Fee" );
+
+		private final String display;
+
+		private EquityEventType( final String display ) {
+			this.display = display;
+		}
+
+		public String getDisplay() {
+			return display;
+		}
 	}
 
-	@Override
-	public LocalDate getLastManagementFeeDate( final LocalDate tradingDate ) {
-		return tradingDate;
-	}
+	/**
+	 * Retrieves the classification for the equity event.
+	 * 
+	 * @return general category the event falls within.
+	 */
+	EquityEventType getType();
+
+	/**
+	 * Number of equities prior to the brokerage event.
+	 * 
+	 * @return quantities of equities prior to the brokerage event.
+	 */
+	BigDecimal getStartingEquityBalance();
+
+	/**
+	 * Number of equities after the equity event.
+	 * 
+	 * @return quantities of equities after the equity event.
+	 */
+	BigDecimal getEndEquityBalance();
+
+	/**
+	 * Date of equity event.
+	 * 
+	 * @return when the equity event occurred.
+	 */
+	LocalDate getTransactionDate();
+
+	/**
+	 * The number of equities involved in the event.
+	 * 
+	 * @return number of equities.
+	 */
+	BigDecimal getEquityAmount();
+
+	/**
+	 * Equity that the event has been applied onto.
+	 * 
+	 * @return identity of the equity that was subject to the event.
+	 */
+	EquityIdentity getIdentity();
 }

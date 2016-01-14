@@ -28,13 +28,15 @@ package com.systematic.trading.simulation.brokerage;
 
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.equity.EquityManagementFee;
+import com.systematic.trading.simulation.equity.event.EquityEventListener;
 
 /**
  * The bringing together of the different aspects of a brokerage house.
  * 
  * @author CJ Hare
  */
-public interface Brokerage extends BrokerageBalance, BrokerageTransaction, BrokerageTransactionFee, EquityManagementFee {
+public interface Brokerage
+		extends BrokerageBalance, BrokerageTransaction, BrokerageTransactionFee, EquityManagementFee {
 
 	/**
 	 * Adds a listener interested in brokerage events.
@@ -42,4 +44,12 @@ public interface Brokerage extends BrokerageBalance, BrokerageTransaction, Broke
 	 * @param listener to receive brokerage event notifications.
 	 */
 	void addListener( BrokerageEventListener listener );
+
+	/**
+	 * Adds a listener interested in equity events.
+	 * 
+	 * @param listener to receive equity event notifications.
+	 */
+	void addListener( EquityEventListener listener );
+
 }

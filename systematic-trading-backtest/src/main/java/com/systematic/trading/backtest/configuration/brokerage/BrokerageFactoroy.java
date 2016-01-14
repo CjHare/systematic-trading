@@ -34,7 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
@@ -72,9 +72,9 @@ public class BrokerageFactoroy {
 
 		final BrokerageTransactionFeeStructure tradingFeeStructure = createFeeStructure( fees, mathContext );
 		final EquityManagementFeeStructure equityManagementFee = equity.getManagementFee();
-		final EquityClass equityType = equity.getIdentity().getType();
+		final EquityIdentity equityId = equity.getIdentity();
 
-		return new SingleEquityClassBroker( tradingFeeStructure, equityManagementFee, equityType, startDate,
+		return new SingleEquityClassBroker( tradingFeeStructure, equityManagementFee, equityId, startDate,
 				mathContext );
 	}
 }
