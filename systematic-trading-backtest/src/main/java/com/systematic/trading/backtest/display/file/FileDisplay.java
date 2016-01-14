@@ -139,7 +139,7 @@ public class FileDisplay implements BacktestDisplay {
 
 		this.signalAnalysisDisplay = new FileSignalAnalysisDisplay( signalAnalysisFilename, pool );
 
-		final String comparisonFilename = "../../simulations/summary.txt";
+		final String comparisonFilename = baseDirectory + "/../summary.txt";
 		netWorthComparisonDisplay = new FileComparisonDisplay( eventStatistics, comparisonFilename, pool, mathContext );
 	}
 

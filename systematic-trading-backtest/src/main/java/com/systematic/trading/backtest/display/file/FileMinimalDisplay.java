@@ -91,7 +91,7 @@ public class FileMinimalDisplay implements BacktestDisplay {
 		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename, pool );
 		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFilename, pool );
 
-		final String comparisonFilename = "../../simulations/summary.txt";
+		final String comparisonFilename = baseDirectory+"/../summary.txt";
 		netWorthComparisonDisplay = new FileComparisonDisplay( eventStatistics, comparisonFilename, pool, mathContext );
 	}
 
