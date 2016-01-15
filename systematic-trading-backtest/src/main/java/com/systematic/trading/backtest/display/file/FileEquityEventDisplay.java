@@ -25,15 +25,8 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.equity.event.EquityEventListener;
@@ -43,41 +36,22 @@ import com.systematic.trading.simulation.equity.event.EquityEventListener;
  * 
  * @author CJ Hare
  */
-public class FileEquityEventDisplay implements EquityEventListener {
-
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileEquityEventDisplay.class );
+public class FileEquityEventDisplay extends FileDisplayMultithreading implements EquityEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
-	private final String outputFilename;
-
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
 	public FileEquityEventDisplay( final String outputFilename, final ExecutorService pool ) {
-		this.outputFilename = outputFilename;
-		this.pool = pool;
+		super( outputFilename, pool );
 	}
 
 	@Override
 	public void event( EquityEvent event ) {
 
-		final Runnable task = () -> {
-			try (final PrintWriter out = new PrintWriter(
-					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				final String output = String.format( "Equity Event - %s: %s - equity balance %s -> %s on %s",
-						event.getType(), TWO_DECIMAL_PLACES.format( event.getEquityAmount() ),
-						TWO_DECIMAL_PLACES.format( event.getStartingEquityBalance() ),
-						TWO_DECIMAL_PLACES.format( event.getEndEquityBalance() ), event.getTransactionDate() );
+		final String content = String.format( "Equity Event - %s: %s - equity balance %s -> %s on %s", event.getType(),
+				TWO_DECIMAL_PLACES.format( event.getEquityAmount() ),
+				TWO_DECIMAL_PLACES.format( event.getStartingEquityBalance() ),
+				TWO_DECIMAL_PLACES.format( event.getEndEquityBalance() ), event.getTransactionDate() );
 
-				out.println( output );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
-		};
-
-		pool.execute( task );
+		write( content );
 	}
-
 }

@@ -25,16 +25,9 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
@@ -46,46 +39,23 @@ import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestme
  * 
  * @author CJ Hare
  */
-public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
-
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileNetWorthSummaryDisplay.class );
+public class FileNetWorthSummaryDisplay extends FileDisplayMultithreading implements NetWorthSummaryDisplay {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
 	private final CumulativeReturnOnInvestment cumulativeRoi;
 
-	private final String outputFilename;
-
 	/** The last net worth recording, which makes it into the summary. */
 	private NetWorthEvent lastEvent;
 
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
 	public FileNetWorthSummaryDisplay( final CumulativeReturnOnInvestment cumulativeRoi, final String outputFilename,
 			final ExecutorService pool ) {
+		super( outputFilename, pool );
 		this.cumulativeRoi = cumulativeRoi;
-		this.outputFilename = outputFilename;
-		this.pool = pool;
 	}
 
 	@Override
 	public void displayNetWorth() {
-
-		final Runnable task = () -> {
-			try (final PrintWriter out = new PrintWriter(
-					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				out.println( createOutput() );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
-		};
-
-		pool.execute( task );
-	}
-
-	private String createOutput() {
 
 		final BigDecimal balance = lastEvent.getEquityBalance();
 		final BigDecimal holdingValue = lastEvent.getEquityBalanceValue();
@@ -104,7 +74,8 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 		output.append( String.format( "\nInvestment Cumulative ROI: %s\n",
 				TWO_DECIMAL_PLACES.format( cumulativeRoi.getCumulativeReturnOnInvestment() ) ) );
 
-		return output.toString();
+		write( output.toString() );
+
 	}
 
 	@Override

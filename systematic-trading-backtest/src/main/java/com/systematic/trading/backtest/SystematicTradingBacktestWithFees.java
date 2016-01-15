@@ -170,10 +170,11 @@ public class SystematicTradingBacktestWithFees {
 		final BigDecimal vanguardEquityManagementFee = BigDecimal.valueOf( 0.0018 );
 
 		CashAccount cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
+		final LocalDate managementFeeStartDate = LocalDate.of( startDate.getYear(), 1, 1 );
 		// TODO vanguard use a stepped fee :. need another fee structure - or pass in the fee amount
 		// and holding amount
 		EquityConfiguration equity = new EquityConfiguration( equityIdentity,
-				new PeriodicEquityManagementFeeStructure( vanguardRetailManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+				new PeriodicEquityManagementFeeStructure(managementFeeStartDate, vanguardRetailManagementFee, ONE_YEAR, MATH_CONTEXT ) );
 		Brokerage vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
 				MATH_CONTEXT );
 		EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, startDate, MATH_CONTEXT );
@@ -218,7 +219,7 @@ public class SystematicTradingBacktestWithFees {
 							EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, macd );
 					description = String.format( "%s_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
-					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
+					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(managementFeeStartDate,
 							vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
 					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 							MATH_CONTEXT );
@@ -235,7 +236,7 @@ public class SystematicTradingBacktestWithFees {
 					description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), rsiConfiguration.getDescription(),
 							minimumTradeDescription, maximumTradeDescription );
-					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
+					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(managementFeeStartDate,
 							vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
 					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 							MATH_CONTEXT );
@@ -254,7 +255,7 @@ public class SystematicTradingBacktestWithFees {
 						description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 								minimumTradeDescription, maximumTradeDescription );
-						equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
+						equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(managementFeeStartDate,
 								vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
 						cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
 								startDate, MATH_CONTEXT );
@@ -273,7 +274,7 @@ public class SystematicTradingBacktestWithFees {
 						description = String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 								rsiConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
-						equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
+						equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(managementFeeStartDate,
 								vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
 						cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
 								startDate, MATH_CONTEXT );
@@ -295,7 +296,7 @@ public class SystematicTradingBacktestWithFees {
 
 					entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
 							EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, rsi, sma );
-					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
+					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(managementFeeStartDate,
 							vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
 					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 							MATH_CONTEXT );

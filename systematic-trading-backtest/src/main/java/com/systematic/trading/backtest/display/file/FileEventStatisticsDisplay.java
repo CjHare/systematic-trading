@@ -25,19 +25,13 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.simulation.analysis.statistics.BrokerageEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.CashEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.EquityEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistics;
 
@@ -46,43 +40,20 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  * 
  * @author CJ Hare
  */
-public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
-
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileEventStatisticsDisplay.class );
+public class FileEventStatisticsDisplay extends FileDisplayMultithreading implements EventStatisticsDisplay {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
 	private final EventStatistics statistics;
 
-	private final String outputFilename;
-
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
 	public FileEventStatisticsDisplay( final EventStatistics statistics, final String outputFilename,
 			final ExecutorService pool ) {
+		super( outputFilename, pool );
 		this.statistics = statistics;
-		this.outputFilename = outputFilename;
-		this.pool = pool;
 	}
 
 	@Override
 	public void displayEventStatistics() {
-
-		final Runnable task = () -> {
-			try (final PrintWriter out = new PrintWriter(
-					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				out.println( createOutput() );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
-		};
-
-		pool.execute( task );
-	}
-
-	private String createOutput() {
 
 		final StringBuilder output = new StringBuilder();
 
@@ -94,8 +65,9 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		addOrderStatistics( statistics.getOrderEventStatistics(), output );
 		addCashStatistics( statistics.getCashEventStatistics(), output );
 		addBrokerageStatistics( statistics.getBrokerageEventStatistics(), output );
+		addEquityStatistics( statistics.getEquityEventStatistics(), output );
 
-		return output.toString();
+		write( output.toString() );
 	}
 
 	private void addOrderStatistics( final OrderEventStatistics orderStatistics, final StringBuilder output ) {
@@ -134,5 +106,12 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		output.append( String.format( "# Buy events: %s\n", brokerageStatistics.getBuyEventCount() ) );
 		output.append( String.format( "Total amount paid in brokerage: %s\n",
 				TWO_DECIMAL_PLACES.format( brokerageStatistics.getBrokerageFees() ) ) );
+	}
+
+	private void addEquityStatistics( final EquityEventStatistics equityStatistics, final StringBuilder output ) {
+
+		output.append( "\n=== Equity events ===\n" );
+		output.append( String.format( "Total amount of equities paid in management fees: %s\n",
+				TWO_DECIMAL_PLACES.format( equityStatistics.getTotalManagmentFeesInEquities() ) ) );
 	}
 }

@@ -25,16 +25,9 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
@@ -49,10 +42,8 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public class FileEventDisplay implements CashEventListener, OrderEventListener, BrokerageEventListener {
-
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileEventDisplay.class );
+public class FileEventDisplay extends FileDisplayMultithreading
+		implements CashEventListener, OrderEventListener, BrokerageEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
@@ -62,16 +53,14 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 
 	public FileEventDisplay( final String outputFilename, final TickerSymbolTradingData tradingData,
 			final ExecutorService pool ) {
+		super( outputFilename, pool );
 
-		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			out.println( createHeaderOutput( tradingData ) );
-		} catch (final IOException e) {
-			LOG.error( e );
-		}
+		write( createHeaderOutput( tradingData ) );
 
 		this.cashEventListener = new FileCashEventDisplay( outputFilename, pool );
 		this.orderEventListener = new FileOrderEventDisplay( outputFilename, pool );
 		this.brokerageEventListener = new FileBrokerageEventDisplay( outputFilename, pool );
+
 	}
 
 	private String createHeaderOutput( final TickerSymbolTradingData tradingData ) {

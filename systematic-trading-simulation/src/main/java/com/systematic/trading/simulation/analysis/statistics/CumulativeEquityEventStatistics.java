@@ -25,60 +25,27 @@
  */
 package com.systematic.trading.simulation.analysis.statistics;
 
-import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
-import com.systematic.trading.simulation.cash.event.CashEvent;
+import java.math.BigDecimal;
+
 import com.systematic.trading.simulation.equity.event.EquityEvent;
-import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Statistics recorded cumulatively, being updated when the events are received.
+ * Cumulative recording of the order events for statistical purposes.
  * 
  * @author CJ Hare
  */
-public class CumulativeEventStatistics implements EventStatistics {
+public class CumulativeEquityEventStatistics implements EquityEventStatistics {
 
-	private final BrokerageEventStatistics brokerageStatistics = new CumulativeBrokerageEventStatistics();
-	private final CashEventStatistics cashStatistics = new CumulativeCashEventStatistics();
-	private final OrderEventStatistics orderStatistics = new CumulativeOrderEventStatistics();
-	private final EquityEventStatistics equityStatistics = new CumulativeEquityEventStatistics();
-
-	@Override
-	public OrderEventStatistics getOrderEventStatistics() {
-		return orderStatistics;
-	}
-
-	@Override
-	public BrokerageEventStatistics getBrokerageEventStatistics() {
-		return brokerageStatistics;
-	}
-
-	@Override
-	public CashEventStatistics getCashEventStatistics() {
-		return cashStatistics;
-	}
-
-	@Override
-	public void event( final CashEvent event ) {
-		cashStatistics.event( event );
-	}
-
-	@Override
-	public void event( final BrokerageEvent event ) {
-		brokerageStatistics.event( event );
-	}
-
-	@Override
-	public void event( final OrderEvent event ) {
-		orderStatistics.event( event );
-	}
-
-	@Override
-	public EquityEventStatistics getEquityEventStatistics() {
-		return equityStatistics;
-	}
+	private BigDecimal managementFeesInEquities = BigDecimal.ZERO;
 
 	@Override
 	public void event( final EquityEvent event ) {
-		equityStatistics.event( event );
+		managementFeesInEquities = managementFeesInEquities.add( event.getEquityAmount() );
+
+	}
+
+	@Override
+	public BigDecimal getTotalManagmentFeesInEquities() {
+		return managementFeesInEquities;
 	}
 }

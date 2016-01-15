@@ -28,7 +28,7 @@ package com.systematic.trading.simulation.analysis.statistics;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Cumulative recording of the order events for statistical purposes.
+ * Cumulative recording of the equity events for statistical purposes.
  * 
  * @author CJ Hare
  */

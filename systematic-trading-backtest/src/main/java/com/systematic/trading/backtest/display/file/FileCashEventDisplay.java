@@ -25,15 +25,8 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
@@ -43,39 +36,21 @@ import com.systematic.trading.simulation.cash.event.CashEventListener;
  * 
  * @author CJ Hare
  */
-public class FileCashEventDisplay implements CashEventListener {
-
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileCashEventDisplay.class );
+public class FileCashEventDisplay extends FileDisplayMultithreading implements CashEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
-	private final String outputFilename;
-
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
 	public FileCashEventDisplay( final String outputFilename, final ExecutorService pool ) {
-		this.outputFilename = outputFilename;
-		this.pool = pool;
+		super( outputFilename, pool );
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
 
-		final Runnable task = ( ) -> {
-			try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				final String output = String.format( "Cash Account - %s: %s - funds %s -> %s on %s", event.getType(),
-						TWO_DECIMAL_PLACES.format( event.getAmount() ),
-						TWO_DECIMAL_PLACES.format( event.getFundsBefore() ),
-						TWO_DECIMAL_PLACES.format( event.getFundsAfter() ), event.getTransactionDate() );
+		final String content = String.format( "Cash Account - %s: %s - funds %s -> %s on %s", event.getType(),
+				TWO_DECIMAL_PLACES.format( event.getAmount() ), TWO_DECIMAL_PLACES.format( event.getFundsBefore() ),
+				TWO_DECIMAL_PLACES.format( event.getFundsAfter() ), event.getTransactionDate() );
 
-				out.println( output );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
-		};
-
-		pool.execute( task );
+		write( content );
 	}
 }

@@ -25,18 +25,11 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
@@ -46,7 +39,8 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  * 
  * @author CJ Hare
  */
-public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventListener {
+public class FileReturnOnInvestmentDisplay extends FileDisplayMultithreading
+		implements ReturnOnInvestmentEventListener {
 
 	enum RETURN_ON_INVESTMENT_DISPLAY {
 		DAILY,
@@ -55,23 +49,14 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		ALL;
 	}
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileReturnOnInvestmentDisplay.class );
-
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( "#.##" );
 
 	private final RETURN_ON_INVESTMENT_DISPLAY roiType;
 
-	private final String outputFilename;
-
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
 	public FileReturnOnInvestmentDisplay( final String outputFilename, final RETURN_ON_INVESTMENT_DISPLAY roiType,
 			final ExecutorService pool ) {
-		this.outputFilename = outputFilename;
+		super( outputFilename, pool );
 		this.roiType = roiType;
-		this.pool = pool;
 	}
 
 	public String createOutput( final ReturnOnInvestmentEvent event ) {
@@ -85,17 +70,17 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		final Period elapsed = Period.between( startDateInclusive, endDateExclusive );
 
 		if (isDailyRoiOutput( elapsed )) {
-			output.append( String.format( "Daily - ROI: %s percent over %s day(s), from %s to %s\n",
+			output.append( String.format( "Daily - ROI: %s percent over %s day(s), from %s to %s",
 					formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive ) );
 		}
 
 		if (isMonthlyRoiOutput( elapsed )) {
-			output.append( String.format( "Monthly - ROI: %s percent over %s month(s), from %s to %s\n",
+			output.append( String.format( "Monthly - ROI: %s percent over %s month(s), from %s to %s",
 					formattedPercentageChange, getRoundedMonths( elapsed ), startDateInclusive, endDateExclusive ) );
 		}
 
 		if (isYearlyRoiOutput( elapsed )) {
-			output.append( String.format( "Yearly - ROI: %s percent over %s year(s), from %s to %s\n",
+			output.append( String.format( "Yearly - ROI: %s percent over %s year(s), from %s to %s",
 					formattedPercentageChange, getRoundedYears( elapsed ), startDateInclusive, endDateExclusive ) );
 		}
 
@@ -151,15 +136,6 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
 
-		final Runnable task = () -> {
-			try (final PrintWriter out = new PrintWriter(
-					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				out.print( createOutput( (ReturnOnInvestmentEvent) event ) );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
-		};
-
-		pool.execute( task );
+		write( createOutput( (ReturnOnInvestmentEvent) event ) );
 	}
 }

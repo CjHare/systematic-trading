@@ -123,7 +123,9 @@ public class BacktestBootstrap {
 		// Statistics recorder for the various cash account, brokerage and order events
 		final EventStatistics eventStatistics = new CumulativeEventStatistics();
 		simulation.addListener( eventStatistics );
-		broker.addListener( eventStatistics );
+		broker.addListener( (BrokerageEventListener) eventStatistics );
+		broker.addListener( (EquityEventListener) eventStatistics );
+
 		cashAccount.addListener( eventStatistics );
 
 		// Creates the net worth events

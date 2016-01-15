@@ -49,13 +49,19 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	private final BigDecimal feePercentage;
 
 	/**
+	 * First fee date, and then at intervals defined by frequency.
+	 */
+	private final LocalDate feeStartDate;
+
+	/**
 	 * @param feePercentage percentage of the holdings taken as the fee.
 	 * @param frequency how often the management fee is applied.
 	 * @param mathContext context to apply to calculations.
 	 */
-	public PeriodicEquityManagementFeeStructure( final BigDecimal feePercentage, final Period frequency,
-			final MathContext mathContext ) {
+	public PeriodicEquityManagementFeeStructure( final LocalDate feeStartDate, final BigDecimal feePercentage,
+			final Period frequency, final MathContext mathContext ) {
 		this.feePercentage = feePercentage;
+		this.feeStartDate = feeStartDate;
 		this.mathContext = mathContext;
 		this.frequency = frequency;
 	}
@@ -74,8 +80,14 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	@Override
 	public LocalDate getLastManagementFeeDate( final LocalDate tradingDate ) {
 
-		// TODO implement this correctly - use a template for the day & month & year
+		// Loop through from the first date until an interval after the trading date
+		LocalDate nextFeeDate = feeStartDate;
 
-		return tradingDate;
+		while (nextFeeDate.isBefore( tradingDate )) {
+			nextFeeDate = nextFeeDate.plus( frequency );
+		}
+
+		// The previous date being the last management fee date
+		return nextFeeDate.minus( frequency );
 	}
 }

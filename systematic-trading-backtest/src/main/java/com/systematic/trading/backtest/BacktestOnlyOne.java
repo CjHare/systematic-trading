@@ -174,8 +174,10 @@ public class BacktestOnlyOne {
 
 		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
 				EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, macd );
+		final LocalDate managementFeeStartDate = LocalDate.of( startDate.getYear(), 1, 1 );
 		final EquityConfiguration equity = new EquityConfiguration( equityIdentity,
-				new PeriodicEquityManagementFeeStructure( vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR,
+						MATH_CONTEXT ) );
 		final Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
 				startDate, MATH_CONTEXT );
 

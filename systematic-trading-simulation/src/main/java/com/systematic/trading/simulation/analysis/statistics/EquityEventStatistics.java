@@ -25,60 +25,28 @@
  */
 package com.systematic.trading.simulation.analysis.statistics;
 
-import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
-import com.systematic.trading.simulation.cash.event.CashEvent;
+import java.math.BigDecimal;
+
 import com.systematic.trading.simulation.equity.event.EquityEvent;
-import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Statistics recorded cumulatively, being updated when the events are received.
+ * Statistics over the occurring equity related events.
  * 
  * @author CJ Hare
  */
-public class CumulativeEventStatistics implements EventStatistics {
+public interface EquityEventStatistics {
 
-	private final BrokerageEventStatistics brokerageStatistics = new CumulativeBrokerageEventStatistics();
-	private final CashEventStatistics cashStatistics = new CumulativeCashEventStatistics();
-	private final OrderEventStatistics orderStatistics = new CumulativeOrderEventStatistics();
-	private final EquityEventStatistics equityStatistics = new CumulativeEquityEventStatistics();
+	/**
+	 * Equity event has occurred and merits recording.
+	 * 
+	 * @param event an event warranting attention of the statistics.
+	 */
+	void event( EquityEvent event );
 
-	@Override
-	public OrderEventStatistics getOrderEventStatistics() {
-		return orderStatistics;
-	}
-
-	@Override
-	public BrokerageEventStatistics getBrokerageEventStatistics() {
-		return brokerageStatistics;
-	}
-
-	@Override
-	public CashEventStatistics getCashEventStatistics() {
-		return cashStatistics;
-	}
-
-	@Override
-	public void event( final CashEvent event ) {
-		cashStatistics.event( event );
-	}
-
-	@Override
-	public void event( final BrokerageEvent event ) {
-		brokerageStatistics.event( event );
-	}
-
-	@Override
-	public void event( final OrderEvent event ) {
-		orderStatistics.event( event );
-	}
-
-	@Override
-	public EquityEventStatistics getEquityEventStatistics() {
-		return equityStatistics;
-	}
-
-	@Override
-	public void event( final EquityEvent event ) {
-		equityStatistics.event( event );
-	}
+	/**
+	 * Any management fees for incurred from holding the equity.
+	 * 
+	 * @return total paid in management fees, in equities.
+	 */
+	BigDecimal getTotalManagmentFeesInEquities();
 }

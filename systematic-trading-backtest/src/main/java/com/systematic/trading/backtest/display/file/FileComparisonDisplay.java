@@ -25,17 +25,10 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
@@ -51,10 +44,7 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  * 
  * @author CJ Hare
  */
-public class FileComparisonDisplay implements NetWorthEventListener {
-
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileComparisonDisplay.class );
+public class FileComparisonDisplay extends FileDisplayMultithreading implements NetWorthEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".00" );
 
@@ -62,19 +52,13 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private final MathContext mathContext;
 
-	private final String outputFilename;
-
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
 	private final EventStatistics statistics;
 
 	public FileComparisonDisplay( final EventStatistics statistics, final String outputFilename,
 			final ExecutorService pool, final MathContext mathContext ) {
-		this.outputFilename = outputFilename;
+		super( outputFilename, pool );
 		this.mathContext = mathContext;
 		this.statistics = statistics;
-		this.pool = pool;
 	}
 
 	@Override
@@ -82,20 +66,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 		// Only interested in the net worth when the simulation is complete
 		if (SimulationState.COMPLETE.equals( state )) {
-
-			// Create the output now, as it uses a field
-			final String output = createOutput( statistics, event );
-
-			final Runnable task = () -> {
-				try (final PrintWriter out = new PrintWriter(
-						new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-					out.println( output );
-				} catch (final IOException e) {
-					LOG.error( e );
-				}
-			};
-
-			pool.execute( task );
+			write( createOutput( statistics, event ) );
 		}
 	}
 

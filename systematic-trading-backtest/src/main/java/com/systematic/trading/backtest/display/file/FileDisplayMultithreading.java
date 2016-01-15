@@ -23,46 +23,54 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.analysis.statistics;
+package com.systematic.trading.backtest.display.file;
 
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
-import com.systematic.trading.simulation.cash.event.CashEventListener;
-import com.systematic.trading.simulation.equity.event.EquityEventListener;
-import com.systematic.trading.simulation.order.event.OrderEventListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.concurrent.ExecutorService;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * Records the data produced during process, making the statistics easily accessible.
+ * Handles the multi-threading
  * 
  * @author CJ Hare
  */
-public interface EventStatistics
-		extends CashEventListener, BrokerageEventListener, OrderEventListener, EquityEventListener {
+public abstract class FileDisplayMultithreading {
+
+	/** Classes logger. */
+	private static final Logger LOG = LogManager.getLogger( FileDisplayMultithreading.class );
+
+	/** File that receives that get written to. */
+	private final String outputFilename;
+
+	/** Pool of execution threads to delegate IO operations. */
+	private final ExecutorService pool;
+
+	public FileDisplayMultithreading( final String outputFilename, final ExecutorService pool ) {
+		this.outputFilename = outputFilename;
+		this.pool = pool;
+	}
 
 	/**
-	 * Retrieves the recorded order event statistics.
+	 * Asynchronous writing operation.
 	 * 
-	 * @return order events recorded to date.
+	 * @param content gets queued for writing to the output file.
 	 */
-	OrderEventStatistics getOrderEventStatistics();
+	public void write( final String content ) {
 
-	/**
-	 * Retrieves the recorded brokerage event statistics.
-	 * 
-	 * @return brokerage events recorded to date.
-	 */
-	BrokerageEventStatistics getBrokerageEventStatistics();
+		final Runnable task = () -> {
+			try (final PrintWriter out = new PrintWriter(
+					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
+				out.println( content );
+			} catch (final IOException e) {
+				LOG.error( e );
+			}
+		};
 
-	/**
-	 * Retrieves the recorded cash event statistics.
-	 * 
-	 * @return cash events recorded to date.
-	 */
-	CashEventStatistics getCashEventStatistics();
-
-	/**
-	 * Retrieves the recorded equity event statistics.
-	 * 
-	 * @return equity events recorded to date.
-	 */
-	EquityEventStatistics getEquityEventStatistics();
+		pool.execute( task );
+	}
 }
