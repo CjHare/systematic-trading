@@ -39,6 +39,8 @@ public class FileSignalAnalysisDisplay extends FileDisplayMultithreading impleme
 
 	public FileSignalAnalysisDisplay( final String outputFilename, final ExecutorService pool ) {
 		super( outputFilename, pool );
+
+		write( "=== Signal Analysis Events ===" );
 	}
 
 	@Override

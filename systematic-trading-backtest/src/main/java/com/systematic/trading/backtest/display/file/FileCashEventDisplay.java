@@ -42,6 +42,8 @@ public class FileCashEventDisplay extends FileDisplayMultithreading implements C
 
 	public FileCashEventDisplay( final String outputFilename, final ExecutorService pool ) {
 		super( outputFilename, pool );
+
+		write( "=== Cash Events ===" );
 	}
 
 	@Override

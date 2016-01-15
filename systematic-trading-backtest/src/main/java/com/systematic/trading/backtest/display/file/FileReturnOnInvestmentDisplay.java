@@ -57,6 +57,8 @@ public class FileReturnOnInvestmentDisplay extends FileDisplayMultithreading
 			final ExecutorService pool ) {
 		super( outputFilename, pool );
 		this.roiType = roiType;
+
+		write( "=== Return On Investment Events ===" );
 	}
 
 	public String createOutput( final ReturnOnInvestmentEvent event ) {

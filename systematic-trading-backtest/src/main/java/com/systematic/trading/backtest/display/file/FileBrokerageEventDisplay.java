@@ -42,6 +42,8 @@ public class FileBrokerageEventDisplay extends FileDisplayMultithreading impleme
 
 	public FileBrokerageEventDisplay( final String outputFilename, final ExecutorService pool ) {
 		super( outputFilename, pool );
+
+		write( "=== Brokerage Events ===" );
 	}
 
 	@Override

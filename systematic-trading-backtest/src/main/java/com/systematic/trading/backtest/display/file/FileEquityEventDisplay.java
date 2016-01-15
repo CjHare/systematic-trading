@@ -42,6 +42,8 @@ public class FileEquityEventDisplay extends FileDisplayMultithreading implements
 
 	public FileEquityEventDisplay( final String outputFilename, final ExecutorService pool ) {
 		super( outputFilename, pool );
+
+		write( "=== Equity Events ===" );
 	}
 
 	@Override

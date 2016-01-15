@@ -52,6 +52,8 @@ public class FileNetWorthSummaryDisplay extends FileDisplayMultithreading implem
 			final ExecutorService pool ) {
 		super( outputFilename, pool );
 		this.cumulativeRoi = cumulativeRoi;
+
+		write( "=== Net Worth Summary ===" );
 	}
 
 	@Override
@@ -64,7 +66,6 @@ public class FileNetWorthSummaryDisplay extends FileDisplayMultithreading implem
 
 		final StringBuilder output = new StringBuilder();
 
-		output.append( "\n=== Net Worth Summary ===\n" );
 		output.append( String.format( "Number of equities: %s\n", TWO_DECIMAL_PLACES.format( balance ) ) );
 		output.append( String.format( "Holdings value: %s\n", TWO_DECIMAL_PLACES.format( holdingValue ) ) );
 		output.append( String.format( "Cash account: %s\n", TWO_DECIMAL_PLACES.format( cashBalance ) ) );

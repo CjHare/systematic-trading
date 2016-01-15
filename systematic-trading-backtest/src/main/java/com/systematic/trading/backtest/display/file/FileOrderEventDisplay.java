@@ -42,6 +42,8 @@ public class FileOrderEventDisplay extends FileDisplayMultithreading implements 
 
 	public FileOrderEventDisplay( final String outputFilename, final ExecutorService pool ) {
 		super( outputFilename, pool );
+
+		write( "=== Order Events ===" );
 	}
 
 	@Override

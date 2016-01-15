@@ -59,6 +59,8 @@ public class FileComparisonDisplay extends FileDisplayMultithreading implements 
 		super( outputFilename, pool );
 		this.mathContext = mathContext;
 		this.statistics = statistics;
+
+		write( "ROI, Total Net Worth, Number of equities, Holdings value, Cash account, Deposited, Profit,  Entry orders placed, Entry orders executed, Entry orders deleted, Exit orders placed, Exit orders executed, Exit orders deleted" );
 	}
 
 	@Override
