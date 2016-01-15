@@ -57,7 +57,6 @@ public class FileEventStatisticsDisplay extends FileDisplayMultithreading implem
 
 		final StringBuilder output = new StringBuilder();
 
-		output.append( "\n" );
 		output.append( "##########################\n" );
 		output.append( "### Summary Statistics ###\n" );
 		output.append( "##########################\n" );

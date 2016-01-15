@@ -73,15 +73,11 @@ import com.systematic.trading.simulation.logic.RelativeTradeValue;
 import com.systematic.trading.simulation.logic.TradeValue;
 
 /**
- * Performs back testing of trading logic over a historical data set.
- * <p/>
- * Decides the persistence type to use, in addition to the type of back testing and equity it is
- * performed on.
+ * Values 100, 150, 200, 250, 300, 500.
  * 
  * @author CJ Hare
  */
-public class SystematicTradingBacktestWithFees {
-
+public class RunAllWeeklyAmounts {
 	// TODO this is a duplicate of SystematicTradingBacktest but with different fees - refacrtor!!
 
 	/** Classes logger. */
@@ -98,48 +94,63 @@ public class SystematicTradingBacktestWithFees {
 
 	public static void main( final String... args ) throws Exception {
 
-		final int cores = Runtime.getRuntime().availableProcessors();
-		final ExecutorService pool = Executors.newFixedThreadPool( cores );
+		final String outputDirectory = "../../simulations-managment-%s/";
+		final BigDecimal[] depositAmounts = { BigDecimal.valueOf( 100 ), BigDecimal.valueOf( 150 ),
+				BigDecimal.valueOf( 200 ), BigDecimal.valueOf( 250 ), BigDecimal.valueOf( 300 ),
+				BigDecimal.valueOf( 400 ), BigDecimal.valueOf( 500 ) };
 
 		final EquityIdentity equity = getEquityIdentity();
 
 		// Date range is from the first of the starting month until now
 		final LocalDate endDate = LocalDate.now();
-		final BigDecimal depositAmount = getDepositAmount( args );
 		final LocalDate startDate = endDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS ).withDayOfMonth( 1 );
-		final List<BacktestBootstrapConfiguration> configurations = getConfigurations( equity, startDate, endDate,
-				depositAmount );
 
-		final String baseOutputDirectory = getBaseOutputDirectory( args );
+		final TickerSymbolTradingData tradingData = getTradingData( equity, startDate, endDate );
 
-		// Arrange output to files, only once per a run
-		new FileClearDestination( baseOutputDirectory );
+		final int cores = Runtime.getRuntime().availableProcessors();
+		final ExecutorService pool = Executors.newFixedThreadPool( cores );
 
 		try {
-			final TickerSymbolTradingData tradingData = getTradingData( equity, startDate, endDate );
+			for (final BigDecimal depositAmount : depositAmounts) {
 
-			for (final BacktestBootstrapConfiguration configuration : configurations) {
-				final String outputDirectory = getOutputDirectory( baseOutputDirectory, equity, configuration );
-				// final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool,
-				// MATH_CONTEXT );
-				final BacktestDisplay fileDisplay = new FileMinimalDisplay( outputDirectory, pool, MATH_CONTEXT );
+				final List<BacktestBootstrapConfiguration> configurations = getConfigurations( equity, startDate,
+						endDate, depositAmount );
 
-				final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
-						MATH_CONTEXT );
-
-				LOG.info( String.format( "Backtesting beginning for: %s", configuration.getDescription() ) );
-
-				bootstrap.run();
-
-				LOG.info( String.format( "Backtesting complete for: %s", configuration.getDescription() ) );
+				runTest( depositAmount, String.format( outputDirectory, depositAmount ), configurations, tradingData,
+						equity, pool );
 			}
-
-			LOG.info( "All Simulations have been completed" );
 
 		} finally {
 			HibernateUtil.getSessionFactory().close();
 			pool.shutdown();
 		}
+	}
+
+	public static void runTest( final BigDecimal depositAmount, final String baseOutputDirectory,
+			final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
+			final EquityIdentity equity, final ExecutorService pool ) throws Exception {
+
+		// Arrange output to files, only once per a run
+		new FileClearDestination( baseOutputDirectory );
+
+		for (final BacktestBootstrapConfiguration configuration : configurations) {
+			final String outputDirectory = getOutputDirectory( baseOutputDirectory, equity, configuration );
+			// final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool,
+			// MATH_CONTEXT );
+			final BacktestDisplay fileDisplay = new FileMinimalDisplay( outputDirectory, pool, MATH_CONTEXT );
+
+			final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
+					MATH_CONTEXT );
+
+			LOG.info( String.format( "Backtesting beginning for: %s", configuration.getDescription() ) );
+
+			bootstrap.run();
+
+			LOG.info( String.format( "Backtesting complete for: %s", configuration.getDescription() ) );
+		}
+
+		LOG.info( String.format( "All Simulations have been completed for deposit amount: %s", depositAmount ) );
+
 	}
 
 	private static TickerSymbolTradingData getTradingData( final EquityIdentity equity, final LocalDate startDate,
@@ -322,23 +333,5 @@ public class SystematicTradingBacktestWithFees {
 			final BacktestBootstrapConfiguration configuration ) {
 		return String.format( "%s%s_%s", baseOutputDirectory, equity.getTickerSymbol(),
 				configuration.getDescription() );
-	}
-
-	private static String getBaseOutputDirectory( final String... args ) {
-
-		if (args != null && args.length > 1) {
-			return args[1];
-		}
-
-		return "../../simulations-managment-fee/";
-	}
-
-	private static BigDecimal getDepositAmount( final String... args ) {
-
-		if (args != null && args.length > 0) {
-			return BigDecimal.valueOf( Double.parseDouble( args[0] ) );
-		}
-
-		return BigDecimal.valueOf( 100 );
 	}
 }
