@@ -52,11 +52,9 @@ import com.systematic.trading.simulation.logic.TradeValue;
  */
 public class EntryLogicFactory {
 
-	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate,
-			final MathContext mathContext ) {
-		final Period weekly = Period.ofDays( 7 );
-		final BigDecimal oneHundredDollars = BigDecimal.valueOf( 100 );
-		return new DateTriggeredEntryLogic( oneHundredDollars, equity.getType(), startDate, weekly, mathContext );
+	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate, final Period frequency,
+			final BigDecimal amount, final MathContext mathContext ) {
+		return new DateTriggeredEntryLogic( amount, equity.getType(), startDate, frequency, mathContext );
 	}
 
 	public static EntryLogic create( final EquityIdentity equity, final TradeValue tradeValue,
