@@ -192,7 +192,28 @@ public class RunAllWeeklyAmounts {
 		EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, depositAmount,
 				MATH_CONTEXT );
 		BacktestBootstrapConfiguration configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(),
-				vanguard, cashAccount, "BuyWeekly_HoldForever" );
+				vanguard, cashAccount, "VaguardRetail_BuyWeekly_HoldForever" );
+		configurations.add( configuration );
+
+		// CMC Weekly
+		equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
+				managementFeeStartDate, vanguardRetailManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+		vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
+				MATH_CONTEXT );
+		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, depositAmount,
+				MATH_CONTEXT );
+		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), vanguard, cashAccount,
+				"CMC_BuyWeekly_HoldForever" );
+		configurations.add( configuration );
+
+		// CMC Monthly
+		equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
+				managementFeeStartDate, vanguardRetailManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+		vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
+				MATH_CONTEXT );
+		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, Period.ofMonths( 1 ), MATH_CONTEXT );
+		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), vanguard, cashAccount,
+				"CMC_BuyMonthly_HoldForever" );
 		configurations.add( configuration );
 
 		// Configuration with different entry values
@@ -203,9 +224,7 @@ public class RunAllWeeklyAmounts {
 				BigDecimal.valueOf( .75 ), BigDecimal.valueOf( 1 ) };
 
 		String description;
-
 		IndicatorSignalGenerator sma, macd, rsi;
-
 		Brokerage cmcMarkets;
 
 		// TODO different RSI values

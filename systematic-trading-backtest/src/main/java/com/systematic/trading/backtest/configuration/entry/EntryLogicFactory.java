@@ -40,6 +40,7 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
+import com.systematic.trading.simulation.logic.DateTriggeredAllFundsEntryLogic;
 import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
@@ -55,6 +56,11 @@ public class EntryLogicFactory {
 	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate, final Period frequency,
 			final BigDecimal amount, final MathContext mathContext ) {
 		return new DateTriggeredEntryLogic( amount, equity.getType(), startDate, frequency, mathContext );
+	}
+
+	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate, final Period frequency,
+			final MathContext mathContext ) {
+		return new DateTriggeredAllFundsEntryLogic( equity.getType(), startDate, frequency, mathContext );
 	}
 
 	public static EntryLogic create( final EquityIdentity equity, final TradeValue tradeValue,
