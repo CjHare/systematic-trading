@@ -197,24 +197,23 @@ public class RunAllWeeklyAmounts {
 
 		// CMC Weekly
 		equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-				managementFeeStartDate, vanguardRetailManagementFee, ONE_YEAR, MATH_CONTEXT ) );
-		vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
+				managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+		Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 				MATH_CONTEXT );
-		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, depositAmount,
-				MATH_CONTEXT );
+		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, MATH_CONTEXT );
 		cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
-		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), vanguard, cashAccount,
+		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount,
 				"CMC_BuyWeekly_HoldForever" );
 		configurations.add( configuration );
 
 		// CMC Monthly
 		equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-				managementFeeStartDate, vanguardRetailManagementFee, ONE_YEAR, MATH_CONTEXT ) );
-		vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
+				managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+		cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 				MATH_CONTEXT );
 		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, Period.ofMonths( 1 ), MATH_CONTEXT );
 		cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
-		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), vanguard, cashAccount,
+		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount,
 				"CMC_BuyMonthly_HoldForever" );
 		configurations.add( configuration );
 
@@ -227,7 +226,6 @@ public class RunAllWeeklyAmounts {
 
 		String description;
 		IndicatorSignalGenerator sma, macd, rsi;
-		Brokerage cmcMarkets;
 
 		// TODO different RSI values
 		final RsiConfiguration rsiConfiguration = RsiConfiguration.MEDIUM;
