@@ -119,8 +119,8 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		firstDayOfNextMonth = firstDayOfNextMonth.plus( Period.ofMonths( 1 ) );
 
 		// Record the credit transaction
-		notifyListeners( new CashAccountEvent( fundsBefore, funds, interest, CashEventType.INTEREST,
-				firstDayOfNextMonth ) );
+		notifyListeners(
+				new CashAccountEvent( fundsBefore, funds, interest, CashEventType.INTEREST, firstDayOfNextMonth ) );
 
 		return firstDayOfNextMonth;
 	}
@@ -129,7 +129,8 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	public void debit( final BigDecimal debit, final LocalDate transactionDate ) throws InsufficientFundsException {
 
 		if (funds.compareTo( debit ) < 0) {
-			throw new InsufficientFundsException( String.format( "Attempting to debit %s from only %s", debit, funds ) );
+			throw new InsufficientFundsException(
+					String.format( "Attempting to debit %s from only %s", debit, funds ) );
 		}
 
 		final BigDecimal fundsBefore = funds;

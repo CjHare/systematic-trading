@@ -202,6 +202,7 @@ public class RunAllWeeklyAmounts {
 				MATH_CONTEXT );
 		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, depositAmount,
 				MATH_CONTEXT );
+		cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
 		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), vanguard, cashAccount,
 				"CMC_BuyWeekly_HoldForever" );
 		configurations.add( configuration );
@@ -212,6 +213,7 @@ public class RunAllWeeklyAmounts {
 		vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
 				MATH_CONTEXT );
 		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, Period.ofMonths( 1 ), MATH_CONTEXT );
+		cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
 		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), vanguard, cashAccount,
 				"CMC_BuyMonthly_HoldForever" );
 		configurations.add( configuration );
