@@ -92,7 +92,7 @@ public class FileComparisonDisplay extends FileDisplayMultithreading implements 
 		final BigDecimal roi = profit.divide( netWorth, mathContext ).multiply( ONE_HUNDRED, mathContext );
 
 		return String.format(
-				"ROI: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s %s",
+				"ROI: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s, %s",
 				TWO_DECIMAL_PLACES.format( roi ), TWO_DECIMAL_PLACES.format( netWorth ),
 				TWO_DECIMAL_PLACES.format( balance ), TWO_DECIMAL_PLACES.format( holdingValue ),
 				TWO_DECIMAL_PLACES.format( cashBalance ), TWO_DECIMAL_PLACES.format( deposited ),
