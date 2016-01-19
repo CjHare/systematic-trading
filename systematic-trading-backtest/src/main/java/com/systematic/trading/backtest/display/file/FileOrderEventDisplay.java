@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.display.file;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
@@ -36,14 +35,17 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public class FileOrderEventDisplay extends FileDisplayMultithreading implements OrderEventListener {
+public class FileOrderEventDisplay implements OrderEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
-	public FileOrderEventDisplay( final String outputFilename, final ExecutorService pool ) {
-		super( outputFilename, pool );
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
 
-		write( "=== Order Events ===" );
+	public FileOrderEventDisplay( final FileDisplayMultithreading display ) {
+		this.display = display;
+
+		display.write( "=== Order Events ===" );
 	}
 
 	@Override
@@ -52,6 +54,6 @@ public class FileOrderEventDisplay extends FileDisplayMultithreading implements 
 		final String content = String.format( "Place Order - %s total cost %s created after c.o.b on %s",
 				event.getType(), TWO_DECIMAL_PLACES.format( event.getTotalCost() ), event.getTransactionDate() );
 
-		write( content );
+		display.write( content );
 	}
 }

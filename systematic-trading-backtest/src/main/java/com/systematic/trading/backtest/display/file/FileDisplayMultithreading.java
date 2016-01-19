@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author CJ Hare
  */
-public abstract class FileDisplayMultithreading {
+public class FileDisplayMultithreading {
 
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger( FileDisplayMultithreading.class );

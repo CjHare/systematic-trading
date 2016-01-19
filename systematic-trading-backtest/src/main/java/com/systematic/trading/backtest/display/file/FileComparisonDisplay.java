@@ -28,7 +28,6 @@ package com.systematic.trading.backtest.display.file;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
@@ -44,19 +43,22 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  * 
  * @author CJ Hare
  */
-public class FileComparisonDisplay extends FileDisplayMultithreading implements NetWorthEventListener {
+public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".00" );
 
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
 
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
+
 	private final MathContext mathContext;
 
 	private final EventStatistics statistics;
 
-	public FileComparisonDisplay( final EventStatistics statistics, final String outputFilename,
-			final ExecutorService pool, final MathContext mathContext ) {
-		super( outputFilename, pool );
+	public FileComparisonDisplay( final EventStatistics statistics, final FileDisplayMultithreading display,
+			final MathContext mathContext ) {
+		this.display = display;
 		this.mathContext = mathContext;
 		this.statistics = statistics;
 	}
@@ -66,7 +68,7 @@ public class FileComparisonDisplay extends FileDisplayMultithreading implements 
 
 		// Only interested in the net worth when the simulation is complete
 		if (SimulationState.COMPLETE.equals( state )) {
-			write( createOutput( statistics, event ) );
+			display.write( createOutput( statistics, event ) );
 		}
 	}
 

@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.display.file;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.simulation.analysis.statistics.BrokerageEventStatistics;
@@ -40,16 +39,18 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  * 
  * @author CJ Hare
  */
-public class FileEventStatisticsDisplay extends FileDisplayMultithreading implements EventStatisticsDisplay {
+public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
+
 	private final EventStatistics statistics;
 
-	public FileEventStatisticsDisplay( final EventStatistics statistics, final String outputFilename,
-			final ExecutorService pool ) {
-		super( outputFilename, pool );
+	public FileEventStatisticsDisplay( final EventStatistics statistics, final FileDisplayMultithreading display ) {
 		this.statistics = statistics;
+		this.display = display;
 	}
 
 	@Override
@@ -66,7 +67,7 @@ public class FileEventStatisticsDisplay extends FileDisplayMultithreading implem
 		addBrokerageStatistics( statistics.getBrokerageEventStatistics(), output );
 		addEquityStatistics( statistics.getEquityEventStatistics(), output );
 
-		write( output.toString() );
+		display.write( output.toString() );
 	}
 
 	private void addOrderStatistics( final OrderEventStatistics orderStatistics, final StringBuilder output ) {

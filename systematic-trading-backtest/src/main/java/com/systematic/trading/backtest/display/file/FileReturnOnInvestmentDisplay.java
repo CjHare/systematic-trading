@@ -29,7 +29,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
@@ -39,8 +38,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  * 
  * @author CJ Hare
  */
-public class FileReturnOnInvestmentDisplay extends FileDisplayMultithreading
-		implements ReturnOnInvestmentEventListener {
+public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventListener {
 
 	enum RETURN_ON_INVESTMENT_DISPLAY {
 		DAILY,
@@ -51,14 +49,18 @@ public class FileReturnOnInvestmentDisplay extends FileDisplayMultithreading
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( "#.##" );
 
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
+
 	private final RETURN_ON_INVESTMENT_DISPLAY roiType;
 
-	public FileReturnOnInvestmentDisplay( final String outputFilename, final RETURN_ON_INVESTMENT_DISPLAY roiType,
-			final ExecutorService pool ) {
-		super( outputFilename, pool );
+	public FileReturnOnInvestmentDisplay( final RETURN_ON_INVESTMENT_DISPLAY roiType,
+			final FileDisplayMultithreading display ) {
+
+		this.display = display;
 		this.roiType = roiType;
 
-		write( "=== Return On Investment Events ===" );
+		display.write( "=== Return On Investment Events ===" );
 	}
 
 	public String createOutput( final ReturnOnInvestmentEvent event ) {
@@ -138,6 +140,6 @@ public class FileReturnOnInvestmentDisplay extends FileDisplayMultithreading
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
 
-		write( createOutput( (ReturnOnInvestmentEvent) event ) );
+		display.write( createOutput( (ReturnOnInvestmentEvent) event ) );
 	}
 }

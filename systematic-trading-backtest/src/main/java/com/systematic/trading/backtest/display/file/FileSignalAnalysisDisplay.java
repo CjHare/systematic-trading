@@ -25,8 +25,6 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.util.concurrent.ExecutorService;
-
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 
@@ -35,12 +33,15 @@ import com.systematic.trading.signals.model.event.SignalAnalysisListener;
  * 
  * @author CJ Hare
  */
-public class FileSignalAnalysisDisplay extends FileDisplayMultithreading implements SignalAnalysisListener {
+public class FileSignalAnalysisDisplay implements SignalAnalysisListener {
 
-	public FileSignalAnalysisDisplay( final String outputFilename, final ExecutorService pool ) {
-		super( outputFilename, pool );
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
 
-		write( "=== Signal Analysis Events ===" );
+	public FileSignalAnalysisDisplay( final FileDisplayMultithreading display ) {
+		this.display = display;
+
+		display.write( "=== Signal Analysis Events ===" );
 	}
 
 	@Override
@@ -48,6 +49,6 @@ public class FileSignalAnalysisDisplay extends FileDisplayMultithreading impleme
 
 		final String content = String.format( "Signal event: %s on date: %s", event.getSignalType(),
 				event.getSignalDate() );
-		write( content );
+		display.write( content );
 	}
 }

@@ -27,7 +27,6 @@ package com.systematic.trading.backtest.display.file;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
@@ -39,21 +38,24 @@ import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestme
  * 
  * @author CJ Hare
  */
-public class FileNetWorthSummaryDisplay extends FileDisplayMultithreading implements NetWorthSummaryDisplay {
+public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
 	private final CumulativeReturnOnInvestment cumulativeRoi;
 
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
+
 	/** The last net worth recording, which makes it into the summary. */
 	private NetWorthEvent lastEvent;
 
-	public FileNetWorthSummaryDisplay( final CumulativeReturnOnInvestment cumulativeRoi, final String outputFilename,
-			final ExecutorService pool ) {
-		super( outputFilename, pool );
+	public FileNetWorthSummaryDisplay( final CumulativeReturnOnInvestment cumulativeRoi,
+			final FileDisplayMultithreading display ) {
 		this.cumulativeRoi = cumulativeRoi;
+		this.display = display;
 
-		write( "=== Net Worth Summary ===" );
+		display.write( "=== Net Worth Summary ===" );
 	}
 
 	@Override
@@ -75,8 +77,7 @@ public class FileNetWorthSummaryDisplay extends FileDisplayMultithreading implem
 		output.append( String.format( "\nInvestment Cumulative ROI: %s\n",
 				TWO_DECIMAL_PLACES.format( cumulativeRoi.getCumulativeReturnOnInvestment() ) ) );
 
-		write( output.toString() );
-
+		display.write( output.toString() );
 	}
 
 	@Override

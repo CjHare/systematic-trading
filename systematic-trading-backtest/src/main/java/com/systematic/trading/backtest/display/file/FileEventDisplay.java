@@ -27,7 +27,6 @@ package com.systematic.trading.backtest.display.file;
 
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
@@ -42,8 +41,7 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public class FileEventDisplay extends FileDisplayMultithreading
-		implements CashEventListener, OrderEventListener, BrokerageEventListener {
+public class FileEventDisplay implements CashEventListener, OrderEventListener, BrokerageEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
@@ -51,15 +49,13 @@ public class FileEventDisplay extends FileDisplayMultithreading
 	private final OrderEventListener orderEventListener;
 	private final BrokerageEventListener brokerageEventListener;
 
-	public FileEventDisplay( final String outputFilename, final TickerSymbolTradingData tradingData,
-			final ExecutorService pool ) {
-		super( outputFilename, pool );
+	public FileEventDisplay( final TickerSymbolTradingData tradingData, final FileDisplayMultithreading display ) {
 
-		write( createHeaderOutput( tradingData ) );
+		display.write( createHeaderOutput( tradingData ) );
 
-		this.cashEventListener = new FileCashEventDisplay( outputFilename, pool );
-		this.orderEventListener = new FileOrderEventDisplay( outputFilename, pool );
-		this.brokerageEventListener = new FileBrokerageEventDisplay( outputFilename, pool );
+		this.cashEventListener = new FileCashEventDisplay( display );
+		this.orderEventListener = new FileOrderEventDisplay( display );
+		this.brokerageEventListener = new FileBrokerageEventDisplay( display );
 
 	}
 

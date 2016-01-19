@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.display.file;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
@@ -36,14 +35,17 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
  * 
  * @author CJ Hare
  */
-public class FileBrokerageEventDisplay extends FileDisplayMultithreading implements BrokerageEventListener {
+public class FileBrokerageEventDisplay implements BrokerageEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
-	public FileBrokerageEventDisplay( final String outputFilename, final ExecutorService pool ) {
-		super( outputFilename, pool );
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
 
-		write( "=== Brokerage Events ===" );
+	public FileBrokerageEventDisplay( final FileDisplayMultithreading display ) {
+		this.display = display;
+
+		display.write( "=== Brokerage Events ===" );
 	}
 
 	@Override
@@ -54,6 +56,6 @@ public class FileBrokerageEventDisplay extends FileDisplayMultithreading impleme
 				TWO_DECIMAL_PLACES.format( event.getStartingEquityBalance() ),
 				TWO_DECIMAL_PLACES.format( event.getEndEquityBalance() ), event.getTransactionDate() );
 
-		write( content );
+		display.write( content );
 	}
 }

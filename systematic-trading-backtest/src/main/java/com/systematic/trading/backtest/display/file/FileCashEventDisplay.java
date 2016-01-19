@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.display.file;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
@@ -36,14 +35,17 @@ import com.systematic.trading.simulation.cash.event.CashEventListener;
  * 
  * @author CJ Hare
  */
-public class FileCashEventDisplay extends FileDisplayMultithreading implements CashEventListener {
+public class FileCashEventDisplay implements CashEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
 
-	public FileCashEventDisplay( final String outputFilename, final ExecutorService pool ) {
-		super( outputFilename, pool );
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
 
-		write( "=== Cash Events ===" );
+	public FileCashEventDisplay( final FileDisplayMultithreading display ) {
+		this.display = display;
+
+		display.write( "=== Cash Events ===" );
 	}
 
 	@Override
@@ -53,6 +55,6 @@ public class FileCashEventDisplay extends FileDisplayMultithreading implements C
 				TWO_DECIMAL_PLACES.format( event.getAmount() ), TWO_DECIMAL_PLACES.format( event.getFundsBefore() ),
 				TWO_DECIMAL_PLACES.format( event.getFundsAfter() ), event.getTransactionDate() );
 
-		write( content );
+		display.write( content );
 	}
 }

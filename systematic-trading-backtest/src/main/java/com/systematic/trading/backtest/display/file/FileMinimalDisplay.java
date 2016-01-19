@@ -87,12 +87,16 @@ public class FileMinimalDisplay implements BacktestDisplay {
 			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 					throws Exception {
 
-		final String statisticsFilename = baseDirectory + "/statistics.txt";
-		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename, pool );
-		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFilename, pool );
+		final FileDisplayMultithreading statisticsFile = getFileDisplay( "/statistics.txt" );
+		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFile );
+		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFile );
 
-		final String comparisonFilename = baseDirectory+"/../summary.txt";
-		netWorthComparisonDisplay = new FileComparisonDisplay( eventStatistics, comparisonFilename, pool, mathContext );
+		final FileDisplayMultithreading comparisonFile = getFileDisplay( "/../summary.txt" );
+		netWorthComparisonDisplay = new FileComparisonDisplay( eventStatistics, comparisonFile, mathContext );
+	}
+
+	private FileDisplayMultithreading getFileDisplay( final String suffix ) {
+		return new FileDisplayMultithreading( baseDirectory + suffix, pool );
 	}
 
 	@Override

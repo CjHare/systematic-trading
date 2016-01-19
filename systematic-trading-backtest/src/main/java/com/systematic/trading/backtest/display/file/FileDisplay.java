@@ -100,47 +100,53 @@ public class FileDisplay implements BacktestDisplay {
 			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 					throws Exception {
 
-		final String returnOnInvestmentFilename = baseDirectory + "/return-on-investment.txt";
-		this.roiDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.ALL, pool );
+		final FileDisplayMultithreading returnOnInvestmentFile = getFileDisplay( "/return-on-investment.txt" );
+		this.roiDisplay = new FileReturnOnInvestmentDisplay(
+				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.ALL, returnOnInvestmentFile );
 
-		final String returnOnInvestmentDailyFilename = baseDirectory + "/return-on-investment-daily.txt";
-		this.roiDailyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentDailyFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.DAILY, pool );
+		final FileDisplayMultithreading returnOnInvestmentDailyFilen = getFileDisplay(
+				"/return-on-investment-daily.txt" );
+		this.roiDailyDisplay = new FileReturnOnInvestmentDisplay(
+				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.DAILY, returnOnInvestmentDailyFilen );
 
-		final String returnOnInvestmentMonthlyFilename = baseDirectory + "/return-on-investment-monthly.txt";
-		this.roiMonthlyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentMonthlyFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.MONTHLY, pool );
+		final FileDisplayMultithreading returnOnInvestmentMonthlyFile = getFileDisplay(
+				"/return-on-investment-monthly.txt" );
+		this.roiMonthlyDisplay = new FileReturnOnInvestmentDisplay(
+				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.MONTHLY, returnOnInvestmentMonthlyFile );
 
-		final String returnOnInvestmentYearlyFilename = baseDirectory + "/return-on-investment-yearly.txt";
-		this.roiYearlyDisplay = new FileReturnOnInvestmentDisplay( returnOnInvestmentYearlyFilename,
-				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.YEARLY, pool );
+		final FileDisplayMultithreading returnOnInvestmentYearlyFile = getFileDisplay(
+				"/return-on-investment-yearly.txt" );
+		this.roiYearlyDisplay = new FileReturnOnInvestmentDisplay(
+				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.YEARLY, returnOnInvestmentYearlyFile );
 
-		final String eventFilename = baseDirectory + "/events.txt";
-		this.eventDisplay = new FileEventDisplay( eventFilename, tradingData, pool );
+		final FileDisplayMultithreading eventFile = getFileDisplay( "/events.txt" );
+		this.eventDisplay = new FileEventDisplay( tradingData, eventFile );
 
-		final String cashEventFilename = baseDirectory + "/events-cash.txt";
-		this.cashEventDisplay = new FileCashEventDisplay( cashEventFilename, pool );
+		final FileDisplayMultithreading cashEventFile = getFileDisplay( "/events-cash.txt" );
+		this.cashEventDisplay = new FileCashEventDisplay( cashEventFile );
 
-		final String orderEventFilename = baseDirectory + "/events-order.txt";
-		this.ordertEventDisplay = new FileOrderEventDisplay( orderEventFilename, pool );
+		final FileDisplayMultithreading orderEventFile = getFileDisplay( "/events-order.txt" );
+		this.ordertEventDisplay = new FileOrderEventDisplay( orderEventFile );
 
-		final String brokerageEventFilename = baseDirectory + "/events-brokerage.txt";
-		this.brokerageEventDisplay = new FileBrokerageEventDisplay( brokerageEventFilename, pool );
+		final FileDisplayMultithreading brokerageEventFile = getFileDisplay( "/events-brokerage.txt" );
+		this.brokerageEventDisplay = new FileBrokerageEventDisplay( brokerageEventFile );
 
-		final String equityEventFilename = baseDirectory + "/events-equity.txt";
-		this.equityEventDisplay = new FileEquityEventDisplay( equityEventFilename, pool );
+		final FileDisplayMultithreading equityEventFile = getFileDisplay( "/events-equity.txt" );
+		this.equityEventDisplay = new FileEquityEventDisplay( equityEventFile );
 
-		final String statisticsFilename = baseDirectory + "/statistics.txt";
-		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFilename, pool );
-		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFilename, pool );
+		final FileDisplayMultithreading statisticsFile = getFileDisplay( "/statistics.txt" );
+		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFile );
+		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFile );
 
-		final String signalAnalysisFilename = baseDirectory + "/signals.txt";
+		final FileDisplayMultithreading signalAnalysisFile = getFileDisplay( "/signals.txt" );
+		this.signalAnalysisDisplay = new FileSignalAnalysisDisplay( signalAnalysisFile );
 
-		this.signalAnalysisDisplay = new FileSignalAnalysisDisplay( signalAnalysisFilename, pool );
+		final FileDisplayMultithreading comparisonFile = getFileDisplay( "/../summary.txt" );
+		netWorthComparisonDisplay = new FileComparisonDisplay( eventStatistics, comparisonFile, mathContext );
+	}
 
-		final String comparisonFilename = baseDirectory + "/../summary.txt";
-		netWorthComparisonDisplay = new FileComparisonDisplay( eventStatistics, comparisonFilename, pool, mathContext );
+	private FileDisplayMultithreading getFileDisplay( final String suffix ) {
+		return new FileDisplayMultithreading( baseDirectory + suffix, pool );
 	}
 
 	@Override
