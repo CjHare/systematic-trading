@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.display.file;
 import java.io.File;
 import java.io.IOException;
 import java.math.MathContext;
+import java.time.Period;
 import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.display.BacktestDisplay;
@@ -84,15 +85,15 @@ public class FileMinimalDisplay implements BacktestDisplay {
 
 	@Override
 	public void init( final TickerSymbolTradingData tradingData, final EventStatistics eventStatistics,
-			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
-					throws Exception {
+			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay,
+			final Period duration ) throws Exception {
 
 		final FileDisplayMultithreading statisticsFile = getFileDisplay( "/statistics.txt" );
 		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFile );
 		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFile );
 
 		final FileDisplayMultithreading comparisonFile = getFileDisplay( "/../summary.txt" );
-		netWorthComparisonDisplay = new FileComparisonDisplay( eventStatistics, comparisonFile, mathContext );
+		netWorthComparisonDisplay = new FileComparisonDisplay( duration, eventStatistics, comparisonFile, mathContext );
 	}
 
 	private FileDisplayMultithreading getFileDisplay( final String suffix ) {

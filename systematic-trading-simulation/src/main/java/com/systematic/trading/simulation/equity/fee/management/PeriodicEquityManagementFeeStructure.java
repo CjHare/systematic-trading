@@ -48,9 +48,7 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	/** The percentage of the fee, or the percentage of the holdings taken as the fee. */
 	private final BigDecimal feePercentage;
 
-	/**
-	 * First fee date, and then at intervals defined by frequency.
-	 */
+	/** First fee date, and then at intervals defined by frequency. */
 	private final LocalDate feeStartDate;
 
 	/**

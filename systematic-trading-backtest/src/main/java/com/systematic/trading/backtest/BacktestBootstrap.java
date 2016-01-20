@@ -134,7 +134,8 @@ public class BacktestBootstrap {
 		simulation.addListener( networthSummay );
 
 		// Display for simulation output
-		display.init( tradingData, eventStatistics, cumulativeRoi, lastTradingDay );
+		final Period duration = Period.between( startDate, endDate );
+		display.init( tradingData, eventStatistics, cumulativeRoi, lastTradingDay, duration );
 		simulation.addListener( (OrderEventListener) display );
 		simulation.addListener( (SimulationStateListener) display );
 		networthSummay.addListener( display );

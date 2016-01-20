@@ -28,7 +28,9 @@ package com.systematic.trading.backtest.display.file;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
+import java.time.Period;
 
+import com.systematic.trading.maths.formula.CompoundAnnualGrowthRate;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
@@ -47,8 +49,6 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".00" );
 
-	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
-
 	/** Display responsible for handling the file output. */
 	private final FileDisplayMultithreading display;
 
@@ -56,11 +56,15 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private final EventStatistics statistics;
 
-	public FileComparisonDisplay( final EventStatistics statistics, final FileDisplayMultithreading display,
-			final MathContext mathContext ) {
-		this.display = display;
+	/** The period of time that the simulation covered. */
+	private final Period duration;
+
+	public FileComparisonDisplay( final Period duration, final EventStatistics statistics,
+			final FileDisplayMultithreading display, final MathContext mathContext ) {
 		this.mathContext = mathContext;
 		this.statistics = statistics;
+		this.duration = duration;
+		this.display = display;
 	}
 
 	@Override
@@ -91,11 +95,13 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		final CashEventStatistics cash = statistics.getCashEventStatistics();
 		final BigDecimal deposited = cash.getAmountDeposited();
 		final BigDecimal profit = netWorth.subtract( deposited, mathContext );
-		final BigDecimal roi = profit.divide( netWorth, mathContext ).multiply( ONE_HUNDRED, mathContext );
+
+		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate( deposited, netWorth, duration.getYears(),
+				mathContext );
 
 		return String.format(
-				"ROI: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s, %s",
-				TWO_DECIMAL_PLACES.format( roi ), TWO_DECIMAL_PLACES.format( netWorth ),
+				"CAGR: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s, %s",
+				TWO_DECIMAL_PLACES.format( cagr ), TWO_DECIMAL_PLACES.format( netWorth ),
 				TWO_DECIMAL_PLACES.format( balance ), TWO_DECIMAL_PLACES.format( holdingValue ),
 				TWO_DECIMAL_PLACES.format( cashBalance ), TWO_DECIMAL_PLACES.format( deposited ),
 				TWO_DECIMAL_PLACES.format( profit ), entryEventCount, entryEventExecutedCount, entryEventDeletedCount,

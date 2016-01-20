@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.display.file;
 import java.io.File;
 import java.io.IOException;
 import java.math.MathContext;
+import java.time.Period;
 import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.display.BacktestDisplay;
@@ -97,8 +98,8 @@ public class FileDisplay implements BacktestDisplay {
 
 	@Override
 	public void init( final TickerSymbolTradingData tradingData, final EventStatistics eventStatistics,
-			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
-					throws Exception {
+			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay,
+			final Period duration ) throws Exception {
 
 		final FileDisplayMultithreading returnOnInvestmentFile = getFileDisplay( "/return-on-investment.txt" );
 		this.roiDisplay = new FileReturnOnInvestmentDisplay(
@@ -142,7 +143,7 @@ public class FileDisplay implements BacktestDisplay {
 		this.signalAnalysisDisplay = new FileSignalAnalysisDisplay( signalAnalysisFile );
 
 		final FileDisplayMultithreading comparisonFile = getFileDisplay( "/../summary.txt" );
-		netWorthComparisonDisplay = new FileComparisonDisplay( eventStatistics, comparisonFile, mathContext );
+		netWorthComparisonDisplay = new FileComparisonDisplay( duration, eventStatistics, comparisonFile, mathContext );
 	}
 
 	private FileDisplayMultithreading getFileDisplay( final String suffix ) {

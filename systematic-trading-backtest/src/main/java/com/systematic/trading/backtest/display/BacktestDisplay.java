@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.display;
 
+import java.time.Period;
+
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
@@ -57,6 +59,6 @@ public interface BacktestDisplay
 	 * @throws Exception problem encountered during the initialisation of the display.
 	 */
 	void init( TickerSymbolTradingData tradingData, EventStatistics eventStatistics,
-			CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, TradingDayPrices lastTradingDay )
+			CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, TradingDayPrices lastTradingDay, Period duration )
 					throws Exception;
 }
