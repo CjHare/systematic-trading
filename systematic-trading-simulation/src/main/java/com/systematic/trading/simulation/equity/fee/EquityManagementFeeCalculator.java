@@ -23,28 +23,28 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.brokerage;
+package com.systematic.trading.simulation.equity.fee;
 
-import com.systematic.trading.simulation.brokerage.fee.transaction.CmcMarketsBrokerageFeeStructure;
-import com.systematic.trading.simulation.brokerage.fee.transaction.VanguardRetailBrokerageFeeStructure;
+import java.math.BigDecimal;
+import java.time.Period;
+
+import com.systematic.trading.data.price.ClosingPrice;
 
 /**
- * Fee structures available for use in configuration.
+ * Calculates the management fee.
  * 
  * @author CJ Hare
  */
-public enum BrokerageFeesConfiguration {
+public interface EquityManagementFeeCalculator {
 
-	CMC_MARKETS( CmcMarketsBrokerageFeeStructure.class ),
-	VANGUARD_RETAIL( VanguardRetailBrokerageFeeStructure.class );
-
-	private final Class<?> type;
-
-	private BrokerageFeesConfiguration( final Class<?> type ) {
-		this.type = type;
-	}
-
-	public Class<?> getType() {
-		return type;
-	}
+	/**
+	 * Calculates the management fee.
+	 * 
+	 * @param numberOfEquities equities to apply the management fee onto.
+	 * @param singleEquityValue the value of a single equity.
+	 * @param durationToCalculate time elapsed since the last management fee, or length of time to
+	 *            apply the fee for.
+	 * @return management fee for the duration in the number of equities.
+	 */
+	BigDecimal calculateFee( BigDecimal numberOfEquities, ClosingPrice singleEquityValue, Period durationToCalculate );
 }

@@ -63,6 +63,8 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
+import com.systematic.trading.simulation.equity.fee.management.LadderedEquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.management.PeriodicEquityManagementFeeStructure;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
@@ -169,15 +171,12 @@ public class BacktestOnlyOne {
 		description = String.format( "%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
 				minimumTradeDescription, maximumTradeDescription );
 
-		// final BigDecimal vanguardRetailManagementFee = BigDecimal.valueOf( 0.009 );
-		final BigDecimal vanguardEquityManagementFee = BigDecimal.valueOf( 0.0018 );
-
+		final EquityManagementFeeCalculator vanguardFeeCalculator = getVanguardRetailFeeCalculator();
 		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
 				EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, macd );
 		final LocalDate managementFeeStartDate = LocalDate.of( startDate.getYear(), 1, 1 );
 		final EquityConfiguration equity = new EquityConfiguration( equityIdentity,
-				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR,
-						MATH_CONTEXT ) );
+				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, vanguardFeeCalculator, ONE_YEAR ) );
 		final Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
 				startDate, MATH_CONTEXT );
 
@@ -191,6 +190,13 @@ public class BacktestOnlyOne {
 		configurations.add( configuration );
 
 		return configurations;
+	}
+
+	private static EquityManagementFeeCalculator getVanguardRetailFeeCalculator() {
+		final BigDecimal[] vanguardFeeRange = { BigDecimal.valueOf( 50000 ), BigDecimal.valueOf( 100000 ) };
+		final BigDecimal[] vanguardPercentageFee = { BigDecimal.valueOf( 0.009 ), BigDecimal.valueOf( 0.006 ),
+				BigDecimal.valueOf( 0.0035 ) };
+		return new LadderedEquityManagementFeeCalculator( vanguardFeeRange, vanguardPercentageFee, MATH_CONTEXT );
 	}
 
 	private static ExitLogic getExitLogic() {

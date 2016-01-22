@@ -65,6 +65,9 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
+import com.systematic.trading.simulation.equity.fee.management.FlatEquityManagementFeeCalculator;
+import com.systematic.trading.simulation.equity.fee.management.LadderedEquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.management.PeriodicEquityManagementFeeStructure;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
@@ -172,21 +175,29 @@ public class RunAllWeeklyAmounts {
 		return new HoldForeverExitLogic();
 	}
 
+	private static EquityManagementFeeCalculator getVanguardRetailFeeCalculator() {
+		final BigDecimal[] vanguardFeeRange = { BigDecimal.valueOf( 50000 ), BigDecimal.valueOf( 100000 ) };
+		final BigDecimal[] vanguardPercentageFee = { BigDecimal.valueOf( 0.009 ), BigDecimal.valueOf( 0.006 ),
+				BigDecimal.valueOf( 0.0035 ) };
+		return new LadderedEquityManagementFeeCalculator( vanguardFeeRange, vanguardPercentageFee, MATH_CONTEXT );
+	}
+
+	private static EquityManagementFeeCalculator getVanguardEftFeeCalculator() {
+		return new FlatEquityManagementFeeCalculator( BigDecimal.valueOf( 0.0018 ), MATH_CONTEXT );
+	}
+
 	private static List<BacktestBootstrapConfiguration> getConfigurations( final EquityIdentity equityIdentity,
 			final LocalDate startDate, final LocalDate endDate, final BigDecimal depositAmount ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
 
 		final Period depositFrequency = Period.ofDays( 7 );
 
-		final BigDecimal vanguardRetailManagementFee = BigDecimal.valueOf( 0.009 );
-		final BigDecimal vanguardEquityManagementFee = BigDecimal.valueOf( 0.0018 );
-
 		CashAccount cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
 		final LocalDate managementFeeStartDate = LocalDate.of( startDate.getYear(), 1, 1 );
-		// TODO vanguard use a stepped fee :. need another fee structure - or pass in the fee amount
-		// and holding amount
+
+		final EquityManagementFeeCalculator vanguardRetailFeeCalculator = getVanguardRetailFeeCalculator();
 		EquityConfiguration equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-				managementFeeStartDate, vanguardRetailManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+				managementFeeStartDate, vanguardRetailFeeCalculator, ONE_YEAR ) );
 		Brokerage vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
 				MATH_CONTEXT );
 		EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, depositAmount,
@@ -196,8 +207,9 @@ public class RunAllWeeklyAmounts {
 		configurations.add( configuration );
 
 		// CMC Weekly
+		EquityManagementFeeCalculator vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
 		equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-				managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+				managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 		Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 				MATH_CONTEXT );
 		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, MATH_CONTEXT );
@@ -207,8 +219,9 @@ public class RunAllWeeklyAmounts {
 		configurations.add( configuration );
 
 		// CMC Monthly
+		vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
 		equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-				managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+				managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 		cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 				MATH_CONTEXT );
 		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, Period.ofMonths( 1 ), MATH_CONTEXT );
@@ -251,8 +264,9 @@ public class RunAllWeeklyAmounts {
 							EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, macd );
 					description = String.format( "%s_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
+					vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
 					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-							managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+							managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 							MATH_CONTEXT );
 					cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
@@ -268,8 +282,9 @@ public class RunAllWeeklyAmounts {
 					description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), rsiConfiguration.getDescription(),
 							minimumTradeDescription, maximumTradeDescription );
+					vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
 					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-							managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+							managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 							MATH_CONTEXT );
 					cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
@@ -287,8 +302,9 @@ public class RunAllWeeklyAmounts {
 						description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 								minimumTradeDescription, maximumTradeDescription );
+						vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
 						equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-								managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+								managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 						cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
 								startDate, MATH_CONTEXT );
 						cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency,
@@ -306,8 +322,9 @@ public class RunAllWeeklyAmounts {
 						description = String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
 								rsiConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
+						vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
 						equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-								managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+								managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 						cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
 								startDate, MATH_CONTEXT );
 						cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency,
@@ -328,8 +345,9 @@ public class RunAllWeeklyAmounts {
 
 					entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
 							EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, rsi, sma );
+					vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
 					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-							managementFeeStartDate, vanguardEquityManagementFee, ONE_YEAR, MATH_CONTEXT ) );
+							managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 							MATH_CONTEXT );
 					cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );

@@ -33,8 +33,8 @@ import java.math.MathContext;
 import org.junit.Test;
 
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.brokerage.fee.transaction.BellDirectFeeStructure;
-import com.systematic.trading.simulation.brokerage.fee.transaction.VanguardRetailFeeStructure;
+import com.systematic.trading.simulation.brokerage.fee.transaction.BellDirectBrokgerageFeeStructure;
+import com.systematic.trading.simulation.brokerage.fee.transaction.VanguardRetailBrokerageFeeStructure;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
@@ -51,7 +51,7 @@ public class VanguardRetailFeeStructureTest {
 	public void firstTradeFlatFee() {
 		final int tradesThisMonth = 1;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 1000 );
-		final VanguardRetailFeeStructure feeStructure = new VanguardRetailFeeStructure( mc );
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -62,7 +62,7 @@ public class VanguardRetailFeeStructureTest {
 	public void tenthTradeFlatFee() {
 		final int tradesThisMonth = 10;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 1000 );
-		final VanguardRetailFeeStructure feeStructure = new VanguardRetailFeeStructure( mc );
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -73,7 +73,7 @@ public class VanguardRetailFeeStructureTest {
 	public void eleventhTradeFlatFee() {
 		final int tradesThisMonth = 11;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 1000 );
-		final VanguardRetailFeeStructure feeStructure = new VanguardRetailFeeStructure( mc );
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -84,7 +84,7 @@ public class VanguardRetailFeeStructureTest {
 	public void thirteithTradeFlatFee() {
 		final int tradesThisMonth = 30;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 1000 );
-		final VanguardRetailFeeStructure feeStructure = new VanguardRetailFeeStructure( mc );
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -95,7 +95,7 @@ public class VanguardRetailFeeStructureTest {
 	public void thirtyFirstTradeFlatFee() {
 		final int tradesThisMonth = 31;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 1000 );
-		final VanguardRetailFeeStructure feeStructure = new VanguardRetailFeeStructure( mc );
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -106,7 +106,7 @@ public class VanguardRetailFeeStructureTest {
 	public void firstTradePercentageFee() {
 		final int tradesThisMonth = 1;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 50000 );
-		final VanguardRetailFeeStructure feeStructure = new VanguardRetailFeeStructure( mc );
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -117,7 +117,7 @@ public class VanguardRetailFeeStructureTest {
 	public void tenthTradePercentageFee() {
 		final int tradesThisMonth = 10;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 50000 );
-		final VanguardRetailFeeStructure feeStructure = new VanguardRetailFeeStructure( mc );
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -128,7 +128,7 @@ public class VanguardRetailFeeStructureTest {
 	public void eleventhTradePercentageFee() {
 		final int tradesThisMonth = 11;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 50000 );
-		final VanguardRetailFeeStructure feeStructure = new VanguardRetailFeeStructure( mc );
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -139,7 +139,7 @@ public class VanguardRetailFeeStructureTest {
 	public void thirteithTradePercentageFee() {
 		final int tradesThisMonth = 30;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 50000 );
-		final VanguardRetailFeeStructure feeStructure = new VanguardRetailFeeStructure( mc );
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -150,7 +150,7 @@ public class VanguardRetailFeeStructureTest {
 	public void thirtyFirstTradePercentageFee() {
 		final int tradesThisMonth = 31;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 50000 );
-		final VanguardRetailFeeStructure feeStructure = new VanguardRetailFeeStructure( mc );
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -159,19 +159,19 @@ public class VanguardRetailFeeStructureTest {
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassFuture() {
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 		feeStructure.calculateFee( BigDecimal.ZERO, EquityClass.FUTURE, 0 );
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassForex() {
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 		feeStructure.calculateFee( BigDecimal.ZERO, EquityClass.FOREX, 0 );
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassMetal() {
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 		feeStructure.calculateFee( BigDecimal.ZERO, EquityClass.METAL, 0 );
 	}
 }

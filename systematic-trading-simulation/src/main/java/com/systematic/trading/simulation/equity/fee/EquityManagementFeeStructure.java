@@ -28,6 +28,8 @@ package com.systematic.trading.simulation.equity.fee;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.systematic.trading.data.TradingDayPrices;
+
 /**
  * Brokerage funds under management fee.
  * 
@@ -39,11 +41,11 @@ public interface EquityManagementFeeStructure {
 	 * Applies relevant management fee calculations and payments based on the passage of time.
 	 * 
 	 * @param lastManagementFeeDate the last date there was a non-zero management fee.
-	 * @param tradingDate the next day of trading data.
+	 * @param tradingData the day of trading data.
 	 * @return number of equities that are to be taken as the equity funds under management fee.
 	 */
 	BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
-			final LocalDate tradingDate );
+			final TradingDayPrices tradingData );
 
 	/**
 	 * Calculates the most recent management fee date.

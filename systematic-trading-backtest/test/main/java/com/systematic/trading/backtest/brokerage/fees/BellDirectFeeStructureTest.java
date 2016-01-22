@@ -38,7 +38,7 @@ import java.math.MathContext;
 import org.junit.Test;
 
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.brokerage.fee.transaction.BellDirectFeeStructure;
+import com.systematic.trading.simulation.brokerage.fee.transaction.BellDirectBrokgerageFeeStructure;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
@@ -53,7 +53,7 @@ public class BellDirectFeeStructureTest {
 	public void firstTradeFlatFee() {
 		final int tradesThisMonth = 1;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 1000 );
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -64,7 +64,7 @@ public class BellDirectFeeStructureTest {
 	public void tenthTradeFlatFee() {
 		final int tradesThisMonth = 10;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 1000 );
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -75,7 +75,7 @@ public class BellDirectFeeStructureTest {
 	public void eleventhTradeFlatFee() {
 		final int tradesThisMonth = 11;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 1000 );
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -86,7 +86,7 @@ public class BellDirectFeeStructureTest {
 	public void thirteithTradeFlatFee() {
 		final int tradesThisMonth = 30;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 1000 );
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -97,7 +97,7 @@ public class BellDirectFeeStructureTest {
 	public void thirtyFirstTradeFlatFee() {
 		final int tradesThisMonth = 31;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 1000 );
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -109,7 +109,7 @@ public class BellDirectFeeStructureTest {
 		final int tradesThisMonth = 1;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 50000 );
 		final BigDecimal expectedFee = tradeValue.multiply( TEN_BASIS_POINTS, mc );
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -121,7 +121,7 @@ public class BellDirectFeeStructureTest {
 		final int tradesThisMonth = 10;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 50000 );
 		final BigDecimal expectedFee = tradeValue.multiply( TEN_BASIS_POINTS, mc );
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -133,7 +133,7 @@ public class BellDirectFeeStructureTest {
 		final int tradesThisMonth = 11;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 50000 );
 		final BigDecimal expectedFee = tradeValue.multiply( EIGHT_BASIS_POINTS, mc );
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -145,7 +145,7 @@ public class BellDirectFeeStructureTest {
 		final int tradesThisMonth = 30;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 50000 );
 		final BigDecimal expectedFee = tradeValue.multiply( EIGHT_BASIS_POINTS, mc );
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -157,7 +157,7 @@ public class BellDirectFeeStructureTest {
 		final int tradesThisMonth = 31;
 		final BigDecimal tradeValue = BigDecimal.valueOf( 50000 );
 		final BigDecimal expectedFee = tradeValue.multiply( EIGHT_BASIS_POINTS, mc );
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 
 		final BigDecimal fee = feeStructure.calculateFee( tradeValue, EquityClass.STOCK, tradesThisMonth );
 
@@ -166,19 +166,19 @@ public class BellDirectFeeStructureTest {
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassFuture() {
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 		feeStructure.calculateFee( BigDecimal.ZERO, EquityClass.FUTURE, 0 );
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassForex() {
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 		feeStructure.calculateFee( BigDecimal.ZERO, EquityClass.FOREX, 0 );
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassMetal() {
-		final BellDirectFeeStructure feeStructure = new BellDirectFeeStructure( mc );
+		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure( mc );
 		feeStructure.calculateFee( BigDecimal.ZERO, EquityClass.METAL, 0 );
 	}
 }

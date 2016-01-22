@@ -44,7 +44,7 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * 
  * @author CJ Hare
  */
-public class BellDirectFeeStructure implements BrokerageTransactionFeeStructure {
+public class BellDirectBrokgerageFeeStructure implements BrokerageTransactionFeeStructure {
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -52,7 +52,7 @@ public class BellDirectFeeStructure implements BrokerageTransactionFeeStructure 
 	/**
 	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	public BellDirectFeeStructure( final MathContext mathContext ) {
+	public BellDirectBrokgerageFeeStructure( final MathContext mathContext ) {
 		this.mathContext = mathContext;
 	}
 

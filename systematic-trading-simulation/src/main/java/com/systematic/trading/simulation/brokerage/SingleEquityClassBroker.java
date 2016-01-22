@@ -193,7 +193,7 @@ public class SingleEquityClassBroker implements Brokerage {
 
 		final LocalDate tradingDate = tradingData.getDate();
 
-		final BigDecimal feeInEquities = equityManagementFee.update( equityBalance, lastManagementFee, tradingDate );
+		final BigDecimal feeInEquities = equityManagementFee.update( equityBalance, lastManagementFee, tradingData );
 
 		// Only when there's a fee apply & record an event
 		if (BigDecimal.ZERO.compareTo( feeInEquities ) != 0) {

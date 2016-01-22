@@ -25,12 +25,7 @@
  */
 package com.systematic.trading.simulation.brokerage.fee.transaction;
 
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.ELEVEN;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.NINE_NINTY;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.SEVENTY_FIVE_BASIS_POINTS;
 import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.applyLargest;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -44,7 +39,7 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * 
  * @author CJ Hare
  */
-public class CmcMarketsFeeStructure implements BrokerageTransactionFeeStructure {
+public class VanguardRetailBrokerageFeeStructure implements BrokerageTransactionFeeStructure {
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -52,7 +47,7 @@ public class CmcMarketsFeeStructure implements BrokerageTransactionFeeStructure 
 	/**
 	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	public CmcMarketsFeeStructure( final MathContext mathContext ) {
+	public VanguardRetailBrokerageFeeStructure( final MathContext mathContext ) {
 		this.mathContext = mathContext;
 	}
 
@@ -65,19 +60,7 @@ public class CmcMarketsFeeStructure implements BrokerageTransactionFeeStructure 
 		switch (type) {
 			case BOND:
 			case STOCK:
-				// Your first 10 trades per month = $11 or 0.1%
-				if (tradesThisMonth < 11) {
-					brokerage = applyLargest( tradeValue, ELEVEN, TEN_BASIS_POINTS, mathContext );
-				}
-				// Your 11th to 30th trades per month = $9.90 or 0.8%
-				else if (tradesThisMonth < 31) {
-					brokerage = applyLargest( tradeValue, NINE_NINTY, EIGHT_BASIS_POINTS, mathContext );
-				}
-				// Your 31st trade onwards per month = $9.90 or 0.75%
-				else {
-					brokerage = applyLargest( tradeValue, NINE_NINTY, SEVENTY_FIVE_BASIS_POINTS, mathContext );
-				}
-
+				brokerage = tradeValue.multiply( TEN_BASIS_POINTS, mathContext );
 				break;
 			default:
 				throw new UnsupportedEquityClass( type );

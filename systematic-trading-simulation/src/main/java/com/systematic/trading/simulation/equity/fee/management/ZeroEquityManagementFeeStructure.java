@@ -28,6 +28,7 @@ package com.systematic.trading.simulation.equity.fee.management;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 
 /**
@@ -39,7 +40,7 @@ public class ZeroEquityManagementFeeStructure implements EquityManagementFeeStru
 
 	@Override
 	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
-			final LocalDate tradingDate ) {
+			final TradingDayPrices tradingData ) {
 		return BigDecimal.ZERO;
 	}
 

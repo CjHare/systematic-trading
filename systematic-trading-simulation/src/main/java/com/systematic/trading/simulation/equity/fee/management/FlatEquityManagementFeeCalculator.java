@@ -23,49 +23,42 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage.fee.transaction;
-
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
+package com.systematic.trading.simulation.equity.fee.management;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.Period;
 
-import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
-import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
 
 /**
- * Fees for the online broker Bell Direct.
+ * The same management fee percentage is applied irrespective of the number of equities held.
  * 
  * @author CJ Hare
  */
-public class VanguardRetailFeeStructure implements BrokerageTransactionFeeStructure {
+public class FlatEquityManagementFeeCalculator implements EquityManagementFeeCalculator {
 
-	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	/**
-	 * @param mathContext math context defining the scale and precision to apply to operations.
-	 */
-	public VanguardRetailFeeStructure( final MathContext mathContext ) {
+	private final BigDecimal percentageFee;
+
+	public FlatEquityManagementFeeCalculator( final BigDecimal percentageFee, final MathContext mathContext ) {
+		this.percentageFee = percentageFee;
 		this.mathContext = mathContext;
 	}
 
 	@Override
-	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
-			throws UnsupportedEquityClass {
+	public BigDecimal calculateFee( final BigDecimal numberOfEquities, final ClosingPrice singleEquityValue,
+			final Period durationToCalculate ) {
 
-		final BigDecimal brokerage;
-
-		switch (type) {
-			case BOND:
-			case STOCK:
-				brokerage = tradeValue.multiply( TEN_BASIS_POINTS, mathContext );
-				break;
-			default:
-				throw new UnsupportedEquityClass( type );
+		if (durationToCalculate.getYears() > 0) {
+			final BigDecimal fee = percentageFee.multiply( BigDecimal.valueOf( durationToCalculate.getYears() ),
+					mathContext );
+			return numberOfEquities.multiply( fee, mathContext );
 		}
 
-		return brokerage;
+		return BigDecimal.ZERO;
 	}
+
 }

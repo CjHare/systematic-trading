@@ -26,10 +26,11 @@
 package com.systematic.trading.simulation.equity.fee.management;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 
 /**
@@ -39,14 +40,11 @@ import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure
  */
 public class PeriodicEquityManagementFeeStructure implements EquityManagementFeeStructure {
 
-	/** Context to apply to calculations. */
-	private final MathContext mathContext;
-
 	/** How often the management fee is applied. */
 	private final Period frequency;
 
 	/** The percentage of the fee, or the percentage of the holdings taken as the fee. */
-	private final BigDecimal feePercentage;
+	private final EquityManagementFeeCalculator fee;
 
 	/** First fee date, and then at intervals defined by frequency. */
 	private final LocalDate feeStartDate;
@@ -56,20 +54,22 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	 * @param frequency how often the management fee is applied.
 	 * @param mathContext context to apply to calculations.
 	 */
-	public PeriodicEquityManagementFeeStructure( final LocalDate feeStartDate, final BigDecimal feePercentage,
-			final Period frequency, final MathContext mathContext ) {
-		this.feePercentage = feePercentage;
+	public PeriodicEquityManagementFeeStructure( final LocalDate feeStartDate, final EquityManagementFeeCalculator fee,
+			final Period frequency ) {
 		this.feeStartDate = feeStartDate;
-		this.mathContext = mathContext;
 		this.frequency = frequency;
+		this.fee = fee;
 	}
 
 	@Override
 	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
-			final LocalDate tradingDate ) {
+			final TradingDayPrices tradingData ) {
+
+		final LocalDate tradingDate = tradingData.getDate();
 
 		if (lastManagementFeeDate.plus( frequency ).isBefore( tradingDate )) {
-			return numberOfEquities.multiply( feePercentage, mathContext );
+			return fee.calculateFee( numberOfEquities, tradingData.getClosingPrice(),
+					Period.between( lastManagementFeeDate, tradingDate ) );
 		}
 
 		return BigDecimal.ZERO;
