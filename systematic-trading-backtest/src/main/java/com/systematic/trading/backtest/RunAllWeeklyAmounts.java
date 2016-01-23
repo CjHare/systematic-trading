@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
@@ -129,6 +130,14 @@ public class RunAllWeeklyAmounts {
 		}
 	}
 
+	private static BacktestDisplay getDisplay( final String outputDirectory, final ExecutorService pool )
+			throws IOException {
+
+		// return new FileDisplay( outputDirectory, pool, MATH_CONTEXT );
+		return new FileMinimalDisplay( outputDirectory, pool, MATH_CONTEXT );
+		// return new FileNoDisplay();
+	}
+
 	public static void runTest( final BigDecimal depositAmount, final String baseOutputDirectory,
 			final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
 			final EquityIdentity equity, final ExecutorService pool ) throws Exception {
@@ -138,9 +147,7 @@ public class RunAllWeeklyAmounts {
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final String outputDirectory = getOutputDirectory( baseOutputDirectory, equity, configuration );
-			// final BacktestDisplay fileDisplay = new FileDisplay( outputDirectory, pool,
-			// MATH_CONTEXT );
-			final BacktestDisplay fileDisplay = new FileMinimalDisplay( outputDirectory, pool, MATH_CONTEXT );
+			final BacktestDisplay fileDisplay = getDisplay( outputDirectory, pool );
 
 			final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
 					MATH_CONTEXT );

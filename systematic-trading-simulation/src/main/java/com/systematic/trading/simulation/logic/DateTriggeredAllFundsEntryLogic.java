@@ -103,7 +103,10 @@ public class DateTriggeredAllFundsEntryLogic implements EntryLogic {
 
 	@Override
 	public EquityOrderInsufficientFundsAction actionOnInsufficentFunds( final EquityOrder order ) {
-		return EquityOrderInsufficientFundsAction.RESUMIT;
+		return EquityOrderInsufficientFundsAction.DELETE;
+
+		//TODO when RESUBMIT is supported in Simulation replace
+//		return EquityOrderInsufficientFundsAction.RESUMIT;
 	}
 
 	@Override

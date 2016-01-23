@@ -254,8 +254,9 @@ public class Simulation {
 					return null;
 				case RESUMIT:
 				default:
-					throw new IllegalArgumentException(
-							String.format( "Unsupported insufficient funds action: %s", action ) );
+					throw new IllegalArgumentException( String.format(
+							"Unsupported insufficient funds action: %s for order: %s using entry logic: %s", action,
+							order, entry ) );
 			}
 		} catch (final OrderException e) {
 			LOG.error( e );
