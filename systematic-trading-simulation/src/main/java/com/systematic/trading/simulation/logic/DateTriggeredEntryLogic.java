@@ -49,9 +49,6 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	/** Time between creation of entry orders. */
 	private final Period interval;
 
-	/** Amount to buy in with. */
-	private final BigDecimal amount;
-
 	/** The last date purchase order was created. */
 	private LocalDate lastOrder;
 
@@ -62,15 +59,13 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	private final EquityClass type;
 
 	/**
-	 * @param amount total to spend on a single purchase order, including fees.
 	 * @param firstOrder date to place the first order.
 	 * @param interval time between creation of entry orders.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public DateTriggeredEntryLogic( final BigDecimal amount, final EquityClass equityType, final LocalDate firstOrder,
-			final Period interval, final MathContext mathContext ) {
+	public DateTriggeredEntryLogic( final EquityClass equityType, final LocalDate firstOrder, final Period interval,
+			final MathContext mathContext ) {
 		this.interval = interval;
-		this.amount = amount;
 		this.mathContext = mathContext;
 		this.type = equityType;
 
@@ -79,16 +74,20 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	}
 
 	@Override
-	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount, final TradingDayPrices data ) {
+	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+			final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();
 
 		if (isOrderTime( tradingDate )) {
-
+			final BigDecimal amount = cashAccount.getBalance();
 			final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, data.getDate() );
 			final BigDecimal closingPrice = data.getClosingPrice().getPrice();
+
+			// TODO get the scale from input
+			final int scale = 2;
 			final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext )
-					.divide( closingPrice, mathContext );
+					.divide( closingPrice, mathContext ).setScale( scale, BigDecimal.ROUND_DOWN );
 
 			if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
 				lastOrder = tradingDate.minus( Period.ofDays( 1 ) );

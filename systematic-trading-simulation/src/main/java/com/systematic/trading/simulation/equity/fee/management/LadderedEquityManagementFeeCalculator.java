@@ -87,12 +87,30 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 		}
 
 		// Cater for the open ended flat fee section
-		if (range[range.length - 1].compareTo( holdingsValue ) < 0) {
-			final BigDecimal flatRate = holdingsValue.subtract( range[range.length - 1], mathContext )
-					.multiply( percentageFee[range.length], mathContext );
-			fee = fee.add( flatRate, mathContext );
+		fee = applyFlatFee( holdingsValue, fee );
+
+		// Convert fee amount into equities
+		return fee.divide( singleEquityValue.getPrice(), mathContext );
+	}
+
+	private BigDecimal applyFlatFee( final BigDecimal holdingsValue, final BigDecimal fee ) {
+
+		final BigDecimal flatRateFeeSpread;
+
+		if (range.length == 0) {
+			flatRateFeeSpread = holdingsValue;
+		} else {
+
+			// Only apply the flat fee when the holdings exceed the upper bounds
+			if (holdingsValue.compareTo( range[range.length - 1] ) > 0) {
+				flatRateFeeSpread = holdingsValue.subtract( range[range.length - 1], mathContext );
+			} else {
+				flatRateFeeSpread = BigDecimal.ZERO;
+			}
 		}
 
-		return fee;
+		final BigDecimal flatRateFee = flatRateFeeSpread.multiply( percentageFee[range.length], mathContext );
+
+		return fee.add( flatRateFee, mathContext );
 	}
 }

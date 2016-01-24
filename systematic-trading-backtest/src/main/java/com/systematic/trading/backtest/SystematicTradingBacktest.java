@@ -166,8 +166,7 @@ public class SystematicTradingBacktest {
 		EquityConfiguration equity = new EquityConfiguration( equityIdentity, new ZeroEquityManagementFeeStructure() );
 		Brokerage vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
 				MATH_CONTEXT );
-		EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, depositAmount,
-				MATH_CONTEXT );
+		EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, MATH_CONTEXT );
 		BacktestBootstrapConfiguration configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(),
 				vanguard, cashAccount, "BuyWeekly_HoldForever" );
 		configurations.add( configuration );

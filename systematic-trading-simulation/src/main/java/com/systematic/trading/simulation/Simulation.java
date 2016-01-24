@@ -256,7 +256,7 @@ public class Simulation {
 				default:
 					throw new IllegalArgumentException( String.format(
 							"Unsupported insufficient funds action: %s for order: %s using entry logic: %s", action,
-							order, entry ) );
+							order, entry ), e );
 			}
 		} catch (final OrderException e) {
 			LOG.error( e );

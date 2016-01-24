@@ -76,9 +76,8 @@ public class DateTriggeredEntryLogicTest {
 	public void actionOnInsufficentFunds() {
 		final LocalDate firstOrder = LocalDate.now();
 		final Period interval = Period.ofDays( 1 );
-		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
-				interval, mc );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, firstOrder, interval,
+				mc );
 
 		final EquityOrder order = mock( EquityOrder.class );
 
@@ -91,9 +90,8 @@ public class DateTriggeredEntryLogicTest {
 	public void updateNoOrder() {
 		final LocalDate firstOrder = LocalDate.now();
 		final Period interval = Period.ofDays( 1 );
-		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
-				interval, mc );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, firstOrder, interval,
+				mc );
 		when( data.getDate() ).thenReturn( firstOrder );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -105,9 +103,8 @@ public class DateTriggeredEntryLogicTest {
 	public void updateOrder() {
 		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 1 );
-		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
-				interval, mc );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, firstOrder, interval,
+				mc );
 		final LocalDate date = LocalDate.now();
 		when( data.getDate() ).thenReturn( date );
 
@@ -117,6 +114,9 @@ public class DateTriggeredEntryLogicTest {
 		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
 				.thenReturn( transactionCost );
+
+		final BigDecimal amount = BigDecimal.valueOf( 100 );
+		when( cashAccount.getBalance() ).thenReturn( amount );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
 
@@ -131,9 +131,8 @@ public class DateTriggeredEntryLogicTest {
 	public void updateOrderMinimumOfZero() {
 		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 1 );
-		final BigDecimal amount = BigDecimal.valueOf( 4 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
-				interval, mc );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, firstOrder, interval,
+				mc );
 		when( data.getDate() ).thenReturn( LocalDate.now() );
 
 		final BigDecimal closingPrice = BigDecimal.valueOf( 1 );
@@ -142,6 +141,9 @@ public class DateTriggeredEntryLogicTest {
 		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
 				.thenReturn( transactionCost );
+
+		final BigDecimal amount = BigDecimal.valueOf( 4 );
+		when( cashAccount.getBalance() ).thenReturn( amount );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
 
@@ -152,9 +154,8 @@ public class DateTriggeredEntryLogicTest {
 	public void updateBuyTwoDaysNoOrder() {
 		final LocalDate firstOrder = LocalDate.now();
 		final Period interval = Period.ofDays( 2 );
-		final BigDecimal amount = BigDecimal.ONE;
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
-				interval, mc );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, firstOrder, interval,
+				mc );
 		when( data.getDate() ).thenReturn( LocalDate.now() );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -166,9 +167,8 @@ public class DateTriggeredEntryLogicTest {
 	public void updateBuyTwoDaysWithOrder() {
 		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 2 );
-		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
-				interval, mc );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, firstOrder, interval,
+				mc );
 		final LocalDate date = LocalDate.now();
 		when( data.getDate() ).thenReturn( date );
 
@@ -178,6 +178,9 @@ public class DateTriggeredEntryLogicTest {
 		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
 				.thenReturn( transactionCost );
+
+		final BigDecimal amount = BigDecimal.valueOf( 100 );
+		when( cashAccount.getBalance() ).thenReturn( amount );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
 
@@ -190,9 +193,8 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate date = LocalDate.now();
 		final LocalDate firstOrder = date.minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 2 );
-		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
-				interval, mc );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, firstOrder, interval,
+				mc );
 		when( data.getDate() ).thenReturn( date );
 
 		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
@@ -201,6 +203,9 @@ public class DateTriggeredEntryLogicTest {
 		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
 				.thenReturn( transactionCost );
+
+		final BigDecimal amount = BigDecimal.valueOf( 100 );
+		when( cashAccount.getBalance() ).thenReturn( amount );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
 
@@ -223,9 +228,8 @@ public class DateTriggeredEntryLogicTest {
 		final LocalDate date = LocalDate.now();
 		final LocalDate firstOrder = date.minus( Period.ofDays( 1 ) );
 		final Period interval = Period.ofDays( 1 );
-		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( amount, EquityClass.STOCK, firstOrder,
-				interval, mc );
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, firstOrder, interval,
+				mc );
 		when( data.getDate() ).thenReturn( date );
 
 		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
@@ -234,6 +238,9 @@ public class DateTriggeredEntryLogicTest {
 		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
 		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
 				.thenReturn( transactionCost );
+
+		final BigDecimal amount = BigDecimal.valueOf( 100 );
+		when( cashAccount.getBalance() ).thenReturn( amount );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
 

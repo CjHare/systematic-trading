@@ -78,22 +78,31 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 		return true;
 	}
 
+	private EquityOrderVolume getOrderVolume( final BigDecimal numberOfEquities ) {
+		// TODO get the scale from input
+		// Number of decimal places
+		final int scale = 2;
+		return EquityOrderVolume.valueOf( numberOfEquities.setScale( scale, BigDecimal.ROUND_DOWN ) );
+	}
+
 	@Override
-	public void execute( final BrokerageTransactionFee fees, final BrokerageTransaction broker, final CashAccount cashAccount,
-			final TradingDayPrices todaysTrade ) throws OrderException {
+	public void execute( final BrokerageTransactionFee fees, final BrokerageTransaction broker,
+			final CashAccount cashAccount, final TradingDayPrices todaysTrade ) throws OrderException {
 
 		final BigDecimal maximumTransactionCost = fees.calculateFee( targetTotalCost, type, todaysTrade.getDate() );
 		final BigDecimal openingPrice = todaysTrade.getOpeningPrice().getPrice();
-		final BigDecimal numberOfEquities = targetTotalCost.subtract( maximumTransactionCost, mathContext ).divide(
-				openingPrice, mathContext );
+		final BigDecimal numberOfEquities = targetTotalCost.subtract( maximumTransactionCost, mathContext )
+				.divide( openingPrice, mathContext );
 
-		final EquityOrderVolume volume = EquityOrderVolume.valueOf( numberOfEquities );
+		final EquityOrderVolume volume = getOrderVolume( numberOfEquities );
 
 		final BigDecimal actualTotalCost = broker.calculateBuy( todaysTrade.getOpeningPrice(), volume,
 				todaysTrade.getDate() );
 
+		// Take the funds
 		cashAccount.debit( actualTotalCost, todaysTrade.getDate() );
 
+		// Award the equities
 		broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
 	}
 

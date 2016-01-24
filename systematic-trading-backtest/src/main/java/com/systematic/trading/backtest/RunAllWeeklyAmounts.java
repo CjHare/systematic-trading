@@ -98,7 +98,7 @@ public class RunAllWeeklyAmounts {
 
 	public static void main( final String... args ) throws Exception {
 
-		final String outputDirectory = "../../simulations-managment-%s/";
+		final String outputDirectory = "../../results/simulations-managment-%s/";
 		final BigDecimal[] depositAmounts = { BigDecimal.valueOf( 100 ), BigDecimal.valueOf( 150 ),
 				BigDecimal.valueOf( 200 ), BigDecimal.valueOf( 250 ), BigDecimal.valueOf( 300 ),
 				BigDecimal.valueOf( 400 ), BigDecimal.valueOf( 500 ) };
@@ -207,8 +207,7 @@ public class RunAllWeeklyAmounts {
 				managementFeeStartDate, vanguardRetailFeeCalculator, ONE_YEAR ) );
 		Brokerage vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
 				MATH_CONTEXT );
-		EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, depositAmount,
-				MATH_CONTEXT );
+		EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, MATH_CONTEXT );
 		BacktestBootstrapConfiguration configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(),
 				vanguard, cashAccount, "VaguardRetail_BuyWeekly_HoldForever" );
 		configurations.add( configuration );

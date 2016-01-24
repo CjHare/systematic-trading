@@ -23,30 +23,53 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.formula;
+package com.systematic.trading.simulation.equity.fee.management;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
 import org.junit.Test;
 
+import com.systematic.trading.data.price.ClosingPrice;
+
 /**
- * Verifies behaviour for CompoundAnnualGrowthRate.
+ * Verifying the behaviour of the LadderedEquityManagementFeeCalculator.
  * 
  * @author CJ Hare
  */
-public class CompoundAnnualGrowthRateTest {
+public class LadderedEquityManagementFeeCalculatorTest {
 
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+	public static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Test
-	public void powerHalf() {
-		// Calculating "1.21".pow("0.5") to return "1.1".
-		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate( BigDecimal.ONE, BigDecimal.valueOf( 1.21 ), 2,
-				MATH_CONTEXT );
+	public void flatFeeOnlyOneShare() {
+		final BigDecimal[] range = new BigDecimal[0];
+		final BigDecimal[] percentageFee = { new BigDecimal( 0.1 ) };
+		final LadderedEquityManagementFeeCalculator fee = new LadderedEquityManagementFeeCalculator( range,
+				percentageFee, MATH_CONTEXT );
 
-		assertEquals( 10.0, cagr.doubleValue(), 0.0001 );
+		final BigDecimal numberOfEquities = BigDecimal.valueOf( 1 );
+		final ClosingPrice singleEquityValue = ClosingPrice.valueOf( BigDecimal.valueOf( 100 ) );
+
+		final BigDecimal result = fee.calculateFee( numberOfEquities, singleEquityValue, null );
+
+		assertEquals( .1, result.doubleValue(), 0.005 );
+	}
+
+	@Test
+	public void flatFeeOnlyManyShare() {
+		final BigDecimal[] range = new BigDecimal[0];
+		final BigDecimal[] percentageFee = { new BigDecimal( 0.1 ) };
+		final LadderedEquityManagementFeeCalculator fee = new LadderedEquityManagementFeeCalculator( range,
+				percentageFee, MATH_CONTEXT );
+
+		final BigDecimal numberOfEquities = BigDecimal.valueOf( 45.75 );
+		final ClosingPrice singleEquityValue = ClosingPrice.valueOf( BigDecimal.valueOf( 100 ) );
+
+		final BigDecimal result = fee.calculateFee( numberOfEquities, singleEquityValue, null );
+
+		assertEquals( 4.575, result.doubleValue(), 0.005 );
 	}
 }

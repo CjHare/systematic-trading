@@ -88,7 +88,8 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	}
 
 	@Override
-	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount, final TradingDayPrices data ) {
+	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+			final TradingDayPrices data ) {
 
 		// Add the day's data to the rolling queue
 		tradingData.add( data );
@@ -119,13 +120,17 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		return tradeValue.getTradeValue( availableFunds );
 	}
 
-	private EquityOrder createOrder( final BrokerageTransactionFee fees, final BigDecimal amount, final TradingDayPrices data ) {
+	private EquityOrder createOrder( final BrokerageTransactionFee fees, final BigDecimal amount,
+			final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();
 		final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, tradingDate );
 		final BigDecimal closingPrice = data.getClosingPrice().getPrice();
-		final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext ).divide( closingPrice,
-				mathContext );
+
+		// TODO get the scale from input
+		final int scale = 2;
+		final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext )
+				.divide( closingPrice, mathContext ).setScale( scale, BigDecimal.ROUND_DOWN );
 
 		if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
 			return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, tradingDate, mathContext );
