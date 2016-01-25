@@ -35,6 +35,7 @@ import java.time.Period;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.InterestRate;
 import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
@@ -49,8 +50,11 @@ public class CashAccountFactory {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger( CashAccountFactory.class );
 
-	public static CashAccount create( final LocalDate startDate, final BigDecimal depositAmount,
-			final Period depositFrequency, final MathContext mathContext ) {
+	public static CashAccount create( final LocalDate startDate, final DepositConfiguration deposit,
+			final MathContext mathContext ) {
+
+		final BigDecimal depositAmount = deposit.getAmount();
+		final Period depositFrequency = deposit.getFrequency();
 
 		// TODO all these into a configuration - interest rate, deposit & frequency
 		final BigDecimal annualRate = BigDecimal.valueOf( 1.5 );

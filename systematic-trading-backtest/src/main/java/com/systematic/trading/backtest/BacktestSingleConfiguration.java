@@ -42,6 +42,7 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFactoroy;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
+import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicFactory;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicFilterConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -80,10 +81,10 @@ import com.systematic.trading.simulation.logic.TradeValue;
  * 
  * @author CJ Hare
  */
-public class BacktestOnlyOne {
+public class BacktestSingleConfiguration {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( BacktestOnlyOne.class );
+	private static final Logger LOG = LogManager.getLogger( BacktestSingleConfiguration.class );
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
@@ -164,6 +165,8 @@ public class BacktestOnlyOne {
 		final String minimumTradeDescription = String.valueOf( minimumTradeValue.longValue() );
 		final String maximumTradeDescription = String.valueOf( maximumTradeValue.doubleValue() );
 
+		final int equityScale = 4;
+
 		final MacdConfiguration macdConfiguration = MacdConfiguration.SHORT;
 
 		final IndicatorSignalGenerator macd = IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
@@ -172,7 +175,7 @@ public class BacktestOnlyOne {
 				minimumTradeDescription, maximumTradeDescription );
 
 		final EquityManagementFeeCalculator vanguardFeeCalculator = getVanguardRetailFeeCalculator();
-		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
+		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
 				EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, macd );
 		final LocalDate managementFeeStartDate = LocalDate.of( startDate.getYear(), 1, 1 );
 		final EquityConfiguration equity = new EquityConfiguration( equityIdentity,
@@ -180,10 +183,8 @@ public class BacktestOnlyOne {
 		final Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
 				startDate, MATH_CONTEXT );
 
-		final BigDecimal depositAmount = BigDecimal.valueOf( 100 );
-		final Period depositFrequency = Period.ofDays( 7 );
-		final CashAccount cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency,
-				MATH_CONTEXT );
+		final DepositConfiguration deposit = DepositConfiguration.WEEKLY_100;
+		final CashAccount cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
 
 		final BacktestBootstrapConfiguration configuration = new BacktestBootstrapConfiguration( entryLogic,
 				getExitLogic(), cmcMarkets, cashAccount, description );

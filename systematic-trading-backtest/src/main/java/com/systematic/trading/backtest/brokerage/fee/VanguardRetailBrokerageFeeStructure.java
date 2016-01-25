@@ -23,14 +23,9 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage.fee.transaction;
+package com.systematic.trading.backtest.brokerage.fee;
 
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.FIFTEEN;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN;
 import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.THIRTEEN;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.applyLargest;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -44,7 +39,7 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * 
  * @author CJ Hare
  */
-public class BellDirectBrokgerageFeeStructure implements BrokerageTransactionFeeStructure {
+public class VanguardRetailBrokerageFeeStructure implements BrokerageTransactionFeeStructure {
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -52,7 +47,7 @@ public class BellDirectBrokgerageFeeStructure implements BrokerageTransactionFee
 	/**
 	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	public BellDirectBrokgerageFeeStructure( final MathContext mathContext ) {
+	public VanguardRetailBrokerageFeeStructure( final MathContext mathContext ) {
 		this.mathContext = mathContext;
 	}
 
@@ -65,19 +60,7 @@ public class BellDirectBrokgerageFeeStructure implements BrokerageTransactionFee
 		switch (type) {
 			case BOND:
 			case STOCK:
-				// Your first 10 trades per month = $15 or 0.1%
-				if (tradesThisMonth < 11) {
-					brokerage = applyLargest( tradeValue, FIFTEEN, TEN_BASIS_POINTS, mathContext );
-				}
-				// Your 11th to 30th trades per month = $13 or 0.8%
-				else if (tradesThisMonth < 31) {
-					brokerage = applyLargest( tradeValue, THIRTEEN, EIGHT_BASIS_POINTS, mathContext );
-				}
-				// Your 31st trade onwards per month = $10 or 0.8%
-				else {
-					brokerage = applyLargest( tradeValue, TEN, EIGHT_BASIS_POINTS, mathContext );
-				}
-
+				brokerage = tradeValue.multiply( TEN_BASIS_POINTS, mathContext );
 				break;
 			default:
 				throw new UnsupportedEquityClass( type );

@@ -31,12 +31,12 @@ import java.time.LocalDate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.event.OrderEvent;
-import com.systematic.trading.simulation.order.event.PlaceOrderTotalCostEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent.EquityOrderType;
+import com.systematic.trading.simulation.order.event.PlaceOrderTotalCostEvent;
 import com.systematic.trading.simulation.order.exception.OrderException;
 
 /**
@@ -58,11 +58,15 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	/** Date on which the order was created. */
 	private final LocalDate creationDate;
 
+	/** The number of decimal places the equity is trading in. */
+	private final int scale;
+
 	public BuyTotalCostTomorrowAtOpeningPriceOrder( final BigDecimal targetTotalCost, final EquityClass type,
-			final LocalDate creationDate, final MathContext mathContext ) {
+			final int equityScale, final LocalDate creationDate, final MathContext mathContext ) {
 		this.targetTotalCost = targetTotalCost;
 		this.creationDate = creationDate;
 		this.mathContext = mathContext;
+		this.scale = equityScale;
 		this.type = type;
 	}
 
@@ -79,9 +83,6 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	}
 
 	private EquityOrderVolume getOrderVolume( final BigDecimal numberOfEquities ) {
-		// TODO get the scale from input
-		// Number of decimal places
-		final int scale = 2;
 		return EquityOrderVolume.valueOf( numberOfEquities.setScale( scale, BigDecimal.ROUND_DOWN ) );
 	}
 

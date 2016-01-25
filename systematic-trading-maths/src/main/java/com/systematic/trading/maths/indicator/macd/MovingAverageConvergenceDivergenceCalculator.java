@@ -53,7 +53,6 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	/** Exponential moving average of the values from slowEma - fastEma. */
 	private final ExponentialMovingAverage signalEma;
 
-	// TODO pass the store in
 	/** Provides a store for the slow-fast ema value for feeding to the signal ema. */
 	private final List<BigDecimal> macdValues;
 

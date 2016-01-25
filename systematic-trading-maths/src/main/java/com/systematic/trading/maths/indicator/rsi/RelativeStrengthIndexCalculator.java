@@ -66,7 +66,6 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	/** Provides the array to store the result in. */
 	private final List<BigDecimal> relativeStrengthValues;
 
-	// TODO pass the store in
 	/** Provides the array to store the result in. */
 	private final List<BigDecimal> relativeStrengthIndexValues;
 

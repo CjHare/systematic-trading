@@ -55,7 +55,6 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
-	// TODO pass the store in
 	/** Provides the array to store the result in. */
 	private final List<BigDecimal> atrValues;
 

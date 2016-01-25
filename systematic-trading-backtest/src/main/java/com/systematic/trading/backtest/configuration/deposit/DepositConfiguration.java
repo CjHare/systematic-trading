@@ -23,28 +23,38 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.brokerage;
+package com.systematic.trading.backtest.configuration.deposit;
 
-import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFeeStructure;
-import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFeeStructure;
+import java.math.BigDecimal;
+import java.time.Period;
 
 /**
- * Fee structures available for use in configuration.
+ * Amount of deposits an their frequency.
  * 
  * @author CJ Hare
  */
-public enum BrokerageFeesConfiguration {
+public enum DepositConfiguration {
 
-	CMC_MARKETS( CmcMarketsBrokerageFeeStructure.class ),
-	VANGUARD_RETAIL( VanguardRetailBrokerageFeeStructure.class );
+	WEEKLY_100( BigDecimal.valueOf( 100 ), Period.ofWeeks( 1 ) ),
+	WEEKLY_150( BigDecimal.valueOf( 150 ), Period.ofWeeks( 1 ) ),
+	WEEKLY_200( BigDecimal.valueOf( 200 ), Period.ofWeeks( 1 ) ),
+	WEEKLY_250( BigDecimal.valueOf( 250 ), Period.ofWeeks( 1 ) ),
+	WEEKLY_300( BigDecimal.valueOf( 300 ), Period.ofWeeks( 1 ) ),
+	WEEKLY_500( BigDecimal.valueOf( 500 ), Period.ofWeeks( 1 ) );
 
-	private final Class<?> type;
+	private final BigDecimal amount;
+	private final Period frequency;
 
-	private BrokerageFeesConfiguration( final Class<?> type ) {
-		this.type = type;
+	private DepositConfiguration( final BigDecimal amount, final Period frequency ) {
+		this.frequency = frequency;
+		this.amount = amount;
 	}
 
-	public Class<?> getType() {
-		return type;
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public Period getFrequency() {
+		return frequency;
 	}
 }

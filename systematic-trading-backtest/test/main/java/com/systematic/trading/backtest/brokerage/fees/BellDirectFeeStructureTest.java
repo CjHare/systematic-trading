@@ -37,8 +37,8 @@ import java.math.MathContext;
 
 import org.junit.Test;
 
+import com.systematic.trading.backtest.brokerage.fee.BellDirectBrokgerageFeeStructure;
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.brokerage.fee.transaction.BellDirectBrokgerageFeeStructure;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**

@@ -58,15 +58,21 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	/** The type of equity being traded. */
 	private final EquityClass type;
 
+	/** Number of decimal places the equity is in. */
+	private final int scale;
+
 	/**
+	 * @param equityScale the number of decimal places the equity is traded in, with zero being
+	 *            whole numbers.
 	 * @param firstOrder date to place the first order.
 	 * @param interval time between creation of entry orders.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public DateTriggeredEntryLogic( final EquityClass equityType, final LocalDate firstOrder, final Period interval,
-			final MathContext mathContext ) {
-		this.interval = interval;
+	public DateTriggeredEntryLogic( final EquityClass equityType, final int equityScale, final LocalDate firstOrder,
+			final Period interval, final MathContext mathContext ) {
 		this.mathContext = mathContext;
+		this.interval = interval;
+		this.scale = equityScale;
 		this.type = equityType;
 
 		// The first order needs to be on that date, not interval after
@@ -84,14 +90,12 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 			final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, data.getDate() );
 			final BigDecimal closingPrice = data.getClosingPrice().getPrice();
 
-			// TODO get the scale from input
-			final int scale = 2;
 			final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext )
 					.divide( closingPrice, mathContext ).setScale( scale, BigDecimal.ROUND_DOWN );
 
 			if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
 				lastOrder = tradingDate.minus( Period.ofDays( 1 ) );
-				return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, tradingDate, mathContext );
+				return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, scale, tradingDate, mathContext );
 			}
 		}
 

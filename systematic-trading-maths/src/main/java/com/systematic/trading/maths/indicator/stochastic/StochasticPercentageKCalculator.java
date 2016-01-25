@@ -55,7 +55,6 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	/** Number of days to read the ranges on. */
 	private final int lookback;
 
-	// TODO pass the store in
 	/** Provides the array to store the result in. */
 	private final List<BigDecimal> stochasticValues;
 

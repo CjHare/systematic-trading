@@ -43,6 +43,7 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFactoroy;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
+import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicFactory;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicFilterConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -82,26 +83,25 @@ import com.systematic.trading.simulation.logic.TradeValue;
  * @author CJ Hare
  */
 public class RunAllWeeklyAmounts {
-	// TODO this is a duplicate of SystematicTradingBacktest but with different fees - refacrtor!!
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( SystematicTradingBacktestWithFees.class );
+	private static final Logger LOG = LogManager.getLogger( RunAllWeeklyAmounts.class );
 
+	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
-	private static final int DAYS_IN_A_YEAR = 365;
-
 	/** Minimum amount of historical data needed for back testing. */
+	private static final int DAYS_IN_A_YEAR = 365;
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
-
 	private static final Period ONE_YEAR = Period.ofYears( 1 );
 
 	public static void main( final String... args ) throws Exception {
 
-		final String outputDirectory = "../../results/simulations-managment-%s/";
-		final BigDecimal[] depositAmounts = { BigDecimal.valueOf( 100 ), BigDecimal.valueOf( 150 ),
-				BigDecimal.valueOf( 200 ), BigDecimal.valueOf( 250 ), BigDecimal.valueOf( 300 ),
-				BigDecimal.valueOf( 400 ), BigDecimal.valueOf( 500 ) };
+		final String baseOutputDirectory = getBaseOutputDirectory( args );
+
+		final DepositConfiguration[] depositAmounts = { DepositConfiguration.WEEKLY_100,
+				DepositConfiguration.WEEKLY_150, DepositConfiguration.WEEKLY_200, DepositConfiguration.WEEKLY_250,
+				DepositConfiguration.WEEKLY_300, DepositConfiguration.WEEKLY_500 };
 
 		final EquityIdentity equity = getEquityIdentity();
 
@@ -115,13 +115,13 @@ public class RunAllWeeklyAmounts {
 		final ExecutorService pool = Executors.newFixedThreadPool( cores );
 
 		try {
-			for (final BigDecimal depositAmount : depositAmounts) {
+			for (final DepositConfiguration depositAmount : depositAmounts) {
 
 				final List<BacktestBootstrapConfiguration> configurations = getConfigurations( equity, startDate,
 						endDate, depositAmount );
+				final String outputDirectory = String.format( baseOutputDirectory, depositAmount );
 
-				runTest( depositAmount, String.format( outputDirectory, depositAmount ), configurations, tradingData,
-						equity, pool );
+				runTest( depositAmount, outputDirectory, configurations, tradingData, equity, pool );
 			}
 
 		} finally {
@@ -138,7 +138,7 @@ public class RunAllWeeklyAmounts {
 		// return new FileNoDisplay();
 	}
 
-	public static void runTest( final BigDecimal depositAmount, final String baseOutputDirectory,
+	public static void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
 			final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
 			final EquityIdentity equity, final ExecutorService pool ) throws Exception {
 
@@ -166,16 +166,16 @@ public class RunAllWeeklyAmounts {
 	private static TickerSymbolTradingData getTradingData( final EquityIdentity equity, final LocalDate startDate,
 			final LocalDate endDate ) {
 
+		// Retrieve and cache data range from remote data source
 		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
 		updateService.get( equity.getTickerSymbol(), startDate, endDate );
 
+		// Retrieve from local cache the desired data range
 		final DataService service = HibernateDataService.getInstance();
 		final TradingDayPrices[] data = service.get( equity.getTickerSymbol(), startDate, endDate );
-
 		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, data );
 
 		return tradingData;
-
 	}
 
 	private static ExitLogic getExitLogic() {
@@ -190,24 +190,32 @@ public class RunAllWeeklyAmounts {
 	}
 
 	private static EquityManagementFeeCalculator getVanguardEftFeeCalculator() {
+		// new ZeroEquityManagementFeeStructure()
 		return new FlatEquityManagementFeeCalculator( BigDecimal.valueOf( 0.0018 ), MATH_CONTEXT );
 	}
 
+	private static LocalDate getFirstDayOfYear( final LocalDate date ) {
+		return LocalDate.of( date.getYear(), 1, 1 );
+	}
+
 	private static List<BacktestBootstrapConfiguration> getConfigurations( final EquityIdentity equityIdentity,
-			final LocalDate startDate, final LocalDate endDate, final BigDecimal depositAmount ) {
+			final LocalDate startDate, final LocalDate endDate, final DepositConfiguration deposit ) {
+
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
 
-		final Period depositFrequency = Period.ofDays( 7 );
+		final int equityScale = 4;
+		final LocalDate managementFeeStartDate = getFirstDayOfYear( startDate );
 
-		CashAccount cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
-		final LocalDate managementFeeStartDate = LocalDate.of( startDate.getYear(), 1, 1 );
+		
+		CashAccount cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
 
 		final EquityManagementFeeCalculator vanguardRetailFeeCalculator = getVanguardRetailFeeCalculator();
 		EquityConfiguration equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
 				managementFeeStartDate, vanguardRetailFeeCalculator, ONE_YEAR ) );
 		Brokerage vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
 				MATH_CONTEXT );
-		EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, MATH_CONTEXT );
+		EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, startDate, deposit,
+				MATH_CONTEXT );
 		BacktestBootstrapConfiguration configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(),
 				vanguard, cashAccount, "VaguardRetail_BuyWeekly_HoldForever" );
 		configurations.add( configuration );
@@ -218,8 +226,8 @@ public class RunAllWeeklyAmounts {
 				managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 		Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 				MATH_CONTEXT );
-		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, depositFrequency, MATH_CONTEXT );
-		cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
+		entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, startDate, deposit, MATH_CONTEXT );
+		cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
 		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount,
 				"CMC_BuyWeekly_HoldForever" );
 		configurations.add( configuration );
@@ -230,8 +238,9 @@ public class RunAllWeeklyAmounts {
 				managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 		cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 				MATH_CONTEXT );
-		entryLogic = EntryLogicFactory.create( equityIdentity, startDate, Period.ofMonths( 1 ), MATH_CONTEXT );
-		cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
+		entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, startDate, Period.ofMonths( 1 ),
+				MATH_CONTEXT );
+		cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
 		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount,
 				"CMC_BuyMonthly_HoldForever" );
 		configurations.add( configuration );
@@ -266,7 +275,7 @@ public class RunAllWeeklyAmounts {
 
 					macd = IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
 
-					entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
+					entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
 							EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, macd );
 					description = String.format( "%s_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
@@ -275,7 +284,7 @@ public class RunAllWeeklyAmounts {
 							managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 							MATH_CONTEXT );
-					cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
+					cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
 					configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets,
 							cashAccount, description );
 					configurations.add( configuration );
@@ -283,7 +292,7 @@ public class RunAllWeeklyAmounts {
 					macd = IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
 					rsi = IndicatorSignalGeneratorFactory.create( rsiConfiguration, MATH_CONTEXT );
 
-					entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
+					entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
 							EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, rsi, macd );
 					description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 							macdConfiguration.getDescription(), rsiConfiguration.getDescription(),
@@ -293,7 +302,7 @@ public class RunAllWeeklyAmounts {
 							managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 							MATH_CONTEXT );
-					cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
+					cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
 					configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets,
 							cashAccount, description );
 					configurations.add( configuration );
@@ -303,7 +312,7 @@ public class RunAllWeeklyAmounts {
 						sma = IndicatorSignalGeneratorFactory.create( smaConfiguration, MATH_CONTEXT );
 						macd = IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
 
-						entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
+						entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
 								EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, sma, macd );
 						description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
@@ -313,8 +322,7 @@ public class RunAllWeeklyAmounts {
 								managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 						cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
 								startDate, MATH_CONTEXT );
-						cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency,
-								MATH_CONTEXT );
+						cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
 						configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets,
 								cashAccount, description );
 						configurations.add( configuration );
@@ -323,7 +331,7 @@ public class RunAllWeeklyAmounts {
 						macd = IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
 						rsi = IndicatorSignalGeneratorFactory.create( rsiConfiguration, MATH_CONTEXT );
 
-						entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
+						entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
 								EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, rsi, sma, macd );
 						description = String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
 								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
@@ -333,8 +341,7 @@ public class RunAllWeeklyAmounts {
 								managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 						cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
 								startDate, MATH_CONTEXT );
-						cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency,
-								MATH_CONTEXT );
+						cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
 						configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets,
 								cashAccount, description );
 						configurations.add( configuration );
@@ -349,14 +356,14 @@ public class RunAllWeeklyAmounts {
 					rsi = IndicatorSignalGeneratorFactory.create( rsiConfiguration, MATH_CONTEXT );
 					sma = IndicatorSignalGeneratorFactory.create( smaConfiguration, MATH_CONTEXT );
 
-					entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
+					entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
 							EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, rsi, sma );
 					vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
 					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
 							managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
 					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
 							MATH_CONTEXT );
-					cashAccount = CashAccountFactory.create( startDate, depositAmount, depositFrequency, MATH_CONTEXT );
+					cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
 					configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets,
 							cashAccount, description );
 					configurations.add( configuration );
@@ -377,5 +384,14 @@ public class RunAllWeeklyAmounts {
 			final BacktestBootstrapConfiguration configuration ) {
 		return String.format( "%s%s_%s", baseOutputDirectory, equity.getTickerSymbol(),
 				configuration.getDescription() );
+	}
+
+	private static String getBaseOutputDirectory( final String... args ) {
+
+		if (args != null && args.length > 0) {
+			return args[0];
+		}
+
+		return "../../simulations/";
 	}
 }

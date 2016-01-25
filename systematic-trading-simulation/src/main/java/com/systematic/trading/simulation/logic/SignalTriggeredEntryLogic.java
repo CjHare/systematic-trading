@@ -55,6 +55,9 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	/** The type of equity being traded. */
 	private final EquityClass type;
 
+	/** The number of decimal places the equity is traded in. */
+	private final int scale;
+
 	/** Generates buy signals. */
 	private final AnalysisBuySignals buyLongAnalysis;
 
@@ -72,11 +75,12 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	 * @param analysis analyser of trading data to generate buy signals.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public SignalTriggeredEntryLogic( final EquityClass equityType, final TradeValue tradeValue,
+	public SignalTriggeredEntryLogic( final EquityClass equityType, final int equityScale, final TradeValue tradeValue,
 			final AnalysisBuySignals analysis, final MathContext mathContext ) {
 		this.buyLongAnalysis = analysis;
 		this.mathContext = mathContext;
 		this.tradeValue = tradeValue;
+		this.scale = equityScale;
 		this.type = equityType;
 
 		this.tradingData = new LimitedSizeQueue<TradingDayPrices>( TradingDayPrices.class,
@@ -126,14 +130,11 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		final LocalDate tradingDate = data.getDate();
 		final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, tradingDate );
 		final BigDecimal closingPrice = data.getClosingPrice().getPrice();
-
-		// TODO get the scale from input
-		final int scale = 2;
 		final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext )
 				.divide( closingPrice, mathContext ).setScale( scale, BigDecimal.ROUND_DOWN );
 
 		if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
-			return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, tradingDate, mathContext );
+			return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, scale, tradingDate, mathContext );
 		}
 
 		return null;

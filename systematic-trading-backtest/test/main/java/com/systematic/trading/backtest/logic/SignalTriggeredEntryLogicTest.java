@@ -72,6 +72,7 @@ public class SignalTriggeredEntryLogicTest {
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 	private static final EquityClass EQUITY_STOCK = EquityClass.STOCK;
+	private static final int EQUITY_SCALE = 4;
 
 	@Mock
 	private BrokerageTransactionFee fees;
@@ -88,7 +89,7 @@ public class SignalTriggeredEntryLogicTest {
 	@Test
 	public void actionOnInsufficientFunds() {
 		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, tradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, EQUITY_SCALE, tradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds( mock( EquityOrder.class ) );
@@ -103,7 +104,7 @@ public class SignalTriggeredEntryLogicTest {
 	@Test
 	public void updateNoOrder() {
 		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, tradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, EQUITY_SCALE, tradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -133,7 +134,7 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( now ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, tradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, EQUITY_SCALE, tradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -166,7 +167,7 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( now ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, tradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, EQUITY_SCALE, tradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		final EquityOrder order = logic.update( fees, cashAccount, data );
@@ -201,7 +202,7 @@ public class SignalTriggeredEntryLogicTest {
 		expected.add( new BuySignal( now ) );
 		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, tradeValue,
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, EQUITY_SCALE, tradeValue,
 				buyLongAnalysis, MATH_CONTEXT );
 
 		logic.update( fees, cashAccount, data );

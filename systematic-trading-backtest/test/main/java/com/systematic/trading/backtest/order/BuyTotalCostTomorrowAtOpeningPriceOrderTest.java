@@ -44,8 +44,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrderVolume;
@@ -59,7 +59,8 @@ import com.systematic.trading.simulation.order.exception.OrderException;
 @RunWith(MockitoJUnitRunner.class)
 public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 
-	private static final MathContext mc = MathContext.DECIMAL64;
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+	private static final int EQUITY_SCALE = 4;
 
 	private final EquityClass type = EquityClass.STOCK;
 
@@ -69,7 +70,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	@Test
 	public void isValid() {
 		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
-				BigDecimal.valueOf( 44 ), type, LocalDate.now(), mc );
+				BigDecimal.valueOf( 44 ), type, EQUITY_SCALE, LocalDate.now(), MATH_CONTEXT );
 
 		final boolean isValid = buy.isValid( todaysTrading );
 
@@ -79,7 +80,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	@Test
 	public void areExecutionConditionsMet() {
 		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
-				BigDecimal.valueOf( 44 ), type, LocalDate.now(), mc );
+				BigDecimal.valueOf( 44 ), type, EQUITY_SCALE, LocalDate.now(), MATH_CONTEXT );
 
 		final boolean areConditionMet = buy.areExecutionConditionsMet( todaysTrading );
 
@@ -92,7 +93,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 		final BrokerageTransactionFee fees = mock( BrokerageTransactionFee.class );
 		final CashAccount cashAccount = mock( CashAccount.class );
 		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
-				BigDecimal.valueOf( 44 ), type, LocalDate.now(), mc );
+				BigDecimal.valueOf( 44 ), type, EQUITY_SCALE, LocalDate.now(), MATH_CONTEXT );
 
 		final OpeningPrice price = mock( OpeningPrice.class );
 		when( price.getPrice() ).thenReturn( BigDecimal.valueOf( 5 ) );

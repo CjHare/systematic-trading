@@ -49,7 +49,6 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	/** Number of days to average the value on. */
 	private final int lookback;
 
-	// TODO pass the store in
 	/** Provides the array to store the result in. */
 	private final List<BigDecimal> smaValues;
 
