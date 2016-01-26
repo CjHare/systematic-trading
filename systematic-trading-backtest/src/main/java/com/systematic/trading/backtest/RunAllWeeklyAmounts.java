@@ -49,6 +49,8 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicFilterConfi
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.IndicatorSignalGeneratorFactory;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
+import com.systematic.trading.backtest.configuration.signals.MaximumTrade;
+import com.systematic.trading.backtest.configuration.signals.MinimumTrade;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
@@ -95,6 +97,9 @@ public class RunAllWeeklyAmounts {
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
 	private static final Period ONE_YEAR = Period.ofYears( 1 );
 
+	/** Number of decimal places the equity are traded in. */
+	private static final int EQUITY_SCALE = 4;
+
 	public static void main( final String... args ) throws Exception {
 
 		final String baseOutputDirectory = getBaseOutputDirectory( args );
@@ -118,7 +123,7 @@ public class RunAllWeeklyAmounts {
 			for (final DepositConfiguration depositAmount : depositAmounts) {
 
 				final List<BacktestBootstrapConfiguration> configurations = getConfigurations( equity, startDate,
-						endDate, depositAmount );
+						endDate, depositAmount, EQUITY_SCALE );
 				final String outputDirectory = String.format( baseOutputDirectory, depositAmount );
 
 				runTest( depositAmount, outputDirectory, configurations, tradingData, equity, pool );
@@ -198,59 +203,96 @@ public class RunAllWeeklyAmounts {
 		return LocalDate.of( date.getYear(), 1, 1 );
 	}
 
+	private static BacktestBootstrapConfiguration getVanguardRetailConfiguration( final EquityIdentity equityIdentity,
+			final int equityScale, final LocalDate startDate, final LocalDate endDate,
+			final DepositConfiguration deposit, final LocalDate managementFeeStartDate ) {
+
+		final CashAccount cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
+		final EquityManagementFeeCalculator vanguardRetailFeeCalculator = getVanguardRetailFeeCalculator();
+		final EquityConfiguration equity = new EquityConfiguration( equityIdentity,
+				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, vanguardRetailFeeCalculator,
+						ONE_YEAR ) );
+		final Brokerage vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL,
+				startDate, MATH_CONTEXT );
+		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, startDate, deposit,
+				MATH_CONTEXT );
+		return new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), vanguard, cashAccount,
+				"VaguardRetail_BuyWeekly_HoldForever" );
+	}
+
+	private static BacktestBootstrapConfiguration getCmCMarketsWeekly( final EquityIdentity equityIdentity,
+			final int equityScale, final LocalDate startDate, final LocalDate endDate,
+			final DepositConfiguration deposit, final LocalDate managementFeeStartDate ) {
+
+		final EquityManagementFeeCalculator vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
+		final EquityConfiguration equity = new EquityConfiguration( equityIdentity,
+				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, vanguardEtfFeeCalculator,
+						ONE_YEAR ) );
+		final Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
+				startDate, MATH_CONTEXT );
+		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, startDate, deposit,
+				MATH_CONTEXT );
+		final CashAccount cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
+		return new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount,
+				"CMC_BuyWeekly_HoldForever" );
+	}
+
+	private static BacktestBootstrapConfiguration getCmCMarketsMonthly( final EquityIdentity equityIdentity,
+			final int equityScale, final LocalDate startDate, final LocalDate endDate,
+			final DepositConfiguration deposit, final LocalDate managementFeeStartDate ) {
+
+		final EquityManagementFeeCalculator vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
+		final EquityConfiguration equity = new EquityConfiguration( equityIdentity,
+				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, vanguardEtfFeeCalculator,
+						ONE_YEAR ) );
+		final Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
+				startDate, MATH_CONTEXT );
+		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, startDate,
+				Period.ofMonths( 1 ), MATH_CONTEXT );
+		final CashAccount cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
+		return new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount,
+				"CMC_BuyMonthly_HoldForever" );
+	}
+
+	private static BacktestBootstrapConfiguration getConfiguration( final EquityIdentity equityIdentity,
+			final int equityScale, final LocalDate startDate, final LocalDate endDate,
+			final DepositConfiguration deposit, final LocalDate managementFeeStartDate, final TradeValue tradeValue,
+			final String description, final IndicatorSignalGenerator... entrySignals ) {
+
+		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
+				EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, entrySignals );
+		final EquityManagementFeeCalculator vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
+		final EquityConfiguration equity = new EquityConfiguration( equityIdentity,
+				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, vanguardEtfFeeCalculator,
+						ONE_YEAR ) );
+		final Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
+				startDate, MATH_CONTEXT );
+		final CashAccount cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
+		return new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount, description );
+	}
+
 	private static List<BacktestBootstrapConfiguration> getConfigurations( final EquityIdentity equityIdentity,
-			final LocalDate startDate, final LocalDate endDate, final DepositConfiguration deposit ) {
+			final LocalDate startDate, final LocalDate endDate, final DepositConfiguration deposit,
+			final int equityScale ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
-
-		final int equityScale = 4;
 		final LocalDate managementFeeStartDate = getFirstDayOfYear( startDate );
+		BacktestBootstrapConfiguration configuration;
 
-		
-		CashAccount cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
-
-		final EquityManagementFeeCalculator vanguardRetailFeeCalculator = getVanguardRetailFeeCalculator();
-		EquityConfiguration equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-				managementFeeStartDate, vanguardRetailFeeCalculator, ONE_YEAR ) );
-		Brokerage vanguard = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.VANGUARD_RETAIL, startDate,
-				MATH_CONTEXT );
-		EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, startDate, deposit,
-				MATH_CONTEXT );
-		BacktestBootstrapConfiguration configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(),
-				vanguard, cashAccount, "VaguardRetail_BuyWeekly_HoldForever" );
+		// Vanguard Retail
+		configuration = getVanguardRetailConfiguration( equityIdentity, equityScale, startDate, endDate, deposit,
+				managementFeeStartDate );
 		configurations.add( configuration );
 
 		// CMC Weekly
-		EquityManagementFeeCalculator vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
-		equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-				managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
-		Brokerage cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
-				MATH_CONTEXT );
-		entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, startDate, deposit, MATH_CONTEXT );
-		cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
-		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount,
-				"CMC_BuyWeekly_HoldForever" );
+		configuration = getCmCMarketsWeekly( equityIdentity, equityScale, startDate, endDate, deposit,
+				managementFeeStartDate );
 		configurations.add( configuration );
 
 		// CMC Monthly
-		vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
-		equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-				managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
-		cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
-				MATH_CONTEXT );
-		entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, startDate, Period.ofMonths( 1 ),
-				MATH_CONTEXT );
-		cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
-		configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount,
-				"CMC_BuyMonthly_HoldForever" );
+		configuration = getCmCMarketsMonthly( equityIdentity, equityScale, startDate, endDate, deposit,
+				managementFeeStartDate );
 		configurations.add( configuration );
-
-		// Configuration with different entry values
-		final BigDecimal[] minimumTradeValues = { BigDecimal.valueOf( 500 ), BigDecimal.valueOf( 1000 ),
-				BigDecimal.valueOf( 1500 ), BigDecimal.valueOf( 2000 ) };
-
-		final BigDecimal[] maximumTradeValues = { BigDecimal.valueOf( .25 ), BigDecimal.valueOf( .5 ),
-				BigDecimal.valueOf( .75 ), BigDecimal.valueOf( 1 ) };
 
 		String description;
 		IndicatorSignalGenerator sma, macd, rsi;
@@ -259,119 +301,110 @@ public class RunAllWeeklyAmounts {
 		final RsiConfiguration rsiConfiguration = RsiConfiguration.MEDIUM;
 
 		// TODO tidy up
-		// TODO move the description out into the BacktestBootstrapConfiguration
 		// TODO make the factories consistent in their approach
-		for (final BigDecimal maximumTradeValue : maximumTradeValues) {
+		for (final MaximumTrade maximumTrade : MaximumTrade.values()) {
+			for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
 
-			for (final BigDecimal minimumTradeValue : minimumTradeValues) {
-
-				final TradeValue tradeValue = new RelativeTradeValue( minimumTradeValue, maximumTradeValue,
+				final TradeValue tradeValue = new RelativeTradeValue( minimumTrade.getValue(), maximumTrade.getValue(),
 						MATH_CONTEXT );
-
-				final String minimumTradeDescription = String.valueOf( minimumTradeValue.longValue() );
-				final String maximumTradeDescription = String.valueOf( maximumTradeValue.doubleValue() );
 
 				for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 
-					macd = IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
-
-					entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
-							EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, macd );
-					description = String.format( "%s_Minimum-%s_Maximum-%s_HoldForever",
-							macdConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
-					vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
-					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-							managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
-					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
-							MATH_CONTEXT );
-					cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
-					configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets,
-							cashAccount, description );
+					// MACD only
+					macd = createSignalGenerator( macdConfiguration );
+					description = getDescription( minimumTrade, maximumTrade, macdConfiguration );
+					configuration = getConfiguration( equityIdentity, equityScale, startDate, endDate, deposit,
+							managementFeeStartDate, tradeValue, description, macd );
 					configurations.add( configuration );
 
-					macd = IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
-					rsi = IndicatorSignalGeneratorFactory.create( rsiConfiguration, MATH_CONTEXT );
-
-					entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
-							EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, rsi, macd );
-					description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
-							macdConfiguration.getDescription(), rsiConfiguration.getDescription(),
-							minimumTradeDescription, maximumTradeDescription );
-					vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
-					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-							managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
-					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
-							MATH_CONTEXT );
-					cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
-					configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets,
-							cashAccount, description );
+					// MACD & RSI
+					macd = createSignalGenerator( macdConfiguration );
+					rsi = createSignalGenerator( rsiConfiguration );
+					description = getDescription( minimumTrade, maximumTrade, macdConfiguration, rsiConfiguration );
+					configuration = getConfiguration( equityIdentity, equityScale, startDate, endDate, deposit,
+							managementFeeStartDate, tradeValue, description, macd, rsi );
 					configurations.add( configuration );
 
 					for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 
-						sma = IndicatorSignalGeneratorFactory.create( smaConfiguration, MATH_CONTEXT );
-						macd = IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
-
-						entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
-								EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, sma, macd );
-						description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
-								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
-								minimumTradeDescription, maximumTradeDescription );
-						vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
-						equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-								managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
-						cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
-								startDate, MATH_CONTEXT );
-						cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
-						configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets,
-								cashAccount, description );
+						// SMA & MACD
+						sma = createSignalGenerator( smaConfiguration );
+						macd = createSignalGenerator( macdConfiguration );
+						description = getDescription( minimumTrade, maximumTrade, macdConfiguration, smaConfiguration );
+						configuration = getConfiguration( equityIdentity, equityScale, startDate, endDate, deposit,
+								managementFeeStartDate, tradeValue, description, sma, macd );
 						configurations.add( configuration );
 
-						sma = IndicatorSignalGeneratorFactory.create( smaConfiguration, MATH_CONTEXT );
-						macd = IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
-						rsi = IndicatorSignalGeneratorFactory.create( rsiConfiguration, MATH_CONTEXT );
-
-						entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
-								EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, rsi, sma, macd );
-						description = String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
-								macdConfiguration.getDescription(), smaConfiguration.getDescription(),
-								rsiConfiguration.getDescription(), minimumTradeDescription, maximumTradeDescription );
-						vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
-						equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-								managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
-						cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS,
-								startDate, MATH_CONTEXT );
-						cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
-						configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets,
-								cashAccount, description );
+						// SMA, MACD & RSI
+						sma = createSignalGenerator( smaConfiguration );
+						macd = createSignalGenerator( macdConfiguration );
+						rsi = createSignalGenerator( rsiConfiguration );
+						description = getDescription( minimumTrade, maximumTrade, macdConfiguration, smaConfiguration,
+								rsiConfiguration );
+						configuration = getConfiguration( equityIdentity, equityScale, startDate, endDate, deposit,
+								managementFeeStartDate, tradeValue, description, sma, macd, rsi );
 						configurations.add( configuration );
 					}
 				}
 
 				for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-					description = String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
-							smaConfiguration.getDescription(), rsiConfiguration.getDescription(),
-							minimumTradeDescription, maximumTradeDescription );
 
-					rsi = IndicatorSignalGeneratorFactory.create( rsiConfiguration, MATH_CONTEXT );
-					sma = IndicatorSignalGeneratorFactory.create( smaConfiguration, MATH_CONTEXT );
-
-					entryLogic = EntryLogicFactory.create( equityIdentity, equityScale, tradeValue,
-							EntryLogicFilterConfiguration.SAME_DAY, MATH_CONTEXT, rsi, sma );
-					vanguardEtfFeeCalculator = getVanguardEftFeeCalculator();
-					equity = new EquityConfiguration( equityIdentity, new PeriodicEquityManagementFeeStructure(
-							managementFeeStartDate, vanguardEtfFeeCalculator, ONE_YEAR ) );
-					cmcMarkets = BrokerageFactoroy.create( equity, BrokerageFeesConfiguration.CMC_MARKETS, startDate,
-							MATH_CONTEXT );
-					cashAccount = CashAccountFactory.create( startDate, deposit, MATH_CONTEXT );
-					configuration = new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets,
-							cashAccount, description );
+					// RSI & SMA
+					rsi = createSignalGenerator( rsiConfiguration );
+					sma = createSignalGenerator( smaConfiguration );
+					description = getDescription( minimumTrade, maximumTrade, smaConfiguration, rsiConfiguration );
+					configuration = getConfiguration( equityIdentity, equityScale, startDate, endDate, deposit,
+							managementFeeStartDate, tradeValue, description, sma, rsi );
 					configurations.add( configuration );
 				}
 			}
 		}
 
 		return configurations;
+	}
+
+	private static IndicatorSignalGenerator createSignalGenerator( final RsiConfiguration rsiConfiguration ) {
+		return IndicatorSignalGeneratorFactory.create( rsiConfiguration, MATH_CONTEXT );
+	}
+
+	private static IndicatorSignalGenerator createSignalGenerator( final SmaConfiguration smaConfiguration ) {
+		return IndicatorSignalGeneratorFactory.create( smaConfiguration, MATH_CONTEXT );
+	}
+
+	private static IndicatorSignalGenerator createSignalGenerator( final MacdConfiguration macdConfiguration ) {
+		return IndicatorSignalGeneratorFactory.create( macdConfiguration, MATH_CONTEXT );
+	}
+
+	private static String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
+			final MacdConfiguration macdConfiguration ) {
+		return String.format( "%s_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
+				minimumTrade.getDescription(), maximumTrade.getDescription() );
+	}
+
+	private static String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
+			final MacdConfiguration macdConfiguration, final RsiConfiguration rsiConfiguration ) {
+		return String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
+				rsiConfiguration.getDescription(), minimumTrade.getDescription(), maximumTrade.getDescription() );
+	}
+
+	private static String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
+			final MacdConfiguration macdConfiguration, final SmaConfiguration smaConfiguration ) {
+		return String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
+				smaConfiguration.getDescription(), minimumTrade.getDescription(), maximumTrade.getDescription() );
+	}
+
+	private static String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
+			final MacdConfiguration macdConfiguration, final SmaConfiguration smaConfiguration,
+			final RsiConfiguration rsiConfiguration ) {
+		return String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", macdConfiguration.getDescription(),
+				smaConfiguration.getDescription(), rsiConfiguration.getDescription(), minimumTrade.getDescription(),
+				maximumTrade.getDescription() );
+	}
+
+	private static String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
+			final SmaConfiguration smaConfiguration, final RsiConfiguration rsiConfiguration ) {
+		return String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", smaConfiguration.getDescription(),
+				rsiConfiguration.getDescription(), minimumTrade.getDescription(), maximumTrade.getDescription() );
 	}
 
 	private static EquityIdentity getEquityIdentity() {
