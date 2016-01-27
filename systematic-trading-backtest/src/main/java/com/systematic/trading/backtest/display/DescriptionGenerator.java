@@ -64,14 +64,16 @@ public class DescriptionGenerator {
 
 		switch (configurations.length) {
 			case 1:
-				return String.format( "%s_Minimum-%s_Maximum-%s_HoldForever", configurations[0],
+				return String.format( "%s_Minimum-%s_Maximum-%s_HoldForever", configurations[0].getDescription(),
 						minimumTrade.getDescription(), maximumTrade.getDescription() );
 			case 2:
-				return String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", configurations[0],
-						configurations[1], minimumTrade.getDescription(), maximumTrade.getDescription() );
+				return String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
+						configurations[0].getDescription(), configurations[1].getDescription(),
+						minimumTrade.getDescription(), maximumTrade.getDescription() );
 			case 3:
-				return String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever", configurations[0],
-						configurations[1], configurations[2], minimumTrade.getDescription(),
+				return String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
+						configurations[0].getDescription(), configurations[1].getDescription(),
+						configurations[2].getDescription(), minimumTrade.getDescription(),
 						maximumTrade.getDescription() );
 			default:
 				throw new IllegalArgumentException(
