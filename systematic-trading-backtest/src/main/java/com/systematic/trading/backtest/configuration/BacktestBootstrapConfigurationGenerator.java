@@ -107,15 +107,15 @@ public class BacktestBootstrapConfigurationGenerator {
 	// TODO consistency with factories / refactor use of reflection & switches
 
 	public BacktestBootstrapConfiguration getPeriodicConfiguration( final BrokerageFeesConfiguration brokerageType,
-			final Period purchaseTime, final EquityManagementFeeCalculator feeCalculator ) {
+			final Period purchaseFrequency, final EquityManagementFeeCalculator feeCalculator ) {
 
 		final CashAccount cashAccount = CashAccountFactory.create( startDate, deposit, mathContext );
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration( equity,
 				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, feeCalculator, ONE_YEAR ) );
 		final Brokerage brokerage = BrokerageFactoroy.create( equityConfiguration, brokerageType, startDate,
 				mathContext );
-		final EntryLogic entryLogic = EntryLogicFactory.create( equity, startDate, purchaseTime, mathContext );
-		final String description = descriptions.getWeeklyDescription( brokerageType );
+		final EntryLogic entryLogic = EntryLogicFactory.create( equity, startDate, purchaseFrequency, mathContext );
+		final String description = descriptions.getDescription( brokerageType, purchaseFrequency );
 		return new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), brokerage, cashAccount, description );
 	}
 

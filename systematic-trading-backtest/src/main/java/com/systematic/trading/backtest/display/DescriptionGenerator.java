@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.display;
 
+import java.time.Period;
+
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
@@ -38,12 +40,18 @@ import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 public class DescriptionGenerator {
 	// TODO interface - one for file, another for console
 
-	public String getWeeklyDescription( final BrokerageFeesConfiguration brokerage ) {
-		return String.format( "%s_BuyWeekly_HoldForever", getBrokerageDescription( brokerage ) );
-	}
+	public String getDescription( final BrokerageFeesConfiguration brokerage, final Period purchaseFrequency ) {
 
-	public String getMonthlyDescription( final BrokerageFeesConfiguration brokerage ) {
-		return String.format( "%s_BuyMonthly_HoldForever", getBrokerageDescription( brokerage ) );
+		if (purchaseFrequency.equals( Period.ofWeeks( 1 ) )) {
+			return String.format( "%s_BuyWeekly_HoldForever", getBrokerageDescription( brokerage ) );
+		}
+
+		if (purchaseFrequency.equals( Period.ofMonths( 1 ) )) {
+			return String.format( "%s_BuyMonthly_HoldForever", getBrokerageDescription( brokerage ) );
+		}
+
+		throw new IllegalArgumentException( String.format(
+				"Unexpected combination of brokerage: %s and purchase frequency: %s", brokerage, purchaseFrequency ) );
 	}
 
 	private String getBrokerageDescription( final BrokerageFeesConfiguration brokerage ) {
