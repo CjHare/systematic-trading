@@ -25,37 +25,29 @@
  */
 package com.systematic.trading.backtest.configuration.equity;
 
+import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
-import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 
 /**
- * An equity is comprised of an identity and management fee.
+ * Supported configurations of equities for back testing.
  * 
  * @author CJ Hare
  */
-public class EquityConfiguration {
+public enum EquityConfiguration {
 
-	/** The equity in question. */
-	private final EquityIdentity identity;
+	SP_500_PRICE_INDEX( "^GSPC", EquityClass.STOCK, 4 );
 
-	/** Any possible management fee structure, applied when holding the equity. */
-	private final EquityManagementFeeStructure managementFee;
+	private final String tickerSymbol;
+	private final EquityClass equityType;
+	private final int scale;
 
-	/**
-	 * @param identity the equity in question.
-	 * @param managementFee any possible management fee structure, applied when holding the equity,
-	 *            bar <code>null</code>.
-	 */
-	public EquityConfiguration( final EquityIdentity identity, final EquityManagementFeeStructure managementFee ) {
-		this.managementFee = managementFee;
-		this.identity = identity;
+	private EquityConfiguration( final String tickerSymbol, final EquityClass equityType, final int scale ) {
+		this.tickerSymbol = tickerSymbol;
+		this.equityType = equityType;
+		this.scale = scale;
 	}
 
-	public EquityIdentity getIdentity() {
-		return identity;
-	}
-
-	public EquityManagementFeeStructure getManagementFee() {
-		return managementFee;
+	public EquityIdentity getEquityIdentity() {
+		return new EquityIdentity( tickerSymbol, equityType, scale );
 	}
 }

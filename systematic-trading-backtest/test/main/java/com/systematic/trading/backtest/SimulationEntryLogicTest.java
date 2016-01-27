@@ -107,7 +107,7 @@ public class SimulationEntryLogicTest {
 
 	@Test
 	public void processOrder() throws OrderException {
-		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK );
+		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK, 4 );
 		final TradingDayPrices[] sortedPoints = createOrderedDataPoints( createUnorderedDataPoints() );
 		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, sortedPoints );
 		final Simulation simulation = new Simulation( tradingData, broker, funds, roiCalculator, entry, exit );

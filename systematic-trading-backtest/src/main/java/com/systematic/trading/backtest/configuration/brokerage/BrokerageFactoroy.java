@@ -33,7 +33,7 @@ import java.time.LocalDate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
@@ -67,7 +67,7 @@ public class BrokerageFactoroy {
 		throw new IllegalArgumentException( String.format( "Could not create the desired fee structure: %s", fee ) );
 	}
 
-	public static Brokerage create( final EquityConfiguration equity, final BrokerageFeesConfiguration fees,
+	public static Brokerage create( final EquityWithFeeConfiguration equity, final BrokerageFeesConfiguration fees,
 			final LocalDate startDate, final MathContext mathContext ) {
 
 		final BrokerageTransactionFeeStructure tradingFeeStructure = createFeeStructure( fees, mathContext );

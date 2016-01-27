@@ -25,31 +25,17 @@
  */
 package com.systematic.trading.backtest.configuration.signals;
 
-import java.math.BigDecimal;
-
 /**
- * Maximum percentage of capital to use in a single transaction.
+ * Generic details about configurations.
  * 
  * @author CJ Hare
  */
-public enum MaximumTrade {
+public interface SignalConfiguration {
 
-	QUARTER( BigDecimal.valueOf( .25 ) ),
-	HALF( BigDecimal.valueOf( .5 ) ),
-	THREE_QUARTERS( BigDecimal.valueOf( .75 ) ),
-	ALL( BigDecimal.valueOf( 1 ) );
-
-	private final BigDecimal value;
-
-	private MaximumTrade( final BigDecimal value ) {
-		this.value = value;
-	}
-
-	public BigDecimal getValue() {
-		return value;
-	}
-
-	public String getDescription() {
-		return String.valueOf( value.doubleValue() );
-	}
+	/**
+	 * Textual description of the configuration.
+	 * 
+	 * @return meaningful description used for display purposes.
+	 */
+	String getDescription();
 }

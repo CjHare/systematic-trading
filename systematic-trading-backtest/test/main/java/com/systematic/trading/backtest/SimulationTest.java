@@ -89,7 +89,7 @@ public class SimulationTest {
 
 	@Test
 	public void create() {
-		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK );
+		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK, 4 );
 		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
 		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, unorderedPoints );
 
@@ -101,7 +101,7 @@ public class SimulationTest {
 		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
 		unorderedPoints[1] = unorderedPoints[0];
 
-		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK );
+		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK, 4 );
 
 		try {
 			final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, unorderedPoints );

@@ -23,50 +23,39 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.signals;
+package com.systematic.trading.backtest.configuration.equity;
 
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
+import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 
 /**
- * Configuration for the SMA signal calculator.
+ * An equity is comprised of an identity and management fee.
  * 
  * @author CJ Hare
  */
-public enum SmaConfiguration implements
-	SignalConfiguration {
+public class EquityWithFeeConfiguration {
 
-		SHORT( 20, GradientType.POSITIVE, 5, "Positive-Short-Sma" ),
-		MEDIUM( 50, GradientType.POSITIVE, 7, "Positive-Medium-Sma" ),
-		LONG( 100, GradientType.POSITIVE, 10, "Positive-Long-Sma" ),
-		LONGEST( 200, GradientType.POSITIVE, 20, "Positive-Longest-Sma" );
+	/** The equity in question. */
+	private final EquityIdentity identity;
 
-	private final String description;
-	private final int lookback;
-	private final int daysOfGradient;
-	private final GradientType type;
+	/** Any possible management fee structure, applied when holding the equity. */
+	private final EquityManagementFeeStructure managementFee;
 
-	private SmaConfiguration( final int lookback, final GradientType type, final int daysOfGradient,
-			final String description ) {
-		this.daysOfGradient = daysOfGradient;
-		this.description = description;
-		this.lookback = lookback;
-		this.type = type;
+	/**
+	 * @param identity the equity in question.
+	 * @param managementFee any possible management fee structure, applied when holding the equity,
+	 *            bar <code>null</code>.
+	 */
+	public EquityWithFeeConfiguration( final EquityIdentity identity, final EquityManagementFeeStructure managementFee ) {
+		this.managementFee = managementFee;
+		this.identity = identity;
 	}
 
-	@Override
-	public String getDescription() {
-		return description;
+	public EquityIdentity getIdentity() {
+		return identity;
 	}
 
-	public int getLookback() {
-		return lookback;
-	}
-
-	public int getDaysOfGradient() {
-		return daysOfGradient;
-	}
-
-	public GradientType getType() {
-		return type;
+	public EquityManagementFeeStructure getManagementFee() {
+		return managementFee;
 	}
 }

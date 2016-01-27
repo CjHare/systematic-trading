@@ -52,18 +52,18 @@ import com.systematic.trading.simulation.logic.TradeValue;
  */
 public class EntryLogicFactory {
 
-	public static EntryLogic create( final EquityIdentity equity, final int equityScale, final LocalDate startDate,
+	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate,
 			final DepositConfiguration deposit, final MathContext mathContext ) {
 		final Period frequency = deposit.getFrequency();
-		return new DateTriggeredEntryLogic( equity.getType(), equityScale, startDate, frequency, mathContext );
+		return new DateTriggeredEntryLogic( equity.getType(), equity.getScale(), startDate, frequency, mathContext );
 	}
 
-	public static EntryLogic create( final EquityIdentity equity, final int equityScale, final LocalDate startDate,
-			final Period frequency, final MathContext mathContext ) {
-		return new DateTriggeredEntryLogic( equity.getType(), equityScale, startDate, frequency, mathContext );
+	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate, final Period frequency,
+			final MathContext mathContext ) {
+		return new DateTriggeredEntryLogic( equity.getType(), equity.getScale(), startDate, frequency, mathContext );
 	}
 
-	public static EntryLogic create( final EquityIdentity equity, final int equityScale, final TradeValue tradeValue,
+	public static EntryLogic create( final EquityIdentity equity, final TradeValue tradeValue,
 			final EntryLogicFilterConfiguration filterConfiguration, final MathContext mathContext,
 			final IndicatorSignalGenerator... entrySignals ) {
 
@@ -88,7 +88,8 @@ public class EntryLogicFactory {
 		filters.add( decoratedFilter );
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
-		return new SignalTriggeredEntryLogic( equity.getType(), equityScale, tradeValue, buyLongAnalysis, mathContext );
+		return new SignalTriggeredEntryLogic( equity.getType(), equity.getScale(), tradeValue, buyLongAnalysis,
+				mathContext );
 	}
 
 	private static SignalFilter creatSignalFilter( final EntryLogicFilterConfiguration configuration,

@@ -39,6 +39,21 @@ import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSigna
  */
 public class IndicatorSignalGeneratorFactory {
 
+	public static IndicatorSignalGenerator create( final SignalConfiguration signal, final MathContext mathContext ) {
+
+		if (signal instanceof MacdConfiguration) {
+			return create( (MacdConfiguration) signal, mathContext );
+		}
+		if (signal instanceof RsiConfiguration) {
+			return create( (RsiConfiguration) signal, mathContext );
+		}
+		if (signal instanceof SmaConfiguration) {
+			return create( (SmaConfiguration) signal, mathContext );
+		}
+
+		throw new IllegalArgumentException( String.format( "Signal type not catered for: %s", signal ) );
+	}
+
 	public static IndicatorSignalGenerator create( final MacdConfiguration macd, final MathContext mathContext ) {
 		return new MovingAveragingConvergeDivergenceSignals( macd.getFastTimePeriods(), macd.getSlowTimePeriods(),
 				macd.getSignalTimePeriods(), mathContext );

@@ -23,50 +23,33 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.signals;
+package com.systematic.trading.backtest.configuration.trade;
 
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
+import java.math.BigDecimal;
 
 /**
- * Configuration for the SMA signal calculator.
+ * Maximum percentage of capital to use in a single transaction.
  * 
  * @author CJ Hare
  */
-public enum SmaConfiguration implements
-	SignalConfiguration {
+public enum MaximumTrade {
 
-		SHORT( 20, GradientType.POSITIVE, 5, "Positive-Short-Sma" ),
-		MEDIUM( 50, GradientType.POSITIVE, 7, "Positive-Medium-Sma" ),
-		LONG( 100, GradientType.POSITIVE, 10, "Positive-Long-Sma" ),
-		LONGEST( 200, GradientType.POSITIVE, 20, "Positive-Longest-Sma" );
+	QUARTER( BigDecimal.valueOf( .25 ) ),
+	HALF( BigDecimal.valueOf( .5 ) ),
+	THREE_QUARTERS( BigDecimal.valueOf( .75 ) ),
+	ALL( BigDecimal.valueOf( 1 ) );
 
-	private final String description;
-	private final int lookback;
-	private final int daysOfGradient;
-	private final GradientType type;
+	private final BigDecimal value;
 
-	private SmaConfiguration( final int lookback, final GradientType type, final int daysOfGradient,
-			final String description ) {
-		this.daysOfGradient = daysOfGradient;
-		this.description = description;
-		this.lookback = lookback;
-		this.type = type;
+	private MaximumTrade( final BigDecimal value ) {
+		this.value = value;
 	}
 
-	@Override
+	public BigDecimal getValue() {
+		return value;
+	}
+
 	public String getDescription() {
-		return description;
-	}
-
-	public int getLookback() {
-		return lookback;
-	}
-
-	public int getDaysOfGradient() {
-		return daysOfGradient;
-	}
-
-	public GradientType getType() {
-		return type;
+		return String.valueOf( value.doubleValue() );
 	}
 }
