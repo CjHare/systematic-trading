@@ -260,9 +260,9 @@ public class AllConfigurations {
 	private static String getBaseOutputDirectory( final String... args ) {
 
 		if (args != null && args.length > 0) {
-			return args[0];
+			return args[0] + "/%s/";
 		}
 
-		return "../../simulations/";
+		return "../../simulations/%s/";
 	}
 }
