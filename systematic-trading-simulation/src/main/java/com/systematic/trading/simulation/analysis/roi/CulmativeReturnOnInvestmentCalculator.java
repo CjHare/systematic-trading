@@ -127,10 +127,15 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 			percentageChange = BigDecimal.ZERO;
 		} else {
 			// Difference / previous worth
-			final BigDecimal absoluteChange = netWorth.subtract( previousNetWorth, mathContext ).subtract(
-					depositedSincePreviousNetWorth, mathContext );
-			percentageChange = absoluteChange.divide( previousNetWorth, mathContext ).multiply( ONE_HUNDRED,
-					mathContext );
+			final BigDecimal absoluteChange = netWorth.subtract( previousNetWorth, mathContext )
+					.subtract( depositedSincePreviousNetWorth, mathContext );
+
+			if (BigDecimal.ZERO.compareTo( absoluteChange ) == 0) {
+				percentageChange = BigDecimal.ZERO;
+			} else {
+				percentageChange = absoluteChange.divide( previousNetWorth, mathContext ).multiply( ONE_HUNDRED,
+						mathContext );
+			}
 		}
 
 		// Reset the counters

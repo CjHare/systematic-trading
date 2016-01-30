@@ -48,9 +48,9 @@ public class ConsoleHeaderDisplay {
 		System.out.println( "\n" );
 
 		System.out.println( String.format( "Data set for %s from %s to %s",
-				tradingData.getEquityIdentity().getTickerSymbol(), tradingData.getStartDate(), tradingData.getEndDate() ) );
+				tradingData.getEquityIdentity().getTickerSymbol(), tradingData.getEarliestDate(), tradingData.getLatestDate() ) );
 
-		final long daysBetween = ChronoUnit.DAYS.between( tradingData.getStartDate(), tradingData.getEndDate() );
+		final long daysBetween = ChronoUnit.DAYS.between( tradingData.getEarliestDate(), tradingData.getLatestDate() );
 		final double percentageTradingDays = ((double) tradingData.getNumberOfTradingDays() / daysBetween) * 100;
 
 		System.out.println( String.format( "# trading days: %s over %s days (%s percentage trading days)",

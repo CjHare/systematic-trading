@@ -48,7 +48,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	/** Rate applied to the funds on a daily basis. */
 	private final InterestRate rate;
 
-	/** last date that interest was calculated. */
+	/** last date that interest was calculated, or when to begin calculations. */
 	private LocalDate lastInterestCalculation;
 
 	/** The current available balance. */
@@ -82,24 +82,24 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	@Override
 	public void update( final LocalDate tradingDate ) {
 
+		// Only calculate interest when the date is after the last calculation date
+
 		// Any trading date earlier in time then our last interest is a mistake
-		if (tradingDate.isBefore( lastInterestCalculation )) {
-			throw new IllegalArgumentException( String.format( "Given date %s has already been passed by %s",
-					tradingDate, lastInterestCalculation ) );
+		if (tradingDate.isAfter( lastInterestCalculation )) {
+
+			while (lastInterestCalculation.getMonth() != tradingDate.getMonth()) {
+				lastInterestCalculation = applyFullMonthInterest( lastInterestCalculation );
+			}
+
+			// Remaining days of interest to escrow
+			final boolean isLeapYear = tradingDate.isLeapYear();
+			final int daysInterest = Period.between( lastInterestCalculation, tradingDate ).getDays();
+
+			escrow = escrow.add( rate.interest( funds, daysInterest, isLeapYear ), mathContext );
+
+			// Update the interest date marker
+			lastInterestCalculation = tradingDate;
 		}
-
-		while (lastInterestCalculation.getMonth() != tradingDate.getMonth()) {
-			lastInterestCalculation = applyFullMonthInterest( lastInterestCalculation );
-		}
-
-		// Remaining days of interest to escrow
-		final boolean isLeapYear = tradingDate.isLeapYear();
-		final int daysInterest = Period.between( lastInterestCalculation, tradingDate ).getDays();
-
-		escrow = escrow.add( rate.interest( funds, daysInterest, isLeapYear ), mathContext );
-
-		// Update the interest date marker
-		lastInterestCalculation = tradingDate;
 	}
 
 	private LocalDate applyFullMonthInterest( final LocalDate last ) {

@@ -45,10 +45,10 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 	private final EquityIdentity equity;
 
 	/** Inclusive beginning date for the set of trading prices. */
-	private final LocalDate startDate;
+	private final LocalDate earliestDate;
 
 	/** Inclusive last date for the set of trading prices. */
-	private final LocalDate endDate;
+	private final LocalDate latestDate;
 
 	/** The trading data to feed into the simulation. */
 	private final Map<LocalDate, TradingDayPrices> tradingData;
@@ -71,18 +71,18 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 
 		this.tradingData = Collections.unmodifiableMap( modifiableTradingData );
 
-		this.startDate = getEarliestDate( tradingData );
-		this.endDate = getLatestDate( tradingData );
+		this.earliestDate = getEarliestDate( tradingData );
+		this.latestDate = getLatestDate( tradingData );
 	}
 
 	@Override
-	public LocalDate getStartDate() {
-		return startDate;
+	public LocalDate getEarliestDate() {
+		return earliestDate;
 	}
 
 	@Override
-	public LocalDate getEndDate() {
-		return endDate;
+	public LocalDate getLatestDate() {
+		return latestDate;
 	}
 
 	@Override

@@ -41,6 +41,7 @@ import com.systematic.trading.backtest.configuration.signals.SignalConfiguration
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
+import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.simulation.brokerage.Brokerage;
@@ -68,12 +69,6 @@ public class BacktestBootstrapConfigurationGenerator {
 	/** Single equity to create the configuration on. */
 	private final EquityIdentity equity;
 
-	/** Intended start date for the simulation. */
-	private final LocalDate startDate;
-
-	/** Intended end date for the simulation/ */
-	private final LocalDate endDate;
-
 	/** Weekly deposit amount into the cash account. */
 	private final DepositConfiguration deposit;
 
@@ -83,14 +78,16 @@ public class BacktestBootstrapConfigurationGenerator {
 	/** First date to apply the management fee on. */
 	private final LocalDate managementFeeStartDate;
 
-	public BacktestBootstrapConfigurationGenerator( final EquityIdentity equity, final LocalDate startDate,
-			final LocalDate endDate, final DepositConfiguration deposit, final DescriptionGenerator descriptions,
-			final MathContext mathContext ) {
-		this.managementFeeStartDate = getFirstDayOfYear( startDate );
+	/** The intended dates for the simulation. */
+	private final BacktestSimulationDates simulationDates;
+
+	public BacktestBootstrapConfigurationGenerator( final EquityIdentity equity,
+			final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+			final DescriptionGenerator descriptions, final MathContext mathContext ) {
+		this.managementFeeStartDate = getFirstDayOfYear( simulationDates.getSimulationStartDate() );
+		this.simulationDates = simulationDates;
 		this.descriptions = descriptions;
 		this.mathContext = mathContext;
-		this.startDate = startDate;
-		this.endDate = endDate;
 		this.deposit = deposit;
 		this.equity = equity;
 
@@ -109,6 +106,7 @@ public class BacktestBootstrapConfigurationGenerator {
 	public BacktestBootstrapConfiguration getPeriodicConfiguration( final BrokerageFeesConfiguration brokerageType,
 			final Period purchaseFrequency, final EquityManagementFeeCalculator feeCalculator ) {
 
+		final LocalDate startDate = simulationDates.getSimulationStartDate();
 		final CashAccount cashAccount = CashAccountFactory.create( startDate, deposit, mathContext );
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration( equity,
 				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, feeCalculator, ONE_YEAR ) );
@@ -116,7 +114,8 @@ public class BacktestBootstrapConfigurationGenerator {
 				mathContext );
 		final EntryLogic entryLogic = EntryLogicFactory.create( equity, startDate, purchaseFrequency, mathContext );
 		final String description = descriptions.getDescription( brokerageType, purchaseFrequency );
-		return new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), brokerage, cashAccount, description );
+		return new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), brokerage, cashAccount, simulationDates,
+				description );
 	}
 
 	public BacktestBootstrapConfiguration getIndicatorConfiguration( final MinimumTrade minimumTrade,
@@ -130,17 +129,17 @@ public class BacktestBootstrapConfigurationGenerator {
 		}
 
 		final String description = descriptions.getDescription( minimumTrade, maximumTrade, indicators );
-		return getIndicatorConfiguration( equity, minimumTrade, maximumTrade, brokerageType, startDate, endDate,
-				deposit, managementFeeStartDate, feeCalculator, description, entrySignals );
+		return getIndicatorConfiguration( equity, minimumTrade, maximumTrade, brokerageType, deposit,
+				managementFeeStartDate, feeCalculator, description, entrySignals );
 	}
 
 	private BacktestBootstrapConfiguration getIndicatorConfiguration( final EquityIdentity equityIdentity,
 			final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
-			final BrokerageFeesConfiguration brokerageType, final LocalDate startDate, final LocalDate endDate,
-			final DepositConfiguration deposit, final LocalDate managementFeeStartDate,
-			final EquityManagementFeeCalculator feeCalculator, final String description,
-			final IndicatorSignalGenerator... entrySignals ) {
+			final BrokerageFeesConfiguration brokerageType, final DepositConfiguration deposit,
+			final LocalDate managementFeeStartDate, final EquityManagementFeeCalculator feeCalculator,
+			final String description, final IndicatorSignalGenerator... entrySignals ) {
 
+		final LocalDate startDate = simulationDates.getSimulationStartDate();
 		final RelativeTradeValue tradeValue = new RelativeTradeValue( minimumTrade.getValue(), maximumTrade.getValue(),
 				mathContext );
 
@@ -150,6 +149,7 @@ public class BacktestBootstrapConfigurationGenerator {
 				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, feeCalculator, ONE_YEAR ) );
 		final Brokerage cmcMarkets = BrokerageFactoroy.create( equity, brokerageType, startDate, mathContext );
 		final CashAccount cashAccount = CashAccountFactory.create( startDate, deposit, mathContext );
-		return new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount, description );
+		return new BacktestBootstrapConfiguration( entryLogic, getExitLogic(), cmcMarkets, cashAccount, simulationDates,
+				description );
 	}
 }

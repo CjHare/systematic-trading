@@ -82,25 +82,30 @@ public class BacktestBootstrap {
 	public void run() throws Exception {
 
 		// First data point may not be the requested start date
-		final LocalDate startDate = tradingData.getStartDate();
+		final LocalDate earliestDate = tradingData.getEarliestDate();
 
 		// Final trading day data point, may not be be requested end date
-		final LocalDate endDate = tradingData.getEndDate();
-		final TradingDayPrices lastTradingDay = tradingData.getTradingDayPrices().get( endDate );
+		final LocalDate latestDate = tradingData.getLatestDate();
+
+		final TradingDayPrices lastTradingDay = tradingData.getTradingDayPrices().get( latestDate );
+
+		// TODO stuff about the start date != earliest date, find the closest to start date maybe?
+
+		// TODO run with a full output & check no deposits & signals
 
 		// Cumulative recording of investment progression
 		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( mathContext );
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-				startDate, Period.ofDays( 1 ), mathContext );
+				earliestDate, Period.ofDays( 1 ), mathContext );
 		roi.addListener( dailyRoi );
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-				startDate, Period.ofMonths( 1 ), mathContext );
+				earliestDate, Period.ofMonths( 1 ), mathContext );
 		roi.addListener( monthlyRoi );
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-				startDate, Period.ofYears( 1 ), mathContext );
+				earliestDate, Period.ofYears( 1 ), mathContext );
 		roi.addListener( yearlyRoi );
 
 		final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi = new CulmativeTotalReturnOnInvestmentCalculator(
@@ -134,8 +139,9 @@ public class BacktestBootstrap {
 		simulation.addListener( networthSummay );
 
 		// Display for simulation output
-		final Period duration = Period.between( startDate, endDate );
-		display.init( tradingData, eventStatistics, cumulativeRoi, lastTradingDay, duration );
+		final Period duration = Period.between( earliestDate, latestDate );
+		display.init( tradingData, configuration.getSimulationDates(), eventStatistics, cumulativeRoi, lastTradingDay,
+				duration );
 		simulation.addListener( (OrderEventListener) display );
 		simulation.addListener( (SimulationStateListener) display );
 		networthSummay.addListener( display );

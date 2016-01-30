@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutorService;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
+import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
@@ -97,9 +98,9 @@ public class FileDisplay implements BacktestDisplay {
 	}
 
 	@Override
-	public void init( final TickerSymbolTradingData tradingData, final EventStatistics eventStatistics,
-			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay,
-			final Period duration ) throws Exception {
+	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
+			final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
+			final TradingDayPrices lastTradingDay, final Period duration ) throws Exception {
 
 		final FileDisplayMultithreading returnOnInvestmentFile = getFileDisplay( "/return-on-investment.txt" );
 		this.roiDisplay = new FileReturnOnInvestmentDisplay(
@@ -121,7 +122,7 @@ public class FileDisplay implements BacktestDisplay {
 				FileReturnOnInvestmentDisplay.RETURN_ON_INVESTMENT_DISPLAY.YEARLY, returnOnInvestmentYearlyFile );
 
 		final FileDisplayMultithreading eventFile = getFileDisplay( "/events.txt" );
-		this.eventDisplay = new FileEventDisplay( tradingData, eventFile );
+		this.eventDisplay = new FileEventDisplay( tradingData, dates, eventFile );
 
 		final FileDisplayMultithreading cashEventFile = getFileDisplay( "/events-cash.txt" );
 		this.cashEventDisplay = new FileCashEventDisplay( cashEventFile );

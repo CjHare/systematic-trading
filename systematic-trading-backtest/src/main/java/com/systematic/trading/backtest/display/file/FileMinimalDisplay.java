@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutorService;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
+import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
@@ -84,9 +85,9 @@ public class FileMinimalDisplay implements BacktestDisplay {
 	}
 
 	@Override
-	public void init( final TickerSymbolTradingData tradingData, final EventStatistics eventStatistics,
-			final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay,
-			final Period duration ) throws Exception {
+	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
+			final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
+			final TradingDayPrices lastTradingDay, final Period duration ) throws Exception {
 
 		final FileDisplayMultithreading statisticsFile = getFileDisplay( "/statistics.txt" );
 		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFile );

@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration;
 
+import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.logic.EntryLogic;
@@ -54,17 +55,22 @@ public class BacktestBootstrapConfiguration {
 	/** Decision maker for when to exit a trade. */
 	private final ExitLogic exitLogic;
 
+	/** Details of the simulation dates. */
+	private final BacktestSimulationDates simulationDates;
+
 	/**
 	 * @param startDate inclusive beginning date for the back testing.
 	 * @param endDate inclusive end date for back testing.
 	 */
 	public BacktestBootstrapConfiguration( final EntryLogic entryLogic, final ExitLogic exitLogic,
-			final Brokerage brokerage, final CashAccount cashAccount, final String description ) {
+			final Brokerage brokerage, final CashAccount cashAccount, final BacktestSimulationDates simulationDates,
+			final String description ) {
 		this.cashAccount = cashAccount;
 		this.description = description;
 		this.entryLogic = entryLogic;
 		this.exitLogic = exitLogic;
 		this.brokerage = brokerage;
+		this.simulationDates = simulationDates;
 	}
 
 	/**
@@ -110,5 +116,14 @@ public class BacktestBootstrapConfiguration {
 	 */
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * The date variables for the simulation.
+	 * 
+	 * @return everything about the simulation dates.
+	 */
+	public BacktestSimulationDates getSimulationDates() {
+		return simulationDates;
 	}
 }

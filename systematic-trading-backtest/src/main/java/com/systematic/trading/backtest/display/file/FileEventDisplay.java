@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.display.file;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
+import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
@@ -49,17 +50,18 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 	private final OrderEventListener orderEventListener;
 	private final BrokerageEventListener brokerageEventListener;
 
-	public FileEventDisplay( final TickerSymbolTradingData tradingData, final FileDisplayMultithreading display ) {
+	public FileEventDisplay( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
+			final FileDisplayMultithreading display ) {
 
-		display.write( createHeaderOutput( tradingData ) );
+		display.write( createHeaderOutput( tradingData, dates ) );
 
 		this.cashEventListener = new FileCashEventDisplay( display );
 		this.orderEventListener = new FileOrderEventDisplay( display );
 		this.brokerageEventListener = new FileBrokerageEventDisplay( display );
-
 	}
 
-	private String createHeaderOutput( final TickerSymbolTradingData tradingData ) {
+	private String createHeaderOutput( final TickerSymbolTradingData tradingData,
+			final BacktestSimulationDates dates ) {
 
 		final StringBuilder output = new StringBuilder();
 		output.append( "\n" );
@@ -70,9 +72,16 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 
 		output.append(
 				String.format( "Data set for %s from %s to %s\n", tradingData.getEquityIdentity().getTickerSymbol(),
-						tradingData.getStartDate(), tradingData.getEndDate() ) );
+						tradingData.getEarliestDate(), tradingData.getLatestDate() ) );
 
-		final long daysBetween = ChronoUnit.DAYS.between( tradingData.getStartDate(), tradingData.getEndDate() );
+		output.append( String.format( "Simulation dates for %s from %s to %s\n",
+				tradingData.getEquityIdentity().getTickerSymbol(), dates.getSimulationStartDate(),
+				dates.getSimulationEndDate() ) );
+
+		output.append( String.format( "Simulation warm up period for %s of %s\n",
+				tradingData.getEquityIdentity().getTickerSymbol(), dates.getWarmUp() ) );
+
+		final long daysBetween = ChronoUnit.DAYS.between( tradingData.getEarliestDate(), tradingData.getLatestDate() );
 		final double percentageTradingDays = ((double) tradingData.getNumberOfTradingDays() / daysBetween) * 100;
 
 		output.append( String.format( "# trading days: %s over %s days (%s percentage trading days)\n",

@@ -47,12 +47,10 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
-import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
-import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
-import com.systematic.trading.backtest.display.file.FileMinimalDisplay;
+import com.systematic.trading.backtest.display.file.FileDisplay;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
 import com.systematic.trading.data.DataService;
@@ -65,17 +63,16 @@ import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.management.FlatEquityManagementFeeCalculator;
-import com.systematic.trading.simulation.equity.fee.management.LadderedEquityManagementFeeCalculator;
 
 /**
- * Values 100, 150, 200, 250, 300, 500.
+ * Cmc Markets @ 150 weekly deposit.
  * 
  * @author CJ Hare
  */
-public class AllConfigurations {
+public class SingleConfigurationCmcMarkets {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( AllConfigurations.class );
+	private static final Logger LOG = LogManager.getLogger( SingleConfigurationCmcMarkets.class );
 
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
@@ -84,7 +81,6 @@ public class AllConfigurations {
 	private static final int DAYS_IN_A_YEAR = 365;
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
 
-	private static final Period WEEKLY = Period.ofWeeks( 1 );
 	private static final Period MONTHLY = Period.ofMonths( 1 );
 
 	public static void main( final String... args ) throws Exception {
@@ -102,29 +98,24 @@ public class AllConfigurations {
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final Period warmUpPeriod = getWarmUpPeriod();
-		final BacktestSimulationDates simulationDates = new BacktestSimulationDates( simulationStartDate,
+		final BacktestSimulationDates simulationDate = new BacktestSimulationDates( simulationStartDate,
 				simulationEndDate, warmUpPeriod );
 
 		// Retrieve the set of trading data
-		final TickerSymbolTradingData tradingData = getTradingData( equity, simulationDates );
+		final TickerSymbolTradingData tradingData = getTradingData( equity, simulationDate );
 
 		// Multi-threading support
 		final int cores = Runtime.getRuntime().availableProcessors();
 		final ExecutorService pool = Executors.newFixedThreadPool( cores );
 
-		// TODO run the test over the full period with exclusion on filters
-		// TODO no deposits until actual start date
-
 		try {
-			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
+			final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_150;
+			final List<BacktestBootstrapConfiguration> configurations = getConfigurations( equity, simulationDate,
+					depositAmount, filenameGenerator );
 
-				final List<BacktestBootstrapConfiguration> configurations = getConfigurations( equity, simulationDates,
-						depositAmount, filenameGenerator );
+			final String outputDirectory = String.format( baseOutputDirectory, depositAmount );
 
-				final String outputDirectory = String.format( baseOutputDirectory, depositAmount );
-
-				runTest( depositAmount, outputDirectory, configurations, tradingData, equity, pool );
-			}
+			runTest( depositAmount, outputDirectory, configurations, tradingData, equity, pool );
 
 		} finally {
 			HibernateUtil.getSessionFactory().close();
@@ -156,9 +147,7 @@ public class AllConfigurations {
 
 	private static BacktestDisplay getDisplay( final String outputDirectory, final ExecutorService pool )
 			throws IOException {
-		// return new FileDisplay( outputDirectory, pool, MATH_CONTEXT );
-		return new FileMinimalDisplay( outputDirectory, pool, MATH_CONTEXT );
-		// return new FileNoDisplay();
+		return new FileDisplay( outputDirectory, pool, MATH_CONTEXT );
 	}
 
 	public static void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
@@ -204,17 +193,9 @@ public class AllConfigurations {
 		return tradingData;
 	}
 
-	// TODO these fees should go somewhere, another configuration enum?
 	private static EquityManagementFeeCalculator getVanguardEftFeeCalculator() {
 		// new ZeroEquityManagementFeeStructure()
 		return new FlatEquityManagementFeeCalculator( BigDecimal.valueOf( 0.0018 ), MATH_CONTEXT );
-	}
-
-	private static EquityManagementFeeCalculator getVanguardRetailFeeCalculator() {
-		final BigDecimal[] vanguardFeeRange = { BigDecimal.valueOf( 50000 ), BigDecimal.valueOf( 100000 ) };
-		final BigDecimal[] vanguardPercentageFee = { BigDecimal.valueOf( 0.009 ), BigDecimal.valueOf( 0.006 ),
-				BigDecimal.valueOf( 0.0035 ) };
-		return new LadderedEquityManagementFeeCalculator( vanguardFeeRange, vanguardPercentageFee, MATH_CONTEXT );
 	}
 
 	private static List<BacktestBootstrapConfiguration> getConfigurations( final EquityIdentity equity,
@@ -226,63 +207,9 @@ public class AllConfigurations {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
 
-		// Vanguard Retail
-		configurations.add( configurationGenerator.getPeriodicConfiguration( BrokerageFeesConfiguration.VANGUARD_RETAIL,
-				WEEKLY, getVanguardRetailFeeCalculator() ) );
-
-		// CMC Weekly
-		configurations.add( configurationGenerator.getPeriodicConfiguration( BrokerageFeesConfiguration.CMC_MARKETS,
-				WEEKLY, getVanguardEftFeeCalculator() ) );
-
 		// CMC Monthly
 		configurations.add( configurationGenerator.getPeriodicConfiguration( BrokerageFeesConfiguration.CMC_MARKETS,
 				MONTHLY, getVanguardEftFeeCalculator() ) );
-
-		// All signal based use the trading account
-		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
-
-		for (final MaximumTrade maximumTrade : MaximumTrade.values()) {
-			for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-				for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-					for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-
-						// MACD & RSI
-						configurations.add( configurationGenerator.getIndicatorConfiguration( minimumTrade,
-								maximumTrade, getVanguardEftFeeCalculator(), brokerage, macdConfiguration,
-								rsiConfiguration ) );
-					}
-
-					// MACD only
-					configurations.add( configurationGenerator.getIndicatorConfiguration( minimumTrade, maximumTrade,
-							getVanguardEftFeeCalculator(), brokerage, macdConfiguration ) );
-
-					for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-						for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-
-							// MACD, SMA & RSI
-							configurations.add( configurationGenerator.getIndicatorConfiguration( minimumTrade,
-									maximumTrade, getVanguardEftFeeCalculator(), brokerage, macdConfiguration,
-									smaConfiguration, rsiConfiguration ) );
-						}
-
-						// MACD & SMA
-						configurations.add( configurationGenerator.getIndicatorConfiguration( minimumTrade,
-								maximumTrade, getVanguardEftFeeCalculator(), brokerage, macdConfiguration,
-								smaConfiguration ) );
-					}
-				}
-
-				for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-					for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-
-						// SMA & RSI
-						configurations.add( configurationGenerator.getIndicatorConfiguration( minimumTrade,
-								maximumTrade, getVanguardEftFeeCalculator(), brokerage, smaConfiguration,
-								rsiConfiguration ) );
-					}
-				}
-			}
-		}
 
 		return configurations;
 	}

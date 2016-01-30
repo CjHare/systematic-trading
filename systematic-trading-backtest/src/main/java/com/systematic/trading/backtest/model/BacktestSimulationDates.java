@@ -23,52 +23,38 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.model;
+package com.systematic.trading.backtest.model;
 
 import java.time.LocalDate;
-import java.util.Map;
-
-import com.systematic.trading.data.TradingDayPrices;
+import java.time.Period;
 
 /**
- * Details for the trading range, per a specific ticker symbol.
+ * Simulation dates and warm up period.
  * 
  * @author CJ Hare
  */
-public interface TickerSymbolTradingData {
+public class BacktestSimulationDates {
 
-	/**
-	 * Identity of the equity across the universe of equities.
-	 * 
-	 * @return never <code>null</code>.
-	 */
-	EquityIdentity getEquityIdentity();
+	private final LocalDate simulationStartDate;
+	private final LocalDate simulationEndDate;
+	private final Period warmUp;
 
-	/**
-	 * Marks the beginning of the trading data range.
-	 * 
-	 * @return Inclusive date for the beginning of the data set.
-	 */
-	LocalDate getEarliestDate();
+	public BacktestSimulationDates( final LocalDate simulationStartDate, final LocalDate simulationEndDate,
+			final Period warmUp ) {
+		this.simulationStartDate = simulationStartDate;
+		this.simulationEndDate = simulationEndDate;
+		this.warmUp = warmUp;
+	}
 
-	/**
-	 * Marks the end of the trading data range.
-	 * 
-	 * @return Inclusive date for the end of the data set.
-	 */
-	LocalDate getLatestDate();
+	public LocalDate getSimulationStartDate() {
+		return simulationStartDate;
+	}
 
-	/**
-	 * Retrieve the number of trading days data.
-	 * 
-	 * @return the number of trading data points within the defined start and end dates.
-	 */
-	int getNumberOfTradingDays();
+	public LocalDate getSimulationEndDate() {
+		return simulationEndDate;
+	}
 
-	/**
-	 * Retrieves the map of trading days to their prices.
-	 * 
-	 * @return trading prices keyed by the date they correspond with.
-	 */
-	Map<LocalDate, TradingDayPrices> getTradingDayPrices();
+	public Period getWarmUp() {
+		return warmUp;
+	}
 }
