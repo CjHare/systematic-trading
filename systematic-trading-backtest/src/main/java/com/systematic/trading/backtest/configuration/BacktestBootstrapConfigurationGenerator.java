@@ -143,7 +143,7 @@ public class BacktestBootstrapConfigurationGenerator {
 		final RelativeTradeValue tradeValue = new RelativeTradeValue( minimumTrade.getValue(), maximumTrade.getValue(),
 				mathContext );
 
-		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue,
+		final EntryLogic entryLogic = EntryLogicFactory.create( equityIdentity, tradeValue, simulationDates,
 				EntryLogicFilterConfiguration.SAME_DAY, mathContext, entrySignals );
 		final EquityWithFeeConfiguration equity = new EquityWithFeeConfiguration( equityIdentity,
 				new PeriodicEquityManagementFeeStructure( managementFeeStartDate, feeCalculator, ONE_YEAR ) );

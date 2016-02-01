@@ -53,7 +53,7 @@ import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
-import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
+import com.systematic.trading.signals.model.filter.RollingTimePeriodSignalFilterDecorator;
 
 public class TodaysBuySignals {
 
@@ -86,7 +86,7 @@ public class TodaysBuySignals {
 		generators.add( sma );
 
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		final SignalFilter filter = new TimePeriodSignalFilterDecorator(
+		final SignalFilter filter = new RollingTimePeriodSignalFilterDecorator(
 				new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD, IndicatorSignalType.RSI ),
 				Period.ofDays( 5 ) );
 		filters.add( filter );

@@ -32,12 +32,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.AnalysisLongBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
+import com.systematic.trading.signals.model.filter.RollingTimePeriodSignalFilterDecorator;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
@@ -64,8 +66,8 @@ public class EntryLogicFactory {
 	}
 
 	public static EntryLogic create( final EquityIdentity equity, final TradeValue tradeValue,
-			final EntryLogicFilterConfiguration filterConfiguration, final MathContext mathContext,
-			final IndicatorSignalGenerator... entrySignals ) {
+			final BacktestSimulationDates simulationDates, final EntryLogicFilterConfiguration filterConfiguration,
+			final MathContext mathContext, final IndicatorSignalGenerator... entrySignals ) {
 
 		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>(
 				entrySignals.length );
@@ -80,11 +82,15 @@ public class EntryLogicFactory {
 		// Number of days of signals to use when triggering signals.
 		final int DAYS_ACCEPTING_SIGNALS = 5;
 
+		final LocalDate simulationStartDate = simulationDates.getSimulationStartDate();
+		final LocalDate simulationEndDate = simulationDates.getSimulationEndDate();
+
 		// Only signals from the last few days are of interest
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
 		final SignalFilter filter = creatSignalFilter( filterConfiguration, entrySignals );
-		final SignalFilter decoratedFilter = new TimePeriodSignalFilterDecorator( filter,
-				Period.ofDays( DAYS_ACCEPTING_SIGNALS ) );
+		final SignalFilter decoratedFilter = new TimePeriodSignalFilterDecorator(
+				new RollingTimePeriodSignalFilterDecorator( filter, Period.ofDays( DAYS_ACCEPTING_SIGNALS ) ),
+				simulationStartDate, simulationEndDate );
 		filters.add( decoratedFilter );
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );

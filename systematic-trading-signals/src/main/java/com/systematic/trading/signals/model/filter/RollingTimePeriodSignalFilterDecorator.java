@@ -26,6 +26,7 @@
 package com.systematic.trading.signals.model.filter;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -38,29 +39,25 @@ import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
- * Decorator to apply to filters that excludes signals dated outside a fixed time period.
+ * Decorator to apply to filters that excludes signals dated outside a time period from the latest
+ * trading day date.
  * <p/>
- * Restriction on date is useful when applying a warm up to the indicators, where some may fire off
- * during that warm up period.
+ * Restriction on date relative to the latest data point is useful when analysing years of data and
+ * only being interested in recent signals.
  * 
  * @author CJ Hare
  */
-public class TimePeriodSignalFilterDecorator implements SignalFilter {
+public class RollingTimePeriodSignalFilterDecorator implements SignalFilter {
 
 	/** Signal filter that has the date restriction applied. */
 	private final SignalFilter filter;
 
-	/** Starting book mark for the acceptable signals. */
-	private final LocalDate startDateInclusive;
+	/** Period of time from the latest date to accept signals. */
+	private final Period inclusiveWithin;
 
-	/** Terminating book end for the acceptable signals. */
-	private final LocalDate endDateInclusive;
-
-	public TimePeriodSignalFilterDecorator( final SignalFilter filter, final LocalDate startDateInclusive,
-			final LocalDate endDateInclusive ) {
-		this.startDateInclusive = startDateInclusive;
-		this.endDateInclusive = endDateInclusive;
+	public RollingTimePeriodSignalFilterDecorator( final SignalFilter filter, final Period withinInclusive ) {
 		this.filter = filter;
+		this.inclusiveWithin = withinInclusive;
 	}
 
 	@Override
@@ -74,7 +71,7 @@ public class TimePeriodSignalFilterDecorator implements SignalFilter {
 		for (final BuySignal signal : signalSet) {
 
 			// When the date is outside the desired range remove the signal
-			if (startDateInclusive.isAfter( signal.getDate() ) || endDateInclusive.isBefore( signal.getDate() )) {
+			if (Period.between( latestTradingDate, signal.getDate() ).plus( inclusiveWithin ).isNegative()) {
 				toRemove.add( signal );
 			}
 		}
