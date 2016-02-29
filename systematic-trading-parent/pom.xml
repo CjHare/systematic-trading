@@ -3,8 +3,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.systematic.trading</groupId>
-	<artifactId>systematic-trading</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>systematic-trading-parent</artifactId>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	
 	<properties>
@@ -16,20 +16,36 @@
 		<mockito.version>1.10.19</mockito.version>
 	</properties>
 
-	<modules>
-		<module>systematic-trading-parent</module>
-		<module>systematic-trading-backtest</module>
-		<module>systematic-trading-data</module>
-		<module>systematic-trading-database-hsqldb</module>
-		<module>systematic-trading-data-hibernate</module>
-		<module>systematic-trading-data-stock-api</module>
-		<module>systematic-trading-data-stock-api-yahoo</module>
-		<module>systematic-trading-interfaces</module>
-		<module>systematic-trading-maths</module>
-		<module>systematic-trading-signals</module>
-		<module>systematic-trading-simulation</module>
-	</modules>
+	<dependencies>
 
+		<!-- These JNA are used by Android API -->
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna-platform</artifactId>
+			<version>${jna.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>${jna.version}</version>
+		</dependency>
+
+		<!-- Testing only dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+	
 	<build>
 		<pluginManagement>
 			<plugins>
