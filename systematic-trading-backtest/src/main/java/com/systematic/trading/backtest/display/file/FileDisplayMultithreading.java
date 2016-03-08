@@ -25,10 +25,10 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
@@ -63,9 +63,11 @@ public class FileDisplayMultithreading {
 	public void write( final String content ) {
 
 		final Runnable task = () -> {
-			try (final PrintWriter out = new PrintWriter(
-					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				out.println( content );
+			try (final FileOutputStream out = new FileOutputStream( outputFilename, true );
+					final FileChannel fileChannel = out.getChannel()) {
+
+				fileChannel.write( ByteBuffer.wrap( content.getBytes() ) );
+
 			} catch (final IOException e) {
 				LOG.error( e );
 			}

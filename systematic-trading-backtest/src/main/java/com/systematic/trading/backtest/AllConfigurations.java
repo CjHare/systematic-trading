@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -129,7 +130,12 @@ public class AllConfigurations {
 		} finally {
 			HibernateUtil.getSessionFactory().close();
 			pool.shutdown();
+
+			LOG.info( "Waiting at most 90 minutes for result output to complete..." );
+			pool.awaitTermination( 90, TimeUnit.MINUTES );
 		}
+
+		LOG.info( "Finished outputting results" );
 	}
 
 	private static Period getWarmUpPeriod() {
