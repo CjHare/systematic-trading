@@ -76,18 +76,21 @@ public class TodaysBuySignals {
 		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals( 10, 20, 7,
 				MATH_CONTEXT );
 
-		final int daysOfSma = 500;
+		final int smaLookback = 50;
+		final int daysOfSmaGradient = 7;
 
-		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( 200, daysOfSma,
+		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals( smaLookback, daysOfSmaGradient,
 				GradientType.POSITIVE, MATH_CONTEXT );
 
+		//TODO Create RSI
+		
 		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>();
 		generators.add( macd );
 		generators.add( sma );
 
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
 		final SignalFilter filter = new RollingTimePeriodSignalFilterDecorator(
-				new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD, IndicatorSignalType.RSI ),
+				new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD,IndicatorSignalType.SMA, IndicatorSignalType.RSI ),
 				Period.ofDays( 5 ) );
 		filters.add( filter );
 
