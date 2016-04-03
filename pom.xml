@@ -14,6 +14,8 @@
 		<junit.version>4.12</junit.version>
 		<jna.version>4.1.0</jna.version>
 		<mockito.version>1.10.19</mockito.version>
+		<maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>		
+		<sonar-jacoco-listeners.version>3.8</sonar-jacoco-listeners.version>		
 	</properties>
 
 	<modules>
@@ -88,6 +90,36 @@
 				</pluginManagement>
 			</build>
 		</profile>
-	</profiles>
 
+		<profile>
+			<id>coverage-per-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>${maven.surefire.plugin.version}</version>
+						<configuration>
+							<properties>
+								<property>
+									<name>listener</name>
+									<value>org.sonar.java.jacoco.JUnitListener</value>
+								</property>
+							</properties>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+
+			<dependencies>
+				<dependency>
+					<groupId>org.sonarsource.java</groupId>
+					<artifactId>sonar-jacoco-listeners</artifactId>
+					<version>${sonar-jacoco-listeners.version}</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles> 
+ 
 </project>
