@@ -12,10 +12,6 @@
 	<artifactId>systematic-trading-interfaces</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<properties>
-		<jee.version>7.0</jee.version>
-	</properties>
-
 	<dependencies>
 		<!--Needed for agnostic JPA 2.x -->
 		<dependency>
