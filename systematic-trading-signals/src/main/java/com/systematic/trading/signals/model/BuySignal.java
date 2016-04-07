@@ -42,4 +42,12 @@ public class BuySignal {
 	public boolean equals( final Object o ) {
 		return o instanceof BuySignal && ((BuySignal) o).getDate().equals( date );
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		return result;
+	}
 }

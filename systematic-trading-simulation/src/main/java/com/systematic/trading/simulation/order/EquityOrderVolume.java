@@ -72,4 +72,12 @@ public class EquityOrderVolume {
 	public boolean equals( final Object obj ) {
 		return obj instanceof EquityOrderVolume && getVolume().equals( ((EquityOrderVolume) obj).getVolume() );
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((volume == null) ? 0 : volume.hashCode());
+		return result;
+	}	
 }
