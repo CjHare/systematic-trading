@@ -32,8 +32,8 @@ package com.systematic.trading.analysis;
  */
 public enum Equity {
 
-//	ETF_OIL( "OOO.AX" ),
-//	ETF_GOLD( "GOLD.AX" ),
+	ETF_OIL( "OOO.AX" ),
+	ETF_GOLD( "GOLD.AX" ),
 //	ETF_SILVER( "ETPMAG.AX" ),
 //	ETF_USD( "USD.AX" ),
 //	ETF_CHINA( "IZZ.AX" ),
@@ -41,11 +41,13 @@ public enum Equity {
 //	ETF_HONG_KONG( "IHK.AX" ),
 //	ETF_SINGAPORE( "ISG.AX" ),
 //	ETF_SOUTH_KOREA( "IKO.AX" ),
-//	ETF_AUSTRALIA( "VAS.AX" ),
+	ETF_AUSTRALIA( "VAS.AX" ),
+	ETF_SHORT_AUSTRALIA( "BEAR.AX" ),
 //	ETF_USA( "VTS.AX" ),
 //	ETF_AUSTRALIA_SHORT( "BEAR.AX" ),
 //	ETF_AUSTRALIAN_BONDS( "VAF.AX" ),
-	ETF_GLOBAL( "VGS.AX" ), ;
+	ETF_GLOBAL( "VGS.AX" ), 
+	;
 
 	Equity( final String symbol ) {
 		this.symbol = symbol;

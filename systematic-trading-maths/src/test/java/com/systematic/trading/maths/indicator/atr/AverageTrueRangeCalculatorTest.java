@@ -52,154 +52,142 @@ import com.systematic.trading.maths.indicator.Validator;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class AverageTrueRangeCalculatorTest {
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+    private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
-	@Mock
-	private Validator validator;
+    @Mock
+    private Validator validator;
 
-	private TradingDayPrices[] createPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
+    private TradingDayPrices[] createPrices(final int count) {
+        final TradingDayPrices[] prices = new TradingDayPrices[count];
 
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 0 ),
-					BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 1 ) );
-		}
+        for (int i = 0; i < count; i++) {
+            prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(1), BigDecimal.valueOf(0),
+                    BigDecimal.valueOf(2), BigDecimal.valueOf(1));
+        }
 
-		return prices;
-	}
+        return prices;
+    }
 
-	private TradingDayPrices[] createIncreasingPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
+    private TradingDayPrices[] createIncreasingPrices(final int count) {
+        final TradingDayPrices[] prices = new TradingDayPrices[count];
 
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( count ), BigDecimal.valueOf( 0 ),
-					BigDecimal.valueOf( count + i * 5 ), BigDecimal.valueOf( count ) );
-		}
+        for (int i = 0; i < count; i++) {
+            prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(count), BigDecimal.valueOf(0),
+                    BigDecimal.valueOf(count + i * 5), BigDecimal.valueOf(count));
+        }
 
-		return prices;
-	}
+        return prices;
+    }
 
-	private TradingDayPrices[] createThreeTypesOfVolatility( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
+    private TradingDayPrices[] createThreeTypesOfVolatility(final int count) {
+        final TradingDayPrices[] prices = new TradingDayPrices[count];
 
-		// Biggest swing is between today's high & low
-		for (int i = 0; i < count - 2; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( count ), BigDecimal.valueOf( 0 ),
-					BigDecimal.valueOf( count ), BigDecimal.valueOf( count ) );
-		}
+        // Biggest swing is between today's high & low
+        for (int i = 0; i < count - 2; i++) {
+            prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(count), BigDecimal.valueOf(0),
+                    BigDecimal.valueOf(count), BigDecimal.valueOf(count));
+        }
 
-		// Biggest swing is between the highest of today and yesterday's close
-		prices[count - 2] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( count ),
-				BigDecimal.valueOf( 2 * count ), BigDecimal.valueOf( 5 * count ), BigDecimal.valueOf( 2 * count ) );
+        // Biggest swing is between the highest of today and yesterday's close
+        prices[count - 2] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(count),
+                BigDecimal.valueOf(2 * count), BigDecimal.valueOf(5 * count), BigDecimal.valueOf(2 * count));
 
-		// Biggest swing is between the low of today and yesterday's close
-		prices[count - 1] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( count ),
-				BigDecimal.valueOf( 0 ), BigDecimal.valueOf( count ), BigDecimal.valueOf( count ) );
+        // Biggest swing is between the low of today and yesterday's close
+        prices[count - 1] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(count), BigDecimal.valueOf(0),
+                BigDecimal.valueOf(count), BigDecimal.valueOf(count));
 
-		return prices;
-	}
+        return prices;
+    }
 
-	@Test
-	public void atrFlat() {
-		final int lookback = 2;
-		final int numberDataPoints = lookback + 1;
-		final TradingDayPrices[] data = createPrices( numberDataPoints );
-		final int daysOfAtrValues = numberDataPoints - lookback;
+    @Test
+    public void atrFlat() {
+        final int lookback = 2;
+        final int numberDataPoints = lookback + 1;
+        final TradingDayPrices[] data = createPrices(numberDataPoints);
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
-				validator, MATH_CONTEXT );
+        final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
 
-		final List<BigDecimal> atr = calculator.atr( data );
+        final List<BigDecimal> atr = calculator.atr(data);
 
-		verify( validator ).verifyZeroNullEntries( data );
-		verify( validator ).verifyEnoughValues( data, numberDataPoints );
+        verify(validator).verifyZeroNullEntries(data);
+        verify(validator).verifyEnoughValues(data, lookback);
 
-		assertNotNull( atr );
-		assertEquals( numberDataPoints, atr.size() );
-		assertEquals( BigDecimal.valueOf( 2 ), atr.get( 0 ) );
-		assertEquals( BigDecimal.valueOf( 2 ), atr.get( 1 ) );
-		assertEquals( BigDecimal.valueOf( 2 ), atr.get( 2 ) );
-	}
+        assertNotNull(atr);
+        assertEquals(numberDataPoints, atr.size());
+        assertEquals(BigDecimal.valueOf(2), atr.get(0));
+        assertEquals(BigDecimal.valueOf(2), atr.get(1));
+        assertEquals(BigDecimal.valueOf(2), atr.get(2));
+    }
 
-	@Test
-	public void atrIncreasing() {
-		final int lookback = 4;
-		final int numberDataPoints = lookback + 1;
-		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
-		final int daysOfAtrValues = numberDataPoints - lookback;
+    @Test
+    public void atrIncreasing() {
+        final int lookback = 4;
+        final int numberDataPoints = lookback + 1;
+        final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
-				validator, MATH_CONTEXT );
+        final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
 
-		final List<BigDecimal> atr = calculator.atr( data );
+        final List<BigDecimal> atr = calculator.atr(data);
 
-		verify( validator ).verifyZeroNullEntries( data );
-		verify( validator ).verifyEnoughValues( data, numberDataPoints );
+        verify(validator).verifyZeroNullEntries(data);
+        verify(validator).verifyEnoughValues(data, lookback);
 
-		assertNotNull( atr );
-		assertEquals( numberDataPoints, atr.size() );
-		assertEquals( BigDecimal.valueOf( 5 ), atr.get( 0 ) );
-		assertEquals( BigDecimal.valueOf( 6.25 ), atr.get( 1 ) );
-		assertEquals( BigDecimal.valueOf( 8.4375 ), atr.get( 2 ) );
-		assertEquals( BigDecimal.valueOf( 11.328125 ), atr.get( 3 ) );
-		assertEquals( BigDecimal.valueOf( 14.74609375 ), atr.get( 4 ) );
-	}
+        assertNotNull(atr);
+        assertEquals(numberDataPoints, atr.size());
+        assertEquals(BigDecimal.valueOf(5), atr.get(0));
+        assertEquals(BigDecimal.valueOf(6.25), atr.get(1));
+        assertEquals(BigDecimal.valueOf(8.4375), atr.get(2));
+        assertEquals(BigDecimal.valueOf(11.328125), atr.get(3));
+        assertEquals(BigDecimal.valueOf(14.74609375), atr.get(4));
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void atrInitialNullEntry() {
-		final int lookback = 2;
-		final int numberDataPoints = 4;
-		final TradingDayPrices[] data = createPrices( numberDataPoints );
-		data[0] = null;
-		final int daysOfAtrValues = numberDataPoints - lookback;
+    @Test(expected = IllegalArgumentException.class)
+    public void atrInitialNullEntry() {
+        final int lookback = 2;
+        final int numberDataPoints = 4;
+        final TradingDayPrices[] data = createPrices(numberDataPoints);
+        data[0] = null;
 
-		doThrow( new IllegalArgumentException() ).when( validator )
-				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
+        doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
-				validator, MATH_CONTEXT );
+        final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
 
-		calculator.atr( data );
-	}
+        calculator.atr(data);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void atrLastNullEntry() {
-		final int lookback = 2;
-		final int numberDataPoints = 4;
-		final TradingDayPrices[] data = createPrices( numberDataPoints );
-		data[data.length - 1] = null;
-		final int daysOfAtrValues = numberDataPoints - lookback;
+    @Test(expected = IllegalArgumentException.class)
+    public void atrLastNullEntry() {
+        final int lookback = 2;
+        final int numberDataPoints = 4;
+        final TradingDayPrices[] data = createPrices(numberDataPoints);
+        data[data.length - 1] = null;
 
-		doThrow( new IllegalArgumentException() ).when( validator )
-				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
+        doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
-				validator, MATH_CONTEXT );
+        final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
 
-		calculator.atr( data );
-	}
+        calculator.atr(data);
+    }
 
-	@Test
-	public void atrThreeRangeTypes() {
-		final int lookback = 4;
-		final int numberDataPoints = lookback + 1;
-		final TradingDayPrices[] data = createThreeTypesOfVolatility( numberDataPoints );
-		final int daysOfAtrValues = numberDataPoints - lookback;
+    @Test
+    public void atrThreeRangeTypes() {
+        final int lookback = 4;
+        final int numberDataPoints = lookback + 1;
+        final TradingDayPrices[] data = createThreeTypesOfVolatility(numberDataPoints);
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator( lookback, daysOfAtrValues,
-				validator, MATH_CONTEXT );
+        final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
 
-		final List<BigDecimal> atr = calculator.atr( data );
+        final List<BigDecimal> atr = calculator.atr(data);
 
-		verify( validator ).verifyZeroNullEntries( data );
-		verify( validator ).verifyEnoughValues( data, numberDataPoints );
+        verify(validator).verifyZeroNullEntries(data);
+        verify(validator).verifyEnoughValues(data, lookback);
 
-		assertNotNull( atr );
-		assertEquals( numberDataPoints, atr.size() );
-		assertEquals( BigDecimal.valueOf( 5 ), atr.get( 0 ) );
-		assertEquals( BigDecimal.valueOf( 5 ), atr.get( 1 ) );
-		assertEquals( BigDecimal.valueOf( 5 ), atr.get( 2 ) );
-		assertEquals( BigDecimal.valueOf( 8.75 ), atr.get( 3 ) );
-		assertEquals( BigDecimal.valueOf( 9.0625 ), atr.get( 4 ) );
-	}
+        assertNotNull(atr);
+        assertEquals(numberDataPoints, atr.size());
+        assertEquals(BigDecimal.valueOf(5), atr.get(0));
+        assertEquals(BigDecimal.valueOf(5), atr.get(1));
+        assertEquals(BigDecimal.valueOf(5), atr.get(2));
+        assertEquals(BigDecimal.valueOf(8.75), atr.get(3));
+        assertEquals(BigDecimal.valueOf(9.0625), atr.get(4));
+    }
 }
