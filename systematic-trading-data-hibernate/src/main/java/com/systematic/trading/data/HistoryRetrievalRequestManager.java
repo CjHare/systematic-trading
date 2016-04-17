@@ -76,6 +76,7 @@ public class HistoryRetrievalRequestManager {
 		session.close();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<HistoryRetrievalRequest> get( final String tickerSymbol ) {
 
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -87,10 +88,7 @@ public class HistoryRetrievalRequestManager {
 			final Query query = session.createQuery("from HistoryRetrievalRequest where ticker_symbol= :ticker_symbol");
 			query.setString("ticker_symbol", tickerSymbol);
 
-			@SuppressWarnings("unchecked")
-			final List<HistoryRetrievalRequest> requests = query.list();
-
-			return requests;
+			return query.list();
 
 		} catch (final HibernateException e) {
 

@@ -32,6 +32,7 @@ package com.systematic.trading.backtest.configuration.entry;
  */
 public enum EntryLogicFilterConfiguration {
 
-	SAME_DAY;
+	SAME_DAY,
+	DAY_AFTER;
 
 }

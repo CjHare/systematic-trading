@@ -43,14 +43,14 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	/** Average number of data points above which assumes the month already retrieve covered. */
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
-	public static DataServiceUpdater getInstance() {
-		return INSTANCE;
-	}
-
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
 	private final StockApi api = new YahooStockApi();
 
 	private DataServiceUpdaterImpl() {
+	}
+
+	public static DataServiceUpdater getInstance() {
+		return INSTANCE;
 	}
 
 	@Override

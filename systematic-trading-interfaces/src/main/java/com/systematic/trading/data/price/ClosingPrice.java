@@ -34,6 +34,10 @@ import java.math.BigDecimal;
  */
 public class ClosingPrice extends Price {
 
+	protected ClosingPrice(final BigDecimal price) {
+		super(price);
+	}
+
 	/**
 	 * Creates a close price from an underlying decimal value.
 	 * 
@@ -48,7 +52,4 @@ public class ClosingPrice extends Price {
 		return new ClosingPrice(price);
 	}
 
-	protected ClosingPrice(final BigDecimal price) {
-		super(price);
-	}
 }

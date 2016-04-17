@@ -53,7 +53,10 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 	private final Period summaryPeriod;
 
 	/** Date of the last summary event. */
-	private LocalDate lastSummaryDate, nextSummaryDate;
+	private LocalDate lastSummaryDate;
+
+	/** Date of the next summary event. */
+	private LocalDate nextSummaryDate;
 
 	/** The running date for calculating when the summary period has passed. */
 	private LocalDate date;

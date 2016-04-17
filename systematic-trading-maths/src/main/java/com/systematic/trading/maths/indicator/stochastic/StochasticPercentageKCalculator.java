@@ -125,7 +125,8 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 
 	private LowestPrice lowestLow( final TradingDayPrices[] data, final int exclusiveEnd ) {
 		final int inclusiveStart = exclusiveEnd - lookback;
-		LowestPrice contender, lowest = data[inclusiveStart].getLowestPrice();
+		LowestPrice contender;
+		LowestPrice lowest = data[inclusiveStart].getLowestPrice();
 
 		for (int i = inclusiveStart + 1; i < exclusiveEnd; i++) {
 			contender = data[i].getLowestPrice();
@@ -139,7 +140,8 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 
 	private HighestPrice highestHigh( final TradingDayPrices[] data, final int exclusiveEnd ) {
 		final int inclusiveStart = exclusiveEnd - lookback;
-		HighestPrice contender, highest = data[inclusiveStart].getHighestPrice();
+		HighestPrice contender;
+		HighestPrice highest = data[inclusiveStart].getHighestPrice();
 
 		for (int i = inclusiveStart + 1; i < exclusiveEnd; i++) {
 			contender = data[i].getHighestPrice();

@@ -181,11 +181,8 @@ public class FileDisplay implements BacktestDisplay {
 	@Override
 	public void stateChanged( final SimulationState transitionedState ) {
 
-		switch (transitionedState) {
-			case COMPLETE:
-				simulationCompleted();
-			default:
-			break;
+		if (SimulationState.COMPLETE.equals(transitionedState)) {
+			simulationCompleted();
 		}
 	}
 

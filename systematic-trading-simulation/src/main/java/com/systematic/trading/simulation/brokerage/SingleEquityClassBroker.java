@@ -45,7 +45,6 @@ import com.systematic.trading.simulation.equity.event.EquityEventListener;
 import com.systematic.trading.simulation.equity.event.SingleEquityEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent.EquityEventType;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
-import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 import com.systematic.trading.simulation.order.EquityOrderVolume;
 import com.systematic.trading.simulation.order.exception.InsufficientEquitiesException;
 
@@ -139,8 +138,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	}
 
 	@Override
-	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final LocalDate tradeDate )
-	        throws UnsupportedEquityClass {
+	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final LocalDate tradeDate ) {
 		return transactionFee.calculateFee(tradeValue, type, monthlyTradeCounter.get(tradeDate));
 	}
 

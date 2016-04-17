@@ -34,6 +34,10 @@ import java.math.BigDecimal;
  */
 public class LowestPrice extends Price {
 
+	protected LowestPrice(final BigDecimal price) {
+		super(price);
+	}
+
 	/**
 	 * Creates a lowest price from an underlying decimal value.
 	 * 
@@ -48,7 +52,4 @@ public class LowestPrice extends Price {
 		return new LowestPrice(price);
 	}
 
-	protected LowestPrice(final BigDecimal price) {
-		super(price);
-	}
 }

@@ -34,6 +34,10 @@ import java.math.BigDecimal;
  */
 public class HighestPrice extends Price {
 
+	protected HighestPrice(final BigDecimal price) {
+		super(price);
+	}
+
 	/**
 	 * Creates a highest price from an underlying decimal value.
 	 * 
@@ -47,9 +51,4 @@ public class HighestPrice extends Price {
 
 		return new HighestPrice(price);
 	}
-
-	protected HighestPrice(final BigDecimal price) {
-		super(price);
-	}
-
 }

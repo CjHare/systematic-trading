@@ -34,6 +34,10 @@ import java.math.BigDecimal;
  */
 public class OpeningPrice extends Price {
 
+	protected OpeningPrice(final BigDecimal price) {
+		super(price);
+	}
+
 	/**
 	 * Creates an opening price from an underlying decimal value.
 	 * 
@@ -47,9 +51,4 @@ public class OpeningPrice extends Price {
 
 		return new OpeningPrice(price);
 	}
-
-	protected OpeningPrice(final BigDecimal price) {
-		super(price);
-	}
-
 }

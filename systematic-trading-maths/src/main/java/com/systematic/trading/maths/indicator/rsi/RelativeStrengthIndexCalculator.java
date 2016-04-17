@@ -108,7 +108,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 		 * Upwards movement upward = closeToday - closeYesterday downward = 0 Downwards movement
 		 * upward = closeYesterday - closeToday */
 		final int startRsiIndex = 0;
-		ClosingPrice closeToday, closeYesterday = data[startRsiIndex].getClosingPrice();
+		ClosingPrice closeToday;
+		ClosingPrice closeYesterday = data[startRsiIndex].getClosingPrice();
 		BigDecimal upward = BigDecimal.ZERO;
 		BigDecimal downward = BigDecimal.ZERO;
 

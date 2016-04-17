@@ -35,6 +35,13 @@ import java.math.MathContext;
  */
 public class Price {
 
+	/** Price of the equity. */
+	private final BigDecimal price;
+
+	protected Price(final BigDecimal price) {
+		this.price = price;
+	}
+
 	/**
 	 * Creates a price from an underlying decimal value.
 	 * 
@@ -47,13 +54,6 @@ public class Price {
 		}
 
 		return new Price(price);
-	}
-
-	/** Price of the equity. */
-	private final BigDecimal price;
-
-	protected Price(final BigDecimal price) {
-		this.price = price;
 	}
 
 	/**

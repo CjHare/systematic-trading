@@ -124,7 +124,10 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		final int endIndex = Math.min(signaLine.size(), macdValues.size());
 
 		// Buy signal is from a cross over of the signal line, for crossing over the origin
-		BigDecimal todayMacd, todaySignalLine, yesterdayMacd, yesterdaySignalLine;
+		BigDecimal todayMacd;
+		BigDecimal todaySignalLine;
+		BigDecimal yesterdayMacd;
+		BigDecimal yesterdaySignalLine;
 		LocalDate todaySignalLineDate;
 
 		for (int index = 1; index < endIndex; index++) {

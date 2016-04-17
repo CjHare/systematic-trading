@@ -105,7 +105,10 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 		final int offset = dataPoint.length - signaline.size();
 
 		// Buy signal is from a cross over of the signal line
-		BigDecimal pointToday, pointYesterday, signalLineToday, signalLineYesterday;
+		BigDecimal pointToday;
+		BigDecimal pointYesterday;
+		BigDecimal signalLineToday;
+		BigDecimal signalLineYesterday;
 
 		for (int index = 1; index < signaline.size(); index++) {
 			pointToday = dataPoint[index + offset].getValue();

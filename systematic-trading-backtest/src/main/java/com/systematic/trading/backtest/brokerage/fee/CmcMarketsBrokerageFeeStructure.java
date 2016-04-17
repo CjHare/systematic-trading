@@ -57,8 +57,7 @@ public class CmcMarketsBrokerageFeeStructure implements BrokerageTransactionFeeS
 	}
 
 	@Override
-	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
-	        throws UnsupportedEquityClass {
+	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
 
 		final BigDecimal brokerage;
 

@@ -34,6 +34,12 @@ import java.math.BigDecimal;
  */
 public class EquityOrderVolume {
 
+	private final BigDecimal volume;
+
+	private EquityOrderVolume(final BigDecimal volume) {
+		this.volume = volume;
+	}
+
 	/**
 	 * Creates a volume of an order from a decimal.
 	 * 
@@ -46,12 +52,6 @@ public class EquityOrderVolume {
 		}
 
 		return new EquityOrderVolume(volume);
-	}
-
-	private final BigDecimal volume;
-
-	private EquityOrderVolume(final BigDecimal volume) {
-		this.volume = volume;
 	}
 
 	/**

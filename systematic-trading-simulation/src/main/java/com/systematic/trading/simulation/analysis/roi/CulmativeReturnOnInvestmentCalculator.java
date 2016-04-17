@@ -49,7 +49,7 @@ import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
 public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator {
 
 	/** Used for the conversion to percentage. */
-	private static BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
 	/** Context for BigDecimal operations. */
 	private final MathContext mathContext;

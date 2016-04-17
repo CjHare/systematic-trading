@@ -54,6 +54,9 @@ import com.systematic.trading.simulation.logic.TradeValue;
  */
 public class EntryLogicFactory {
 
+	/* Number of days of signals to use when triggering signals.*/
+	private static final int DAYS_ACCEPTING_SIGNALS = 5;
+
 	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate,
 	        final DepositConfiguration deposit, final MathContext mathContext ) {
 		final Period frequency = deposit.getFrequency();
@@ -77,9 +80,6 @@ public class EntryLogicFactory {
 			generators.add(entrySignal);
 			types[i] = entrySignal.getSignalType();
 		}
-
-		// Number of days of signals to use when triggering signals.
-		final int DAYS_ACCEPTING_SIGNALS = 5;
 
 		final LocalDate simulationStartDate = simulationDates.getSimulationStartDate();
 		final LocalDate simulationEndDate = simulationDates.getSimulationEndDate();
@@ -107,6 +107,8 @@ public class EntryLogicFactory {
 					passed[i] = entrySignals[i].getSignalType();
 				}
 				return new IndicatorsOnSameDaySignalFilter(passed);
+			case DAY_AFTER:
+				throw new IllegalArgumentException(String.format("Filter not yet implemented: %s", configuration));
 			default:
 				throw new IllegalArgumentException(
 				        String.format("Could not create the desired entry logic filter: %s", configuration));

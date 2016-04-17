@@ -55,7 +55,9 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 	private final int requiredNumberOfTradingDays;
 
-	private final BigDecimal oversold, overbought;
+	private final BigDecimal oversold;
+
+	private final BigDecimal overbought;
 
 	// TODO enums for configuration
 
@@ -78,9 +80,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		final List<BigDecimal> tenDayRsi = rsi.rsi(data);
 
 		/* RSI triggers a buy signal when crossing the over brought level (e.g. 30) */
-		final List<IndicatorSignal> tenDayBuy = buySignals(tenDayRsi, data);
-
-		return tenDayBuy;
+		return buySignals(tenDayRsi, data);
 	}
 
 	protected List<IndicatorSignal> buySignals( final List<BigDecimal> rsi, final TradingDayPrices[] data ) {

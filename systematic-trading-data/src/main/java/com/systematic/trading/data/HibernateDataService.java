@@ -34,13 +34,13 @@ public class HibernateDataService implements DataService {
 
 	private static final HibernateDataService INSTANCE = new HibernateDataService();
 
-	public static DataService getInstance() {
-		return INSTANCE;
-	}
-
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
 
 	private HibernateDataService() {
+	}
+
+	public static DataService getInstance() {
+		return INSTANCE;
 	}
 
 	@Override
