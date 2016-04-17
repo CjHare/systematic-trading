@@ -64,30 +64,30 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 	        final BacktestSimulationDates dates ) {
 
 		final StringBuilder output = new StringBuilder();
-		output.append("\n");
-		output.append("#######################\n");
-		output.append("### Backtest Events ###\n");
-		output.append("#######################\n");
-		output.append("\n");
+		output.append("%n");
+		output.append("#######################%n");
+		output.append("### Backtest Events ###%n");
+		output.append("#######################%n");
+		output.append("%n");
 
 		output.append(
-		        String.format("Data set for %s from %s to %s\n", tradingData.getEquityIdentity().getTickerSymbol(),
+		        String.format("Data set for %s from %s to %s%n", tradingData.getEquityIdentity().getTickerSymbol(),
 		                tradingData.getEarliestDate(), tradingData.getLatestDate()));
 
-		output.append(String.format("Simulation dates for %s from %s to %s\n",
+		output.append(String.format("Simulation dates for %s from %s to %s%n",
 		        tradingData.getEquityIdentity().getTickerSymbol(), dates.getSimulationStartDate(),
 		        dates.getSimulationEndDate()));
 
-		output.append(String.format("Simulation warm up period for %s of %s\n",
+		output.append(String.format("Simulation warm up period for %s of %s%n",
 		        tradingData.getEquityIdentity().getTickerSymbol(), dates.getWarmUp()));
 
 		final long daysBetween = ChronoUnit.DAYS.between(tradingData.getEarliestDate(), tradingData.getLatestDate());
 		final double percentageTradingDays = ((double) tradingData.getNumberOfTradingDays() / daysBetween) * 100;
 
-		output.append(String.format("# trading days: %s over %s days (%s percentage trading days)\n",
+		output.append(String.format("# trading days: %s over %s days (%s percentage trading days)%n",
 		        tradingData.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format(percentageTradingDays)));
 
-		output.append("\n");
+		output.append("%n");
 
 		return output.toString();
 	}

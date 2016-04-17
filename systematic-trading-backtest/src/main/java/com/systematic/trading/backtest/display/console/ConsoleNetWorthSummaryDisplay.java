@@ -61,14 +61,14 @@ public class ConsoleNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 		final StringBuilder output = new StringBuilder();
 
-		output.append("\n=== Net Worth Summary ===\n");
-		output.append(String.format("Number of equities: %s\n", TWO_DECIMAL_PLACES.format(balance)));
-		output.append(String.format("Holdings value: %s\n", TWO_DECIMAL_PLACES.format(holdingValue)));
-		output.append(String.format("Cash account: %s\n", TWO_DECIMAL_PLACES.format(cashBalance)));
-		output.append(String.format("\nTotal Net Worth: %s\n", TWO_DECIMAL_PLACES.format(netWorth)));
+		output.append("\n=== Net Worth Summary ===%n");
+		output.append(String.format("Number of equities: %s%n", TWO_DECIMAL_PLACES.format(balance)));
+		output.append(String.format("Holdings value: %s%n", TWO_DECIMAL_PLACES.format(holdingValue)));
+		output.append(String.format("Cash account: %s%n", TWO_DECIMAL_PLACES.format(cashBalance)));
+		output.append(String.format("\nTotal Net Worth: %s%n", TWO_DECIMAL_PLACES.format(netWorth)));
 
 		// TODO this value is of dubious value, needs weighting (plus pusing into summary)
-		output.append(String.format("\nInvestment Cumulative ROI: %s\n",
+		output.append(String.format("\nInvestment Cumulative ROI: %s%n",
 		        TWO_DECIMAL_PLACES.format(cumulativeRoi.getCumulativeReturnOnInvestment())));
 
 		System.out.println(output.toString());
