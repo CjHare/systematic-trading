@@ -66,7 +66,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	 */
 	public AverageTrueRangeCalculator(final int lookback, final Validator validator, final MathContext mathContext) {
 		this.minimumNumberOfPrices = lookback;
-		this.priorMultiplier = BigDecimal.valueOf(lookback - 1);
+		this.priorMultiplier = BigDecimal.valueOf(lookback - 1L);
 		this.lookbackDivider = BigDecimal.valueOf(lookback);
 		this.mathContext = mathContext;
 		this.atrValues = new NonNullableArrayList<BigDecimal>();

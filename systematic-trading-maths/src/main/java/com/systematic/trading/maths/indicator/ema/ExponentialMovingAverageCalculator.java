@@ -127,7 +127,8 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 			simpleMovingAverage = simpleMovingAverage.add(data.getPrice(i), mathContext);
 		}
 
-		simpleMovingAverage = simpleMovingAverage.divide(BigDecimal.valueOf(endSmaIndex - startSmaIndex), mathContext);
+		simpleMovingAverage = simpleMovingAverage.divide(BigDecimal.valueOf((long) endSmaIndex - startSmaIndex),
+		        mathContext);
 
 		final int startEmaIndex = endSmaIndex;
 		BigDecimal yesterday = simpleMovingAverage;

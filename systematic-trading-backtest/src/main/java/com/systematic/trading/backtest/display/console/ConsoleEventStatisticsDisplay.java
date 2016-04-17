@@ -85,7 +85,7 @@ public class ConsoleEventStatisticsDisplay implements EventStatisticsDisplay {
 
 	private void displayBrokerageStatistics( final BrokerageEventStatistics brokerageStatistics ) {
 
-		final long sumBrokerageEvents = brokerageStatistics.getSellEventCount()
+		final long sumBrokerageEvents = (long) brokerageStatistics.getSellEventCount()
 		        + brokerageStatistics.getBuyEventCount();
 
 		System.out.println("\n=== Brokerage events ===");

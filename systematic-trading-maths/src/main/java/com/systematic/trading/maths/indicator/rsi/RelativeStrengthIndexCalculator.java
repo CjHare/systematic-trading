@@ -140,8 +140,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 		// Dividing by the number of time periods for a SMA
 		// Reduce lookup by one, as the initial value is neither up or down
-		upward = upward.divide(BigDecimal.valueOf(lookback - 1), mathContext);
-		downward = downward.divide(BigDecimal.valueOf(lookback - 1), mathContext);
+		upward = upward.divide(BigDecimal.valueOf(lookback - 1L), mathContext);
+		downward = downward.divide(BigDecimal.valueOf(lookback - 1L), mathContext);
 
 		/* RS = EMA(U,n) / EMA(D,n) (smoothing constant) multiplier: (2 / (Time periods + 1) ) EMA:
 		 * {Close - EMA(previous day)} x multiplier + EMA(previous day). */
