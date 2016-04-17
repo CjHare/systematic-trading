@@ -54,6 +54,7 @@ import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
 import com.systematic.trading.backtest.display.file.FileMinimalDisplay;
+import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
 import com.systematic.trading.data.DataService;
@@ -169,7 +170,8 @@ public class AllConfigurations {
 
 	public static void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
-	        final EquityIdentity equity, final ExecutorService pool ) throws Exception {
+	        final EquityIdentity equity, final ExecutorService pool )
+	                throws BacktestInitialisationException, IOException {
 
 		// Arrange output to files, only once per a run
 		FileClearDestination destination = new FileClearDestination(baseOutputDirectory);

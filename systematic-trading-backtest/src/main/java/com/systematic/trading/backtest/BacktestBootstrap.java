@@ -31,6 +31,7 @@ import java.time.Period;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
+import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;
@@ -79,7 +80,7 @@ public class BacktestBootstrap {
 		this.display = display;
 	}
 
-	public void run() throws Exception {
+	public void run() throws BacktestInitialisationException {
 
 		// First data point may not be the requested start date
 		final LocalDate earliestDate = tradingData.getEarliestDate();
