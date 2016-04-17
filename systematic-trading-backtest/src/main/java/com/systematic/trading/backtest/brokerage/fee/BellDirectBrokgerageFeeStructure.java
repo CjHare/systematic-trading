@@ -57,8 +57,7 @@ public class BellDirectBrokgerageFeeStructure implements BrokerageTransactionFee
 	}
 
 	@Override
-	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
-	        throws UnsupportedEquityClass {
+	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
 
 		final BigDecimal brokerage;
 

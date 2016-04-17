@@ -28,7 +28,6 @@ package com.systematic.trading.simulation.brokerage.fee;
 import java.math.BigDecimal;
 
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
  * Brokerage fees applied to all an equity transaction.
@@ -45,8 +44,6 @@ public interface BrokerageTransactionFeeStructure {
 	 * @param tradesThisMonth the number of trades, inclusive of this one per the calendar month
 	 *            e.g. if this is the tenth trade this month the value is ten.
 	 * @return transaction (brokerage) cost.
-	 * @throws UnsupportedEquityClass encountered when the broker does not support the equity type.
 	 */
-	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, int tradesThisMonth )
-	        throws UnsupportedEquityClass;
+	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, int tradesThisMonth );
 }

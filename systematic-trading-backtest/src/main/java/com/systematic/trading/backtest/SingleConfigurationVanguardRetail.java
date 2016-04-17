@@ -188,9 +188,8 @@ public class SingleConfigurationVanguardRetail {
 		// Retrieve from local cache the desired data range
 		final DataService service = HibernateDataService.getInstance();
 		final TradingDayPrices[] data = service.get(equity.getTickerSymbol(), startDate, endDate);
-		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest(equity, data);
 
-		return tradingData;
+		return new TickerSymbolTradingDataBacktest(equity, data);
 	}
 
 	private static EquityManagementFeeCalculator getVanguardRetailFeeCalculator() {

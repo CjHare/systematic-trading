@@ -52,8 +52,7 @@ public class VanguardRetailBrokerageFeeStructure implements BrokerageTransaction
 	}
 
 	@Override
-	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
-	        throws UnsupportedEquityClass {
+	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
 
 		final BigDecimal brokerage;
 
