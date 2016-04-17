@@ -39,10 +39,10 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 	private final int limit;
 
 	/** Array to use when the limit is not yet reached. */
-	private final E[] empty;
+	private final transient E[] empty;
 
 	/** Array re-used when invoking toArray . */
-	private final E[] items;
+	private final transient E[] items;
 
 	@SuppressWarnings("unchecked")
 	public LimitedSizeQueue(final Class<E> clazz, final int limit) {
