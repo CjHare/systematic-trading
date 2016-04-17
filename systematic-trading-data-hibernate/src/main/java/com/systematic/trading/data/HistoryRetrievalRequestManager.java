@@ -66,6 +66,7 @@ public class HistoryRetrievalRequestManager {
 				// May already have the record inserted
 				LOG.info(String.format("Failed to save request for %s %s %s", request.getTickerSymbol(),
 				        request.getInclusiveStartDate(), request.getExclusiveEndDate()));
+				LOG.debug(e);
 
 				if (tx != null && tx.isActive()) {
 					tx.rollback();
@@ -115,6 +116,7 @@ public class HistoryRetrievalRequestManager {
 		} catch (final HibernateException e) {
 			LOG.info(String.format("Error deleting entry for %s %s %s", request.getTickerSymbol(),
 			        request.getInclusiveStartDate(), request.getExclusiveEndDate()), e);
+			LOG.debug(e);
 		}
 
 		tx.commit();
