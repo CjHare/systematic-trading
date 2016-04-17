@@ -155,7 +155,8 @@ public class SingleConfigurationCmcMarkets {
 	        final EquityIdentity equity, final ExecutorService pool ) throws Exception {
 
 		// Arrange output to files, only once per a run
-		new FileClearDestination(baseOutputDirectory);
+		FileClearDestination destination = new FileClearDestination(baseOutputDirectory);
+		destination.clear();
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final String outputDirectory = getOutputDirectory(baseOutputDirectory, equity, configuration);

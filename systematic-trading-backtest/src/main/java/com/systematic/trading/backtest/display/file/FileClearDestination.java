@@ -34,14 +34,24 @@ import java.io.File;
  */
 public class FileClearDestination {
 
+	private final String outputDirectory;
+
 	public FileClearDestination(final String outputDirectory) {
+		this.outputDirectory = outputDirectory;
+	}
+
+	public void clear() {
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File(outputDirectory);
 
-		if (outputDirectoryFile.exists()) {
+		if (outputDirectoryFile.exists())
+
+		{
 			deleteSubDirectories(outputDirectoryFile);
-		} else {
+		} else
+
+		{
 			if (!outputDirectoryFile.mkdirs()) {
 				throw new IllegalArgumentException(
 				        String.format("Failed to create / access directory parent directory: %s", outputDirectory));
