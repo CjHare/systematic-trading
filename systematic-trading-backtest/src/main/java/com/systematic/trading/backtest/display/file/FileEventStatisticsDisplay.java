@@ -95,7 +95,7 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 	private void addBrokerageStatistics( final BrokerageEventStatistics brokerageStatistics,
 	        final StringBuilder output ) {
 
-		final long sumBrokerageEvents = brokerageStatistics.getSellEventCount()
+		final long sumBrokerageEvents = (long) brokerageStatistics.getSellEventCount()
 		        + brokerageStatistics.getBuyEventCount();
 
 		output.append("\n=== Brokerage events ===%n");
