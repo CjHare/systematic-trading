@@ -47,20 +47,20 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		ALL;
 	}
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( "#.##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat("#.##");
 
 	/** Display responsible for handling the file output. */
 	private final FileDisplayMultithreading display;
 
 	private final RETURN_ON_INVESTMENT_DISPLAY roiType;
 
-	public FileReturnOnInvestmentDisplay( final RETURN_ON_INVESTMENT_DISPLAY roiType,
-			final FileDisplayMultithreading display ) {
+	public FileReturnOnInvestmentDisplay(final RETURN_ON_INVESTMENT_DISPLAY roiType,
+	        final FileDisplayMultithreading display) {
 
 		this.display = display;
 		this.roiType = roiType;
 
-		display.write( "=== Return On Investment Events ===" );
+		display.write("=== Return On Investment Events ===");
 	}
 
 	public String createOutput( final ReturnOnInvestmentEvent event ) {
@@ -70,22 +70,22 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		final LocalDate startDateInclusive = event.getExclusiveStartDate();
 		final LocalDate endDateExclusive = event.getInclusiveEndDate();
 
-		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format( percentageChange );
-		final Period elapsed = Period.between( startDateInclusive, endDateExclusive );
+		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format(percentageChange);
+		final Period elapsed = Period.between(startDateInclusive, endDateExclusive);
 
-		if (isDailyRoiOutput( elapsed )) {
-			output.append( String.format( "Daily - ROI: %s percent over %s day(s), from %s to %s",
-					formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive ) );
+		if (isDailyRoiOutput(elapsed)) {
+			output.append(String.format("Daily - ROI: %s percent over %s day(s), from %s to %s",
+			        formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive));
 		}
 
-		if (isMonthlyRoiOutput( elapsed )) {
-			output.append( String.format( "Monthly - ROI: %s percent over %s month(s), from %s to %s",
-					formattedPercentageChange, getRoundedMonths( elapsed ), startDateInclusive, endDateExclusive ) );
+		if (isMonthlyRoiOutput(elapsed)) {
+			output.append(String.format("Monthly - ROI: %s percent over %s month(s), from %s to %s",
+			        formattedPercentageChange, getRoundedMonths(elapsed), startDateInclusive, endDateExclusive));
 		}
 
-		if (isYearlyRoiOutput( elapsed )) {
-			output.append( String.format( "Yearly - ROI: %s percent over %s year(s), from %s to %s",
-					formattedPercentageChange, getRoundedYears( elapsed ), startDateInclusive, endDateExclusive ) );
+		if (isYearlyRoiOutput(elapsed)) {
+			output.append(String.format("Yearly - ROI: %s percent over %s year(s), from %s to %s",
+			        formattedPercentageChange, getRoundedYears(elapsed), startDateInclusive, endDateExclusive));
 		}
 
 		return output.toString();
@@ -95,28 +95,28 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		switch (roiType) {
 			case ALL:
 			case DAILY:
-				return hasMostlyDays( elapsed );
+				return hasMostlyDays(elapsed);
 			default:
 				return false;
 		}
 	}
 
 	private boolean hasMostlyDays( final Period elapsed ) {
-		return elapsed.getDays() > 0 && getRoundedMonths( elapsed ) == 0 && getRoundedYears( elapsed ) == 0;
+		return elapsed.getDays() > 0 && getRoundedMonths(elapsed) == 0 && getRoundedYears(elapsed) == 0;
 	}
 
 	private boolean isMonthlyRoiOutput( final Period elapsed ) {
 		switch (roiType) {
 			case ALL:
 			case MONTHLY:
-				return hasMostlyMonths( elapsed );
+				return hasMostlyMonths(elapsed);
 			default:
 				return false;
 		}
 	}
 
 	private boolean hasMostlyMonths( final Period elapsed ) {
-		return getRoundedMonths( elapsed ) > 0 && getRoundedYears( elapsed ) == 0;
+		return getRoundedMonths(elapsed) > 0 && getRoundedYears(elapsed) == 0;
 	}
 
 	private int getRoundedMonths( final Period elapsed ) {
@@ -127,7 +127,7 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		switch (roiType) {
 			case ALL:
 			case YEARLY:
-				return getRoundedYears( elapsed ) > 0;
+				return getRoundedYears(elapsed) > 0;
 			default:
 				return false;
 		}
@@ -140,6 +140,6 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
 
-		display.write( createOutput( (ReturnOnInvestmentEvent) event ) );
+		display.write(createOutput((ReturnOnInvestmentEvent) event));
 	}
 }

@@ -41,16 +41,16 @@ public class ConsoleEventDisplay implements CashEventListener, OrderEventListene
 
 	@Override
 	public void event( BrokerageEvent event ) {
-		System.out.println( event );
+		System.out.println(event);
 	}
 
 	@Override
 	public void event( OrderEvent event ) {
-		System.out.println( event );
+		System.out.println(event);
 	}
 
 	@Override
 	public void event( CashEvent event ) {
-		System.out.println( event );
+		System.out.println(event);
 	}
 }

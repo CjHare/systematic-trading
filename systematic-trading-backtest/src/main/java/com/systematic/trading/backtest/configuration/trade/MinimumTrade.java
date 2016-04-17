@@ -34,14 +34,14 @@ import java.math.BigDecimal;
  */
 public enum MinimumTrade {
 
-	FIVE_HUNDRED( BigDecimal.valueOf( 500 ) ),
-	ONE_THOUSAND( BigDecimal.valueOf( 1000 ) ),
-	FIFTEEN_HUNDRED( BigDecimal.valueOf( 1500 ) ),
-	TWO_THOUSAND( BigDecimal.valueOf( 2000 ) );
+	FIVE_HUNDRED(BigDecimal.valueOf(500)),
+	ONE_THOUSAND(BigDecimal.valueOf(1000)),
+	FIFTEEN_HUNDRED(BigDecimal.valueOf(1500)),
+	TWO_THOUSAND(BigDecimal.valueOf(2000));
 
 	private final BigDecimal value;
 
-	private MinimumTrade( final BigDecimal value ) {
+	private MinimumTrade(final BigDecimal value) {
 		this.value = value;
 	}
 
@@ -50,6 +50,6 @@ public enum MinimumTrade {
 	}
 
 	public String getDescription() {
-		return String.valueOf( value.longValue() );
+		return String.valueOf(value.longValue());
 	}
 }

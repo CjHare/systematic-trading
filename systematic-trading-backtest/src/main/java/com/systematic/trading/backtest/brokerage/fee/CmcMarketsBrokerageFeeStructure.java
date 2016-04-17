@@ -52,13 +52,13 @@ public class CmcMarketsBrokerageFeeStructure implements BrokerageTransactionFeeS
 	/**
 	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	public CmcMarketsBrokerageFeeStructure( final MathContext mathContext ) {
+	public CmcMarketsBrokerageFeeStructure(final MathContext mathContext) {
 		this.mathContext = mathContext;
 	}
 
 	@Override
 	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
-			throws UnsupportedEquityClass {
+	        throws UnsupportedEquityClass {
 
 		final BigDecimal brokerage;
 
@@ -67,20 +67,20 @@ public class CmcMarketsBrokerageFeeStructure implements BrokerageTransactionFeeS
 			case STOCK:
 				// Your first 10 trades per month = $11 or 0.1%
 				if (tradesThisMonth < 11) {
-					brokerage = applyLargest( tradeValue, ELEVEN, TEN_BASIS_POINTS, mathContext );
+					brokerage = applyLargest(tradeValue, ELEVEN, TEN_BASIS_POINTS, mathContext);
 				}
 				// Your 11th to 30th trades per month = $9.90 or 0.8%
 				else if (tradesThisMonth < 31) {
-					brokerage = applyLargest( tradeValue, NINE_NINTY, EIGHT_BASIS_POINTS, mathContext );
+					brokerage = applyLargest(tradeValue, NINE_NINTY, EIGHT_BASIS_POINTS, mathContext);
 				}
 				// Your 31st trade onwards per month = $9.90 or 0.75%
 				else {
-					brokerage = applyLargest( tradeValue, NINE_NINTY, SEVENTY_FIVE_BASIS_POINTS, mathContext );
+					brokerage = applyLargest(tradeValue, NINE_NINTY, SEVENTY_FIVE_BASIS_POINTS, mathContext);
 				}
 
-				break;
+			break;
 			default:
-				throw new UnsupportedEquityClass( type );
+				throw new UnsupportedEquityClass(type);
 		}
 
 		return brokerage;

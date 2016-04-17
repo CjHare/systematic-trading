@@ -45,7 +45,7 @@ public class HibernateUtil {
 			configuration.configure("hibernate.cfg.xml");
 
 			final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-					.applySettings(configuration.getProperties()).build();
+			        .applySettings(configuration.getProperties()).build();
 
 			configuration.addAnnotatedClass(HistoryRetrievalRequest.class);
 			// addPackage("com.xyz") //add package if used.

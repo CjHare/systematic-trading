@@ -37,23 +37,23 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  */
 public class FileOrderEventDisplay implements OrderEventListener {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
 	private final FileDisplayMultithreading display;
 
-	public FileOrderEventDisplay( final FileDisplayMultithreading display ) {
+	public FileOrderEventDisplay(final FileDisplayMultithreading display) {
 		this.display = display;
 
-		display.write( "=== Order Events ===" );
+		display.write("=== Order Events ===");
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
 
-		final String content = String.format( "Place Order - %s total cost %s created after c.o.b on %s",
-				event.getType(), TWO_DECIMAL_PLACES.format( event.getTotalCost() ), event.getTransactionDate() );
+		final String content = String.format("Place Order - %s total cost %s created after c.o.b on %s",
+		        event.getType(), TWO_DECIMAL_PLACES.format(event.getTotalCost()), event.getTransactionDate());
 
-		display.write( content );
+		display.write(content);
 	}
 }

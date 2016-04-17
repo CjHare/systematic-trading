@@ -44,11 +44,11 @@ public class DatedValue implements TradingDayPrices {
 	private final LocalDate date;
 	private final BigDecimal value;
 
-	public DatedValue( final LocalDate date, final BigDecimal value ) {
+	public DatedValue(final LocalDate date, final BigDecimal value) {
 
 		if (date == null || value == null) {
 			throw new IllegalArgumentException(
-					String.format( "Expecting non null date and value, given Date: %s and Value: %s", date, value ) );
+			        String.format("Expecting non null date and value, given Date: %s and Value: %s", date, value));
 		}
 
 		this.date = date;
@@ -65,7 +65,7 @@ public class DatedValue implements TradingDayPrices {
 
 	@Override
 	public ClosingPrice getClosingPrice() {
-		return value == null ? null : ClosingPrice.valueOf( value );
+		return value == null ? null : ClosingPrice.valueOf(value);
 	}
 
 	@Override

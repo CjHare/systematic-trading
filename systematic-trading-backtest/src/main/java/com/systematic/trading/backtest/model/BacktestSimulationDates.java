@@ -39,8 +39,8 @@ public class BacktestSimulationDates {
 	private final LocalDate simulationEndDate;
 	private final Period warmUp;
 
-	public BacktestSimulationDates( final LocalDate simulationStartDate, final LocalDate simulationEndDate,
-			final Period warmUp ) {
+	public BacktestSimulationDates(final LocalDate simulationStartDate, final LocalDate simulationEndDate,
+	        final Period warmUp) {
 		this.simulationStartDate = simulationStartDate;
 		this.simulationEndDate = simulationEndDate;
 		this.warmUp = warmUp;

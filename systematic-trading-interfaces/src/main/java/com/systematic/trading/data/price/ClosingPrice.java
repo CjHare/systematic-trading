@@ -42,13 +42,13 @@ public class ClosingPrice extends Price {
 	 */
 	public static ClosingPrice valueOf( final BigDecimal price ) {
 		if (price == null) {
-			throw new IllegalArgumentException( "null is not accepted by ClosingPrice.valueOf()" );
+			throw new IllegalArgumentException("null is not accepted by ClosingPrice.valueOf()");
 		}
 
-		return new ClosingPrice( price );
+		return new ClosingPrice(price);
 	}
 
-	protected ClosingPrice( final BigDecimal price ) {
-		super( price );
+	protected ClosingPrice(final BigDecimal price) {
+		super(price);
 	}
 }

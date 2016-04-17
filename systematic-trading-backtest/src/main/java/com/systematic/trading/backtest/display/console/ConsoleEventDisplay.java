@@ -41,35 +41,35 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  */
 public class ConsoleEventDisplay implements CashEventListener, BrokerageEventListener, OrderEventListener {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	@Override
 	public void event( final OrderEvent event ) {
 
-		final String output = String.format( "Place Order - %s total cost %s created after c.o.b on %s",
-				event.getType(), TWO_DECIMAL_PLACES.format( event.getTotalCost() ), event.getTransactionDate() );
+		final String output = String.format("Place Order - %s total cost %s created after c.o.b on %s", event.getType(),
+		        TWO_DECIMAL_PLACES.format(event.getTotalCost()), event.getTransactionDate());
 
-		System.out.println( output );
+		System.out.println(output);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
 
-		final String output = String.format( "Brokerage Account - %s: %s - equity balance %s -> %s on %s",
-				event.getType(), TWO_DECIMAL_PLACES.format( event.getEquityAmount() ),
-				TWO_DECIMAL_PLACES.format( event.getStartingEquityBalance() ),
-				TWO_DECIMAL_PLACES.format( event.getEndEquityBalance() ), event.getTransactionDate() );
+		final String output = String.format("Brokerage Account - %s: %s - equity balance %s -> %s on %s",
+		        event.getType(), TWO_DECIMAL_PLACES.format(event.getEquityAmount()),
+		        TWO_DECIMAL_PLACES.format(event.getStartingEquityBalance()),
+		        TWO_DECIMAL_PLACES.format(event.getEndEquityBalance()), event.getTransactionDate());
 
-		System.out.println( output );
+		System.out.println(output);
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
 
-		final String output = String.format( "Cash Account - %s: %s - funds %s -> %s on %s", event.getType(),
-				TWO_DECIMAL_PLACES.format( event.getAmount() ), TWO_DECIMAL_PLACES.format( event.getFundsBefore() ),
-				TWO_DECIMAL_PLACES.format( event.getFundsAfter() ), event.getTransactionDate() );
+		final String output = String.format("Cash Account - %s: %s - funds %s -> %s on %s", event.getType(),
+		        TWO_DECIMAL_PLACES.format(event.getAmount()), TWO_DECIMAL_PLACES.format(event.getFundsBefore()),
+		        TWO_DECIMAL_PLACES.format(event.getFundsAfter()), event.getTransactionDate());
 
-		System.out.println( output );
+		System.out.println(output);
 	}
 }

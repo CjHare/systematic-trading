@@ -43,9 +43,9 @@ public class BrokerageAccountEvent implements BrokerageEvent {
 	private final BigDecimal transactionFee;
 	private final BigDecimal transactionValue;
 
-	public BrokerageAccountEvent( final BigDecimal startingEquityBalance, final BigDecimal endEquityBalance,
-			final BigDecimal amount, final BrokerageAccountEventType type, final LocalDate transactionDate,
-			final BigDecimal transactionValue, final BigDecimal transactionFee ) {
+	public BrokerageAccountEvent(final BigDecimal startingEquityBalance, final BigDecimal endEquityBalance,
+	        final BigDecimal amount, final BrokerageAccountEventType type, final LocalDate transactionDate,
+	        final BigDecimal transactionValue, final BigDecimal transactionFee) {
 		this.startingEquityBalance = startingEquityBalance;
 		this.endEquityBalance = endEquityBalance;
 		this.equityAmount = amount;

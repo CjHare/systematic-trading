@@ -44,8 +44,8 @@ public class RelativeTradeValue implements TradeValue {
 	/** Percentage of funds to trade (range of 0-1). */
 	private final BigDecimal maximumPercentage;
 
-	public RelativeTradeValue( final BigDecimal minimumTradeValue, final BigDecimal maximumPercentage,
-			final MathContext mathContext ) {
+	public RelativeTradeValue(final BigDecimal minimumTradeValue, final BigDecimal maximumPercentage,
+	        final MathContext mathContext) {
 		this.minimumTradeValue = minimumTradeValue;
 		this.maximumPercentage = maximumPercentage;
 		this.mathContext = mathContext;
@@ -57,12 +57,12 @@ public class RelativeTradeValue implements TradeValue {
 		BigDecimal tradeValue = minimumTradeValue;
 
 		// If above the minimum there's a chance to use the percentage
-		if (minimumTradeValue.compareTo( availableFunds ) < 0) {
+		if (minimumTradeValue.compareTo(availableFunds) < 0) {
 
-			final BigDecimal maximumTradeValue = availableFunds.multiply( maximumPercentage, mathContext );
+			final BigDecimal maximumTradeValue = availableFunds.multiply(maximumPercentage, mathContext);
 
 			// Only when the maximum is above the threshold, use it
-			if (maximumTradeValue.compareTo( minimumTradeValue ) > 0) {
+			if (maximumTradeValue.compareTo(minimumTradeValue) > 0) {
 				tradeValue = maximumTradeValue;
 			}
 		}

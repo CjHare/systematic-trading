@@ -55,28 +55,28 @@ public class RollingTimePeriodSignalFilterDecorator implements SignalFilter {
 	/** Period of time from the latest date to accept signals. */
 	private final Period inclusiveWithin;
 
-	public RollingTimePeriodSignalFilterDecorator( final SignalFilter filter, final Period withinInclusive ) {
+	public RollingTimePeriodSignalFilterDecorator(final SignalFilter filter, final Period withinInclusive) {
 		this.filter = filter;
 		this.inclusiveWithin = withinInclusive;
 	}
 
 	@Override
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
-			final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
 
-		final SortedSet<BuySignal> signalSet = filter.apply( signals, ordering, latestTradingDate );
+		final SortedSet<BuySignal> signalSet = filter.apply(signals, ordering, latestTradingDate);
 
 		final Set<BuySignal> toRemove = new HashSet<BuySignal>();
 
 		for (final BuySignal signal : signalSet) {
 
 			// When the date is outside the desired range remove the signal
-			if (Period.between( latestTradingDate, signal.getDate() ).plus( inclusiveWithin ).isNegative()) {
-				toRemove.add( signal );
+			if (Period.between(latestTradingDate, signal.getDate()).plus(inclusiveWithin).isNegative()) {
+				toRemove.add(signal);
 			}
 		}
 
-		signalSet.removeAll( toRemove );
+		signalSet.removeAll(toRemove);
 
 		return signalSet;
 	}

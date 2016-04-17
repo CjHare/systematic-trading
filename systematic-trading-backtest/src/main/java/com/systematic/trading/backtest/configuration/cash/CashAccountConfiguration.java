@@ -34,11 +34,11 @@ import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAcco
  */
 public enum CashAccountConfiguration {
 
-	CALCULATED_DAILY_PAID_MONTHLY( CalculatedDailyPaidMonthlyCashAccount.class );
+	CALCULATED_DAILY_PAID_MONTHLY(CalculatedDailyPaidMonthlyCashAccount.class);
 
 	private final Class<?> type;
 
-	private CashAccountConfiguration( final Class<?> type ) {
+	private CashAccountConfiguration(final Class<?> type) {
 		this.type = type;
 	}
 

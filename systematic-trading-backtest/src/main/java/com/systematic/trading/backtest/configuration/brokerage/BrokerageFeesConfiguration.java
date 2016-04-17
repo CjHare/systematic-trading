@@ -35,12 +35,12 @@ import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFeeS
  */
 public enum BrokerageFeesConfiguration {
 
-	CMC_MARKETS( CmcMarketsBrokerageFeeStructure.class ),
-	VANGUARD_RETAIL( VanguardRetailBrokerageFeeStructure.class );
+	CMC_MARKETS(CmcMarketsBrokerageFeeStructure.class),
+	VANGUARD_RETAIL(VanguardRetailBrokerageFeeStructure.class);
 
 	private final Class<?> type;
 
-	private BrokerageFeesConfiguration( final Class<?> type ) {
+	private BrokerageFeesConfiguration(final Class<?> type) {
 		this.type = type;
 	}
 

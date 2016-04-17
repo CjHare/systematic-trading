@@ -33,7 +33,7 @@ package com.systematic.trading.data.stock.api.exception;
 public class CannotRetrieveDataException extends Exception {
 	private static final long serialVersionUID = 1L;
 
-	public CannotRetrieveDataException( final String message, final Throwable cause ) {
-		super( message, cause );
+	public CannotRetrieveDataException(final String message, final Throwable cause) {
+		super(message, cause);
 	}
 }

@@ -58,11 +58,10 @@ import com.systematic.trading.simulation.logic.ExitLogic;
 @RunWith(MockitoJUnitRunner.class)
 public class SimulationTest {
 
-	private static LocalDate[] UNORDERED_DATE = { LocalDate.of( 2000, Month.APRIL, 1 ),
-			LocalDate.of( 2000, Month.APRIL, 9 ), LocalDate.of( 2000, Month.APRIL, 2 ),
-			LocalDate.of( 2000, Month.APRIL, 3 ), LocalDate.of( 2000, Month.APRIL, 4 ),
-			LocalDate.of( 2000, Month.APRIL, 8 ), LocalDate.of( 2000, Month.APRIL, 6 ),
-			LocalDate.of( 2000, Month.APRIL, 7 ), LocalDate.of( 2000, Month.APRIL, 5 ) };
+	private static LocalDate[] UNORDERED_DATE = { LocalDate.of(2000, Month.APRIL, 1),
+	        LocalDate.of(2000, Month.APRIL, 9), LocalDate.of(2000, Month.APRIL, 2), LocalDate.of(2000, Month.APRIL, 3),
+	        LocalDate.of(2000, Month.APRIL, 4), LocalDate.of(2000, Month.APRIL, 8), LocalDate.of(2000, Month.APRIL, 6),
+	        LocalDate.of(2000, Month.APRIL, 7), LocalDate.of(2000, Month.APRIL, 5) };
 
 	@Mock
 	private Brokerage broker;
@@ -79,9 +78,9 @@ public class SimulationTest {
 		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
 
 		for (int i = 0; i < unordered.length; i++) {
-			unordered[i] = mock( TradingDayPrices.class );
-			when( unordered[i].getDate() ).thenReturn( UNORDERED_DATE[i] );
-			when( unordered[i].toString() ).thenReturn( UNORDERED_DATE[i].toString() );
+			unordered[i] = mock(TradingDayPrices.class);
+			when(unordered[i].getDate()).thenReturn(UNORDERED_DATE[i]);
+			when(unordered[i].toString()).thenReturn(UNORDERED_DATE[i].toString());
 		}
 
 		return unordered;
@@ -89,11 +88,11 @@ public class SimulationTest {
 
 	@Test
 	public void create() {
-		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK, 4 );
+		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
 		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
-		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, unorderedPoints );
+		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest(equity, unorderedPoints);
 
-		new Simulation( tradingData, broker, funds, roiCalculator, entry, exit );
+		new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
 	}
 
 	@Test
@@ -101,15 +100,15 @@ public class SimulationTest {
 		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
 		unorderedPoints[1] = unorderedPoints[0];
 
-		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK, 4 );
+		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
 
 		try {
-			final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, unorderedPoints );
-			new Simulation( tradingData, broker, funds, roiCalculator, entry, exit );
+			final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest(equity, unorderedPoints);
+			new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
 
-			fail( "Expecting exception for duplicate data point date" );
+			fail("Expecting exception for duplicate data point date");
 		} catch (final IllegalArgumentException e) {
-			assertEquals( "Duplicate trading dates provided", e.getMessage() );
+			assertEquals("Duplicate trading dates provided", e.getMessage());
 		}
 	}
 

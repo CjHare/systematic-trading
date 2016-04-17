@@ -38,153 +38,153 @@ import com.systematic.trading.signals.yahoo.YahooStockApi;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
-    private static final DataServiceUpdater INSTANCE = new DataServiceUpdaterImpl();
+	private static final DataServiceUpdater INSTANCE = new DataServiceUpdaterImpl();
 
-    /** Average number of data points above which assumes the month already retrieve covered. */
-    private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
+	/** Average number of data points above which assumes the month already retrieve covered. */
+	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
-    public static DataServiceUpdater getInstance() {
-        return INSTANCE;
-    }
+	public static DataServiceUpdater getInstance() {
+		return INSTANCE;
+	}
 
-    private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
-    private final StockApi api = new YahooStockApi();
+	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
+	private final StockApi api = new YahooStockApi();
 
-    private DataServiceUpdaterImpl() {
-    }
+	private DataServiceUpdaterImpl() {
+	}
 
-    @Override
-    public void get(final String tickerSymbol, final LocalDate startDate, final LocalDate endDate) {
+	@Override
+	public void get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 
-        // Ensure there's a table for the data
-        dao.createTableIfAbsent(tickerSymbol);
+		// Ensure there's a table for the data
+		dao.createTableIfAbsent(tickerSymbol);
 
-        // TODO of partial data, retrieve & discard
+		// TODO of partial data, retrieve & discard
 
-        final List<HistoryRetrievalRequest> unfilteredRequests = sliceHistoryRetrievalRequest(tickerSymbol, startDate,
-                endDate);
-        final List<HistoryRetrievalRequest> filteredRequests = removeRedundantRequests(unfilteredRequests);
-        storeHistoryRetrievalRequests(filteredRequests);
+		final List<HistoryRetrievalRequest> unfilteredRequests = sliceHistoryRetrievalRequest(tickerSymbol, startDate,
+		        endDate);
+		final List<HistoryRetrievalRequest> filteredRequests = removeRedundantRequests(unfilteredRequests);
+		storeHistoryRetrievalRequests(filteredRequests);
 
-        final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
+		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 
-        processHistoryRetrievalRequests(outstandingRequests);
-    }
+		processHistoryRetrievalRequests(outstandingRequests);
+	}
 
-    /**
-     * Get the history requests from the stock API.
-     */
-    private void processHistoryRetrievalRequests(final List<HistoryRetrievalRequest> requests) {
-        final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
+	/**
+	 * Get the history requests from the stock API.
+	 */
+	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests ) {
+		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
 
-        for (final HistoryRetrievalRequest request : requests) {
+		for (final HistoryRetrievalRequest request : requests) {
 
-            final String tickerSymbol = request.getTickerSymbol();
-            final LocalDate inclusiveStartDate = request.getInclusiveStartDate().toLocalDate();
-            final LocalDate exclusiveEndDate = request.getExclusiveEndDate().toLocalDate();
+			final String tickerSymbol = request.getTickerSymbol();
+			final LocalDate inclusiveStartDate = request.getInclusiveStartDate().toLocalDate();
+			final LocalDate exclusiveEndDate = request.getExclusiveEndDate().toLocalDate();
 
-            try {
+			try {
 
-                // Pull the data from the Stock API
-                final TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate,
-                        exclusiveEndDate);
+				// Pull the data from the Stock API
+				final TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate,
+				        exclusiveEndDate);
 
-                // Push to the data source
-                dao.create(tradingData);
+				// Push to the data source
+				dao.create(tradingData);
 
-                // Remove the request from the queue
-                requestManager.delete(request);
+				// Remove the request from the queue
+				requestManager.delete(request);
 
-            } catch (final CannotRetrieveDataException e) {
+			} catch (final CannotRetrieveDataException e) {
 
-                // TODO ? propagate ?
-            }
+				// TODO ? propagate ?
+			}
 
-        }
-    }
+		}
+	}
 
-    /**
-     * Split up the date range into manageable size pieces.
-     */
-    private List<HistoryRetrievalRequest> sliceHistoryRetrievalRequest(final String tickerSymbol,
-            final LocalDate startDate, final LocalDate endDate) {
+	/**
+	 * Split up the date range into manageable size pieces.
+	 */
+	private List<HistoryRetrievalRequest> sliceHistoryRetrievalRequest( final String tickerSymbol,
+	        final LocalDate startDate, final LocalDate endDate ) {
 
-        final Period maximum = api.getMaximumDurationInSingleUpdate();
-        final List<HistoryRetrievalRequest> requests = new ArrayList<HistoryRetrievalRequest>();
+		final Period maximum = api.getMaximumDurationInSingleUpdate();
+		final List<HistoryRetrievalRequest> requests = new ArrayList<HistoryRetrievalRequest>();
 
-        if (isDurationTooLong(maximum, Period.between(startDate, endDate))) {
+		if (isDurationTooLong(maximum, Period.between(startDate, endDate))) {
 
-            // Split up the requests for processing
-            LocalDate movedStartDate = startDate;
-            LocalDate movedEndDate = startDate.plus(maximum);
+			// Split up the requests for processing
+			LocalDate movedStartDate = startDate;
+			LocalDate movedEndDate = startDate.plus(maximum);
 
-            while (endDate.isAfter(movedStartDate)) {
+			while (endDate.isAfter(movedStartDate)) {
 
-                requests.add(new HistoryRetrievalRequest(tickerSymbol, movedStartDate, movedEndDate));
+				requests.add(new HistoryRetrievalRequest(tickerSymbol, movedStartDate, movedEndDate));
 
-                movedStartDate = movedEndDate;
-                movedEndDate = movedStartDate.plus(maximum);
-            }
+				movedStartDate = movedEndDate;
+				movedEndDate = movedStartDate.plus(maximum);
+			}
 
-        } else {
+		} else {
 
-            requests.add(new HistoryRetrievalRequest(tickerSymbol, startDate, endDate));
-        }
+			requests.add(new HistoryRetrievalRequest(tickerSymbol, startDate, endDate));
+		}
 
-        return requests;
-    }
+		return requests;
+	}
 
-    /**
-     * Remove requests where the full set of data already has already been retrieved.
-     */
-    private List<HistoryRetrievalRequest> removeRedundantRequests(final List<HistoryRetrievalRequest> requests) {
-        final List<HistoryRetrievalRequest> filtered = new ArrayList<HistoryRetrievalRequest>();
+	/**
+	 * Remove requests where the full set of data already has already been retrieved.
+	 */
+	private List<HistoryRetrievalRequest> removeRedundantRequests( final List<HistoryRetrievalRequest> requests ) {
+		final List<HistoryRetrievalRequest> filtered = new ArrayList<HistoryRetrievalRequest>();
 
-        for (final HistoryRetrievalRequest request : requests) {
+		for (final HistoryRetrievalRequest request : requests) {
 
-            final String tickerSymbol = request.getTickerSymbol();
-            final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
-            final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
+			final String tickerSymbol = request.getTickerSymbol();
+			final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
+			final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
 
-            final long count = dao.count(tickerSymbol, startDate, endDate);
+			final long count = dao.count(tickerSymbol, startDate, endDate);
 
-            if (count == 0) {
-                // Zero data exists :. we need data
-                filtered.add(request);
-            } else {
-                final Period interval = Period.between(startDate, endDate);
+			if (count == 0) {
+				// Zero data exists :. we need data
+				filtered.add(request);
+			} else {
+				final Period interval = Period.between(startDate, endDate);
 
-                if (interval.toTotalMonths() > 0) {
-                    final long meanDataPointsPerMonth = count / interval.toTotalMonths();
+				if (interval.toTotalMonths() > 0) {
+					final long meanDataPointsPerMonth = count / interval.toTotalMonths();
 
-                    if (meanDataPointsPerMonth < MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD) {
-                        // Insufficient data exists :. we need data
-                        filtered.add(request);
-                    }
-                } else {
-                    // Under one month means we're in days difference
-                    if (count <= interval.getDays()) {
-                        filtered.add(request);
-                    }
-                }
-            }
-        }
+					if (meanDataPointsPerMonth < MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD) {
+						// Insufficient data exists :. we need data
+						filtered.add(request);
+					}
+				} else {
+					// Under one month means we're in days difference
+					if (count <= interval.getDays()) {
+						filtered.add(request);
+					}
+				}
+			}
+		}
 
-        return filtered;
-    }
+		return filtered;
+	}
 
-    private boolean isDurationTooLong(final Period maximum, final Period actual) {
-        return actual.toTotalMonths() > maximum.toTotalMonths();
-    }
+	private boolean isDurationTooLong( final Period maximum, final Period actual ) {
+		return actual.toTotalMonths() > maximum.toTotalMonths();
+	}
 
-    /**
-     * These we store as a defensive approach in case of partial failure during processing.
-     */
-    private void storeHistoryRetrievalRequests(final List<HistoryRetrievalRequest> requests) {
-        HistoryRetrievalRequestManager.getInstance().create(requests);
-    }
+	/**
+	 * These we store as a defensive approach in case of partial failure during processing.
+	 */
+	private void storeHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests ) {
+		HistoryRetrievalRequestManager.getInstance().create(requests);
+	}
 
-    private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests(final String tickerSymbol) {
-        return HistoryRetrievalRequestManager.getInstance().get(tickerSymbol);
-    }
+	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
+		return HistoryRetrievalRequestManager.getInstance().get(tickerSymbol);
+	}
 }

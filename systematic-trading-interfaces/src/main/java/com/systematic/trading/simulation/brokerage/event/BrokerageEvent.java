@@ -38,12 +38,12 @@ import com.systematic.trading.event.Event;
 public interface BrokerageEvent extends Event {
 
 	public enum BrokerageAccountEventType {
-		BUY( "Buy" ),
-		SELL( "Sell" );
+		BUY("Buy"),
+		SELL("Sell");
 
 		private final String display;
 
-		private BrokerageAccountEventType( final String display ) {
+		private BrokerageAccountEventType(final String display) {
 			this.display = display;
 		}
 

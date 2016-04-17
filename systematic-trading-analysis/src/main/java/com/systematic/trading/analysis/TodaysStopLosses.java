@@ -47,89 +47,89 @@ import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 
 public class TodaysStopLosses {
 
-    private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
-    private static final int ONE = 1;
+	private static final int ONE = 1;
 
-    /** Calendar days in a week.*/
-    private static final int DAYS_IN_WEEK = 7;
+	/** Calendar days in a week.*/
+	private static final int DAYS_IN_WEEK = 7;
 
-    /** Business days in a week.*/
-    private static final int DAYS_IN_WORKING_WEEK = 5;
+	/** Business days in a week.*/
+	private static final int DAYS_IN_WORKING_WEEK = 5;
 
-    /** Days of look back used by the average true range indicator.*/
-    private static final int DAYS_ATR_LOOKBACK = 10;
+	/** Days of look back used by the average true range indicator.*/
+	private static final int DAYS_ATR_LOOKBACK = 10;
 
-    /** Interested in signals from the past few days.*/
-    private static final int DAYS_OF_INTEREST = 5;
+	/** Interested in signals from the past few days.*/
+	private static final int DAYS_OF_INTEREST = 5;
 
-    public static void main(final String... args) {
+	public static void main( final String... args ) {
 
-        final int tradingDaysRequired = DAYS_ATR_LOOKBACK + DAYS_OF_INTEREST;
+		final int tradingDaysRequired = DAYS_ATR_LOOKBACK + DAYS_OF_INTEREST;
 
-        updateEquities(tradingDaysRequired);
+		updateEquities(tradingDaysRequired);
 
-        final LocalDate endDate = LocalDate.now();
-        final LocalDate startDate = getStartDate(endDate, tradingDaysRequired);
+		final LocalDate endDate = LocalDate.now();
+		final LocalDate startDate = getStartDate(endDate, tradingDaysRequired);
 
-        averageTrueRange(startDate, endDate);
+		averageTrueRange(startDate, endDate);
 
-        HibernateUtil.getSessionFactory().close();
-    }
+		HibernateUtil.getSessionFactory().close();
+	}
 
-    private static void updateEquities(final int tradingDaysRequired) {
-        final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
-        final LocalDate endDate = LocalDate.now();
-        final LocalDate startDate = getStartDate(endDate, tradingDaysRequired);
+	private static void updateEquities( final int tradingDaysRequired ) {
+		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
+		final LocalDate endDate = LocalDate.now();
+		final LocalDate startDate = getStartDate(endDate, tradingDaysRequired);
 
-        for (final EquityHeld equity : EquityHeld.values()) {
-            updateService.get(equity.getSymbol(), startDate, endDate);
-        }
-    }
+		for (final EquityHeld equity : EquityHeld.values()) {
+			updateService.get(equity.getSymbol(), startDate, endDate);
+		}
+	}
 
-    private static void averageTrueRange(final LocalDate startDate, final LocalDate endDate) {
-        final DataService service = HibernateDataService.getInstance();
-        final Validator validator = new IllegalArgumentThrowingValidator();
-        final BigDecimal threeQuaterMultiplier = BigDecimal.valueOf(3.25);
-        final BigDecimal threeHalfMultiplier = BigDecimal.valueOf(3.5);
+	private static void averageTrueRange( final LocalDate startDate, final LocalDate endDate ) {
+		final DataService service = HibernateDataService.getInstance();
+		final Validator validator = new IllegalArgumentThrowingValidator();
+		final BigDecimal threeQuaterMultiplier = BigDecimal.valueOf(3.25);
+		final BigDecimal threeHalfMultiplier = BigDecimal.valueOf(3.5);
 
-        final DecimalFormat twoDecimalPlaces = new DecimalFormat();
-        twoDecimalPlaces.setMaximumFractionDigits(2);
-        twoDecimalPlaces.setMinimumFractionDigits(0);
-        twoDecimalPlaces.setGroupingUsed(false);
+		final DecimalFormat twoDecimalPlaces = new DecimalFormat();
+		twoDecimalPlaces.setMaximumFractionDigits(2);
+		twoDecimalPlaces.setMinimumFractionDigits(0);
+		twoDecimalPlaces.setGroupingUsed(false);
 
-        for (final EquityHeld equity : EquityHeld.values()) {
-            final String symbol = equity.getSymbol();
-            final TradingDayPrices[] data = service.get(symbol, startDate, endDate);
-            final AverageTrueRange atr = new AverageTrueRangeCalculator(DAYS_ATR_LOOKBACK, validator, MATH_CONTEXT);
+		for (final EquityHeld equity : EquityHeld.values()) {
+			final String symbol = equity.getSymbol();
+			final TradingDayPrices[] data = service.get(symbol, startDate, endDate);
+			final AverageTrueRange atr = new AverageTrueRangeCalculator(DAYS_ATR_LOOKBACK, validator, MATH_CONTEXT);
 
-            // Correct the ordering from earliest to latest
-            Arrays.sort(data, new TradingDayPricesDateOrder());
+			// Correct the ordering from earliest to latest
+			Arrays.sort(data, new TradingDayPricesDateOrder());
 
-            final List<BigDecimal> averageTrueRanges = atr.atr(data);
-            final int lastAtrValue = averageTrueRanges.size() - 1;
-            final BigDecimal averageTrueRange = averageTrueRanges.get(lastAtrValue);
+			final List<BigDecimal> averageTrueRanges = atr.atr(data);
+			final int lastAtrValue = averageTrueRanges.size() - 1;
+			final BigDecimal averageTrueRange = averageTrueRanges.get(lastAtrValue);
 
-            System.out.println("--- Stop Loss Prices on " + endDate);
-            System.out.println(symbol);
-            System.out.println(twoDecimalPlaces.format(data[lastAtrValue].getClosingPrice().getPrice()
-                    .subtract(averageTrueRange.multiply(threeQuaterMultiplier, MATH_CONTEXT), MATH_CONTEXT)));
-            System.out.println(twoDecimalPlaces.format(data[lastAtrValue].getClosingPrice().getPrice()
-                    .subtract(averageTrueRange.multiply(threeHalfMultiplier, MATH_CONTEXT), MATH_CONTEXT)));
-            System.out.println("--- ");
-        }
-    }
+			System.out.println("--- Stop Loss Prices on " + endDate);
+			System.out.println(symbol);
+			System.out.println(twoDecimalPlaces.format(data[lastAtrValue].getClosingPrice().getPrice()
+			        .subtract(averageTrueRange.multiply(threeQuaterMultiplier, MATH_CONTEXT), MATH_CONTEXT)));
+			System.out.println(twoDecimalPlaces.format(data[lastAtrValue].getClosingPrice().getPrice()
+			        .subtract(averageTrueRange.multiply(threeHalfMultiplier, MATH_CONTEXT), MATH_CONTEXT)));
+			System.out.println("--- ");
+		}
+	}
 
-    /**
-     * @param endDate the inclusive final date, what will be tradingDaysRequired after the start date.
-     */
-    private static LocalDate getStartDate(final LocalDate endDate, final int tradingDaysRequired) {
+	/**
+	 * @param endDate the inclusive final date, what will be tradingDaysRequired after the start date.
+	 */
+	private static LocalDate getStartDate( final LocalDate endDate, final int tradingDaysRequired ) {
 
-        // At least one week, account for bank holidays / integer rounding.
-        final int numberOfWeeks = ONE + tradingDaysRequired / DAYS_IN_WORKING_WEEK;
-        final int tradingDaysIncludingWeekends = DAYS_IN_WEEK * numberOfWeeks;
-        final LocalDate startDate = endDate.minus(tradingDaysIncludingWeekends, ChronoUnit.DAYS);
+		// At least one week, account for bank holidays / integer rounding.
+		final int numberOfWeeks = ONE + tradingDaysRequired / DAYS_IN_WORKING_WEEK;
+		final int tradingDaysIncludingWeekends = DAYS_IN_WEEK * numberOfWeeks;
+		final LocalDate startDate = endDate.minus(tradingDaysIncludingWeekends, ChronoUnit.DAYS);
 
-        return startDate;
-    }
+		return startDate;
+	}
 }

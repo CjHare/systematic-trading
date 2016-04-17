@@ -55,8 +55,8 @@ public class HoldForeverExitLogicTest {
 	public void update() {
 		final HoldForeverExitLogic logic = new HoldForeverExitLogic();
 
-		final EquityOrder update = logic.update( broker, data );
+		final EquityOrder update = logic.update(broker, data);
 
-		assertEquals( null, update );
+		assertEquals(null, update);
 	}
 }

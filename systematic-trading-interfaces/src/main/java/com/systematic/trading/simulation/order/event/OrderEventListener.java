@@ -25,15 +25,13 @@
  */
 package com.systematic.trading.simulation.order.event;
 
-
-
 /**
  * A listener interested in order event notifications.
  * 
  * @author CJ Hare
  */
 public interface OrderEventListener {
-	
+
 	/**
 	 * Notification that an Order Event has occurred.
 	 * 

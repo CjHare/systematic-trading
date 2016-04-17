@@ -42,7 +42,7 @@ import org.apache.logging.log4j.Logger;
 public class FileDisplayMultithreading {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileDisplayMultithreading.class );
+	private static final Logger LOG = LogManager.getLogger(FileDisplayMultithreading.class);
 
 	/** File that receives that get written to. */
 	private final String outputFilename;
@@ -50,7 +50,7 @@ public class FileDisplayMultithreading {
 	/** Pool of execution threads to delegate IO operations. */
 	private final ExecutorService pool;
 
-	public FileDisplayMultithreading( final String outputFilename, final ExecutorService pool ) {
+	public FileDisplayMultithreading(final String outputFilename, final ExecutorService pool) {
 		this.outputFilename = outputFilename;
 		this.pool = pool;
 	}
@@ -63,16 +63,16 @@ public class FileDisplayMultithreading {
 	public void write( final String content ) {
 
 		final Runnable task = () -> {
-			try (final FileOutputStream out = new FileOutputStream( outputFilename, true );
-					final FileChannel fileChannel = out.getChannel()) {
+			try (final FileOutputStream out = new FileOutputStream(outputFilename, true);
+		            final FileChannel fileChannel = out.getChannel()) {
 
-				fileChannel.write( ByteBuffer.wrap( content.getBytes() ) );
+				fileChannel.write(ByteBuffer.wrap(content.getBytes()));
 
 			} catch (final IOException e) {
-				LOG.error( e );
+				LOG.error(e);
 			}
 		};
 
-		pool.execute( task );
+		pool.execute(task);
 	}
 }

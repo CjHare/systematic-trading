@@ -62,8 +62,8 @@ public class SimpleMovingAverageCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 0 ),
-					BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 1 ) );
+			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(1), BigDecimal.valueOf(0),
+			        BigDecimal.valueOf(2), BigDecimal.valueOf(1));
 		}
 
 		return prices;
@@ -73,8 +73,8 @@ public class SimpleMovingAverageCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( i + 1 ), BigDecimal.valueOf( i ),
-					BigDecimal.valueOf( i + 2 ), BigDecimal.valueOf( i + 1 ) );
+			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(i + 1), BigDecimal.valueOf(i),
+			        BigDecimal.valueOf(i + 2), BigDecimal.valueOf(i + 1));
 		}
 
 		return prices;
@@ -84,96 +84,94 @@ public class SimpleMovingAverageCalculatorTest {
 	public void smaTwoPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 3;
-		final TradingDayPrices[] data = createPrices( numberDataPoints );
+		final TradingDayPrices[] data = createPrices(numberDataPoints);
 		final int daysOfSmaValues = numberDataPoints - lookback;
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, daysOfSmaValues,
-				validator, MATH_CONTEXT );
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
+		        validator, MATH_CONTEXT);
 
-		final List<BigDecimal> sma = calculator.sma( data );
+		final List<BigDecimal> sma = calculator.sma(data);
 
-		assertNotNull( sma );
-		assertEquals( 4, sma.size() );
-		assertEquals( BigDecimal.ONE, sma.get( 0 ) );
-		assertEquals( BigDecimal.ONE, sma.get( 1 ) );
-		assertEquals( BigDecimal.ONE, sma.get( 2 ) );
-		assertEquals( BigDecimal.ONE, sma.get( 3 ) );
+		assertNotNull(sma);
+		assertEquals(4, sma.size());
+		assertEquals(BigDecimal.ONE, sma.get(0));
+		assertEquals(BigDecimal.ONE, sma.get(1));
+		assertEquals(BigDecimal.ONE, sma.get(2));
+		assertEquals(BigDecimal.ONE, sma.get(3));
 
-		verify( validator ).verifyZeroNullEntries( data );
-		verify( validator ).verifyEnoughValues( data, numberDataPoints );
+		verify(validator).verifyZeroNullEntries(data);
+		verify(validator).verifyEnoughValues(data, numberDataPoints);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void nullFirstDataPoint() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
-		final TradingDayPrices[] data = createPrices( numberDataPoints );
+		final TradingDayPrices[] data = createPrices(numberDataPoints);
 		data[0] = null;
 		final int daysOfSmaValues = numberDataPoints - lookback - 1;
 
-		doThrow( new IllegalArgumentException() ).when( validator )
-				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, daysOfSmaValues,
-				validator, MATH_CONTEXT );
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
+		        validator, MATH_CONTEXT);
 
-		calculator.sma( data );
+		calculator.sma(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void nullLastDataPoint() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
-		final TradingDayPrices[] data = createPrices( numberDataPoints );
+		final TradingDayPrices[] data = createPrices(numberDataPoints);
 		data[lookback + 2] = null;
 		final int daysOfSmaValues = numberDataPoints - lookback - 2;
 
-		doThrow( new IllegalArgumentException() ).when( validator )
-				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, daysOfSmaValues,
-				validator, MATH_CONTEXT );
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
+		        validator, MATH_CONTEXT);
 
-		calculator.sma( data );
+		calculator.sma(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughDataPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
-		final TradingDayPrices[] data = createPrices( numberDataPoints );
+		final TradingDayPrices[] data = createPrices(numberDataPoints);
 		final int daysOfSmaValues = numberDataPoints - lookback + 1;
 
-		doThrow( new IllegalArgumentException() ).when( validator ).verifyEnoughValues( any( TradingDayPrices[].class ),
-				anyInt() );
+		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
+		        anyInt());
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, daysOfSmaValues,
-				validator, MATH_CONTEXT );
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
+		        validator, MATH_CONTEXT);
 
-		calculator.sma( data );
+		calculator.sma(data);
 	}
 
 	@Test
 	public void smaThreePoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
-		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
+		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
 		final int daysOfSmaValues = numberDataPoints - lookback;
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator( lookback, daysOfSmaValues,
-				validator, MATH_CONTEXT );
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
+		        validator, MATH_CONTEXT);
 
-		final List<BigDecimal> sma = calculator.sma( data );
+		final List<BigDecimal> sma = calculator.sma(data);
 
-		assertNotNull( sma );
-		assertEquals( 5, sma.size() );
-		assertEquals( BigDecimal.valueOf( 1.5 ), sma.get( 0 ) );
-		assertEquals( BigDecimal.valueOf( 2.5 ), sma.get( 1 ) );
-		assertEquals( BigDecimal.valueOf( 3.5 ), sma.get( 2 ) );
-		assertEquals( BigDecimal.valueOf( 4.5 ), sma.get( 3 ) );
-		assertEquals( BigDecimal.valueOf( 5.5 ), sma.get( 4 ) );
+		assertNotNull(sma);
+		assertEquals(5, sma.size());
+		assertEquals(BigDecimal.valueOf(1.5), sma.get(0));
+		assertEquals(BigDecimal.valueOf(2.5), sma.get(1));
+		assertEquals(BigDecimal.valueOf(3.5), sma.get(2));
+		assertEquals(BigDecimal.valueOf(4.5), sma.get(3));
+		assertEquals(BigDecimal.valueOf(5.5), sma.get(4));
 
-		verify( validator ).verifyZeroNullEntries( data );
-		verify( validator ).verifyEnoughValues( data, numberDataPoints );
+		verify(validator).verifyZeroNullEntries(data);
+		verify(validator).verifyEnoughValues(data, numberDataPoints);
 	}
 }

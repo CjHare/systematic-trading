@@ -45,19 +45,18 @@ public class CumulativeOrderEventStatistics implements OrderEventStatistics {
 		switch (event.getType()) {
 			case ENTRY:
 				entryEventCount++;
-				break;
+			break;
 			case DELETE_ENTRY:
 				deleteEntryEventCount++;
-				break;
+			break;
 			case EXIT:
 				exitEventCount++;
-				break;
+			break;
 			case DELETE_EXIT:
 				deleteExitEventCount++;
-				break;
+			break;
 			default:
-				throw new IllegalArgumentException(
-						String.format( "Order event type %s is unexpected", event.getType() ) );
+				throw new IllegalArgumentException(String.format("Order event type %s is unexpected", event.getType()));
 		}
 	}
 

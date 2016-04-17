@@ -69,8 +69,8 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	 * @param openingDate date to start calculating interest from, cannot be <code>null</code>.
 	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	public CalculatedDailyPaidMonthlyCashAccount( final InterestRate rate, final BigDecimal openingFunds,
-			final LocalDate openingDate, final MathContext mathContext ) {
+	public CalculatedDailyPaidMonthlyCashAccount(final InterestRate rate, final BigDecimal openingFunds,
+	        final LocalDate openingDate, final MathContext mathContext) {
 		this.rate = rate;
 		this.funds = openingFunds;
 		this.lastInterestCalculation = openingDate;
@@ -85,17 +85,17 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		// Only calculate interest when the date is after the last calculation date
 
 		// Any trading date earlier in time then our last interest is a mistake
-		if (tradingDate.isAfter( lastInterestCalculation )) {
+		if (tradingDate.isAfter(lastInterestCalculation)) {
 
 			while (lastInterestCalculation.getMonth() != tradingDate.getMonth()) {
-				lastInterestCalculation = applyFullMonthInterest( lastInterestCalculation );
+				lastInterestCalculation = applyFullMonthInterest(lastInterestCalculation);
 			}
 
 			// Remaining days of interest to escrow
 			final boolean isLeapYear = tradingDate.isLeapYear();
-			final int daysInterest = Period.between( lastInterestCalculation, tradingDate ).getDays();
+			final int daysInterest = Period.between(lastInterestCalculation, tradingDate).getDays();
 
-			escrow = escrow.add( rate.interest( funds, daysInterest, isLeapYear ), mathContext );
+			escrow = escrow.add(rate.interest(funds, daysInterest, isLeapYear), mathContext);
 
 			// Update the interest date marker
 			lastInterestCalculation = tradingDate;
@@ -105,22 +105,22 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	private LocalDate applyFullMonthInterest( final LocalDate last ) {
 
 		// Number of days interest this month
-		final int daysInterest = last.getMonth().length( last.isLeapYear() ) - last.getDayOfMonth() + 1;
+		final int daysInterest = last.getMonth().length(last.isLeapYear()) - last.getDayOfMonth() + 1;
 
 		// Calculate and pay the interest
 		final BigDecimal fundsBefore = funds;
 		final boolean isLeapYear = last.isLeapYear();
-		final BigDecimal interest = rate.interest( funds, daysInterest, isLeapYear ).add( escrow, mathContext );
-		funds = funds.add( interest, mathContext );
+		final BigDecimal interest = rate.interest(funds, daysInterest, isLeapYear).add(escrow, mathContext);
+		funds = funds.add(interest, mathContext);
 		escrow = BigDecimal.ZERO;
 
 		// Next month begins on the first day
-		LocalDate firstDayOfNextMonth = LocalDate.of( last.getYear(), last.getMonthValue(), 1 );
-		firstDayOfNextMonth = firstDayOfNextMonth.plus( Period.ofMonths( 1 ) );
+		LocalDate firstDayOfNextMonth = LocalDate.of(last.getYear(), last.getMonthValue(), 1);
+		firstDayOfNextMonth = firstDayOfNextMonth.plus(Period.ofMonths(1));
 
 		// Record the credit transaction
 		notifyListeners(
-				new CashAccountEvent( fundsBefore, funds, interest, CashEventType.INTEREST, firstDayOfNextMonth ) );
+		        new CashAccountEvent(fundsBefore, funds, interest, CashEventType.INTEREST, firstDayOfNextMonth));
 
 		return firstDayOfNextMonth;
 	}
@@ -128,27 +128,26 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	@Override
 	public void debit( final BigDecimal debit, final LocalDate transactionDate ) throws InsufficientFundsException {
 
-		if (funds.compareTo( debit ) < 0) {
-			throw new InsufficientFundsException(
-					String.format( "Attempting to debit %s from only %s", debit, funds ) );
+		if (funds.compareTo(debit) < 0) {
+			throw new InsufficientFundsException(String.format("Attempting to debit %s from only %s", debit, funds));
 		}
 
 		final BigDecimal fundsBefore = funds;
 
-		funds = funds.subtract( debit );
+		funds = funds.subtract(debit);
 
 		// Record the debit transaction
-		notifyListeners( new CashAccountEvent( fundsBefore, funds, debit, CashEventType.DEBIT, transactionDate ) );
+		notifyListeners(new CashAccountEvent(fundsBefore, funds, debit, CashEventType.DEBIT, transactionDate));
 	}
 
 	@Override
 	public void credit( final BigDecimal credit, final LocalDate transactionDate ) {
 		final BigDecimal fundsBefore = funds;
 
-		funds = funds.add( credit );
+		funds = funds.add(credit);
 
 		// Record the credit transaction
-		notifyListeners( new CashAccountEvent( fundsBefore, funds, credit, CashEventType.CREDIT, transactionDate ) );
+		notifyListeners(new CashAccountEvent(fundsBefore, funds, credit, CashEventType.CREDIT, transactionDate));
 	}
 
 	@Override
@@ -161,22 +160,22 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	public void deposit( final BigDecimal deposit, final LocalDate transactionDate ) {
 		final BigDecimal fundsBefore = funds;
 
-		funds = funds.add( deposit );
+		funds = funds.add(deposit);
 
 		// Record the credit transaction
-		notifyListeners( new CashAccountEvent( fundsBefore, funds, deposit, CashEventType.DEPOSIT, transactionDate ) );
+		notifyListeners(new CashAccountEvent(fundsBefore, funds, deposit, CashEventType.DEPOSIT, transactionDate));
 	}
 
 	private void notifyListeners( final CashEvent event ) {
 		for (final CashEventListener listener : listeners) {
-			listener.event( event );
+			listener.event(event);
 		}
 	}
 
 	@Override
 	public void addListener( final CashEventListener listener ) {
-		if (!listeners.contains( listener )) {
-			listeners.add( listener );
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
 		}
 	}
 }

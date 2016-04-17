@@ -46,40 +46,40 @@ public class FlatEquityManagementFeeCalculatorTest {
 
 	@Test
 	public void flatFeeOnlyOneShare() {
-		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator( new BigDecimal( 0.1 ),
-				MATH_CONTEXT );
+		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1),
+		        MATH_CONTEXT);
 
-		final BigDecimal numberOfEquities = BigDecimal.valueOf( 1 );
-		final ClosingPrice singleEquityValue = ClosingPrice.valueOf( BigDecimal.valueOf( 100 ) );
+		final BigDecimal numberOfEquities = BigDecimal.valueOf(1);
+		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
 
-		final BigDecimal result = fee.calculateFee( numberOfEquities, singleEquityValue, Period.ofYears( 1 ) );
+		final BigDecimal result = fee.calculateFee(numberOfEquities, singleEquityValue, Period.ofYears(1));
 
-		assertEquals( .1, result.doubleValue(), 0.005 );
+		assertEquals(.1, result.doubleValue(), 0.005);
 	}
 
 	@Test
 	public void flatFeeOnlyManyShare() {
-		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator( new BigDecimal( 0.1 ),
-				MATH_CONTEXT );
+		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1),
+		        MATH_CONTEXT);
 
-		final BigDecimal numberOfEquities = BigDecimal.valueOf( 45.75 );
-		final ClosingPrice singleEquityValue = ClosingPrice.valueOf( BigDecimal.valueOf( 100 ) );
+		final BigDecimal numberOfEquities = BigDecimal.valueOf(45.75);
+		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
 
-		final BigDecimal result = fee.calculateFee( numberOfEquities, singleEquityValue, Period.ofYears( 1 ) );
+		final BigDecimal result = fee.calculateFee(numberOfEquities, singleEquityValue, Period.ofYears(1));
 
-		assertEquals( 4.575, result.doubleValue(), 0.005 );
+		assertEquals(4.575, result.doubleValue(), 0.005);
 	}
 
 	@Test
 	public void flatFeeOnlyManyShareManyYears() {
-		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator( new BigDecimal( 0.1 ),
-				MATH_CONTEXT );
+		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1),
+		        MATH_CONTEXT);
 
-		final BigDecimal numberOfEquities = BigDecimal.valueOf( 45.75 );
-		final ClosingPrice singleEquityValue = ClosingPrice.valueOf( BigDecimal.valueOf( 100 ) );
+		final BigDecimal numberOfEquities = BigDecimal.valueOf(45.75);
+		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
 
-		final BigDecimal result = fee.calculateFee( numberOfEquities, singleEquityValue, Period.ofYears( 3 ) );
+		final BigDecimal result = fee.calculateFee(numberOfEquities, singleEquityValue, Period.ofYears(3));
 
-		assertEquals( 13.725, result.doubleValue(), 0.005 );
+		assertEquals(13.725, result.doubleValue(), 0.005);
 	}
 }

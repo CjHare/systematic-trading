@@ -68,99 +68,99 @@ public class TimePeriodSignalFilterDecoratorTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void lowerRangeAccepted() {
-		final LocalDate startDate = LocalDate.of( 2010, 1, 1 );
-		final LocalDate endDate = LocalDate.of( 2015, 1, 1 );
-		final LocalDate signalDate = LocalDate.of( 2010, 1, 1 );
+		final LocalDate startDate = LocalDate.of(2010, 1, 1);
+		final LocalDate endDate = LocalDate.of(2015, 1, 1);
+		final LocalDate signalDate = LocalDate.of(2010, 1, 1);
 
-		final SortedSet<BuySignal> expectedSignals = createOutputSignals( signalDate );
-		when( filter.apply( anyMap(), any( Comparator.class ), any( LocalDate.class ) ) ).thenReturn( expectedSignals );
+		final SortedSet<BuySignal> expectedSignals = createOutputSignals(signalDate);
+		when(filter.apply(anyMap(), any(Comparator.class), any(LocalDate.class))).thenReturn(expectedSignals);
 
-		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator( filter, startDate,
-				endDate );
+		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
+		        endDate);
 
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals( signalDate );
+		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals(signalDate);
 
-		final SortedSet<BuySignal> filteredSignals = decorator.apply( signals, ORDER_BY_DATE, signalDate );
+		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
 
-		assertNotNull( filteredSignals );
-		assertEquals( false, filteredSignals.isEmpty() );
-		assertEquals( 1, filteredSignals.size() );
-		assertEquals( expectedSignals, filteredSignals );
-		verify( filter ).apply( signals, ORDER_BY_DATE, signalDate );
+		assertNotNull(filteredSignals);
+		assertEquals(false, filteredSignals.isEmpty());
+		assertEquals(1, filteredSignals.size());
+		assertEquals(expectedSignals, filteredSignals);
+		verify(filter).apply(signals, ORDER_BY_DATE, signalDate);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void lowerRangeRejected() {
-		final LocalDate startDate = LocalDate.of( 2010, 1, 2 );
-		final LocalDate endDate = LocalDate.of( 2015, 1, 1 );
-		final LocalDate signalDate = LocalDate.of( 2010, 1, 1 );
+		final LocalDate startDate = LocalDate.of(2010, 1, 2);
+		final LocalDate endDate = LocalDate.of(2015, 1, 1);
+		final LocalDate signalDate = LocalDate.of(2010, 1, 1);
 
-		final SortedSet<BuySignal> expectedSignals = createOutputSignals( signalDate );
-		when( filter.apply( anyMap(), any( Comparator.class ), any( LocalDate.class ) ) ).thenReturn( expectedSignals );
+		final SortedSet<BuySignal> expectedSignals = createOutputSignals(signalDate);
+		when(filter.apply(anyMap(), any(Comparator.class), any(LocalDate.class))).thenReturn(expectedSignals);
 
-		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator( filter, startDate,
-				endDate );
+		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
+		        endDate);
 
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals( signalDate );
+		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals(signalDate);
 
-		final SortedSet<BuySignal> filteredSignals = decorator.apply( signals, ORDER_BY_DATE, signalDate );
+		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
 
-		assertNotNull( filteredSignals );
-		assertEquals( true, filteredSignals.isEmpty() );
-		verify( filter ).apply( signals, ORDER_BY_DATE, signalDate );
+		assertNotNull(filteredSignals);
+		assertEquals(true, filteredSignals.isEmpty());
+		verify(filter).apply(signals, ORDER_BY_DATE, signalDate);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void upperRangeAccepted() {
-		final LocalDate startDate = LocalDate.of( 2010, 1, 1 );
-		final LocalDate endDate = LocalDate.of( 2015, 1, 2 );
-		final LocalDate signalDate = LocalDate.of( 2015, 1, 1 );
+		final LocalDate startDate = LocalDate.of(2010, 1, 1);
+		final LocalDate endDate = LocalDate.of(2015, 1, 2);
+		final LocalDate signalDate = LocalDate.of(2015, 1, 1);
 
-		final SortedSet<BuySignal> expectedSignals = createOutputSignals( signalDate );
-		when( filter.apply( anyMap(), any( Comparator.class ), any( LocalDate.class ) ) ).thenReturn( expectedSignals );
+		final SortedSet<BuySignal> expectedSignals = createOutputSignals(signalDate);
+		when(filter.apply(anyMap(), any(Comparator.class), any(LocalDate.class))).thenReturn(expectedSignals);
 
-		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator( filter, startDate,
-				endDate );
+		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
+		        endDate);
 
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals( signalDate );
+		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals(signalDate);
 
-		final SortedSet<BuySignal> filteredSignals = decorator.apply( signals, ORDER_BY_DATE, signalDate );
+		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
 
-		assertNotNull( filteredSignals );
-		assertEquals( false, filteredSignals.isEmpty() );
-		assertEquals( 1, filteredSignals.size() );
-		assertEquals( expectedSignals, filteredSignals );
-		verify( filter ).apply( signals, ORDER_BY_DATE, signalDate );
+		assertNotNull(filteredSignals);
+		assertEquals(false, filteredSignals.isEmpty());
+		assertEquals(1, filteredSignals.size());
+		assertEquals(expectedSignals, filteredSignals);
+		verify(filter).apply(signals, ORDER_BY_DATE, signalDate);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void upperRangeRejected() {
-		final LocalDate startDate = LocalDate.of( 2010, 1, 1 );
-		final LocalDate endDate = LocalDate.of( 2015, 1, 1 );
-		final LocalDate signalDate = LocalDate.of( 2015, 1, 2 );
+		final LocalDate startDate = LocalDate.of(2010, 1, 1);
+		final LocalDate endDate = LocalDate.of(2015, 1, 1);
+		final LocalDate signalDate = LocalDate.of(2015, 1, 2);
 
-		final SortedSet<BuySignal> expectedSignals = createOutputSignals( signalDate );
-		when( filter.apply( anyMap(), any( Comparator.class ), any( LocalDate.class ) ) ).thenReturn( expectedSignals );
+		final SortedSet<BuySignal> expectedSignals = createOutputSignals(signalDate);
+		when(filter.apply(anyMap(), any(Comparator.class), any(LocalDate.class))).thenReturn(expectedSignals);
 
-		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator( filter, startDate,
-				endDate );
+		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
+		        endDate);
 
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals( signalDate );
+		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals(signalDate);
 
-		final SortedSet<BuySignal> filteredSignals = decorator.apply( signals, ORDER_BY_DATE, signalDate );
+		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
 
-		assertNotNull( filteredSignals );
-		assertEquals( true, filteredSignals.isEmpty() );
-		verify( filter ).apply( signals, ORDER_BY_DATE, signalDate );
+		assertNotNull(filteredSignals);
+		assertEquals(true, filteredSignals.isEmpty());
+		verify(filter).apply(signals, ORDER_BY_DATE, signalDate);
 	}
 
 	private SortedSet<BuySignal> createOutputSignals( final LocalDate signalDate ) {
-		final SortedSet<BuySignal> signals = new TreeSet<BuySignal>( ORDER_BY_DATE );
+		final SortedSet<BuySignal> signals = new TreeSet<BuySignal>(ORDER_BY_DATE);
 
-		signals.add( new BuySignal( signalDate ) );
+		signals.add(new BuySignal(signalDate));
 
 		return signals;
 	}
@@ -169,12 +169,12 @@ public class TimePeriodSignalFilterDecoratorTest {
 		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
 
 		final List<IndicatorSignal> rsiSignals = new ArrayList<IndicatorSignal>();
-		rsiSignals.add( new IndicatorSignal( date, IndicatorSignalType.RSI ) );
-		signals.put( IndicatorSignalType.RSI, rsiSignals );
+		rsiSignals.add(new IndicatorSignal(date, IndicatorSignalType.RSI));
+		signals.put(IndicatorSignalType.RSI, rsiSignals);
 
 		final List<IndicatorSignal> macdSignals = new ArrayList<IndicatorSignal>();
-		macdSignals.add( new IndicatorSignal( date, IndicatorSignalType.MACD ) );
-		signals.put( IndicatorSignalType.MACD, macdSignals );
+		macdSignals.add(new IndicatorSignal(date, IndicatorSignalType.MACD));
+		signals.put(IndicatorSignalType.MACD, macdSignals);
 
 		return signals;
 	}

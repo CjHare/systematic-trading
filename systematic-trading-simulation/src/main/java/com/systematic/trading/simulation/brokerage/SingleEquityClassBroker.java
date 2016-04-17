@@ -83,11 +83,11 @@ public class SingleEquityClassBroker implements Brokerage {
 	/** Parties interested in listening to equity events. */
 	private final List<EquityEventListener> equityListeners = new ArrayList<EquityEventListener>();
 
-	public SingleEquityClassBroker( final BrokerageTransactionFeeStructure fees,
-			final EquityManagementFeeStructure managementFees, final EquityIdentity equity, final LocalDate startDate,
-			final MathContext mathContext ) {
+	public SingleEquityClassBroker(final BrokerageTransactionFeeStructure fees,
+	        final EquityManagementFeeStructure managementFees, final EquityIdentity equity, final LocalDate startDate,
+	        final MathContext mathContext) {
 		this.monthlyTradeCounter = new MonthlyRollingCounter();
-		this.lastManagementFee = managementFees.getLastManagementFeeDate( startDate );
+		this.lastManagementFee = managementFees.getLastManagementFeeDate(startDate);
 		this.equityManagementFee = managementFees;
 		this.transactionFee = fees;
 		this.equityBalance = BigDecimal.ZERO;
@@ -98,39 +98,39 @@ public class SingleEquityClassBroker implements Brokerage {
 	@Override
 	public void buy( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
 
-		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), mathContext );
-		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
-		final BigDecimal tradeFee = transactionFee.calculateFee( tradeValue, equity.getType(), tradesThisMonth );
+		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), mathContext);
+		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
+		final BigDecimal tradeFee = transactionFee.calculateFee(tradeValue, equity.getType(), tradesThisMonth);
 
 		// Adding the equity purchases to the balance
 		final BigDecimal startingEquityBalance = equityBalance;
-		equityBalance = equityBalance.add( volume.getVolume(), mathContext );
+		equityBalance = equityBalance.add(volume.getVolume(), mathContext);
 
 		// Record of the buy transaction
-		notifyListeners( new BrokerageAccountEvent( startingEquityBalance, equityBalance, volume.getVolume(),
-				BrokerageAccountEventType.BUY, tradeDate, tradeValue, tradeFee ) );
+		notifyListeners(new BrokerageAccountEvent(startingEquityBalance, equityBalance, volume.getVolume(),
+		        BrokerageAccountEventType.BUY, tradeDate, tradeValue, tradeFee));
 	}
 
 	@Override
 	public BigDecimal sell( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate )
-			throws InsufficientEquitiesException {
+	        throws InsufficientEquitiesException {
 
 		final BigDecimal startingEquityBalance = equityBalance;
-		equityBalance = equityBalance.subtract( volume.getVolume(), mathContext );
+		equityBalance = equityBalance.subtract(volume.getVolume(), mathContext);
 
-		if (equityBalance.compareTo( BigDecimal.ZERO ) < 0) {
+		if (equityBalance.compareTo(BigDecimal.ZERO) < 0) {
 			throw new InsufficientEquitiesException();
 		}
 
-		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), mathContext );
-		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
-		final BigDecimal tradeFee = transactionFee.calculateFee( tradeValue, equity.getType(), tradesThisMonth );
+		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), mathContext);
+		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
+		final BigDecimal tradeFee = transactionFee.calculateFee(tradeValue, equity.getType(), tradesThisMonth);
 
 		// Record of the sell transaction
-		notifyListeners( new BrokerageAccountEvent( startingEquityBalance, equityBalance, volume.getVolume(),
-				BrokerageAccountEventType.SELL, tradeDate, tradeValue, tradeFee ) );
+		notifyListeners(new BrokerageAccountEvent(startingEquityBalance, equityBalance, volume.getVolume(),
+		        BrokerageAccountEventType.SELL, tradeDate, tradeValue, tradeFee));
 
-		return tradeValue.subtract( tradeFee, mathContext );
+		return tradeValue.subtract(tradeFee, mathContext);
 	}
 
 	@Override
@@ -140,8 +140,8 @@ public class SingleEquityClassBroker implements Brokerage {
 
 	@Override
 	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final LocalDate tradeDate )
-			throws UnsupportedEquityClass {
-		return transactionFee.calculateFee( tradeValue, type, monthlyTradeCounter.get( tradeDate ) );
+	        throws UnsupportedEquityClass {
+		return transactionFee.calculateFee(tradeValue, type, monthlyTradeCounter.get(tradeDate));
 	}
 
 	/**
@@ -155,36 +155,36 @@ public class SingleEquityClassBroker implements Brokerage {
 
 	private void notifyListeners( final BrokerageEvent event ) {
 		for (final BrokerageEventListener listener : brokerageListeners) {
-			listener.event( event );
+			listener.event(event);
 		}
 	}
 
 	private void notifyListeners( final EquityEvent event ) {
 		for (final EquityEventListener listener : equityListeners) {
-			listener.event( event );
+			listener.event(event);
 		}
 	}
 
 	@Override
 	public BigDecimal calculateBuy( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
-		final BigDecimal tradeValue = price.getPrice().multiply( volume.getVolume(), mathContext );
-		final int tradesThisMonth = monthlyTradeCounter.add( tradeDate );
-		final BigDecimal tradeFee = transactionFee.calculateFee( tradeValue, equity.getType(), tradesThisMonth );
+		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), mathContext);
+		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
+		final BigDecimal tradeFee = transactionFee.calculateFee(tradeValue, equity.getType(), tradesThisMonth);
 
-		return tradeValue.add( tradeFee, mathContext );
+		return tradeValue.add(tradeFee, mathContext);
 	}
 
 	@Override
 	public void addListener( final BrokerageEventListener listener ) {
-		if (!brokerageListeners.contains( listener )) {
-			brokerageListeners.add( listener );
+		if (!brokerageListeners.contains(listener)) {
+			brokerageListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void addListener( final EquityEventListener listener ) {
-		if (!equityListeners.contains( listener )) {
-			equityListeners.add( listener );
+		if (!equityListeners.contains(listener)) {
+			equityListeners.add(listener);
 		}
 	}
 
@@ -193,23 +193,23 @@ public class SingleEquityClassBroker implements Brokerage {
 
 		final LocalDate tradingDate = tradingData.getDate();
 
-		final BigDecimal feeInEquities = equityManagementFee.update( equityBalance, lastManagementFee, tradingData );
+		final BigDecimal feeInEquities = equityManagementFee.update(equityBalance, lastManagementFee, tradingData);
 
 		// Only when there's a fee apply & record an event
-		if (BigDecimal.ZERO.compareTo( feeInEquities ) != 0) {
+		if (BigDecimal.ZERO.compareTo(feeInEquities) != 0) {
 
 			final BigDecimal startingEquityBalance = equityBalance;
-			final BigDecimal transactionValue = tradingData.getClosingPrice().getPrice().multiply( feeInEquities,
-					mathContext );
+			final BigDecimal transactionValue = tradingData.getClosingPrice().getPrice().multiply(feeInEquities,
+			        mathContext);
 
 			// Erode the original equity balance with the management fee
-			equityBalance = equityBalance.subtract( feeInEquities, mathContext );
+			equityBalance = equityBalance.subtract(feeInEquities, mathContext);
 
-			lastManagementFee = equityManagementFee.getLastManagementFeeDate( tradingDate );
+			lastManagementFee = equityManagementFee.getLastManagementFeeDate(tradingDate);
 
 			// TODO maybe a separate equity object to manage the events: fees / dividends / splits
-			notifyListeners( new SingleEquityEvent( equity, startingEquityBalance, equityBalance, feeInEquities,
-					EquityEventType.MANAGEMENT_FEE, tradingDate, transactionValue ) );
+			notifyListeners(new SingleEquityEvent(equity, startingEquityBalance, equityBalance, feeInEquities,
+			        EquityEventType.MANAGEMENT_FEE, tradingDate, transactionValue));
 		}
 	}
 }

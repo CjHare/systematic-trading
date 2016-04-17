@@ -62,9 +62,9 @@ public class BacktestBootstrapConfiguration {
 	 * @param startDate inclusive beginning date for the back testing.
 	 * @param endDate inclusive end date for back testing.
 	 */
-	public BacktestBootstrapConfiguration( final EntryLogic entryLogic, final ExitLogic exitLogic,
-			final Brokerage brokerage, final CashAccount cashAccount, final BacktestSimulationDates simulationDates,
-			final String description ) {
+	public BacktestBootstrapConfiguration(final EntryLogic entryLogic, final ExitLogic exitLogic,
+	        final Brokerage brokerage, final CashAccount cashAccount, final BacktestSimulationDates simulationDates,
+	        final String description) {
 		this.cashAccount = cashAccount;
 		this.description = description;
 		this.entryLogic = entryLogic;

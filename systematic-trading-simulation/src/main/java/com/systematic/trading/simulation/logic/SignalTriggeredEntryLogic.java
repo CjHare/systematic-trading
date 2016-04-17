@@ -75,44 +75,44 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	 * @param analysis analyser of trading data to generate buy signals.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public SignalTriggeredEntryLogic( final EquityClass equityType, final int equityScale, final TradeValue tradeValue,
-			final AnalysisBuySignals analysis, final MathContext mathContext ) {
+	public SignalTriggeredEntryLogic(final EquityClass equityType, final int equityScale, final TradeValue tradeValue,
+	        final AnalysisBuySignals analysis, final MathContext mathContext) {
 		this.buyLongAnalysis = analysis;
 		this.mathContext = mathContext;
 		this.tradeValue = tradeValue;
 		this.scale = equityScale;
 		this.type = equityType;
 
-		this.tradingData = new LimitedSizeQueue<TradingDayPrices>( TradingDayPrices.class,
-				analysis.getMaximumNumberOfTradingDaysRequired() );
+		this.tradingData = new LimitedSizeQueue<TradingDayPrices>(TradingDayPrices.class,
+		        analysis.getMaximumNumberOfTradingDaysRequired());
 
 		// There can only ever be as many signals as trading days stored
-		this.previousSignals = new LimitedSizeQueue<BuySignal>( BuySignal.class,
-				analysis.getMaximumNumberOfTradingDaysRequired() );
+		this.previousSignals = new LimitedSizeQueue<BuySignal>(BuySignal.class,
+		        analysis.getMaximumNumberOfTradingDaysRequired());
 	}
 
 	@Override
 	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount,
-			final TradingDayPrices data ) {
+	        final TradingDayPrices data ) {
 
 		// Add the day's data to the rolling queue
-		tradingData.add( data );
+		tradingData.add(data);
 
 		// Create signals from the available trading data
-		final List<BuySignal> signals = buyLongAnalysis.analyse( tradingData.toArray() );
+		final List<BuySignal> signals = buyLongAnalysis.analyse(tradingData.toArray());
 
 		if (!signals.isEmpty()) {
 
 			// Only one order at a day
-			final BuySignal signal = signals.get( 0 );
+			final BuySignal signal = signals.get(0);
 
-			if (!previousSignals.contains( signal )) {
+			if (!previousSignals.contains(signal)) {
 
 				// Order placed, put on the ignore list
-				previousSignals.add( signal );
+				previousSignals.add(signal);
 
-				final BigDecimal amount = getTradeAmount( cashAccount );
-				return createOrder( fees, amount, data );
+				final BigDecimal amount = getTradeAmount(cashAccount);
+				return createOrder(fees, amount, data);
 			}
 		}
 
@@ -121,20 +121,20 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 
 	private BigDecimal getTradeAmount( final CashAccount cashAccount ) {
 		final BigDecimal availableFunds = cashAccount.getBalance();
-		return tradeValue.getTradeValue( availableFunds );
+		return tradeValue.getTradeValue(availableFunds);
 	}
 
 	private EquityOrder createOrder( final BrokerageTransactionFee fees, final BigDecimal amount,
-			final TradingDayPrices data ) {
+	        final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();
-		final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, tradingDate );
+		final BigDecimal maximumTransactionCost = fees.calculateFee(amount, type, tradingDate);
 		final BigDecimal closingPrice = data.getClosingPrice().getPrice();
-		final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext )
-				.divide( closingPrice, mathContext ).setScale( scale, BigDecimal.ROUND_DOWN );
+		final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, mathContext)
+		        .divide(closingPrice, mathContext).setScale(scale, BigDecimal.ROUND_DOWN);
 
-		if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
-			return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, scale, tradingDate, mathContext );
+		if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
+			return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, mathContext);
 		}
 
 		return null;
@@ -147,6 +147,6 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 
 	@Override
 	public void addListener( final SignalAnalysisListener listener ) {
-		buyLongAnalysis.addListener( listener );
+		buyLongAnalysis.addListener(listener);
 	}
 }

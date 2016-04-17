@@ -39,7 +39,7 @@ public class TooManyDataPointsEvent implements SignalAnalysisEvent {
 	private final IndicatorSignalType type;
 	private final LocalDate date;
 
-	public TooManyDataPointsEvent( final IndicatorSignalType type, final LocalDate date ) {
+	public TooManyDataPointsEvent(final IndicatorSignalType type, final LocalDate date) {
 		this.type = type;
 		this.date = date;
 	}

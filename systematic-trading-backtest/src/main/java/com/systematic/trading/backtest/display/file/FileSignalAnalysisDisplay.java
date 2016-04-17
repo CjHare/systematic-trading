@@ -38,17 +38,17 @@ public class FileSignalAnalysisDisplay implements SignalAnalysisListener {
 	/** Display responsible for handling the file output. */
 	private final FileDisplayMultithreading display;
 
-	public FileSignalAnalysisDisplay( final FileDisplayMultithreading display ) {
+	public FileSignalAnalysisDisplay(final FileDisplayMultithreading display) {
 		this.display = display;
 
-		display.write( "=== Signal Analysis Events ===" );
+		display.write("=== Signal Analysis Events ===");
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
 
-		final String content = String.format( "Signal event: %s on date: %s", event.getSignalType(),
-				event.getSignalDate() );
-		display.write( content );
+		final String content = String.format("Signal event: %s on date: %s", event.getSignalType(),
+		        event.getSignalDate());
+		display.write(content);
 	}
 }

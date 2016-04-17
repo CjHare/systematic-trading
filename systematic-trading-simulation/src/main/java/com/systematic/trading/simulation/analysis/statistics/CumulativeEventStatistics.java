@@ -59,17 +59,17 @@ public class CumulativeEventStatistics implements EventStatistics {
 
 	@Override
 	public void event( final CashEvent event ) {
-		cashStatistics.event( event );
+		cashStatistics.event(event);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		brokerageStatistics.event( event );
+		brokerageStatistics.event(event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		orderStatistics.event( event );
+		orderStatistics.event(event);
 	}
 
 	@Override
@@ -79,6 +79,6 @@ public class CumulativeEventStatistics implements EventStatistics {
 
 	@Override
 	public void event( final EquityEvent event ) {
-		equityStatistics.event( event );
+		equityStatistics.event(event);
 	}
 }

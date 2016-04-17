@@ -34,11 +34,11 @@ import com.systematic.trading.simulation.cash.FlatInterestRate;
  */
 public enum InterestRateConfiguration {
 
-	FLAT_INTEREST_RATE( FlatInterestRate.class );
+	FLAT_INTEREST_RATE(FlatInterestRate.class);
 
 	private final Class<?> type;
 
-	private InterestRateConfiguration( final Class<?> type ) {
+	private InterestRateConfiguration(final Class<?> type) {
 		this.type = type;
 	}
 

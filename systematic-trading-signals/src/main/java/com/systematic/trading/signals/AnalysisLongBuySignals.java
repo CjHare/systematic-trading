@@ -62,7 +62,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	private final List<SignalFilter> filters;
 	private final List<IndicatorSignalGenerator> generators;
 
-	public AnalysisLongBuySignals( final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters ) {
+	public AnalysisLongBuySignals(final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters) {
 		this.generators = generators;
 		this.filters = filters;
 		this.requiredNumberOfTradingDays = getRequiredNumberOfTradingDays();
@@ -73,28 +73,28 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 		final List<Integer> requiredTradingDays = new ArrayList<Integer>();
 		for (final IndicatorSignalGenerator generator : generators) {
-			requiredTradingDays.add( generator.getRequiredNumberOfTradingDays() );
+			requiredTradingDays.add(generator.getRequiredNumberOfTradingDays());
 		}
 
 		// 't be magicTODO the plus one shouldn't be magic
-		return Collections.max( requiredTradingDays ) + 1;
+		return Collections.max(requiredTradingDays) + 1;
 	}
 
 	@Override
 	public List<BuySignal> analyse( final TradingDayPrices[] data ) {
 
 		// Correct the ordering from earliest to latest
-		Arrays.sort( data, TRADING_DAY_ORDER_BY_DATE );
+		Arrays.sort(data, TRADING_DAY_ORDER_BY_DATE);
 
 		// Generate the indicator signals
-		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = addSignals( data );
+		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = addSignals(data);
 
 		final LocalDate latestTradingDate = data[data.length - 1].getDate();
 		final List<BuySignal> signals = new ArrayList<BuySignal>();
 
 		// Apply the rule filters
 		for (final SignalFilter filter : filters) {
-			signals.addAll( filter.apply( indicatorSignals, BUY_SIGNAL_ORDER_BY_DATE, latestTradingDate ) );
+			signals.addAll(filter.apply(indicatorSignals, BUY_SIGNAL_ORDER_BY_DATE, latestTradingDate));
 		}
 
 		return signals;
@@ -103,25 +103,25 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	private Map<IndicatorSignalType, List<IndicatorSignal>> addSignals( final TradingDayPrices[] data ) {
 
 		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = new EnumMap<IndicatorSignalType, List<IndicatorSignal>>(
-				IndicatorSignalType.class );
+		        IndicatorSignalType.class);
 
 		for (final IndicatorSignalGenerator generator : generators) {
-			final List<IndicatorSignal> signals = calculateSignals( data, generator );
+			final List<IndicatorSignal> signals = calculateSignals(data, generator);
 			final IndicatorSignalType type = generator.getSignalType();
-			indicatorSignals.put( type, signals );
+			indicatorSignals.put(type, signals);
 		}
 
 		return indicatorSignals;
 	}
 
 	private List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data,
-			final IndicatorSignalGenerator generator ) {
+	        final IndicatorSignalGenerator generator ) {
 
 		final List<IndicatorSignal> signals;
 
 		if (generator.getRequiredNumberOfTradingDays() < data.length) {
-			signals = generator.calculateSignals( data );
-			notifyIndicatorEvent( signals );
+			signals = generator.calculateSignals(data);
+			notifyIndicatorEvent(signals);
 			return signals;
 		}
 
@@ -136,7 +136,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 	@Override
 	public void addListener( final SignalAnalysisListener listener ) {
-		listeners.add( listener );
+		listeners.add(listener);
 	}
 
 	private void notifyIndicatorEvent( final List<IndicatorSignal> signals ) {
@@ -144,9 +144,9 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		// Create the event only when there are listeners
 		if (!listeners.isEmpty()) {
 			for (final IndicatorSignal signal : signals) {
-				final SignalAnalysisEvent event = new IndicatorSignalEvent( signal );
+				final SignalAnalysisEvent event = new IndicatorSignalEvent(signal);
 				for (final SignalAnalysisListener listener : listeners) {
-					listener.event( event );
+					listener.event(event);
 				}
 			}
 		}

@@ -37,25 +37,25 @@ import com.systematic.trading.simulation.equity.event.EquityEventListener;
  */
 public class FileEquityEventDisplay implements EquityEventListener {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
 	private final FileDisplayMultithreading display;
 
-	public FileEquityEventDisplay( final FileDisplayMultithreading display ) {
+	public FileEquityEventDisplay(final FileDisplayMultithreading display) {
 		this.display = display;
 
-		display.write( "=== Equity Events ===" );
+		display.write("=== Equity Events ===");
 	}
 
 	@Override
 	public void event( EquityEvent event ) {
 
-		final String content = String.format( "Equity Event - %s: %s - equity balance %s -> %s on %s", event.getType(),
-				TWO_DECIMAL_PLACES.format( event.getEquityAmount() ),
-				TWO_DECIMAL_PLACES.format( event.getStartingEquityBalance() ),
-				TWO_DECIMAL_PLACES.format( event.getEndEquityBalance() ), event.getTransactionDate() );
+		final String content = String.format("Equity Event - %s: %s - equity balance %s -> %s on %s", event.getType(),
+		        TWO_DECIMAL_PLACES.format(event.getEquityAmount()),
+		        TWO_DECIMAL_PLACES.format(event.getStartingEquityBalance()),
+		        TWO_DECIMAL_PLACES.format(event.getEndEquityBalance()), event.getTransactionDate());
 
-		display.write( content );
+		display.write(content);
 	}
 }

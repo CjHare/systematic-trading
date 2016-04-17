@@ -30,7 +30,7 @@ import java.time.LocalDate;
 public class BuySignal {
 	private final LocalDate date;
 
-	public BuySignal( final LocalDate date ) {
+	public BuySignal(final LocalDate date) {
 		this.date = date;
 	}
 
@@ -40,7 +40,7 @@ public class BuySignal {
 
 	@Override
 	public boolean equals( final Object o ) {
-		return o instanceof BuySignal && ((BuySignal) o).getDate().equals( date );
+		return o instanceof BuySignal && ((BuySignal) o).getDate().equals(date);
 	}
 
 	@Override

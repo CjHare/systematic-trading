@@ -40,7 +40,7 @@ import java.math.MathContext;
  */
 public class CompoundAnnualGrowthRate {
 
-	private static final BigDecimal ONE_HHUNDRED = BigDecimal.valueOf( 100 );
+	private static final BigDecimal ONE_HHUNDRED = BigDecimal.valueOf(100);
 
 	/**
 	 * The Compound Annual Growth Rate (CAGR) is the mean annual growth rate of an investment over a
@@ -57,12 +57,12 @@ public class CompoundAnnualGrowthRate {
 	 * @return the compound annual growth rate, as a signed percentage.
 	 */
 	public static BigDecimal calculate( final BigDecimal startValue, final BigDecimal finishValue, final int years,
-			final MathContext mathContext ) {
+	        final MathContext mathContext ) {
 
-		final double change = finishValue.divide( startValue, mathContext ).doubleValue();
-		final double power = BigDecimal.ONE.divide( BigDecimal.valueOf( years ), mathContext ).doubleValue();
+		final double change = finishValue.divide(startValue, mathContext).doubleValue();
+		final double power = BigDecimal.ONE.divide(BigDecimal.valueOf(years), mathContext).doubleValue();
 
-		return BigDecimal.valueOf( Math.pow( change, power ) ).subtract( BigDecimal.ONE, mathContext )
-				.multiply( ONE_HHUNDRED, mathContext );
+		return BigDecimal.valueOf(Math.pow(change, power)).subtract(BigDecimal.ONE, mathContext).multiply(ONE_HHUNDRED,
+		        mathContext);
 	}
 }

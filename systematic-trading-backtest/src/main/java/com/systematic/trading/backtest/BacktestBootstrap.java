@@ -70,9 +70,9 @@ public class BacktestBootstrap {
 	/** Unmodifiable trading data for input to the back test. */
 	private final TickerSymbolTradingData tradingData;
 
-	public BacktestBootstrap( final TickerSymbolTradingData tradingData,
-			final BacktestBootstrapConfiguration configuration, final BacktestDisplay display,
-			final MathContext mathContext ) {
+	public BacktestBootstrap(final TickerSymbolTradingData tradingData,
+	        final BacktestBootstrapConfiguration configuration, final BacktestDisplay display,
+	        final MathContext mathContext) {
 		this.configuration = configuration;
 		this.mathContext = mathContext;
 		this.tradingData = tradingData;
@@ -87,70 +87,70 @@ public class BacktestBootstrap {
 		// Final trading day data point, may not be be requested end date
 		final LocalDate latestDate = tradingData.getLatestDate();
 
-		final TradingDayPrices lastTradingDay = tradingData.getTradingDayPrices().get( latestDate );
+		final TradingDayPrices lastTradingDay = tradingData.getTradingDayPrices().get(latestDate);
 
 		// TODO stuff about the start date != earliest date, find the closest to start date maybe?
 
 		// TODO run with a full output & check no deposits & signals
 
 		// Cumulative recording of investment progression
-		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator( mathContext );
+		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator(mathContext);
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-				earliestDate, Period.ofDays( 1 ), mathContext );
-		roi.addListener( dailyRoi );
+		        earliestDate, Period.ofDays(1), mathContext);
+		roi.addListener(dailyRoi);
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-				earliestDate, Period.ofMonths( 1 ), mathContext );
-		roi.addListener( monthlyRoi );
+		        earliestDate, Period.ofMonths(1), mathContext);
+		roi.addListener(monthlyRoi);
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-				earliestDate, Period.ofYears( 1 ), mathContext );
-		roi.addListener( yearlyRoi );
+		        earliestDate, Period.ofYears(1), mathContext);
+		roi.addListener(yearlyRoi);
 
 		final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi = new CulmativeTotalReturnOnInvestmentCalculator(
-				mathContext );
-		roi.addListener( cumulativeRoi );
+		        mathContext);
+		roi.addListener(cumulativeRoi);
 
 		final EntryLogic entry = configuration.getEntryLogic();
-		entry.addListener( display );
+		entry.addListener(display);
 
 		final ExitLogic exit = configuration.getExitLogic();
 
 		final Brokerage broker = configuration.getBroker();
 
 		final CashAccount cashAccount = configuration.getCashAccount();
-		cashAccount.addListener( roi );
+		cashAccount.addListener(roi);
 
 		// Engine dealing with the event flow
-		final Simulation simulation = new Simulation( tradingData, broker, cashAccount, roi, entry, exit );
+		final Simulation simulation = new Simulation(tradingData, broker, cashAccount, roi, entry, exit);
 
 		// Statistics recorder for the various cash account, brokerage and order events
 		final EventStatistics eventStatistics = new CumulativeEventStatistics();
-		simulation.addListener( eventStatistics );
-		broker.addListener( (BrokerageEventListener) eventStatistics );
-		broker.addListener( (EquityEventListener) eventStatistics );
+		simulation.addListener(eventStatistics);
+		broker.addListener((BrokerageEventListener) eventStatistics);
+		broker.addListener((EquityEventListener) eventStatistics);
 
-		cashAccount.addListener( eventStatistics );
+		cashAccount.addListener(eventStatistics);
 
 		// Creates the net worth events
-		final NetWorthSummaryEventGenerator networthSummay = new NetWorthSummaryEventGenerator( broker, lastTradingDay,
-				cashAccount, configuration.getDescription() );
-		simulation.addListener( networthSummay );
+		final NetWorthSummaryEventGenerator networthSummay = new NetWorthSummaryEventGenerator(broker, lastTradingDay,
+		        cashAccount, configuration.getDescription());
+		simulation.addListener(networthSummay);
 
 		// Display for simulation output
-		final Period duration = Period.between( earliestDate, latestDate );
-		display.init( tradingData, configuration.getSimulationDates(), eventStatistics, cumulativeRoi, lastTradingDay,
-				duration );
-		simulation.addListener( (OrderEventListener) display );
-		simulation.addListener( (SimulationStateListener) display );
-		networthSummay.addListener( display );
-		cashAccount.addListener( display );
-		yearlyRoi.addListener( display );
-		monthlyRoi.addListener( display );
-		dailyRoi.addListener( display );
-		broker.addListener( (BrokerageEventListener) display );
-		broker.addListener( (EquityEventListener) display );
+		final Period duration = Period.between(earliestDate, latestDate);
+		display.init(tradingData, configuration.getSimulationDates(), eventStatistics, cumulativeRoi, lastTradingDay,
+		        duration);
+		simulation.addListener((OrderEventListener) display);
+		simulation.addListener((SimulationStateListener) display);
+		networthSummay.addListener(display);
+		cashAccount.addListener(display);
+		yearlyRoi.addListener(display);
+		monthlyRoi.addListener(display);
+		dailyRoi.addListener(display);
+		broker.addListener((BrokerageEventListener) display);
+		broker.addListener((EquityEventListener) display);
 
 		// Run the simulation until completion
 		simulation.run();

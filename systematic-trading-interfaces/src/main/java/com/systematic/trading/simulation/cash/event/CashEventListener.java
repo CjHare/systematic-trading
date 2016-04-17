@@ -25,15 +25,13 @@
  */
 package com.systematic.trading.simulation.cash.event;
 
-
-
 /**
  * A listener interested in cash event notifications.
  * 
  * @author CJ Hare
  */
 public interface CashEventListener {
-	
+
 	/**
 	 * Notification that an Cash Event has occurred.
 	 * 

@@ -46,8 +46,8 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
-	private static final BigDecimal ONE_HUNDREDTH = BigDecimal.valueOf( 0.01 );
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+	private static final BigDecimal ONE_HUNDREDTH = BigDecimal.valueOf(0.01);
 
 	/** Required number of data points required for ATR calculation. */
 	private final int minimumNumberOfPrices;
@@ -67,8 +67,8 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public StochasticPercentageKCalculator( final int lookback, final int daysOfPercentageKValues,
-			final Validator validator, final MathContext mathContext ) {
+	public StochasticPercentageKCalculator(final int lookback, final int daysOfPercentageKValues,
+	        final Validator validator, final MathContext mathContext) {
 		this.minimumNumberOfPrices = lookback + daysOfPercentageKValues;
 		this.mathContext = mathContext;
 		this.validator = validator;
@@ -79,8 +79,8 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	@Override
 	public List<BigDecimal> percentageK( final TradingDayPrices[] data ) {
 
-		validator.verifyZeroNullEntries( data );
-		validator.verifyEnoughValues( data, minimumNumberOfPrices );
+		validator.verifyZeroNullEntries(data);
+		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
 		stochasticValues.clear();
 
@@ -94,34 +94,33 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 
 		for (int i = pkSmaIndex; i < data.length; i++) {
 			currentClose = data[i].getClosingPrice();
-			lowestLow = lowestLow( data, i );
-			highestHigh = highestHigh( data, i );
-			lowestHighestDifference = differenceBetweenHighestHighAndLowestLow( lowestLow, highestHigh );
+			lowestLow = lowestLow(data, i);
+			highestHigh = highestHigh(data, i);
+			lowestHighestDifference = differenceBetweenHighestHighAndLowestLow(lowestLow, highestHigh);
 
-			stochasticValues
-					.add( calculatePercentageK( lowestLow, highestHigh, currentClose, lowestHighestDifference ) );
+			stochasticValues.add(calculatePercentageK(lowestLow, highestHigh, currentClose, lowestHighestDifference));
 		}
 
 		return stochasticValues;
 	}
 
 	private BigDecimal calculatePercentageK( final LowestPrice lowestLow, final HighestPrice highestHigh,
-			final ClosingPrice currentClose, final BigDecimal lowestHighestDifference ) {
+	        final ClosingPrice currentClose, final BigDecimal lowestHighestDifference ) {
 		// %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
-		final BigDecimal pK = ((currentClose.subtract( lowestLow, mathContext )).divide( lowestHighestDifference,
-				mathContext )).multiply( ONE_HUNDRED, mathContext );
+		final BigDecimal pK = ((currentClose.subtract(lowestLow, mathContext)).divide(lowestHighestDifference,
+		        mathContext)).multiply(ONE_HUNDRED, mathContext);
 
 		// Cap output at 100
-		return (pK.compareTo( ONE_HUNDRED ) > 0) ? ONE_HUNDRED : pK;
+		return (pK.compareTo(ONE_HUNDRED) > 0) ? ONE_HUNDRED : pK;
 	}
 
 	private BigDecimal differenceBetweenHighestHighAndLowestLow( final LowestPrice lowestLow,
-			final HighestPrice highestHigh ) {
-		if (lowestLow.isEqaul( highestHigh )) {
+	        final HighestPrice highestHigh ) {
+		if (lowestLow.isEqaul(highestHigh)) {
 			return ONE_HUNDREDTH;
 		}
 
-		return highestHigh.getPrice().subtract( lowestLow.getPrice(), mathContext );
+		return highestHigh.getPrice().subtract(lowestLow.getPrice(), mathContext);
 	}
 
 	private LowestPrice lowestLow( final TradingDayPrices[] data, final int exclusiveEnd ) {
@@ -130,7 +129,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 
 		for (int i = inclusiveStart + 1; i < exclusiveEnd; i++) {
 			contender = data[i].getLowestPrice();
-			if (contender.isLessThan( lowest )) {
+			if (contender.isLessThan(lowest)) {
 				lowest = contender;
 			}
 		}
@@ -144,7 +143,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 
 		for (int i = inclusiveStart + 1; i < exclusiveEnd; i++) {
 			contender = data[i].getHighestPrice();
-			if (contender.isGreaterThan( highest )) {
+			if (contender.isGreaterThan(highest)) {
 				highest = contender;
 			}
 		}

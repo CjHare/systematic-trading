@@ -60,11 +60,10 @@ import com.systematic.trading.simulation.order.exception.OrderException;
 @RunWith(MockitoJUnitRunner.class)
 public class SimulationExitLogicTest {
 
-	private static LocalDate[] UNORDERED_DATE = { LocalDate.of( 2000, Month.APRIL, 1 ),
-			LocalDate.of( 2000, Month.APRIL, 9 ), LocalDate.of( 2000, Month.APRIL, 2 ),
-			LocalDate.of( 2000, Month.APRIL, 3 ), LocalDate.of( 2000, Month.APRIL, 4 ),
-			LocalDate.of( 2000, Month.APRIL, 8 ), LocalDate.of( 2000, Month.APRIL, 6 ),
-			LocalDate.of( 2000, Month.APRIL, 7 ), LocalDate.of( 2000, Month.APRIL, 5 ) };
+	private static LocalDate[] UNORDERED_DATE = { LocalDate.of(2000, Month.APRIL, 1),
+	        LocalDate.of(2000, Month.APRIL, 9), LocalDate.of(2000, Month.APRIL, 2), LocalDate.of(2000, Month.APRIL, 3),
+	        LocalDate.of(2000, Month.APRIL, 4), LocalDate.of(2000, Month.APRIL, 8), LocalDate.of(2000, Month.APRIL, 6),
+	        LocalDate.of(2000, Month.APRIL, 7), LocalDate.of(2000, Month.APRIL, 5) };
 
 	@Mock
 	private Brokerage broker;
@@ -81,9 +80,9 @@ public class SimulationExitLogicTest {
 		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
 
 		for (int i = 0; i < unordered.length; i++) {
-			unordered[i] = mock( TradingDayPrices.class );
-			when( unordered[i].getDate() ).thenReturn( UNORDERED_DATE[i] );
-			when( unordered[i].toString() ).thenReturn( UNORDERED_DATE[i].toString() );
+			unordered[i] = mock(TradingDayPrices.class);
+			when(unordered[i].getDate()).thenReturn(UNORDERED_DATE[i]);
+			when(unordered[i].toString()).thenReturn(UNORDERED_DATE[i].toString());
 		}
 
 		return unordered;
@@ -107,20 +106,20 @@ public class SimulationExitLogicTest {
 
 	@Test
 	public void processOrder() throws OrderException {
-		final EquityIdentity equity = new EquityIdentity( "A", EquityClass.STOCK, 4 );
-		final TradingDayPrices[] sortedPoints = createOrderedDataPoints( createUnorderedDataPoints() );
-		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, sortedPoints );
-		final Simulation simulation = new Simulation( tradingData, broker, funds, roiCalculator, entry, exit );
+		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
+		final TradingDayPrices[] sortedPoints = createOrderedDataPoints(createUnorderedDataPoints());
+		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest(equity, sortedPoints);
+		final Simulation simulation = new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
 
-		final EquityOrder order = mock( EquityOrder.class );
-		when( order.areExecutionConditionsMet( any( TradingDayPrices.class ) ) ).thenReturn( true );
-		when( order.isValid( any( TradingDayPrices.class ) ) ).thenReturn( true );
-		when( exit.update( broker, sortedPoints[1] ) ).thenReturn( order );
+		final EquityOrder order = mock(EquityOrder.class);
+		when(order.areExecutionConditionsMet(any(TradingDayPrices.class))).thenReturn(true);
+		when(order.isValid(any(TradingDayPrices.class))).thenReturn(true);
+		when(exit.update(broker, sortedPoints[1])).thenReturn(order);
 
 		simulation.run();
 
-		verify( order ).areExecutionConditionsMet( sortedPoints[2] );
-		verify( order ).isValid( sortedPoints[2] );
-		verify( order ).execute( broker, broker, funds, sortedPoints[2] );
+		verify(order).areExecutionConditionsMet(sortedPoints[2]);
+		verify(order).isValid(sortedPoints[2]);
+		verify(order).execute(broker, broker, funds, sortedPoints[2]);
 	}
 }

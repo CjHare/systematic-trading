@@ -40,7 +40,7 @@ public class CumulativeEquityEventStatistics implements EquityEventStatistics {
 
 	@Override
 	public void event( final EquityEvent event ) {
-		managementFeesInEquities = managementFeesInEquities.add( event.getEquityAmount() );
+		managementFeesInEquities = managementFeesInEquities.add(event.getEquityAmount());
 
 	}
 

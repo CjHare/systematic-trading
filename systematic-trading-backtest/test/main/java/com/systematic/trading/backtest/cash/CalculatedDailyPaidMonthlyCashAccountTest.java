@@ -61,140 +61,140 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 	@Test
 	public void credit() {
-		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), mc );
+		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount(rate,
+		        BigDecimal.ZERO, LocalDate.now(), mc);
 
-		final BigDecimal credit = BigDecimal.valueOf( 1.23456789 );
+		final BigDecimal credit = BigDecimal.valueOf(1.23456789);
 
-		assertEquals( BigDecimal.ZERO, account.getBalance() );
+		assertEquals(BigDecimal.ZERO, account.getBalance());
 
 		final LocalDate date = LocalDate.now();
-		account.credit( credit, date );
+		account.credit(credit, date);
 
-		assertEquals( credit, account.getBalance() );
+		assertEquals(credit, account.getBalance());
 	}
 
 	@Test
 	public void deposit() {
-		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), mc );
+		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount(rate,
+		        BigDecimal.ZERO, LocalDate.now(), mc);
 
-		final BigDecimal deposit = BigDecimal.valueOf( 1.23456789 );
+		final BigDecimal deposit = BigDecimal.valueOf(1.23456789);
 
-		assertEquals( BigDecimal.ZERO, account.getBalance() );
+		assertEquals(BigDecimal.ZERO, account.getBalance());
 
 		final LocalDate date = LocalDate.now();
-		account.deposit( deposit, date );
+		account.deposit(deposit, date);
 
-		assertEquals( deposit, account.getBalance() );
+		assertEquals(deposit, account.getBalance());
 	}
 
 	@Test
 	public void debit() throws InsufficientFundsException {
-		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
-		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, LocalDate.now(), mc );
+		final BigDecimal openingFunds = BigDecimal.valueOf(100);
+		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount(rate,
+		        openingFunds, LocalDate.now(), mc);
 
-		final BigDecimal debit = BigDecimal.valueOf( 1.23456789 );
+		final BigDecimal debit = BigDecimal.valueOf(1.23456789);
 
-		assertEquals( openingFunds, account.getBalance() );
+		assertEquals(openingFunds, account.getBalance());
 
 		final LocalDate date = LocalDate.now();
-		account.debit( debit, date );
+		account.debit(debit, date);
 
-		assertEquals( openingFunds.subtract( debit ), account.getBalance() );
+		assertEquals(openingFunds.subtract(debit), account.getBalance());
 	}
 
 	@Test(expected = InsufficientFundsException.class)
 	public void debitInsufficientFunds() throws InsufficientFundsException {
-		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), mc );
+		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount(rate,
+		        BigDecimal.ZERO, LocalDate.now(), mc);
 
-		final BigDecimal debit = BigDecimal.valueOf( 1.23456789 );
+		final BigDecimal debit = BigDecimal.valueOf(1.23456789);
 
-		account.debit( debit, LocalDate.now() );
+		account.debit(debit, LocalDate.now());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void updateDateTooEarly() {
-		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				BigDecimal.ZERO, LocalDate.now(), mc );
+		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount(rate,
+		        BigDecimal.ZERO, LocalDate.now(), mc);
 
-		account.update( LocalDate.now().minus( Period.ofDays( 1 ) ) );
+		account.update(LocalDate.now().minus(Period.ofDays(1)));
 	}
 
 	@Test
 	public void oneInterestPayment() {
-		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
-		final LocalDate openingDate = LocalDate.of( 2015, 3, 31 );
-		final LocalDate tradingDate = LocalDate.of( 2015, 4, 1 );
-		final BigDecimal interest = BigDecimal.valueOf( 1.000045 );
-		when( rate.interest( any( BigDecimal.class ), anyInt(), anyBoolean() ) ).thenReturn( interest );
+		final BigDecimal openingFunds = BigDecimal.valueOf(100);
+		final LocalDate openingDate = LocalDate.of(2015, 3, 31);
+		final LocalDate tradingDate = LocalDate.of(2015, 4, 1);
+		final BigDecimal interest = BigDecimal.valueOf(1.000045);
+		when(rate.interest(any(BigDecimal.class), anyInt(), anyBoolean())).thenReturn(interest);
 
-		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, mc );
+		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount(rate,
+		        openingFunds, openingDate, mc);
 
-		account.update( tradingDate );
+		account.update(tradingDate);
 
-		assertEquals( openingFunds.add( interest ), account.getBalance() );
+		assertEquals(openingFunds.add(interest), account.getBalance());
 	}
 
 	@Test
 	public void oneEscrowNoPayment() {
-		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
-		final LocalDate openingDate = LocalDate.of( 2015, 3, 30 );
-		final BigDecimal interest = BigDecimal.valueOf( 1.000045 );
-		final LocalDate tradingDate = LocalDate.of( 2015, 3, 31 );
-		when( rate.interest( any( BigDecimal.class ), anyInt(), anyBoolean() ) ).thenReturn( interest );
+		final BigDecimal openingFunds = BigDecimal.valueOf(100);
+		final LocalDate openingDate = LocalDate.of(2015, 3, 30);
+		final BigDecimal interest = BigDecimal.valueOf(1.000045);
+		final LocalDate tradingDate = LocalDate.of(2015, 3, 31);
+		when(rate.interest(any(BigDecimal.class), anyInt(), anyBoolean())).thenReturn(interest);
 
-		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, mc );
+		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount(rate,
+		        openingFunds, openingDate, mc);
 
-		account.update( tradingDate );
+		account.update(tradingDate);
 
-		assertEquals( openingFunds, account.getBalance() );
-		verify( rate ).interest( openingFunds, 1, false );
+		assertEquals(openingFunds, account.getBalance());
+		verify(rate).interest(openingFunds, 1, false);
 	}
 
 	@Test
 	public void twoInterestPayments() {
-		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
-		final LocalDate openingDate = LocalDate.of( 2015, 3, 31 );
-		final LocalDate tradingDate = LocalDate.of( 2015, 5, 1 );
-		final BigDecimal firstInterest = BigDecimal.valueOf( 1.000045 );
-		final BigDecimal secondInterest = BigDecimal.valueOf( 2.00000999 );
-		when( rate.interest( any( BigDecimal.class ), anyInt(), anyBoolean() ) ).thenReturn( firstInterest )
-				.thenReturn( secondInterest );
+		final BigDecimal openingFunds = BigDecimal.valueOf(100);
+		final LocalDate openingDate = LocalDate.of(2015, 3, 31);
+		final LocalDate tradingDate = LocalDate.of(2015, 5, 1);
+		final BigDecimal firstInterest = BigDecimal.valueOf(1.000045);
+		final BigDecimal secondInterest = BigDecimal.valueOf(2.00000999);
+		when(rate.interest(any(BigDecimal.class), anyInt(), anyBoolean())).thenReturn(firstInterest)
+		        .thenReturn(secondInterest);
 
-		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, mc );
+		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount(rate,
+		        openingFunds, openingDate, mc);
 
-		account.update( tradingDate );
+		account.update(tradingDate);
 
-		assertEquals( openingFunds.add( firstInterest ).add( secondInterest ), account.getBalance() );
-		verify( rate ).interest( openingFunds, 1, false );
-		verify( rate ).interest( openingFunds.add( firstInterest ), 30, false );
+		assertEquals(openingFunds.add(firstInterest).add(secondInterest), account.getBalance());
+		verify(rate).interest(openingFunds, 1, false);
+		verify(rate).interest(openingFunds.add(firstInterest), 30, false);
 	}
 
 	@Test
 	public void oneEscrowOneInterestPayment() {
-		final BigDecimal openingFunds = BigDecimal.valueOf( 100 );
-		final LocalDate openingDate = LocalDate.of( 2015, 3, 30 );
-		final BigDecimal firstInterest = BigDecimal.valueOf( 1.000045 );
-		final BigDecimal secondInterest = BigDecimal.valueOf( 2.00000999 );
-		when( rate.interest( any( BigDecimal.class ), anyInt(), anyBoolean() ) ).thenReturn( firstInterest )
-				.thenReturn( secondInterest );
+		final BigDecimal openingFunds = BigDecimal.valueOf(100);
+		final LocalDate openingDate = LocalDate.of(2015, 3, 30);
+		final BigDecimal firstInterest = BigDecimal.valueOf(1.000045);
+		final BigDecimal secondInterest = BigDecimal.valueOf(2.00000999);
+		when(rate.interest(any(BigDecimal.class), anyInt(), anyBoolean())).thenReturn(firstInterest)
+		        .thenReturn(secondInterest);
 
-		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount( rate,
-				openingFunds, openingDate, mc );
+		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount(rate,
+		        openingFunds, openingDate, mc);
 
-		final LocalDate firstTradingDate = LocalDate.of( 2015, 3, 31 );
-		account.update( firstTradingDate );
+		final LocalDate firstTradingDate = LocalDate.of(2015, 3, 31);
+		account.update(firstTradingDate);
 
-		final LocalDate secondTradingDate = LocalDate.of( 2015, 4, 1 );
-		account.update( secondTradingDate );
+		final LocalDate secondTradingDate = LocalDate.of(2015, 4, 1);
+		account.update(secondTradingDate);
 
-		assertEquals( openingFunds.add( firstInterest ).add( secondInterest ), account.getBalance() );
-		verify( rate, times( 2 ) ).interest( openingFunds, 1, false );
+		assertEquals(openingFunds.add(firstInterest).add(secondInterest), account.getBalance());
+		verify(rate, times(2)).interest(openingFunds, 1, false);
 	}
 }

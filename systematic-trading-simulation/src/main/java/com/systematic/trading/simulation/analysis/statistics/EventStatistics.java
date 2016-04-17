@@ -36,7 +36,7 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * @author CJ Hare
  */
 public interface EventStatistics
-		extends CashEventListener, BrokerageEventListener, OrderEventListener, EquityEventListener {
+        extends CashEventListener, BrokerageEventListener, OrderEventListener, EquityEventListener {
 
 	/**
 	 * Retrieves the recorded order event statistics.

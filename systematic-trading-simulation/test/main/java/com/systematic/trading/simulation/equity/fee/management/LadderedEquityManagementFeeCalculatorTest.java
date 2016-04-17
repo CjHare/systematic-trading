@@ -46,30 +46,30 @@ public class LadderedEquityManagementFeeCalculatorTest {
 	@Test
 	public void flatFeeOnlyOneShare() {
 		final BigDecimal[] range = new BigDecimal[0];
-		final BigDecimal[] percentageFee = { new BigDecimal( 0.1 ) };
-		final LadderedEquityManagementFeeCalculator fee = new LadderedEquityManagementFeeCalculator( range,
-				percentageFee, MATH_CONTEXT );
+		final BigDecimal[] percentageFee = { new BigDecimal(0.1) };
+		final LadderedEquityManagementFeeCalculator fee = new LadderedEquityManagementFeeCalculator(range,
+		        percentageFee, MATH_CONTEXT);
 
-		final BigDecimal numberOfEquities = BigDecimal.valueOf( 1 );
-		final ClosingPrice singleEquityValue = ClosingPrice.valueOf( BigDecimal.valueOf( 100 ) );
+		final BigDecimal numberOfEquities = BigDecimal.valueOf(1);
+		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
 
-		final BigDecimal result = fee.calculateFee( numberOfEquities, singleEquityValue, null );
+		final BigDecimal result = fee.calculateFee(numberOfEquities, singleEquityValue, null);
 
-		assertEquals( .1, result.doubleValue(), 0.005 );
+		assertEquals(.1, result.doubleValue(), 0.005);
 	}
 
 	@Test
 	public void flatFeeOnlyManyShare() {
 		final BigDecimal[] range = new BigDecimal[0];
-		final BigDecimal[] percentageFee = { new BigDecimal( 0.1 ) };
-		final LadderedEquityManagementFeeCalculator fee = new LadderedEquityManagementFeeCalculator( range,
-				percentageFee, MATH_CONTEXT );
+		final BigDecimal[] percentageFee = { new BigDecimal(0.1) };
+		final LadderedEquityManagementFeeCalculator fee = new LadderedEquityManagementFeeCalculator(range,
+		        percentageFee, MATH_CONTEXT);
 
-		final BigDecimal numberOfEquities = BigDecimal.valueOf( 45.75 );
-		final ClosingPrice singleEquityValue = ClosingPrice.valueOf( BigDecimal.valueOf( 100 ) );
+		final BigDecimal numberOfEquities = BigDecimal.valueOf(45.75);
+		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
 
-		final BigDecimal result = fee.calculateFee( numberOfEquities, singleEquityValue, null );
+		final BigDecimal result = fee.calculateFee(numberOfEquities, singleEquityValue, null);
 
-		assertEquals( 4.575, result.doubleValue(), 0.005 );
+		assertEquals(4.575, result.doubleValue(), 0.005);
 	}
 }

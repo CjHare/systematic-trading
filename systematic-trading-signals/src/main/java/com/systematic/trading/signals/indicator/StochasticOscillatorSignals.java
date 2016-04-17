@@ -63,26 +63,26 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 	/** Stochastic %K calculator */
 	final StochasticPercentageK percentageK;
 
-	public StochasticOscillatorSignals( final int lookback, final int daysOfStocastic, final int smaK, final int smaD,
-			final MathContext mathContext ) {
+	public StochasticOscillatorSignals(final int lookback, final int daysOfStocastic, final int smaK, final int smaD,
+	        final MathContext mathContext) {
 		this.lookback = lookback;
 
-		this.smaFullK = new SimpleMovingAverageCalculator( smaK, daysOfStocastic,
-				new IllegalArgumentThrowingValidator(), mathContext );
-		this.smaFullD = new SimpleMovingAverageCalculator( smaD, daysOfStocastic,
-				new IllegalArgumentThrowingValidator(), mathContext );
-		this.percentageK = new StochasticPercentageKCalculator( lookback, daysOfStocastic,
-				new IllegalArgumentThrowingValidator(), mathContext );
+		this.smaFullK = new SimpleMovingAverageCalculator(smaK, daysOfStocastic, new IllegalArgumentThrowingValidator(),
+		        mathContext);
+		this.smaFullD = new SimpleMovingAverageCalculator(smaD, daysOfStocastic, new IllegalArgumentThrowingValidator(),
+		        mathContext);
+		this.percentageK = new StochasticPercentageKCalculator(lookback, daysOfStocastic,
+		        new IllegalArgumentThrowingValidator(), mathContext);
 	}
 
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
 
-		final List<BigDecimal> fastK = percentageK.percentageK( data );
-		final List<BigDecimal> fullK = smaFullK.sma( merge( data, fastK ) );
-		final List<BigDecimal> fullD = smaFullD.sma( merge( data, fullK ) );
+		final List<BigDecimal> fastK = percentageK.percentageK(data);
+		final List<BigDecimal> fullK = smaFullK.sma(merge(data, fastK));
+		final List<BigDecimal> fullD = smaFullD.sma(merge(data, fullK));
 
-		return buySignals( merge( data, fullK ), fullD );
+		return buySignals(merge(data, fullK), fullD);
 	}
 
 	private DatedValue[] merge( final TradingDayPrices[] dates, final List<BigDecimal> values ) {
@@ -92,7 +92,7 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 		final int offset = dates.length - values.size();
 
 		for (int index = 0; index < values.size(); index++) {
-			merged[index] = new DatedValue( dates[index + offset].getDate(), values.get( index ) );
+			merged[index] = new DatedValue(dates[index + offset].getDate(), values.get(index));
 		}
 
 		return merged;
@@ -110,14 +110,14 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 		for (int index = 1; index < signaline.size(); index++) {
 			pointToday = dataPoint[index + offset].getValue();
 			pointYesterday = dataPoint[index - 1 + offset].getValue();
-			signalLineToday = signaline.get( index );
-			signalLineYesterday = signaline.get( index );
+			signalLineToday = signaline.get(index);
+			signalLineYesterday = signaline.get(index);
 
 			// The MACD trends up, with crossing the signal line
 			// OR trending up and crossing the zero line
-			if (crossingSignalLine( pointYesterday, pointToday, signalLineToday, signalLineYesterday )) {
-				buySignals.add(
-						new IndicatorSignal( dataPoint[index + offset].getDate(), IndicatorSignalType.STOCHASTIC ) );
+			if (crossingSignalLine(pointYesterday, pointToday, signalLineToday, signalLineYesterday)) {
+				buySignals
+				        .add(new IndicatorSignal(dataPoint[index + offset].getDate(), IndicatorSignalType.STOCHASTIC));
 			}
 
 		}
@@ -126,11 +126,11 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 	}
 
 	private boolean crossingSignalLine( final BigDecimal pointYesterday, final BigDecimal pointToday,
-			final BigDecimal signalLineYesterday, final BigDecimal signalLineToday ) {
+	        final BigDecimal signalLineYesterday, final BigDecimal signalLineToday ) {
 		/* Between yesterday and today: - MACD need to be moving upwards - today's MACD needs to be
 		 * above today's signal line - yesterday's MACD needs to be below yesterday's signal line */
-		return pointToday.compareTo( pointYesterday ) > 0 && pointToday.compareTo( signalLineToday ) > 0
-				&& signalLineYesterday.compareTo( pointYesterday ) > 0;
+		return pointToday.compareTo(pointYesterday) > 0 && pointToday.compareTo(signalLineToday) > 0
+		        && signalLineYesterday.compareTo(pointYesterday) > 0;
 	}
 
 	@Override

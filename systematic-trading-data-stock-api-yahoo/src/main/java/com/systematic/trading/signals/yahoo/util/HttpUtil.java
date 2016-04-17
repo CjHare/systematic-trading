@@ -42,20 +42,20 @@ public class HttpUtil {
 
 		try {
 			final HttpClient httpClient = HttpClientBuilder.create().build();
-			final HttpGet getRequest = new HttpGet( url );
-			getRequest.addHeader( "accept", "application/json" );
+			final HttpGet getRequest = new HttpGet(url);
+			getRequest.addHeader("accept", "application/json");
 
-			final HttpResponse response = httpClient.execute( getRequest );
+			final HttpResponse response = httpClient.execute(getRequest);
 
 			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new RuntimeException( "Failed : HTTP error code : " + response.getStatusLine().getStatusCode() );
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
 			}
 
-			final BufferedReader br = new BufferedReader( new InputStreamReader( (response.getEntity().getContent()) ) );
+			final BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
 
 			String output;
 			while ((output = br.readLine()) != null) {
-				result.append( output );
+				result.append(output);
 			}
 
 		} catch (ClientProtocolException e) {

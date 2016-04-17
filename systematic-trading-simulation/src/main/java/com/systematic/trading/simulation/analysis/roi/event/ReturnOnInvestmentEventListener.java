@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.simulation.analysis.roi.event;
 
-
 /**
  * A listener interested in cash event notifications.
  * 

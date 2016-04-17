@@ -88,134 +88,134 @@ public class SignalTriggeredEntryLogicTest {
 
 	@Test
 	public void actionOnInsufficientFunds() {
-		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, EQUITY_SCALE, tradeValue,
-				buyLongAnalysis, MATH_CONTEXT );
+		final TradeValue tradeValue = new RelativeTradeValue(BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT);
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic(EQUITY_STOCK, EQUITY_SCALE, tradeValue,
+		        buyLongAnalysis, MATH_CONTEXT);
 
-		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds( mock( EquityOrder.class ) );
+		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds(mock(EquityOrder.class));
 
-		assertEquals( EquityOrderInsufficientFundsAction.DELETE, action );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
-		verifyNoMoreInteractions( buyLongAnalysis );
-		verifyZeroInteractions( fees );
-		verifyZeroInteractions( cashAccount );
+		assertEquals(EquityOrderInsufficientFundsAction.DELETE, action);
+		verify(buyLongAnalysis, atLeastOnce()).getMaximumNumberOfTradingDaysRequired();
+		verifyNoMoreInteractions(buyLongAnalysis);
+		verifyZeroInteractions(fees);
+		verifyZeroInteractions(cashAccount);
 	}
 
 	@Test
 	public void updateNoOrder() {
-		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, EQUITY_SCALE, tradeValue,
-				buyLongAnalysis, MATH_CONTEXT );
+		final TradeValue tradeValue = new RelativeTradeValue(BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT);
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic(EQUITY_STOCK, EQUITY_SCALE, tradeValue,
+		        buyLongAnalysis, MATH_CONTEXT);
 
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNull( order );
-		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
-		verifyNoMoreInteractions( buyLongAnalysis );
-		verifyZeroInteractions( fees );
-		verifyZeroInteractions( cashAccount );
+		assertNull(order);
+		verify(buyLongAnalysis).analyse(any(TradingDayPrices[].class));
+		verify(buyLongAnalysis, atLeastOnce()).getMaximumNumberOfTradingDaysRequired();
+		verifyNoMoreInteractions(buyLongAnalysis);
+		verifyZeroInteractions(fees);
+		verifyZeroInteractions(cashAccount);
 	}
 
 	@Test
 	public void updateOrderNotCreatedTooFewFundsToBuyStock() {
-		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
-		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
+		when(buyLongAnalysis.getMaximumNumberOfTradingDaysRequired()).thenReturn(10);
+		when(data.getClosingPrice()).thenReturn(ClosingPrice.valueOf(BigDecimal.valueOf(101)));
 
 		final LocalDate now = LocalDate.now();
-		final BigDecimal accountBalance = BigDecimal.valueOf( 1 );
-		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
+		final BigDecimal accountBalance = BigDecimal.valueOf(1);
+		final TradeValue tradeValue = new RelativeTradeValue(BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT);
 
-		when( cashAccount.getBalance() ).thenReturn( accountBalance );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
-				.thenReturn( BigDecimal.valueOf( 2.25 ) );
-		when( data.getDate() ).thenReturn( now );
+		when(cashAccount.getBalance()).thenReturn(accountBalance);
+		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		        .thenReturn(BigDecimal.valueOf(2.25));
+		when(data.getDate()).thenReturn(now);
 		final List<BuySignal> expected = new ArrayList<BuySignal>();
-		expected.add( new BuySignal( now ) );
-		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
+		expected.add(new BuySignal(now));
+		when(buyLongAnalysis.analyse(any(TradingDayPrices[].class))).thenReturn(expected);
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, EQUITY_SCALE, tradeValue,
-				buyLongAnalysis, MATH_CONTEXT );
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic(EQUITY_STOCK, EQUITY_SCALE, tradeValue,
+		        buyLongAnalysis, MATH_CONTEXT);
 
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNull( order );
-		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
-		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
-		verifyNoMoreInteractions( buyLongAnalysis );
-		verifyNoMoreInteractions( fees );
-		verify( cashAccount, atLeastOnce() ).getBalance();
-		verifyNoMoreInteractions( cashAccount );
+		assertNull(order);
+		verify(buyLongAnalysis).analyse(any(TradingDayPrices[].class));
+		verify(buyLongAnalysis, atLeastOnce()).getMaximumNumberOfTradingDaysRequired();
+		verify(fees).calculateFee(accountBalance, EquityClass.STOCK, now);
+		verifyNoMoreInteractions(buyLongAnalysis);
+		verifyNoMoreInteractions(fees);
+		verify(cashAccount, atLeastOnce()).getBalance();
+		verifyNoMoreInteractions(cashAccount);
 	}
 
 	@Test
 	public void updateOrderCreated() {
 
-		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
-		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
+		when(buyLongAnalysis.getMaximumNumberOfTradingDaysRequired()).thenReturn(10);
+		when(data.getClosingPrice()).thenReturn(ClosingPrice.valueOf(BigDecimal.valueOf(101)));
 
 		final LocalDate now = LocalDate.now();
-		final BigDecimal accountBalance = BigDecimal.valueOf( 50 );
-		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
+		final BigDecimal accountBalance = BigDecimal.valueOf(50);
+		final TradeValue tradeValue = new RelativeTradeValue(BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT);
 
-		when( cashAccount.getBalance() ).thenReturn( accountBalance );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
-				.thenReturn( BigDecimal.valueOf( 2.25 ) );
-		when( data.getDate() ).thenReturn( now );
+		when(cashAccount.getBalance()).thenReturn(accountBalance);
+		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		        .thenReturn(BigDecimal.valueOf(2.25));
+		when(data.getDate()).thenReturn(now);
 		final List<BuySignal> expected = new ArrayList<BuySignal>();
-		expected.add( new BuySignal( now ) );
-		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
+		expected.add(new BuySignal(now));
+		when(buyLongAnalysis.analyse(any(TradingDayPrices[].class))).thenReturn(expected);
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, EQUITY_SCALE, tradeValue,
-				buyLongAnalysis, MATH_CONTEXT );
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic(EQUITY_STOCK, EQUITY_SCALE, tradeValue,
+		        buyLongAnalysis, MATH_CONTEXT);
 
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNotNull( order );
-		assertEquals( true, order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
-		verify( buyLongAnalysis ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
-		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
-		verifyNoMoreInteractions( buyLongAnalysis );
-		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
-		verifyNoMoreInteractions( fees );
-		verify( cashAccount, atLeastOnce() ).getBalance();
-		verifyNoMoreInteractions( cashAccount );
+		assertNotNull(order);
+		assertEquals(true, order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder);
+		verify(buyLongAnalysis).analyse(any(TradingDayPrices[].class));
+		verify(buyLongAnalysis, atLeastOnce()).getMaximumNumberOfTradingDaysRequired();
+		verify(fees).calculateFee(accountBalance, EquityClass.STOCK, now);
+		verifyNoMoreInteractions(buyLongAnalysis);
+		verify(fees).calculateFee(accountBalance, EquityClass.STOCK, now);
+		verifyNoMoreInteractions(fees);
+		verify(cashAccount, atLeastOnce()).getBalance();
+		verifyNoMoreInteractions(cashAccount);
 	}
 
 	@Test
 	public void updateOrderNotCreatedPreviouslyTriggered() {
 
-		when( buyLongAnalysis.getMaximumNumberOfTradingDaysRequired() ).thenReturn( 10 );
-		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( BigDecimal.valueOf( 101 ) ) );
+		when(buyLongAnalysis.getMaximumNumberOfTradingDaysRequired()).thenReturn(10);
+		when(data.getClosingPrice()).thenReturn(ClosingPrice.valueOf(BigDecimal.valueOf(101)));
 
 		final LocalDate now = LocalDate.now();
-		final BigDecimal accountBalance = BigDecimal.valueOf( 50 );
-		final TradeValue tradeValue = new RelativeTradeValue( BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT );
+		final BigDecimal accountBalance = BigDecimal.valueOf(50);
+		final TradeValue tradeValue = new RelativeTradeValue(BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT);
 
-		when( cashAccount.getBalance() ).thenReturn( accountBalance );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
-				.thenReturn( BigDecimal.valueOf( 2.25 ) );
-		when( data.getDate() ).thenReturn( now );
+		when(cashAccount.getBalance()).thenReturn(accountBalance);
+		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		        .thenReturn(BigDecimal.valueOf(2.25));
+		when(data.getDate()).thenReturn(now);
 		final List<BuySignal> expected = new ArrayList<BuySignal>();
-		expected.add( new BuySignal( now ) );
-		when( buyLongAnalysis.analyse( any( TradingDayPrices[].class ) ) ).thenReturn( expected );
+		expected.add(new BuySignal(now));
+		when(buyLongAnalysis.analyse(any(TradingDayPrices[].class))).thenReturn(expected);
 
-		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic( EQUITY_STOCK, EQUITY_SCALE, tradeValue,
-				buyLongAnalysis, MATH_CONTEXT );
+		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic(EQUITY_STOCK, EQUITY_SCALE, tradeValue,
+		        buyLongAnalysis, MATH_CONTEXT);
 
-		logic.update( fees, cashAccount, data );
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		logic.update(fees, cashAccount, data);
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNull( order );
-		verify( buyLongAnalysis, times( 2 ) ).analyse( any( TradingDayPrices[].class ) );
-		verify( buyLongAnalysis, atLeastOnce() ).getMaximumNumberOfTradingDaysRequired();
-		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
-		verifyNoMoreInteractions( buyLongAnalysis );
-		verify( fees ).calculateFee( accountBalance, EquityClass.STOCK, now );
-		verifyNoMoreInteractions( fees );
-		verify( cashAccount, atLeastOnce() ).getBalance();
-		verifyNoMoreInteractions( cashAccount );
+		assertNull(order);
+		verify(buyLongAnalysis, times(2)).analyse(any(TradingDayPrices[].class));
+		verify(buyLongAnalysis, atLeastOnce()).getMaximumNumberOfTradingDaysRequired();
+		verify(fees).calculateFee(accountBalance, EquityClass.STOCK, now);
+		verifyNoMoreInteractions(buyLongAnalysis);
+		verify(fees).calculateFee(accountBalance, EquityClass.STOCK, now);
+		verifyNoMoreInteractions(fees);
+		verify(cashAccount, atLeastOnce()).getBalance();
+		verifyNoMoreInteractions(cashAccount);
 	}
 }

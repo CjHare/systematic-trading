@@ -66,7 +66,7 @@ public interface EquityOrder {
 	 * @throws OrderException when the order fails.
 	 */
 	void execute( BrokerageTransactionFee fees, BrokerageTransaction broker, CashAccount cashAccount,
-			TradingDayPrices todaysTrading ) throws OrderException;
+	        TradingDayPrices todaysTrading ) throws OrderException;
 
 	/**
 	 * The type, or details of event that the equity order should be recorded as.

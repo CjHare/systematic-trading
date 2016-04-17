@@ -76,53 +76,53 @@ public class DateTriggeredEntryLogicTest {
 	@Test
 	public void actionOnInsufficentFunds() {
 		final LocalDate firstOrder = LocalDate.now();
-		final Period interval = Period.ofDays( 1 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, EQUITY_SCALE, firstOrder,
-				interval, MATH_CONTEXT );
+		final Period interval = Period.ofDays(1);
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder,
+		        interval, MATH_CONTEXT);
 
-		final EquityOrder order = mock( EquityOrder.class );
+		final EquityOrder order = mock(EquityOrder.class);
 
-		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds( order );
+		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds(order);
 
-		assertEquals( EquityOrderInsufficientFundsAction.RESUMIT, action );
+		assertEquals(EquityOrderInsufficientFundsAction.RESUMIT, action);
 	}
 
 	@Test
 	public void updateNoOrder() {
 		final LocalDate firstOrder = LocalDate.now();
-		final Period interval = Period.ofDays( 1 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, EQUITY_SCALE, firstOrder,
-				interval, MATH_CONTEXT );
-		when( data.getDate() ).thenReturn( firstOrder );
+		final Period interval = Period.ofDays(1);
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder,
+		        interval, MATH_CONTEXT);
+		when(data.getDate()).thenReturn(firstOrder);
 
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNull( order );
+		assertNull(order);
 	}
 
 	@Test
 	public void updateOrder() {
-		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
-		final Period interval = Period.ofDays( 1 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, EQUITY_SCALE, firstOrder,
-				interval, MATH_CONTEXT );
+		final LocalDate firstOrder = LocalDate.now().minus(Period.ofDays(1));
+		final Period interval = Period.ofDays(1);
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder,
+		        interval, MATH_CONTEXT);
 		final LocalDate date = LocalDate.now();
-		when( data.getDate() ).thenReturn( date );
+		when(data.getDate()).thenReturn(date);
 
-		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
-		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( closingPrice ) );
+		final BigDecimal closingPrice = BigDecimal.valueOf(20);
+		when(data.getClosingPrice()).thenReturn(ClosingPrice.valueOf(closingPrice));
 
-		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
-				.thenReturn( transactionCost );
+		final BigDecimal transactionCost = BigDecimal.valueOf(5);
+		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		        .thenReturn(transactionCost);
 
-		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		when( cashAccount.getBalance() ).thenReturn( amount );
+		final BigDecimal amount = BigDecimal.valueOf(100);
+		when(cashAccount.getBalance()).thenReturn(amount);
 
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNotNull( order );
-		assertTrue( order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
+		assertNotNull(order);
+		assertTrue(order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder);
 	}
 
 	@Test
@@ -130,95 +130,95 @@ public class DateTriggeredEntryLogicTest {
 	 * When the fees are higher then the order amount, there should be no order
 	 */
 	public void updateOrderMinimumOfZero() {
-		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
-		final Period interval = Period.ofDays( 1 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, EQUITY_SCALE, firstOrder,
-				interval, MATH_CONTEXT );
-		when( data.getDate() ).thenReturn( LocalDate.now() );
+		final LocalDate firstOrder = LocalDate.now().minus(Period.ofDays(1));
+		final Period interval = Period.ofDays(1);
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder,
+		        interval, MATH_CONTEXT);
+		when(data.getDate()).thenReturn(LocalDate.now());
 
-		final BigDecimal closingPrice = BigDecimal.valueOf( 1 );
-		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( closingPrice ) );
+		final BigDecimal closingPrice = BigDecimal.valueOf(1);
+		when(data.getClosingPrice()).thenReturn(ClosingPrice.valueOf(closingPrice));
 
-		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
-				.thenReturn( transactionCost );
+		final BigDecimal transactionCost = BigDecimal.valueOf(5);
+		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		        .thenReturn(transactionCost);
 
-		final BigDecimal amount = BigDecimal.valueOf( 4 );
-		when( cashAccount.getBalance() ).thenReturn( amount );
+		final BigDecimal amount = BigDecimal.valueOf(4);
+		when(cashAccount.getBalance()).thenReturn(amount);
 
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNull( order );
+		assertNull(order);
 	}
 
 	@Test
 	public void updateBuyTwoDaysNoOrder() {
 		final LocalDate firstOrder = LocalDate.now();
-		final Period interval = Period.ofDays( 2 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, EQUITY_SCALE, firstOrder,
-				interval, MATH_CONTEXT );
-		when( data.getDate() ).thenReturn( LocalDate.now() );
+		final Period interval = Period.ofDays(2);
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder,
+		        interval, MATH_CONTEXT);
+		when(data.getDate()).thenReturn(LocalDate.now());
 
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNull( order );
+		assertNull(order);
 	}
 
 	@Test
 	public void updateBuyTwoDaysWithOrder() {
-		final LocalDate firstOrder = LocalDate.now().minus( Period.ofDays( 1 ) );
-		final Period interval = Period.ofDays( 2 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, EQUITY_SCALE, firstOrder,
-				interval, MATH_CONTEXT );
+		final LocalDate firstOrder = LocalDate.now().minus(Period.ofDays(1));
+		final Period interval = Period.ofDays(2);
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder,
+		        interval, MATH_CONTEXT);
 		final LocalDate date = LocalDate.now();
-		when( data.getDate() ).thenReturn( date );
+		when(data.getDate()).thenReturn(date);
 
-		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
-		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( closingPrice ) );
+		final BigDecimal closingPrice = BigDecimal.valueOf(20);
+		when(data.getClosingPrice()).thenReturn(ClosingPrice.valueOf(closingPrice));
 
-		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
-				.thenReturn( transactionCost );
+		final BigDecimal transactionCost = BigDecimal.valueOf(5);
+		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		        .thenReturn(transactionCost);
 
-		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		when( cashAccount.getBalance() ).thenReturn( amount );
+		final BigDecimal amount = BigDecimal.valueOf(100);
+		when(cashAccount.getBalance()).thenReturn(amount);
 
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNotNull( order );
-		assertTrue( order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
+		assertNotNull(order);
+		assertTrue(order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder);
 	}
 
 	@Test
 	public void updateBuyTwoDaysRolling() {
 		final LocalDate date = LocalDate.now();
-		final LocalDate firstOrder = date.minus( Period.ofDays( 1 ) );
-		final Period interval = Period.ofDays( 2 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, EQUITY_SCALE, firstOrder,
-				interval, MATH_CONTEXT );
-		when( data.getDate() ).thenReturn( date );
+		final LocalDate firstOrder = date.minus(Period.ofDays(1));
+		final Period interval = Period.ofDays(2);
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder,
+		        interval, MATH_CONTEXT);
+		when(data.getDate()).thenReturn(date);
 
-		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
-		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( closingPrice ) );
+		final BigDecimal closingPrice = BigDecimal.valueOf(20);
+		when(data.getClosingPrice()).thenReturn(ClosingPrice.valueOf(closingPrice));
 
-		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
-				.thenReturn( transactionCost );
+		final BigDecimal transactionCost = BigDecimal.valueOf(5);
+		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		        .thenReturn(transactionCost);
 
-		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		when( cashAccount.getBalance() ).thenReturn( amount );
+		final BigDecimal amount = BigDecimal.valueOf(100);
+		when(cashAccount.getBalance()).thenReturn(amount);
 
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNotNull( order );
-		assertTrue( order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
+		assertNotNull(order);
+		assertTrue(order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder);
 
 		// Change the trading day to tomorrow - should not have an order
-		when( data.getDate() ).thenReturn( LocalDate.now().plus( Period.ofDays( 1 ) ) );
+		when(data.getDate()).thenReturn(LocalDate.now().plus(Period.ofDays(1)));
 
-		final EquityOrder secondOrder = logic.update( fees, cashAccount, data );
+		final EquityOrder secondOrder = logic.update(fees, cashAccount, data);
 
-		assertNull( secondOrder );
+		assertNull(secondOrder);
 	}
 
 	@Test
@@ -227,33 +227,33 @@ public class DateTriggeredEntryLogicTest {
 	 */
 	public void updateEnsureNoDrift() {
 		final LocalDate date = LocalDate.now();
-		final LocalDate firstOrder = date.minus( Period.ofDays( 1 ) );
-		final Period interval = Period.ofDays( 1 );
-		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic( EquityClass.STOCK, EQUITY_SCALE, firstOrder,
-				interval, MATH_CONTEXT );
-		when( data.getDate() ).thenReturn( date );
+		final LocalDate firstOrder = date.minus(Period.ofDays(1));
+		final Period interval = Period.ofDays(1);
+		final DateTriggeredEntryLogic logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder,
+		        interval, MATH_CONTEXT);
+		when(data.getDate()).thenReturn(date);
 
-		final BigDecimal closingPrice = BigDecimal.valueOf( 20 );
-		when( data.getClosingPrice() ).thenReturn( ClosingPrice.valueOf( closingPrice ) );
+		final BigDecimal closingPrice = BigDecimal.valueOf(20);
+		when(data.getClosingPrice()).thenReturn(ClosingPrice.valueOf(closingPrice));
 
-		final BigDecimal transactionCost = BigDecimal.valueOf( 5 );
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
-				.thenReturn( transactionCost );
+		final BigDecimal transactionCost = BigDecimal.valueOf(5);
+		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		        .thenReturn(transactionCost);
 
-		final BigDecimal amount = BigDecimal.valueOf( 100 );
-		when( cashAccount.getBalance() ).thenReturn( amount );
+		final BigDecimal amount = BigDecimal.valueOf(100);
+		when(cashAccount.getBalance()).thenReturn(amount);
 
-		final EquityOrder order = logic.update( fees, cashAccount, data );
+		final EquityOrder order = logic.update(fees, cashAccount, data);
 
-		assertNotNull( order );
-		assertTrue( order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
+		assertNotNull(order);
+		assertTrue(order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder);
 
 		// Change the trading day to tomorrow - should not have an order
-		when( data.getDate() ).thenReturn( LocalDate.now().plus( Period.ofDays( 1 ) ) );
+		when(data.getDate()).thenReturn(LocalDate.now().plus(Period.ofDays(1)));
 
-		final EquityOrder secondOrder = logic.update( fees, cashAccount, data );
+		final EquityOrder secondOrder = logic.update(fees, cashAccount, data);
 
-		assertNotNull( secondOrder );
-		assertTrue( secondOrder instanceof BuyTotalCostTomorrowAtOpeningPriceOrder );
+		assertNotNull(secondOrder);
+		assertTrue(secondOrder instanceof BuyTotalCostTomorrowAtOpeningPriceOrder);
 	}
 }

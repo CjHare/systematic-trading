@@ -49,13 +49,13 @@ public class EveryIndicatorIsBuySignalFilter implements SignalFilter {
 	 * Just pass through the indicators given as signals
 	 */
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
-			final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
 
-		final SortedSet<BuySignal> passedSignals = new TreeSet<BuySignal>( new BuySignalDateComparator() );
+		final SortedSet<BuySignal> passedSignals = new TreeSet<BuySignal>(new BuySignalDateComparator());
 
 		for (final IndicatorSignalType type : signals.keySet()) {
-			for (final IndicatorSignal signal : signals.get( type )) {
-				passedSignals.add( new BuySignal( signal.getDate() ) );
+			for (final IndicatorSignal signal : signals.get(type)) {
+				passedSignals.add(new BuySignal(signal.getDate()));
 			}
 		}
 

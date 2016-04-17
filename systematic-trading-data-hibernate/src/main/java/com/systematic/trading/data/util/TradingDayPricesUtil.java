@@ -40,21 +40,21 @@ public class TradingDayPricesUtil {
 
 	public static TradingDayPrices parseDataPoint( final String tickerSymbol, final Object uncast ) {
 		final Object[] data = (Object[]) uncast;
-		final LocalDate date = parseDate( data[0] );
+		final LocalDate date = parseDate(data[0]);
 
-		final OpeningPrice openingPrice = OpeningPrice.valueOf( parseBigDecimal( data[3] ) );
-		final LowestPrice lowestPrice = LowestPrice.valueOf( parseBigDecimal( data[1] ) );
-		final HighestPrice highestPrice = HighestPrice.valueOf( parseBigDecimal( data[2] ) );
-		final ClosingPrice closingPrice = ClosingPrice.valueOf( parseBigDecimal( data[4] ) );
+		final OpeningPrice openingPrice = OpeningPrice.valueOf(parseBigDecimal(data[3]));
+		final LowestPrice lowestPrice = LowestPrice.valueOf(parseBigDecimal(data[1]));
+		final HighestPrice highestPrice = HighestPrice.valueOf(parseBigDecimal(data[2]));
+		final ClosingPrice closingPrice = ClosingPrice.valueOf(parseBigDecimal(data[4]));
 
-		return new TradingDayPricesImpl( tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice );
+		return new TradingDayPricesImpl(tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice);
 	}
 
 	private static LocalDate parseDate( final Object o ) {
-		return Date.valueOf( o.toString() ).toLocalDate();
+		return Date.valueOf(o.toString()).toLocalDate();
 	}
 
 	private static BigDecimal parseBigDecimal( final Object o ) {
-		return BigDecimal.valueOf( Double.valueOf( o.toString() ) );
+		return BigDecimal.valueOf(Double.valueOf(o.toString()));
 	}
 }

@@ -35,15 +35,15 @@ import java.math.MathContext;
  */
 public class BrokerageFeeUtil {
 
-	public static final BigDecimal FIFTEEN = BigDecimal.valueOf( 15 );
-	public static final BigDecimal THIRTEEN = BigDecimal.valueOf( 13 );
-	public static final BigDecimal ELEVEN = BigDecimal.valueOf( 10 );
-	public static final BigDecimal TEN = BigDecimal.valueOf( 10 );
-	public static final BigDecimal NINE_NINTY = BigDecimal.valueOf( 9.9 );
+	public static final BigDecimal FIFTEEN = BigDecimal.valueOf(15);
+	public static final BigDecimal THIRTEEN = BigDecimal.valueOf(13);
+	public static final BigDecimal ELEVEN = BigDecimal.valueOf(10);
+	public static final BigDecimal TEN = BigDecimal.valueOf(10);
+	public static final BigDecimal NINE_NINTY = BigDecimal.valueOf(9.9);
 
-	public static final BigDecimal TEN_BASIS_POINTS = BigDecimal.valueOf( .001 );
-	public static final BigDecimal EIGHT_BASIS_POINTS = BigDecimal.valueOf( .0008 );
-	public static final BigDecimal SEVENTY_FIVE_BASIS_POINTS = BigDecimal.valueOf( .00075 );
+	public static final BigDecimal TEN_BASIS_POINTS = BigDecimal.valueOf(.001);
+	public static final BigDecimal EIGHT_BASIS_POINTS = BigDecimal.valueOf(.0008);
+	public static final BigDecimal SEVENTY_FIVE_BASIS_POINTS = BigDecimal.valueOf(.00075);
 
 	/**
 	 * Calculates and return the larger value from the absolute and percentage.
@@ -55,8 +55,8 @@ public class BrokerageFeeUtil {
 	 * @return the larger between the absolute and relative given the specific trade value.
 	 */
 	public static BigDecimal applyLargest( final BigDecimal tradeValue, final BigDecimal absoluteFee,
-			final BigDecimal percentage, final MathContext mathContext ) {
-		final BigDecimal relativeFee = tradeValue.multiply( percentage, mathContext );
-		return absoluteFee.compareTo( relativeFee ) > 0 ? absoluteFee : relativeFee;
+	        final BigDecimal percentage, final MathContext mathContext ) {
+		final BigDecimal relativeFee = tradeValue.multiply(percentage, mathContext);
+		return absoluteFee.compareTo(relativeFee) > 0 ? absoluteFee : relativeFee;
 	}
 }

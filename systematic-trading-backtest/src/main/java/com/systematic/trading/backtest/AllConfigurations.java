@@ -76,7 +76,7 @@ import com.systematic.trading.simulation.equity.fee.management.LadderedEquityMan
 public class AllConfigurations {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( AllConfigurations.class );
+	private static final Logger LOG = LogManager.getLogger(AllConfigurations.class);
 
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
@@ -85,33 +85,33 @@ public class AllConfigurations {
 	private static final int DAYS_IN_A_YEAR = 365;
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
 
-	private static final Period WEEKLY = Period.ofWeeks( 1 );
-	private static final Period MONTHLY = Period.ofMonths( 1 );
+	private static final Period WEEKLY = Period.ofWeeks(1);
+	private static final Period MONTHLY = Period.ofMonths(1);
 
 	public static void main( final String... args ) throws Exception {
 
-		final String baseOutputDirectory = getBaseOutputDirectory( args );
+		final String baseOutputDirectory = getBaseOutputDirectory(args);
 		final DescriptionGenerator filenameGenerator = new DescriptionGenerator();
 
 		// Date range is from the first of the starting month until now
 		final LocalDate simulationEndDate = LocalDate.now();
-		final LocalDate simulationStartDate = simulationEndDate.minus( HISTORY_REQUIRED, ChronoUnit.DAYS )
-				.withDayOfMonth( 1 );
+		final LocalDate simulationStartDate = simulationEndDate.minus(HISTORY_REQUIRED, ChronoUnit.DAYS)
+		        .withDayOfMonth(1);
 
 		// Only for the single equity
 		final EquityIdentity equity = EquityConfiguration.SP_500_PRICE_INDEX.getEquityIdentity();
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final Period warmUpPeriod = getWarmUpPeriod();
-		final BacktestSimulationDates simulationDates = new BacktestSimulationDates( simulationStartDate,
-				simulationEndDate, warmUpPeriod );
+		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
+		        simulationEndDate, warmUpPeriod);
 
 		// Retrieve the set of trading data
-		final TickerSymbolTradingData tradingData = getTradingData( equity, simulationDates );
+		final TickerSymbolTradingData tradingData = getTradingData(equity, simulationDates);
 
 		// Multi-threading support
 		final int cores = Runtime.getRuntime().availableProcessors();
-		final ExecutorService pool = Executors.newFixedThreadPool( cores );
+		final ExecutorService pool = Executors.newFixedThreadPool(cores);
 
 		// TODO run the test over the full period with exclusion on filters
 		// TODO no deposits until actual start date
@@ -119,23 +119,23 @@ public class AllConfigurations {
 		try {
 			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
 
-				final List<BacktestBootstrapConfiguration> configurations = getConfigurations( equity, simulationDates,
-						depositAmount, filenameGenerator );
+				final List<BacktestBootstrapConfiguration> configurations = getConfigurations(equity, simulationDates,
+				        depositAmount, filenameGenerator);
 
-				final String outputDirectory = String.format( baseOutputDirectory, depositAmount );
+				final String outputDirectory = String.format(baseOutputDirectory, depositAmount);
 
-				runTest( depositAmount, outputDirectory, configurations, tradingData, equity, pool );
+				runTest(depositAmount, outputDirectory, configurations, tradingData, equity, pool);
 			}
 
 		} finally {
 			HibernateUtil.getSessionFactory().close();
 			pool.shutdown();
 
-			LOG.info( "Waiting at most 90 minutes for result output to complete..." );
-			pool.awaitTermination( 90, TimeUnit.MINUTES );
+			LOG.info("Waiting at most 90 minutes for result output to complete...");
+			pool.awaitTermination(90, TimeUnit.MINUTES);
 		}
 
-		LOG.info( "Finished outputting results" );
+		LOG.info("Finished outputting results");
 	}
 
 	private static Period getWarmUpPeriod() {
@@ -157,55 +157,55 @@ public class AllConfigurations {
 			}
 		}
 
-		return Period.ofDays( windUp );
+		return Period.ofDays(windUp);
 	}
 
 	private static BacktestDisplay getDisplay( final String outputDirectory, final ExecutorService pool )
-			throws IOException {
+	        throws IOException {
 		// return new FileDisplay( outputDirectory, pool, MATH_CONTEXT );
-		return new FileMinimalDisplay( outputDirectory, pool, MATH_CONTEXT );
+		return new FileMinimalDisplay(outputDirectory, pool, MATH_CONTEXT);
 		// return new FileNoDisplay();
 	}
 
 	public static void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
-			final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
-			final EquityIdentity equity, final ExecutorService pool ) throws Exception {
+	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
+	        final EquityIdentity equity, final ExecutorService pool ) throws Exception {
 
 		// Arrange output to files, only once per a run
-		new FileClearDestination( baseOutputDirectory );
+		new FileClearDestination(baseOutputDirectory);
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
-			final String outputDirectory = getOutputDirectory( baseOutputDirectory, equity, configuration );
-			final BacktestDisplay fileDisplay = getDisplay( outputDirectory, pool );
+			final String outputDirectory = getOutputDirectory(baseOutputDirectory, equity, configuration);
+			final BacktestDisplay fileDisplay = getDisplay(outputDirectory, pool);
 
-			final BacktestBootstrap bootstrap = new BacktestBootstrap( tradingData, configuration, fileDisplay,
-					MATH_CONTEXT );
+			final BacktestBootstrap bootstrap = new BacktestBootstrap(tradingData, configuration, fileDisplay,
+			        MATH_CONTEXT);
 
-			LOG.info( String.format( "Backtesting beginning for: %s", configuration.getDescription() ) );
+			LOG.info(String.format("Backtesting beginning for: %s", configuration.getDescription()));
 
 			bootstrap.run();
 
-			LOG.info( String.format( "Backtesting complete for: %s", configuration.getDescription() ) );
+			LOG.info(String.format("Backtesting complete for: %s", configuration.getDescription()));
 		}
 
-		LOG.info( String.format( "All Simulations have been completed for deposit amount: %s", depositAmount ) );
+		LOG.info(String.format("All Simulations have been completed for deposit amount: %s", depositAmount));
 
 	}
 
 	private static TickerSymbolTradingData getTradingData( final EquityIdentity equity,
-			final BacktestSimulationDates simulationDate ) {
+	        final BacktestSimulationDates simulationDate ) {
 
-		final LocalDate startDate = simulationDate.getSimulationStartDate().minus( simulationDate.getWarmUp() );
+		final LocalDate startDate = simulationDate.getSimulationStartDate().minus(simulationDate.getWarmUp());
 		final LocalDate endDate = simulationDate.getSimulationEndDate();
 
 		// Retrieve and cache data range from remote data source
 		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
-		updateService.get( equity.getTickerSymbol(), startDate, endDate );
+		updateService.get(equity.getTickerSymbol(), startDate, endDate);
 
 		// Retrieve from local cache the desired data range
 		final DataService service = HibernateDataService.getInstance();
-		final TradingDayPrices[] data = service.get( equity.getTickerSymbol(), startDate, endDate );
-		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest( equity, data );
+		final TradingDayPrices[] data = service.get(equity.getTickerSymbol(), startDate, endDate);
+		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest(equity, data);
 
 		return tradingData;
 	}
@@ -213,36 +213,36 @@ public class AllConfigurations {
 	// TODO these fees should go somewhere, another configuration enum?
 	private static EquityManagementFeeCalculator getVanguardEftFeeCalculator() {
 		// new ZeroEquityManagementFeeStructure()
-		return new FlatEquityManagementFeeCalculator( BigDecimal.valueOf( 0.0018 ), MATH_CONTEXT );
+		return new FlatEquityManagementFeeCalculator(BigDecimal.valueOf(0.0018), MATH_CONTEXT);
 	}
 
 	private static EquityManagementFeeCalculator getVanguardRetailFeeCalculator() {
-		final BigDecimal[] vanguardFeeRange = { BigDecimal.valueOf( 50000 ), BigDecimal.valueOf( 100000 ) };
-		final BigDecimal[] vanguardPercentageFee = { BigDecimal.valueOf( 0.009 ), BigDecimal.valueOf( 0.006 ),
-				BigDecimal.valueOf( 0.0035 ) };
-		return new LadderedEquityManagementFeeCalculator( vanguardFeeRange, vanguardPercentageFee, MATH_CONTEXT );
+		final BigDecimal[] vanguardFeeRange = { BigDecimal.valueOf(50000), BigDecimal.valueOf(100000) };
+		final BigDecimal[] vanguardPercentageFee = { BigDecimal.valueOf(0.009), BigDecimal.valueOf(0.006),
+		        BigDecimal.valueOf(0.0035) };
+		return new LadderedEquityManagementFeeCalculator(vanguardFeeRange, vanguardPercentageFee, MATH_CONTEXT);
 	}
 
 	private static List<BacktestBootstrapConfiguration> getConfigurations( final EquityIdentity equity,
-			final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-			final DescriptionGenerator descriptionGenerator ) {
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+	        final DescriptionGenerator descriptionGenerator ) {
 
 		final BacktestBootstrapConfigurationGenerator configurationGenerator = new BacktestBootstrapConfigurationGenerator(
-				equity, simulationDates, deposit, descriptionGenerator, MATH_CONTEXT );
+		        equity, simulationDates, deposit, descriptionGenerator, MATH_CONTEXT);
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
 
 		// Vanguard Retail
-		configurations.add( configurationGenerator.getPeriodicConfiguration( BrokerageFeesConfiguration.VANGUARD_RETAIL,
-				WEEKLY, getVanguardRetailFeeCalculator() ) );
+		configurations.add(configurationGenerator.getPeriodicConfiguration(BrokerageFeesConfiguration.VANGUARD_RETAIL,
+		        WEEKLY, getVanguardRetailFeeCalculator()));
 
 		// CMC Weekly
-		configurations.add( configurationGenerator.getPeriodicConfiguration( BrokerageFeesConfiguration.CMC_MARKETS,
-				WEEKLY, getVanguardEftFeeCalculator() ) );
+		configurations.add(configurationGenerator.getPeriodicConfiguration(BrokerageFeesConfiguration.CMC_MARKETS,
+		        WEEKLY, getVanguardEftFeeCalculator()));
 
 		// CMC Monthly
-		configurations.add( configurationGenerator.getPeriodicConfiguration( BrokerageFeesConfiguration.CMC_MARKETS,
-				MONTHLY, getVanguardEftFeeCalculator() ) );
+		configurations.add(configurationGenerator.getPeriodicConfiguration(BrokerageFeesConfiguration.CMC_MARKETS,
+		        MONTHLY, getVanguardEftFeeCalculator()));
 
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
@@ -253,28 +253,26 @@ public class AllConfigurations {
 					for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 
 						// MACD & RSI
-						configurations.add( configurationGenerator.getIndicatorConfiguration( minimumTrade,
-								maximumTrade, getVanguardEftFeeCalculator(), brokerage, macdConfiguration,
-								rsiConfiguration ) );
+						configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
+						        getVanguardEftFeeCalculator(), brokerage, macdConfiguration, rsiConfiguration));
 					}
 
 					// MACD only
-					configurations.add( configurationGenerator.getIndicatorConfiguration( minimumTrade, maximumTrade,
-							getVanguardEftFeeCalculator(), brokerage, macdConfiguration ) );
+					configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
+					        getVanguardEftFeeCalculator(), brokerage, macdConfiguration));
 
 					for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 						for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 
 							// MACD, SMA & RSI
-							configurations.add( configurationGenerator.getIndicatorConfiguration( minimumTrade,
-									maximumTrade, getVanguardEftFeeCalculator(), brokerage, macdConfiguration,
-									smaConfiguration, rsiConfiguration ) );
+							configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade,
+							        maximumTrade, getVanguardEftFeeCalculator(), brokerage, macdConfiguration,
+							        smaConfiguration, rsiConfiguration));
 						}
 
 						// MACD & SMA
-						configurations.add( configurationGenerator.getIndicatorConfiguration( minimumTrade,
-								maximumTrade, getVanguardEftFeeCalculator(), brokerage, macdConfiguration,
-								smaConfiguration ) );
+						configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
+						        getVanguardEftFeeCalculator(), brokerage, macdConfiguration, smaConfiguration));
 					}
 				}
 
@@ -282,9 +280,8 @@ public class AllConfigurations {
 					for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 
 						// SMA & RSI
-						configurations.add( configurationGenerator.getIndicatorConfiguration( minimumTrade,
-								maximumTrade, getVanguardEftFeeCalculator(), brokerage, smaConfiguration,
-								rsiConfiguration ) );
+						configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
+						        getVanguardEftFeeCalculator(), brokerage, smaConfiguration, rsiConfiguration));
 					}
 				}
 			}
@@ -294,9 +291,8 @@ public class AllConfigurations {
 	}
 
 	private static String getOutputDirectory( final String baseOutputDirectory, final EquityIdentity equity,
-			final BacktestBootstrapConfiguration configuration ) {
-		return String.format( "%s%s_%s", baseOutputDirectory, equity.getTickerSymbol(),
-				configuration.getDescription() );
+	        final BacktestBootstrapConfiguration configuration ) {
+		return String.format("%s%s_%s", baseOutputDirectory, equity.getTickerSymbol(), configuration.getDescription());
 	}
 
 	private static String getBaseOutputDirectory( final String... args ) {

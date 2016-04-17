@@ -40,7 +40,7 @@ import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestme
  */
 public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	private final CumulativeReturnOnInvestment cumulativeRoi;
 
@@ -50,12 +50,12 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 	/** The last net worth recording, which makes it into the summary. */
 	private NetWorthEvent lastEvent;
 
-	public FileNetWorthSummaryDisplay( final CumulativeReturnOnInvestment cumulativeRoi,
-			final FileDisplayMultithreading display ) {
+	public FileNetWorthSummaryDisplay(final CumulativeReturnOnInvestment cumulativeRoi,
+	        final FileDisplayMultithreading display) {
 		this.cumulativeRoi = cumulativeRoi;
 		this.display = display;
 
-		display.write( "=== Net Worth Summary ===" );
+		display.write("=== Net Worth Summary ===");
 	}
 
 	@Override
@@ -68,22 +68,22 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 		final StringBuilder output = new StringBuilder();
 
-		output.append( String.format( "Number of equities: %s\n", TWO_DECIMAL_PLACES.format( balance ) ) );
-		output.append( String.format( "Holdings value: %s\n", TWO_DECIMAL_PLACES.format( holdingValue ) ) );
-		output.append( String.format( "Cash account: %s\n", TWO_DECIMAL_PLACES.format( cashBalance ) ) );
-		output.append( String.format( "\nTotal Net Worth: %s\n", TWO_DECIMAL_PLACES.format( netWorth ) ) );
+		output.append(String.format("Number of equities: %s\n", TWO_DECIMAL_PLACES.format(balance)));
+		output.append(String.format("Holdings value: %s\n", TWO_DECIMAL_PLACES.format(holdingValue)));
+		output.append(String.format("Cash account: %s\n", TWO_DECIMAL_PLACES.format(cashBalance)));
+		output.append(String.format("\nTotal Net Worth: %s\n", TWO_DECIMAL_PLACES.format(netWorth)));
 
 		// TODO this value is of dubious value, needs weighting (plus passing into summary)
-		output.append( String.format( "\nInvestment Cumulative ROI: %s\n",
-				TWO_DECIMAL_PLACES.format( cumulativeRoi.getCumulativeReturnOnInvestment() ) ) );
+		output.append(String.format("\nInvestment Cumulative ROI: %s\n",
+		        TWO_DECIMAL_PLACES.format(cumulativeRoi.getCumulativeReturnOnInvestment())));
 
-		display.write( output.toString() );
+		display.write(output.toString());
 	}
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
 
-		if (SimulationState.COMPLETE.equals( state )) {
+		if (SimulationState.COMPLETE.equals(state)) {
 			lastEvent = event;
 		}
 	}

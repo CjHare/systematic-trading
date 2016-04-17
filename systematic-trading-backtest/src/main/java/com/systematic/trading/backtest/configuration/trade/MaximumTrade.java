@@ -34,14 +34,14 @@ import java.math.BigDecimal;
  */
 public enum MaximumTrade {
 
-	QUARTER( BigDecimal.valueOf( .25 ) ),
-	HALF( BigDecimal.valueOf( .5 ) ),
-	THREE_QUARTERS( BigDecimal.valueOf( .75 ) ),
-	ALL( BigDecimal.valueOf( 1 ) );
+	QUARTER(BigDecimal.valueOf(.25)),
+	HALF(BigDecimal.valueOf(.5)),
+	THREE_QUARTERS(BigDecimal.valueOf(.75)),
+	ALL(BigDecimal.valueOf(1));
 
 	private final BigDecimal value;
 
-	private MaximumTrade( final BigDecimal value ) {
+	private MaximumTrade(final BigDecimal value) {
 		this.value = value;
 	}
 
@@ -50,6 +50,6 @@ public enum MaximumTrade {
 	}
 
 	public String getDescription() {
-		return String.valueOf( value.doubleValue() );
+		return String.valueOf(value.doubleValue());
 	}
 }

@@ -60,14 +60,14 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	// TODO enums for configuration
 
 	// TODO only one constructor
-	public RelativeStrengthIndexSignals( final int lookback, final int oversold, final int overbought,
-			final MathContext mathContext ) {
-		this.oversold = BigDecimal.valueOf( oversold );
-		this.overbought = BigDecimal.valueOf( overbought );
+	public RelativeStrengthIndexSignals(final int lookback, final int oversold, final int overbought,
+	        final MathContext mathContext) {
+		this.oversold = BigDecimal.valueOf(oversold);
+		this.overbought = BigDecimal.valueOf(overbought);
 		this.requiredNumberOfTradingDays = lookback + DAYS_OF_SIGNALS + MINIMUM_PRICES_FOR_ACCURACY;
 
-		this.rsi = new RelativeStrengthIndexCalculator( lookback, DAYS_OF_SIGNALS, new IllegalArgumentThrowingValidator(),
-				mathContext );
+		this.rsi = new RelativeStrengthIndexCalculator(lookback, DAYS_OF_SIGNALS,
+		        new IllegalArgumentThrowingValidator(), mathContext);
 	}
 
 	@Override
@@ -75,10 +75,10 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		// Calculate the RSI signals
 		// TODO convert return type to value with date
-		final List<BigDecimal> tenDayRsi = rsi.rsi( data );
+		final List<BigDecimal> tenDayRsi = rsi.rsi(data);
 
 		/* RSI triggers a buy signal when crossing the over brought level (e.g. 30) */
-		final List<IndicatorSignal> tenDayBuy = buySignals( tenDayRsi, data );
+		final List<IndicatorSignal> tenDayBuy = buySignals(tenDayRsi, data);
 
 		return tenDayBuy;
 	}
@@ -91,9 +91,9 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		final int offset = data.length - rsi.size();
 
 		for (int index = 0; index < rsi.size(); index++) {
-			if (isOversold( rsi.get( index ) )) {
+			if (isOversold(rsi.get(index))) {
 				// rsi list maps to the right most data entries
-				buySignals.add( new IndicatorSignal( data[offset + index].getDate(), IndicatorSignalType.RSI ) );
+				buySignals.add(new IndicatorSignal(data[offset + index].getDate(), IndicatorSignalType.RSI));
 			}
 		}
 
@@ -104,7 +104,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	 * Security is considered over sold when the RSI meet or falls below the threshold F
 	 */
 	private boolean isOversold( final BigDecimal rsi ) {
-		return oversold.compareTo( rsi ) >= 0;
+		return oversold.compareTo(rsi) >= 0;
 	}
 
 	protected List<IndicatorSignal> intersection( final List<IndicatorSignal> a, final List<IndicatorSignal> b ) {
@@ -115,8 +115,8 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		for (final IndicatorSignal signal : shorter) {
 			// Match on the dates
 			final LocalDate aDate = signal.getDate();
-			if (contains( aDate, larger )) {
-				intersection.add( signal );
+			if (contains(aDate, larger)) {
+				intersection.add(signal);
 			}
 		}
 
@@ -125,7 +125,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 	private boolean contains( final LocalDate date, final List<IndicatorSignal> signals ) {
 		for (final IndicatorSignal signal : signals) {
-			if (date.equals( signal.getDate() )) {
+			if (date.equals(signal.getDate())) {
 				return true;
 			}
 		}

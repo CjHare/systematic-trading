@@ -40,7 +40,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  */
 public class ConsoleReturnOnInvestmentDisplay implements ReturnOnInvestmentEventListener {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( "#.##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat("#.##");
 
 	public void record( final ReturnOnInvestmentEvent event ) {
 
@@ -48,27 +48,27 @@ public class ConsoleReturnOnInvestmentDisplay implements ReturnOnInvestmentEvent
 		final LocalDate startDateInclusive = event.getExclusiveStartDate();
 		final LocalDate endDateExclusive = event.getInclusiveEndDate();
 
-		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format( percentageChange );
-		final Period elapsed = Period.between( startDateInclusive, endDateExclusive );
+		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format(percentageChange);
+		final Period elapsed = Period.between(startDateInclusive, endDateExclusive);
 
 		if (elapsed.getDays() > 0) {
-			System.out.println( String.format( "Daily - ROI: %s percent over %s day(s), from %s to %s",
-					formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive ) );
+			System.out.println(String.format("Daily - ROI: %s percent over %s day(s), from %s to %s",
+			        formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive));
 		}
 
 		if (elapsed.getMonths() > 0) {
-			System.out.println( String.format( "Monthly - ROI: %s percent over %s month(s), from %s to %s",
-					formattedPercentageChange, elapsed.getMonths(), startDateInclusive, endDateExclusive ) );
+			System.out.println(String.format("Monthly - ROI: %s percent over %s month(s), from %s to %s",
+			        formattedPercentageChange, elapsed.getMonths(), startDateInclusive, endDateExclusive));
 		}
 
 		if (elapsed.getYears() > 0) {
-			System.out.println( String.format( "Yearly - ROI: %s percent over %s year(s), from %s to %s",
-					formattedPercentageChange, elapsed.getYears(), startDateInclusive, endDateExclusive ) );
+			System.out.println(String.format("Yearly - ROI: %s percent over %s year(s), from %s to %s",
+			        formattedPercentageChange, elapsed.getYears(), startDateInclusive, endDateExclusive));
 		}
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		record( (ReturnOnInvestmentEvent) event );
+		record((ReturnOnInvestmentEvent) event);
 	}
 }

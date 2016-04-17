@@ -42,31 +42,30 @@ public class IndicatorSignalGeneratorFactory {
 	public static IndicatorSignalGenerator create( final SignalConfiguration signal, final MathContext mathContext ) {
 
 		if (signal instanceof MacdConfiguration) {
-			return create( (MacdConfiguration) signal, mathContext );
+			return create((MacdConfiguration) signal, mathContext);
 		}
 		if (signal instanceof RsiConfiguration) {
-			return create( (RsiConfiguration) signal, mathContext );
+			return create((RsiConfiguration) signal, mathContext);
 		}
 		if (signal instanceof SmaConfiguration) {
-			return create( (SmaConfiguration) signal, mathContext );
+			return create((SmaConfiguration) signal, mathContext);
 		}
 
-		throw new IllegalArgumentException( String.format( "Signal type not catered for: %s", signal ) );
+		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
 	public static IndicatorSignalGenerator create( final MacdConfiguration macd, final MathContext mathContext ) {
-		return new MovingAveragingConvergeDivergenceSignals( macd.getFastTimePeriods(), macd.getSlowTimePeriods(),
-				macd.getSignalTimePeriods(), mathContext );
+		return new MovingAveragingConvergeDivergenceSignals(macd.getFastTimePeriods(), macd.getSlowTimePeriods(),
+		        macd.getSignalTimePeriods(), mathContext);
 	}
 
 	public static IndicatorSignalGenerator create( final RsiConfiguration rsi, final MathContext mathContext ) {
-		return new RelativeStrengthIndexSignals( rsi.getLookback(), rsi.getOverbought(), rsi.getOversold(),
-				mathContext );
+		return new RelativeStrengthIndexSignals(rsi.getLookback(), rsi.getOverbought(), rsi.getOversold(), mathContext);
 	}
 
 	public static IndicatorSignalGenerator create( final SmaConfiguration sma, final MathContext mathContext ) {
-		return new SimpleMovingAverageGradientSignals( sma.getLookback(), sma.getDaysOfGradient(), sma.getType(),
-				mathContext );
+		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), sma.getType(),
+		        mathContext);
 	}
 
 }

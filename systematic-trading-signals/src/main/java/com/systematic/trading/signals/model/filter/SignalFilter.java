@@ -51,6 +51,6 @@ public interface SignalFilter {
 	 * @param the date of the latest trading price action in the data set being analysed.
 	 * @return the resulting signal(s) from applying the filters rules.
 	 */
-	SortedSet<BuySignal> apply( Map<IndicatorSignalType, List<IndicatorSignal>> signals,
-			Comparator<BuySignal> ordering, LocalDate latestTradingDate );
+	SortedSet<BuySignal> apply( Map<IndicatorSignalType, List<IndicatorSignal>> signals, Comparator<BuySignal> ordering,
+	        LocalDate latestTradingDate );
 }

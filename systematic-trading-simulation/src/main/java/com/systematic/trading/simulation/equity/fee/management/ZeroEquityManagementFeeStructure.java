@@ -40,7 +40,7 @@ public class ZeroEquityManagementFeeStructure implements EquityManagementFeeStru
 
 	@Override
 	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
-			final TradingDayPrices tradingData ) {
+	        final TradingDayPrices tradingData ) {
 		return BigDecimal.ZERO;
 	}
 

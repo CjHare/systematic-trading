@@ -39,7 +39,7 @@ import com.systematic.trading.data.util.HibernateUtil;
 
 public class HistoryRetrievalRequestManager {
 
-	private static final Logger LOG = LogManager.getLogger( HistoryRetrievalRequestManager.class );
+	private static final Logger LOG = LogManager.getLogger(HistoryRetrievalRequestManager.class);
 
 	private static final HistoryRetrievalRequestManager INSTANCE = new HistoryRetrievalRequestManager();
 
@@ -60,12 +60,12 @@ public class HistoryRetrievalRequestManager {
 		for (final HistoryRetrievalRequest request : requests) {
 			try {
 				tx = session.beginTransaction();
-				session.save( request );
+				session.save(request);
 				tx.commit();
 			} catch (final HibernateException e) {
 				// May already have the record inserted
-				LOG.info( String.format( "Failed to save request for %s %s %s", request.getTickerSymbol(),
-						request.getInclusiveStartDate(), request.getExclusiveEndDate() ) );
+				LOG.info(String.format("Failed to save request for %s %s %s", request.getTickerSymbol(),
+				        request.getInclusiveStartDate(), request.getExclusiveEndDate()));
 
 				if (tx != null && tx.isActive()) {
 					tx.rollback();
@@ -84,9 +84,8 @@ public class HistoryRetrievalRequestManager {
 		try {
 			tx = session.beginTransaction();
 
-			final Query query = session
-					.createQuery( "from HistoryRetrievalRequest where ticker_symbol= :ticker_symbol" );
-			query.setString( "ticker_symbol", tickerSymbol );
+			final Query query = session.createQuery("from HistoryRetrievalRequest where ticker_symbol= :ticker_symbol");
+			query.setString("ticker_symbol", tickerSymbol);
 
 			@SuppressWarnings("unchecked")
 			final List<HistoryRetrievalRequest> requests = query.list();
@@ -95,7 +94,7 @@ public class HistoryRetrievalRequestManager {
 
 		} catch (final HibernateException e) {
 
-			LOG.error( e );
+			LOG.error(e);
 
 		} finally {
 			if (tx != null) {
@@ -103,7 +102,7 @@ public class HistoryRetrievalRequestManager {
 			}
 		}
 
-		return new ArrayList<HistoryRetrievalRequest>( 0 );
+		return new ArrayList<HistoryRetrievalRequest>(0);
 	}
 
 	public void delete( final HistoryRetrievalRequest request ) {
@@ -114,11 +113,10 @@ public class HistoryRetrievalRequestManager {
 		tx = session.beginTransaction();
 
 		try {
-			session.delete( request );
+			session.delete(request);
 		} catch (final HibernateException e) {
-			LOG.info(
-					String.format( "Error deleting entry for %s %s %s", request.getTickerSymbol(),
-							request.getInclusiveStartDate(), request.getExclusiveEndDate() ), e );
+			LOG.info(String.format("Error deleting entry for %s %s %s", request.getTickerSymbol(),
+			        request.getInclusiveStartDate(), request.getExclusiveEndDate()), e);
 		}
 
 		tx.commit();

@@ -40,14 +40,14 @@ import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestme
  */
 public class ConsoleNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	private final CumulativeReturnOnInvestment cumulativeRoi;
 
 	/** The last net worth recording, which makes it into the summary. */
 	private NetWorthEvent lastEvent;
 
-	public ConsoleNetWorthSummaryDisplay( final CumulativeReturnOnInvestment cumulativeRoi ) {
+	public ConsoleNetWorthSummaryDisplay(final CumulativeReturnOnInvestment cumulativeRoi) {
 		this.cumulativeRoi = cumulativeRoi;
 	}
 
@@ -61,17 +61,17 @@ public class ConsoleNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 		final StringBuilder output = new StringBuilder();
 
-		output.append( "\n=== Net Worth Summary ===\n" );
-		output.append( String.format( "Number of equities: %s\n", TWO_DECIMAL_PLACES.format( balance ) ) );
-		output.append( String.format( "Holdings value: %s\n", TWO_DECIMAL_PLACES.format( holdingValue ) ) );
-		output.append( String.format( "Cash account: %s\n", TWO_DECIMAL_PLACES.format( cashBalance ) ) );
-		output.append( String.format( "\nTotal Net Worth: %s\n", TWO_DECIMAL_PLACES.format( netWorth ) ) );
+		output.append("\n=== Net Worth Summary ===\n");
+		output.append(String.format("Number of equities: %s\n", TWO_DECIMAL_PLACES.format(balance)));
+		output.append(String.format("Holdings value: %s\n", TWO_DECIMAL_PLACES.format(holdingValue)));
+		output.append(String.format("Cash account: %s\n", TWO_DECIMAL_PLACES.format(cashBalance)));
+		output.append(String.format("\nTotal Net Worth: %s\n", TWO_DECIMAL_PLACES.format(netWorth)));
 
 		// TODO this value is of dubious value, needs weighting (plus pusing into summary)
-		output.append( String.format( "\nInvestment Cumulative ROI: %s\n",
-				TWO_DECIMAL_PLACES.format( cumulativeRoi.getCumulativeReturnOnInvestment() ) ) );
+		output.append(String.format("\nInvestment Cumulative ROI: %s\n",
+		        TWO_DECIMAL_PLACES.format(cumulativeRoi.getCumulativeReturnOnInvestment())));
 
-		System.out.println( output.toString() );
+		System.out.println(output.toString());
 	}
 
 	@Override

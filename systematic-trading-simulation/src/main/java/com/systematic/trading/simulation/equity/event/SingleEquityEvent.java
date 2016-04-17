@@ -46,9 +46,9 @@ public class SingleEquityEvent implements EquityEvent {
 	private final EquityEventType type;
 	private final EquityIdentity id;
 
-	public SingleEquityEvent( final EquityIdentity id, final BigDecimal startingEquityBalance,
-			final BigDecimal endEquityBalance, final BigDecimal amount, final EquityEventType type,
-			final LocalDate transactionDate, final BigDecimal transactionValue ) {
+	public SingleEquityEvent(final EquityIdentity id, final BigDecimal startingEquityBalance,
+	        final BigDecimal endEquityBalance, final BigDecimal amount, final EquityEventType type,
+	        final LocalDate transactionDate, final BigDecimal transactionValue) {
 		this.startingEquityBalance = startingEquityBalance;
 		this.endEquityBalance = endEquityBalance;
 		this.transactionValue = transactionValue;

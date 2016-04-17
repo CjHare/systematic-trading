@@ -33,7 +33,7 @@ public class IndicatorSignal {
 	private final LocalDate date;
 	private final IndicatorSignalType type;
 
-	public IndicatorSignal( final LocalDate date, final IndicatorSignalType type ) {
+	public IndicatorSignal(final LocalDate date, final IndicatorSignalType type) {
 		this.date = date;
 		this.type = type;
 	}

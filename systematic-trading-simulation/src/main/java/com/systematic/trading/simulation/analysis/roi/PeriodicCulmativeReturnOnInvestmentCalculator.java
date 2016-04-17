@@ -61,26 +61,26 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 	/** Running total of the ROI for the period so far. */
 	private BigDecimal cumulativeROI = BigDecimal.ZERO;
 
-	public PeriodicCulmativeReturnOnInvestmentCalculator( final LocalDate startingDate, final Period summaryPeriod,
-			final MathContext mathContext ) {
+	public PeriodicCulmativeReturnOnInvestmentCalculator(final LocalDate startingDate, final Period summaryPeriod,
+	        final MathContext mathContext) {
 		this.date = startingDate;
 		this.mathContext = mathContext;
 		this.summaryPeriod = summaryPeriod;
 
 		lastSummaryDate = startingDate;
-		nextSummaryDate = startingDate.plus( summaryPeriod );
+		nextSummaryDate = startingDate.plus(summaryPeriod);
 	}
 
 	private void notifyListeners( final BigDecimal percentageChange, final LocalDate exclusiveStartDate,
-			final LocalDate inclusiveEndDate ) {
+	        final LocalDate inclusiveEndDate ) {
 		for (final ReturnOnInvestmentEventListener listener : listeners) {
-			listener.event( new ReturnOnInvestmentEventImpl( percentageChange, exclusiveStartDate, inclusiveEndDate ) );
+			listener.event(new ReturnOnInvestmentEventImpl(percentageChange, exclusiveStartDate, inclusiveEndDate));
 		}
 	}
 
 	public void addListener( final ReturnOnInvestmentEventListener listener ) {
-		if (!listeners.contains( listener )) {
-			listeners.add( listener );
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
 		}
 	}
 
@@ -88,13 +88,13 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 	public void event( final ReturnOnInvestmentEvent event ) {
 		final BigDecimal percentageChange = event.getPercentageChange();
 		date = event.getInclusiveEndDate();
-		cumulativeROI = cumulativeROI.add( percentageChange, mathContext );
+		cumulativeROI = cumulativeROI.add(percentageChange, mathContext);
 
-		if (nextSummaryDate.isBefore( date ) || nextSummaryDate.equals( date )) {
-			notifyListeners( cumulativeROI, lastSummaryDate, date );
+		if (nextSummaryDate.isBefore(date) || nextSummaryDate.equals(date)) {
+			notifyListeners(cumulativeROI, lastSummaryDate, date);
 			cumulativeROI = BigDecimal.ZERO;
 			lastSummaryDate = date;
-			nextSummaryDate = nextSummaryDate.plus( summaryPeriod );
+			nextSummaryDate = nextSummaryDate.plus(summaryPeriod);
 		}
 	}
 }

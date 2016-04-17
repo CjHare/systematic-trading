@@ -47,23 +47,23 @@ public class VanguardRetailBrokerageFeeStructure implements BrokerageTransaction
 	/**
 	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	public VanguardRetailBrokerageFeeStructure( final MathContext mathContext ) {
+	public VanguardRetailBrokerageFeeStructure(final MathContext mathContext) {
 		this.mathContext = mathContext;
 	}
 
 	@Override
 	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth )
-			throws UnsupportedEquityClass {
+	        throws UnsupportedEquityClass {
 
 		final BigDecimal brokerage;
 
 		switch (type) {
 			case BOND:
 			case STOCK:
-				brokerage = tradeValue.multiply( TEN_BASIS_POINTS, mathContext );
-				break;
+				brokerage = tradeValue.multiply(TEN_BASIS_POINTS, mathContext);
+			break;
 			default:
-				throw new UnsupportedEquityClass( type );
+				throw new UnsupportedEquityClass(type);
 		}
 
 		return brokerage;

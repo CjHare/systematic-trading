@@ -45,39 +45,39 @@ public class MonthlyRollingCounterTest {
 	public void addOne() {
 		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
 
-		final int count = counter.add( LocalDate.now() );
+		final int count = counter.add(LocalDate.now());
 
-		assertEquals( 1, count );
+		assertEquals(1, count);
 	}
 
 	@Test
 	public void addTwo() {
 		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
 
-		counter.add( LocalDate.now() );
-		final int count = counter.add( LocalDate.now() );
+		counter.add(LocalDate.now());
+		final int count = counter.add(LocalDate.now());
 
-		assertEquals( 2, count );
+		assertEquals(2, count);
 	}
 
 	@Test
 	public void addTwoMonthSplit() {
 		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
 
-		counter.add( LocalDate.now().minus( Period.ofMonths( 1 ) ) );
-		final int count = counter.add( LocalDate.now() );
+		counter.add(LocalDate.now().minus(Period.ofMonths(1)));
+		final int count = counter.add(LocalDate.now());
 
-		assertEquals( 1, count );
+		assertEquals(1, count);
 	}
 
 	@Test
 	public void addTwoYearsSplit() {
 		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
 
-		counter.add( LocalDate.now().minus( Period.ofYears( 1 ) ) );
-		final int count = counter.add( LocalDate.now() );
+		counter.add(LocalDate.now().minus(Period.ofYears(1)));
+		final int count = counter.add(LocalDate.now());
 
-		assertEquals( 1, count );
+		assertEquals(1, count);
 	}
 
 	@Test
@@ -85,41 +85,41 @@ public class MonthlyRollingCounterTest {
 		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
 
 		// Here, then back (should dump that count) then here again
-		counter.add( LocalDate.now() );
-		counter.add( LocalDate.now().minus( Period.ofMonths( 1 ) ) );
-		final int count = counter.add( LocalDate.now() );
+		counter.add(LocalDate.now());
+		counter.add(LocalDate.now().minus(Period.ofMonths(1)));
+		final int count = counter.add(LocalDate.now());
 
-		assertEquals( 1, count );
+		assertEquals(1, count);
 	}
 
 	@Test
 	public void getCountZero() {
 		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
 
-		final int count = counter.get( LocalDate.now() );
+		final int count = counter.get(LocalDate.now());
 
-		assertEquals( 0, count );
+		assertEquals(0, count);
 	}
 
 	@Test
 	public void getCountTwo() {
 		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
 
-		counter.add( LocalDate.now() );
-		counter.add( LocalDate.now() );
-		final int count = counter.get( LocalDate.now() );
+		counter.add(LocalDate.now());
+		counter.add(LocalDate.now());
+		final int count = counter.get(LocalDate.now());
 
-		assertEquals( 2, count );
+		assertEquals(2, count);
 	}
 
 	@Test
 	public void getRollingCounterLost() {
 		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
 
-		counter.add( LocalDate.now().minus( Period.ofMonths( 2 ) ) );
-		counter.add( LocalDate.now().minus( Period.ofMonths( 1 ) ) );
-		final int count = counter.get( LocalDate.now().minus( Period.ofMonths( 2 ) ) );
+		counter.add(LocalDate.now().minus(Period.ofMonths(2)));
+		counter.add(LocalDate.now().minus(Period.ofMonths(1)));
+		final int count = counter.get(LocalDate.now().minus(Period.ofMonths(2)));
 
-		assertEquals( 0, count );
+		assertEquals(0, count);
 	}
 }

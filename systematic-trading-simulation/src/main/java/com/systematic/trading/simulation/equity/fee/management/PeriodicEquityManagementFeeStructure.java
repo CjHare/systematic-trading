@@ -54,8 +54,8 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	 * @param frequency how often the management fee is applied.
 	 * @param mathContext context to apply to calculations.
 	 */
-	public PeriodicEquityManagementFeeStructure( final LocalDate feeStartDate, final EquityManagementFeeCalculator fee,
-			final Period frequency ) {
+	public PeriodicEquityManagementFeeStructure(final LocalDate feeStartDate, final EquityManagementFeeCalculator fee,
+	        final Period frequency) {
 		this.feeStartDate = feeStartDate;
 		this.frequency = frequency;
 		this.fee = fee;
@@ -63,13 +63,13 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 
 	@Override
 	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
-			final TradingDayPrices tradingData ) {
+	        final TradingDayPrices tradingData ) {
 
 		final LocalDate tradingDate = tradingData.getDate();
 
-		if (lastManagementFeeDate.plus( frequency ).isBefore( tradingDate )) {
-			return fee.calculateFee( numberOfEquities, tradingData.getClosingPrice(),
-					Period.between( lastManagementFeeDate, tradingDate ) );
+		if (lastManagementFeeDate.plus(frequency).isBefore(tradingDate)) {
+			return fee.calculateFee(numberOfEquities, tradingData.getClosingPrice(),
+			        Period.between(lastManagementFeeDate, tradingDate));
 		}
 
 		return BigDecimal.ZERO;
@@ -81,11 +81,11 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 		// Loop through from the first date until an interval after the trading date
 		LocalDate nextFeeDate = feeStartDate;
 
-		while (nextFeeDate.isBefore( tradingDate )) {
-			nextFeeDate = nextFeeDate.plus( frequency );
+		while (nextFeeDate.isBefore(tradingDate)) {
+			nextFeeDate = nextFeeDate.plus(frequency);
 		}
 
 		// The previous date being the last management fee date
-		return nextFeeDate.minus( frequency );
+		return nextFeeDate.minus(frequency);
 	}
 }

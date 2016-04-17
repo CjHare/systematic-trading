@@ -47,7 +47,7 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  */
 public class FileComparisonDisplay implements NetWorthEventListener {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".00" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
 
 	/** Display responsible for handling the file output. */
 	private final FileDisplayMultithreading display;
@@ -59,8 +59,8 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	/** The period of time that the simulation covered. */
 	private final Period duration;
 
-	public FileComparisonDisplay( final Period duration, final EventStatistics statistics,
-			final FileDisplayMultithreading display, final MathContext mathContext ) {
+	public FileComparisonDisplay(final Period duration, final EventStatistics statistics,
+	        final FileDisplayMultithreading display, final MathContext mathContext) {
 		this.mathContext = mathContext;
 		this.statistics = statistics;
 		this.duration = duration;
@@ -71,8 +71,8 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	public void event( final NetWorthEvent event, final SimulationState state ) {
 
 		// Only interested in the net worth when the simulation is complete
-		if (SimulationState.COMPLETE.equals( state )) {
-			display.write( createOutput( statistics, event ) );
+		if (SimulationState.COMPLETE.equals(state)) {
+			display.write(createOutput(statistics, event));
 		}
 	}
 
@@ -94,17 +94,17 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 		final CashEventStatistics cash = statistics.getCashEventStatistics();
 		final BigDecimal deposited = cash.getAmountDeposited();
-		final BigDecimal profit = netWorth.subtract( deposited, mathContext );
+		final BigDecimal profit = netWorth.subtract(deposited, mathContext);
 
-		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate( deposited, netWorth, duration.getYears(),
-				mathContext );
+		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears(),
+		        mathContext);
 
 		return String.format(
-				"CAGR: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s, %s",
-				TWO_DECIMAL_PLACES.format( cagr ), TWO_DECIMAL_PLACES.format( netWorth ),
-				TWO_DECIMAL_PLACES.format( balance ), TWO_DECIMAL_PLACES.format( holdingValue ),
-				TWO_DECIMAL_PLACES.format( cashBalance ), TWO_DECIMAL_PLACES.format( deposited ),
-				TWO_DECIMAL_PLACES.format( profit ), entryEventCount, entryEventExecutedCount, entryEventDeletedCount,
-				exitEventCount, exitEventExecutedCount, exitEventDeletedCount, event.getDescription() );
+		        "CAGR: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s, %s",
+		        TWO_DECIMAL_PLACES.format(cagr), TWO_DECIMAL_PLACES.format(netWorth),
+		        TWO_DECIMAL_PLACES.format(balance), TWO_DECIMAL_PLACES.format(holdingValue),
+		        TWO_DECIMAL_PLACES.format(cashBalance), TWO_DECIMAL_PLACES.format(deposited),
+		        TWO_DECIMAL_PLACES.format(profit), entryEventCount, entryEventExecutedCount, entryEventDeletedCount,
+		        exitEventCount, exitEventExecutedCount, exitEventDeletedCount, event.getDescription());
 	}
 }

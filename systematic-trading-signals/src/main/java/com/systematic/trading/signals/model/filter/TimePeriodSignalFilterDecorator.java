@@ -56,8 +56,8 @@ public class TimePeriodSignalFilterDecorator implements SignalFilter {
 	/** Terminating book end for the acceptable signals. */
 	private final LocalDate endDateInclusive;
 
-	public TimePeriodSignalFilterDecorator( final SignalFilter filter, final LocalDate startDateInclusive,
-			final LocalDate endDateInclusive ) {
+	public TimePeriodSignalFilterDecorator(final SignalFilter filter, final LocalDate startDateInclusive,
+	        final LocalDate endDateInclusive) {
 		this.startDateInclusive = startDateInclusive;
 		this.endDateInclusive = endDateInclusive;
 		this.filter = filter;
@@ -65,21 +65,21 @@ public class TimePeriodSignalFilterDecorator implements SignalFilter {
 
 	@Override
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
-			final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
 
-		final SortedSet<BuySignal> signalSet = filter.apply( signals, ordering, latestTradingDate );
+		final SortedSet<BuySignal> signalSet = filter.apply(signals, ordering, latestTradingDate);
 
 		final Set<BuySignal> toRemove = new HashSet<BuySignal>();
 
 		for (final BuySignal signal : signalSet) {
 
 			// When the date is outside the desired range remove the signal
-			if (startDateInclusive.isAfter( signal.getDate() ) || endDateInclusive.isBefore( signal.getDate() )) {
-				toRemove.add( signal );
+			if (startDateInclusive.isAfter(signal.getDate()) || endDateInclusive.isBefore(signal.getDate())) {
+				toRemove.add(signal);
 			}
 		}
 
-		signalSet.removeAll( toRemove );
+		signalSet.removeAll(toRemove);
 
 		return signalSet;
 	}

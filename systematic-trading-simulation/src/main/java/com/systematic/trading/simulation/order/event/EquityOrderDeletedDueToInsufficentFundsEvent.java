@@ -43,18 +43,18 @@ public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrder
 	/**
 	 * @param originalOrderType order prior to being deleted.
 	 */
-	public EquityOrderDeletedDueToInsufficentFundsEvent( final OrderEvent order ) {
+	public EquityOrderDeletedDueToInsufficentFundsEvent(final OrderEvent order) {
 
 		// Convert into the delete version
 		switch (order.getType()) {
 			case ENTRY:
 				this.type = EquityOrderType.DELETE_ENTRY;
-				break;
+			break;
 			case EXIT:
 				this.type = EquityOrderType.DELETE_EXIT;
-				break;
+			break;
 			default:
-				throw new IllegalArgumentException( String.format( "Unexpected order type %s", order.getType() ) );
+				throw new IllegalArgumentException(String.format("Unexpected order type %s", order.getType()));
 		}
 
 		this.orderEvent = order;

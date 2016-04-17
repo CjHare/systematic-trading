@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.simulation.order.exception;
 
-
 /**
  * Executing an order and there are not enough equities held.
  * 
@@ -36,6 +35,6 @@ public class InsufficientEquitiesException extends OrderException {
 	private static final long serialVersionUID = 1L;
 
 	public InsufficientEquitiesException() {
-		super( "Unsupported number of equities" );
+		super("Unsupported number of equities");
 	}
 }

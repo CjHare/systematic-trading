@@ -46,24 +46,24 @@ public class IndicatorSignalEventTest {
 	public void getSignalType() {
 		final LocalDate date = LocalDate.now();
 		final IndicatorSignalType type = IndicatorSignalType.RSI;
-		final IndicatorSignal signal = new IndicatorSignal( date, type );
+		final IndicatorSignal signal = new IndicatorSignal(date, type);
 
-		final IndicatorSignalEvent event = new IndicatorSignalEvent( signal );
+		final IndicatorSignalEvent event = new IndicatorSignalEvent(signal);
 
-		assertNotNull( event );
-		assertEquals( type, event.getSignalType() );
+		assertNotNull(event);
+		assertEquals(type, event.getSignalType());
 	}
 
 	@Test
 	public void getDate() {
 		final LocalDate date = LocalDate.now();
 		final IndicatorSignalType type = IndicatorSignalType.RSI;
-		final IndicatorSignal signal = new IndicatorSignal( date, type );
+		final IndicatorSignal signal = new IndicatorSignal(date, type);
 
-		final IndicatorSignalEvent event = new IndicatorSignalEvent( signal );
+		final IndicatorSignalEvent event = new IndicatorSignalEvent(signal);
 
-		assertNotNull( event );
-		assertEquals( date, event.getSignalDate() );
+		assertNotNull(event);
+		assertEquals(date, event.getSignalDate());
 	}
 
 }

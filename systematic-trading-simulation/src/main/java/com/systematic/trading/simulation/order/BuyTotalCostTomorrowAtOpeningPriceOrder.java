@@ -61,8 +61,8 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	/** The number of decimal places the equity is trading in. */
 	private final int scale;
 
-	public BuyTotalCostTomorrowAtOpeningPriceOrder( final BigDecimal targetTotalCost, final EquityClass type,
-			final int equityScale, final LocalDate creationDate, final MathContext mathContext ) {
+	public BuyTotalCostTomorrowAtOpeningPriceOrder(final BigDecimal targetTotalCost, final EquityClass type,
+	        final int equityScale, final LocalDate creationDate, final MathContext mathContext) {
 		this.targetTotalCost = targetTotalCost;
 		this.creationDate = creationDate;
 		this.mathContext = mathContext;
@@ -83,32 +83,32 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	}
 
 	private EquityOrderVolume getOrderVolume( final BigDecimal numberOfEquities ) {
-		return EquityOrderVolume.valueOf( numberOfEquities.setScale( scale, BigDecimal.ROUND_DOWN ) );
+		return EquityOrderVolume.valueOf(numberOfEquities.setScale(scale, BigDecimal.ROUND_DOWN));
 	}
 
 	@Override
 	public void execute( final BrokerageTransactionFee fees, final BrokerageTransaction broker,
-			final CashAccount cashAccount, final TradingDayPrices todaysTrade ) throws OrderException {
+	        final CashAccount cashAccount, final TradingDayPrices todaysTrade ) throws OrderException {
 
-		final BigDecimal maximumTransactionCost = fees.calculateFee( targetTotalCost, type, todaysTrade.getDate() );
+		final BigDecimal maximumTransactionCost = fees.calculateFee(targetTotalCost, type, todaysTrade.getDate());
 		final BigDecimal openingPrice = todaysTrade.getOpeningPrice().getPrice();
-		final BigDecimal numberOfEquities = targetTotalCost.subtract( maximumTransactionCost, mathContext )
-				.divide( openingPrice, mathContext );
+		final BigDecimal numberOfEquities = targetTotalCost.subtract(maximumTransactionCost, mathContext)
+		        .divide(openingPrice, mathContext);
 
-		final EquityOrderVolume volume = getOrderVolume( numberOfEquities );
+		final EquityOrderVolume volume = getOrderVolume(numberOfEquities);
 
-		final BigDecimal actualTotalCost = broker.calculateBuy( todaysTrade.getOpeningPrice(), volume,
-				todaysTrade.getDate() );
+		final BigDecimal actualTotalCost = broker.calculateBuy(todaysTrade.getOpeningPrice(), volume,
+		        todaysTrade.getDate());
 
 		// Take the funds
-		cashAccount.debit( actualTotalCost, todaysTrade.getDate() );
+		cashAccount.debit(actualTotalCost, todaysTrade.getDate());
 
 		// Award the equities
-		broker.buy( todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate() );
+		broker.buy(todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate());
 	}
 
 	@Override
 	public OrderEvent getOrderEvent() {
-		return new PlaceOrderTotalCostEvent( targetTotalCost, creationDate, EquityOrderType.ENTRY );
+		return new PlaceOrderTotalCostEvent(targetTotalCost, creationDate, EquityOrderType.ENTRY);
 	}
 }

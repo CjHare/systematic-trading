@@ -40,62 +40,59 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  */
 public class ConsoleEventStatisticsDisplay implements EventStatisticsDisplay {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	private final EventStatistics statistics;
 
-	public ConsoleEventStatisticsDisplay( final EventStatistics statistics ) {
+	public ConsoleEventStatisticsDisplay(final EventStatistics statistics) {
 		this.statistics = statistics;
 	}
 
 	@Override
 	public void displayEventStatistics() {
-		System.out.println( "\n" );
-		System.out.println( "#####################" );
-		System.out.println( "### Event Summary ###" );
-		System.out.println( "#####################" );
+		System.out.println("\n");
+		System.out.println("#####################");
+		System.out.println("### Event Summary ###");
+		System.out.println("#####################");
 
-		displayOrderStatistics( statistics.getOrderEventStatistics() );
-		displayCashStatistics( statistics.getCashEventStatistics() );
-		displayBrokerageStatistics( statistics.getBrokerageEventStatistics() );
+		displayOrderStatistics(statistics.getOrderEventStatistics());
+		displayCashStatistics(statistics.getCashEventStatistics());
+		displayBrokerageStatistics(statistics.getBrokerageEventStatistics());
 	}
 
 	private void displayOrderStatistics( final OrderEventStatistics orderStatistics ) {
 
-		System.out.println( "\n=== Order events ===" );
-		System.out.println( String.format( "# Entry Order events: %s", orderStatistics.getEntryEventCount() ) );
-		System.out.println( String.format( "# Delete Entry Order events: %s",
-				orderStatistics.getDeleteEntryEventCount() ) );
-		System.out.println( String.format( "# Exit Order events: %s", orderStatistics.getExitEventCount() ) );
+		System.out.println("\n=== Order events ===");
+		System.out.println(String.format("# Entry Order events: %s", orderStatistics.getEntryEventCount()));
 		System.out
-				.println( String.format( "# Delete Exit Order events: %s", orderStatistics.getDeleteExitEventCount() ) );
+		        .println(String.format("# Delete Entry Order events: %s", orderStatistics.getDeleteEntryEventCount()));
+		System.out.println(String.format("# Exit Order events: %s", orderStatistics.getExitEventCount()));
+		System.out.println(String.format("# Delete Exit Order events: %s", orderStatistics.getDeleteExitEventCount()));
 	}
 
 	private void displayCashStatistics( final CashEventStatistics cashStatistics ) {
 
-		System.out.println( "\n=== Cash events ===" );
-		System.out.println( String.format( "# Cash account credit events: %s", cashStatistics.getCreditEventCount() ) );
-		System.out.println( String.format( "# Cash account debit events: %s", cashStatistics.getDebitEventCount() ) );
-		System.out
-				.println( String.format( "# Cash account interest events: %s", cashStatistics.getInterestEventCount() ) );
-		System.out
-				.println( String.format( "# Cash account deposit events: %s", cashStatistics.getDepositEventCount() ) );
-		System.out.println( String.format( "Total interest earned: %s",
-				TWO_DECIMAL_PLACES.format( cashStatistics.getInterestEarned() ) ) );
-		System.out.println( String.format( "Total amount deposited: %s",
-				TWO_DECIMAL_PLACES.format( cashStatistics.getAmountDeposited() ) ) );
+		System.out.println("\n=== Cash events ===");
+		System.out.println(String.format("# Cash account credit events: %s", cashStatistics.getCreditEventCount()));
+		System.out.println(String.format("# Cash account debit events: %s", cashStatistics.getDebitEventCount()));
+		System.out.println(String.format("# Cash account interest events: %s", cashStatistics.getInterestEventCount()));
+		System.out.println(String.format("# Cash account deposit events: %s", cashStatistics.getDepositEventCount()));
+		System.out.println(String.format("Total interest earned: %s",
+		        TWO_DECIMAL_PLACES.format(cashStatistics.getInterestEarned())));
+		System.out.println(String.format("Total amount deposited: %s",
+		        TWO_DECIMAL_PLACES.format(cashStatistics.getAmountDeposited())));
 	}
 
 	private void displayBrokerageStatistics( final BrokerageEventStatistics brokerageStatistics ) {
 
 		final long sumBrokerageEvents = brokerageStatistics.getSellEventCount()
-				+ brokerageStatistics.getBuyEventCount();
+		        + brokerageStatistics.getBuyEventCount();
 
-		System.out.println( "\n=== Brokerage events ===" );
-		System.out.println( String.format( "# Brokerage events: %s", sumBrokerageEvents ) );
-		System.out.println( String.format( "# Sell events: %s", brokerageStatistics.getSellEventCount() ) );
-		System.out.println( String.format( "# Buy events: %s", brokerageStatistics.getBuyEventCount() ) );
-		System.out.println( String.format( "Total amount paid in brokerage: %s",
-				TWO_DECIMAL_PLACES.format( brokerageStatistics.getBrokerageFees() ) ) );
+		System.out.println("\n=== Brokerage events ===");
+		System.out.println(String.format("# Brokerage events: %s", sumBrokerageEvents));
+		System.out.println(String.format("# Sell events: %s", brokerageStatistics.getSellEventCount()));
+		System.out.println(String.format("# Buy events: %s", brokerageStatistics.getBuyEventCount()));
+		System.out.println(String.format("Total amount paid in brokerage: %s",
+		        TWO_DECIMAL_PLACES.format(brokerageStatistics.getBrokerageFees())));
 	}
 }

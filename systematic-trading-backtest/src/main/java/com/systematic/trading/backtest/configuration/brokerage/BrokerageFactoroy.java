@@ -48,33 +48,32 @@ import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure
 public class BrokerageFactoroy {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( BrokerageFactoroy.class );
+	private static final Logger LOG = LogManager.getLogger(BrokerageFactoroy.class);
 
 	/**
 	 * Create an instance of the fee structure.
 	 */
 	private static BrokerageTransactionFeeStructure createFeeStructure( final BrokerageFeesConfiguration fee,
-			final MathContext mathContext ) {
+	        final MathContext mathContext ) {
 
 		try {
-			Constructor<?> cons = fee.getType().getConstructor( MathContext.class );
-			return (BrokerageTransactionFeeStructure) cons.newInstance( mathContext );
+			Constructor<?> cons = fee.getType().getConstructor(MathContext.class);
+			return (BrokerageTransactionFeeStructure) cons.newInstance(mathContext);
 		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			LOG.error( e );
+		        | IllegalArgumentException | InvocationTargetException e) {
+			LOG.error(e);
 		}
 
-		throw new IllegalArgumentException( String.format( "Could not create the desired fee structure: %s", fee ) );
+		throw new IllegalArgumentException(String.format("Could not create the desired fee structure: %s", fee));
 	}
 
 	public static Brokerage create( final EquityWithFeeConfiguration equity, final BrokerageFeesConfiguration fees,
-			final LocalDate startDate, final MathContext mathContext ) {
+	        final LocalDate startDate, final MathContext mathContext ) {
 
-		final BrokerageTransactionFeeStructure tradingFeeStructure = createFeeStructure( fees, mathContext );
+		final BrokerageTransactionFeeStructure tradingFeeStructure = createFeeStructure(fees, mathContext);
 		final EquityManagementFeeStructure equityManagementFee = equity.getManagementFee();
 		final EquityIdentity equityId = equity.getIdentity();
 
-		return new SingleEquityClassBroker( tradingFeeStructure, equityManagementFee, equityId, startDate,
-				mathContext );
+		return new SingleEquityClassBroker(tradingFeeStructure, equityManagementFee, equityId, startDate, mathContext);
 	}
 }

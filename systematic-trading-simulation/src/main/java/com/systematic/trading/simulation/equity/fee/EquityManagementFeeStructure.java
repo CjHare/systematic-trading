@@ -45,7 +45,7 @@ public interface EquityManagementFeeStructure {
 	 * @return number of equities that are to be taken as the equity funds under management fee.
 	 */
 	BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
-			final TradingDayPrices tradingData );
+	        final TradingDayPrices tradingData );
 
 	/**
 	 * Calculates the most recent management fee date.

@@ -43,16 +43,16 @@ public class Price {
 	 */
 	public static Price valueOf( final BigDecimal price ) {
 		if (price == null) {
-			throw new IllegalArgumentException( "null is not accepted by Price.valueOf()" );
+			throw new IllegalArgumentException("null is not accepted by Price.valueOf()");
 		}
 
-		return new Price( price );
+		return new Price(price);
 	}
 
 	/** Price of the equity. */
 	private final BigDecimal price;
 
-	protected Price( final BigDecimal price ) {
+	protected Price(final BigDecimal price) {
 		this.price = price;
 	}
 
@@ -72,7 +72,7 @@ public class Price {
 	 * @return <code>true</code> when the other is smaller, <code>false</code> otherwise.
 	 */
 	public boolean isGreaterThan( final Price other ) {
-		return getPrice().compareTo( other.getPrice() ) > 0;
+		return getPrice().compareTo(other.getPrice()) > 0;
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class Price {
 	 * @return <code>true</code> when the other value is larger, <code>false</code> otherwise.
 	 */
 	public boolean isLessThan( final Price other ) {
-		return getPrice().compareTo( other.getPrice() ) < 0;
+		return getPrice().compareTo(other.getPrice()) < 0;
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class Price {
 	 * @return <code>true</code> when the other value is the same, <code>false</code> otherwise.
 	 */
 	public boolean isEqaul( final Price other ) {
-		return getPrice().compareTo( other.getPrice() ) == 0;
+		return getPrice().compareTo(other.getPrice()) == 0;
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class Price {
 	 *         {@code other}.
 	 */
 	public int compareTo( final Price other ) {
-		return getPrice().compareTo( other.getPrice() );
+		return getPrice().compareTo(other.getPrice());
 	}
 
 	/**
@@ -114,6 +114,6 @@ public class Price {
 	 * @return the result of the subtraction, not side effecting this Price.
 	 */
 	public BigDecimal subtract( final Price other, final MathContext mathContext ) {
-		return getPrice().subtract( other.getPrice(), mathContext );
+		return getPrice().subtract(other.getPrice(), mathContext);
 	}
 }

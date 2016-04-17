@@ -61,7 +61,7 @@ import com.systematic.trading.simulation.order.exception.OrderException;
 public class Simulation {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( Simulation.class );
+	private static final Logger LOG = LogManager.getLogger(Simulation.class);
 
 	/** Makes the decision on whether entry action is required. */
 	private final EntryLogic entry;
@@ -76,7 +76,7 @@ public class Simulation {
 	private final Brokerage broker;
 
 	/** Time between deposit events. */
-	private final Period interval = Period.ofDays( 1 );
+	private final Period interval = Period.ofDays(1);
 
 	/** Return on investment calculator. */
 	private final ReturnOnInvestmentCalculator roi;
@@ -90,8 +90,8 @@ public class Simulation {
 	/** Trading data to use for the simulation. */
 	private final TickerSymbolTradingData tradingData;
 
-	public Simulation( final TickerSymbolTradingData tradingData, final Brokerage broker, final CashAccount funds,
-			final ReturnOnInvestmentCalculator roi, final EntryLogic entry, final ExitLogic exit ) {
+	public Simulation(final TickerSymbolTradingData tradingData, final Brokerage broker, final CashAccount funds,
+	        final ReturnOnInvestmentCalculator roi, final EntryLogic entry, final ExitLogic exit) {
 
 		this.entry = entry;
 		this.exit = exit;
@@ -109,31 +109,31 @@ public class Simulation {
 		List<EquityOrder> orders = new ArrayList<EquityOrder>();
 		LocalDate currentDate = tradingData.getEarliestDate();
 
-		while (currentDate.isBefore( endDate )) {
+		while (currentDate.isBefore(endDate)) {
 
 			// Financial activity of deposits, withdrawal and interest
-			funds.update( currentDate );
+			funds.update(currentDate);
 
-			final TradingDayPrices currentTradingData = tradingDayPrices.get( currentDate );
+			final TradingDayPrices currentTradingData = tradingDayPrices.get(currentDate);
 
 			// Only when there is trading data for today
 			if (currentTradingData != null) {
 
 				// Process orders and add those from the day's trading data
-				orders = processTradingData( currentTradingData, orders );
+				orders = processTradingData(currentTradingData, orders);
 
 				// Update the return on investment calculator
-				roi.update( broker, funds, currentTradingData );
+				roi.update(broker, funds, currentTradingData);
 
 				// Broker activity of fees, clearing transactions at the end of the business day
-				broker.update( currentTradingData );
+				broker.update(currentTradingData);
 			}
 
 			// Move date to tomorrow
-			currentDate = currentDate.plus( interval );
+			currentDate = currentDate.plus(interval);
 		}
 
-		notifyListeners( SimulationState.COMPLETE );
+		notifyListeners(SimulationState.COMPLETE);
 	}
 
 	/**
@@ -147,11 +147,11 @@ public class Simulation {
 	private List<EquityOrder> processTradingData( final TradingDayPrices tradingDataToday, List<EquityOrder> orders ) {
 
 		// Attempt to execute the queued orders
-		orders = processOutstandingOrders( orders, tradingDataToday );
+		orders = processOutstandingOrders(orders, tradingDataToday);
 
 		// Apply analysis to generate more orders
-		orders = addExitOrderForToday( tradingDataToday, orders );
-		orders = addEntryOrderForToday( tradingDataToday, orders );
+		orders = addExitOrderForToday(tradingDataToday, orders);
+		orders = addEntryOrderForToday(tradingDataToday, orders);
 
 		return orders;
 	}
@@ -164,11 +164,11 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the exit logic.
 	 */
 	private List<EquityOrder> addExitOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
-		final EquityOrder order = exit.update( broker, data );
+		final EquityOrder order = exit.update(broker, data);
 
 		if (order != null) {
-			notifyListeners( order.getOrderEvent() );
-			openOrders.add( order );
+			notifyListeners(order.getOrderEvent());
+			openOrders.add(order);
 		}
 
 		return openOrders;
@@ -182,11 +182,11 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the entry logic.
 	 */
 	private List<EquityOrder> addEntryOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
-		final EquityOrder order = entry.update( broker, funds, data );
+		final EquityOrder order = entry.update(broker, funds, data);
 
 		if (order != null) {
-			notifyListeners( order.getOrderEvent() );
-			openOrders.add( order );
+			notifyListeners(order.getOrderEvent());
+			openOrders.add(order);
 		}
 
 		return openOrders;
@@ -198,16 +198,16 @@ public class Simulation {
 	 * @return orders that were not executed as their conditions were not met.
 	 */
 	private List<EquityOrder> processOutstandingOrders( final List<EquityOrder> orders, final TradingDayPrices data ) {
-		final List<EquityOrder> remainingOrders = new ArrayList<EquityOrder>( orders.size() );
+		final List<EquityOrder> remainingOrders = new ArrayList<EquityOrder>(orders.size());
 
 		for (final EquityOrder order : orders) {
 
-			if (order.isValid( data )) {
-				final EquityOrder processedOrder = processOutstandingValidOrder( order, data );
+			if (order.isValid(data)) {
+				final EquityOrder processedOrder = processOutstandingValidOrder(order, data);
 
 				// Add the original / altered order back to try again
 				if (processedOrder != null) {
-					remainingOrders.add( processedOrder );
+					remainingOrders.add(processedOrder);
 				}
 			}
 		}
@@ -222,8 +222,8 @@ public class Simulation {
 	 */
 	private EquityOrder processOutstandingValidOrder( final EquityOrder order, final TradingDayPrices data ) {
 
-		if (order.areExecutionConditionsMet( data )) {
-			return executeOrder( order, data );
+		if (order.areExecutionConditionsMet(data)) {
+			return executeOrder(order, data);
 		}
 
 		return order;
@@ -238,41 +238,41 @@ public class Simulation {
 	 */
 	private EquityOrder executeOrder( final EquityOrder order, final TradingDayPrices data ) {
 		try {
-			order.execute( broker, broker, funds, data );
+			order.execute(broker, broker, funds, data);
 
 			// Discard the order, as it's processed
 			return null;
 
 		} catch (final InsufficientFundsException e) {
 
-			final EquityOrderInsufficientFundsAction action = entry.actionOnInsufficentFunds( order );
+			final EquityOrderInsufficientFundsAction action = entry.actionOnInsufficentFunds(order);
 
 			switch (action) {
 				case DELETE:
 					// Discard the order
-					notifyListeners( new EquityOrderDeletedDueToInsufficentFundsEvent( order.getOrderEvent() ) );
+					notifyListeners(new EquityOrderDeletedDueToInsufficentFundsEvent(order.getOrderEvent()));
 					return null;
 				case RESUMIT:
 				default:
-					throw new IllegalArgumentException( String.format(
-							"Unsupported insufficient funds action: %s for order: %s using entry logic: %s", action,
-							order, entry ), e );
+					throw new IllegalArgumentException(String.format(
+					        "Unsupported insufficient funds action: %s for order: %s using entry logic: %s", action,
+					        order, entry), e);
 			}
 		} catch (final OrderException e) {
-			LOG.error( e );
-			throw new IllegalArgumentException( "Unhandled Order exception", e );
+			LOG.error(e);
+			throw new IllegalArgumentException("Unhandled Order exception", e);
 		}
 	}
 
 	private void notifyListeners( final OrderEvent event ) {
 		for (final OrderEventListener listener : orderEventListeners) {
-			listener.event( event );
+			listener.event(event);
 		}
 	}
 
 	private void notifyListeners( final SimulationState event ) {
 		for (final SimulationStateListener listener : stateListeners) {
-			listener.stateChanged( event );
+			listener.stateChanged(event);
 		}
 	}
 
@@ -282,8 +282,8 @@ public class Simulation {
 	 * @param listener will receive notification of order event occurrences.
 	 */
 	public void addListener( final OrderEventListener listener ) {
-		if (!orderEventListeners.contains( listener )) {
-			orderEventListeners.add( listener );
+		if (!orderEventListeners.contains(listener)) {
+			orderEventListeners.add(listener);
 		}
 	}
 
@@ -293,8 +293,8 @@ public class Simulation {
 	 * @param listener will receive notification of simulation state change occurrences.
 	 */
 	public void addListener( final SimulationStateListener listener ) {
-		if (!stateListeners.contains( listener )) {
-			stateListeners.add( listener );
+		if (!stateListeners.contains(listener)) {
+			stateListeners.add(listener);
 		}
 	}
 }

@@ -56,23 +56,23 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 	/**
 	 * Restrictions of no duplicate trading dates, applies date ordering on the given data.
 	 */
-	public TickerSymbolTradingDataBacktest( final EquityIdentity equity, final TradingDayPrices[] data ) {
+	public TickerSymbolTradingDataBacktest(final EquityIdentity equity, final TradingDayPrices[] data) {
 		this.equity = equity;
 
 		final Map<LocalDate, TradingDayPrices> modifiableTradingData = new HashMap<LocalDate, TradingDayPrices>();
 
 		for (final TradingDayPrices tradingDay : data) {
-			modifiableTradingData.put( tradingDay.getDate(), tradingDay );
+			modifiableTradingData.put(tradingDay.getDate(), tradingDay);
 		}
 
 		if (modifiableTradingData.size() != data.length) {
-			throw new IllegalArgumentException( "Duplicate trading dates provided" );
+			throw new IllegalArgumentException("Duplicate trading dates provided");
 		}
 
-		this.tradingData = Collections.unmodifiableMap( modifiableTradingData );
+		this.tradingData = Collections.unmodifiableMap(modifiableTradingData);
 
-		this.earliestDate = getEarliestDate( tradingData );
-		this.latestDate = getLatestDate( tradingData );
+		this.earliestDate = getEarliestDate(tradingData);
+		this.latestDate = getLatestDate(tradingData);
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 		LocalDate earliest = tradingData.values().iterator().next().getDate();
 
 		for (final TradingDayPrices contender : tradingData.values()) {
-			if (contender.getDate().isBefore( earliest )) {
+			if (contender.getDate().isBefore(earliest)) {
 				earliest = contender.getDate();
 			}
 		}
@@ -116,7 +116,7 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 		LocalDate latest = tradingData.values().iterator().next().getDate();
 
 		for (final TradingDayPrices contender : tradingData.values()) {
-			if (contender.getDate().isAfter( latest )) {
+			if (contender.getDate().isAfter(latest)) {
 				latest = contender.getDate();
 			}
 		}

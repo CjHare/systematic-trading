@@ -44,9 +44,9 @@ public class CompoundAnnualGrowthRateTest {
 	@Test
 	public void powerHalf() {
 		// Calculating "1.21".pow("0.5") to return "1.1".
-		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate( BigDecimal.ONE, BigDecimal.valueOf( 1.21 ), 2,
-				MATH_CONTEXT );
+		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(BigDecimal.ONE, BigDecimal.valueOf(1.21), 2,
+		        MATH_CONTEXT);
 
-		assertEquals( 10.0, cagr.doubleValue(), 0.0001 );
+		assertEquals(10.0, cagr.doubleValue(), 0.0001);
 	}
 }

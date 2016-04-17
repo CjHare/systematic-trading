@@ -43,19 +43,19 @@ public class FlatEquityManagementFeeCalculator implements EquityManagementFeeCal
 
 	private final BigDecimal percentageFee;
 
-	public FlatEquityManagementFeeCalculator( final BigDecimal percentageFee, final MathContext mathContext ) {
+	public FlatEquityManagementFeeCalculator(final BigDecimal percentageFee, final MathContext mathContext) {
 		this.percentageFee = percentageFee;
 		this.mathContext = mathContext;
 	}
 
 	@Override
 	public BigDecimal calculateFee( final BigDecimal numberOfEquities, final ClosingPrice singleEquityValue,
-			final Period durationToCalculate ) {
+	        final Period durationToCalculate ) {
 
 		if (durationToCalculate.getYears() > 0) {
-			final BigDecimal fee = percentageFee.multiply( BigDecimal.valueOf( durationToCalculate.getYears() ),
-					mathContext );
-			return numberOfEquities.multiply( fee, mathContext );
+			final BigDecimal fee = percentageFee.multiply(BigDecimal.valueOf(durationToCalculate.getYears()),
+			        mathContext);
+			return numberOfEquities.multiply(fee, mathContext);
 		}
 
 		return BigDecimal.ZERO;

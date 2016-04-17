@@ -63,8 +63,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 0 ),
-					BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 1 ) );
+			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(1), BigDecimal.valueOf(0),
+			        BigDecimal.valueOf(2), BigDecimal.valueOf(1));
 		}
 
 		return prices;
@@ -74,8 +74,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( i + 1 ), BigDecimal.valueOf( i ),
-					BigDecimal.valueOf( i + 2 ), BigDecimal.valueOf( i + 1 ) );
+			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(i + 1), BigDecimal.valueOf(i),
+			        BigDecimal.valueOf(i + 2), BigDecimal.valueOf(i + 1));
 		}
 
 		return prices;
@@ -87,9 +87,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		final int base = count * 2;
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( base - i + 1 ),
-					BigDecimal.valueOf( base + i ), BigDecimal.valueOf( base + i + 2 ),
-					BigDecimal.valueOf( base - i + 1 ) );
+			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(base - i + 1),
+			        BigDecimal.valueOf(base + i), BigDecimal.valueOf(base + i + 2), BigDecimal.valueOf(base - i + 1));
 		}
 
 		return prices;
@@ -98,130 +97,128 @@ public class RelativeStrengthIndexCalculatorTest {
 	@Test
 	public void rsiFlat() {
 		final int dataSize = 8;
-		final TradingDayPrices[] data = createPrices( dataSize );
+		final TradingDayPrices[] data = createPrices(dataSize);
 		final int lookback = 4;
 		final int daysOfRsiValues = dataSize - lookback;
 
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback,
-				daysOfRsiValues, validator, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(lookback,
+		        daysOfRsiValues, validator, MATH_CONTEXT);
 
-		final List<BigDecimal> rsi = calculator.rsi( data );
+		final List<BigDecimal> rsi = calculator.rsi(data);
 
-		assertNotNull( rsi );
-		assertEquals( daysOfRsiValues, rsi.size() );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 0 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 1 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 2 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 3 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertNotNull(rsi);
+		assertEquals(daysOfRsiValues, rsi.size());
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(0).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(1).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(2).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(3).setScale(2, RoundingMode.HALF_EVEN));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void startingWithNullDataPoint() {
 		final int dataSize = 8;
-		final TradingDayPrices[] data = createPrices( dataSize );
+		final TradingDayPrices[] data = createPrices(dataSize);
 		data[0] = null;
 
 		final int lookback = 4;
 		final int daysOfRsiValues = dataSize - lookback;
 
-		doThrow( new IllegalArgumentException() ).when( validator )
-				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback,
-				daysOfRsiValues, validator, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(lookback,
+		        daysOfRsiValues, validator, MATH_CONTEXT);
 
-		calculator.rsi( data );
+		calculator.rsi(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void endingWithNullDataPoint() {
 		final int dataSize = 8;
-		final TradingDayPrices[] data = createPrices( dataSize );
+		final TradingDayPrices[] data = createPrices(dataSize);
 		data[data.length - 1] = null;
 
 		final int lookback = 4;
 		final int daysOfRsiValues = dataSize - lookback;
 
-		doThrow( new IllegalArgumentException() ).when( validator )
-				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback,
-				daysOfRsiValues, validator, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(lookback,
+		        daysOfRsiValues, validator, MATH_CONTEXT);
 
-		calculator.rsi( data );
+		calculator.rsi(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughDataPoints() {
 		final int dataSize = 8;
 		final int lookback = 4;
-		final TradingDayPrices[] data = createPrices( dataSize );
+		final TradingDayPrices[] data = createPrices(dataSize);
 		final int daysOfRsiValues = dataSize - lookback + 1;
 
-		doThrow( new IllegalArgumentException() ).when( validator ).verifyEnoughValues( any( TradingDayPrices[].class ),
-				anyInt() );
+		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
+		        anyInt());
 
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback,
-				daysOfRsiValues, validator, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(lookback,
+		        daysOfRsiValues, validator, MATH_CONTEXT);
 
-		calculator.rsi( data );
+		calculator.rsi(data);
 	}
 
 	@Test
 	public void rsiIncreasing() {
 		final int dataSize = 8;
-		final TradingDayPrices[] data = createIncreasingPrices( dataSize );
+		final TradingDayPrices[] data = createIncreasingPrices(dataSize);
 
 		final int lookback = 4;
 		final int daysOfRsiValues = dataSize - lookback;
 
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback,
-				daysOfRsiValues, validator, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(lookback,
+		        daysOfRsiValues, validator, MATH_CONTEXT);
 
-		final List<BigDecimal> rsi = calculator.rsi( data );
+		final List<BigDecimal> rsi = calculator.rsi(data);
 
-		assertNotNull( rsi );
-		assertEquals( daysOfRsiValues, rsi.size() );
+		assertNotNull(rsi);
+		assertEquals(daysOfRsiValues, rsi.size());
 		// RS of 50 == RSI 49.02
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 0 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 1 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 2 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 3 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(0).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(1).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(2).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(3).setScale(2, RoundingMode.HALF_EVEN));
 
-		verify( validator ).verifyZeroNullEntries( data );
-		verify( validator ).verifyEnoughValues( data, dataSize );
+		verify(validator).verifyZeroNullEntries(data);
+		verify(validator).verifyEnoughValues(data, dataSize);
 	}
 
 	@Test
 	public void rsiDecreasing() {
 		final int dataSize = 8;
-		final TradingDayPrices[] data = createDecreasingPrices( dataSize );
+		final TradingDayPrices[] data = createDecreasingPrices(dataSize);
 
 		final int lookback = 4;
 		final int daysOfRsiValues = dataSize - lookback;
 
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback,
-				daysOfRsiValues, validator, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(lookback,
+		        daysOfRsiValues, validator, MATH_CONTEXT);
 
-		final List<BigDecimal> rsi = calculator.rsi( data );
+		final List<BigDecimal> rsi = calculator.rsi(data);
 
-		assertNotNull( rsi );
-		assertEquals( daysOfRsiValues, rsi.size() );
-		assertEquals( BigDecimal.ZERO, rsi.get( 0 ) );
-		assertEquals( BigDecimal.ZERO, rsi.get( 1 ) );
-		assertEquals( BigDecimal.ZERO, rsi.get( 2 ) );
-		assertEquals( BigDecimal.ZERO, rsi.get( 3 ) );
+		assertNotNull(rsi);
+		assertEquals(daysOfRsiValues, rsi.size());
+		assertEquals(BigDecimal.ZERO, rsi.get(0));
+		assertEquals(BigDecimal.ZERO, rsi.get(1));
+		assertEquals(BigDecimal.ZERO, rsi.get(2));
+		assertEquals(BigDecimal.ZERO, rsi.get(3));
 
-		verify( validator ).verifyZeroNullEntries( data );
-		verify( validator ).verifyEnoughValues( data, dataSize );
+		verify(validator).verifyZeroNullEntries(data);
+		verify(validator).verifyEnoughValues(data, dataSize);
 	}
 
 	@Test
 	public void rsiIncreasingThenDecreasing() {
 		final int dataSize = 8;
 
-		final TradingDayPrices[] dataIncreasing = createIncreasingPrices( dataSize );
-		final TradingDayPrices[] dataDecreasing = createDecreasingPrices( dataSize );
+		final TradingDayPrices[] dataIncreasing = createIncreasingPrices(dataSize);
+		final TradingDayPrices[] dataDecreasing = createDecreasingPrices(dataSize);
 
 		final TradingDayPrices[] data = new TradingDayPrices[dataSize * 2];
 		for (int i = 0; i < dataIncreasing.length; i++) {
@@ -234,36 +231,36 @@ public class RelativeStrengthIndexCalculatorTest {
 		final int lookback = 4;
 		final int daysOfRsiValues = dataSize - lookback;
 
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback,
-				daysOfRsiValues, validator, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(lookback,
+		        daysOfRsiValues, validator, MATH_CONTEXT);
 
-		final List<BigDecimal> rsi = calculator.rsi( data );
+		final List<BigDecimal> rsi = calculator.rsi(data);
 
-		assertNotNull( rsi );
-		assertEquals( 2 * dataSize - lookback, rsi.size() );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 0 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 1 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 2 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 3 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 49.02 ), rsi.get( 4 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 43.15 ), rsi.get( 5 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 35.13 ), rsi.get( 6 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 26.82 ), rsi.get( 7 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 19.24 ), rsi.get( 8 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 13.08 ), rsi.get( 9 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 8.52 ), rsi.get( 10 ).setScale( 2, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 5.4 ), rsi.get( 11 ).setScale( 1, RoundingMode.HALF_EVEN ) );
+		assertNotNull(rsi);
+		assertEquals(2 * dataSize - lookback, rsi.size());
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(0).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(1).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(2).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(3).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(49.02), rsi.get(4).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(43.15), rsi.get(5).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(35.13), rsi.get(6).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(26.82), rsi.get(7).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(19.24), rsi.get(8).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(13.08), rsi.get(9).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(8.52), rsi.get(10).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(5.4), rsi.get(11).setScale(1, RoundingMode.HALF_EVEN));
 
-		verify( validator ).verifyZeroNullEntries( data );
-		verify( validator ).verifyEnoughValues( data, dataSize );
+		verify(validator).verifyZeroNullEntries(data);
+		verify(validator).verifyEnoughValues(data, dataSize);
 	}
 
 	@Test
 	public void rsiDecreasingThenIncreasing() {
 		final int dataSize = 8;
 
-		final TradingDayPrices[] dataIncreasing = createIncreasingPrices( dataSize );
-		final TradingDayPrices[] dataDecreasing = createDecreasingPrices( dataSize );
+		final TradingDayPrices[] dataIncreasing = createIncreasingPrices(dataSize);
+		final TradingDayPrices[] dataDecreasing = createDecreasingPrices(dataSize);
 
 		final TradingDayPrices[] data = new TradingDayPrices[dataSize * 2];
 		for (int i = 0; i < dataDecreasing.length; i++) {
@@ -276,27 +273,27 @@ public class RelativeStrengthIndexCalculatorTest {
 		final int lookback = 4;
 		final int daysOfRsiValues = dataSize - lookback;
 
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator( lookback,
-				daysOfRsiValues, validator, MATH_CONTEXT );
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(lookback,
+		        daysOfRsiValues, validator, MATH_CONTEXT);
 
-		final List<BigDecimal> rsi = calculator.rsi( data );
+		final List<BigDecimal> rsi = calculator.rsi(data);
 
-		assertNotNull( rsi );
-		assertEquals( 2 * dataSize - lookback, rsi.size() );
-		assertEquals( BigDecimal.ZERO, rsi.get( 0 ) );
-		assertEquals( BigDecimal.ZERO, rsi.get( 1 ) );
-		assertEquals( BigDecimal.ZERO, rsi.get( 2 ) );
-		assertEquals( BigDecimal.ZERO, rsi.get( 3 ) );
-		assertEquals( BigDecimal.ZERO, rsi.get( 4 ) );
-		assertEquals( BigDecimal.valueOf( 6.8493 ), rsi.get( 5 ).setScale( 4, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 14.8699 ), rsi.get( 6 ).setScale( 4, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 23.1788 ), rsi.get( 7 ).setScale( 4, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 30.7623 ), rsi.get( 8 ).setScale( 4, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 36.9241 ), rsi.get( 9 ).setScale( 4, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 41.475 ), rsi.get( 10 ).setScale( 3, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 44.6047 ), rsi.get( 11 ).setScale( 4, RoundingMode.HALF_EVEN ) );
+		assertNotNull(rsi);
+		assertEquals(2 * dataSize - lookback, rsi.size());
+		assertEquals(BigDecimal.ZERO, rsi.get(0));
+		assertEquals(BigDecimal.ZERO, rsi.get(1));
+		assertEquals(BigDecimal.ZERO, rsi.get(2));
+		assertEquals(BigDecimal.ZERO, rsi.get(3));
+		assertEquals(BigDecimal.ZERO, rsi.get(4));
+		assertEquals(BigDecimal.valueOf(6.8493), rsi.get(5).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(14.8699), rsi.get(6).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(23.1788), rsi.get(7).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(30.7623), rsi.get(8).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(36.9241), rsi.get(9).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(41.475), rsi.get(10).setScale(3, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(44.6047), rsi.get(11).setScale(4, RoundingMode.HALF_EVEN));
 
-		verify( validator ).verifyZeroNullEntries( data );
-		verify( validator ).verifyEnoughValues( data, dataSize );
+		verify(validator).verifyZeroNullEntries(data);
+		verify(validator).verifyEnoughValues(data, dataSize);
 	}
 }

@@ -48,24 +48,24 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 	/** All the mathematical operation works within the context. */
 	private final MathContext mathContext;
 
-	public LadderedEquityManagementFeeCalculator( final BigDecimal[] range, final BigDecimal[] percentageFee,
-			final MathContext mathContext ) {
+	public LadderedEquityManagementFeeCalculator(final BigDecimal[] range, final BigDecimal[] percentageFee,
+	        final MathContext mathContext) {
 		this.percentageFee = percentageFee;
 		this.mathContext = mathContext;
 		this.range = range;
 
 		if (range.length + 1 != percentageFee.length) {
 			throw new IllegalArgumentException(
-					String.format( "Expecting one less range enrtry to fee, but given: %s and: %s", range.length,
-							percentageFee.length ) );
+			        String.format("Expecting one less range enrtry to fee, but given: %s and: %s", range.length,
+			                percentageFee.length));
 		}
 	}
 
 	@Override
 	public BigDecimal calculateFee( final BigDecimal numberOfEquities, final ClosingPrice singleEquityValue,
-			final Period durationToCalculate ) {
+	        final Period durationToCalculate ) {
 
-		final BigDecimal holdingsValue = numberOfEquities.multiply( singleEquityValue.getPrice(), mathContext );
+		final BigDecimal holdingsValue = numberOfEquities.multiply(singleEquityValue.getPrice(), mathContext);
 		BigDecimal fee = BigDecimal.ZERO;
 		BigDecimal topEndOfLastRange = BigDecimal.ZERO;
 
@@ -73,24 +73,24 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 
 			final BigDecimal spread;
 
-			if (holdingsValue.compareTo( range[i] ) < 0) {
+			if (holdingsValue.compareTo(range[i]) < 0) {
 				// The the holdings is below the top end of this range
-				spread = holdingsValue.subtract( topEndOfLastRange, mathContext );
+				spread = holdingsValue.subtract(topEndOfLastRange, mathContext);
 				i = range.length;
 			} else {
 				// Holdings cover all this range (preceeding ones too)
-				spread = range[i].subtract( topEndOfLastRange, mathContext );
+				spread = range[i].subtract(topEndOfLastRange, mathContext);
 				topEndOfLastRange = range[i];
 			}
 
-			fee = fee.add( spread.multiply( percentageFee[i], mathContext ), mathContext );
+			fee = fee.add(spread.multiply(percentageFee[i], mathContext), mathContext);
 		}
 
 		// Cater for the open ended flat fee section
-		fee = applyFlatFee( holdingsValue, fee );
+		fee = applyFlatFee(holdingsValue, fee);
 
 		// Convert fee amount into equities
-		return fee.divide( singleEquityValue.getPrice(), mathContext );
+		return fee.divide(singleEquityValue.getPrice(), mathContext);
 	}
 
 	private BigDecimal applyFlatFee( final BigDecimal holdingsValue, final BigDecimal fee ) {
@@ -102,15 +102,15 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 		} else {
 
 			// Only apply the flat fee when the holdings exceed the upper bounds
-			if (holdingsValue.compareTo( range[range.length - 1] ) > 0) {
-				flatRateFeeSpread = holdingsValue.subtract( range[range.length - 1], mathContext );
+			if (holdingsValue.compareTo(range[range.length - 1]) > 0) {
+				flatRateFeeSpread = holdingsValue.subtract(range[range.length - 1], mathContext);
 			} else {
 				flatRateFeeSpread = BigDecimal.ZERO;
 			}
 		}
 
-		final BigDecimal flatRateFee = flatRateFeeSpread.multiply( percentageFee[range.length], mathContext );
+		final BigDecimal flatRateFee = flatRateFeeSpread.multiply(percentageFee[range.length], mathContext);
 
-		return fee.add( flatRateFee, mathContext );
+		return fee.add(flatRateFee, mathContext);
 	}
 }

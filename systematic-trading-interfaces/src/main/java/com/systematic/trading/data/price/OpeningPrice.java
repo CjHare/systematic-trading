@@ -42,14 +42,14 @@ public class OpeningPrice extends Price {
 	 */
 	public static OpeningPrice valueOf( final BigDecimal price ) {
 		if (price == null) {
-			throw new IllegalArgumentException( "null is not accepted by OpeningPrice.valueOf()" );
+			throw new IllegalArgumentException("null is not accepted by OpeningPrice.valueOf()");
 		}
 
-		return new OpeningPrice( price );
+		return new OpeningPrice(price);
 	}
 
-	protected OpeningPrice( final BigDecimal price ) {
-		super( price );
+	protected OpeningPrice(final BigDecimal price) {
+		super(price);
 	}
 
 }

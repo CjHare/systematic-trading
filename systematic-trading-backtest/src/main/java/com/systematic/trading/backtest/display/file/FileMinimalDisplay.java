@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutorService;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
+import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
@@ -67,15 +68,15 @@ public class FileMinimalDisplay implements BacktestDisplay {
 	private NetWorthEventListener netWorthComparisonDisplay;
 	private final ExecutorService pool;
 
-	public FileMinimalDisplay( final String outputDirectory, final ExecutorService pool, final MathContext mathContext )
-			throws IOException {
+	public FileMinimalDisplay(final String outputDirectory, final ExecutorService pool, final MathContext mathContext)
+	        throws IOException {
 
 		// Ensure the directory exists
-		final File outputDirectoryFile = new File( outputDirectory );
+		final File outputDirectoryFile = new File(outputDirectory);
 		if (!outputDirectoryFile.exists()) {
 			if (!outputDirectoryFile.mkdirs()) {
 				throw new IllegalArgumentException(
-						String.format( "Failed to create / access directory: %s", outputDirectory ) );
+				        String.format("Failed to create / access directory: %s", outputDirectory));
 			}
 		}
 
@@ -86,19 +87,19 @@ public class FileMinimalDisplay implements BacktestDisplay {
 
 	@Override
 	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-			final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			final TradingDayPrices lastTradingDay, final Period duration ) throws Exception {
+	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
+	        final TradingDayPrices lastTradingDay, final Period duration ) throws BacktestInitialisationException {
 
-		final FileDisplayMultithreading statisticsFile = getFileDisplay( "/statistics.txt" );
-		this.statisticsDisplay = new FileEventStatisticsDisplay( eventStatistics, statisticsFile );
-		this.netWorthDisplay = new FileNetWorthSummaryDisplay( cumulativeRoi, statisticsFile );
+		final FileDisplayMultithreading statisticsFile = getFileDisplay("/statistics.txt");
+		this.statisticsDisplay = new FileEventStatisticsDisplay(eventStatistics, statisticsFile);
+		this.netWorthDisplay = new FileNetWorthSummaryDisplay(cumulativeRoi, statisticsFile);
 
-		final FileDisplayMultithreading comparisonFile = getFileDisplay( "/../summary.txt" );
-		netWorthComparisonDisplay = new FileComparisonDisplay( duration, eventStatistics, comparisonFile, mathContext );
+		final FileDisplayMultithreading comparisonFile = getFileDisplay("/../summary.txt");
+		netWorthComparisonDisplay = new FileComparisonDisplay(duration, eventStatistics, comparisonFile, mathContext);
 	}
 
 	private FileDisplayMultithreading getFileDisplay( final String suffix ) {
-		return new FileDisplayMultithreading( baseDirectory + suffix, pool );
+		return new FileDisplayMultithreading(baseDirectory + suffix, pool);
 	}
 
 	@Override
@@ -124,7 +125,7 @@ public class FileMinimalDisplay implements BacktestDisplay {
 			case COMPLETE:
 				simulationCompleted();
 			default:
-				break;
+			break;
 		}
 	}
 
@@ -135,8 +136,8 @@ public class FileMinimalDisplay implements BacktestDisplay {
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
-		netWorthDisplay.event( event, state );
-		netWorthComparisonDisplay.event( event, state );
+		netWorthDisplay.event(event, state);
+		netWorthComparisonDisplay.event(event, state);
 	}
 
 	@Override

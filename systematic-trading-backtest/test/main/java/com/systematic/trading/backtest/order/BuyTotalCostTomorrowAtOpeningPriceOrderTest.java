@@ -70,47 +70,47 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	@Test
 	public void isValid() {
 		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
-				BigDecimal.valueOf( 44 ), type, EQUITY_SCALE, LocalDate.now(), MATH_CONTEXT );
+		        BigDecimal.valueOf(44), type, EQUITY_SCALE, LocalDate.now(), MATH_CONTEXT);
 
-		final boolean isValid = buy.isValid( todaysTrading );
+		final boolean isValid = buy.isValid(todaysTrading);
 
-		assertEquals( true, isValid );
+		assertEquals(true, isValid);
 	}
 
 	@Test
 	public void areExecutionConditionsMet() {
 		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
-				BigDecimal.valueOf( 44 ), type, EQUITY_SCALE, LocalDate.now(), MATH_CONTEXT );
+		        BigDecimal.valueOf(44), type, EQUITY_SCALE, LocalDate.now(), MATH_CONTEXT);
 
-		final boolean areConditionMet = buy.areExecutionConditionsMet( todaysTrading );
+		final boolean areConditionMet = buy.areExecutionConditionsMet(todaysTrading);
 
-		assertEquals( true, areConditionMet );
+		assertEquals(true, areConditionMet);
 	}
 
 	@Test
 	public void execute() throws OrderException {
-		final BrokerageTransaction broker = mock( BrokerageTransaction.class );
-		final BrokerageTransactionFee fees = mock( BrokerageTransactionFee.class );
-		final CashAccount cashAccount = mock( CashAccount.class );
+		final BrokerageTransaction broker = mock(BrokerageTransaction.class);
+		final BrokerageTransactionFee fees = mock(BrokerageTransactionFee.class);
+		final CashAccount cashAccount = mock(CashAccount.class);
 		final BuyTotalCostTomorrowAtOpeningPriceOrder buy = new BuyTotalCostTomorrowAtOpeningPriceOrder(
-				BigDecimal.valueOf( 44 ), type, EQUITY_SCALE, LocalDate.now(), MATH_CONTEXT );
+		        BigDecimal.valueOf(44), type, EQUITY_SCALE, LocalDate.now(), MATH_CONTEXT);
 
-		final OpeningPrice price = mock( OpeningPrice.class );
-		when( price.getPrice() ).thenReturn( BigDecimal.valueOf( 5 ) );
-		when( todaysTrading.getOpeningPrice() ).thenReturn( price );
+		final OpeningPrice price = mock(OpeningPrice.class);
+		when(price.getPrice()).thenReturn(BigDecimal.valueOf(5));
+		when(todaysTrading.getOpeningPrice()).thenReturn(price);
 
 		final LocalDate date = LocalDate.now();
-		when( todaysTrading.getDate() ).thenReturn( date );
+		when(todaysTrading.getDate()).thenReturn(date);
 
-		when( fees.calculateFee( any( BigDecimal.class ), any( EquityClass.class ), any( LocalDate.class ) ) )
-				.thenReturn( BigDecimal.valueOf( 3 ) );
+		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		        .thenReturn(BigDecimal.valueOf(3));
 
-		buy.execute( fees, broker, cashAccount, todaysTrading );
+		buy.execute(fees, broker, cashAccount, todaysTrading);
 
 		final EquityOrderVolume expectedVolume = EquityOrderVolume
-				.valueOf( BigDecimal.valueOf( 8.2 ).setScale( 2, BigDecimal.ROUND_DOWN ) );
-		verify( broker ).buy( price, expectedVolume, date );
-		verify( todaysTrading, atLeastOnce() ).getDate();
-		verify( todaysTrading, atLeastOnce() ).getOpeningPrice();
+		        .valueOf(BigDecimal.valueOf(8.2).setScale(2, BigDecimal.ROUND_DOWN));
+		verify(broker).buy(price, expectedVolume, date);
+		verify(todaysTrading, atLeastOnce()).getDate();
+		verify(todaysTrading, atLeastOnce()).getOpeningPrice();
 	}
 }

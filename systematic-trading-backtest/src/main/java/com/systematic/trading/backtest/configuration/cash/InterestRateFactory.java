@@ -43,24 +43,24 @@ import com.systematic.trading.simulation.cash.InterestRate;
 public class InterestRateFactory {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( InterestRateFactory.class );
+	private static final Logger LOG = LogManager.getLogger(InterestRateFactory.class);
 
 	/**
 	 * Create an instance of the a interest rate.
 	 */
-	public static InterestRate create( final InterestRateConfiguration configuration,
-			final BigDecimal annualRate, final MathContext mathContext ) {
+	public static InterestRate create( final InterestRateConfiguration configuration, final BigDecimal annualRate,
+	        final MathContext mathContext ) {
 
 		try {
-			Constructor<?> cons = configuration.getType().getConstructor( BigDecimal.class, MathContext.class );
+			Constructor<?> cons = configuration.getType().getConstructor(BigDecimal.class, MathContext.class);
 
-			return (InterestRate) cons.newInstance( annualRate, mathContext );
+			return (InterestRate) cons.newInstance(annualRate, mathContext);
 		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			LOG.error( e );
+		        | IllegalArgumentException | InvocationTargetException e) {
+			LOG.error(e);
 		}
 
 		throw new IllegalArgumentException(
-				String.format( "Could not create the desired interest rate: %s", configuration ) );
+		        String.format("Could not create the desired interest rate: %s", configuration));
 	}
 }

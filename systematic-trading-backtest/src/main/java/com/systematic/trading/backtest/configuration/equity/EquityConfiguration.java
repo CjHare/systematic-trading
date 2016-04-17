@@ -35,19 +35,19 @@ import com.systematic.trading.model.EquityIdentity;
  */
 public enum EquityConfiguration {
 
-	SP_500_PRICE_INDEX( "^GSPC", EquityClass.STOCK, 4 );
+	SP_500_PRICE_INDEX("^GSPC", EquityClass.STOCK, 4);
 
 	private final String tickerSymbol;
 	private final EquityClass equityType;
 	private final int scale;
 
-	private EquityConfiguration( final String tickerSymbol, final EquityClass equityType, final int scale ) {
+	private EquityConfiguration(final String tickerSymbol, final EquityClass equityType, final int scale) {
 		this.tickerSymbol = tickerSymbol;
 		this.equityType = equityType;
 		this.scale = scale;
 	}
 
 	public EquityIdentity getEquityIdentity() {
-		return new EquityIdentity( tickerSymbol, equityType, scale );
+		return new EquityIdentity(tickerSymbol, equityType, scale);
 	}
 }

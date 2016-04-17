@@ -37,24 +37,24 @@ import com.systematic.trading.simulation.cash.event.CashEventListener;
  */
 public class FileCashEventDisplay implements CashEventListener {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
 	private final FileDisplayMultithreading display;
 
-	public FileCashEventDisplay( final FileDisplayMultithreading display ) {
+	public FileCashEventDisplay(final FileDisplayMultithreading display) {
 		this.display = display;
 
-		display.write( "=== Cash Events ===" );
+		display.write("=== Cash Events ===");
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
 
-		final String content = String.format( "Cash Account - %s: %s - funds %s -> %s on %s", event.getType(),
-				TWO_DECIMAL_PLACES.format( event.getAmount() ), TWO_DECIMAL_PLACES.format( event.getFundsBefore() ),
-				TWO_DECIMAL_PLACES.format( event.getFundsAfter() ), event.getTransactionDate() );
+		final String content = String.format("Cash Account - %s: %s - funds %s -> %s on %s", event.getType(),
+		        TWO_DECIMAL_PLACES.format(event.getAmount()), TWO_DECIMAL_PLACES.format(event.getFundsBefore()),
+		        TWO_DECIMAL_PLACES.format(event.getFundsAfter()), event.getTransactionDate());
 
-		display.write( content );
+		display.write(content);
 	}
 }

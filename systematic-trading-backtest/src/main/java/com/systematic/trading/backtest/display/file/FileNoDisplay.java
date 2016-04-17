@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.display.file;
 import java.time.Period;
 
 import com.systematic.trading.backtest.display.BacktestDisplay;
+import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
@@ -53,8 +54,8 @@ public class FileNoDisplay implements BacktestDisplay {
 
 	@Override
 	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-			final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-			final TradingDayPrices lastTradingDay, final Period duration ) throws Exception {
+	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
+	        final TradingDayPrices lastTradingDay, final Period duration ) throws BacktestInitialisationException {
 	}
 
 	@Override

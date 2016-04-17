@@ -45,19 +45,19 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 	private final E[] items;
 
 	@SuppressWarnings("unchecked")
-	public LimitedSizeQueue( final Class<E> clazz, final int limit ) {
+	public LimitedSizeQueue(final Class<E> clazz, final int limit) {
 		this.limit = limit;
 
 		// Occur the reflection cost here once
-		this.items = (E[]) java.lang.reflect.Array.newInstance( clazz, limit );
+		this.items = (E[]) java.lang.reflect.Array.newInstance(clazz, limit);
 
-		this.empty = (E[]) java.lang.reflect.Array.newInstance( clazz, 0 );
+		this.empty = (E[]) java.lang.reflect.Array.newInstance(clazz, 0);
 
 	}
 
 	@Override
 	public boolean add( final E o ) {
-		super.add( o );
+		super.add(o);
 
 		while (size() > limit) {
 			super.remove();
@@ -72,15 +72,15 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 	 */
 	public E[] toArray() {
 		if (size() >= limit) {
-			return super.toArray( items );
+			return super.toArray(items);
 		} else {
-			return super.toArray( empty );
+			return super.toArray(empty);
 		}
 	}
 
 	@Override
 	public <T> T[] toArray( final T[] a ) {
-		throw new UnsupportedOperationException( "Please use LimitedQueue.toArray() instead" );
+		throw new UnsupportedOperationException("Please use LimitedQueue.toArray() instead");
 	}
 
 	public int getLimit() {

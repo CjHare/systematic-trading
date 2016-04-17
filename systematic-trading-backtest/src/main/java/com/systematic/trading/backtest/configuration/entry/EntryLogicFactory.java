@@ -55,27 +55,26 @@ import com.systematic.trading.simulation.logic.TradeValue;
 public class EntryLogicFactory {
 
 	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate,
-			final DepositConfiguration deposit, final MathContext mathContext ) {
+	        final DepositConfiguration deposit, final MathContext mathContext ) {
 		final Period frequency = deposit.getFrequency();
-		return new DateTriggeredEntryLogic( equity.getType(), equity.getScale(), startDate, frequency, mathContext );
+		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency, mathContext);
 	}
 
 	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate, final Period frequency,
-			final MathContext mathContext ) {
-		return new DateTriggeredEntryLogic( equity.getType(), equity.getScale(), startDate, frequency, mathContext );
+	        final MathContext mathContext ) {
+		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency, mathContext);
 	}
 
 	public static EntryLogic create( final EquityIdentity equity, final TradeValue tradeValue,
-			final BacktestSimulationDates simulationDates, final EntryLogicFilterConfiguration filterConfiguration,
-			final MathContext mathContext, final IndicatorSignalGenerator... entrySignals ) {
+	        final BacktestSimulationDates simulationDates, final EntryLogicFilterConfiguration filterConfiguration,
+	        final MathContext mathContext, final IndicatorSignalGenerator... entrySignals ) {
 
-		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>(
-				entrySignals.length );
+		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>(entrySignals.length);
 		final IndicatorSignalType[] types = new IndicatorSignalType[entrySignals.length];
 
 		for (int i = 0; i < entrySignals.length; i++) {
 			final IndicatorSignalGenerator entrySignal = entrySignals[i];
-			generators.add( entrySignal );
+			generators.add(entrySignal);
 			types[i] = entrySignal.getSignalType();
 		}
 
@@ -87,19 +86,19 @@ public class EntryLogicFactory {
 
 		// Only signals from the last few days are of interest
 		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		final SignalFilter filter = creatSignalFilter( filterConfiguration, entrySignals );
+		final SignalFilter filter = creatSignalFilter(filterConfiguration, entrySignals);
 		final SignalFilter decoratedFilter = new TimePeriodSignalFilterDecorator(
-				new RollingTimePeriodSignalFilterDecorator( filter, Period.ofDays( DAYS_ACCEPTING_SIGNALS ) ),
-				simulationStartDate, simulationEndDate );
-		filters.add( decoratedFilter );
+		        new RollingTimePeriodSignalFilterDecorator(filter, Period.ofDays(DAYS_ACCEPTING_SIGNALS)),
+		        simulationStartDate, simulationEndDate);
+		filters.add(decoratedFilter);
 
-		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals( generators, filters );
-		return new SignalTriggeredEntryLogic( equity.getType(), equity.getScale(), tradeValue, buyLongAnalysis,
-				mathContext );
+		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals(generators, filters);
+		return new SignalTriggeredEntryLogic(equity.getType(), equity.getScale(), tradeValue, buyLongAnalysis,
+		        mathContext);
 	}
 
 	private static SignalFilter creatSignalFilter( final EntryLogicFilterConfiguration configuration,
-			final IndicatorSignalGenerator[] entrySignals ) {
+	        final IndicatorSignalGenerator[] entrySignals ) {
 
 		switch (configuration) {
 			case SAME_DAY:
@@ -107,10 +106,10 @@ public class EntryLogicFactory {
 				for (int i = 0; i < entrySignals.length; i++) {
 					passed[i] = entrySignals[i].getSignalType();
 				}
-				return new IndicatorsOnSameDaySignalFilter( passed );
+				return new IndicatorsOnSameDaySignalFilter(passed);
 			default:
 				throw new IllegalArgumentException(
-						String.format( "Could not create the desired entry logic filter: %s", configuration ) );
+				        String.format("Could not create the desired entry logic filter: %s", configuration));
 		}
 	}
 }

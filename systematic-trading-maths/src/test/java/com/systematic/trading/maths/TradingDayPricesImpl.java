@@ -42,13 +42,13 @@ public class TradingDayPricesImpl implements TradingDayPrices {
 	private final HighestPrice highestPrice;
 	private final ClosingPrice closingPrice;
 
-	public TradingDayPricesImpl( final LocalDate date, final BigDecimal openingPrice, final BigDecimal lowestPrice,
-			final BigDecimal highestPrice, final BigDecimal closingPrice ) {
+	public TradingDayPricesImpl(final LocalDate date, final BigDecimal openingPrice, final BigDecimal lowestPrice,
+	        final BigDecimal highestPrice, final BigDecimal closingPrice) {
 		this.date = date;
-		this.openingPrice = OpeningPrice.valueOf( openingPrice );
-		this.lowestPrice = LowestPrice.valueOf( lowestPrice );
-		this.highestPrice = HighestPrice.valueOf( highestPrice );
-		this.closingPrice = ClosingPrice.valueOf( closingPrice );
+		this.openingPrice = OpeningPrice.valueOf(openingPrice);
+		this.lowestPrice = LowestPrice.valueOf(lowestPrice);
+		this.highestPrice = HighestPrice.valueOf(highestPrice);
+		this.closingPrice = ClosingPrice.valueOf(closingPrice);
 	}
 
 	@Override

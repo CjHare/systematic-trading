@@ -50,7 +50,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	private final int lookback = 10;
 
 	private final double[] closingPrice = { 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2, 2.1, 2.1, 1.8, 1.4,
-			0.9, 0.8, 1.0, 1.2 };
+	        0.9, 0.8, 1.0, 1.2 };
 
 	private final long[] dateValues = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
@@ -59,17 +59,17 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final TradingDayPrices[] data = createTradingPrices();
 		final int daysGradient = data.length - 1 - lookback;
 
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
-				daysGradient, GradientType.POSITIVE, MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals(lookback,
+		        daysGradient, GradientType.POSITIVE, MATH_CONTEXT);
 
-		final List<IndicatorSignal> signals = smaGradient.calculateSignals( data );
+		final List<IndicatorSignal> signals = smaGradient.calculateSignals(data);
 
-		assertNotNull( signals );
-		assertEquals( 4, signals.size() );
-		assertEquals( data[11].getDate(), signals.get( 0 ).getDate() );
-		assertEquals( data[12].getDate(), signals.get( 1 ).getDate() );
-		assertEquals( data[13].getDate(), signals.get( 2 ).getDate() );
-		assertEquals( data[14].getDate(), signals.get( 3 ).getDate() );
+		assertNotNull(signals);
+		assertEquals(4, signals.size());
+		assertEquals(data[11].getDate(), signals.get(0).getDate());
+		assertEquals(data[12].getDate(), signals.get(1).getDate());
+		assertEquals(data[13].getDate(), signals.get(2).getDate());
+		assertEquals(data[14].getDate(), signals.get(3).getDate());
 	}
 
 	@Test
@@ -77,15 +77,15 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final TradingDayPrices[] data = createTradingPrices();
 		final int daysGradient = data.length - lookback;
 
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( 1, daysGradient,
-				GradientType.FLAT, MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals(1, daysGradient,
+		        GradientType.FLAT, MATH_CONTEXT);
 
-		final List<IndicatorSignal> signals = smaGradient.calculateSignals( data );
+		final List<IndicatorSignal> signals = smaGradient.calculateSignals(data);
 
-		assertNotNull( signals );
-		assertEquals( 2, signals.size() );
-		assertEquals( data[11].getDate(), signals.get( 0 ).getDate() );
-		assertEquals( data[13].getDate(), signals.get( 1 ).getDate() );
+		assertNotNull(signals);
+		assertEquals(2, signals.size());
+		assertEquals(data[11].getDate(), signals.get(0).getDate());
+		assertEquals(data[13].getDate(), signals.get(1).getDate());
 	}
 
 	@Test
@@ -93,25 +93,25 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final TradingDayPrices[] data = createTradingPrices();
 		final int daysGradient = data.length - 1 - lookback;
 
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
-				daysGradient, GradientType.NEGATIVE, MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals(lookback,
+		        daysGradient, GradientType.NEGATIVE, MATH_CONTEXT);
 
-		final List<IndicatorSignal> signals = smaGradient.calculateSignals( data );
+		final List<IndicatorSignal> signals = smaGradient.calculateSignals(data);
 
-		assertNotNull( signals );
-		assertEquals( 5, signals.size() );
-		assertEquals( data[15].getDate(), signals.get( 0 ).getDate() );
-		assertEquals( data[16].getDate(), signals.get( 1 ).getDate() );
-		assertEquals( data[17].getDate(), signals.get( 2 ).getDate() );
-		assertEquals( data[18].getDate(), signals.get( 3 ).getDate() );
-		assertEquals( data[19].getDate(), signals.get( 4 ).getDate() );
+		assertNotNull(signals);
+		assertEquals(5, signals.size());
+		assertEquals(data[15].getDate(), signals.get(0).getDate());
+		assertEquals(data[16].getDate(), signals.get(1).getDate());
+		assertEquals(data[17].getDate(), signals.get(2).getDate());
+		assertEquals(data[18].getDate(), signals.get(3).getDate());
+		assertEquals(data[19].getDate(), signals.get(4).getDate());
 	}
 
 	private TradingDayPrices[] createTradingPrices() {
 		final TradingDayPrices[] data = new TradingDayPrices[dateValues.length];
 		for (int i = 0; i < dateValues.length; i++) {
-			data[i] = new TradingDayPricesImpl( LocalDate.now().plusDays( dateValues[i] ), BigDecimal.ZERO,
-					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf( closingPrice[i] ) );
+			data[i] = new TradingDayPricesImpl(LocalDate.now().plusDays(dateValues[i]), BigDecimal.ZERO,
+			        BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(closingPrice[i]));
 		}
 
 		return data;
@@ -121,9 +121,9 @@ public class SimpleMovingAverageGradientSignalsTest {
 	public void getMaximumNumberOfTradingDaysRequired() {
 		final int daysGradient = 7;
 
-		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals( lookback,
-				daysGradient, GradientType.NEGATIVE, MATH_CONTEXT );
+		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals(lookback,
+		        daysGradient, GradientType.NEGATIVE, MATH_CONTEXT);
 
-		assertEquals( lookback + daysGradient, smaGradient.getRequiredNumberOfTradingDays() );
+		assertEquals(lookback + daysGradient, smaGradient.getRequiredNumberOfTradingDays());
 	}
 }

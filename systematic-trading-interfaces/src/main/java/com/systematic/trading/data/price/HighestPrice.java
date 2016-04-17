@@ -42,14 +42,14 @@ public class HighestPrice extends Price {
 	 */
 	public static HighestPrice valueOf( final BigDecimal price ) {
 		if (price == null) {
-			throw new IllegalArgumentException( "null is not accepted by HighestPrice.valueOf()" );
+			throw new IllegalArgumentException("null is not accepted by HighestPrice.valueOf()");
 		}
 
-		return new HighestPrice( price );
+		return new HighestPrice(price);
 	}
 
-	protected HighestPrice( final BigDecimal price ) {
-		super( price );
+	protected HighestPrice(final BigDecimal price) {
+		super(price);
 	}
 
 }

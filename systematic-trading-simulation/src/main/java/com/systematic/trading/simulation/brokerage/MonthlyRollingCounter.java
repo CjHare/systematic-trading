@@ -54,10 +54,10 @@ public class MonthlyRollingCounter {
 	 */
 	public int add( final LocalDate date ) {
 
-		if (isSameMonthAsLastAddition( date )) {
+		if (isSameMonthAsLastAddition(date)) {
 			additionsThisMonth++;
 		} else {
-			resetCounter( date );
+			resetCounter(date);
 		}
 
 		return additionsThisMonth;
@@ -70,7 +70,7 @@ public class MonthlyRollingCounter {
 	 */
 	public int get( final LocalDate date ) {
 
-		if (isSameMonthAsLastAddition( date )) {
+		if (isSameMonthAsLastAddition(date)) {
 			return additionsThisMonth;
 		}
 

@@ -36,7 +36,7 @@ import com.systematic.trading.simulation.equity.event.EquityEventListener;
  * @author CJ Hare
  */
 public interface Brokerage
-		extends BrokerageBalance, BrokerageTransaction, BrokerageTransactionFee, EquityManagementFee {
+        extends BrokerageBalance, BrokerageTransaction, BrokerageTransactionFee, EquityManagementFee {
 
 	/**
 	 * Adds a listener interested in brokerage events.

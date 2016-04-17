@@ -42,16 +42,16 @@ public class DescriptionGenerator {
 
 	public String getDescription( final BrokerageFeesConfiguration brokerage, final Period purchaseFrequency ) {
 
-		if (purchaseFrequency.equals( Period.ofWeeks( 1 ) )) {
-			return String.format( "%s_BuyWeekly_HoldForever", getBrokerageDescription( brokerage ) );
+		if (purchaseFrequency.equals(Period.ofWeeks(1))) {
+			return String.format("%s_BuyWeekly_HoldForever", getBrokerageDescription(brokerage));
 		}
 
-		if (purchaseFrequency.equals( Period.ofMonths( 1 ) )) {
-			return String.format( "%s_BuyMonthly_HoldForever", getBrokerageDescription( brokerage ) );
+		if (purchaseFrequency.equals(Period.ofMonths(1))) {
+			return String.format("%s_BuyMonthly_HoldForever", getBrokerageDescription(brokerage));
 		}
 
-		throw new IllegalArgumentException( String.format(
-				"Unexpected combination of brokerage: %s and purchase frequency: %s", brokerage, purchaseFrequency ) );
+		throw new IllegalArgumentException(String.format(
+		        "Unexpected combination of brokerage: %s and purchase frequency: %s", brokerage, purchaseFrequency));
 	}
 
 	private String getBrokerageDescription( final BrokerageFeesConfiguration brokerage ) {
@@ -62,30 +62,30 @@ public class DescriptionGenerator {
 				return "VanguardRetail";
 			default:
 				throw new IllegalArgumentException(
-						String.format( "Brokerage configurataion not catered for: %s", brokerage ) );
+				        String.format("Brokerage configurataion not catered for: %s", brokerage));
 		}
 
 	}
 
 	public String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
-			final SignalConfiguration... configurations ) {
+	        final SignalConfiguration... configurations ) {
 
 		switch (configurations.length) {
 			case 1:
-				return String.format( "%s_Minimum-%s_Maximum-%s_HoldForever", configurations[0].getDescription(),
-						minimumTrade.getDescription(), maximumTrade.getDescription() );
+				return String.format("%s_Minimum-%s_Maximum-%s_HoldForever", configurations[0].getDescription(),
+				        minimumTrade.getDescription(), maximumTrade.getDescription());
 			case 2:
-				return String.format( "%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
-						configurations[0].getDescription(), configurations[1].getDescription(),
-						minimumTrade.getDescription(), maximumTrade.getDescription() );
+				return String.format("%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
+				        configurations[0].getDescription(), configurations[1].getDescription(),
+				        minimumTrade.getDescription(), maximumTrade.getDescription());
 			case 3:
-				return String.format( "%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
-						configurations[0].getDescription(), configurations[1].getDescription(),
-						configurations[2].getDescription(), minimumTrade.getDescription(),
-						maximumTrade.getDescription() );
+				return String.format("%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
+				        configurations[0].getDescription(), configurations[1].getDescription(),
+				        configurations[2].getDescription(), minimumTrade.getDescription(),
+				        maximumTrade.getDescription());
 			default:
 				throw new IllegalArgumentException(
-						String.format( "Unexpected number of configurations: %s", configurations.length ) );
+				        String.format("Unexpected number of configurations: %s", configurations.length));
 		}
 	}
 }

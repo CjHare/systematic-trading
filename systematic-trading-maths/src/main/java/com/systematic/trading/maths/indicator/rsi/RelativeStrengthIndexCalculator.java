@@ -55,7 +55,7 @@ import com.systematic.trading.maths.indicator.Validator;
 public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 	/** Constant for the value of 100. */
-	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 50 );
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(50);
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -84,12 +84,12 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthIndexCalculator( final int lookback, final int daysOfRsiValues, final Validator validator,
-			final MathContext mathContext ) {
+	public RelativeStrengthIndexCalculator(final int lookback, final int daysOfRsiValues, final Validator validator,
+	        final MathContext mathContext) {
 		this.relativeStrengthIndexValues = new NonNullableArrayList<BigDecimal>();
 		this.relativeStrengthValues = new NonNullableArrayList<BigDecimal>();
 		this.minimumNumberOfPrices = lookback + daysOfRsiValues;
-		this.smoothingConstant = calculateSmoothingConstant( lookback );
+		this.smoothingConstant = calculateSmoothingConstant(lookback);
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
@@ -98,8 +98,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	@Override
 	public List<BigDecimal> rsi( final TradingDayPrices[] data ) {
 
-		validator.verifyZeroNullEntries( data );
-		validator.verifyEnoughValues( data, minimumNumberOfPrices );
+		validator.verifyZeroNullEntries(data);
+		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
 		relativeStrengthIndexValues.clear();
 		relativeStrengthValues.clear();
@@ -116,22 +116,22 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 		for (int i = startRsiIndex; i < endInitialLookback; i++) {
 			closeToday = data[i].getClosingPrice();
 
-			switch (closeToday.compareTo( closeYesterday )) {
+			switch (closeToday.compareTo(closeYesterday)) {
 
 				// Today's price is higher then yesterdays
 				case 1:
-					upward = upward.add( closeToday.subtract( closeYesterday, mathContext ) );
-					break;
+					upward = upward.add(closeToday.subtract(closeYesterday, mathContext));
+				break;
 
 				// Today's price is lower then yesterdays
 				case -1:
-					downward = downward.add( closeYesterday.subtract( closeToday, mathContext ) );
-					break;
+					downward = downward.add(closeYesterday.subtract(closeToday, mathContext));
+				break;
 
 				// When equal there's no movement, both are zero
 				case 0:
 				default:
-					break;
+				break;
 			}
 
 			closeYesterday = closeToday;
@@ -139,8 +139,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 		// Dividing by the number of time periods for a SMA
 		// Reduce lookup by one, as the initial value is neither up or down
-		upward = upward.divide( BigDecimal.valueOf( lookback - 1 ), mathContext );
-		downward = downward.divide( BigDecimal.valueOf( lookback - 1 ), mathContext );
+		upward = upward.divide(BigDecimal.valueOf(lookback - 1), mathContext);
+		downward = downward.divide(BigDecimal.valueOf(lookback - 1), mathContext);
 
 		/* RS = EMA(U,n) / EMA(D,n) (smoothing constant) multiplier: (2 / (Time periods + 1) ) EMA:
 		 * {Close - EMA(previous day)} x multiplier + EMA(previous day). */
@@ -149,49 +149,48 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 			closeToday = data[i].getClosingPrice();
 			closeYesterday = data[i - 1].getClosingPrice();
 
-			switch (closeToday.compareTo( closeYesterday )) {
+			switch (closeToday.compareTo(closeYesterday)) {
 
 				// Today's price is higher then yesterdays
 				case 1:
-					upward = (closeToday.subtract( closeYesterday, mathContext ).subtract( upward, mathContext ))
-							.multiply( smoothingConstant, mathContext ).add( upward, mathContext );
+					upward = (closeToday.subtract(closeYesterday, mathContext).subtract(upward, mathContext))
+					        .multiply(smoothingConstant, mathContext).add(upward, mathContext);
 
-					downward = downward.negate().multiply( smoothingConstant, mathContext ).add( downward,
-							mathContext );
-					break;
+					downward = downward.negate().multiply(smoothingConstant, mathContext).add(downward, mathContext);
+				break;
 
 				// Today's price is lower then yesterdays
 				case -1:
-					upward = upward.negate().multiply( smoothingConstant, mathContext ).add( upward, mathContext );
+					upward = upward.negate().multiply(smoothingConstant, mathContext).add(upward, mathContext);
 
-					downward = (closeYesterday.subtract( closeToday, mathContext ).subtract( downward, mathContext ))
-							.multiply( smoothingConstant, mathContext ).add( downward, mathContext );
-					break;
+					downward = (closeYesterday.subtract(closeToday, mathContext).subtract(downward, mathContext))
+					        .multiply(smoothingConstant, mathContext).add(downward, mathContext);
+				break;
 
 				// When equal there's no movement, both are zero
 				case 0:
 				default:
-					break;
+				break;
 			}
 
 			// When downward approaches zero, RSI approaches 100
-			if (downward.compareTo( BigDecimal.ZERO ) <= 0) {
-				relativeStrengthValues.add( ONE_HUNDRED );
+			if (downward.compareTo(BigDecimal.ZERO) <= 0) {
+				relativeStrengthValues.add(ONE_HUNDRED);
 			} else {
-				relativeStrengthValues.add( upward.divide( downward, mathContext ) );
+				relativeStrengthValues.add(upward.divide(downward, mathContext));
 			}
 		}
 
 		/* RSI = 100 / 1 + RS */
 		for (final BigDecimal rs : relativeStrengthValues) {
 			relativeStrengthIndexValues
-					.add( ONE_HUNDRED.subtract( ONE_HUNDRED.divide( BigDecimal.ONE.add( rs ), mathContext ) ) );
+			        .add(ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(rs), mathContext)));
 		}
 
 		return relativeStrengthIndexValues;
 	}
 
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {
-		return BigDecimal.valueOf( 2d / (lookback + 1) );
+		return BigDecimal.valueOf(2d / (lookback + 1));
 	}
 }

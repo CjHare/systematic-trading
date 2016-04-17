@@ -45,7 +45,7 @@ public class HibernateDataService implements DataService {
 
 	@Override
 	public TradingDayPrices[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
-		return dao.get( tickerSymbol, startDate, endDate );
+		return dao.get(tickerSymbol, startDate, endDate);
 	}
 
 }

@@ -48,42 +48,42 @@ import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator
 public class CashAccountFactory {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( CashAccountFactory.class );
+	private static final Logger LOG = LogManager.getLogger(CashAccountFactory.class);
 
 	public static CashAccount create( final LocalDate startDate, final DepositConfiguration deposit,
-			final MathContext mathContext ) {
+	        final MathContext mathContext ) {
 
 		final BigDecimal depositAmount = deposit.getAmount();
 		final Period depositFrequency = deposit.getFrequency();
 
 		// TODO all these into a configuration - interest rate, deposit & frequency
-		final BigDecimal annualRate = BigDecimal.valueOf( 1.5 );
-		final InterestRate annualInterestRate = InterestRateFactory
-				.create( InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, mathContext );
+		final BigDecimal annualRate = BigDecimal.valueOf(1.5);
+		final InterestRate annualInterestRate = InterestRateFactory.create(InterestRateConfiguration.FLAT_INTEREST_RATE,
+		        annualRate, mathContext);
 		final CashAccount underlyingAccount = CashAccountFactory.create(
-				CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, annualInterestRate, BigDecimal.ZERO, startDate,
-				mathContext );
-		return new RegularDepositCashAccountDecorator( depositAmount, underlyingAccount, startDate, depositFrequency );
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, annualInterestRate, BigDecimal.ZERO, startDate,
+		        mathContext);
+		return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate, depositFrequency);
 	}
 
 	/**
 	 * Create an instance of the a cash account.
 	 */
 	public static CashAccount create( final CashAccountConfiguration configuration,
-			final InterestRate annualInterestRate, final BigDecimal openingFunds, final LocalDate openingDate,
-			final MathContext mathContext ) {
+	        final InterestRate annualInterestRate, final BigDecimal openingFunds, final LocalDate openingDate,
+	        final MathContext mathContext ) {
 
 		try {
-			Constructor<?> cons = configuration.getType().getConstructor( InterestRate.class, BigDecimal.class,
-					LocalDate.class, MathContext.class );
+			Constructor<?> cons = configuration.getType().getConstructor(InterestRate.class, BigDecimal.class,
+			        LocalDate.class, MathContext.class);
 
-			return (CashAccount) cons.newInstance( annualInterestRate, openingFunds, openingDate, mathContext );
+			return (CashAccount) cons.newInstance(annualInterestRate, openingFunds, openingDate, mathContext);
 		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			LOG.error( e );
+		        | IllegalArgumentException | InvocationTargetException e) {
+			LOG.error(e);
 		}
 
 		throw new IllegalArgumentException(
-				String.format( "Could not create the desired cash accounte: %s", configuration ) );
+		        String.format("Could not create the desired cash accounte: %s", configuration));
 	}
 }
