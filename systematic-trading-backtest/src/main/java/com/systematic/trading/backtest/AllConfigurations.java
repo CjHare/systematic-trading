@@ -124,7 +124,7 @@ public class AllConfigurations {
 		final ExecutorService pool = Executors.newFixedThreadPool(cores);
 
 		final DisplayType outputType = DisplayType.FILE_MINIMUM;
-		
+
 		// TODO run the test over the full period with exclusion on filters
 		// TODO no deposits until actual start date
 
@@ -179,9 +179,10 @@ public class AllConfigurations {
 				return new FileDisplay(outputDirectory, pool, MATH_CONTEXT);
 			case FILE_MINIMUM:
 				return new FileMinimalDisplay(outputDirectory, pool, MATH_CONTEXT);
-			default:
 			case NO_DISPLAY:
 				return new FileNoDisplay();
+			default:
+				throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
 		}
 	}
 
