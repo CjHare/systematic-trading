@@ -53,7 +53,9 @@ import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
+import com.systematic.trading.backtest.display.file.FileDisplay;
 import com.systematic.trading.backtest.display.file.FileMinimalDisplay;
+import com.systematic.trading.backtest.display.file.FileNoDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
@@ -90,6 +92,12 @@ public class AllConfigurations {
 	private static final Period WEEKLY = Period.ofWeeks(1);
 	private static final Period MONTHLY = Period.ofMonths(1);
 
+	private enum DisplayType {
+		FILE_FULL,
+		FILE_MINIMUM,
+		NO_DISPLAY;
+	}
+
 	public static void main( final String... args ) throws Exception {
 
 		final String baseOutputDirectory = getBaseOutputDirectory(args);
@@ -115,6 +123,8 @@ public class AllConfigurations {
 		final int cores = Runtime.getRuntime().availableProcessors();
 		final ExecutorService pool = Executors.newFixedThreadPool(cores);
 
+		final DisplayType outputType = DisplayType.FILE_MINIMUM;
+		
 		// TODO run the test over the full period with exclusion on filters
 		// TODO no deposits until actual start date
 
@@ -126,7 +136,7 @@ public class AllConfigurations {
 
 				final String outputDirectory = String.format(baseOutputDirectory, depositAmount);
 
-				runTest(depositAmount, outputDirectory, configurations, tradingData, equity, pool);
+				runTest(depositAmount, outputDirectory, configurations, tradingData, equity, outputType, pool);
 			}
 
 		} finally {
@@ -162,16 +172,22 @@ public class AllConfigurations {
 		return Period.ofDays(windUp);
 	}
 
-	private static BacktestDisplay getDisplay( final String outputDirectory, final ExecutorService pool )
-	        throws IOException {
-		// return new FileDisplay( outputDirectory, pool, MATH_CONTEXT );
-		return new FileMinimalDisplay(outputDirectory, pool, MATH_CONTEXT);
-		// return new FileNoDisplay();
+	private static BacktestDisplay getDisplay( final DisplayType type, final String outputDirectory,
+	        final ExecutorService pool ) throws IOException {
+		switch (type) {
+			case FILE_FULL:
+				return new FileDisplay(outputDirectory, pool, MATH_CONTEXT);
+			case FILE_MINIMUM:
+				return new FileMinimalDisplay(outputDirectory, pool, MATH_CONTEXT);
+			default:
+			case NO_DISPLAY:
+				return new FileNoDisplay();
+		}
 	}
 
 	public static void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
-	        final EquityIdentity equity, final ExecutorService pool )
+	        final EquityIdentity equity, final DisplayType type, final ExecutorService pool )
 	                throws BacktestInitialisationException, IOException {
 
 		// Arrange output to files, only once per a run
@@ -180,7 +196,7 @@ public class AllConfigurations {
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final String outputDirectory = getOutputDirectory(baseOutputDirectory, equity, configuration);
-			final BacktestDisplay fileDisplay = getDisplay(outputDirectory, pool);
+			final BacktestDisplay fileDisplay = getDisplay(type, outputDirectory, pool);
 
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(tradingData, configuration, fileDisplay,
 			        MATH_CONTEXT);
