@@ -89,32 +89,36 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		LowestPrice lowestLow;
 		HighestPrice highestHigh;
 		ClosingPrice currentClose;
-		BigDecimal lowestHighestDifference;
 		pkSmaIndex += lookback;
 
 		for (int i = pkSmaIndex; i < data.length; i++) {
 			currentClose = data[i].getClosingPrice();
 			lowestLow = lowestLow(data, i);
 			highestHigh = highestHigh(data, i);
-			lowestHighestDifference = differenceBetweenHighestHighAndLowestLow(lowestLow, highestHigh);
 
-			stochasticValues.add(calculatePercentageK(lowestLow, highestHigh, currentClose, lowestHighestDifference));
+			stochasticValues.add(calculatePercentageK(lowestLow, highestHigh, currentClose));
 		}
 
 		return stochasticValues;
 	}
 
 	private BigDecimal calculatePercentageK( final LowestPrice lowestLow, final HighestPrice highestHigh,
-	        final ClosingPrice currentClose, final BigDecimal lowestHighestDifference ) {
+	        final ClosingPrice currentClose ) {
 		// %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
-		final BigDecimal pK = ((currentClose.subtract(lowestLow, mathContext)).divide(lowestHighestDifference,
-		        mathContext)).multiply(ONE_HUNDRED, mathContext);
+		final BigDecimal pK = (currentCloseMinusLowestLow(lowestLow, currentClose)
+		        .divide(highestHighMinusLowestLow(lowestLow, highestHigh), mathContext))
+		                .multiply(ONE_HUNDRED, mathContext);
 
 		// Cap output at 100
 		return (pK.compareTo(ONE_HUNDRED) > 0) ? ONE_HUNDRED : pK;
 	}
 
-	private BigDecimal differenceBetweenHighestHighAndLowestLow( final LowestPrice lowestLow,
+	private BigDecimal currentCloseMinusLowestLow( final LowestPrice lowestLow,
+	        final ClosingPrice currentClose ) {
+		return currentClose.subtract(lowestLow, mathContext);
+	}
+
+	private BigDecimal highestHighMinusLowestLow( final LowestPrice lowestLow,
 	        final HighestPrice highestHigh ) {
 		if (lowestLow.isEqaul(highestHigh)) {
 			return ONE_HUNDREDTH;
