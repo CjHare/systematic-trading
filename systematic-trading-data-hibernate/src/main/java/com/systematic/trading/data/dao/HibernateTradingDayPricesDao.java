@@ -191,7 +191,7 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		query.setDate("start_date", Date.valueOf(startDate));
 		query.setDate("end_date", Date.valueOf(endDate));
 
-		final BigInteger count = ((BigInteger) query.uniqueResult());
+		final BigInteger count = (BigInteger) query.uniqueResult();
 
 		tx.commit();
 

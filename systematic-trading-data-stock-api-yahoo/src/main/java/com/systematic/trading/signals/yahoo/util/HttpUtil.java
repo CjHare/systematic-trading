@@ -54,7 +54,7 @@ public class HttpUtil {
 				        url, response.getStatusLine().getStatusCode()));
 			}
 
-			final BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+			final BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
 			String output;
 			while ((output = br.readLine()) != null) {
