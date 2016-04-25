@@ -117,14 +117,14 @@ public class YahooStockApi implements StockApi {
 	}
 
 	private List<TradingDayPrices> parseQuoteAsJsonObject( List<TradingDayPrices> data, final JSONObject query,
-	        final String tickerSymbol ) throws JSONException, ParseException {
+	        final String tickerSymbol ) throws ParseException {
 		final JSONObject result = query.getJSONObject("results");
 		data.add(parseQuote(tickerSymbol, result.getJSONObject("quote")));
 		return data;
 	}
 
 	private List<TradingDayPrices> parseQuoteAsJsonArray( List<TradingDayPrices> data, final JSONObject query,
-	        final int numberOfQuotes, final String tickerSymbol ) throws JSONException, ParseException {
+	        final int numberOfQuotes, final String tickerSymbol ) throws ParseException {
 		final JSONObject results = query.getJSONObject("results");
 		final JSONArray quote = results.getJSONArray("quote");
 		for (int i = 0; i < numberOfQuotes; i++) {
