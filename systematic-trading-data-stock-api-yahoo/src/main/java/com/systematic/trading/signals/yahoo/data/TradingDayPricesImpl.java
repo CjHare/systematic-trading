@@ -29,7 +29,7 @@ import java.time.LocalDate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 
@@ -39,11 +39,11 @@ public class TradingDayPricesImpl implements TradingDayPrices {
 	private final LocalDate date;
 	private final OpeningPrice openingPrice;
 	private final LowestPrice lowestPrice;
-	private final HighestPrice highestPrice;
+	private final HighestEquityPrice highestPrice;
 	private final ClosingPrice closingPrice;
 
 	public TradingDayPricesImpl(final String tickerSymbol, final LocalDate date, final OpeningPrice openingPrice,
-	        final LowestPrice lowestPrice, final HighestPrice highestPrice, final ClosingPrice closingPrice) {
+	        final LowestPrice lowestPrice, final HighestEquityPrice highestPrice, final ClosingPrice closingPrice) {
 		this.tickerSymbol = tickerSymbol;
 		this.date = date;
 		this.closingPrice = closingPrice;
@@ -68,7 +68,7 @@ public class TradingDayPricesImpl implements TradingDayPrices {
 	}
 
 	@Override
-	public HighestPrice getHighestPrice() {
+	public HighestEquityPrice getHighestPrice() {
 		return highestPrice;
 	}
 

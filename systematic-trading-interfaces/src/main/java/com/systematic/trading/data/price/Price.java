@@ -36,24 +36,24 @@ import java.math.MathContext;
 public class Price {
 
 	/** Price of the equity. */
-	private final BigDecimal price;
+	private final BigDecimal amount;
 
-	protected Price(final BigDecimal price) {
-		this.price = price;
+	protected Price(final BigDecimal amount) {
+		this.amount = amount;
 	}
 
 	/**
 	 * Creates a price from an underlying decimal value.
 	 * 
-	 * @param price decimal to create as a price, cannot be <code>null</code>.
+	 * @param amount decimal to create as a price, cannot be <code>null</code>.
 	 * @return equivalent price for the given decimal.
 	 */
-	public static Price valueOf( final BigDecimal price ) {
-		if (price == null) {
+	public static Price valueOf( final BigDecimal amount ) {
+		if (amount == null) {
 			throw new IllegalArgumentException("null is not accepted by Price.valueOf()");
 		}
 
-		return new Price(price);
+		return new Price(amount);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class Price {
 	 * @return price, never <code>null</code>.
 	 */
 	public BigDecimal getPrice() {
-		return price;
+		return amount;
 	}
 
 	/**

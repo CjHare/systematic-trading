@@ -32,9 +32,9 @@ import java.math.BigDecimal;
  * 
  * @author CJ Hare
  */
-public class HighestPrice extends Price {
+public class HighestEquityPrice extends Price {
 
-	protected HighestPrice(final BigDecimal price) {
+	protected HighestEquityPrice(final BigDecimal price) {
 		super(price);
 	}
 
@@ -44,11 +44,11 @@ public class HighestPrice extends Price {
 	 * @param price decimal to create as an highest price, cannot be <code>null</code>.
 	 * @return equivalent highest price for the given decimal.
 	 */
-	public static HighestPrice valueOf( final BigDecimal price ) {
+	public static HighestEquityPrice valueOf( final BigDecimal price ) {
 		if (price == null) {
 			throw new IllegalArgumentException("null is not accepted by HighestPrice.valueOf()");
 		}
 
-		return new HighestPrice(price);
+		return new HighestEquityPrice(price);
 	}
 }

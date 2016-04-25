@@ -30,7 +30,7 @@ import java.time.LocalDate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 
@@ -74,7 +74,7 @@ public class DatedValue implements TradingDayPrices {
 	}
 
 	@Override
-	public HighestPrice getHighestPrice() {
+	public HighestEquityPrice getHighestPrice() {
 		throw new UnsupportedOperationException();
 	}
 

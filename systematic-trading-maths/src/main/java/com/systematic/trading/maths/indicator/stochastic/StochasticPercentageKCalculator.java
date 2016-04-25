@@ -32,7 +32,7 @@ import java.util.List;
 import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.maths.indicator.Validator;
 
@@ -87,7 +87,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		int pkSmaIndex = 0;
 
 		LowestPrice lowestLow;
-		HighestPrice highestHigh;
+		HighestEquityPrice highestHigh;
 		ClosingPrice currentClose;
 		pkSmaIndex += lookback;
 
@@ -102,7 +102,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		return stochasticValues;
 	}
 
-	private BigDecimal calculatePercentageK( final LowestPrice lowestLow, final HighestPrice highestHigh,
+	private BigDecimal calculatePercentageK( final LowestPrice lowestLow, final HighestEquityPrice highestHigh,
 	        final ClosingPrice currentClose ) {
 		// %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
 		final BigDecimal pK = (currentCloseMinusLowestLow(lowestLow, currentClose)
@@ -119,7 +119,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	}
 
 	private BigDecimal highestHighMinusLowestLow( final LowestPrice lowestLow,
-	        final HighestPrice highestHigh ) {
+	        final HighestEquityPrice highestHigh ) {
 		if (lowestLow.isEqaul(highestHigh)) {
 			return ONE_HUNDREDTH;
 		}
@@ -142,10 +142,10 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		return lowest;
 	}
 
-	private HighestPrice highestHigh( final TradingDayPrices[] data, final int exclusiveEnd ) {
+	private HighestEquityPrice highestHigh( final TradingDayPrices[] data, final int exclusiveEnd ) {
 		final int inclusiveStart = exclusiveEnd - lookback;
-		HighestPrice contender;
-		HighestPrice highest = data[inclusiveStart].getHighestPrice();
+		HighestEquityPrice contender;
+		HighestEquityPrice highest = data[inclusiveStart].getHighestPrice();
 
 		for (int i = inclusiveStart + 1; i < exclusiveEnd; i++) {
 			contender = data[i].getHighestPrice();
