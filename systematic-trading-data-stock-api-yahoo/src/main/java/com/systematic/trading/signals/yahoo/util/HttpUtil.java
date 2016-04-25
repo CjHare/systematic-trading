@@ -35,9 +35,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 
+import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
+
 public class HttpUtil {
 
-	public String httpGet( final String url ) {
+	public String httpGet( final String url ) throws CannotRetrieveDataException {
 		final StringBuilder result = new StringBuilder();
 
 		try {
@@ -48,7 +50,8 @@ public class HttpUtil {
 			final HttpResponse response = httpClient.execute(getRequest);
 
 			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+				throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s, HTTP error code : %s",
+				        url, response.getStatusLine().getStatusCode()));
 			}
 
 			final BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
@@ -59,9 +62,9 @@ public class HttpUtil {
 			}
 
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s", url), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s", url), e);
 		}
 
 		return result.toString();
