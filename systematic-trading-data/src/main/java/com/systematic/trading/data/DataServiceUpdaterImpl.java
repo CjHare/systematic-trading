@@ -54,7 +54,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	}
 
 	@Override
-	public void get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
+	public void get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate )
+	        throws CannotRetrieveDataException {
 
 		// Ensure there's a table for the data
 		dao.createTableIfAbsent(tickerSymbol);
@@ -74,7 +75,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	/**
 	 * Get the history requests from the stock API.
 	 */
-	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests ) {
+	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests )
+	        throws CannotRetrieveDataException {
 		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
 
 		for (final HistoryRetrievalRequest request : requests) {
@@ -83,23 +85,14 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			final LocalDate inclusiveStartDate = request.getInclusiveStartDate().toLocalDate();
 			final LocalDate exclusiveEndDate = request.getExclusiveEndDate().toLocalDate();
 
-			try {
+			// Pull the data from the Stock API
+			final TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
-				// Pull the data from the Stock API
-				final TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate,
-				        exclusiveEndDate);
+			// Push to the data source
+			dao.create(tradingData);
 
-				// Push to the data source
-				dao.create(tradingData);
-
-				// Remove the request from the queue
-				requestManager.delete(request);
-
-			} catch (final CannotRetrieveDataException e) {
-
-				// TODO ? propagate ?
-			}
-
+			// Remove the request from the queue
+			requestManager.delete(request);
 		}
 	}
 

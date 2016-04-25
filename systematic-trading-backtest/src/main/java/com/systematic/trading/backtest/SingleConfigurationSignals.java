@@ -62,6 +62,7 @@ import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
+import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
@@ -179,7 +180,7 @@ public class SingleConfigurationSignals {
 	}
 
 	private static TickerSymbolTradingData getTradingData( final EquityIdentity equity,
-	        final BacktestSimulationDates simulationDate ) {
+	        final BacktestSimulationDates simulationDate ) throws ServiceException {
 
 		final LocalDate startDate = simulationDate.getSimulationStartDate().minus(simulationDate.getWarmUp());
 		final LocalDate endDate = simulationDate.getSimulationEndDate();

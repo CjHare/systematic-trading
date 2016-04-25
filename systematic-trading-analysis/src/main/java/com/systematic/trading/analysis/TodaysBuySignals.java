@@ -45,6 +45,7 @@ import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
+import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
@@ -53,8 +54,8 @@ import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSigna
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
-import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.RollingTimePeriodSignalFilterDecorator;
+import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class TodaysBuySignals {
 
@@ -67,7 +68,7 @@ public class TodaysBuySignals {
 	/* Days data needed - 20 + 20 for the MACD part EMA(20), Weekend and bank holidays */
 	private static final int HISTORY_REQUIRED = 80 + 16 + 5;
 
-	public static void main( final String... args ) {
+	public static void main( final String... args ) throws ServiceException {
 
 		//TODO calculate the number of days from the indicators, their lookback, warm ups & days of interest
 		updateEquities();
@@ -113,7 +114,7 @@ public class TodaysBuySignals {
 		HibernateUtil.getSessionFactory().close();
 	}
 
-	private static void updateEquities() {
+	private static void updateEquities() throws ServiceException {
 		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
 		final LocalDate endDate = LocalDate.now();
 		final LocalDate startDate = endDate.minus(HISTORY_REQUIRED, ChronoUnit.DAYS);

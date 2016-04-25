@@ -39,6 +39,7 @@ import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
+import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.atr.AverageTrueRange;
@@ -63,7 +64,7 @@ public class TodaysStopLosses {
 	/** Interested in signals from the past few days.*/
 	private static final int DAYS_OF_INTEREST = 5;
 
-	public static void main( final String... args ) {
+	public static void main( final String... args ) throws ServiceException {
 
 		final int tradingDaysRequired = DAYS_ATR_LOOKBACK + DAYS_OF_INTEREST;
 
@@ -77,7 +78,7 @@ public class TodaysStopLosses {
 		HibernateUtil.getSessionFactory().close();
 	}
 
-	private static void updateEquities( final int tradingDaysRequired ) {
+	private static void updateEquities( final int tradingDaysRequired ) throws ServiceException {
 		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
 		final LocalDate endDate = LocalDate.now();
 		final LocalDate startDate = getStartDate(endDate, tradingDaysRequired);
