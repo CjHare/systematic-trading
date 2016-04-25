@@ -94,24 +94,15 @@ public class YahooStockApi implements StockApi {
 
 			LOG.info(String.format("%s data points returned for ticker symbol %s", numberOfQuotes, tickerSymbol));
 
-			final JSONObject results;
-
 			switch (numberOfQuotes) {
-				// No parsing possible with no results
 				case 0:
+				// No parsing possible, as there are no results
 				break;
-				// Single result, parse as JSON object
 				case 1:
-					results = query.getJSONObject("results");
-					data.add(parseQuote(tickerSymbol, results.getJSONObject("quote")));
+					data = parseQuoteAsJsonObject(data, query, tickerSymbol);
 				break;
-				// Two or more results, parse as JSON array
 				default:
-					results = query.getJSONObject("results");
-					final JSONArray quote = results.getJSONArray("quote");
-					for (int i = 0; i < numberOfQuotes; i++) {
-						data.add(parseQuote(tickerSymbol, quote.getJSONObject(i)));
-					}
+					data = parseQuoteAsJsonArray(data, query, numberOfQuotes, tickerSymbol);
 				break;
 			}
 
@@ -123,6 +114,24 @@ public class YahooStockApi implements StockApi {
 		}
 
 		return data.toArray(new TradingDayPrices[0]);
+	}
+
+	private List<TradingDayPrices> parseQuoteAsJsonObject( List<TradingDayPrices> data, final JSONObject query,
+	        final String tickerSymbol ) throws JSONException, ParseException {
+		final JSONObject result = query.getJSONObject("results");
+		data.add(parseQuote(tickerSymbol, result.getJSONObject("quote")));
+		return data;
+	}
+
+	private List<TradingDayPrices> parseQuoteAsJsonArray( List<TradingDayPrices> data, final JSONObject query,
+	        final int numberOfQuotes, final String tickerSymbol ) throws JSONException, ParseException {
+		final JSONObject results = query.getJSONObject("results");
+		final JSONArray quote = results.getJSONArray("quote");
+		for (int i = 0; i < numberOfQuotes; i++) {
+			data.add(parseQuote(tickerSymbol, quote.getJSONObject(i)));
+		}
+
+		return data;
 	}
 
 	private TradingDayPricesImpl parseQuote( final String tickerSymbol, final JSONObject quote ) throws ParseException {
