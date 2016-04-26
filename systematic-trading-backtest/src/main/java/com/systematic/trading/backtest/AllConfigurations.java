@@ -173,23 +173,27 @@ public class AllConfigurations {
 	}
 
 	private static BacktestDisplay getDisplay( final DisplayType type, final String outputDirectory,
-	        final ExecutorService pool ) throws IOException {
-		switch (type) {
-			case FILE_FULL:
-				return new FileDisplay(outputDirectory, pool, MATH_CONTEXT);
-			case FILE_MINIMUM:
-				return new FileMinimalDisplay(outputDirectory, pool, MATH_CONTEXT);
-			case NO_DISPLAY:
-				return new FileNoDisplay();
-			default:
-				throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
+	        final ExecutorService pool ) throws BacktestInitialisationException {
+		try {
+			switch (type) {
+				case FILE_FULL:
+					return new FileDisplay(outputDirectory, pool, MATH_CONTEXT);
+				case FILE_MINIMUM:
+					return new FileMinimalDisplay(outputDirectory, pool, MATH_CONTEXT);
+				case NO_DISPLAY:
+					return new FileNoDisplay();
+				default:
+					throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
+			}
+		} catch (final IOException e) {
+			throw new BacktestInitialisationException(e);
 		}
 	}
 
 	public static void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
 	        final EquityIdentity equity, final DisplayType type, final ExecutorService pool )
-	                throws BacktestInitialisationException, IOException {
+	                throws BacktestInitialisationException {
 
 		// Arrange output to files, only once per a run
 		FileClearDestination destination = new FileClearDestination(baseOutputDirectory);
@@ -250,7 +254,7 @@ public class AllConfigurations {
 		final BacktestBootstrapConfigurationGenerator configurationGenerator = new BacktestBootstrapConfigurationGenerator(
 		        equity, simulationDates, deposit, descriptionGenerator, MATH_CONTEXT);
 
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Vanguard Retail
 		configurations.add(configurationGenerator.getPeriodicConfiguration(BrokerageFeesConfiguration.VANGUARD_RETAIL,
@@ -269,41 +273,54 @@ public class AllConfigurations {
 
 		for (final MaximumTrade maximumTrade : MaximumTrade.values()) {
 			for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-				for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-					for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+				getConfigurations(configurationGenerator, brokerage, minimumTrade, maximumTrade);
+			}
+		}
 
-						// MACD & RSI
-						configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-						        getVanguardEftFeeCalculator(), brokerage, macdConfiguration, rsiConfiguration));
-					}
+		return configurations;
+	}
 
-					// MACD only
+	private static List<BacktestBootstrapConfiguration> getConfigurations(
+	        final BacktestBootstrapConfigurationGenerator configurationGenerator,
+	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
+
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
+
+		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
+
+			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+
+				// MACD & RSI
+				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
+				        getVanguardEftFeeCalculator(), brokerage, macdConfiguration, rsiConfiguration));
+			}
+
+			// MACD only
+			configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
+			        getVanguardEftFeeCalculator(), brokerage, macdConfiguration));
+
+			for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
+				for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+
+					// MACD, SMA & RSI
 					configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-					        getVanguardEftFeeCalculator(), brokerage, macdConfiguration));
-
-					for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-						for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-
-							// MACD, SMA & RSI
-							configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade,
-							        maximumTrade, getVanguardEftFeeCalculator(), brokerage, macdConfiguration,
-							        smaConfiguration, rsiConfiguration));
-						}
-
-						// MACD & SMA
-						configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-						        getVanguardEftFeeCalculator(), brokerage, macdConfiguration, smaConfiguration));
-					}
+					        getVanguardEftFeeCalculator(), brokerage, macdConfiguration, smaConfiguration,
+					        rsiConfiguration));
 				}
 
-				for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-					for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+				// MACD & SMA
+				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
+				        getVanguardEftFeeCalculator(), brokerage, macdConfiguration, smaConfiguration));
+			}
+		}
 
-						// SMA & RSI
-						configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-						        getVanguardEftFeeCalculator(), brokerage, smaConfiguration, rsiConfiguration));
-					}
-				}
+		for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
+			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+
+				// SMA & RSI
+				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
+				        getVanguardEftFeeCalculator(), brokerage, smaConfiguration, rsiConfiguration));
 			}
 		}
 
