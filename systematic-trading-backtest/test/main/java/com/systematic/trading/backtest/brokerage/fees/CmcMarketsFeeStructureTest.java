@@ -37,7 +37,6 @@ import java.math.MathContext;
 
 import org.junit.Test;
 
-import com.systematic.trading.backtest.brokerage.fee.BellDirectBrokgerageFeeStructure;
 import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFeeStructure;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
@@ -179,7 +178,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassMetal() {
-		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure(mc);
+		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
 		feeStructure.calculateFee(BigDecimal.ZERO, EquityClass.METAL, 0);
 	}
 }

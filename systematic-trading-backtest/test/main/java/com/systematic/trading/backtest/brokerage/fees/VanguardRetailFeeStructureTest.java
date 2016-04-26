@@ -32,7 +32,6 @@ import java.math.MathContext;
 
 import org.junit.Test;
 
-import com.systematic.trading.backtest.brokerage.fee.BellDirectBrokgerageFeeStructure;
 import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFeeStructure;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
@@ -159,19 +158,19 @@ public class VanguardRetailFeeStructureTest {
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassFuture() {
-		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure(mc);
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure(mc);
 		feeStructure.calculateFee(BigDecimal.ZERO, EquityClass.FUTURE, 0);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassForex() {
-		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure(mc);
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure(mc);
 		feeStructure.calculateFee(BigDecimal.ZERO, EquityClass.FOREX, 0);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassMetal() {
-		final BellDirectBrokgerageFeeStructure feeStructure = new BellDirectBrokgerageFeeStructure(mc);
+		final VanguardRetailBrokerageFeeStructure feeStructure = new VanguardRetailBrokerageFeeStructure(mc);
 		feeStructure.calculateFee(BigDecimal.ZERO, EquityClass.METAL, 0);
 	}
 }
