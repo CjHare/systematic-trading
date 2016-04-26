@@ -30,7 +30,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.TradingDayPricesImpl;
+import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;

@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.yahoo.data;
+package com.systematic.trading.data.impl;
 
 import java.time.LocalDate;
 
@@ -37,19 +37,19 @@ public class TradingDayPricesImpl implements TradingDayPrices {
 
 	private final String tickerSymbol;
 	private final LocalDate date;
-	private final OpeningPrice openingPrice;
+	private final ClosingPrice closingPrice;
 	private final LowestPrice lowestPrice;
 	private final HighestEquityPrice highestPrice;
-	private final ClosingPrice closingPrice;
+	private final OpeningPrice openingPrice;
 
 	public TradingDayPricesImpl(final String tickerSymbol, final LocalDate date, final OpeningPrice openingPrice,
 	        final LowestPrice lowestPrice, final HighestEquityPrice highestPrice, final ClosingPrice closingPrice) {
 		this.tickerSymbol = tickerSymbol;
-		this.date = date;
-		this.closingPrice = closingPrice;
-		this.lowestPrice = lowestPrice;
-		this.highestPrice = highestPrice;
 		this.openingPrice = openingPrice;
+		this.closingPrice = closingPrice;
+		this.highestPrice = highestPrice;
+		this.lowestPrice = lowestPrice;
+		this.date = date;
 	}
 
 	@Override

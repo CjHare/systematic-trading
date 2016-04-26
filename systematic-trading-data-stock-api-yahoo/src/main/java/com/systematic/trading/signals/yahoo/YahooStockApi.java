@@ -43,13 +43,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.data.stock.api.StockApi;
 import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.yahoo.data.TradingDayPricesImpl;
 import com.systematic.trading.signals.yahoo.util.HttpUtil;
 
 public class YahooStockApi implements StockApi {
