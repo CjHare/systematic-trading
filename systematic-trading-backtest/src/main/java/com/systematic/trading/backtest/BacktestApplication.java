@@ -1,47 +1,19 @@
-/**
- * Copyright (c) 2015, CJ Hare All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted
- * provided that the following conditions are met:
- *
- * * Redistributions of source code must retain the above copyright notice, this list of conditions
- * and the following disclaimer.
- *
- * * Redistributions in binary form must reproduce the above copyright notice, this list of
- * conditions and the following disclaimer in the documentation and/or other materials provided with
- * the distribution.
- *
- * * Neither the name of [project] nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
- * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package com.systematic.trading.backtest;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurationGenerator;
-import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
@@ -51,6 +23,8 @@ import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
 import com.systematic.trading.backtest.display.file.FileCompleteDisplay;
+import com.systematic.trading.backtest.display.file.FileMinimalDisplay;
+import com.systematic.trading.backtest.display.file.FileNoDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
@@ -63,29 +37,34 @@ import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
-import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
-import com.systematic.trading.simulation.equity.fee.management.LadderedEquityManagementFeeCalculator;
 
 /**
- * Vanguard Retail @ 150 weekly deposit.
+ * Performs the initial configuration common between all back tests, including hardware configuration.
  * 
  * @author CJ Hare
  */
-public class SingleConfigurationVanguardRetail {
+public class BacktestApplication {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(SingleConfigurationVanguardRetail.class);
-
-	/** Accuracy for BigDecimal operations. */
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+	private static final Logger LOG = LogManager.getLogger(BacktestApplication.class);
 
 	/** Minimum amount of historical data needed for back testing. */
 	private static final int DAYS_IN_A_YEAR = 365;
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
 
-	private static final Period WEEKLY = Period.ofWeeks(1);
+	private enum DisplayType {
+		FILE_FULL,
+		FILE_MINIMUM,
+		NO_DISPLAY;
+	}
 
-	public static void main( final String... args ) throws Exception {
+	private final MathContext mathContext;
+
+	public BacktestApplication(final MathContext mathContext) {
+		this.mathContext = mathContext;
+	}
+
+	public void runTest( final BacktestConfigurations configurations, final String... args ) throws Exception {
 
 		final String baseOutputDirectory = getBaseOutputDirectory(args);
 		final DescriptionGenerator filenameGenerator = new DescriptionGenerator();
@@ -100,29 +79,41 @@ public class SingleConfigurationVanguardRetail {
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final Period warmUpPeriod = getWarmUpPeriod();
-		final BacktestSimulationDates simulationDate = new BacktestSimulationDates(simulationStartDate,
+		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
 		        simulationEndDate, warmUpPeriod);
 
 		// Retrieve the set of trading data
-		final TickerSymbolTradingData tradingData = getTradingData(equity, simulationDate);
+		final TickerSymbolTradingData tradingData = getTradingData(equity, simulationDates);
 
 		// Multi-threading support
 		final int cores = Runtime.getRuntime().availableProcessors();
 		final ExecutorService pool = Executors.newFixedThreadPool(cores);
 
+		final DisplayType outputType = DisplayType.FILE_MINIMUM;
+
+		// TODO run the test over the full period with exclusion on filters
+		// TODO no deposits until actual start date
+
 		try {
-			final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_150;
-			final List<BacktestBootstrapConfiguration> configurations = getConfigurations(equity, simulationDate,
-			        depositAmount, filenameGenerator);
+			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
 
-			final String outputDirectory = String.format(baseOutputDirectory, depositAmount);
+				final List<BacktestBootstrapConfiguration> tests = configurations.get(equity, simulationDates,
+				        depositAmount, filenameGenerator);
 
-			runTest(depositAmount, outputDirectory, configurations, tradingData, equity, pool);
+				final String outputDirectory = String.format(baseOutputDirectory, depositAmount);
+
+				runTest(depositAmount, outputDirectory, tests, tradingData, equity, outputType, pool);
+			}
 
 		} finally {
 			HibernateUtil.getSessionFactory().close();
 			pool.shutdown();
+
+			LOG.info("Waiting at most 90 minutes for result output to complete...");
+			pool.awaitTermination(90, TimeUnit.MINUTES);
 		}
+
+		LOG.info("Finished outputting results");
 	}
 
 	private static Period getWarmUpPeriod() {
@@ -147,15 +138,28 @@ public class SingleConfigurationVanguardRetail {
 		return Period.ofDays(windUp);
 	}
 
-	private static BacktestDisplay getDisplay( final String outputDirectory, final ExecutorService pool )
-	        throws IOException {
-		return new FileCompleteDisplay(outputDirectory, pool, MATH_CONTEXT);
+	private BacktestDisplay getDisplay( final DisplayType type, final String outputDirectory,
+	        final ExecutorService pool ) throws BacktestInitialisationException {
+		try {
+			switch (type) {
+				case FILE_FULL:
+					return new FileCompleteDisplay(outputDirectory, pool, mathContext);
+				case FILE_MINIMUM:
+					return new FileMinimalDisplay(outputDirectory, pool, mathContext);
+				case NO_DISPLAY:
+					return new FileNoDisplay();
+				default:
+					throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
+			}
+		} catch (final IOException e) {
+			throw new BacktestInitialisationException(e);
+		}
 	}
 
-	public static void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
+	private void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
-	        final EquityIdentity equity, final ExecutorService pool )
-	                throws BacktestInitialisationException, IOException {
+	        final EquityIdentity equity, final DisplayType type, final ExecutorService pool )
+	                throws BacktestInitialisationException {
 
 		// Arrange output to files, only once per a run
 		FileClearDestination destination = new FileClearDestination(baseOutputDirectory);
@@ -163,10 +167,10 @@ public class SingleConfigurationVanguardRetail {
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final String outputDirectory = getOutputDirectory(baseOutputDirectory, equity, configuration);
-			final BacktestDisplay fileDisplay = getDisplay(outputDirectory, pool);
+			final BacktestDisplay fileDisplay = getDisplay(type, outputDirectory, pool);
 
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(tradingData, configuration, fileDisplay,
-			        MATH_CONTEXT);
+			        mathContext);
 
 			LOG.info(String.format("Backtesting beginning for: %s", configuration.getDescription()));
 
@@ -179,7 +183,7 @@ public class SingleConfigurationVanguardRetail {
 
 	}
 
-	private static TickerSymbolTradingData getTradingData( final EquityIdentity equity,
+	private TickerSymbolTradingData getTradingData( final EquityIdentity equity,
 	        final BacktestSimulationDates simulationDate ) throws ServiceException {
 
 		final LocalDate startDate = simulationDate.getSimulationStartDate().minus(simulationDate.getWarmUp());
@@ -196,35 +200,12 @@ public class SingleConfigurationVanguardRetail {
 		return new TickerSymbolTradingDataBacktest(equity, data);
 	}
 
-	private static EquityManagementFeeCalculator getVanguardRetailFeeCalculator() {
-		final BigDecimal[] vanguardFeeRange = { BigDecimal.valueOf(50000), BigDecimal.valueOf(100000) };
-		final BigDecimal[] vanguardPercentageFee = { BigDecimal.valueOf(0.009), BigDecimal.valueOf(0.006),
-		        BigDecimal.valueOf(0.0035) };
-		return new LadderedEquityManagementFeeCalculator(vanguardFeeRange, vanguardPercentageFee, MATH_CONTEXT);
-	}
-
-	private static List<BacktestBootstrapConfiguration> getConfigurations( final EquityIdentity equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final DescriptionGenerator descriptionGenerator ) {
-
-		final BacktestBootstrapConfigurationGenerator configurationGenerator = new BacktestBootstrapConfigurationGenerator(
-		        equity, simulationDates, deposit, descriptionGenerator, MATH_CONTEXT);
-
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
-
-		// Vanguard Retail
-		configurations.add(configurationGenerator.getPeriodicConfiguration(BrokerageFeesConfiguration.VANGUARD_RETAIL,
-		        WEEKLY, getVanguardRetailFeeCalculator()));
-
-		return configurations;
-	}
-
-	private static String getOutputDirectory( final String baseOutputDirectory, final EquityIdentity equity,
+	private String getOutputDirectory( final String baseOutputDirectory, final EquityIdentity equity,
 	        final BacktestBootstrapConfiguration configuration ) {
 		return String.format("%s%s_%s", baseOutputDirectory, equity.getTickerSymbol(), configuration.getDescription());
 	}
 
-	private static String getBaseOutputDirectory( final String... args ) {
+	private String getBaseOutputDirectory( final String... args ) {
 
 		if (args != null && args.length > 0) {
 			return args[0] + "/%s/";
