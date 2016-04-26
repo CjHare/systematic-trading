@@ -52,7 +52,7 @@ import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
-import com.systematic.trading.backtest.display.file.FileDisplay;
+import com.systematic.trading.backtest.display.file.FileCompleteDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
@@ -149,7 +149,7 @@ public class SingleConfigurationSignals {
 
 	private static BacktestDisplay getDisplay( final String outputDirectory, final ExecutorService pool )
 	        throws IOException {
-		return new FileDisplay(outputDirectory, pool, MATH_CONTEXT);
+		return new FileCompleteDisplay(outputDirectory, pool, MATH_CONTEXT);
 	}
 
 	public static void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,

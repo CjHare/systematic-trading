@@ -53,7 +53,7 @@ import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
-import com.systematic.trading.backtest.display.file.FileDisplay;
+import com.systematic.trading.backtest.display.file.FileCompleteDisplay;
 import com.systematic.trading.backtest.display.file.FileMinimalDisplay;
 import com.systematic.trading.backtest.display.file.FileNoDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
@@ -177,7 +177,7 @@ public class AllConfigurations {
 		try {
 			switch (type) {
 				case FILE_FULL:
-					return new FileDisplay(outputDirectory, pool, MATH_CONTEXT);
+					return new FileCompleteDisplay(outputDirectory, pool, MATH_CONTEXT);
 				case FILE_MINIMUM:
 					return new FileMinimalDisplay(outputDirectory, pool, MATH_CONTEXT);
 				case NO_DISPLAY:
