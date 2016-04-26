@@ -28,51 +28,24 @@ package com.systematic.trading.simulation.brokerage.event;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.systematic.trading.simulation.StandardEquityEvent;
+
 /**
  * Broker Account events, buying and selling equities.
  * 
  * @author CJ Hare
  */
-public class BrokerageAccountEvent implements BrokerageEvent {
+public class BrokerageAccountEvent extends StandardEquityEvent implements BrokerageEvent {
 
-	private final BigDecimal equityAmount;
-	private final BigDecimal startingEquityBalance;
-	private final BigDecimal endEquityBalance;
-	private final LocalDate transactionDate;
 	private final BrokerageAccountEventType type;
 	private final BigDecimal transactionFee;
-	private final BigDecimal transactionValue;
 
 	public BrokerageAccountEvent(final BigDecimal startingEquityBalance, final BigDecimal endEquityBalance,
 	        final BigDecimal amount, final BrokerageAccountEventType type, final LocalDate transactionDate,
 	        final BigDecimal transactionValue, final BigDecimal transactionFee) {
-		this.startingEquityBalance = startingEquityBalance;
-		this.endEquityBalance = endEquityBalance;
-		this.equityAmount = amount;
-		this.transactionDate = transactionDate;
-		this.type = type;
-		this.transactionValue = transactionValue;
+		super(amount, startingEquityBalance, endEquityBalance, transactionDate, transactionValue);
 		this.transactionFee = transactionFee;
-	}
-
-	@Override
-	public BigDecimal getEquityAmount() {
-		return equityAmount;
-	}
-
-	@Override
-	public BigDecimal getStartingEquityBalance() {
-		return startingEquityBalance;
-	}
-
-	@Override
-	public BigDecimal getEndEquityBalance() {
-		return endEquityBalance;
-	}
-
-	@Override
-	public LocalDate getTransactionDate() {
-		return transactionDate;
+		this.type = type;
 	}
 
 	@Override
@@ -83,9 +56,5 @@ public class BrokerageAccountEvent implements BrokerageEvent {
 	@Override
 	public BigDecimal getTransactionFee() {
 		return transactionFee;
-	}
-
-	public BigDecimal getTransactionValue() {
-		return transactionValue;
 	}
 }

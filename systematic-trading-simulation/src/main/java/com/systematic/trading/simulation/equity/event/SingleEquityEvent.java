@@ -29,19 +29,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.simulation.StandardEquityEvent;
 
 /**
  * Equity event for a single equity.
  * 
  * @author CJ Hare
  */
-public class SingleEquityEvent implements EquityEvent {
-
-	private final BigDecimal equityAmount;
-	private final BigDecimal startingEquityBalance;
-	private final BigDecimal endEquityBalance;
-	private final LocalDate transactionDate;
-	private final BigDecimal transactionValue;
+public class SingleEquityEvent extends StandardEquityEvent implements EquityEvent {
 
 	private final EquityEventType type;
 	private final EquityIdentity id;
@@ -49,37 +44,9 @@ public class SingleEquityEvent implements EquityEvent {
 	public SingleEquityEvent(final EquityIdentity id, final BigDecimal startingEquityBalance,
 	        final BigDecimal endEquityBalance, final BigDecimal amount, final EquityEventType type,
 	        final LocalDate transactionDate, final BigDecimal transactionValue) {
-		this.startingEquityBalance = startingEquityBalance;
-		this.endEquityBalance = endEquityBalance;
-		this.transactionValue = transactionValue;
-		this.transactionDate = transactionDate;
-		this.equityAmount = amount;
+		super(amount, startingEquityBalance, endEquityBalance, transactionDate, transactionValue);
 		this.type = type;
 		this.id = id;
-	}
-
-	@Override
-	public BigDecimal getEquityAmount() {
-		return equityAmount;
-	}
-
-	@Override
-	public BigDecimal getStartingEquityBalance() {
-		return startingEquityBalance;
-	}
-
-	@Override
-	public BigDecimal getEndEquityBalance() {
-		return endEquityBalance;
-	}
-
-	@Override
-	public LocalDate getTransactionDate() {
-		return transactionDate;
-	}
-
-	public BigDecimal getTransactionValue() {
-		return transactionValue;
 	}
 
 	@Override
