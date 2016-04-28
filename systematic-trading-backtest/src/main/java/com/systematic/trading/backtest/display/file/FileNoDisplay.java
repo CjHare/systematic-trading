@@ -60,33 +60,41 @@ public class FileNoDisplay implements BacktestDisplay {
 
 	@Override
 	public void event( final CashEvent event ) {
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void stateChanged( final SimulationState transitionedState ) {
+		// Recording of this state change is not required for no display
 	}
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void event( EquityEvent event ) {
+		// Recording of this event is not required for no display
 	}
 }
