@@ -60,9 +60,6 @@ public class HistoryRetrievalRequest implements Serializable {
 	@Column(name = "end", nullable = false)
 	private Date exclusiveEndDate;
 
-	public HistoryRetrievalRequest() {
-	}
-
 	public HistoryRetrievalRequest(final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate) {
 		this.tickerSymbol = tickerSymbol;
