@@ -42,7 +42,7 @@ import com.systematic.trading.simulation.cash.CashAccount;
 public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 
 	/** Parties interested in receiving net worth events. */
-	private final List<NetWorthEventListener> listeners = new ArrayList<NetWorthEventListener>();
+	private final List<NetWorthEventListener> listeners = new ArrayList<>();
 
 	private final Brokerage broker;
 	private final TradingDayPrices lastTradingDay;

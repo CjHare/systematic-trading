@@ -59,7 +59,7 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 	public TickerSymbolTradingDataBacktest(final EquityIdentity equity, final TradingDayPrices[] data) {
 		this.equity = equity;
 
-		final Map<LocalDate, TradingDayPrices> modifiableTradingData = new HashMap<LocalDate, TradingDayPrices>();
+		final Map<LocalDate, TradingDayPrices> modifiableTradingData = new HashMap<>();
 
 		for (final TradingDayPrices tradingDay : data) {
 			modifiableTradingData.put(tradingDay.getDate(), tradingDay);

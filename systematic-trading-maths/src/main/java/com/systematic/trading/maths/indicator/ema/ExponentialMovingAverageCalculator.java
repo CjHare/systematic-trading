@@ -76,7 +76,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		// Look back provides one of the days of EMA values
 		this.smoothingConstant = calculateSmoothingConstant(lookback);
 		this.mathContext = mathContext;
-		this.emaValues = new NonNullableArrayList<BigDecimal>();
+		this.emaValues = new NonNullableArrayList<>();
 		this.validator = validator;
 		this.lookback = lookback;
 		this.wrapper = new Data();

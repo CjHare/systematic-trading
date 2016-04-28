@@ -66,7 +66,7 @@ public class SingleConfigurationSignals implements BacktestConfigurations {
 		final BacktestBootstrapConfigurationGenerator configurationGenerator = new BacktestBootstrapConfigurationGenerator(
 		        equity, simulationDates, deposit, descriptionGenerator, MATH_CONTEXT);
 
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<BacktestBootstrapConfiguration>();
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;

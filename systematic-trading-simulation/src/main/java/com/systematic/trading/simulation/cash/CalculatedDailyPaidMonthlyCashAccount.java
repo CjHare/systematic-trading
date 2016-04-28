@@ -61,7 +61,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	private final MathContext mathContext;
 
 	/** Parties interested in the account events. */
-	private final List<CashEventListener> listeners = new ArrayList<CashEventListener>();
+	private final List<CashEventListener> listeners = new ArrayList<>();
 
 	/**
 	 * @param rate calculated daily to the funds and paid monthly, cannot be <code>null</code>.

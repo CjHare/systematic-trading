@@ -99,7 +99,7 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 	}
 
 	protected List<IndicatorSignal> buySignals( final DatedValue[] dataPoint, final List<BigDecimal> signaline ) {
-		final List<IndicatorSignal> buySignals = new ArrayList<IndicatorSignal>();
+		final List<IndicatorSignal> buySignals = new ArrayList<>();
 
 		// Use the right most date values
 		final int offset = dataPoint.length - signaline.size();

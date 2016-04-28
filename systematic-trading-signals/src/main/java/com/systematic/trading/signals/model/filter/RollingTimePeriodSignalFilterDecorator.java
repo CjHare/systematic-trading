@@ -66,7 +66,7 @@ public class RollingTimePeriodSignalFilterDecorator implements SignalFilter {
 
 		final SortedSet<BuySignal> signalSet = filter.apply(signals, ordering, latestTradingDate);
 
-		final Set<BuySignal> toRemove = new HashSet<BuySignal>();
+		final Set<BuySignal> toRemove = new HashSet<>();
 
 		for (final BuySignal signal : signalSet) {
 

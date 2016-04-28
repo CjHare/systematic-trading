@@ -73,7 +73,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
-		this.stochasticValues = new NonNullableArrayList<BigDecimal>();
+		this.stochasticValues = new NonNullableArrayList<>();
 	}
 
 	@Override

@@ -65,7 +65,7 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
 		validateInput(signals);
 
-		final SortedSet<BuySignal> passedSignals = new TreeSet<BuySignal>(ordering);
+		final SortedSet<BuySignal> passedSignals = new TreeSet<>(ordering);
 
 		final List<IndicatorSignal> firstIndicatorSignals = signals.get(indicators[0]);
 

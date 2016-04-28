@@ -72,7 +72,7 @@ public class EntryLogicFactory {
 	        final BacktestSimulationDates simulationDates, final EntryLogicFilterConfiguration filterConfiguration,
 	        final MathContext mathContext, final IndicatorSignalGenerator... entrySignals ) {
 
-		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>(entrySignals.length);
+		final List<IndicatorSignalGenerator> generators = new ArrayList<>(entrySignals.length);
 		final IndicatorSignalType[] types = new IndicatorSignalType[entrySignals.length];
 
 		for (int i = 0; i < entrySignals.length; i++) {
@@ -85,7 +85,7 @@ public class EntryLogicFactory {
 		final LocalDate simulationEndDate = simulationDates.getSimulationEndDate();
 
 		// Only signals from the last few days are of interest
-		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
+		final List<SignalFilter> filters = new ArrayList<>();
 		final SignalFilter filter = creatSignalFilter(filterConfiguration, entrySignals);
 		final SignalFilter decoratedFilter = new TimePeriodSignalFilterDecorator(
 		        new RollingTimePeriodSignalFilterDecorator(filter, Period.ofDays(DAYS_ACCEPTING_SIGNALS)),

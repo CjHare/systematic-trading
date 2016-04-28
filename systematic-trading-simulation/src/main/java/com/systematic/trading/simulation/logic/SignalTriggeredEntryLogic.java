@@ -83,11 +83,11 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		this.scale = equityScale;
 		this.type = equityType;
 
-		this.tradingData = new LimitedSizeQueue<TradingDayPrices>(TradingDayPrices.class,
+		this.tradingData = new LimitedSizeQueue<>(TradingDayPrices.class,
 		        analysis.getMaximumNumberOfTradingDaysRequired());
 
 		// There can only ever be as many signals as trading days stored
-		this.previousSignals = new LimitedSizeQueue<BuySignal>(BuySignal.class,
+		this.previousSignals = new LimitedSizeQueue<>(BuySignal.class,
 		        analysis.getMaximumNumberOfTradingDaysRequired());
 	}
 

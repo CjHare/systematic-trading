@@ -57,7 +57,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	private final int requiredNumberOfTradingDays;
 
 	/** Listeners interested in signal analysis events. */
-	private final List<SignalAnalysisListener> listeners = new ArrayList<SignalAnalysisListener>();
+	private final List<SignalAnalysisListener> listeners = new ArrayList<>();
 
 	private final List<SignalFilter> filters;
 	private final List<IndicatorSignalGenerator> generators;
@@ -71,7 +71,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	// TODO test
 	private int getRequiredNumberOfTradingDays() {
 
-		final List<Integer> requiredTradingDays = new ArrayList<Integer>();
+		final List<Integer> requiredTradingDays = new ArrayList<>();
 		for (final IndicatorSignalGenerator generator : generators) {
 			requiredTradingDays.add(generator.getRequiredNumberOfTradingDays());
 		}
@@ -90,7 +90,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = addSignals(data);
 
 		final LocalDate latestTradingDate = data[data.length - 1].getDate();
-		final List<BuySignal> signals = new ArrayList<BuySignal>();
+		final List<BuySignal> signals = new ArrayList<>();
 
 		// Apply the rule filters
 		for (final SignalFilter filter : filters) {
@@ -102,7 +102,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 	private Map<IndicatorSignalType, List<IndicatorSignal>> addSignals( final TradingDayPrices[] data ) {
 
-		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = new EnumMap<IndicatorSignalType, List<IndicatorSignal>>(
+		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = new EnumMap<>(
 		        IndicatorSignalType.class);
 
 		for (final IndicatorSignalGenerator generator : generators) {
@@ -126,7 +126,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		}
 
 		// Only here on error :. no signals
-		return new ArrayList<IndicatorSignal>();
+		return new ArrayList<>();
 	}
 
 	@Override

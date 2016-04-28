@@ -55,7 +55,7 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	private final MathContext mathContext;
 
 	/** Parties interested in ROI events. */
-	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<ReturnOnInvestmentEventListener>();
+	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<>();
 
 	/** Net Worth as recorded on previous update. */
 	private BigDecimal previousNetWorth;

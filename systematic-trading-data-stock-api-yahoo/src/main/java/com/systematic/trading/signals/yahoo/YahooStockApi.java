@@ -85,7 +85,7 @@ public class YahooStockApi implements StockApi {
 
 	private TradingDayPrices[] parseJson( final String tickerSymbol, final String result )
 	        throws CannotRetrieveDataException {
-		List<TradingDayPrices> data = new ArrayList<TradingDayPrices>();
+		List<TradingDayPrices> data = new ArrayList<>();
 
 		try {
 			final JSONObject json = new JSONObject(result);

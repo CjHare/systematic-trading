@@ -77,10 +77,10 @@ public class SingleEquityClassBroker implements Brokerage {
 	private final MathContext mathContext;
 
 	/** Parties interested in listening to brokerage events. */
-	private final List<BrokerageEventListener> brokerageListeners = new ArrayList<BrokerageEventListener>();
+	private final List<BrokerageEventListener> brokerageListeners = new ArrayList<>();
 
 	/** Parties interested in listening to equity events. */
-	private final List<EquityEventListener> equityListeners = new ArrayList<EquityEventListener>();
+	private final List<EquityEventListener> equityListeners = new ArrayList<>();
 
 	public SingleEquityClassBroker(final BrokerageTransactionFeeStructure fees,
 	        final EquityManagementFeeStructure managementFees, final EquityIdentity equity, final LocalDate startDate,

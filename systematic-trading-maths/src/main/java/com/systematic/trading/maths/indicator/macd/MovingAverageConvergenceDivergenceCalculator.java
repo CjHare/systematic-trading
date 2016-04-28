@@ -68,8 +68,8 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	public MovingAverageConvergenceDivergenceCalculator(final ExponentialMovingAverage fastEma,
 	        final ExponentialMovingAverage slowEma, final ExponentialMovingAverage signalEma,
 	        final Validator validator) {
-		this.macdValues = new NonNullableArrayList<BigDecimal>();
-		this.signalLineDates = new NonNullableArrayList<LocalDate>();
+		this.macdValues = new NonNullableArrayList<>();
+		this.signalLineDates = new NonNullableArrayList<>();
 		this.validator = validator;
 		this.signalEma = signalEma;
 		this.slowEma = slowEma;
@@ -116,7 +116,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	private List<DatedSignal> calculateBullishSignals( final List<BigDecimal> macdValues,
 	        final List<BigDecimal> signaLine, final List<LocalDate> signalLineDates ) {
 
-		final List<DatedSignal> signals = new ArrayList<DatedSignal>();
+		final List<DatedSignal> signals = new ArrayList<>();
 
 		// We're only interested in shared indexes, both right most aligned with data[]
 		final int macdValuesOffset = Math.max(0, macdValues.size() - signaLine.size());

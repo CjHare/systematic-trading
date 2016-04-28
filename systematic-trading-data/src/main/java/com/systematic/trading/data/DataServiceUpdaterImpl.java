@@ -103,7 +103,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	        final LocalDate startDate, final LocalDate endDate ) {
 
 		final Period maximum = api.getMaximumDurationInSingleUpdate();
-		final List<HistoryRetrievalRequest> requests = new ArrayList<HistoryRetrievalRequest>();
+		final List<HistoryRetrievalRequest> requests = new ArrayList<>();
 
 		if (isDurationTooLong(maximum, Period.between(startDate, endDate))) {
 
@@ -131,7 +131,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 * Remove requests where the full set of data already has already been retrieved.
 	 */
 	private List<HistoryRetrievalRequest> removeRedundantRequests( final List<HistoryRetrievalRequest> requests ) {
-		final List<HistoryRetrievalRequest> filtered = new ArrayList<HistoryRetrievalRequest>();
+		final List<HistoryRetrievalRequest> filtered = new ArrayList<>();
 
 		for (final HistoryRetrievalRequest request : requests) {
 

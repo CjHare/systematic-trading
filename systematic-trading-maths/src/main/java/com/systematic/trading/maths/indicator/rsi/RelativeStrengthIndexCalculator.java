@@ -86,8 +86,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	 */
 	public RelativeStrengthIndexCalculator(final int lookback, final int daysOfRsiValues, final Validator validator,
 	        final MathContext mathContext) {
-		this.relativeStrengthIndexValues = new NonNullableArrayList<BigDecimal>();
-		this.relativeStrengthValues = new NonNullableArrayList<BigDecimal>();
+		this.relativeStrengthIndexValues = new NonNullableArrayList<>();
+		this.relativeStrengthValues = new NonNullableArrayList<>();
 		this.minimumNumberOfPrices = lookback + daysOfRsiValues;
 		this.smoothingConstant = calculateSmoothingConstant(lookback);
 		this.mathContext = mathContext;

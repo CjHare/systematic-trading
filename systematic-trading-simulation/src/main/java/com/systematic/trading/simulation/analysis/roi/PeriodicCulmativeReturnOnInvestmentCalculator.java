@@ -47,7 +47,7 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 	private final MathContext mathContext;
 
 	/** Parties interested in ROI events. */
-	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<ReturnOnInvestmentEventListener>();
+	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<>();
 
 	/** Aggregates the cumulative ROI for every summary period. */
 	private final Period summaryPeriod;

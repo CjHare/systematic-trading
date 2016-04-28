@@ -82,10 +82,10 @@ public class Simulation {
 	private final ReturnOnInvestmentCalculator roi;
 
 	/** Listeners interested in entry events. */
-	private final List<OrderEventListener> orderEventListeners = new ArrayList<OrderEventListener>();
+	private final List<OrderEventListener> orderEventListeners = new ArrayList<>();
 
 	/** Listeners interested in state transition events. */
-	private final List<SimulationStateListener> stateListeners = new ArrayList<SimulationStateListener>();
+	private final List<SimulationStateListener> stateListeners = new ArrayList<>();
 
 	/** Trading data to use for the simulation. */
 	private final TickerSymbolTradingData tradingData;
@@ -106,7 +106,7 @@ public class Simulation {
 		final Map<LocalDate, TradingDayPrices> tradingDayPrices = tradingData.getTradingDayPrices();
 		final LocalDate endDate = tradingData.getLatestDate();
 
-		List<EquityOrder> orders = new ArrayList<EquityOrder>();
+		List<EquityOrder> orders = new ArrayList<>();
 		LocalDate currentDate = tradingData.getEarliestDate();
 
 		while (currentDate.isBefore(endDate)) {
@@ -198,7 +198,7 @@ public class Simulation {
 	 * @return orders that were not executed as their conditions were not met.
 	 */
 	private List<EquityOrder> processOutstandingOrders( final List<EquityOrder> orders, final TradingDayPrices data ) {
-		final List<EquityOrder> remainingOrders = new ArrayList<EquityOrder>(orders.size());
+		final List<EquityOrder> remainingOrders = new ArrayList<>(orders.size());
 
 		for (final EquityOrder order : orders) {
 

@@ -86,7 +86,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	protected List<IndicatorSignal> buySignals( final List<BigDecimal> rsi, final TradingDayPrices[] data ) {
 
 		// TODO pass the store array in
-		final List<IndicatorSignal> buySignals = new ArrayList<IndicatorSignal>();
+		final List<IndicatorSignal> buySignals = new ArrayList<>();
 
 		final int offset = data.length - rsi.size();
 
@@ -108,7 +108,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	}
 
 	protected List<IndicatorSignal> intersection( final List<IndicatorSignal> a, final List<IndicatorSignal> b ) {
-		final List<IndicatorSignal> intersection = new ArrayList<IndicatorSignal>();
+		final List<IndicatorSignal> intersection = new ArrayList<>();
 		final List<IndicatorSignal> shorter = a.size() < b.size() ? a : b;
 		final List<IndicatorSignal> larger = a.size() >= b.size() ? a : b;
 

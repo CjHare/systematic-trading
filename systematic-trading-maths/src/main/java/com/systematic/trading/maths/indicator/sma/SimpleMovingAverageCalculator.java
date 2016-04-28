@@ -70,7 +70,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
 		this.daysOfSmaValues = daysOfSmaValues;
 		this.mathContext = mathContext;
-		this.smaValues = new NonNullableArrayList<BigDecimal>();
+		this.smaValues = new NonNullableArrayList<>();
 		this.validator = validator;
 		this.lookback = lookback;
 	}

@@ -65,7 +65,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		final List<DatedSignal> signals = macd.macd(data);
 
-		final List<IndicatorSignal> converted = new ArrayList<IndicatorSignal>(signals.size());
+		final List<IndicatorSignal> converted = new ArrayList<>(signals.size());
 
 		for (final DatedSignal signal : signals) {
 			converted.add(new IndicatorSignal(signal.getDate(), IndicatorSignalType.MACD));

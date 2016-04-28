@@ -92,11 +92,11 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 			return analysisGradient(data, sma);
 		}
 
-		return new ArrayList<IndicatorSignal>();
+		return new ArrayList<>();
 	}
 
 	private List<IndicatorSignal> analysisGradient( final TradingDayPrices[] data, final List<BigDecimal> sma ) {
-		final List<IndicatorSignal> signals = new ArrayList<IndicatorSignal>();
+		final List<IndicatorSignal> signals = new ArrayList<>();
 
 		// We're only using the right most values of the data
 		final int offset = data.length - sma.size();

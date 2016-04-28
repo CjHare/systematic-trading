@@ -101,7 +101,7 @@ public class HistoryRetrievalRequestManager {
 			}
 		}
 
-		return new ArrayList<HistoryRetrievalRequest>(0);
+		return new ArrayList<>(0);
 	}
 
 	public void delete( final HistoryRetrievalRequest request ) {
