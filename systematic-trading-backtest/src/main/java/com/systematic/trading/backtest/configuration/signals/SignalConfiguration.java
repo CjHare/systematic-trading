@@ -30,6 +30,7 @@ package com.systematic.trading.backtest.configuration.signals;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface SignalConfiguration {
 
 	/**

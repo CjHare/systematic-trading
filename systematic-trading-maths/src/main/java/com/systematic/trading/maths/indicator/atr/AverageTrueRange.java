@@ -56,6 +56,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface AverageTrueRange {
 
 	/**
@@ -65,5 +66,4 @@ public interface AverageTrueRange {
 	 * @return average true range values.
 	 */
 	List<BigDecimal> atr( TradingDayPrices[] data );
-
 }

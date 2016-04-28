@@ -41,6 +41,7 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface SignalFilter {
 
 	/**

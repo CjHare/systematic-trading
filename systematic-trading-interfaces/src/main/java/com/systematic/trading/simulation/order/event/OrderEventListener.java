@@ -30,6 +30,7 @@ package com.systematic.trading.simulation.order.event;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface OrderEventListener {
 
 	/**

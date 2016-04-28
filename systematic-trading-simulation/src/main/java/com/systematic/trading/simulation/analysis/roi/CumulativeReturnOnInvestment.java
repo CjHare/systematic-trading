@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 /**
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface CumulativeReturnOnInvestment {
 
 	/**

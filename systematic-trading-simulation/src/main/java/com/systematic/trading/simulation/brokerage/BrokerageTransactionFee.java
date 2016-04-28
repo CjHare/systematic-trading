@@ -36,6 +36,7 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface BrokerageTransactionFee {
 
 	/**

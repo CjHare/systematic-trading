@@ -32,6 +32,7 @@ import com.systematic.trading.simulation.SimulationStateListener.SimulationState
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface NetWorthEventListener {
 
 	/**

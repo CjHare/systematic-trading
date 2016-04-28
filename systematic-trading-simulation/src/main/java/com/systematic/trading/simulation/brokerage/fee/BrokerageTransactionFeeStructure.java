@@ -34,6 +34,7 @@ import com.systematic.trading.model.EquityClass;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface BrokerageTransactionFeeStructure {
 
 	/**

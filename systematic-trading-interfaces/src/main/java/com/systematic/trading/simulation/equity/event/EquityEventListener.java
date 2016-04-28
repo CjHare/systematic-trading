@@ -30,6 +30,7 @@ package com.systematic.trading.simulation.equity.event;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface EquityEventListener {
 
 	/**

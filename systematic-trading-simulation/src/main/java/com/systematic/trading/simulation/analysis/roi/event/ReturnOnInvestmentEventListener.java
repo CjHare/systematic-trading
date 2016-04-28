@@ -30,6 +30,7 @@ package com.systematic.trading.simulation.analysis.roi.event;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface ReturnOnInvestmentEventListener {
 
 	/**

@@ -35,6 +35,7 @@ import com.systematic.trading.simulation.order.EquityOrder;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface ExitLogic {
 
 	/**

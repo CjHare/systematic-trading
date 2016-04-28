@@ -13,6 +13,7 @@ import com.systematic.trading.model.EquityIdentity;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface BacktestConfigurations {
 
 	List<BacktestBootstrapConfiguration> get( EquityIdentity equity, BacktestSimulationDates simulationDates,

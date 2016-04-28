@@ -34,6 +34,7 @@ import com.systematic.trading.exception.ServiceException;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface DataServiceUpdater {
 
 	/**

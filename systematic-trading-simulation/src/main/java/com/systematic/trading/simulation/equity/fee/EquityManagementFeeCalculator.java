@@ -35,6 +35,7 @@ import com.systematic.trading.data.price.ClosingPrice;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface EquityManagementFeeCalculator {
 
 	/**

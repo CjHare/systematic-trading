@@ -30,6 +30,7 @@ package com.systematic.trading.simulation.cash.event;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface CashEventListener {
 
 	/**

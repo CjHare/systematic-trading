@@ -30,6 +30,7 @@ package com.systematic.trading.simulation.brokerage.event;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface BrokerageEventListener {
 
 	/**

@@ -35,6 +35,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface StochasticPercentageK {
 
 	List<BigDecimal> percentageK( TradingDayPrices[] data );
