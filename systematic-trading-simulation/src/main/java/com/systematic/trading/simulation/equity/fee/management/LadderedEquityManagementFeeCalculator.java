@@ -76,14 +76,14 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 			if (holdingsValue.compareTo(range[i]) < 0) {
 				// The the holdings is below the top end of this range
 				spread = holdingsValue.subtract(topEndOfLastRange, mathContext);
-				break;
+				fee = fee.add(spread.multiply(percentageFee[i], mathContext), mathContext);
+
 			} else {
 				// Holdings cover all this range (preceeding ones too)
 				spread = range[i].subtract(topEndOfLastRange, mathContext);
 				topEndOfLastRange = range[i];
+				fee = fee.add(spread.multiply(percentageFee[i], mathContext), mathContext);
 			}
-
-			fee = fee.add(spread.multiply(percentageFee[i], mathContext), mathContext);
 		}
 
 		// Cater for the open ended flat fee section
