@@ -17,4 +17,8 @@ public abstract class ServiceException extends Exception {
 	public ServiceException(final String message) {
 		super(message);
 	}
+
+	public ServiceException(final Throwable cause) {
+		super(cause);
+	}
 }
