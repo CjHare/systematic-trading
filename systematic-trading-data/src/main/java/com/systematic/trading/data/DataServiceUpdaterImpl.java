@@ -131,34 +131,41 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 * Remove requests where the full set of data already has already been retrieved.
 	 */
 	private List<HistoryRetrievalRequest> removeRedundantRequests( final List<HistoryRetrievalRequest> requests ) {
-		final List<HistoryRetrievalRequest> filtered = new ArrayList<>();
+		List<HistoryRetrievalRequest> filtered = new ArrayList<>();
 
 		for (final HistoryRetrievalRequest request : requests) {
+			filtered = removeIfRedundantRequest(request, filtered);
+		}
 
-			final String tickerSymbol = request.getTickerSymbol();
-			final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
-			final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
+		return filtered;
+	}
 
-			final long count = dao.count(tickerSymbol, startDate, endDate);
+	private List<HistoryRetrievalRequest> removeIfRedundantRequest( final HistoryRetrievalRequest request,
+	        final List<HistoryRetrievalRequest> filtered ) {
 
-			if (count == 0) {
-				// Zero data exists :. we need data
-				filtered.add(request);
+		final String tickerSymbol = request.getTickerSymbol();
+		final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
+		final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
+
+		final long count = dao.count(tickerSymbol, startDate, endDate);
+
+		if (count == 0) {
+			// Zero data exists :. we need data
+			filtered.add(request);
+		} else {
+			final Period interval = Period.between(startDate, endDate);
+
+			if (interval.toTotalMonths() > 0) {
+				final long meanDataPointsPerMonth = count / interval.toTotalMonths();
+
+				if (meanDataPointsPerMonth < MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD) {
+					// Insufficient data exists :. we need data
+					filtered.add(request);
+				}
 			} else {
-				final Period interval = Period.between(startDate, endDate);
-
-				if (interval.toTotalMonths() > 0) {
-					final long meanDataPointsPerMonth = count / interval.toTotalMonths();
-
-					if (meanDataPointsPerMonth < MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD) {
-						// Insufficient data exists :. we need data
-						filtered.add(request);
-					}
-				} else {
-					// Under one month means we're in days difference
-					if (count <= interval.getDays()) {
-						filtered.add(request);
-					}
+				// Under one month means we're in days difference
+				if (count <= interval.getDays()) {
+					filtered.add(request);
 				}
 			}
 		}
