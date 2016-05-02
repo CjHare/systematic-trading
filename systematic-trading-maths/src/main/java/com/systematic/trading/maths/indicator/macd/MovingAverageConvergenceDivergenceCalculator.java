@@ -138,13 +138,11 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 			yesterdaySignalLine = signaLine.get(index + signalLineOffset - 1);
 			todaySignalLineDate = signalLineDates.get(index + signalLineOffset);
 
-			if (isAfterLastDateProcessed(todaySignalLineDate)) {
-				// The MACD trends up, with crossing the signal line
-				// OR trending up and crossing the zero line
-				if (crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
-				        || crossingOrigin(yesterdayMacd, todayMacd)) {
-					signals.add(new DatedSignal(todaySignalLineDate, SignalType.BULLISH));
-				}
+			// The MACD trends up, with crossing the signal line OR trending up and crossing the zero line
+			if (isAfterLastDateProcessed(todaySignalLineDate)
+			        && crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
+			        || crossingOrigin(yesterdayMacd, todayMacd)) {
+				signals.add(new DatedSignal(todaySignalLineDate, SignalType.BULLISH));
 			}
 		}
 
