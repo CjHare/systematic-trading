@@ -50,31 +50,35 @@ public class HistoryRetrievalRequestManager {
 	/**
 	 * Persists the given set of retrieval requests.
 	 * 
-	 * @param requests the requests to hibernate.
+	 * @param requests the requests to Hibernate.
 	 */
 	public void create( final List<HistoryRetrievalRequest> requests ) {
 
 		final Session session = HibernateUtil.getSessionFactory().openSession();
-		Transaction tx = null;
-
 		for (final HistoryRetrievalRequest request : requests) {
-			try {
-				tx = session.beginTransaction();
-				session.save(request);
-				tx.commit();
-			} catch (final HibernateException e) {
-				// May already have the record inserted
-				LOG.info(String.format("Failed to save request for %s %s %s", request.getTickerSymbol(),
-				        request.getInclusiveStartDate(), request.getExclusiveEndDate()));
-				LOG.debug(e);
+			create(request, session);
+		}
+		session.close();
+	}
 
-				if (tx != null && tx.isActive()) {
-					tx.rollback();
-				}
+	private void create( final HistoryRetrievalRequest request, final Session session ) {
+
+		final Transaction tx = session.beginTransaction();
+
+		try {
+			session.save(request);
+			tx.commit();
+		} catch (final HibernateException e) {
+			// May already have the record inserted
+			LOG.info(String.format("Failed to save request for %s %s %s", request.getTickerSymbol(),
+			        request.getInclusiveStartDate(), request.getExclusiveEndDate()));
+			LOG.debug(e);
+
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
 			}
 		}
 
-		session.close();
 	}
 
 	@SuppressWarnings("unchecked")

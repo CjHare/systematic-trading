@@ -101,7 +101,7 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 		// We're only using the right most values of the data
 		final int offset = data.length - sma.size();
 
-		// Initialise to the first value, bump the index
+		// Start with the first value, bump the index
 		BigDecimal previous = sma.get(0);
 
 		for (int index = 1; index < sma.size(); index++) {
