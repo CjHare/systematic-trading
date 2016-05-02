@@ -64,7 +64,7 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfigurations configurations, final String... args ) throws ServiceException {
+	public void runTest( final BacktestConfigurations configurations, final String... args ) throws Exception {
 
 		final String baseOutputDirectory = getBaseOutputDirectory(args);
 		final DescriptionGenerator filenameGenerator = new DescriptionGenerator();
@@ -110,11 +110,7 @@ public class BacktestApplication {
 			pool.shutdown();
 
 			LOG.info("Waiting at most 90 minutes for result output to complete...");
-			try {
-				pool.awaitTermination(90, TimeUnit.MINUTES);
-			} catch (final InterruptedException e) {
-				throw new BacktestInitialisationException(e);
-			}
+			pool.awaitTermination(90, TimeUnit.MINUTES);
 		}
 
 		LOG.info("Finished outputting results");
