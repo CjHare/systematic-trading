@@ -85,16 +85,15 @@ public class FileCompleteDisplay extends FileDisplay implements BacktestDisplay 
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File(outputDirectory);
-		if (!outputDirectoryFile.exists()) {
-			if (!outputDirectoryFile.mkdirs()) {
-				throw new IllegalArgumentException(
-				        String.format("Failed to create / access directory: %s", outputDirectory));
-			}
+		if (!outputDirectoryFile.exists() && !outputDirectoryFile.mkdirs()) {
+			throw new IllegalArgumentException(
+			        String.format("Failed to create / access directory: %s", outputDirectory));
 		}
 
 		this.baseDirectory = outputDirectoryFile.getCanonicalPath();
 		this.mathContext = mathContext;
 		this.pool = pool;
+
 	}
 
 	@Override
