@@ -39,7 +39,16 @@ import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSigna
  */
 public class IndicatorSignalGeneratorFactory {
 
-	public static IndicatorSignalGenerator create( final SignalConfiguration signal, final MathContext mathContext ) {
+	public static final IndicatorSignalGeneratorFactory INSTANCE = new IndicatorSignalGeneratorFactory();
+
+	private IndicatorSignalGeneratorFactory() {
+	}
+
+	public static final IndicatorSignalGeneratorFactory getInstance() {
+		return INSTANCE;
+	}
+
+	public IndicatorSignalGenerator create( final SignalConfiguration signal, final MathContext mathContext ) {
 
 		if (signal instanceof MacdConfiguration) {
 			return create((MacdConfiguration) signal, mathContext);
@@ -54,16 +63,16 @@ public class IndicatorSignalGeneratorFactory {
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
-	public static IndicatorSignalGenerator create( final MacdConfiguration macd, final MathContext mathContext ) {
+	public IndicatorSignalGenerator create( final MacdConfiguration macd, final MathContext mathContext ) {
 		return new MovingAveragingConvergeDivergenceSignals(macd.getFastTimePeriods(), macd.getSlowTimePeriods(),
 		        macd.getSignalTimePeriods(), mathContext);
 	}
 
-	public static IndicatorSignalGenerator create( final RsiConfiguration rsi, final MathContext mathContext ) {
+	public IndicatorSignalGenerator create( final RsiConfiguration rsi, final MathContext mathContext ) {
 		return new RelativeStrengthIndexSignals(rsi.getLookback(), rsi.getOverbought(), rsi.getOversold(), mathContext);
 	}
 
-	public static IndicatorSignalGenerator create( final SmaConfiguration sma, final MathContext mathContext ) {
+	public IndicatorSignalGenerator create( final SmaConfiguration sma, final MathContext mathContext ) {
 		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), sma.getType(),
 		        mathContext);
 	}

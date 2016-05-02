@@ -107,12 +107,13 @@ public class BacktestBootstrapConfigurationGenerator {
 	        final Period purchaseFrequency, final EquityManagementFeeCalculator feeCalculator ) {
 
 		final LocalDate startDate = simulationDates.getSimulationStartDate();
-		final CashAccount cashAccount = CashAccountFactory.create(startDate, deposit, mathContext);
+		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit, mathContext);
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(equity,
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
-		final Brokerage brokerage = BrokerageFactoroy.create(equityConfiguration, brokerageType, startDate,
+		final Brokerage brokerage = BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
+		        startDate, mathContext);
+		final EntryLogic entryLogic = EntryLogicFactory.getInstance().create(equity, startDate, purchaseFrequency,
 		        mathContext);
-		final EntryLogic entryLogic = EntryLogicFactory.create(equity, startDate, purchaseFrequency, mathContext);
 		final String description = descriptions.getDescription(brokerageType, purchaseFrequency);
 		return new BacktestBootstrapConfiguration(entryLogic, getExitLogic(), brokerage, cashAccount, simulationDates,
 		        description);
@@ -125,7 +126,7 @@ public class BacktestBootstrapConfigurationGenerator {
 		final IndicatorSignalGenerator[] entrySignals = new IndicatorSignalGenerator[indicators.length];
 
 		for (int i = 0; i < entrySignals.length; i++) {
-			entrySignals[i] = IndicatorSignalGeneratorFactory.create(indicators[i], mathContext);
+			entrySignals[i] = IndicatorSignalGeneratorFactory.getInstance().create(indicators[i], mathContext);
 		}
 
 		final String description = descriptions.getDescription(minimumTrade, maximumTrade, indicators);
@@ -143,12 +144,13 @@ public class BacktestBootstrapConfigurationGenerator {
 		final RelativeTradeValue tradeValue = new RelativeTradeValue(minimumTrade.getValue(), maximumTrade.getValue(),
 		        mathContext);
 
-		final EntryLogic entryLogic = EntryLogicFactory.create(equityIdentity, tradeValue, simulationDates,
-		        EntryLogicFilterConfiguration.SAME_DAY, mathContext, entrySignals);
-		final EquityWithFeeConfiguration equity = new EquityWithFeeConfiguration(equityIdentity,
+		final EntryLogic entryLogic = EntryLogicFactory.getInstance().create(equityIdentity, tradeValue,
+		        simulationDates, EntryLogicFilterConfiguration.SAME_DAY, mathContext, entrySignals);
+		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(equityIdentity,
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
-		final Brokerage cmcMarkets = BrokerageFactoroy.create(equity, brokerageType, startDate, mathContext);
-		final CashAccount cashAccount = CashAccountFactory.create(startDate, deposit, mathContext);
+		final Brokerage cmcMarkets = BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
+		        startDate, mathContext);
+		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit, mathContext);
 		return new BacktestBootstrapConfiguration(entryLogic, getExitLogic(), cmcMarkets, cashAccount, simulationDates,
 		        description);
 	}

@@ -37,5 +37,6 @@ public interface Event {
 	 * 
 	 * @return all the details of the event, as a String.
 	 */
+	@Override
 	String toString();
 }

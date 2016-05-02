@@ -50,7 +50,16 @@ public class CashAccountFactory {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(CashAccountFactory.class);
 
-	public static CashAccount create( final LocalDate startDate, final DepositConfiguration deposit,
+	private static final CashAccountFactory INSTANCE = new CashAccountFactory();
+
+	private CashAccountFactory() {
+	}
+
+	public static final CashAccountFactory getInstance() {
+		return INSTANCE;
+	}
+
+	public CashAccount create( final LocalDate startDate, final DepositConfiguration deposit,
 	        final MathContext mathContext ) {
 
 		final BigDecimal depositAmount = deposit.getAmount();
@@ -58,20 +67,18 @@ public class CashAccountFactory {
 
 		// TODO all these into a configuration - interest rate, deposit & frequency
 		final BigDecimal annualRate = BigDecimal.valueOf(1.5);
-		final InterestRate annualInterestRate = InterestRateFactory.create(InterestRateConfiguration.FLAT_INTEREST_RATE,
-		        annualRate, mathContext);
-		final CashAccount underlyingAccount = CashAccountFactory.create(
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, annualInterestRate, BigDecimal.ZERO, startDate,
-		        mathContext);
+		final InterestRate annualInterestRate = InterestRateFactory.getInstance()
+		        .create(InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, mathContext);
+		final CashAccount underlyingAccount = create(CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
+		        annualInterestRate, BigDecimal.ZERO, startDate, mathContext);
 		return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate, depositFrequency);
 	}
 
 	/**
 	 * Create an instance of the a cash account.
 	 */
-	public static CashAccount create( final CashAccountConfiguration configuration,
-	        final InterestRate annualInterestRate, final BigDecimal openingFunds, final LocalDate openingDate,
-	        final MathContext mathContext ) {
+	public CashAccount create( final CashAccountConfiguration configuration, final InterestRate annualInterestRate,
+	        final BigDecimal openingFunds, final LocalDate openingDate, final MathContext mathContext ) {
 
 		try {
 			Constructor<?> cons = configuration.getType().getConstructor(InterestRate.class, BigDecimal.class,

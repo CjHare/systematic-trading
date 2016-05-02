@@ -50,10 +50,19 @@ public class BrokerageFactoroy {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(BrokerageFactoroy.class);
 
+	private static final BrokerageFactoroy INSTANCE = new BrokerageFactoroy();
+
+	private BrokerageFactoroy() {
+	}
+
+	public static BrokerageFactoroy getInstance() {
+		return INSTANCE;
+	}
+
 	/**
 	 * Create an instance of the fee structure.
 	 */
-	private static BrokerageTransactionFeeStructure createFeeStructure( final BrokerageFeesConfiguration fee,
+	private BrokerageTransactionFeeStructure createFeeStructure( final BrokerageFeesConfiguration fee,
 	        final MathContext mathContext ) {
 
 		try {
@@ -67,7 +76,7 @@ public class BrokerageFactoroy {
 		throw new IllegalArgumentException(String.format("Could not create the desired fee structure: %s", fee));
 	}
 
-	public static Brokerage create( final EquityWithFeeConfiguration equity, final BrokerageFeesConfiguration fees,
+	public Brokerage create( final EquityWithFeeConfiguration equity, final BrokerageFeesConfiguration fees,
 	        final LocalDate startDate, final MathContext mathContext ) {
 
 		final BrokerageTransactionFeeStructure tradingFeeStructure = createFeeStructure(fees, mathContext);

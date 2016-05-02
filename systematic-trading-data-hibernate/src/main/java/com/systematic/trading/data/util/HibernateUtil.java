@@ -37,7 +37,10 @@ import com.systematic.trading.data.HistoryRetrievalRequest;
 public class HibernateUtil {
 
 	private static final Logger LOG = LogManager.getLogger(HibernateUtil.class);
-	private static final SessionFactory sessionFactory = buildSessionFactory();
+	private static final SessionFactory SESSION_FACTORY = buildSessionFactory();
+
+	private HibernateUtil() {
+	}
 
 	private static SessionFactory buildSessionFactory() {
 		try {
@@ -59,7 +62,7 @@ public class HibernateUtil {
 	}
 
 	public static SessionFactory getSessionFactory() {
-		return sessionFactory;
+		return SESSION_FACTORY;
 	}
 
 }

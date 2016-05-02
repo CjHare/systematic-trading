@@ -38,7 +38,16 @@ import com.systematic.trading.data.price.OpeningPrice;
 
 public class TradingDayPricesUtil {
 
-	public static TradingDayPrices parseDataPoint( final String tickerSymbol, final Object uncast ) {
+	private static final TradingDayPricesUtil INSTANCE = new TradingDayPricesUtil();
+
+	private TradingDayPricesUtil() {
+	}
+
+	public static final TradingDayPricesUtil getInstance() {
+		return INSTANCE;
+	}
+
+	public TradingDayPrices parseDataPoint( final String tickerSymbol, final Object uncast ) {
 		final Object[] data = (Object[]) uncast;
 		final LocalDate date = parseDate(data[0]);
 
@@ -50,11 +59,11 @@ public class TradingDayPricesUtil {
 		return new TradingDayPricesImpl(tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice);
 	}
 
-	private static LocalDate parseDate( final Object o ) {
+	private LocalDate parseDate( final Object o ) {
 		return Date.valueOf(o.toString()).toLocalDate();
 	}
 
-	private static BigDecimal parseBigDecimal( final Object o ) {
+	private BigDecimal parseBigDecimal( final Object o ) {
 		return BigDecimal.valueOf(Double.valueOf(o.toString()));
 	}
 }

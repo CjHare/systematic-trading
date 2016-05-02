@@ -76,7 +76,7 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 			if (holdingsValue.compareTo(range[i]) < 0) {
 				// The the holdings is below the top end of this range
 				spread = holdingsValue.subtract(topEndOfLastRange, mathContext);
-				i = range.length;
+				break;
 			} else {
 				// Holdings cover all this range (preceeding ones too)
 				spread = range[i].subtract(topEndOfLastRange, mathContext);

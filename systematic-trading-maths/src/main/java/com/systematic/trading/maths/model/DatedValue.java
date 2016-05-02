@@ -55,6 +55,7 @@ public class DatedValue implements TradingDayPrices {
 		this.value = value;
 	}
 
+	@Override
 	public LocalDate getDate() {
 		return date;
 	}

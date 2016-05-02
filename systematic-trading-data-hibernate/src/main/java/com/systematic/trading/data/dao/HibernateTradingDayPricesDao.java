@@ -141,7 +141,7 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		}
 
 		// Convert result entries into the DataPoint
-		return TradingDayPricesUtil.parseDataPoint(tickerSymbol, result.get(0));
+		return TradingDayPricesUtil.getInstance().parseDataPoint(tickerSymbol, result.get(0));
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		// Convert result entries into the DataPoint
 		final TradingDayPrices[] data = new TradingDayPrices[result.size()];
 		for (int i = 0; i < data.length; i++) {
-			data[i] = TradingDayPricesUtil.parseDataPoint(tickerSymbol, result.get(i));
+			data[i] = TradingDayPricesUtil.getInstance().parseDataPoint(tickerSymbol, result.get(i));
 		}
 
 		return data;

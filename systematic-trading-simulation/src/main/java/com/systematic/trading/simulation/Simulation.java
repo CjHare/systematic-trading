@@ -144,16 +144,19 @@ public class Simulation {
 	 * @param orders orders carried over from yesterday.
 	 * @return the outstanding orders to carry over to tomorrow.
 	 */
-	private List<EquityOrder> processTradingData( final TradingDayPrices tradingDataToday, List<EquityOrder> orders ) {
+	private List<EquityOrder> processTradingData( final TradingDayPrices tradingDataToday,
+	        final List<EquityOrder> orders ) {
 
 		// Attempt to execute the queued orders
-		orders = processOutstandingOrders(orders, tradingDataToday);
+		final List<EquityOrder> withoutAnyOutstandingOrders = processOutstandingOrders(orders, tradingDataToday);
 
 		// Apply analysis to generate more orders
-		orders = addExitOrderForToday(tradingDataToday, orders);
-		orders = addEntryOrderForToday(tradingDataToday, orders);
+		final List<EquityOrder> exitOrdersIncluded = addExitOrderForToday(tradingDataToday,
+		        withoutAnyOutstandingOrders);
+		final List<EquityOrder> allOrdersIncluded = addEntryOrderForToday(tradingDataToday,
+		        exitOrdersIncluded);
 
-		return orders;
+		return allOrdersIncluded;
 	}
 
 	/**

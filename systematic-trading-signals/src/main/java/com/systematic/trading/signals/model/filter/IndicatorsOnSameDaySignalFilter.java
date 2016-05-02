@@ -79,7 +79,7 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 					matches++;
 				} else {
 					// We need a match across all indicators, missed one :. don't continue
-					i = indicators.length;
+					break;
 				}
 			}
 

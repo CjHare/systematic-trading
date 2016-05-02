@@ -45,10 +45,19 @@ public class InterestRateFactory {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(InterestRateFactory.class);
 
+	private static final InterestRateFactory INSTANCE = new InterestRateFactory();
+
+	private InterestRateFactory() {
+	}
+
+	public static final InterestRateFactory getInstance() {
+		return INSTANCE;
+	}
+
 	/**
 	 * Create an instance of the a interest rate.
 	 */
-	public static InterestRate create( final InterestRateConfiguration configuration, final BigDecimal annualRate,
+	public InterestRate create( final InterestRateConfiguration configuration, final BigDecimal annualRate,
 	        final MathContext mathContext ) {
 
 		try {

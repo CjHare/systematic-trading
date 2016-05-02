@@ -45,6 +45,9 @@ public class BrokerageFeeUtil {
 	public static final BigDecimal EIGHT_BASIS_POINTS = BigDecimal.valueOf(.0008);
 	public static final BigDecimal SEVENTY_FIVE_BASIS_POINTS = BigDecimal.valueOf(.00075);
 
+	private BrokerageFeeUtil() {
+	}
+
 	/**
 	 * Calculates and return the larger value from the absolute and percentage.
 	 * 

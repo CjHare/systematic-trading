@@ -53,8 +53,8 @@ public class EveryIndicatorIsBuySignalFilter implements SignalFilter {
 
 		final SortedSet<BuySignal> passedSignals = new TreeSet<>(new BuySignalDateComparator());
 
-		for (final IndicatorSignalType type : signals.keySet()) {
-			for (final IndicatorSignal signal : signals.get(type)) {
+		for (final List<IndicatorSignal> values : signals.values()) {
+			for (final IndicatorSignal signal : values) {
 				passedSignals.add(new BuySignal(signal.getDate()));
 			}
 		}

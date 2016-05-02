@@ -57,18 +57,27 @@ public class EntryLogicFactory {
 	/* Number of days of signals to use when triggering signals.*/
 	private static final int DAYS_ACCEPTING_SIGNALS = 5;
 
-	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate,
+	private static final EntryLogicFactory INSTANCE = new EntryLogicFactory();
+
+	private EntryLogicFactory() {
+	}
+
+	public static final EntryLogicFactory getInstance() {
+		return INSTANCE;
+	}
+
+	public EntryLogic create( final EquityIdentity equity, final LocalDate startDate,
 	        final DepositConfiguration deposit, final MathContext mathContext ) {
 		final Period frequency = deposit.getFrequency();
 		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency, mathContext);
 	}
 
-	public static EntryLogic create( final EquityIdentity equity, final LocalDate startDate, final Period frequency,
+	public EntryLogic create( final EquityIdentity equity, final LocalDate startDate, final Period frequency,
 	        final MathContext mathContext ) {
 		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency, mathContext);
 	}
 
-	public static EntryLogic create( final EquityIdentity equity, final TradeValue tradeValue,
+	public EntryLogic create( final EquityIdentity equity, final TradeValue tradeValue,
 	        final BacktestSimulationDates simulationDates, final EntryLogicFilterConfiguration filterConfiguration,
 	        final MathContext mathContext, final IndicatorSignalGenerator... entrySignals ) {
 
@@ -97,7 +106,7 @@ public class EntryLogicFactory {
 		        mathContext);
 	}
 
-	private static SignalFilter creatSignalFilter( final EntryLogicFilterConfiguration configuration,
+	private SignalFilter creatSignalFilter( final EntryLogicFilterConfiguration configuration,
 	        final IndicatorSignalGenerator[] entrySignals ) {
 
 		switch (configuration) {
