@@ -153,10 +153,8 @@ public class Simulation {
 		// Apply analysis to generate more orders
 		final List<EquityOrder> exitOrdersIncluded = addExitOrderForToday(tradingDataToday,
 		        withoutAnyOutstandingOrders);
-		final List<EquityOrder> allOrdersIncluded = addEntryOrderForToday(tradingDataToday,
-		        exitOrdersIncluded);
 
-		return allOrdersIncluded;
+		return addEntryOrderForToday(tradingDataToday, exitOrdersIncluded);
 	}
 
 	/**
