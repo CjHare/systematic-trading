@@ -64,7 +64,7 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfigurations configurations, final String... args ) throws Exception {
+	public void runTest( final BacktestConfigurations configurations, final String... args ) throws ServiceException {
 
 		final String baseOutputDirectory = getBaseOutputDirectory(args);
 		final DescriptionGenerator filenameGenerator = new DescriptionGenerator();
@@ -107,13 +107,22 @@ public class BacktestApplication {
 
 		} finally {
 			HibernateUtil.getSessionFactory().close();
-			pool.shutdown();
 
-			LOG.info("Waiting at most 90 minutes for result output to complete...");
-			pool.awaitTermination(90, TimeUnit.MINUTES);
+			closePool(pool);
 		}
 
 		LOG.info("Finished outputting results");
+	}
+
+	private static void closePool( final ExecutorService pool ) {
+		pool.shutdown();
+
+		LOG.info("Waiting at most 90 minutes for result output to complete...");
+		try {
+			pool.awaitTermination(90, TimeUnit.MINUTES);
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	private static Period getWarmUpPeriod() {
