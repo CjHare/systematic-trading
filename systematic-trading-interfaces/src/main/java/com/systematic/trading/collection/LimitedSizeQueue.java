@@ -86,4 +86,27 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 	public int getLimit() {
 		return limit;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + limit;
+		return result;
+	}
+
+	@Override
+	public boolean equals( final Object obj ) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		@SuppressWarnings("unchecked")
+		LimitedSizeQueue<E> other = (LimitedSizeQueue<E>) obj;
+		if (limit != other.limit)
+			return false;
+		return true;
+	}
 }
