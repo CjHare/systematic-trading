@@ -56,6 +56,7 @@ public class FileNoDisplay implements BacktestDisplay {
 	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
 	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
 	        final TradingDayPrices lastTradingDay, final Period duration ) throws BacktestInitialisationException {
+		// Recording of this event is not required for no display
 	}
 
 	@Override
