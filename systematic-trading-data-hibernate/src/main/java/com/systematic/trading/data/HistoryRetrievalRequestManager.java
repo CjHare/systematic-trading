@@ -85,18 +85,15 @@ public class HistoryRetrievalRequestManager {
 	public List<HistoryRetrievalRequest> get( final String tickerSymbol ) {
 
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx = null;
+		Transaction tx = session.beginTransaction();
 
 		try {
-			tx = session.beginTransaction();
-
 			final Query query = session.createQuery("from HistoryRetrievalRequest where ticker_symbol= :ticker_symbol");
 			query.setString("ticker_symbol", tickerSymbol);
 
 			return query.list();
 
 		} catch (final HibernateException e) {
-
 			LOG.error(e);
 
 		} finally {
@@ -111,9 +108,7 @@ public class HistoryRetrievalRequestManager {
 	public void delete( final HistoryRetrievalRequest request ) {
 
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx = null;
-
-		tx = session.beginTransaction();
+		Transaction tx = session.beginTransaction();
 
 		try {
 			session.delete(request);
