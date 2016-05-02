@@ -88,7 +88,7 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 		final List<BigDecimal> sma = movingAverage.sma(data);
 
 		// Only look at the gradient if there's more than one sma result
-		if (sma.isEmpty()) {
+		if (!sma.isEmpty()) {
 			return analysisGradient(data, sma);
 		}
 
