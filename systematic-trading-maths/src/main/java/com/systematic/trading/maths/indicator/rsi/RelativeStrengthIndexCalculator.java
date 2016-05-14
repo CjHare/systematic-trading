@@ -152,24 +152,19 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 			switch (closeToday.compareTo(closeYesterday)) {
 
-				// Today's price is higher then yesterdays
-				case 1:
+				case 1: // Today's price is higher then yesterdays
 					upward = (closeToday.subtract(closeYesterday, mathContext).subtract(upward, mathContext))
 					        .multiply(smoothingConstant, mathContext).add(upward, mathContext);
-
 					downward = downward.negate().multiply(smoothingConstant, mathContext).add(downward, mathContext);
 				break;
 
-				// Today's price is lower then yesterdays
-				case -1:
+				case -1: // Today's price is lower then yesterdays
 					upward = upward.negate().multiply(smoothingConstant, mathContext).add(upward, mathContext);
-
 					downward = (closeYesterday.subtract(closeToday, mathContext).subtract(downward, mathContext))
 					        .multiply(smoothingConstant, mathContext).add(downward, mathContext);
 				break;
 
-				// When equal there's no movement, both are zero
-				case 0:
+				case 0: // When equal there's no movement, both are zero
 				default:
 				break;
 			}
@@ -190,7 +185,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 		return relativeStrengthIndexValues;
 	}
-
+	
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {
 		return BigDecimal.valueOf(2d / (lookback + 1));
 	}
