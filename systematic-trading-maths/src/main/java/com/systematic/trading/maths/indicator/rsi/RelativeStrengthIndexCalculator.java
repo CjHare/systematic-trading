@@ -101,32 +101,57 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
+		final int startWindupIndex = 0;
+		final int endWindupIndex = startWindupIndex + lookback;
+
+		final UpwardsToDownwardsMovement initialLookback = calculateWindup(data, startWindupIndex, endWindupIndex);
+
+		calculateRelativeStrengthValues(data, initialLookback, endWindupIndex);
+
+		return calculateRelativeStrengthIndexValues();
+	}
+
+	private BigDecimal calculateSmoothingConstant( final int lookback ) {
+		return BigDecimal.valueOf(2d / (lookback + 1));
+	}
+
+	private List<BigDecimal> calculateRelativeStrengthIndexValues() {
 		relativeStrengthIndexValues.clear();
-		relativeStrengthValues.clear();
 
-		/* For the first zero - time period entries calculate the SMA based on up to down movement
-		 * Upwards movement upward = closeToday - closeYesterday downward = 0 Downwards movement
-		 * upward = closeYesterday - closeToday */
-		final int startRsiIndex = 0;
+		/* RSI = 100 / 1 + RS */
+		for (final BigDecimal rs : relativeStrengthValues) {
+			relativeStrengthIndexValues
+			        .add(ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(rs), mathContext)));
+		}
+
+		return relativeStrengthIndexValues;
+	}
+
+	/**
+	 * For the first zero - time period entries calculate the SMA based on up to down movement to use as the first RS value.
+	 */
+	private UpwardsToDownwardsMovement calculateWindup( final TradingDayPrices[] data, final int startWindupIndex,
+	        final int endWindupIndex ) {
+
 		ClosingPrice closeToday;
-		ClosingPrice closeYesterday = data[startRsiIndex].getClosingPrice();
-		BigDecimal upward = BigDecimal.ZERO;
-		BigDecimal downward = BigDecimal.ZERO;
+		ClosingPrice closeYesterday = data[startWindupIndex].getClosingPrice();
 
-		final int endInitialLookback = startRsiIndex + lookback;
-		for (int i = startRsiIndex; i < endInitialLookback; i++) {
+		// Calculate the starting values via SMA
+		final UpwardsToDownwardsMovement initialLookback = new UpwardsToDownwardsMovement(mathContext);
+
+		for (int i = startWindupIndex; i < endWindupIndex; i++) {
 			closeToday = data[i].getClosingPrice();
 
 			switch (closeToday.compareTo(closeYesterday)) {
 
 				// Today's price is higher then yesterdays
 				case 1:
-					upward = upward.add(closeToday.subtract(closeYesterday, mathContext));
+					initialLookback.addUpwards(closeToday.subtract(closeYesterday, mathContext));
 				break;
 
 				// Today's price is lower then yesterdays
 				case -1:
-					downward = downward.add(closeYesterday.subtract(closeToday, mathContext));
+					initialLookback.addDownwards(closeYesterday.subtract(closeToday, mathContext));
 				break;
 
 				// When equal there's no movement, both are zero
@@ -140,12 +165,25 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 		// Dividing by the number of time periods for a SMA
 		// Reduce lookup by one, as the initial value is neither up or down
-		upward = upward.divide(BigDecimal.valueOf(lookback - 1L), mathContext);
-		downward = downward.divide(BigDecimal.valueOf(lookback - 1L), mathContext);
+		initialLookback.divideUpwards(BigDecimal.valueOf(lookback - 1L));
+		initialLookback.divideDownwards(BigDecimal.valueOf(lookback - 1L));
+
+		return initialLookback;
+	}
+
+	private void calculateRelativeStrengthValues( final TradingDayPrices[] data,
+	        final UpwardsToDownwardsMovement initialLookback, final int endWindupIndex ) {
+
+		relativeStrengthValues.clear();
+
+		BigDecimal upward = initialLookback.getUpward();
+		BigDecimal downward = initialLookback.getDownward();
+		ClosingPrice closeToday;
+		ClosingPrice closeYesterday;
 
 		/* RS = EMA(U,n) / EMA(D,n) (smoothing constant) multiplier: (2 / (Time periods + 1) ) EMA:
 		 * {Close - EMA(previous day)} x multiplier + EMA(previous day). */
-		for (int i = endInitialLookback; i < data.length; i++) {
+		for (int i = endWindupIndex; i < data.length; i++) {
 
 			closeToday = data[i].getClosingPrice();
 			closeYesterday = data[i - 1].getClosingPrice();
@@ -176,17 +214,5 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 				relativeStrengthValues.add(upward.divide(downward, mathContext));
 			}
 		}
-
-		/* RSI = 100 / 1 + RS */
-		for (final BigDecimal rs : relativeStrengthValues) {
-			relativeStrengthIndexValues
-			        .add(ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(rs), mathContext)));
-		}
-
-		return relativeStrengthIndexValues;
-	}
-	
-	private BigDecimal calculateSmoothingConstant( final int lookback ) {
-		return BigDecimal.valueOf(2d / (lookback + 1));
 	}
 }
