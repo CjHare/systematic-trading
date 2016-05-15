@@ -31,6 +31,11 @@ public class BuySignal {
 	private final LocalDate date;
 
 	public BuySignal(final LocalDate date) {
+
+		if (date == null) {
+			throw new IllegalArgumentException("Expecting a non-null BuySignal date");
+		}
+
 		this.date = date;
 	}
 
@@ -40,14 +45,12 @@ public class BuySignal {
 
 	@Override
 	public boolean equals( final Object o ) {
-		return o instanceof BuySignal && ((BuySignal) o).getDate().equals(date);
+		return o != null && o instanceof BuySignal && ((BuySignal) o).getDate().equals(date);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		return result;
+		return prime + date.hashCode();
 	}
 }
