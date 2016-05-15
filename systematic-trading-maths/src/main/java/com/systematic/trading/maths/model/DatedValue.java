@@ -66,7 +66,8 @@ public class DatedValue implements TradingDayPrices {
 
 	@Override
 	public ClosingPrice getClosingPrice() {
-		return value == null ? null : ClosingPrice.valueOf(value);
+		// Immutable value is verified as non-null in constructor
+		return ClosingPrice.valueOf(value);
 	}
 
 	@Override
