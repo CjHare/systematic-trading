@@ -47,6 +47,12 @@ import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
+	/** When there are no signals generators, no input is needed.*/
+	private static final int NO_DAYS_REQUIRED = 0;
+
+	/** Used for converting from base zero to base one counting systems. */
+	private static final int CONVERT_BASE_ZERO_TO_BASE_ONE = 1;
+
 	/** Default ordering of signals. */
 	private static final BuySignalDateComparator BUY_SIGNAL_ORDER_BY_DATE = new BuySignalDateComparator();
 
@@ -63,12 +69,22 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	private final List<IndicatorSignalGenerator> generators;
 
 	public AnalysisLongBuySignals(final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters) {
+		validateInput(generators, filters);
+
 		this.generators = generators;
 		this.filters = filters;
 		this.requiredNumberOfTradingDays = getRequiredNumberOfTradingDays();
 	}
 
-	// TODO test
+	private void validateInput( final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters ) {
+		if (generators == null) {
+			throw new IllegalArgumentException("Expecting a non-null list of generators");
+		}
+		if (filters == null) {
+			throw new IllegalArgumentException("Expecting a non-null list of filters");
+		}
+	}
+
 	private int getRequiredNumberOfTradingDays() {
 
 		final List<Integer> requiredTradingDays = new ArrayList<>();
@@ -76,8 +92,8 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 			requiredTradingDays.add(generator.getRequiredNumberOfTradingDays());
 		}
 
-		// 't be magicTODO the plus one shouldn't be magic
-		return Collections.max(requiredTradingDays) + 1;
+		return requiredTradingDays.isEmpty() ? NO_DAYS_REQUIRED
+		        : Collections.max(requiredTradingDays) + CONVERT_BASE_ZERO_TO_BASE_ONE;
 	}
 
 	@Override

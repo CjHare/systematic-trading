@@ -71,7 +71,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	public void event( final NetWorthEvent event, final SimulationState state ) {
 
 		// Only interested in the net worth when the simulation is complete
-		if (SimulationState.COMPLETE.equals(state)) {
+		if (SimulationState.COMPLETE == state) {
 			display.write(createOutput(statistics, event));
 		}
 	}

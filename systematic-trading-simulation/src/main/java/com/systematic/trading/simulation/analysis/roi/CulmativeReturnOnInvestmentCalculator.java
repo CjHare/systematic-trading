@@ -148,7 +148,7 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	@Override
 	public void event( final CashEvent cashEvent ) {
 
-		if (CashEventType.DEPOSIT.equals(cashEvent.getType())) {
+		if (CashEventType.DEPOSIT == cashEvent.getType()) {
 			// Add the deposit to the running total
 			depositedSincePreviousNetWorth = depositedSincePreviousNetWorth.add(cashEvent.getAmount(), mathContext);
 		}

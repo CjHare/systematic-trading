@@ -83,7 +83,7 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
 
-		if (SimulationState.COMPLETE.equals(state)) {
+		if (SimulationState.COMPLETE == state) {
 			lastEvent = event;
 		}
 	}

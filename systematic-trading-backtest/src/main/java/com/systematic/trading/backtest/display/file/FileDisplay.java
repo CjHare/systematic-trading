@@ -47,7 +47,7 @@ public abstract class FileDisplay implements BacktestDisplay {
 	@Override
 	public void stateChanged( final SimulationState transitionedState ) {
 
-		if (SimulationState.COMPLETE.equals(transitionedState)) {
+		if (SimulationState.COMPLETE == transitionedState) {
 			simulationCompleted();
 		}
 	}
