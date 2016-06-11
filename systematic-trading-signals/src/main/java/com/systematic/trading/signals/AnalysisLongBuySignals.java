@@ -103,7 +103,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		Arrays.sort(data, TRADING_DAY_ORDER_BY_DATE);
 
 		// Generate the indicator signals
-		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = addSignals(data);
+		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = getSignals(data);
 
 		final LocalDate latestTradingDate = data[data.length - 1].getDate();
 		final List<BuySignal> signals = new ArrayList<>();
@@ -116,7 +116,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		return signals;
 	}
 
-	private Map<IndicatorSignalType, List<IndicatorSignal>> addSignals( final TradingDayPrices[] data ) {
+	private Map<IndicatorSignalType, List<IndicatorSignal>> getSignals( final TradingDayPrices[] data ) {
 
 		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = new EnumMap<>(
 		        IndicatorSignalType.class);
