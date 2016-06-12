@@ -27,6 +27,7 @@ package com.systematic.trading.signals.model.event;
 
 import java.time.LocalDate;
 
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -49,4 +50,11 @@ public interface SignalAnalysisEvent {
 	 * @return date of the signal, when there is one.
 	 */
 	LocalDate getSignalDate();
+
+	/**
+	 * The direction of the indicator signal generated from analysis.
+	 * 
+	 * @return the direction of the signal.
+	 */
+	IndicatorDirectionType getDirectionType();
 }

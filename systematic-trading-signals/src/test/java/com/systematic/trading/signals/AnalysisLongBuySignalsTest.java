@@ -18,6 +18,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.BuySignal;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.filter.EveryIndicatorIsBuySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
@@ -122,7 +123,7 @@ public class AnalysisLongBuySignalsTest {
 		when(generatorA.getSignalType()).thenReturn(IndicatorSignalType.RSI);
 		final List<IndicatorSignal> signalsGeneratorA = new ArrayList<>();
 		final IndicatorSignal firstSignal = new IndicatorSignal(LocalDate.now().minus(2, ChronoUnit.DAYS),
-		        IndicatorSignalType.RSI);
+		        IndicatorSignalType.RSI, IndicatorDirectionType.UP);
 		signalsGeneratorA.add(firstSignal);
 		when(generatorA.calculateSignals(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorA);
 
@@ -130,9 +131,10 @@ public class AnalysisLongBuySignalsTest {
 		when(generatorB.getSignalType()).thenReturn(IndicatorSignalType.MACD);
 		final List<IndicatorSignal> signalsGeneratorB = new ArrayList<>();
 		final IndicatorSignal secondSignal = new IndicatorSignal(LocalDate.now().minus(1, ChronoUnit.DAYS),
-		        IndicatorSignalType.MACD);
+		        IndicatorSignalType.MACD, IndicatorDirectionType.UP);
 		signalsGeneratorB.add(secondSignal);
-		final IndicatorSignal thirdSignal = new IndicatorSignal(LocalDate.now(), IndicatorSignalType.SMA);
+		final IndicatorSignal thirdSignal = new IndicatorSignal(LocalDate.now(), IndicatorSignalType.SMA,
+		        IndicatorDirectionType.UP);
 		signalsGeneratorB.add(thirdSignal);
 		when(generatorB.calculateSignals(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorB);
 

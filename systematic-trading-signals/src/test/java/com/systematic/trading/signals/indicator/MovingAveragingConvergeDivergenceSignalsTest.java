@@ -3,7 +3,6 @@ package com.systematic.trading.signals.indicator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -12,9 +11,10 @@ import java.util.List;
 import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
-public class MovingAveragingConvergeDivergenceSignalsTest {
+public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 
 	@Test
 	public void getRequiredNumberOfTradingDays() {
@@ -23,7 +23,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final int signalTimePeriods = 7;
 
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(
-		        fastTimePeriods, slowTimePeriods, signalTimePeriods, MathContext.DECIMAL64);
+		        fastTimePeriods, slowTimePeriods, signalTimePeriods, MATH_CONTEXT);
 
 		assertEquals(37, signals.getRequiredNumberOfTradingDays());
 	}
@@ -43,7 +43,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final int signalTimePeriods = 7;
 
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(
-		        fastTimePeriods, slowTimePeriods, signalTimePeriods, MathContext.DECIMAL64);
+		        fastTimePeriods, slowTimePeriods, signalTimePeriods, MATH_CONTEXT);
 
 		final TradingDayPrices[] data = createFlatTradingDayPrices(37, 10);
 
@@ -61,7 +61,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final int signalTimePeriods = 7;
 
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(
-		        fastTimePeriods, slowTimePeriods, signalTimePeriods, MathContext.DECIMAL64);
+		        fastTimePeriods, slowTimePeriods, signalTimePeriods, MATH_CONTEXT);
 
 		// Create a down, then an up-spike
 		final TradingDayPrices[] data = addSpike(15, 15, -100,
@@ -71,32 +71,9 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 
 		assertNotNull(results);
 		assertEquals(1, results.size());
-		assertEquals(IndicatorSignalType.MACD, results.get(0).getType());
+		assertEquals(IndicatorSignalType.MACD, results.get(0).getSignal());
+		assertEquals(IndicatorDirectionType.UP, results.get(0).getDirection());
+
 		assertEquals(LocalDate.now().minus(buyPriceSpike, ChronoUnit.DAYS), results.get(0).getDate());
-	}
-
-	private TradingDayPrices[] createFlatTradingDayPrices( final int count, final int price ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		final LocalDate startDate = LocalDate.now().minus(count, ChronoUnit.DAYS);
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(startDate.plus(i, ChronoUnit.DAYS), BigDecimal.valueOf(price),
-			        BigDecimal.valueOf(price), BigDecimal.valueOf(price), BigDecimal.valueOf(price));
-		}
-
-		return prices;
-	}
-
-	private TradingDayPrices[] addSpike( final int start, final int count, final int increasePrice,
-	        final TradingDayPrices[] prices ) {
-
-		for (int i = start; i < start + count; i++) {
-			final BigDecimal price = prices[i].getClosingPrice().getPrice().add(BigDecimal.valueOf(increasePrice));
-
-			prices[i] = new TradingDayPricesImpl(prices[i].getDate(), price, price, price, price);
-		}
-
-		return prices;
 	}
 }

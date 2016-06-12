@@ -37,6 +37,7 @@ import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageK;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageKCalculator;
 import com.systematic.trading.maths.model.DatedValue;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -110,6 +111,8 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 		BigDecimal signalLineToday;
 		BigDecimal signalLineYesterday;
 
+		//TODO generate the down signals too
+
 		for (int index = 1; index < signaline.size(); index++) {
 			pointToday = dataPoint[index + offset].getValue();
 			pointYesterday = dataPoint[index - 1 + offset].getValue();
@@ -119,8 +122,8 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 			// The MACD trends up, with crossing the signal line
 			// OR trending up and crossing the zero line
 			if (crossingSignalLine(pointYesterday, pointToday, signalLineToday, signalLineYesterday)) {
-				buySignals
-				        .add(new IndicatorSignal(dataPoint[index + offset].getDate(), IndicatorSignalType.STOCHASTIC));
+				buySignals.add(new IndicatorSignal(dataPoint[index + offset].getDate(), IndicatorSignalType.STOCHASTIC,
+				        IndicatorDirectionType.UP));
 			}
 
 		}

@@ -34,6 +34,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -103,23 +104,26 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 
 		// Start with the first value, bump the index
 		BigDecimal previous = sma.get(0);
-
 		for (int index = 1; index < sma.size(); index++) {
 
+			//TODO generate the down signals too
 			switch (signalGenerated) {
 				case POSITIVE:
 					if (isPositiveGardient(previous, sma.get(index))) {
-						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA));
+						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
+						        IndicatorDirectionType.UP));
 					}
 				break;
 				case FLAT:
 					if (isFlatGardient(previous, sma.get(index))) {
-						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA));
+						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
+						        IndicatorDirectionType.UP));
 					}
 				break;
 				case NEGATIVE:
 					if (isNegativeGardient(previous, sma.get(index))) {
-						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA));
+						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
+						        IndicatorDirectionType.UP));
 					}
 				break;
 				default:

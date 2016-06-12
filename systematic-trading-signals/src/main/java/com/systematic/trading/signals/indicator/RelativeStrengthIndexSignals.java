@@ -27,7 +27,6 @@ package com.systematic.trading.signals.indicator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +34,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -83,54 +83,43 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		return buySignals(tenDayRsi, data);
 	}
 
-	protected List<IndicatorSignal> buySignals( final List<BigDecimal> rsi, final TradingDayPrices[] data ) {
+	private List<IndicatorSignal> buySignals( final List<BigDecimal> rsi, final TradingDayPrices[] data ) {
 
 		// TODO pass the store array in
 		final List<IndicatorSignal> buySignals = new ArrayList<>();
 
 		final int offset = data.length - rsi.size();
 
-		for (int index = 0; index < rsi.size(); index++) {
-			if (isOversold(rsi.get(index))) {
-				// rsi list maps to the right most data entries
-				buySignals.add(new IndicatorSignal(data[offset + index].getDate(), IndicatorSignalType.RSI));
+		// Need at least two values to test transition between barriers
+		for (int index = 1; index < rsi.size(); index++) {
+			if (hasTransitionedFromOversold(rsi, index)) {
+				buySignals.add(new IndicatorSignal(data[offset + index].getDate(), IndicatorSignalType.RSI,
+				        IndicatorDirectionType.UP));
 			}
 		}
 
 		return buySignals;
 	}
 
+	private boolean hasTransitionedFromOversold( final List<BigDecimal> rsi, final int index ) {
+		final BigDecimal rsiYesterday = rsi.get(index - 1);
+		final BigDecimal rsiToday = rsi.get(index);
+
+		return isOversold(rsiYesterday) && isNotOversold(rsiToday);
+	}
+
 	/**
-	 * Security is considered over sold when the RSI meet or falls below the threshold F
+	 * Security is considered over sold when the RSI meet or falls below the threshold.
 	 */
 	private boolean isOversold( final BigDecimal rsi ) {
 		return oversold.compareTo(rsi) >= 0;
 	}
 
-	protected List<IndicatorSignal> intersection( final List<IndicatorSignal> a, final List<IndicatorSignal> b ) {
-		final List<IndicatorSignal> intersection = new ArrayList<>();
-		final List<IndicatorSignal> shorter = a.size() < b.size() ? a : b;
-		final List<IndicatorSignal> larger = a.size() >= b.size() ? a : b;
-
-		for (final IndicatorSignal signal : shorter) {
-			// Match on the dates
-			final LocalDate aDate = signal.getDate();
-			if (contains(aDate, larger)) {
-				intersection.add(signal);
-			}
-		}
-
-		return intersection;
-	}
-
-	private boolean contains( final LocalDate date, final List<IndicatorSignal> signals ) {
-		for (final IndicatorSignal signal : signals) {
-			if (date.equals(signal.getDate())) {
-				return true;
-			}
-		}
-
-		return false;
+	/**
+	 * Security is not considered over sold when the RSI meet or falls below the threshold.
+	 */
+	private boolean isNotOversold( final BigDecimal rsi ) {
+		return oversold.compareTo(rsi) < 0;
 	}
 
 	@Override
