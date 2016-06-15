@@ -54,8 +54,10 @@ import com.systematic.trading.maths.indicator.Validator;
  */
 public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
+	//TODO fix this class, the numbers are currently wack, test against, flat, v shape, n shape as well as both gradients
+	
 	/** Constant for the value of 100. */
-	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(50);
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;

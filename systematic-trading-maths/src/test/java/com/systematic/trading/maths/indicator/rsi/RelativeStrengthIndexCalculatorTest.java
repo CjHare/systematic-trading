@@ -108,10 +108,10 @@ public class RelativeStrengthIndexCalculatorTest {
 
 		assertNotNull(rsi);
 		assertEquals(daysOfRsiValues, rsi.size());
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(0).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(1).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(2).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(3).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(0).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(1).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(2).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(3).setScale(2, RoundingMode.HALF_EVEN));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -180,10 +180,10 @@ public class RelativeStrengthIndexCalculatorTest {
 		assertNotNull(rsi);
 		assertEquals(daysOfRsiValues, rsi.size());
 		// RS of 50 == RSI 49.02
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(0).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(1).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(2).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(3).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(0).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(1).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(2).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(3).setScale(2, RoundingMode.HALF_EVEN));
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, dataSize);
@@ -238,18 +238,18 @@ public class RelativeStrengthIndexCalculatorTest {
 
 		assertNotNull(rsi);
 		assertEquals(2 * dataSize - lookback, rsi.size());
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(0).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(1).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(2).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(3).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(49.02), rsi.get(4).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(43.15), rsi.get(5).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(35.13), rsi.get(6).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(26.82), rsi.get(7).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(19.24), rsi.get(8).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(13.08), rsi.get(9).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(8.52), rsi.get(10).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(5.4), rsi.get(11).setScale(1, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(0).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(1).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(2).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(3).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(99.01), rsi.get(4).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(86.3), rsi.get(5).setScale(1, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(70.26), rsi.get(6).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(53.64), rsi.get(7).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(38.48), rsi.get(8).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(26.15), rsi.get(9).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(17.05), rsi.get(10).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(10.8), rsi.get(11).setScale(1, RoundingMode.HALF_EVEN));
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, dataSize);
@@ -285,13 +285,13 @@ public class RelativeStrengthIndexCalculatorTest {
 		assertEquals(BigDecimal.ZERO, rsi.get(2));
 		assertEquals(BigDecimal.ZERO, rsi.get(3));
 		assertEquals(BigDecimal.ZERO, rsi.get(4));
-		assertEquals(BigDecimal.valueOf(6.8493), rsi.get(5).setScale(4, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(14.8699), rsi.get(6).setScale(4, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(23.1788), rsi.get(7).setScale(4, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(30.7623), rsi.get(8).setScale(4, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(36.9241), rsi.get(9).setScale(4, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(41.475), rsi.get(10).setScale(3, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(44.6047), rsi.get(11).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(13.6986), rsi.get(5).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(29.7398), rsi.get(6).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(46.3576), rsi.get(7).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(61.5245), rsi.get(8).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(73.8482), rsi.get(9).setScale(4, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(82.95), rsi.get(10).setScale(2, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(89.2093), rsi.get(11).setScale(4, RoundingMode.HALF_EVEN));
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, dataSize);

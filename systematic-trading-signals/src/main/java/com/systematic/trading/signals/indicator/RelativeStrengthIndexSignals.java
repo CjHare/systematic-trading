@@ -77,28 +77,48 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		// Calculate the RSI signals
 		// TODO convert return type to value with date
-		final List<BigDecimal> tenDayRsi = rsi.rsi(data);
+		final List<BigDecimal> analysedRsi = rsi.rsi(data);
+
+		// TODO pass the store array in? or maybe not?
+		List<IndicatorSignal> signals = new ArrayList<>();
 
 		/* RSI triggers a buy signal when crossing the over brought level (e.g. 30) */
-		return buySignals(tenDayRsi, data);
+		signals = buySignals(analysedRsi, data, signals);
+		signals = sellSignals(analysedRsi, data, signals);
+
+		return signals;
 	}
 
-	private List<IndicatorSignal> buySignals( final List<BigDecimal> rsi, final TradingDayPrices[] data ) {
-
-		// TODO pass the store array in
-		final List<IndicatorSignal> buySignals = new ArrayList<>();
+	private List<IndicatorSignal> buySignals( final List<BigDecimal> rsi, final TradingDayPrices[] data,
+	        final List<IndicatorSignal> signals ) {
 
 		final int offset = data.length - rsi.size();
 
 		// Need at least two values to test transition between barriers
 		for (int index = 1; index < rsi.size(); index++) {
 			if (hasTransitionedFromOversold(rsi, index)) {
-				buySignals.add(new IndicatorSignal(data[offset + index].getDate(), IndicatorSignalType.RSI,
+				signals.add(new IndicatorSignal(data[offset + index].getDate(), IndicatorSignalType.RSI,
 				        IndicatorDirectionType.UP));
 			}
 		}
 
-		return buySignals;
+		return signals;
+	}
+
+	private List<IndicatorSignal> sellSignals( final List<BigDecimal> rsi, final TradingDayPrices[] data,
+	        final List<IndicatorSignal> signals ) {
+
+		final int offset = data.length - rsi.size();
+
+		// Need at least two values to test transition between barriers
+		for (int index = 1; index < rsi.size(); index++) {
+			if (hasTransitionedFromOverbrought(rsi, index)) {
+				signals.add(new IndicatorSignal(data[offset + index].getDate(), IndicatorSignalType.RSI,
+				        IndicatorDirectionType.DOWN));
+			}
+		}
+
+		return signals;
 	}
 
 	private boolean hasTransitionedFromOversold( final List<BigDecimal> rsi, final int index ) {
@@ -120,6 +140,27 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	 */
 	private boolean isNotOversold( final BigDecimal rsi ) {
 		return oversold.compareTo(rsi) < 0;
+	}
+
+	private boolean hasTransitionedFromOverbrought( final List<BigDecimal> rsi, final int index ) {
+		final BigDecimal rsiYesterday = rsi.get(index - 1);
+		final BigDecimal rsiToday = rsi.get(index);
+
+		return isOverbrought(rsiYesterday) && isNotOverbrought(rsiToday);
+	}
+
+	/**
+	 * Security is considered over sold when the RSI meet or falls below the threshold.
+	 */
+	private boolean isOverbrought( final BigDecimal rsi ) {
+		return overbought.compareTo(rsi) < 0;
+	}
+
+	/**
+	 * Security is not considered over sold when the RSI meet or falls below the threshold.
+	 */
+	private boolean isNotOverbrought( final BigDecimal rsi ) {
+		return overbought.compareTo(rsi) >= 0;
 	}
 
 	@Override

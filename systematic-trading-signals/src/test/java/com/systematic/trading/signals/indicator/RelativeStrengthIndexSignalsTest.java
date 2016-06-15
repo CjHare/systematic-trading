@@ -47,8 +47,8 @@ public class RelativeStrengthIndexSignalsTest extends SignalTest {
 		final RelativeStrengthIndexSignals signals = new RelativeStrengthIndexSignals(5, 30, 70, MATH_CONTEXT);
 
 		// Create a down, then an up-spike
-		final TradingDayPrices[] data = addSpike(15, 15, -100,
-		        addSpike(30, buyPriceSpike, 100, createFlatTradingDayPrices(37, 25)));
+		final TradingDayPrices[] data = addStep(15, 15, -100,
+		        addStep(30, buyPriceSpike, 100, createFlatTradingDayPrices(37, 25)));
 
 		final List<IndicatorSignal> results = signals.calculateSignals(data);
 
@@ -56,6 +56,24 @@ public class RelativeStrengthIndexSignalsTest extends SignalTest {
 		assertEquals(1, results.size());
 		assertEquals(IndicatorSignalType.RSI, results.get(0).getSignal());
 		assertEquals(IndicatorDirectionType.UP, results.get(0).getDirection());
+		assertEquals(LocalDate.now().minus(buyPriceSpike, ChronoUnit.DAYS), results.get(0).getDate());
+	}
+
+	@Test
+	public void overbrought() {
+		final int buyPriceSpike = 7;
+
+		final RelativeStrengthIndexSignals signals = new RelativeStrengthIndexSignals(5, 30, 70, MATH_CONTEXT);
+
+		// Create a up then an down-spike
+		final TradingDayPrices[] data = addLinearChange(10, 10, -50, createFlatTradingDayPrices(37, 25));
+
+		final List<IndicatorSignal> results = signals.calculateSignals(data);
+
+		assertNotNull(results);
+		assertEquals(1, results.size());
+		assertEquals(IndicatorSignalType.RSI, results.get(0).getSignal());
+		assertEquals(IndicatorDirectionType.DOWN, results.get(0).getDirection());
 		assertEquals(LocalDate.now().minus(buyPriceSpike, ChronoUnit.DAYS), results.get(0).getDate());
 	}
 

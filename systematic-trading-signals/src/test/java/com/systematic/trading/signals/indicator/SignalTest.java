@@ -24,7 +24,10 @@ public abstract class SignalTest {
 		return prices;
 	}
 
-	protected TradingDayPrices[] addSpike( final int start, final int count, final int increasePrice,
+	/**
+	 * Steps the prices up for a period of time.
+	 */
+	protected TradingDayPrices[] addStep( final int start, final int count, final int increasePrice,
 	        final TradingDayPrices[] prices ) {
 
 		for (int i = start; i < start + count; i++) {
@@ -35,4 +38,21 @@ public abstract class SignalTest {
 
 		return prices;
 	}
+
+	/**
+	 * Changes the values evenly at each time increment for a period of time.
+	 */
+	protected TradingDayPrices[] addLinearChange( final int start, final int count, final int increasePrice,
+	        final TradingDayPrices[] prices ) {
+
+		for (int i = start; i < start + count; i++) {
+			final BigDecimal price = prices[i].getClosingPrice().getPrice()
+			        .add(BigDecimal.valueOf((i - start) * increasePrice));
+
+			prices[i] = new TradingDayPricesImpl(prices[i].getDate(), price, price, price, price);
+		}
+
+		return prices;
+	}
+
 }

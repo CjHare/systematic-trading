@@ -64,8 +64,8 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 		        fastTimePeriods, slowTimePeriods, signalTimePeriods, MATH_CONTEXT);
 
 		// Create a down, then an up-spike
-		final TradingDayPrices[] data = addSpike(15, 15, -100,
-		        addSpike(30, buyPriceSpike, 100, createFlatTradingDayPrices(37, 25)));
+		final TradingDayPrices[] data = addStep(15, 15, -100,
+		        addStep(30, buyPriceSpike, 100, createFlatTradingDayPrices(37, 25)));
 
 		final List<IndicatorSignal> results = signals.calculateSignals(data);
 
