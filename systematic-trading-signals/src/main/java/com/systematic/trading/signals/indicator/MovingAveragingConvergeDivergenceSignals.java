@@ -36,6 +36,7 @@ import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalcul
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
 import com.systematic.trading.maths.model.DatedSignal;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignalGenerator {
@@ -43,32 +44,33 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	private final MovingAverageConvergenceDivergence macd;
 	private final int requiredNumberOfTradingDays;
 
-	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
-			final int signalTimePeriods, final MathContext mathContext ) {
+	public MovingAveragingConvergeDivergenceSignals(final int fastTimePeriods, final int slowTimePeriods,
+	        final int signalTimePeriods, final MathContext mathContext) {
 
-		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator( fastTimePeriods,
-				new IllegalArgumentThrowingValidator(), mathContext );
-		final ExponentialMovingAverage slowEma = new ExponentialMovingAverageCalculator( slowTimePeriods,
-				new IllegalArgumentThrowingValidator(), mathContext );
-		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator( signalTimePeriods,
-				new IllegalArgumentThrowingValidator(), mathContext );
+		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(fastTimePeriods,
+		        new IllegalArgumentThrowingValidator(), mathContext);
+		final ExponentialMovingAverage slowEma = new ExponentialMovingAverageCalculator(slowTimePeriods,
+		        new IllegalArgumentThrowingValidator(), mathContext);
+		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(signalTimePeriods,
+		        new IllegalArgumentThrowingValidator(), mathContext);
 
-		this.macd = new MovingAverageConvergenceDivergenceCalculator( fastEma, slowEma, signalEma,
-				new IllegalArgumentThrowingValidator() );
+		this.macd = new MovingAverageConvergenceDivergenceCalculator(fastEma, slowEma, signalEma,
+		        new IllegalArgumentThrowingValidator());
 
 		this.requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
-				+ signalEma.getMinimumNumberOfPrices();
+		        + signalEma.getMinimumNumberOfPrices();
 	}
 
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
 
-		final List<DatedSignal> signals = macd.macd( data );
+		//TODO generate the down signals too
+		final List<DatedSignal> signals = macd.macd(data);
 
-		final List<IndicatorSignal> converted = new ArrayList<IndicatorSignal>( signals.size() );
+		final List<IndicatorSignal> converted = new ArrayList<>(signals.size());
 
 		for (final DatedSignal signal : signals) {
-			converted.add( new IndicatorSignal( signal.getDate(), IndicatorSignalType.MACD ) );
+			converted.add(new IndicatorSignal(signal.getDate(), IndicatorSignalType.MACD, IndicatorDirectionType.UP));
 		}
 
 		return converted;

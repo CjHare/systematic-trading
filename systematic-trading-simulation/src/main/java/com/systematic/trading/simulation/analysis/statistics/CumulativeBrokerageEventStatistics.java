@@ -43,18 +43,18 @@ public class CumulativeBrokerageEventStatistics implements BrokerageEventStatist
 	@Override
 	public void event( final BrokerageEvent event ) {
 
-		brokerageFees = brokerageFees.add( event.getTransactionFee() );
+		brokerageFees = brokerageFees.add(event.getTransactionFee());
 
 		switch (event.getType()) {
 			case BUY:
 				buyEventCount++;
-				break;
+			break;
 			case SELL:
 				sellEventCount++;
-				break;
+			break;
 			default:
-				throw new IllegalArgumentException( String.format( "Brokerage event type %s is unexpected",
-						event.getType() ) );
+				throw new IllegalArgumentException(
+				        String.format("Brokerage event type %s is unexpected", event.getType()));
 		}
 	}
 

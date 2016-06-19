@@ -49,14 +49,14 @@ public interface TickerSymbolTradingData {
 	 * 
 	 * @return Inclusive date for the beginning of the data set.
 	 */
-	LocalDate getStartDate();
+	LocalDate getEarliestDate();
 
 	/**
 	 * Marks the end of the trading data range.
 	 * 
 	 * @return Inclusive date for the end of the data set.
 	 */
-	LocalDate getEndDate();
+	LocalDate getLatestDate();
 
 	/**
 	 * Retrieve the number of trading days data.

@@ -36,40 +36,40 @@ public class DisplayBuySignals {
 	/** The oldest signal date (inclusive) from today to report. */
 	private final int oldestSignal;
 
-	public DisplayBuySignals( final int oldestSignal ) {
+	public DisplayBuySignals(final int oldestSignal) {
 		this.oldestSignal = oldestSignal;
 	}
 
 	public void displayBuySignals( final String symbol, final List<BuySignal> buySignals ) {
 
 		// Only display if within range
-		if (!hasBuySignalsWithinDateRange( buySignals )) {
+		if (!hasBuySignalsWithinDateRange(buySignals)) {
 			return;
 		}
 
 		final LocalDate earliestSignal = getEarliestSignalDate();
 
-		System.out.println( "--- " );
-		System.out.println( symbol );
+		System.out.println("--- ");
+		System.out.println(symbol);
 
 		for (final BuySignal buySignal : buySignals) {
-			if (buySignal.getDate().compareTo( earliestSignal ) >= 0) {
-				System.out.println( String.format( "%s", buySignal.getDate() ) );
+			if (buySignal.getDate().compareTo(earliestSignal) >= 0) {
+				System.out.println(String.format("%s", buySignal.getDate()));
 			}
 		}
 
-		System.out.println( "---" );
+		System.out.println("---");
 	}
 
 	private boolean hasBuySignalsWithinDateRange( final List<BuySignal> buySignals ) {
 		final LocalDate earliestSignal = getEarliestSignalDate();
-		return hasBuySignalsWithinDateRange( earliestSignal, buySignals );
+		return hasBuySignalsWithinDateRange(earliestSignal, buySignals);
 	}
 
 	private boolean hasBuySignalsWithinDateRange( final LocalDate earliestSignal, final List<BuySignal> signals ) {
 		int index = 0;
 		while (index < signals.size()) {
-			if (signals.get( index ).getDate().compareTo( earliestSignal ) >= 0) {
+			if (signals.get(index).getDate().compareTo(earliestSignal) >= 0) {
 				return true;
 			}
 			index++;
@@ -78,6 +78,6 @@ public class DisplayBuySignals {
 	}
 
 	private LocalDate getEarliestSignalDate() {
-		return LocalDate.now().minus( oldestSignal, ChronoUnit.DAYS );
+		return LocalDate.now().minus(oldestSignal, ChronoUnit.DAYS);
 	}
 }

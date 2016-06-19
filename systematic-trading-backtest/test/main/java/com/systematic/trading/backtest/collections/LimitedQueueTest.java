@@ -43,84 +43,84 @@ public class LimitedQueueTest {
 	@Test
 	public void addUnderLimit() {
 		final int limit = 5;
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, limit );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, limit);
 		final String one = "one";
 
 		// Add the data to the list
-		list.add( one );
+		list.add(one);
 
-		assertEquals( 1, list.size() );
-		assertNotNull( list.get( 0 ) );
-		assertEquals( one, list.get( 0 ) );
+		assertEquals(1, list.size());
+		assertNotNull(list.get(0));
+		assertEquals(one, list.get(0));
 	}
 
 	@Test
 	public void addOnLimit() {
 		final int limit = 2;
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, limit );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, limit);
 		final String one = "one";
 		final String two = "two";
 
 		// Add the data to the list
-		list.add( one );
-		list.add( two );
+		list.add(one);
+		list.add(two);
 
-		assertEquals( 2, list.size() );
-		assertNotNull( list.get( 0 ) );
-		assertNotNull( list.get( 1 ) );
-		assertEquals( one, list.get( 0 ) );
-		assertEquals( two, list.get( 1 ) );
+		assertEquals(2, list.size());
+		assertNotNull(list.get(0));
+		assertNotNull(list.get(1));
+		assertEquals(one, list.get(0));
+		assertEquals(two, list.get(1));
 	}
 
 	@Test
 	public void addOverLimit() {
 		final int limit = 2;
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, limit );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, limit);
 		final String one = "one";
 		final String two = "two";
 		final String three = "three";
 
 		// Add the data to the list
-		list.add( one );
-		list.add( two );
-		list.add( three );
+		list.add(one);
+		list.add(two);
+		list.add(three);
 
-		assertEquals( 2, list.size() );
-		assertNotNull( list.get( 0 ) );
-		assertNotNull( list.get( 1 ) );
-		assertEquals( two, list.get( 0 ) );
-		assertEquals( three, list.get( 1 ) );
+		assertEquals(2, list.size());
+		assertNotNull(list.get(0));
+		assertNotNull(list.get(1));
+		assertEquals(two, list.get(0));
+		assertEquals(three, list.get(1));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void toArrayException() {
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, 1 );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, 1);
 
-		list.toArray( new String[0] );
+		list.toArray(new String[0]);
 
-		fail( "Expecting exception" );
+		fail("Expecting exception");
 	}
 
 	@Test
 	public void toArraySizeOne() {
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, 1 );
-		list.add( "first" );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, 1);
+		list.add("first");
 
 		final String[] a = list.toArray();
 
-		assertEquals( 1, a.length );
-		assertEquals( "first", a[0] );
+		assertEquals(1, a.length);
+		assertEquals("first", a[0]);
 	}
 
 	@Test
 	public void toArraySizeTwoPopulationOne() {
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>( String.class, 2 );
-		list.add( "first" );
+		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, 2);
+		list.add("first");
 
 		final String[] a = list.toArray();
 
-		assertEquals( 1, a.length );
-		assertEquals( "first", a[0] );
+		assertEquals(1, a.length);
+		assertEquals("first", a[0]);
 	}
 
 }

@@ -34,22 +34,21 @@ import java.math.BigDecimal;
  */
 public class OpeningPrice extends Price {
 
+	protected OpeningPrice(final BigDecimal amount) {
+		super(amount);
+	}
+
 	/**
 	 * Creates an opening price from an underlying decimal value.
 	 * 
-	 * @param price decimal to create as an opening price, cannot be <code>null</code>.
+	 * @param amount decimal to create as an opening price, cannot be <code>null</code>.
 	 * @return equivalent opening price for the given decimal.
 	 */
-	public static OpeningPrice valueOf( final BigDecimal price ) {
-		if (price == null) {
-			throw new IllegalArgumentException( "null is not accepted by OpeningPrice.valueOf()" );
+	public static OpeningPrice valueOf( final BigDecimal amount ) {
+		if (amount == null) {
+			throw new IllegalArgumentException("null is not accepted by OpeningPrice.valueOf()");
 		}
 
-		return new OpeningPrice( price );
+		return new OpeningPrice(amount);
 	}
-
-	protected OpeningPrice( final BigDecimal price ) {
-		super( price );
-	}
-
 }

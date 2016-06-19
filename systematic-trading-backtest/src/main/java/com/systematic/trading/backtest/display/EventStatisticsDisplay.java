@@ -30,6 +30,7 @@ package com.systematic.trading.backtest.display;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface EventStatisticsDisplay {
 
 	void displayEventStatistics();

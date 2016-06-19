@@ -25,12 +25,12 @@
  */
 package com.systematic.trading.simulation.analysis.roi.event;
 
-
 /**
  * A listener interested in cash event notifications.
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface ReturnOnInvestmentEventListener {
 
 	/**

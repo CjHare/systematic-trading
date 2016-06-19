@@ -44,7 +44,7 @@ import com.systematic.trading.data.util.HibernateUtil;
 
 public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 
-	private static final Logger LOG = LogManager.getLogger( HibernateTradingDayPricesDao.class );
+	private static final Logger LOG = LogManager.getLogger(HibernateTradingDayPricesDao.class);
 
 	@Override
 	public void create( final TradingDayPrices[] data ) {
@@ -53,11 +53,11 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 
 		for (final TradingDayPrices d : data) {
 			try {
-				create( d, session );
+				create(d, session);
 			} catch (final HibernateException e) {
 
 				if (e.getCause() instanceof ConstraintViolationException) {
-					LOG.info( e.getMessage() );
+					LOG.info(e.getMessage());
 				} else {
 					throw e;
 				}
@@ -72,28 +72,27 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 	public void create( final TradingDayPrices data ) {
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		create( data, session );
+		create(data, session);
 		session.getTransaction().commit();
 	}
 
 	public void create( final TradingDayPrices data, final Session session ) {
-		final String sql = String
-				.format(
-						"INSERT INTO history_%s (date, opening_price, lowest_price, highest_price, closing_price) VALUES (:date, :opening_price, :lowest_price, :highest_price, :closing_price)",
-						sanitise( data.getTickerSymbol() ) );
+		final String sql = String.format(
+		        "INSERT INTO history_%s (date, opening_price, lowest_price, highest_price, closing_price) VALUES (:date, :opening_price, :lowest_price, :highest_price, :closing_price)",
+		        sanitise(data.getTickerSymbol()));
 
-		final Query query = session.createSQLQuery( sql );
-		query.setDate( "date", Date.valueOf( data.getDate() ) );
-		query.setBigDecimal( "opening_price", data.getOpeningPrice().getPrice() );
-		query.setBigDecimal( "lowest_price", data.getLowestPrice().getPrice() );
-		query.setBigDecimal( "highest_price", data.getHighestPrice().getPrice() );
-		query.setBigDecimal( "closing_price", data.getClosingPrice().getPrice() );
+		final Query query = session.createSQLQuery(sql);
+		query.setDate("date", Date.valueOf(data.getDate()));
+		query.setBigDecimal("opening_price", data.getOpeningPrice().getPrice());
+		query.setBigDecimal("lowest_price", data.getLowestPrice().getPrice());
+		query.setBigDecimal("highest_price", data.getHighestPrice().getPrice());
+		query.setBigDecimal("closing_price", data.getClosingPrice().getPrice());
 
 		try {
 			query.executeUpdate();
 		} catch (final HibernateException e) {
-			throw new HibernateException( String.format( "Failed inserting %s on %s", data.getTickerSymbol(),
-					data.getDate() ), e );
+			throw new HibernateException(
+			        String.format("Failed inserting %s on %s", data.getTickerSymbol(), data.getDate()), e);
 		}
 	}
 
@@ -101,37 +100,36 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 	public void createTableIfAbsent( final String tickerSymbol ) {
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		createTable( tickerSymbol, session );
+		createTable(tickerSymbol, session);
 		session.getTransaction().commit();
 	}
 
 	public void createTable( final String tickerSymbol, final Session session ) {
 		final StringBuilder template = new StringBuilder();
-		template.append( "CREATE TABLE IF NOT EXISTS history_%s (" );
-		template.append( "date DATE," );
-		template.append( "opening_price DECIMAL(8,2) NOT NULL," );
-		template.append( "lowest_price DECIMAL(8,2) NOT NULL," );
-		template.append( "highest_price DECIMAL(8,2) NOT NULL," );
-		template.append( "closing_price DECIMAL(8,2) NOT NULL," );
-		template.append( "PRIMARY KEY (date) );" );
+		template.append("CREATE TABLE IF NOT EXISTS history_%s (");
+		template.append("date DATE,");
+		template.append("opening_price DECIMAL(8,2) NOT NULL,");
+		template.append("lowest_price DECIMAL(8,2) NOT NULL,");
+		template.append("highest_price DECIMAL(8,2) NOT NULL,");
+		template.append("closing_price DECIMAL(8,2) NOT NULL,");
+		template.append("PRIMARY KEY (date) );");
 
-		final String sql = String.format( template.toString(), sanitise( tickerSymbol ) );
+		final String sql = String.format(template.toString(), sanitise(tickerSymbol));
 
-		final Query query = session.createSQLQuery( sql );
+		final Query query = session.createSQLQuery(sql);
 
 		query.executeUpdate();
 	}
 
 	@Override
 	public TradingDayPrices getMostRecent( final String tickerSymbol ) {
-		final String sql = String
-				.format(
-						"SELECT date, opening_price, lowest_price, highest_price, closing_price FROM history_%s ORDER BY date DESC LIMIT 1",
-						sanitise( tickerSymbol ) );
+		final String sql = String.format(
+		        "SELECT date, opening_price, lowest_price, highest_price, closing_price FROM history_%s ORDER BY date DESC LIMIT 1",
+		        sanitise(tickerSymbol));
 
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		final Query query = session.createSQLQuery( sql );
+		final Query query = session.createSQLQuery(sql);
 
 		@SuppressWarnings("rawtypes")
 		final List result = query.list();
@@ -143,22 +141,21 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		}
 
 		// Convert result entries into the DataPoint
-		return TradingDayPricesUtil.parseDataPoint( tickerSymbol, result.get( 0 ) );
+		return TradingDayPricesUtil.getInstance().parseDataPoint(tickerSymbol, result.get(0));
 	}
 
 	@Override
 	public TradingDayPrices[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 
-		final String sql = String
-				.format(
-						"SELECT date, opening_price, lowest_price, highest_price, closing_price FROM history_%s WHERE date BETWEEN :start_date AND :end_date ORDER BY date DESC",
-						sanitise( tickerSymbol ) );
+		final String sql = String.format(
+		        "SELECT date, opening_price, lowest_price, highest_price, closing_price FROM history_%s WHERE date BETWEEN :start_date AND :end_date ORDER BY date DESC",
+		        sanitise(tickerSymbol));
 
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		final Query query = session.createSQLQuery( sql );
-		query.setDate( "start_date", Date.valueOf( startDate ) );
-		query.setDate( "end_date", Date.valueOf( endDate ) );
+		final Query query = session.createSQLQuery(sql);
+		query.setDate("start_date", Date.valueOf(startDate));
+		query.setDate("end_date", Date.valueOf(endDate));
 
 		@SuppressWarnings("rawtypes")
 		final List result = query.list();
@@ -172,30 +169,29 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		// Convert result entries into the DataPoint
 		final TradingDayPrices[] data = new TradingDayPrices[result.size()];
 		for (int i = 0; i < data.length; i++) {
-			data[i] = TradingDayPricesUtil.parseDataPoint( tickerSymbol, result.get( i ) );
+			data[i] = TradingDayPricesUtil.getInstance().parseDataPoint(tickerSymbol, result.get(i));
 		}
 
 		return data;
 	}
 
 	private String sanitise( final String unsanitised ) {
-		return unsanitised.replaceAll( "\\.", "_" ).replaceAll( "[-+.^:,]", "_" ).toLowerCase();
+		return unsanitised.replaceAll("\\.", "_").replaceAll("[-+.^:,]", "_").toLowerCase();
 	}
 
 	@Override
 	public long count( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 
-		final String sql = String
-				.format( "SELECT count(1) FROM history_%s WHERE date BETWEEN :start_date AND :end_date",
-						sanitise( tickerSymbol ) );
+		final String sql = String.format("SELECT count(1) FROM history_%s WHERE date BETWEEN :start_date AND :end_date",
+		        sanitise(tickerSymbol));
 
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		final Transaction tx = session.beginTransaction();
-		final Query query = session.createSQLQuery( sql );
-		query.setDate( "start_date", Date.valueOf( startDate ) );
-		query.setDate( "end_date", Date.valueOf( endDate ) );
+		final Query query = session.createSQLQuery(sql);
+		query.setDate("start_date", Date.valueOf(startDate));
+		query.setDate("end_date", Date.valueOf(endDate));
 
-		final BigInteger count = ((BigInteger) query.uniqueResult());
+		final BigInteger count = (BigInteger) query.uniqueResult();
 
 		tx.commit();
 

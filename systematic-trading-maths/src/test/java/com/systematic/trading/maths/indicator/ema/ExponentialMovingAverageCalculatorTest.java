@@ -65,8 +65,8 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 0 ),
-					BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 1 ) );
+			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(1), BigDecimal.valueOf(0),
+			        BigDecimal.valueOf(2), BigDecimal.valueOf(1));
 		}
 
 		return prices;
@@ -76,28 +76,28 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl( LocalDate.now(), BigDecimal.valueOf( i + 1 ), BigDecimal.valueOf( i ),
-					BigDecimal.valueOf( i + 2 ), BigDecimal.valueOf( i + 1 ) );
+			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(i + 1), BigDecimal.valueOf(i),
+			        BigDecimal.valueOf(i + 2), BigDecimal.valueOf(i + 1));
 		}
 
 		return prices;
 	}
 
 	private List<BigDecimal> createIncreasingDecimalPrices( final int count ) {
-		final List<BigDecimal> prices = new ArrayList<BigDecimal>( count );
+		final List<BigDecimal> prices = new ArrayList<BigDecimal>(count);
 
 		for (int i = 0; i < count; i++) {
-			prices.add( BigDecimal.valueOf( i ) );
+			prices.add(BigDecimal.valueOf(i));
 		}
 
 		return prices;
 	}
 
 	private List<BigDecimal> createDecimalPrices( final int count ) {
-		final List<BigDecimal> prices = new ArrayList<BigDecimal>( count );
+		final List<BigDecimal> prices = new ArrayList<BigDecimal>(count);
 
 		for (int i = 0; i < count; i++) {
-			prices.add( BigDecimal.valueOf( 1 ) );
+			prices.add(BigDecimal.valueOf(1));
 		}
 
 		return prices;
@@ -106,160 +106,159 @@ public class ExponentialMovingAverageCalculatorTest {
 	@Test
 	public void emaOnePoints() {
 		final int lookback = 2;
-		final TradingDayPrices[] data = createPrices( lookback );
+		final TradingDayPrices[] data = createPrices(lookback);
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
-				validator, MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
+		        validator, MATH_CONTEXT);
 
-		final List<BigDecimal> ema = calculator.ema( data );
+		final List<BigDecimal> ema = calculator.ema(data);
 
-		assertNotNull( ema );
-		assertEquals( 1, ema.size() );
-		assertEquals( BigDecimal.ONE, ema.get( 0 ).setScale( 0, RoundingMode.HALF_EVEN ) );
+		assertNotNull(ema);
+		assertEquals(1, ema.size());
+		assertEquals(BigDecimal.ONE, ema.get(0).setScale(0, RoundingMode.HALF_EVEN));
 
-		verify( validator ).verifyEnoughValues( data, lookback );
-		verify( validator ).verifyZeroNullEntries( data );
+		verify(validator).verifyEnoughValues(data, lookback);
+		verify(validator).verifyZeroNullEntries(data);
 	}
 
 	@Test
 	public void emaTwoPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 1;
-		final TradingDayPrices[] data = createPrices( numberDataPoints );
+		final TradingDayPrices[] data = createPrices(numberDataPoints);
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
-				validator, MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
+		        validator, MATH_CONTEXT);
 
-		final List<BigDecimal> ema = calculator.ema( data );
+		final List<BigDecimal> ema = calculator.ema(data);
 
-		assertNotNull( ema );
-		assertEquals( 2, ema.size() );
-		assertEquals( BigDecimal.ONE, ema.get( 0 ).setScale( 0, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.ONE, ema.get( 1 ).setScale( 0, RoundingMode.HALF_EVEN ) );
+		assertNotNull(ema);
+		assertEquals(2, ema.size());
+		assertEquals(BigDecimal.ONE, ema.get(0).setScale(0, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.ONE, ema.get(1).setScale(0, RoundingMode.HALF_EVEN));
 
-		verify( validator ).verifyEnoughValues( data, lookback );
-		verify( validator ).verifyZeroNullEntries( data );
+		verify(validator).verifyEnoughValues(data, lookback);
+		verify(validator).verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaFirstPointNull() {
 		final int lookback = 3;
 		final int numberDataPoints = lookback + 2;
-		final TradingDayPrices[] data = createPrices( numberDataPoints );
+		final TradingDayPrices[] data = createPrices(numberDataPoints);
 		data[0] = null;
 
-		doThrow( new IllegalArgumentException() ).when( validator ).verifyEnoughValues( any( TradingDayPrices[].class ),
-				anyInt() );
+		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
+		        anyInt());
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
-				validator, MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
+		        validator, MATH_CONTEXT);
 
-		calculator.ema( data );
+		calculator.ema(data);
 	}
 
 	@Test
 	public void emaThreePoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
-		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
+		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
-				validator, MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
+		        validator, MATH_CONTEXT);
 
-		final List<BigDecimal> ema = calculator.ema( data );
+		final List<BigDecimal> ema = calculator.ema(data);
 
-		assertNotNull( ema );
-		assertEquals( 3, ema.size() );
-		assertEquals( BigDecimal.valueOf( 1.5 ), ema.get( 0 ).setScale( 1, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 2.5 ), ema.get( 1 ).setScale( 1, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 3.67 ), ema.get( 2 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertNotNull(ema);
+		assertEquals(3, ema.size());
+		assertEquals(BigDecimal.valueOf(1.5), ema.get(0).setScale(1, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(2.5), ema.get(1).setScale(1, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(3.67), ema.get(2).setScale(2, RoundingMode.HALF_EVEN));
 
-		verify( validator ).verifyEnoughValues( data, lookback );
-		verify( validator ).verifyZeroNullEntries( data );
+		verify(validator).verifyEnoughValues(data, lookback);
+		verify(validator).verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaTwoPointsLastNull() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
-		final TradingDayPrices[] data = createIncreasingPrices( numberDataPoints );
+		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
 		data[data.length - 1] = null;
 
-		doThrow( new IllegalArgumentException() ).when( validator )
-				.verifyZeroNullEntries( any( TradingDayPrices[].class ) );
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
-				validator, MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
+		        validator, MATH_CONTEXT);
 
-		calculator.ema( data );
+		calculator.ema(data);
 	}
 
 	@Test
 	public void emaTwoPointsDecimal() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
-		final List<BigDecimal> data = createDecimalPrices( numberDataPoints );
+		final List<BigDecimal> data = createDecimalPrices(numberDataPoints);
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
-				validator, MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
+		        validator, MATH_CONTEXT);
 
-		final List<BigDecimal> ema = calculator.ema( data );
+		final List<BigDecimal> ema = calculator.ema(data);
 
-		assertNotNull( ema );
-		assertEquals( 3, ema.size() );
-		assertEquals( BigDecimal.ONE, ema.get( 0 ).setScale( 0, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.ONE, ema.get( 1 ).setScale( 0, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.ONE, ema.get( 2 ).setScale( 0, RoundingMode.HALF_EVEN ) );
+		assertNotNull(ema);
+		assertEquals(3, ema.size());
+		assertEquals(BigDecimal.ONE, ema.get(0).setScale(0, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.ONE, ema.get(1).setScale(0, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.ONE, ema.get(2).setScale(0, RoundingMode.HALF_EVEN));
 
-		verify( validator ).verifyEnoughValues( data, lookback );
-		verify( validator ).verifyZeroNullEntries( data );
+		verify(validator).verifyEnoughValues(data, lookback);
+		verify(validator).verifyZeroNullEntries(data);
 	}
 
 	@Test
 	public void emaThreePointsDecimal() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
-		final List<BigDecimal> data = createIncreasingDecimalPrices( numberDataPoints );
+		final List<BigDecimal> data = createIncreasingDecimalPrices(numberDataPoints);
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
-				validator, MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
+		        validator, MATH_CONTEXT);
 
-		final List<BigDecimal> ema = calculator.ema( data );
+		final List<BigDecimal> ema = calculator.ema(data);
 
-		assertNotNull( ema );
-		assertEquals( 3, ema.size() );
-		assertEquals( BigDecimal.valueOf( 0.5 ), ema.get( 0 ).setScale( 1, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 1.5 ), ema.get( 1 ).setScale( 1, RoundingMode.HALF_EVEN ) );
-		assertEquals( BigDecimal.valueOf( 2.67 ), ema.get( 2 ).setScale( 2, RoundingMode.HALF_EVEN ) );
+		assertNotNull(ema);
+		assertEquals(3, ema.size());
+		assertEquals(BigDecimal.valueOf(0.5), ema.get(0).setScale(1, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(1.5), ema.get(1).setScale(1, RoundingMode.HALF_EVEN));
+		assertEquals(BigDecimal.valueOf(2.67), ema.get(2).setScale(2, RoundingMode.HALF_EVEN));
 
-		verify( validator ).verifyEnoughValues( data, lookback );
-		verify( validator ).verifyZeroNullEntries( data );
+		verify(validator).verifyEnoughValues(data, lookback);
+		verify(validator).verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughDataPointsDecimal() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback - 1;
-		final List<BigDecimal> data = createIncreasingDecimalPrices( numberDataPoints );
+		final List<BigDecimal> data = createIncreasingDecimalPrices(numberDataPoints);
 
-		doThrow( new IllegalArgumentException() ).when( validator ).verifyEnoughValues( anyListOf( BigDecimal.class ),
-				anyInt() );
+		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(anyListOf(BigDecimal.class),
+		        anyInt());
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
-				validator, MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
+		        validator, MATH_CONTEXT);
 
-		calculator.ema( data );
+		calculator.ema(data);
 	}
 
 	@Test
 	public void getMinimumNumberOfPrices() {
 		final int lookback = 2;
 
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator( lookback,
-				validator, MATH_CONTEXT );
+		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
+		        validator, MATH_CONTEXT);
 
 		final int requiredDays = calculator.getMinimumNumberOfPrices();
 
-		assertEquals( lookback, requiredDays );
+		assertEquals(lookback, requiredDays);
 	}
 }

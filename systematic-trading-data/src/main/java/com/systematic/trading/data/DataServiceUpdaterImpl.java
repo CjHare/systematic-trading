@@ -43,38 +43,40 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	/** Average number of data points above which assumes the month already retrieve covered. */
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
-	public static DataServiceUpdater getInstance() {
-		return INSTANCE;
-	}
-
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
 	private final StockApi api = new YahooStockApi();
 
 	private DataServiceUpdaterImpl() {
 	}
 
+	public static DataServiceUpdater getInstance() {
+		return INSTANCE;
+	}
+
 	@Override
-	public void get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
+	public void get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate )
+	        throws CannotRetrieveDataException {
 
 		// Ensure there's a table for the data
-		dao.createTableIfAbsent( tickerSymbol );
+		dao.createTableIfAbsent(tickerSymbol);
 
 		// TODO of partial data, retrieve & discard
 
-		final List<HistoryRetrievalRequest> unfilteredRequests = sliceHistoryRetrievalRequest( tickerSymbol, startDate,
-				endDate );
-		final List<HistoryRetrievalRequest> filteredRequests = removeRedundantRequests( unfilteredRequests );
-		storeHistoryRetrievalRequests( filteredRequests );
+		final List<HistoryRetrievalRequest> unfilteredRequests = sliceHistoryRetrievalRequest(tickerSymbol, startDate,
+		        endDate);
+		final List<HistoryRetrievalRequest> filteredRequests = removeRedundantRequests(unfilteredRequests);
+		storeHistoryRetrievalRequests(filteredRequests);
 
-		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests( tickerSymbol );
+		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 
-		processHistoryRetrievalRequests( outstandingRequests );
+		processHistoryRetrievalRequests(outstandingRequests);
 	}
 
 	/**
 	 * Get the history requests from the stock API.
 	 */
-	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests ) {
+	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests )
+	        throws CannotRetrieveDataException {
 		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
 
 		for (final HistoryRetrievalRequest request : requests) {
@@ -83,23 +85,14 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			final LocalDate inclusiveStartDate = request.getInclusiveStartDate().toLocalDate();
 			final LocalDate exclusiveEndDate = request.getExclusiveEndDate().toLocalDate();
 
-			try {
+			// Pull the data from the Stock API
+			final TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
-				// Pull the data from the Stock API
-				final TradingDayPrices[] tradingData = api.getStockData( tickerSymbol, inclusiveStartDate,
-						exclusiveEndDate );
+			// Push to the data source
+			dao.create(tradingData);
 
-				// Push to the data source
-				dao.create( tradingData );
-
-				// Remove the request from the queue
-				requestManager.delete( request );
-
-			} catch (final CannotRetrieveDataException e) {
-
-				// TODO ? propagate ?
-			}
-
+			// Remove the request from the queue
+			requestManager.delete(request);
 		}
 	}
 
@@ -107,28 +100,28 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 * Split up the date range into manageable size pieces.
 	 */
 	private List<HistoryRetrievalRequest> sliceHistoryRetrievalRequest( final String tickerSymbol,
-			final LocalDate startDate, final LocalDate endDate ) {
+	        final LocalDate startDate, final LocalDate endDate ) {
 
 		final Period maximum = api.getMaximumDurationInSingleUpdate();
-		final List<HistoryRetrievalRequest> requests = new ArrayList<HistoryRetrievalRequest>();
+		final List<HistoryRetrievalRequest> requests = new ArrayList<>();
 
-		if (isDurationTooLong( maximum, Period.between( startDate, endDate ) )) {
+		if (isDurationTooLong(maximum, Period.between(startDate, endDate))) {
 
 			// Split up the requests for processing
 			LocalDate movedStartDate = startDate;
-			LocalDate movedEndDate = startDate.plus( maximum );
+			LocalDate movedEndDate = startDate.plus(maximum);
 
-			while (endDate.isAfter( movedStartDate )) {
+			while (endDate.isAfter(movedStartDate)) {
 
-				requests.add( new HistoryRetrievalRequest( tickerSymbol, movedStartDate, movedEndDate ) );
+				requests.add(new HistoryRetrievalRequest(tickerSymbol, movedStartDate, movedEndDate));
 
 				movedStartDate = movedEndDate;
-				movedEndDate = movedStartDate.plus( maximum );
+				movedEndDate = movedStartDate.plus(maximum);
 			}
 
 		} else {
 
-			requests.add( new HistoryRetrievalRequest( tickerSymbol, startDate, endDate ) );
+			requests.add(new HistoryRetrievalRequest(tickerSymbol, startDate, endDate));
 		}
 
 		return requests;
@@ -138,20 +131,42 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 * Remove requests where the full set of data already has already been retrieved.
 	 */
 	private List<HistoryRetrievalRequest> removeRedundantRequests( final List<HistoryRetrievalRequest> requests ) {
-		final List<HistoryRetrievalRequest> filtered = new ArrayList<HistoryRetrievalRequest>();
+		List<HistoryRetrievalRequest> filtered = new ArrayList<>();
 
 		for (final HistoryRetrievalRequest request : requests) {
+			filtered = removeIfRedundantRequest(request, filtered);
+		}
 
-			final String tickerSymbol = request.getTickerSymbol();
-			final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
-			final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
+		return filtered;
+	}
 
-			final long count = dao.count( tickerSymbol, startDate, endDate );
-			final Period interval = Period.between( startDate, endDate );
-			final long meanDataPointsPerMonth = count / interval.toTotalMonths();
+	private List<HistoryRetrievalRequest> removeIfRedundantRequest( final HistoryRetrievalRequest request,
+	        final List<HistoryRetrievalRequest> filtered ) {
 
-			if (meanDataPointsPerMonth < MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD) {
-				filtered.add( request );
+		final String tickerSymbol = request.getTickerSymbol();
+		final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
+		final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
+
+		final long count = dao.count(tickerSymbol, startDate, endDate);
+
+		if (count == 0) {
+			// Zero data exists :. we need data
+			filtered.add(request);
+		} else {
+			final Period interval = Period.between(startDate, endDate);
+
+			if (interval.toTotalMonths() > 0) {
+				final long meanDataPointsPerMonth = count / interval.toTotalMonths();
+
+				if (meanDataPointsPerMonth < MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD) {
+					// Insufficient data exists :. we need data
+					filtered.add(request);
+				}
+			} else {
+				// Under one month means we're in days difference
+				if (count <= interval.getDays()) {
+					filtered.add(request);
+				}
 			}
 		}
 
@@ -166,10 +181,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 * These we store as a defensive approach in case of partial failure during processing.
 	 */
 	private void storeHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests ) {
-		HistoryRetrievalRequestManager.getInstance().create( requests );
+		HistoryRetrievalRequestManager.getInstance().create(requests);
 	}
 
 	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
-		return HistoryRetrievalRequestManager.getInstance().get( tickerSymbol );
+		return HistoryRetrievalRequestManager.getInstance().get(tickerSymbol);
 	}
 }

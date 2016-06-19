@@ -25,15 +25,7 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
@@ -45,37 +37,23 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  */
 public class FileOrderEventDisplay implements OrderEventListener {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileOrderEventDisplay.class );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
 
-	private final String outputFilename;
+	public FileOrderEventDisplay(final FileDisplayMultithreading display) {
+		this.display = display;
 
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
-	public FileOrderEventDisplay( final String outputFilename, final ExecutorService pool ) {
-		this.outputFilename = outputFilename;
-		this.pool = pool;
+		display.write("=== Order Events ===");
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
 
-		final Runnable task = () -> {
-			try (final PrintWriter out = new PrintWriter(
-					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				final String output = String.format( "Place Order - %s total cost %s created after c.o.b on %s",
-						event.getType(), TWO_DECIMAL_PLACES.format( event.getTotalCost() ),
-						event.getTransactionDate() );
+		final String content = String.format("Place Order - %s total cost %s created after c.o.b on %s",
+		        event.getType(), TWO_DECIMAL_PLACES.format(event.getTotalCost()), event.getTransactionDate());
 
-				out.println( output );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
-		};
-
-		pool.execute( task );
+		display.write(content);
 	}
 }

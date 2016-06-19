@@ -25,17 +25,10 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.ExecutorService;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
@@ -51,66 +44,66 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  */
 public class FileEventDisplay implements CashEventListener, OrderEventListener, BrokerageEventListener {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileEventDisplay.class );
-
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	private final CashEventListener cashEventListener;
 	private final OrderEventListener orderEventListener;
 	private final BrokerageEventListener brokerageEventListener;
 
-	public FileEventDisplay( final String outputFilename, final TickerSymbolTradingData tradingData,
-			final ExecutorService pool ) {
+	public FileEventDisplay(final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
+	        final FileDisplayMultithreading display) {
 
-		try (final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-			out.println( createHeaderOutput( tradingData ) );
-		} catch (final IOException e) {
-			LOG.error( e );
-		}
+		display.write(createHeaderOutput(tradingData, dates));
 
-		this.cashEventListener = new FileCashEventDisplay( outputFilename, pool );
-		this.orderEventListener = new FileOrderEventDisplay( outputFilename, pool );
-		this.brokerageEventListener = new FileBrokerageEventDisplay( outputFilename, pool );
+		this.cashEventListener = new FileCashEventDisplay(display);
+		this.orderEventListener = new FileOrderEventDisplay(display);
+		this.brokerageEventListener = new FileBrokerageEventDisplay(display);
 	}
 
-	private String createHeaderOutput( final TickerSymbolTradingData tradingData ) {
+	private String createHeaderOutput( final TickerSymbolTradingData tradingData,
+	        final BacktestSimulationDates dates ) {
 
 		final StringBuilder output = new StringBuilder();
-		output.append( "\n" );
-		output.append( "#######################\n" );
-		output.append( "### Backtest Events ###\n" );
-		output.append( "#######################\n" );
-		output.append( "\n" );
+		output.append("%n");
+		output.append("#######################%n");
+		output.append("### Backtest Events ###%n");
+		output.append("#######################%n");
+		output.append("%n");
 
 		output.append(
-				String.format( "Data set for %s from %s to %s\n", tradingData.getEquityIdentity().getTickerSymbol(),
-						tradingData.getStartDate(), tradingData.getEndDate() ) );
+		        String.format("Data set for %s from %s to %s%n", tradingData.getEquityIdentity().getTickerSymbol(),
+		                tradingData.getEarliestDate(), tradingData.getLatestDate()));
 
-		final long daysBetween = ChronoUnit.DAYS.between( tradingData.getStartDate(), tradingData.getEndDate() );
+		output.append(String.format("Simulation dates for %s from %s to %s%n",
+		        tradingData.getEquityIdentity().getTickerSymbol(), dates.getSimulationStartDate(),
+		        dates.getSimulationEndDate()));
+
+		output.append(String.format("Simulation warm up period for %s of %s%n",
+		        tradingData.getEquityIdentity().getTickerSymbol(), dates.getWarmUp()));
+
+		final long daysBetween = ChronoUnit.DAYS.between(tradingData.getEarliestDate(), tradingData.getLatestDate());
 		final double percentageTradingDays = ((double) tradingData.getNumberOfTradingDays() / daysBetween) * 100;
 
-		output.append( String.format( "# trading days: %s over %s days (%s percentage trading days)\n",
-				tradingData.getNumberOfTradingDays(), daysBetween,
-				TWO_DECIMAL_PLACES.format( percentageTradingDays ) ) );
+		output.append(String.format("# trading days: %s over %s days (%s percentage trading days)%n",
+		        tradingData.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format(percentageTradingDays)));
 
-		output.append( "\n" );
+		output.append("%n");
 
 		return output.toString();
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		brokerageEventListener.event( event );
+		brokerageEventListener.event(event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		orderEventListener.event( event );
+		orderEventListener.event(event);
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
-		cashEventListener.event( event );
+		cashEventListener.event(event);
 	}
 }

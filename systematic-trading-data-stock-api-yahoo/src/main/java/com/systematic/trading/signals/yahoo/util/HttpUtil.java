@@ -30,38 +30,38 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 
+import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
+
 public class HttpUtil {
 
-	public String httpGet( final String url ) {
+	public String httpGet( final String url ) throws CannotRetrieveDataException {
 		final StringBuilder result = new StringBuilder();
 
 		try {
 			final HttpClient httpClient = HttpClientBuilder.create().build();
-			final HttpGet getRequest = new HttpGet( url );
-			getRequest.addHeader( "accept", "application/json" );
+			final HttpGet getRequest = new HttpGet(url);
+			getRequest.addHeader("accept", "application/json");
 
-			final HttpResponse response = httpClient.execute( getRequest );
+			final HttpResponse response = httpClient.execute(getRequest);
 
 			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new RuntimeException( "Failed : HTTP error code : " + response.getStatusLine().getStatusCode() );
+				throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s, HTTP error code : %s",
+				        url, response.getStatusLine().getStatusCode()));
 			}
 
-			final BufferedReader br = new BufferedReader( new InputStreamReader( (response.getEntity().getContent()) ) );
+			final BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
 			String output;
 			while ((output = br.readLine()) != null) {
-				result.append( output );
+				result.append(output);
 			}
 
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (final IOException e) {
+			throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s", url), e);
 		}
 
 		return result.toString();

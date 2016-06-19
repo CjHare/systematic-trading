@@ -42,7 +42,7 @@ import javax.persistence.Table;
  * @author CJ Hare
  */
 @Entity
-@Table(name = "history_retrieval_queue", indexes = @Index(columnList = "ticker_symbol"))
+@Table(name = "history_retrieval_queue", indexes = @Index(columnList = "ticker_symbol") )
 public class HistoryRetrievalRequest implements Serializable {
 
 	/** Serialisation is required as we are using a composite primary key. */
@@ -60,14 +60,11 @@ public class HistoryRetrievalRequest implements Serializable {
 	@Column(name = "end", nullable = false)
 	private Date exclusiveEndDate;
 
-	public HistoryRetrievalRequest() {
-	}
-
-	public HistoryRetrievalRequest( final String tickerSymbol, final LocalDate inclusiveStartDate,
-			final LocalDate exclusiveEndDate ) {
+	public HistoryRetrievalRequest(final String tickerSymbol, final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate) {
 		this.tickerSymbol = tickerSymbol;
-		this.inclusiveStartDate = Date.valueOf( inclusiveStartDate );
-		this.exclusiveEndDate = Date.valueOf( exclusiveEndDate );
+		this.inclusiveStartDate = Date.valueOf(inclusiveStartDate);
+		this.exclusiveEndDate = Date.valueOf(exclusiveEndDate);
 	}
 
 	public String getTickerSymbol() {

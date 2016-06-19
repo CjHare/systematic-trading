@@ -25,15 +25,21 @@
  */
 package com.systematic.trading.data.stock.api.exception;
 
+import com.systematic.trading.exception.ServiceException;
+
 /**
- * Problem encountered during using the stock API.F
+ * Problem encountered during using the stock API.
  * 
  * @author CJ Hare
  */
-public class CannotRetrieveDataException extends Exception {
+public class CannotRetrieveDataException extends ServiceException {
 	private static final long serialVersionUID = 1L;
 
-	public CannotRetrieveDataException( final String message, final Throwable cause ) {
-		super( message, cause );
+	public CannotRetrieveDataException(final String message, final Throwable cause) {
+		super(message, cause);
+	}
+
+	public CannotRetrieveDataException(final String message) {
+		super(message);
 	}
 }

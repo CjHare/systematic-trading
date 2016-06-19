@@ -25,19 +25,12 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.simulation.analysis.statistics.BrokerageEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.CashEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.EquityEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistics;
 
@@ -48,91 +41,75 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  */
 public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileEventStatisticsDisplay.class );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
 
 	private final EventStatistics statistics;
 
-	private final String outputFilename;
-
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
-	public FileEventStatisticsDisplay( final EventStatistics statistics, final String outputFilename,
-			final ExecutorService pool ) {
+	public FileEventStatisticsDisplay(final EventStatistics statistics, final FileDisplayMultithreading display) {
 		this.statistics = statistics;
-		this.outputFilename = outputFilename;
-		this.pool = pool;
+		this.display = display;
 	}
 
 	@Override
 	public void displayEventStatistics() {
 
-		final Runnable task = () -> {
-			try (final PrintWriter out = new PrintWriter(
-					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				out.println( createOutput() );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
-		};
-
-		pool.execute( task );
-	}
-
-	private String createOutput() {
-
 		final StringBuilder output = new StringBuilder();
 
-		output.append( "\n" );
-		output.append( "##########################\n" );
-		output.append( "### Summary Statistics ###\n" );
-		output.append( "##########################\n" );
+		output.append("##########################%n");
+		output.append("### Summary Statistics ###%n");
+		output.append("##########################%n");
 
-		addOrderStatistics( statistics.getOrderEventStatistics(), output );
-		addCashStatistics( statistics.getCashEventStatistics(), output );
-		addBrokerageStatistics( statistics.getBrokerageEventStatistics(), output );
+		addOrderStatistics(statistics.getOrderEventStatistics(), output);
+		addCashStatistics(statistics.getCashEventStatistics(), output);
+		addBrokerageStatistics(statistics.getBrokerageEventStatistics(), output);
+		addEquityStatistics(statistics.getEquityEventStatistics(), output);
 
-		return output.toString();
+		display.write(output.toString());
 	}
 
 	private void addOrderStatistics( final OrderEventStatistics orderStatistics, final StringBuilder output ) {
 
-		output.append( "\n=== Order events ===\n" );
-		output.append( String.format( "# Entry Order events: %s\n", orderStatistics.getEntryEventCount() ) );
-		output.append(
-				String.format( "# Delete Entry Order events: %s\n", orderStatistics.getDeleteEntryEventCount() ) );
-		output.append( String.format( "# Exit Order events: %s\n", orderStatistics.getExitEventCount() ) );
-		output.append( String.format( "# Delete Exit Order events: %s\n", orderStatistics.getDeleteExitEventCount() ) );
+		output.append("%n=== Order events ===%n");
+		output.append(String.format("# Entry Order events: %s%n", orderStatistics.getEntryEventCount()));
+		output.append(String.format("# Delete Entry Order events: %s%n", orderStatistics.getDeleteEntryEventCount()));
+		output.append(String.format("# Exit Order events: %s%n", orderStatistics.getExitEventCount()));
+		output.append(String.format("# Delete Exit Order events: %s%n", orderStatistics.getDeleteExitEventCount()));
 	}
 
 	private void addCashStatistics( final CashEventStatistics cashStatistics, final StringBuilder output ) {
 
-		output.append( "\n=== Cash events ===\n" );
-		output.append( String.format( "# Cash account credit events: %s\n", cashStatistics.getCreditEventCount() ) );
-		output.append( String.format( "# Cash account debit events: %s\n", cashStatistics.getDebitEventCount() ) );
-		output.append(
-				String.format( "# Cash account interest events: %s\n", cashStatistics.getInterestEventCount() ) );
-		output.append( String.format( "# Cash account deposit events: %s\n", cashStatistics.getDepositEventCount() ) );
-		output.append( String.format( "Total interest earned: %s\n",
-				TWO_DECIMAL_PLACES.format( cashStatistics.getInterestEarned() ) ) );
-		output.append( String.format( "Total amount deposited: %s\n",
-				TWO_DECIMAL_PLACES.format( cashStatistics.getAmountDeposited() ) ) );
+		output.append("\n=== Cash events ===%n");
+		output.append(String.format("# Cash account credit events: %s%n", cashStatistics.getCreditEventCount()));
+		output.append(String.format("# Cash account debit events: %s%n", cashStatistics.getDebitEventCount()));
+		output.append(String.format("# Cash account interest events: %s%n", cashStatistics.getInterestEventCount()));
+		output.append(String.format("# Cash account deposit events: %s%n", cashStatistics.getDepositEventCount()));
+		output.append(String.format("Total interest earned: %s%n",
+		        TWO_DECIMAL_PLACES.format(cashStatistics.getInterestEarned())));
+		output.append(String.format("Total amount deposited: %s%n",
+		        TWO_DECIMAL_PLACES.format(cashStatistics.getAmountDeposited())));
 	}
 
 	private void addBrokerageStatistics( final BrokerageEventStatistics brokerageStatistics,
-			final StringBuilder output ) {
+	        final StringBuilder output ) {
 
-		final long sumBrokerageEvents = brokerageStatistics.getSellEventCount()
-				+ brokerageStatistics.getBuyEventCount();
+		final long sumBrokerageEvents = (long) brokerageStatistics.getSellEventCount()
+		        + brokerageStatistics.getBuyEventCount();
 
-		output.append( "\n=== Brokerage events ===\n" );
-		output.append( String.format( "# Brokerage events: %s\n", sumBrokerageEvents ) );
-		output.append( String.format( "# Sell events: %s\n", brokerageStatistics.getSellEventCount() ) );
-		output.append( String.format( "# Buy events: %s\n", brokerageStatistics.getBuyEventCount() ) );
-		output.append( String.format( "Total amount paid in brokerage: %s\n",
-				TWO_DECIMAL_PLACES.format( brokerageStatistics.getBrokerageFees() ) ) );
+		output.append("\n=== Brokerage events ===%n");
+		output.append(String.format("# Brokerage events: %s%n", sumBrokerageEvents));
+		output.append(String.format("# Sell events: %s%n", brokerageStatistics.getSellEventCount()));
+		output.append(String.format("# Buy events: %s%n", brokerageStatistics.getBuyEventCount()));
+		output.append(String.format("Total amount paid in brokerage: %s%n",
+		        TWO_DECIMAL_PLACES.format(brokerageStatistics.getBrokerageFees())));
+	}
+
+	private void addEquityStatistics( final EquityEventStatistics equityStatistics, final StringBuilder output ) {
+
+		output.append("\n=== Equity events ===%n");
+		output.append(String.format("Total amount of equities paid in management fees: %s%n",
+		        TWO_DECIMAL_PLACES.format(equityStatistics.getTotalManagmentFeesInEquities())));
 	}
 }

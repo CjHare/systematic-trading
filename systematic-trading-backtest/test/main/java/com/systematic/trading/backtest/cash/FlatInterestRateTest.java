@@ -47,74 +47,74 @@ public class FlatInterestRateTest {
 
 	@Test
 	public void zeroDaysInterest() {
-		final FlatInterestRate rate = new FlatInterestRate( BigDecimal.valueOf( 7.5 ), mc );
+		final FlatInterestRate rate = new FlatInterestRate(BigDecimal.valueOf(7.5), mc);
 		final int days = 0;
-		final BigDecimal funds = BigDecimal.valueOf( 1000000 );
+		final BigDecimal funds = BigDecimal.valueOf(1000000);
 
-		final BigDecimal interest = rate.interest( funds, days, isLeapYear );
+		final BigDecimal interest = rate.interest(funds, days, isLeapYear);
 
-		assertEquals( BigDecimal.ZERO, interest );
+		assertEquals(BigDecimal.ZERO, interest);
 	}
 
 	@Test
 	public void oneDaysInterest() {
-		final BigDecimal interestRate = BigDecimal.valueOf( 7.5 );
-		final FlatInterestRate rate = new FlatInterestRate( interestRate, mc );
+		final BigDecimal interestRate = BigDecimal.valueOf(7.5);
+		final FlatInterestRate rate = new FlatInterestRate(interestRate, mc);
 		final int days = 1;
-		final BigDecimal funds = BigDecimal.valueOf( 1000000 );
-		final BigDecimal expectedInterest = interestRate.divide( getNonLeapYearDivisor(), mc ).multiply( funds, mc );
+		final BigDecimal funds = BigDecimal.valueOf(1000000);
+		final BigDecimal expectedInterest = interestRate.divide(getNonLeapYearDivisor(), mc).multiply(funds, mc);
 
-		final BigDecimal interest = rate.interest( funds, days, isLeapYear );
+		final BigDecimal interest = rate.interest(funds, days, isLeapYear);
 
-		assertEquals( expectedInterest, interest );
+		assertEquals(expectedInterest, interest);
 	}
 
 	@Test
 	public void oneDaysInterestLeapYear() {
-		final BigDecimal interestRate = BigDecimal.valueOf( 7.5 );
-		final FlatInterestRate rate = new FlatInterestRate( interestRate, mc );
+		final BigDecimal interestRate = BigDecimal.valueOf(7.5);
+		final FlatInterestRate rate = new FlatInterestRate(interestRate, mc);
 		final int days = 1;
-		final BigDecimal funds = BigDecimal.valueOf( 1000000 );
-		final BigDecimal expectedInterest = interestRate.divide( getLeapYearDivisor(), mc ).multiply( funds, mc );
+		final BigDecimal funds = BigDecimal.valueOf(1000000);
+		final BigDecimal expectedInterest = interestRate.divide(getLeapYearDivisor(), mc).multiply(funds, mc);
 
-		final BigDecimal interest = rate.interest( funds, days, true );
+		final BigDecimal interest = rate.interest(funds, days, true);
 
-		assertEquals( expectedInterest, interest );
+		assertEquals(expectedInterest, interest);
 	}
 
 	@Test
 	public void tenDaysInterest() {
-		final BigDecimal interestRate = BigDecimal.valueOf( 7.5 );
-		final FlatInterestRate rate = new FlatInterestRate( interestRate, mc );
+		final BigDecimal interestRate = BigDecimal.valueOf(7.5);
+		final FlatInterestRate rate = new FlatInterestRate(interestRate, mc);
 		final int days = 10;
-		final BigDecimal funds = BigDecimal.valueOf( 1000000 );
-		final BigDecimal expectedInterest = interestRate.divide( getNonLeapYearDivisor(), mc ).multiply( funds, mc )
-				.multiply( BigDecimal.valueOf( days ), mc );
+		final BigDecimal funds = BigDecimal.valueOf(1000000);
+		final BigDecimal expectedInterest = interestRate.divide(getNonLeapYearDivisor(), mc).multiply(funds, mc)
+		        .multiply(BigDecimal.valueOf(days), mc);
 
-		final BigDecimal interest = rate.interest( funds, days, isLeapYear );
+		final BigDecimal interest = rate.interest(funds, days, isLeapYear);
 
-		assertEquals( expectedInterest, interest );
+		assertEquals(expectedInterest, interest);
 	}
 
 	@Test
 	public void tenDaysInterestLeapYear() {
-		final BigDecimal interestRate = BigDecimal.valueOf( 7.5 );
-		final FlatInterestRate rate = new FlatInterestRate( interestRate, mc );
+		final BigDecimal interestRate = BigDecimal.valueOf(7.5);
+		final FlatInterestRate rate = new FlatInterestRate(interestRate, mc);
 		final int days = 10;
-		final BigDecimal funds = BigDecimal.valueOf( 1000000 );
-		final BigDecimal expectedInterest = interestRate.divide( getLeapYearDivisor(), mc ).multiply( funds, mc )
-				.multiply( BigDecimal.valueOf( days ), mc );
+		final BigDecimal funds = BigDecimal.valueOf(1000000);
+		final BigDecimal expectedInterest = interestRate.divide(getLeapYearDivisor(), mc).multiply(funds, mc)
+		        .multiply(BigDecimal.valueOf(days), mc);
 
-		final BigDecimal interest = rate.interest( funds, days, true );
+		final BigDecimal interest = rate.interest(funds, days, true);
 
-		assertEquals( expectedInterest, interest );
+		assertEquals(expectedInterest, interest);
 	}
 
 	private BigDecimal getNonLeapYearDivisor() {
-		return BigDecimal.valueOf( 36500 );
+		return BigDecimal.valueOf(36500);
 	}
 
 	private BigDecimal getLeapYearDivisor() {
-		return BigDecimal.valueOf( 36600 );
+		return BigDecimal.valueOf(36600);
 	}
 }

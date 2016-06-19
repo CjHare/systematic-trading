@@ -32,23 +32,24 @@ package com.systematic.trading.analysis;
  */
 public enum EquityHeld {
 
-	// ETF_OIL("OOO.AX"),
-	// ETF_GOLD("GOLD.AX"),
-	// ETF_SILVER("ETPMAG.AX"),
-	// ETF_USD("USD.AX"),
-	// ETF_CHINA("IZZ.AX"),
-	// ETF_JAPAN("IJP.AX"),
-	// ETF_HONG_KONG( "IHK.AX" ),
-	// ETF_SINGAPORE("ISG.AX"),
-	// ETF_SOUTH_KOREA("IKO.AX"),
-	ETF_AUSTRALIA( "VAS.AX" ),
-	ETF_USA( "VTS.AX" ),
-	ETF_AUSTRALIA_SHORT( "BEAR.AX" ),
-	ETF_AUSTRALIAN_BONDS( "VAF.AX" ),
+    // ETF_OIL("OOO.AX"),
+    // ETF_GOLD("GOLD.AX"),
+    // ETF_SILVER("ETPMAG.AX"),
+    // ETF_USD("USD.AX"),
+    // ETF_CHINA("IZZ.AX"),
+    // ETF_JAPAN("IJP.AX"),
+    // ETF_HONG_KONG( "IHK.AX" ),
+    // ETF_SINGAPORE("ISG.AX"),
+    // ETF_SOUTH_KOREA("IKO.AX"),
+    // ETF_AUSTRALIA( "VAS.AX" ),
+    // ETF_USA( "VTS.AX" ),
+    // ETF_AUSTRALIA_SHORT( "BEAR.AX" ),
+    // ETF_AUSTRALIAN_BONDS( "VAF.AX" ),
+	ETF_MSCI_WORLD("VGS.AX"),
 
 	;
 
-	EquityHeld( final String symbol ) {
+	EquityHeld(final String symbol) {
 		this.symbol = symbol;
 	}
 

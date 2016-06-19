@@ -39,25 +39,25 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 	private final int limit;
 
 	/** Array to use when the limit is not yet reached. */
-	private final E[] empty;
+	private final transient E[] empty;
 
 	/** Array re-used when invoking toArray . */
-	private final E[] items;
+	private final transient E[] items;
 
 	@SuppressWarnings("unchecked")
-	public LimitedSizeQueue( final Class<E> clazz, final int limit ) {
+	public LimitedSizeQueue(final Class<E> clazz, final int limit) {
 		this.limit = limit;
 
 		// Occur the reflection cost here once
-		this.items = (E[]) java.lang.reflect.Array.newInstance( clazz, limit );
+		this.items = (E[]) java.lang.reflect.Array.newInstance(clazz, limit);
 
-		this.empty = (E[]) java.lang.reflect.Array.newInstance( clazz, 0 );
+		this.empty = (E[]) java.lang.reflect.Array.newInstance(clazz, 0);
 
 	}
 
 	@Override
 	public boolean add( final E o ) {
-		super.add( o );
+		super.add(o);
 
 		while (size() > limit) {
 			super.remove();
@@ -72,18 +72,41 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 	 */
 	public E[] toArray() {
 		if (size() >= limit) {
-			return super.toArray( items );
+			return super.toArray(items);
 		} else {
-			return super.toArray( empty );
+			return super.toArray(empty);
 		}
 	}
 
 	@Override
 	public <T> T[] toArray( final T[] a ) {
-		throw new UnsupportedOperationException( "Please use LimitedQueue.toArray() instead" );
+		throw new UnsupportedOperationException("Please use LimitedQueue.toArray() instead");
 	}
 
 	public int getLimit() {
 		return limit;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + limit;
+		return result;
+	}
+
+	@Override
+	public boolean equals( final Object obj ) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		@SuppressWarnings("unchecked")
+		LimitedSizeQueue<E> other = (LimitedSizeQueue<E>) obj;
+		if (limit != other.limit)
+			return false;
+		return true;
 	}
 }

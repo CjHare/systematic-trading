@@ -34,21 +34,22 @@ import java.math.BigDecimal;
  */
 public class ClosingPrice extends Price {
 
+	protected ClosingPrice(final BigDecimal amount) {
+		super(amount);
+	}
+
 	/**
 	 * Creates a close price from an underlying decimal value.
 	 * 
-	 * @param price decimal to create as a close price, cannot be <code>null</code>.
+	 * @param amount decimal to create as a close price, cannot be <code>null</code>.
 	 * @return equivalent closing price for the given decimal.
 	 */
-	public static ClosingPrice valueOf( final BigDecimal price ) {
-		if (price == null) {
-			throw new IllegalArgumentException( "null is not accepted by ClosingPrice.valueOf()" );
+	public static ClosingPrice valueOf( final BigDecimal amount ) {
+		if (amount == null) {
+			throw new IllegalArgumentException("null is not accepted by ClosingPrice.valueOf()");
 		}
 
-		return new ClosingPrice( price );
+		return new ClosingPrice(amount);
 	}
 
-	protected ClosingPrice( final BigDecimal price ) {
-		super( price );
-	}
 }

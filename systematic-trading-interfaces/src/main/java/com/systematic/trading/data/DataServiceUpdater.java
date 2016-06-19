@@ -27,11 +27,14 @@ package com.systematic.trading.data;
 
 import java.time.LocalDate;
 
+import com.systematic.trading.exception.ServiceException;
+
 /**
  * Handles the retrieving and aggregating of trading data from external sources.
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface DataServiceUpdater {
 
 	/**
@@ -41,7 +44,8 @@ public interface DataServiceUpdater {
 	 *            last two month is available locally.
 	 * @param startDate the inclusive start date, of the required data set.
 	 * @param endDate the inclusive end date, of the required data set.
+	 * @throws ServiceException problem has been encountered during the data retrieval.
 	 */
-	void get( String tickerSymbol, LocalDate startDate, LocalDate endDate );
+	void get( String tickerSymbol, LocalDate startDate, LocalDate endDate ) throws ServiceException;
 
 }

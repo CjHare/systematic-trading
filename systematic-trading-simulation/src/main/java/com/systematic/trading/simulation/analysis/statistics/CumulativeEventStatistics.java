@@ -27,6 +27,7 @@ package com.systematic.trading.simulation.analysis.statistics;
 
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
@@ -39,6 +40,7 @@ public class CumulativeEventStatistics implements EventStatistics {
 	private final BrokerageEventStatistics brokerageStatistics = new CumulativeBrokerageEventStatistics();
 	private final CashEventStatistics cashStatistics = new CumulativeCashEventStatistics();
 	private final OrderEventStatistics orderStatistics = new CumulativeOrderEventStatistics();
+	private final EquityEventStatistics equityStatistics = new CumulativeEquityEventStatistics();
 
 	@Override
 	public OrderEventStatistics getOrderEventStatistics() {
@@ -57,16 +59,26 @@ public class CumulativeEventStatistics implements EventStatistics {
 
 	@Override
 	public void event( final CashEvent event ) {
-		cashStatistics.event( event );
+		cashStatistics.event(event);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		brokerageStatistics.event( event );
+		brokerageStatistics.event(event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		orderStatistics.event( event );
+		orderStatistics.event(event);
+	}
+
+	@Override
+	public EquityEventStatistics getEquityEventStatistics() {
+		return equityStatistics;
+	}
+
+	@Override
+	public void event( final EquityEvent event ) {
+		equityStatistics.event(event);
 	}
 }

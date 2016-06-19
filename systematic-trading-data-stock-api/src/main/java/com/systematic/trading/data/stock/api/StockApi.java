@@ -42,7 +42,7 @@ public interface StockApi {
 	 * @throws CannotRetrieveDataException problem encountered in retrieving the stock data.
 	 */
 	TradingDayPrices[] getStockData( String symbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate )
-			throws CannotRetrieveDataException;
+	        throws CannotRetrieveDataException;
 
 	/**
 	 * Maximum number of time that may be retrieved in one attempt.

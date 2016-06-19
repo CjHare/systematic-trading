@@ -33,14 +33,14 @@ import java.time.Period;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
-import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 
 /**
- * Frequent purchases of a fixed amount at regular intervals.
+ * Frequent purchases of a the maximum amount of equities at regular intervals.
  * 
  * @author CJ Hare
  */
@@ -48,9 +48,6 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 
 	/** Time between creation of entry orders. */
 	private final Period interval;
-
-	/** Amount to buy in with. */
-	private final BigDecimal amount;
 
 	/** The last date purchase order was created. */
 	private LocalDate lastOrder;
@@ -61,38 +58,44 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	/** The type of equity being traded. */
 	private final EquityClass type;
 
+	/** Number of decimal places the equity is in. */
+	private final int scale;
+
 	/**
-	 * @param amount total to spend on a single purchase order, including fees.
+	 * @param equityScale the number of decimal places the equity is traded in, with zero being
+	 *            whole numbers.
 	 * @param firstOrder date to place the first order.
 	 * @param interval time between creation of entry orders.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public DateTriggeredEntryLogic( final BigDecimal amount, final EquityClass equityType, final LocalDate firstOrder,
-			final Period interval, final MathContext mathContext ) {
-		this.interval = interval;
-		this.amount = amount;
+	public DateTriggeredEntryLogic(final EquityClass equityType, final int equityScale, final LocalDate firstOrder,
+	        final Period interval, final MathContext mathContext) {
 		this.mathContext = mathContext;
+		this.interval = interval;
+		this.scale = equityScale;
 		this.type = equityType;
 
 		// The first order needs to be on that date, not interval after
-		lastOrder = LocalDate.from( firstOrder ).minus( interval );
+		lastOrder = LocalDate.from(firstOrder).minus(interval);
 	}
 
 	@Override
-	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final TradingDayPrices data ) {
+	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+	        final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();
 
-		if (isOrderTime( tradingDate )) {
-
-			final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, data.getDate() );
+		if (isOrderTime(tradingDate)) {
+			final BigDecimal amount = cashAccount.getBalance();
+			final BigDecimal maximumTransactionCost = fees.calculateFee(amount, type, data.getDate());
 			final BigDecimal closingPrice = data.getClosingPrice().getPrice();
-			final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext )
-					.divide( closingPrice, mathContext );
 
-			if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
-				lastOrder = tradingDate.minus( Period.ofDays( 1 ) );
-				return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, tradingDate, mathContext );
+			final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, mathContext)
+			        .divide(closingPrice, mathContext).setScale(scale, BigDecimal.ROUND_DOWN);
+
+			if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
+				lastOrder = tradingDate.minus(Period.ofDays(1));
+				return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, mathContext);
 			}
 		}
 
@@ -100,7 +103,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	}
 
 	private boolean isOrderTime( final LocalDate tradingDate ) {
-		return tradingDate.isAfter( lastOrder.plus( interval ) );
+		return tradingDate.isAfter(lastOrder.plus(interval));
 	}
 
 	@Override

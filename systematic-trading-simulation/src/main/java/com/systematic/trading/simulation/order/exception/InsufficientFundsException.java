@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.simulation.order.exception;
 
-
 /**
  * When there is not enough money available.
  * 
@@ -35,7 +34,7 @@ public class InsufficientFundsException extends OrderException {
 
 	private static final long serialVersionUID = 1L;
 
-	public InsufficientFundsException( final String message ) {
-		super( message );
+	public InsufficientFundsException(final String message) {
+		super(message);
 	}
 }

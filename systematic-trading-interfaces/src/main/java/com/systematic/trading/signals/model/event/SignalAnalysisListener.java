@@ -30,6 +30,7 @@ package com.systematic.trading.signals.model.event;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface SignalAnalysisListener {
 
 	/**

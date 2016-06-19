@@ -50,11 +50,11 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	 * @param indicators all the indicators expected in an application, those all required on the
 	 *            same date to pass the filtering.
 	 */
-	public IndicatorsOnSameDaySignalFilter( final IndicatorSignalType... indicators ) {
+	public IndicatorsOnSameDaySignalFilter(final IndicatorSignalType... indicators) {
 
 		// There'll be NullPointers unless we have an array of IndicatorSignalType
 		if (indicators == null || indicators.length == 0) {
-			throw new IllegalArgumentException( "Expecting at least one IndicatorSignalType" );
+			throw new IllegalArgumentException("Expecting at least one IndicatorSignalType");
 		}
 
 		this.indicators = indicators;
@@ -62,12 +62,12 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 
 	@Override
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
-			final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
-		validateInput( signals );
+	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+		validateInput(signals);
 
-		final SortedSet<BuySignal> passedSignals = new TreeSet<BuySignal>( ordering );
+		final SortedSet<BuySignal> passedSignals = new TreeSet<>(ordering);
 
-		final List<IndicatorSignal> firstIndicatorSignals = signals.get( indicators[0] );
+		final List<IndicatorSignal> firstIndicatorSignals = signals.get(indicators[0]);
 
 		for (final IndicatorSignal firstIndicatorSignal : firstIndicatorSignals) {
 			final LocalDate date = firstIndicatorSignal.getDate();
@@ -75,17 +75,17 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 			// Discover how many of the indicator signals also match on that date
 			int matches = 1;
 			for (int i = 1; i < indicators.length; i++) {
-				if (hasSignalOnSameDay( date, signals.get( indicators[i] ) )) {
+				if (hasSignalOnSameDay(date, signals.get(indicators[i]))) {
 					matches++;
 				} else {
 					// We need a match across all indicators, missed one :. don't continue
-					i = indicators.length;
+					break;
 				}
 			}
 
 			// Buy when all have a signal on the same date
 			if (matches == indicators.length) {
-				passedSignals.add( new BuySignal( date ) );
+				passedSignals.add(new BuySignal(date));
 			}
 		}
 
@@ -95,7 +95,7 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	private boolean hasSignalOnSameDay( final LocalDate date, final List<IndicatorSignal> signals ) {
 
 		for (final IndicatorSignal signal : signals) {
-			if (date.equals( signal.getDate() )) {
+			if (date.equals(signal.getDate())) {
 				return true;
 			}
 		}
@@ -106,8 +106,8 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	private void validateInput( final Map<IndicatorSignalType, List<IndicatorSignal>> signals ) {
 
 		for (final IndicatorSignalType indicator : indicators) {
-			if (signals.get( indicator ) == null) {
-				throw new IllegalArgumentException( String.format( "Expecting a non-null %s list", indicator ) );
+			if (signals.get(indicator) == null) {
+				throw new IllegalArgumentException(String.format("Expecting a non-null %s list", indicator));
 			}
 		}
 	}

@@ -34,29 +34,39 @@ import java.io.File;
  */
 public class FileClearDestination {
 
-	public FileClearDestination( final String outputDirectory ) {
+	private final String outputDirectory;
+
+	public FileClearDestination(final String outputDirectory) {
+		this.outputDirectory = outputDirectory;
+	}
+
+	public void clear() {
 
 		// Ensure the directory exists
-		final File outputDirectoryFile = new File( outputDirectory );
+		final File outputDirectoryFile = new File(outputDirectory);
 
-		if (outputDirectoryFile.exists()) {
-			deleteSubDirectories( outputDirectoryFile );
-		} else {
+		if (outputDirectoryFile.exists())
+
+		{
+			deleteSubDirectories(outputDirectoryFile);
+		} else
+
+		{
 			if (!outputDirectoryFile.mkdirs()) {
 				throw new IllegalArgumentException(
-						String.format( "Failed to create / access directory parent directory: %s", outputDirectory ) );
+				        String.format("Failed to create / access directory parent directory: %s", outputDirectory));
 			}
 		}
 
-		verifyDirectoryIsEmpty( outputDirectory );
+		verifyDirectoryIsEmpty(outputDirectory);
 	}
 
 	private void verifyDirectoryIsEmpty( final String outputDirectory ) {
-		final File outputDirectoryFile = new File( outputDirectory );
+		final File outputDirectoryFile = new File(outputDirectory);
 
 		if (outputDirectoryFile.listFiles().length != 0) {
-			throw new IllegalArgumentException( String.format( "%s was not successfully emptied, still contains: %s",
-					outputDirectory, outputDirectoryFile.listFiles() ) );
+			throw new IllegalArgumentException(String.format("%s was not successfully emptied, still contains: %s",
+			        outputDirectory, outputDirectoryFile.listFiles()));
 		}
 	}
 
@@ -65,11 +75,11 @@ public class FileClearDestination {
 		for (final File file : directory.listFiles()) {
 
 			if (file.isDirectory()) {
-				deleteSubDirectories( file );
+				deleteSubDirectories(file);
 			}
 
 			if (!file.delete()) {
-				throw new IllegalArgumentException( String.format( "Failed to delete: %s", directory ) );
+				throw new IllegalArgumentException(String.format("Failed to delete: %s", directory));
 			}
 		}
 	}

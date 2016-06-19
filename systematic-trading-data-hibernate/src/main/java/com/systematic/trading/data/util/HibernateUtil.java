@@ -36,30 +36,33 @@ import com.systematic.trading.data.HistoryRetrievalRequest;
 
 public class HibernateUtil {
 
-	private static final Logger LOG = LogManager.getLogger( HibernateUtil.class );
-	private static final SessionFactory sessionFactory = buildSessionFactory();
+	private static final Logger LOG = LogManager.getLogger(HibernateUtil.class);
+	private static final SessionFactory SESSION_FACTORY = buildSessionFactory();
+
+	private HibernateUtil() {
+	}
 
 	private static SessionFactory buildSessionFactory() {
 		try {
 			final Configuration configuration = new Configuration();
-			configuration.configure( "hibernate.cfg.xml" );
+			configuration.configure("hibernate.cfg.xml");
 
-			final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-					configuration.getProperties() ).build();
+			final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+			        .applySettings(configuration.getProperties()).build();
 
-			configuration.addAnnotatedClass( HistoryRetrievalRequest.class );
+			configuration.addAnnotatedClass(HistoryRetrievalRequest.class);
 			// addPackage("com.xyz") //add package if used.
 
-			return configuration.buildSessionFactory( serviceRegistry );
+			return configuration.buildSessionFactory(serviceRegistry);
 
-		} catch (final Throwable ex) {
-			LOG.error( "Initial SessionFactory creation failed.", ex );
-			throw new ExceptionInInitializerError( ex );
+		} catch (final Exception ex) {
+			LOG.error("Initial SessionFactory creation failed.", ex);
+			throw new ExceptionInInitializerError(ex);
 		}
 	}
 
 	public static SessionFactory getSessionFactory() {
-		return sessionFactory;
+		return SESSION_FACTORY;
 	}
 
 }

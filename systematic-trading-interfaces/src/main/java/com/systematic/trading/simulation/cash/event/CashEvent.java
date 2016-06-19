@@ -38,18 +38,18 @@ import com.systematic.trading.event.Event;
 public interface CashEvent extends Event {
 
 	enum CashEventType {
-		/** From the sale of equities. */
-		CREDIT( "Credit" ),
+	    /** From the sale of equities. */
+		CREDIT("Credit"),
 		/** From the purchase of equities. */
-		DEBIT( "Debit" ),
+		DEBIT("Debit"),
 		/** Non-equity source of funds being credited. */
-		DEPOSIT( "Deposit" ),
+		DEPOSIT("Deposit"),
 		/** Interest paid on cash held in transactional account. */
-		INTEREST( "Interest" );
+		INTEREST("Interest");
 
 		private final String display;
 
-		private CashEventType( final String display ) {
+		private CashEventType(final String display) {
 			this.display = display;
 		}
 

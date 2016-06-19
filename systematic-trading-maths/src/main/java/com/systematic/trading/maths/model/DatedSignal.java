@@ -37,7 +37,7 @@ public class DatedSignal {
 	private final LocalDate date;
 	private final SignalType type;
 
-	public DatedSignal( final LocalDate date, final SignalType type ) {
+	public DatedSignal(final LocalDate date, final SignalType type) {
 		this.date = date;
 		this.type = type;
 	}

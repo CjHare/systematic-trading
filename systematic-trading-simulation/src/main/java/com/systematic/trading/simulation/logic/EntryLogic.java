@@ -27,7 +27,7 @@ package com.systematic.trading.simulation.logic;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
-import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
@@ -50,7 +50,7 @@ public interface EntryLogic {
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
 	 *         be placed.
 	 */
-	EquityOrder update( BrokerageFees fees, CashAccount cashAccount, TradingDayPrices data );
+	EquityOrder update( BrokerageTransactionFee fees, CashAccount cashAccount, TradingDayPrices data );
 
 	/**
 	 * Action to take on the order when the triggering conditions are met, however there are

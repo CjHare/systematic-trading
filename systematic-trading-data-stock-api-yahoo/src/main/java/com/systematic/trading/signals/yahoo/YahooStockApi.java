@@ -43,17 +43,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.data.stock.api.StockApi;
 import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.yahoo.data.TradingDayPricesImpl;
 import com.systematic.trading.signals.yahoo.util.HttpUtil;
 
 public class YahooStockApi implements StockApi {
-	private static final Logger LOG = LogManager.getLogger( YahooStockApi.class );
+	private static final Logger LOG = LogManager.getLogger(YahooStockApi.class);
 
 	private static final String API_PART_ONE = "http://query.yahooapis.com/v1/public/yql?q=select%20Date,Open,High,Low,Close%20from%20yahoo.finance.historicaldata%20where%20symbol=%22";
 	private static final String API_PART_TWO = "%22%20and%20startDate=%22";
@@ -61,94 +61,104 @@ public class YahooStockApi implements StockApi {
 	private static final String API_PART_FOUR = "%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 
 	// Dividend API
-//	http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.dividendhistory%20where%20symbol=%22VGS.AX%22%20and%20startDate=%222015-01-01%22%20and%20endDate=%222015-02-01%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys
-	
+	//	http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.dividendhistory%20where%20symbol=%22VGS.AX%22%20and%20startDate=%222015-01-01%22%20and%20endDate=%222015-02-01%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys
+
 	private static final HttpUtil HTTP_UTILS = new HttpUtil();
 
 	private String getJsonUrl( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate )
-			throws CannotRetrieveDataException {
+	        throws CannotRetrieveDataException {
 
 		try {
 			final StringBuilder query = new StringBuilder();
-			query.append( API_PART_ONE );
-			query.append( URLEncoder.encode( tickerSymbol, StandardCharsets.UTF_8.name() ) );
-			query.append( API_PART_TWO );
-			query.append( startDate.toString() );
-			query.append( API_PART_THREE );
-			query.append( endDate.minus( Period.ofDays( 1 ) ).toString() );
-			query.append( API_PART_FOUR );
+			query.append(API_PART_ONE);
+			query.append(URLEncoder.encode(tickerSymbol, StandardCharsets.UTF_8.name()));
+			query.append(API_PART_TWO);
+			query.append(startDate.toString());
+			query.append(API_PART_THREE);
+			query.append(endDate.minus(Period.ofDays(1)).toString());
+			query.append(API_PART_FOUR);
 			return query.toString();
 		} catch (final UnsupportedEncodingException e) {
-			throw new CannotRetrieveDataException( "URL encoding failed", e );
+			throw new CannotRetrieveDataException("URL encoding failed", e);
 		}
 	}
 
-	private TradingDayPrices[] parseJson( final String tickerSymbol, final String result ) throws CannotRetrieveDataException {
-		List<TradingDayPrices> data = new ArrayList<TradingDayPrices>();
+	private TradingDayPrices[] parseJson( final String tickerSymbol, final String result )
+	        throws CannotRetrieveDataException {
+		List<TradingDayPrices> data = new ArrayList<>();
 
 		try {
-			final JSONObject json = new JSONObject( result );
-			final JSONObject query = json.getJSONObject( "query" );
-			final int numberOfQuotes = query.getInt( "count" );
+			final JSONObject json = new JSONObject(result);
+			final JSONObject query = json.getJSONObject("query");
+			final int numberOfQuotes = query.getInt("count");
 
-			LOG.info( String.format( "%s data points returned for ticker symbol %s", numberOfQuotes, tickerSymbol ) );
-
-			final JSONObject results;
+			LOG.info(String.format("%s data points returned for ticker symbol %s", numberOfQuotes, tickerSymbol));
 
 			switch (numberOfQuotes) {
-			// No parsing possible with no results
 				case 0:
-					break;
-				// Single result, parse as JSON object
+				// No parsing possible, as there are no results
+				break;
 				case 1:
-					results = query.getJSONObject( "results" );
-					data.add( parseQuote( tickerSymbol, results.getJSONObject( "quote" ) ) );
-					break;
-				// Two or more results, parse as JSON array
+					data = parseQuoteAsJsonObject(data, query, tickerSymbol);
+				break;
 				default:
-					results = query.getJSONObject( "results" );
-					final JSONArray quote = results.getJSONArray( "quote" );
-					for (int i = 0; i < numberOfQuotes; i++) {
-						data.add( parseQuote( tickerSymbol, quote.getJSONObject( i ) ) );
-					}
-					break;
+					data = parseQuoteAsJsonArray(data, query, numberOfQuotes, tickerSymbol);
+				break;
 			}
 
 		} catch (final JSONException | ParseException e) {
-			final String message = String.format( "Failed in parsing JSON for: %s", tickerSymbol );
-			LOG.error( message, e );
-			LOG.error( result );
-			throw new CannotRetrieveDataException( message, e );
+			final String message = String.format("Failed in parsing JSON for: %s", tickerSymbol);
+			LOG.error(message, e);
+			LOG.error(result);
+			throw new CannotRetrieveDataException(message, e);
 		}
 
-		return data.toArray( new TradingDayPrices[0] );
+		return data.toArray(new TradingDayPrices[0]);
+	}
+
+	private List<TradingDayPrices> parseQuoteAsJsonObject( List<TradingDayPrices> data, final JSONObject query,
+	        final String tickerSymbol ) throws ParseException {
+		final JSONObject result = query.getJSONObject("results");
+		data.add(parseQuote(tickerSymbol, result.getJSONObject("quote")));
+		return data;
+	}
+
+	private List<TradingDayPrices> parseQuoteAsJsonArray( List<TradingDayPrices> data, final JSONObject query,
+	        final int numberOfQuotes, final String tickerSymbol ) throws ParseException {
+		final JSONObject results = query.getJSONObject("results");
+		final JSONArray quote = results.getJSONArray("quote");
+		for (int i = 0; i < numberOfQuotes; i++) {
+			data.add(parseQuote(tickerSymbol, quote.getJSONObject(i)));
+		}
+
+		return data;
 	}
 
 	private TradingDayPricesImpl parseQuote( final String tickerSymbol, final JSONObject quote ) throws ParseException {
 
-		final String unparseDdate = quote.getString( "Date" );
-		final LocalDate date = LocalDate.from( DateTimeFormatter.ISO_LOCAL_DATE.parse( unparseDdate ) );
-		final ClosingPrice closingPrice = ClosingPrice.valueOf( BigDecimal.valueOf( quote.getDouble( "Close" ) ) );
-		final LowestPrice lowestPrice = LowestPrice.valueOf( BigDecimal.valueOf( quote.getDouble( "Low" ) ) );
-		final HighestPrice highestPrice = HighestPrice.valueOf( BigDecimal.valueOf( quote.getDouble( "High" ) ) );
-		final OpeningPrice openingPrice = OpeningPrice.valueOf( BigDecimal.valueOf( quote.getDouble( "Open" ) ) );
+		final String unparseDdate = quote.getString("Date");
+		final LocalDate date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(unparseDdate));
+		final ClosingPrice closingPrice = ClosingPrice.valueOf(BigDecimal.valueOf(quote.getDouble("Close")));
+		final LowestPrice lowestPrice = LowestPrice.valueOf(BigDecimal.valueOf(quote.getDouble("Low")));
+		final HighestEquityPrice highestPrice = HighestEquityPrice.valueOf(BigDecimal.valueOf(quote.getDouble("High")));
+		final OpeningPrice openingPrice = OpeningPrice.valueOf(BigDecimal.valueOf(quote.getDouble("Open")));
 
-		return new TradingDayPricesImpl( tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice );
+		return new TradingDayPricesImpl(tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice);
 	}
 
 	@Override
 	public TradingDayPrices[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
-			final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
-		final String uri = getJsonUrl( tickerSymbol, inclusiveStartDate, exclusiveEndDate );
-		LOG.info( String.format( "%s API call to: %s", tickerSymbol, uri ) );
+	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+		final String uri = getJsonUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		LOG.info(String.format("%s API call to: %s", tickerSymbol, uri));
 
-		final String json = HTTP_UTILS.httpGet( uri );
+		final String json = HTTP_UTILS.httpGet(uri);
 
-		return parseJson( tickerSymbol, json );
+		return parseJson(tickerSymbol, json);
 	}
 
 	@Override
 	public Period getMaximumDurationInSingleUpdate() {
-		return Period.ofYears( 1 );
+		return Period.ofYears(1);
 	}
 }

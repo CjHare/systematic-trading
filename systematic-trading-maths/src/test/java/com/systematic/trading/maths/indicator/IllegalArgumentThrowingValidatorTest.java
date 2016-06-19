@@ -43,10 +43,10 @@ public class IllegalArgumentThrowingValidatorTest {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
 		final List<String> data = new ArrayList<String>();
-		data.add( "one" );
-		data.add( "two" );
+		data.add("one");
+		data.add("two");
 
-		validator.verifyEnoughValues( data, requiredNumberOfPrices );
+		validator.verifyEnoughValues(data, requiredNumberOfPrices);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -55,9 +55,9 @@ public class IllegalArgumentThrowingValidatorTest {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
 		final List<String> data = new ArrayList<String>();
-		data.add( "one" );
+		data.add("one");
 
-		validator.verifyEnoughValues( data, requiredNumberOfPrices );
+		validator.verifyEnoughValues(data, requiredNumberOfPrices);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -66,10 +66,10 @@ public class IllegalArgumentThrowingValidatorTest {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
 		final List<String> data = new ArrayList<String>();
-		data.add( null );
-		data.add( null );
+		data.add(null);
+		data.add(null);
 
-		validator.verifyEnoughValues( data, requiredNumberOfPrices );
+		validator.verifyEnoughValues(data, requiredNumberOfPrices);
 	}
 
 	@Test
@@ -78,11 +78,11 @@ public class IllegalArgumentThrowingValidatorTest {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
 		final List<String> data = new ArrayList<String>();
-		data.add( null );
-		data.add( "one" );
-		data.add( "two" );
+		data.add(null);
+		data.add("one");
+		data.add("two");
 
-		validator.verifyEnoughValues( data, requiredNumberOfPrices );
+		validator.verifyEnoughValues(data, requiredNumberOfPrices);
 	}
 
 	@Test
@@ -91,11 +91,11 @@ public class IllegalArgumentThrowingValidatorTest {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
 		final List<String> data = new ArrayList<String>();
-		data.add( "one" );
-		data.add( "two" );
-		data.add( null );
+		data.add("one");
+		data.add("two");
+		data.add(null);
 
-		validator.verifyEnoughValues( data, requiredNumberOfPrices );
+		validator.verifyEnoughValues(data, requiredNumberOfPrices);
 	}
 
 	@Test
@@ -107,7 +107,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		data[0] = "one";
 		data[1] = "two";
 
-		validator.verifyEnoughValues( data, requiredNumberOfPrices );
+		validator.verifyEnoughValues(data, requiredNumberOfPrices);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -118,7 +118,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		final String[] data = new String[1];
 		data[0] = "one";
 
-		validator.verifyEnoughValues( data, requiredNumberOfPrices );
+		validator.verifyEnoughValues(data, requiredNumberOfPrices);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -128,7 +128,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 		final String[] data = new String[2];
 
-		validator.verifyEnoughValues( data, requiredNumberOfPrices );
+		validator.verifyEnoughValues(data, requiredNumberOfPrices);
 	}
 
 	@Test
@@ -141,7 +141,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		data[1] = "one";
 		data[2] = "two";
 
-		validator.verifyEnoughValues( data, requiredNumberOfPrices );
+		validator.verifyEnoughValues(data, requiredNumberOfPrices);
 	}
 
 	@Test
@@ -154,7 +154,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		data[1] = "two";
 		data[2] = null;
 
-		validator.verifyEnoughValues( data, requiredNumberOfPrices );
+		validator.verifyEnoughValues(data, requiredNumberOfPrices);
 	}
 
 	@Test
@@ -164,7 +164,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		final String[] data = new String[1];
 		data[0] = "one";
 
-		validator.verifyZeroNullEntries( data );
+		validator.verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -172,11 +172,11 @@ public class IllegalArgumentThrowingValidatorTest {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
 		final List<String> data = new ArrayList<String>();
-		data.add( null );
-		data.add( "one" );
-		data.add( "two" );
+		data.add(null);
+		data.add("one");
+		data.add("two");
 
-		validator.verifyZeroNullEntries( data );
+		validator.verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -184,11 +184,11 @@ public class IllegalArgumentThrowingValidatorTest {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
 		final List<String> data = new ArrayList<String>();
-		data.add( "one" );
-		data.add( "two" );
-		data.add( null );
+		data.add("one");
+		data.add("two");
+		data.add(null);
 
-		validator.verifyZeroNullEntries( data );
+		validator.verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -196,11 +196,11 @@ public class IllegalArgumentThrowingValidatorTest {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
 		final List<String> data = new ArrayList<String>();
-		data.add( "one" );
-		data.add( null );
-		data.add( "two" );
+		data.add("one");
+		data.add(null);
+		data.add("two");
 
-		validator.verifyZeroNullEntries( data );
+		validator.verifyZeroNullEntries(data);
 	}
 
 	@Test
@@ -210,7 +210,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		final String[] data = new String[1];
 		data[0] = "one";
 
-		validator.verifyZeroNullEntries( data );
+		validator.verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -222,7 +222,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		data[1] = "one";
 		data[2] = "two";
 
-		validator.verifyZeroNullEntries( data );
+		validator.verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -234,7 +234,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		data[1] = "two";
 		data[2] = null;
 
-		validator.verifyZeroNullEntries( data );
+		validator.verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -246,7 +246,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		data[1] = null;
 		data[2] = "two";
 
-		validator.verifyZeroNullEntries( data );
+		validator.verifyZeroNullEntries(data);
 	}
 
 }

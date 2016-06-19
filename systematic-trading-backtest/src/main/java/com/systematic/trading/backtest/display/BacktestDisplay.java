@@ -25,6 +25,10 @@
  */
 package com.systematic.trading.backtest.display;
 
+import java.time.Period;
+
+import com.systematic.trading.backtest.exception.BacktestInitialisationException;
+import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
@@ -35,6 +39,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.equity.event.EquityEventListener;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
@@ -42,8 +47,9 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay extends CashEventListener, OrderEventListener, BrokerageEventListener,
-		ReturnOnInvestmentEventListener, SimulationStateListener, NetWorthEventListener, SignalAnalysisListener {
+public interface BacktestDisplay
+        extends CashEventListener, OrderEventListener, BrokerageEventListener, ReturnOnInvestmentEventListener,
+        SimulationStateListener, NetWorthEventListener, SignalAnalysisListener, EquityEventListener {
 
 	/**
 	 * All the interesting data points for displaying.
@@ -54,7 +60,7 @@ public interface BacktestDisplay extends CashEventListener, OrderEventListener, 
 	 * @param lastTradingDay prices from the last day in the back test.
 	 * @throws Exception problem encountered during the initialisation of the display.
 	 */
-	void init( TickerSymbolTradingData tradingData, EventStatistics eventStatistics,
-			CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, TradingDayPrices lastTradingDay )
-					throws Exception;
+	void init( TickerSymbolTradingData tradingData, BacktestSimulationDates simulationDates,
+	        EventStatistics eventStatistics, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
+	        TradingDayPrices lastTradingDay, Period duration ) throws BacktestInitialisationException;
 }

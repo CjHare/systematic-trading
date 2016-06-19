@@ -28,7 +28,7 @@ package com.systematic.trading.data;
 import java.time.LocalDate;
 
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 
@@ -65,7 +65,7 @@ public interface TradingDayPrices {
 	 * 
 	 * @return highest price of the equity during the day's trading.
 	 */
-	HighestPrice getHighestPrice();
+	HighestEquityPrice getHighestPrice();
 
 	/**
 	 * Price of the equity at the start of trading.

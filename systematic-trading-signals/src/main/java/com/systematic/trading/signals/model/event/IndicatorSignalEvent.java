@@ -28,6 +28,7 @@ package com.systematic.trading.signals.model.event;
 import java.time.LocalDate;
 
 import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -39,17 +40,22 @@ public class IndicatorSignalEvent implements SignalAnalysisEvent {
 
 	private final IndicatorSignal signal;
 
-	public IndicatorSignalEvent( final IndicatorSignal signal ) {
+	public IndicatorSignalEvent(final IndicatorSignal signal) {
 		this.signal = signal;
 	}
 
 	@Override
 	public IndicatorSignalType getSignalType() {
-		return signal.getType();
+		return signal.getSignal();
 	}
 
 	@Override
 	public LocalDate getSignalDate() {
 		return signal.getDate();
+	}
+
+	@Override
+	public IndicatorDirectionType getDirectionType() {
+		return signal.getDirection();
 	}
 }

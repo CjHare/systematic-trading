@@ -33,6 +33,7 @@ import java.time.LocalDate;
 import org.junit.Test;
 
 import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -46,24 +47,40 @@ public class IndicatorSignalEventTest {
 	public void getSignalType() {
 		final LocalDate date = LocalDate.now();
 		final IndicatorSignalType type = IndicatorSignalType.RSI;
-		final IndicatorSignal signal = new IndicatorSignal( date, type );
+		final IndicatorDirectionType direction = IndicatorDirectionType.UP;
 
-		final IndicatorSignalEvent event = new IndicatorSignalEvent( signal );
+		final IndicatorSignal signal = new IndicatorSignal(date, type, direction);
 
-		assertNotNull( event );
-		assertEquals( type, event.getSignalType() );
+		final IndicatorSignalEvent event = new IndicatorSignalEvent(signal);
+
+		assertNotNull(event);
+		assertEquals(type, event.getSignalType());
 	}
 
 	@Test
 	public void getDate() {
 		final LocalDate date = LocalDate.now();
 		final IndicatorSignalType type = IndicatorSignalType.RSI;
-		final IndicatorSignal signal = new IndicatorSignal( date, type );
+		final IndicatorDirectionType direction = IndicatorDirectionType.UP;
+		final IndicatorSignal signal = new IndicatorSignal(date, type, direction);
 
-		final IndicatorSignalEvent event = new IndicatorSignalEvent( signal );
+		final IndicatorSignalEvent event = new IndicatorSignalEvent(signal);
 
-		assertNotNull( event );
-		assertEquals( date, event.getSignalDate() );
+		assertNotNull(event);
+		assertEquals(date, event.getSignalDate());
 	}
 
+	@Test
+	public void getDirectionType() {
+		final LocalDate date = LocalDate.now();
+		final IndicatorSignalType signal = IndicatorSignalType.RSI;
+		final IndicatorDirectionType direction = IndicatorDirectionType.UP;
+
+		final IndicatorSignal indicatorSignal = new IndicatorSignal(date, signal, direction);
+
+		final IndicatorSignalEvent event = new IndicatorSignalEvent(indicatorSignal);
+
+		assertNotNull(event);
+		assertEquals(direction, event.getDirectionType());
+	}
 }

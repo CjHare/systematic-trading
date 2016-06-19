@@ -27,6 +27,7 @@ package com.systematic.trading.simulation.analysis.statistics;
 
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.equity.event.EquityEventListener;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
@@ -34,7 +35,8 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public interface EventStatistics extends CashEventListener, BrokerageEventListener, OrderEventListener {
+public interface EventStatistics
+        extends CashEventListener, BrokerageEventListener, OrderEventListener, EquityEventListener {
 
 	/**
 	 * Retrieves the recorded order event statistics.
@@ -56,4 +58,11 @@ public interface EventStatistics extends CashEventListener, BrokerageEventListen
 	 * @return cash events recorded to date.
 	 */
 	CashEventStatistics getCashEventStatistics();
+
+	/**
+	 * Retrieves the recorded equity event statistics.
+	 * 
+	 * @return equity events recorded to date.
+	 */
+	EquityEventStatistics getEquityEventStatistics();
 }

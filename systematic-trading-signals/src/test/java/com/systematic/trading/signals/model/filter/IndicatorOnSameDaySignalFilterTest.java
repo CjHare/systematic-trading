@@ -40,6 +40,7 @@ import org.junit.Test;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -58,29 +59,29 @@ public class IndicatorOnSameDaySignalFilterTest {
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add( new IndicatorSignal( today, IndicatorSignalType.MACD ) );
+		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.UP));
 
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add( new IndicatorSignal( today, IndicatorSignalType.RSI ) );
+		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.UP));
 
 		final List<IndicatorSignal> sma = new ArrayList<IndicatorSignal>();
-		sma.add( new IndicatorSignal( today, IndicatorSignalType.SMA ) );
+		sma.add(new IndicatorSignal(today, IndicatorSignalType.SMA, IndicatorDirectionType.UP));
 
-		signals.put( IndicatorSignalType.MACD, macd );
-		signals.put( IndicatorSignalType.RSI, rsi );
-		signals.put( IndicatorSignalType.SMA, sma );
+		signals.put(IndicatorSignalType.MACD, macd);
+		signals.put(IndicatorSignalType.RSI, rsi);
+		signals.put(IndicatorSignalType.SMA, sma);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD,
-				IndicatorSignalType.RSI, IndicatorSignalType.SMA );
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
+		        IndicatorSignalType.RSI, IndicatorSignalType.SMA);
 
-		final SortedSet<BuySignal> results = filter.apply( signals, ordering, latestTradingDate );
+		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
 
-		assertNotNull( "Expecting a non-null result set", results );
-		assertEquals( "Expecting a single filtered signal", 1, results.size() );
+		assertNotNull("Expecting a non-null result set", results);
+		assertEquals("Expecting a single filtered signal", 1, results.size());
 
 		final BuySignal result = results.first();
-		assertNotNull( "Expecting a non-null indicator", result );
-		assertEquals( today, result.getDate() );
+		assertNotNull("Expecting a non-null indicator", result);
+		assertEquals(today, result.getDate());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -89,18 +90,18 @@ public class IndicatorOnSameDaySignalFilterTest {
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add( new IndicatorSignal( today, IndicatorSignalType.MACD ) );
+		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.UP));
 
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add( new IndicatorSignal( today, IndicatorSignalType.RSI ) );
+		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.UP));
 
-		signals.put( IndicatorSignalType.MACD, macd );
-		signals.put( IndicatorSignalType.RSI, rsi );
+		signals.put(IndicatorSignalType.MACD, macd);
+		signals.put(IndicatorSignalType.RSI, rsi);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD,
-				IndicatorSignalType.RSI, IndicatorSignalType.SMA );
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
+		        IndicatorSignalType.RSI, IndicatorSignalType.SMA);
 
-		filter.apply( signals, ordering, latestTradingDate );
+		filter.apply(signals, ordering, latestTradingDate);
 	}
 
 	@Test
@@ -109,25 +110,25 @@ public class IndicatorOnSameDaySignalFilterTest {
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add( new IndicatorSignal( today, IndicatorSignalType.MACD ) );
+		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.UP));
 
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add( new IndicatorSignal( today, IndicatorSignalType.RSI ) );
+		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.UP));
 
-		signals.put( IndicatorSignalType.MACD, macd );
-		signals.put( IndicatorSignalType.RSI, rsi );
+		signals.put(IndicatorSignalType.MACD, macd);
+		signals.put(IndicatorSignalType.RSI, rsi);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD,
-				IndicatorSignalType.RSI );
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
+		        IndicatorSignalType.RSI);
 
-		final SortedSet<BuySignal> results = filter.apply( signals, ordering, latestTradingDate );
+		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
 
-		assertNotNull( "Expecting a non-null result set", results );
-		assertEquals( "Expecting a single filtered signal", 1, results.size() );
+		assertNotNull("Expecting a non-null result set", results);
+		assertEquals("Expecting a single filtered signal", 1, results.size());
 
 		final BuySignal result = results.first();
-		assertNotNull( "Expecting a non-null indicator", result );
-		assertEquals( today, result.getDate() );
+		assertNotNull("Expecting a non-null indicator", result);
+		assertEquals(today, result.getDate());
 	}
 
 	@Test
@@ -137,18 +138,18 @@ public class IndicatorOnSameDaySignalFilterTest {
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add( new IndicatorSignal( today, IndicatorSignalType.RSI ) );
+		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.UP));
 
-		signals.put( IndicatorSignalType.MACD, macd );
-		signals.put( IndicatorSignalType.RSI, rsi );
+		signals.put(IndicatorSignalType.MACD, macd);
+		signals.put(IndicatorSignalType.RSI, rsi);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD,
-				IndicatorSignalType.RSI );
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
+		        IndicatorSignalType.RSI);
 
-		final SortedSet<BuySignal> results = filter.apply( signals, ordering, latestTradingDate );
+		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
 
-		assertNotNull( "Expecting a non-null result set", results );
-		assertEquals( "Expecting no filtered signal", 0, results.size() );
+		assertNotNull("Expecting a non-null result set", results);
+		assertEquals("Expecting no filtered signal", 0, results.size());
 	}
 
 	@Test
@@ -158,55 +159,55 @@ public class IndicatorOnSameDaySignalFilterTest {
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add( new IndicatorSignal( today, IndicatorSignalType.MACD ) );
+		rsi.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.UP));
 
-		signals.put( IndicatorSignalType.MACD, macd );
-		signals.put( IndicatorSignalType.RSI, rsi );
+		signals.put(IndicatorSignalType.MACD, macd);
+		signals.put(IndicatorSignalType.RSI, rsi);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD,
-				IndicatorSignalType.RSI );
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
+		        IndicatorSignalType.RSI);
 
-		final SortedSet<BuySignal> results = filter.apply( signals, ordering, latestTradingDate );
+		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
 
-		assertNotNull( "Expecting a non-null result set", results );
-		assertEquals( "Expecting no filtered signal", 0, results.size() );
+		assertNotNull("Expecting a non-null result set", results);
+		assertEquals("Expecting no filtered signal", 0, results.size());
 	}
 
 	@Test
 	public void noSignals() {
 		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
-		signals.put( IndicatorSignalType.MACD, new ArrayList<IndicatorSignal>() );
-		signals.put( IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>() );
+		signals.put(IndicatorSignalType.MACD, new ArrayList<IndicatorSignal>());
+		signals.put(IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>());
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD,
-				IndicatorSignalType.RSI );
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
+		        IndicatorSignalType.RSI);
 
-		final SortedSet<BuySignal> results = filter.apply( signals, ordering, latestTradingDate );
+		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
 
-		assertNotNull( "Expecting a non-null result set", results );
-		assertEquals( "Expecting no filtered signals", 0, results.size() );
+		assertNotNull("Expecting a non-null result set", results);
+		assertEquals("Expecting no filtered signals", 0, results.size());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void noSignalsNullMacdList() {
 		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
-		signals.put( IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>() );
+		signals.put(IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>());
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD,
-				IndicatorSignalType.RSI );
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
+		        IndicatorSignalType.RSI);
 
-		filter.apply( signals, ordering, latestTradingDate );
+		filter.apply(signals, ordering, latestTradingDate);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void noSignalsNullRsiList() {
 		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
-		signals.put( IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>() );
+		signals.put(IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>());
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter( IndicatorSignalType.MACD,
-				IndicatorSignalType.RSI );
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
+		        IndicatorSignalType.RSI);
 
-		filter.apply( signals, ordering, latestTradingDate );
+		filter.apply(signals, ordering, latestTradingDate);
 	}
 
 }

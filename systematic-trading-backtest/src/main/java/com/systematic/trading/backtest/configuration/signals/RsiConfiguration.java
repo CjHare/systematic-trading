@@ -30,22 +30,23 @@ package com.systematic.trading.backtest.configuration.signals;
  * 
  * @author CJ Hare
  */
-public enum RsiConfiguration {
+public enum RsiConfiguration implements SignalConfiguration {
 
-	MEDIUM( 10, 70, 30, "Medium-Rsi" );
+	MEDIUM(10, 70, 30, "Medium-Rsi");
 
 	private final String description;
 	private final int lookback;
 	private final int oversold;
 	private final int overbought;
 
-	private RsiConfiguration( final int lookback, final int oversold, final int overbought, final String description ) {
+	private RsiConfiguration(final int lookback, final int oversold, final int overbought, final String description) {
 		this.description = description;
 		this.lookback = lookback;
 		this.oversold = oversold;
 		this.overbought = overbought;
 	}
 
+	@Override
 	public String getDescription() {
 		return description;
 	}

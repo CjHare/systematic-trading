@@ -25,13 +25,12 @@
  */
 package com.systematic.trading.simulation.brokerage.event;
 
-
-
 /**
  * A listener interested in brokerage event notifications.
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface BrokerageEventListener {
 
 	/**

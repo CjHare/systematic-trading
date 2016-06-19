@@ -40,13 +40,13 @@ public class ProcessLongBuySignals {
 
 	private final List<SignalFilter> filters;
 
-	public ProcessLongBuySignals( final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters ) {
+	public ProcessLongBuySignals(final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters) {
 		this.generators = generators;
 		this.filters = filters;
 	}
 
 	public List<BuySignal> process( final Equity equity, final TradingDayPrices[] data ) {
 
-		return new AnalysisLongBuySignals( generators, filters ).analyse( data );
+		return new AnalysisLongBuySignals(generators, filters).analyse(data);
 	}
 }

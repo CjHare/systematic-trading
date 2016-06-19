@@ -25,15 +25,6 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 
@@ -43,34 +34,21 @@ import com.systematic.trading.signals.model.event.SignalAnalysisListener;
  * @author CJ Hare
  */
 public class FileSignalAnalysisDisplay implements SignalAnalysisListener {
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileSignalAnalysisDisplay.class );
 
-	private final String outputFilename;
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
 
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
+	public FileSignalAnalysisDisplay(final FileDisplayMultithreading display) {
+		this.display = display;
 
-	public FileSignalAnalysisDisplay( final String outputFilename, final ExecutorService pool ) {
-		this.outputFilename = outputFilename;
-		this.pool = pool;
+		display.write("=== Signal Analysis Events ===");
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
 
-		final Runnable task = () -> {
-			try (final PrintWriter out = new PrintWriter(
-					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				final String output = String.format( "Signal event: %s on date: %s", event.getSignalType(),
-						event.getSignalDate() );
-
-				out.println( output );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
-		};
-
-		pool.execute( task );
+		final String content = String.format("Signal event: %s on date: %s", event.getSignalType(),
+		        event.getSignalDate());
+		display.write(content);
 	}
 }

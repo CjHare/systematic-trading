@@ -32,6 +32,7 @@ import java.time.LocalDate;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface DataService {
 
 	/**

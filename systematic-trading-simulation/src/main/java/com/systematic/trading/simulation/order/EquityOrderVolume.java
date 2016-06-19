@@ -34,6 +34,12 @@ import java.math.BigDecimal;
  */
 public class EquityOrderVolume {
 
+	private final BigDecimal volume;
+
+	private EquityOrderVolume(final BigDecimal volume) {
+		this.volume = volume;
+	}
+
 	/**
 	 * Creates a volume of an order from a decimal.
 	 * 
@@ -42,16 +48,10 @@ public class EquityOrderVolume {
 	 */
 	public static EquityOrderVolume valueOf( final BigDecimal volume ) {
 		if (volume == null) {
-			throw new IllegalArgumentException( "null is not accepted by OrderVolume.valueOf()" );
+			throw new IllegalArgumentException("null is not accepted by OrderVolume.valueOf()");
 		}
 
-		return new EquityOrderVolume( volume );
-	}
-
-	private final BigDecimal volume;
-
-	private EquityOrderVolume( final BigDecimal volume ) {
-		this.volume = volume;
+		return new EquityOrderVolume(volume);
 	}
 
 	/**
@@ -65,11 +65,19 @@ public class EquityOrderVolume {
 
 	@Override
 	public String toString() {
-		return String.valueOf( volume );
+		return String.valueOf(volume);
 	}
 
 	@Override
 	public boolean equals( final Object obj ) {
-		return obj instanceof EquityOrderVolume && getVolume().equals( ((EquityOrderVolume) obj).getVolume() );
+		return obj instanceof EquityOrderVolume && getVolume().equals(((EquityOrderVolume) obj).getVolume());
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((volume == null) ? 0 : volume.hashCode());
+		return result;
 	}
 }

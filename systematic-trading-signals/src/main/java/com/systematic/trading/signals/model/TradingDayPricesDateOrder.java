@@ -38,6 +38,6 @@ public class TradingDayPricesDateOrder implements Comparator<TradingDayPrices> {
 
 	@Override
 	public int compare( final TradingDayPrices a, final TradingDayPrices b ) {
-		return a.getDate().compareTo( b.getDate() );
+		return a.getDate().compareTo(b.getDate());
 	}
 }

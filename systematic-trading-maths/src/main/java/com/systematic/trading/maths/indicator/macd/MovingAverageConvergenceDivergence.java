@@ -55,6 +55,7 @@ import com.systematic.trading.maths.model.DatedSignal;
  * 
  * @author CJ Hare
  */
+@FunctionalInterface
 public interface MovingAverageConvergenceDivergence {
 
 	/**

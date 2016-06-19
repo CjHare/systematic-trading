@@ -27,22 +27,29 @@ package com.systematic.trading.signals.indicator;
 
 import java.time.LocalDate;
 
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class IndicatorSignal {
 	private final LocalDate date;
-	private final IndicatorSignalType type;
+	private final IndicatorSignalType signal;
+	private final IndicatorDirectionType direction;
 
-	public IndicatorSignal( final LocalDate date, final IndicatorSignalType type ) {
+	public IndicatorSignal(final LocalDate date, final IndicatorSignalType signal, final IndicatorDirectionType direction) {
 		this.date = date;
-		this.type = type;
+		this.signal = signal;
+		this.direction = direction;
 	}
 
 	public LocalDate getDate() {
 		return date;
 	}
 
-	public IndicatorSignalType getType() {
-		return type;
+	public IndicatorSignalType getSignal() {
+		return signal;
+	}
+
+	public IndicatorDirectionType getDirection() {
+		return direction;
 	}
 }

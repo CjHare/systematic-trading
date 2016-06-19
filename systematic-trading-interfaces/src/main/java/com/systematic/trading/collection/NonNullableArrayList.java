@@ -40,10 +40,10 @@ public class NonNullableArrayList<T> extends ArrayList<T> {
 	@Override
 	public boolean add( final T item ) {
 		if (item == null) {
-			throw new IllegalArgumentException( "NonNullableArrayList Does not accept null" );
+			throw new IllegalArgumentException("NonNullableArrayList Does not accept null");
 		}
 
-		return super.add( item );
+		return super.add(item);
 	}
 
 	// TODO extend & test the other add methods

@@ -42,15 +42,15 @@ import com.systematic.trading.simulation.cash.CashAccount;
 public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 
 	/** Parties interested in receiving net worth events. */
-	private final List<NetWorthEventListener> listeners = new ArrayList<NetWorthEventListener>();
+	private final List<NetWorthEventListener> listeners = new ArrayList<>();
 
 	private final Brokerage broker;
 	private final TradingDayPrices lastTradingDay;
 	private final CashAccount cashAccount;
 	private final String description;
 
-	public NetWorthSummaryEventGenerator( final Brokerage broker, final TradingDayPrices lastTradingDay,
-			final CashAccount cashAccount, final String description ) {
+	public NetWorthSummaryEventGenerator(final Brokerage broker, final TradingDayPrices lastTradingDay,
+	        final CashAccount cashAccount, final String description) {
 		this.broker = broker;
 		this.lastTradingDay = lastTradingDay;
 		this.cashAccount = cashAccount;
@@ -62,15 +62,15 @@ public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 
 		final BigDecimal equityBalance = broker.getEquityBalance();
 		final BigDecimal lastClosingPrice = lastTradingDay.getClosingPrice().getPrice();
-		final BigDecimal equityBalanceValue = equityBalance.multiply( lastClosingPrice );
+		final BigDecimal equityBalanceValue = equityBalance.multiply(lastClosingPrice);
 		final BigDecimal cashBalance = cashAccount.getBalance();
-		final BigDecimal networth = cashAccount.getBalance().add( equityBalanceValue );
+		final BigDecimal networth = cashAccount.getBalance().add(equityBalanceValue);
 
-		final NetWorthEvent event = new NetWorthSummaryEvent( equityBalance, equityBalanceValue, cashBalance, networth,
-				description );
+		final NetWorthEvent event = new NetWorthSummaryEvent(equityBalance, equityBalanceValue, cashBalance, networth,
+		        description);
 
 		for (final NetWorthEventListener listener : listeners) {
-			listener.event( event, transitionedState );
+			listener.event(event, transitionedState);
 		}
 	}
 
@@ -80,6 +80,6 @@ public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 	 * @param listener party interested in net worth events.
 	 */
 	public void addListener( final NetWorthEventListener listener ) {
-		listeners.add( listener );
+		listeners.add(listener);
 	}
 }

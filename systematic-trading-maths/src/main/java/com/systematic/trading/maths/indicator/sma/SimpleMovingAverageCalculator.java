@@ -49,7 +49,6 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	/** Number of days to average the value on. */
 	private final int lookback;
 
-	// TODO pass the store in
 	/** Provides the array to store the result in. */
 	private final List<BigDecimal> smaValues;
 
@@ -66,12 +65,12 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	 * @param store source for the storage array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues, final Validator validator,
-			final MathContext mathContext ) {
+	public SimpleMovingAverageCalculator(final int lookback, final int daysOfSmaValues, final Validator validator,
+	        final MathContext mathContext) {
 		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
 		this.daysOfSmaValues = daysOfSmaValues;
 		this.mathContext = mathContext;
-		this.smaValues = new NonNullableArrayList<BigDecimal>();
+		this.smaValues = new NonNullableArrayList<>();
 		this.validator = validator;
 		this.lookback = lookback;
 	}
@@ -79,8 +78,8 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	@Override
 	public List<BigDecimal> sma( final TradingDayPrices[] data ) {
 
-		validator.verifyZeroNullEntries( data );
-		validator.verifyEnoughValues( data, minimumNumberOfPrices );
+		validator.verifyZeroNullEntries(data);
+		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
 		smaValues.clear();
 
@@ -89,7 +88,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 
 		// Start at the end and work towards the origin
 		for (int i = startSmaIndex; i <= endSmaIndex; i++) {
-			smaValues.add( simpleAverage( i, data ) );
+			smaValues.add(simpleAverage(i, data));
 		}
 
 		return smaValues;
@@ -103,9 +102,9 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 		BigDecimal average = data[endIndex].getClosingPrice().getPrice();
 
 		for (int i = startIndex; i < endIndex; i++) {
-			average = average.add( data[i].getClosingPrice().getPrice() );
+			average = average.add(data[i].getClosingPrice().getPrice());
 		}
 
-		return average.divide( BigDecimal.valueOf( lookback ), mathContext );
+		return average.divide(BigDecimal.valueOf(lookback), mathContext);
 	}
 }

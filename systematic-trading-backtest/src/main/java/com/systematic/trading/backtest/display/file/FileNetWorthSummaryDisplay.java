@@ -25,16 +25,8 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
@@ -48,44 +40,26 @@ import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestme
  */
 public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileNetWorthSummaryDisplay.class );
-
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( ".##" );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	private final CumulativeReturnOnInvestment cumulativeRoi;
 
-	private final String outputFilename;
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
 
 	/** The last net worth recording, which makes it into the summary. */
 	private NetWorthEvent lastEvent;
 
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
-	public FileNetWorthSummaryDisplay( final CumulativeReturnOnInvestment cumulativeRoi, final String outputFilename,
-			final ExecutorService pool ) {
+	public FileNetWorthSummaryDisplay(final CumulativeReturnOnInvestment cumulativeRoi,
+	        final FileDisplayMultithreading display) {
 		this.cumulativeRoi = cumulativeRoi;
-		this.outputFilename = outputFilename;
-		this.pool = pool;
+		this.display = display;
+
+		display.write("=== Net Worth Summary ===");
 	}
 
 	@Override
 	public void displayNetWorth() {
-
-		final Runnable task = () -> {
-			try (final PrintWriter out = new PrintWriter(
-					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				out.println( createOutput() );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
-		};
-
-		pool.execute( task );
-	}
-
-	private String createOutput() {
 
 		final BigDecimal balance = lastEvent.getEquityBalance();
 		final BigDecimal holdingValue = lastEvent.getEquityBalanceValue();
@@ -94,23 +68,22 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 
 		final StringBuilder output = new StringBuilder();
 
-		output.append( "\n=== Net Worth Summary ===\n" );
-		output.append( String.format( "Number of equities: %s\n", TWO_DECIMAL_PLACES.format( balance ) ) );
-		output.append( String.format( "Holdings value: %s\n", TWO_DECIMAL_PLACES.format( holdingValue ) ) );
-		output.append( String.format( "Cash account: %s\n", TWO_DECIMAL_PLACES.format( cashBalance ) ) );
-		output.append( String.format( "\nTotal Net Worth: %s\n", TWO_DECIMAL_PLACES.format( netWorth ) ) );
+		output.append(String.format("Number of equities: %s%n", TWO_DECIMAL_PLACES.format(balance)));
+		output.append(String.format("Holdings value: %s%n", TWO_DECIMAL_PLACES.format(holdingValue)));
+		output.append(String.format("Cash account: %s%n", TWO_DECIMAL_PLACES.format(cashBalance)));
+		output.append(String.format("%nTotal Net Worth: %s%n", TWO_DECIMAL_PLACES.format(netWorth)));
 
 		// TODO this value is of dubious value, needs weighting (plus passing into summary)
-		output.append( String.format( "\nInvestment Cumulative ROI: %s\n",
-				TWO_DECIMAL_PLACES.format( cumulativeRoi.getCumulativeReturnOnInvestment() ) ) );
+		output.append(String.format("%nInvestment Cumulative ROI: %s%n",
+		        TWO_DECIMAL_PLACES.format(cumulativeRoi.getCumulativeReturnOnInvestment())));
 
-		return output.toString();
+		display.write(output.toString());
 	}
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
 
-		if (SimulationState.COMPLETE.equals( state )) {
+		if (SimulationState.COMPLETE == state) {
 			lastEvent = event;
 		}
 	}

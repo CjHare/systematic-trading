@@ -30,26 +30,27 @@ package com.systematic.trading.backtest.configuration.signals;
  * 
  * @author CJ Hare
  */
-public enum MacdConfiguration {
+public enum MacdConfiguration implements SignalConfiguration {
 
-	SHORT( 5, 10, 3, "Short-Macd" ),
-	MEDIUM( 10, 20, 7, "Medium-Macd" ),
-	LONG( 25, 50, 10, "Long-Macd" ),
-	LONGEST( 50, 100, 35, "Longest-Macd" );
+	SHORT(5, 10, 3, "Short-Macd"),
+	MEDIUM(10, 20, 7, "Medium-Macd"),
+	LONG(25, 50, 10, "Long-Macd"),
+	LONGEST(50, 100, 35, "Longest-Macd");
 
 	private final String description;
 	private final int fastTimePeriods;
 	private final int slowTimePeriods;
 	private final int signalTimePeriods;
 
-	private MacdConfiguration( final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
-			final String description ) {
+	private MacdConfiguration(final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
+	        final String description) {
 		this.description = description;
 		this.fastTimePeriods = fastTimePeriods;
 		this.slowTimePeriods = slowTimePeriods;
 		this.signalTimePeriods = signalTimePeriods;
 	}
 
+	@Override
 	public String getDescription() {
 		return description;
 	}

@@ -26,7 +26,6 @@
 package com.systematic.trading.signals.model.filter;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -39,11 +38,10 @@ import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
- * Decorator to apply to filters that excludes signals dated outside a time period from the latest
- * trading day date.
+ * Decorator to apply to filters that excludes signals dated outside a fixed time period.
  * <p/>
- * Restriction on date relative to the latest data point is useful when analysing years of data and
- * only being interested in recent signals.
+ * Restriction on date is useful when applying a warm up to the indicators, where some may fire off
+ * during that warm up period.
  * 
  * @author CJ Hare
  */
@@ -52,31 +50,36 @@ public class TimePeriodSignalFilterDecorator implements SignalFilter {
 	/** Signal filter that has the date restriction applied. */
 	private final SignalFilter filter;
 
-	/** Period of time from the latest date to accept signals. */
-	private final Period inclusiveWithin;
+	/** Starting book mark for the acceptable signals. */
+	private final LocalDate startDateInclusive;
 
-	public TimePeriodSignalFilterDecorator( final SignalFilter filter, final Period withinInclusive ) {
+	/** Terminating book end for the acceptable signals. */
+	private final LocalDate endDateInclusive;
+
+	public TimePeriodSignalFilterDecorator(final SignalFilter filter, final LocalDate startDateInclusive,
+	        final LocalDate endDateInclusive) {
+		this.startDateInclusive = startDateInclusive;
+		this.endDateInclusive = endDateInclusive;
 		this.filter = filter;
-		this.inclusiveWithin = withinInclusive;
 	}
 
 	@Override
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
-			final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
 
-		final SortedSet<BuySignal> signalSet = filter.apply( signals, ordering, latestTradingDate );
+		final SortedSet<BuySignal> signalSet = filter.apply(signals, ordering, latestTradingDate);
 
-		final Set<BuySignal> toRemove = new HashSet<BuySignal>();
+		final Set<BuySignal> toRemove = new HashSet<>();
 
 		for (final BuySignal signal : signalSet) {
 
 			// When the date is outside the desired range remove the signal
-			if (Period.between( latestTradingDate, signal.getDate() ).plus( inclusiveWithin ).isNegative()) {
-				toRemove.add( signal );
+			if (startDateInclusive.isAfter(signal.getDate()) || endDateInclusive.isBefore(signal.getDate())) {
+				toRemove.add(signal);
 			}
 		}
 
-		signalSet.removeAll( toRemove );
+		signalSet.removeAll(toRemove);
 
 		return signalSet;
 	}

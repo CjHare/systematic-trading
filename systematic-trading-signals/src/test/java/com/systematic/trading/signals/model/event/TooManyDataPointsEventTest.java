@@ -45,10 +45,10 @@ public class TooManyDataPointsEventTest {
 		final IndicatorSignalType type = IndicatorSignalType.RSI;
 		final LocalDate date = LocalDate.now();
 
-		final TooManyDataPointsEvent event = new TooManyDataPointsEvent( type, date );
+		final TooManyDataPointsEvent event = new TooManyDataPointsEvent(type, date);
 
-		assertNotNull( event );
-		assertEquals( type, event.getSignalType() );
+		assertNotNull(event);
+		assertEquals(type, event.getSignalType());
 	}
 
 	@Test
@@ -56,9 +56,9 @@ public class TooManyDataPointsEventTest {
 		final IndicatorSignalType type = IndicatorSignalType.RSI;
 		final LocalDate date = LocalDate.now();
 
-		final TooManyDataPointsEvent event = new TooManyDataPointsEvent( type, date );
+		final TooManyDataPointsEvent event = new TooManyDataPointsEvent(type, date);
 
-		assertNotNull( event );
-		assertEquals( date, event.getSignalDate() );
+		assertNotNull(event);
+		assertEquals(date, event.getSignalDate());
 	}
 }

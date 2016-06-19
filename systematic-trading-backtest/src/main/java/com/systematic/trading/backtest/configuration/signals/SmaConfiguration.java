@@ -32,26 +32,27 @@ import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSigna
  * 
  * @author CJ Hare
  */
-public enum SmaConfiguration {
+public enum SmaConfiguration implements SignalConfiguration {
 
-	SHORT( 20, GradientType.POSITIVE, 5, "Positive-Short-Sma" ),
-	MEDIUM( 50, GradientType.POSITIVE, 7, "Positive-Medium-Sma" ),
-	LONG( 100, GradientType.POSITIVE, 10, "Positive-Long-Sma" ),
-	LONGEST( 200, GradientType.POSITIVE, 20, "Positive-Longest-Sma" );
+	SHORT(20, GradientType.POSITIVE, 5, "Positive-Short-Sma"),
+	MEDIUM(50, GradientType.POSITIVE, 7, "Positive-Medium-Sma"),
+	LONG(100, GradientType.POSITIVE, 10, "Positive-Long-Sma"),
+	LONGEST(200, GradientType.POSITIVE, 20, "Positive-Longest-Sma");
 
 	private final String description;
 	private final int lookback;
 	private final int daysOfGradient;
 	private final GradientType type;
 
-	private SmaConfiguration( final int lookback, final GradientType type, final int daysOfGradient,
-			final String description ) {
+	private SmaConfiguration(final int lookback, final GradientType type, final int daysOfGradient,
+	        final String description) {
 		this.daysOfGradient = daysOfGradient;
 		this.description = description;
 		this.lookback = lookback;
 		this.type = type;
 	}
 
+	@Override
 	public String getDescription() {
 		return description;
 	}

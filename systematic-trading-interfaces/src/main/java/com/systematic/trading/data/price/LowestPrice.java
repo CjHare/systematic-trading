@@ -34,21 +34,22 @@ import java.math.BigDecimal;
  */
 public class LowestPrice extends Price {
 
-    /**
-     * Creates a lowest price from an underlying decimal value.
-     * 
-     * @param price decimal to create as an lowest price, cannot be <code>null</code>.
-     * @return equivalent lowest price for the given decimal.
-     */
-    public static LowestPrice valueOf(final BigDecimal price) {
-        if (price == null) {
-            throw new IllegalArgumentException("null is not accepted by LowestPrice.valueOf()");
-        }
+	protected LowestPrice(final BigDecimal amount) {
+		super(amount);
+	}
 
-        return new LowestPrice(price);
-    }
+	/**
+	 * Creates a lowest price from an underlying decimal value.
+	 * 
+	 * @param amount decimal to create as an lowest price, cannot be <code>null</code>.
+	 * @return equivalent lowest price for the given decimal.
+	 */
+	public static LowestPrice valueOf( final BigDecimal amount ) {
+		if (amount == null) {
+			throw new IllegalArgumentException("null is not accepted by LowestPrice.valueOf()");
+		}
 
-    protected LowestPrice(final BigDecimal price) {
-        super(price);
-    }
+		return new LowestPrice(amount);
+	}
+
 }

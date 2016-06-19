@@ -34,6 +34,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -65,16 +66,16 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	/** Responsible for calculating the simple moving average. */
 	private final SimpleMovingAverage movingAverage;
 
-	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
-			final GradientType signalGenerated, final MathContext mathContext ) {
+	public SimpleMovingAverageGradientSignals(final int lookback, final int daysOfGradient,
+	        final GradientType signalGenerated, final MathContext mathContext) {
 
-		this( lookback, daysOfGradient, signalGenerated, mathContext, new SimpleMovingAverageCalculator( lookback,
-				daysOfGradient, new IllegalArgumentThrowingValidator(), mathContext ) );
+		this(lookback, daysOfGradient, signalGenerated, mathContext, new SimpleMovingAverageCalculator(lookback,
+		        daysOfGradient, new IllegalArgumentThrowingValidator(), mathContext));
 	}
 
-	private SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
-			final GradientType signalGenerated, final MathContext mathContext,
-			final SimpleMovingAverageCalculator movingAverage ) {
+	private SimpleMovingAverageGradientSignals(final int lookback, final int daysOfGradient,
+	        final GradientType signalGenerated, final MathContext mathContext,
+	        final SimpleMovingAverageCalculator movingAverage) {
 		this.signalGenerated = signalGenerated;
 		this.daysOfGradient = daysOfGradient;
 		this.movingAverage = movingAverage;
@@ -85,63 +86,66 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
 
-		final List<BigDecimal> sma = movingAverage.sma( data );
+		final List<BigDecimal> sma = movingAverage.sma(data);
 
 		// Only look at the gradient if there's more than one sma result
-		if (sma.size() > 0) {
-			return analysisGradient( data, sma );
+		if (!sma.isEmpty()) {
+			return analysisGradient(data, sma);
 		}
 
-		return new ArrayList<IndicatorSignal>();
+		return new ArrayList<>();
 	}
 
 	private List<IndicatorSignal> analysisGradient( final TradingDayPrices[] data, final List<BigDecimal> sma ) {
-		final List<IndicatorSignal> signals = new ArrayList<IndicatorSignal>();
+		final List<IndicatorSignal> signals = new ArrayList<>();
 
 		// We're only using the right most values of the data
 		final int offset = data.length - sma.size();
 
-		// Initialise to the first value, bump the index
-		BigDecimal previous = sma.get( 0 );
-
+		// Start with the first value, bump the index
+		BigDecimal previous = sma.get(0);
 		for (int index = 1; index < sma.size(); index++) {
 
+			//TODO generate the down signals too
 			switch (signalGenerated) {
 				case POSITIVE:
-					if (isPositiveGardient( previous, sma.get( index ) )) {
-						signals.add( new IndicatorSignal( data[index + offset].getDate(), IndicatorSignalType.SMA ) );
+					if (isPositiveGardient(previous, sma.get(index))) {
+						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
+						        IndicatorDirectionType.UP));
 					}
-					break;
+				break;
 				case FLAT:
-					if (isFlatGardient( previous, sma.get( index ) )) {
-						signals.add( new IndicatorSignal( data[index + offset].getDate(), IndicatorSignalType.SMA ) );
+					if (isFlatGardient(previous, sma.get(index))) {
+						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
+						        IndicatorDirectionType.UP));
 					}
-					break;
+				break;
 				case NEGATIVE:
-					if (isNegativeGardient( previous, sma.get( index ) )) {
-						signals.add( new IndicatorSignal( data[index + offset].getDate(), IndicatorSignalType.SMA ) );
+					if (isNegativeGardient(previous, sma.get(index))) {
+						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
+						        IndicatorDirectionType.UP));
 					}
-					break;
+				break;
 				default:
-					throw new IllegalArgumentException( String.format( "%s enum is unexpected", signalGenerated ) );
+					throw new IllegalArgumentException(String.format("%s enum is unexpected", signalGenerated));
 			}
 
-			previous = sma.get( index );
+			previous = sma.get(index);
 		}
 
 		return signals;
 	}
 
 	private boolean isPositiveGardient( final BigDecimal previous, final BigDecimal current ) {
-		return current.subtract( previous, mathContext ).compareTo( BigDecimal.ZERO ) > 0;
+		return current.subtract(previous, mathContext).compareTo(BigDecimal.ZERO) > 0;
 	}
 
 	private boolean isNegativeGardient( final BigDecimal previous, final BigDecimal current ) {
-		return current.subtract( previous, mathContext ).compareTo( BigDecimal.ZERO ) < 0;
+		return current.subtract(previous, mathContext).compareTo(BigDecimal.ZERO) < 0;
 	}
 
 	private boolean isFlatGardient( final BigDecimal previous, final BigDecimal current ) {
-		return current.subtract( previous, mathContext ).compareTo( BigDecimal.ZERO ) == 0;
+		return current.subtract(previous, mathContext).compareTo(BigDecimal.ZERO) == 0;
 	}
 
 	@Override

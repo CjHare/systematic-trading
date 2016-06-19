@@ -25,8 +25,6 @@
  */
 package com.systematic.trading.model;
 
-
-
 /**
  * Highest level of unique identifier for an equity within the wider simulation.
  * 
@@ -40,12 +38,18 @@ public class EquityIdentity {
 	/** Symbol used to identify the equity in the source of the trading data. */
 	private final String tickerSymbol;
 
+	/** Number of decimal places that the equity is traded in, 0 for only whole units. */
+	private final int scale;
+
 	/**
 	 * @param tickerSymbol identity of the equity within the source of the trading data.
 	 * @param type determines how the equity is treated.
+	 * @param scale the number of decimal places for the units that the equity may be traded in,
+	 *            zero being whole units only.
 	 */
-	public EquityIdentity( final String tickerSymbol, final EquityClass type ) {
+	public EquityIdentity(final String tickerSymbol, final EquityClass type, final int scale) {
 		this.tickerSymbol = tickerSymbol;
+		this.scale = scale;
 		this.type = type;
 	}
 
@@ -65,5 +69,14 @@ public class EquityIdentity {
 	 */
 	public String getTickerSymbol() {
 		return tickerSymbol;
+	}
+
+	/**
+	 * The number of decimal places for the trading units.
+	 * 
+	 * @return the fractions of a unit that the equity may be traded in.
+	 */
+	public int getScale() {
+		return scale;
 	}
 }

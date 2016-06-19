@@ -31,7 +31,7 @@ public class BuySignalDateComparator implements Comparator<BuySignal> {
 
 	@Override
 	public int compare( final BuySignal a, final BuySignal b ) {
-		return a.getDate().compareTo( b.getDate() );
+		return a.getDate().compareTo(b.getDate());
 	}
 
 }

@@ -57,50 +57,50 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 	 * @param firstDeposit date for the first deposit.
 	 * @param interval time between deposit events.
 	 */
-	public RegularDepositCashAccountDecorator( final BigDecimal depositAmount, final CashAccount account,
-			final LocalDate firstDeposit, final Period interval ) {
+	public RegularDepositCashAccountDecorator(final BigDecimal depositAmount, final CashAccount account,
+	        final LocalDate firstDeposit, final Period interval) {
 		this.account = account;
 		this.depositAmount = depositAmount;
 		this.interval = interval;
 
 		// The first order needs to be on that date, not interval after
-		lastDeposit = LocalDate.from( firstDeposit ).minus( interval );
+		lastDeposit = LocalDate.from(firstDeposit).minus(interval);
 	}
 
 	@Override
 	public void update( final LocalDate tradingDate ) {
 
-		if (isDepositTime( tradingDate )) {
+		if (isDepositTime(tradingDate)) {
 
 			// Multiple intervals may have elapsed
-			final int numberOfDeposits = getNumberOfDeposits( tradingDate );
+			final int numberOfDeposits = getNumberOfDeposits(tradingDate);
 			for (int i = 0; i < numberOfDeposits; i++) {
-				deposit( depositAmount, tradingDate );
+				deposit(depositAmount, tradingDate);
 			}
 
-			lastDeposit = lastDeposit.plus( interval.multipliedBy( numberOfDeposits ) );
+			lastDeposit = lastDeposit.plus(interval.multipliedBy(numberOfDeposits));
 		}
 
-		account.update( tradingDate );
+		account.update(tradingDate);
 	}
 
 	private boolean isDepositTime( final LocalDate tradingDate ) {
-		return tradingDate.isAfter( lastDeposit.plus( interval ) );
+		return tradingDate.isAfter(lastDeposit.plus(interval));
 	}
 
 	private int getNumberOfDeposits( final LocalDate tradingDate ) {
-		return Period.between( lastDeposit, tradingDate ).getDays() / interval.getDays();
+		return Period.between(lastDeposit, tradingDate).getDays() / interval.getDays();
 	}
 
 	@Override
 	public void debit( final BigDecimal debitAmount, final LocalDate transactionDate )
-			throws InsufficientFundsException {
-		account.debit( debitAmount, transactionDate );
+	        throws InsufficientFundsException {
+		account.debit(debitAmount, transactionDate);
 	}
 
 	@Override
 	public void credit( final BigDecimal creditAmount, final LocalDate transactionDate ) {
-		account.credit( creditAmount, transactionDate );
+		account.credit(creditAmount, transactionDate);
 	}
 
 	@Override
@@ -110,11 +110,11 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 
 	@Override
 	public void deposit( final BigDecimal depositAmount, final LocalDate transactionDate ) {
-		account.deposit( depositAmount, transactionDate );
+		account.deposit(depositAmount, transactionDate);
 	}
 
 	@Override
 	public void addListener( final CashEventListener listener ) {
-		account.addListener( listener );
+		account.addListener(listener);
 	}
 }

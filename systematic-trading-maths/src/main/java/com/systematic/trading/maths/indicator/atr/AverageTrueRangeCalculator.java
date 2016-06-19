@@ -55,52 +55,49 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
-	// TODO pass the store in
 	/** Provides the array to store the result in. */
 	private final List<BigDecimal> atrValues;
 
 	/**
 	 * @param lookback the number of days to use when calculating the ATR, also the number of days
 	 *            prior to the averaging becoming correct.
-	 * @param daysOfAtrValues the number of trading days to calculate the ATR value.
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public AverageTrueRangeCalculator( final int lookback, final int daysOfAtrValues, final Validator validator,
-			final MathContext mathContext ) {
-		this.minimumNumberOfPrices = lookback + daysOfAtrValues;
-		this.priorMultiplier = BigDecimal.valueOf( lookback - 1 );
-		this.lookbackDivider = BigDecimal.valueOf( lookback );
+	public AverageTrueRangeCalculator(final int lookback, final Validator validator, final MathContext mathContext) {
+		this.minimumNumberOfPrices = lookback;
+		this.priorMultiplier = BigDecimal.valueOf(lookback - 1L);
+		this.lookbackDivider = BigDecimal.valueOf(lookback);
 		this.mathContext = mathContext;
-		this.atrValues = new NonNullableArrayList<BigDecimal>();
+		this.atrValues = new NonNullableArrayList<>();
 		this.validator = validator;
 	}
 
 	private BigDecimal trueRangeMethodOne( final TradingDayPrices today ) {
-		return today.getHighestPrice().subtract( today.getLowestPrice(), mathContext ).abs();
+		return today.getHighestPrice().subtract(today.getLowestPrice(), mathContext).abs();
 	}
 
 	private BigDecimal trueRangeMethodTwo( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		return today.getHighestPrice().subtract( yesterday.getClosingPrice(), mathContext ).abs();
+		return today.getHighestPrice().subtract(yesterday.getClosingPrice(), mathContext).abs();
 	}
 
 	private BigDecimal trueRangeMethodThree( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		return today.getLowestPrice().subtract( yesterday.getClosingPrice(), mathContext ).abs();
+		return today.getLowestPrice().subtract(yesterday.getClosingPrice(), mathContext).abs();
 	}
 
 	/**
 	 * @return highest value of the three true range methods.
 	 */
 	private BigDecimal getTrueRange( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		final BigDecimal one = trueRangeMethodOne( today );
-		final BigDecimal two = trueRangeMethodTwo( today, yesterday );
-		final BigDecimal three = trueRangeMethodThree( today, yesterday );
+		final BigDecimal one = trueRangeMethodOne(today);
+		final BigDecimal two = trueRangeMethodTwo(today, yesterday);
+		final BigDecimal three = trueRangeMethodThree(today, yesterday);
 
-		if (one.compareTo( two ) >= 0 && one.compareTo( three ) >= 0) {
+		if (one.compareTo(two) >= 0 && one.compareTo(three) >= 0) {
 			return one;
 		}
 
-		if (two.compareTo( three ) >= 0) {
+		if (two.compareTo(three) >= 0) {
 			return two;
 		}
 
@@ -110,27 +107,27 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	private BigDecimal average( final BigDecimal currentTrueRange, final BigDecimal priorAverageTrueRange ) {
 		/* For a look back of 14: Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the
 		 * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14 */
-		return priorAverageTrueRange.multiply( priorMultiplier ).add( currentTrueRange ).divide( lookbackDivider,
-				mathContext );
+		return priorAverageTrueRange.multiply(priorMultiplier).add(currentTrueRange).divide(lookbackDivider,
+		        mathContext);
 	}
 
 	@Override
 	public List<BigDecimal> atr( final TradingDayPrices[] data ) {
 
-		validator.verifyZeroNullEntries( data );
-		validator.verifyEnoughValues( data, minimumNumberOfPrices );
+		validator.verifyZeroNullEntries(data);
+		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
 		atrValues.clear();
 
 		// For the first value just use the TR
-		atrValues.add( trueRangeMethodOne( data[0] ) );
+		atrValues.add(trueRangeMethodOne(data[0]));
 
 		// Starting ATR is just the first value
-		BigDecimal priorAtr = atrValues.get( 0 );
+		BigDecimal priorAtr = atrValues.get(0);
 
 		for (int i = 0 + 1; i < data.length; i++) {
-			atrValues.add( average( getTrueRange( data[i], data[i - 1] ), priorAtr ) );
-			priorAtr = atrValues.get( atrValues.size() - 1 );
+			atrValues.add(average(getTrueRange(data[i], data[i - 1]), priorAtr));
+			priorAtr = atrValues.get(atrValues.size() - 1);
 		}
 
 		return atrValues;

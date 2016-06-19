@@ -45,10 +45,10 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 	private final EquityIdentity equity;
 
 	/** Inclusive beginning date for the set of trading prices. */
-	private final LocalDate startDate;
+	private final LocalDate earliestDate;
 
 	/** Inclusive last date for the set of trading prices. */
-	private final LocalDate endDate;
+	private final LocalDate latestDate;
 
 	/** The trading data to feed into the simulation. */
 	private final Map<LocalDate, TradingDayPrices> tradingData;
@@ -56,33 +56,33 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 	/**
 	 * Restrictions of no duplicate trading dates, applies date ordering on the given data.
 	 */
-	public TickerSymbolTradingDataBacktest( final EquityIdentity equity, final TradingDayPrices[] data ) {
+	public TickerSymbolTradingDataBacktest(final EquityIdentity equity, final TradingDayPrices[] data) {
 		this.equity = equity;
 
-		final Map<LocalDate, TradingDayPrices> modifiableTradingData = new HashMap<LocalDate, TradingDayPrices>();
+		final Map<LocalDate, TradingDayPrices> modifiableTradingData = new HashMap<>();
 
 		for (final TradingDayPrices tradingDay : data) {
-			modifiableTradingData.put( tradingDay.getDate(), tradingDay );
+			modifiableTradingData.put(tradingDay.getDate(), tradingDay);
 		}
 
 		if (modifiableTradingData.size() != data.length) {
-			throw new IllegalArgumentException( "Duplicate trading dates provided" );
+			throw new IllegalArgumentException("Duplicate trading dates provided");
 		}
 
-		this.tradingData = Collections.unmodifiableMap( modifiableTradingData );
+		this.tradingData = Collections.unmodifiableMap(modifiableTradingData);
 
-		this.startDate = getEarliestDate( tradingData );
-		this.endDate = getLatestDate( tradingData );
+		this.earliestDate = getEarliestDate(tradingData);
+		this.latestDate = getLatestDate(tradingData);
 	}
 
 	@Override
-	public LocalDate getStartDate() {
-		return startDate;
+	public LocalDate getEarliestDate() {
+		return earliestDate;
 	}
 
 	@Override
-	public LocalDate getEndDate() {
-		return endDate;
+	public LocalDate getLatestDate() {
+		return latestDate;
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 		LocalDate earliest = tradingData.values().iterator().next().getDate();
 
 		for (final TradingDayPrices contender : tradingData.values()) {
-			if (contender.getDate().isBefore( earliest )) {
+			if (contender.getDate().isBefore(earliest)) {
 				earliest = contender.getDate();
 			}
 		}
@@ -116,7 +116,7 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 		LocalDate latest = tradingData.values().iterator().next().getDate();
 
 		for (final TradingDayPrices contender : tradingData.values()) {
-			if (contender.getDate().isAfter( latest )) {
+			if (contender.getDate().isAfter(latest)) {
 				latest = contender.getDate();
 			}
 		}

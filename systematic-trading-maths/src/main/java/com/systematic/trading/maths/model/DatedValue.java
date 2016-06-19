@@ -30,7 +30,7 @@ import java.time.LocalDate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestPrice;
+import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 
@@ -44,17 +44,18 @@ public class DatedValue implements TradingDayPrices {
 	private final LocalDate date;
 	private final BigDecimal value;
 
-	public DatedValue( final LocalDate date, final BigDecimal value ) {
+	public DatedValue(final LocalDate date, final BigDecimal value) {
 
 		if (date == null || value == null) {
 			throw new IllegalArgumentException(
-					String.format( "Expecting non null date and value, given Date: %s and Value: %s", date, value ) );
+			        String.format("Expecting non null date and value, given Date: %s and Value: %s", date, value));
 		}
 
 		this.date = date;
 		this.value = value;
 	}
 
+	@Override
 	public LocalDate getDate() {
 		return date;
 	}
@@ -65,7 +66,8 @@ public class DatedValue implements TradingDayPrices {
 
 	@Override
 	public ClosingPrice getClosingPrice() {
-		return value == null ? null : ClosingPrice.valueOf( value );
+		// Immutable value is verified as non-null in constructor
+		return ClosingPrice.valueOf(value);
 	}
 
 	@Override
@@ -74,7 +76,7 @@ public class DatedValue implements TradingDayPrices {
 	}
 
 	@Override
-	public HighestPrice getHighestPrice() {
+	public HighestEquityPrice getHighestPrice() {
 		throw new UnsupportedOperationException();
 	}
 

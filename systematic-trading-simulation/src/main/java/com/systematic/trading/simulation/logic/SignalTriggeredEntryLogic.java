@@ -36,7 +36,7 @@ import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
-import com.systematic.trading.simulation.brokerage.BrokerageFees;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrder;
@@ -55,6 +55,9 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	/** The type of equity being traded. */
 	private final EquityClass type;
 
+	/** The number of decimal places the equity is traded in. */
+	private final int scale;
+
 	/** Generates buy signals. */
 	private final AnalysisBuySignals buyLongAnalysis;
 
@@ -65,79 +68,73 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	private final LimitedSizeQueue<BuySignal> previousSignals;
 
 	/** Minimum value of the trade excluding the fee amount */
-	private final MinimumTradeValue minimumTradeValue;
+	private final TradeValue tradeValue;
 
 	/**
 	 * @param interval time between creation of entry orders.
 	 * @param analysis analyser of trading data to generate buy signals.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public SignalTriggeredEntryLogic( final EquityClass equityType, final MinimumTradeValue minimumTradeValue,
-			final AnalysisBuySignals analysis, final MathContext mathContext ) {
-		this.mathContext = mathContext;
-		this.type = equityType;
-		this.minimumTradeValue = minimumTradeValue;
+	public SignalTriggeredEntryLogic(final EquityClass equityType, final int equityScale, final TradeValue tradeValue,
+	        final AnalysisBuySignals analysis, final MathContext mathContext) {
 		this.buyLongAnalysis = analysis;
+		this.mathContext = mathContext;
+		this.tradeValue = tradeValue;
+		this.scale = equityScale;
+		this.type = equityType;
 
-		this.tradingData = new LimitedSizeQueue<TradingDayPrices>( TradingDayPrices.class,
-				analysis.getMaximumNumberOfTradingDaysRequired() );
+		this.tradingData = new LimitedSizeQueue<>(TradingDayPrices.class,
+		        analysis.getMaximumNumberOfTradingDaysRequired());
 
 		// There can only ever be as many signals as trading days stored
-		this.previousSignals = new LimitedSizeQueue<BuySignal>( BuySignal.class,
-				analysis.getMaximumNumberOfTradingDaysRequired() );
+		this.previousSignals = new LimitedSizeQueue<>(BuySignal.class,
+		        analysis.getMaximumNumberOfTradingDaysRequired());
 	}
 
 	@Override
-	public EquityOrder update( final BrokerageFees fees, final CashAccount cashAccount, final TradingDayPrices data ) {
+	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+	        final TradingDayPrices data ) {
 
 		// Add the day's data to the rolling queue
-		tradingData.add( data );
+		tradingData.add(data);
 
 		// Create signals from the available trading data
-		final List<BuySignal> signals = buyLongAnalysis.analyse( tradingData.toArray() );
+		final List<BuySignal> signals = buyLongAnalysis.analyse(tradingData.toArray());
 
 		if (!signals.isEmpty()) {
 
 			// Only one order at a day
-			final BuySignal signal = signals.get( 0 );
+			final BuySignal signal = signals.get(0);
 
-			if (!previousSignals.contains( signal )) {
+			if (!previousSignals.contains(signal)) {
 
-				final BigDecimal amount;
+				// Order placed, put on the ignore list
+				previousSignals.add(signal);
 
-				if (minimumTradeValue.isLessThan( cashAccount.getBalance() )) {
-
-					// Order placed, put on the ignore list
-					previousSignals.add( signal );
-
-					// Everything into the trade
-					amount = cashAccount.getBalance();
-
-				} else {
-					// Order placed, put on the ignore list
-					previousSignals.add( signal );
-
-					// Minimum trade value
-					amount = minimumTradeValue.getValue();
-				}
-
-				return createOrder( fees, amount, data );
+				final BigDecimal amount = getTradeAmount(cashAccount);
+				return createOrder(fees, amount, data);
 			}
 		}
 
 		return null;
 	}
 
-	private EquityOrder createOrder( final BrokerageFees fees, final BigDecimal amount, final TradingDayPrices data ) {
+	private BigDecimal getTradeAmount( final CashAccount cashAccount ) {
+		final BigDecimal availableFunds = cashAccount.getBalance();
+		return tradeValue.getTradeValue(availableFunds);
+	}
+
+	private EquityOrder createOrder( final BrokerageTransactionFee fees, final BigDecimal amount,
+	        final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();
-		final BigDecimal maximumTransactionCost = fees.calculateFee( amount, type, tradingDate );
+		final BigDecimal maximumTransactionCost = fees.calculateFee(amount, type, tradingDate);
 		final BigDecimal closingPrice = data.getClosingPrice().getPrice();
-		final BigDecimal numberOfEquities = amount.subtract( maximumTransactionCost, mathContext ).divide( closingPrice,
-				mathContext );
+		final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, mathContext)
+		        .divide(closingPrice, mathContext).setScale(scale, BigDecimal.ROUND_DOWN);
 
-		if (numberOfEquities.compareTo( BigDecimal.ZERO ) > 0) {
-			return new BuyTotalCostTomorrowAtOpeningPriceOrder( amount, type, tradingDate, mathContext );
+		if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
+			return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, mathContext);
 		}
 
 		return null;
@@ -150,6 +147,6 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 
 	@Override
 	public void addListener( final SignalAnalysisListener listener ) {
-		buyLongAnalysis.addListener( listener );
+		buyLongAnalysis.addListener(listener);
 	}
 }

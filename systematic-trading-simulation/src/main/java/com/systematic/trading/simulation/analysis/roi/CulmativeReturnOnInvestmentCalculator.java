@@ -49,13 +49,13 @@ import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
 public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator {
 
 	/** Used for the conversion to percentage. */
-	private static BigDecimal ONE_HUNDRED = BigDecimal.valueOf( 100 );
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
 	/** Context for BigDecimal operations. */
 	private final MathContext mathContext;
 
 	/** Parties interested in ROI events. */
-	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<ReturnOnInvestmentEventListener>();
+	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<>();
 
 	/** Net Worth as recorded on previous update. */
 	private BigDecimal previousNetWorth;
@@ -66,17 +66,17 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	/** Running total of the amount deposited since the last net worth calculation. */
 	private BigDecimal depositedSincePreviousNetWorth = BigDecimal.ZERO;
 
-	public CulmativeReturnOnInvestmentCalculator( final MathContext mathContext ) {
+	public CulmativeReturnOnInvestmentCalculator(final MathContext mathContext) {
 		this.mathContext = mathContext;
 	}
 
 	@Override
 	public void update( final Brokerage broker, final CashAccount cashAccount, final TradingDayPrices tradingData ) {
 
-		final BigDecimal percentageChange = calculatePercentageChangeInNetWorth( broker, cashAccount, tradingData );
-		final ReturnOnInvestmentEvent event = createEvent( percentageChange, tradingData.getDate() );
+		final BigDecimal percentageChange = calculatePercentageChangeInNetWorth(broker, cashAccount, tradingData);
+		final ReturnOnInvestmentEvent event = createEvent(percentageChange, tradingData.getDate());
 
-		notifyListeners( event );
+		notifyListeners(event);
 
 		// Move the previous date to now
 		previousDate = tradingData.getDate();
@@ -84,14 +84,14 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 
 	private void notifyListeners( final ReturnOnInvestmentEvent event ) {
 		for (final ReturnOnInvestmentEventListener listener : listeners) {
-			listener.event( event );
+			listener.event(event);
 		}
 	}
 
 	@Override
 	public void addListener( final ReturnOnInvestmentEventListener listener ) {
-		if (!listeners.contains( listener )) {
-			listeners.add( listener );
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
 		}
 	}
 
@@ -99,11 +99,11 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 
 		if (previousDate == null) {
 			// No previous data, the change is ONE
-			previousDate = latestDate.minus( Period.ofDays( 1 ) );
+			previousDate = latestDate.minus(Period.ofDays(1));
 		}
 
-		final ReturnOnInvestmentEvent event = new ReturnOnInvestmentEventImpl( percentageChange, previousDate,
-				latestDate );
+		final ReturnOnInvestmentEvent event = new ReturnOnInvestmentEventImpl(percentageChange, previousDate,
+		        latestDate);
 
 		// Move the previous date to now
 		previousDate = latestDate;
@@ -112,13 +112,13 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	}
 
 	private BigDecimal calculatePercentageChangeInNetWorth( final Brokerage broker, final CashAccount cashAccount,
-			final TradingDayPrices tradingData ) {
+	        final TradingDayPrices tradingData ) {
 
 		final BigDecimal equityBalance = broker.getEquityBalance();
 		final BigDecimal lastClosingPrice = tradingData.getClosingPrice().getPrice();
-		final BigDecimal holdingsValue = equityBalance.multiply( lastClosingPrice, mathContext );
+		final BigDecimal holdingsValue = equityBalance.multiply(lastClosingPrice, mathContext);
 		final BigDecimal cashBalance = cashAccount.getBalance();
-		final BigDecimal netWorth = cashBalance.add( holdingsValue, mathContext );
+		final BigDecimal netWorth = cashBalance.add(holdingsValue, mathContext);
 
 		final BigDecimal percentageChange;
 
@@ -127,10 +127,15 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 			percentageChange = BigDecimal.ZERO;
 		} else {
 			// Difference / previous worth
-			final BigDecimal absoluteChange = netWorth.subtract( previousNetWorth, mathContext ).subtract(
-					depositedSincePreviousNetWorth, mathContext );
-			percentageChange = absoluteChange.divide( previousNetWorth, mathContext ).multiply( ONE_HUNDRED,
-					mathContext );
+			final BigDecimal absoluteChange = netWorth.subtract(previousNetWorth, mathContext)
+			        .subtract(depositedSincePreviousNetWorth, mathContext);
+
+			if (BigDecimal.ZERO.compareTo(absoluteChange) == 0) {
+				percentageChange = BigDecimal.ZERO;
+			} else {
+				percentageChange = absoluteChange.divide(previousNetWorth, mathContext).multiply(ONE_HUNDRED,
+				        mathContext);
+			}
 		}
 
 		// Reset the counters
@@ -143,9 +148,9 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	@Override
 	public void event( final CashEvent cashEvent ) {
 
-		if (CashEventType.DEPOSIT.equals( cashEvent.getType() )) {
+		if (CashEventType.DEPOSIT == cashEvent.getType()) {
 			// Add the deposit to the running total
-			depositedSincePreviousNetWorth = depositedSincePreviousNetWorth.add( cashEvent.getAmount(), mathContext );
+			depositedSincePreviousNetWorth = depositedSincePreviousNetWorth.add(cashEvent.getAmount(), mathContext);
 		}
 	}
 }

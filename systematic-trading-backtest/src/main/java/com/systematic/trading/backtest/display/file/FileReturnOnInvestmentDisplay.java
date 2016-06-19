@@ -25,18 +25,10 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
@@ -55,23 +47,20 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		ALL;
 	}
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger( FileReturnOnInvestmentDisplay.class );
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat("#.##");
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat( "#.##" );
+	/** Display responsible for handling the file output. */
+	private final FileDisplayMultithreading display;
 
 	private final RETURN_ON_INVESTMENT_DISPLAY roiType;
 
-	private final String outputFilename;
+	public FileReturnOnInvestmentDisplay(final RETURN_ON_INVESTMENT_DISPLAY roiType,
+	        final FileDisplayMultithreading display) {
 
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
-	public FileReturnOnInvestmentDisplay( final String outputFilename, final RETURN_ON_INVESTMENT_DISPLAY roiType,
-			final ExecutorService pool ) {
-		this.outputFilename = outputFilename;
+		this.display = display;
 		this.roiType = roiType;
-		this.pool = pool;
+
+		display.write("=== Return On Investment Events ===");
 	}
 
 	public String createOutput( final ReturnOnInvestmentEvent event ) {
@@ -81,22 +70,22 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		final LocalDate startDateInclusive = event.getExclusiveStartDate();
 		final LocalDate endDateExclusive = event.getInclusiveEndDate();
 
-		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format( percentageChange );
-		final Period elapsed = Period.between( startDateInclusive, endDateExclusive );
+		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format(percentageChange);
+		final Period elapsed = Period.between(startDateInclusive, endDateExclusive);
 
-		if (isDailyRoiOutput( elapsed )) {
-			output.append( String.format( "Daily - ROI: %s percent over %s day(s), from %s to %s\n",
-					formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive ) );
+		if (isDailyRoiOutput(elapsed)) {
+			output.append(String.format("Daily - ROI: %s percent over %s day(s), from %s to %s",
+			        formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive));
 		}
 
-		if (isMonthlyRoiOutput( elapsed )) {
-			output.append( String.format( "Monthly - ROI: %s percent over %s month(s), from %s to %s\n",
-					formattedPercentageChange, getRoundedMonths( elapsed ), startDateInclusive, endDateExclusive ) );
+		if (isMonthlyRoiOutput(elapsed)) {
+			output.append(String.format("Monthly - ROI: %s percent over %s month(s), from %s to %s",
+			        formattedPercentageChange, getRoundedMonths(elapsed), startDateInclusive, endDateExclusive));
 		}
 
-		if (isYearlyRoiOutput( elapsed )) {
-			output.append( String.format( "Yearly - ROI: %s percent over %s year(s), from %s to %s\n",
-					formattedPercentageChange, getRoundedYears( elapsed ), startDateInclusive, endDateExclusive ) );
+		if (isYearlyRoiOutput(elapsed)) {
+			output.append(String.format("Yearly - ROI: %s percent over %s year(s), from %s to %s",
+			        formattedPercentageChange, getRoundedYears(elapsed), startDateInclusive, endDateExclusive));
 		}
 
 		return output.toString();
@@ -106,28 +95,28 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		switch (roiType) {
 			case ALL:
 			case DAILY:
-				return hasMostlyDays( elapsed );
+				return hasMostlyDays(elapsed);
 			default:
 				return false;
 		}
 	}
 
 	private boolean hasMostlyDays( final Period elapsed ) {
-		return elapsed.getDays() > 0 && getRoundedMonths( elapsed ) == 0 && getRoundedYears( elapsed ) == 0;
+		return elapsed.getDays() > 0 && getRoundedMonths(elapsed) == 0 && getRoundedYears(elapsed) == 0;
 	}
 
 	private boolean isMonthlyRoiOutput( final Period elapsed ) {
 		switch (roiType) {
 			case ALL:
 			case MONTHLY:
-				return hasMostlyMonths( elapsed );
+				return hasMostlyMonths(elapsed);
 			default:
 				return false;
 		}
 	}
 
 	private boolean hasMostlyMonths( final Period elapsed ) {
-		return getRoundedMonths( elapsed ) > 0 && getRoundedYears( elapsed ) == 0;
+		return getRoundedMonths(elapsed) > 0 && getRoundedYears(elapsed) == 0;
 	}
 
 	private int getRoundedMonths( final Period elapsed ) {
@@ -138,7 +127,7 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		switch (roiType) {
 			case ALL:
 			case YEARLY:
-				return getRoundedYears( elapsed ) > 0;
+				return getRoundedYears(elapsed) > 0;
 			default:
 				return false;
 		}
@@ -151,15 +140,6 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
 
-		final Runnable task = () -> {
-			try (final PrintWriter out = new PrintWriter(
-					new BufferedWriter( new FileWriter( outputFilename, true ) ) )) {
-				out.print( createOutput( (ReturnOnInvestmentEvent) event ) );
-			} catch (final IOException e) {
-				LOG.error( e );
-			}
-		};
-
-		pool.execute( task );
+		display.write(createOutput((ReturnOnInvestmentEvent) event));
 	}
 }
