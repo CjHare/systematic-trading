@@ -79,6 +79,8 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
 
+		//TODO validate the number of data items meets the minimum
+
 		final List<BigDecimal> fastK = percentageK.percentageK(data);
 		final List<BigDecimal> fullK = smaFullK.sma(merge(data, fastK));
 		final List<BigDecimal> fullD = smaFullD.sma(merge(data, fullK));

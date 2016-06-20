@@ -37,6 +37,10 @@ public class NonNullableArrayList<T> extends ArrayList<T> {
 	/** Serialisation ID. */
 	private static final long serialVersionUID = 1L;
 
+	public NonNullableArrayList(final int size) {
+		super(size);
+	}
+
 	@Override
 	public boolean add( final T item ) {
 		if (item == null) {

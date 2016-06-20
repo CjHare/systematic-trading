@@ -29,7 +29,6 @@ import java.math.MathContext;
 
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 
 /**

@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.maths.formula.rs;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
@@ -45,5 +44,5 @@ public interface RelativeStrength {
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return relative strength index values.
 	 */
-	public List<BigDecimal> rs( TradingDayPrices[] data );
+	public List<RelativeStrengthDataPoint> rs( TradingDayPrices[] data );
 }

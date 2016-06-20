@@ -27,6 +27,7 @@ package com.systematic.trading.maths.indicator.rsi;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.collection.NonNullableArrayList;
@@ -60,9 +61,6 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	/** Provides the array to store the result in. */
-	private final List<BigDecimal> relativeStrengthIndexValues;
-
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
@@ -75,17 +73,17 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	 */
 	public RelativeStrengthIndexCalculator(final RelativeStrength rs, final Validator validator,
 	        final MathContext mathContext) {
-		this.relativeStrengthIndexValues = new NonNullableArrayList<>();
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.rs = rs;
 	}
 
 	@Override
-	public List<BigDecimal> rsi( final TradingDayPrices[] data ) {
+	public List<RelativeStrengthIndexDataPoint> rsi( final TradingDayPrices[] data ) {
 		final List<BigDecimal> relativeStrengthValues = rs.rs(data);
 		validator.verifyZeroNullEntries(data);
-		relativeStrengthIndexValues.clear();
+
+		final List<RelativeStrengthIndexDataPoint> relativeStrengthIndexValues = new NonNullableArrayList<>();
 
 		/* RSI = 100 - 100 /( 1 + RS ) */
 		for (final BigDecimal rs : relativeStrengthValues) {

@@ -1,0 +1,87 @@
+package com.systematic.trading.signals.indicator;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.formula.rs.RelativeStrengthCalculator;
+import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
+import com.systematic.trading.maths.model.DatedSignal;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
+import com.systematic.trading.signals.model.IndicatorSignalType;
+
+public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
+
+	private final RelativeStrengthIndex rsi;
+
+	/** Required number of data points required for RSI calculation. */
+	private final int minimumNumberOfPrices;
+
+	/** Threshold for when the RSI is considered as over sold.*/
+	private final BigDecimal oversold;
+
+	/** Threshold for when the RSI is considered as over brought.*/
+	private final BigDecimal overbrought;
+
+	/**
+	 * @param lookback the number of data points to use in calculations.
+	 * @param daysOfRsiValues the number of RSI values desired.
+	 */
+	public RelativeStrengthIndexSignals(final int lookback, final int daysOfRsiValues, final BigDecimal oversold,
+	        final BigDecimal overbrought, final MathContext mathContext) {
+		this.minimumNumberOfPrices = lookback + daysOfRsiValues;
+		this.overbrought = overbrought;
+		this.oversold = oversold;
+		this.rsi = new RelativeStrengthIndexCalculator(new RelativeStrengthCalculator(lookback, daysOfRsiValues,
+		        new IllegalArgumentThrowingValidator(), mathContext), new IllegalArgumentThrowingValidator(),
+		        mathContext);
+	}
+
+	@Override
+	public int getRequiredNumberOfTradingDays() {
+		return minimumNumberOfPrices;
+	}
+
+	@Override
+	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
+
+		//TODO write tests
+
+		//TODO validate the number of data items meets the minimum
+
+		//TODO need a consistent return type from the calculators, dated values (tuples)
+
+		//TODO generate the down signals too
+		final List<BigDecimal> rsiData = rsi.rsi(data);
+
+		List<IndicatorSignal> signals = new ArrayList<>();
+		signals = addBuySignals(rsiData, signals);
+		signals = addSellSignals(rsiData, signals);
+		return signals;
+	}
+
+	@Override
+	public IndicatorSignalType getSignalType() {
+		return IndicatorSignalType.RSI;
+	}
+
+	private List<IndicatorSignal> addBuySignals( final List<BigDecimal> rsiData, final List<IndicatorSignal> signals ) {
+
+		//TODO code
+
+		return signals;
+	}
+
+	private List<IndicatorSignal> addSellSignals( final List<BigDecimal> rsiData,
+	        final List<IndicatorSignal> signals ) {
+
+		//TODO code
+
+		return signals;
+	}
+
+}

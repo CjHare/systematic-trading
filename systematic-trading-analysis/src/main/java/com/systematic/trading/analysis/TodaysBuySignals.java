@@ -48,7 +48,6 @@ import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.BuySignal;

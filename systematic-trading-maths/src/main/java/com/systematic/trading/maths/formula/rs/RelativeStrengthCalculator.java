@@ -58,44 +58,34 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 	/** The number of trading days to look back for calculation. */
 	private final int lookback;
 
-	/** Provides the array to store the result in. */
-	private final List<BigDecimal> relativeStrengthValues;
-
-	/** Required number of data points required for ATR calculation. */
-	private final int minimumNumberOfPrices;
-
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
 	/**
-	 * @param lookback the number of days to use when calculating the RSI.
-	 * @param daysOfRsiValues the number of trading days to calculate the RSI value.
+	 * @param lookback the number of days to use when calculating the RS.
+	 * @param daysOfRsiValues the number of desired RS values to calculate.
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
 	public RelativeStrengthCalculator(final int lookback, final int daysOfRsiValues, final Validator validator,
 	        final MathContext mathContext) {
-		this.relativeStrengthValues = new NonNullableArrayList<>();
-		this.minimumNumberOfPrices = lookback + daysOfRsiValues;
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
 	}
 
 	@Override
-	public List<BigDecimal> rs( final TradingDayPrices[] data ) {
+	public List<RelativeStrengthDataPoint> rs( final TradingDayPrices[] data ) {
 
 		validator.verifyZeroNullEntries(data);
-		validator.verifyEnoughValues(data, minimumNumberOfPrices);
+		validator.verifyEnoughValues(data, lookback);
 
 		final int startWindupIndex = 0;
 		final int endWindupIndex = startWindupIndex + lookback;
 
 		final UpwardsToDownwardsMovement initialLookback = calculateWindup(data, startWindupIndex, endWindupIndex);
 
-		calculateRelativeStrengthValues(data, initialLookback, endWindupIndex);
-
-		return relativeStrengthValues;
+		return calculateRelativeStrengthValues(data, initialLookback, endWindupIndex);
 	}
 
 	/**
@@ -147,10 +137,8 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 	 * 	Average Gain = [(previous Average Gain) x archive + current Gain] / lookback.
 	 * 	Average Loss = [(previous Average Loss) x archive + current Loss] / lookback.
 	 */
-	private void calculateRelativeStrengthValues( final TradingDayPrices[] data,
+	private List<RelativeStrengthDataPoint> calculateRelativeStrengthValues( final TradingDayPrices[] data,
 	        final UpwardsToDownwardsMovement initialLookback, final int endWindupIndex ) {
-
-		relativeStrengthValues.clear();
 
 		final BigDecimal archive = BigDecimal.valueOf(lookback - 1);
 		final BigDecimal history = BigDecimal.valueOf(lookback);
@@ -158,8 +146,12 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 		BigDecimal downward = initialLookback.getDownward();
 		BigDecimal currentGain = BigDecimal.ZERO;
 		BigDecimal currentLoss = BigDecimal.ZERO;
+		BigDecimal relativeStrength;
 		ClosingPrice closeToday;
 		ClosingPrice closeYesterday;
+
+		final List<RelativeStrengthDataPoint> relativeStrengthValues = new NonNullableArrayList<>(
+		        data.length - endWindupIndex);
 
 		for (int i = endWindupIndex; i < data.length; i++) {
 
@@ -191,10 +183,14 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 
 			// There's no downward, then avoid dividing by zero
 			if (downward.compareTo(BigDecimal.ZERO) <= 0) {
-				relativeStrengthValues.add(upward);
+				relativeStrength = upward;
 			} else {
-				relativeStrengthValues.add(upward.divide(downward, mathContext));
+				relativeStrength = upward.divide(downward, mathContext);
 			}
+
+			relativeStrengthValues.add(new RelativeStrengthDataPoint(data[i].getDate(), relativeStrength));
 		}
+
+		return relativeStrengthValues;
 	}
 }
