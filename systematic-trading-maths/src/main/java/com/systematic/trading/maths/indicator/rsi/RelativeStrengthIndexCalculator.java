@@ -27,12 +27,12 @@ package com.systematic.trading.maths.indicator.rsi;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.formula.rs.RelativeStrength;
+import com.systematic.trading.maths.formula.rs.RelativeStrengthDataPoint;
 import com.systematic.trading.maths.indicator.Validator;
 
 /**
@@ -80,15 +80,16 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 	@Override
 	public List<RelativeStrengthIndexDataPoint> rsi( final TradingDayPrices[] data ) {
-		final List<BigDecimal> relativeStrengthValues = rs.rs(data);
+		final List<RelativeStrengthDataPoint> relativeStrengthValues = rs.rs(data);
 		validator.verifyZeroNullEntries(data);
 
-		final List<RelativeStrengthIndexDataPoint> relativeStrengthIndexValues = new NonNullableArrayList<>();
+		final List<RelativeStrengthIndexDataPoint> relativeStrengthIndexValues = new NonNullableArrayList<>(
+		        relativeStrengthValues.size());
 
 		/* RSI = 100 - 100 /( 1 + RS ) */
-		for (final BigDecimal rs : relativeStrengthValues) {
-			relativeStrengthIndexValues
-			        .add(ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(rs), mathContext)));
+		for (final RelativeStrengthDataPoint rs : relativeStrengthValues) {
+			relativeStrengthIndexValues.add(new RelativeStrengthIndexDataPoint(rs.getDate(),
+			        ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(rs.getValue()), mathContext))));
 		}
 
 		return relativeStrengthIndexValues;

@@ -35,6 +35,8 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +47,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.formula.rs.RelativeStrength;
+import com.systematic.trading.maths.formula.rs.RelativeStrengthDataPoint;
 import com.systematic.trading.maths.indicator.Validator;
 
 /**
@@ -65,59 +68,64 @@ public class RelativeStrengthIndexCalculatorTest {
 	@Test
 	public void rsi() {
 		final int relativeStrengthCount = 5;
-		final List<BigDecimal> rsData = createIncreasingRelativeStrengthValues(relativeStrengthCount);
+		final List<RelativeStrengthDataPoint> rsData = createIncreasingRelativeStrengthValues(relativeStrengthCount);
 		when(relativeStrength.rs(any(TradingDayPrices[].class))).thenReturn(rsData);
 
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
 		        validator, MATH_CONTEXT);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
-		final List<BigDecimal> rsi = calculator.rsi(prices);
+		final List<RelativeStrengthIndexDataPoint> rsi = calculator.rsi(prices);
 
 		assertNotNull(rsi);
 		assertEquals(relativeStrengthCount, rsi.size());
-		assertEquals(BigDecimal.valueOf(67.213), rsi.get(0).setScale(3, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(75.309), rsi.get(1).setScale(3, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(80.198), rsi.get(2).setScale(3, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(83.471), rsi.get(3).setScale(3, RoundingMode.HALF_EVEN));
+		assertValueEquals(67.21, rsi.get(0));
+		assertValueEquals(75.31, rsi.get(1));
+		assertValueEquals(80.20, rsi.get(2));
+		assertValueEquals(83.47, rsi.get(3));
 
 		verify(relativeStrength).rs(prices);
 	}
 
 	@Test
 	public void rsiExample() {
-		final List<BigDecimal> rsData = createExampleRelativeStrengthValues();
+		final List<RelativeStrengthDataPoint> rsData = createExampleRelativeStrengthValues();
 		when(relativeStrength.rs(any(TradingDayPrices[].class))).thenReturn(rsData);
 
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
 		        validator, MATH_CONTEXT);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
-		final List<BigDecimal> rsi = calculator.rsi(prices);
+		final List<RelativeStrengthIndexDataPoint> rsi = calculator.rsi(prices);
 
 		assertNotNull(rsi);
 		assertEquals(19, rsi.size());
-		assertEquals(BigDecimal.valueOf(70.53), rsi.get(0).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(66.32), rsi.get(1).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(66.55), rsi.get(2).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(69.41), rsi.get(3).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(66.35), rsi.get(4).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(57.97), rsi.get(5).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(62.93), rsi.get(6).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(63.26), rsi.get(7).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(56.06), rsi.get(8).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(62.38), rsi.get(9).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(54.71), rsi.get(10).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(50.42), rsi.get(11).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(39.99), rsi.get(12).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(41.46), rsi.get(13).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(41.87), rsi.get(14).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(45.46), rsi.get(15).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(37.3), rsi.get(16).setScale(1, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(33.08), rsi.get(17).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(37.77), rsi.get(18).setScale(2, RoundingMode.HALF_EVEN));
+		assertValueEquals(70.53, rsi.get(0));
+		assertValueEquals(66.32, rsi.get(1));
+		assertValueEquals(66.55, rsi.get(2));
+		assertValueEquals(69.41, rsi.get(3));
+		assertValueEquals(66.35, rsi.get(4));
+		assertValueEquals(57.97, rsi.get(5));
+		assertValueEquals(62.93, rsi.get(6));
+		assertValueEquals(63.26, rsi.get(7));
+		assertValueEquals(56.06, rsi.get(8));
+		assertValueEquals(62.38, rsi.get(9));
+		assertValueEquals(54.71, rsi.get(10));
+		assertValueEquals(50.42, rsi.get(11));
+		assertValueEquals(39.99, rsi.get(12));
+		assertValueEquals(41.46, rsi.get(13));
+		assertValueEquals(41.87, rsi.get(14));
+		assertValueEquals(45.46, rsi.get(15));
+		assertValueEquals(37.30, rsi.get(16));
+		assertValueEquals(33.08, rsi.get(17));
+		assertValueEquals(37.77, rsi.get(18));
 
 		verify(relativeStrength).rs(prices);
+	}
+
+	private void assertValueEquals( final double expected, final RelativeStrengthIndexDataPoint actual ) {
+		assertEquals(BigDecimal.valueOf(expected).setScale(2, RoundingMode.HALF_EVEN),
+		        actual.getValue().setScale(2, RoundingMode.HALF_EVEN));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -140,11 +148,12 @@ public class RelativeStrengthIndexCalculatorTest {
 		calculator.rsi(new TradingDayPrices[] {});
 	}
 
-	private List<BigDecimal> createIncreasingRelativeStrengthValues( final int count ) {
-		final List<BigDecimal> data = new ArrayList<>();
+	private List<RelativeStrengthDataPoint> createIncreasingRelativeStrengthValues( final int count ) {
+		final List<RelativeStrengthDataPoint> data = new ArrayList<>(count);
 
 		for (int i = 0; i < count; i++) {
-			data.add(BigDecimal.valueOf(i + 2.05));
+			data.add(new RelativeStrengthDataPoint(LocalDate.now().plus(count, ChronoUnit.DAYS),
+			        BigDecimal.valueOf(i + 2.05)));
 		}
 
 		return data;
@@ -153,13 +162,14 @@ public class RelativeStrengthIndexCalculatorTest {
 	/**
 	 * Values taken from example on chart school site
 	 */
-	private List<BigDecimal> createExampleRelativeStrengthValues() {
+	private List<RelativeStrengthDataPoint> createExampleRelativeStrengthValues() {
 		final double[] exampleData = { 2.3936, 1.9690, 1.9895, 2.2686, 1.9722, 1.3795, 1.6976, 1.7216, 1.2758, 1.6580,
 		        1.2079, 1.0171, 0.6664, 0.7082, 0.7203, 0.8336, 0.5950, 0.4943, 0.6070 };
-		final List<BigDecimal> data = new ArrayList<>();
+		final List<RelativeStrengthDataPoint> data = new ArrayList<>(exampleData.length);
 
-		for (final double value : exampleData) {
-			data.add(BigDecimal.valueOf(value));
+		for (int i = 0; i < exampleData.length; i++) {
+			data.add(new RelativeStrengthDataPoint(LocalDate.now().plus(i, ChronoUnit.DAYS),
+			        BigDecimal.valueOf(exampleData[i])));
 		}
 
 		return data;
