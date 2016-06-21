@@ -191,7 +191,7 @@ public class RelativeStrengthCalculatorTest {
 		assertValueEquals(0.92, rsi.get(3));
 
 		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, dataSize);
+		verify(validator).verifyEnoughValues(data, dataSize - lookback);
 	}
 
 	@Test
@@ -215,7 +215,7 @@ public class RelativeStrengthCalculatorTest {
 		assertValueEquals(0, rsi.get(3));
 
 		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, dataSize);
+		verify(validator).verifyEnoughValues(data, dataSize - lookback);
 	}
 
 	@Test
@@ -257,7 +257,7 @@ public class RelativeStrengthCalculatorTest {
 		assertValueEquals(0.45, rsi.get(11));
 
 		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, dataSize);
+		verify(validator).verifyEnoughValues(data, dataSize - lookback);
 	}
 
 	@Test
@@ -299,7 +299,7 @@ public class RelativeStrengthCalculatorTest {
 		assertValueEquals(2.21, rsi.get(11));
 
 		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, dataSize);
+		verify(validator).verifyEnoughValues(data, dataSize - lookback);
 	}
 
 	private TradingDayPrices[] createPrices( final int count ) {
