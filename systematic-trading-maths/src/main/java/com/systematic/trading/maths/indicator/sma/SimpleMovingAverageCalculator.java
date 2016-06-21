@@ -49,9 +49,6 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	/** Number of days to average the value on. */
 	private final int lookback;
 
-	/** Provides the array to store the result in. */
-	private final List<BigDecimal> smaValues;
-
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
@@ -70,7 +67,6 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
 		this.daysOfSmaValues = daysOfSmaValues;
 		this.mathContext = mathContext;
-		this.smaValues = new NonNullableArrayList<>();
 		this.validator = validator;
 		this.lookback = lookback;
 	}
@@ -81,10 +77,11 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
-		smaValues.clear();
-
 		final int endSmaIndex = data.length - 1;
 		final int startSmaIndex = endSmaIndex - daysOfSmaValues;
+
+		// Account for <= in the following loop
+		final List<BigDecimal> smaValues = new NonNullableArrayList<>(1 + endSmaIndex - startSmaIndex);
 
 		// Start at the end and work towards the origin
 		for (int i = startSmaIndex; i <= endSmaIndex; i++) {
