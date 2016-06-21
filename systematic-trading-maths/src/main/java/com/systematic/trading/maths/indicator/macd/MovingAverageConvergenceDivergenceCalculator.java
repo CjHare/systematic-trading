@@ -53,12 +53,6 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	/** Exponential moving average of the values from slowEma - fastEma. */
 	private final ExponentialMovingAverage signalEma;
 
-	/** Provides a store for the slow-fast ema value for feeding to the signal ema. */
-	private final List<BigDecimal> macdValues;
-
-	/** Provides a store for the dates that match the signal line entries. */
-	private final List<LocalDate> signalLineDates;
-
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
@@ -68,8 +62,6 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	public MovingAverageConvergenceDivergenceCalculator(final ExponentialMovingAverage fastEma,
 	        final ExponentialMovingAverage slowEma, final ExponentialMovingAverage signalEma,
 	        final Validator validator) {
-		this.macdValues = new NonNullableArrayList<>();
-		this.signalLineDates = new NonNullableArrayList<>();
 		this.validator = validator;
 		this.signalEma = signalEma;
 		this.slowEma = slowEma;
@@ -85,14 +77,12 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		final List<BigDecimal> slowEmaValues = slowEma.ema(data);
 		final List<BigDecimal> fastEmaValues = fastEma.ema(data);
 
-		// Clear the stores, readying them for use
-		macdValues.clear();
-		signalLineDates.clear();
-
 		// We're only interested in shared indexes, both right most aligned with data[]
 		final int slowEmaOffset = Math.max(0, slowEmaValues.size() - fastEmaValues.size());
 		final int fastEmaOffset = Math.max(0, fastEmaValues.size() - slowEmaValues.size());
 		final int emaEndIndex = Math.min(slowEmaValues.size(), fastEmaValues.size());
+
+		final List<BigDecimal> macdValues = new NonNullableArrayList<>(emaEndIndex);
 
 		// MACD is the fast - slow EMAs
 		for (int i = 0; i < emaEndIndex; i++) {
@@ -100,6 +90,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		}
 
 		final List<BigDecimal> signaLine = signalEma.ema(macdValues);
+		final List<LocalDate> signalLineDates = new NonNullableArrayList<>(data.length);
 
 		// The signal line matches with the right most values of the data array
 		for (int i = data.length - signaLine.size(); i < data.length; i++) {
