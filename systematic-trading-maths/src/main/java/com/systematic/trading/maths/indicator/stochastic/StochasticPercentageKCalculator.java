@@ -55,9 +55,6 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	/** Number of days to read the ranges on. */
 	private final int lookback;
 
-	/** Provides the array to store the result in. */
-	private final List<BigDecimal> stochasticValues;
-
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
@@ -73,7 +70,6 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
-		this.stochasticValues = new NonNullableArrayList<>();
 	}
 
 	@Override
@@ -82,14 +78,12 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
-		stochasticValues.clear();
-
-		int pkSmaIndex = 0;
-
 		LowestPrice lowestLow;
 		HighestEquityPrice highestHigh;
 		ClosingPrice currentClose;
-		pkSmaIndex += lookback;
+		int pkSmaIndex = lookback;
+
+		final List<BigDecimal> stochasticValues = new NonNullableArrayList<>(data.length - pkSmaIndex);
 
 		for (int i = pkSmaIndex; i < data.length; i++) {
 			currentClose = data[i].getClosingPrice();
@@ -106,20 +100,18 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	        final ClosingPrice currentClose ) {
 		// %K = (Current Close - Lowest Low)/(Highest High - Lowest Low) * 100
 		final BigDecimal pK = (currentCloseMinusLowestLow(lowestLow, currentClose)
-		        .divide(highestHighMinusLowestLow(lowestLow, highestHigh), mathContext))
-		                .multiply(ONE_HUNDRED, mathContext);
+		        .divide(highestHighMinusLowestLow(lowestLow, highestHigh), mathContext)).multiply(ONE_HUNDRED,
+		                mathContext);
 
 		// Cap output at 100
 		return (pK.compareTo(ONE_HUNDRED) > 0) ? ONE_HUNDRED : pK;
 	}
 
-	private BigDecimal currentCloseMinusLowestLow( final LowestPrice lowestLow,
-	        final ClosingPrice currentClose ) {
+	private BigDecimal currentCloseMinusLowestLow( final LowestPrice lowestLow, final ClosingPrice currentClose ) {
 		return currentClose.subtract(lowestLow, mathContext);
 	}
 
-	private BigDecimal highestHighMinusLowestLow( final LowestPrice lowestLow,
-	        final HighestEquityPrice highestHigh ) {
+	private BigDecimal highestHighMinusLowestLow( final LowestPrice lowestLow, final HighestEquityPrice highestHigh ) {
 		if (lowestLow.isEqaul(highestHigh)) {
 			return ONE_HUNDREDTH;
 		}
