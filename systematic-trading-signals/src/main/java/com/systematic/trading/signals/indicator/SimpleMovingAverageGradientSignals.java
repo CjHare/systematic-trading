@@ -87,7 +87,7 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
 
 		//TODO validate the number of data items meets the minimum
-		
+
 		final List<BigDecimal> sma = movingAverage.sma(data);
 
 		// Only look at the gradient if there's more than one sma result

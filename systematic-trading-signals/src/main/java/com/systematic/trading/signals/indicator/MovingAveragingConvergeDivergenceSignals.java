@@ -65,7 +65,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
 
 		//TODO validate the number of data items meets the minimum
-		
+
 		//TODO generate the down signals too
 		final List<DatedSignal> signals = macd.macd(data);
 
