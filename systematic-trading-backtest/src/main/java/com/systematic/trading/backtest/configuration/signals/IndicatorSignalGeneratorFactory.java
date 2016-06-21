@@ -29,6 +29,7 @@ import java.math.MathContext;
 
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 
 /**
@@ -68,7 +69,7 @@ public class IndicatorSignalGeneratorFactory {
 	}
 
 	public IndicatorSignalGenerator create( final RsiConfiguration rsi, final MathContext mathContext ) {
-		return new RelativeStrengthIndexSignals(rsi.getLookback(), rsi.getOverbought(), rsi.getOversold(), mathContext);
+		return new RelativeStrengthIndexSignals(rsi.getLookback(), rsi.getOversold(), rsi.getOverbought(), mathContext);
 	}
 
 	public IndicatorSignalGenerator create( final SmaConfiguration sma, final MathContext mathContext ) {

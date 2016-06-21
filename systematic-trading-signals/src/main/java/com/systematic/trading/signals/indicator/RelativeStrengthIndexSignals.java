@@ -10,11 +10,13 @@ import com.systematic.trading.maths.formula.rs.RelativeStrengthCalculator;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
-import com.systematic.trading.maths.model.DatedSignal;
-import com.systematic.trading.signals.model.IndicatorDirectionType;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
+
+	/** The least number of data points that enables RSI signal generation. */
+	private static final int MINIMUM_DAYS_OF_RSI_VALUES = 2;
 
 	private final RelativeStrengthIndex rsi;
 
@@ -31,14 +33,15 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	 * @param lookback the number of data points to use in calculations.
 	 * @param daysOfRsiValues the number of RSI values desired.
 	 */
-	public RelativeStrengthIndexSignals(final int lookback, final int daysOfRsiValues, final BigDecimal oversold,
-	        final BigDecimal overbrought, final MathContext mathContext) {
-		this.minimumNumberOfPrices = lookback + daysOfRsiValues;
+	public RelativeStrengthIndexSignals(final int lookback, final BigDecimal oversold, final BigDecimal overbrought,
+	        final MathContext mathContext) {
+		this.minimumNumberOfPrices = lookback + MINIMUM_DAYS_OF_RSI_VALUES;
 		this.overbrought = overbrought;
 		this.oversold = oversold;
-		this.rsi = new RelativeStrengthIndexCalculator(new RelativeStrengthCalculator(lookback, daysOfRsiValues,
-		        new IllegalArgumentThrowingValidator(), mathContext), new IllegalArgumentThrowingValidator(),
-		        mathContext);
+		this.rsi = new RelativeStrengthIndexCalculator(
+		        new RelativeStrengthCalculator(lookback, MINIMUM_DAYS_OF_RSI_VALUES,
+		                new IllegalArgumentThrowingValidator(), mathContext),
+		        new IllegalArgumentThrowingValidator(), mathContext);
 	}
 
 	@Override
@@ -53,10 +56,9 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		//TODO validate the number of data items meets the minimum
 
-		//TODO need a consistent return type from the calculators, dated values (tuples)
+		//TODO need a consistent return type from all the calculators, dated values (tuples)
 
-		//TODO generate the down signals too
-		final List<BigDecimal> rsiData = rsi.rsi(data);
+		final List<RelativeStrengthIndexDataPoint> rsiData = rsi.rsi(data);
 
 		List<IndicatorSignal> signals = new ArrayList<>();
 		signals = addBuySignals(rsiData, signals);
@@ -69,14 +71,15 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		return IndicatorSignalType.RSI;
 	}
 
-	private List<IndicatorSignal> addBuySignals( final List<BigDecimal> rsiData, final List<IndicatorSignal> signals ) {
+	private List<IndicatorSignal> addBuySignals( final List<RelativeStrengthIndexDataPoint> rsiData,
+	        final List<IndicatorSignal> signals ) {
 
 		//TODO code
 
 		return signals;
 	}
 
-	private List<IndicatorSignal> addSellSignals( final List<BigDecimal> rsiData,
+	private List<IndicatorSignal> addSellSignals( final List<RelativeStrengthIndexDataPoint> rsiData,
 	        final List<IndicatorSignal> signals ) {
 
 		//TODO code

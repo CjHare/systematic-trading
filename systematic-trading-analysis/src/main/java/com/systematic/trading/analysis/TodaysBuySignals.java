@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.analysis;
 
+import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
@@ -48,6 +49,7 @@ import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 import com.systematic.trading.signals.model.BuySignal;
@@ -83,9 +85,9 @@ public class TodaysBuySignals {
 		        daysOfSmaGradient, GradientType.POSITIVE, MATH_CONTEXT);
 
 		final int lookback = 10;
-		final int oversold = 70;
-		final int overbought = 30;
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals(lookback, oversold, overbought,
+		final BigDecimal overbought = BigDecimal.valueOf(30);
+		final BigDecimal oversold = BigDecimal.valueOf(70);
+		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals(lookback, overbought, oversold,
 		        MATH_CONTEXT);
 
 		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>();

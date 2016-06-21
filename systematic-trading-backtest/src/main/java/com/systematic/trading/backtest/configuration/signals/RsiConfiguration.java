@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.configuration.signals;
 
+import java.math.BigDecimal;
+
 /**
  * Configuration for the MACD signal calculator.
  * 
@@ -32,14 +34,15 @@ package com.systematic.trading.backtest.configuration.signals;
  */
 public enum RsiConfiguration implements SignalConfiguration {
 
-	MEDIUM(10, 70, 30, "Medium-Rsi");
+	MEDIUM(10, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "Medium-Rsi");
 
 	private final String description;
 	private final int lookback;
-	private final int oversold;
-	private final int overbought;
+	private final BigDecimal oversold;
+	private final BigDecimal overbought;
 
-	private RsiConfiguration(final int lookback, final int oversold, final int overbought, final String description) {
+	private RsiConfiguration(final int lookback, final BigDecimal overbought, final BigDecimal oversold,
+	        final String description) {
 		this.description = description;
 		this.lookback = lookback;
 		this.oversold = oversold;
@@ -55,11 +58,11 @@ public enum RsiConfiguration implements SignalConfiguration {
 		return lookback;
 	}
 
-	public int getOversold() {
+	public BigDecimal getOversold() {
 		return oversold;
 	}
 
-	public int getOverbought() {
+	public BigDecimal getOverbought() {
 		return overbought;
 	}
 }
