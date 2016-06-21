@@ -55,9 +55,6 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
-	/** Provides the array to store the result in. */
-	private final List<BigDecimal> atrValues;
-
 	/**
 	 * @param lookback the number of days to use when calculating the ATR, also the number of days
 	 *            prior to the averaging becoming correct.
@@ -69,7 +66,6 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 		this.priorMultiplier = BigDecimal.valueOf(lookback - 1L);
 		this.lookbackDivider = BigDecimal.valueOf(lookback);
 		this.mathContext = mathContext;
-		this.atrValues = new NonNullableArrayList<>();
 		this.validator = validator;
 	}
 
@@ -117,7 +113,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
-		atrValues.clear();
+		final List<BigDecimal> atrValues = new NonNullableArrayList<>(data.length);
 
 		// For the first value just use the TR
 		atrValues.add(trueRangeMethodOne(data[0]));

@@ -54,9 +54,6 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/** Constant used for smoothing the moving average. */
 	private final BigDecimal smoothingConstant;
 
-	/** Provides the array to store the result in. */
-	private final List<BigDecimal> emaValues;
-
 	/** The number of previous data points used in EMA calculation. */
 	private final int lookback;
 
@@ -76,7 +73,6 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		// Look back provides one of the days of EMA values
 		this.smoothingConstant = calculateSmoothingConstant(lookback);
 		this.mathContext = mathContext;
-		this.emaValues = new NonNullableArrayList<>();
 		this.validator = validator;
 		this.lookback = lookback;
 		this.wrapper = new Data();
@@ -134,8 +130,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		BigDecimal yesterday = simpleMovingAverage;
 		BigDecimal today;
 
-		// Empty the return store, populating with the look back SMA
-		emaValues.clear();
+		// One SMA value and the <= in loop
+		final List<BigDecimal> emaValues = new NonNullableArrayList<>(2 + endEmaIndex - startEmaIndex);
+
 		emaValues.add(yesterday);
 
 		for (int i = startEmaIndex; i <= endEmaIndex; i++) {
