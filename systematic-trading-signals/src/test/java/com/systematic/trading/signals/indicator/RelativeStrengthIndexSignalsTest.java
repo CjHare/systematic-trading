@@ -63,13 +63,16 @@ public class RelativeStrengthIndexSignalsTest extends SignalTest {
 
 	@Test
 	public void overbrought() {
-		final int buyPriceSpike = 7;
+		final int lookback = 5;
+		final int priceSpikeStart = 15;
+		final int buyPriceSpike = 27;
 
-		final RelativeStrengthIndexSignals signals = new RelativeStrengthIndexSignals(5, BigDecimal.valueOf(30),
+		final RelativeStrengthIndexSignals signals = new RelativeStrengthIndexSignals(lookback, BigDecimal.valueOf(30),
 		        BigDecimal.valueOf(70), MATH_CONTEXT);
 
 		// Create a up then an down-spike
-		final TradingDayPrices[] data = addLinearChange(10, 10, -50, createFlatTradingDayPrices(37, 25));
+		final TradingDayPrices[] data = addLinearChange(0, 10, 5,
+		        addLinearChange(priceSpikeStart, 22, -5, createFlatTradingDayPrices(37, 100)));
 
 		final List<IndicatorSignal> results = signals.calculateSignals(data);
 
@@ -85,7 +88,7 @@ public class RelativeStrengthIndexSignalsTest extends SignalTest {
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals(5, BigDecimal.valueOf(30),
 		        BigDecimal.valueOf(70), MATH_CONTEXT);
 
-		assertEquals(57, rsi.getRequiredNumberOfTradingDays());
+		assertEquals(7, rsi.getRequiredNumberOfTradingDays());
 	}
 
 	@Test

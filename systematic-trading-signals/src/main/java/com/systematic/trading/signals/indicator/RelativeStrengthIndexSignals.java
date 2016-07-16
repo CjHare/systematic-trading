@@ -11,6 +11,7 @@ import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
@@ -39,8 +40,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		this.overbrought = overbrought;
 		this.oversold = oversold;
 		this.rsi = new RelativeStrengthIndexCalculator(
-		        new RelativeStrengthCalculator(lookback, MINIMUM_DAYS_OF_RSI_VALUES,
-		                new IllegalArgumentThrowingValidator(), mathContext),
+		        new RelativeStrengthCalculator(lookback, new IllegalArgumentThrowingValidator(), mathContext),
 		        new IllegalArgumentThrowingValidator(), mathContext);
 	}
 
@@ -74,7 +74,16 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	private List<IndicatorSignal> addBuySignals( final List<RelativeStrengthIndexDataPoint> rsiData,
 	        final List<IndicatorSignal> signals ) {
 
-		//TODO code
+		RelativeStrengthIndexDataPoint previousData = rsiData.get(0);
+
+		for (final RelativeStrengthIndexDataPoint data : rsiData) {
+
+			if (previousData.getValue().compareTo(oversold) <= 0 && data.getValue().compareTo(oversold) >= 0) {
+				signals.add(new IndicatorSignal(data.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.UP));
+			}
+
+			previousData = data;
+		}
 
 		return signals;
 	}
@@ -82,7 +91,16 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	private List<IndicatorSignal> addSellSignals( final List<RelativeStrengthIndexDataPoint> rsiData,
 	        final List<IndicatorSignal> signals ) {
 
-		//TODO code
+		RelativeStrengthIndexDataPoint previousData = rsiData.get(0);
+
+		for (final RelativeStrengthIndexDataPoint data : rsiData) {
+
+			if (previousData.getValue().compareTo(overbrought) >= 0 && data.getValue().compareTo(overbrought) <= 0) {
+				signals.add(new IndicatorSignal(data.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.DOWN));
+			}
+
+			previousData = data;
+		}
 
 		return signals;
 	}

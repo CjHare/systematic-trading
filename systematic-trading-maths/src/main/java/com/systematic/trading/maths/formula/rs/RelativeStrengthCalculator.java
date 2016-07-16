@@ -52,6 +52,9 @@ import com.systematic.trading.maths.indicator.Validator;
  */
 public class RelativeStrengthCalculator implements RelativeStrength {
 
+	/** Used in place of no upwards movement yet, to provide a small value to show constant down momentum. */
+	private static final BigDecimal NO_UPWARDS_YET = BigDecimal.valueOf(0.01);
+
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
 
@@ -63,12 +66,10 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 
 	/**
 	 * @param lookback the number of days to use when calculating the RS.
-	 * @param daysOfRsiValues the number of desired RS values to calculate.
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthCalculator(final int lookback, final int daysOfRsiValues, final Validator validator,
-	        final MathContext mathContext) {
+	public RelativeStrengthCalculator(final int lookback, final Validator validator, final MathContext mathContext) {
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
@@ -181,16 +182,25 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 			downward = downward.multiply(archive, mathContext).add(currentLoss, mathContext).divide(history,
 			        mathContext);
 
-			// There's no downward, then avoid dividing by zero
-			if (downward.compareTo(BigDecimal.ZERO) <= 0) {
+			if (isZeroOrBelow(downward)) {
+				// There's no downward, then avoid dividing by zero
 				relativeStrength = upward;
+			} else if (isZeroOrBelow(upward)) {
+				// No upwards use a small number to signify movement
+				relativeStrength = NO_UPWARDS_YET.divide(downward, mathContext);
 			} else {
 				relativeStrength = upward.divide(downward, mathContext);
 			}
+
+			//TODO what about when upward is zero - just return downward
 
 			relativeStrengthValues.add(new RelativeStrengthDataPoint(data[i].getDate(), relativeStrength));
 		}
 
 		return relativeStrengthValues;
+	}
+
+	private boolean isZeroOrBelow( final BigDecimal value ) {
+		return value.compareTo(BigDecimal.ZERO) <= 0;
 	}
 }
