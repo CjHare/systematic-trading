@@ -60,8 +60,9 @@ public class SingleConfigurationSignals implements BacktestConfigurations {
 	}
 
 	@Override
-	public List<BacktestBootstrapConfiguration> get( EquityIdentity equity, BacktestSimulationDates simulationDates,
-	        DepositConfiguration deposit, DescriptionGenerator descriptionGenerator ) {
+	public List<BacktestBootstrapConfiguration> get( final EquityIdentity equity,
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+	        final DescriptionGenerator descriptionGenerator ) {
 
 		final BacktestBootstrapConfigurationGenerator configurationGenerator = new BacktestBootstrapConfigurationGenerator(
 		        equity, simulationDates, deposit, descriptionGenerator, MATH_CONTEXT);

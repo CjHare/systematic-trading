@@ -65,12 +65,15 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 			modifiableTradingData.put(tradingDay.getDate(), tradingDay);
 		}
 
+		if (modifiableTradingData.isEmpty()) {
+			throw new IllegalArgumentException("Requires at least one trading day of data");
+		}
+
 		if (modifiableTradingData.size() != data.length) {
 			throw new IllegalArgumentException("Duplicate trading dates provided");
 		}
 
 		this.tradingData = Collections.unmodifiableMap(modifiableTradingData);
-
 		this.earliestDate = getEarliestDate(tradingData);
 		this.latestDate = getLatestDate(tradingData);
 	}
