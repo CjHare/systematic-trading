@@ -1,0 +1,9 @@
+cd systematic-trading-database-hsqldb/data/
+rmdir systematic-trading.tmp
+del systematic-trading.lck
+del systematic-trading.log
+del systematic-trading.properties
+del systematic-trading.script
+cd ..
+rmdir data
+cd ..
