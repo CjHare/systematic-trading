@@ -199,10 +199,10 @@ public class RelativeStrengthCalculatorTest {
 
 		assertNotNull(rsi);
 		assertEquals(daysOfRsiValues, rsi.size());
-		assertValueEquals(0.01, rsi.get(0));
-		assertValueEquals(0.01, rsi.get(1));
-		assertValueEquals(0.01, rsi.get(2));
-		assertValueEquals(0.01, rsi.get(3));
+		assertValueEquals(0.00, rsi.get(0));
+		assertValueEquals(0.00, rsi.get(1));
+		assertValueEquals(0.00, rsi.get(2));
+		assertValueEquals(0.00, rsi.get(3));
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, dataSize - lookback);
@@ -271,10 +271,10 @@ public class RelativeStrengthCalculatorTest {
 
 		assertNotNull(rsi);
 		assertEquals(2 * dataSize - lookback, rsi.size());
-		assertValueEquals(0.01, rsi.get(0));
-		assertValueEquals(0.01, rsi.get(1));
-		assertValueEquals(0.01, rsi.get(2));
-		assertValueEquals(0.01, rsi.get(3));
+		assertValueEquals(0.00, rsi.get(0));
+		assertValueEquals(0.00, rsi.get(1));
+		assertValueEquals(0.00, rsi.get(2));
+		assertValueEquals(0.00, rsi.get(3));
 		assertValueEquals(0.00, rsi.get(4));
 		assertValueEquals(0.11, rsi.get(5));
 		assertValueEquals(0.26, rsi.get(6));

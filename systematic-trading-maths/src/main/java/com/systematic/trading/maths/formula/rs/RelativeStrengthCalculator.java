@@ -48,12 +48,11 @@ import com.systematic.trading.maths.indicator.Validator;
  * exponential moving average calculation. This also means that RSI values become more accurate as
  * the calculation period extends.
  * 
+ * Until there has been an upwards movements in the data set, RS value will be zero.
+ * 
  * @author CJ Hare
  */
 public class RelativeStrengthCalculator implements RelativeStrength {
-
-	/** Used in place of no upwards movement yet, to provide a small value to show constant down momentum. */
-	private static final BigDecimal NO_UPWARDS_YET = BigDecimal.valueOf(0.01);
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -185,14 +184,9 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 			if (isZeroOrBelow(downward)) {
 				// There's no downward, then avoid dividing by zero
 				relativeStrength = upward;
-			} else if (isZeroOrBelow(upward)) {
-				// No upwards use a small number to signify movement
-				relativeStrength = NO_UPWARDS_YET.divide(downward, mathContext);
 			} else {
 				relativeStrength = upward.divide(downward, mathContext);
 			}
-
-			//TODO what about when upward is zero - just return downward
 
 			relativeStrengthValues.add(new RelativeStrengthDataPoint(data[i].getDate(), relativeStrength));
 		}
