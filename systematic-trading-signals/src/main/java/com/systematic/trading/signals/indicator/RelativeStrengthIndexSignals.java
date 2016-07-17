@@ -51,11 +51,10 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
-
-		//TODO need a consistent return type from all the calculators, dated values (tuples)
-
+		
+		//TODO validate minimum nummber of points given
+		
 		final List<RelativeStrengthIndexDataPoint> rsiData = rsi.rsi(data);
-
 		return addSellSignals(rsiData, addBuySignals(rsiData, new ArrayList<>()));
 	}
 
