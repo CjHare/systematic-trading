@@ -52,18 +52,11 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
 
-		//TODO write tests
-
-		//TODO validate the number of data items meets the minimum
-
 		//TODO need a consistent return type from all the calculators, dated values (tuples)
 
 		final List<RelativeStrengthIndexDataPoint> rsiData = rsi.rsi(data);
 
-		List<IndicatorSignal> signals = new ArrayList<>();
-		signals = addBuySignals(rsiData, signals);
-		signals = addSellSignals(rsiData, signals);
-		return signals;
+		return addSellSignals(rsiData, addBuySignals(rsiData, new ArrayList<>()));
 	}
 
 	@Override
@@ -74,15 +67,14 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	private List<IndicatorSignal> addBuySignals( final List<RelativeStrengthIndexDataPoint> rsiData,
 	        final List<IndicatorSignal> signals ) {
 
-		RelativeStrengthIndexDataPoint previousData = rsiData.get(0);
+		RelativeStrengthIndexDataPoint yesterday = rsiData.get(0);
 
-		for (final RelativeStrengthIndexDataPoint data : rsiData) {
-
-			if (previousData.getValue().compareTo(oversold) <= 0 && data.getValue().compareTo(oversold) >= 0) {
-				signals.add(new IndicatorSignal(data.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.UP));
+		for (final RelativeStrengthIndexDataPoint today : rsiData) {
+			if (isOversold(yesterday, today)) {
+				signals.add(new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.UP));
 			}
 
-			previousData = data;
+			yesterday = today;
 		}
 
 		return signals;
@@ -91,18 +83,26 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	private List<IndicatorSignal> addSellSignals( final List<RelativeStrengthIndexDataPoint> rsiData,
 	        final List<IndicatorSignal> signals ) {
 
-		RelativeStrengthIndexDataPoint previousData = rsiData.get(0);
+		RelativeStrengthIndexDataPoint yesterday = rsiData.get(0);
 
-		for (final RelativeStrengthIndexDataPoint data : rsiData) {
-
-			if (previousData.getValue().compareTo(overbrought) >= 0 && data.getValue().compareTo(overbrought) <= 0) {
-				signals.add(new IndicatorSignal(data.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.DOWN));
+		for (final RelativeStrengthIndexDataPoint today : rsiData) {
+			if (isOverbrought(yesterday, today)) {
+				signals.add(new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.DOWN));
 			}
 
-			previousData = data;
+			yesterday = today;
 		}
 
 		return signals;
 	}
 
+	private boolean isOversold( final RelativeStrengthIndexDataPoint yesterday,
+	        final RelativeStrengthIndexDataPoint today ) {
+		return yesterday.getValue().compareTo(oversold) <= 0 && today.getValue().compareTo(oversold) >= 0;
+	}
+
+	private boolean isOverbrought( final RelativeStrengthIndexDataPoint yesterday,
+	        final RelativeStrengthIndexDataPoint today ) {
+		return yesterday.getValue().compareTo(overbrought) >= 0 && today.getValue().compareTo(overbrought) <= 0;
+	}
 }
