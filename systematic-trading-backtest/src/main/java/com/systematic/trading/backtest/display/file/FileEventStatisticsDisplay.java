@@ -58,9 +58,9 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 
 		final StringBuilder output = new StringBuilder();
 
-		output.append("##########################%n");
-		output.append("### Summary Statistics ###%n");
-		output.append("##########################%n");
+		output.append(String.format("##########################%n"));
+		output.append(String.format("### Summary Statistics ###%n"));
+		output.append(String.format("##########################%n"));
 
 		addOrderStatistics(statistics.getOrderEventStatistics(), output);
 		addCashStatistics(statistics.getCashEventStatistics(), output);
@@ -72,7 +72,7 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 
 	private void addOrderStatistics( final OrderEventStatistics orderStatistics, final StringBuilder output ) {
 
-		output.append("%n=== Order events ===%n");
+		output.append(String.format("%n=== Order events ===%n"));
 		output.append(String.format("# Entry Order events: %s%n", orderStatistics.getEntryEventCount()));
 		output.append(String.format("# Delete Entry Order events: %s%n", orderStatistics.getDeleteEntryEventCount()));
 		output.append(String.format("# Exit Order events: %s%n", orderStatistics.getExitEventCount()));
@@ -81,7 +81,7 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 
 	private void addCashStatistics( final CashEventStatistics cashStatistics, final StringBuilder output ) {
 
-		output.append("\n=== Cash events ===%n");
+		output.append(String.format("%n=== Cash events ===%n"));
 		output.append(String.format("# Cash account credit events: %s%n", cashStatistics.getCreditEventCount()));
 		output.append(String.format("# Cash account debit events: %s%n", cashStatistics.getDebitEventCount()));
 		output.append(String.format("# Cash account interest events: %s%n", cashStatistics.getInterestEventCount()));
@@ -98,7 +98,7 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		final long sumBrokerageEvents = (long) brokerageStatistics.getSellEventCount()
 		        + brokerageStatistics.getBuyEventCount();
 
-		output.append("\n=== Brokerage events ===%n");
+		output.append(String.format("%n=== Brokerage events ===%n"));
 		output.append(String.format("# Brokerage events: %s%n", sumBrokerageEvents));
 		output.append(String.format("# Sell events: %s%n", brokerageStatistics.getSellEventCount()));
 		output.append(String.format("# Buy events: %s%n", brokerageStatistics.getBuyEventCount()));
@@ -108,7 +108,7 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 
 	private void addEquityStatistics( final EquityEventStatistics equityStatistics, final StringBuilder output ) {
 
-		output.append("\n=== Equity events ===%n");
+		output.append(String.format("%n=== Equity events ===%n"));
 		output.append(String.format("Total amount of equities paid in management fees: %s%n",
 		        TWO_DECIMAL_PLACES.format(equityStatistics.getTotalManagmentFeesInEquities())));
 	}

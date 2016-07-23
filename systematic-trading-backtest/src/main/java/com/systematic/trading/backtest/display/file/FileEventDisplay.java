@@ -64,11 +64,11 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 	        final BacktestSimulationDates dates ) {
 
 		final StringBuilder output = new StringBuilder();
-		output.append("%n");
-		output.append("#######################%n");
-		output.append("### Backtest Events ###%n");
-		output.append("#######################%n");
-		output.append("%n");
+		output.append(String.format("%n"));
+		output.append(String.format("#######################%n"));
+		output.append(String.format("### Backtest Events ###%n"));
+		output.append(String.format("#######################%n"));
+		output.append(String.format("%n"));
 
 		output.append(
 		        String.format("Data set for %s from %s to %s%n", tradingData.getEquityIdentity().getTickerSymbol(),
@@ -87,7 +87,7 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 		output.append(String.format("# trading days: %s over %s days (%s percentage trading days)%n",
 		        tradingData.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format(percentageTradingDays)));
 
-		output.append("%n");
+		output.append(String.format("%n"));
 
 		return output.toString();
 	}

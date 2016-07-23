@@ -55,7 +55,7 @@ public class FileNetWorthSummaryDisplay implements NetWorthSummaryDisplay {
 		this.cumulativeRoi = cumulativeRoi;
 		this.display = display;
 
-		display.write("=== Net Worth Summary ===");
+		display.write(String.format("=== Net Worth Summary ===%n"));
 	}
 
 	@Override
