@@ -93,7 +93,7 @@ public class AllConfigurations implements BacktestConfigurations {
 
 		for (final MaximumTrade maximumTrade : MaximumTrade.values()) {
 			for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-				getConfigurations(configurationGenerator, brokerage, minimumTrade, maximumTrade);
+				configurations.addAll(getConfigurations(configurationGenerator, brokerage, minimumTrade, maximumTrade));
 			}
 		}
 
