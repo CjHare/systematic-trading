@@ -100,7 +100,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		        mathContext);
 
 		return String.format(
-		        "CAGR: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s, %s",
+		        "CAGR: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s, %s%n",
 		        TWO_DECIMAL_PLACES.format(cagr), TWO_DECIMAL_PLACES.format(netWorth),
 		        TWO_DECIMAL_PLACES.format(balance), TWO_DECIMAL_PLACES.format(holdingValue),
 		        TWO_DECIMAL_PLACES.format(cashBalance), TWO_DECIMAL_PLACES.format(deposited),

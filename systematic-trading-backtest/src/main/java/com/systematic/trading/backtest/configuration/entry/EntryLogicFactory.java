@@ -77,6 +77,7 @@ public class EntryLogicFactory {
 		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency, mathContext);
 	}
 
+	//TODO EntryLogicFilterConfiguration needs relationship between the indicator's, i.e. b up to three days after a
 	public EntryLogic create( final EquityIdentity equity, final TradeValue tradeValue,
 	        final BacktestSimulationDates simulationDates, final EntryLogicFilterConfiguration filterConfiguration,
 	        final MathContext mathContext, final IndicatorSignalGenerator... entrySignals ) {
