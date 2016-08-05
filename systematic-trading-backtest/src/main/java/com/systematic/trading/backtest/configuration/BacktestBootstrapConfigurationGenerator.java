@@ -59,7 +59,9 @@ import com.systematic.trading.simulation.logic.RelativeTradeValue;
  * @author CJ Hare
  */
 public class BacktestBootstrapConfigurationGenerator {
-
+	//TODO cater for different EntryLogicFilterConfiguration
+	//TODO convert to a builder
+	
 	/** How long one year is as a period of time/ */
 	private static final Period ONE_YEAR = Period.ofYears(1);
 

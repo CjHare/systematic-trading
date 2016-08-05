@@ -39,7 +39,7 @@ import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
  */
 public class DescriptionGenerator {
 	// TODO interface - one for file, another for console
-
+	//TODO convert to a builder
 	public String getDescription( final BrokerageFeesConfiguration brokerage, final Period purchaseFrequency ) {
 
 		if (purchaseFrequency.equals(Period.ofWeeks(1))) {
