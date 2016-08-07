@@ -72,7 +72,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		final List<IndicatorSignal> converted = new ArrayList<>(signals.size());
 
 		for (final DatedSignal signal : signals) {
-			converted.add(new IndicatorSignal(signal.getDate(), IndicatorSignalType.MACD, IndicatorDirectionType.UP));
+			converted.add(new IndicatorSignal(signal.getDate(), IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH));
 		}
 
 		return converted;

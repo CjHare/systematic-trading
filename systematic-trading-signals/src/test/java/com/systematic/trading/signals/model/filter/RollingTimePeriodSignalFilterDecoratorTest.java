@@ -170,11 +170,11 @@ public class RollingTimePeriodSignalFilterDecoratorTest {
 		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
 
 		final List<IndicatorSignal> rsiSignals = new ArrayList<IndicatorSignal>();
-		rsiSignals.add(new IndicatorSignal(date, IndicatorSignalType.RSI, IndicatorDirectionType.UP));
+		rsiSignals.add(new IndicatorSignal(date, IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
 		signals.put(IndicatorSignalType.RSI, rsiSignals);
 
 		final List<IndicatorSignal> macdSignals = new ArrayList<IndicatorSignal>();
-		macdSignals.add(new IndicatorSignal(date, IndicatorSignalType.MACD, IndicatorDirectionType.UP));
+		macdSignals.add(new IndicatorSignal(date, IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH));
 		signals.put(IndicatorSignalType.MACD, macdSignals);
 
 		return signals;

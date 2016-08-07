@@ -72,7 +72,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 		assertNotNull(results);
 		assertEquals(1, results.size());
 		assertEquals(IndicatorSignalType.MACD, results.get(0).getSignal());
-		assertEquals(IndicatorDirectionType.UP, results.get(0).getDirection());
+		assertEquals(IndicatorDirectionType.BULLISH, results.get(0).getDirection());
 
 		assertEquals(LocalDate.now().minus(buyPriceSpike, ChronoUnit.DAYS), results.get(0).getDate());
 	}

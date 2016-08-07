@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurationGenerator;
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurationBulider;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
@@ -71,7 +71,7 @@ public class AllConfigurations implements BacktestConfigurations {
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final DescriptionGenerator descriptionGenerator ) {
 
-		final BacktestBootstrapConfigurationGenerator configurationGenerator = new BacktestBootstrapConfigurationGenerator(
+		final BacktestBootstrapConfigurationBulider configurationGenerator = new BacktestBootstrapConfigurationBulider(
 		        equity, simulationDates, deposit, descriptionGenerator, MATH_CONTEXT);
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
@@ -101,7 +101,7 @@ public class AllConfigurations implements BacktestConfigurations {
 	}
 
 	private static List<BacktestBootstrapConfiguration> getConfigurations(
-	        final BacktestBootstrapConfigurationGenerator configurationGenerator,
+	        final BacktestBootstrapConfigurationBulider configurationGenerator,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 

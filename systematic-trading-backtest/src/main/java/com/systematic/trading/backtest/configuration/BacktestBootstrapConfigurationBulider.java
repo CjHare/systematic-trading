@@ -58,10 +58,8 @@ import com.systematic.trading.simulation.logic.RelativeTradeValue;
  * 
  * @author CJ Hare
  */
-public class BacktestBootstrapConfigurationGenerator {
-	//TODO cater for different EntryLogicFilterConfiguration
-	//TODO convert to a builder
-	
+public class BacktestBootstrapConfigurationBulider {
+
 	/** How long one year is as a period of time/ */
 	private static final Period ONE_YEAR = Period.ofYears(1);
 
@@ -83,7 +81,7 @@ public class BacktestBootstrapConfigurationGenerator {
 	/** The intended dates for the simulation. */
 	private final BacktestSimulationDates simulationDates;
 
-	public BacktestBootstrapConfigurationGenerator(final EquityIdentity equity,
+	public BacktestBootstrapConfigurationBulider(final EquityIdentity equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final DescriptionGenerator descriptions, final MathContext mathContext) {
 		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getSimulationStartDate());
@@ -102,8 +100,6 @@ public class BacktestBootstrapConfigurationGenerator {
 	private ExitLogic getExitLogic() {
 		return new HoldForeverExitLogic();
 	}
-
-	// TODO consistency with factories / refactor use of reflection & switches
 
 	public BacktestBootstrapConfiguration getPeriodicConfiguration( final BrokerageFeesConfiguration brokerageType,
 	        final Period purchaseFrequency, final EquityManagementFeeCalculator feeCalculator ) {
@@ -137,6 +133,12 @@ public class BacktestBootstrapConfigurationGenerator {
 		        entrySignals);
 	}
 
+	//TODO signals and their relationship to each other
+
+	//TODO create indicator relationship rule class, replace the entry signals
+	
+	//TODO convert method names to build
+
 	private BacktestBootstrapConfiguration getIndicatorConfiguration( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
 	        final EquityManagementFeeCalculator feeCalculator, final String description,
@@ -156,4 +158,5 @@ public class BacktestBootstrapConfigurationGenerator {
 		return new BacktestBootstrapConfiguration(entryLogic, getExitLogic(), cmcMarkets, cashAccount, simulationDates,
 		        description);
 	}
+
 }

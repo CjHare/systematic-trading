@@ -47,7 +47,7 @@ public class IndicatorSignalEventTest {
 	public void getSignalType() {
 		final LocalDate date = LocalDate.now();
 		final IndicatorSignalType type = IndicatorSignalType.RSI;
-		final IndicatorDirectionType direction = IndicatorDirectionType.UP;
+		final IndicatorDirectionType direction = IndicatorDirectionType.BULLISH;
 
 		final IndicatorSignal signal = new IndicatorSignal(date, type, direction);
 
@@ -61,7 +61,7 @@ public class IndicatorSignalEventTest {
 	public void getDate() {
 		final LocalDate date = LocalDate.now();
 		final IndicatorSignalType type = IndicatorSignalType.RSI;
-		final IndicatorDirectionType direction = IndicatorDirectionType.UP;
+		final IndicatorDirectionType direction = IndicatorDirectionType.BULLISH;
 		final IndicatorSignal signal = new IndicatorSignal(date, type, direction);
 
 		final IndicatorSignalEvent event = new IndicatorSignalEvent(signal);
@@ -74,7 +74,7 @@ public class IndicatorSignalEventTest {
 	public void getDirectionType() {
 		final LocalDate date = LocalDate.now();
 		final IndicatorSignalType signal = IndicatorSignalType.RSI;
-		final IndicatorDirectionType direction = IndicatorDirectionType.UP;
+		final IndicatorDirectionType direction = IndicatorDirectionType.BULLISH;
 
 		final IndicatorSignal indicatorSignal = new IndicatorSignal(date, signal, direction);
 

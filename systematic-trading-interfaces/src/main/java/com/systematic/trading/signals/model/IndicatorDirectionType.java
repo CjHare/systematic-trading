@@ -6,6 +6,6 @@ package com.systematic.trading.signals.model;
  * @author CJ Hare
  */
 public enum IndicatorDirectionType {
-	UP,
-	DOWN
+	BULLISH,
+	BEARISH
 }

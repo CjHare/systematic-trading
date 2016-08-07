@@ -125,7 +125,7 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 			// OR trending up and crossing the zero line
 			if (crossingSignalLine(pointYesterday, pointToday, signalLineToday, signalLineYesterday)) {
 				buySignals.add(new IndicatorSignal(dataPoint[index + offset].getDate(), IndicatorSignalType.STOCHASTIC,
-				        IndicatorDirectionType.UP));
+				        IndicatorDirectionType.BULLISH));
 			}
 
 		}

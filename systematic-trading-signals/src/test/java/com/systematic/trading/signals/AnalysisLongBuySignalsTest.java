@@ -123,7 +123,7 @@ public class AnalysisLongBuySignalsTest {
 		when(generatorA.getSignalType()).thenReturn(IndicatorSignalType.RSI);
 		final List<IndicatorSignal> signalsGeneratorA = new ArrayList<>();
 		final IndicatorSignal firstSignal = new IndicatorSignal(LocalDate.now().minus(2, ChronoUnit.DAYS),
-		        IndicatorSignalType.RSI, IndicatorDirectionType.UP);
+		        IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH);
 		signalsGeneratorA.add(firstSignal);
 		when(generatorA.calculateSignals(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorA);
 
@@ -131,10 +131,10 @@ public class AnalysisLongBuySignalsTest {
 		when(generatorB.getSignalType()).thenReturn(IndicatorSignalType.MACD);
 		final List<IndicatorSignal> signalsGeneratorB = new ArrayList<>();
 		final IndicatorSignal secondSignal = new IndicatorSignal(LocalDate.now().minus(1, ChronoUnit.DAYS),
-		        IndicatorSignalType.MACD, IndicatorDirectionType.UP);
+		        IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH);
 		signalsGeneratorB.add(secondSignal);
 		final IndicatorSignal thirdSignal = new IndicatorSignal(LocalDate.now(), IndicatorSignalType.SMA,
-		        IndicatorDirectionType.UP);
+		        IndicatorDirectionType.BULLISH);
 		signalsGeneratorB.add(thirdSignal);
 		when(generatorB.calculateSignals(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorB);
 

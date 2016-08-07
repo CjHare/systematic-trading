@@ -113,19 +113,19 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 				case POSITIVE:
 					if (isPositiveGardient(previous, sma.get(index))) {
 						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
-						        IndicatorDirectionType.UP));
+						        IndicatorDirectionType.BULLISH));
 					}
 				break;
 				case FLAT:
 					if (isFlatGardient(previous, sma.get(index))) {
 						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
-						        IndicatorDirectionType.UP));
+						        IndicatorDirectionType.BULLISH));
 					}
 				break;
 				case NEGATIVE:
 					if (isNegativeGardient(previous, sma.get(index))) {
 						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
-						        IndicatorDirectionType.UP));
+						        IndicatorDirectionType.BULLISH));
 					}
 				break;
 				default:

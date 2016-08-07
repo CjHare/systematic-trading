@@ -70,7 +70,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		for (final RelativeStrengthIndexDataPoint today : rsiData) {
 			if (isOversold(yesterday, today)) {
-				signals.add(new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.UP));
+				signals.add(new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
 			}
 
 			yesterday = today;
@@ -86,7 +86,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		for (final RelativeStrengthIndexDataPoint today : rsiData) {
 			if (isOverbrought(yesterday, today)) {
-				signals.add(new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.DOWN));
+				signals.add(new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.BEARISH));
 			}
 
 			yesterday = today;

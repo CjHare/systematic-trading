@@ -59,13 +59,13 @@ public class IndicatorOnSameDaySignalFilterTest {
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.UP));
+		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH));
 
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.UP));
+		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
 
 		final List<IndicatorSignal> sma = new ArrayList<IndicatorSignal>();
-		sma.add(new IndicatorSignal(today, IndicatorSignalType.SMA, IndicatorDirectionType.UP));
+		sma.add(new IndicatorSignal(today, IndicatorSignalType.SMA, IndicatorDirectionType.BULLISH));
 
 		signals.put(IndicatorSignalType.MACD, macd);
 		signals.put(IndicatorSignalType.RSI, rsi);
@@ -90,10 +90,10 @@ public class IndicatorOnSameDaySignalFilterTest {
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.UP));
+		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH));
 
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.UP));
+		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
 
 		signals.put(IndicatorSignalType.MACD, macd);
 		signals.put(IndicatorSignalType.RSI, rsi);
@@ -110,10 +110,10 @@ public class IndicatorOnSameDaySignalFilterTest {
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.UP));
+		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH));
 
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.UP));
+		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
 
 		signals.put(IndicatorSignalType.MACD, macd);
 		signals.put(IndicatorSignalType.RSI, rsi);
@@ -138,7 +138,7 @@ public class IndicatorOnSameDaySignalFilterTest {
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.UP));
+		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
 
 		signals.put(IndicatorSignalType.MACD, macd);
 		signals.put(IndicatorSignalType.RSI, rsi);
@@ -159,7 +159,7 @@ public class IndicatorOnSameDaySignalFilterTest {
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.UP));
+		rsi.add(new IndicatorSignal(today, IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH));
 
 		signals.put(IndicatorSignalType.MACD, macd);
 		signals.put(IndicatorSignalType.RSI, rsi);
