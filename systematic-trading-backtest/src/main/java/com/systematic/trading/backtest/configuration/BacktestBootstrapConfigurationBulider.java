@@ -139,6 +139,8 @@ public class BacktestBootstrapConfigurationBulider {
 	
 	//TODO convert method names to build
 
+	//TODO need a aggregator to it on top of the indicatorSignalGenerators to create buy / sell signals from the rules
+	
 	private BacktestBootstrapConfiguration getIndicatorConfiguration( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
 	        final EquityManagementFeeCalculator feeCalculator, final String description,
