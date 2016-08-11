@@ -108,7 +108,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 		buy.execute(fees, broker, cashAccount, todaysTrading);
 
 		final EquityOrderVolume expectedVolume = EquityOrderVolume
-		        .valueOf(BigDecimal.valueOf(8.2).setScale(2, BigDecimal.ROUND_DOWN));
+		        .valueOf(BigDecimal.valueOf(8.2).setScale(4, BigDecimal.ROUND_DOWN));
 		verify(broker).buy(price, expectedVolume, date);
 		verify(todaysTrading, atLeastOnce()).getDate();
 		verify(todaysTrading, atLeastOnce()).getOpeningPrice();

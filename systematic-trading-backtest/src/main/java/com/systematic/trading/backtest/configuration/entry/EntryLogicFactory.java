@@ -29,6 +29,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -37,8 +38,6 @@ import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.AnalysisLongBuySignals;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.model.IndicatorSignalType;
-import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.RollingTimePeriodSignalFilterDecorator;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
@@ -77,51 +76,20 @@ public class EntryLogicFactory {
 		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency, mathContext);
 	}
 
-	//TODO EntryLogicFilterConfiguration needs relationship between the indicator's, i.e. b up to three days after a
 	public EntryLogic create( final EquityIdentity equity, final TradeValue tradeValue,
-	        final BacktestSimulationDates simulationDates, final EntryLogicFilterConfiguration filterConfiguration,
-	        final MathContext mathContext, final IndicatorSignalGenerator... entrySignals ) {
-
-		final List<IndicatorSignalGenerator> generators = new ArrayList<>(entrySignals.length);
-		final IndicatorSignalType[] types = new IndicatorSignalType[entrySignals.length];
-
-		for (int i = 0; i < entrySignals.length; i++) {
-			final IndicatorSignalGenerator entrySignal = entrySignals[i];
-			generators.add(entrySignal);
-			types[i] = entrySignal.getSignalType();
-		}
-
+	        final BacktestSimulationDates simulationDates, final SignalFilter filter, final MathContext mathContext,
+	        final IndicatorSignalGenerator... entrySignals ) {
 		final LocalDate simulationStartDate = simulationDates.getSimulationStartDate();
 		final LocalDate simulationEndDate = simulationDates.getSimulationEndDate();
 
-		// Only signals from the last few days are of interest
 		final List<SignalFilter> filters = new ArrayList<>();
-		final SignalFilter filter = creatSignalFilter(filterConfiguration, entrySignals);
 		final SignalFilter decoratedFilter = new TimePeriodSignalFilterDecorator(
 		        new RollingTimePeriodSignalFilterDecorator(filter, Period.ofDays(DAYS_ACCEPTING_SIGNALS)),
 		        simulationStartDate, simulationEndDate);
 		filters.add(decoratedFilter);
 
-		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals(generators, filters);
+		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals(Arrays.asList(entrySignals), filters);
 		return new SignalTriggeredEntryLogic(equity.getType(), equity.getScale(), tradeValue, buyLongAnalysis,
 		        mathContext);
-	}
-
-	private SignalFilter creatSignalFilter( final EntryLogicFilterConfiguration configuration,
-	        final IndicatorSignalGenerator[] entrySignals ) {
-
-		switch (configuration) {
-			case SAME_DAY:
-				final IndicatorSignalType[] passed = new IndicatorSignalType[entrySignals.length];
-				for (int i = 0; i < entrySignals.length; i++) {
-					passed[i] = entrySignals[i].getSignalType();
-				}
-				return new IndicatorsOnSameDaySignalFilter(passed);
-			case DAY_AFTER:
-				throw new IllegalArgumentException(String.format("Filter not yet implemented: %s", configuration));
-			default:
-				throw new IllegalArgumentException(
-				        String.format("Could not create the desired entry logic filter: %s", configuration));
-		}
 	}
 }

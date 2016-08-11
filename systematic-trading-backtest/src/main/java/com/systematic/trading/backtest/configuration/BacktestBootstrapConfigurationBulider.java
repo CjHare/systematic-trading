@@ -44,6 +44,9 @@ import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.model.IndicatorSignalType;
+import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
+import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
@@ -136,11 +139,11 @@ public class BacktestBootstrapConfigurationBulider {
 	//TODO signals and their relationship to each other
 
 	//TODO create indicator relationship rule class, replace the entry signals
-	
+
 	//TODO convert method names to build
 
 	//TODO need a aggregator to it on top of the indicatorSignalGenerators to create buy / sell signals from the rules
-	
+
 	private BacktestBootstrapConfiguration getIndicatorConfiguration( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
 	        final EquityManagementFeeCalculator feeCalculator, final String description,
@@ -150,8 +153,10 @@ public class BacktestBootstrapConfigurationBulider {
 		final RelativeTradeValue tradeValue = new RelativeTradeValue(minimumTrade.getValue(), maximumTrade.getValue(),
 		        mathContext);
 
+		final EntryLogicFilterConfiguration filterConfiguration = EntryLogicFilterConfiguration.SAME_DAY;
+		final SignalFilter filter = creatSignalFilter(filterConfiguration, entrySignals);
 		final EntryLogic entryLogic = EntryLogicFactory.getInstance().create(equityIdentity, tradeValue,
-		        simulationDates, EntryLogicFilterConfiguration.SAME_DAY, mathContext, entrySignals);
+		        simulationDates, filter, mathContext, entrySignals);
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(equityIdentity,
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 		final Brokerage cmcMarkets = BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
@@ -161,4 +166,21 @@ public class BacktestBootstrapConfigurationBulider {
 		        description);
 	}
 
+	private SignalFilter creatSignalFilter( final EntryLogicFilterConfiguration configuration,
+	        final IndicatorSignalGenerator[] entrySignals ) {
+
+		switch (configuration) {
+			case SAME_DAY:
+				final IndicatorSignalType[] passed = new IndicatorSignalType[entrySignals.length];
+				for (int i = 0; i < entrySignals.length; i++) {
+					passed[i] = entrySignals[i].getSignalType();
+				}
+				return new IndicatorsOnSameDaySignalFilter(passed);
+			case DAY_AFTER:
+				throw new IllegalArgumentException(String.format("Filter not yet implemented: %s", configuration));
+			default:
+				throw new IllegalArgumentException(
+				        String.format("Could not create the desired entry logic filter: %s", configuration));
+		}
+	}
 }

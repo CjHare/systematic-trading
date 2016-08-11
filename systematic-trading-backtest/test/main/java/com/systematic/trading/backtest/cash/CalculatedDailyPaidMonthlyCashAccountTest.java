@@ -115,12 +115,14 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account.debit(debit, LocalDate.now());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void updateDateTooEarly() {
+	@Test
+	public void updateDateTooEarlyNoInterestPayment() {
 		final CalculatedDailyPaidMonthlyCashAccount account = new CalculatedDailyPaidMonthlyCashAccount(rate,
-		        BigDecimal.ZERO, LocalDate.now(), mc);
+		        BigDecimal.ONE, LocalDate.now(), mc);
 
 		account.update(LocalDate.now().minus(Period.ofDays(1)));
+
+		assertEquals(BigDecimal.ONE, account.getBalance());
 	}
 
 	@Test

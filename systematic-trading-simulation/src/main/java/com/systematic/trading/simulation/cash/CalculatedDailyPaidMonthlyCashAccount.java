@@ -83,8 +83,6 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	public void update( final LocalDate tradingDate ) {
 
 		// Only calculate interest when the date is after the last calculation date
-
-		// Any trading date earlier in time then our last interest is a mistake
 		if (tradingDate.isAfter(lastInterestCalculation)) {
 
 			while (lastInterestCalculation.getMonth() != tradingDate.getMonth()) {
