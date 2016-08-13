@@ -63,6 +63,6 @@ public class AnyIndicatorIsBuySignalFilter implements SignalFilter {
 
 	@Override
 	public String getDescription() {
-		return "Any_Indicator";
+		return "Any-Indicator";
 	}
 }
