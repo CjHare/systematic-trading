@@ -52,7 +52,7 @@ import com.systematic.trading.simulation.equity.fee.management.FlatEquityManagem
 import com.systematic.trading.simulation.equity.fee.management.LadderedEquityManagementFeeCalculator;
 
 /**
- * Values 100, 150, 200, 250, 300, 500.
+ * Executes all configurations.
  * 
  * @author CJ Hare
  */
