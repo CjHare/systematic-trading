@@ -45,6 +45,7 @@ import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.model.IndicatorSignalType;
+import com.systematic.trading.signals.model.filter.ConfirmationIndicatorsSignalFilter;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
@@ -112,19 +113,24 @@ public class AllConfigurations implements BacktestConfigurations {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 
 				// MACD & RSI
 				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
 				        getVanguardEftFeeCalculator(), brokerage,
-				        creatSameDaySignalFilter(macdConfiguration, rsiConfiguration), macdConfiguration,
+				        createSameDaySignalFilter(macdConfiguration, rsiConfiguration), macdConfiguration,
+				        rsiConfiguration));
+
+				// MACD & RSI - confirmation signals
+				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
+				        getVanguardEftFeeCalculator(), brokerage,
+				        createConfirmationSignalFilter(macdConfiguration, rsiConfiguration), macdConfiguration,
 				        rsiConfiguration));
 			}
 
 			// MACD only
 			configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-			        getVanguardEftFeeCalculator(), brokerage, creatSameDaySignalFilter(macdConfiguration),
+			        getVanguardEftFeeCalculator(), brokerage, createSameDaySignalFilter(macdConfiguration),
 			        macdConfiguration));
 
 			for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
@@ -133,14 +139,14 @@ public class AllConfigurations implements BacktestConfigurations {
 					// MACD, SMA & RSI
 					configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
 					        getVanguardEftFeeCalculator(), brokerage,
-					        creatSameDaySignalFilter(macdConfiguration, smaConfiguration), macdConfiguration,
+					        createSameDaySignalFilter(macdConfiguration, smaConfiguration), macdConfiguration,
 					        smaConfiguration, rsiConfiguration));
 				}
 
 				// MACD & SMA
 				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
 				        getVanguardEftFeeCalculator(), brokerage,
-				        creatSameDaySignalFilter(macdConfiguration, smaConfiguration), macdConfiguration,
+				        createSameDaySignalFilter(macdConfiguration, smaConfiguration), macdConfiguration,
 				        smaConfiguration));
 			}
 		}
@@ -151,7 +157,7 @@ public class AllConfigurations implements BacktestConfigurations {
 				// SMA & RSI
 				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
 				        getVanguardEftFeeCalculator(), brokerage,
-				        creatSameDaySignalFilter(smaConfiguration, rsiConfiguration), smaConfiguration,
+				        createSameDaySignalFilter(smaConfiguration, rsiConfiguration), smaConfiguration,
 				        rsiConfiguration));
 			}
 		}
@@ -172,12 +178,20 @@ public class AllConfigurations implements BacktestConfigurations {
 		return new LadderedEquityManagementFeeCalculator(vanguardFeeRange, vanguardPercentageFee, MATH_CONTEXT);
 	}
 
-	private static SignalFilter creatSameDaySignalFilter( final SignalConfiguration... entrySignals ) {
+	private static SignalFilter createSameDaySignalFilter( final SignalConfiguration... entrySignals ) {
 
 		final IndicatorSignalType[] passed = new IndicatorSignalType[entrySignals.length];
 		for (int i = 0; i < entrySignals.length; i++) {
 			passed[i] = entrySignals[i].getType();
 		}
 		return new IndicatorsOnSameDaySignalFilter(passed);
+	}
+
+	private static SignalFilter createConfirmationSignalFilter( final SignalConfiguration anchor,
+	        final SignalConfiguration confirmation ) {
+		final int daysUntilStartOfConfirmationRange = 1;
+		final int confirmationDayRange = 3;
+		return new ConfirmationIndicatorsSignalFilter(anchor.getType(), confirmation.getType(),
+		        daysUntilStartOfConfirmationRange, confirmationDayRange);
 	}
 }
