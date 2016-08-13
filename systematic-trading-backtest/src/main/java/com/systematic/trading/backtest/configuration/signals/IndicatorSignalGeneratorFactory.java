@@ -73,8 +73,7 @@ public class IndicatorSignalGeneratorFactory {
 	}
 
 	public IndicatorSignalGenerator create( final SmaConfiguration sma, final MathContext mathContext ) {
-		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), sma.getType(),
+		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), sma.getGradient(),
 		        mathContext);
 	}
-
 }

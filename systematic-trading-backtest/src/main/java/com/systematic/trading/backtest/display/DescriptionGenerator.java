@@ -31,6 +31,7 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
+import com.systematic.trading.signals.model.filter.SignalFilter;
 
 /**
  * Textually meaningful description of the configuration appropriate for display.
@@ -68,20 +69,20 @@ public class DescriptionGenerator {
 	}
 
 	public String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
-	        final SignalConfiguration... configurations ) {
+	        final SignalFilter filter, final SignalConfiguration... configurations ) {
 
 		switch (configurations.length) {
 			case 1:
-				return String.format("%s_Minimum-%s_Maximum-%s_HoldForever", configurations[0].getDescription(),
-				        minimumTrade.getDescription(), maximumTrade.getDescription());
+				return String.format("%s_%s_Minimum-%s_Maximum-%s_HoldForever", configurations[0].getDescription(),
+				        filter.getDescription(), minimumTrade.getDescription(), maximumTrade.getDescription());
 			case 2:
-				return String.format("%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
-				        configurations[0].getDescription(), configurations[1].getDescription(),
-				        minimumTrade.getDescription(), maximumTrade.getDescription());
+				return String.format("%s-%s_%s_Minimum-%s_Maximum-%s_HoldForever", configurations[0].getDescription(),
+				        configurations[1].getDescription(), filter.getDescription(), minimumTrade.getDescription(),
+				        maximumTrade.getDescription());
 			case 3:
-				return String.format("%s-%s-%s_SameDay_Minimum-%s_Maximum-%s_HoldForever",
+				return String.format("%s-%s-%s_%s_Minimum-%s_Maximum-%s_HoldForever",
 				        configurations[0].getDescription(), configurations[1].getDescription(),
-				        configurations[2].getDescription(), minimumTrade.getDescription(),
+				        configurations[2].getDescription(), filter.getDescription(), minimumTrade.getDescription(),
 				        maximumTrade.getDescription());
 			default:
 				throw new IllegalArgumentException(

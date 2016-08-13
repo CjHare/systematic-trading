@@ -111,4 +111,16 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 			}
 		}
 	}
+
+	@Override
+	public String getDescription() {
+		final StringBuilder description = new StringBuilder("All_on_same_day_");
+
+		for (final IndicatorSignalType indicator : indicators) {
+			description.append(indicator);
+			description.append(", ");
+		}
+
+		return description.toString();
+	}
 }

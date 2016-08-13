@@ -27,6 +27,8 @@ package com.systematic.trading.backtest.configuration.signals;
 
 import java.math.BigDecimal;
 
+import com.systematic.trading.signals.model.IndicatorSignalType;
+
 /**
  * Configuration for the MACD signal calculator.
  * 
@@ -64,5 +66,10 @@ public enum RsiConfiguration implements SignalConfiguration {
 
 	public BigDecimal getOverbought() {
 		return overbought;
+	}
+
+	@Override
+	public IndicatorSignalType getType() {
+		return IndicatorSignalType.RSI;
 	}
 }

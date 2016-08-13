@@ -20,7 +20,7 @@ import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
-import com.systematic.trading.signals.model.filter.EveryIndicatorIsBuySignalFilter;
+import com.systematic.trading.signals.model.filter.AnyIndicatorIsBuySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class AnalysisLongBuySignalsTest {
@@ -143,7 +143,7 @@ public class AnalysisLongBuySignalsTest {
 		generators.add(generatorB);
 
 		final List<SignalFilter> filters = new ArrayList<>();
-		filters.add(new EveryIndicatorIsBuySignalFilter());
+		filters.add(new AnyIndicatorIsBuySignalFilter());
 
 		final AnalysisBuySignals analysis = new AnalysisLongBuySignals(generators, filters);
 

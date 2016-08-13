@@ -25,12 +25,13 @@
  */
 package com.systematic.trading.backtest.configuration.signals;
 
+import com.systematic.trading.signals.model.IndicatorSignalType;
+
 /**
  * Generic details about configurations.
  * 
  * @author CJ Hare
  */
-@FunctionalInterface
 public interface SignalConfiguration {
 
 	/**
@@ -39,4 +40,11 @@ public interface SignalConfiguration {
 	 * @return meaningful description used for display purposes.
 	 */
 	String getDescription();
+
+	/**
+	 * Retrieves the signal type.
+	 * 
+	 * @return the type of signal the configuration matches.
+	 */
+	IndicatorSignalType getType();
 }

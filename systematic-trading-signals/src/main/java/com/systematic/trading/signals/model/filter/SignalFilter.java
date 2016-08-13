@@ -41,7 +41,6 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
  * 
  * @author CJ Hare
  */
-@FunctionalInterface
 public interface SignalFilter {
 
 	/**
@@ -54,4 +53,11 @@ public interface SignalFilter {
 	 */
 	SortedSet<BuySignal> apply( Map<IndicatorSignalType, List<IndicatorSignal>> signals, Comparator<BuySignal> ordering,
 	        LocalDate latestTradingDate );
+
+	/**
+	 * Textual description of the configuration.
+	 * 
+	 * @return meaningful description used for display purposes.
+	 */
+	String getDescription();
 }

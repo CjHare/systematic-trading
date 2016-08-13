@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.configuration.signals;
 
+import com.systematic.trading.signals.model.IndicatorSignalType;
+
 /**
  * Configuration for the MACD signal calculator.
  * 
@@ -65,5 +67,10 @@ public enum MacdConfiguration implements SignalConfiguration {
 
 	public int getSignalTimePeriods() {
 		return signalTimePeriods;
+	}
+
+	@Override
+	public IndicatorSignalType getType() {
+		return IndicatorSignalType.MACD;
 	}
 }

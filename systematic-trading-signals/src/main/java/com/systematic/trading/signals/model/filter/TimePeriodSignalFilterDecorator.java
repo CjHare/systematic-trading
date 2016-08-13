@@ -83,4 +83,9 @@ public class TimePeriodSignalFilterDecorator implements SignalFilter {
 
 		return signalSet;
 	}
+
+	@Override
+	public String getDescription() {
+		return String.format("Time_period_%s_%s_%s", startDateInclusive, endDateInclusive, filter.getDescription());
+	}
 }

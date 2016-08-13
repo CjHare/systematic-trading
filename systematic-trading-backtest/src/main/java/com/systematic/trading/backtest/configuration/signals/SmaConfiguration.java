@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.configuration.signals;
 
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
+import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
  * Configuration for the SMA signal calculator.
@@ -65,7 +66,12 @@ public enum SmaConfiguration implements SignalConfiguration {
 		return daysOfGradient;
 	}
 
-	public GradientType getType() {
+	public GradientType getGradient() {
 		return type;
+	}
+
+	@Override
+	public IndicatorSignalType getType() {
+		return IndicatorSignalType.SMA;
 	}
 }

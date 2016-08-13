@@ -34,7 +34,6 @@ import java.util.TreeSet;
 
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
@@ -42,7 +41,7 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
  * 
  * @author CJ Hare
  */
-public class EveryIndicatorIsBuySignalFilter implements SignalFilter {
+public class AnyIndicatorIsBuySignalFilter implements SignalFilter {
 
 	@Override
 	/**
@@ -51,7 +50,7 @@ public class EveryIndicatorIsBuySignalFilter implements SignalFilter {
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
 	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
 
-		final SortedSet<BuySignal> passedSignals = new TreeSet<>(new BuySignalDateComparator());
+		final SortedSet<BuySignal> passedSignals = new TreeSet<>(ordering);
 
 		for (final List<IndicatorSignal> values : signals.values()) {
 			for (final IndicatorSignal signal : values) {
@@ -60,5 +59,10 @@ public class EveryIndicatorIsBuySignalFilter implements SignalFilter {
 		}
 
 		return passedSignals;
+	}
+
+	@Override
+	public String getDescription() {
+		return "Any_Indicator";
 	}
 }

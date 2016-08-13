@@ -35,11 +35,15 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
+import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.signals.model.IndicatorSignalType;
+import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
+import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.management.FlatEquityManagementFeeCalculator;
 
@@ -77,7 +81,8 @@ public class SingleConfigurationSignals implements BacktestConfigurations {
 		final MacdConfiguration macdConfiguration = MacdConfiguration.MEDIUM;
 
 		configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-		        getVanguardEftFeeCalculator(), brokerage, macdConfiguration));
+		        getVanguardEftFeeCalculator(), brokerage, creatSameDaySignalFilter(macdConfiguration),
+		        macdConfiguration));
 
 		return configurations;
 	}
@@ -88,4 +93,12 @@ public class SingleConfigurationSignals implements BacktestConfigurations {
 		return new FlatEquityManagementFeeCalculator(BigDecimal.valueOf(0.0018), MATH_CONTEXT);
 	}
 
+	private static SignalFilter creatSameDaySignalFilter( final SignalConfiguration... entrySignals ) {
+
+		final IndicatorSignalType[] passed = new IndicatorSignalType[entrySignals.length];
+		for (int i = 0; i < entrySignals.length; i++) {
+			passed[i] = entrySignals[i].getType();
+		}
+		return new IndicatorsOnSameDaySignalFilter(passed);
+	}
 }

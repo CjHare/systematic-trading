@@ -34,7 +34,6 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicFactory;
-import com.systematic.trading.backtest.configuration.entry.EntryLogicFilterConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
 import com.systematic.trading.backtest.configuration.signals.IndicatorSignalGeneratorFactory;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
@@ -44,8 +43,6 @@ import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.model.IndicatorSignalType;
-import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
@@ -122,7 +119,8 @@ public class BacktestBootstrapConfigurationBulider {
 
 	public BacktestBootstrapConfiguration getIndicatorConfiguration( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final EquityManagementFeeCalculator feeCalculator,
-	        final BrokerageFeesConfiguration brokerageType, final SignalConfiguration... indicators ) {
+	        final BrokerageFeesConfiguration brokerageType, final SignalFilter filter,
+	        final SignalConfiguration... indicators ) {
 
 		final IndicatorSignalGenerator[] entrySignals = new IndicatorSignalGenerator[indicators.length];
 
@@ -130,31 +128,21 @@ public class BacktestBootstrapConfigurationBulider {
 			entrySignals[i] = IndicatorSignalGeneratorFactory.getInstance().create(indicators[i], mathContext);
 		}
 
-		final String description = descriptions.getDescription(minimumTrade, maximumTrade, indicators);
+		final String description = descriptions.getDescription(minimumTrade, maximumTrade, filter, indicators);
 
-		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, description,
+		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter, description,
 		        entrySignals);
 	}
 
-	//TODO signals and their relationship to each other
-
-	//TODO create indicator relationship rule class, replace the entry signals
-
-	//TODO convert method names to build
-
-	//TODO need a aggregator to it on top of the indicatorSignalGenerators to create buy / sell signals from the rules
-
 	private BacktestBootstrapConfiguration getIndicatorConfiguration( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
-	        final EquityManagementFeeCalculator feeCalculator, final String description,
+	        final EquityManagementFeeCalculator feeCalculator, final SignalFilter filter, final String description,
 	        final IndicatorSignalGenerator... entrySignals ) {
 
 		final LocalDate startDate = simulationDates.getSimulationStartDate();
 		final RelativeTradeValue tradeValue = new RelativeTradeValue(minimumTrade.getValue(), maximumTrade.getValue(),
 		        mathContext);
 
-		final EntryLogicFilterConfiguration filterConfiguration = EntryLogicFilterConfiguration.SAME_DAY;
-		final SignalFilter filter = creatSignalFilter(filterConfiguration, entrySignals);
 		final EntryLogic entryLogic = EntryLogicFactory.getInstance().create(equityIdentity, tradeValue,
 		        simulationDates, filter, mathContext, entrySignals);
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(equityIdentity,
@@ -164,23 +152,5 @@ public class BacktestBootstrapConfigurationBulider {
 		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit, mathContext);
 		return new BacktestBootstrapConfiguration(entryLogic, getExitLogic(), cmcMarkets, cashAccount, simulationDates,
 		        description);
-	}
-
-	private SignalFilter creatSignalFilter( final EntryLogicFilterConfiguration configuration,
-	        final IndicatorSignalGenerator[] entrySignals ) {
-
-		switch (configuration) {
-			case SAME_DAY:
-				final IndicatorSignalType[] passed = new IndicatorSignalType[entrySignals.length];
-				for (int i = 0; i < entrySignals.length; i++) {
-					passed[i] = entrySignals[i].getSignalType();
-				}
-				return new IndicatorsOnSameDaySignalFilter(passed);
-			case DAY_AFTER:
-				throw new IllegalArgumentException(String.format("Filter not yet implemented: %s", configuration));
-			default:
-				throw new IllegalArgumentException(
-				        String.format("Could not create the desired entry logic filter: %s", configuration));
-		}
 	}
 }
