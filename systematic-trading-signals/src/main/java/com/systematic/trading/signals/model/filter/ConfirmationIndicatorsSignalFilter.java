@@ -143,7 +143,7 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 
 	@Override
 	public String getDescription() {
-		return String.format("%s_confirmed_by_%s_between_%s_%s_days_after", anchor, confirmation,
+		return String.format("%s_confirmed_by_%s_between_%s_to_%s_days_after", anchor, confirmation,
 		        daysUntilStartOfConfirmationRange, confirmationDayRange);
 	}
 }
