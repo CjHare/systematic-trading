@@ -34,10 +34,10 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
  */
 public enum MacdConfiguration implements SignalConfiguration {
 
-	SHORT(5, 10, 3, "Short-Macd"),
-	MEDIUM(10, 20, 7, "Medium-Macd"),
-	LONG(25, 50, 10, "Long-Macd"),
-	LONGEST(50, 100, 35, "Longest-Macd");
+	SHORT(5, 10, 3, "Short-MACD"),
+	MEDIUM(10, 20, 7, "Medium-MACD"),
+	LONG(25, 50, 10, "Long-MACD"),
+	LONGEST(50, 100, 35, "Longest-MACD");
 
 	private final String description;
 	private final int fastTimePeriods;

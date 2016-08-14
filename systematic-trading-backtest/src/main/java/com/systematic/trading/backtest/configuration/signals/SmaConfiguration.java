@@ -35,10 +35,10 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
  */
 public enum SmaConfiguration implements SignalConfiguration {
 
-	SHORT(20, GradientType.POSITIVE, 5, "Positive-Short-Sma"),
-	MEDIUM(50, GradientType.POSITIVE, 7, "Positive-Medium-Sma"),
-	LONG(100, GradientType.POSITIVE, 10, "Positive-Long-Sma"),
-	LONGEST(200, GradientType.POSITIVE, 20, "Positive-Longest-Sma");
+	SHORT(20, GradientType.POSITIVE, 5, "Positive-Short-SMA"),
+	MEDIUM(50, GradientType.POSITIVE, 7, "Positive-Medium-SMA"),
+	LONG(100, GradientType.POSITIVE, 10, "Positive-Long-SMA"),
+	LONGEST(200, GradientType.POSITIVE, 20, "Positive-Longest-SMA");
 
 	private final String description;
 	private final int lookback;
