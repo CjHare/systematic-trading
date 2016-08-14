@@ -57,25 +57,25 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 	private final int confirmationDayRange;
 
 	/** The number of days after the anchor signal to begin range of acceptable days for the confirmation signal.*/
-	private final int daysUntilStartOfConfirmationRange;
+	private final int delayUntilConfirmationRange;
 
 	/**
 	 * @param anchor first signal that precedes the follower.
 	 * @param follower after the anchor where a signal if generated only when within the inclusive days.
-	 * @param daysUntilStartOfConfirmationRange number of days after the anchor signal to begin the acceptable range of days for the confirmation signal. 
+	 * @param delayUntilConfirmationRange number of days after the anchor signal to begin the acceptable range of days for the confirmation signal. 
 	 * @param confirmationDayRange inclusive number of days from the start of the range the confirmation signal must be within.
 	 */
 	public ConfirmationIndicatorsSignalFilter(final IndicatorSignalType anchor, final IndicatorSignalType confirmation,
-	        final int daysUntilStartOfConfirmationRange, final int confirmationDayRange) {
+	        final int delayUntilConfirmationRange, final int confirmationDayRange) {
 		validate(anchor, "Expecting an anchor IndicatorSignalType");
 		validate(confirmation, "Expecting an anchor IndicatorSignalType");
 		validate(confirmationDayRange, "Expecting zero or a positive number of days for the confirmation signal range");
-		validate(daysUntilStartOfConfirmationRange, "Expecting zero or positive number for the days");
+		validate(delayUntilConfirmationRange, "Expecting zero or positive number for the days");
 
 		this.anchor = anchor;
 		this.confirmation = confirmation;
 		this.confirmationDayRange = confirmationDayRange;
-		this.daysUntilStartOfConfirmationRange = daysUntilStartOfConfirmationRange;
+		this.delayUntilConfirmationRange = delayUntilConfirmationRange;
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 
 	private LocalDate hasConfirmationSignal( final LocalDate anchorDate,
 	        final List<IndicatorSignal> confirmationSignals ) {
-		final LocalDate startConfirmationRange = anchorDate.plus(daysUntilStartOfConfirmationRange, ChronoUnit.DAYS);
+		final LocalDate startConfirmationRange = anchorDate.plus(delayUntilConfirmationRange, ChronoUnit.DAYS);
 		final LocalDate endConfirmationRange = startConfirmationRange.plus(confirmationDayRange, ChronoUnit.DAYS);
 
 		for (final IndicatorSignal confirmationSignal : confirmationSignals) {
@@ -144,6 +144,6 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 	@Override
 	public String getDescription() {
 		return String.format("%s-confirmed-by-%s-between-%s-to-%s-days-after", anchor, confirmation,
-		        daysUntilStartOfConfirmationRange, confirmationDayRange);
+		        delayUntilConfirmationRange, confirmationDayRange);
 	}
 }

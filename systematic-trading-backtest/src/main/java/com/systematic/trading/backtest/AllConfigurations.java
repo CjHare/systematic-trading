@@ -35,6 +35,7 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurationBulider;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
@@ -121,11 +122,15 @@ public class AllConfigurations implements BacktestConfigurations {
 				        createSameDaySignalFilter(macdConfiguration, rsiConfiguration), macdConfiguration,
 				        rsiConfiguration));
 
-				// MACD & RSI - confirmation signals
-				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-				        getVanguardEftFeeCalculator(), brokerage,
-				        createConfirmationSignalFilter(macdConfiguration, rsiConfiguration), macdConfiguration,
-				        rsiConfiguration));
+				for (final ConfirmationSignalFilterConfiguration filterConfigurations : ConfirmationSignalFilterConfiguration
+				        .values()) {
+
+					// MACD & RSI - confirmation signals
+					configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
+					        getVanguardEftFeeCalculator(), brokerage,
+					        createConfirmationSignalFilter(macdConfiguration, rsiConfiguration, filterConfigurations),
+					        macdConfiguration, rsiConfiguration));
+				}
 			}
 
 			// MACD only
@@ -178,6 +183,7 @@ public class AllConfigurations implements BacktestConfigurations {
 		return new LadderedEquityManagementFeeCalculator(vanguardFeeRange, vanguardPercentageFee, MATH_CONTEXT);
 	}
 
+	//TODO these filters into an factory
 	private static SignalFilter createSameDaySignalFilter( final SignalConfiguration... entrySignals ) {
 
 		final IndicatorSignalType[] passed = new IndicatorSignalType[entrySignals.length];
@@ -188,10 +194,8 @@ public class AllConfigurations implements BacktestConfigurations {
 	}
 
 	private static SignalFilter createConfirmationSignalFilter( final SignalConfiguration anchor,
-	        final SignalConfiguration confirmation ) {
-		final int daysUntilStartOfConfirmationRange = 1;
-		final int confirmationDayRange = 3;
+	        final SignalConfiguration confirmation, final ConfirmationSignalFilterConfiguration filterConfiguration ) {
 		return new ConfirmationIndicatorsSignalFilter(anchor.getType(), confirmation.getType(),
-		        daysUntilStartOfConfirmationRange, confirmationDayRange);
+		        filterConfiguration.getDelayUntilConfirmationRange(), filterConfiguration.getConfirmationDayRange());
 	}
 }
