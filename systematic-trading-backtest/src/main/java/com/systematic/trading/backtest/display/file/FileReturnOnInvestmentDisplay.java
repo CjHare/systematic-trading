@@ -40,7 +40,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  */
 public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventListener {
 
-	private enum RETURN_ON_INVESTMENT_DISPLAY {
+	enum RETURN_ON_INVESTMENT_DISPLAY {
 		DAILY,
 		MONTHLY,
 		YEARLY,
