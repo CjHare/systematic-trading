@@ -52,7 +52,7 @@ public class RelativeTradeValue implements TradeValue {
 	}
 
 	@Override
-	public BigDecimal getTradeValue( final BigDecimal availableFunds ) {
+	public BigDecimal calculate( final BigDecimal availableFunds ) {
 
 		BigDecimal tradeValue = minimumTradeValue;
 

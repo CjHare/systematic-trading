@@ -121,7 +121,7 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 
 	private BigDecimal getTradeAmount( final CashAccount cashAccount ) {
 		final BigDecimal availableFunds = cashAccount.getBalance();
-		return tradeValue.getTradeValue(availableFunds);
+		return tradeValue.calculate(availableFunds);
 	}
 
 	private EquityOrder createOrder( final BrokerageTransactionFee fees, final BigDecimal amount,

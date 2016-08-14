@@ -41,6 +41,5 @@ public interface TradeValue {
 	 * @param availableFunds the amount available to trade with.
 	 * @return minimum value, never <code>null</code>
 	 */
-	BigDecimal getTradeValue( BigDecimal availableFunds );
-
+	BigDecimal calculate( BigDecimal availableFunds );
 }
