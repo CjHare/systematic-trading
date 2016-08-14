@@ -44,7 +44,7 @@ public enum RsiConfiguration implements SignalConfiguration {
 	private final BigDecimal oversold;
 	private final BigDecimal overbought;
 
-	private RsiConfiguration(final int lookback, final BigDecimal overbought, final BigDecimal oversold,
+	RsiConfiguration(final int lookback, final BigDecimal overbought, final BigDecimal oversold,
 	        final String description) {
 		this.description = description;
 		this.lookback = lookback;

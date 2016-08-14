@@ -42,5 +42,4 @@ public interface SimulationStateListener {
 	 * @param transitionedState the new state the simulation has entered.
 	 */
 	void stateChanged( SimulationState transitionedState );
-
 }

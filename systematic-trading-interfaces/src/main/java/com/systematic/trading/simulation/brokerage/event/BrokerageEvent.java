@@ -43,7 +43,7 @@ public interface BrokerageEvent extends Event {
 
 		private final String display;
 
-		private BrokerageAccountEventType(final String display) {
+		BrokerageAccountEventType(final String display) {
 			this.display = display;
 		}
 

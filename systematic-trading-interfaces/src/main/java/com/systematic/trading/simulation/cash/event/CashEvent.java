@@ -49,7 +49,7 @@ public interface CashEvent extends Event {
 
 		private final String display;
 
-		private CashEventType(final String display) {
+		CashEventType(final String display) {
 			this.display = display;
 		}
 

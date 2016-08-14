@@ -38,12 +38,11 @@ public enum InterestRateConfiguration {
 
 	private final Class<?> type;
 
-	private InterestRateConfiguration(final Class<?> type) {
+	InterestRateConfiguration(final Class<?> type) {
 		this.type = type;
 	}
 
 	public Class<?> getType() {
 		return type;
 	}
-
 }

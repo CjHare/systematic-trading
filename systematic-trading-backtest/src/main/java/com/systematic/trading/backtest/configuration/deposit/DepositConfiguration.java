@@ -43,7 +43,7 @@ public enum DepositConfiguration {
 	private final BigDecimal amount;
 	private final Period frequency;
 
-	private DepositConfiguration(final BigDecimal amount, final Period frequency) {
+	DepositConfiguration(final BigDecimal amount, final Period frequency) {
 		this.frequency = frequency;
 		this.amount = amount;
 	}

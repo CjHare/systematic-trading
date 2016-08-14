@@ -31,7 +31,6 @@ package com.systematic.trading.maths.model;
  * @author CJ Hare
  */
 public enum SignalType {
-
 	BULLISH,
 	BEARISH;
 }
