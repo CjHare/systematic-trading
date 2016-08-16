@@ -37,6 +37,7 @@ import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener
 import com.systematic.trading.simulation.analysis.statistics.CashEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistics;
+import com.systematic.trading.simulation.logic.EntryLogic;
 
 /**
  * Persists the comparison displays into a file.
@@ -56,11 +57,14 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private final EventStatistics statistics;
 
+	private final EntryLogic entryLogic;
+
 	/** The period of time that the simulation covered. */
 	private final Period duration;
 
-	public FileComparisonDisplay(final Period duration, final EventStatistics statistics,
+	public FileComparisonDisplay(final Period duration, final EventStatistics statistics, final EntryLogic entryLogic,
 	        final FileDisplayMultithreading display, final MathContext mathContext) {
+		this.entryLogic = entryLogic;
 		this.mathContext = mathContext;
 		this.statistics = statistics;
 		this.duration = duration;
@@ -72,11 +76,11 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 		// Only interested in the net worth when the simulation is complete
 		if (SimulationState.COMPLETE == state) {
-			display.write(createOutput(statistics, event));
+			display.write(createOutput(event));
 		}
 	}
 
-	private String createOutput( final EventStatistics statistics, final NetWorthEvent event ) {
+	private String createOutput( final NetWorthEvent event ) {
 
 		final BigDecimal balance = event.getEquityBalance();
 		final BigDecimal holdingValue = event.getEquityBalanceValue();
@@ -99,6 +103,8 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears(),
 		        mathContext);
 
+		//TODO min & max into their own columns
+		
 		return String.format(
 		        "CAGR: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s, %s%n",
 		        TWO_DECIMAL_PLACES.format(cagr), TWO_DECIMAL_PLACES.format(netWorth),

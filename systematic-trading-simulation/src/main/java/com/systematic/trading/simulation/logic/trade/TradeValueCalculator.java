@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  * 
  * @author CJ Hare
  */
-public interface TradeValueConfiguration {
+public interface TradeValueCalculator {
 
 	/**
 	 * ABSOLUTE is taken as the actual spend in currency.

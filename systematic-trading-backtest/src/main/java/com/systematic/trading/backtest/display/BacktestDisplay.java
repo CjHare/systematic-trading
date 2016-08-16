@@ -40,6 +40,7 @@ import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
 import com.systematic.trading.simulation.equity.event.EquityEventListener;
+import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
@@ -56,11 +57,13 @@ public interface BacktestDisplay
 	 * 
 	 * @param tradingData summary of the data set analysed.
 	 * @param eventStatistics record of various event occurrences.
+	 * @param entryLogic the set up of the simulation executed.
 	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
 	 * @param lastTradingDay prices from the last day in the back test.
 	 * @throws Exception problem encountered during the initialisation of the display.
 	 */
 	void init( TickerSymbolTradingData tradingData, BacktestSimulationDates simulationDates,
-	        EventStatistics eventStatistics, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-	        TradingDayPrices lastTradingDay, Period duration ) throws BacktestInitialisationException;
+	        EventStatistics eventStatistics, final EntryLogic entryLogic,
+	        CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, TradingDayPrices lastTradingDay, Period duration )
+	                throws BacktestInitialisationException;
 }

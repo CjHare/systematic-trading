@@ -56,9 +56,9 @@ import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
-import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueConfiguration;
+import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueCalculator;
 import com.systematic.trading.simulation.logic.trade.BoundedTradeValue;
-import com.systematic.trading.simulation.logic.trade.RelativeTradeValueConfiguration;
+import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculator;
 import com.systematic.trading.simulation.logic.trade.TradeValueLogic;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrder;
@@ -90,8 +90,8 @@ public class SignalTriggeredEntryLogicTest {
 
 	@Test
 	public void actionOnInsufficientFunds() {
-		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueConfiguration(BigDecimal.ONE),
-		        new RelativeTradeValueConfiguration(BigDecimal.ONE, MATH_CONTEXT));
+		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueCalculator(BigDecimal.ONE),
+		        new RelativeTradeValueCalculator(BigDecimal.ONE, MATH_CONTEXT));
 		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic(EQUITY_STOCK, EQUITY_SCALE, tradeValue,
 		        buyLongAnalysis, MATH_CONTEXT);
 
@@ -106,8 +106,8 @@ public class SignalTriggeredEntryLogicTest {
 
 	@Test
 	public void updateNoOrder() {
-		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueConfiguration(BigDecimal.ONE),
-		        new RelativeTradeValueConfiguration(BigDecimal.ONE, MATH_CONTEXT));
+		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueCalculator(BigDecimal.ONE),
+		        new RelativeTradeValueCalculator(BigDecimal.ONE, MATH_CONTEXT));
 		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic(EQUITY_STOCK, EQUITY_SCALE, tradeValue,
 		        buyLongAnalysis, MATH_CONTEXT);
 
@@ -128,8 +128,8 @@ public class SignalTriggeredEntryLogicTest {
 
 		final LocalDate now = LocalDate.now();
 		final BigDecimal accountBalance = BigDecimal.valueOf(1);
-		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueConfiguration(BigDecimal.ONE),
-		        new RelativeTradeValueConfiguration(BigDecimal.ONE, MATH_CONTEXT));
+		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueCalculator(BigDecimal.ONE),
+		        new RelativeTradeValueCalculator(BigDecimal.ONE, MATH_CONTEXT));
 
 		when(cashAccount.getBalance()).thenReturn(accountBalance);
 		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
@@ -162,8 +162,8 @@ public class SignalTriggeredEntryLogicTest {
 
 		final LocalDate now = LocalDate.now();
 		final BigDecimal accountBalance = BigDecimal.valueOf(50);
-		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueConfiguration(BigDecimal.ONE),
-		        new RelativeTradeValueConfiguration(BigDecimal.ONE, MATH_CONTEXT));
+		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueCalculator(BigDecimal.ONE),
+		        new RelativeTradeValueCalculator(BigDecimal.ONE, MATH_CONTEXT));
 
 		when(cashAccount.getBalance()).thenReturn(accountBalance);
 		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
@@ -198,8 +198,8 @@ public class SignalTriggeredEntryLogicTest {
 
 		final LocalDate now = LocalDate.now();
 		final BigDecimal accountBalance = BigDecimal.valueOf(50);
-		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueConfiguration(BigDecimal.ONE),
-		        new RelativeTradeValueConfiguration(BigDecimal.ONE, MATH_CONTEXT));
+		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueCalculator(BigDecimal.ONE),
+		        new RelativeTradeValueCalculator(BigDecimal.ONE, MATH_CONTEXT));
 
 		when(cashAccount.getBalance()).thenReturn(accountBalance);
 		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))

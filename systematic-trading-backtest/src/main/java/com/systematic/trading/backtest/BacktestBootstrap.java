@@ -141,8 +141,8 @@ public class BacktestBootstrap {
 
 		// Display for simulation output
 		final Period duration = Period.between(earliestDate, latestDate);
-		display.init(tradingData, configuration.getSimulationDates(), eventStatistics, cumulativeRoi, lastTradingDay,
-		        duration);
+		display.init(tradingData, configuration.getSimulationDates(), eventStatistics, entry, cumulativeRoi,
+		        lastTradingDay, duration);
 		simulation.addListener((OrderEventListener) display);
 		simulation.addListener((SimulationStateListener) display);
 		networthSummay.addListener(display);

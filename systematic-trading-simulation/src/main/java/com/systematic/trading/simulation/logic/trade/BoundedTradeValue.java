@@ -35,12 +35,12 @@ import java.math.BigDecimal;
 public class BoundedTradeValue implements TradeValueLogic {
 
 	/** Smallest value to trade. */
-	private final TradeValueConfiguration minimum;
+	private final TradeValueCalculator minimum;
 
 	/** Smallest value to trade. */
-	private final TradeValueConfiguration maximum;
+	private final TradeValueCalculator maximum;
 
-	public BoundedTradeValue(final TradeValueConfiguration minimum, final TradeValueConfiguration maximum) {
+	public BoundedTradeValue(final TradeValueCalculator minimum, final TradeValueCalculator maximum) {
 		this.minimum = minimum;
 		this.maximum = maximum;
 	}

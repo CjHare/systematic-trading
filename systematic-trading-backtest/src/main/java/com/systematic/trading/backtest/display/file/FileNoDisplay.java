@@ -40,6 +40,7 @@ import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
+import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
@@ -54,8 +55,9 @@ public class FileNoDisplay implements BacktestDisplay {
 
 	@Override
 	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-	        final TradingDayPrices lastTradingDay, final Period duration ) throws BacktestInitialisationException {
+	        final EventStatistics eventStatistics, final EntryLogic entryLogic,
+	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay,
+	        final Period duration ) throws BacktestInitialisationException {
 		// Recording of this event is not required for no display
 	}
 

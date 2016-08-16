@@ -46,6 +46,7 @@ import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
+import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
@@ -84,15 +85,17 @@ public class FileMinimalDisplay extends FileDisplay implements BacktestDisplay {
 
 	@Override
 	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
-	        final TradingDayPrices lastTradingDay, final Period duration ) throws BacktestInitialisationException {
+	        final EventStatistics eventStatistics, final EntryLogic entryLogic,
+	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay,
+	        final Period duration ) throws BacktestInitialisationException {
 
 		final FileDisplayMultithreading statisticsFile = getFileDisplay("/statistics.txt");
 		this.statisticsDisplay = new FileEventStatisticsDisplay(eventStatistics, statisticsFile);
 		this.netWorthDisplay = new FileNetWorthSummaryDisplay(cumulativeRoi, statisticsFile);
 
 		final FileDisplayMultithreading comparisonFile = getFileDisplay("/../summary.txt");
-		netWorthComparisonDisplay = new FileComparisonDisplay(duration, eventStatistics, comparisonFile, mathContext);
+		netWorthComparisonDisplay = new FileComparisonDisplay(duration, eventStatistics, entryLogic, comparisonFile,
+		        mathContext);
 	}
 
 	private FileDisplayMultithreading getFileDisplay( final String suffix ) {

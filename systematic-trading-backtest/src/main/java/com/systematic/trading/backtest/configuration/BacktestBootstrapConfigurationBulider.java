@@ -51,9 +51,9 @@ import com.systematic.trading.simulation.equity.fee.management.PeriodicEquityMan
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
-import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueConfiguration;
+import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueCalculator;
 import com.systematic.trading.simulation.logic.trade.BoundedTradeValue;
-import com.systematic.trading.simulation.logic.trade.RelativeTradeValueConfiguration;
+import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculator;
 
 /**
  * Creates the Bootstrap configurations for back testing.
@@ -115,6 +115,7 @@ public class BacktestBootstrapConfigurationBulider {
 		final EntryLogic entryLogic = EntryLogicFactory.getInstance().create(equityIdentity, startDate,
 		        purchaseFrequency, mathContext);
 		final String description = descriptions.getDescription(brokerageType, purchaseFrequency);
+
 		return new BacktestBootstrapConfiguration(entryLogic, getExitLogic(), brokerage, cashAccount, simulationDates,
 		        description);
 	}
@@ -143,8 +144,8 @@ public class BacktestBootstrapConfigurationBulider {
 
 		final LocalDate startDate = simulationDates.getSimulationStartDate();
 		final BoundedTradeValue tradeValue = new BoundedTradeValue(
-		        new AbsoluteTradeValueConfiguration(minimumTrade.getValue()),
-		        new RelativeTradeValueConfiguration(maximumTrade.getValue(), mathContext));
+		        new AbsoluteTradeValueCalculator(minimumTrade.getValue()),
+		        new RelativeTradeValueCalculator(maximumTrade.getValue(), mathContext));
 
 		final EntryLogic entryLogic = EntryLogicFactory.getInstance().create(equityIdentity, tradeValue,
 		        simulationDates, filter, mathContext, entrySignals);
@@ -153,6 +154,7 @@ public class BacktestBootstrapConfigurationBulider {
 		final Brokerage cmcMarkets = BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
 		        startDate, mathContext);
 		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit, mathContext);
+
 		return new BacktestBootstrapConfiguration(entryLogic, getExitLogic(), cmcMarkets, cashAccount, simulationDates,
 		        description);
 	}

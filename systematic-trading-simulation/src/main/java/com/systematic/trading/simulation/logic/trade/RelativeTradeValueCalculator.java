@@ -8,7 +8,7 @@ import java.math.MathContext;
  * 
  * @author CJ Hare
  */
-public class RelativeTradeValueConfiguration implements TradeValueConfiguration {
+public class RelativeTradeValueCalculator implements TradeValueCalculator {
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
@@ -16,7 +16,7 @@ public class RelativeTradeValueConfiguration implements TradeValueConfiguration 
 	/** Value between zero and one, the percentage of the funds to use in a trade. */
 	private final BigDecimal percentage;
 
-	public RelativeTradeValueConfiguration(final BigDecimal percentage, final MathContext mathContext) {
+	public RelativeTradeValueCalculator(final BigDecimal percentage, final MathContext mathContext) {
 		this.percentage = percentage;
 		this.mathContext = mathContext;
 	}

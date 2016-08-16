@@ -7,12 +7,12 @@ import java.math.BigDecimal;
  * 
  * @author CJ Hare
  */
-public class AbsoluteTradeValueConfiguration implements TradeValueConfiguration {
+public class AbsoluteTradeValueCalculator implements TradeValueCalculator {
 
 	/** The only value to ever use. */
 	private final BigDecimal value;
 
-	public AbsoluteTradeValueConfiguration(final BigDecimal value) {
+	public AbsoluteTradeValueCalculator(final BigDecimal value) {
 		this.value = value;
 	}
 
