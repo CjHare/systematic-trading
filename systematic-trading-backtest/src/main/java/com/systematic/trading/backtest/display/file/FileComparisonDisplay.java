@@ -29,15 +29,15 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.time.Period;
+import java.util.StringJoiner;
 
 import com.systematic.trading.maths.formula.CompoundAnnualGrowthRate;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
-import com.systematic.trading.simulation.analysis.statistics.CashEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
-import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistics;
 import com.systematic.trading.simulation.logic.EntryLogic;
+import com.systematic.trading.simulation.logic.trade.TradeValueCalculator;
 
 /**
  * Persists the comparison displays into a file.
@@ -49,6 +49,8 @@ import com.systematic.trading.simulation.logic.EntryLogic;
 public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
+
+	private static final String SEPARATOR = ",";
 
 	/** Display responsible for handling the file output. */
 	private final FileDisplayMultithreading display;
@@ -81,36 +83,104 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	}
 
 	private String createOutput( final NetWorthEvent event ) {
+		final StringJoiner out = new StringJoiner(",");
+		out.add(compoundAnnualGrowth(event));
+		out.add(netWorth(event));
+		out.add(equitiesHeld(event));
+		out.add(holdingsValue(event));
+		out.add(cashAccount(event));
+		out.add(deposited(event));
+		out.add(profit(event));
 
-		final BigDecimal balance = event.getEquityBalance();
-		final BigDecimal holdingValue = event.getEquityBalanceValue();
-		final BigDecimal cashBalance = event.getCashBalance();
+		out.add(minimumTradeValue());
+		out.add(maximumTradeValue());
+		//TODO add filters used
+
+		out.add(entryOrdersPlaced(event));
+		out.add(entryOrdersExecuted(event));
+		out.add(entryOrdersDeleted(event));
+		out.add(exitOrdersPlaced(event));
+		out.add(exitOrdersExecuted(event));
+		out.add(exitOrdersDeleted(event));
+
+		//TODO remove the general description
+		out.add(event.getDescription());
+
+		return out.toString();
+	}
+
+	private String exitOrdersDeleted( final NetWorthEvent event ) {
+		return String.format("Exit orders deleted: %s", statistics.getOrderEventStatistics().getDeleteExitEventCount());
+	}
+
+	private String exitOrdersExecuted( final NetWorthEvent event ) {
+		return String.format("Exit orders executed: %s", statistics.getOrderEventStatistics().getExitEventCount()
+		        - statistics.getOrderEventStatistics().getDeleteExitEventCount());
+	}
+
+	private String exitOrdersPlaced( final NetWorthEvent event ) {
+		return String.format("Exit orders placed: %s", statistics.getOrderEventStatistics().getExitEventCount());
+	}
+
+	private String entryOrdersDeleted( final NetWorthEvent event ) {
+		return String.format("Entry orders deleted: %s",
+		        statistics.getOrderEventStatistics().getDeleteEntryEventCount());
+	}
+
+	private String entryOrdersExecuted( final NetWorthEvent event ) {
+		return String.format("Entry orders executed: %s", statistics.getOrderEventStatistics().getEntryEventCount()
+		        - statistics.getOrderEventStatistics().getDeleteEntryEventCount());
+	}
+
+	private String entryOrdersPlaced( final NetWorthEvent event ) {
+		return String.format("Entry orders placed: %s", statistics.getOrderEventStatistics().getEntryEventCount());
+	}
+
+	private String profit( final NetWorthEvent event ) {
+		return String.format("Profit: %s", TWO_DECIMAL_PLACES.format(
+		        event.getNetWorth().subtract(statistics.getCashEventStatistics().getAmountDeposited(), mathContext)));
+	}
+
+	private String deposited( final NetWorthEvent event ) {
+		return String.format("Deposited: %s",
+		        TWO_DECIMAL_PLACES.format(statistics.getCashEventStatistics().getAmountDeposited()));
+	}
+
+	private String cashAccount( final NetWorthEvent event ) {
+		return String.format("Cash account: %s", TWO_DECIMAL_PLACES.format(event.getCashBalance()));
+	}
+
+	private String compoundAnnualGrowth( final NetWorthEvent event ) {
+		final BigDecimal deposited = statistics.getCashEventStatistics().getAmountDeposited();
 		final BigDecimal netWorth = event.getNetWorth();
-		final OrderEventStatistics orders = statistics.getOrderEventStatistics();
-
-		final int entryEventCount = orders.getEntryEventCount();
-		final int entryEventDeletedCount = orders.getDeleteEntryEventCount();
-		final int entryEventExecutedCount = orders.getEntryEventCount() - orders.getDeleteEntryEventCount();
-
-		final int exitEventCount = orders.getExitEventCount();
-		final int exitEventDeletedCount = orders.getDeleteExitEventCount();
-		final int exitEventExecutedCount = orders.getExitEventCount() - orders.getDeleteExitEventCount();
-
-		final CashEventStatistics cash = statistics.getCashEventStatistics();
-		final BigDecimal deposited = cash.getAmountDeposited();
-		final BigDecimal profit = netWorth.subtract(deposited, mathContext);
-
 		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears(),
 		        mathContext);
 
-		//TODO min & max into their own columns
-		
-		return String.format(
-		        "CAGR: %s, Total Net Worth: %s, Number of equities: %s, Holdings value: %s, Cash account: %s, Deposited: %s, Profit: %s,  Entry orders placed: %s, Entry orders executed: %s, Entry orders deleted: %s, Exit orders placed: %s, Exit orders executed: %s, Exit orders deleted: %s, %s%n",
-		        TWO_DECIMAL_PLACES.format(cagr), TWO_DECIMAL_PLACES.format(netWorth),
-		        TWO_DECIMAL_PLACES.format(balance), TWO_DECIMAL_PLACES.format(holdingValue),
-		        TWO_DECIMAL_PLACES.format(cashBalance), TWO_DECIMAL_PLACES.format(deposited),
-		        TWO_DECIMAL_PLACES.format(profit), entryEventCount, entryEventExecutedCount, entryEventDeletedCount,
-		        exitEventCount, exitEventExecutedCount, exitEventDeletedCount, event.getDescription());
+		return String.format("CAGR: %s", cagr);
+	}
+
+	private String netWorth( final NetWorthEvent event ) {
+		return String.format("Net Worth: %s", TWO_DECIMAL_PLACES.format(event.getNetWorth()));
+	}
+
+	private String equitiesHeld( final NetWorthEvent event ) {
+		return String.format("Equities Held: %s", TWO_DECIMAL_PLACES.format(event.getEquityBalance()));
+	}
+
+	private String holdingsValue( final NetWorthEvent event ) {
+		return String.format("Holdings value: %s", TWO_DECIMAL_PLACES.format(event.getEquityBalanceValue()));
+	}
+
+	private String maximumTradeValue() {
+		return tradeValue("Maximum", entryLogic.getTradeValue().getMinimumValue());
+	}
+
+	private String minimumTradeValue() {
+		return tradeValue("Minimum", entryLogic.getTradeValue().getMinimumValue());
+	}
+
+	private String tradeValue( final String prefix, final TradeValueCalculator tradeValue ) {
+		return String.format("%s Trade Value: %s%s Trade Type: %s", prefix, tradeValue.getValue(), SEPARATOR, prefix,
+		        tradeValue.getType());
 	}
 }

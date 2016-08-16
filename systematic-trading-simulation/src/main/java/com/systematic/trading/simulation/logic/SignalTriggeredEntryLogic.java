@@ -150,4 +150,9 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	public void addListener( final SignalAnalysisListener listener ) {
 		buyLongAnalysis.addListener(listener);
 	}
+
+	@Override
+	public TradeValueLogic getTradeValue() {
+		return tradeValue;
+	}
 }

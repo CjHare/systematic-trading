@@ -131,7 +131,7 @@ public class BacktestBootstrapConfigurationBulider {
 			entrySignals[i] = IndicatorSignalGeneratorFactory.getInstance().create(indicators[i], mathContext);
 		}
 
-		final String description = descriptions.getDescription(minimumTrade, maximumTrade, filter, indicators);
+		final String description = descriptions.getDescription(filter, indicators);
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter, description,
 		        entrySignals);

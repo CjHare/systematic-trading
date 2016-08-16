@@ -29,8 +29,6 @@ import java.time.Period;
 
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
-import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
-import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 /**
@@ -68,22 +66,18 @@ public class DescriptionGenerator {
 
 	}
 
-	public String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
-	        final SignalFilter filter, final SignalConfiguration... configurations ) {
+	public String getDescription( final SignalFilter filter, final SignalConfiguration... configurations ) {
 
 		switch (configurations.length) {
 			case 1:
-				return String.format("%s_%s_Minimum-%s_Maximum-%s_HoldForever", configurations[0].getDescription(),
-				        filter.getDescription(), minimumTrade.getDescription(), maximumTrade.getDescription());
+				return String.format("%s_%s_HoldForever", configurations[0].getDescription(), filter.getDescription());
 			case 2:
-				return String.format("%s-%s_%s_Minimum-%s_Maximum-%s_HoldForever", configurations[0].getDescription(),
-				        configurations[1].getDescription(), filter.getDescription(), minimumTrade.getDescription(),
-				        maximumTrade.getDescription());
+				return String.format("%s-%s_-%s_HoldForever", configurations[0].getDescription(),
+				        configurations[1].getDescription(), filter.getDescription());
 			case 3:
-				return String.format("%s-%s-%s_%s_Minimum-%s_Maximum-%s_HoldForever",
-				        configurations[0].getDescription(), configurations[1].getDescription(),
-				        configurations[2].getDescription(), filter.getDescription(), minimumTrade.getDescription(),
-				        maximumTrade.getDescription());
+				return String.format("%s-%s-%s_%s_HoldForever", configurations[0].getDescription(),
+				        configurations[1].getDescription(), configurations[2].getDescription(),
+				        filter.getDescription());
 			default:
 				throw new IllegalArgumentException(
 				        String.format("Unexpected number of configurations: %s", configurations.length));

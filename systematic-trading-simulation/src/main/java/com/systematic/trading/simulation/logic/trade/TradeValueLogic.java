@@ -32,7 +32,6 @@ import java.math.BigDecimal;
  * 
  * @author CJ Hare
  */
-@FunctionalInterface
 public interface TradeValueLogic {
 
 	/**
@@ -42,4 +41,18 @@ public interface TradeValueLogic {
 	 * @return minimum value, never <code>null</code>
 	 */
 	BigDecimal calculate( BigDecimal funds );
+
+	/**
+	 * Calculator used for determining the minimum trade value.
+	 * 
+	 * @return how the lowest value for trade entry is calculated.
+	 */
+	TradeValueCalculator getMinimumValue();
+
+	/**
+	 * Calculator used for determining the maximum trade value.
+	 * 
+	 * @return how the highest value for trade entry is calculated.
+	 */
+	TradeValueCalculator getMaximumValue();
 }
