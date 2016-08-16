@@ -23,50 +23,23 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.logic;
+package com.systematic.trading.simulation.logic.trade;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 /**
- * Trade value behaviour with a minimum threshold, with a relative percentage in amounts above.
+ * Amounts for trade value minimum and maximum threshold.
  * 
  * @author CJ Hare
  */
-public class RelativeTradeValue implements TradeValue {
+@FunctionalInterface
+public interface TradeValueLogic {
 
-	/** Smallest value to trade. */
-	private final BigDecimal minimumTradeValue;
-
-	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext mathContext;
-
-	/** Percentage of funds to trade (range of 0-1). */
-	private final BigDecimal maximumPercentage;
-
-	public RelativeTradeValue(final BigDecimal minimumTradeValue, final BigDecimal maximumPercentage,
-	        final MathContext mathContext) {
-		this.minimumTradeValue = minimumTradeValue;
-		this.maximumPercentage = maximumPercentage;
-		this.mathContext = mathContext;
-	}
-
-	@Override
-	public BigDecimal calculate( final BigDecimal availableFunds ) {
-
-		BigDecimal tradeValue = minimumTradeValue;
-
-		// If above the minimum there's a chance to use the percentage
-		if (minimumTradeValue.compareTo(availableFunds) < 0) {
-
-			final BigDecimal maximumTradeValue = availableFunds.multiply(maximumPercentage, mathContext);
-
-			// Only when the maximum is above the threshold, use it
-			if (maximumTradeValue.compareTo(minimumTradeValue) > 0) {
-				tradeValue = maximumTradeValue;
-			}
-		}
-
-		return tradeValue;
-	}
+	/**
+	 * Retrieves the amount to spend on equities.
+	 * 
+	 * @param funds the total amount in the trading account.
+	 * @return minimum value, never <code>null</code>
+	 */
+	BigDecimal calculate( BigDecimal funds );
 }

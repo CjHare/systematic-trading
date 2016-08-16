@@ -55,9 +55,11 @@ import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.logic.RelativeTradeValue;
 import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
-import com.systematic.trading.simulation.logic.TradeValue;
+import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueConfiguration;
+import com.systematic.trading.simulation.logic.trade.BoundedTradeValue;
+import com.systematic.trading.simulation.logic.trade.RelativeTradeValueConfiguration;
+import com.systematic.trading.simulation.logic.trade.TradeValueLogic;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
@@ -88,7 +90,8 @@ public class SignalTriggeredEntryLogicTest {
 
 	@Test
 	public void actionOnInsufficientFunds() {
-		final TradeValue tradeValue = new RelativeTradeValue(BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT);
+		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueConfiguration(BigDecimal.ONE),
+		        new RelativeTradeValueConfiguration(BigDecimal.ONE, MATH_CONTEXT));
 		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic(EQUITY_STOCK, EQUITY_SCALE, tradeValue,
 		        buyLongAnalysis, MATH_CONTEXT);
 
@@ -103,7 +106,8 @@ public class SignalTriggeredEntryLogicTest {
 
 	@Test
 	public void updateNoOrder() {
-		final TradeValue tradeValue = new RelativeTradeValue(BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT);
+		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueConfiguration(BigDecimal.ONE),
+		        new RelativeTradeValueConfiguration(BigDecimal.ONE, MATH_CONTEXT));
 		final SignalTriggeredEntryLogic logic = new SignalTriggeredEntryLogic(EQUITY_STOCK, EQUITY_SCALE, tradeValue,
 		        buyLongAnalysis, MATH_CONTEXT);
 
@@ -124,7 +128,8 @@ public class SignalTriggeredEntryLogicTest {
 
 		final LocalDate now = LocalDate.now();
 		final BigDecimal accountBalance = BigDecimal.valueOf(1);
-		final TradeValue tradeValue = new RelativeTradeValue(BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT);
+		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueConfiguration(BigDecimal.ONE),
+		        new RelativeTradeValueConfiguration(BigDecimal.ONE, MATH_CONTEXT));
 
 		when(cashAccount.getBalance()).thenReturn(accountBalance);
 		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
@@ -157,7 +162,8 @@ public class SignalTriggeredEntryLogicTest {
 
 		final LocalDate now = LocalDate.now();
 		final BigDecimal accountBalance = BigDecimal.valueOf(50);
-		final TradeValue tradeValue = new RelativeTradeValue(BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT);
+		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueConfiguration(BigDecimal.ONE),
+		        new RelativeTradeValueConfiguration(BigDecimal.ONE, MATH_CONTEXT));
 
 		when(cashAccount.getBalance()).thenReturn(accountBalance);
 		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
@@ -192,7 +198,8 @@ public class SignalTriggeredEntryLogicTest {
 
 		final LocalDate now = LocalDate.now();
 		final BigDecimal accountBalance = BigDecimal.valueOf(50);
-		final TradeValue tradeValue = new RelativeTradeValue(BigDecimal.ONE, BigDecimal.ONE, MATH_CONTEXT);
+		final TradeValueLogic tradeValue = new BoundedTradeValue(new AbsoluteTradeValueConfiguration(BigDecimal.ONE),
+		        new RelativeTradeValueConfiguration(BigDecimal.ONE, MATH_CONTEXT));
 
 		when(cashAccount.getBalance()).thenReturn(accountBalance);
 		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))

@@ -38,6 +38,7 @@ import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.logic.trade.TradeValueLogic;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
@@ -68,14 +69,14 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	private final LimitedSizeQueue<BuySignal> previousSignals;
 
 	/** Minimum value of the trade excluding the fee amount */
-	private final TradeValue tradeValue;
+	private final TradeValueLogic tradeValue;
 
 	/**
 	 * @param interval time between creation of entry orders.
 	 * @param analysis analyser of trading data to generate buy signals.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public SignalTriggeredEntryLogic(final EquityClass equityType, final int equityScale, final TradeValue tradeValue,
+	public SignalTriggeredEntryLogic(final EquityClass equityType, final int equityScale, final TradeValueLogic tradeValue,
 	        final AnalysisBuySignals analysis, final MathContext mathContext) {
 		this.buyLongAnalysis = analysis;
 		this.mathContext = mathContext;

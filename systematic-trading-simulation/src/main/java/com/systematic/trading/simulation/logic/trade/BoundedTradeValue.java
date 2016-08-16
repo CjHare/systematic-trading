@@ -23,23 +23,44 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.logic;
+package com.systematic.trading.simulation.logic.trade;
 
 import java.math.BigDecimal;
 
 /**
- * Amounts for trade value minimum and maximum threshold.
+ * Trade value with minimum and maximum thresholds.
  * 
  * @author CJ Hare
  */
-@FunctionalInterface
-public interface TradeValue {
+public class BoundedTradeValue implements TradeValueLogic {
 
-	/**
-	 * Retrieves the amount to spend on equities.
-	 * 
-	 * @param availableFunds the amount available to trade with.
-	 * @return minimum value, never <code>null</code>
-	 */
-	BigDecimal calculate( BigDecimal availableFunds );
+	/** Smallest value to trade. */
+	private final TradeValueConfiguration minimum;
+
+	/** Smallest value to trade. */
+	private final TradeValueConfiguration maximum;
+
+	public BoundedTradeValue(final TradeValueConfiguration minimum, final TradeValueConfiguration maximum) {
+		this.minimum = minimum;
+		this.maximum = maximum;
+	}
+
+	@Override
+	public BigDecimal calculate( final BigDecimal funds ) {
+
+		BigDecimal tradeValue = minimum.getTradeValue(funds);
+
+		// If above the minimum there's a chance to use the percentage
+		if (tradeValue.compareTo(funds) < 0) {
+
+			final BigDecimal maximumTradeValue = maximum.getTradeValue(funds);
+
+			// Only when the maximum is above the threshold, use it
+			if (maximumTradeValue.compareTo(tradeValue) > 0) {
+				tradeValue = maximumTradeValue;
+			}
+		}
+
+		return tradeValue;
+	}
 }

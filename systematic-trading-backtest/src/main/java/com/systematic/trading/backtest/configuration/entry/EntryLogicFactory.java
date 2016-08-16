@@ -44,7 +44,7 @@ import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorat
 import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
-import com.systematic.trading.simulation.logic.TradeValue;
+import com.systematic.trading.simulation.logic.trade.TradeValueLogic;
 
 /**
  * Creates the instances of Entry Logic.
@@ -76,7 +76,7 @@ public class EntryLogicFactory {
 		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency, mathContext);
 	}
 
-	public EntryLogic create( final EquityIdentity equity, final TradeValue tradeValue,
+	public EntryLogic create( final EquityIdentity equity, final TradeValueLogic tradeValue,
 	        final BacktestSimulationDates simulationDates, final SignalFilter filter, final MathContext mathContext,
 	        final IndicatorSignalGenerator... entrySignals ) {
 		final LocalDate simulationStartDate = simulationDates.getSimulationStartDate();

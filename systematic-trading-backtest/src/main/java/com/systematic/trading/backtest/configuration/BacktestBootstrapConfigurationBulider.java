@@ -51,7 +51,9 @@ import com.systematic.trading.simulation.equity.fee.management.PeriodicEquityMan
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
-import com.systematic.trading.simulation.logic.RelativeTradeValue;
+import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueConfiguration;
+import com.systematic.trading.simulation.logic.trade.BoundedTradeValue;
+import com.systematic.trading.simulation.logic.trade.RelativeTradeValueConfiguration;
 
 /**
  * Creates the Bootstrap configurations for back testing.
@@ -140,8 +142,9 @@ public class BacktestBootstrapConfigurationBulider {
 	        final IndicatorSignalGenerator... entrySignals ) {
 
 		final LocalDate startDate = simulationDates.getSimulationStartDate();
-		final RelativeTradeValue tradeValue = new RelativeTradeValue(minimumTrade.getValue(), maximumTrade.getValue(),
-		        mathContext);
+		final BoundedTradeValue tradeValue = new BoundedTradeValue(
+		        new AbsoluteTradeValueConfiguration(minimumTrade.getValue()),
+		        new RelativeTradeValueConfiguration(maximumTrade.getValue(), mathContext));
 
 		final EntryLogic entryLogic = EntryLogicFactory.getInstance().create(equityIdentity, tradeValue,
 		        simulationDates, filter, mathContext, entrySignals);
