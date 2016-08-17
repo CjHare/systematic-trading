@@ -52,4 +52,10 @@ public interface Brokerage
 	 */
 	void addListener( EquityEventListener listener );
 
+	/**
+	 * Retrieves the identifier for the broker.
+	 * 
+	 * @return name of the broker.
+	 */
+	String getName();
 }

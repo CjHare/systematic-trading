@@ -103,10 +103,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		out.add(exitOrdersExecuted(event));
 		out.add(exitOrdersDeleted(event));
 
-		//TODO remove the general description
-		out.add(event.getDescription());
-
-		return out.toString();
+		return String.format("%s%n", out.toString());
 	}
 
 	private String exitOrdersDeleted( final NetWorthEvent event ) {
@@ -172,7 +169,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	}
 
 	private String maximumTradeValue() {
-		return tradeValue("Maximum", entryLogic.getTradeValue().getMinimumValue());
+		return tradeValue("Maximum", entryLogic.getTradeValue().getMaximumValue());
 	}
 
 	private String minimumTradeValue() {
@@ -180,7 +177,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	}
 
 	private String tradeValue( final String prefix, final TradeValueCalculator tradeValue ) {
-		return String.format("%s Trade Value: %s%s Trade Type: %s", prefix, tradeValue.getValue(), SEPARATOR, prefix,
+		return String.format("%s Trade Value: %s%s%s Trade Type: %s", prefix, tradeValue.getValue(), SEPARATOR, prefix,
 		        tradeValue.getType());
 	}
 }

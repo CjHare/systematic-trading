@@ -26,10 +26,16 @@
 package com.systematic.trading.backtest.display;
 
 import java.time.Period;
+import java.util.List;
+import java.util.StringJoiner;
 
-import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
-import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.signals.model.filter.SignalFilter;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
+import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
+import com.systematic.trading.simulation.logic.EntryLogic;
+import com.systematic.trading.simulation.logic.trade.TradeValueCalculator;
 
 /**
  * Textually meaningful description of the configuration appropriate for display.
@@ -39,48 +45,67 @@ import com.systematic.trading.signals.model.filter.SignalFilter;
 public class DescriptionGenerator {
 	// TODO interface - one for file, another for console
 	//TODO convert to a builder
-	public String getDescription( final BrokerageFeesConfiguration brokerage, final Period purchaseFrequency ) {
 
-		if (purchaseFrequency.equals(Period.ofWeeks(1))) {
-			return String.format("%s_BuyWeekly_HoldForever", getBrokerageDescription(brokerage));
-		}
+	private static final String SEPARATOR = "_";
 
-		if (purchaseFrequency.equals(Period.ofMonths(1))) {
-			return String.format("%s_BuyMonthly_HoldForever", getBrokerageDescription(brokerage));
-		}
+	public String getDescription( final BacktestBootstrapConfiguration configuration ) {
+		final StringJoiner out = new StringJoiner(SEPARATOR);
 
-		throw new IllegalArgumentException(String.format(
-		        "Unexpected combination of brokerage: %s and purchase frequency: %s", brokerage, purchaseFrequency));
+		//TODO tell between different filter values, i.e. short / medium / long parameters ...or include those in filter output
+		out.add(entryFilters(configuration.getEntryLogic()));
+		out.add(minimumTradeValue(configuration.getEntryLogic()));
+		out.add(maximumTradeValue(configuration.getEntryLogic()));
+
+		//TODO weekly cash deposit / starting value
+		out.add(depositAmount(configuration.getCashAccount()));
+
+		//TODO add broker type
+		out.add(configuration.getBroker().getName());
+
+		//TODO better way of passing this information then the full objects, some configuration summary?
+
+		//TODO add entry filters		
+
+		//TODO add exit filters
+
+		return String.format("%s_HoldForever", out.toString());
 	}
 
-	private String getBrokerageDescription( final BrokerageFeesConfiguration brokerage ) {
-		switch (brokerage) {
-			case CMC_MARKETS:
-				return "CmcMarkets";
-			case VANGUARD_RETAIL:
-				return "VanguardRetail";
-			default:
-				throw new IllegalArgumentException(
-				        String.format("Brokerage configurataion not catered for: %s", brokerage));
+	private String depositAmount( final CashAccount cashAccount ) {
+		if (cashAccount instanceof RegularDepositCashAccountDecorator) {
+			final RegularDepositCashAccountDecorator deposit = (RegularDepositCashAccountDecorator) cashAccount;
+			return String.format("%s%s%s", deposit.getDepositAmount(), SEPARATOR, deposit.getInterval());
 		}
 
+		return "NoDeposit";
 	}
 
-	public String getDescription( final SignalFilter filter, final SignalConfiguration... configurations ) {
-
-		switch (configurations.length) {
-			case 1:
-				return String.format("%s_%s_HoldForever", configurations[0].getDescription(), filter.getDescription());
-			case 2:
-				return String.format("%s-%s_-%s_HoldForever", configurations[0].getDescription(),
-				        configurations[1].getDescription(), filter.getDescription());
-			case 3:
-				return String.format("%s-%s-%s_%s_HoldForever", configurations[0].getDescription(),
-				        configurations[1].getDescription(), configurations[2].getDescription(),
-				        filter.getDescription());
-			default:
-				throw new IllegalArgumentException(
-				        String.format("Unexpected number of configurations: %s", configurations.length));
+	private String entryFilters( final EntryLogic entryLogic ) {
+		if (entryLogic.getBuySignalAnalysis() == null) {
+			if (Period.ofDays(7).equals(((DateTriggeredEntryLogic) entryLogic).getInterval())) {
+				return "BuyWeekly";
+			} else {
+				return "BuyMonthly";
+			}
 		}
+
+		final List<SignalFilter> filters = entryLogic.getBuySignalAnalysis().getFilters();
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		for (final SignalFilter filter : filters) {
+			out.add(filter.getDescription(SEPARATOR));
+		}
+		return out.toString();
+	}
+
+	private String maximumTradeValue( final EntryLogic entryLogic ) {
+		return tradeValue("Maximum", entryLogic.getTradeValue().getMinimumValue());
+	}
+
+	private String minimumTradeValue( final EntryLogic entryLogic ) {
+		return tradeValue("Minimum", entryLogic.getTradeValue().getMinimumValue());
+	}
+
+	private String tradeValue( final String prefix, final TradeValueCalculator tradeValue ) {
+		return String.format("%s-%s%s%s", prefix, tradeValue.getValue(), SEPARATOR, tradeValue.getType());
 	}
 }

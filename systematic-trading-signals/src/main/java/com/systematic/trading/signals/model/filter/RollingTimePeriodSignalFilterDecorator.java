@@ -82,7 +82,8 @@ public class RollingTimePeriodSignalFilterDecorator implements SignalFilter {
 	}
 
 	@Override
-	public String getDescription() {
-		return String.format("Rolling-period-%s-%s", inclusiveWithin, filter.getDescription());
+	public String getDescription( final String separator ) {
+		return String.format("RollingPeriod%s%s%s%s", separator, inclusiveWithin, separator,
+		        filter.getDescription(separator));
 	}
 }

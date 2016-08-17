@@ -1,5 +1,6 @@
 package com.systematic.trading.backtest;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.MathContext;
 import java.time.LocalDate;
@@ -59,6 +60,7 @@ public class BacktestApplication {
 	}
 
 	private final MathContext mathContext;
+	private final DescriptionGenerator description = new DescriptionGenerator();
 
 	public BacktestApplication(final MathContext mathContext) {
 		this.mathContext = mathContext;
@@ -67,7 +69,6 @@ public class BacktestApplication {
 	public void runTest( final BacktestConfigurations configurations, final String... args ) throws ServiceException {
 
 		final String baseOutputDirectory = getBaseOutputDirectory(args);
-		final DescriptionGenerator filenameGenerator = new DescriptionGenerator();
 
 		// Date range is from the first of the starting month until now
 		final LocalDate simulationEndDate = LocalDate.now();
@@ -98,7 +99,7 @@ public class BacktestApplication {
 			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
 
 				final List<BacktestBootstrapConfiguration> tests = configurations.get(equity, simulationDates,
-				        depositAmount, filenameGenerator);
+				        depositAmount);
 
 				final String outputDirectory = String.format(baseOutputDirectory, depositAmount);
 
@@ -181,11 +182,11 @@ public class BacktestApplication {
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(tradingData, configuration, fileDisplay,
 			        mathContext);
 
-			LOG.info(String.format("Backtesting beginning for: %s", configuration.getDescription()));
+			LOG.info(String.format("Backtesting beginning for: %s", description.getDescription(configuration)));
 
 			bootstrap.run();
 
-			LOG.info(String.format("Backtesting complete for: %s", configuration.getDescription()));
+			LOG.info(String.format("Backtesting complete for: %s", description.getDescription(configuration)));
 		}
 
 		LOG.info(String.format("All Simulations have been completed for deposit amount: %s", depositAmount));
@@ -211,7 +212,8 @@ public class BacktestApplication {
 
 	private String getOutputDirectory( final String baseOutputDirectory, final EquityIdentity equity,
 	        final BacktestBootstrapConfiguration configuration ) {
-		return String.format("%s%s_%s", baseOutputDirectory, equity.getTickerSymbol(), configuration.getDescription());
+		return String.format("%s%s%s%s", baseOutputDirectory, equity.getTickerSymbol(), "/",
+		        description.getDescription(configuration));
 	}
 
 	private String getBaseOutputDirectory( final String... args ) {

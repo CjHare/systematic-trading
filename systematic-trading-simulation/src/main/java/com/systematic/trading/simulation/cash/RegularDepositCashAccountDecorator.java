@@ -117,4 +117,14 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 	public void addListener( final CashEventListener listener ) {
 		account.addListener(listener);
 	}
+
+	//TODO shift the interval and deposit amount into a tuple object
+	public BigDecimal getDepositAmount() {
+		return depositAmount;
+	}
+
+	public Period getInterval() {
+		return interval;
+	}
+
 }

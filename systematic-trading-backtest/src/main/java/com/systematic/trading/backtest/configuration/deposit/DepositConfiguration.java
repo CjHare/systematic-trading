@@ -35,9 +35,9 @@ import java.time.Period;
  */
 public enum DepositConfiguration {
 
-	WEEKLY_100(BigDecimal.valueOf(100), Period.ofWeeks(1)),
-	WEEKLY_150(BigDecimal.valueOf(150), Period.ofWeeks(1)),
-	WEEKLY_200(BigDecimal.valueOf(200), Period.ofWeeks(1)),
+//	WEEKLY_100(BigDecimal.valueOf(100), Period.ofWeeks(1)),
+//	WEEKLY_150(BigDecimal.valueOf(150), Period.ofWeeks(1)),
+//	WEEKLY_200(BigDecimal.valueOf(200), Period.ofWeeks(1)),
 	WEEKLY_250(BigDecimal.valueOf(250), Period.ofWeeks(1));
 
 	private final BigDecimal amount;

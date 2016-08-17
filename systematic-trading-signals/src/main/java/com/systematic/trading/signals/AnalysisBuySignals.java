@@ -30,6 +30,7 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
+import com.systematic.trading.signals.model.filter.SignalFilter;
 
 /**
  * Analysis of buy signals.
@@ -59,4 +60,11 @@ public interface AnalysisBuySignals {
 	 * @param listener will receive signal events.
 	 */
 	void addListener( SignalAnalysisListener listener );
+
+	/**
+	 * Filters used in the analysis of buy signals.
+	 * 
+	 * @return all the filters used during analysis.
+	 */
+	List<SignalFilter> getFilters();
 }

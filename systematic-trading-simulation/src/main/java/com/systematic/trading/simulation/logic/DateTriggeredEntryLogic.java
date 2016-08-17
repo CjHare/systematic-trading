@@ -32,6 +32,7 @@ import java.time.Period;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
@@ -123,5 +124,15 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	public TradeValueLogic getTradeValue() {
 		return new BoundedTradeValue(new RelativeTradeValueCalculator(BigDecimal.ONE, mathContext),
 		        new RelativeTradeValueCalculator(BigDecimal.ONE, mathContext));
+	}
+
+	@Override
+	public AnalysisBuySignals getBuySignalAnalysis() {
+		// Not using buy signals for analysis
+		return null;
+	}
+
+	public Period getInterval() {
+		return interval;
 	}
 }

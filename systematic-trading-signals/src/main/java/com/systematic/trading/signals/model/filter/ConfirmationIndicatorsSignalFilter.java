@@ -74,8 +74,8 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 
 		this.anchor = anchor;
 		this.confirmation = confirmation;
-		this.confirmationDayRange = confirmationDayRange;
 		this.delayUntilConfirmationRange = delayUntilConfirmationRange;
+		this.confirmationDayRange = confirmationDayRange;
 	}
 
 	@Override
@@ -142,8 +142,9 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 	}
 
 	@Override
-	public String getDescription() {
-		return String.format("%s-confirmed-by-%s-between-%s-to-%s-days-after", anchor, confirmation,
-		        delayUntilConfirmationRange, confirmationDayRange);
+	public String getDescription( final String separator ) {
+		return String.format("%s%sConfirmedBy%s%s%sbetween%s%s%sto%s%s%sDaysAfter", anchor, separator, separator,
+		        confirmation, separator, separator, delayUntilConfirmationRange, separator, separator,
+		        delayUntilConfirmationRange + confirmationDayRange, separator);
 	}
 }

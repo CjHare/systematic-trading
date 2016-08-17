@@ -47,14 +47,12 @@ public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 	private final Brokerage broker;
 	private final TradingDayPrices lastTradingDay;
 	private final CashAccount cashAccount;
-	private final String description;
 
 	public NetWorthSummaryEventGenerator(final Brokerage broker, final TradingDayPrices lastTradingDay,
-	        final CashAccount cashAccount, final String description) {
+	        final CashAccount cashAccount) {
 		this.broker = broker;
 		this.lastTradingDay = lastTradingDay;
 		this.cashAccount = cashAccount;
-		this.description = description;
 	}
 
 	@Override
@@ -66,8 +64,7 @@ public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 		final BigDecimal cashBalance = cashAccount.getBalance();
 		final BigDecimal networth = cashAccount.getBalance().add(equityBalanceValue);
 
-		final NetWorthEvent event = new NetWorthSummaryEvent(equityBalance, equityBalanceValue, cashBalance, networth,
-		        description);
+		final NetWorthEvent event = new NetWorthSummaryEvent(equityBalance, equityBalanceValue, cashBalance, networth);
 
 		for (final NetWorthEventListener listener : listeners) {
 			listener.event(event, transitionedState);

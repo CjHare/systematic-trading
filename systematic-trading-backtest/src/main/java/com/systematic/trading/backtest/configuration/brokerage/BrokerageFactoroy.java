@@ -83,6 +83,7 @@ public class BrokerageFactoroy {
 		final EquityManagementFeeStructure equityManagementFee = equity.getManagementFee();
 		final EquityIdentity equityId = equity.getIdentity();
 
-		return new SingleEquityClassBroker(tradingFeeStructure, equityManagementFee, equityId, startDate, mathContext);
+		return new SingleEquityClassBroker(fees.name(), tradingFeeStructure, equityManagementFee, equityId, startDate,
+		        mathContext);
 	}
 }

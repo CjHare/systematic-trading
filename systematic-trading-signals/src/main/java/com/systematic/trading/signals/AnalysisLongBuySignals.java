@@ -167,4 +167,9 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 			}
 		}
 	}
+
+	@Override
+	public List<SignalFilter> getFilters() {
+		return filters;
+	}
 }

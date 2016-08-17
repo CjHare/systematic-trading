@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
-import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.EquityIdentity;
 
@@ -17,5 +16,5 @@ import com.systematic.trading.model.EquityIdentity;
 public interface BacktestConfigurations {
 
 	List<BacktestBootstrapConfiguration> get( EquityIdentity equity, BacktestSimulationDates simulationDates,
-	        DepositConfiguration deposit, DescriptionGenerator descriptionGenerator );
+	        DepositConfiguration deposit );
 }

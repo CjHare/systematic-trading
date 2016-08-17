@@ -62,7 +62,7 @@ public class AnyIndicatorIsBuySignalFilter implements SignalFilter {
 	}
 
 	@Override
-	public String getDescription() {
-		return "Any-Indicator";
+	public String getDescription( final String separator ) {
+		return "AnyIndicator";
 	}
 }

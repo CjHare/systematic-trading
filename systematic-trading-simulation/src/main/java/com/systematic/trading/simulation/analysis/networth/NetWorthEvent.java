@@ -62,11 +62,4 @@ public interface NetWorthEvent {
 	 *         capital gains tax for liquidation.
 	 */
 	BigDecimal getNetWorth();
-
-	/**
-	 * Description of the source of the Net worth event.
-	 * 
-	 * @return what created the event.
-	 */
-	String getDescription();
 }

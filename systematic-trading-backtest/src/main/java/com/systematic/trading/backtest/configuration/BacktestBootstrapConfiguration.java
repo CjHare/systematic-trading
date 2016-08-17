@@ -40,9 +40,6 @@ import com.systematic.trading.simulation.logic.ExitLogic;
  */
 public class BacktestBootstrapConfiguration {
 
-	/** Description used for uniquely identifying the configuration. */
-	private final String description;
-
 	/** Applied to each equity transaction. */
 	private final Brokerage brokerage;
 
@@ -63,10 +60,8 @@ public class BacktestBootstrapConfiguration {
 	 * @param endDate inclusive end date for back testing.
 	 */
 	public BacktestBootstrapConfiguration(final EntryLogic entryLogic, final ExitLogic exitLogic,
-	        final Brokerage brokerage, final CashAccount cashAccount, final BacktestSimulationDates simulationDates,
-	        final String description) {
+	        final Brokerage brokerage, final CashAccount cashAccount, final BacktestSimulationDates simulationDates) {
 		this.cashAccount = cashAccount;
-		this.description = description;
 		this.entryLogic = entryLogic;
 		this.exitLogic = exitLogic;
 		this.brokerage = brokerage;
@@ -107,15 +102,6 @@ public class BacktestBootstrapConfiguration {
 	 */
 	public EntryLogic getEntryLogic() {
 		return entryLogic;
-	}
-
-	/**
-	 * Describes the behaviour of the configuration.
-	 * 
-	 * @return unique description of the configurations behaviour, a meaningful key.
-	 */
-	public String getDescription() {
-		return description;
 	}
 
 	/**

@@ -136,7 +136,7 @@ public class BacktestBootstrap {
 
 		// Creates the net worth events
 		final NetWorthSummaryEventGenerator networthSummay = new NetWorthSummaryEventGenerator(broker, lastTradingDay,
-		        cashAccount, configuration.getDescription());
+		        cashAccount);
 		simulation.addListener(networthSummay);
 
 		// Display for simulation output

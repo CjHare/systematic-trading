@@ -26,6 +26,7 @@
 package com.systematic.trading.simulation.logic;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
@@ -75,4 +76,11 @@ public interface EntryLogic {
 	 * @return minimum and maximum trade value inputs.
 	 */
 	TradeValueLogic getTradeValue();
+
+	/**
+	 * Analyzer of indicators for buy signals.
+	 * 
+	 * @return analysis logic for generating buy signals.
+	 */
+	AnalysisBuySignals getBuySignalAnalysis();
 }

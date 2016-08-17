@@ -38,7 +38,6 @@ import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
-import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.model.IndicatorSignalType;
@@ -65,11 +64,10 @@ public class SingleConfigurationSignals implements BacktestConfigurations {
 
 	@Override
 	public List<BacktestBootstrapConfiguration> get( final EquityIdentity equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final DescriptionGenerator descriptionGenerator ) {
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
 
 		final BacktestBootstrapConfigurationBulider configurationGenerator = new BacktestBootstrapConfigurationBulider(
-		        equity, simulationDates, deposit, descriptionGenerator, MATH_CONTEXT);
+		        equity, simulationDates, deposit, MATH_CONTEXT);
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 

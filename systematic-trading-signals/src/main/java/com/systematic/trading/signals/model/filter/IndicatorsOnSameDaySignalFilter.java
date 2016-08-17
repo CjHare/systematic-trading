@@ -114,8 +114,9 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	}
 
 	@Override
-	public String getDescription() {
-		final StringJoiner description = new StringJoiner("-", "All-on-same-day-", "");
+	public String getDescription( final String separator ) {
+		final StringJoiner description = new StringJoiner(separator, "", "");
+		description.add("AllOnSameDay");
 
 		for (final IndicatorSignalType indicator : indicators) {
 			description.add(indicator.name());

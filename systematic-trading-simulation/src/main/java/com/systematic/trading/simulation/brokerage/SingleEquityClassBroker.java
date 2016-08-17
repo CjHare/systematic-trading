@@ -82,9 +82,13 @@ public class SingleEquityClassBroker implements Brokerage {
 	/** Parties interested in listening to equity events. */
 	private final List<EquityEventListener> equityListeners = new ArrayList<>();
 
-	public SingleEquityClassBroker(final BrokerageTransactionFeeStructure fees,
+	/** Identifier for the broker.*/
+	private final String brokerName;
+
+	public SingleEquityClassBroker(final String brokerName, final BrokerageTransactionFeeStructure fees,
 	        final EquityManagementFeeStructure managementFees, final EquityIdentity equity, final LocalDate startDate,
 	        final MathContext mathContext) {
+		this.brokerName = brokerName;
 		this.monthlyTradeCounter = new MonthlyRollingCounter();
 		this.lastManagementFee = managementFees.getLastManagementFeeDate(startDate);
 		this.equityManagementFee = managementFees;
@@ -209,5 +213,10 @@ public class SingleEquityClassBroker implements Brokerage {
 			notifyListeners(new SingleEquityEvent(equity, startingEquityBalance, equityBalance, feeInEquities,
 			        EquityEventType.MANAGEMENT_FEE, tradingDate, transactionValue));
 		}
+	}
+
+	@Override
+	public String getName() {
+		return brokerName;
 	}
 }

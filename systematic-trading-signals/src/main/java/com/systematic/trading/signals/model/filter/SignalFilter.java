@@ -59,5 +59,5 @@ public interface SignalFilter {
 	 * 
 	 * @return meaningful description used for display purposes.
 	 */
-	String getDescription();
+	String getDescription( String separator );
 }
