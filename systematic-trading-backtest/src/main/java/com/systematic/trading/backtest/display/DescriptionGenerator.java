@@ -67,11 +67,14 @@ public class DescriptionGenerator {
 	private String entryLogic( final EntryLogicConfiguration entry ) {
 
 		switch (entry.getType()) {
+			case CONFIRMATION_SIGNAL:
+				return String.format("Buy%s%s", SEPARATOR, entry.getConfirmationSignal().name());
+
 			case PERIODIC:
 				return String.format("Buy%s%s", SEPARATOR, entry.getPeriodic().name());
 
-			case CONFIRMATION_SIGNAL:
-				return String.format("Buy%s%s", SEPARATOR, entry.getConfirmationSignal().name());
+			case SAME_DAY_SIGNALS:
+				return String.format("Buy%s%s", SEPARATOR, entry.getSameDaySignals().name());
 
 			default:
 				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
