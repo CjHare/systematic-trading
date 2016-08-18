@@ -25,32 +25,27 @@
  */
 package com.systematic.trading.backtest;
 
-import java.math.BigDecimal;
 import java.math.MathContext;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
+import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration.Type;
+import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
+import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
+import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
+import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
-import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
-import com.systematic.trading.backtest.context.BacktestBootstrapContext;
-import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
-import com.systematic.trading.model.EquityIdentity;
-import com.systematic.trading.signals.model.IndicatorSignalType;
-import com.systematic.trading.signals.model.filter.ConfirmationIndicatorsSignalFilter;
-import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
-import com.systematic.trading.signals.model.filter.SignalFilter;
-import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
-import com.systematic.trading.simulation.equity.fee.management.FlatEquityManagementFeeCalculator;
-import com.systematic.trading.simulation.equity.fee.management.LadderedEquityManagementFeeCalculator;
 
 /**
  * Executes all configurations.
@@ -62,95 +57,104 @@ public class AllConfigurations implements BacktestConfigurations {
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
-	private static final Period WEEKLY = Period.ofWeeks(1);
-	private static final Period MONTHLY = Period.ofMonths(1);
-
 	public static void main( final String... args ) throws Exception {
-
-		final BacktestApplication application = new BacktestApplication(MATH_CONTEXT);
-		application.runTest(new AllConfigurations(), args);
+		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), args);
 	}
 
 	@Override
-	public List<BacktestBootstrapContext> get( final EquityIdentity equity,
+	public List<BacktestBootstrapConfiguration> get( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
-		final BacktestBootstrapContextBulider configurationGenerator = new BacktestBootstrapContextBulider(
-		        equity, simulationDates, deposit, MATH_CONTEXT);
-
-		final List<BacktestBootstrapContext> configurations = new ArrayList<>();
+		final EntryLogicConfiguration weeklyBuy = new EntryLogicConfiguration(Type.PERIODIC,
+		        PeriodicFilterConfiguration.WEEKLY);
+		final EntryLogicConfiguration monthlyBuy = new EntryLogicConfiguration(Type.PERIODIC,
+		        PeriodicFilterConfiguration.MONTHLY);
 
 		// Vanguard Retail
-		configurations.add(configurationGenerator.getPeriodicConfiguration(BrokerageFeesConfiguration.VANGUARD_RETAIL,
-		        WEEKLY, getVanguardRetailFeeCalculator()));
+		configurations.add(new BacktestBootstrapConfiguration(simulationDates,
+		        BrokerageFeesConfiguration.VANGUARD_RETAIL, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
+		        deposit, weeklyBuy, equity, ExitLogicConfiguration.HOLD_FOREVER, MaximumTrade.ALL, MinimumTrade.ZERO));
 
 		// CMC Weekly
-		configurations.add(configurationGenerator.getPeriodicConfiguration(BrokerageFeesConfiguration.CMC_MARKETS,
-		        WEEKLY, getVanguardEftFeeCalculator()));
+		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, weeklyBuy, equity,
+		        ExitLogicConfiguration.HOLD_FOREVER, MaximumTrade.ALL, MinimumTrade.ZERO));
 
 		// CMC Monthly
-		configurations.add(configurationGenerator.getPeriodicConfiguration(BrokerageFeesConfiguration.CMC_MARKETS,
-		        MONTHLY, getVanguardEftFeeCalculator()));
+		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, monthlyBuy, equity,
+		        ExitLogicConfiguration.HOLD_FOREVER, MaximumTrade.ALL, MinimumTrade.ZERO));
 
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
 
 		for (final MaximumTrade maximumTrade : MaximumTrade.values()) {
 			for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-				configurations.addAll(getConfigurations(configurationGenerator, brokerage, minimumTrade, maximumTrade));
+				configurations.addAll(
+				        getConfigurations(simulationDates, deposit, equity, brokerage, minimumTrade, maximumTrade));
 			}
 		}
 
 		return configurations;
 	}
 
-	private static List<BacktestBootstrapContext> getConfigurations(
-	        final BacktestBootstrapContextBulider configurationGenerator,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
-	        final MaximumTrade maximumTrade ) {
+	private static List<BacktestBootstrapConfiguration> getConfigurations(
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+	        final EquityConfiguration equity, final BrokerageFeesConfiguration brokerage,
+	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
 
-		final List<BacktestBootstrapContext> configurations = new ArrayList<>();
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
+		EntryLogicConfiguration entry;
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 
 				// MACD & RSI
-				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-				        getVanguardEftFeeCalculator(), brokerage,
-				        createSameDaySignalFilter(macdConfiguration, rsiConfiguration), macdConfiguration,
-				        rsiConfiguration));
+				entry = new EntryLogicConfiguration(Type.SAME_DAY_SIGNALS, SameDayFilterConfiguration.ALL,
+				        macdConfiguration, rsiConfiguration);
+				configurations.add(new BacktestBootstrapConfiguration(simulationDates,
+				        BrokerageFeesConfiguration.CMC_MARKETS, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
+				        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
 
 				for (final ConfirmationSignalFilterConfiguration filterConfigurations : ConfirmationSignalFilterConfiguration
 				        .values()) {
 
 					// MACD & RSI - confirmation signals
-					configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-					        getVanguardEftFeeCalculator(), brokerage,
-					        createConfirmationSignalFilter(macdConfiguration, rsiConfiguration, filterConfigurations),
-					        macdConfiguration, rsiConfiguration));
+					entry = new EntryLogicConfiguration(Type.CONFIRMATION_SIGNAL, filterConfigurations,
+					        macdConfiguration, rsiConfiguration);
+					configurations.add(
+					        new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
+					                CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
+					                ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
 				}
 			}
 
 			// MACD only
-			configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-			        getVanguardEftFeeCalculator(), brokerage, createSameDaySignalFilter(macdConfiguration),
-			        macdConfiguration));
+			entry = new EntryLogicConfiguration(Type.SAME_DAY_SIGNALS, SameDayFilterConfiguration.ALL,
+			        macdConfiguration);
+			configurations.add(new BacktestBootstrapConfiguration(simulationDates,
+			        BrokerageFeesConfiguration.CMC_MARKETS, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
+			        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
 
 			for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 				for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 
 					// MACD, SMA & RSI
-					configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-					        getVanguardEftFeeCalculator(), brokerage,
-					        createSameDaySignalFilter(macdConfiguration, smaConfiguration), macdConfiguration,
-					        smaConfiguration, rsiConfiguration));
+					entry = new EntryLogicConfiguration(Type.SAME_DAY_SIGNALS, SameDayFilterConfiguration.ALL,
+					        macdConfiguration, smaConfiguration, rsiConfiguration);
+					configurations.add(
+					        new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
+					                CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
+					                ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
 				}
 
 				// MACD & SMA
-				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-				        getVanguardEftFeeCalculator(), brokerage,
-				        createSameDaySignalFilter(macdConfiguration, smaConfiguration), macdConfiguration,
-				        smaConfiguration));
+				entry = new EntryLogicConfiguration(Type.SAME_DAY_SIGNALS, SameDayFilterConfiguration.ALL,
+				        macdConfiguration, smaConfiguration);
+				configurations.add(new BacktestBootstrapConfiguration(simulationDates,
+				        BrokerageFeesConfiguration.CMC_MARKETS, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
+				        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
 			}
 		}
 
@@ -158,42 +162,14 @@ public class AllConfigurations implements BacktestConfigurations {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 
 				// SMA & RSI
-				configurations.add(configurationGenerator.getIndicatorConfiguration(minimumTrade, maximumTrade,
-				        getVanguardEftFeeCalculator(), brokerage,
-				        createSameDaySignalFilter(smaConfiguration, rsiConfiguration), smaConfiguration,
-				        rsiConfiguration));
+				entry = new EntryLogicConfiguration(Type.SAME_DAY_SIGNALS, SameDayFilterConfiguration.ALL,
+				        smaConfiguration, rsiConfiguration);
+				configurations.add(new BacktestBootstrapConfiguration(simulationDates,
+				        BrokerageFeesConfiguration.CMC_MARKETS, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
+				        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
 			}
 		}
 
 		return configurations;
-	}
-
-	// TODO these fees should go somewhere, another configuration enum?
-	private static EquityManagementFeeCalculator getVanguardEftFeeCalculator() {
-		// new ZeroEquityManagementFeeStructure()
-		return new FlatEquityManagementFeeCalculator(BigDecimal.valueOf(0.0018), MATH_CONTEXT);
-	}
-
-	private static EquityManagementFeeCalculator getVanguardRetailFeeCalculator() {
-		final BigDecimal[] vanguardFeeRange = { BigDecimal.valueOf(50000), BigDecimal.valueOf(100000) };
-		final BigDecimal[] vanguardPercentageFee = { BigDecimal.valueOf(0.009), BigDecimal.valueOf(0.006),
-		        BigDecimal.valueOf(0.0035) };
-		return new LadderedEquityManagementFeeCalculator(vanguardFeeRange, vanguardPercentageFee, MATH_CONTEXT);
-	}
-
-	//TODO these filters into an factory
-	private static SignalFilter createSameDaySignalFilter( final SignalConfiguration... entrySignals ) {
-
-		final IndicatorSignalType[] passed = new IndicatorSignalType[entrySignals.length];
-		for (int i = 0; i < entrySignals.length; i++) {
-			passed[i] = entrySignals[i].getType();
-		}
-		return new IndicatorsOnSameDaySignalFilter(passed);
-	}
-
-	private static SignalFilter createConfirmationSignalFilter( final SignalConfiguration anchor,
-	        final SignalConfiguration confirmation, final ConfirmationSignalFilterConfiguration filterConfiguration ) {
-		return new ConfirmationIndicatorsSignalFilter(anchor.getType(), confirmation.getType(),
-		        filterConfiguration.getDelayUntilConfirmationRange(), filterConfiguration.getConfirmationDayRange());
 	}
 }

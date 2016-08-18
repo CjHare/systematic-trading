@@ -26,11 +26,9 @@
 package com.systematic.trading.simulation.logic;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.logic.trade.TradeValueLogic;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 
@@ -69,18 +67,4 @@ public interface EntryLogic {
 	 * @param listener will receive signal events that occur during analysis.
 	 */
 	void addListener( SignalAnalysisListener listener );
-
-	/**
-	 * Logic used for the calculating the trade value on each trade event.
-	 * 
-	 * @return minimum and maximum trade value inputs.
-	 */
-	TradeValueLogic getTradeValue();
-
-	/**
-	 * Analyzer of indicators for buy signals.
-	 * 
-	 * @return analysis logic for generating buy signals.
-	 */
-	AnalysisBuySignals getBuySignalAnalysis();
 }

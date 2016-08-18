@@ -25,17 +25,17 @@
  */
 package com.systematic.trading.backtest.display;
 
-import java.time.Period;
-import java.util.List;
 import java.util.StringJoiner;
 
-import com.systematic.trading.backtest.context.BacktestBootstrapContext;
-import com.systematic.trading.signals.model.filter.SignalFilter;
-import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
-import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
-import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.trade.TradeValueCalculator;
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
+import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
+import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
+import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
+import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 
 /**
  * Textually meaningful description of the configuration appropriate for display.
@@ -44,68 +44,66 @@ import com.systematic.trading.simulation.logic.trade.TradeValueCalculator;
  */
 public class DescriptionGenerator {
 	// TODO interface - one for file, another for console
-	//TODO convert to a builder
 
 	private static final String SEPARATOR = "_";
 
-	public String getDescription( final BacktestBootstrapContext configuration ) {
+	public String getDescription( final BacktestBootstrapConfiguration configuration ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 
 		//TODO tell between different filter values, i.e. short / medium / long parameters ...or include those in filter output
-		out.add(entryFilters(configuration.getEntryLogic()));
-		out.add(minimumTradeValue(configuration.getEntryLogic()));
-		out.add(maximumTradeValue(configuration.getEntryLogic()));
 
-		//TODO weekly cash deposit / starting value
-		out.add(depositAmount(configuration.getCashAccount()));
+		out.add(equity(configuration.getEquity()));
+		out.add(brokerage(configuration.getBrokerageFees()));
+		out.add(cashAccount(configuration.getCashAccount()));
+		out.add(depositAmount(configuration.getDeposit()));
+		out.add(entryLogic(configuration.getEntryLogic()));
+		out.add(exitLogic(configuration.getExitLogic()));
+		out.add(minimumTradeValue(configuration.getMinimumTrade()));
+		out.add(maximumTradeValue(configuration.getMaximumTrade()));
 
-		//TODO add broker type
-		out.add(configuration.getBroker().getName());
-
-		//TODO better way of passing this information then the full objects, some configuration summary?
-
-		//TODO add entry filters		
-
-		//TODO add exit filters
-
-		return String.format("%s_HoldForever", out.toString());
-	}
-
-	private String depositAmount( final CashAccount cashAccount ) {
-		if (cashAccount instanceof RegularDepositCashAccountDecorator) {
-			final RegularDepositCashAccountDecorator deposit = (RegularDepositCashAccountDecorator) cashAccount;
-			return String.format("%s%s%s", deposit.getDepositAmount(), SEPARATOR, deposit.getInterval());
-		}
-
-		return "NoDeposit";
-	}
-
-	private String entryFilters( final EntryLogic entryLogic ) {
-		if (entryLogic.getBuySignalAnalysis() == null) {
-			if (Period.ofDays(7).equals(((DateTriggeredEntryLogic) entryLogic).getInterval())) {
-				return "BuyWeekly";
-			} else {
-				return "BuyMonthly";
-			}
-		}
-
-		final List<SignalFilter> filters = entryLogic.getBuySignalAnalysis().getFilters();
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		for (final SignalFilter filter : filters) {
-			//out.add(filter.getDescription(SEPARATOR));
-		}
 		return out.toString();
 	}
 
-	private String maximumTradeValue( final EntryLogic entryLogic ) {
-		return tradeValue("Maximum", entryLogic.getTradeValue().getMinimumValue());
+	private String entryLogic( final EntryLogicConfiguration entry ) {
+
+		switch (entry.getType()) {
+			case PERIODIC:
+				return String.format("Buy%s%s", SEPARATOR, entry.getPeriodic().name());
+
+			case CONFIRMATION_SIGNAL:
+				return String.format("Buy%s%s", SEPARATOR, entry.getConfirmationSignal().name());
+
+			default:
+				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
+		}
 	}
 
-	private String minimumTradeValue( final EntryLogic entryLogic ) {
-		return tradeValue("Minimum", entryLogic.getTradeValue().getMinimumValue());
+	private String equity( final EquityConfiguration equity ) {
+		return equity.getEquityIdentity().getTickerSymbol();
 	}
 
-	private String tradeValue( final String prefix, final TradeValueCalculator tradeValue ) {
-		return String.format("%s-%s%s%s", prefix, tradeValue.getValue(), SEPARATOR, tradeValue.getType());
+	private String exitLogic( final ExitLogicConfiguration entry ) {
+		return "HoldForever";
+	}
+
+	private String cashAccount( final CashAccountConfiguration cashAccount ) {
+		return String.format("Account %s", cashAccount.name());
+	}
+
+	private String depositAmount( final DepositConfiguration deposit ) {
+		return String.format("DepositAmoun%s%s%sDepositFrequency%s%s", SEPARATOR, deposit.getAmount(), SEPARATOR,
+		        SEPARATOR, deposit.getFrequency());
+	}
+
+	private String brokerage( final BrokerageFeesConfiguration brokerage ) {
+		return String.format("%s", brokerage.name());
+	}
+
+	private String minimumTradeValue( final MinimumTrade trade ) {
+		return String.format("MinimumTrade%s%s", SEPARATOR, trade.getDescription());
+	}
+
+	private String maximumTradeValue( final MaximumTrade trade ) {
+		return String.format("MaximumTrade%s%s%spercent", SEPARATOR, trade.getDescription(), SEPARATOR);
 	}
 }

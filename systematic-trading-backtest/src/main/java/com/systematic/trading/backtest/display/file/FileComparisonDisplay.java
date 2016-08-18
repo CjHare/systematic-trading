@@ -169,11 +169,13 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	}
 
 	private String maximumTradeValue() {
-		return tradeValue("Maximum", entryLogic.getTradeValue().getMaximumValue());
+		//		return tradeValue("Maximum", entryLogic.getTradeValue().getMaximumValue());
+		return null;
 	}
 
 	private String minimumTradeValue() {
-		return tradeValue("Minimum", entryLogic.getTradeValue().getMinimumValue());
+		//		return tradeValue("Minimum", entryLogic.getTradeValue().getMinimumValue());
+		return null;
 	}
 
 	private String tradeValue( final String prefix, final TradeValueCalculator tradeValue ) {

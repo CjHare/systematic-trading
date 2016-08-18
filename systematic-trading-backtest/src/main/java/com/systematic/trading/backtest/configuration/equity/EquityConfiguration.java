@@ -40,14 +40,28 @@ public enum EquityConfiguration {
 	private final String tickerSymbol;
 	private final EquityClass equityType;
 	private final int scale;
+	private final EquityManagementFeeConfiguration managementFee;
+
+	EquityConfiguration(final String tickerSymbol, final EquityClass equityType, final int scale,
+	        final EquityManagementFeeConfiguration managementFee) {
+		this.tickerSymbol = tickerSymbol;
+		this.equityType = equityType;
+		this.scale = scale;
+		this.managementFee = managementFee;
+	}
 
 	EquityConfiguration(final String tickerSymbol, final EquityClass equityType, final int scale) {
 		this.tickerSymbol = tickerSymbol;
 		this.equityType = equityType;
 		this.scale = scale;
+		this.managementFee = EquityManagementFeeConfiguration.NONE;
 	}
 
 	public EquityIdentity getEquityIdentity() {
 		return new EquityIdentity(tickerSymbol, equityType, scale);
+	}
+
+	public EquityManagementFeeConfiguration getManagementFee() {
+		return managementFee;
 	}
 }

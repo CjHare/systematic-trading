@@ -34,6 +34,7 @@ import java.math.BigDecimal;
  */
 public enum MinimumTrade {
 
+	ZERO(BigDecimal.ZERO),
 	FIVE_HUNDRED(BigDecimal.valueOf(500)),
 	ONE_THOUSAND(BigDecimal.valueOf(1000)),
 	FIFTEEN_HUNDRED(BigDecimal.valueOf(1500)),

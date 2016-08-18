@@ -1,6 +1,5 @@
 package com.systematic.trading.backtest;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.MathContext;
 import java.time.LocalDate;
@@ -14,12 +13,18 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
+import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
+import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
+import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
@@ -76,7 +81,7 @@ public class BacktestApplication {
 		        .withDayOfMonth(1);
 
 		// Only for the single equity
-		final EquityIdentity equity = EquityConfiguration.SP_500_PRICE_INDEX.getEquityIdentity();
+		final EquityConfiguration equity = EquityConfiguration.SP_500_PRICE_INDEX;
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final Period warmUpPeriod = getWarmUpPeriod();
@@ -84,7 +89,7 @@ public class BacktestApplication {
 		        simulationEndDate, warmUpPeriod);
 
 		// Retrieve the set of trading data
-		final TickerSymbolTradingData tradingData = getTradingData(equity, simulationDates);
+		final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityIdentity(), simulationDates);
 
 		// Multi-threading support
 		final int cores = Runtime.getRuntime().availableProcessors();
@@ -97,18 +102,16 @@ public class BacktestApplication {
 
 		try {
 			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
-
-				final List<BacktestBootstrapContext> tests = configurations.get(equity, simulationDates,
+				final List<BacktestBootstrapConfiguration> tests = configurations.get(equity, simulationDates,
 				        depositAmount);
-
 				final String outputDirectory = String.format(baseOutputDirectory, depositAmount);
 
-				runTest(depositAmount, outputDirectory, tests, tradingData, equity, outputType, pool);
+				runTest(depositAmount, outputDirectory, tests, tradingData, equity.getEquityIdentity(), outputType,
+				        pool);
 			}
 
 		} finally {
 			HibernateUtil.getSessionFactory().close();
-
 			closePool(pool);
 		}
 
@@ -127,7 +130,6 @@ public class BacktestApplication {
 	}
 
 	private static Period getWarmUpPeriod() {
-
 		int windUp = 0;
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
@@ -167,7 +169,7 @@ public class BacktestApplication {
 	}
 
 	private void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
-	        final List<BacktestBootstrapContext> configurations, final TickerSymbolTradingData tradingData,
+	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
 	        final EquityIdentity equity, final DisplayType type, final ExecutorService pool )
 	                throws BacktestInitialisationException {
 
@@ -175,12 +177,12 @@ public class BacktestApplication {
 		FileClearDestination destination = new FileClearDestination(baseOutputDirectory);
 		destination.clear();
 
-		for (final BacktestBootstrapContext configuration : configurations) {
+		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final String outputDirectory = getOutputDirectory(baseOutputDirectory, equity, configuration);
 			final BacktestDisplay fileDisplay = getDisplay(type, outputDirectory, pool);
+			final BacktestBootstrapContext context = createContext(configuration);
 
-			final BacktestBootstrap bootstrap = new BacktestBootstrap(tradingData, configuration, fileDisplay,
-			        mathContext);
+			final BacktestBootstrap bootstrap = new BacktestBootstrap(tradingData, context, fileDisplay, mathContext);
 
 			LOG.info(String.format("Backtesting beginning for: %s", description.getDescription(configuration)));
 
@@ -191,6 +193,36 @@ public class BacktestApplication {
 
 		LOG.info(String.format("All Simulations have been completed for deposit amount: %s", depositAmount));
 
+	}
+
+	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration ) {
+		final DepositConfiguration deposit = configuration.getDeposit();
+		final BacktestSimulationDates simulationDates = configuration.getBacktestDates();
+		final BacktestBootstrapContextBulider builder = new BacktestBootstrapContextBulider(configuration.getEquity(),
+		        simulationDates, deposit, mathContext);
+
+		final BrokerageFeesConfiguration brokerageType = configuration.getBrokerageFees();
+
+		final MinimumTrade minimumTrade = configuration.getMinimumTrade();
+		final MaximumTrade maximumTrade = configuration.getMaximumTrade();
+		final EntryLogicConfiguration entry = configuration.getEntryLogic();
+
+		//TODO move this switch into the builder
+		switch (configuration.getEntryLogic().getType()) {
+			case PERIODIC:
+				final Period purchaseFrequency = configuration.getEntryLogic().getPeriodic().getFrequency();
+				return builder.periodic(brokerageType, purchaseFrequency);
+
+			case CONFIRMATION_SIGNAL:
+				return builder.confirmationSignal(minimumTrade, maximumTrade, brokerageType, entry);
+
+			case SAME_DAY_SIGNALS:
+				return builder.indicatorsOnSameDay(minimumTrade, maximumTrade, brokerageType, entry);
+
+			default:
+				throw new IllegalArgumentException(
+				        String.format("Unexpected entry logic type: %s", configuration.getEntryLogic().getType()));
+		}
 	}
 
 	private TickerSymbolTradingData getTradingData( final EquityIdentity equity,
@@ -211,9 +243,8 @@ public class BacktestApplication {
 	}
 
 	private String getOutputDirectory( final String baseOutputDirectory, final EquityIdentity equity,
-	        final BacktestBootstrapContext configuration ) {
-		return String.format("%s%s%s%s", baseOutputDirectory, equity.getTickerSymbol(), "/",
-		        description.getDescription(configuration));
+	        final BacktestBootstrapConfiguration configuration ) {
+		return String.format("%s%s", baseOutputDirectory, description.getDescription(configuration));
 	}
 
 	private String getBaseOutputDirectory( final String... args ) {

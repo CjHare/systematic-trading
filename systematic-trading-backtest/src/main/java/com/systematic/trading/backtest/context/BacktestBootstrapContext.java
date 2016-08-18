@@ -32,9 +32,7 @@ import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 
 /**
- * Configuration for a back testing bootstrap configuration.
- * <p/>
- * The inputs, including the entry and exit logic.
+ * Context that a back testing will occurs within. 
  * 
  * @author CJ Hare
  */
@@ -59,8 +57,8 @@ public class BacktestBootstrapContext {
 	 * @param startDate inclusive beginning date for the back testing.
 	 * @param endDate inclusive end date for back testing.
 	 */
-	public BacktestBootstrapContext(final EntryLogic entryLogic, final ExitLogic exitLogic,
-	        final Brokerage brokerage, final CashAccount cashAccount, final BacktestSimulationDates simulationDates) {
+	public BacktestBootstrapContext(final EntryLogic entryLogic, final ExitLogic exitLogic, final Brokerage brokerage,
+	        final CashAccount cashAccount, final BacktestSimulationDates simulationDates) {
 		this.cashAccount = cashAccount;
 		this.entryLogic = entryLogic;
 		this.exitLogic = exitLogic;

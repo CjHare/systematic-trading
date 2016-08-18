@@ -26,26 +26,21 @@
 package com.systematic.trading.simulation.equity.fee.management;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Period;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
 
 /**
  * Zero management cost associated with holding the equity.
  * 
  * @author CJ Hare
  */
-public class ZeroEquityManagementFeeStructure implements EquityManagementFeeStructure {
+public class ZeroEquityManagementFeeCalculator implements EquityManagementFeeCalculator {
 
 	@Override
-	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
-	        final TradingDayPrices tradingData ) {
+	public BigDecimal calculateFee( final BigDecimal numberOfEquities, final ClosingPrice singleEquityValue,
+	        final Period durationToCalculate ) {
 		return BigDecimal.ZERO;
-	}
-
-	@Override
-	public LocalDate getLastManagementFeeDate( final LocalDate tradingDate ) {
-		return tradingDate;
 	}
 }
