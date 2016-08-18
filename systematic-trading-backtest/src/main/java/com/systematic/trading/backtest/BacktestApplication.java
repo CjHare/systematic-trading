@@ -14,12 +14,12 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
+import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.backtest.display.file.FileClearDestination;
@@ -98,7 +98,7 @@ public class BacktestApplication {
 		try {
 			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
 
-				final List<BacktestBootstrapConfiguration> tests = configurations.get(equity, simulationDates,
+				final List<BacktestBootstrapContext> tests = configurations.get(equity, simulationDates,
 				        depositAmount);
 
 				final String outputDirectory = String.format(baseOutputDirectory, depositAmount);
@@ -167,7 +167,7 @@ public class BacktestApplication {
 	}
 
 	private void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
-	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
+	        final List<BacktestBootstrapContext> configurations, final TickerSymbolTradingData tradingData,
 	        final EquityIdentity equity, final DisplayType type, final ExecutorService pool )
 	                throws BacktestInitialisationException {
 
@@ -175,7 +175,7 @@ public class BacktestApplication {
 		FileClearDestination destination = new FileClearDestination(baseOutputDirectory);
 		destination.clear();
 
-		for (final BacktestBootstrapConfiguration configuration : configurations) {
+		for (final BacktestBootstrapContext configuration : configurations) {
 			final String outputDirectory = getOutputDirectory(baseOutputDirectory, equity, configuration);
 			final BacktestDisplay fileDisplay = getDisplay(type, outputDirectory, pool);
 
@@ -211,7 +211,7 @@ public class BacktestApplication {
 	}
 
 	private String getOutputDirectory( final String baseOutputDirectory, final EquityIdentity equity,
-	        final BacktestBootstrapConfiguration configuration ) {
+	        final BacktestBootstrapContext configuration ) {
 		return String.format("%s%s%s%s", baseOutputDirectory, equity.getTickerSymbol(), "/",
 		        description.getDescription(configuration));
 	}

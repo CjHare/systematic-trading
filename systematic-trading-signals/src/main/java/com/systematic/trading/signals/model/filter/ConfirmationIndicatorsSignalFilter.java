@@ -140,11 +140,4 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 			throw new IllegalArgumentException(message);
 		}
 	}
-
-	@Override
-	public String getDescription( final String separator ) {
-		return String.format("%s%sConfirmedBy%s%s%sbetween%s%s%sto%s%s%sDaysAfter", anchor, separator, separator,
-		        confirmation, separator, separator, delayUntilConfirmationRange, separator, separator,
-		        delayUntilConfirmationRange + confirmationDayRange, separator);
-	}
 }

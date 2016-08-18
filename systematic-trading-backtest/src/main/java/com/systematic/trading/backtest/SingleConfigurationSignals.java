@@ -30,14 +30,14 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurationBulider;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
+import com.systematic.trading.backtest.context.BacktestBootstrapContext;
+import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.model.IndicatorSignalType;
@@ -63,13 +63,13 @@ public class SingleConfigurationSignals implements BacktestConfigurations {
 	}
 
 	@Override
-	public List<BacktestBootstrapConfiguration> get( final EquityIdentity equity,
+	public List<BacktestBootstrapContext> get( final EquityIdentity equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
 
-		final BacktestBootstrapConfigurationBulider configurationGenerator = new BacktestBootstrapConfigurationBulider(
+		final BacktestBootstrapContextBulider configurationGenerator = new BacktestBootstrapContextBulider(
 		        equity, simulationDates, deposit, MATH_CONTEXT);
 
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
+		final List<BacktestBootstrapContext> configurations = new ArrayList<>();
 
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;

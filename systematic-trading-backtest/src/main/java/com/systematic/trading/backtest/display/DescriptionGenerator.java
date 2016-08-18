@@ -29,7 +29,7 @@ import java.time.Period;
 import java.util.List;
 import java.util.StringJoiner;
 
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
@@ -48,7 +48,7 @@ public class DescriptionGenerator {
 
 	private static final String SEPARATOR = "_";
 
-	public String getDescription( final BacktestBootstrapConfiguration configuration ) {
+	public String getDescription( final BacktestBootstrapContext configuration ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 
 		//TODO tell between different filter values, i.e. short / medium / long parameters ...or include those in filter output
@@ -92,7 +92,7 @@ public class DescriptionGenerator {
 		final List<SignalFilter> filters = entryLogic.getBuySignalAnalysis().getFilters();
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		for (final SignalFilter filter : filters) {
-			out.add(filter.getDescription(SEPARATOR));
+			//out.add(filter.getDescription(SEPARATOR));
 		}
 		return out.toString();
 	}

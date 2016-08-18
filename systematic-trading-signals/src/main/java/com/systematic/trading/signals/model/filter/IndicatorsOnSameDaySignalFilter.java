@@ -30,7 +30,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
-import java.util.StringJoiner;
 import java.util.TreeSet;
 
 import com.systematic.trading.signals.indicator.IndicatorSignal;
@@ -111,17 +110,5 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 				throw new IllegalArgumentException(String.format("Expecting a non-null %s list", indicator));
 			}
 		}
-	}
-
-	@Override
-	public String getDescription( final String separator ) {
-		final StringJoiner description = new StringJoiner(separator, "", "");
-		description.add("AllOnSameDay");
-
-		for (final IndicatorSignalType indicator : indicators) {
-			description.add(indicator.name());
-		}
-
-		return description.toString();
 	}
 }

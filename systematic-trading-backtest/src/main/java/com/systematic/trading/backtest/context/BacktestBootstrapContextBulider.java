@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration;
+package com.systematic.trading.backtest.context;
 
 import java.math.MathContext;
 import java.time.LocalDate;
@@ -59,7 +59,7 @@ import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculato
  * 
  * @author CJ Hare
  */
-public class BacktestBootstrapConfigurationBulider {
+public class BacktestBootstrapContextBulider {
 
 	/** How long one year is as a period of time/ */
 	private static final Period ONE_YEAR = Period.ofYears(1);
@@ -79,7 +79,7 @@ public class BacktestBootstrapConfigurationBulider {
 	/** The intended dates for the simulation. */
 	private final BacktestSimulationDates simulationDates;
 
-	public BacktestBootstrapConfigurationBulider(final EquityIdentity equity,
+	public BacktestBootstrapContextBulider(final EquityIdentity equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final MathContext mathContext) {
 		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getSimulationStartDate());
@@ -97,7 +97,7 @@ public class BacktestBootstrapConfigurationBulider {
 		return new HoldForeverExitLogic();
 	}
 
-	public BacktestBootstrapConfiguration getPeriodicConfiguration( final BrokerageFeesConfiguration brokerageType,
+	public BacktestBootstrapContext getPeriodicConfiguration( final BrokerageFeesConfiguration brokerageType,
 	        final Period purchaseFrequency, final EquityManagementFeeCalculator feeCalculator ) {
 
 		final LocalDate startDate = simulationDates.getSimulationStartDate();
@@ -109,10 +109,10 @@ public class BacktestBootstrapConfigurationBulider {
 		final EntryLogic entryLogic = EntryLogicFactory.getInstance().create(equityIdentity, startDate,
 		        purchaseFrequency, mathContext);
 
-		return new BacktestBootstrapConfiguration(entryLogic, getExitLogic(), brokerage, cashAccount, simulationDates);
+		return new BacktestBootstrapContext(entryLogic, getExitLogic(), brokerage, cashAccount, simulationDates);
 	}
 
-	public BacktestBootstrapConfiguration getIndicatorConfiguration( final MinimumTrade minimumTrade,
+	public BacktestBootstrapContext getIndicatorConfiguration( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final EquityManagementFeeCalculator feeCalculator,
 	        final BrokerageFeesConfiguration brokerageType, final SignalFilter filter,
 	        final SignalConfiguration... indicators ) {
@@ -127,7 +127,7 @@ public class BacktestBootstrapConfigurationBulider {
 		        entrySignals);
 	}
 
-	private BacktestBootstrapConfiguration getIndicatorConfiguration( final MinimumTrade minimumTrade,
+	private BacktestBootstrapContext getIndicatorConfiguration( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
 	        final EquityManagementFeeCalculator feeCalculator, final SignalFilter filter,
 	        final IndicatorSignalGenerator... entrySignals ) {
@@ -145,6 +145,6 @@ public class BacktestBootstrapConfigurationBulider {
 		        startDate, mathContext);
 		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit, mathContext);
 
-		return new BacktestBootstrapConfiguration(entryLogic, getExitLogic(), cmcMarkets, cashAccount, simulationDates);
+		return new BacktestBootstrapContext(entryLogic, getExitLogic(), cmcMarkets, cashAccount, simulationDates);
 	}
 }

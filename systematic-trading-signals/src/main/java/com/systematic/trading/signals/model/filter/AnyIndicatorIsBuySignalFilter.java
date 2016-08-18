@@ -60,9 +60,4 @@ public class AnyIndicatorIsBuySignalFilter implements SignalFilter {
 
 		return passedSignals;
 	}
-
-	@Override
-	public String getDescription( final String separator ) {
-		return "AnyIndicator";
-	}
 }

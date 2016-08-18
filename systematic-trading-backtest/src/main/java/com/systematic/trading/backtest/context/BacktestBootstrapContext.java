@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration;
+package com.systematic.trading.backtest.context;
 
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.simulation.brokerage.Brokerage;
@@ -38,7 +38,7 @@ import com.systematic.trading.simulation.logic.ExitLogic;
  * 
  * @author CJ Hare
  */
-public class BacktestBootstrapConfiguration {
+public class BacktestBootstrapContext {
 
 	/** Applied to each equity transaction. */
 	private final Brokerage brokerage;
@@ -59,7 +59,7 @@ public class BacktestBootstrapConfiguration {
 	 * @param startDate inclusive beginning date for the back testing.
 	 * @param endDate inclusive end date for back testing.
 	 */
-	public BacktestBootstrapConfiguration(final EntryLogic entryLogic, final ExitLogic exitLogic,
+	public BacktestBootstrapContext(final EntryLogic entryLogic, final ExitLogic exitLogic,
 	        final Brokerage brokerage, final CashAccount cashAccount, final BacktestSimulationDates simulationDates) {
 		this.cashAccount = cashAccount;
 		this.entryLogic = entryLogic;
