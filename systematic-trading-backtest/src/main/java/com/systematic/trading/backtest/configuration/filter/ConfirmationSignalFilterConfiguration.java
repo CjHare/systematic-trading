@@ -7,7 +7,7 @@ public enum ConfirmationSignalFilterConfiguration {
 	private final int confirmationDayRange;
 	private final int delayUntilConfirmationRange;
 
-	ConfirmationSignalFilterConfiguration(final int confirmationDayRange, final int delayUntilConfirmationRange) {
+	ConfirmationSignalFilterConfiguration(final int delayUntilConfirmationRange, final int confirmationDayRange) {
 		this.confirmationDayRange = confirmationDayRange;
 		this.delayUntilConfirmationRange = delayUntilConfirmationRange;
 	}
