@@ -49,8 +49,4 @@ public enum MinimumTrade {
 	public BigDecimal getValue() {
 		return value;
 	}
-
-	public String getDescription() {
-		return String.valueOf(value.longValue());
-	}
 }

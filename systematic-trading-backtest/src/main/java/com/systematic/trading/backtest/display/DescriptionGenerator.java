@@ -132,7 +132,7 @@ public class DescriptionGenerator {
 	}
 
 	private String minimumTradeValue( final MinimumTrade trade ) {
-		return String.format("Minimum%s%s", SEPARATOR, MAX_TWO_DECIMAL_PLACES.format(trade.getDescription()));
+		return String.format("Minimum%s%s", SEPARATOR, MAX_TWO_DECIMAL_PLACES.format(trade.getValue()));
 	}
 
 	private String maximumTradeValue( final MaximumTrade trade ) {
