@@ -64,27 +64,25 @@ public class DescriptionGenerator {
 	}
 
 	private String entryLogic( final EntryLogicConfiguration entry ) {
-		final String signal;
+		final StringJoiner out = new StringJoiner(SEPARATOR);
 
 		switch (entry.getType()) {
 			case CONFIRMATION_SIGNAL:
-				signal = entryLogicConfirmationSignal(entry);
+				out.add(entryLogicConfirmationSignal(entry));
 			break;
-
 			case PERIODIC:
-				signal = entryPeriodic(entry);
+				out.add(entryPeriodic(entry));
 			break;
-
 			case SAME_DAY_SIGNALS:
-				signal = entryLogicSameDaySignals(entry);
+				out.add(entryLogicSameDaySignals(entry));
 			break;
-
 			default:
 				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
 		}
 
-		return String.format("%s%s%s", signal, minimumTradeValue(entry.getMinimumTrade()),
-		        maximumTradeValue(entry.getMaximumTrade()));
+		out.add(minimumTradeValue(entry.getMinimumTrade()));
+		out.add(maximumTradeValue(entry.getMaximumTrade()));
+		return out.toString();
 	}
 
 	private String entryPeriodic( final EntryLogicConfiguration entry ) {
@@ -101,14 +99,17 @@ public class DescriptionGenerator {
 	}
 
 	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
+		final int delay = entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange();
+		final int range = entry.getConfirmationSignal().getType().getConfirmationDayRange();
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(entry.getConfirmationSignal().getAnchor().getDescription());
 		out.add("confirmedBy");
 		out.add(entry.getConfirmationSignal().getConfirmation().getDescription());
 		out.add("in");
-		out.add(String.valueOf(entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange()));
+		out.add(String.valueOf(delay));
 		out.add("to");
-		out.add(String.valueOf(entry.getConfirmationSignal().getType().getConfirmationDayRange()));
+		out.add(String.valueOf(delay + range));
+		out.add("days");
 		return out.toString();
 	}
 
@@ -153,11 +154,15 @@ public class DescriptionGenerator {
 	}
 
 	private String minimumTradeValue( final MinimumTrade trade ) {
-		return String.format("Minimum%s", MAX_TWO_DECIMAL_PLACES.format(trade.getValue()));
+		return String.format("Minimum%s%s", SEPARATOR, MAX_TWO_DECIMAL_PLACES.format(trade.getValue()));
 	}
 
 	private String maximumTradeValue( final MaximumTrade trade ) {
-		return String.format("Maximum%s%spercent", convertToPercetage(trade.getValue()), SEPARATOR);
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add("Maximum");
+		out.add(convertToPercetage(trade.getValue()));
+		out.add("spercent");
+		return out.toString();
 	}
 
 	private String convertToPercetage( final BigDecimal toPercentage ) {
