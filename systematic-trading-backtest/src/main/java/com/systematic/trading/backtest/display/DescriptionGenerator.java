@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.display;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.StringJoiner;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
@@ -34,6 +36,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 
@@ -46,6 +49,10 @@ public class DescriptionGenerator {
 	// TODO interface - one for file, another for console
 
 	private static final String SEPARATOR = "_";
+
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+
+	private static final DecimalFormat MAX_TWO_DECIMAL_PLACES = new DecimalFormat("#.##");
 
 	public String getDescription( final BacktestBootstrapConfiguration configuration ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
@@ -65,20 +72,37 @@ public class DescriptionGenerator {
 	}
 
 	private String entryLogic( final EntryLogicConfiguration entry ) {
-
 		switch (entry.getType()) {
 			case CONFIRMATION_SIGNAL:
-				return String.format("Buy%s%s", SEPARATOR, entry.getConfirmationSignal().name());
+				return entryLogicConfirmationSignal(entry);
 
 			case PERIODIC:
 				return String.format("Buy%s%s", SEPARATOR, entry.getPeriodic().name());
 
 			case SAME_DAY_SIGNALS:
-				return String.format("Buy%s%s", SEPARATOR, entry.getSameDaySignals().name());
+				return entryLogicSameDaySignals(entry);
 
 			default:
 				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
 		}
+	}
+
+	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
+		final StringJoiner out = new StringJoiner("Buy", SEPARATOR, "");
+		out.add(entry.getConfirmationSignal().name());
+		for (final SignalConfiguration signal : entry.getSignals()) {
+			out.add(signal.getDescription());
+		}
+		return out.toString();
+	}
+
+	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
+		final StringJoiner out = new StringJoiner("Buy", SEPARATOR, "");
+		out.add(entry.getSameDaySignals().name());
+		for (final SignalConfiguration signal : entry.getSignals()) {
+			out.add(signal.getDescription());
+		}
+		return out.toString();
 	}
 
 	private String equity( final EquityConfiguration equity ) {
@@ -91,9 +115,8 @@ public class DescriptionGenerator {
 
 	private String cashAccount( final CashAccountConfiguration cashAccount ) {
 		switch (cashAccount) {
-			// Standard output needs no description
 			case CALCULATED_DAILY_PAID_MONTHLY:
-				return "";
+				return ""; // Standard output needs no description
 
 			default:
 				return "NoInterest";
@@ -109,10 +132,14 @@ public class DescriptionGenerator {
 	}
 
 	private String minimumTradeValue( final MinimumTrade trade ) {
-		return String.format("MinimumTrade%s%s", SEPARATOR, trade.getDescription());
+		return String.format("Minimum%s%s", SEPARATOR, MAX_TWO_DECIMAL_PLACES.format(trade.getDescription()));
 	}
 
 	private String maximumTradeValue( final MaximumTrade trade ) {
-		return String.format("MaximumTrade%s%s%spercent", SEPARATOR, trade.getDescription(), SEPARATOR);
+		return String.format("Maximum%s%s%spercent", SEPARATOR, convertToPercetage(trade.getValue()), SEPARATOR);
+	}
+
+	private String convertToPercetage( final BigDecimal toPercentage ) {
+		return String.format("%s", toPercentage.multiply(ONE_HUNDRED));
 	}
 }
