@@ -90,12 +90,18 @@ public class DescriptionGenerator {
 	}
 
 	private String cashAccount( final CashAccountConfiguration cashAccount ) {
-		return String.format("Account %s", cashAccount.name());
+		switch (cashAccount) {
+			// Standard output needs no description
+			case CALCULATED_DAILY_PAID_MONTHLY:
+				return "";
+
+			default:
+				return "NoInterest";
+		}
 	}
 
 	private String depositAmount( final DepositConfiguration deposit ) {
-		return String.format("DepositAmoun%s%s%sDepositFrequency%s%s", SEPARATOR, deposit.getAmount(), SEPARATOR,
-		        SEPARATOR, deposit.getFrequency());
+		return String.format("Deposit%s%s%s%s", SEPARATOR, deposit.getAmount(), SEPARATOR, deposit.getFrequency());
 	}
 
 	private String brokerage( final BrokerageFeesConfiguration brokerage ) {
