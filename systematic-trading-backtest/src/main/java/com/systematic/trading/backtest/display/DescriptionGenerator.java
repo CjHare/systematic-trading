@@ -103,8 +103,12 @@ public class DescriptionGenerator {
 	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(entry.getConfirmationSignal().getAnchor().getDescription());
-		out.add(entry.getConfirmationSignal().getType().name());
+		out.add("confirmedBy");
 		out.add(entry.getConfirmationSignal().getConfirmation().getDescription());
+		out.add("in");
+		out.add(String.valueOf(entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange()));
+		out.add("to");
+		out.add(String.valueOf(entry.getConfirmationSignal().getType().getConfirmationDayRange()));
 		return out.toString();
 	}
 
