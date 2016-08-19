@@ -94,20 +94,18 @@ public class DescriptionGenerator {
 		}
 	}
 
-	//TODO need to know which signal is the anchor and which the confirmation
 	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(entry.getConfirmationSignal().name());
-		for (final SignalConfiguration signal : entry.getSignals()) {
-			out.add(signal.getDescription());
-		}
+		out.add(entry.getConfirmationSignal().getAnchor().getDescription());
+		out.add(entry.getConfirmationSignal().getType().name());
+		out.add(entry.getConfirmationSignal().getConfirmation().getDescription());
 		return out.toString();
 	}
 
 	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add("SameDay");
-		for (final SignalConfiguration signal : entry.getSignals()) {
+		for (final SignalConfiguration signal : entry.getSameDaySignals().getSignals()) {
 			out.add(signal.getDescription());
 		}
 		return out.toString();

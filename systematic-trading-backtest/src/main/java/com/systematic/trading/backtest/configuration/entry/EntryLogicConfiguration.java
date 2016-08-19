@@ -3,7 +3,6 @@ package com.systematic.trading.backtest.configuration.entry;
 import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
-import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 
 public class EntryLogicConfiguration {
 
@@ -17,32 +16,26 @@ public class EntryLogicConfiguration {
 	private final PeriodicFilterConfiguration periodic;
 	private final ConfirmationSignalFilterConfiguration confirmationSignal;
 	private final SameDayFilterConfiguration sameDaySignals;
-	private final SignalConfiguration[] signals;
 
-	public EntryLogicConfiguration(final Type type, final PeriodicFilterConfiguration periodic) {
-		this.type = type;
+	public EntryLogicConfiguration(final PeriodicFilterConfiguration periodic) {
+		this.type = Type.PERIODIC;
 		this.periodic = periodic;
 		this.confirmationSignal = null;
 		this.sameDaySignals = null;
-		this.signals = null;
 	}
 
-	public EntryLogicConfiguration(final Type type, final ConfirmationSignalFilterConfiguration confirmationSignal,
-	        final SignalConfiguration... signals) {
-		this.type = type;
+	public EntryLogicConfiguration(final ConfirmationSignalFilterConfiguration confirmationSignal) {
+		this.type = Type.CONFIRMATION_SIGNAL;
 		this.periodic = null;
 		this.confirmationSignal = confirmationSignal;
 		this.sameDaySignals = null;
-		this.signals = signals;
 	}
 
-	public EntryLogicConfiguration(final Type type, final SameDayFilterConfiguration sameDaySignals,
-	        final SignalConfiguration... signals) {
-		this.type = type;
+	public EntryLogicConfiguration(final SameDayFilterConfiguration sameDaySignals) {
+		this.type = Type.SAME_DAY_SIGNALS;
 		this.periodic = null;
 		this.confirmationSignal = null;
 		this.sameDaySignals = sameDaySignals;
-		this.signals = signals;
 	}
 
 	public Type getType() {
@@ -59,9 +52,5 @@ public class EntryLogicConfiguration {
 
 	public SameDayFilterConfiguration getSameDaySignals() {
 		return sameDaySignals;
-	}
-
-	public SignalConfiguration[] getSignals() {
-		return signals;
 	}
 }

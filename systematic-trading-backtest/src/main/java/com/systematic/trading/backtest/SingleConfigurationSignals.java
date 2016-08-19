@@ -34,7 +34,6 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
-import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration.Type;
 import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
@@ -69,8 +68,10 @@ public class SingleConfigurationSignals implements BacktestConfigurations {
 		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
 		final MacdConfiguration macdConfiguration = MacdConfiguration.MEDIUM;
 
-		final EntryLogicConfiguration entry = new EntryLogicConfiguration(Type.CONFIRMATION_SIGNAL,
-		        SameDayFilterConfiguration.ALL, macdConfiguration);
+		final SameDayFilterConfiguration filterConfiguration = new SameDayFilterConfiguration(
+		        SameDayFilterConfiguration.Type.ALL, macdConfiguration);
+
+		final EntryLogicConfiguration entry = new EntryLogicConfiguration(filterConfiguration);
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
 		        ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
