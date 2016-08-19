@@ -6,8 +6,6 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
-import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 
 /**
@@ -24,13 +22,11 @@ public class BacktestBootstrapConfiguration {
 	private final EntryLogicConfiguration entry;
 	private final EquityConfiguration equity;
 	private final ExitLogicConfiguration exit;
-	private final MaximumTrade maximumTrade;
-	private final MinimumTrade minimumTrade;
 
 	public BacktestBootstrapConfiguration(final BacktestSimulationDates backtestDates,
 	        final BrokerageFeesConfiguration brokerageFees, final CashAccountConfiguration cashAccount,
 	        final DepositConfiguration deposit, final EntryLogicConfiguration entry, final EquityConfiguration equity,
-	        final ExitLogicConfiguration exit, final MaximumTrade maximumTrade, final MinimumTrade minimumTrade) {
+	        final ExitLogicConfiguration exit) {
 		this.backtestDates = backtestDates;
 		this.brokerageFees = brokerageFees;
 		this.cashAccount = cashAccount;
@@ -38,8 +34,6 @@ public class BacktestBootstrapConfiguration {
 		this.entry = entry;
 		this.equity = equity;
 		this.exit = exit;
-		this.maximumTrade = maximumTrade;
-		this.minimumTrade = minimumTrade;
 	}
 
 	public BacktestSimulationDates getBacktestDates() {
@@ -68,13 +62,5 @@ public class BacktestBootstrapConfiguration {
 
 	public ExitLogicConfiguration getExitLogic() {
 		return exit;
-	}
-
-	public MaximumTrade getMaximumTrade() {
-		return maximumTrade;
-	}
-
-	public MinimumTrade getMinimumTrade() {
-		return minimumTrade;
 	}
 }

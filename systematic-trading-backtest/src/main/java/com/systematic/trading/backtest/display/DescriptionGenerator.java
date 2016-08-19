@@ -60,25 +60,31 @@ public class DescriptionGenerator {
 		out.add(cashAccount(configuration.getCashAccount()));
 		out.add(entryLogic(configuration.getEntryLogic()));
 		out.add(exitLogic(configuration.getExitLogic()));
-		out.add(minimumTradeValue(configuration.getMinimumTrade()));
-		out.add(maximumTradeValue(configuration.getMaximumTrade()));
 		return out.toString();
 	}
 
 	private String entryLogic( final EntryLogicConfiguration entry ) {
+		final String signal;
+
 		switch (entry.getType()) {
 			case CONFIRMATION_SIGNAL:
-				return entryLogicConfirmationSignal(entry);
+				signal = entryLogicConfirmationSignal(entry);
+			break;
 
 			case PERIODIC:
-				return entryPeriodic(entry);
+				signal = entryPeriodic(entry);
+			break;
 
 			case SAME_DAY_SIGNALS:
-				return entryLogicSameDaySignals(entry);
+				signal = entryLogicSameDaySignals(entry);
+			break;
 
 			default:
 				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
 		}
+
+		return String.format("%s%s%s", signal, minimumTradeValue(entry.getMinimumTrade()),
+		        maximumTradeValue(entry.getMaximumTrade()));
 	}
 
 	private String entryPeriodic( final EntryLogicConfiguration entry ) {

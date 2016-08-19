@@ -202,10 +202,9 @@ public class BacktestApplication {
 		        simulationDates, deposit, mathContext);
 
 		final BrokerageFeesConfiguration brokerageType = configuration.getBrokerageFees();
-
-		final MinimumTrade minimumTrade = configuration.getMinimumTrade();
-		final MaximumTrade maximumTrade = configuration.getMaximumTrade();
 		final EntryLogicConfiguration entry = configuration.getEntryLogic();
+		final MinimumTrade minimumTrade = entry.getMinimumTrade();
+		final MaximumTrade maximumTrade = entry.getMaximumTrade();
 
 		//TODO move this switch into the builder
 		switch (configuration.getEntryLogic().getType()) {

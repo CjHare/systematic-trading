@@ -65,23 +65,25 @@ public class AllConfigurations implements BacktestConfigurations {
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
-		final EntryLogicConfiguration weeklyBuy = new EntryLogicConfiguration(PeriodicFilterConfiguration.WEEKLY);
-		final EntryLogicConfiguration monthlyBuy = new EntryLogicConfiguration(PeriodicFilterConfiguration.MONTHLY);
+		final EntryLogicConfiguration weeklyBuy = new EntryLogicConfiguration(PeriodicFilterConfiguration.WEEKLY,
+		        MaximumTrade.ALL, MinimumTrade.ZERO);
+		final EntryLogicConfiguration monthlyBuy = new EntryLogicConfiguration(PeriodicFilterConfiguration.MONTHLY,
+		        MaximumTrade.ALL, MinimumTrade.ZERO);
 
 		// Vanguard Retail
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates,
 		        BrokerageFeesConfiguration.VANGUARD_RETAIL, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
-		        deposit, weeklyBuy, equity, ExitLogicConfiguration.HOLD_FOREVER, MaximumTrade.ALL, MinimumTrade.ZERO));
+		        deposit, weeklyBuy, equity, ExitLogicConfiguration.HOLD_FOREVER));
 
 		// CMC Weekly
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, weeklyBuy, equity,
-		        ExitLogicConfiguration.HOLD_FOREVER, MaximumTrade.ALL, MinimumTrade.ZERO));
+		        ExitLogicConfiguration.HOLD_FOREVER));
 
 		// CMC Monthly
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, monthlyBuy, equity,
-		        ExitLogicConfiguration.HOLD_FOREVER, MaximumTrade.ALL, MinimumTrade.ZERO));
+		        ExitLogicConfiguration.HOLD_FOREVER));
 
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
@@ -109,30 +111,31 @@ public class AllConfigurations implements BacktestConfigurations {
 
 				// MACD & RSI
 				entry = new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
-				        macdConfiguration, rsiConfiguration));
+				        macdConfiguration, rsiConfiguration), maximumTrade, minimumTrade);
 				configurations.add(new BacktestBootstrapConfiguration(simulationDates,
 				        BrokerageFeesConfiguration.CMC_MARKETS, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
-				        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
+				        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER));
 
 				for (final ConfirmationSignalFilterConfiguration.Type filterConfigurations : ConfirmationSignalFilterConfiguration.Type
 				        .values()) {
 
 					// MACD & RSI - confirmation signals
 					entry = new EntryLogicConfiguration(new ConfirmationSignalFilterConfiguration(filterConfigurations,
-					        macdConfiguration, rsiConfiguration));
+					        macdConfiguration, rsiConfiguration), maximumTrade, minimumTrade);
 					configurations.add(
 					        new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 					                CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
-					                ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
+					                ExitLogicConfiguration.HOLD_FOREVER));
 				}
 			}
 
 			// MACD only
 			entry = new EntryLogicConfiguration(
-			        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration));
+			        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration),
+			        maximumTrade, minimumTrade);
 			configurations.add(new BacktestBootstrapConfiguration(simulationDates,
 			        BrokerageFeesConfiguration.CMC_MARKETS, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
-			        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
+			        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER));
 
 			for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 				for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
@@ -140,19 +143,20 @@ public class AllConfigurations implements BacktestConfigurations {
 					// MACD, SMA & RSI
 					entry = new EntryLogicConfiguration(
 					        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration,
-					                smaConfiguration, rsiConfiguration));
+					                smaConfiguration, rsiConfiguration),
+					        maximumTrade, minimumTrade);
 					configurations.add(
 					        new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 					                CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
-					                ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
+					                ExitLogicConfiguration.HOLD_FOREVER));
 				}
 
 				// MACD & SMA
 				entry = new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
-				        macdConfiguration, smaConfiguration));
+				        macdConfiguration, smaConfiguration), maximumTrade, minimumTrade);
 				configurations.add(new BacktestBootstrapConfiguration(simulationDates,
 				        BrokerageFeesConfiguration.CMC_MARKETS, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
-				        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
+				        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER));
 			}
 		}
 
@@ -161,10 +165,10 @@ public class AllConfigurations implements BacktestConfigurations {
 
 				// SMA & RSI			
 				entry = new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
-				        smaConfiguration, rsiConfiguration));
+				        smaConfiguration, rsiConfiguration), maximumTrade, minimumTrade);
 				configurations.add(new BacktestBootstrapConfiguration(simulationDates,
 				        BrokerageFeesConfiguration.CMC_MARKETS, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
-				        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
+				        deposit, entry, equity, ExitLogicConfiguration.HOLD_FOREVER));
 			}
 		}
 

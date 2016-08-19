@@ -71,10 +71,11 @@ public class SingleConfigurationSignals implements BacktestConfigurations {
 		final SameDayFilterConfiguration filterConfiguration = new SameDayFilterConfiguration(
 		        SameDayFilterConfiguration.Type.ALL, macdConfiguration);
 
-		final EntryLogicConfiguration entry = new EntryLogicConfiguration(filterConfiguration);
+		final EntryLogicConfiguration entry = new EntryLogicConfiguration(filterConfiguration, maximumTrade,
+		        minimumTrade);
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
-		        ExitLogicConfiguration.HOLD_FOREVER, maximumTrade, minimumTrade));
+		        ExitLogicConfiguration.HOLD_FOREVER));
 
 		return configurations;
 	}
