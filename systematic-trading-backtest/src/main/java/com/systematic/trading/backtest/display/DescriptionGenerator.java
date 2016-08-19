@@ -55,9 +55,6 @@ public class DescriptionGenerator {
 
 	public String getDescription( final BacktestBootstrapConfiguration configuration ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
-
-		//TODO tell between different filter values, i.e. short / medium / long parameters ...or include those in filter output
-
 		out.add(equity(configuration.getEquity()));
 		out.add(brokerage(configuration.getBrokerageFees()));
 		out.add(cashAccount(configuration.getCashAccount()));
@@ -65,7 +62,6 @@ public class DescriptionGenerator {
 		out.add(exitLogic(configuration.getExitLogic()));
 		out.add(minimumTradeValue(configuration.getMinimumTrade()));
 		out.add(maximumTradeValue(configuration.getMaximumTrade()));
-
 		return out.toString();
 	}
 
@@ -88,18 +84,19 @@ public class DescriptionGenerator {
 	private String entryPeriodic( final EntryLogicConfiguration entry ) {
 		switch (entry.getPeriodic()) {
 			case WEEKLY:
-				return "BuyWeekly";
+				return "Weekly";
 
 			case MONTHLY:
-				return "BuyMonthly";
+				return "Monthly";
 
 			default:
 				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", entry.getPeriodic()));
 		}
 	}
 
+	//TODO need to know which signal is the anchor and which the confirmation
 	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
-		final StringJoiner out = new StringJoiner(SEPARATOR, "Buy", "");
+		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(entry.getConfirmationSignal().name());
 		for (final SignalConfiguration signal : entry.getSignals()) {
 			out.add(signal.getDescription());
@@ -108,8 +105,8 @@ public class DescriptionGenerator {
 	}
 
 	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
-		final StringJoiner out = new StringJoiner(SEPARATOR, "Buy", "");
-		out.add(entry.getSameDaySignals().name());
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add("AllSameDay");
 		for (final SignalConfiguration signal : entry.getSignals()) {
 			out.add(signal.getDescription());
 		}
