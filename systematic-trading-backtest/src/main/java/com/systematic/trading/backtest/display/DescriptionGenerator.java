@@ -32,7 +32,6 @@ import java.util.StringJoiner;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -52,7 +51,7 @@ public class DescriptionGenerator {
 
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
-	private static final DecimalFormat MAX_TWO_DECIMAL_PLACES = new DecimalFormat("#.##");
+	private static final DecimalFormat MAX_TWO_DECIMAL_PLACES = new DecimalFormat("#");
 
 	public String getDescription( final BacktestBootstrapConfiguration configuration ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
@@ -62,7 +61,6 @@ public class DescriptionGenerator {
 		out.add(equity(configuration.getEquity()));
 		out.add(brokerage(configuration.getBrokerageFees()));
 		out.add(cashAccount(configuration.getCashAccount()));
-		out.add(depositAmount(configuration.getDeposit()));
 		out.add(entryLogic(configuration.getEntryLogic()));
 		out.add(exitLogic(configuration.getExitLogic()));
 		out.add(minimumTradeValue(configuration.getMinimumTrade()));
@@ -77,7 +75,7 @@ public class DescriptionGenerator {
 				return entryLogicConfirmationSignal(entry);
 
 			case PERIODIC:
-				return String.format("Buy%s%s", SEPARATOR, entry.getPeriodic().name());
+				return entryPeriodic(entry);
 
 			case SAME_DAY_SIGNALS:
 				return entryLogicSameDaySignals(entry);
@@ -87,8 +85,21 @@ public class DescriptionGenerator {
 		}
 	}
 
+	private String entryPeriodic( final EntryLogicConfiguration entry ) {
+		switch (entry.getPeriodic()) {
+			case WEEKLY:
+				return "BuyWeekly";
+
+			case MONTHLY:
+				return "BuyMonthly";
+
+			default:
+				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", entry.getPeriodic()));
+		}
+	}
+
 	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
-		final StringJoiner out = new StringJoiner("Buy", SEPARATOR, "");
+		final StringJoiner out = new StringJoiner(SEPARATOR, "Buy", "");
 		out.add(entry.getConfirmationSignal().name());
 		for (final SignalConfiguration signal : entry.getSignals()) {
 			out.add(signal.getDescription());
@@ -97,7 +108,7 @@ public class DescriptionGenerator {
 	}
 
 	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
-		final StringJoiner out = new StringJoiner("Buy", SEPARATOR, "");
+		final StringJoiner out = new StringJoiner(SEPARATOR, "Buy", "");
 		out.add(entry.getSameDaySignals().name());
 		for (final SignalConfiguration signal : entry.getSignals()) {
 			out.add(signal.getDescription());
@@ -116,19 +127,24 @@ public class DescriptionGenerator {
 	private String cashAccount( final CashAccountConfiguration cashAccount ) {
 		switch (cashAccount) {
 			case CALCULATED_DAILY_PAID_MONTHLY:
-				return ""; // Standard output needs no description
+				return "InterestDaily"; // Standard output needs no description
 
 			default:
 				return "NoInterest";
 		}
 	}
 
-	private String depositAmount( final DepositConfiguration deposit ) {
-		return String.format("Deposit%s%s%s%s", SEPARATOR, deposit.getAmount(), SEPARATOR, deposit.getFrequency());
-	}
-
 	private String brokerage( final BrokerageFeesConfiguration brokerage ) {
-		return String.format("%s", brokerage.name());
+		switch (brokerage) {
+			case CMC_MARKETS:
+				return "CmC";
+
+			case VANGUARD_RETAIL:
+				return "Vanguard";
+
+			default:
+				throw new IllegalArgumentException(String.format("Unexpected brokerage fee %s", brokerage));
+		}
 	}
 
 	private String minimumTradeValue( final MinimumTrade trade ) {
@@ -140,6 +156,6 @@ public class DescriptionGenerator {
 	}
 
 	private String convertToPercetage( final BigDecimal toPercentage ) {
-		return String.format("%s", toPercentage.multiply(ONE_HUNDRED));
+		return String.format("%s", MAX_TWO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
 	}
 }
