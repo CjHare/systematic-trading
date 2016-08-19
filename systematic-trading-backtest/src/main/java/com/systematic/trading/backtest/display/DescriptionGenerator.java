@@ -106,7 +106,7 @@ public class DescriptionGenerator {
 
 	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add("AllSameDay");
+		out.add("SameDay");
 		for (final SignalConfiguration signal : entry.getSignals()) {
 			out.add(signal.getDescription());
 		}
@@ -145,11 +145,11 @@ public class DescriptionGenerator {
 	}
 
 	private String minimumTradeValue( final MinimumTrade trade ) {
-		return String.format("Minimum%s%s", SEPARATOR, MAX_TWO_DECIMAL_PLACES.format(trade.getValue()));
+		return String.format("Minimum%s", MAX_TWO_DECIMAL_PLACES.format(trade.getValue()));
 	}
 
 	private String maximumTradeValue( final MaximumTrade trade ) {
-		return String.format("Maximum%s%s%spercent", SEPARATOR, convertToPercetage(trade.getValue()), SEPARATOR);
+		return String.format("Maximum%s%spercent", convertToPercetage(trade.getValue()), SEPARATOR);
 	}
 
 	private String convertToPercetage( final BigDecimal toPercentage ) {
