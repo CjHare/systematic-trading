@@ -63,16 +63,16 @@ public class IndicatorSignalGeneratorFactory {
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
-	public IndicatorSignalGenerator create( final MacdConfiguration macd, final MathContext mathContext ) {
+	private IndicatorSignalGenerator create( final MacdConfiguration macd, final MathContext mathContext ) {
 		return new MovingAveragingConvergeDivergenceSignals(macd.getFastTimePeriods(), macd.getSlowTimePeriods(),
 		        macd.getSignalTimePeriods(), mathContext);
 	}
 
-	public IndicatorSignalGenerator create( final RsiConfiguration rsi, final MathContext mathContext ) {
+	private IndicatorSignalGenerator create( final RsiConfiguration rsi, final MathContext mathContext ) {
 		return new RelativeStrengthIndexSignals(rsi.getLookback(), rsi.getOversold(), rsi.getOverbought(), mathContext);
 	}
 
-	public IndicatorSignalGenerator create( final SmaConfiguration sma, final MathContext mathContext ) {
+	private IndicatorSignalGenerator create( final SmaConfiguration sma, final MathContext mathContext ) {
 		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), sma.getGradient(),
 		        mathContext);
 	}

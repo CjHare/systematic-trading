@@ -73,7 +73,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 		this.generators = generators;
 		this.filters = filters;
-		this.requiredNumberOfTradingDays = getRequiredNumberOfTradingDays();
+		this.requiredNumberOfTradingDays = getRequiredNumberOfTradingDays(generators);
 	}
 
 	private void validateInput( final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters ) {
@@ -85,10 +85,10 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		}
 	}
 
-	private int getRequiredNumberOfTradingDays() {
+	private int getRequiredNumberOfTradingDays( final List<IndicatorSignalGenerator> requiredGenerators ) {
 
 		final List<Integer> requiredTradingDays = new ArrayList<>();
-		for (final IndicatorSignalGenerator generator : generators) {
+		for (final IndicatorSignalGenerator generator : requiredGenerators) {
 			requiredTradingDays.add(generator.getRequiredNumberOfTradingDays());
 		}
 
