@@ -121,7 +121,7 @@ public class AllConfigurations implements BacktestConfigurations {
 
 					// MACD & RSI - confirmation signals
 					entry = new EntryLogicConfiguration(new ConfirmationSignalFilterConfiguration(filterConfigurations,
-					        macdConfiguration, rsiConfiguration), maximumTrade, minimumTrade);
+					        rsiConfiguration, macdConfiguration), maximumTrade, minimumTrade);
 					configurations.add(
 					        new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 					                CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
