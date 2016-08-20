@@ -25,8 +25,7 @@
  */
 package com.systematic.trading.backtest.display;
 
-import java.time.Period;
-
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
@@ -40,7 +39,6 @@ import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
 import com.systematic.trading.simulation.equity.event.EquityEventListener;
-import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
@@ -55,15 +53,15 @@ public interface BacktestDisplay
 	/**
 	 * All the interesting data points for displaying.
 	 * 
+	 * @param configuration set up for the simulation being displayed.
 	 * @param tradingData summary of the data set analysed.
 	 * @param eventStatistics record of various event occurrences.
-	 * @param entryLogic the set up of the simulation executed.
 	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
 	 * @param lastTradingDay prices from the last day in the back test.
 	 * @throws Exception problem encountered during the initialisation of the display.
 	 */
-	void init( TickerSymbolTradingData tradingData, BacktestSimulationDates simulationDates,
-	        EventStatistics eventStatistics, final EntryLogic entryLogic,
-	        CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, TradingDayPrices lastTradingDay, Period duration )
+	void init( BacktestBootstrapConfiguration configuration, TickerSymbolTradingData tradingData,
+	        BacktestSimulationDates simulationDates, EventStatistics eventStatistics,
+	        CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, TradingDayPrices lastTradingDay )
 	                throws BacktestInitialisationException;
 }

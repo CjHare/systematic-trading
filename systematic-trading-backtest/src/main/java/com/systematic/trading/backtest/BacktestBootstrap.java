@@ -29,6 +29,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
@@ -66,14 +67,16 @@ public class BacktestBootstrap {
 	private final BacktestDisplay display;
 
 	/** Configuration for the back test. */
-	private final BacktestBootstrapContext configuration;
+	private final BacktestBootstrapConfiguration configuration;
+
+	private final BacktestBootstrapContext context;
 
 	/** Unmodifiable trading data for input to the back test. */
 	private final TickerSymbolTradingData tradingData;
 
-	public BacktestBootstrap(final TickerSymbolTradingData tradingData,
-	        final BacktestBootstrapContext configuration, final BacktestDisplay display,
-	        final MathContext mathContext) {
+	public BacktestBootstrap(final BacktestBootstrapConfiguration configuration, final BacktestBootstrapContext context,
+	        final BacktestDisplay display, final TickerSymbolTradingData tradingData, final MathContext mathContext) {
+		this.context = context;
 		this.configuration = configuration;
 		this.mathContext = mathContext;
 		this.tradingData = tradingData;
@@ -113,14 +116,14 @@ public class BacktestBootstrap {
 		        mathContext);
 		roi.addListener(cumulativeRoi);
 
-		final EntryLogic entry = configuration.getEntryLogic();
+		final EntryLogic entry = context.getEntryLogic();
 		entry.addListener(display);
 
-		final ExitLogic exit = configuration.getExitLogic();
+		final ExitLogic exit = context.getExitLogic();
 
-		final Brokerage broker = configuration.getBroker();
+		final Brokerage broker = context.getBroker();
 
-		final CashAccount cashAccount = configuration.getCashAccount();
+		final CashAccount cashAccount = context.getCashAccount();
 		cashAccount.addListener(roi);
 
 		// Engine dealing with the event flow
@@ -140,9 +143,8 @@ public class BacktestBootstrap {
 		simulation.addListener(networthSummay);
 
 		// Display for simulation output
-		final Period duration = Period.between(earliestDate, latestDate);
-		display.init(tradingData, configuration.getSimulationDates(), eventStatistics, entry, cumulativeRoi,
-		        lastTradingDay, duration);
+		display.init(configuration, tradingData, context.getSimulationDates(), eventStatistics, cumulativeRoi,
+		        lastTradingDay);
 		simulation.addListener((OrderEventListener) display);
 		simulation.addListener((SimulationStateListener) display);
 		networthSummay.addListener(display);

@@ -28,9 +28,9 @@ package com.systematic.trading.backtest.display.file;
 import java.io.File;
 import java.io.IOException;
 import java.math.MathContext;
-import java.time.Period;
 import java.util.concurrent.ExecutorService;
 
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
@@ -51,7 +51,6 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.equity.event.EquityEventListener;
-import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
@@ -98,10 +97,10 @@ public class FileCompleteDisplay extends FileDisplay implements BacktestDisplay 
 	}
 
 	@Override
-	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-	        final EventStatistics eventStatistics, final EntryLogic entryLogic,
-	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay,
-	        final Period duration ) throws BacktestInitialisationException {
+	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
+	        final BacktestSimulationDates dates, final EventStatistics eventStatistics,
+	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
+	                throws BacktestInitialisationException {
 
 		final FileDisplayMultithreading returnOnInvestmentFile = getFileDisplay("/return-on-investment.txt");
 		this.roiDisplay = new FileReturnOnInvestmentDisplay(
@@ -145,7 +144,7 @@ public class FileCompleteDisplay extends FileDisplay implements BacktestDisplay 
 		this.signalAnalysisDisplay = new FileSignalAnalysisDisplay(signalAnalysisFile);
 
 		final FileDisplayMultithreading comparisonFile = getFileDisplay("/../summary.txt");
-		netWorthComparisonDisplay = new FileComparisonDisplay(duration, eventStatistics, entryLogic, comparisonFile,
+		netWorthComparisonDisplay = new FileComparisonDisplay(configuration, eventStatistics, comparisonFile,
 		        mathContext);
 	}
 

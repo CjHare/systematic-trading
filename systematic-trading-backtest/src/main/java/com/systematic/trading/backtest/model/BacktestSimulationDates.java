@@ -35,23 +35,22 @@ import java.time.Period;
  */
 public class BacktestSimulationDates {
 
-	private final LocalDate simulationStartDate;
-	private final LocalDate simulationEndDate;
+	private final LocalDate startDate;
+	private final LocalDate endDate;
 	private final Period warmUp;
 
-	public BacktestSimulationDates(final LocalDate simulationStartDate, final LocalDate simulationEndDate,
-	        final Period warmUp) {
-		this.simulationStartDate = simulationStartDate;
-		this.simulationEndDate = simulationEndDate;
+	public BacktestSimulationDates(final LocalDate startDate, final LocalDate endDate, final Period warmUp) {
+		this.startDate = startDate;
+		this.endDate = endDate;
 		this.warmUp = warmUp;
 	}
 
-	public LocalDate getSimulationStartDate() {
-		return simulationStartDate;
+	public LocalDate getStartDate() {
+		return startDate;
 	}
 
-	public LocalDate getSimulationEndDate() {
-		return simulationEndDate;
+	public LocalDate getEndDate() {
+		return endDate;
 	}
 
 	public Period getWarmUp() {

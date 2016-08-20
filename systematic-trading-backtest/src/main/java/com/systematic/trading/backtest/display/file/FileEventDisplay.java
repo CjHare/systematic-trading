@@ -75,8 +75,8 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 		                tradingData.getEarliestDate(), tradingData.getLatestDate()));
 
 		output.append(String.format("Simulation dates for %s from %s to %s%n",
-		        tradingData.getEquityIdentity().getTickerSymbol(), dates.getSimulationStartDate(),
-		        dates.getSimulationEndDate()));
+		        tradingData.getEquityIdentity().getTickerSymbol(), dates.getStartDate(),
+		        dates.getEndDate()));
 
 		output.append(String.format("Simulation warm up period for %s of %s%n",
 		        tradingData.getEquityIdentity().getTickerSymbol(), dates.getWarmUp()));

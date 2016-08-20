@@ -71,7 +71,7 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfigurations configurations, final String... args ) throws ServiceException {
+	public void runTest( final BacktestConfiguration configurations, final String... args ) throws ServiceException {
 
 		final String baseOutputDirectory = getBaseOutputDirectory(args);
 
@@ -182,7 +182,8 @@ public class BacktestApplication {
 			final BacktestDisplay fileDisplay = getDisplay(type, outputDirectory, pool);
 			final BacktestBootstrapContext context = createContext(configuration);
 
-			final BacktestBootstrap bootstrap = new BacktestBootstrap(tradingData, context, fileDisplay, mathContext);
+			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, fileDisplay, tradingData,
+			        mathContext);
 
 			LOG.info(String.format("Backtesting beginning for: %s", description.getDescription(configuration)));
 
@@ -227,8 +228,8 @@ public class BacktestApplication {
 	private TickerSymbolTradingData getTradingData( final EquityIdentity equity,
 	        final BacktestSimulationDates simulationDate ) throws ServiceException {
 
-		final LocalDate startDate = simulationDate.getSimulationStartDate().minus(simulationDate.getWarmUp());
-		final LocalDate endDate = simulationDate.getSimulationEndDate();
+		final LocalDate startDate = simulationDate.getStartDate().minus(simulationDate.getWarmUp());
+		final LocalDate endDate = simulationDate.getEndDate();
 
 		// Retrieve and cache data range from remote data source
 		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();

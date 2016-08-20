@@ -13,7 +13,7 @@ import com.systematic.trading.backtest.model.BacktestSimulationDates;
  * @author CJ Hare
  */
 @FunctionalInterface
-public interface BacktestConfigurations {
+public interface BacktestConfiguration {
 
 	List<BacktestBootstrapConfiguration> get( EquityConfiguration equity, BacktestSimulationDates simulationDates,
 	        DepositConfiguration deposit );

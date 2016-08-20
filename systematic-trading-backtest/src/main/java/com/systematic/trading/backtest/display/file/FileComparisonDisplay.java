@@ -31,13 +31,16 @@ import java.text.DecimalFormat;
 import java.time.Period;
 import java.util.StringJoiner;
 
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
+import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
+import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
+import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.maths.formula.CompoundAnnualGrowthRate;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
-import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.trade.TradeValueCalculator;
 
 /**
  * Persists the comparison displays into a file.
@@ -50,6 +53,9 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
 
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+
+	private static final DecimalFormat MAX_TWO_DECIMAL_PLACES = new DecimalFormat("#");
 	private static final String SEPARATOR = ",";
 
 	/** Display responsible for handling the file output. */
@@ -59,17 +65,13 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private final EventStatistics statistics;
 
-	private final EntryLogic entryLogic;
+	private final BacktestBootstrapConfiguration configuration;
 
-	/** The period of time that the simulation covered. */
-	private final Period duration;
-
-	public FileComparisonDisplay(final Period duration, final EventStatistics statistics, final EntryLogic entryLogic,
+	public FileComparisonDisplay(final BacktestBootstrapConfiguration configuration, final EventStatistics statistics,
 	        final FileDisplayMultithreading display, final MathContext mathContext) {
-		this.entryLogic = entryLogic;
+		this.configuration = configuration;
 		this.mathContext = mathContext;
 		this.statistics = statistics;
-		this.duration = duration;
 		this.display = display;
 	}
 
@@ -83,7 +85,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	}
 
 	private String createOutput( final NetWorthEvent event ) {
-		final StringJoiner out = new StringJoiner(",");
+		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(compoundAnnualGrowth(event));
 		out.add(netWorth(event));
 		out.add(equitiesHeld(event));
@@ -91,46 +93,9 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		out.add(cashAccount(event));
 		out.add(deposited(event));
 		out.add(profit(event));
-
-		out.add(minimumTradeValue());
-		out.add(maximumTradeValue());
-		//TODO add filters used
-
-		out.add(entryOrdersPlaced(event));
-		out.add(entryOrdersExecuted(event));
-		out.add(entryOrdersDeleted(event));
-		out.add(exitOrdersPlaced(event));
-		out.add(exitOrdersExecuted(event));
-		out.add(exitOrdersDeleted(event));
-
+		out.add(entryLogic(event));
+		out.add(exitLogic(event));
 		return String.format("%s%n", out.toString());
-	}
-
-	private String exitOrdersDeleted( final NetWorthEvent event ) {
-		return String.format("Exit orders deleted: %s", statistics.getOrderEventStatistics().getDeleteExitEventCount());
-	}
-
-	private String exitOrdersExecuted( final NetWorthEvent event ) {
-		return String.format("Exit orders executed: %s", statistics.getOrderEventStatistics().getExitEventCount()
-		        - statistics.getOrderEventStatistics().getDeleteExitEventCount());
-	}
-
-	private String exitOrdersPlaced( final NetWorthEvent event ) {
-		return String.format("Exit orders placed: %s", statistics.getOrderEventStatistics().getExitEventCount());
-	}
-
-	private String entryOrdersDeleted( final NetWorthEvent event ) {
-		return String.format("Entry orders deleted: %s",
-		        statistics.getOrderEventStatistics().getDeleteEntryEventCount());
-	}
-
-	private String entryOrdersExecuted( final NetWorthEvent event ) {
-		return String.format("Entry orders executed: %s", statistics.getOrderEventStatistics().getEntryEventCount()
-		        - statistics.getOrderEventStatistics().getDeleteEntryEventCount());
-	}
-
-	private String entryOrdersPlaced( final NetWorthEvent event ) {
-		return String.format("Entry orders placed: %s", statistics.getOrderEventStatistics().getEntryEventCount());
 	}
 
 	private String profit( final NetWorthEvent event ) {
@@ -148,6 +113,10 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	}
 
 	private String compoundAnnualGrowth( final NetWorthEvent event ) {
+
+		final Period duration = Period.between(configuration.getBacktestDates().getStartDate(),
+		        configuration.getBacktestDates().getEndDate());
+
 		final BigDecimal deposited = statistics.getCashEventStatistics().getAmountDeposited();
 		final BigDecimal netWorth = event.getNetWorth();
 		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears(),
@@ -168,18 +137,116 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		return String.format("Holdings value: %s", TWO_DECIMAL_PLACES.format(event.getEquityBalanceValue()));
 	}
 
+	private String exitLogic( final NetWorthEvent event ) {
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add(exitOrdersPlaced(event));
+		out.add(exitOrdersExecuted(event));
+		out.add(exitOrdersDeleted(event));
+		return out.toString();
+	}
+
+	private String exitOrdersDeleted( final NetWorthEvent event ) {
+		return String.format("Exit orders deleted: %s", statistics.getOrderEventStatistics().getDeleteExitEventCount());
+	}
+
+	private String exitOrdersExecuted( final NetWorthEvent event ) {
+		return String.format("Exit orders executed: %s", statistics.getOrderEventStatistics().getExitEventCount()
+		        - statistics.getOrderEventStatistics().getDeleteExitEventCount());
+	}
+
+	private String exitOrdersPlaced( final NetWorthEvent event ) {
+		return String.format("Exit orders placed: %s", statistics.getOrderEventStatistics().getExitEventCount());
+	}
+
+	private String entryLogic( final NetWorthEvent event ) {
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add(minimumTradeValue());
+		out.add(maximumTradeValue());
+		out.add(entryLogicDescription());
+		out.add(entryOrdersPlaced(event));
+		out.add(entryOrdersExecuted(event));
+		out.add(entryOrdersDeleted(event));
+		return out.toString();
+	}
+
+	private String entryLogicDescription() {
+		final EntryLogicConfiguration entry = configuration.getEntryLogic();
+		switch (entry.getType()) {
+			case CONFIRMATION_SIGNAL:
+				return entryLogicConfirmationSignal(entry);
+			case PERIODIC:
+				return entryPeriodic(entry);
+			case SAME_DAY_SIGNALS:
+				return entryLogicSameDaySignals(entry);
+			default:
+				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
+		}
+	}
+
+	private String entryPeriodic( final EntryLogicConfiguration entry ) {
+		switch (entry.getPeriodic()) {
+			case WEEKLY:
+				return "Weekly";
+
+			case MONTHLY:
+				return "Monthly";
+
+			default:
+				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", entry.getPeriodic()));
+		}
+	}
+
+	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
+		final int delay = entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange();
+		final int range = entry.getConfirmationSignal().getType().getConfirmationDayRange();
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add(entry.getConfirmationSignal().getAnchor().getDescription());
+		out.add("confirmedBy");
+		out.add(entry.getConfirmationSignal().getConfirmation().getDescription());
+		out.add("in");
+		out.add(String.valueOf(delay));
+		out.add("to");
+		out.add(String.valueOf(delay + range));
+		out.add("days");
+		return out.toString();
+	}
+
+	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add("SameDay");
+		for (final SignalConfiguration signal : entry.getSameDaySignals().getSignals()) {
+			out.add(signal.getDescription());
+		}
+		return out.toString();
+	}
+
 	private String maximumTradeValue() {
-		//		return tradeValue("Maximum", entryLogic.getTradeValue().getMaximumValue());
-		return null;
+		final MaximumTrade trade = configuration.getEntryLogic().getMaximumTrade();
+		return String.format("Maximum Trade: %s%s Maximum Trade Type: Absolute", convertToPercetage(trade.getValue()),
+		        SEPARATOR);
 	}
 
 	private String minimumTradeValue() {
-		//		return tradeValue("Minimum", entryLogic.getTradeValue().getMinimumValue());
-		return null;
+		final MinimumTrade trade = configuration.getEntryLogic().getMinimumTrade();
+		return String.format("Minimum Trade: %s%s Minimum Trade Type: Percent",
+		        MAX_TWO_DECIMAL_PLACES.format(trade.getValue()), SEPARATOR);
 	}
 
-	private String tradeValue( final String prefix, final TradeValueCalculator tradeValue ) {
-		return String.format("%s Trade Value: %s%s%s Trade Type: %s", prefix, tradeValue.getValue(), SEPARATOR, prefix,
-		        tradeValue.getType());
+	private String convertToPercetage( final BigDecimal toPercentage ) {
+		return String.format("%s", MAX_TWO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
+	}
+
+	private String entryOrdersDeleted( final NetWorthEvent event ) {
+		return String.format("Entry orders deleted: %s",
+		        statistics.getOrderEventStatistics().getDeleteEntryEventCount());
+	}
+
+	private String entryOrdersExecuted( final NetWorthEvent event ) {
+		return String.format("Entry orders executed: %s", statistics.getOrderEventStatistics().getEntryEventCount()
+		        - statistics.getOrderEventStatistics().getDeleteEntryEventCount());
+	}
+
+	private String entryOrdersPlaced( final NetWorthEvent event ) {
+		return String.format("Entry orders placed: %s", statistics.getOrderEventStatistics().getEntryEventCount());
 	}
 }

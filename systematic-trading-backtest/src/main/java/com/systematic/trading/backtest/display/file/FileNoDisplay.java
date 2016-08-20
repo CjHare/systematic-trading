@@ -25,8 +25,7 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.time.Period;
-
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.display.BacktestDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
@@ -40,7 +39,6 @@ import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
-import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
@@ -54,10 +52,10 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
 public class FileNoDisplay implements BacktestDisplay {
 
 	@Override
-	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-	        final EventStatistics eventStatistics, final EntryLogic entryLogic,
-	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay,
-	        final Period duration ) throws BacktestInitialisationException {
+	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
+	        final BacktestSimulationDates dates, final EventStatistics eventStatistics,
+	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
+	                throws BacktestInitialisationException {
 		// Recording of this event is not required for no display
 	}
 

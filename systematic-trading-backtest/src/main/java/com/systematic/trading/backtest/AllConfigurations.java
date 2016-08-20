@@ -51,7 +51,7 @@ import com.systematic.trading.backtest.model.BacktestSimulationDates;
  * 
  * @author CJ Hare
  */
-public class AllConfigurations implements BacktestConfigurations {
+public class AllConfigurations implements BacktestConfiguration {
 
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;

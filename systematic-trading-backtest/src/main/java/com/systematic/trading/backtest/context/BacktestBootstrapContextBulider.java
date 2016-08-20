@@ -92,7 +92,7 @@ public class BacktestBootstrapContextBulider {
 	public BacktestBootstrapContextBulider(final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final MathContext mathContext) {
-		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getSimulationStartDate());
+		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getStartDate());
 		this.simulationDates = simulationDates;
 		this.mathContext = mathContext;
 		this.deposit = deposit;
@@ -110,7 +110,7 @@ public class BacktestBootstrapContextBulider {
 	public BacktestBootstrapContext periodic( final BrokerageFeesConfiguration brokerageType,
 	        final Period purchaseFrequency ) {
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
-		final LocalDate startDate = simulationDates.getSimulationStartDate();
+		final LocalDate startDate = simulationDates.getStartDate();
 		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit, mathContext);
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
 		        equity.getEquityIdentity(),
@@ -170,7 +170,7 @@ public class BacktestBootstrapContextBulider {
 	        final EquityManagementFeeCalculator feeCalculator, final SignalFilter filter,
 	        final IndicatorSignalGenerator... indicators ) {
 
-		final LocalDate startDate = simulationDates.getSimulationStartDate();
+		final LocalDate startDate = simulationDates.getStartDate();
 		final BoundedTradeValue tradeValue = new BoundedTradeValue(
 		        new AbsoluteTradeValueCalculator(minimumTrade.getValue()),
 		        new RelativeTradeValueCalculator(maximumTrade.getValue(), mathContext));

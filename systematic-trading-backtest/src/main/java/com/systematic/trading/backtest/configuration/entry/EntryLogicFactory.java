@@ -79,8 +79,8 @@ public class EntryLogicFactory {
 	public EntryLogic create( final EquityIdentity equity, final TradeValueLogic tradeValue,
 	        final BacktestSimulationDates simulationDates, final SignalFilter filter, final MathContext mathContext,
 	        final IndicatorSignalGenerator[] entrySignals ) {
-		final LocalDate simulationStartDate = simulationDates.getSimulationStartDate();
-		final LocalDate simulationEndDate = simulationDates.getSimulationEndDate();
+		final LocalDate simulationStartDate = simulationDates.getStartDate();
+		final LocalDate simulationEndDate = simulationDates.getEndDate();
 
 		final List<SignalFilter> filters = new ArrayList<>();
 		final SignalFilter decoratedFilter = new TimePeriodSignalFilterDecorator(
