@@ -119,7 +119,7 @@ public class DescriptionGenerator {
 		if (signals.length == 1) {
 			out.add("Signal");
 		} else {
-			out.add("SignalsSameDay");
+			out.add("SameDay");
 		}
 
 		for (final SignalConfiguration signal : signals) {

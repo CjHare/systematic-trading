@@ -224,7 +224,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		if (signals.length == 1) {
 			out.add("Signal");
 		} else {
-			out.add("SignalsOnSameDay");
+			out.add("SameDay");
 		}
 
 		for (final SignalConfiguration signal : signals) {
