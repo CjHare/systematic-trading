@@ -56,7 +56,8 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
 	private static final DecimalFormat MAX_TWO_DECIMAL_PLACES = new DecimalFormat("#");
-	private static final String SEPARATOR = ",";
+	private static final String COLUMN_SEPARATOR = ",";
+	private static final String TEXT_SEPARATOR = " ";
 
 	/** Display responsible for handling the file output. */
 	private final FileDisplayMultithreading display;
@@ -85,7 +86,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	}
 
 	private String createOutput( final NetWorthEvent event ) {
-		final StringJoiner out = new StringJoiner(SEPARATOR);
+		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
 		out.add(compoundAnnualGrowth(event));
 		out.add(netWorth(event));
 		out.add(equitiesHeld(event));
@@ -138,7 +139,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	}
 
 	private String exitLogic( final NetWorthEvent event ) {
-		final StringJoiner out = new StringJoiner(SEPARATOR);
+		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
 		out.add(exitOrdersPlaced(event));
 		out.add(exitOrdersExecuted(event));
 		out.add(exitOrdersDeleted(event));
@@ -159,7 +160,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	}
 
 	private String entryLogic( final NetWorthEvent event ) {
-		final StringJoiner out = new StringJoiner(SEPARATOR);
+		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
 		out.add(minimumTradeValue());
 		out.add(maximumTradeValue());
 		out.add(entryLogicDescription());
@@ -171,25 +172,31 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private String entryLogicDescription() {
 		final EntryLogicConfiguration entry = configuration.getEntryLogic();
+		final String description;
 		switch (entry.getType()) {
 			case CONFIRMATION_SIGNAL:
-				return entryLogicConfirmationSignal(entry);
+				description = entryLogicConfirmationSignal(entry);
+			break;
 			case PERIODIC:
-				return entryPeriodic(entry);
+				description = entryPeriodic(entry);
+			break;
 			case SAME_DAY_SIGNALS:
-				return entryLogicSameDaySignals(entry);
+				description = entryLogicSameDaySignals(entry);
+			break;
 			default:
 				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
 		}
+
+		return String.format("Entry: %s", description);
 	}
 
 	private String entryPeriodic( final EntryLogicConfiguration entry ) {
 		switch (entry.getPeriodic()) {
 			case WEEKLY:
-				return "Weekly";
+				return "BuyWeekly";
 
 			case MONTHLY:
-				return "Monthly";
+				return "BuyMonthly";
 
 			default:
 				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", entry.getPeriodic()));
@@ -199,7 +206,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
 		final int delay = entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange();
 		final int range = entry.getConfirmationSignal().getType().getConfirmationDayRange();
-		final StringJoiner out = new StringJoiner(SEPARATOR);
+		final StringJoiner out = new StringJoiner(TEXT_SEPARATOR);
 		out.add(entry.getConfirmationSignal().getAnchor().getDescription());
 		out.add("confirmedBy");
 		out.add(entry.getConfirmationSignal().getConfirmation().getDescription());
@@ -212,9 +219,15 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	}
 
 	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add("SameDay");
-		for (final SignalConfiguration signal : entry.getSameDaySignals().getSignals()) {
+		final StringJoiner out = new StringJoiner(TEXT_SEPARATOR);
+		final SignalConfiguration[] signals = entry.getSameDaySignals().getSignals();
+		if (signals.length == 1) {
+			out.add("Signal");
+		} else {
+			out.add("SignalsOnSameDay");
+		}
+
+		for (final SignalConfiguration signal : signals) {
 			out.add(signal.getDescription());
 		}
 		return out.toString();
@@ -223,13 +236,13 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	private String maximumTradeValue() {
 		final MaximumTrade trade = configuration.getEntryLogic().getMaximumTrade();
 		return String.format("Maximum Trade: %s%s Maximum Trade Type: Absolute", convertToPercetage(trade.getValue()),
-		        SEPARATOR);
+		        COLUMN_SEPARATOR);
 	}
 
 	private String minimumTradeValue() {
 		final MinimumTrade trade = configuration.getEntryLogic().getMinimumTrade();
 		return String.format("Minimum Trade: %s%s Minimum Trade Type: Percent",
-		        MAX_TWO_DECIMAL_PLACES.format(trade.getValue()), SEPARATOR);
+		        MAX_TWO_DECIMAL_PLACES.format(trade.getValue()), COLUMN_SEPARATOR);
 	}
 
 	private String convertToPercetage( final BigDecimal toPercentage ) {

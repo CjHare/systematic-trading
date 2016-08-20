@@ -115,8 +115,14 @@ public class DescriptionGenerator {
 
 	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add("SameDay");
-		for (final SignalConfiguration signal : entry.getSameDaySignals().getSignals()) {
+		final SignalConfiguration[] signals = entry.getSameDaySignals().getSignals();
+		if (signals.length == 1) {
+			out.add("Signal");
+		} else {
+			out.add("SignalsSameDay");
+		}
+
+		for (final SignalConfiguration signal : signals) {
 			out.add(signal.getDescription());
 		}
 		return out.toString();
