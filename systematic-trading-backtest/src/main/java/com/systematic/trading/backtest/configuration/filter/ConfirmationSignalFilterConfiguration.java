@@ -5,6 +5,7 @@ import com.systematic.trading.backtest.configuration.signals.SignalConfiguration
 public class ConfirmationSignalFilterConfiguration {
 
 	public enum Type {
+		NO_DELAY_RANGE_THREE_DAYS(0, 3),
 		DELAY_ONE_DAY_RANGE_THREE_DAYS(1, 3),
 		DELAY_ONE_DAY_RANGE_FOUR_DAYS(1, 4);
 
