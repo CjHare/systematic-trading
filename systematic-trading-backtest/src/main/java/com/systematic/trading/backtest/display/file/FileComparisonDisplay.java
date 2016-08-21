@@ -52,10 +52,11 @@ import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
+	private static final DecimalFormat FOUR_DECIMAL_PLACES = new DecimalFormat(".0000");
 
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
-	private static final DecimalFormat MAX_TWO_DECIMAL_PLACES = new DecimalFormat("#");
+	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
 	private static final String COLUMN_SEPARATOR = ",";
 	private static final String TEXT_SEPARATOR = " ";
 
@@ -123,7 +124,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears(),
 		        mathContext);
 
-		return String.format("CAGR: %s", cagr);
+		return String.format("CAGR: %s", FOUR_DECIMAL_PLACES.format(cagr));
 	}
 
 	private String netWorth( final NetWorthEvent event ) {
@@ -242,11 +243,11 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	private String minimumTradeValue() {
 		final MinimumTrade trade = configuration.getEntryLogic().getMinimumTrade();
 		return String.format("Minimum Trade: %s%s Minimum Trade Type: Percent",
-		        MAX_TWO_DECIMAL_PLACES.format(trade.getValue()), COLUMN_SEPARATOR);
+		        NO_DECIMAL_PLACES.format(trade.getValue()), COLUMN_SEPARATOR);
 	}
 
 	private String convertToPercetage( final BigDecimal toPercentage ) {
-		return String.format("%s", MAX_TWO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
+		return String.format("%s", NO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
 	}
 
 	private String entryOrdersDeleted( final NetWorthEvent event ) {

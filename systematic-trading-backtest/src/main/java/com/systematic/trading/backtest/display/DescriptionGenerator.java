@@ -51,7 +51,7 @@ public class DescriptionGenerator {
 
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
-	private static final DecimalFormat MAX_TWO_DECIMAL_PLACES = new DecimalFormat("#");
+	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
 
 	public String getDescription( final BacktestBootstrapConfiguration configuration ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
@@ -160,7 +160,7 @@ public class DescriptionGenerator {
 	}
 
 	private String minimumTradeValue( final MinimumTrade trade ) {
-		return String.format("Minimum%s%s", SEPARATOR, MAX_TWO_DECIMAL_PLACES.format(trade.getValue()));
+		return String.format("Minimum%s%s", SEPARATOR, NO_DECIMAL_PLACES.format(trade.getValue()));
 	}
 
 	private String maximumTradeValue( final MaximumTrade trade ) {
@@ -172,6 +172,6 @@ public class DescriptionGenerator {
 	}
 
 	private String convertToPercetage( final BigDecimal toPercentage ) {
-		return String.format("%s", MAX_TWO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
+		return String.format("%s", NO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
 	}
 }
