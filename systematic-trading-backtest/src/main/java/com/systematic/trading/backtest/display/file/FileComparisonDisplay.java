@@ -168,9 +168,9 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		out.add(minimumTradeValue());
 		out.add(maximumTradeValue());
 		out.add(entryLogicDescription());
-		out.add(entryOrdersPlaced(event));
-		out.add(entryOrdersExecuted(event));
-		out.add(entryOrdersDeleted(event));
+		out.add(entryOrdersPlaced());
+		out.add(entryOrdersExecuted());
+		out.add(entryOrdersDeleted());
 		return out.toString();
 	}
 
@@ -238,17 +238,17 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		return String.format("%s", NO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
 	}
 
-	private String entryOrdersDeleted( final NetWorthEvent event ) {
+	private String entryOrdersDeleted() {
 		return String.format("Entry orders deleted: %s",
 		        statistics.getOrderEventStatistics().getDeleteEntryEventCount());
 	}
 
-	private String entryOrdersExecuted( final NetWorthEvent event ) {
+	private String entryOrdersExecuted() {
 		return String.format("Entry orders executed: %s", statistics.getOrderEventStatistics().getEntryEventCount()
 		        - statistics.getOrderEventStatistics().getDeleteEntryEventCount());
 	}
 
-	private String entryOrdersPlaced( final NetWorthEvent event ) {
+	private String entryOrdersPlaced() {
 		return String.format("Entry orders placed: %s", statistics.getOrderEventStatistics().getEntryEventCount());
 	}
 }
