@@ -96,10 +96,10 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		out.add(equitiesHeld(event));
 		out.add(holdingsValue(event));
 		out.add(cashAccount(event));
-		out.add(deposited(event));
+		out.add(deposited());
 		out.add(profit(event));
 		out.add(entryLogic(event));
-		out.add(exitLogic(event));
+		out.add(exitLogic());
 		return String.format("%s%n", out.toString());
 	}
 
@@ -108,7 +108,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		        event.getNetWorth().subtract(statistics.getCashEventStatistics().getAmountDeposited(), mathContext)));
 	}
 
-	private String deposited( final NetWorthEvent event ) {
+	private String deposited() {
 		return String.format("Deposited: %s",
 		        TWO_DECIMAL_PLACES.format(statistics.getCashEventStatistics().getAmountDeposited()));
 	}
@@ -142,24 +142,24 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		return String.format("Holdings value: %s", TWO_DECIMAL_PLACES.format(event.getEquityBalanceValue()));
 	}
 
-	private String exitLogic( final NetWorthEvent event ) {
+	private String exitLogic() {
 		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
-		out.add(exitOrdersPlaced(event));
-		out.add(exitOrdersExecuted(event));
-		out.add(exitOrdersDeleted(event));
+		out.add(exitOrdersPlaced());
+		out.add(exitOrdersExecuted());
+		out.add(exitOrdersDeleted());
 		return out.toString();
 	}
 
-	private String exitOrdersDeleted( final NetWorthEvent event ) {
+	private String exitOrdersDeleted() {
 		return String.format("Exit orders deleted: %s", statistics.getOrderEventStatistics().getDeleteExitEventCount());
 	}
 
-	private String exitOrdersExecuted( final NetWorthEvent event ) {
+	private String exitOrdersExecuted() {
 		return String.format("Exit orders executed: %s", statistics.getOrderEventStatistics().getExitEventCount()
 		        - statistics.getOrderEventStatistics().getDeleteExitEventCount());
 	}
 
-	private String exitOrdersPlaced( final NetWorthEvent event ) {
+	private String exitOrdersPlaced() {
 		return String.format("Exit orders placed: %s", statistics.getOrderEventStatistics().getExitEventCount());
 	}
 
