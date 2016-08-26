@@ -61,6 +61,7 @@ public class HistoryRetrievalRequest implements Serializable {
 	private Date exclusiveEndDate;
 
 	public HistoryRetrievalRequest() {
+		// Default constructor used by Hiberante
 	}
 
 	public HistoryRetrievalRequest(final String tickerSymbol, final LocalDate inclusiveStartDate,
