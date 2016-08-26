@@ -189,16 +189,16 @@ public class BacktestBootstrapContextBulider {
 
 	private EquityManagementFeeCalculator createFeeCalculator( final EquityManagementFeeConfiguration managementFee ) {
 		switch (managementFee) {
-			default:
-			case NONE:
-				return new ZeroEquityManagementFeeCalculator();
-
 			case VANGUARD_MSCI_INT_RETAIL:
 				return new LadderedEquityManagementFeeCalculator(managementFee.getFeeRange(),
 				        managementFee.getPercentageFee(), mathContext);
 
 			case VGS:
 				return new FlatEquityManagementFeeCalculator(managementFee.getPercentageFee()[0], mathContext);
+
+			default:
+			case NONE:
+				return new ZeroEquityManagementFeeCalculator();
 		}
 	}
 }
