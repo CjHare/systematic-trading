@@ -140,7 +140,7 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 	private List<RelativeStrengthDataPoint> calculateRelativeStrengthValues( final TradingDayPrices[] data,
 	        final UpwardsToDownwardsMovement initialLookback, final int endWindupIndex ) {
 
-		final BigDecimal archive = BigDecimal.valueOf(lookback - 1);
+		final BigDecimal archive = BigDecimal.valueOf(lookback - 1L);
 		final BigDecimal history = BigDecimal.valueOf(lookback);
 		BigDecimal upward = initialLookback.getUpward();
 		BigDecimal downward = initialLookback.getDownward();
