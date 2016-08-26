@@ -55,7 +55,7 @@ import com.systematic.trading.maths.indicator.Validator;
  */
 public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
-	//TODO fix this class, the numbers are currently wack, test against, flat, v shape, n shape as well as both gradients
+	//TODO fix this class, test against, flat, v shape, n shape as well as both gradients
 
 	/** Constant for the value of 100. */
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
@@ -89,9 +89,9 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 		        relativeStrengthValues.size());
 
 		/* RSI = 100 - 100 /( 1 + RS ) */
-		for (final RelativeStrengthDataPoint rs : relativeStrengthValues) {
-			relativeStrengthIndexValues.add(new RelativeStrengthIndexDataPoint(rs.getDate(),
-			        ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(rs.getValue()), mathContext))));
+		for (final RelativeStrengthDataPoint dataPoint : relativeStrengthValues) {
+			relativeStrengthIndexValues.add(new RelativeStrengthIndexDataPoint(dataPoint.getDate(),
+			        ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(dataPoint.getValue()), mathContext))));
 		}
 
 		return relativeStrengthIndexValues;

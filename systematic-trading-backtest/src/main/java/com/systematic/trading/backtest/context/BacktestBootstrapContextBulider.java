@@ -196,8 +196,8 @@ public class BacktestBootstrapContextBulider {
 			case VGS:
 				return new FlatEquityManagementFeeCalculator(managementFee.getPercentageFee()[0], mathContext);
 
-			default:
 			case NONE:
+			default:
 				return new ZeroEquityManagementFeeCalculator();
 		}
 	}
