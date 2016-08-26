@@ -71,7 +71,7 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfiguration configurations, final String... args ) throws ServiceException {
+	public void runTest( final BacktestConfiguration configuration, final String... args ) throws ServiceException {
 
 		final String baseOutputDirectory = getBaseOutputDirectory(args);
 
@@ -102,7 +102,7 @@ public class BacktestApplication {
 
 		try {
 			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
-				final List<BacktestBootstrapConfiguration> tests = configurations.get(equity, simulationDates,
+				final List<BacktestBootstrapConfiguration> tests = configuration.get(equity, simulationDates,
 				        depositAmount);
 				final String outputDirectory = String.format(baseOutputDirectory, depositAmount);
 
