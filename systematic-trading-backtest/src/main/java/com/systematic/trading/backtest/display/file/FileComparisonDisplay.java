@@ -98,7 +98,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		out.add(cashAccount(event));
 		out.add(deposited());
 		out.add(profit(event));
-		out.add(entryLogic(event));
+		out.add(entryLogic());
 		out.add(exitLogic());
 		return String.format("%s%n", out.toString());
 	}
@@ -163,7 +163,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		return String.format("Exit orders placed: %s", statistics.getOrderEventStatistics().getExitEventCount());
 	}
 
-	private String entryLogic( final NetWorthEvent event ) {
+	private String entryLogic() {
 		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
 		out.add(minimumTradeValue());
 		out.add(maximumTradeValue());
