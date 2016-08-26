@@ -137,13 +137,13 @@ public class DescriptionGenerator {
 	}
 
 	private String cashAccount( final CashAccountConfiguration cashAccount ) {
-		switch (cashAccount) {
-			case CALCULATED_DAILY_PAID_MONTHLY:
-				return "InterestDaily"; // Standard output needs no description
 
-			default:
-				return "NoInterest";
+		if (CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY == cashAccount) {
+			return "InterestDaily"; // Standard output needs no description
+
 		}
+
+		return "NoInterest";
 	}
 
 	private String brokerage( final BrokerageFeesConfiguration brokerage ) {
