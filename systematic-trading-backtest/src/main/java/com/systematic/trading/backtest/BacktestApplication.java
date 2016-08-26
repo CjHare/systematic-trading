@@ -106,8 +106,7 @@ public class BacktestApplication {
 				        depositAmount);
 				final String outputDirectory = String.format(baseOutputDirectory, depositAmount);
 
-				runTest(depositAmount, outputDirectory, tests, tradingData, equity.getEquityIdentity(), outputType,
-				        pool);
+				runTest(depositAmount, outputDirectory, tests, tradingData, outputType, pool);
 			}
 
 		} finally {
@@ -170,15 +169,14 @@ public class BacktestApplication {
 
 	private void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
-	        final EquityIdentity equity, final DisplayType type, final ExecutorService pool )
-	                throws BacktestInitialisationException {
+	        final DisplayType type, final ExecutorService pool ) throws BacktestInitialisationException {
 
 		// Arrange output to files, only once per a run
 		FileClearDestination destination = new FileClearDestination(baseOutputDirectory);
 		destination.clear();
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
-			final String outputDirectory = getOutputDirectory(baseOutputDirectory, equity, configuration);
+			final String outputDirectory = getOutputDirectory(baseOutputDirectory, configuration);
 			final BacktestDisplay fileDisplay = getDisplay(type, outputDirectory, pool);
 			final BacktestBootstrapContext context = createContext(configuration);
 
@@ -242,7 +240,7 @@ public class BacktestApplication {
 		return new TickerSymbolTradingDataBacktest(equity, data);
 	}
 
-	private String getOutputDirectory( final String baseOutputDirectory, final EquityIdentity equity,
+	private String getOutputDirectory( final String baseOutputDirectory,
 	        final BacktestBootstrapConfiguration configuration ) {
 		return String.format("%s%s", baseOutputDirectory, description.getDescription(configuration));
 	}
