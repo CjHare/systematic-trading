@@ -33,7 +33,6 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
-import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
@@ -53,13 +52,15 @@ public class DescriptionGenerator {
 
 	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
 
+	private static final String EXIT_LOGIC = "HoldForever";
+
 	public String getDescription( final BacktestBootstrapConfiguration configuration ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(equity(configuration.getEquity()));
 		out.add(brokerage(configuration.getBrokerageFees()));
 		out.add(cashAccount(configuration.getCashAccount()));
 		out.add(entryLogic(configuration.getEntryLogic()));
-		out.add(exitLogic(configuration.getExitLogic()));
+		out.add(EXIT_LOGIC);
 		return out.toString();
 	}
 
@@ -98,7 +99,7 @@ public class DescriptionGenerator {
 		}
 	}
 
-	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
+	public String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
 		final int delay = entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange();
 		final int range = entry.getConfirmationSignal().getType().getConfirmationDayRange();
 		final StringJoiner out = new StringJoiner(SEPARATOR);
@@ -130,10 +131,6 @@ public class DescriptionGenerator {
 
 	private String equity( final EquityConfiguration equity ) {
 		return equity.getEquityIdentity().getTickerSymbol();
-	}
-
-	private String exitLogic( final ExitLogicConfiguration entry ) {
-		return "HoldForever";
 	}
 
 	private String cashAccount( final CashAccountConfiguration cashAccount ) {

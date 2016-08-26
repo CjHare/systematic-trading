@@ -36,6 +36,7 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicConfigurati
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
+import com.systematic.trading.backtest.display.DescriptionGenerator;
 import com.systematic.trading.maths.formula.CompoundAnnualGrowthRate;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
@@ -68,6 +69,8 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	private final EventStatistics statistics;
 
 	private final BacktestBootstrapConfiguration configuration;
+
+	private final DescriptionGenerator generator = new DescriptionGenerator();
 
 	public FileComparisonDisplay(final BacktestBootstrapConfiguration configuration, final EventStatistics statistics,
 	        final FileDisplayMultithreading display, final MathContext mathContext) {
@@ -176,7 +179,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 		final String description;
 		switch (entry.getType()) {
 			case CONFIRMATION_SIGNAL:
-				description = entryLogicConfirmationSignal(entry);
+				description = generator.entryLogicConfirmationSignal(entry);
 			break;
 			case PERIODIC:
 				description = entryPeriodic(entry);
@@ -202,21 +205,6 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 			default:
 				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", entry.getPeriodic()));
 		}
-	}
-
-	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
-		final int delay = entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange();
-		final int range = entry.getConfirmationSignal().getType().getConfirmationDayRange();
-		final StringJoiner out = new StringJoiner(TEXT_SEPARATOR);
-		out.add(entry.getConfirmationSignal().getAnchor().getDescription());
-		out.add("confirmedBy");
-		out.add(entry.getConfirmationSignal().getConfirmation().getDescription());
-		out.add("in");
-		out.add(String.valueOf(delay));
-		out.add("to");
-		out.add(String.valueOf(delay + range));
-		out.add("days");
-		return out.toString();
 	}
 
 	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
