@@ -76,13 +76,25 @@ public class CumulativeBrokerageEventStatistics implements BrokerageEventStatist
 	}
 
 	@Override
-	public int getBuyEventCount() {
-		return buyEvents.values().size();
+	public BigInteger getBuyEventCount() {
+		BigInteger buyEventCount = BigInteger.ZERO;
+
+		for (final BigInteger event : buyEvents.values()) {
+			buyEventCount = buyEventCount.add(event);
+		}
+
+		return buyEventCount;
 	}
 
 	@Override
-	public int getSellEventCount() {
-		return sellEvents.values().size();
+	public BigInteger getSellEventCount() {
+		BigInteger sellEventCount = BigInteger.ZERO;
+
+		for (final BigInteger event : sellEvents.values()) {
+			sellEventCount = sellEventCount.add(event);
+		}
+
+		return sellEventCount;
 	}
 
 	@Override

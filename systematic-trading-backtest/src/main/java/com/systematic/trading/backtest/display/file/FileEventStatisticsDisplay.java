@@ -100,8 +100,8 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 	private void addBrokerageStatistics( final BrokerageEventStatistics brokerageStatistics,
 	        final StringBuilder output ) {
 
-		final long sumBrokerageEvents = (long) brokerageStatistics.getSellEventCount()
-		        + brokerageStatistics.getBuyEventCount();
+		final BigInteger sumBrokerageEvents = brokerageStatistics.getSellEventCount()
+		        .add(brokerageStatistics.getBuyEventCount());
 
 		output.append(String.format("%n=== Brokerage events ===%n"));
 		output.append(String.format("# Brokerage events: %s%n", sumBrokerageEvents));
@@ -149,7 +149,7 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		final BigDecimal binSize = largest.subtract(smallest).divide(TEN);
 
 		int bin = 1;
-		while (binSize.multiply(BigDecimal.valueOf(bin)).add(smallest).compareTo(value) < 0) {
+		while (binSize.multiply(BigDecimal.valueOf(bin)).add(smallest).compareTo(value) <= 0) {
 			bin++;
 		}
 

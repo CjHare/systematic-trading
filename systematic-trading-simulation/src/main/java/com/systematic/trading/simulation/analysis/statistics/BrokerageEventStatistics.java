@@ -57,14 +57,14 @@ public interface BrokerageEventStatistics {
 	 * 
 	 * @return number of brokerage purchase actions carried out.
 	 */
-	int getBuyEventCount();
+	BigInteger getBuyEventCount();
 
 	/**
 	 * Number of sale transactions performed.
 	 * 
 	 * @return number of brokerage sale actions carried out.
 	 */
-	int getSellEventCount();
+	BigInteger getSellEventCount();
 
 	/**
 	 * Total of the buy events that occurred.
