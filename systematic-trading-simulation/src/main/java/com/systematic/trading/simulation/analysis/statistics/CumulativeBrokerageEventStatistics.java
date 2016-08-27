@@ -55,17 +55,19 @@ public class CumulativeBrokerageEventStatistics implements BrokerageEventStatist
 
 		switch (event.getType()) {
 			case BUY:
-				buyEvents.put(event.getEquityAmount(),
-				        buyEvents.get(event.getEquityAmount().add(BigDecimal.ONE)));
+				buyEvents.put(event.getEquityAmount(), increment(buyEvents, event.getEquityAmount()));
 			break;
 			case SELL:
-				sellEvents.put(event.getEquityAmount(),
-				        sellEvents.get(event.getEquityAmount().add(BigDecimal.ONE)));
+				sellEvents.put(event.getEquityAmount(), increment(sellEvents, event.getEquityAmount()));
 			break;
 			default:
 				throw new IllegalArgumentException(
 				        String.format("Brokerage event type %s is unexpected", event.getType()));
 		}
+	}
+
+	private BigInteger increment( final Map<BigDecimal, BigInteger> count, final BigDecimal key ) {
+		return count.get(key) == null ? BigInteger.ONE : count.get(key).add(BigInteger.ONE);
 	}
 
 	@Override
