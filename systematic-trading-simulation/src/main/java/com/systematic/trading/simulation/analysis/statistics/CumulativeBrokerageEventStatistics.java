@@ -26,6 +26,9 @@
 package com.systematic.trading.simulation.analysis.statistics;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 
@@ -36,9 +39,14 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
  */
 public class CumulativeBrokerageEventStatistics implements BrokerageEventStatistics {
 
+	/** Running total of all brokerage fees paid.*/
 	private BigDecimal brokerageFees = BigDecimal.ZERO;
-	private int buyEventCount = 0;
-	private int sellEventCount = 0;
+
+	/** Buy events are put into bins of their precise amount, aggregation left for display step.*/
+	private Map<BigDecimal, BigInteger> buyEvents = new HashMap<>();
+
+	/** Sell events are put into bins of their precise amount, aggregation left for display step.*/
+	private Map<BigDecimal, BigInteger> sellEvents = new HashMap<>();
 
 	@Override
 	public void event( final BrokerageEvent event ) {
@@ -47,10 +55,12 @@ public class CumulativeBrokerageEventStatistics implements BrokerageEventStatist
 
 		switch (event.getType()) {
 			case BUY:
-				buyEventCount++;
+				buyEvents.put(event.getEquityAmount(),
+				        buyEvents.get(event.getEquityAmount().add(BigDecimal.ONE)));
 			break;
 			case SELL:
-				sellEventCount++;
+				sellEvents.put(event.getEquityAmount(),
+				        sellEvents.get(event.getEquityAmount().add(BigDecimal.ONE)));
 			break;
 			default:
 				throw new IllegalArgumentException(
@@ -65,11 +75,21 @@ public class CumulativeBrokerageEventStatistics implements BrokerageEventStatist
 
 	@Override
 	public int getBuyEventCount() {
-		return buyEventCount;
+		return buyEvents.values().size();
 	}
 
 	@Override
 	public int getSellEventCount() {
-		return sellEventCount;
+		return sellEvents.values().size();
+	}
+
+	@Override
+	public Map<BigDecimal, BigInteger> getBuyEvents() {
+		return buyEvents;
+	}
+
+	@Override
+	public Map<BigDecimal, BigInteger> getSellEvents() {
+		return sellEvents;
 	}
 }

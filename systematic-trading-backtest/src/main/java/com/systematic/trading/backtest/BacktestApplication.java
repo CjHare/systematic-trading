@@ -58,7 +58,7 @@ public class BacktestApplication {
 	private static final int DAYS_IN_A_YEAR = 365;
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
 
-	private enum DisplayType {
+	public enum DisplayType {
 		FILE_FULL,
 		FILE_MINIMUM,
 		NO_DISPLAY;
@@ -71,7 +71,8 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfiguration configuration, final String... args ) throws ServiceException {
+	public void runTest( final BacktestConfiguration configuration, final DisplayType outputType, final String... args )
+	        throws ServiceException {
 
 		final String baseOutputDirectory = getBaseOutputDirectory(args);
 
@@ -94,8 +95,6 @@ public class BacktestApplication {
 		// Multi-threading support
 		final int cores = Runtime.getRuntime().availableProcessors();
 		final ExecutorService pool = Executors.newFixedThreadPool(cores);
-
-		final DisplayType outputType = DisplayType.FILE_MINIMUM;
 
 		// TODO run the test over the full period with exclusion on filters
 		// TODO no deposits until actual start date

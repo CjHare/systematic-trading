@@ -26,6 +26,8 @@
 package com.systematic.trading.simulation.analysis.statistics;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Map;
 
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 
@@ -63,4 +65,18 @@ public interface BrokerageEventStatistics {
 	 * @return number of brokerage sale actions carried out.
 	 */
 	int getSellEventCount();
+
+	/**
+	 * Total of the buy events that occurred.
+	 * 
+	 * @return the number equities brought and their frequency.
+	 */
+	Map<BigDecimal, BigInteger> getBuyEvents();
+
+	/**
+	 * Total of the sell events that occurred.
+	 * 
+	 * @return the number equities sold and their frequency.
+	 */
+	Map<BigDecimal, BigInteger> getSellEvents();
 }
