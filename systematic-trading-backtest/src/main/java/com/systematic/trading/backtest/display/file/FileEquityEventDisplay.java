@@ -45,13 +45,12 @@ public class FileEquityEventDisplay implements EquityEventListener {
 	public FileEquityEventDisplay(final FileDisplayMultithreading display) {
 		this.display = display;
 
-		display.write("=== Equity Events ===");
+		display.write("=== Equity Events ===\n");
 	}
 
 	@Override
 	public void event( EquityEvent event ) {
-
-		final String content = String.format("Equity Event - %s: %s - equity balance %s -> %s on %s", event.getType(),
+		final String content = String.format("Equity Event - %s: %s - equity balance %s -> %s on %s%n", event.getType(),
 		        TWO_DECIMAL_PLACES.format(event.getEquityAmount()),
 		        TWO_DECIMAL_PLACES.format(event.getStartingEquityBalance()),
 		        TWO_DECIMAL_PLACES.format(event.getEndEquityBalance()), event.getTransactionDate());

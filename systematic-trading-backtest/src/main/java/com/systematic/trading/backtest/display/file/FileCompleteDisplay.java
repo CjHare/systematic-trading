@@ -143,7 +143,7 @@ public class FileCompleteDisplay extends FileDisplay implements BacktestDisplay 
 		final FileDisplayMultithreading signalAnalysisFile = getFileDisplay("/signals.txt");
 		this.signalAnalysisDisplay = new FileSignalAnalysisDisplay(signalAnalysisFile);
 
-		final FileDisplayMultithreading comparisonFile = getFileDisplay("/../summary.txt");
+		final FileDisplayMultithreading comparisonFile = getFileDisplay("/../summary.csv");
 		netWorthComparisonDisplay = new FileComparisonDisplay(configuration, eventStatistics, comparisonFile,
 		        mathContext);
 	}

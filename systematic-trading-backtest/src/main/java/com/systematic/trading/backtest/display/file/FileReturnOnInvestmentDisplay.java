@@ -60,7 +60,7 @@ public class FileReturnOnInvestmentDisplay implements ReturnOnInvestmentEventLis
 		this.display = display;
 		this.roiType = roiType;
 
-		display.write("=== Return On Investment Events ===");
+		display.write("=== Return On Investment Events ===\n");
 	}
 
 	public String createOutput( final ReturnOnInvestmentEvent event ) {

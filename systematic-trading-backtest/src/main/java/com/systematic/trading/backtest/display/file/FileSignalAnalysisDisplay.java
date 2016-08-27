@@ -41,13 +41,12 @@ public class FileSignalAnalysisDisplay implements SignalAnalysisListener {
 	public FileSignalAnalysisDisplay(final FileDisplayMultithreading display) {
 		this.display = display;
 
-		display.write("=== Signal Analysis Events ===");
+		display.write("=== Signal Analysis Events ===\n");
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
-
-		final String content = String.format("Signal event: %s on date: %s", event.getSignalType(),
+		final String content = String.format("Signal event: %s on date: %s%n", event.getSignalType(),
 		        event.getSignalDate());
 		display.write(content);
 	}

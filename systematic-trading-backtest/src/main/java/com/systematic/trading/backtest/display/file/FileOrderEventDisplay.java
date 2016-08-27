@@ -45,13 +45,12 @@ public class FileOrderEventDisplay implements OrderEventListener {
 	public FileOrderEventDisplay(final FileDisplayMultithreading display) {
 		this.display = display;
 
-		display.write("=== Order Events ===");
+		display.write("=== Order Events ===\n");
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-
-		final String content = String.format("Place Order - %s total cost %s created after c.o.b on %s",
+		final String content = String.format("Place Order - %s total cost %s created after c.o.b on %s%n",
 		        event.getType(), TWO_DECIMAL_PLACES.format(event.getTotalCost()), event.getTransactionDate());
 
 		display.write(content);

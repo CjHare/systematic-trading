@@ -45,13 +45,12 @@ public class FileBrokerageEventDisplay implements BrokerageEventListener {
 	public FileBrokerageEventDisplay(final FileDisplayMultithreading display) {
 		this.display = display;
 
-		display.write("=== Brokerage Events ===");
+		display.write("=== Brokerage Events ===\n");
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-
-		final String content = String.format("Brokerage Account - %s: %s - equity balance %s -> %s on %s",
+		final String content = String.format("Brokerage Account - %s: %s - equity balance %s -> %s on %s%n",
 		        event.getType(), TWO_DECIMAL_PLACES.format(event.getEquityAmount()),
 		        TWO_DECIMAL_PLACES.format(event.getStartingEquityBalance()),
 		        TWO_DECIMAL_PLACES.format(event.getEndEquityBalance()), event.getTransactionDate());
