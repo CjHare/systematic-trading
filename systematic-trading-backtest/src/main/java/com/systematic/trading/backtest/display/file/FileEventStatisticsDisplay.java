@@ -29,7 +29,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.Map;
-import java.util.TreeMap;
 
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.simulation.analysis.statistics.BrokerageEventStatistics;
@@ -45,17 +44,19 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  */
 public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 
-	private static final BigDecimal TEN = BigDecimal.valueOf(10);
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
 	private final FileDisplayMultithreading display;
+
+	private final FileHistogram histogram;
 
 	private final EventStatistics statistics;
 
 	public FileEventStatisticsDisplay(final EventStatistics statistics, final FileDisplayMultithreading display) {
 		this.statistics = statistics;
 		this.display = display;
+		this.histogram = new FileHistogram();
 	}
 
 	@Override
@@ -113,49 +114,12 @@ public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
 		addBrokerageBuyHistogram(brokerageStatistics, output);
 	}
 
-	//TODO Histogram display should be moved into it's own class ...as it'll be used by both the buy & sell
 	private void addBrokerageBuyHistogram( final BrokerageEventStatistics brokerageStatistics,
 	        final StringBuilder output ) {
 
 		output.append(String.format("%n=== Brokerage Buy Histogram ===%n"));
-
 		final Map<BigDecimal, BigInteger> buyEvents = brokerageStatistics.getBuyEvents();
-		BigDecimal smallestKey = BigDecimal.valueOf(Double.MAX_VALUE);
-		BigDecimal largestKey = BigDecimal.ZERO;
-		for (final BigDecimal equities : buyEvents.keySet()) {
-			if (smallestKey.compareTo(equities) > 0) {
-				smallestKey = equities;
-			}
-			if (largestKey.compareTo(equities) < 0) {
-				largestKey = equities;
-			}
-		}
-
-		final Map<String, BigInteger> binnedBuyEvents = new TreeMap<>();
-		for (final BigDecimal equities : buyEvents.keySet()) {
-			final String bin = getBin(smallestKey, largestKey, equities);
-			final BigInteger count = buyEvents.get(equities);
-			binnedBuyEvents.put(bin, binnedBuyEvents.get(bin) == null ? count : binnedBuyEvents.get(bin).add(count));
-		}
-
-		for (final String bin : binnedBuyEvents.keySet()) {
-			output.append(String.format("%s : %s%n", bin, binnedBuyEvents.get(bin)));
-		}
-	}
-
-	private String getBin( final BigDecimal smallest, final BigDecimal largest, final BigDecimal value ) {
-
-		// Ten bins covering the whole range of values
-		final BigDecimal binSize = largest.subtract(smallest).divide(TEN);
-
-		int bin = 1;
-		while (binSize.multiply(BigDecimal.valueOf(bin)).add(smallest).compareTo(value) <= 0) {
-			bin++;
-		}
-
-		return String.format("%s to %s",
-		        TWO_DECIMAL_PLACES.format(binSize.multiply(BigDecimal.valueOf(bin - 1)).add(smallest)),
-		        TWO_DECIMAL_PLACES.format(binSize.multiply(BigDecimal.valueOf(bin)).add(smallest)));
+		histogram.addHistogram(buyEvents, output);
 	}
 
 	private void addEquityStatistics( final EquityEventStatistics equityStatistics, final StringBuilder output ) {
