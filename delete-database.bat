@@ -1,4 +1,4 @@
-cd systematic-trading-database-hsqldb/data/
+cd systematic-trading-data-source-hsqldb/data/
 rmdir systematic-trading.tmp
 del systematic-trading.lck
 del systematic-trading.log

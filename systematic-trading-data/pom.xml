@@ -27,7 +27,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data-hibernate</artifactId>
+			<artifactId>systematic-trading-data-orm-hibernate</artifactId>
 			<version>${systematic.trading.data.hibernate.version}</version>
 		</dependency>
 

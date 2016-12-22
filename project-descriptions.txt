@@ -7,9 +7,9 @@ systematic-trading-backtest
 
 systematic-trading-data
 
-systematic-trading-database-hsqldb
+systematic-trading-data-source-hsqldb
 
-systematic-trading-data-hibernate
+systematic-trading-data-source-hibernate
 
 systematic-trading-data-stock-api
 
