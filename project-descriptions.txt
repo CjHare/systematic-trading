@@ -3,7 +3,8 @@ Stateless
 
 systematic-trading-analysis
 
-systematic-trading-backtest
+> systematic-trading-backtest
+Manages the events and configuration i.e. indicators / entries / desposits / period to be used in the simulation.
 
 systematic-trading-data
 
