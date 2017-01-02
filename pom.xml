@@ -15,9 +15,10 @@
 	<modules>
 		<module>systematic-trading-parent</module>
 		<module>systematic-trading-backtest</module>
+		<module>systematic-trading-backtest-display</module>
 		<module>systematic-trading-data</module>
-		<module>systematic-trading-database-hsqldb</module>
-		<module>systematic-trading-data-hibernate</module>
+		<module>systematic-trading-data-orm-hibernate</module>
+		<module>systematic-trading-data-source-hsqldb</module>
 		<module>systematic-trading-data-stock-api</module>
 		<module>systematic-trading-data-stock-api-yahoo</module>
 		<module>systematic-trading-interfaces</module>

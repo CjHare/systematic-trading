@@ -9,18 +9,18 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>systematic-trading-backtest-console</artifactId>
+	<artifactId>systematic-trading-backtest-display</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<systematic.trading.simulation.version>0.0.1-SNAPSHOT</systematic.trading.simulation.version>
+		<systematic.trading.backtest.version>0.0.1-SNAPSHOT</systematic.trading.backtest.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-simulation</artifactId>
-			<version>${systematic.trading.simulation.version}</version>
+			<artifactId>systematic-trading-backtest</artifactId>
+			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
 	</dependencies>
 

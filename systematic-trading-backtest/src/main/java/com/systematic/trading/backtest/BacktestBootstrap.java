@@ -52,8 +52,6 @@ import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
- * Bootstraps the back test.
- * <p/>
  * Deals with the wiring together of the surrounding classes for correct propagation of events.
  * 
  * @author CJ Hare
