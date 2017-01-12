@@ -12,14 +12,6 @@
 	<artifactId>systematic-trading-data-orm-hibernate</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<properties>
-		<log4j.version>2.3</log4j.version>
-		<hypersql.version>2.3.3</hypersql.version>
-		<hibernate.version>4.3.10.Final</hibernate.version>
-
-		<systematic.trading.interfaces.version>0.0.1-SNAPSHOT</systematic.trading.interfaces.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>

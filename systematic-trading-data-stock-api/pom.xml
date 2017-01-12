@@ -12,10 +12,6 @@
 	<artifactId>systematic-trading-data-stock-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<properties>
-		<systematic.trading.maths.version>0.0.1-SNAPSHOT</systematic.trading.maths.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>

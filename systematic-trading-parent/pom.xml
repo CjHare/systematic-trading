@@ -17,6 +17,27 @@
 		<maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>		
 		<sonar-jacoco-listeners.version>3.8</sonar-jacoco-listeners.version>		
 		<jee.version>7.0</jee.version>
+		<log4j.version>2.3</log4j.version>
+		<hypersql.version>2.3.3</hypersql.version>
+		<org.json.version>20141113</org.json.version>
+		<hibernate.version>4.3.10.Final</hibernate.version>
+		<http.components.version>4.4.1</http.components.version>
+
+		<systematic.trading.signals.version>0.0.1-SNAPSHOT</systematic.trading.signals.version>
+		<systematic.trading.data.version>0.0.1-SNAPSHOT</systematic.trading.data.version>
+		<systematic.trading.simulation.version>0.0.1-SNAPSHOT</systematic.trading.simulation.version>
+		<systematic.trading.backtest.version>0.0.1-SNAPSHOT</systematic.trading.backtest.version>
+		<systematic.trading.data.stock.api.yahoo.version>0.0.1-SNAPSHOT</systematic.trading.data.stock.api.yahoo.version>
+		<systematic.trading.data.hibernate.version>0.0.1-SNAPSHOT</systematic.trading.data.hibernate.version>		
+		<systematic.trading.interfaces.version>0.0.1-SNAPSHOT</systematic.trading.interfaces.version>
+		<systematic.trading.maths.version>0.0.1-SNAPSHOT</systematic.trading.maths.version>
+		<systematic.trading.data.stock.api.version>0.0.1-SNAPSHOT</systematic.trading.data.stock.api.version>
+		<systematic.trading.interfaces.version>0.0.1-SNAPSHOT</systematic.trading.interfaces.version>
+		<systematic.trading.interfaces.version>0.0.1-SNAPSHOT</systematic.trading.interfaces.version>
+		<systematic.trading.maths.version>0.0.1-SNAPSHOT</systematic.trading.maths.version>
+		<systematic.trading.signals.version>0.0.1-SNAPSHOT</systematic.trading.signals.version>
+		<systematic.trading.data.version>0.0.1-SNAPSHOT</systematic.trading.data.version>
+
 	</properties>
 
 	<dependencies>

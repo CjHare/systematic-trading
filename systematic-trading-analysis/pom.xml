@@ -12,11 +12,6 @@
 	<artifactId>systematic-trading-analysis</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<properties>
-		<systematic.trading.signals.version>0.0.1-SNAPSHOT</systematic.trading.signals.version>
-		<systematic.trading.data.version>0.0.1-SNAPSHOT</systematic.trading.data.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>

@@ -12,15 +12,6 @@
 	<artifactId>systematic-trading-data-stock-api-yahoo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<properties>
-		<http.components.version>4.4.1</http.components.version>
-		<org.json.version>20141113</org.json.version>
-		<log4j.version>2.3</log4j.version>
-
-		<systematic.trading.data.stock.api.version>0.0.1-SNAPSHOT</systematic.trading.data.stock.api.version>
-		<systematic.trading.interfaces.version>0.0.1-SNAPSHOT</systematic.trading.interfaces.version>
-	</properties>
-
 	<dependencies>
 
 		<dependency>

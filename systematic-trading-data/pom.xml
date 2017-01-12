@@ -12,13 +12,6 @@
 	<artifactId>systematic-trading-data</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<properties>
-		<log4j.version>2.3</log4j.version>
-
-		<systematic.trading.data.stock.api.yahoo.version>0.0.1-SNAPSHOT</systematic.trading.data.stock.api.yahoo.version>
-		<systematic.trading.data.hibernate.version>0.0.1-SNAPSHOT</systematic.trading.data.hibernate.version>		
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
