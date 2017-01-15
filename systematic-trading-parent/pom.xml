@@ -22,6 +22,7 @@
 		<org.json.version>20141113</org.json.version>
 		<hibernate.version>4.3.10.Final</hibernate.version>
 		<http.components.version>4.4.1</http.components.version>
+		<jersey.client.version>2.25</jersey.client.version>
 
 		<systematic.trading.signals.version>0.0.1-SNAPSHOT</systematic.trading.signals.version>
 		<systematic.trading.data.version>0.0.1-SNAPSHOT</systematic.trading.data.version>
@@ -36,8 +37,7 @@
 		<systematic.trading.interfaces.version>0.0.1-SNAPSHOT</systematic.trading.interfaces.version>
 		<systematic.trading.maths.version>0.0.1-SNAPSHOT</systematic.trading.maths.version>
 		<systematic.trading.signals.version>0.0.1-SNAPSHOT</systematic.trading.signals.version>
-		<systematic.trading.data.version>0.0.1-SNAPSHOT</systematic.trading.data.version>
-
+		<systematic.trading.data.version>0.0.1-SNAPSHOT</systematic.trading.data.version>		
 	</properties>
 
 	<dependencies>

@@ -18,6 +18,12 @@
 			<artifactId>systematic-trading-backtest</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey.client.version}</version>
+		</dependency>		
 	</dependencies>
 
 	<build>
