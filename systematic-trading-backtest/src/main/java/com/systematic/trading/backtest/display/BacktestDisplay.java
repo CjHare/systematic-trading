@@ -51,7 +51,7 @@ public interface BacktestDisplay
         SimulationStateListener, NetWorthEventListener, SignalAnalysisListener, EquityEventListener {
 
 	/**
-	 * All the interesting data points for displaying.
+	 * All the interesting data points for displaying, the information that uniquely identifies the backtest.
 	 * 
 	 * @param configuration set up for the simulation being displayed.
 	 * @param tradingData summary of the data set analysed.

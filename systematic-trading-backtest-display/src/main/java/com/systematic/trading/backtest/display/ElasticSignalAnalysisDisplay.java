@@ -25,15 +25,27 @@
  */
 package com.systematic.trading.backtest.display;
 
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.exception.BacktestInitialisationException;
+import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
-import com.systematic.trading.signals.model.event.SignalAnalysisListener;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.equity.event.EquityEvent;
+import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Interested in displaying signal analysis events.
+ * Puts the event data into Elastic using the rest HTTP endpoint.
  * 
  * @author CJ Hare
  */
-public class ElasticSignalAnalysisDisplay implements SignalAnalysisListener {
+public class ElasticSignalAnalysisDisplay implements BacktestDisplay {
 
 	public ElasticSignalAnalysisDisplay() {
 	}
@@ -42,5 +54,56 @@ public class ElasticSignalAnalysisDisplay implements SignalAnalysisListener {
 	public void event( final SignalAnalysisEvent event ) {
 
 		//TODO put the event into elastic
+	}
+
+	@Override
+	public void event( final CashEvent event ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void event( final OrderEvent event ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void event( final BrokerageEvent event ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void event( final ReturnOnInvestmentEvent event ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void stateChanged( final SimulationState transitionedState ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void event( final NetWorthEvent event, final SimulationState state ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void event( final EquityEvent event ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
+	        final BacktestSimulationDates simulationDates, final EventStatistics eventStatistics,
+	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
+	        throws BacktestInitialisationException {
+		// TODO Auto-generated method stub
+
 	}
 }
