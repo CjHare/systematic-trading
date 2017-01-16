@@ -35,14 +35,14 @@ import com.systematic.trading.simulation.cash.event.CashEventListener;
  * 
  * @author CJ Hare
  */
-public class FileCashEventDisplay implements CashEventListener {
+public class CashEventFileDisplay implements CashEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
-	private final FileDisplayMultithreading display;
+	private final DisplayMultithreading display;
 
-	public FileCashEventDisplay(final FileDisplayMultithreading display) {
+	public CashEventFileDisplay(final DisplayMultithreading display) {
 		this.display = display;
 
 		display.write("=== Cash Events ===\n");

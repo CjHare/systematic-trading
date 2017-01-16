@@ -25,12 +25,12 @@ import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
-import com.systematic.trading.backtest.display.BacktestDisplay;
+import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.display.DescriptionGenerator;
-import com.systematic.trading.backtest.display.file.FileClearDestination;
-import com.systematic.trading.backtest.display.file.FileCompleteDisplay;
-import com.systematic.trading.backtest.display.file.FileMinimalDisplay;
-import com.systematic.trading.backtest.display.file.FileNoDisplay;
+import com.systematic.trading.backtest.display.NoDisplay;
+import com.systematic.trading.backtest.display.file.ClearFileDestination;
+import com.systematic.trading.backtest.display.file.CompleteFileDisplay;
+import com.systematic.trading.backtest.display.file.MinimalFileDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
@@ -148,16 +148,16 @@ public class BacktestApplication {
 		return Period.ofDays(windUp);
 	}
 
-	private BacktestDisplay getDisplay( final DisplayType type, final String outputDirectory,
+	private BacktestOutput getDisplay( final DisplayType type, final String outputDirectory,
 	        final ExecutorService pool ) throws BacktestInitialisationException {
 		try {
 			switch (type) {
 				case FILE_FULL:
-					return new FileCompleteDisplay(outputDirectory, pool, mathContext);
+					return new CompleteFileDisplay(outputDirectory, pool, mathContext);
 				case FILE_MINIMUM:
-					return new FileMinimalDisplay(outputDirectory, pool, mathContext);
+					return new MinimalFileDisplay(outputDirectory, pool, mathContext);
 				case NO_DISPLAY:
-					return new FileNoDisplay();
+					return new NoDisplay();
 				default:
 					throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
 			}
@@ -171,12 +171,12 @@ public class BacktestApplication {
 	        final DisplayType type, final ExecutorService pool ) throws BacktestInitialisationException {
 
 		// Arrange output to files, only once per a run
-		FileClearDestination destination = new FileClearDestination(baseOutputDirectory);
+		ClearFileDestination destination = new ClearFileDestination(baseOutputDirectory);
 		destination.clear();
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final String outputDirectory = getOutputDirectory(baseOutputDirectory, configuration);
-			final BacktestDisplay fileDisplay = getDisplay(type, outputDirectory, pool);
+			final BacktestOutput fileDisplay = getDisplay(type, outputDirectory, pool);
 			final BacktestBootstrapContext context = createContext(configuration);
 
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, fileDisplay, tradingData,

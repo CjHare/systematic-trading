@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import com.systematic.trading.backtest.display.BacktestDisplay;
+import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
@@ -36,7 +36,7 @@ import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener
  * 
  * @author CJ Hare
  */
-public abstract class FileDisplay implements BacktestDisplay {
+public abstract class FileDisplay implements BacktestOutput {
 
 	protected abstract EventStatisticsDisplay getEventStatisticsDisplay();
 

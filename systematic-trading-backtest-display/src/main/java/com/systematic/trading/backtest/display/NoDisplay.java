@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.display;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
@@ -41,69 +42,59 @@ import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Puts the event data into Elastic using the rest HTTP endpoint.
+ * Single entry point to output for a simulation run without actually outputting any of the events.
+ * <p/>
+ * Produces no IO operations.
  * 
  * @author CJ Hare
  */
-public class ElasticSignalAnalysisDisplay implements BacktestDisplay {
-
-	public ElasticSignalAnalysisDisplay() {
-	}
+public class NoDisplay implements BacktestOutput {
 
 	@Override
-	public void event( final SignalAnalysisEvent event ) {
-
-		//TODO put the event into elastic
+	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
+	        final BacktestSimulationDates dates, final EventStatistics eventStatistics,
+	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
+	        throws BacktestInitialisationException {
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
-		// TODO Auto-generated method stub
-
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		// TODO Auto-generated method stub
-
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		// TODO Auto-generated method stub
-
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		// TODO Auto-generated method stub
-
+		// Recording of this event is not required for no display
 	}
 
 	@Override
 	public void stateChanged( final SimulationState transitionedState ) {
-		// TODO Auto-generated method stub
-
+		// Recording of this state change is not required for no display
 	}
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
-		// TODO Auto-generated method stub
-
+		// Recording of this event is not required for no display
 	}
 
 	@Override
-	public void event( final EquityEvent event ) {
-		// TODO Auto-generated method stub
-
+	public void event( final SignalAnalysisEvent event ) {
+		// Recording of this event is not required for no display
 	}
 
 	@Override
-	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
-	        final BacktestSimulationDates simulationDates, final EventStatistics eventStatistics,
-	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
-	        throws BacktestInitialisationException {
-		// TODO Auto-generated method stub
-
+	public void event( EquityEvent event ) {
+		// Recording of this event is not required for no display
 	}
 }

@@ -35,14 +35,14 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
  * 
  * @author CJ Hare
  */
-public class FileBrokerageEventDisplay implements BrokerageEventListener {
+public class BrokerageEventFileDisplay implements BrokerageEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
-	private final FileDisplayMultithreading display;
+	private final DisplayMultithreading display;
 
-	public FileBrokerageEventDisplay(final FileDisplayMultithreading display) {
+	public BrokerageEventFileDisplay(final DisplayMultithreading display) {
 		this.display = display;
 
 		display.write("=== Brokerage Events ===\n");

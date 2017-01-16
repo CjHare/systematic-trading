@@ -31,7 +31,7 @@ import java.math.MathContext;
 import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.display.BacktestDisplay;
+import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
@@ -39,34 +39,48 @@ import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.cash.event.CashEventListener;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
+import com.systematic.trading.simulation.equity.event.EquityEventListener;
 import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
- * Single entry point to output a simulation run into files, displaying only the summary and
- * comparisons.
- * <p/>
- * Substantially reduces the number of logged events, hence side stepping the IO bottleneck.
+ * Single entry point to output a simulation run into files, displaying all events.
  * 
  * @author CJ Hare
  */
-public class FileMinimalDisplay extends FileDisplay implements BacktestDisplay {
+public class CompleteFileDisplay extends FileDisplay implements BacktestOutput {
 
 	private final MathContext mathContext;
 
+	// TODO aggregate displays into arrays
 	private final String baseDirectory;
+	private ReturnOnInvestmentEventListener roiDisplay;
+	private ReturnOnInvestmentEventListener roiDailyDisplay;
+	private ReturnOnInvestmentEventListener roiMonthlyDisplay;
+	private ReturnOnInvestmentEventListener roiYearlyDisplay;
+	private EventFileDisplay eventDisplay;
+	private CashEventListener cashEventDisplay;
+	private BrokerageEventListener brokerageEventDisplay;
+	private OrderEventListener ordertEventDisplay;
+	private SignalAnalysisListener signalAnalysisDisplay;
 	private EventStatisticsDisplay statisticsDisplay;
 	private NetWorthSummaryDisplay netWorthDisplay;
 	private NetWorthEventListener netWorthComparisonDisplay;
+	private EquityEventListener equityEventDisplay;
 	private final ExecutorService pool;
 
-	public FileMinimalDisplay(final String outputDirectory, final ExecutorService pool, final MathContext mathContext)
+	public CompleteFileDisplay(final String outputDirectory, final ExecutorService pool, final MathContext mathContext)
 	        throws IOException {
 
 		// Ensure the directory exists
@@ -88,47 +102,90 @@ public class FileMinimalDisplay extends FileDisplay implements BacktestDisplay {
 	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 	                throws BacktestInitialisationException {
 
-		final FileDisplayMultithreading statisticsFile = getFileDisplay("/statistics.txt");
-		this.statisticsDisplay = new FileEventStatisticsDisplay(eventStatistics, statisticsFile);
-		this.netWorthDisplay = new FileNetWorthSummaryDisplay(cumulativeRoi, statisticsFile);
+		final DisplayMultithreading returnOnInvestmentFile = getFileDisplay("/return-on-investment.txt");
+		this.roiDisplay = new ReturnOnInvestmentFileDisplay(
+		        ReturnOnInvestmentFileDisplay.RETURN_ON_INVESTMENT_DISPLAY.ALL, returnOnInvestmentFile);
 
-		final FileDisplayMultithreading comparisonFile = getFileDisplay("/../summary.txt");
-		netWorthComparisonDisplay = new FileComparisonDisplay(configuration, eventStatistics, comparisonFile,
+		final DisplayMultithreading returnOnInvestmentDailyFilen = getFileDisplay(
+		        "/return-on-investment-daily.txt");
+		this.roiDailyDisplay = new ReturnOnInvestmentFileDisplay(
+		        ReturnOnInvestmentFileDisplay.RETURN_ON_INVESTMENT_DISPLAY.DAILY, returnOnInvestmentDailyFilen);
+
+		final DisplayMultithreading returnOnInvestmentMonthlyFile = getFileDisplay(
+		        "/return-on-investment-monthly.txt");
+		this.roiMonthlyDisplay = new ReturnOnInvestmentFileDisplay(
+		        ReturnOnInvestmentFileDisplay.RETURN_ON_INVESTMENT_DISPLAY.MONTHLY, returnOnInvestmentMonthlyFile);
+
+		final DisplayMultithreading returnOnInvestmentYearlyFile = getFileDisplay(
+		        "/return-on-investment-yearly.txt");
+		this.roiYearlyDisplay = new ReturnOnInvestmentFileDisplay(
+		        ReturnOnInvestmentFileDisplay.RETURN_ON_INVESTMENT_DISPLAY.YEARLY, returnOnInvestmentYearlyFile);
+
+		final DisplayMultithreading eventFile = getFileDisplay("/events.txt");
+		this.eventDisplay = new EventFileDisplay(tradingData, dates, eventFile);
+
+		final DisplayMultithreading cashEventFile = getFileDisplay("/events-cash.txt");
+		this.cashEventDisplay = new CashEventFileDisplay(cashEventFile);
+
+		final DisplayMultithreading orderEventFile = getFileDisplay("/events-order.txt");
+		this.ordertEventDisplay = new OrderEventFileDisplay(orderEventFile);
+
+		final DisplayMultithreading brokerageEventFile = getFileDisplay("/events-brokerage.txt");
+		this.brokerageEventDisplay = new BrokerageEventFileDisplay(brokerageEventFile);
+
+		final DisplayMultithreading equityEventFile = getFileDisplay("/events-equity.txt");
+		this.equityEventDisplay = new EquityEventFileDisplay(equityEventFile);
+
+		final DisplayMultithreading statisticsFile = getFileDisplay("/statistics.txt");
+		this.statisticsDisplay = new EventStatisticsFileDisplay(eventStatistics, statisticsFile);
+		this.netWorthDisplay = new NetWorthSummaryFileDisplay(cumulativeRoi, statisticsFile);
+
+		final DisplayMultithreading signalAnalysisFile = getFileDisplay("/signals.txt");
+		this.signalAnalysisDisplay = new SignalAnalysisFileDisplay(signalAnalysisFile);
+
+		final DisplayMultithreading comparisonFile = getFileDisplay("/../summary.csv");
+		netWorthComparisonDisplay = new ComparisonFileDisplay(configuration, eventStatistics, comparisonFile,
 		        mathContext);
 	}
 
-	private FileDisplayMultithreading getFileDisplay( final String suffix ) {
-		return new FileDisplayMultithreading(baseDirectory + suffix, pool);
+	private DisplayMultithreading getFileDisplay( final String suffix ) {
+		return new DisplayMultithreading(baseDirectory + suffix, pool);
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
-		// Recording of this event is not required for minimal display
+		eventDisplay.event(event);
+		cashEventDisplay.event(event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		// Recording of this event is not required for minimal display
+		eventDisplay.event(event);
+		ordertEventDisplay.event(event);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		// Recording of this event is not required for minimal display
+		eventDisplay.event(event);
+		brokerageEventDisplay.event(event);
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		// Recording of this event is not required for minimal display
+		roiDisplay.event(event);
+		roiDailyDisplay.event(event);
+		roiMonthlyDisplay.event(event);
+		roiYearlyDisplay.event(event);
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
-		// Recording of this event is not required for minimal display
+		signalAnalysisDisplay.event(event);
 	}
 
 	@Override
-	public void event( EquityEvent event ) {
-		// Recording of this event is not required for minimal display
+	public void event( final EquityEvent event ) {
+		equityEventDisplay.event(event);
 	}
 
 	@Override

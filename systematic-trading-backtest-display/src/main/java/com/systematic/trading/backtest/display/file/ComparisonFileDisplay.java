@@ -50,7 +50,7 @@ import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
  * 
  * @author CJ Hare
  */
-public class FileComparisonDisplay implements NetWorthEventListener {
+public class ComparisonFileDisplay implements NetWorthEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
 	private static final DecimalFormat FOUR_DECIMAL_PLACES = new DecimalFormat(".0000");
@@ -62,7 +62,7 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 	private static final String TEXT_SEPARATOR = " ";
 
 	/** Display responsible for handling the file output. */
-	private final FileDisplayMultithreading display;
+	private final DisplayMultithreading display;
 
 	private final MathContext mathContext;
 
@@ -72,8 +72,8 @@ public class FileComparisonDisplay implements NetWorthEventListener {
 
 	private final DescriptionGenerator generator = new DescriptionGenerator();
 
-	public FileComparisonDisplay(final BacktestBootstrapConfiguration configuration, final EventStatistics statistics,
-	        final FileDisplayMultithreading display, final MathContext mathContext) {
+	public ComparisonFileDisplay(final BacktestBootstrapConfiguration configuration, final EventStatistics statistics,
+	        final DisplayMultithreading display, final MathContext mathContext) {
 		this.configuration = configuration;
 		this.mathContext = mathContext;
 		this.statistics = statistics;

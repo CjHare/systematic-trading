@@ -23,45 +23,88 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.display;
+package com.systematic.trading.backtest.output.elastic;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
-import com.systematic.trading.signals.model.event.SignalAnalysisListener;
-import com.systematic.trading.simulation.SimulationStateListener;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
+import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
-import com.systematic.trading.simulation.cash.event.CashEventListener;
-import com.systematic.trading.simulation.equity.event.EquityEventListener;
-import com.systematic.trading.simulation.order.event.OrderEventListener;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.equity.event.EquityEvent;
+import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Output from back testing.
+ * Puts the event data into Elastic Search using the rest HTTP endpoint.
  * 
  * @author CJ Hare
  */
-public interface BacktestDisplay
-        extends CashEventListener, OrderEventListener, BrokerageEventListener, ReturnOnInvestmentEventListener,
-        SimulationStateListener, NetWorthEventListener, SignalAnalysisListener, EquityEventListener {
+public class ElasticBacktestOutput implements BacktestOutput {
 
-	/**
-	 * All the interesting data points for displaying, the information that uniquely identifies the backtest.
-	 * 
-	 * @param configuration set up for the simulation being displayed.
-	 * @param tradingData summary of the data set analysed.
-	 * @param eventStatistics record of various event occurrences.
-	 * @param cumulativeRoi sum of the return on investment over the course of back testing.
-	 * @param lastTradingDay prices from the last day in the back test.
-	 * @throws Exception problem encountered during the initialisation of the display.
-	 */
-	void init( BacktestBootstrapConfiguration configuration, TickerSymbolTradingData tradingData,
-	        BacktestSimulationDates simulationDates, EventStatistics eventStatistics,
-	        CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, TradingDayPrices lastTradingDay )
-	                throws BacktestInitialisationException;
+	public ElasticBacktestOutput() {
+	}
+
+	@Override
+	public void event( final SignalAnalysisEvent event ) {
+
+		//TODO put the event into elastic
+	}
+
+	@Override
+	public void event( final CashEvent event ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void event( final OrderEvent event ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void event( final BrokerageEvent event ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void event( final ReturnOnInvestmentEvent event ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void stateChanged( final SimulationState transitionedState ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void event( final NetWorthEvent event, final SimulationState state ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void event( final EquityEvent event ) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
+	        final BacktestSimulationDates simulationDates, final EventStatistics eventStatistics,
+	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
+	        throws BacktestInitialisationException {
+		// TODO Auto-generated method stub
+
+	}
 }

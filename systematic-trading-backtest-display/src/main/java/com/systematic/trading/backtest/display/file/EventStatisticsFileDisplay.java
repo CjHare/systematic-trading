@@ -31,6 +31,7 @@ import java.text.DecimalFormat;
 import java.util.Map;
 
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
+import com.systematic.trading.backtest.display.HistogramDisplay;
 import com.systematic.trading.simulation.analysis.statistics.BrokerageEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.CashEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EquityEventStatistics;
@@ -42,21 +43,21 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  * 
  * @author CJ Hare
  */
-public class FileEventStatisticsDisplay implements EventStatisticsDisplay {
+public class EventStatisticsFileDisplay implements EventStatisticsDisplay {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
-	private final FileDisplayMultithreading display;
+	private final DisplayMultithreading display;
 
-	private final FileHistogram histogram;
+	private final HistogramDisplay histogram;
 
 	private final EventStatistics statistics;
 
-	public FileEventStatisticsDisplay(final EventStatistics statistics, final FileDisplayMultithreading display) {
+	public EventStatisticsFileDisplay(final EventStatistics statistics, final DisplayMultithreading display) {
 		this.statistics = statistics;
 		this.display = display;
-		this.histogram = new FileHistogram();
+		this.histogram = new HistogramDisplay();
 	}
 
 	@Override

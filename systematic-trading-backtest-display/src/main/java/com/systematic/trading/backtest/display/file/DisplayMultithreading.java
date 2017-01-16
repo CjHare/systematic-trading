@@ -25,36 +25,54 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.text.DecimalFormat;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.concurrent.ExecutorService;
 
-import com.systematic.trading.simulation.equity.event.EquityEvent;
-import com.systematic.trading.simulation.equity.event.EquityEventListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * Simple output to the console for the events.
+ * Handles the multi-threading
  * 
  * @author CJ Hare
  */
-public class FileEquityEventDisplay implements EquityEventListener {
+public class DisplayMultithreading {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
+	/** Classes logger. */
+	private static final Logger LOG = LogManager.getLogger(DisplayMultithreading.class);
 
-	/** Display responsible for handling the file output. */
-	private final FileDisplayMultithreading display;
+	/** File that receives that get written to. */
+	private final String outputFilename;
 
-	public FileEquityEventDisplay(final FileDisplayMultithreading display) {
-		this.display = display;
+	/** Pool of execution threads to delegate IO operations. */
+	private final ExecutorService pool;
 
-		display.write("=== Equity Events ===\n");
+	public DisplayMultithreading(final String outputFilename, final ExecutorService pool) {
+		this.outputFilename = outputFilename;
+		this.pool = pool;
 	}
 
-	@Override
-	public void event( EquityEvent event ) {
-		final String content = String.format("Equity Event - %s: %s - equity balance %s -> %s on %s%n", event.getType(),
-		        TWO_DECIMAL_PLACES.format(event.getEquityAmount()),
-		        TWO_DECIMAL_PLACES.format(event.getStartingEquityBalance()),
-		        TWO_DECIMAL_PLACES.format(event.getEndEquityBalance()), event.getTransactionDate());
+	/**
+	 * Asynchronous writing operation.
+	 * 
+	 * @param content gets queued for writing to the output file.
+	 */
+	public void write( final String content ) {
 
-		display.write(content);
+		final Runnable task = () -> {
+			try (final FileOutputStream out = new FileOutputStream(outputFilename, true);
+		            final FileChannel fileChannel = out.getChannel()) {
+
+				fileChannel.write(ByteBuffer.wrap(content.getBytes()));
+
+			} catch (final IOException e) {
+				LOG.error(e);
+			}
+		};
+
+		pool.execute(task);
 	}
 }

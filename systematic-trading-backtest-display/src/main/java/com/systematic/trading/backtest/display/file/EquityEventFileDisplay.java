@@ -25,29 +25,36 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
-import com.systematic.trading.signals.model.event.SignalAnalysisListener;
+import java.text.DecimalFormat;
+
+import com.systematic.trading.simulation.equity.event.EquityEvent;
+import com.systematic.trading.simulation.equity.event.EquityEventListener;
 
 /**
- * Interested in displaying signal analysis events.
+ * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public class FileSignalAnalysisDisplay implements SignalAnalysisListener {
+public class EquityEventFileDisplay implements EquityEventListener {
+
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
-	private final FileDisplayMultithreading display;
+	private final DisplayMultithreading display;
 
-	public FileSignalAnalysisDisplay(final FileDisplayMultithreading display) {
+	public EquityEventFileDisplay(final DisplayMultithreading display) {
 		this.display = display;
 
-		display.write("=== Signal Analysis Events ===\n");
+		display.write("=== Equity Events ===\n");
 	}
 
 	@Override
-	public void event( final SignalAnalysisEvent event ) {
-		final String content = String.format("Signal event: %s on date: %s%n", event.getSignalType(),
-		        event.getSignalDate());
+	public void event( EquityEvent event ) {
+		final String content = String.format("Equity Event - %s: %s - equity balance %s -> %s on %s%n", event.getType(),
+		        TWO_DECIMAL_PLACES.format(event.getEquityAmount()),
+		        TWO_DECIMAL_PLACES.format(event.getStartingEquityBalance()),
+		        TWO_DECIMAL_PLACES.format(event.getEndEquityBalance()), event.getTransactionDate());
+
 		display.write(content);
 	}
 }

@@ -42,7 +42,7 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public class FileEventDisplay implements CashEventListener, OrderEventListener, BrokerageEventListener {
+public class EventFileDisplay implements CashEventListener, OrderEventListener, BrokerageEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
@@ -50,14 +50,14 @@ public class FileEventDisplay implements CashEventListener, OrderEventListener, 
 	private final OrderEventListener orderEventListener;
 	private final BrokerageEventListener brokerageEventListener;
 
-	public FileEventDisplay(final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-	        final FileDisplayMultithreading display) {
+	public EventFileDisplay(final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
+	        final DisplayMultithreading display) {
 
 		display.write(createHeaderOutput(tradingData, dates));
 
-		this.cashEventListener = new FileCashEventDisplay(display);
-		this.orderEventListener = new FileOrderEventDisplay(display);
-		this.brokerageEventListener = new FileBrokerageEventDisplay(display);
+		this.cashEventListener = new CashEventFileDisplay(display);
+		this.orderEventListener = new OrderEventFileDisplay(display);
+		this.brokerageEventListener = new BrokerageEventFileDisplay(display);
 	}
 
 	private String createHeaderOutput( final TickerSymbolTradingData tradingData,

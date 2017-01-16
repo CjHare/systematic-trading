@@ -25,54 +25,29 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.util.concurrent.ExecutorService;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 
 /**
- * Handles the multi-threading
+ * Interested in displaying signal analysis events.
  * 
  * @author CJ Hare
  */
-public class FileDisplayMultithreading {
+public class SignalAnalysisFileDisplay implements SignalAnalysisListener {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(FileDisplayMultithreading.class);
+	/** Display responsible for handling the file output. */
+	private final DisplayMultithreading display;
 
-	/** File that receives that get written to. */
-	private final String outputFilename;
+	public SignalAnalysisFileDisplay(final DisplayMultithreading display) {
+		this.display = display;
 
-	/** Pool of execution threads to delegate IO operations. */
-	private final ExecutorService pool;
-
-	public FileDisplayMultithreading(final String outputFilename, final ExecutorService pool) {
-		this.outputFilename = outputFilename;
-		this.pool = pool;
+		display.write("=== Signal Analysis Events ===\n");
 	}
 
-	/**
-	 * Asynchronous writing operation.
-	 * 
-	 * @param content gets queued for writing to the output file.
-	 */
-	public void write( final String content ) {
-
-		final Runnable task = () -> {
-			try (final FileOutputStream out = new FileOutputStream(outputFilename, true);
-		            final FileChannel fileChannel = out.getChannel()) {
-
-				fileChannel.write(ByteBuffer.wrap(content.getBytes()));
-
-			} catch (final IOException e) {
-				LOG.error(e);
-			}
-		};
-
-		pool.execute(task);
+	@Override
+	public void event( final SignalAnalysisEvent event ) {
+		final String content = String.format("Signal event: %s on date: %s%n", event.getSignalType(),
+		        event.getSignalDate());
+		display.write(content);
 	}
 }

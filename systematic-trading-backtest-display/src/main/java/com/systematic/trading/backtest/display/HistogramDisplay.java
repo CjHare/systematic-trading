@@ -1,4 +1,4 @@
-package com.systematic.trading.backtest.display.file;
+package com.systematic.trading.backtest.display;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class FileHistogram {
+public class HistogramDisplay {
 
 	private static final BigDecimal TEN = BigDecimal.valueOf(10);
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");

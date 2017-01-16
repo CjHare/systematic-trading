@@ -25,34 +25,63 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import java.text.DecimalFormat;
-
-import com.systematic.trading.simulation.order.event.OrderEvent;
-import com.systematic.trading.simulation.order.event.OrderEventListener;
+import java.io.File;
 
 /**
- * Simple output to the console for the events.
+ * Empties the destination directory of all files and folders.
  * 
  * @author CJ Hare
  */
-public class FileOrderEventDisplay implements OrderEventListener {
+public class ClearFileDestination {
 
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
+	private final String outputDirectory;
 
-	/** Display responsible for handling the file output. */
-	private final FileDisplayMultithreading display;
-
-	public FileOrderEventDisplay(final FileDisplayMultithreading display) {
-		this.display = display;
-
-		display.write("=== Order Events ===\n");
+	public ClearFileDestination(final String outputDirectory) {
+		this.outputDirectory = outputDirectory;
 	}
 
-	@Override
-	public void event( final OrderEvent event ) {
-		final String content = String.format("Place Order - %s total cost %s created after c.o.b on %s%n",
-		        event.getType(), TWO_DECIMAL_PLACES.format(event.getTotalCost()), event.getTransactionDate());
+	public void clear() {
 
-		display.write(content);
+		// Ensure the directory exists
+		final File outputDirectoryFile = new File(outputDirectory);
+
+		if (outputDirectoryFile.exists())
+
+		{
+			deleteSubDirectories(outputDirectoryFile);
+		} else
+
+		{
+			if (!outputDirectoryFile.mkdirs()) {
+				throw new IllegalArgumentException(
+				        String.format("Failed to create / access directory parent directory: %s", outputDirectory));
+			}
+		}
+
+		verifyDirectoryIsEmpty(outputDirectory);
 	}
+
+	private void verifyDirectoryIsEmpty( final String outputDirectory ) {
+		final File outputDirectoryFile = new File(outputDirectory);
+
+		if (outputDirectoryFile.listFiles().length != 0) {
+			throw new IllegalArgumentException(String.format("%s was not successfully emptied, still contains: %s",
+			        outputDirectory, outputDirectoryFile.listFiles()));
+		}
+	}
+
+	private void deleteSubDirectories( final File directory ) {
+
+		for (final File file : directory.listFiles()) {
+
+			if (file.isDirectory()) {
+				deleteSubDirectories(file);
+			}
+
+			if (!file.delete()) {
+				throw new IllegalArgumentException(String.format("Failed to delete: %s", directory));
+			}
+		}
+	}
+
 }
