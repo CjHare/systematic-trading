@@ -1,27 +1,52 @@
 systematic-trading-maths
-Stateless
+	Mathematics behind the indicators used in systematic-trading simulation.
+
 
 systematic-trading-analysis
+	Application providing daily price data analysis. Entry points for stop-loss and buy prices.
 
-> systematic-trading-backtest
-Manages the events and configuration i.e. indicators / entries / desposits / period to be used in the simulation.
 
+systematic-trading-backtest
+	Application for perofrming backtesting. Manages the events and configuration i.e. indicators / entries / desposits / period to be used in the simulation.
+
+	
+systematic-trading-backtest-display
+	Output and display for the simulation.
+
+	
 systematic-trading-data
+	Facade effectively providing a local caching of daily equity price data. 
 
+
+systematic-trading-data-orm-hibernate
+	Hibernate mapping for the pending history retrieval requests and retrieved price data.
+	
+	
 systematic-trading-data-source-hsqldb
+	HSQL database, startup scripts and data files.
 
-systematic-trading-data-source-hibernate
 
 systematic-trading-data-stock-api
+	Interfaces for retrieving equity price data from an external stock API.
+
 
 systematic-trading-data-stock-api-yahoo
+	Implementation for retriving equity price data from the Yahoo public tables as JSON.
+
 
 systematic-trading-interfaces
+	Interfaces abstracting the simulation from the data sources and consumer applications.
 
-systematic-trading-maths
 
 systematic-trading-parent
 
+
+
 systematic-trading-signals
 
+
+
 systematic-trading-simulation
+
+
+
