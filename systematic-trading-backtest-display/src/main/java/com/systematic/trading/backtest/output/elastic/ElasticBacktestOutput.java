@@ -106,5 +106,7 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	        throws BacktestInitialisationException {
 		// TODO Auto-generated method stub
 
+		//TODO store the unqiueness value for the elastic index: 
+		//TODO start off with every event in their own index, then extract data with graphana / kinana to refine
 	}
 }
