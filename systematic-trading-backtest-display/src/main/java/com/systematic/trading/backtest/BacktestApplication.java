@@ -59,6 +59,7 @@ import com.systematic.trading.backtest.display.file.MinimalFileDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
+import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
@@ -84,6 +85,7 @@ public class BacktestApplication {
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
 
 	public enum DisplayType {
+		ELASTIC_SEARCH,
 		FILE_FULL,
 		FILE_MINIMUM,
 		NO_DISPLAY;
@@ -177,6 +179,8 @@ public class BacktestApplication {
 	        final ExecutorService pool ) throws BacktestInitialisationException {
 		try {
 			switch (type) {
+				case ELASTIC_SEARCH:
+					return new ElasticBacktestOutput();
 				case FILE_FULL:
 					return new CompleteFileDisplay(outputDirectory, pool, mathContext);
 				case FILE_MINIMUM:
@@ -195,13 +199,20 @@ public class BacktestApplication {
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
 	        final DisplayType type, final ExecutorService pool ) throws BacktestInitialisationException {
 
+		//TODO refactor out the file stuff, don't need/want to do with elasticsearch
+		
 		// Arrange output to files, only once per a run
 		ClearFileDestination destination = new ClearFileDestination(baseOutputDirectory);
 		destination.clear();
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final String outputDirectory = getOutputDirectory(baseOutputDirectory, configuration);
+			
+			//TODO getDisplay ???? 
+			
 			final BacktestOutput fileDisplay = getDisplay(type, outputDirectory, pool);
+			
+			
 			final BacktestBootstrapContext context = createContext(configuration);
 
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, fileDisplay, tradingData,

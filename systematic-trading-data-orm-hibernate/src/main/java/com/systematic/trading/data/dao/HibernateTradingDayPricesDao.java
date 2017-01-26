@@ -39,8 +39,8 @@ import org.hibernate.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.util.TradingDayPricesUtil;
 import com.systematic.trading.data.util.HibernateUtil;
+import com.systematic.trading.data.util.TradingDayPricesUtil;
 
 public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 

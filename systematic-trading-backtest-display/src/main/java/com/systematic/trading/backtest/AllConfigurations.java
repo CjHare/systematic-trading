@@ -58,7 +58,7 @@ public class AllConfigurations implements BacktestConfiguration {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	public static void main( final String... args ) throws Exception {
-		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), DisplayType.FILE_MINIMUM, args);
+		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), DisplayType.ELASTIC_SEARCH, args);
 	}
 
 	@Override
@@ -85,7 +85,9 @@ public class AllConfigurations implements BacktestConfiguration {
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, monthlyBuy, equity,
 		        ExitLogicConfiguration.HOLD_FOREVER));
-
+		
+		//TODO undo comment after elastic search is refined
+/*
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
 
@@ -95,7 +97,7 @@ public class AllConfigurations implements BacktestConfiguration {
 				        getConfigurations(simulationDates, deposit, equity, brokerage, minimumTrade, maximumTrade));
 			}
 		}
-
+*/
 		return configurations;
 	}
 

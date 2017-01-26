@@ -41,9 +41,9 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent.Brokerag
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
+import com.systematic.trading.simulation.equity.event.EquityEvent.EquityEventType;
 import com.systematic.trading.simulation.equity.event.EquityEventListener;
 import com.systematic.trading.simulation.equity.event.SingleEquityEvent;
-import com.systematic.trading.simulation.equity.event.EquityEvent.EquityEventType;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 import com.systematic.trading.simulation.order.EquityOrderVolume;
 import com.systematic.trading.simulation.order.exception.InsufficientEquitiesException;

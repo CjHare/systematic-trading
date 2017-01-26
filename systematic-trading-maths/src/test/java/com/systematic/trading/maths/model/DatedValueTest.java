@@ -1,6 +1,6 @@
 package com.systematic.trading.maths.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

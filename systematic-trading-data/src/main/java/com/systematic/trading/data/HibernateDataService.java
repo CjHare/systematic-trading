@@ -27,8 +27,8 @@ package com.systematic.trading.data;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
+import com.systematic.trading.data.dao.TradingDayPricesDao;
 
 public class HibernateDataService implements DataService {
 

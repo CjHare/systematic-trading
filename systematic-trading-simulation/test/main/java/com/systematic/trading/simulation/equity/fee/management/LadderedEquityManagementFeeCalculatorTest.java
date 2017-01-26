@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.simulation.equity.fee.management;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

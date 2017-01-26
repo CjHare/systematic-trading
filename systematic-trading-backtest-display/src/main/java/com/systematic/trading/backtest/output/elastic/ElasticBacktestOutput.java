@@ -25,6 +25,15 @@
  */
 package com.systematic.trading.backtest.output.elastic;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.glassfish.jersey.client.ClientConfig;
+
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
@@ -42,19 +51,41 @@ import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Puts the event data into Elastic Search using the rest HTTP endpoint.
+ * Puts the event data into Elastic Search using the rest HTTP end point.
  * 
  * @author CJ Hare
  */
 public class ElasticBacktestOutput implements BacktestOutput {
 
+	/** Location of the elastic search end point. */
+	private static final String ELASTIC_ENDPOINT_URL = "http:/localhost:9200";
+
+	/** Base of the elastic search Restful end point. */
+	private final WebTarget root;
+
+	//TODO use an exectuor pool for the Java-RS operations?
+	// final ExecutorService pool
+
 	public ElasticBacktestOutput() {
+
+		// Registering the provider for POJO -> JSON
+		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
+
+		// End point target root
+		root = ClientBuilder.newClient(clientConfig).target(ELASTIC_ENDPOINT_URL);
+
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
 
-		//TODO put the event into elastic
+		//TODO sample code from https://chanchal.wordpress.com/2015/12/29/calling-elasticsearch-apis-using-jax-rs-client-jersey-client-jackson/
+		// let's create an index called articles
+		Response response = root.path("signal-analysis").request(MediaType.APPLICATION_JSON).post(Entity.json(event));
+
+		System.out.println("Response code: " + response.getStatus());
+		System.out.println("Response :" + response.readEntity(String.class));
+
 	}
 
 	@Override
