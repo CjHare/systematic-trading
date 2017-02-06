@@ -58,7 +58,7 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
 public class ElasticBacktestOutput implements BacktestOutput {
 
 	/** Location of the elastic search end point. */
-	private static final String ELASTIC_ENDPOINT_URL = "http:/localhost:9200";
+	private static final String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
 
 	/** Base of the elastic search Restful end point. */
 	private final WebTarget root;
@@ -78,13 +78,7 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
-
-		//TODO sample code from https://chanchal.wordpress.com/2015/12/29/calling-elasticsearch-apis-using-jax-rs-client-jersey-client-jackson/
-		// let's create an index called articles
-		Response response = root.path("signal-analysis").request(MediaType.APPLICATION_JSON).post(Entity.json(event));
-
-		System.out.println("Response code: " + response.getStatus());
-		System.out.println("Response :" + response.readEntity(String.class));
+		// TODO Auto-generated method stub
 
 	}
 
@@ -102,7 +96,15 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		// TODO Auto-generated method stub
+
+		//TODO convert the object to the JSON format expected by elastic
+		
+		//TODO sample code from https://chanchal.wordpress.com/2015/12/29/calling-elasticsearch-apis-using-jax-rs-client-jersey-client-jackson/
+		// let's create an index called articles
+		Response response = root.path("brokerage-events").request(MediaType.APPLICATION_JSON).post(Entity.json(event));
+
+		System.out.println("Response code: " + response.getStatus());
+		System.out.println("Response :" + response.readEntity(String.class));
 
 	}
 
