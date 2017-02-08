@@ -25,6 +25,10 @@
  */
 package com.systematic.trading.backtest.output.elastic;
 
+import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -98,10 +102,10 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	public void event( final BrokerageEvent event ) {
 
 		//TODO convert the object to the JSON format expected by elastic
-		
+
 		//TODO sample code from https://chanchal.wordpress.com/2015/12/29/calling-elasticsearch-apis-using-jax-rs-client-jersey-client-jackson/
 		// let's create an index called articles
-		Response response = root.path("brokerage-events").request(MediaType.APPLICATION_JSON).post(Entity.json(event));
+		Response response = root.path("brokerage-events").request(MediaType.APPLICATION_JSON).put(Entity.json(event));
 
 		System.out.println("Response code: " + response.getStatus());
 		System.out.println("Response :" + response.readEntity(String.class));
@@ -137,7 +141,25 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	        final BacktestSimulationDates simulationDates, final EventStatistics eventStatistics,
 	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 	        throws BacktestInitialisationException {
-		// TODO Auto-generated method stub
+
+		final Map<String, Object> index = new HashMap<>();
+		final Map<String, Object> mappings = new HashMap<>();
+		final Map<String, Object> properties = new HashMap<>();
+		
+		final Map<String, Object> message = new HashMap<>();
+		final SimpleEntry<String, String> messageType = new SimpleEntry<String, String>("type", "text");
+		message.put("message", messageType);
+
+		properties.put("properties", message);
+		mappings.put("tweet", properties);
+		index.put("mappings", mappings);
+
+		Response response = root.path("twitter").request(MediaType.APPLICATION_JSON).put(Entity.json(index));
+
+		System.out.println("Response code: " + response.getStatus());
+		System.out.println("Response :" + response.readEntity(String.class));
+
+		//TODO test around these JSON conversions
 
 		//TODO store the unqiueness value for the elastic index: 
 		//TODO start off with every event in their own index, then extract data with graphana / kinana to refine
