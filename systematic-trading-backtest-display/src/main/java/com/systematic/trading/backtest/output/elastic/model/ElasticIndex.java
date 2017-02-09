@@ -27,11 +27,11 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic;
+package com.systematic.trading.backtest.output.elastic.model;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.AbstractMap.SimpleEntry;
 
 /**
  * An Object structure representation of an ElasticSearch index.
@@ -48,8 +48,12 @@ public class ElasticIndex {
 
 	//TODO convert the type into an enum
 	//TODO multiple fields? 
-	public ElasticIndex(final String mappingName, final String fieldName, final String fieldType) {
+	public ElasticIndex(final ElasticMappingName mappingName, final ElasticFieldName fieldName,
+	        final ElasticFieldType fieldType) {
+		this(mappingName.getName(), fieldName.getName(), fieldType.getName());
+	}
 
+	protected ElasticIndex(final String mappingName, final String fieldName, final String fieldType) {
 		mappings = new HashMap<>();
 		final Map<String, Object> properties = new HashMap<>();
 
@@ -59,6 +63,7 @@ public class ElasticIndex {
 
 		properties.put(PROPERTIES, message);
 		mappings.put(mappingName, properties);
+
 	}
 
 	/**

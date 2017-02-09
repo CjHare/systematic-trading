@@ -25,10 +25,6 @@
  */
 package com.systematic.trading.backtest.output.elastic;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -42,6 +38,11 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.systematic.trading.backtest.output.elastic.model.ElasticMappingName;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
@@ -142,19 +143,22 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 	        throws BacktestInitialisationException {
 
-		final String mappingName = "tweet";
-		final String fieldName = "message";
+		//TODO the mapping - field name is going to be a 1-1 mapping? - design
+		final ElasticMappingName mappingName = ElasticMappingName.TWEET;
+		final ElasticFieldName fieldName = ElasticFieldName.MESSAGE;
+		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
 
-		final ElasticIndex index = new ElasticIndex(mappingName, fieldName, "text");
-		
-		Response response = root.path("twitter").request(MediaType.APPLICATION_JSON).put(Entity.json(index));
+		//TODO get the index & only create if it does not exist
+
+		final ElasticIndex index = new ElasticIndex(mappingName, fieldName, fieldType);
+
+		final String indexName = ElasticIndexName.TWITTER.getName();
+
+		Response response = root.path(indexName).request(MediaType.APPLICATION_JSON).put(Entity.json(index));
 
 		System.out.println("Response code: " + response.getStatus());
 		System.out.println("Response :" + response.readEntity(String.class));
 
-		//TODO test around these JSON conversions
-
-		//TODO store the unqiueness value for the elastic index: 
 		//TODO start off with every event in their own index, then extract data with graphana / kinana to refine
 	}
 }

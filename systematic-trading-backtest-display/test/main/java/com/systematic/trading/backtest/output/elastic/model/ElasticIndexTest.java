@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic;
+package com.systematic.trading.backtest.output.elastic.model;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,6 +35,10 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
+import com.systematic.trading.backtest.output.elastic.model.ElasticMappingName;
 
 /**
  * Verifies the object representation converts to the correct JSON.
