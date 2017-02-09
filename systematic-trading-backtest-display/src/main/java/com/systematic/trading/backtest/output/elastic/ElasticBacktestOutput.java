@@ -142,18 +142,11 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 	        throws BacktestInitialisationException {
 
-		final Map<String, Object> index = new HashMap<>();
-		final Map<String, Object> mappings = new HashMap<>();
-		final Map<String, Object> properties = new HashMap<>();
+		final String mappingName = "tweet";
+		final String fieldName = "message";
+
+		final ElasticIndex index = new ElasticIndex(mappingName, fieldName, "text");
 		
-		final Map<String, Object> message = new HashMap<>();
-		final SimpleEntry<String, String> messageType = new SimpleEntry<String, String>("type", "text");
-		message.put("message", messageType);
-
-		properties.put("properties", message);
-		mappings.put("tweet", properties);
-		index.put("mappings", mappings);
-
 		Response response = root.path("twitter").request(MediaType.APPLICATION_JSON).put(Entity.json(index));
 
 		System.out.println("Response code: " + response.getStatus());
