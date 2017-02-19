@@ -36,6 +36,7 @@ public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 
 	public void event( final SignalAnalysisEvent event ) {
 		// TODO Auto-generated method stub
+		System.out.println("code ElasticSignalAnalysisIndex");
 
 	}
 
