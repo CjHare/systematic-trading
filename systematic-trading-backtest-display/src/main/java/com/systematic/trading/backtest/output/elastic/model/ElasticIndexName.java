@@ -32,7 +32,7 @@ package com.systematic.trading.backtest.output.elastic.model;
  */
 public enum ElasticIndexName {
 
-	TWITTER("twitter");
+	SIGNAL_ANALYSIS("signal-analysis");
 
 	private final String name;
 

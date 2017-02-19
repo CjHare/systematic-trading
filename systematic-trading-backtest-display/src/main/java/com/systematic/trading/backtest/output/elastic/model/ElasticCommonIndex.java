@@ -25,22 +25,34 @@
  */
 package com.systematic.trading.backtest.output.elastic.model;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 /**
- * The set of mappings used by Systematic Trading with Elastic Search.
+ * Behaviour  common for indexes put into Elastic Search
  * 
  * @author CJ Hare
  */
-public enum ElasticMappingName {
+public abstract class ElasticCommonIndex {
 
-	SIGNAL_ANALYSIS("signal-analysis");
+	protected abstract ElasticIndex getIndex();
 
-	private final String name;
+	protected abstract ElasticIndexName getName();
 
-	ElasticMappingName(final String name) {
-		this.name = name;
-	}
+	public void init( final WebTarget root ) {
 
-	public String getName() {
-		return name;
+		final ElasticIndex index = getIndex();
+		final String indexName = getName().getName();
+		final Response response = root.path(indexName).request(MediaType.APPLICATION_JSON).put(Entity.json(index));
+
+		System.out.println("Response code: " + response.getStatus());
+		System.out.println("Response :" + response.readEntity(String.class));
+
+		//TODO get the index & only create if it does not exist
+
+		//TODO parse the response
+		
 	}
 }

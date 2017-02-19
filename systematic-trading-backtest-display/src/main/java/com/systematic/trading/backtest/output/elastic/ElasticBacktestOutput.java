@@ -43,6 +43,7 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticMappingName;
+import com.systematic.trading.backtest.output.elastic.model.ElasticSignalAnalysisIndex;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
@@ -68,6 +69,8 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	/** Base of the elastic search Restful end point. */
 	private final WebTarget root;
 
+	private final ElasticSignalAnalysisIndex signalAnalysisIndex;
+
 	//TODO use an exectuor pool for the Java-RS operations?
 	// final ExecutorService pool
 
@@ -79,12 +82,13 @@ public class ElasticBacktestOutput implements BacktestOutput {
 		// End point target root
 		root = ClientBuilder.newClient(clientConfig).target(ELASTIC_ENDPOINT_URL);
 
+		signalAnalysisIndex = new ElasticSignalAnalysisIndex();
+
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
-		// TODO Auto-generated method stub
-
+		signalAnalysisIndex.event(event);
 	}
 
 	@Override
@@ -143,21 +147,7 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 	        throws BacktestInitialisationException {
 
-		//TODO the mapping - field name is going to be a 1-1 mapping? - design
-		final ElasticMappingName mappingName = ElasticMappingName.TWEET;
-		final ElasticFieldName fieldName = ElasticFieldName.MESSAGE;
-		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
-
-		//TODO get the index & only create if it does not exist
-
-		final ElasticIndex index = new ElasticIndex(mappingName, fieldName, fieldType);
-
-		final String indexName = ElasticIndexName.TWITTER.getName();
-
-		Response response = root.path(indexName).request(MediaType.APPLICATION_JSON).put(Entity.json(index));
-
-		System.out.println("Response code: " + response.getStatus());
-		System.out.println("Response :" + response.readEntity(String.class));
+		signalAnalysisIndex.init(root);
 
 		//TODO start off with every event in their own index, then extract data with graphana / kinana to refine
 	}

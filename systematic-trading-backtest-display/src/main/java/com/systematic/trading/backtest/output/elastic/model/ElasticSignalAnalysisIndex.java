@@ -25,22 +25,32 @@
  */
 package com.systematic.trading.backtest.output.elastic.model;
 
+import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+
 /**
- * The set of mappings used by Systematic Trading with Elastic Search.
+ * Elastic Search index for signal analysis events.
  * 
  * @author CJ Hare
  */
-public enum ElasticMappingName {
+public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 
-	SIGNAL_ANALYSIS("signal-analysis");
+	public void event( final SignalAnalysisEvent event ) {
+		// TODO Auto-generated method stub
 
-	private final String name;
-
-	ElasticMappingName(final String name) {
-		this.name = name;
 	}
 
-	public String getName() {
-		return name;
+	@Override
+	protected ElasticIndex getIndex() {
+
+		final ElasticMappingName mappingName = ElasticMappingName.SIGNAL_ANALYSIS;
+		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
+		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
+
+		return new ElasticIndex(mappingName, fieldName, fieldType);
+	}
+
+	@Override
+	protected ElasticIndexName getName() {
+		return ElasticIndexName.SIGNAL_ANALYSIS;
 	}
 }

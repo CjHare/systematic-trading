@@ -35,10 +35,6 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
-import com.systematic.trading.backtest.output.elastic.model.ElasticMappingName;
 
 /**
  * Verifies the object representation converts to the correct JSON.
@@ -53,7 +49,7 @@ public class ElasticIndexTest {
 	/**
 	 * Twitter eample JSON from https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-put-mapping.html
 	 */
-	public void json() throws JsonProcessingException {
+	public void indexJson() throws JsonProcessingException {
 
 		final ElasticIndex index = new ElasticIndex("tweet", "message", "text");
 		final String json = mapper.writeValueAsString(index);

@@ -40,21 +40,22 @@ import java.util.Map;
  */
 public class ElasticIndex {
 
+	/** Elastic key for the index properties. */
 	private static final String PROPERTIES = "properties";
+
+	/** Elastic key for the index type */
 	private static final String TYPE = "type";
 
 	/** Top level 'mappings' key for the index. */
 	private final Map<String, Object> mappings;
 
-	//TODO convert the type into an enum
-	//TODO multiple fields? 
 	public ElasticIndex(final ElasticMappingName mappingName, final ElasticFieldName fieldName,
 	        final ElasticFieldType fieldType) {
 		this(mappingName.getName(), fieldName.getName(), fieldType.getName());
 	}
 
 	protected ElasticIndex(final String mappingName, final String fieldName, final String fieldType) {
-		mappings = new HashMap<>();
+		this.mappings = new HashMap<>();
 		final Map<String, Object> properties = new HashMap<>();
 
 		final Map<String, Object> message = new HashMap<>();
@@ -62,8 +63,7 @@ public class ElasticIndex {
 		message.put(fieldName, messageType);
 
 		properties.put(PROPERTIES, message);
-		mappings.put(mappingName, properties);
-
+		this.mappings.put(mappingName, properties);
 	}
 
 	/**
