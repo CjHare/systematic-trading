@@ -26,10 +26,7 @@
 package com.systematic.trading.backtest.output.elastic;
 
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -38,12 +35,13 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticMappingName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticSignalAnalysisIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticBrokerageIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticCashIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticEquityIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticNetworthIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticOrderIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticReturnOnInvestmentIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalAnalysisIndex;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
@@ -70,6 +68,12 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	private final WebTarget root;
 
 	private final ElasticSignalAnalysisIndex signalAnalysisIndex;
+	private final ElasticCashIndex cashIndex;
+	private final ElasticOrderIndex orderIndex;
+	private final ElasticBrokerageIndex brokerageIndex;
+	private final ElasticReturnOnInvestmentIndex returnOnInvestmentIndex;
+	private final ElasticNetworthIndex networthIndex;
+	private final ElasticEquityIndex equityIndex;
 
 	//TODO use an exectuor pool for the Java-RS operations?
 	// final ExecutorService pool
@@ -83,7 +87,12 @@ public class ElasticBacktestOutput implements BacktestOutput {
 		root = ClientBuilder.newClient(clientConfig).target(ELASTIC_ENDPOINT_URL);
 
 		signalAnalysisIndex = new ElasticSignalAnalysisIndex();
-
+		cashIndex = new ElasticCashIndex();
+		orderIndex = new ElasticOrderIndex();
+		brokerageIndex = new ElasticBrokerageIndex();
+		returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex();
+		networthIndex = new ElasticNetworthIndex();
+		equityIndex = new ElasticEquityIndex();
 	}
 
 	@Override
@@ -93,45 +102,36 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final CashEvent event ) {
-		// TODO Auto-generated method stub
-
+		cashIndex.event(event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		// TODO Auto-generated method stub
-
+		orderIndex.event(event);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-
-		// TODO Auto-generated method stub
-
+		brokerageIndex.event(event);
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		// TODO Auto-generated method stub
-
+		returnOnInvestmentIndex.event(event);
 	}
 
 	@Override
 	public void stateChanged( final SimulationState transitionedState ) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
-		// TODO Auto-generated method stub
-
+		networthIndex.event(event);
 	}
 
 	@Override
 	public void event( final EquityEvent event ) {
-		// TODO Auto-generated method stub
-
+		equityIndex.event(event);
 	}
 
 	@Override
@@ -141,7 +141,11 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	        throws BacktestInitialisationException {
 
 		signalAnalysisIndex.init(root);
-
-		//TODO start off with every event in their own index, then extract data with graphana / kinana to refine
+		cashIndex.init(root);
+		orderIndex.init(root);
+		brokerageIndex.init(root);
+		returnOnInvestmentIndex.init(root);
+		networthIndex.init(root);
+		equityIndex.init(root);
 	}
 }

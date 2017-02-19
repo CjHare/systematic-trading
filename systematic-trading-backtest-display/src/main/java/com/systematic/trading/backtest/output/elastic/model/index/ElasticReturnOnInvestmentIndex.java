@@ -23,30 +23,41 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model;
+package com.systematic.trading.backtest.output.elastic.model.index;
+
+import com.systematic.trading.backtest.output.elastic.model.ElasticCommonIndex;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.systematic.trading.backtest.output.elastic.model.ElasticMappingName;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 
 /**
- * The set of mappings used by Systematic Trading with Elastic Search.
+ * Elastic Search index for return on investments events.
  * 
  * @author CJ Hare
  */
-public enum ElasticMappingName {
+public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
 
-	BROKERAGE("brokerage"),
-	CASH("cash"),
-	EQUITY("equity"),
-	ORDER("order"),
-	NETWORTH("networth"),
-	RETURN_ON_INVESTMENT("return-on-investment"),
-	SIGNAL_ANALYSIS("signal-analysis");
+	public void event( final ReturnOnInvestmentEvent event ) {
+		// TODO Auto-generated method stub
+		System.out.println("code ElasticReturnOnInvestmentIndex");
 
-	private final String name;
-
-	ElasticMappingName(final String name) {
-		this.name = name;
 	}
 
-	public String getName() {
-		return name;
+	@Override
+	protected ElasticIndex getIndex() {
+
+		final ElasticMappingName mappingName = ElasticMappingName.RETURN_ON_INVESTMENT;
+		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
+		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
+
+		return new ElasticIndex(mappingName, fieldName, fieldType);
+	}
+
+	@Override
+	protected ElasticIndexName getName() {
+		return ElasticIndexName.RETURN_ON_INVESTMENT;
 	}
 }

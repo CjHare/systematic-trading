@@ -23,27 +23,33 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
-import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.backtest.output.elastic.model.ElasticCommonIndex;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.systematic.trading.backtest.output.elastic.model.ElasticMappingName;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 
 /**
- * Elastic Search index for signal analysis events.
+ * Elastic Search index for networth events.
  * 
  * @author CJ Hare
  */
-public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
+public class ElasticNetworthIndex extends ElasticCommonIndex {
 
-	public void event( final SignalAnalysisEvent event ) {
+	public void event( final NetWorthEvent event ) {
 		// TODO Auto-generated method stub
-		System.out.println("code ElasticSignalAnalysisIndex");
+		System.out.println("code ElasticNetworthIndex");
 
 	}
 
 	@Override
 	protected ElasticIndex getIndex() {
 
-		final ElasticMappingName mappingName = ElasticMappingName.SIGNAL_ANALYSIS;
+		final ElasticMappingName mappingName = ElasticMappingName.NETWORTH;
 		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
 		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
 
@@ -52,6 +58,6 @@ public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 
 	@Override
 	protected ElasticIndexName getName() {
-		return ElasticIndexName.SIGNAL_ANALYSIS;
+		return ElasticIndexName.NETWORTH;
 	}
 }

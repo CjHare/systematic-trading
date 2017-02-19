@@ -32,6 +32,12 @@ package com.systematic.trading.backtest.output.elastic.model;
  */
 public enum ElasticIndexName {
 
+	BROKERAGE("brokerage"),
+	CASH("cash"),
+	EQUITY("equity"),
+	ORDER("order"),
+	NETWORTH("networth"),
+	RETURN_ON_INVESTMENT("return-on-investment"),
 	SIGNAL_ANALYSIS("signal-analysis");
 
 	private final String name;
