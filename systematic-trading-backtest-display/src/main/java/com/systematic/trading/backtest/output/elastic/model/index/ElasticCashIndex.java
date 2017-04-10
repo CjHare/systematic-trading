@@ -41,6 +41,9 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
 public class ElasticCashIndex extends ElasticCommonIndex {
 
 	public void event( final CashEvent event ) {
+		
+		//TODO put into the cash index in Elastic Search
+		
 		// TODO Auto-generated method stub
 		System.out.println("code CashIndex");
 

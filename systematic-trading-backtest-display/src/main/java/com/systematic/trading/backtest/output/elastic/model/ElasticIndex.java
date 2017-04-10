@@ -40,6 +40,11 @@ import java.util.Map;
  */
 public class ElasticIndex {
 
+	//TODO strucutre with a @JsonCreator to accept format of
+	//{"signal-analysis":{"aliases":{},"mappings":{"signal-analysis":{"properties":{"event":{"type":"text"}}}},"settings":{"index":{"creation_date":"1487497092304","number_of_shards":"5","number_of_replicas":"1","uuid":"dUnk_vL9QbOR8J5hCmIgkg","version":{"created":"5010199"},"provided_name":"signal-analysis"}}}}
+
+	
+	
 	/** Elastic key for the index properties. */
 	private static final String PROPERTIES = "properties";
 
@@ -54,6 +59,8 @@ public class ElasticIndex {
 		this(mappingName.getName(), fieldName.getName(), fieldType.getName());
 	}
 
+	//TODO will need to support multiple fields
+	
 	protected ElasticIndex(final String mappingName, final String fieldName, final String fieldType) {
 		this.mappings = new HashMap<>();
 		final Map<String, Object> properties = new HashMap<>();

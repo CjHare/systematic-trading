@@ -75,7 +75,7 @@ public class AllConfigurations implements BacktestConfiguration {
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates,
 		        BrokerageFeesConfiguration.VANGUARD_RETAIL, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
 		        deposit, weeklyBuy, equity, ExitLogicConfiguration.HOLD_FOREVER));
-
+		/*	
 		// CMC Weekly
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, weeklyBuy, equity,
@@ -87,7 +87,7 @@ public class AllConfigurations implements BacktestConfiguration {
 		        ExitLogicConfiguration.HOLD_FOREVER));
 		
 		//TODO undo comment after elastic search is refined
-/*
+	
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
 

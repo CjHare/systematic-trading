@@ -57,7 +57,7 @@ public abstract class ElasticCommonIndex {
 		System.out.println("Response :" + response.readEntity(String.class));
 
 		//TODO verify index has structure expected (index object is returned
-		
+
 		return response.getStatus() != 200;
 	}
 
