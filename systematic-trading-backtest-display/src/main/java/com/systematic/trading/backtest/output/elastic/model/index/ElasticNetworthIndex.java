@@ -25,6 +25,12 @@
  */
 package com.systematic.trading.backtest.output.elastic.model.index;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.systematic.trading.backtest.output.elastic.model.ElasticCommonIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
@@ -53,11 +59,16 @@ public class ElasticNetworthIndex extends ElasticCommonIndex {
 		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
 		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
 
-		return new ElasticIndex(mappingName, fieldName, fieldType);
+		//TODO create the index appropriate for the event bean
+
+		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays
+		        .asList(new ImmutablePair<ElasticFieldName, ElasticFieldType>(fieldName, fieldType));
+
+		return new ElasticIndex(mappingName, fields);
 	}
 
 	@Override
-	protected ElasticIndexName getName() {
+	protected ElasticIndexName getIndexName() {
 		return ElasticIndexName.NETWORTH;
 	}
 }

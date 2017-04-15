@@ -25,50 +25,65 @@
  */
 package com.systematic.trading.backtest.output.elastic.model.index;
 
-import java.util.Arrays;
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
 
-import com.systematic.trading.backtest.output.elastic.model.ElasticCommonIndex;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticMappingName;
-import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+public class ElasticCashEvent {
 
-/**
- * Elastic Search index for signal analysis events.
- * 
- * @author CJ Hare
- */
-public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
+	private CashEventType type;
+	private BigDecimal amount;
+	private BigDecimal fundsBefore;
+	private BigDecimal fundsAfter;
+	private LocalDate transactionDate;
 
-	public void event( final SignalAnalysisEvent event ) {
-		// TODO Auto-generated method stub
-		System.out.println("code ElasticSignalAnalysisIndex");
-
+	public ElasticCashEvent(final CashEvent event) {
+		this.type = event.getType();
+		this.amount = event.getAmount();
+		this.fundsBefore = event.getFundsBefore();
+		this.fundsAfter = event.getFundsAfter();
+		this.transactionDate = event.getTransactionDate();
 	}
 
-	@Override
-	protected ElasticIndex getIndex() {
-
-		final ElasticMappingName mappingName = ElasticMappingName.SIGNAL_ANALYSIS;
-		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
-		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
-
-		//TODO create the index appropriate for the event bean
-
-		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays
-		        .asList(new ImmutablePair<ElasticFieldName, ElasticFieldType>(fieldName, fieldType));
-
-		return new ElasticIndex(mappingName, fields);
+	public CashEventType getType() {
+		return type;
 	}
 
-	@Override
-	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.SIGNAL_ANALYSIS;
+	public void setType( CashEventType type ) {
+		this.type = type;
+	}
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount( BigDecimal amount ) {
+		this.amount = amount;
+	}
+
+	public BigDecimal getFundsBefore() {
+		return fundsBefore;
+	}
+
+	public void setFundsBefore( BigDecimal fundsBefore ) {
+		this.fundsBefore = fundsBefore;
+	}
+
+	public BigDecimal getFundsAfter() {
+		return fundsAfter;
+	}
+
+	public void setFundsAfter( BigDecimal fundsAfter ) {
+		this.fundsAfter = fundsAfter;
+	}
+
+	public LocalDate getTransactionDate() {
+		return transactionDate;
+	}
+
+	public void setTransactionDate( LocalDate transactionDate ) {
+		this.transactionDate = transactionDate;
 	}
 }

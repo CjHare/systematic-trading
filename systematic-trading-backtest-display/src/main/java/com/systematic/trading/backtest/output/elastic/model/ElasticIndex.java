@@ -30,8 +30,12 @@
 package com.systematic.trading.backtest.output.elastic.model;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * An Object structure representation of an ElasticSearch index.
@@ -40,11 +44,9 @@ import java.util.Map;
  */
 public class ElasticIndex {
 
-	//TODO strucutre with a @JsonCreator to accept format of
+	//TODO ? strucutre with a @JsonCreator to accept format of
 	//{"signal-analysis":{"aliases":{},"mappings":{"signal-analysis":{"properties":{"event":{"type":"text"}}}},"settings":{"index":{"creation_date":"1487497092304","number_of_shards":"5","number_of_replicas":"1","uuid":"dUnk_vL9QbOR8J5hCmIgkg","version":{"created":"5010199"},"provided_name":"signal-analysis"}}}}
 
-	
-	
 	/** Elastic key for the index properties. */
 	private static final String PROPERTIES = "properties";
 
@@ -54,23 +56,24 @@ public class ElasticIndex {
 	/** Top level 'mappings' key for the index. */
 	private final Map<String, Object> mappings;
 
-	public ElasticIndex(final ElasticMappingName mappingName, final ElasticFieldName fieldName,
-	        final ElasticFieldType fieldType) {
-		this(mappingName.getName(), fieldName.getName(), fieldType.getName());
+	public ElasticIndex(final ElasticMappingName name, final Pair<ElasticFieldName, ElasticFieldType> field) {
+		this(name, Arrays.asList(field));
 	}
 
-	//TODO will need to support multiple fields
-	
-	protected ElasticIndex(final String mappingName, final String fieldName, final String fieldType) {
-		this.mappings = new HashMap<>();
-		final Map<String, Object> properties = new HashMap<>();
+	public ElasticIndex(final ElasticMappingName mappingName,
+	        final List<Pair<ElasticFieldName, ElasticFieldType>> fields) {
 
 		final Map<String, Object> message = new HashMap<>();
-		final SimpleEntry<String, String> messageType = new SimpleEntry<String, String>(TYPE, fieldType);
-		message.put(fieldName, messageType);
 
+		for (final Pair<ElasticFieldName, ElasticFieldType> field : fields) {
+			message.put(getName(field), getType(field));
+		}
+
+		final Map<String, Object> properties = new HashMap<>();
 		properties.put(PROPERTIES, message);
-		this.mappings.put(mappingName, properties);
+
+		mappings = new HashMap<>();
+		mappings.put(mappingName.getName(), properties);
 	}
 
 	/**
@@ -80,5 +83,13 @@ public class ElasticIndex {
 	 */
 	public Map<String, Object> getMappings() {
 		return mappings;
+	}
+
+	private String getName( final Pair<ElasticFieldName, ElasticFieldType> field ) {
+		return field.getLeft().getName();
+	}
+
+	private SimpleEntry<String, String> getType( final Pair<ElasticFieldName, ElasticFieldType> field ) {
+		return new SimpleEntry<String, String>(TYPE, field.getRight().getName());
 	}
 }

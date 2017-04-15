@@ -32,7 +32,8 @@ package com.systematic.trading.backtest.output.elastic.model;
  */
 public enum ElasticFieldType {
 
-	//TODO restrict to actual data types, that may no include text
+	DATE("date"),
+	FLOAT("float"),
 	TEXT("text");
 
 	private final String name;

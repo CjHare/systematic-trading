@@ -39,7 +39,7 @@ public abstract class ElasticCommonIndex {
 
 	protected abstract ElasticIndex getIndex();
 
-	protected abstract ElasticIndexName getName();
+	protected abstract ElasticIndexName getIndexName();
 
 	public void init( final WebTarget root ) {
 
@@ -50,7 +50,7 @@ public abstract class ElasticCommonIndex {
 
 	private boolean isIndexMissing( final WebTarget root ) {
 
-		final String indexName = getName().getName();
+		final String indexName = getIndexName().getName();
 		final Response response = root.path(indexName).request(MediaType.APPLICATION_JSON).get();
 
 		System.out.println("Response code: " + response.getStatus());
@@ -64,15 +64,14 @@ public abstract class ElasticCommonIndex {
 	private void createIndex( final WebTarget root ) {
 
 		final ElasticIndex index = getIndex();
-		final String indexName = getName().getName();
-		final Response response = root.path(indexName).request(MediaType.APPLICATION_JSON).put(Entity.json(index));
+		final String indexName = getIndexName().getName();
+		final Response response = root.path(indexName).request().put(Entity.json(index));
 
 		System.out.println("Response code: " + response.getStatus());
 		System.out.println("Response :" + response.readEntity(String.class));
 
-		//TODO get the index & only create if it does not exist
 
-		//TODO parse the response
+		//TODO parse the response, only a problem if not 200
 
 	}
 }

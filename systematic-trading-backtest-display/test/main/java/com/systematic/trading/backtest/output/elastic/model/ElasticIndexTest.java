@@ -31,6 +31,11 @@ package com.systematic.trading.backtest.output.elastic.model;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,14 +51,27 @@ public class ElasticIndexTest {
 	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Test
-	/**
-	 * Twitter example JSON from https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-put-mapping.html
-	 */
-	public void indexJson() throws JsonProcessingException {
+	public void jsonSingleField() throws JsonProcessingException {
 
-		final ElasticIndex index = new ElasticIndex("tweet", "message", "text");
+		final ElasticIndex index = new ElasticIndex(ElasticMappingName.CASH,
+		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT));
 		final String json = mapper.writeValueAsString(index);
 
-		assertEquals("{\"mappings\":{\"tweet\":{\"properties\":{\"message\":{\"type\":\"text\"}}}}}", json);
+		assertEquals("{\"mappings\":{\"cash\":{\"properties\":{\"event\":{\"type\":\"text\"}}}}}", json);
+	}
+
+	@Test
+	public void jsonMultipleFields() throws JsonProcessingException {
+
+		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays.asList(
+		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
+		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT));
+
+		final ElasticIndex index = new ElasticIndex(ElasticMappingName.CASH, fields);
+		final String json = mapper.writeValueAsString(index);
+
+		assertEquals(
+		        "{\"mappings\":{\"cash\":{\"properties\":{\"amount\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}}}",
+		        json);
 	}
 }

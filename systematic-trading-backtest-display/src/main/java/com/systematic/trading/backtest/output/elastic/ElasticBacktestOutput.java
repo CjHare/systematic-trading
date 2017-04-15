@@ -102,7 +102,7 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final CashEvent event ) {
-		cashIndex.event(event);
+		cashIndex.event(root, event);
 	}
 
 	@Override

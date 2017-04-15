@@ -8,6 +8,7 @@
 	<packaging>pom</packaging>
 	
 	<properties>
+		<apache.commons.lang>3.5</apache.commons.lang>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
