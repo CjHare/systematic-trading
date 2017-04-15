@@ -26,14 +26,10 @@
 package com.systematic.trading.backtest.output.elastic.model.index;
 
 import java.util.Arrays;
-import java.util.List;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import com.systematic.trading.backtest.output.elastic.model.ElasticCommonIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
@@ -59,8 +55,10 @@ public class ElasticCashIndex extends ElasticCommonIndex {
 
 		final ElasticCashEvent elasticEvent = new ElasticCashEvent(event);
 
-		final String indexName = getIndexName().getName();
-		final Response response = root.path(indexName).request().put(Entity.json(elasticEvent));
+		final String indexName = getIndexName().getName() +"/"+getIndexName().getName();
+
+		// Using ID auto-generation, so we're using a post not a put
+		final Response response = root.path(indexName).request().post(Entity.json(elasticEvent));
 
 		System.out.println("Response code: " + response.getStatus());
 		System.out.println("Response :" + response.readEntity(String.class));
@@ -71,17 +69,11 @@ public class ElasticCashIndex extends ElasticCommonIndex {
 
 	@Override
 	protected ElasticIndex getIndex() {
-
-		final ElasticMappingName mappingName = ElasticMappingName.CASH;
-		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
-		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
-
-		//TODO create the index appropriate for the event bean
-
-		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays
-		        .asList(new ImmutablePair<ElasticFieldName, ElasticFieldType>(fieldName, fieldType));
-
-		return new ElasticIndex(mappingName, fields);
+		return new ElasticIndex(ElasticMappingName.CASH,
+		        Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
+		                getPair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
+		                getPair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
+		                getPair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT)));
 	}
 
 	@Override

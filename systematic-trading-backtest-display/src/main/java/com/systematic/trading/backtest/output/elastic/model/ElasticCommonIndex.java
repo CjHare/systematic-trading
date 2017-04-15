@@ -30,6 +30,9 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 /**
  * Behaviour  common for indexes put into Elastic Search
  * 
@@ -41,6 +44,8 @@ public abstract class ElasticCommonIndex {
 
 	protected abstract ElasticIndexName getIndexName();
 
+	//TODO optimize this by having the init should be done once per a run, not every simulation
+	
 	public void init( final WebTarget root ) {
 
 		if (isIndexMissing(root)) {
@@ -70,8 +75,12 @@ public abstract class ElasticCommonIndex {
 		System.out.println("Response code: " + response.getStatus());
 		System.out.println("Response :" + response.readEntity(String.class));
 
-
 		//TODO parse the response, only a problem if not 200
 
+	}
+
+	protected Pair<ElasticFieldName, ElasticFieldType> getPair( final ElasticFieldName name,
+	        final ElasticFieldType type ) {
+		return new ImmutablePair<ElasticFieldName, ElasticFieldType>(name, type);
 	}
 }

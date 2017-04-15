@@ -32,8 +32,11 @@ package com.systematic.trading.backtest.output.elastic.model;
  */
 public enum ElasticFieldName {
 
+	FUNDS_AFTER("funds_after"),
+	FUNDS_BEFORE("funds_before"),
 	AMOUNT("amount"),
-	EVENT("event");
+	EVENT("event"),
+	TRANSACTION_DATE("transaction_date");
 
 	private final String name;
 

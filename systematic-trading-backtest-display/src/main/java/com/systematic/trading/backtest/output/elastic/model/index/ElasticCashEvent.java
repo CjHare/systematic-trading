@@ -25,57 +25,56 @@
  */
 package com.systematic.trading.backtest.output.elastic.model.index;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.simulation.cash.event.CashEvent;
-import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
 
 public class ElasticCashEvent {
 
-	private CashEventType type;
-	private BigDecimal amount;
-	private BigDecimal fundsBefore;
-	private BigDecimal fundsAfter;
+	//TODO immutable?
+	private String event;
+	private float amount;
+	private float fundsBefore;
+	private float fundsAfter;
 	private LocalDate transactionDate;
 
 	public ElasticCashEvent(final CashEvent event) {
-		this.type = event.getType();
-		this.amount = event.getAmount();
-		this.fundsBefore = event.getFundsBefore();
-		this.fundsAfter = event.getFundsAfter();
+		this.event = event.getType().getName();
+		this.amount = event.getAmount().floatValue();
+		this.fundsBefore = event.getFundsBefore().floatValue();
+		this.fundsAfter = event.getFundsAfter().floatValue();
 		this.transactionDate = event.getTransactionDate();
 	}
 
-	public CashEventType getType() {
-		return type;
+	public String getEvent() {
+		return event;
 	}
 
-	public void setType( CashEventType type ) {
-		this.type = type;
+	public void setEvent( String event ) {
+		this.event = event;
 	}
 
-	public BigDecimal getAmount() {
+	public float getAmount() {
 		return amount;
 	}
 
-	public void setAmount( BigDecimal amount ) {
+	public void setAmount( float amount ) {
 		this.amount = amount;
 	}
 
-	public BigDecimal getFundsBefore() {
+	public float getFundsBefore() {
 		return fundsBefore;
 	}
 
-	public void setFundsBefore( BigDecimal fundsBefore ) {
+	public void setFundsBefore( float fundsBefore ) {
 		this.fundsBefore = fundsBefore;
 	}
 
-	public BigDecimal getFundsAfter() {
+	public float getFundsAfter() {
 		return fundsAfter;
 	}
 
-	public void setFundsAfter( BigDecimal fundsAfter ) {
+	public void setFundsAfter( float fundsAfter ) {
 		this.fundsAfter = fundsAfter;
 	}
 

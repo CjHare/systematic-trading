@@ -47,14 +47,14 @@ public interface CashEvent extends Event {
 		/** Interest paid on cash held in transactional account. */
 		INTEREST("Interest");
 
-		private final String display;
+		private final String name;
 
-		CashEventType(final String display) {
-			this.display = display;
+		CashEventType(final String name) {
+			this.name = name;
 		}
 
-		public String getDisplay() {
-			return display;
+		public String getName() {
+			return name;
 		}
 	}
 
