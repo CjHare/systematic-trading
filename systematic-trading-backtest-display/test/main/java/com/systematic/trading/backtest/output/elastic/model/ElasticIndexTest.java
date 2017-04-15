@@ -53,7 +53,7 @@ public class ElasticIndexTest {
 	@Test
 	public void jsonSingleField() throws JsonProcessingException {
 
-		final ElasticIndex index = new ElasticIndex(ElasticMappingName.CASH,
+		final ElasticIndex index = new ElasticIndex("cash",
 		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT));
 		final String json = mapper.writeValueAsString(index);
 
@@ -67,7 +67,7 @@ public class ElasticIndexTest {
 		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
 		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT));
 
-		final ElasticIndex index = new ElasticIndex(ElasticMappingName.CASH, fields);
+		final ElasticIndex index = new ElasticIndex("cash", fields);
 		final String json = mapper.writeValueAsString(index);
 
 		assertEquals(

@@ -33,6 +33,8 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+
 /**
  * Behaviour  common for indexes put into Elastic Search
  * 
@@ -40,22 +42,23 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public abstract class ElasticCommonIndex {
 
-	protected abstract ElasticIndex getIndex();
+	protected abstract ElasticIndex getIndex( BacktestBatchId id );
 
 	protected abstract ElasticIndexName getIndexName();
 
-	//TODO optimize this by having the init should be done once per a run, not every simulation
-	
-	public void init( final WebTarget root ) {
+	//TODO the type needs to be the run underway (unique-identifier), that needs to be in the index
 
-		if (isIndexMissing(root)) {
-			createIndex(root);
+	public void init( final WebTarget root, final BacktestBatchId id ) {
+
+		if (isIndexMissing(root, id)) {
+			createIndex(root, id);
 		}
 	}
 
-	private boolean isIndexMissing( final WebTarget root ) {
+	private boolean isIndexMissing( final WebTarget root, final BacktestBatchId id ) {
 
-		final String indexName = getIndexName().getName();
+		//TODO magic string
+		final String indexName = getIndexName().getName() + "/" + id.getName();
 		final Response response = root.path(indexName).request(MediaType.APPLICATION_JSON).get();
 
 		System.out.println("Response code: " + response.getStatus());
@@ -66,10 +69,13 @@ public abstract class ElasticCommonIndex {
 		return response.getStatus() != 200;
 	}
 
-	private void createIndex( final WebTarget root ) {
+	private void createIndex( final WebTarget root, final BacktestBatchId id ) {
 
-		final ElasticIndex index = getIndex();
-		final String indexName = getIndexName().getName();
+		final ElasticIndex index = getIndex(id);
+
+		//TODO magic string
+		final String indexName = getIndexName().getName() + "/" + id.getName();
+
 		final Response response = root.path(indexName).request().put(Entity.json(index));
 
 		System.out.println("Response code: " + response.getStatus());

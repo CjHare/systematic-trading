@@ -23,26 +23,17 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model;
+package com.systematic.trading.backtest.output.elastic;
 
 /**
- * The set of mappings used by Systematic Trading with Elastic Search.
+ * ID that groups back testing events..
  * 
  * @author CJ Hare
  */
-public enum ElasticMappingName {
-
-	BROKERAGE("brokerage"),
-	CASH("cash"),
-	EQUITY("equity"),
-	ORDER("order"),
-	NETWORTH("networth"),
-	RETURN_ON_INVESTMENT("return-on-investment"),
-	SIGNAL_ANALYSIS("signal-analysis");
-
+public class BacktestBatchId {
 	private final String name;
 
-	ElasticMappingName(final String name) {
+	public BacktestBatchId(final String name) {
 		this.name = name;
 	}
 

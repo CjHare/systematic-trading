@@ -31,12 +31,12 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.model.ElasticCommonIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticMappingName;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 
 /**
@@ -46,16 +46,13 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
  */
 public class ElasticCashIndex extends ElasticCommonIndex {
 
-	public void event( final WebTarget root, final CashEvent event ) {
-
-		//TODO put into the cash index in Elastic Search
-		//TODO ala: https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html
-
-		//TODO put 
+	public void event( final WebTarget root, final BacktestBatchId id, final CashEvent event ) {
 
 		final ElasticCashEvent elasticEvent = new ElasticCashEvent(event);
 
-		final String indexName = getIndexName().getName() +"/"+getIndexName().getName();
+		final String indexName = getIndexName().getName() + "/" + id.getName();
+
+		//TODO this part is generic - move to the common index, given an entity
 
 		// Using ID auto-generation, so we're using a post not a put
 		final Response response = root.path(indexName).request().post(Entity.json(elasticEvent));
@@ -68,8 +65,9 @@ public class ElasticCashIndex extends ElasticCommonIndex {
 	}
 
 	@Override
-	protected ElasticIndex getIndex() {
-		return new ElasticIndex(ElasticMappingName.CASH,
+	protected ElasticIndex getIndex( final BacktestBatchId id ) {
+
+		return new ElasticIndex(id.getName(),
 		        Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
 		                getPair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
 		                getPair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),

@@ -59,6 +59,7 @@ import com.systematic.trading.backtest.display.file.MinimalFileDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
+import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
@@ -92,6 +93,8 @@ public class BacktestApplication {
 	}
 
 	private final MathContext mathContext;
+
+	// TODO the description is specific to the type of output - file, console, elastic :. refactor
 	private final DescriptionGenerator description = new DescriptionGenerator();
 
 	public BacktestApplication(final MathContext mathContext) {
@@ -175,16 +178,19 @@ public class BacktestApplication {
 		return Period.ofDays(windUp);
 	}
 
-	private BacktestOutput getDisplay( final DisplayType type, final String outputDirectory,
-	        final ExecutorService pool ) throws BacktestInitialisationException {
+	private BacktestOutput getDisplay( final DisplayType type, final BacktestBootstrapConfiguration configuration,
+	        final String baseOutputDirectory, final ExecutorService pool ) throws BacktestInitialisationException {
+
 		try {
 			switch (type) {
 				case ELASTIC_SEARCH:
-					return new ElasticBacktestOutput();
+					return new ElasticBacktestOutput(getBatchId(configuration));
 				case FILE_FULL:
-					return new CompleteFileDisplay(outputDirectory, pool, mathContext);
+					return new CompleteFileDisplay(getOutputDirectory(baseOutputDirectory, configuration), pool,
+					        mathContext);
 				case FILE_MINIMUM:
-					return new MinimalFileDisplay(outputDirectory, pool, mathContext);
+					return new MinimalFileDisplay(getOutputDirectory(baseOutputDirectory, configuration), pool,
+					        mathContext);
 				case NO_DISPLAY:
 					return new NoDisplay();
 				default:
@@ -199,22 +205,15 @@ public class BacktestApplication {
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
 	        final DisplayType type, final ExecutorService pool ) throws BacktestInitialisationException {
 
-		//TODO refactor out the file stuff, don't need/want to do with elasticsearch
-		
 		// Arrange output to files, only once per a run
-		ClearFileDestination destination = new ClearFileDestination(baseOutputDirectory);
-		destination.clear();
+		if (isFileBasedDisplay(type)) {
+			new ClearFileDestination(baseOutputDirectory).clear();
+		}
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
-			final String outputDirectory = getOutputDirectory(baseOutputDirectory, configuration);
-			
-			//TODO getDisplay ???? 
-			
-			final BacktestOutput fileDisplay = getDisplay(type, outputDirectory, pool);
-			
-			
-			final BacktestBootstrapContext context = createContext(configuration);
 
+			final BacktestOutput fileDisplay = getDisplay(type, configuration, baseOutputDirectory, pool);
+			final BacktestBootstrapContext context = createContext(configuration);
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, fileDisplay, tradingData,
 			        mathContext);
 
@@ -227,6 +226,10 @@ public class BacktestApplication {
 
 		LOG.info(String.format("All Simulations have been completed for deposit amount: %s", depositAmount));
 
+	}
+
+	private boolean isFileBasedDisplay( final DisplayType type ) {
+		return type == DisplayType.FILE_FULL || type == DisplayType.FILE_MINIMUM;
 	}
 
 	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration ) {
@@ -273,6 +276,10 @@ public class BacktestApplication {
 		final TradingDayPrices[] data = service.get(equity.getTickerSymbol(), startDate, endDate);
 
 		return new TickerSymbolTradingDataBacktest(equity, data);
+	}
+
+	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration ) {
+		return new BacktestBatchId(description.getDescription(configuration));
 	}
 
 	private String getOutputDirectory( final String baseOutputDirectory,

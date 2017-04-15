@@ -31,12 +31,12 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.model.ElasticCommonIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticMappingName;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 
 /**
@@ -53,9 +53,8 @@ public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 	}
 
 	@Override
-	protected ElasticIndex getIndex() {
+	protected ElasticIndex getIndex( final BacktestBatchId id ) {
 
-		final ElasticMappingName mappingName = ElasticMappingName.SIGNAL_ANALYSIS;
 		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
 		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
 
@@ -64,7 +63,7 @@ public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays
 		        .asList(new ImmutablePair<ElasticFieldName, ElasticFieldType>(fieldName, fieldType));
 
-		return new ElasticIndex(mappingName, fields);
+		return new ElasticIndex(id.getName(), fields);
 	}
 
 	@Override

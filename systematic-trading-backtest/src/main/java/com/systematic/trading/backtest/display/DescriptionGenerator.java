@@ -44,8 +44,12 @@ import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
  * @author CJ Hare
  */
 public class DescriptionGenerator {
-	// TODO interface - one for file, another for console
+	// TODO interface - one for file, another for console, another for elastic?
 
+	//TODO add the dates for the test too
+	
+	//TODO deposit amounts / frequency for elastic
+	
 	private static final String SEPARATOR = "_";
 
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);

@@ -75,24 +75,26 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	private final ElasticNetworthIndex networthIndex;
 	private final ElasticEquityIndex equityIndex;
 
+	private final BacktestBatchId id;
 	//TODO use an exectuor pool for the Java-RS operations?
 	// final ExecutorService pool
 
-	public ElasticBacktestOutput() {
+	public ElasticBacktestOutput(final BacktestBatchId id) {
 
 		// Registering the provider for POJO -> JSON
 		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
 
 		// End point target root
-		root = ClientBuilder.newClient(clientConfig).target(ELASTIC_ENDPOINT_URL);
+		this.root = ClientBuilder.newClient(clientConfig).target(ELASTIC_ENDPOINT_URL);
 
-		signalAnalysisIndex = new ElasticSignalAnalysisIndex();
-		cashIndex = new ElasticCashIndex();
-		orderIndex = new ElasticOrderIndex();
-		brokerageIndex = new ElasticBrokerageIndex();
-		returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex();
-		networthIndex = new ElasticNetworthIndex();
-		equityIndex = new ElasticEquityIndex();
+		this.id = id;
+		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex();
+		this.cashIndex = new ElasticCashIndex();
+		this.orderIndex = new ElasticOrderIndex();
+		this.brokerageIndex = new ElasticBrokerageIndex();
+		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex();
+		this.networthIndex = new ElasticNetworthIndex();
+		this.equityIndex = new ElasticEquityIndex();
 	}
 
 	@Override
@@ -102,7 +104,7 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final CashEvent event ) {
-		cashIndex.event(root, event);
+		cashIndex.event(root, id, event);
 	}
 
 	@Override
@@ -134,18 +136,19 @@ public class ElasticBacktestOutput implements BacktestOutput {
 		equityIndex.event(event);
 	}
 
+	//TODO why the init???? shouldn't have a constructor & init - only one
 	@Override
 	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
 	        final BacktestSimulationDates simulationDates, final EventStatistics eventStatistics,
 	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 	        throws BacktestInitialisationException {
 
-		signalAnalysisIndex.init(root);
-		cashIndex.init(root);
-		orderIndex.init(root);
-		brokerageIndex.init(root);
-		returnOnInvestmentIndex.init(root);
-		networthIndex.init(root);
-		equityIndex.init(root);
+		signalAnalysisIndex.init(root, id);
+		cashIndex.init(root, id);
+		orderIndex.init(root, id);
+		brokerageIndex.init(root, id);
+		returnOnInvestmentIndex.init(root, id);
+		networthIndex.init(root, id);
+		equityIndex.init(root, id);
 	}
 }

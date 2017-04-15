@@ -45,6 +45,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class ElasticIndex {
 
 	//TODO ? strucutre with a @JsonCreator to accept format of
+	//TODO used when reading the index to verify structure is correct
 	//{"signal-analysis":{"aliases":{},"mappings":{"signal-analysis":{"properties":{"event":{"type":"text"}}}},"settings":{"index":{"creation_date":"1487497092304","number_of_shards":"5","number_of_replicas":"1","uuid":"dUnk_vL9QbOR8J5hCmIgkg","version":{"created":"5010199"},"provided_name":"signal-analysis"}}}}
 
 	/** Elastic key for the index properties. */
@@ -56,12 +57,11 @@ public class ElasticIndex {
 	/** Top level 'mappings' key for the index. */
 	private final Map<String, Object> mappings;
 
-	public ElasticIndex(final ElasticMappingName name, final Pair<ElasticFieldName, ElasticFieldType> field) {
-		this(name, Arrays.asList(field));
+	public ElasticIndex(final String indexTypeName, final Pair<ElasticFieldName, ElasticFieldType> field) {
+		this(indexTypeName, Arrays.asList(field));
 	}
 
-	public ElasticIndex(final ElasticMappingName mappingName,
-	        final List<Pair<ElasticFieldName, ElasticFieldType>> fields) {
+	public ElasticIndex(final String indexTypeName, final List<Pair<ElasticFieldName, ElasticFieldType>> fields) {
 
 		final Map<String, Object> message = new HashMap<>();
 
@@ -73,7 +73,7 @@ public class ElasticIndex {
 		properties.put(PROPERTIES, message);
 
 		mappings = new HashMap<>();
-		mappings.put(mappingName.getName(), properties);
+		mappings.put(indexTypeName, properties);
 	}
 
 	/**
