@@ -67,7 +67,8 @@ public abstract class ElasticCommonIndex {
 		if (isIndexMappingMissing(root, id)) {
 			createIndexMapping(root, id);
 		} else {
-			throw new ElasticException(String.format("Mapping already exists for: %s", getMappingPath(id)));
+			throw new ElasticException(
+			        String.format("Existing mapping (and potentially results) found for: %s", getMappingPath(id)));
 		}
 	}
 
@@ -135,7 +136,7 @@ public abstract class ElasticCommonIndex {
 	private void createIndexMapping( final WebTarget root, final BacktestBatchId id ) {
 
 		final Entity<?> requestBody = Entity.json(getIndexMapping());
-		final String path = getPutMapping(id);
+		final String path = getMappingPath(id);
 		final Response response = root.path(path).request().put(requestBody);
 
 		if (response.getStatus() != 200) {
@@ -144,10 +145,6 @@ public abstract class ElasticCommonIndex {
 	}
 
 	private String getMappingPath( final BacktestBatchId id ) {
-		return String.format("%s/%s", getIndexName().getName(), id.getName());
-	}
-
-	private String getPutMapping( final BacktestBatchId id ) {
 		return String.format("%s/_mapping/%s", getIndexName().getName(), id.getName());
 	}
 
