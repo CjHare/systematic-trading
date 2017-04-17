@@ -31,11 +31,6 @@ package com.systematic.trading.backtest.output.elastic.model;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -53,25 +48,9 @@ public class ElasticIndexTest {
 	@Test
 	public void jsonSingleField() throws JsonProcessingException {
 
-		final ElasticIndex index = new ElasticIndex("cash",
-		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT));
+		final ElasticIndex index = new ElasticIndex(4, 5);
 		final String json = mapper.writeValueAsString(index);
 
-		assertEquals("{\"mappings\":{\"cash\":{\"properties\":{\"event\":{\"type\":\"text\"}}}}}", json);
-	}
-
-	@Test
-	public void jsonMultipleFields() throws JsonProcessingException {
-
-		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays.asList(
-		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
-		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT));
-
-		final ElasticIndex index = new ElasticIndex("cash", fields);
-		final String json = mapper.writeValueAsString(index);
-
-		assertEquals(
-		        "{\"mappings\":{\"cash\":{\"properties\":{\"amount\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}}}",
-		        json);
+		assertEquals("{\"settings\":{\"number_of_shards\":4,\"number_of_replicas\":5}}", json);
 	}
 }

@@ -49,21 +49,31 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
  */
 public abstract class ElasticCommonIndex {
 
+	/** 
+	 * The number of primary shards that an index should have, which defaults to 5. 
+	 * This setting cannot be changed after index creation.
+	 */
+	private static final int DEFAULT_NUMBER_OF_SHARDS = 5;
+
+	/** The number of replica shards (copies) that each primary shard should have, which defaults to 1. 	 */
+	private static final int DEFAULT_NUMBER_OF_REPLICAS = 1;
+
 	public void init( final WebTarget root, final BacktestBatchId id ) {
 
-		//TODO separate the index from the mappings
-		//TODO index needs to exist, include settings such as shards & replicas
-		
-		//TODO need to check whether the mapping already exists - if so error, existing data
-		
-		if (isIndexMissing(root, id)) {
-			createIndex(root, id);
+		if (isIndexMissing(root)) {
+			createIndex(root);
+		}
+
+		if (isIndexMappingMissing(root, id)) {
+			createIndexMapping(root, id);
+		} else {
+			throw new ElasticException(String.format("Mapping already exists for: %s", getMappingPath(id)));
 		}
 	}
 
 	public void post( final WebTarget root, final BacktestBatchId id, final Entity<?> requestBody ) {
 
-		final WebTarget url = root.path(getPath(id));
+		final WebTarget url = root.path(getMappingPath(id));
 
 		// Using the elastic search ID auto-generation, so we're using a post not a put
 		final Response response = url.request().post(requestBody);
@@ -82,10 +92,10 @@ public abstract class ElasticCommonIndex {
 		}
 	}
 
-	//TODO - don't need the index, only use mapping?
-	protected abstract ElasticIndex getIndex( BacktestBatchId id );
+	protected ElasticIndex getIndex() {
+		return new ElasticIndex(DEFAULT_NUMBER_OF_SHARDS, DEFAULT_NUMBER_OF_REPLICAS);
+	}
 
-	//TODO - don't need the index, only use mapping?
 	protected abstract ElasticIndexMapping getIndexMapping();
 
 	protected abstract ElasticIndexName getIndexName();
@@ -95,33 +105,45 @@ public abstract class ElasticCommonIndex {
 		return new ImmutablePair<ElasticFieldName, ElasticFieldType>(name, type);
 	}
 
-	private boolean isIndexMissing( final WebTarget root, final BacktestBatchId id ) {
+	private boolean isIndexMissing( final WebTarget root ) {
 
-		final String path = getPath(id);
+		final String path = getIndexName().getName();
 		final Response response = root.path(path).request(MediaType.APPLICATION_JSON).get();
-
-		System.out.println("Response code: " + response.getStatus());
-		System.out.println("Response :" + response.readEntity(String.class));
-
-		//TODO verify index has structure expected (index object is returned
 
 		return response.getStatus() != 200;
 	}
 
-	private void createIndex( final WebTarget root, final BacktestBatchId id ) {
+	private boolean isIndexMappingMissing( final WebTarget root, final BacktestBatchId id ) {
 
-		final Entity<?> requestBody = Entity.json(getIndexMapping());
+		final String path = getMappingPath(id);
+		final Response response = root.path(path).request(MediaType.APPLICATION_JSON).get();
 
-		final Response response = root.path(getPutMapping(id)).request().put(requestBody);
-
-		System.out.println("Response code: " + response.getStatus());
-		System.out.println("Response :" + response.readEntity(String.class));
-
-		//TODO parse the response, only a problem if not 200
-
+		return response.getStatus() != 200;
 	}
 
-	private String getPath( final BacktestBatchId id ) {
+	private void createIndex( final WebTarget root ) {
+
+		final Entity<?> requestBody = Entity.json(getIndex());
+		final String path = getIndexName().getName();
+		final Response response = root.path(path).request().put(requestBody);
+
+		if (response.getStatus() != 200) {
+			throw new ElasticException(String.format("Failed to put the index to: %s", path));
+		}
+	}
+
+	private void createIndexMapping( final WebTarget root, final BacktestBatchId id ) {
+
+		final Entity<?> requestBody = Entity.json(getIndexMapping());
+		final String path = getPutMapping(id);
+		final Response response = root.path(path).request().put(requestBody);
+
+		if (response.getStatus() != 200) {
+			throw new ElasticException(String.format("Failed to put the mapping to: %s", path));
+		}
+	}
+
+	private String getMappingPath( final BacktestBatchId id ) {
 		return String.format("%s/%s", getIndexName().getName(), id.getName());
 	}
 

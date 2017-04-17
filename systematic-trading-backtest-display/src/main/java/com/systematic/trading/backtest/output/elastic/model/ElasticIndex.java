@@ -29,18 +29,13 @@
  */
 package com.systematic.trading.backtest.output.elastic.model;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * An Object structure representation of an ElasticSearch index.
@@ -50,62 +45,28 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class ElasticIndex {
 
-	/*
-	"settings" : {
-	    "index" : {
-	        "number_of_shards" : 3,
-	        "number_of_replicas" : 2
-	    }
-	}	  
+	/** 
+	 * The number of primary shards that an index should have, which defaults to 5. 
+	 * This setting cannot be changed after index creation.
 	 */
+	private static final String NUMBER_OF_SHARDS = "number_of_shards";
 
-	//TODO ? strucutre with a @JsonCreator to accept format of
-	//TODO used when reading the index to verify structure is correct
-	//{"signal-analysis":{"aliases":{},"mappings":{"signal-analysis":{"properties":{"event":{"type":"text"}}}},"settings":{"index":{"creation_date":"1487497092304","number_of_shards":"5","number_of_replicas":"1","uuid":"dUnk_vL9QbOR8J5hCmIgkg","version":{"created":"5010199"},"provided_name":"signal-analysis"}}}}
+	/** The number of replica shards (copies) that each primary shard should have, which defaults to 1. 	 */
+	private static final String NUMBER_OF_REPLICAS = "number_of_replicas";
 
-	/** Elastic key for the index properties. */
-	private static final String PROPERTIES = "properties";
+	@JsonProperty("settings")
+	private final Map<String, Object> settings;
 
-	/** Elastic key for the index type */
-	private static final String TYPE = "type";
-
-	/** Top level 'mappings' key for the index. */
-	@JsonProperty("mappings")
-	private final Map<String, Object> indexMapping;
-
-	public ElasticIndex(final String indexTypeName, final Pair<ElasticFieldName, ElasticFieldType> field) {
-		this(indexTypeName, Arrays.asList(field));
-	}
-
-	public ElasticIndex(final String indexTypeName, final List<Pair<ElasticFieldName, ElasticFieldType>> fields) {
+	public ElasticIndex(final int numberOfShards, final int numberOfReplicas) {
 
 		final Map<String, Object> message = new HashMap<>();
+		message.put(NUMBER_OF_SHARDS, numberOfShards);
+		message.put(NUMBER_OF_REPLICAS, numberOfReplicas);
 
-		for (final Pair<ElasticFieldName, ElasticFieldType> field : fields) {
-			message.put(getName(field), getType(field));
-		}
-
-		final Map<String, Object> properties = new HashMap<>();
-		properties.put(PROPERTIES, Collections.unmodifiableMap(message));
-
-		final Map<String, Object> mappings = new HashMap<>();
-		mappings.put(indexTypeName, Collections.unmodifiableMap(properties));
-		indexMapping = Collections.unmodifiableMap(mappings);
-
+		settings = Collections.unmodifiableMap(message);
 	}
 
-	/**
-	 * Includes the type mapping with the additional level for the indexTypeName;
-	 */
-	public Map<String, Object> getIndexMapping() {
-		return indexMapping;
-	}
-
-	private String getName( final Pair<ElasticFieldName, ElasticFieldType> field ) {
-		return field.getLeft().getName();
-	}
-
-	private Map.Entry<String, String> getType( final Pair<ElasticFieldName, ElasticFieldType> field ) {
-		return new SimpleEntry<String, String>(TYPE, field.getRight().getName());
+	public Map<String, Object> getSettings() {
+		return settings;
 	}
 }

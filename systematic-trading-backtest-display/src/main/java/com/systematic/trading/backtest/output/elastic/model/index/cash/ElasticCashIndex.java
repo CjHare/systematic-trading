@@ -33,7 +33,6 @@ import javax.ws.rs.client.WebTarget;
 import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticCommonIndex;
@@ -48,16 +47,6 @@ public class ElasticCashIndex extends ElasticCommonIndex {
 
 	public void event( final WebTarget root, final BacktestBatchId id, final CashEvent event ) {
 		post(root, id, Entity.json(new ElasticCashEvent(event)));
-	}
-
-	@Override
-	protected ElasticIndex getIndex( final BacktestBatchId id ) {
-		return new ElasticIndex(id.getName(),
-		        Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
-		                getPair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
-		                getPair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
-		                getPair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT),
-		                getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 
 	@Override
