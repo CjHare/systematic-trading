@@ -32,10 +32,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
-import com.systematic.trading.backtest.output.elastic.model.ElasticCommonIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 
@@ -70,5 +70,19 @@ public class ElasticBrokerageIndex extends ElasticCommonIndex {
 	@Override
 	protected ElasticIndexName getIndexName() {
 		return ElasticIndexName.BROKERAGE;
+	}
+
+	@Override
+	protected ElasticIndexMapping getIndexMapping() {
+
+		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
+		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
+
+		//TODO create the index appropriate for the event bean
+
+		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays
+		        .asList(new ImmutablePair<ElasticFieldName, ElasticFieldType>(fieldName, fieldType));
+
+		return new ElasticIndexMapping(fields);
 	}
 }

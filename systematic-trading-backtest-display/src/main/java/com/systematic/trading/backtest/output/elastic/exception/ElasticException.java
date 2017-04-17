@@ -23,66 +23,19 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index;
+package com.systematic.trading.backtest.output.elastic.exception;
 
-import java.time.LocalDate;
+/**
+ * When there's a problem communicating with the data store (Elastic search), no need to continue.
+ * 
+ * @author CJ Hare
+ */
+public class ElasticException extends RuntimeException {
 
-import com.systematic.trading.simulation.cash.event.CashEvent;
+	/** Serialization identity. */
+	private static final long serialVersionUID = 1L;
 
-public class ElasticCashEvent {
-
-	//TODO immutable?
-	private String event;
-	private float amount;
-	private float fundsBefore;
-	private float fundsAfter;
-	private LocalDate transactionDate;
-
-	public ElasticCashEvent(final CashEvent event) {
-		this.event = event.getType().getName();
-		this.amount = event.getAmount().floatValue();
-		this.fundsBefore = event.getFundsBefore().floatValue();
-		this.fundsAfter = event.getFundsAfter().floatValue();
-		this.transactionDate = event.getTransactionDate();
-	}
-
-	public String getEvent() {
-		return event;
-	}
-
-	public void setEvent( String event ) {
-		this.event = event;
-	}
-
-	public float getAmount() {
-		return amount;
-	}
-
-	public void setAmount( float amount ) {
-		this.amount = amount;
-	}
-
-	public float getFundsBefore() {
-		return fundsBefore;
-	}
-
-	public void setFundsBefore( float fundsBefore ) {
-		this.fundsBefore = fundsBefore;
-	}
-
-	public float getFundsAfter() {
-		return fundsAfter;
-	}
-
-	public void setFundsAfter( float fundsAfter ) {
-		this.fundsAfter = fundsAfter;
-	}
-
-	public LocalDate getTransactionDate() {
-		return transactionDate;
-	}
-
-	public void setTransactionDate( LocalDate transactionDate ) {
-		this.transactionDate = transactionDate;
+	public ElasticException(final String message) {
+		super(message);
 	}
 }

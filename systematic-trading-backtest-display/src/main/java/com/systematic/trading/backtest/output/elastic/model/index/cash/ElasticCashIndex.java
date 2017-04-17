@@ -23,20 +23,20 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index;
+package com.systematic.trading.backtest.output.elastic.model.index.cash;
 
 import java.util.Arrays;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 
 import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
-import com.systematic.trading.backtest.output.elastic.model.ElasticCommonIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticCommonIndex;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 
 /**
@@ -47,35 +47,30 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
 public class ElasticCashIndex extends ElasticCommonIndex {
 
 	public void event( final WebTarget root, final BacktestBatchId id, final CashEvent event ) {
-
-		final ElasticCashEvent elasticEvent = new ElasticCashEvent(event);
-
-		final String indexName = getIndexName().getName() + "/" + id.getName();
-
-		//TODO this part is generic - move to the common index, given an entity
-
-		// Using ID auto-generation, so we're using a post not a put
-		final Response response = root.path(indexName).request().post(Entity.json(elasticEvent));
-
-		System.out.println("Response code: " + response.getStatus());
-		System.out.println("Response :" + response.readEntity(String.class));
-
-		//TODO move this and the bean into it's own package, name the bean a resource
-		System.out.println("Did putting the cash work?");
+		post(root, id, Entity.json(new ElasticCashEvent(event)));
 	}
 
 	@Override
 	protected ElasticIndex getIndex( final BacktestBatchId id ) {
-
 		return new ElasticIndex(id.getName(),
 		        Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
 		                getPair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
 		                getPair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
-		                getPair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT)));
+		                getPair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT),
+		                getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 
 	@Override
 	protected ElasticIndexName getIndexName() {
 		return ElasticIndexName.CASH;
+	}
+
+	@Override
+	protected ElasticIndexMapping getIndexMapping() {
+		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
+		        getPair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 }

@@ -100,24 +100,21 @@ public class CompleteFileDisplay extends FileDisplay implements BacktestOutput {
 	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
 	        final BacktestSimulationDates dates, final EventStatistics eventStatistics,
 	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
-	                throws BacktestInitialisationException {
+	        throws BacktestInitialisationException {
 
 		final DisplayMultithreading returnOnInvestmentFile = getFileDisplay("/return-on-investment.txt");
 		this.roiDisplay = new ReturnOnInvestmentFileDisplay(
 		        ReturnOnInvestmentFileDisplay.RETURN_ON_INVESTMENT_DISPLAY.ALL, returnOnInvestmentFile);
 
-		final DisplayMultithreading returnOnInvestmentDailyFilen = getFileDisplay(
-		        "/return-on-investment-daily.txt");
+		final DisplayMultithreading returnOnInvestmentDailyFilen = getFileDisplay("/return-on-investment-daily.txt");
 		this.roiDailyDisplay = new ReturnOnInvestmentFileDisplay(
 		        ReturnOnInvestmentFileDisplay.RETURN_ON_INVESTMENT_DISPLAY.DAILY, returnOnInvestmentDailyFilen);
 
-		final DisplayMultithreading returnOnInvestmentMonthlyFile = getFileDisplay(
-		        "/return-on-investment-monthly.txt");
+		final DisplayMultithreading returnOnInvestmentMonthlyFile = getFileDisplay("/return-on-investment-monthly.txt");
 		this.roiMonthlyDisplay = new ReturnOnInvestmentFileDisplay(
 		        ReturnOnInvestmentFileDisplay.RETURN_ON_INVESTMENT_DISPLAY.MONTHLY, returnOnInvestmentMonthlyFile);
 
-		final DisplayMultithreading returnOnInvestmentYearlyFile = getFileDisplay(
-		        "/return-on-investment-yearly.txt");
+		final DisplayMultithreading returnOnInvestmentYearlyFile = getFileDisplay("/return-on-investment-yearly.txt");
 		this.roiYearlyDisplay = new ReturnOnInvestmentFileDisplay(
 		        ReturnOnInvestmentFileDisplay.RETURN_ON_INVESTMENT_DISPLAY.YEARLY, returnOnInvestmentYearlyFile);
 
