@@ -51,10 +51,6 @@ public class JsonEntityMatcher extends ArgumentMatcher<Entity<?>> {
 
 			final Entity<?> entity = (Entity<?>) argument;
 			final Optional<String> jsonEntity = parseEntity(entity);
-
-			System.out.println(expectedJson);
-			System.out.println(jsonEntity.get());
-
 			return jsonEntity.isPresent() && StringUtils.contains(jsonEntity.get(), expectedJson);
 		}
 

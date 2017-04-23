@@ -32,6 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
@@ -49,6 +50,9 @@ import com.systematic.trading.backtest.output.elastic.model.index.JsonEntityMatc
 @RunWith(MockitoJUnitRunner.class)
 public class ElasticCashIndexTest {
 
+	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"entity\":{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"amount\":{\"type\":\"float\"},\"funds_after\":{\"type\":\"float\"},\"funds_before\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
+
 	@Mock
 	private ElasticDao dao;
 
@@ -60,7 +64,6 @@ public class ElasticCashIndexTest {
 
 	@Before
 	public void setUp() {
-
 		when(dao.get(any(ElasticIndexName.class))).thenReturn(getIndexResponse);
 		when(dao.get(any(ElasticIndexName.class), any(BacktestBatchId.class))).thenReturn(getIndexTypeResponse);
 	}
@@ -74,12 +77,9 @@ public class ElasticCashIndexTest {
 		index.init(id);
 
 		verify(dao).get(ElasticIndexName.CASH);
-		verify(dao).put(eq(ElasticIndexName.CASH),
-		        argThat(new JsonEntityMatcher("{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}")));
-		verify(dao).get(eq(ElasticIndexName.CASH), matchesBacktestId(batchId));
-		verify(dao).put(eq(ElasticIndexName.CASH), matchesBacktestId(batchId), argThat(new JsonEntityMatcher(
-		        "{\"entity\":{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"amount\":{\"type\":\"float\"},\"funds_after\":{\"type\":\"float\"},\"funds_before\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}")));
-
+		verify(dao).put(eq(ElasticIndexName.CASH), equalsPutIndexJson());
+		verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsPutIndexMappingJson());
 		verifyNoMoreInteractions(dao);
 	}
 
@@ -105,7 +105,15 @@ public class ElasticCashIndexTest {
 	}
 
 	//TODO refactor into common component
-	private BacktestBatchId matchesBacktestId( final String batchId ) {
+	private BacktestBatchId equalsBacktestId( final String batchId ) {
 		return argThat(new BacktestBatchIdMatcher(batchId));
+	}
+
+	private Entity<?> equalsPutIndexMappingJson() {
+		return argThat(new JsonEntityMatcher(JSON_PUT_INDEX_MAPPING));
+	}
+
+	private Entity<?> equalsPutIndexJson() {
+		return argThat(new JsonEntityMatcher(JSON_PUT_INDEX));
 	}
 }
