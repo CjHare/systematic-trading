@@ -23,26 +23,34 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
-/**
- * ID that groups back testing events..
- * 
- * @author CJ Hare
- */
-public class BacktestBatchId {
-	private final String name;
+import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.Description;
+import org.mockito.ArgumentMatcher;
 
-	public BacktestBatchId(final String name) {
-		this.name = name;
+import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+
+public class BacktestBatchIdMatcher extends ArgumentMatcher<BacktestBatchId> {
+
+	private final String expectedId;
+
+	public BacktestBatchIdMatcher(final String expectedId) {
+		this.expectedId = expectedId;
 	}
 
-	public String getName() {
-		return name;
+	public boolean matches( Object argument ) {
+
+		if (argument instanceof BacktestBatchId) {
+			final BacktestBatchId entity = (BacktestBatchId) argument;
+			return StringUtils.equals(expectedId, entity.getName());
+		}
+
+		return false;
 	}
 
 	@Override
-	public String toString() {
-		return name;
+	public void describeTo( Description description ) {
+		description.appendText(expectedId);
 	}
 }

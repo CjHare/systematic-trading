@@ -34,7 +34,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
@@ -58,39 +61,27 @@ public abstract class ElasticCommonIndex {
 	/** The number of replica shards (copies) that each primary shard should have, which defaults to 1. 	 */
 	private static final int DEFAULT_NUMBER_OF_REPLICAS = 1;
 
-	public void init( final WebTarget root, final BacktestBatchId id ) {
+	private final ElasticDao dao;
 
-		if (isIndexMissing(root)) {
-			createIndex(root);
+	public ElasticCommonIndex(final ElasticDao dao) {
+		this.dao = dao;
+	}
+
+	public void init( final BacktestBatchId id ) {
+
+		if (isIndexMissing()) {
+			createIndex();
 		}
 
-		if (isIndexMappingMissing(root, id)) {
-			createIndexMapping(root, id);
+		if (isIndexMappingMissing(id)) {
+			createIndexMapping(id);
 		} else {
-			throw new ElasticException(
-			        String.format("Existing mapping (and potentially results) found for: %s", getMappingPath(id)));
+			throw new ElasticException(String.format("Existing mapping (and potentially results) found for: %s", id));
 		}
 	}
 
-	public void post( final WebTarget root, final BacktestBatchId id, final Entity<?> requestBody ) {
-
-		final WebTarget url = root.path(getMappingPath(id));
-
-		// Using the elastic search ID auto-generation, so we're using a post not a put
-		final Response response = url.request().post(requestBody);
-
-		if (response.getStatus() != 201) {
-			throw new ElasticException(
-			        String.format("Expecting a HTTP 201 instead receieved HTTP %s, URL: %s, body: %s",
-			                response.getStatus(), url, requestBody));
-		}
-
-		final ElasticPostEventResponse eventResponse = response.readEntity(ElasticPostEventResponse.class);
-
-		if (isInvalidResponse(id, eventResponse)) {
-			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
-			        eventResponse, url, requestBody));
-		}
+	protected void post( final BacktestBatchId id, final Entity<?> requestBody ) {
+		dao.post(getIndexName(), id, requestBody);
 	}
 
 	protected ElasticIndex getIndex() {
@@ -106,55 +97,21 @@ public abstract class ElasticCommonIndex {
 		return new ImmutablePair<ElasticFieldName, ElasticFieldType>(name, type);
 	}
 
-	private boolean isIndexMissing( final WebTarget root ) {
-
-		final String path = getIndexName().getName();
-		final Response response = root.path(path).request(MediaType.APPLICATION_JSON).get();
-
+	private boolean isIndexMissing() {
+		final Response response = dao.get(getIndexName());
 		return response.getStatus() != 200;
 	}
 
-	private boolean isIndexMappingMissing( final WebTarget root, final BacktestBatchId id ) {
-
-		final String path = getMappingPath(id);
-		final Response response = root.path(path).request(MediaType.APPLICATION_JSON).get();
-
+	private boolean isIndexMappingMissing( final BacktestBatchId id ) {
+		final Response response = dao.get(getIndexName(), id);
 		return response.getStatus() != 200;
 	}
 
-	private void createIndex( final WebTarget root ) {
-
-		final Entity<?> requestBody = Entity.json(getIndex());
-		final String path = getIndexName().getName();
-		final Response response = root.path(path).request().put(requestBody);
-
-		if (response.getStatus() != 200) {
-			throw new ElasticException(String.format("Failed to put the index to: %s", path));
-		}
+	private void createIndex() {
+		dao.put(getIndexName(), Entity.json(getIndex()));
 	}
 
-	private void createIndexMapping( final WebTarget root, final BacktestBatchId id ) {
-
-		final Entity<?> requestBody = Entity.json(getIndexMapping());
-		final String path = getMappingPath(id);
-		final Response response = root.path(path).request().put(requestBody);
-
-		if (response.getStatus() != 200) {
-			throw new ElasticException(String.format("Failed to put the mapping to: %s", path));
-		}
-	}
-
-	private String getMappingPath( final BacktestBatchId id ) {
-		return String.format("%s/_mapping/%s", getIndexName().getName(), id.getName());
-	}
-
-	private boolean isInvalidResponse( final BacktestBatchId id, final ElasticPostEventResponse eventResponse ) {
-		return !isValidResponse(id, eventResponse);
-	}
-
-	private boolean isValidResponse( final BacktestBatchId id, final ElasticPostEventResponse eventResponse ) {
-		return eventResponse.isCreated() && eventResponse.isResultCreated()
-		        && StringUtils.equals(getIndexName().getName(), eventResponse.getIndex())
-		        && StringUtils.equals(id.getName(), eventResponse.getType());
+	private void createIndexMapping( final BacktestBatchId id ) {
+		dao.put(getIndexName(), id, Entity.json(Entity.json(getIndexMapping())));
 	}
 }

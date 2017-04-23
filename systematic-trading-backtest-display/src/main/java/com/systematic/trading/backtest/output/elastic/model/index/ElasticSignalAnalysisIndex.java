@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
@@ -43,6 +44,10 @@ import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
  * @author CJ Hare
  */
 public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
+
+	public ElasticSignalAnalysisIndex(final ElasticDao dao) {
+		super(dao);
+	}
 
 	public void event( final SignalAnalysisEvent event ) {
 		// TODO Auto-generated method stub

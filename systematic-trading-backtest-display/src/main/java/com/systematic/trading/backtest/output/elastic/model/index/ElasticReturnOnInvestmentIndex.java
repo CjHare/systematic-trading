@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
@@ -43,6 +44,10 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  * @author CJ Hare
  */
 public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
+
+	public ElasticReturnOnInvestmentIndex(final ElasticDao dao) {
+		super(dao);
+	}
 
 	public void event( final ReturnOnInvestmentEvent event ) {
 		// TODO Auto-generated method stub

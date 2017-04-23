@@ -25,16 +25,11 @@
  */
 package com.systematic.trading.backtest.output.elastic;
 
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-
-import org.glassfish.jersey.client.ClientConfig;
-
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticBrokerageIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticEquityIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticNetworthIndex;
@@ -61,12 +56,6 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  */
 public class ElasticBacktestOutput implements BacktestOutput {
 
-	/** Location of the elastic search end point. */
-	private static final String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
-
-	/** Base of the elastic search Restful end point. */
-	private final WebTarget root;
-
 	private final ElasticSignalAnalysisIndex signalAnalysisIndex;
 	private final ElasticCashIndex cashIndex;
 	private final ElasticOrderIndex orderIndex;
@@ -76,25 +65,17 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	private final ElasticEquityIndex equityIndex;
 
 	private final BacktestBatchId id;
-	//TODO use an exectuor pool for the Java-RS operations?
-	// final ExecutorService pool
 
 	public ElasticBacktestOutput(final BacktestBatchId id) {
-
-		// Registering the provider for POJO -> JSON
-		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
-
-		// End point target root
-		this.root = ClientBuilder.newClient(clientConfig).target(ELASTIC_ENDPOINT_URL);
-
+		final ElasticDao dao = new ElasticDao();
 		this.id = id;
-		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex();
-		this.cashIndex = new ElasticCashIndex();
-		this.orderIndex = new ElasticOrderIndex();
-		this.brokerageIndex = new ElasticBrokerageIndex();
-		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex();
-		this.networthIndex = new ElasticNetworthIndex();
-		this.equityIndex = new ElasticEquityIndex();
+		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao);
+		this.cashIndex = new ElasticCashIndex(dao);
+		this.orderIndex = new ElasticOrderIndex(dao);
+		this.brokerageIndex = new ElasticBrokerageIndex(dao);
+		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(dao);
+		this.networthIndex = new ElasticNetworthIndex(dao);
+		this.equityIndex = new ElasticEquityIndex(dao);
 	}
 
 	@Override
@@ -104,7 +85,7 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final CashEvent event ) {
-		cashIndex.event(root, id, event);
+		cashIndex.event(id, event);
 	}
 
 	@Override
@@ -143,12 +124,12 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
 	        throws BacktestInitialisationException {
 
-		signalAnalysisIndex.init(root, id);
-		cashIndex.init(root, id);
-		orderIndex.init(root, id);
-		brokerageIndex.init(root, id);
-		returnOnInvestmentIndex.init(root, id);
-		networthIndex.init(root, id);
-		equityIndex.init(root, id);
+		signalAnalysisIndex.init(id);
+		cashIndex.init(id);
+		orderIndex.init(id);
+		brokerageIndex.init(id);
+		returnOnInvestmentIndex.init(id);
+		networthIndex.init(id);
+		equityIndex.init(id);
 	}
 }

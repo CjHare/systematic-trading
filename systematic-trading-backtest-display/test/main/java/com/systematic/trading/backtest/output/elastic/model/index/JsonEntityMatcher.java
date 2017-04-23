@@ -23,26 +23,54 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
-/**
- * ID that groups back testing events..
- * 
- * @author CJ Hare
- */
-public class BacktestBatchId {
-	private final String name;
+import java.util.Optional;
 
-	public BacktestBatchId(final String name) {
-		this.name = name;
+import javax.ws.rs.client.Entity;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.Description;
+import org.mockito.ArgumentMatcher;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class JsonEntityMatcher extends ArgumentMatcher<Entity<?>> {
+
+	private final ObjectMapper mapper = new ObjectMapper();
+	private final String expectedJson;
+
+	public JsonEntityMatcher(final String expectedJson) {
+		this.expectedJson = expectedJson;
 	}
 
-	public String getName() {
-		return name;
+	public boolean matches( Object argument ) {
+
+		if (argument instanceof Entity<?>) {
+
+			final Entity<?> entity = (Entity<?>) argument;
+			final Optional<String> jsonEntity = parseEntity(entity);
+
+			System.out.println(expectedJson);
+			System.out.println(jsonEntity.get());
+
+			return jsonEntity.isPresent() && StringUtils.contains(jsonEntity.get(), expectedJson);
+		}
+
+		return false;
 	}
 
 	@Override
-	public String toString() {
-		return name;
+	public void describeTo( Description description ) {
+		description.appendText(expectedJson);
+	}
+
+	private Optional<String> parseEntity( final Entity<?> entity ) {
+		try {
+			return Optional.of(mapper.writeValueAsString(entity.getEntity()));
+		} catch (JsonProcessingException e) {
+			return Optional.empty();
+		}
 	}
 }

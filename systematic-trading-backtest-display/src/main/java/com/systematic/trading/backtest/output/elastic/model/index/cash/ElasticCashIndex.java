@@ -28,9 +28,9 @@ package com.systematic.trading.backtest.output.elastic.model.index.cash;
 import java.util.Arrays;
 
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 
 import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
@@ -45,8 +45,12 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
  */
 public class ElasticCashIndex extends ElasticCommonIndex {
 
-	public void event( final WebTarget root, final BacktestBatchId id, final CashEvent event ) {
-		post(root, id, Entity.json(new ElasticCashEvent(event)));
+	public ElasticCashIndex(final ElasticDao dao) {
+		super(dao);
+	}
+
+	public void event( final BacktestBatchId id, final CashEvent event ) {
+		post(id, Entity.json(new ElasticCashEvent(event)));
 	}
 
 	@Override
