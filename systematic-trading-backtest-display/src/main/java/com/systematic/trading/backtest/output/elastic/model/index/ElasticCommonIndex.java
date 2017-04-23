@@ -76,7 +76,8 @@ public abstract class ElasticCommonIndex {
 		if (isIndexMappingMissing(id)) {
 			createIndexMapping(id);
 		} else {
-			throw new ElasticException(String.format("Existing mapping (and potentially results) found for: %s", id));
+			throw new ElasticException(
+			        String.format("Existing mapping (and potentially already existing results) found for: %s", id));
 		}
 	}
 

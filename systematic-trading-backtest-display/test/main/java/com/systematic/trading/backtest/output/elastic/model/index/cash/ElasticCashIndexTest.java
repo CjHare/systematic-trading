@@ -25,14 +25,19 @@
  */
 package com.systematic.trading.backtest.output.elastic.model.index.cash;
 
+import static com.systematic.trading.backtest.output.elastic.model.index.ElasticMatcher.equalsBacktestId;
+import static com.systematic.trading.backtest.output.elastic.model.index.ElasticMatcher.equalsJson;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import javax.ws.rs.client.Entity;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
@@ -43,15 +48,24 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
+import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.BacktestBatchIdMatcher;
-import com.systematic.trading.backtest.output.elastic.model.index.JsonEntityMatcher;
+import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
 
+/**
+ * Purpose being to Verify the JSON messages to Elastic Search.
+ * 
+ * @author CJ Hare
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class ElasticCashIndexTest {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"entity\":{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"amount\":{\"type\":\"float\"},\"funds_after\":{\"type\":\"float\"},\"funds_before\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
+	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Credit\",\"amount\":12.34,\"fundsBefore\":500.12,\"fundsAfter\":512.46,\"transactionDate\":{\"year\":2012,\"month\":\"MARCH\",\"dayOfMonth\":14,\"dayOfWeek\":\"WEDNESDAY\"";
+
+	//TODO common parent & merge the static classes into it too
 
 	@Mock
 	private ElasticDao dao;
@@ -71,49 +85,108 @@ public class ElasticCashIndexTest {
 	@Test
 	public void initMissingIndex() {
 		final ElasticCashIndex index = new ElasticCashIndex(dao);
-		final String batchId = "BatchForTesting";
+		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
 
 		index.init(id);
 
 		verify(dao).get(ElasticIndexName.CASH);
-		verify(dao).put(eq(ElasticIndexName.CASH), equalsPutIndexJson());
+		verify(dao).put(eq(ElasticIndexName.CASH), equalsJson(JSON_PUT_INDEX));
 		verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
-		verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsPutIndexMappingJson());
+		verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
 		verifyNoMoreInteractions(dao);
 	}
 
 	@Test
 	public void initPresentIndexMissingMapping() {
-		final ElasticCashIndex index = new ElasticCashIndex(dao);
+		setUpPresentIndex();
 
-		//TODO code
+		final ElasticCashIndex index = new ElasticCashIndex(dao);
+		final String batchId = "MissingIndexBatchForTesting";
+		final BacktestBatchId id = new BacktestBatchId(batchId);
+
+		index.init(id);
+
+		verify(dao).get(ElasticIndexName.CASH);
+		verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
+		verifyNoMoreInteractions(dao);
+		verify(getIndexResponse).getStatus();
+		verifyNoMoreInteractions(getIndexResponse);
 	}
 
 	@Test
 	public void initPresentIndexPresentMapping() {
-		final ElasticCashIndex index = new ElasticCashIndex(dao);
+		setUpPresentIndex();
+		setUpPresentMapping();
 
-		//TODO code
+		final ElasticCashIndex index = new ElasticCashIndex(dao);
+		final String batchId = "MissingIndexBatchForTesting";
+		final BacktestBatchId id = new BacktestBatchId(batchId);
+
+		try {
+			index.init(id);
+		} catch (final ElasticException e) {
+			assertEquals(
+			        String.format("Existing mapping (and potentially already existing results) found for: %s", batchId),
+			        e.getMessage());
+		}
+
+		verify(dao).get(ElasticIndexName.CASH);
+		verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		verifyNoMoreInteractions(dao);
+		verify(getIndexResponse).getStatus();
+		verify(getIndexTypeResponse).getStatus();
+		verifyNoMoreInteractions(getIndexResponse);
 	}
 
 	@Test
 	public void event() {
+		setUpPresentIndex();
+
 		final ElasticCashIndex index = new ElasticCashIndex(dao);
+		final String batchId = "MissingIndexBatchForTesting";
+		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final CashEvent event = getEvent();
 
-		//TODO code		
+		index.init(id);
+		index.event(id, event);
+
+		//TODO inorder
+
+		verify(dao).get(ElasticIndexName.CASH);
+		verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
+		verify(dao).post(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_POST_INDEX_TYPE));
+		verifyNoMoreInteractions(dao);
+		verify(getIndexResponse).getStatus();
+		verifyNoMoreInteractions(getIndexResponse);
+		verify(getIndexTypeResponse).getStatus();
+		verifyNoMoreInteractions(getIndexResponse);
 	}
 
-	//TODO refactor into common component
-	private BacktestBatchId equalsBacktestId( final String batchId ) {
-		return argThat(new BacktestBatchIdMatcher(batchId));
+	private void setUpPresentIndex() {
+		when(getIndexResponse.getStatus()).thenReturn(200);
 	}
 
-	private Entity<?> equalsPutIndexMappingJson() {
-		return argThat(new JsonEntityMatcher(JSON_PUT_INDEX_MAPPING));
+	private void setUpPresentMapping() {
+		when(getIndexTypeResponse.getStatus()).thenReturn(200);
 	}
 
-	private Entity<?> equalsPutIndexJson() {
-		return argThat(new JsonEntityMatcher(JSON_PUT_INDEX));
+	private CashEvent getEvent() {
+		final CashEvent event = mock(CashEvent.class);
+		final BigDecimal amount = BigDecimal.valueOf(12.34);
+		final BigDecimal fundsAfter = BigDecimal.valueOf(512.46);
+		final BigDecimal fundsBefore = BigDecimal.valueOf(500.12);
+		final LocalDate transactionDate = LocalDate.of(2012, 3, 14);
+		final CashEventType eventType = CashEventType.CREDIT;
+
+		when(event.getAmount()).thenReturn(amount);
+		when(event.getFundsAfter()).thenReturn(fundsAfter);
+		when(event.getFundsBefore()).thenReturn(fundsBefore);
+		when(event.getTransactionDate()).thenReturn(transactionDate);
+		when(event.getType()).thenReturn(eventType);
+
+		return event;
 	}
 }
