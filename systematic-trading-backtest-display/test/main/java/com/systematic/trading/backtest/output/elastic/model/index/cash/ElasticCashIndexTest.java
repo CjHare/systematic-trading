@@ -30,6 +30,7 @@ import static com.systematic.trading.backtest.output.elastic.model.index.Elastic
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -43,6 +44,7 @@ import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -63,7 +65,9 @@ public class ElasticCashIndexTest {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"entity\":{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"amount\":{\"type\":\"float\"},\"funds_after\":{\"type\":\"float\"},\"funds_before\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Credit\",\"amount\":12.34,\"fundsBefore\":500.12,\"fundsAfter\":512.46,\"transactionDate\":{\"year\":2012,\"month\":\"MARCH\",\"dayOfMonth\":14,\"dayOfWeek\":\"WEDNESDAY\"";
+
+	//TODO need the date as a separate pass in, as it's ordered differently each run	
+	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Credit\",\"amount\":12.34,\"fundsBefore\":500.12,\"fundsAfter\":512.46,\"transactionDate\":{";
 
 	//TODO common parent & merge the static classes into it too
 
@@ -90,10 +94,11 @@ public class ElasticCashIndexTest {
 
 		index.init(id);
 
-		verify(dao).get(ElasticIndexName.CASH);
-		verify(dao).put(eq(ElasticIndexName.CASH), equalsJson(JSON_PUT_INDEX));
-		verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
-		verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
+		final InOrder order = inOrder(dao);
+		order.verify(dao).get(ElasticIndexName.CASH);
+		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsJson(JSON_PUT_INDEX));
+		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
 		verifyNoMoreInteractions(dao);
 	}
 
@@ -107,10 +112,12 @@ public class ElasticCashIndexTest {
 
 		index.init(id);
 
-		verify(dao).get(ElasticIndexName.CASH);
-		verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
-		verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
+		final InOrder order = inOrder(dao);
+		order.verify(dao).get(ElasticIndexName.CASH);
+		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
 		verifyNoMoreInteractions(dao);
+
 		verify(getIndexResponse).getStatus();
 		verifyNoMoreInteractions(getIndexResponse);
 	}
@@ -132,12 +139,16 @@ public class ElasticCashIndexTest {
 			        e.getMessage());
 		}
 
-		verify(dao).get(ElasticIndexName.CASH);
-		verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		final InOrder order = inOrder(dao);
+		order.verify(dao).get(ElasticIndexName.CASH);
+		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
 		verifyNoMoreInteractions(dao);
+
 		verify(getIndexResponse).getStatus();
-		verify(getIndexTypeResponse).getStatus();
 		verifyNoMoreInteractions(getIndexResponse);
+
+		verify(getIndexTypeResponse).getStatus();
+		verifyNoMoreInteractions(getIndexTypeResponse);
 	}
 
 	@Test
@@ -152,17 +163,18 @@ public class ElasticCashIndexTest {
 		index.init(id);
 		index.event(id, event);
 
-		//TODO inorder
-
-		verify(dao).get(ElasticIndexName.CASH);
-		verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
-		verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
-		verify(dao).post(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_POST_INDEX_TYPE));
+		final InOrder order = inOrder(dao);
+		order.verify(dao).get(ElasticIndexName.CASH);
+		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
+		order.verify(dao).post(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_POST_INDEX_TYPE));
 		verifyNoMoreInteractions(dao);
+
 		verify(getIndexResponse).getStatus();
 		verifyNoMoreInteractions(getIndexResponse);
+
 		verify(getIndexTypeResponse).getStatus();
-		verifyNoMoreInteractions(getIndexResponse);
+		verifyNoMoreInteractions(getIndexTypeResponse);
 	}
 
 	private void setUpPresentIndex() {
