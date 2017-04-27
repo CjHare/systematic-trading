@@ -38,7 +38,7 @@ import com.systematic.trading.event.Event;
 public interface CashEvent extends Event {
 
 	enum CashEventType {
-	    /** From the sale of equities. */
+		/** From the sale of equities. */
 		CREDIT("Credit"),
 		/** From the purchase of equities. */
 		DEBIT("Debit"),
@@ -49,7 +49,7 @@ public interface CashEvent extends Event {
 
 		private final String name;
 
-		CashEventType(final String name) {
+		CashEventType( final String name ) {
 			this.name = name;
 		}
 

@@ -42,8 +42,8 @@ public class TradingDayPricesImpl implements TradingDayPrices {
 	private final HighestEquityPrice highestPrice;
 	private final ClosingPrice closingPrice;
 
-	public TradingDayPricesImpl(final LocalDate date, final BigDecimal openingPrice, final BigDecimal lowestPrice,
-	        final BigDecimal highestPrice, final BigDecimal closingPrice) {
+	public TradingDayPricesImpl( final LocalDate date, final BigDecimal openingPrice, final BigDecimal lowestPrice,
+	        final BigDecimal highestPrice, final BigDecimal closingPrice ) {
 		this.date = date;
 		this.openingPrice = OpeningPrice.valueOf(openingPrice);
 		this.lowestPrice = LowestPrice.valueOf(lowestPrice);

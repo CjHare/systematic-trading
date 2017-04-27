@@ -50,7 +50,7 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	 * @param indicators all the indicators expected in an application, those all required on the
 	 *            same date to pass the filtering.
 	 */
-	public IndicatorsOnSameDaySignalFilter(final IndicatorSignalType... indicators) {
+	public IndicatorsOnSameDaySignalFilter( final IndicatorSignalType... indicators ) {
 
 		// There'll be NullPointers unless we have an array of IndicatorSignalType
 		if (indicators == null || indicators.length == 0) {

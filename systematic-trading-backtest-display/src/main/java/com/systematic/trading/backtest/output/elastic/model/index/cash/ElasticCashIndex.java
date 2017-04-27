@@ -45,7 +45,7 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
  */
 public class ElasticCashIndex extends ElasticCommonIndex {
 
-	public ElasticCashIndex(final ElasticDao dao) {
+	public ElasticCashIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 

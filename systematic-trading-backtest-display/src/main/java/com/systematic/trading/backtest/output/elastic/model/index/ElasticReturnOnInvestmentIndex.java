@@ -45,7 +45,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  */
 public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
 
-	public ElasticReturnOnInvestmentIndex(final ElasticDao dao) {
+	public ElasticReturnOnInvestmentIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 

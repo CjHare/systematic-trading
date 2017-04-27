@@ -11,7 +11,7 @@ public class UpwardsToDownwardsMovement {
 	private BigDecimal upward;
 	private BigDecimal downward;
 
-	public UpwardsToDownwardsMovement(final MathContext mathContext) {
+	public UpwardsToDownwardsMovement( final MathContext mathContext ) {
 		this.mathContext = mathContext;
 		this.upward = BigDecimal.ZERO;
 		this.downward = BigDecimal.ZERO;

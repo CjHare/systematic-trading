@@ -38,7 +38,7 @@ public enum CashAccountConfiguration {
 
 	private final Class<?> type;
 
-	CashAccountConfiguration(final Class<?> type) {
+	CashAccountConfiguration( final Class<?> type ) {
 		this.type = type;
 	}
 

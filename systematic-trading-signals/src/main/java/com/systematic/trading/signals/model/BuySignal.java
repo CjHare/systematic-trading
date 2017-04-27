@@ -30,7 +30,7 @@ import java.time.LocalDate;
 public class BuySignal {
 	private final LocalDate date;
 
-	public BuySignal(final LocalDate date) {
+	public BuySignal( final LocalDate date ) {
 
 		if (date == null) {
 			throw new IllegalArgumentException("Expecting a non-null BuySignal date");

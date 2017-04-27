@@ -41,7 +41,7 @@ public class RelativeTradeValueCalculator implements TradeValueCalculator {
 	/** Value between zero and one, the percentage of the funds to use in a trade. */
 	private final BigDecimal percentage;
 
-	public RelativeTradeValueCalculator(final BigDecimal percentage, final MathContext mathContext) {
+	public RelativeTradeValueCalculator( final BigDecimal percentage, final MathContext mathContext ) {
 		this.percentage = percentage;
 		this.mathContext = mathContext;
 	}

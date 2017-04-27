@@ -59,8 +59,8 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	 * @param lookback the number of data points to use in calculations.
 	 * @param daysOfRsiValues the number of RSI values desired.
 	 */
-	public RelativeStrengthIndexSignals(final int lookback, final BigDecimal oversold, final BigDecimal overbrought,
-	        final MathContext mathContext) {
+	public RelativeStrengthIndexSignals( final int lookback, final BigDecimal oversold, final BigDecimal overbrought,
+	        final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + MINIMUM_DAYS_OF_RSI_VALUES;
 		this.overbrought = overbrought;
 		this.oversold = oversold;
@@ -76,9 +76,9 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 	@Override
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
-		
+
 		//TODO validate minimum nummber of points given
-		
+
 		final List<RelativeStrengthIndexDataPoint> rsiData = rsi.rsi(data);
 		return addSellSignals(rsiData, addBuySignals(rsiData, new ArrayList<>()));
 	}
@@ -95,7 +95,8 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		for (final RelativeStrengthIndexDataPoint today : rsiData) {
 			if (isOversold(yesterday, today)) {
-				signals.add(new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
+				signals.add(
+				        new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
 			}
 
 			yesterday = today;
@@ -111,7 +112,8 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		for (final RelativeStrengthIndexDataPoint today : rsiData) {
 			if (isOverbrought(yesterday, today)) {
-				signals.add(new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.BEARISH));
+				signals.add(
+				        new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.BEARISH));
 			}
 
 			yesterday = today;

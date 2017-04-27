@@ -43,8 +43,8 @@ public enum MacdConfiguration implements SignalConfiguration {
 	private final int slowTimePeriods;
 	private final int signalTimePeriods;
 
-	MacdConfiguration(final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
-	        final String description) {
+	MacdConfiguration( final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
+	        final String description ) {
 		this.description = description;
 		this.fastTimePeriods = fastTimePeriods;
 		this.slowTimePeriods = slowTimePeriods;

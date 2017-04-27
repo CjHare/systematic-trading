@@ -43,7 +43,7 @@ public class FlatEquityManagementFeeCalculator implements EquityManagementFeeCal
 
 	private final BigDecimal percentageFee;
 
-	public FlatEquityManagementFeeCalculator(final BigDecimal percentageFee, final MathContext mathContext) {
+	public FlatEquityManagementFeeCalculator( final BigDecimal percentageFee, final MathContext mathContext ) {
 		this.percentageFee = percentageFee;
 		this.mathContext = mathContext;
 	}

@@ -38,7 +38,7 @@ public enum InterestRateConfiguration {
 
 	private final Class<?> type;
 
-	InterestRateConfiguration(final Class<?> type) {
+	InterestRateConfiguration( final Class<?> type ) {
 		this.type = type;
 	}
 

@@ -42,7 +42,7 @@ public class CashEventFileDisplay implements CashEventListener {
 	/** Display responsible for handling the file output. */
 	private final DisplayMultithreading display;
 
-	public CashEventFileDisplay(final DisplayMultithreading display) {
+	public CashEventFileDisplay( final DisplayMultithreading display ) {
 		this.display = display;
 
 		display.write("=== Cash Events ===\n");

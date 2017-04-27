@@ -45,7 +45,7 @@ import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
  */
 public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 
-	public ElasticSignalAnalysisIndex(final ElasticDao dao) {
+	public ElasticSignalAnalysisIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 

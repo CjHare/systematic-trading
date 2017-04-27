@@ -56,7 +56,7 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 	/**
 	 * Restrictions of no duplicate trading dates, applies date ordering on the given data.
 	 */
-	public TickerSymbolTradingDataBacktest(final EquityIdentity equity, final TradingDayPrices[] data) {
+	public TickerSymbolTradingDataBacktest( final EquityIdentity equity, final TradingDayPrices[] data ) {
 		this.equity = equity;
 
 		final Map<LocalDate, TradingDayPrices> modifiableTradingData = new HashMap<>();

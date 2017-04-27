@@ -45,7 +45,7 @@ import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
  */
 public class ElasticNetworthIndex extends ElasticCommonIndex {
 
-	public ElasticNetworthIndex(final ElasticDao dao) {
+	public ElasticNetworthIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 

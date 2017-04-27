@@ -35,7 +35,8 @@ public class IndicatorSignal {
 	private final IndicatorSignalType signal;
 	private final IndicatorDirectionType direction;
 
-	public IndicatorSignal(final LocalDate date, final IndicatorSignalType signal, final IndicatorDirectionType direction) {
+	public IndicatorSignal( final LocalDate date, final IndicatorSignalType signal,
+	        final IndicatorDirectionType direction ) {
 		this.date = date;
 		this.signal = signal;
 		this.direction = direction;

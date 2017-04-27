@@ -34,7 +34,7 @@ import java.math.BigDecimal;
  */
 public class LowestPrice extends Price {
 
-	protected LowestPrice(final BigDecimal amount) {
+	protected LowestPrice( final BigDecimal amount ) {
 		super(amount);
 	}
 

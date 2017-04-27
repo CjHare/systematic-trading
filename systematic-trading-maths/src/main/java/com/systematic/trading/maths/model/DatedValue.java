@@ -44,7 +44,7 @@ public class DatedValue implements TradingDayPrices {
 	private final LocalDate date;
 	private final BigDecimal value;
 
-	public DatedValue(final LocalDate date, final BigDecimal value) {
+	public DatedValue( final LocalDate date, final BigDecimal value ) {
 
 		if (date == null || value == null) {
 			throw new IllegalArgumentException(

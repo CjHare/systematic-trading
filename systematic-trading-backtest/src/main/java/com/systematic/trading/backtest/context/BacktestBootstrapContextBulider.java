@@ -89,9 +89,9 @@ public class BacktestBootstrapContextBulider {
 	/** The intended dates for the simulation. */
 	private final BacktestSimulationDates simulationDates;
 
-	public BacktestBootstrapContextBulider(final EquityConfiguration equity,
+	public BacktestBootstrapContextBulider( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final MathContext mathContext) {
+	        final MathContext mathContext ) {
 		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getStartDate());
 		this.simulationDates = simulationDates;
 		this.mathContext = mathContext;

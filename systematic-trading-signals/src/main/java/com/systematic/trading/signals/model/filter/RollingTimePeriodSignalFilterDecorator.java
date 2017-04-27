@@ -55,7 +55,7 @@ public class RollingTimePeriodSignalFilterDecorator implements SignalFilter {
 	/** Period of time from the latest date to accept signals. */
 	private final Period inclusiveWithin;
 
-	public RollingTimePeriodSignalFilterDecorator(final SignalFilter filter, final Period withinInclusive) {
+	public RollingTimePeriodSignalFilterDecorator( final SignalFilter filter, final Period withinInclusive ) {
 		this.filter = filter;
 		this.inclusiveWithin = withinInclusive;
 	}

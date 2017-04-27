@@ -42,7 +42,7 @@ public class ConfirmationSignalFilterConfiguration {
 		private final int confirmationDayRange;
 		private final int delayUntilConfirmationRange;
 
-		Type(final int delayUntilConfirmationRange, final int confirmationDayRange) {
+		Type( final int delayUntilConfirmationRange, final int confirmationDayRange ) {
 			this.confirmationDayRange = confirmationDayRange;
 			this.delayUntilConfirmationRange = delayUntilConfirmationRange;
 		}
@@ -60,8 +60,8 @@ public class ConfirmationSignalFilterConfiguration {
 	private final SignalConfiguration confirmation;
 	private final Type type;
 
-	public ConfirmationSignalFilterConfiguration(final Type type, final SignalConfiguration anchor,
-	        SignalConfiguration confirmation) {
+	public ConfirmationSignalFilterConfiguration( final Type type, final SignalConfiguration anchor,
+	        SignalConfiguration confirmation ) {
 		this.type = type;
 		this.anchor = anchor;
 		this.confirmation = confirmation;

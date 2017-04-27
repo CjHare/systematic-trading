@@ -23,10 +23,10 @@ public class BacktestBootstrapConfiguration {
 	private final EquityConfiguration equity;
 	private final ExitLogicConfiguration exit;
 
-	public BacktestBootstrapConfiguration(final BacktestSimulationDates backtestDates,
+	public BacktestBootstrapConfiguration( final BacktestSimulationDates backtestDates,
 	        final BrokerageFeesConfiguration brokerageFees, final CashAccountConfiguration cashAccount,
 	        final DepositConfiguration deposit, final EntryLogicConfiguration entry, final EquityConfiguration equity,
-	        final ExitLogicConfiguration exit) {
+	        final ExitLogicConfiguration exit ) {
 		this.backtestDates = backtestDates;
 		this.brokerageFees = brokerageFees;
 		this.cashAccount = cashAccount;

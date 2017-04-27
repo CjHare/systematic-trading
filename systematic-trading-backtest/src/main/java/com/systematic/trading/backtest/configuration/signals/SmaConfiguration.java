@@ -44,7 +44,8 @@ public enum SmaConfiguration implements SignalConfiguration {
 	private final int daysOfGradient;
 	private final GradientType type;
 
-	SmaConfiguration(final int lookback, final GradientType type, final int daysOfGradient, final String description) {
+	SmaConfiguration( final int lookback, final GradientType type, final int daysOfGradient,
+	        final String description ) {
 		this.daysOfGradient = daysOfGradient;
 		this.description = description;
 		this.lookback = lookback;

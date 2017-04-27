@@ -42,7 +42,7 @@ public enum ElasticIndexName {
 
 	private final String name;
 
-	ElasticIndexName(final String name) {
+	ElasticIndexName( final String name ) {
 		this.name = name;
 	}
 

@@ -57,7 +57,7 @@ public class ElasticIndex {
 	@JsonProperty("settings")
 	private final Map<String, Object> settings;
 
-	public ElasticIndex(final int numberOfShards, final int numberOfReplicas) {
+	public ElasticIndex( final int numberOfShards, final int numberOfReplicas ) {
 
 		final Map<String, Object> message = new HashMap<>();
 		message.put(NUMBER_OF_SHARDS, numberOfShards);

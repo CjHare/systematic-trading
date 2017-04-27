@@ -54,7 +54,7 @@ public class EventStatisticsFileDisplay implements EventStatisticsDisplay {
 
 	private final EventStatistics statistics;
 
-	public EventStatisticsFileDisplay(final EventStatistics statistics, final DisplayMultithreading display) {
+	public EventStatisticsFileDisplay( final EventStatistics statistics, final DisplayMultithreading display ) {
 		this.statistics = statistics;
 		this.display = display;
 		this.histogram = new HistogramDisplay();

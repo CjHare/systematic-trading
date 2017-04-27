@@ -45,7 +45,7 @@ public class CulmativeTotalReturnOnInvestmentCalculator
 	/** Running total of the ROI. */
 	private BigDecimal cumulativeROI = BigDecimal.ZERO;
 
-	public CulmativeTotalReturnOnInvestmentCalculator(final MathContext mathContext) {
+	public CulmativeTotalReturnOnInvestmentCalculator( final MathContext mathContext ) {
 		this.mathContext = mathContext;
 	}
 

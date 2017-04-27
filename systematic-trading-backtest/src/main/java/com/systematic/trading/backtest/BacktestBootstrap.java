@@ -72,8 +72,9 @@ public class BacktestBootstrap {
 	/** Unmodifiable trading data for input to the back test. */
 	private final TickerSymbolTradingData tradingData;
 
-	public BacktestBootstrap(final BacktestBootstrapConfiguration configuration, final BacktestBootstrapContext context,
-	        final BacktestOutput display, final TickerSymbolTradingData tradingData, final MathContext mathContext) {
+	public BacktestBootstrap( final BacktestBootstrapConfiguration configuration,
+	        final BacktestBootstrapContext context, final BacktestOutput display,
+	        final TickerSymbolTradingData tradingData, final MathContext mathContext ) {
 		this.context = context;
 		this.configuration = configuration;
 		this.mathContext = mathContext;

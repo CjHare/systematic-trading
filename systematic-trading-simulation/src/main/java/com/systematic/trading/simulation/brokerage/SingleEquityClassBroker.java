@@ -85,9 +85,9 @@ public class SingleEquityClassBroker implements Brokerage {
 	/** Identifier for the broker.*/
 	private final String brokerName;
 
-	public SingleEquityClassBroker(final String brokerName, final BrokerageTransactionFeeStructure fees,
+	public SingleEquityClassBroker( final String brokerName, final BrokerageTransactionFeeStructure fees,
 	        final EquityManagementFeeStructure managementFees, final EquityIdentity equity, final LocalDate startDate,
-	        final MathContext mathContext) {
+	        final MathContext mathContext ) {
 		this.brokerName = brokerName;
 		this.monthlyTradeCounter = new MonthlyRollingCounter();
 		this.lastManagementFee = managementFees.getLastManagementFeeDate(startDate);

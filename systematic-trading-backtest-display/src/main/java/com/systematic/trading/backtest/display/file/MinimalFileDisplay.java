@@ -66,7 +66,7 @@ public class MinimalFileDisplay extends FileDisplay implements BacktestOutput {
 	private NetWorthEventListener netWorthComparisonDisplay;
 	private final ExecutorService pool;
 
-	public MinimalFileDisplay(final String outputDirectory, final ExecutorService pool, final MathContext mathContext)
+	public MinimalFileDisplay( final String outputDirectory, final ExecutorService pool, final MathContext mathContext )
 	        throws IOException {
 
 		// Ensure the directory exists
@@ -86,7 +86,7 @@ public class MinimalFileDisplay extends FileDisplay implements BacktestOutput {
 	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
 	        final BacktestSimulationDates dates, final EventStatistics eventStatistics,
 	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
-	                throws BacktestInitialisationException {
+	        throws BacktestInitialisationException {
 
 		final DisplayMultithreading statisticsFile = getFileDisplay("/statistics.txt");
 		this.statisticsDisplay = new EventStatisticsFileDisplay(eventStatistics, statisticsFile);

@@ -72,8 +72,8 @@ public class ComparisonFileDisplay implements NetWorthEventListener {
 
 	private final DescriptionGenerator generator = new DescriptionGenerator();
 
-	public ComparisonFileDisplay(final BacktestBootstrapConfiguration configuration, final EventStatistics statistics,
-	        final DisplayMultithreading display, final MathContext mathContext) {
+	public ComparisonFileDisplay( final BacktestBootstrapConfiguration configuration, final EventStatistics statistics,
+	        final DisplayMultithreading display, final MathContext mathContext ) {
 		this.configuration = configuration;
 		this.mathContext = mathContext;
 		this.statistics = statistics;

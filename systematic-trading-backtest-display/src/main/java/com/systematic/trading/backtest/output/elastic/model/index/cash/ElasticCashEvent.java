@@ -40,7 +40,7 @@ public class ElasticCashEvent {
 	private final float fundsAfter;
 	private final LocalDate transactionDate;
 
-	public ElasticCashEvent(final CashEvent event) {
+	public ElasticCashEvent( final CashEvent event ) {
 		this.event = event.getType().getName();
 		this.amount = event.getAmount().floatValue();
 		this.fundsBefore = event.getFundsBefore().floatValue();

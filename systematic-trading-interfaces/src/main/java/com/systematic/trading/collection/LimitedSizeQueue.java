@@ -45,7 +45,7 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 	private final transient E[] items;
 
 	@SuppressWarnings("unchecked")
-	public LimitedSizeQueue(final Class<E> clazz, final int limit) {
+	public LimitedSizeQueue( final Class<E> clazz, final int limit ) {
 		this.limit = limit;
 
 		// Occur the reflection cost here once

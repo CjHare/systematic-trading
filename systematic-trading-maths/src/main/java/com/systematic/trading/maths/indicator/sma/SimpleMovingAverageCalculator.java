@@ -62,8 +62,8 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	 * @param store source for the storage array.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public SimpleMovingAverageCalculator(final int lookback, final int daysOfSmaValues, final Validator validator,
-	        final MathContext mathContext) {
+	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues, final Validator validator,
+	        final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
 		this.daysOfSmaValues = daysOfSmaValues;
 		this.mathContext = mathContext;

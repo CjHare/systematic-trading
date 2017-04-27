@@ -42,7 +42,7 @@ public class BrokerageEventFileDisplay implements BrokerageEventListener {
 	/** Display responsible for handling the file output. */
 	private final DisplayMultithreading display;
 
-	public BrokerageEventFileDisplay(final DisplayMultithreading display) {
+	public BrokerageEventFileDisplay( final DisplayMultithreading display ) {
 		this.display = display;
 
 		display.write("=== Brokerage Events ===\n");

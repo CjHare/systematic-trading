@@ -50,8 +50,8 @@ public class EventFileDisplay implements CashEventListener, OrderEventListener, 
 	private final OrderEventListener orderEventListener;
 	private final BrokerageEventListener brokerageEventListener;
 
-	public EventFileDisplay(final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-	        final DisplayMultithreading display) {
+	public EventFileDisplay( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
+	        final DisplayMultithreading display ) {
 
 		display.write(createHeaderOutput(tradingData, dates));
 

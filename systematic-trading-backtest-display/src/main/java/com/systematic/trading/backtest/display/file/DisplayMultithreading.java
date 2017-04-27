@@ -50,7 +50,7 @@ public class DisplayMultithreading {
 	/** Pool of execution threads to delegate IO operations. */
 	private final ExecutorService pool;
 
-	public DisplayMultithreading(final String outputFilename, final ExecutorService pool) {
+	public DisplayMultithreading( final String outputFilename, final ExecutorService pool ) {
 		this.outputFilename = outputFilename;
 		this.pool = pool;
 	}
@@ -64,7 +64,7 @@ public class DisplayMultithreading {
 
 		final Runnable task = () -> {
 			try (final FileOutputStream out = new FileOutputStream(outputFilename, true);
-		            final FileChannel fileChannel = out.getChannel()) {
+			        final FileChannel fileChannel = out.getChannel()) {
 
 				fileChannel.write(ByteBuffer.wrap(content.getBytes()));
 

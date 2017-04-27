@@ -13,7 +13,7 @@ public class RelativeStrengthIndexDataPoint {
 	private final BigDecimal value;
 	private final LocalDate date;
 
-	public RelativeStrengthIndexDataPoint(final LocalDate date, final BigDecimal value) {
+	public RelativeStrengthIndexDataPoint( final LocalDate date, final BigDecimal value ) {
 		this.date = date;
 		this.value = value;
 	}

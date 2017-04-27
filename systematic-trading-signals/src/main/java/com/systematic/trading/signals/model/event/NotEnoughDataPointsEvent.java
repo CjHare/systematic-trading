@@ -40,7 +40,7 @@ public class NotEnoughDataPointsEvent implements SignalAnalysisEvent {
 	private final IndicatorSignalType type;
 	private final LocalDate date;
 
-	public NotEnoughDataPointsEvent(final IndicatorSignalType type, final LocalDate date) {
+	public NotEnoughDataPointsEvent( final IndicatorSignalType type, final LocalDate date ) {
 		this.type = type;
 		this.date = date;
 	}

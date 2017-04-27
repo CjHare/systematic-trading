@@ -80,8 +80,8 @@ public class CompleteFileDisplay extends FileDisplay implements BacktestOutput {
 	private EquityEventListener equityEventDisplay;
 	private final ExecutorService pool;
 
-	public CompleteFileDisplay(final String outputDirectory, final ExecutorService pool, final MathContext mathContext)
-	        throws IOException {
+	public CompleteFileDisplay( final String outputDirectory, final ExecutorService pool,
+	        final MathContext mathContext ) throws IOException {
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File(outputDirectory);

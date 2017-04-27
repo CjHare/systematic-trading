@@ -76,8 +76,8 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	 * @param analysis analyser of trading data to generate buy signals.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public SignalTriggeredEntryLogic(final EquityClass equityType, final int equityScale,
-	        final TradeValueLogic tradeValue, final AnalysisBuySignals analysis, final MathContext mathContext) {
+	public SignalTriggeredEntryLogic( final EquityClass equityType, final int equityScale,
+	        final TradeValueLogic tradeValue, final AnalysisBuySignals analysis, final MathContext mathContext ) {
 		this.buyLongAnalysis = analysis;
 		this.mathContext = mathContext;
 		this.tradeValue = tradeValue;

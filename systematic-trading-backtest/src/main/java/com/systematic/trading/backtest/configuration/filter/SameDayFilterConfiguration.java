@@ -41,7 +41,7 @@ public class SameDayFilterConfiguration {
 	private final SignalConfiguration[] signals;
 	private final Type type;
 
-	public SameDayFilterConfiguration(final Type type, final SignalConfiguration... signals) {
+	public SameDayFilterConfiguration( final Type type, final SignalConfiguration... signals ) {
 		this.signals = signals;
 		this.type = type;
 	}

@@ -43,7 +43,7 @@ public interface EquityEvent extends Event {
 
 		private final String display;
 
-		EquityEventType(final String display) {
+		EquityEventType( final String display ) {
 			this.display = display;
 		}
 

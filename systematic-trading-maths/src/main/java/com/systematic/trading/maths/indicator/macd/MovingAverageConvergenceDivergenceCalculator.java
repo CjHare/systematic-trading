@@ -59,9 +59,9 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	/** The date of the last processed price data. */
 	private LocalDate lastDateProcessed = LocalDate.MIN;
 
-	public MovingAverageConvergenceDivergenceCalculator(final ExponentialMovingAverage fastEma,
+	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverage fastEma,
 	        final ExponentialMovingAverage slowEma, final ExponentialMovingAverage signalEma,
-	        final Validator validator) {
+	        final Validator validator ) {
 		this.validator = validator;
 		this.signalEma = signalEma;
 		this.slowEma = slowEma;

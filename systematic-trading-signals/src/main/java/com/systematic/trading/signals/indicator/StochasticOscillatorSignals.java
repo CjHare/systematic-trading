@@ -64,8 +64,8 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 	/** Stochastic %K calculator */
 	final StochasticPercentageK percentageK;
 
-	public StochasticOscillatorSignals(final int lookback, final int daysOfStocastic, final int smaK, final int smaD,
-	        final MathContext mathContext) {
+	public StochasticOscillatorSignals( final int lookback, final int daysOfStocastic, final int smaK, final int smaD,
+	        final MathContext mathContext ) {
 		this.lookback = lookback;
 
 		this.smaFullK = new SimpleMovingAverageCalculator(smaK, daysOfStocastic, new IllegalArgumentThrowingValidator(),

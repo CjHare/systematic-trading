@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- package com.systematic.trading.simulation;
+package com.systematic.trading.simulation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,8 +36,8 @@ public abstract class StandardEquityEvent {
 	private final BigDecimal equityAmount;
 	private final LocalDate transactionDate;
 
-	public StandardEquityEvent(final BigDecimal equityAmount, final BigDecimal startingEquityBalance,
-	        final BigDecimal endEquityBalance, final LocalDate transactionDate, final BigDecimal transactionValue) {
+	public StandardEquityEvent( final BigDecimal equityAmount, final BigDecimal startingEquityBalance,
+	        final BigDecimal endEquityBalance, final LocalDate transactionDate, final BigDecimal transactionValue ) {
 		this.startingEquityBalance = startingEquityBalance;
 		this.endEquityBalance = endEquityBalance;
 		this.transactionValue = transactionValue;

@@ -38,7 +38,7 @@ public enum PeriodicFilterConfiguration {
 
 	private final Period frequency;
 
-	PeriodicFilterConfiguration(final Period frequency) {
+	PeriodicFilterConfiguration( final Period frequency ) {
 		this.frequency = frequency;
 	}
 

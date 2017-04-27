@@ -36,7 +36,7 @@ public class ClearFileDestination {
 
 	private final String outputDirectory;
 
-	public ClearFileDestination(final String outputDirectory) {
+	public ClearFileDestination( final String outputDirectory ) {
 		this.outputDirectory = outputDirectory;
 	}
 

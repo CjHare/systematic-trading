@@ -61,8 +61,8 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	/** The number of decimal places the equity is trading in. */
 	private final int scale;
 
-	public BuyTotalCostTomorrowAtOpeningPriceOrder(final BigDecimal targetTotalCost, final EquityClass type,
-	        final int equityScale, final LocalDate creationDate, final MathContext mathContext) {
+	public BuyTotalCostTomorrowAtOpeningPriceOrder( final BigDecimal targetTotalCost, final EquityClass type,
+	        final int equityScale, final LocalDate creationDate, final MathContext mathContext ) {
 		this.targetTotalCost = targetTotalCost;
 		this.creationDate = creationDate;
 		this.mathContext = mathContext;

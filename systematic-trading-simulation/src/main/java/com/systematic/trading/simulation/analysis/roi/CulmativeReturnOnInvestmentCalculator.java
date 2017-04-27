@@ -66,7 +66,7 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	/** Running total of the amount deposited since the last net worth calculation. */
 	private BigDecimal depositedSincePreviousNetWorth = BigDecimal.ZERO;
 
-	public CulmativeReturnOnInvestmentCalculator(final MathContext mathContext) {
+	public CulmativeReturnOnInvestmentCalculator( final MathContext mathContext ) {
 		this.mathContext = mathContext;
 	}
 

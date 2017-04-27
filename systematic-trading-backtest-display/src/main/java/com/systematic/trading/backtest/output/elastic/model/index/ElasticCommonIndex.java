@@ -63,7 +63,7 @@ public abstract class ElasticCommonIndex {
 
 	private final ElasticDao dao;
 
-	public ElasticCommonIndex(final ElasticDao dao) {
+	public ElasticCommonIndex( final ElasticDao dao ) {
 		this.dao = dao;
 	}
 

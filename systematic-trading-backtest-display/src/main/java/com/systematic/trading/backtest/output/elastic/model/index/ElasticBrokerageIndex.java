@@ -45,7 +45,7 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
  */
 public class ElasticBrokerageIndex extends ElasticCommonIndex {
 
-	public ElasticBrokerageIndex(final ElasticDao dao) {
+	public ElasticBrokerageIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 

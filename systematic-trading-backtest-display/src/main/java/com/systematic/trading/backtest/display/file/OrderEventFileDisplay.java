@@ -42,7 +42,7 @@ public class OrderEventFileDisplay implements OrderEventListener {
 	/** Display responsible for handling the file output. */
 	private final DisplayMultithreading display;
 
-	public OrderEventFileDisplay(final DisplayMultithreading display) {
+	public OrderEventFileDisplay( final DisplayMultithreading display ) {
 		this.display = display;
 
 		display.write("=== Order Events ===\n");

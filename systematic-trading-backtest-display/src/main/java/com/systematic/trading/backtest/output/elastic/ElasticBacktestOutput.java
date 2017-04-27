@@ -66,7 +66,7 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	private final BacktestBatchId id;
 
-	public ElasticBacktestOutput(final BacktestBatchId id) {
+	public ElasticBacktestOutput( final BacktestBatchId id ) {
 		final ElasticDao dao = new ElasticDao();
 		this.id = id;
 		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao);

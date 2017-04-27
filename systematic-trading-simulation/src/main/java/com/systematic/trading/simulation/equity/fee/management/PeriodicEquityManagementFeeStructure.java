@@ -54,8 +54,8 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	 * @param frequency how often the management fee is applied.
 	 * @param mathContext context to apply to calculations.
 	 */
-	public PeriodicEquityManagementFeeStructure(final LocalDate feeStartDate, final EquityManagementFeeCalculator fee,
-	        final Period frequency) {
+	public PeriodicEquityManagementFeeStructure( final LocalDate feeStartDate, final EquityManagementFeeCalculator fee,
+	        final Period frequency ) {
 		this.feeStartDate = feeStartDate;
 		this.frequency = frequency;
 		this.fee = fee;

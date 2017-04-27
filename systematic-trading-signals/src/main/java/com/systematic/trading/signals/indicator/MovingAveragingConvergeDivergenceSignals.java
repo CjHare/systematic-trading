@@ -44,8 +44,8 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	private final MovingAverageConvergenceDivergence macd;
 	private final int requiredNumberOfTradingDays;
 
-	public MovingAveragingConvergeDivergenceSignals(final int fastTimePeriods, final int slowTimePeriods,
-	        final int signalTimePeriods, final MathContext mathContext) {
+	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
+	        final int signalTimePeriods, final MathContext mathContext ) {
 
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(fastTimePeriods,
 		        new IllegalArgumentThrowingValidator(), mathContext);
@@ -72,7 +72,8 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		final List<IndicatorSignal> converted = new ArrayList<>(signals.size());
 
 		for (final DatedSignal signal : signals) {
-			converted.add(new IndicatorSignal(signal.getDate(), IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH));
+			converted.add(
+			        new IndicatorSignal(signal.getDate(), IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH));
 		}
 
 		return converted;

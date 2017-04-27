@@ -42,7 +42,7 @@ public enum MinimumTrade {
 
 	private final BigDecimal value;
 
-	MinimumTrade(final BigDecimal value) {
+	MinimumTrade( final BigDecimal value ) {
 		this.value = value;
 	}
 

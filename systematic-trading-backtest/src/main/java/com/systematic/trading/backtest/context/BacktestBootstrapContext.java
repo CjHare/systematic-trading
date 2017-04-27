@@ -57,8 +57,8 @@ public class BacktestBootstrapContext {
 	 * @param startDate inclusive beginning date for the back testing.
 	 * @param endDate inclusive end date for back testing.
 	 */
-	public BacktestBootstrapContext(final EntryLogic entryLogic, final ExitLogic exitLogic, final Brokerage brokerage,
-	        final CashAccount cashAccount, final BacktestSimulationDates simulationDates) {
+	public BacktestBootstrapContext( final EntryLogic entryLogic, final ExitLogic exitLogic, final Brokerage brokerage,
+	        final CashAccount cashAccount, final BacktestSimulationDates simulationDates ) {
 		this.cashAccount = cashAccount;
 		this.entryLogic = entryLogic;
 		this.exitLogic = exitLogic;

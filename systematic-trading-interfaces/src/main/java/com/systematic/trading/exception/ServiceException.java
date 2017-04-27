@@ -35,15 +35,15 @@ public abstract class ServiceException extends Exception {
 	/** Serialization identity. */
 	private static final long serialVersionUID = 1L;
 
-	public ServiceException(final String message, final Throwable cause) {
+	public ServiceException( final String message, final Throwable cause ) {
 		super(message, cause);
 	}
 
-	public ServiceException(final String message) {
+	public ServiceException( final String message ) {
 		super(message);
 	}
 
-	public ServiceException(final Throwable cause) {
+	public ServiceException( final Throwable cause ) {
 		super(cause);
 	}
 }

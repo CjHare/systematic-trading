@@ -68,7 +68,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	private final List<SignalFilter> filters;
 	private final List<IndicatorSignalGenerator> generators;
 
-	public AnalysisLongBuySignals(final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters) {
+	public AnalysisLongBuySignals( final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters ) {
 		validateInput(generators, filters);
 
 		this.generators = generators;

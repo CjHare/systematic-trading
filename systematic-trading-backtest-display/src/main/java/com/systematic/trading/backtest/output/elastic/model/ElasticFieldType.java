@@ -38,7 +38,7 @@ public enum ElasticFieldType {
 
 	private final String name;
 
-	ElasticFieldType(final String name) {
+	ElasticFieldType( final String name ) {
 		this.name = name;
 	}
 

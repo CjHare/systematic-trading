@@ -44,9 +44,9 @@ public class ElasticPostEventResponse {
 	private final String type;
 
 	@JsonCreator
-	public ElasticPostEventResponse(@JsonProperty("_index") final String index,
+	public ElasticPostEventResponse( @JsonProperty("_index") final String index,
 	        @JsonProperty("_type") final String type, @JsonProperty("_id") final String id,
-	        @JsonProperty("result") final String result, @JsonProperty("created") final String created) {
+	        @JsonProperty("result") final String result, @JsonProperty("created") final String created ) {
 		this.created = created;
 		this.id = id;
 		this.index = index;

@@ -45,7 +45,7 @@ import com.systematic.trading.simulation.equity.event.EquityEvent;
  */
 public class ElasticEquityIndex extends ElasticCommonIndex {
 
-	public ElasticEquityIndex(final ElasticDao dao) {
+	public ElasticEquityIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 

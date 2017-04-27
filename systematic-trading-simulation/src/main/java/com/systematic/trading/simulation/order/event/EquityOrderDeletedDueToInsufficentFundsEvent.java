@@ -43,7 +43,7 @@ public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrder
 	/**
 	 * @param originalOrderType order prior to being deleted.
 	 */
-	public EquityOrderDeletedDueToInsufficentFundsEvent(final OrderEvent order) {
+	public EquityOrderDeletedDueToInsufficentFundsEvent( final OrderEvent order ) {
 
 		// Convert into the delete version
 		switch (order.getType()) {

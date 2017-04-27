@@ -64,8 +64,8 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public StochasticPercentageKCalculator(final int lookback, final int daysOfPercentageKValues,
-	        final Validator validator, final MathContext mathContext) {
+	public StochasticPercentageKCalculator( final int lookback, final int daysOfPercentageKValues,
+	        final Validator validator, final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + daysOfPercentageKValues;
 		this.mathContext = mathContext;
 		this.validator = validator;

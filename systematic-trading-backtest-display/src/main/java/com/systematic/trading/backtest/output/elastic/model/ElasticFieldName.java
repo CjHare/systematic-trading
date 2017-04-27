@@ -40,7 +40,7 @@ public enum ElasticFieldName {
 
 	private final String name;
 
-	ElasticFieldName(final String name) {
+	ElasticFieldName( final String name ) {
 		this.name = name;
 	}
 

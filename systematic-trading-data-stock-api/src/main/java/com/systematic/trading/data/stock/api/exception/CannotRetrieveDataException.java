@@ -35,11 +35,11 @@ import com.systematic.trading.exception.ServiceException;
 public class CannotRetrieveDataException extends ServiceException {
 	private static final long serialVersionUID = 1L;
 
-	public CannotRetrieveDataException(final String message, final Throwable cause) {
+	public CannotRetrieveDataException( final String message, final Throwable cause ) {
 		super(message, cause);
 	}
 
-	public CannotRetrieveDataException(final String message) {
+	public CannotRetrieveDataException( final String message ) {
 		super(message);
 	}
 }

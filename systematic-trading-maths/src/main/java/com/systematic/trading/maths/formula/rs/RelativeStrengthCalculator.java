@@ -68,7 +68,7 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthCalculator(final int lookback, final Validator validator, final MathContext mathContext) {
+	public RelativeStrengthCalculator( final int lookback, final Validator validator, final MathContext mathContext ) {
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;

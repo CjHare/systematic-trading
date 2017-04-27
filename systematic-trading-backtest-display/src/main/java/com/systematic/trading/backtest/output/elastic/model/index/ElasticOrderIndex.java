@@ -45,7 +45,7 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  */
 public class ElasticOrderIndex extends ElasticCommonIndex {
 
-	public ElasticOrderIndex(final ElasticDao dao) {
+	public ElasticOrderIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 

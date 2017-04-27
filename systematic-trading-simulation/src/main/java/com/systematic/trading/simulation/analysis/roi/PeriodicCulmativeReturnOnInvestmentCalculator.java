@@ -64,8 +64,8 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 	/** Running total of the ROI for the period so far. */
 	private BigDecimal cumulativeROI = BigDecimal.ZERO;
 
-	public PeriodicCulmativeReturnOnInvestmentCalculator(final LocalDate startingDate, final Period summaryPeriod,
-	        final MathContext mathContext) {
+	public PeriodicCulmativeReturnOnInvestmentCalculator( final LocalDate startingDate, final Period summaryPeriod,
+	        final MathContext mathContext ) {
 		this.date = startingDate;
 		this.mathContext = mathContext;
 		this.summaryPeriod = summaryPeriod;

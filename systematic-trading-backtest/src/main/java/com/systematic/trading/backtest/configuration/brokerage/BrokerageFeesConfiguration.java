@@ -40,7 +40,7 @@ public enum BrokerageFeesConfiguration {
 
 	private final Class<?> type;
 
-	BrokerageFeesConfiguration(final Class<?> type) {
+	BrokerageFeesConfiguration( final Class<?> type ) {
 		this.type = type;
 	}
 

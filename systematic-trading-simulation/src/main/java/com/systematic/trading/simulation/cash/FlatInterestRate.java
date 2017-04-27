@@ -53,7 +53,7 @@ public class FlatInterestRate implements InterestRate {
 	 *            2.0.
 	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	public FlatInterestRate(final BigDecimal annualInterestRate, final MathContext mathContext) {
+	public FlatInterestRate( final BigDecimal annualInterestRate, final MathContext mathContext ) {
 
 		this.mathContext = mathContext;
 

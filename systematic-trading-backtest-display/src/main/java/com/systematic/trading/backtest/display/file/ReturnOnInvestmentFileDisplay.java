@@ -54,8 +54,8 @@ public class ReturnOnInvestmentFileDisplay implements ReturnOnInvestmentEventLis
 
 	private final RETURN_ON_INVESTMENT_DISPLAY roiType;
 
-	public ReturnOnInvestmentFileDisplay(final RETURN_ON_INVESTMENT_DISPLAY roiType,
-	        final DisplayMultithreading display) {
+	public ReturnOnInvestmentFileDisplay( final RETURN_ON_INVESTMENT_DISPLAY roiType,
+	        final DisplayMultithreading display ) {
 
 		this.display = display;
 		this.roiType = roiType;

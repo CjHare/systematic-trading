@@ -50,8 +50,8 @@ public class NetWorthSummaryFileDisplay implements NetWorthSummaryDisplay {
 	/** The last net worth recording, which makes it into the summary. */
 	private NetWorthEvent lastEvent;
 
-	public NetWorthSummaryFileDisplay(final CumulativeReturnOnInvestment cumulativeRoi,
-	        final DisplayMultithreading display) {
+	public NetWorthSummaryFileDisplay( final CumulativeReturnOnInvestment cumulativeRoi,
+	        final DisplayMultithreading display ) {
 		this.cumulativeRoi = cumulativeRoi;
 		this.display = display;
 

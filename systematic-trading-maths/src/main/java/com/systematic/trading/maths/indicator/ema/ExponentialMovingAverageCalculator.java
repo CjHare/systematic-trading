@@ -68,8 +68,8 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public ExponentialMovingAverageCalculator(final int lookback, final Validator validator,
-	        final MathContext mathContext) {
+	public ExponentialMovingAverageCalculator( final int lookback, final Validator validator,
+	        final MathContext mathContext ) {
 		// Look back provides one of the days of EMA values
 		this.smoothingConstant = calculateSmoothingConstant(lookback);
 		this.mathContext = mathContext;

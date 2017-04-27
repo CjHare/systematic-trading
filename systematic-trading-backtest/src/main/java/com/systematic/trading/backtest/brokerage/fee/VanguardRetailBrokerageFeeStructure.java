@@ -47,7 +47,7 @@ public class VanguardRetailBrokerageFeeStructure implements BrokerageTransaction
 	/**
 	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	public VanguardRetailBrokerageFeeStructure(final MathContext mathContext) {
+	public VanguardRetailBrokerageFeeStructure( final MathContext mathContext ) {
 		this.mathContext = mathContext;
 	}
 

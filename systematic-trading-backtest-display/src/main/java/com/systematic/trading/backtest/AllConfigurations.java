@@ -80,24 +80,24 @@ public class AllConfigurations implements BacktestConfiguration {
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, weeklyBuy, equity,
 		        ExitLogicConfiguration.HOLD_FOREVER));
-
+		
 		// CMC Monthly
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, monthlyBuy, equity,
 		        ExitLogicConfiguration.HOLD_FOREVER));
 		
 		//TODO undo comment after elastic search is refined
-	
+		
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
-
+		
 		for (final MaximumTrade maximumTrade : MaximumTrade.values()) {
 			for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
 				configurations.addAll(
 				        getConfigurations(simulationDates, deposit, equity, brokerage, minimumTrade, maximumTrade));
 			}
 		}
-*/
+		*/
 		return configurations;
 	}
 

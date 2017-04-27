@@ -48,8 +48,8 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 	/** All the mathematical operation works within the context. */
 	private final MathContext mathContext;
 
-	public LadderedEquityManagementFeeCalculator(final BigDecimal[] range, final BigDecimal[] percentageFee,
-	        final MathContext mathContext) {
+	public LadderedEquityManagementFeeCalculator( final BigDecimal[] range, final BigDecimal[] percentageFee,
+	        final MathContext mathContext ) {
 		this.percentageFee = percentageFee;
 		this.mathContext = mathContext;
 		this.range = range;

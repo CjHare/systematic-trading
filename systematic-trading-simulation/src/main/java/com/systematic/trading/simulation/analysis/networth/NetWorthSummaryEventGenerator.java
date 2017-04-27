@@ -48,8 +48,8 @@ public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 	private final TradingDayPrices lastTradingDay;
 	private final CashAccount cashAccount;
 
-	public NetWorthSummaryEventGenerator(final Brokerage broker, final TradingDayPrices lastTradingDay,
-	        final CashAccount cashAccount) {
+	public NetWorthSummaryEventGenerator( final Brokerage broker, final TradingDayPrices lastTradingDay,
+	        final CashAccount cashAccount ) {
 		this.broker = broker;
 		this.lastTradingDay = lastTradingDay;
 		this.cashAccount = cashAccount;

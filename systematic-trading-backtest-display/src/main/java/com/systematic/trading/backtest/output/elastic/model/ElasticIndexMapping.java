@@ -60,11 +60,11 @@ public class ElasticIndexMapping {
 	@JsonProperty("properties")
 	private final Map<String, Object> typeMapping;
 
-	public ElasticIndexMapping(final Pair<ElasticFieldName, ElasticFieldType> field) {
+	public ElasticIndexMapping( final Pair<ElasticFieldName, ElasticFieldType> field ) {
 		this(Arrays.asList(field));
 	}
 
-	public ElasticIndexMapping(final List<Pair<ElasticFieldName, ElasticFieldType>> fields) {
+	public ElasticIndexMapping( final List<Pair<ElasticFieldName, ElasticFieldType>> fields ) {
 
 		final Map<String, Object> message = new HashMap<>();
 

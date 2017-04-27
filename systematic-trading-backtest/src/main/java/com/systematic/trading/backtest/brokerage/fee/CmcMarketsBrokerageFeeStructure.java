@@ -52,7 +52,7 @@ public class CmcMarketsBrokerageFeeStructure implements BrokerageTransactionFeeS
 	/**
 	 * @param mathContext math context defining the scale and precision to apply to operations.
 	 */
-	public CmcMarketsBrokerageFeeStructure(final MathContext mathContext) {
+	public CmcMarketsBrokerageFeeStructure( final MathContext mathContext ) {
 		this.mathContext = mathContext;
 	}
 

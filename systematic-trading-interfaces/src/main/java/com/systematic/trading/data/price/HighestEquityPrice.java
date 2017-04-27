@@ -34,7 +34,7 @@ import java.math.BigDecimal;
  */
 public class HighestEquityPrice extends Price {
 
-	protected HighestEquityPrice(final BigDecimal price) {
+	protected HighestEquityPrice( final BigDecimal price ) {
 		super(price);
 	}
 

@@ -313,8 +313,8 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 		private final LocalDate startDateExclusive;
 		private final LocalDate endDateInclusive;
 
-		RoiEventMatcher(final BigDecimal percentageChange, final LocalDate startDateExclusive,
-		        final LocalDate endDateInclusive) {
+		RoiEventMatcher( final BigDecimal percentageChange, final LocalDate startDateExclusive,
+		        final LocalDate endDateInclusive ) {
 			this.percentageChange = percentageChange;
 			this.startDateExclusive = startDateExclusive;
 			this.endDateInclusive = endDateInclusive;

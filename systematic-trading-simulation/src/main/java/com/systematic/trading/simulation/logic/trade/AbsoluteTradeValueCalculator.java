@@ -37,7 +37,7 @@ public class AbsoluteTradeValueCalculator implements TradeValueCalculator {
 	/** The only value to ever use. */
 	private final BigDecimal value;
 
-	public AbsoluteTradeValueCalculator(final BigDecimal value) {
+	public AbsoluteTradeValueCalculator( final BigDecimal value ) {
 		this.value = value;
 	}
 

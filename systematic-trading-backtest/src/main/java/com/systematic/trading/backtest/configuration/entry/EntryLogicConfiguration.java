@@ -21,8 +21,8 @@ public class EntryLogicConfiguration {
 	private final MaximumTrade maximumTrade;
 	private final MinimumTrade minimumTrade;
 
-	public EntryLogicConfiguration(final PeriodicFilterConfiguration periodic, final MaximumTrade maximumTrade,
-	        final MinimumTrade minimumTrade) {
+	public EntryLogicConfiguration( final PeriodicFilterConfiguration periodic, final MaximumTrade maximumTrade,
+	        final MinimumTrade minimumTrade ) {
 		this.type = Type.PERIODIC;
 		this.periodic = periodic;
 		this.confirmationSignal = null;
@@ -31,8 +31,8 @@ public class EntryLogicConfiguration {
 		this.minimumTrade = minimumTrade;
 	}
 
-	public EntryLogicConfiguration(final ConfirmationSignalFilterConfiguration confirmationSignal,
-	        final MaximumTrade maximumTrade, final MinimumTrade minimumTrade) {
+	public EntryLogicConfiguration( final ConfirmationSignalFilterConfiguration confirmationSignal,
+	        final MaximumTrade maximumTrade, final MinimumTrade minimumTrade ) {
 		this.type = Type.CONFIRMATION_SIGNAL;
 		this.periodic = null;
 		this.confirmationSignal = confirmationSignal;
@@ -41,8 +41,8 @@ public class EntryLogicConfiguration {
 		this.minimumTrade = minimumTrade;
 	}
 
-	public EntryLogicConfiguration(final SameDayFilterConfiguration sameDaySignals, final MaximumTrade maximumTrade,
-	        final MinimumTrade minimumTrade) {
+	public EntryLogicConfiguration( final SameDayFilterConfiguration sameDaySignals, final MaximumTrade maximumTrade,
+	        final MinimumTrade minimumTrade ) {
 		this.type = Type.SAME_DAY_SIGNALS;
 		this.periodic = null;
 		this.confirmationSignal = null;

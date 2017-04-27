@@ -16,7 +16,7 @@ public enum EquityManagementFeeConfiguration {
 		this.percentageFee = new BigDecimal[0];
 	}
 
-	EquityManagementFeeConfiguration(final BigDecimal[] feeRange, final BigDecimal[] percentageFee) {
+	EquityManagementFeeConfiguration( final BigDecimal[] feeRange, final BigDecimal[] percentageFee ) {
 		this.feeRange = feeRange;
 		this.percentageFee = percentageFee;
 	}

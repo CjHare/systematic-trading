@@ -61,7 +61,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public AverageTrueRangeCalculator(final int lookback, final Validator validator, final MathContext mathContext) {
+	public AverageTrueRangeCalculator( final int lookback, final Validator validator, final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback;
 		this.priorMultiplier = BigDecimal.valueOf(lookback - 1L);
 		this.lookbackDivider = BigDecimal.valueOf(lookback);

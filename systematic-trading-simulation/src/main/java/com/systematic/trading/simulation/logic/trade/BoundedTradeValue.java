@@ -40,7 +40,7 @@ public class BoundedTradeValue implements TradeValueLogic {
 	/** Smallest value to trade. */
 	private final TradeValueCalculator maximum;
 
-	public BoundedTradeValue(final TradeValueCalculator minimum, final TradeValueCalculator maximum) {
+	public BoundedTradeValue( final TradeValueCalculator minimum, final TradeValueCalculator maximum ) {
 		this.minimum = minimum;
 		this.maximum = maximum;
 	}

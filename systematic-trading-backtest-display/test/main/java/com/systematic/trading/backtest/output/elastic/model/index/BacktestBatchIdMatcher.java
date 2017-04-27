@@ -35,7 +35,7 @@ public class BacktestBatchIdMatcher extends ArgumentMatcher<BacktestBatchId> {
 
 	private final String expectedId;
 
-	public BacktestBatchIdMatcher(final String expectedId) {
+	public BacktestBatchIdMatcher( final String expectedId ) {
 		this.expectedId = expectedId;
 	}
 

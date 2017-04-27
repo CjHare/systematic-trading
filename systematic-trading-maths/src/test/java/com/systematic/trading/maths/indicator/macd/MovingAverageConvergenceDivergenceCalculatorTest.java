@@ -323,7 +323,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final BigDecimal[] expected;
 
-		public IsBigDecimalList(final BigDecimal... bigDecimals) {
+		public IsBigDecimalList( final BigDecimal... bigDecimals ) {
 			this.expected = bigDecimals;
 		}
 

@@ -56,8 +56,8 @@ public class TimePeriodSignalFilterDecorator implements SignalFilter {
 	/** Terminating book end for the acceptable signals. */
 	private final LocalDate endDateInclusive;
 
-	public TimePeriodSignalFilterDecorator(final SignalFilter filter, final LocalDate startDateInclusive,
-	        final LocalDate endDateInclusive) {
+	public TimePeriodSignalFilterDecorator( final SignalFilter filter, final LocalDate startDateInclusive,
+	        final LocalDate endDateInclusive ) {
 		this.startDateInclusive = startDateInclusive;
 		this.endDateInclusive = endDateInclusive;
 		this.filter = filter;

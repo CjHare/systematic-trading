@@ -65,8 +65,8 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 	 * @param delayUntilConfirmationRange number of days after the anchor signal to begin the acceptable range of days for the confirmation signal. 
 	 * @param confirmationDayRange inclusive number of days from the start of the range the confirmation signal must be within.
 	 */
-	public ConfirmationIndicatorsSignalFilter(final IndicatorSignalType anchor, final IndicatorSignalType confirmation,
-	        final int delayUntilConfirmationRange, final int confirmationDayRange) {
+	public ConfirmationIndicatorsSignalFilter( final IndicatorSignalType anchor, final IndicatorSignalType confirmation,
+	        final int delayUntilConfirmationRange, final int confirmationDayRange ) {
 		validate(anchor, "Expecting an anchor IndicatorSignalType");
 		validate(confirmation, "Expecting an anchor IndicatorSignalType");
 		validate(confirmationDayRange, "Expecting zero or a positive number of days for the confirmation signal range");

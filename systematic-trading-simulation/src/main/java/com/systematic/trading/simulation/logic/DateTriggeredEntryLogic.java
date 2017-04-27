@@ -68,8 +68,8 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	 * @param interval time between creation of entry orders.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
-	public DateTriggeredEntryLogic(final EquityClass equityType, final int equityScale, final LocalDate firstOrder,
-	        final Period interval, final MathContext mathContext) {
+	public DateTriggeredEntryLogic( final EquityClass equityType, final int equityScale, final LocalDate firstOrder,
+	        final Period interval, final MathContext mathContext ) {
 		this.mathContext = mathContext;
 		this.interval = interval;
 		this.scale = equityScale;

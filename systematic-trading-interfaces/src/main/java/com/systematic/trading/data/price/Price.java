@@ -38,7 +38,7 @@ public class Price {
 	/** Price of the equity. */
 	private final BigDecimal amount;
 
-	protected Price(final BigDecimal amount) {
+	protected Price( final BigDecimal amount ) {
 		this.amount = amount;
 	}
 

@@ -42,7 +42,7 @@ public class EquityEventFileDisplay implements EquityEventListener {
 	/** Display responsible for handling the file output. */
 	private final DisplayMultithreading display;
 
-	public EquityEventFileDisplay(final DisplayMultithreading display) {
+	public EquityEventFileDisplay( final DisplayMultithreading display ) {
 		this.display = display;
 
 		display.write("=== Equity Events ===\n");

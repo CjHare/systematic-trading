@@ -34,7 +34,7 @@ public abstract class OrderException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public OrderException(final String message) {
+	public OrderException( final String message ) {
 		super(message);
 	}
 }

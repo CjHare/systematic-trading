@@ -90,8 +90,8 @@ public class Simulation {
 	/** Trading data to use for the simulation. */
 	private final TickerSymbolTradingData tradingData;
 
-	public Simulation(final TickerSymbolTradingData tradingData, final Brokerage broker, final CashAccount funds,
-	        final ReturnOnInvestmentCalculator roi, final EntryLogic entry, final ExitLogic exit) {
+	public Simulation( final TickerSymbolTradingData tradingData, final Brokerage broker, final CashAccount funds,
+	        final ReturnOnInvestmentCalculator roi, final EntryLogic entry, final ExitLogic exit ) {
 
 		this.entry = entry;
 		this.exit = exit;

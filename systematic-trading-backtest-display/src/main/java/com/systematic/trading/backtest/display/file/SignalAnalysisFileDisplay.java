@@ -38,7 +38,7 @@ public class SignalAnalysisFileDisplay implements SignalAnalysisListener {
 	/** Display responsible for handling the file output. */
 	private final DisplayMultithreading display;
 
-	public SignalAnalysisFileDisplay(final DisplayMultithreading display) {
+	public SignalAnalysisFileDisplay( final DisplayMultithreading display ) {
 		this.display = display;
 
 		display.write("=== Signal Analysis Events ===\n");

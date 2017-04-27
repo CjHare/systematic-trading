@@ -73,8 +73,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthIndexCalculator(final RelativeStrength rs, final Validator validator,
-	        final MathContext mathContext) {
+	public RelativeStrengthIndexCalculator( final RelativeStrength rs, final Validator validator,
+	        final MathContext mathContext ) {
 		this.mathContext = mathContext;
 		this.validator = validator;
 		this.rs = rs;

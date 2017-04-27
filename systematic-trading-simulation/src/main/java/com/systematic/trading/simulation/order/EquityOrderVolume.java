@@ -36,7 +36,7 @@ public class EquityOrderVolume {
 
 	private final BigDecimal volume;
 
-	private EquityOrderVolume(final BigDecimal volume) {
+	private EquityOrderVolume( final BigDecimal volume ) {
 		this.volume = volume;
 	}
 

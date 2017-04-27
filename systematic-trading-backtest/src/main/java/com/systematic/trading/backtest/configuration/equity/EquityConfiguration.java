@@ -42,7 +42,7 @@ public enum EquityConfiguration {
 	private final int scale;
 	private final EquityManagementFeeConfiguration managementFee;
 
-	EquityConfiguration(final String tickerSymbol, final EquityClass equityType, final int scale) {
+	EquityConfiguration( final String tickerSymbol, final EquityClass equityType, final int scale ) {
 		this.tickerSymbol = tickerSymbol;
 		this.equityType = equityType;
 		this.scale = scale;
