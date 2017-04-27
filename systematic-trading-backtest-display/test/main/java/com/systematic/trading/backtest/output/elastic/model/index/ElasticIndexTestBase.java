@@ -34,6 +34,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
+
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
@@ -79,13 +81,15 @@ public abstract class ElasticIndexTestBase {
 		verifyNoMoreInteractions(getIndexTypeResponse);
 	}
 
-	protected void verifyEventCalls( final String batchId ) {
+	protected void verifyEventCalls( final String batchId, final LocalDate transactionDate ) {
 		final InOrder order = inOrder(dao);
 		order.verify(dao).get(ElasticIndexName.CASH);
 		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
 		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId),
 		        equalsJson(getJsonPutIndexMapping()));
-		order.verify(dao).post(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(getPostIndexType()));
+
+		order.verify(dao).post(eq(ElasticIndexName.CASH), equalsBacktestId(batchId),
+		        equalsJson(getPostIndexType(), transactionDate));
 		verifyNoMoreInteractions(dao);
 
 		verifyGetIndex();

@@ -52,8 +52,6 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"entity\":{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"amount\":{\"type\":\"float\"},\"funds_after\":{\"type\":\"float\"},\"funds_before\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
-
-	//TODO need the date as a separate pass in, as it's ordered differently each run	
 	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Credit\",\"amount\":12.34,\"fundsBefore\":500.12,\"fundsAfter\":512.46,\"transactionDate\":{";
 
 	@Test
@@ -112,7 +110,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 		index.init(id);
 		index.event(id, event);
 
-		verifyEventCalls(batchId);
+		verifyEventCalls(batchId, event.getTransactionDate());
 	}
 
 	private CashEvent getEvent() {
@@ -120,7 +118,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 		final BigDecimal amount = BigDecimal.valueOf(12.34);
 		final BigDecimal fundsAfter = BigDecimal.valueOf(512.46);
 		final BigDecimal fundsBefore = BigDecimal.valueOf(500.12);
-		final LocalDate transactionDate = LocalDate.of(2012, 3, 14);
+		final LocalDate transactionDate = LocalDate.now();
 		final CashEventType eventType = CashEventType.CREDIT;
 
 		when(event.getAmount()).thenReturn(amount);

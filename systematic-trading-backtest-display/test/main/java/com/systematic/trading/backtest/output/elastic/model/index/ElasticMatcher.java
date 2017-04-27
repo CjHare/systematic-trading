@@ -27,6 +27,8 @@ package com.systematic.trading.backtest.output.elastic.model.index;
 
 import static org.mockito.Matchers.argThat;
 
+import java.time.LocalDate;
+
 import javax.ws.rs.client.Entity;
 
 import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
@@ -40,4 +42,9 @@ public class ElasticMatcher {
 	public static Entity<?> equalsJson( final String json ) {
 		return argThat(new JsonEntityMatcher(json));
 	}
+
+	public static Entity<?> equalsJson( final String json, final LocalDate transactionDate ) {
+		return argThat(new JsonEntityWithDateMatcher(json, transactionDate));
+	}
+
 }

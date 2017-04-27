@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest.output.elastic.model.index;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import javax.ws.rs.client.Entity;
@@ -37,17 +38,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Matcher for a sub-string within an JSON Entity.
+ * As the LocalDate JSON conversion mixes up the ordering of elements, a more generous matching is required.
  * 
  * @author CJ Hare
  */
-public class JsonEntityMatcher extends ArgumentMatcher<Entity<?>> {
+public class JsonEntityWithDateMatcher extends ArgumentMatcher<Entity<?>> {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final String expectedJson;
+	private final LocalDate date;
 
-	public JsonEntityMatcher( final String expectedJson ) {
+	public JsonEntityWithDateMatcher( final String expectedJson, final LocalDate date ) {
 		this.expectedJson = expectedJson;
+		this.date = date;
 	}
 
 	public boolean matches( Object argument ) {
@@ -56,15 +59,26 @@ public class JsonEntityMatcher extends ArgumentMatcher<Entity<?>> {
 
 			final Entity<?> entity = (Entity<?>) argument;
 			final Optional<String> jsonEntity = parseEntity(entity);
-			return jsonEntity.isPresent() && StringUtils.contains(jsonEntity.get(), expectedJson);
+			return jsonEntity.isPresent() && containsJson(jsonEntity.get()) && containsDate(jsonEntity.get());
 		}
 
 		return false;
 	}
 
+	private boolean containsJson( final String json ) {
+		return StringUtils.contains(json, expectedJson);
+	}
+
+	private boolean containsDate( final String json ) {
+		return StringUtils.contains(json, String.format("\"dayOfMonth\":%s", date.getDayOfMonth()))
+		        && StringUtils.contains(json, String.format("\"monthValue\":%s", date.getMonthValue()))
+		        && StringUtils.contains(json, String.format("\"year\":%s", date.getYear()));
+	}
+
 	@Override
 	public void describeTo( Description description ) {
 		description.appendText(expectedJson);
+		description.appendText(date.toString());
 	}
 
 	private Optional<String> parseEntity( final Entity<?> entity ) {
