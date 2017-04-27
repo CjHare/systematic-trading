@@ -94,12 +94,7 @@ public class ElasticCashIndexTest {
 
 		index.init(id);
 
-		final InOrder order = inOrder(dao);
-		order.verify(dao).get(ElasticIndexName.CASH);
-		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsJson(JSON_PUT_INDEX));
-		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
-		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
-		verifyNoMoreInteractions(dao);
+		verifyMissingIndexCalls(batchId);
 	}
 
 	@Test
@@ -112,14 +107,7 @@ public class ElasticCashIndexTest {
 
 		index.init(id);
 
-		final InOrder order = inOrder(dao);
-		order.verify(dao).get(ElasticIndexName.CASH);
-		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
-		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
-		verifyNoMoreInteractions(dao);
-
-		verify(getIndexResponse).getStatus();
-		verifyNoMoreInteractions(getIndexResponse);
+		verifyPresentIndexMissingMappingCalls(batchId);
 	}
 
 	@Test
@@ -139,16 +127,7 @@ public class ElasticCashIndexTest {
 			        e.getMessage());
 		}
 
-		final InOrder order = inOrder(dao);
-		order.verify(dao).get(ElasticIndexName.CASH);
-		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
-		verifyNoMoreInteractions(dao);
-
-		verify(getIndexResponse).getStatus();
-		verifyNoMoreInteractions(getIndexResponse);
-
-		verify(getIndexTypeResponse).getStatus();
-		verifyNoMoreInteractions(getIndexTypeResponse);
+		verifyPresentIndexPresentMappingCalls(batchId);
 	}
 
 	@Test
@@ -163,6 +142,20 @@ public class ElasticCashIndexTest {
 		index.init(id);
 		index.event(id, event);
 
+		verifyEventCalls(batchId);
+	}
+
+	private void verifyGetIndex() {
+		verify(getIndexResponse).getStatus();
+		verifyNoMoreInteractions(getIndexResponse);
+	}
+
+	private void verifyGetIndexType() {
+		verify(getIndexTypeResponse).getStatus();
+		verifyNoMoreInteractions(getIndexTypeResponse);
+	}
+
+	private void verifyEventCalls( final String batchId ) {
 		final InOrder order = inOrder(dao);
 		order.verify(dao).get(ElasticIndexName.CASH);
 		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
@@ -170,11 +163,39 @@ public class ElasticCashIndexTest {
 		order.verify(dao).post(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_POST_INDEX_TYPE));
 		verifyNoMoreInteractions(dao);
 
-		verify(getIndexResponse).getStatus();
-		verifyNoMoreInteractions(getIndexResponse);
+		verifyGetIndex();
 
 		verify(getIndexTypeResponse).getStatus();
 		verifyNoMoreInteractions(getIndexTypeResponse);
+	}
+
+	private void verifyPresentIndexPresentMappingCalls( final String batchId ) {
+		final InOrder order = inOrder(dao);
+		order.verify(dao).get(ElasticIndexName.CASH);
+		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		verifyNoMoreInteractions(dao);
+
+		verifyGetIndex();
+		verifyGetIndexType();
+	}
+
+	private void verifyPresentIndexMissingMappingCalls( final String batchId ) {
+		final InOrder order = inOrder(dao);
+		order.verify(dao).get(ElasticIndexName.CASH);
+		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
+		verifyNoMoreInteractions(dao);
+
+		verifyGetIndex();
+	}
+
+	private void verifyMissingIndexCalls( final String batchId ) {
+		final InOrder order = inOrder(dao);
+		order.verify(dao).get(ElasticIndexName.CASH);
+		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsJson(JSON_PUT_INDEX));
+		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId), equalsJson(JSON_PUT_INDEX_MAPPING));
+		verifyNoMoreInteractions(dao);
 	}
 
 	private void setUpPresentIndex() {
