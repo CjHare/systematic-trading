@@ -83,12 +83,11 @@ public abstract class ElasticIndexTestBase {
 
 	protected void verifyEventCalls( final String batchId, final LocalDate transactionDate ) {
 		final InOrder order = inOrder(dao);
-		order.verify(dao).get(ElasticIndexName.CASH);
-		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
-		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId),
-		        equalsJson(getJsonPutIndexMapping()));
+		order.verify(dao).get(getIndexName());
+		order.verify(dao).get(eq(getIndexName()), equalsBacktestId(batchId));
+		order.verify(dao).put(eq(getIndexName()), equalsBacktestId(batchId), equalsJson(getJsonPutIndexMapping()));
 
-		order.verify(dao).post(eq(ElasticIndexName.CASH), equalsBacktestId(batchId),
+		order.verify(dao).post(eq(getIndexName()), equalsBacktestId(batchId),
 		        equalsJson(getPostIndexType(), transactionDate));
 		verifyNoMoreInteractions(dao);
 
@@ -100,8 +99,8 @@ public abstract class ElasticIndexTestBase {
 
 	protected void verifyPresentIndexPresentMappingCalls( final String batchId ) {
 		final InOrder order = inOrder(dao);
-		order.verify(dao).get(ElasticIndexName.CASH);
-		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
+		order.verify(dao).get(getIndexName());
+		order.verify(dao).get(eq(getIndexName()), equalsBacktestId(batchId));
 		verifyNoMoreInteractions(dao);
 
 		verifyGetIndex();
@@ -110,10 +109,9 @@ public abstract class ElasticIndexTestBase {
 
 	protected void verifyPresentIndexMissingMappingCalls( final String batchId ) {
 		final InOrder order = inOrder(dao);
-		order.verify(dao).get(ElasticIndexName.CASH);
-		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
-		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId),
-		        equalsJson(getJsonPutIndexMapping()));
+		order.verify(dao).get(getIndexName());
+		order.verify(dao).get(eq(getIndexName()), equalsBacktestId(batchId));
+		order.verify(dao).put(eq(getIndexName()), equalsBacktestId(batchId), equalsJson(getJsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);
 
 		verifyGetIndex();
@@ -121,11 +119,10 @@ public abstract class ElasticIndexTestBase {
 
 	protected void verifyMissingIndexCalls( final String batchId ) {
 		final InOrder order = inOrder(dao);
-		order.verify(dao).get(ElasticIndexName.CASH);
-		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsJson(getJsonPutIndex()));
-		order.verify(dao).get(eq(ElasticIndexName.CASH), equalsBacktestId(batchId));
-		order.verify(dao).put(eq(ElasticIndexName.CASH), equalsBacktestId(batchId),
-		        equalsJson(getJsonPutIndexMapping()));
+		order.verify(dao).get(getIndexName());
+		order.verify(dao).put(eq(getIndexName()), equalsJson(getJsonPutIndex()));
+		order.verify(dao).get(eq(getIndexName()), equalsBacktestId(batchId));
+		order.verify(dao).put(eq(getIndexName()), equalsBacktestId(batchId), equalsJson(getJsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);
 	}
 
@@ -147,4 +144,5 @@ public abstract class ElasticIndexTestBase {
 
 	protected abstract String getJsonPutIndexMapping();
 
+	protected abstract ElasticIndexName getIndexName();
 }

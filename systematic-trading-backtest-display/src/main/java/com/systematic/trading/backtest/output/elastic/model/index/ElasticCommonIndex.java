@@ -108,6 +108,6 @@ public abstract class ElasticCommonIndex {
 	}
 
 	private void createIndexMapping( final BacktestBatchId id ) {
-		dao.put(getIndexName(), id, Entity.json(Entity.json(getIndexMapping())));
+		dao.put(getIndexName(), id, Entity.json(getIndexMapping()));
 	}
 }

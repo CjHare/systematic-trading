@@ -47,7 +47,7 @@ public interface BrokerageEvent extends Event {
 			this.display = display;
 		}
 
-		public String getDisplay() {
+		public String getName() {
 			return display;
 		}
 	}

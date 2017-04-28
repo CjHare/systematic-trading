@@ -30,12 +30,12 @@ import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticBrokerageIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticEquityIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticNetworthIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticOrderIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticReturnOnInvestmentIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalAnalysisIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.brokerage.ElasticBrokerageIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.cash.ElasticCashIndex;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
@@ -95,7 +95,7 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		brokerageIndex.event(event);
+		brokerageIndex.event(id, event);
 	}
 
 	@Override

@@ -50,7 +50,7 @@ public class ElasticCashIndex extends ElasticCommonIndex {
 	}
 
 	public void event( final BacktestBatchId id, final CashEvent event ) {
-		post(id, Entity.json(new ElasticCashEvent(event)));
+		post(id, Entity.json(new ElasticCashEventResource(event)));
 	}
 
 	@Override

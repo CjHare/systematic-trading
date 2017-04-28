@@ -31,8 +31,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 
+/**
+ * Resource to send to Elasric Search for a CashEvent.
+ * 
+ * @author CJ Hare
+ */
 @JsonInclude(Include.NON_NULL)
-public class ElasticCashEvent {
+public class ElasticCashEventResource {
 
 	private final String event;
 	private final float amount;
@@ -40,7 +45,7 @@ public class ElasticCashEvent {
 	private final float fundsAfter;
 	private final LocalDate transactionDate;
 
-	public ElasticCashEvent( final CashEvent event ) {
+	public ElasticCashEventResource( final CashEvent event ) {
 		this.event = event.getType().getName();
 		this.amount = event.getAmount().floatValue();
 		this.fundsBefore = event.getFundsBefore().floatValue();
