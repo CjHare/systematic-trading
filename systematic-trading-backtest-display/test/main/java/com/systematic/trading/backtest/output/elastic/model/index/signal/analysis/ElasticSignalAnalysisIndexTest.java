@@ -58,9 +58,9 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void initMissingIndex() {
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(id, getDao());
 
 		index.init(id);
 
@@ -71,9 +71,9 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 	public void initPresentIndexMissingMapping() {
 		setUpPresentIndex();
 
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(id, getDao());
 
 		index.init(id);
 
@@ -85,9 +85,9 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 		setUpPresentIndex();
 		setUpPresentMapping();
 
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(id, getDao());
 
 		try {
 			index.init(id);
@@ -105,9 +105,9 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 	public void event() {
 		setUpPresentIndex();
 
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(id, getDao());
 		final SignalAnalysisEvent event = getEvent();
 
 		index.init(id);

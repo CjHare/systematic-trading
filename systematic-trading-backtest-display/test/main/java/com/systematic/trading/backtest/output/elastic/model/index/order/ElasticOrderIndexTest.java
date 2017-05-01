@@ -58,9 +58,9 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void initMissingIndex() {
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
 
 		index.init(id);
 
@@ -71,9 +71,9 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 	public void initPresentIndexMissingMapping() {
 		setUpPresentIndex();
 
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
 
 		index.init(id);
 
@@ -85,9 +85,9 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 		setUpPresentIndex();
 		setUpPresentMapping();
 
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
 
 		try {
 			index.init(id);
@@ -105,9 +105,9 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 	public void event() {
 		setUpPresentIndex();
 
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
 		final OrderEvent event = getEvent();
 
 		index.init(id);

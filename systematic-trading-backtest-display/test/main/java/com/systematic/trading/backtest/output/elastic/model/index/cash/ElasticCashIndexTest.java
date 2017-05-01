@@ -58,9 +58,9 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void initMissingIndex() {
-		final ElasticCashIndex index = new ElasticCashIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticCashIndex index = new ElasticCashIndex(id, getDao());
 
 		index.init(id);
 
@@ -71,9 +71,9 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 	public void initPresentIndexMissingMapping() {
 		setUpPresentIndex();
 
-		final ElasticCashIndex index = new ElasticCashIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticCashIndex index = new ElasticCashIndex(id, getDao());
 
 		index.init(id);
 
@@ -85,9 +85,9 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 		setUpPresentIndex();
 		setUpPresentMapping();
 
-		final ElasticCashIndex index = new ElasticCashIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticCashIndex index = new ElasticCashIndex(id, getDao());
 
 		try {
 			index.init(id);
@@ -105,9 +105,9 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 	public void event() {
 		setUpPresentIndex();
 
-		final ElasticCashIndex index = new ElasticCashIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticCashIndex index = new ElasticCashIndex(id, getDao());
 		final CashEvent event = getEvent();
 
 		index.init(id);

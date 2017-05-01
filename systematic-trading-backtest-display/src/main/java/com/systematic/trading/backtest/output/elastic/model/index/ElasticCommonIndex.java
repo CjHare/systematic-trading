@@ -56,15 +56,16 @@ public abstract class ElasticCommonIndex {
 	/** The number of replica shards (copies) that each primary shard should have, which defaults to 1. 	 */
 	private static final int DEFAULT_NUMBER_OF_REPLICAS = 1;
 
+	/** Access to Elastic Search endpoint.*/
 	private final ElasticDao dao;
 
-	private BacktestBatchId id;
+	/** Identity of the back testing  run.*/
+	private final BacktestBatchId id;
 
-	public ElasticCommonIndex( final ElasticDao dao ) {
+	public ElasticCommonIndex( final BacktestBatchId id, final ElasticDao dao ) {
+		this.id = id;
 		this.dao = dao;
 	}
-
-	//TODO store the ID and have retireval instead of passing 
 
 	public void init( final BacktestBatchId id ) {
 
@@ -78,8 +79,6 @@ public abstract class ElasticCommonIndex {
 			throw new ElasticException(
 			        String.format("Existing mapping (and potentially already existing results) found for: %s", id));
 		}
-
-		this.id = id;
 	}
 
 	protected BacktestBatchId getBacktestBatchId() {

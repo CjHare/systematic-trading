@@ -58,9 +58,9 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void initMissingIndex() {
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(id, getDao());
 
 		index.init(id);
 
@@ -71,9 +71,9 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 	public void initPresentIndexMissingMapping() {
 		setUpPresentIndex();
 
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(id, getDao());
 
 		index.init(id);
 
@@ -85,9 +85,9 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 		setUpPresentIndex();
 		setUpPresentMapping();
 
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(id, getDao());
 
 		try {
 			index.init(id);
@@ -105,9 +105,9 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 	public void event() {
 		setUpPresentIndex();
 
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(id, getDao());
 		final NetWorthEvent event = getEvent();
 
 		index.init(id);

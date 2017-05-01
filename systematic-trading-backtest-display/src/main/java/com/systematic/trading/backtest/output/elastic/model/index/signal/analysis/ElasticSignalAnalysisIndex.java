@@ -29,6 +29,7 @@ import java.util.Arrays;
 
 import javax.ws.rs.client.Entity;
 
+import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
@@ -44,8 +45,8 @@ import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
  */
 public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 
-	public ElasticSignalAnalysisIndex( final ElasticDao dao ) {
-		super(dao);
+	public ElasticSignalAnalysisIndex( final BacktestBatchId id, final ElasticDao dao ) {
+		super(id, dao);
 	}
 
 	public void event( final SignalAnalysisEvent event ) {

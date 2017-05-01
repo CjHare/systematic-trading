@@ -57,9 +57,9 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void initMissingIndex() {
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(id, getDao());
 
 		index.init(id);
 
@@ -70,9 +70,9 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 	public void initPresentIndexMissingMapping() {
 		setUpPresentIndex();
 
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(id, getDao());
 
 		index.init(id);
 
@@ -84,9 +84,9 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 		setUpPresentIndex();
 		setUpPresentMapping();
 
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(id, getDao());
 
 		try {
 			index.init(id);
@@ -104,9 +104,9 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 	public void event() {
 		setUpPresentIndex();
 
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(id, getDao());
 		final ReturnOnInvestmentEvent event = getEvent();
 
 		index.init(id);

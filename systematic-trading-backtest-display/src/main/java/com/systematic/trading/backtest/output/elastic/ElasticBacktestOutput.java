@@ -69,13 +69,13 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	public ElasticBacktestOutput( final BacktestBatchId id ) {
 		final ElasticDao dao = new ElasticDao();
 		this.id = id;
-		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao);
-		this.cashIndex = new ElasticCashIndex(dao);
-		this.orderIndex = new ElasticOrderIndex(dao);
-		this.brokerageIndex = new ElasticBrokerageIndex(dao);
-		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(dao);
-		this.networthIndex = new ElasticNetworthIndex(dao);
-		this.equityIndex = new ElasticEquityIndex(dao);
+		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(id, dao);
+		this.cashIndex = new ElasticCashIndex(id, dao);
+		this.orderIndex = new ElasticOrderIndex(id, dao);
+		this.brokerageIndex = new ElasticBrokerageIndex(id, dao);
+		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(id, dao);
+		this.networthIndex = new ElasticNetworthIndex(id, dao);
+		this.equityIndex = new ElasticEquityIndex(id, dao);
 	}
 
 	@Override
