@@ -23,39 +23,45 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model;
+package com.systematic.trading.backtest.output.elastic.model.index.order;
+
+import java.util.Arrays;
+
+import javax.ws.rs.client.Entity;
+
+import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
+import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticCommonIndex;
+import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * The set of fields that Systematic Trading use with Elastic Search.
+ * Elastic Search index for order events.
  * 
  * @author CJ Hare
  */
-public enum ElasticFieldName {
+public class ElasticOrderIndex extends ElasticCommonIndex {
 
-	AMOUNT("amount"),
-	CASH_BALANCE("cash_balance"),
-	END_EQUITY_BALANCE("end_equity_balance"),
-	EQUITY_BALANCE("equity_balance"),
-	EQUITY_BALANCE_VALUE("equity_balance_value"),
-	EQUITY_AMOUNT("equity_amount"),
-	EVENT("event"),
-	EVENT_DATE("event_date"),
-	FUNDS_AFTER("funds_after"),
-	FUNDS_BEFORE("funds_before"),
-	IDENTITY("identity"),
-	NETWORTH("networth"),
-	STARTING_EQUITY_BALANCE("starting_equity_balance"),
-	TRANSACTION_DATE("transaction_date"),
-	TRANSACTION_FEE("transaction_fee"),
-	TOTAL_COST("total_cost");
-
-	private final String name;
-
-	ElasticFieldName( final String name ) {
-		this.name = name;
+	public ElasticOrderIndex( final ElasticDao dao ) {
+		super(dao);
 	}
 
-	public String getName() {
-		return name;
+	public void event( final BacktestBatchId id, final OrderEvent event ) {
+		post(id, Entity.json(new ElasticOrderEventResource(event)));
+	}
+
+	@Override
+	protected ElasticIndexName getIndexName() {
+		return ElasticIndexName.ORDER;
+	}
+
+	@Override
+	protected ElasticIndexMapping getIndexMapping() {
+		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
+		        getPair(ElasticFieldName.TOTAL_COST, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 }

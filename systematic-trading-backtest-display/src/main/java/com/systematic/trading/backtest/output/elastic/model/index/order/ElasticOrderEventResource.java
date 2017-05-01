@@ -23,54 +23,54 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index;
+package com.systematic.trading.backtest.output.elastic.model.index.order;
 
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDate;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Elastic Search index for order events.
+ * Resource for an brokerage event to send to Elastic search. 
  * 
  * @author CJ Hare
  */
-public class ElasticOrderIndex extends ElasticCommonIndex {
+@JsonInclude(Include.NON_NULL)
+public class ElasticOrderEventResource {
 
-	public ElasticOrderIndex( final ElasticDao dao ) {
-		super(dao);
+	private final String event;
+	private final float totalCost;
+	private final LocalDate transactionDate;
+
+	public ElasticOrderEventResource( final OrderEvent event ) {
+		this.event = event.getType().name();
+		this.totalCost = event.getTotalCost().floatValue();
+		this.transactionDate = event.getTransactionDate();
 	}
 
-	public void event( final OrderEvent event ) {
-		// TODO Auto-generated method stub
-		System.out.println("code ElasticOrderIndex");
+	public String getEvent() {
+		return event;
+	}
 
+	public float getTotalCost() {
+		return totalCost;
+	}
+
+	public LocalDate getTransactionDate() {
+		return transactionDate;
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.ORDER;
-	}
-
-	@Override
-	protected ElasticIndexMapping getIndexMapping() {
-
-		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
-		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
-
-		//TODO create the index appropriate for the event bean
-
-		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays
-		        .asList(new ImmutablePair<ElasticFieldName, ElasticFieldType>(fieldName, fieldType));
-
-		return new ElasticIndexMapping(fields);
+	public String toString() {
+		final StringBuilder out = new StringBuilder("ElasticOrderEventResource [");
+		out.append("event=");
+		out.append(event);
+		out.append(", totalCost=");
+		out.append(totalCost);
+		out.append(", transactionDate=");
+		out.append(transactionDate);
+		out.append("]");
+		return out.toString();
 	}
 }

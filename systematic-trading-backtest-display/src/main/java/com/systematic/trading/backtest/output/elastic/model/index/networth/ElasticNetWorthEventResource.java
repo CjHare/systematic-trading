@@ -81,7 +81,7 @@ public class ElasticNetWorthEventResource {
 
 	@Override
 	public String toString() {
-		final StringBuilder out = new StringBuilder("ElasticEquityEventResource [");
+		final StringBuilder out = new StringBuilder("ElasticNetWorthEventResource [");
 		out.append("event=");
 		out.append(event);
 		out.append("cashBalance=");
