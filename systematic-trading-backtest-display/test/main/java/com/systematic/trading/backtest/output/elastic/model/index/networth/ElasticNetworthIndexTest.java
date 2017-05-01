@@ -111,7 +111,7 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 		final NetWorthEvent event = getEvent();
 
 		index.init(id);
-		index.event(id, event);
+		index.event(event);
 
 		verifyEventCalls(batchId, event.getEventDate());
 	}

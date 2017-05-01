@@ -82,7 +82,7 @@ public abstract class ElasticCommonIndex {
 		this.id = id;
 	}
 
-	protected BacktestBatchId getId() {
+	protected BacktestBatchId getBacktestBatchId() {
 		return id;
 	}
 

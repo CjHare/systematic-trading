@@ -80,27 +80,27 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
-		signalAnalysisIndex.event(id, event);
+		signalAnalysisIndex.event(event);
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
-		cashIndex.event(id, event);
+		cashIndex.event(event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		orderIndex.event(id, event);
+		orderIndex.event(event);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		brokerageIndex.event(id, event);
+		brokerageIndex.event(event);
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		returnOnInvestmentIndex.event(id, event);
+		returnOnInvestmentIndex.event(event);
 	}
 
 	@Override
@@ -109,12 +109,12 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
-		networthIndex.event(id, event);
+		networthIndex.event(event);
 	}
 
 	@Override
 	public void event( final EquityEvent event ) {
-		equityIndex.event(id, event);
+		equityIndex.event(event);
 	}
 
 	//TODO why the init???? shouldn't have a constructor & init - only one

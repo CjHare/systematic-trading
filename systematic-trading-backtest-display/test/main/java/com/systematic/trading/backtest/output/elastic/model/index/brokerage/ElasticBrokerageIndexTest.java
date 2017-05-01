@@ -111,7 +111,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 		final BrokerageEvent event = getEvent();
 
 		index.init(id);
-		index.event(id, event);
+		index.event(event);
 
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}

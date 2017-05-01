@@ -111,7 +111,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 		final CashEvent event = getEvent();
 
 		index.init(id);
-		index.event(id, event);
+		index.event(event);
 
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}

@@ -111,7 +111,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 		final OrderEvent event = getEvent();
 
 		index.init(id);
-		index.event(id, event);
+		index.event(event);
 
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}

@@ -29,7 +29,6 @@ import java.util.Arrays;
 
 import javax.ws.rs.client.Entity;
 
-import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
@@ -49,8 +48,8 @@ public class ElasticNetworthIndex extends ElasticCommonIndex {
 		super(dao);
 	}
 
-	public void event( final BacktestBatchId id, final NetWorthEvent event ) {
-		post(id, Entity.json(new ElasticNetWorthEventResource(event)));
+	public void event( final NetWorthEvent event ) {
+		post(getBacktestBatchId(), Entity.json(new ElasticNetWorthEventResource(event)));
 	}
 
 	@Override

@@ -111,7 +111,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 		final SignalAnalysisEvent event = getEvent();
 
 		index.init(id);
-		index.event(id, event);
+		index.event(event);
 
 		verifyEventCalls(batchId, event.getSignalDate());
 	}

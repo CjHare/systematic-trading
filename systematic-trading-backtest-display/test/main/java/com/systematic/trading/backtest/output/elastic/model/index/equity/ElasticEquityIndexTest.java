@@ -113,7 +113,7 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 		final EquityEvent event = getEvent();
 
 		index.init(id);
-		index.event(id, event);
+		index.event(event);
 
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}
