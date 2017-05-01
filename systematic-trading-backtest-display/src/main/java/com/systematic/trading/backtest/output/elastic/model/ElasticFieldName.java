@@ -32,12 +32,13 @@ package com.systematic.trading.backtest.output.elastic.model;
  */
 public enum ElasticFieldName {
 
+	AMOUNT("amount"),
 	END_EQUITY_BALANCE("end_equity_balance"),
 	EQUITY_AMOUNT("equity_amount"),
+	EVENT("event"),
 	FUNDS_AFTER("funds_after"),
 	FUNDS_BEFORE("funds_before"),
-	AMOUNT("amount"),
-	EVENT("event"),
+	IDENTITY("identity"),
 	STARTING_EQUITY_BALANCE("starting_equity_balance"),
 	TRANSACTION_DATE("transaction_date"),
 	TRANSACTION_FEE("transaction_fee");

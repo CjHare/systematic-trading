@@ -23,19 +23,19 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index;
+package com.systematic.trading.backtest.output.elastic.model.index.equity;
 
 import java.util.Arrays;
-import java.util.List;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import javax.ws.rs.client.Entity;
 
+import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticCommonIndex;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 
 /**
@@ -49,10 +49,8 @@ public class ElasticEquityIndex extends ElasticCommonIndex {
 		super(dao);
 	}
 
-	public void event( final EquityEvent event ) {
-		// TODO Auto-generated method stub
-		System.out.println("code ElasticEquityIndex");
-
+	public void event( final BacktestBatchId id, final EquityEvent event ) {
+		post(id, Entity.json(new ElasticEquityEventResource(event)));
 	}
 
 	@Override
@@ -62,15 +60,11 @@ public class ElasticEquityIndex extends ElasticCommonIndex {
 
 	@Override
 	protected ElasticIndexMapping getIndexMapping() {
-
-		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
-		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
-
-		//TODO create the index appropriate for the event bean
-
-		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays
-		        .asList(new ImmutablePair<ElasticFieldName, ElasticFieldType>(fieldName, fieldType));
-
-		return new ElasticIndexMapping(fields);
+		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
+		        getPair(ElasticFieldName.IDENTITY, ElasticFieldType.TEXT),
+		        getPair(ElasticFieldName.EQUITY_AMOUNT, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.STARTING_EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.END_EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 }

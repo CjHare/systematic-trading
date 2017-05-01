@@ -86,4 +86,13 @@ public class ElasticIndexMapping {
 	private Map.Entry<String, String> getType( final Pair<ElasticFieldName, ElasticFieldType> field ) {
 		return new SimpleEntry<String, String>(TYPE, field.getRight().getName());
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder out = new StringBuilder("ElasticIndexMapping [");
+		out.append("typeMapping=");
+		out.append(typeMapping.toString());
+		out.append("]");
+		return out.toString();
+	}
 }

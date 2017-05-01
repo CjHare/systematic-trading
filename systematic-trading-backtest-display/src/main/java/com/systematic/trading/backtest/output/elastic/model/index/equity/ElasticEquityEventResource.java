@@ -23,33 +23,35 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.cash;
+package com.systematic.trading.backtest.output.elastic.model.index.equity;
 
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.simulation.equity.event.EquityEvent;
 
 /**
- * Resource to send to Elastic Search for a CashEvent.
+ * Resource for converting Equity Events to input for Elastic Search.
  * 
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticCashEventResource {
+public class ElasticEquityEventResource {
 
 	private final String event;
-	private final float amount;
-	private final float fundsBefore;
-	private final float fundsAfter;
+	private final String identity;
+	private final float startingEquityBalance;
+	private final float endEquityBalance;
+	private final float equityAmount;
 	private final LocalDate transactionDate;
 
-	public ElasticCashEventResource( final CashEvent event ) {
+	public ElasticEquityEventResource( final EquityEvent event ) {
 		this.event = event.getType().getName();
-		this.amount = event.getAmount().floatValue();
-		this.fundsBefore = event.getFundsBefore().floatValue();
-		this.fundsAfter = event.getFundsAfter().floatValue();
+		this.identity = event.getIdentity().getTickerSymbol();
+		this.startingEquityBalance = event.getStartingEquityBalance().floatValue();
+		this.endEquityBalance = event.getEndEquityBalance().floatValue();
+		this.equityAmount = event.getEquityAmount().floatValue();
 		this.transactionDate = event.getTransactionDate();
 	}
 
@@ -57,16 +59,20 @@ public class ElasticCashEventResource {
 		return event;
 	}
 
-	public float getAmount() {
-		return amount;
+	public String getIdentity() {
+		return identity;
 	}
 
-	public float getFundsBefore() {
-		return fundsBefore;
+	public float getStartingEquityBalance() {
+		return startingEquityBalance;
 	}
 
-	public float getFundsAfter() {
-		return fundsAfter;
+	public float getEndEquityBalance() {
+		return endEquityBalance;
+	}
+
+	public float getEquityAmount() {
+		return equityAmount;
 	}
 
 	public LocalDate getTransactionDate() {
@@ -75,15 +81,17 @@ public class ElasticCashEventResource {
 
 	@Override
 	public String toString() {
-		final StringBuilder out = new StringBuilder("ElasticCashEventResource [");
+		final StringBuilder out = new StringBuilder("ElasticEquityEventResource [");
 		out.append("event=");
 		out.append(event);
-		out.append(", amount=");
-		out.append(amount);
-		out.append(", fundsBefore=");
-		out.append(fundsBefore);
-		out.append(", fundsAfter=");
-		out.append(fundsAfter);
+		out.append("identity=");
+		out.append(identity);
+		out.append(", startingEquityBalance=");
+		out.append(startingEquityBalance);
+		out.append(", endEquityBalance=");
+		out.append(endEquityBalance);
+		out.append(", equityAmount=");
+		out.append(equityAmount);
 		out.append(", transactionDate=");
 		out.append(transactionDate);
 		out.append("]");

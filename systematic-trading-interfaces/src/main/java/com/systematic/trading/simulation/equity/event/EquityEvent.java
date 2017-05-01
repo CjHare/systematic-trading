@@ -32,7 +32,7 @@ import com.systematic.trading.event.Event;
 import com.systematic.trading.model.EquityIdentity;
 
 /**
- * A equity event that warrants being recorded.
+ * An event derived from holding an equity that warrants recording.
  * 
  * @author CJ Hare
  */
@@ -41,14 +41,14 @@ public interface EquityEvent extends Event {
 	public enum EquityEventType {
 		MANAGEMENT_FEE("Management Fee");
 
-		private final String display;
+		private final String name;
 
-		EquityEventType( final String display ) {
-			this.display = display;
+		EquityEventType( final String name ) {
+			this.name = name;
 		}
 
-		public String getDisplay() {
-			return display;
+		public String getName() {
+			return name;
 		}
 	}
 
