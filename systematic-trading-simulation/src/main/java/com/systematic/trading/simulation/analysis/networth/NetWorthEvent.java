@@ -26,6 +26,7 @@
 package com.systematic.trading.simulation.analysis.networth;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * Data pertaining to the net worth.
@@ -33,6 +34,20 @@ import java.math.BigDecimal;
  * @author CJ Hare
  */
 public interface NetWorthEvent {
+
+	public enum NetWorthEventType {
+		COMPLETED("Completed");
+
+		private final String name;
+
+		NetWorthEventType( final String name ) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+	}
 
 	/**
 	 * Retrieve the brokerage's balance of equities.
@@ -62,4 +77,18 @@ public interface NetWorthEvent {
 	 *         capital gains tax for liquidation.
 	 */
 	BigDecimal getNetWorth();
+
+	/**
+	 * Date when the event occurred
+	 * 
+	 * @return the date when the event occurred.
+	 */
+	LocalDate getEventDate();
+
+	/**
+	 * Trigger for the Net worth event.
+	 * 
+	 * @return type of Net worth event.
+	 */
+	NetWorthEventType getType();
 }

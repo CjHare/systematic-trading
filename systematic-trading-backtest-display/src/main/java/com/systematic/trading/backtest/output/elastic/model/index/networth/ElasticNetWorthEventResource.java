@@ -23,63 +23,78 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.analysis.networth;
+package com.systematic.trading.backtest.output.elastic.model.index.networth;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+
 /**
- * Data pertaining to the net worth.
+ * Resource for converting Net worth Events to input for Elastic Search.
  * 
  * @author CJ Hare
  */
-public class NetWorthSummaryEvent implements NetWorthEvent {
+@JsonInclude(Include.NON_NULL)
+public class ElasticNetWorthEventResource {
 
-	private final BigDecimal equityBalance;
-	private final BigDecimal equityBalanceValue;
-	private final BigDecimal cashBalance;
-	private final BigDecimal networth;
+	private final String event;
+	private final float cashBalance;
+	private final float equityBalance;
+	private final float equityBalanceValue;
+	private final float networth;
 	private final LocalDate eventDate;
-	private final NetWorthEventType type;
 
-	public NetWorthSummaryEvent( final BigDecimal equityBalance, final BigDecimal equityBalanceValue,
-	        final BigDecimal cashBalance, final BigDecimal networth, final LocalDate eventDate,
-	        final NetWorthEventType type ) {
-		this.equityBalance = equityBalance;
-		this.equityBalanceValue = equityBalanceValue;
-		this.cashBalance = cashBalance;
-		this.networth = networth;
-		this.eventDate = eventDate;
-		this.type = type;
+	public ElasticNetWorthEventResource( final NetWorthEvent event ) {
+		this.event = event.getType().getName();
+		this.cashBalance = event.getCashBalance().floatValue();
+		this.equityBalance = event.getEquityBalance().floatValue();
+		this.equityBalanceValue = event.getEquityBalanceValue().floatValue();
+		this.networth = event.getNetWorth().floatValue();
+		this.eventDate = event.getEventDate();
 	}
 
-	@Override
-	public BigDecimal getEquityBalance() {
-		return equityBalance;
+	public String getEvent() {
+		return event;
 	}
 
-	@Override
-	public BigDecimal getEquityBalanceValue() {
-		return equityBalanceValue;
-	}
-
-	@Override
-	public BigDecimal getCashBalance() {
+	public float getCashBalance() {
 		return cashBalance;
 	}
 
-	@Override
-	public BigDecimal getNetWorth() {
+	public float getEquityBalance() {
+		return equityBalance;
+	}
+
+	public float getEquityBalanceValue() {
+		return equityBalanceValue;
+	}
+
+	public float getNetworth() {
 		return networth;
 	}
 
-	@Override
 	public LocalDate getEventDate() {
 		return eventDate;
 	}
 
 	@Override
-	public NetWorthEventType getType() {
-		return type;
+	public String toString() {
+		final StringBuilder out = new StringBuilder("ElasticEquityEventResource [");
+		out.append("event=");
+		out.append(event);
+		out.append("cashBalance=");
+		out.append(cashBalance);
+		out.append(", equityBalance=");
+		out.append(equityBalance);
+		out.append(", equityBalanceValue=");
+		out.append(equityBalanceValue);
+		out.append(", networth=");
+		out.append(networth);
+		out.append(", eventDate=");
+		out.append(eventDate);
+		out.append("]");
+		return out.toString();
 	}
 }

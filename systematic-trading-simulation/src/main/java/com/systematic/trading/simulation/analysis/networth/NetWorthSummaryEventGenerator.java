@@ -26,11 +26,13 @@
 package com.systematic.trading.simulation.analysis.networth;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.simulation.SimulationStateListener;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent.NetWorthEventType;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 
@@ -63,8 +65,11 @@ public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 		final BigDecimal equityBalanceValue = equityBalance.multiply(lastClosingPrice);
 		final BigDecimal cashBalance = cashAccount.getBalance();
 		final BigDecimal networth = cashAccount.getBalance().add(equityBalanceValue);
+		final LocalDate eventDate = lastTradingDay.getDate();
+		final NetWorthEventType type = NetWorthEventType.COMPLETED;
 
-		final NetWorthEvent event = new NetWorthSummaryEvent(equityBalance, equityBalanceValue, cashBalance, networth);
+		final NetWorthEvent event = new NetWorthSummaryEvent(equityBalance, equityBalanceValue, cashBalance, networth,
+		        eventDate, type);
 
 		for (final NetWorthEventListener listener : listeners) {
 			listener.event(event, transitionedState);
