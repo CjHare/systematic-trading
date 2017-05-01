@@ -178,7 +178,7 @@ public class BacktestApplication {
 		return Period.ofDays(windUp);
 	}
 
-	private BacktestOutput getDisplay( final DisplayType type, final BacktestBootstrapConfiguration configuration,
+	private BacktestOutput getOutput( final DisplayType type, final BacktestBootstrapConfiguration configuration,
 	        final String baseOutputDirectory, final ExecutorService pool ) throws BacktestInitialisationException {
 
 		try {
@@ -212,7 +212,7 @@ public class BacktestApplication {
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 
-			final BacktestOutput fileDisplay = getDisplay(type, configuration, baseOutputDirectory, pool);
+			final BacktestOutput fileDisplay = getOutput(type, configuration, baseOutputDirectory, pool);
 			final BacktestBootstrapContext context = createContext(configuration);
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, fileDisplay, tradingData,
 			        mathContext);

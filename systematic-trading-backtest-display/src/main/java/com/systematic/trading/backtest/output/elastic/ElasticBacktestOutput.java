@@ -117,7 +117,6 @@ public class ElasticBacktestOutput implements BacktestOutput {
 		equityIndex.event(event);
 	}
 
-	//TODO why the init???? shouldn't have a constructor & init - only one
 	@Override
 	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
 	        final BacktestSimulationDates simulationDates, final EventStatistics eventStatistics,
