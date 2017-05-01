@@ -58,12 +58,14 @@ public abstract class ElasticCommonIndex {
 
 	private final ElasticDao dao;
 
+	private BacktestBatchId id;
+
 	public ElasticCommonIndex( final ElasticDao dao ) {
 		this.dao = dao;
 	}
 
 	//TODO store the ID and have retireval instead of passing 
-	
+
 	public void init( final BacktestBatchId id ) {
 
 		if (isIndexMissing()) {
@@ -76,6 +78,12 @@ public abstract class ElasticCommonIndex {
 			throw new ElasticException(
 			        String.format("Existing mapping (and potentially already existing results) found for: %s", id));
 		}
+
+		this.id = id;
+	}
+
+	protected BacktestBatchId getId() {
+		return id;
 	}
 
 	protected void post( final BacktestBatchId id, final Entity<?> requestBody ) {

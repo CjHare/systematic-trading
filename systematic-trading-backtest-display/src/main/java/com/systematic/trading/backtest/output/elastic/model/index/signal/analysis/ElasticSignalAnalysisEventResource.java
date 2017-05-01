@@ -23,54 +23,54 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index;
+package com.systematic.trading.backtest.output.elastic.model.index.signal.analysis;
 
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDate;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 
 /**
- * Elastic Search index for signal analysis events.
+ * Resource for an brokerage event to send to Elastic search. 
  * 
  * @author CJ Hare
  */
-public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
+@JsonInclude(Include.NON_NULL)
+public class ElasticSignalAnalysisEventResource {
 
-	public ElasticSignalAnalysisIndex( final ElasticDao dao ) {
-		super(dao);
+	private final String signalType;
+	private final String directionType;
+	private final LocalDate signalDate;
+
+	public ElasticSignalAnalysisEventResource( final SignalAnalysisEvent event ) {
+		this.signalType = event.getSignalType().name();
+		this.directionType = event.getDirectionType().name();
+		this.signalDate = event.getSignalDate();
 	}
 
-	public void event( final SignalAnalysisEvent event ) {
-		// TODO Auto-generated method stub
-		System.out.println("code ElasticSignalAnalysisIndex");
+	public String getSignalType() {
+		return signalType;
+	}
 
+	public String getDirectionType() {
+		return directionType;
+	}
+
+	public LocalDate getSignalDate() {
+		return signalDate;
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.SIGNAL_ANALYSIS;
-	}
-
-	@Override
-	protected ElasticIndexMapping getIndexMapping() {
-
-		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
-		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
-
-		//TODO create the index appropriate for the event bean
-
-		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays
-		        .asList(new ImmutablePair<ElasticFieldName, ElasticFieldType>(fieldName, fieldType));
-
-		return new ElasticIndexMapping(fields);
+	public String toString() {
+		final StringBuilder out = new StringBuilder("ElasticReturnOnInvestmentEventResource [");
+		out.append("signalType=");
+		out.append(signalType);
+		out.append(", directionType=");
+		out.append(directionType);
+		out.append(", signalDate=");
+		out.append(signalDate);
+		out.append("]");
+		return out.toString();
 	}
 }
