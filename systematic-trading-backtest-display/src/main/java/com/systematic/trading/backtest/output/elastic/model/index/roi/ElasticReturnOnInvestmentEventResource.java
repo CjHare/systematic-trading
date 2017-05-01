@@ -23,54 +23,54 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index;
+package com.systematic.trading.backtest.output.elastic.model.index.roi;
 
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDate;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
-import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 
 /**
- * Elastic Search index for return on investments events.
+ * Resource for converting Equity Events to input for Elastic Search.
  * 
  * @author CJ Hare
  */
-public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
+@JsonInclude(Include.NON_NULL)
+public class ElasticReturnOnInvestmentEventResource {
 
-	public ElasticReturnOnInvestmentIndex( final ElasticDao dao ) {
-		super(dao);
+	private final float percentageChange;
+	private final LocalDate exlusiveStartDate;
+	private final LocalDate inclusiveEndDate;
+
+	public ElasticReturnOnInvestmentEventResource( final ReturnOnInvestmentEvent event ) {
+		this.percentageChange = event.getPercentageChange().floatValue();
+		this.exlusiveStartDate = event.getExclusiveStartDate();
+		this.inclusiveEndDate = event.getInclusiveEndDate();
 	}
 
-	public void event( final ReturnOnInvestmentEvent event ) {
-		// TODO Auto-generated method stub
-		System.out.println("code ElasticReturnOnInvestmentIndex");
+	public float getPercentageChange() {
+		return percentageChange;
+	}
 
+	public LocalDate getExlusiveStartDate() {
+		return exlusiveStartDate;
+	}
+
+	public LocalDate getInclusiveEndDate() {
+		return inclusiveEndDate;
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.RETURN_ON_INVESTMENT;
-	}
-
-	@Override
-	protected ElasticIndexMapping getIndexMapping() {
-
-		final ElasticFieldName fieldName = ElasticFieldName.EVENT;
-		final ElasticFieldType fieldType = ElasticFieldType.TEXT;
-
-		//TODO create the index appropriate for the event bean
-
-		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays
-		        .asList(new ImmutablePair<ElasticFieldName, ElasticFieldType>(fieldName, fieldType));
-
-		return new ElasticIndexMapping(fields);
+	public String toString() {
+		final StringBuilder out = new StringBuilder("ElasticReturnOnInvestmentEventResource [");
+		out.append("percentageChange=");
+		out.append(percentageChange);
+		out.append("exlusiveStartDate=");
+		out.append(exlusiveStartDate);
+		out.append(", inclusiveEndDate=");
+		out.append(inclusiveEndDate);
+		out.append("]");
+		return out.toString();
 	}
 }

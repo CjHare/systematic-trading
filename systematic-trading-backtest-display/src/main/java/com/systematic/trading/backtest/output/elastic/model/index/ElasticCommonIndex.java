@@ -62,6 +62,8 @@ public abstract class ElasticCommonIndex {
 		this.dao = dao;
 	}
 
+	//TODO store the ID and have retireval instead of passing 
+	
 	public void init( final BacktestBatchId id ) {
 
 		if (isIndexMissing()) {
