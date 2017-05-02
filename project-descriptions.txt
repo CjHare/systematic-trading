@@ -13,7 +13,10 @@ systematic-trading-backtest
 systematic-trading-backtest-display
 	Output and display for the simulation.
 
-	
+systematic-trading-backtest-output-elastic
+	Implementation for pushing the output to Elastic Search
+
+		
 systematic-trading-data
 	Facade effectively providing a local caching of daily equity price data. 
 
