@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.display;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;

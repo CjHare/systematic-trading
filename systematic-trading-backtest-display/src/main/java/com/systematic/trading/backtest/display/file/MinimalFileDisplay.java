@@ -31,11 +31,11 @@ import java.math.MathContext;
 import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;

@@ -36,7 +36,7 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicConfigurati
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
-import com.systematic.trading.backtest.display.DescriptionGenerator;
+import com.systematic.trading.backtest.output.DescriptionGenerator;
 import com.systematic.trading.maths.formula.CompoundAnnualGrowthRate;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;

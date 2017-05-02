@@ -26,9 +26,9 @@
 package com.systematic.trading.backtest.output.elastic;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.index.brokerage.ElasticBrokerageIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.cash.ElasticCashIndex;

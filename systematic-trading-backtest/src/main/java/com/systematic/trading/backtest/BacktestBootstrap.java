@@ -31,8 +31,8 @@ import java.time.Period;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
-import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
+import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;

@@ -25,9 +25,9 @@
  */
 package com.systematic.trading.backtest.display.file;
 
-import com.systematic.trading.backtest.display.BacktestOutput;
 import com.systematic.trading.backtest.display.EventStatisticsDisplay;
 import com.systematic.trading.backtest.display.NetWorthSummaryDisplay;
+import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 
