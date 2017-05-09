@@ -50,17 +50,17 @@ import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
 import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
-import com.systematic.trading.backtest.display.NoDisplay;
-import com.systematic.trading.backtest.display.file.ClearFileDestination;
-import com.systematic.trading.backtest.display.file.CompleteFileDisplay;
-import com.systematic.trading.backtest.display.file.MinimalFileDisplay;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.model.BacktestSimulationDates;
 import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.DescriptionGenerator;
+import com.systematic.trading.backtest.output.NoBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
+import com.systematic.trading.backtest.output.file.CompleteFileOutputService;
+import com.systematic.trading.backtest.output.file.MinimalFileOutputService;
+import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
@@ -186,13 +186,13 @@ public class BacktestApplication {
 				case ELASTIC_SEARCH:
 					return new ElasticBacktestOutput(getBatchId(configuration));
 				case FILE_FULL:
-					return new CompleteFileDisplay(getOutputDirectory(baseOutputDirectory, configuration), pool,
+					return new CompleteFileOutputService(getOutputDirectory(baseOutputDirectory, configuration), pool,
 					        mathContext);
 				case FILE_MINIMUM:
-					return new MinimalFileDisplay(getOutputDirectory(baseOutputDirectory, configuration), pool,
+					return new MinimalFileOutputService(getOutputDirectory(baseOutputDirectory, configuration), pool,
 					        mathContext);
 				case NO_DISPLAY:
-					return new NoDisplay();
+					return new NoBacktestOutput();
 				default:
 					throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
 			}

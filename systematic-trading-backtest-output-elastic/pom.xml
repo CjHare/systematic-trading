@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-backtest</artifactId>
+			<artifactId>systematic-trading-backtest-output</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
 
