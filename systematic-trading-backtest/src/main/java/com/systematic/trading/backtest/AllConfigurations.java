@@ -37,12 +37,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
-import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
-import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
-import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 
@@ -57,7 +52,7 @@ public class AllConfigurations implements BacktestConfiguration {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	public static void main( final String... args ) throws Exception {
-		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), OutputType.FILE, args);
+		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), OutputType.FILE_MINIMUM, args);
 	}
 
 	@Override
@@ -94,7 +89,7 @@ public class AllConfigurations implements BacktestConfiguration {
 				        getConfigurations(simulationDates, deposit, equity, brokerage, minimumTrade, maximumTrade));
 			}
 		}
-
+		
 		return configurations;
 	}
 
@@ -104,8 +99,11 @@ public class AllConfigurations implements BacktestConfiguration {
 	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
-		EntryLogicConfiguration entry;
 
+		//TODO need to fix the configurations, result of refactoring while code commented out
+		/*
+
+		EntryLogicConfiguration entry;
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 
@@ -169,6 +167,7 @@ public class AllConfigurations implements BacktestConfiguration {
 				        ExitLogicConfiguration.HOLD_FOREVER));
 			}
 		}
+		 */
 
 		return configurations;
 	}
