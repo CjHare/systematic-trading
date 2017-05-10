@@ -23,25 +23,26 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.trade;
+package com.systematic.trading.backtest.trade;
 
 import java.math.BigDecimal;
 
 /**
- * Maximum percentage of capital to use in a single transaction.
+ * Minimum entry values for a single transaction.
  * 
  * @author CJ Hare
  */
-public enum MaximumTrade {
+public enum MinimumTrade {
 
-	QUARTER(BigDecimal.valueOf(.25)),
-	HALF(BigDecimal.valueOf(.5)),
-	THREE_QUARTERS(BigDecimal.valueOf(.75)),
-	ALL(BigDecimal.valueOf(1));
+	ZERO(BigDecimal.ZERO),
+	FIVE_HUNDRED(BigDecimal.valueOf(500)),
+	ONE_THOUSAND(BigDecimal.valueOf(1000)),
+	FIFTEEN_HUNDRED(BigDecimal.valueOf(1500)),
+	TWO_THOUSAND(BigDecimal.valueOf(2000));
 
 	private final BigDecimal value;
 
-	MaximumTrade( final BigDecimal value ) {
+	MinimumTrade( final BigDecimal value ) {
 		this.value = value;
 	}
 

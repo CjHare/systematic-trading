@@ -43,9 +43,8 @@ import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfigu
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
-import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
-import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
-import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.trade.MaximumTrade;
+import com.systematic.trading.backtest.trade.MinimumTrade;
 
 /**
  * Executes all configurations.

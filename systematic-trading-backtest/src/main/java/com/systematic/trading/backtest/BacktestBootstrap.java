@@ -62,10 +62,7 @@ public class BacktestBootstrap {
 	private final MathContext mathContext;
 
 	/** Display information from the back testing. */
-	private final BacktestOutput display;
-
-	/** Configuration for the back test. */
-	private final BacktestBootstrapConfiguration configuration;
+	private final BacktestOutput output;
 
 	private final BacktestBootstrapContext context;
 
@@ -73,13 +70,12 @@ public class BacktestBootstrap {
 	private final TickerSymbolTradingData tradingData;
 
 	public BacktestBootstrap( final BacktestBootstrapConfiguration configuration,
-	        final BacktestBootstrapContext context, final BacktestOutput display,
+	        final BacktestBootstrapContext context, final BacktestOutput output,
 	        final TickerSymbolTradingData tradingData, final MathContext mathContext ) {
 		this.context = context;
-		this.configuration = configuration;
 		this.mathContext = mathContext;
 		this.tradingData = tradingData;
-		this.display = display;
+		this.output = output;
 	}
 
 	public void run() throws BacktestInitialisationException {
@@ -116,7 +112,7 @@ public class BacktestBootstrap {
 		roi.addListener(cumulativeRoi);
 
 		final EntryLogic entry = context.getEntryLogic();
-		entry.addListener(display);
+		entry.addListener(output);
 
 		final ExitLogic exit = context.getExitLogic();
 
@@ -142,17 +138,16 @@ public class BacktestBootstrap {
 		simulation.addListener(networthSummay);
 
 		// Display for simulation output
-		display.init(configuration, tradingData, context.getSimulationDates(), eventStatistics, cumulativeRoi,
-		        lastTradingDay);
-		simulation.addListener((OrderEventListener) display);
-		simulation.addListener((SimulationStateListener) display);
-		networthSummay.addListener(display);
-		cashAccount.addListener(display);
-		yearlyRoi.addListener(display);
-		monthlyRoi.addListener(display);
-		dailyRoi.addListener(display);
-		broker.addListener((BrokerageEventListener) display);
-		broker.addListener((EquityEventListener) display);
+		output.init(tradingData, context.getSimulationDates(), eventStatistics, cumulativeRoi, lastTradingDay);
+		simulation.addListener((OrderEventListener) output);
+		simulation.addListener((SimulationStateListener) output);
+		networthSummay.addListener(output);
+		cashAccount.addListener(output);
+		yearlyRoi.addListener(output);
+		monthlyRoi.addListener(output);
+		dailyRoi.addListener(output);
+		broker.addListener((BrokerageEventListener) output);
+		broker.addListener((EquityEventListener) output);
 
 		// Run the simulation until completion
 		simulation.run();

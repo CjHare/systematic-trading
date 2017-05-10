@@ -23,37 +23,29 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.model;
+package com.systematic.trading.backtest.trade;
 
-import java.time.LocalDate;
-import java.time.Period;
+import java.math.BigDecimal;
 
 /**
- * Simulation dates and warm up period.
+ * Maximum percentage of capital to use in a single transaction.
  * 
  * @author CJ Hare
  */
-public class BacktestSimulationDates {
+public enum MaximumTrade {
 
-	private final LocalDate startDate;
-	private final LocalDate endDate;
-	private final Period warmUp;
+	QUARTER(BigDecimal.valueOf(.25)),
+	HALF(BigDecimal.valueOf(.5)),
+	THREE_QUARTERS(BigDecimal.valueOf(.75)),
+	ALL(BigDecimal.valueOf(1));
 
-	public BacktestSimulationDates( final LocalDate startDate, final LocalDate endDate, final Period warmUp ) {
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.warmUp = warmUp;
+	private final BigDecimal value;
+
+	MaximumTrade( final BigDecimal value ) {
+		this.value = value;
 	}
 
-	public LocalDate getStartDate() {
-		return startDate;
-	}
-
-	public LocalDate getEndDate() {
-		return endDate;
-	}
-
-	public Period getWarmUp() {
-		return warmUp;
+	public BigDecimal getValue() {
+		return value;
 	}
 }

@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.context;
 
-import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.logic.EntryLogic;

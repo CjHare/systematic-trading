@@ -46,21 +46,18 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
-import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
-import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
-import com.systematic.trading.backtest.model.BacktestSimulationDates;
-import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.DescriptionGenerator;
 import com.systematic.trading.backtest.output.NoBacktestOutput;
-import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.backtest.output.file.CompleteFileOutputService;
 import com.systematic.trading.backtest.output.file.MinimalFileOutputService;
 import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
+import com.systematic.trading.backtest.trade.MaximumTrade;
+import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
@@ -181,16 +178,19 @@ public class BacktestApplication {
 	private BacktestOutput getOutput( final DisplayType type, final BacktestBootstrapConfiguration configuration,
 	        final String baseOutputDirectory, final ExecutorService pool ) throws BacktestInitialisationException {
 
+		final BacktestBatchId batchId = getBatchId(configuration);
+
 		try {
+
 			switch (type) {
 				case ELASTIC_SEARCH:
-					return new ElasticBacktestOutput(getBatchId(configuration));
+					return new ElasticBacktestOutput(batchId);
 				case FILE_FULL:
-					return new CompleteFileOutputService(getOutputDirectory(baseOutputDirectory, configuration), pool,
-					        mathContext);
+					return new CompleteFileOutputService(batchId,
+					        getOutputDirectory(baseOutputDirectory, configuration), pool, mathContext);
 				case FILE_MINIMUM:
-					return new MinimalFileOutputService(getOutputDirectory(baseOutputDirectory, configuration), pool,
-					        mathContext);
+					return new MinimalFileOutputService(batchId, getOutputDirectory(baseOutputDirectory, configuration),
+					        pool, mathContext);
 				case NO_DISPLAY:
 					return new NoBacktestOutput();
 				default:
@@ -275,11 +275,13 @@ public class BacktestApplication {
 		final DataService service = HibernateDataService.getInstance();
 		final TradingDayPrices[] data = service.get(equity.getTickerSymbol(), startDate, endDate);
 
-		return new TickerSymbolTradingDataBacktest(equity, data);
+		return new BacktestTickerSymbolTradingData(equity, data);
 	}
 
 	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration ) {
-		return new BacktestBatchId(description.getDescription(configuration));
+		return new BacktestBatchId(description.getDescription(configuration),
+		        description.getEntryLogic(configuration.getEntryLogic()),
+		        configuration.getEntryLogic().getMinimumTrade(), configuration.getEntryLogic().getMaximumTrade());
 	}
 
 	private String getOutputDirectory( final String baseOutputDirectory,

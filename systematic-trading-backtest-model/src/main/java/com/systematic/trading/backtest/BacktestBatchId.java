@@ -23,7 +23,10 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic;
+package com.systematic.trading.backtest;
+
+import com.systematic.trading.backtest.trade.MaximumTrade;
+import com.systematic.trading.backtest.trade.MinimumTrade;
 
 /**
  * ID that groups back testing events..
@@ -33,8 +36,32 @@ package com.systematic.trading.backtest.output.elastic;
 public class BacktestBatchId {
 	private final String name;
 
-	public BacktestBatchId( final String name ) {
+	//TODO these three are needed by the file output - maybe split into another object?
+	private final String entryLogic;
+	private final MaximumTrade maximumTrade;
+	private final MinimumTrade minimumTrade;
+
+	public BacktestBatchId( final String name, final String entryLogic, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
 		this.name = name;
+		this.entryLogic = entryLogic;
+		this.minimumTrade = minimumTrade;
+		this.maximumTrade = maximumTrade;
+	}
+
+	/**
+	 * @return description of the entry logic used by this run of the simulation.
+	 */
+	public String getEntryLogic() {
+		return entryLogic;
+	}
+
+	public MaximumTrade getMaximumTrade() {
+		return maximumTrade;
+	}
+
+	public MinimumTrade getMinimumTrade() {
+		return minimumTrade;
 	}
 
 	public String getName() {

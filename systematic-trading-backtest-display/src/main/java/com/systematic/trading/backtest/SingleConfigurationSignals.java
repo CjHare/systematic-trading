@@ -39,9 +39,8 @@ import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguratio
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
-import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
-import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
-import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.trade.MaximumTrade;
+import com.systematic.trading.backtest.trade.MinimumTrade;
 
 /**
  * MACD signals @ 150 weekly deposit.

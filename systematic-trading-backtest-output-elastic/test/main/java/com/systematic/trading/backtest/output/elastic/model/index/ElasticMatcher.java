@@ -31,7 +31,7 @@ import java.time.LocalDate;
 
 import javax.ws.rs.client.Entity;
 
-import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestBatchId;
 
 public class ElasticMatcher {
 

@@ -38,7 +38,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
@@ -108,7 +107,7 @@ public class SimulationExitLogicTest {
 	public void processOrder() throws OrderException {
 		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
 		final TradingDayPrices[] sortedPoints = createOrderedDataPoints(createUnorderedDataPoints());
-		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest(equity, sortedPoints);
+		final TickerSymbolTradingData tradingData = new BacktestTickerSymbolTradingData(equity, sortedPoints);
 		final Simulation simulation = new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
 
 		final EquityOrder order = mock(EquityOrder.class);

@@ -25,9 +25,7 @@
  */
 package com.systematic.trading.backtest.output.elastic;
 
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.exception.BacktestInitialisationException;
-import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.index.brokerage.ElasticBrokerageIndex;
@@ -37,13 +35,9 @@ import com.systematic.trading.backtest.output.elastic.model.index.networth.Elast
 import com.systematic.trading.backtest.output.elastic.model.index.order.ElasticOrderIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.roi.ElasticReturnOnInvestmentIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.signal.analysis.ElasticSignalAnalysisIndex;
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
-import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
@@ -64,11 +58,8 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	private final ElasticNetworthIndex networthIndex;
 	private final ElasticEquityIndex equityIndex;
 
-	private final BacktestBatchId id;
-
 	public ElasticBacktestOutput( final BacktestBatchId id ) {
 		final ElasticDao dao = new ElasticDao();
-		this.id = id;
 		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(id, dao);
 		this.cashIndex = new ElasticCashIndex(id, dao);
 		this.orderIndex = new ElasticOrderIndex(id, dao);
@@ -115,20 +106,5 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	@Override
 	public void event( final EquityEvent event ) {
 		equityIndex.event(event);
-	}
-
-	@Override
-	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
-	        final BacktestSimulationDates simulationDates, final EventStatistics eventStatistics,
-	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
-	        throws BacktestInitialisationException {
-
-		signalAnalysisIndex.init(id);
-		cashIndex.init(id);
-		orderIndex.init(id);
-		brokerageIndex.init(id);
-		returnOnInvestmentIndex.init(id);
-		networthIndex.init(id);
-		equityIndex.init(id);
 	}
 }

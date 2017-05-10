@@ -3,8 +3,8 @@ package com.systematic.trading.backtest.configuration.entry;
 import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
-import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
-import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
+import com.systematic.trading.backtest.trade.MaximumTrade;
+import com.systematic.trading.backtest.trade.MinimumTrade;
 
 public class EntryLogicConfiguration {
 

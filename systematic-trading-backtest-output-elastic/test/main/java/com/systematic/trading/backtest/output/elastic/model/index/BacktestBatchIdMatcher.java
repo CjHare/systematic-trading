@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Description;
 import org.mockito.ArgumentMatcher;
 
-import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestBatchId;
 
 public class BacktestBatchIdMatcher extends ArgumentMatcher<BacktestBatchId> {
 

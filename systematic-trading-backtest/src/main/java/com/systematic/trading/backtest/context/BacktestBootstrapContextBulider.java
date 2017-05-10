@@ -29,6 +29,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
+import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFactoroy;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
@@ -40,9 +41,8 @@ import com.systematic.trading.backtest.configuration.equity.EquityManagementFeeC
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
 import com.systematic.trading.backtest.configuration.signals.IndicatorSignalGeneratorFactory;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
-import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
-import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
-import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.trade.MaximumTrade;
+import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.filter.ConfirmationIndicatorsSignalFilter;

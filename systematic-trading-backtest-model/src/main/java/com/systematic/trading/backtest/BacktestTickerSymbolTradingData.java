@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.model;
+package com.systematic.trading.backtest;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -39,7 +39,7 @@ import com.systematic.trading.model.TickerSymbolTradingData;
  * 
  * @author CJ Hare
  */
-public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData {
+public class BacktestTickerSymbolTradingData implements TickerSymbolTradingData {
 
 	/** Equity being subjected to back testing. */
 	private final EquityIdentity equity;
@@ -56,7 +56,7 @@ public class TickerSymbolTradingDataBacktest implements TickerSymbolTradingData 
 	/**
 	 * Restrictions of no duplicate trading dates, applies date ordering on the given data.
 	 */
-	public TickerSymbolTradingDataBacktest( final EquityIdentity equity, final TradingDayPrices[] data ) {
+	public BacktestTickerSymbolTradingData( final EquityIdentity equity, final TradingDayPrices[] data ) {
 		this.equity = equity;
 
 		final Map<LocalDate, TradingDayPrices> modifiableTradingData = new HashMap<>();

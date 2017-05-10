@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;

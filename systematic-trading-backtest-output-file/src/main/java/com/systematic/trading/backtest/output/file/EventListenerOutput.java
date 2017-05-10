@@ -28,7 +28,7 @@ package com.systematic.trading.backtest.output.file;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
-import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.file.dao.BrokerageEventFileDao;
 import com.systematic.trading.backtest.output.file.dao.CashEventFileDao;
 import com.systematic.trading.backtest.output.file.dao.OrderEventFileDao;

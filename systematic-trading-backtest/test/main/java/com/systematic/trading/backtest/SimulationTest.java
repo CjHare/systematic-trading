@@ -38,7 +38,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.model.TickerSymbolTradingDataBacktest;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
@@ -90,7 +89,7 @@ public class SimulationTest {
 	public void create() {
 		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
 		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
-		final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest(equity, unorderedPoints);
+		final TickerSymbolTradingData tradingData = new BacktestTickerSymbolTradingData(equity, unorderedPoints);
 
 		new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
 	}
@@ -103,7 +102,7 @@ public class SimulationTest {
 		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
 
 		try {
-			final TickerSymbolTradingData tradingData = new TickerSymbolTradingDataBacktest(equity, unorderedPoints);
+			final TickerSymbolTradingData tradingData = new BacktestTickerSymbolTradingData(equity, unorderedPoints);
 			new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
 
 			fail("Expecting exception for duplicate data point date");

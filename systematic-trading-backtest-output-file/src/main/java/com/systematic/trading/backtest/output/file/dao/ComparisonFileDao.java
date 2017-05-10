@@ -31,12 +31,8 @@ import java.text.DecimalFormat;
 import java.time.Period;
 import java.util.StringJoiner;
 
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
-import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
-import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
-import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
-import com.systematic.trading.backtest.output.DescriptionGenerator;
+import com.systematic.trading.backtest.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.maths.formula.CompoundAnnualGrowthRate;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
@@ -55,30 +51,23 @@ public class ComparisonFileDao implements NetWorthEventListener {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
 	private static final DecimalFormat FOUR_DECIMAL_PLACES = new DecimalFormat(".0000");
-
-	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
-
 	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
+	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 	private static final String COLUMN_SEPARATOR = ",";
-	private static final String TEXT_SEPARATOR = " ";
 
-	/** Display responsible for handling the file output. */
+	private final BacktestSimulationDates dates;
+	private final EventStatistics statistics;
+	private final BacktestBatchId batchId;
 	private final FileMultithreading file;
-
 	private final MathContext mathContext;
 
-	private final EventStatistics statistics;
-
-	private final BacktestBootstrapConfiguration configuration;
-
-	private final DescriptionGenerator generator = new DescriptionGenerator();
-
-	public ComparisonFileDao( final BacktestBootstrapConfiguration configuration, final EventStatistics statistics,
-	        final FileMultithreading file, final MathContext mathContext ) {
-		this.configuration = configuration;
+	public ComparisonFileDao( final BacktestBatchId batchId, final BacktestSimulationDates dates,
+	        final EventStatistics statistics, final FileMultithreading file, final MathContext mathContext ) {
+		this.batchId = batchId;
 		this.mathContext = mathContext;
 		this.statistics = statistics;
 		this.file = file;
+		this.dates = dates;
 	}
 
 	@Override
@@ -120,9 +109,7 @@ public class ComparisonFileDao implements NetWorthEventListener {
 
 	private String compoundAnnualGrowth( final NetWorthEvent event ) {
 
-		final Period duration = Period.between(configuration.getBacktestDates().getStartDate(),
-		        configuration.getBacktestDates().getEndDate());
-
+		final Period duration = Period.between(dates.getStartDate(), dates.getEndDate());
 		final BigDecimal deposited = statistics.getCashEventStatistics().getAmountDeposited();
 		final BigDecimal netWorth = event.getNetWorth();
 		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears(),
@@ -168,75 +155,25 @@ public class ComparisonFileDao implements NetWorthEventListener {
 		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
 		out.add(minimumTradeValue());
 		out.add(maximumTradeValue());
-		out.add(entryLogicDescription());
+		out.add(batchId.getEntryLogic());
 		out.add(entryOrdersPlaced());
 		out.add(entryOrdersExecuted());
 		out.add(entryOrdersDeleted());
 		return out.toString();
 	}
 
-	private String entryLogicDescription() {
-		final EntryLogicConfiguration entry = configuration.getEntryLogic();
-		final String description;
-		switch (entry.getType()) {
-			case CONFIRMATION_SIGNAL:
-				description = generator.entryLogicConfirmationSignal(entry);
-			break;
-			case PERIODIC:
-				description = entryPeriodic(entry);
-			break;
-			case SAME_DAY_SIGNALS:
-				description = entryLogicSameDaySignals(entry);
-			break;
-			default:
-				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
-		}
-
-		return String.format("Entry: %s", description);
-	}
-
-	private String entryPeriodic( final EntryLogicConfiguration entry ) {
-		switch (entry.getPeriodic()) {
-			case WEEKLY:
-				return "BuyWeekly";
-
-			case MONTHLY:
-				return "BuyMonthly";
-
-			default:
-				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", entry.getPeriodic()));
-		}
-	}
-
-	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
-		final StringJoiner out = new StringJoiner(TEXT_SEPARATOR);
-		final SignalConfiguration[] signals = entry.getSameDaySignals().getSignals();
-		if (signals.length == 1) {
-			out.add("Signal");
-		} else {
-			out.add("SameDay");
-		}
-
-		for (final SignalConfiguration signal : signals) {
-			out.add(signal.getDescription());
-		}
-		return out.toString();
-	}
-
 	private String maximumTradeValue() {
-		final MaximumTrade trade = configuration.getEntryLogic().getMaximumTrade();
-		return String.format("Maximum Trade: %s%s Maximum Trade Type: Absolute", convertToPercetage(trade.getValue()),
-		        COLUMN_SEPARATOR);
-	}
-
-	private String minimumTradeValue() {
-		final MinimumTrade trade = configuration.getEntryLogic().getMinimumTrade();
-		return String.format("Minimum Trade: %s%s Minimum Trade Type: Percent",
-		        NO_DECIMAL_PLACES.format(trade.getValue()), COLUMN_SEPARATOR);
+		return String.format("Maximum Trade: %s%s Maximum Trade Type: Absolute",
+		        convertToPercetage(batchId.getMaximumTrade().getValue()), COLUMN_SEPARATOR);
 	}
 
 	private String convertToPercetage( final BigDecimal toPercentage ) {
 		return String.format("%s", NO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
+	}
+
+	private String minimumTradeValue() {
+		return String.format("Minimum Trade: %s%s Minimum Trade Type: Percent",
+		        NO_DECIMAL_PLACES.format(batchId.getMinimumTrade().getValue()), COLUMN_SEPARATOR);
 	}
 
 	private String entryOrdersDeleted() {

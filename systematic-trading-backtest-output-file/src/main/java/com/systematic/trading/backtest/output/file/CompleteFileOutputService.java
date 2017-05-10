@@ -30,9 +30,8 @@ import java.io.IOException;
 import java.math.MathContext;
 import java.util.concurrent.ExecutorService;
 
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.exception.BacktestInitialisationException;
-import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.file.dao.BrokerageEventFileDao;
 import com.systematic.trading.backtest.output.file.dao.CashEventFileDao;
@@ -90,8 +89,10 @@ public class CompleteFileOutputService extends FileOutput implements BacktestOut
 	private EquityEventListener equityEventDisplay;
 	private final ExecutorService pool;
 
-	public CompleteFileOutputService( final String outputDirectory, final ExecutorService pool,
-	        final MathContext mathContext ) throws IOException {
+	private final BacktestBatchId batchId;
+
+	public CompleteFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
+	        final ExecutorService pool, final MathContext mathContext ) throws IOException {
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File(outputDirectory);
@@ -103,14 +104,13 @@ public class CompleteFileOutputService extends FileOutput implements BacktestOut
 		this.baseDirectory = outputDirectoryFile.getCanonicalPath();
 		this.mathContext = mathContext;
 		this.pool = pool;
-
+		this.batchId = batchId;
 	}
 
 	@Override
-	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
-	        final BacktestSimulationDates dates, final EventStatistics eventStatistics,
-	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
-	        throws BacktestInitialisationException {
+	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
+	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
+	        final TradingDayPrices lastTradingDay ) {
 
 		final FileMultithreading returnOnInvestmentFile = getFileDisplay("/return-on-investment.txt");
 		this.roiDisplay = new ReturnOnInvestmentFileDao(ReturnOnInvestmentPeriod.ALL, returnOnInvestmentFile);
@@ -150,8 +150,7 @@ public class CompleteFileOutputService extends FileOutput implements BacktestOut
 		this.signalAnalysisDisplay = new SignalAnalysisFileDao(signalAnalysisFile);
 
 		final FileMultithreading comparisonFile = getFileDisplay("/../summary.csv");
-		netWorthComparisonDisplay = new ComparisonFileDao(configuration, eventStatistics, comparisonFile,
-		        mathContext);
+		netWorthComparisonDisplay = new ComparisonFileDao(batchId, dates, eventStatistics, comparisonFile, mathContext);
 	}
 
 	private FileMultithreading getFileDisplay( final String suffix ) {

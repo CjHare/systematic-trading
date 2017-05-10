@@ -44,7 +44,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 
@@ -69,6 +69,10 @@ public abstract class ElasticIndexTestBase {
 	public void setUp() {
 		when(dao.get(any(ElasticIndexName.class))).thenReturn(getIndexResponse);
 		when(dao.get(any(ElasticIndexName.class), any(BacktestBatchId.class))).thenReturn(getIndexTypeResponse);
+	}
+
+	protected BacktestBatchId getBatchId( final String id ) {
+		return new BacktestBatchId(id, null, null, null);
 	}
 
 	protected void verifyGetIndex() {

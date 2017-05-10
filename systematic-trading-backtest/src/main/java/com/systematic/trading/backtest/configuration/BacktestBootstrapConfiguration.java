@@ -1,12 +1,12 @@
 package com.systematic.trading.backtest.configuration;
 
+import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.model.BacktestSimulationDates;
 
 /**
  * The set of configurations for the back testing.

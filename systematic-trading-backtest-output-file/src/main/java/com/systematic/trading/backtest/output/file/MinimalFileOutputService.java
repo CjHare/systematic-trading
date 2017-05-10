@@ -30,9 +30,8 @@ import java.io.IOException;
 import java.math.MathContext;
 import java.util.concurrent.ExecutorService;
 
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.exception.BacktestInitialisationException;
-import com.systematic.trading.backtest.model.BacktestSimulationDates;
+import com.systematic.trading.backtest.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.file.dao.ComparisonFileDao;
 import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
@@ -69,9 +68,10 @@ public class MinimalFileOutputService extends FileOutput implements BacktestOutp
 	private NetWorthSummaryDao netWorthDisplay;
 	private NetWorthEventListener netWorthComparisonDisplay;
 	private final ExecutorService pool;
+	private final BacktestBatchId batchId;
 
-	public MinimalFileOutputService( final String outputDirectory, final ExecutorService pool, final MathContext mathContext )
-	        throws IOException {
+	public MinimalFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
+	        final ExecutorService pool, final MathContext mathContext ) throws IOException {
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File(outputDirectory);
@@ -83,22 +83,20 @@ public class MinimalFileOutputService extends FileOutput implements BacktestOutp
 		this.baseDirectory = outputDirectoryFile.getCanonicalPath();
 		this.mathContext = mathContext;
 		this.pool = pool;
-
+		this.batchId = batchId;
 	}
 
 	@Override
-	public void init( final BacktestBootstrapConfiguration configuration, final TickerSymbolTradingData tradingData,
-	        final BacktestSimulationDates dates, final EventStatistics eventStatistics,
-	        final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi, final TradingDayPrices lastTradingDay )
-	        throws BacktestInitialisationException {
+	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
+	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
+	        final TradingDayPrices lastTradingDay ) {
 
 		final FileMultithreading statisticsFile = getFileDisplay("/statistics.txt");
 		this.statisticsDisplay = new EventStatisticsFileDao(eventStatistics, statisticsFile);
 		this.netWorthDisplay = new NetWorthSummaryFileDao(cumulativeRoi, statisticsFile);
 
 		final FileMultithreading comparisonFile = getFileDisplay("/../summary.txt");
-		netWorthComparisonDisplay = new ComparisonFileDao(configuration, eventStatistics, comparisonFile,
-		        mathContext);
+		netWorthComparisonDisplay = new ComparisonFileDao(batchId, dates, eventStatistics, comparisonFile, mathContext);
 	}
 
 	private FileMultithreading getFileDisplay( final String suffix ) {

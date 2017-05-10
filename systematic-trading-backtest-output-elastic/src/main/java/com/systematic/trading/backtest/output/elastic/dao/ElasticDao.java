@@ -35,7 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEventResponse;

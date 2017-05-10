@@ -35,8 +35,8 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
-import com.systematic.trading.backtest.configuration.trade.MaximumTrade;
-import com.systematic.trading.backtest.configuration.trade.MinimumTrade;
+import com.systematic.trading.backtest.trade.MaximumTrade;
+import com.systematic.trading.backtest.trade.MinimumTrade;
 
 /**
  * Textually meaningful description of the configuration appropriate for display.
@@ -63,12 +63,12 @@ public class DescriptionGenerator {
 		out.add(equity(configuration.getEquity()));
 		out.add(brokerage(configuration.getBrokerageFees()));
 		out.add(cashAccount(configuration.getCashAccount()));
-		out.add(entryLogic(configuration.getEntryLogic()));
+		out.add(getEntryLogic(configuration.getEntryLogic()));
 		out.add(EXIT_LOGIC);
 		return out.toString();
 	}
 
-	private String entryLogic( final EntryLogicConfiguration entry ) {
+	public String getEntryLogic( final EntryLogicConfiguration entry ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 
 		switch (entry.getType()) {

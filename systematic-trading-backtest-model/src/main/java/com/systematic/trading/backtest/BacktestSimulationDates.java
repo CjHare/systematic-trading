@@ -23,30 +23,37 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.trade;
+package com.systematic.trading.backtest;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
 
 /**
- * Minimum entry values for a single transaction.
+ * Simulation dates and warm up period.
  * 
  * @author CJ Hare
  */
-public enum MinimumTrade {
+public class BacktestSimulationDates {
 
-	ZERO(BigDecimal.ZERO),
-	FIVE_HUNDRED(BigDecimal.valueOf(500)),
-	ONE_THOUSAND(BigDecimal.valueOf(1000)),
-	FIFTEEN_HUNDRED(BigDecimal.valueOf(1500)),
-	TWO_THOUSAND(BigDecimal.valueOf(2000));
+	private final LocalDate startDate;
+	private final LocalDate endDate;
+	private final Period warmUp;
 
-	private final BigDecimal value;
-
-	MinimumTrade( final BigDecimal value ) {
-		this.value = value;
+	public BacktestSimulationDates( final LocalDate startDate, final LocalDate endDate, final Period warmUp ) {
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.warmUp = warmUp;
 	}
 
-	public BigDecimal getValue() {
-		return value;
+	public LocalDate getStartDate() {
+		return startDate;
+	}
+
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	public Period getWarmUp() {
+		return warmUp;
 	}
 }

@@ -37,7 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.output.elastic.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticIndexTestBase;
@@ -59,7 +59,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final BacktestBatchId id = getBatchId(batchId);
 		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
 
 		index.init(id);
@@ -72,7 +72,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 		setUpPresentIndex();
 
 		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final BacktestBatchId id = getBatchId(batchId);
 		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
 
 		index.init(id);
@@ -86,7 +86,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 		setUpPresentMapping();
 
 		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final BacktestBatchId id = getBatchId(batchId);
 		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
 
 		try {
@@ -106,7 +106,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 		setUpPresentIndex();
 
 		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = new BacktestBatchId(batchId);
+		final BacktestBatchId id = getBatchId(batchId);
 		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
 		final OrderEvent event = getEvent();
 

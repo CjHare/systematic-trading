@@ -25,10 +25,15 @@
  */
 package com.systematic.trading.backtest.output;
 
+import com.systematic.trading.backtest.BacktestSimulationDates;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.SimulationStateListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
+import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
+import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
 import com.systematic.trading.simulation.equity.event.EquityEventListener;
@@ -42,4 +47,9 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
 public interface BacktestOutput
         extends CashEventListener, OrderEventListener, BrokerageEventListener, ReturnOnInvestmentEventListener,
         SimulationStateListener, NetWorthEventListener, SignalAnalysisListener, EquityEventListener {
+
+	default void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
+	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
+	        final TradingDayPrices lastTradingDay ) {
+	}
 }
