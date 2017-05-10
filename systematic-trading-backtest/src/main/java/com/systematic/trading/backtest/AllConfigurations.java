@@ -29,7 +29,7 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.backtest.BacktestApplication.DisplayType;
+import com.systematic.trading.backtest.BacktestApplication.OutputType;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
@@ -57,7 +57,7 @@ public class AllConfigurations implements BacktestConfiguration {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	public static void main( final String... args ) throws Exception {
-		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), DisplayType.ELASTIC_SEARCH, args);
+		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), OutputType.FILE, args);
 	}
 
 	@Override
@@ -74,29 +74,27 @@ public class AllConfigurations implements BacktestConfiguration {
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates,
 		        BrokerageFeesConfiguration.VANGUARD_RETAIL, CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
 		        deposit, weeklyBuy, equity, ExitLogicConfiguration.HOLD_FOREVER));
-		/*	
+
 		// CMC Weekly
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, weeklyBuy, equity,
 		        ExitLogicConfiguration.HOLD_FOREVER));
-		
+
 		// CMC Monthly
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, monthlyBuy, equity,
 		        ExitLogicConfiguration.HOLD_FOREVER));
-		
-		//TODO undo comment after elastic search is refined
-		
+
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
-		
+
 		for (final MaximumTrade maximumTrade : MaximumTrade.values()) {
 			for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
 				configurations.addAll(
 				        getConfigurations(simulationDates, deposit, equity, brokerage, minimumTrade, maximumTrade));
 			}
 		}
-		*/
+
 		return configurations;
 	}
 

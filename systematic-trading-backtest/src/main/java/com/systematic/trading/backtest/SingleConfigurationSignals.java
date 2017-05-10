@@ -29,7 +29,7 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.backtest.BacktestApplication.DisplayType;
+import com.systematic.trading.backtest.BacktestApplication.OutputType;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
@@ -55,7 +55,7 @@ public class SingleConfigurationSignals implements BacktestConfiguration {
 	public static void main( final String... args ) throws Exception {
 
 		final BacktestApplication application = new BacktestApplication(MATH_CONTEXT);
-		application.runTest(new SingleConfigurationSignals(), DisplayType.FILE_FULL, args);
+		application.runTest(new SingleConfigurationSignals(), OutputType.FILE_FULL, args);
 	}
 
 	@Override

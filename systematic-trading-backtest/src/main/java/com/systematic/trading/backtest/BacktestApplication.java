@@ -82,7 +82,7 @@ public class BacktestApplication {
 	private static final int DAYS_IN_A_YEAR = 365;
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
 
-	public enum DisplayType {
+	public enum OutputType {
 		ELASTIC_SEARCH,
 		FILE_FULL,
 		FILE_MINIMUM,
@@ -98,7 +98,7 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfiguration configuration, final DisplayType outputType, final String... args )
+	public void runTest( final BacktestConfiguration configuration, final OutputType outputType, final String... args )
 	        throws ServiceException {
 
 		final String baseOutputDirectory = getBaseOutputDirectory(args);
@@ -175,7 +175,7 @@ public class BacktestApplication {
 		return Period.ofDays(windUp);
 	}
 
-	private BacktestOutput getOutput( final DisplayType type, final BacktestBootstrapConfiguration configuration,
+	private BacktestOutput getOutput( final OutputType type, final BacktestBootstrapConfiguration configuration,
 	        final String baseOutputDirectory, final ExecutorService pool ) throws BacktestInitialisationException {
 
 		final BacktestBatchId batchId = getBatchId(configuration);
@@ -202,7 +202,7 @@ public class BacktestApplication {
 
 	private void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
-	        final DisplayType type, final ExecutorService pool ) throws BacktestInitialisationException {
+	        final OutputType type, final ExecutorService pool ) throws BacktestInitialisationException {
 
 		// Arrange output to files, only once per a run
 		if (isFileBasedDisplay(type)) {
@@ -227,8 +227,8 @@ public class BacktestApplication {
 
 	}
 
-	private boolean isFileBasedDisplay( final DisplayType type ) {
-		return type == DisplayType.FILE_FULL || type == DisplayType.FILE_MINIMUM;
+	private boolean isFileBasedDisplay( final OutputType type ) {
+		return type == OutputType.FILE_FULL || type == OutputType.FILE_MINIMUM;
 	}
 
 	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration ) {
