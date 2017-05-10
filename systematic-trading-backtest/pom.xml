@@ -18,6 +18,16 @@
 			<artifactId>systematic-trading-backtest-model</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-backtest-output-elastic</artifactId>
+			<version>${systematic.trading.backtest.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-backtest-output-file</artifactId>
+			<version>${systematic.trading.backtest.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

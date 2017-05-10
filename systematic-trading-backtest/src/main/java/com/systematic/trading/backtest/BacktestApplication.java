@@ -181,7 +181,6 @@ public class BacktestApplication {
 		final BacktestBatchId batchId = getBatchId(configuration);
 
 		try {
-
 			switch (type) {
 				case ELASTIC_SEARCH:
 					return new ElasticBacktestOutput(batchId);

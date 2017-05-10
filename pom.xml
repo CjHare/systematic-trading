@@ -15,7 +15,6 @@
 	<modules>
 		<module>systematic-trading-parent</module>
 		<module>systematic-trading-backtest</module>
-		<module>systematic-trading-backtest-display</module>
 		<module>systematic-trading-backtest-model</module>
 		<module>systematic-trading-backtest-output-elastic</module>
 		<module>systematic-trading-backtest-output-file</module>
