@@ -49,6 +49,7 @@ import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
+import com.systematic.trading.backtest.input.BacktestLaunchArgumentParser;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.DescriptionGenerator;
 import com.systematic.trading.backtest.output.NoBacktestOutput;
@@ -82,6 +83,7 @@ public class BacktestApplication {
 	private static final int DAYS_IN_A_YEAR = 365;
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
 
+	//TODO rename file_full to file_complete
 	public enum OutputType {
 		ELASTIC_SEARCH,
 		FILE_FULL,
@@ -98,9 +100,11 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfiguration configuration, final OutputType outputType, final String... args )
+	public void runTest( final BacktestConfiguration configuration,final BacktestLaunchArgumentParser parserdArguments   )
 	        throws ServiceException {
 
+		final OutputType outputType = parserdArguments.getOutputType();
+		
 		final String baseOutputDirectory = getBaseOutputDirectory(args);
 
 		// Date range is from the first of the starting month until now
@@ -288,6 +292,7 @@ public class BacktestApplication {
 		return String.format("%s%s", baseOutputDirectory, description.getDescription(configuration));
 	}
 
+	//TODO this should be in the file DAO classes!
 	private String getBaseOutputDirectory( final String... args ) {
 
 		if (args != null && args.length > 0) {

@@ -29,7 +29,6 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.backtest.BacktestApplication.OutputType;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
@@ -38,6 +37,7 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicConfigurati
 import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
+import com.systematic.trading.backtest.input.BacktestLaunchArgumentParser;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 
@@ -52,7 +52,7 @@ public class AllConfigurations implements BacktestConfiguration {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	public static void main( final String... args ) throws Exception {
-		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), OutputType.FILE_MINIMUM, args);
+		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), new BacktestLaunchArgumentParser(args));
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class AllConfigurations implements BacktestConfiguration {
 				        getConfigurations(simulationDates, deposit, equity, brokerage, minimumTrade, maximumTrade));
 			}
 		}
-		
+
 		return configurations;
 	}
 
@@ -102,21 +102,21 @@ public class AllConfigurations implements BacktestConfiguration {
 
 		//TODO need to fix the configurations, result of refactoring while code commented out
 		/*
-
+		
 		EntryLogicConfiguration entry;
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-
+		
 				// MACD & RSI
 				entry = new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
 				        macdConfiguration, rsiConfiguration), maximumTrade, minimumTrade);
 				configurations.add(new BacktestBootstrapConfiguration(simulationDates, brokerage,
 				        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
 				        ExitLogicConfiguration.HOLD_FOREVER));
-
+		
 				for (final ConfirmationSignalFilterConfiguration.Type filterConfigurations : ConfirmationSignalFilterConfiguration.Type
 				        .values()) {
-
+		
 					// MACD & RSI - confirmation signals
 					entry = new EntryLogicConfiguration(new ConfirmationSignalFilterConfiguration(filterConfigurations,
 					        rsiConfiguration, macdConfiguration), maximumTrade, minimumTrade);
@@ -125,7 +125,7 @@ public class AllConfigurations implements BacktestConfiguration {
 					        ExitLogicConfiguration.HOLD_FOREVER));
 				}
 			}
-
+		
 			// MACD only
 			entry = new EntryLogicConfiguration(
 			        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration),
@@ -133,10 +133,10 @@ public class AllConfigurations implements BacktestConfiguration {
 			configurations.add(new BacktestBootstrapConfiguration(simulationDates, brokerage,
 			        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
 			        ExitLogicConfiguration.HOLD_FOREVER));
-
+		
 			for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 				for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-
+		
 					// MACD, SMA & RSI
 					entry = new EntryLogicConfiguration(
 					        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration,
@@ -146,7 +146,7 @@ public class AllConfigurations implements BacktestConfiguration {
 					        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
 					        ExitLogicConfiguration.HOLD_FOREVER));
 				}
-
+		
 				// MACD & SMA
 				entry = new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
 				        macdConfiguration, smaConfiguration), maximumTrade, minimumTrade);
@@ -155,10 +155,10 @@ public class AllConfigurations implements BacktestConfiguration {
 				        ExitLogicConfiguration.HOLD_FOREVER));
 			}
 		}
-
+		
 		for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-
+		
 				// SMA & RSI			
 				entry = new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
 				        smaConfiguration, rsiConfiguration), maximumTrade, minimumTrade);

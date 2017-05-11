@@ -29,7 +29,6 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.backtest.BacktestApplication.OutputType;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
@@ -39,6 +38,7 @@ import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguratio
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
+import com.systematic.trading.backtest.input.BacktestLaunchArgumentParser;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 
@@ -53,9 +53,8 @@ public class SingleConfigurationSignals implements BacktestConfiguration {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	public static void main( final String... args ) throws Exception {
-
-		final BacktestApplication application = new BacktestApplication(MATH_CONTEXT);
-		application.runTest(new SingleConfigurationSignals(), OutputType.FILE_FULL, args);
+		new BacktestApplication(MATH_CONTEXT).runTest(new SingleConfigurationSignals(),
+		        new BacktestLaunchArgumentParser(args));
 	}
 
 	@Override
