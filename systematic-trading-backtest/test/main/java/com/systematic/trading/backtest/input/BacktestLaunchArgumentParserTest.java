@@ -35,6 +35,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import com.systematic.trading.backtest.BacktestApplication.OutputType;
+import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 
 /**
  * Test for the BacktestLaunchArgumentParser.
@@ -115,4 +116,12 @@ public class BacktestLaunchArgumentParserTest {
 		}
 	}
 
+	@Test
+	public void getBaseOutputDirectory() {
+		final String[] launchArguments = { "no-display" };
+
+		final BacktestLaunchArgumentParser parser = new BacktestLaunchArgumentParser(launchArguments);
+
+		assertEquals("../../simulations/WEEKLY_150/", parser.getBaseOutputDirectory(DepositConfiguration.WEEKLY_150));
+	}
 }

@@ -43,6 +43,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 public class BacktestLaunchArgumentParser {
 
 	private static final int EXPECTED_NUMBER_ARGUMENTS = 1;
+	private static final String BASE_OUTPUT_DIRECTORY = "../../simulations/%s/";
 	private static final Map<String, OutputType> outputTypeMapping = new HashMap<>();
 
 	static {
@@ -53,7 +54,6 @@ public class BacktestLaunchArgumentParser {
 	}
 
 	private final OutputType outputType;
-	private final String baseOutputDirectory;
 
 	public BacktestLaunchArgumentParser( final String... args ) {
 
@@ -66,27 +66,14 @@ public class BacktestLaunchArgumentParser {
 		if (hasNoOutputType()) {
 			incorrectArguments("First argument is not in the set of supported OutputTypes: %s", args[0]);
 		}
-
-		//TODO optional parameter - for file output only
-		this.baseOutputDirectory = getBaseOutputDirectory(args);
-
 	}
 
 	public String getBaseOutputDirectory( final DepositConfiguration depositAmount ) {
-		return String.format(baseOutputDirectory, depositAmount);
+		return String.format(BASE_OUTPUT_DIRECTORY, depositAmount);
 	}
 
 	public OutputType getOutputType() {
 		return outputType;
-	}
-
-	private String getBaseOutputDirectory( final String... args ) {
-
-		if (args != null && args.length > 0) {
-			return args[0] + "/%s/";
-		}
-
-		return "../../simulations/%s/";
 	}
 
 	private boolean hasIncorrectArgumentCount( final String... args ) {
