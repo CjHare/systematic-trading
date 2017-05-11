@@ -86,7 +86,7 @@ public class BacktestApplication {
 	//TODO rename file_full to file_complete
 	public enum OutputType {
 		ELASTIC_SEARCH,
-		FILE_FULL,
+		FILE_COMPLETE,
 		FILE_MINIMUM,
 		NO_DISPLAY;
 	}
@@ -100,12 +100,8 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfiguration configuration,final BacktestLaunchArgumentParser parserdArguments   )
-	        throws ServiceException {
-
-		final OutputType outputType = parserdArguments.getOutputType();
-		
-		final String baseOutputDirectory = getBaseOutputDirectory(args);
+	public void runTest( final BacktestConfiguration configuration,
+	        final BacktestLaunchArgumentParser parserdArguments ) throws ServiceException {
 
 		// Date range is from the first of the starting month until now
 		final LocalDate simulationEndDate = LocalDate.now();
@@ -134,9 +130,8 @@ public class BacktestApplication {
 			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
 				final List<BacktestBootstrapConfiguration> tests = configuration.get(equity, simulationDates,
 				        depositAmount);
-				final String outputDirectory = String.format(baseOutputDirectory, depositAmount);
 
-				runTest(depositAmount, outputDirectory, tests, tradingData, outputType, pool);
+				runTest(depositAmount, parserdArguments, tests, tradingData, pool);
 			}
 
 		} finally {
@@ -188,7 +183,7 @@ public class BacktestApplication {
 			switch (type) {
 				case ELASTIC_SEARCH:
 					return new ElasticBacktestOutput(batchId);
-				case FILE_FULL:
+				case FILE_COMPLETE:
 					return new CompleteFileOutputService(batchId,
 					        getOutputDirectory(baseOutputDirectory, configuration), pool, mathContext);
 				case FILE_MINIMUM:
@@ -204,18 +199,22 @@ public class BacktestApplication {
 		}
 	}
 
-	private void runTest( final DepositConfiguration depositAmount, final String baseOutputDirectory,
+	private void runTest( final DepositConfiguration depositAmount, final BacktestLaunchArgumentParser parserdArguments,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
-	        final OutputType type, final ExecutorService pool ) throws BacktestInitialisationException {
+	        final ExecutorService pool ) throws BacktestInitialisationException {
 
+		//TODO this should happen only once & be moved into the file DAOs
 		// Arrange output to files, only once per a run
+		final String outputDirectory = parserdArguments.getBaseOutputDirectory(depositAmount);
+		final OutputType type = parserdArguments.getOutputType();
+
 		if (isFileBasedDisplay(type)) {
-			new ClearFileDestination(baseOutputDirectory).clear();
+			new ClearFileDestination(outputDirectory).clear();
 		}
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 
-			final BacktestOutput fileDisplay = getOutput(type, configuration, baseOutputDirectory, pool);
+			final BacktestOutput fileDisplay = getOutput(type, configuration, outputDirectory, pool);
 			final BacktestBootstrapContext context = createContext(configuration);
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, fileDisplay, tradingData,
 			        mathContext);
@@ -228,11 +227,10 @@ public class BacktestApplication {
 		}
 
 		LOG.info(String.format("All Simulations have been completed for deposit amount: %s", depositAmount));
-
 	}
 
 	private boolean isFileBasedDisplay( final OutputType type ) {
-		return type == OutputType.FILE_FULL || type == OutputType.FILE_MINIMUM;
+		return type == OutputType.FILE_COMPLETE || type == OutputType.FILE_MINIMUM;
 	}
 
 	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration ) {
@@ -290,15 +288,5 @@ public class BacktestApplication {
 	private String getOutputDirectory( final String baseOutputDirectory,
 	        final BacktestBootstrapConfiguration configuration ) {
 		return String.format("%s%s", baseOutputDirectory, description.getDescription(configuration));
-	}
-
-	//TODO this should be in the file DAO classes!
-	private String getBaseOutputDirectory( final String... args ) {
-
-		if (args != null && args.length > 0) {
-			return args[0] + "/%s/";
-		}
-
-		return "../../simulations/%s/";
 	}
 }

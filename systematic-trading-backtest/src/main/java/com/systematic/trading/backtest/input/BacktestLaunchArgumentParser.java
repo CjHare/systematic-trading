@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.systematic.trading.backtest.BacktestApplication.OutputType;
+import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 
 /**
  * Parses the arguments given on launch, validating and converting them.
@@ -46,14 +47,15 @@ public class BacktestLaunchArgumentParser {
 
 	static {
 		outputTypeMapping.put("elastic-search", OutputType.ELASTIC_SEARCH);
-		outputTypeMapping.put("file-complete", OutputType.FILE_FULL);
+		outputTypeMapping.put("file-complete", OutputType.FILE_COMPLETE);
 		outputTypeMapping.put("file-minimum", OutputType.FILE_MINIMUM);
 		outputTypeMapping.put("no-display", OutputType.NO_DISPLAY);
 	}
 
 	private final OutputType outputType;
+	private final String baseOutputDirectory;
 
-	public BacktestLaunchArgumentParser(final String... args) {
+	public BacktestLaunchArgumentParser( final String... args ) {
 
 		if (hasIncorrectArgumentCount(args)) {
 			incorrectArguments("Expecting %s arguments, provided with: %s", EXPECTED_NUMBER_ARGUMENTS, args.length);
@@ -64,6 +66,27 @@ public class BacktestLaunchArgumentParser {
 		if (hasNoOutputType()) {
 			incorrectArguments("First argument is not in the set of supported OutputTypes: %s", args[0]);
 		}
+
+		//TODO optional parameter - for file output only
+		this.baseOutputDirectory = getBaseOutputDirectory(args);
+
+	}
+
+	public String getBaseOutputDirectory( final DepositConfiguration depositAmount ) {
+		return String.format(baseOutputDirectory, depositAmount);
+	}
+
+	public OutputType getOutputType() {
+		return outputType;
+	}
+
+	private String getBaseOutputDirectory( final String... args ) {
+
+		if (args != null && args.length > 0) {
+			return args[0] + "/%s/";
+		}
+
+		return "../../simulations/%s/";
 	}
 
 	private boolean hasIncorrectArgumentCount( final String... args ) {
@@ -76,9 +99,5 @@ public class BacktestLaunchArgumentParser {
 
 	private void incorrectArguments( final String message, final Object... arguments ) {
 		throw new IllegalArgumentException(String.format(message, arguments));
-	}
-
-	public OutputType getOutputType() {
-		return outputType;
 	}
 }

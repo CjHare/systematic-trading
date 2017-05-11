@@ -58,7 +58,7 @@ public class BacktestLaunchArgumentParserTest {
 
 		final BacktestLaunchArgumentParser parser = new BacktestLaunchArgumentParser(launchArguments);
 
-		assertEquals(OutputType.FILE_FULL, parser.getOutputType());
+		assertEquals(OutputType.FILE_COMPLETE, parser.getOutputType());
 	}
 
 	@Test
