@@ -83,7 +83,6 @@ public class BacktestApplication {
 	private static final int DAYS_IN_A_YEAR = 365;
 	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
 
-	//TODO rename file_full to file_complete
 	public enum OutputType {
 		ELASTIC_SEARCH,
 		FILE_COMPLETE,
@@ -128,10 +127,10 @@ public class BacktestApplication {
 
 		try {
 			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
-				final List<BacktestBootstrapConfiguration> tests = configuration.get(equity, simulationDates,
+				final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
 				        depositAmount);
 
-				runTest(depositAmount, parserdArguments, tests, tradingData, pool);
+				runTest(depositAmount, parserdArguments, configurations, tradingData, pool);
 			}
 
 		} finally {
@@ -174,6 +173,7 @@ public class BacktestApplication {
 		return Period.ofDays(windUp);
 	}
 
+	//TODO spring boot application - candidate for configuration flag
 	private BacktestOutput getOutput( final OutputType type, final BacktestBootstrapConfiguration configuration,
 	        final String baseOutputDirectory, final ExecutorService pool ) throws BacktestInitialisationException {
 
@@ -245,6 +245,7 @@ public class BacktestApplication {
 		final MaximumTrade maximumTrade = entry.getMaximumTrade();
 
 		//TODO move this switch into the builder
+		//TODO follow the builder pattern too
 		switch (configuration.getEntryLogic().getType()) {
 			case PERIODIC:
 				final Period purchaseFrequency = configuration.getEntryLogic().getPeriodic().getFrequency();
