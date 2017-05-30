@@ -29,8 +29,13 @@
  */
 package com.systematic.trading.backtest.input;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.BacktestApplication.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -42,37 +47,56 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
  */
 public class BacktestLaunchArgumentParser {
 
-	//TODO arguments passed in as pairs, with the key containing a minus prefix
-	
-	private static final int EXPECTED_NUMBER_ARGUMENTS = 1;
-	
+	/** Classes logger. */
+	private static final Logger LOG = LogManager.getLogger(BacktestLaunchArgumentParser.class);
+
+	private enum ArgumentKey {
+		OUTPUT_TYPE("-output");
+
+		private String key;
+
+		private ArgumentKey( final String key ) {
+			this.key = key;
+		}
+
+		private static Optional<ArgumentKey> get( final String arg ) {
+
+			for (final ArgumentKey candidate : ArgumentKey.values()) {
+				if (candidate.key.equals(arg)) {
+					return Optional.of(candidate);
+				}
+			}
+
+			return Optional.empty();
+
+		}
+	}
+
 	//TODO pass in - alternative batch for file output
 	private static final String BASE_OUTPUT_DIRECTORY = "../../simulations/%s/";
-	
+
 	private static final Map<String, OutputType> outputTypeMapping = new HashMap<>();
 
 	static {
-		outputTypeMapping.put("elastic-search", OutputType.ELASTIC_SEARCH);
-		outputTypeMapping.put("file-complete", OutputType.FILE_COMPLETE);
-		outputTypeMapping.put("file-minimum", OutputType.FILE_MINIMUM);
-		outputTypeMapping.put("no-display", OutputType.NO_DISPLAY);
+		outputTypeMapping.put("elastic_search", OutputType.ELASTIC_SEARCH);
+		outputTypeMapping.put("file_complete", OutputType.FILE_COMPLETE);
+		outputTypeMapping.put("file_minimum", OutputType.FILE_MINIMUM);
+		outputTypeMapping.put("no_display", OutputType.NO_DISPLAY);
 	}
 
 	private final OutputType outputType;
 
-	//TODO key parsing, logging unknown keys
 	//TODO fail on missing mandatory keys, validator pattern
-	
+
 	public BacktestLaunchArgumentParser( final String... args ) {
 
-		if (hasIncorrectArgumentCount(args)) {
-			incorrectArguments("Expecting %s arguments, provided with: %s", EXPECTED_NUMBER_ARGUMENTS, args.length);
-		}
+		final Map<ArgumentKey, String> arguments = parseArguments(args);
 
-		this.outputType = outputTypeMapping.get(args[0]);
+		this.outputType = outputTypeMapping.get(arguments.get(ArgumentKey.OUTPUT_TYPE));
 
 		if (hasNoOutputType()) {
-			incorrectArguments("First argument is not in the set of supported OutputTypes: %s", args[0]);
+			incorrectArguments("Output argument is not in the set of supported OutputTypes: %s",
+			        arguments.get(ArgumentKey.OUTPUT_TYPE));
 		}
 	}
 
@@ -84,15 +108,39 @@ public class BacktestLaunchArgumentParser {
 		return outputType;
 	}
 
-	private boolean hasIncorrectArgumentCount( final String... args ) {
-		return args.length != EXPECTED_NUMBER_ARGUMENTS;
-	}
-
 	private boolean hasNoOutputType() {
 		return this.outputType == null;
 	}
 
 	private void incorrectArguments( final String message, final Object... arguments ) {
 		throw new IllegalArgumentException(String.format(message, arguments));
+	}
+
+	private Map<ArgumentKey, String> parseArguments( final String... args ) {
+
+		final Map<ArgumentKey, String> argumentPairs = new EnumMap<>(ArgumentKey.class);
+
+		for (int i = 0; i < args.length; i++) {
+
+			final Optional<ArgumentKey> key = ArgumentKey.get(args[i]);
+
+			if (key.isPresent()) {
+				if (hasInsufficuentArgumentCount(i + 1, args)) {
+					incorrectArguments("Missing value for argument key %w", args[i]);
+				}
+
+				argumentPairs.put(key.get(), args[++i]);
+
+			} else {
+
+				LOG.warn(String.format("Unknown / unused argument %s", args[i]));
+			}
+		}
+
+		return argumentPairs;
+	}
+
+	private boolean hasInsufficuentArgumentCount( final int index, final String... args ) {
+		return index >= args.length;
 	}
 }

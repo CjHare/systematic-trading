@@ -46,7 +46,7 @@ public class BacktestLaunchArgumentParserTest {
 
 	@Test
 	public void outputTypeElasticSearch() {
-		final String[] launchArguments = { "elastic-search" };
+		final String[] launchArguments = { "-output", "elastic_search" };
 
 		final BacktestLaunchArgumentParser parser = new BacktestLaunchArgumentParser(launchArguments);
 
@@ -55,7 +55,7 @@ public class BacktestLaunchArgumentParserTest {
 
 	@Test
 	public void outputTypeFileComplete() {
-		final String[] launchArguments = { "file-complete" };
+		final String[] launchArguments = { "-output", "file_complete" };
 
 		final BacktestLaunchArgumentParser parser = new BacktestLaunchArgumentParser(launchArguments);
 
@@ -64,7 +64,7 @@ public class BacktestLaunchArgumentParserTest {
 
 	@Test
 	public void outputTypeFileMinimum() {
-		final String[] launchArguments = { "file-minimum" };
+		final String[] launchArguments = { "-output", "file_minimum" };
 
 		final BacktestLaunchArgumentParser parser = new BacktestLaunchArgumentParser(launchArguments);
 
@@ -73,7 +73,7 @@ public class BacktestLaunchArgumentParserTest {
 
 	@Test
 	public void outputTypeNoDisplay() {
-		final String[] launchArguments = { "no-display" };
+		final String[] launchArguments = { "-output", "no_display" };
 
 		final BacktestLaunchArgumentParser parser = new BacktestLaunchArgumentParser(launchArguments);
 
@@ -87,25 +87,22 @@ public class BacktestLaunchArgumentParserTest {
 			new BacktestLaunchArgumentParser();
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("Expecting 1 arguments, provided with: 0", e.getMessage());
+			assertEquals("Output argument is not in the set of supported OutputTypes: null", e.getMessage());
 		}
 	}
 
 	@Test
 	public void tooManyArguments() {
-		final String[] launchArguments = { "no-display", "another-argument" };
+		final String[] launchArguments = { "-output", "no_display", "another_argument" };
 
-		try {
-			new BacktestLaunchArgumentParser(launchArguments);
-			fail("expecting an exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals("Expecting 1 arguments, provided with: 2", e.getMessage());
-		}
+		final BacktestLaunchArgumentParser parser = new BacktestLaunchArgumentParser(launchArguments);
+
+		assertEquals(OutputType.NO_DISPLAY, parser.getOutputType());
 	}
 
 	@Test
 	public void withoutMatchingOutputType() {
-		final String[] launchArguments = { "unmatched output type" };
+		final String[] launchArguments = { "-output", "unmatched output type" };
 
 		try {
 			new BacktestLaunchArgumentParser(launchArguments);
@@ -118,7 +115,7 @@ public class BacktestLaunchArgumentParserTest {
 
 	@Test
 	public void getBaseOutputDirectory() {
-		final String[] launchArguments = { "no-display" };
+		final String[] launchArguments = { "-output", "no_display" };
 
 		final BacktestLaunchArgumentParser parser = new BacktestLaunchArgumentParser(launchArguments);
 

@@ -92,7 +92,7 @@ public class BacktestApplication {
 
 	private final MathContext mathContext;
 
-	// TODO the description is specific to the type of output - file, console, elastic :. refactor
+	// TODO the description is specific to the type of output - file, console, elastic :. refactor - move into BacktestLaunchArgumentParser
 	private final DescriptionGenerator description = new DescriptionGenerator();
 
 	public BacktestApplication( final MathContext mathContext ) {
