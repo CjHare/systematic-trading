@@ -42,8 +42,13 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
  */
 public class BacktestLaunchArgumentParser {
 
+	//TODO arguments passed in as pairs, with the key containing a minus prefix
+	
 	private static final int EXPECTED_NUMBER_ARGUMENTS = 1;
+	
+	//TODO pass in - alternative batch for file output
 	private static final String BASE_OUTPUT_DIRECTORY = "../../simulations/%s/";
+	
 	private static final Map<String, OutputType> outputTypeMapping = new HashMap<>();
 
 	static {
@@ -55,6 +60,9 @@ public class BacktestLaunchArgumentParser {
 
 	private final OutputType outputType;
 
+	//TODO key parsing, logging unknown keys
+	//TODO fail on missing mandatory keys, validator pattern
+	
 	public BacktestLaunchArgumentParser( final String... args ) {
 
 		if (hasIncorrectArgumentCount(args)) {
