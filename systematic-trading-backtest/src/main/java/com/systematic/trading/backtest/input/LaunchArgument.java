@@ -29,45 +29,14 @@
  */
 package com.systematic.trading.backtest.input;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import com.systematic.trading.backtest.configuration.OutputType;
-import com.systematic.trading.backtest.input.BacktestLaunchArguments.ArgumentKey;
+import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
- * Launch argument parsers and validator for the output type key value pairing.
- * 
  * @author CJ Hare
  */
-public class BacktestOutputLaunchArgument implements BacktestLaunchArgument<OutputType> {
+public interface LaunchArgument<T> {
 
-	private static final Map<String, OutputType> OUTPUT_TYPE_MAPPING = new HashMap<>();
-
-	static {
-		OUTPUT_TYPE_MAPPING.put("elastic_search", OutputType.ELASTIC_SEARCH);
-		OUTPUT_TYPE_MAPPING.put("file_complete", OutputType.FILE_COMPLETE);
-		OUTPUT_TYPE_MAPPING.put("file_minimum", OutputType.FILE_MINIMUM);
-		OUTPUT_TYPE_MAPPING.put("no_display", OutputType.NO_DISPLAY);
-	}
-
-	private boolean isUnmappedOutputType( final OutputType outputType ) {
-		return outputType == null;
-	}
-
-	private void incorrectArguments( final String message, final Object... arguments ) {
-		throw new IllegalArgumentException(String.format(message, arguments));
-	}
-
-	@Override
-	public OutputType get( final Map<ArgumentKey, String> arguments ) {
-		final OutputType outputType = OUTPUT_TYPE_MAPPING.get(arguments.get(ArgumentKey.OUTPUT_TYPE));
-
-		if (isUnmappedOutputType(outputType)) {
-			incorrectArguments("Output argument is not in the set of supported OutputTypes: %s",
-			        arguments.get(ArgumentKey.OUTPUT_TYPE));
-		}
-
-		return outputType;
-	}
+	T get( Map<ArgumentKey, String> arguments );
 }

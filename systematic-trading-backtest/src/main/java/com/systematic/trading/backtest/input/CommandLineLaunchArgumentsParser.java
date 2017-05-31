@@ -29,14 +29,54 @@
  */
 package com.systematic.trading.backtest.input;
 
+import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
-import com.systematic.trading.backtest.input.BacktestLaunchArguments.ArgumentKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
+ * Parses the launch arguments, converting them into a typed map.
+ * 
  * @author CJ Hare
  */
-public interface BacktestLaunchArgument<T> {
+public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 
-	T get( Map<ArgumentKey, String> arguments );
+	/** Classes logger. */
+	private static final Logger LOG = LogManager.getLogger(CommandLineLaunchArgumentsParser.class);
+
+	public Map<ArgumentKey, String> parse( final String... args ) {
+
+		final Map<ArgumentKey, String> argumentPairs = new EnumMap<>(ArgumentKey.class);
+
+		for (int i = 0; i < args.length; i++) {
+
+			final Optional<ArgumentKey> key = ArgumentKey.get(args[i]);
+
+			if (key.isPresent()) {
+				if (hasInsufficuentArgumentCount(i + 1, args)) {
+					incorrectArguments("Missing value for argument key %w", args[i]);
+				}
+
+				argumentPairs.put(key.get(), args[++i]);
+
+			} else {
+
+				LOG.warn(String.format("Unknown / unused argument %s", args[i]));
+			}
+		}
+
+		return argumentPairs;
+	}
+
+	private boolean hasInsufficuentArgumentCount( final int index, final String... args ) {
+		return index >= args.length;
+	}
+
+	private void incorrectArguments( final String message, final Object... arguments ) {
+		throw new IllegalArgumentException(String.format(message, arguments));
+	}
 }

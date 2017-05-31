@@ -42,14 +42,14 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
  * 
  * @author CJ Hare
  */
-public class BacktestLaunchArgumentsTest {
+public class LaunchArgumentsTest {
 
 	@Test
 	public void outputTypeElasticSearch() {
 		final String[] launchArguments = { "-output", "elastic_search" };
 
-		final BacktestLaunchArguments parser = new BacktestLaunchArguments(
-		        new BacktestCommandLineLaunchArgumentsParser(), new BacktestOutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(
+		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.ELASTIC_SEARCH, parser.getOutputType());
 	}
@@ -58,8 +58,8 @@ public class BacktestLaunchArgumentsTest {
 	public void outputTypeFileComplete() {
 		final String[] launchArguments = { "-output", "file_complete" };
 
-		final BacktestLaunchArguments parser = new BacktestLaunchArguments(
-		        new BacktestCommandLineLaunchArgumentsParser(), new BacktestOutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(
+		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.FILE_COMPLETE, parser.getOutputType());
 	}
@@ -68,8 +68,8 @@ public class BacktestLaunchArgumentsTest {
 	public void outputTypeFileMinimum() {
 		final String[] launchArguments = { "-output", "file_minimum" };
 
-		final BacktestLaunchArguments parser = new BacktestLaunchArguments(
-		        new BacktestCommandLineLaunchArgumentsParser(), new BacktestOutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(
+		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.FILE_MINIMUM, parser.getOutputType());
 	}
@@ -78,8 +78,8 @@ public class BacktestLaunchArgumentsTest {
 	public void outputTypeNoDisplay() {
 		final String[] launchArguments = { "-output", "no_display" };
 
-		final BacktestLaunchArguments parser = new BacktestLaunchArguments(
-		        new BacktestCommandLineLaunchArgumentsParser(), new BacktestOutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(
+		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.NO_DISPLAY, parser.getOutputType());
 	}
@@ -88,8 +88,8 @@ public class BacktestLaunchArgumentsTest {
 	public void tooFewArguments() {
 
 		try {
-			new BacktestLaunchArguments(new BacktestCommandLineLaunchArgumentsParser(),
-			        new BacktestOutputLaunchArgument());
+			new LaunchArguments(new CommandLineLaunchArgumentsParser(),
+			        new OutputLaunchArgument());
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals("Output argument is not in the set of supported OutputTypes: null", e.getMessage());
@@ -100,8 +100,8 @@ public class BacktestLaunchArgumentsTest {
 	public void tooManyArguments() {
 		final String[] launchArguments = { "-output", "no_display", "another_argument" };
 
-		final BacktestLaunchArguments parser = new BacktestLaunchArguments(
-		        new BacktestCommandLineLaunchArgumentsParser(), new BacktestOutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(
+		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.NO_DISPLAY, parser.getOutputType());
 	}
@@ -111,8 +111,8 @@ public class BacktestLaunchArgumentsTest {
 		final String[] launchArguments = { "-output", "unmatched output type" };
 
 		try {
-			new BacktestLaunchArguments(new BacktestCommandLineLaunchArgumentsParser(),
-			        new BacktestOutputLaunchArgument(), launchArguments);
+			new LaunchArguments(new CommandLineLaunchArgumentsParser(),
+			        new OutputLaunchArgument(), launchArguments);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals("Output argument is not in the set of supported OutputTypes: unmatched output type",
@@ -124,8 +124,8 @@ public class BacktestLaunchArgumentsTest {
 	public void getBaseOutputDirectory() {
 		final String[] launchArguments = { "-output", "no_display" };
 
-		final BacktestLaunchArguments parser = new BacktestLaunchArguments(
-		        new BacktestCommandLineLaunchArgumentsParser(), new BacktestOutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(
+		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
 
 		assertEquals("../../simulations/WEEKLY_150/", parser.getBaseOutputDirectory(DepositConfiguration.WEEKLY_150));
 	}

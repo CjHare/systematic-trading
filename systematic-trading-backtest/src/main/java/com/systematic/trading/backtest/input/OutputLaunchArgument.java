@@ -29,63 +29,45 @@
  */
 package com.systematic.trading.backtest.input;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import com.systematic.trading.backtest.configuration.OutputType;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
- * Parses the arguments given on launch, validating and converting them.
+ * Launch argument parsers and validator for the output type key value pairing.
  * 
  * @author CJ Hare
  */
-public class BacktestLaunchArguments {
+public class OutputLaunchArgument implements LaunchArgument<OutputType> {
 
-	//TODO drop the backtest prefix
+	private static final Map<String, OutputType> OUTPUT_TYPE_MAPPING = new HashMap<>();
 
-	enum ArgumentKey {
-		OUTPUT_TYPE("-output");
-
-		private final String key;
-
-		private ArgumentKey( final String key ) {
-			this.key = key;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public static Optional<ArgumentKey> get( final String arg ) {
-
-			for (final ArgumentKey candidate : ArgumentKey.values()) {
-				if (candidate.key.equals(arg)) {
-					return Optional.of(candidate);
-				}
-			}
-
-			return Optional.empty();
-
-		}
+	static {
+		OUTPUT_TYPE_MAPPING.put("elastic_search", OutputType.ELASTIC_SEARCH);
+		OUTPUT_TYPE_MAPPING.put("file_complete", OutputType.FILE_COMPLETE);
+		OUTPUT_TYPE_MAPPING.put("file_minimum", OutputType.FILE_MINIMUM);
+		OUTPUT_TYPE_MAPPING.put("no_display", OutputType.NO_DISPLAY);
 	}
 
-	//TODO pass in - alternative batch for file output
-	private static final String BASE_OUTPUT_DIRECTORY = "../../simulations/%s/";
-
-	private final OutputType outputType;
-
-	public BacktestLaunchArguments( final BacktestLaunchArgumentsParser argumentParser,
-	        final BacktestLaunchArgument<OutputType> outputArgument, final String... args ) {
-		final Map<ArgumentKey, String> arguments = argumentParser.parse(args);
-		this.outputType = outputArgument.get(arguments);
+	private boolean isUnmappedOutputType( final OutputType outputType ) {
+		return outputType == null;
 	}
 
-	public String getBaseOutputDirectory( final DepositConfiguration depositAmount ) {
-		return String.format(BASE_OUTPUT_DIRECTORY, depositAmount);
+	private void incorrectArguments( final String message, final Object... arguments ) {
+		throw new IllegalArgumentException(String.format(message, arguments));
 	}
 
-	public OutputType getOutputType() {
+	@Override
+	public OutputType get( final Map<ArgumentKey, String> arguments ) {
+		final OutputType outputType = OUTPUT_TYPE_MAPPING.get(arguments.get(ArgumentKey.OUTPUT_TYPE));
+
+		if (isUnmappedOutputType(outputType)) {
+			incorrectArguments("Output argument is not in the set of supported OutputTypes: %s",
+			        arguments.get(ArgumentKey.OUTPUT_TYPE));
+		}
+
 		return outputType;
 	}
 }

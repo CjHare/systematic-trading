@@ -30,15 +30,62 @@
 package com.systematic.trading.backtest.input;
 
 import java.util.Map;
+import java.util.Optional;
 
-import com.systematic.trading.backtest.input.BacktestLaunchArguments.ArgumentKey;
+import com.systematic.trading.backtest.configuration.OutputType;
+import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 
 /**
- * Parses a feed of launch arguments for the back test application.
+ * Parses the arguments given on launch, validating and converting them.
  * 
  * @author CJ Hare
  */
-public interface BacktestLaunchArgumentsParser {
+public class LaunchArguments {
 
-	Map<ArgumentKey, String> parse( final String... args );
+	//TODO drop the backtest prefix
+
+	enum ArgumentKey {
+		OUTPUT_TYPE("-output");
+
+		private final String key;
+
+		private ArgumentKey( final String key ) {
+			this.key = key;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public static Optional<ArgumentKey> get( final String arg ) {
+
+			for (final ArgumentKey candidate : ArgumentKey.values()) {
+				if (candidate.key.equals(arg)) {
+					return Optional.of(candidate);
+				}
+			}
+
+			return Optional.empty();
+
+		}
+	}
+
+	//TODO pass in - alternative batch for file output
+	private static final String BASE_OUTPUT_DIRECTORY = "../../simulations/%s/";
+
+	private final OutputType outputType;
+
+	public LaunchArguments( final LaunchArgumentsParser argumentParser,
+	        final LaunchArgument<OutputType> outputArgument, final String... args ) {
+		final Map<ArgumentKey, String> arguments = argumentParser.parse(args);
+		this.outputType = outputArgument.get(arguments);
+	}
+
+	public String getBaseOutputDirectory( final DepositConfiguration depositAmount ) {
+		return String.format(BASE_OUTPUT_DIRECTORY, depositAmount);
+	}
+
+	public OutputType getOutputType() {
+		return outputType;
+	}
 }

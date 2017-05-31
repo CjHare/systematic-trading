@@ -50,7 +50,7 @@ import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
-import com.systematic.trading.backtest.input.BacktestLaunchArguments;
+import com.systematic.trading.backtest.input.LaunchArguments;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.DescriptionGenerator;
 import com.systematic.trading.backtest.output.NoBacktestOutput;
@@ -93,7 +93,7 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfiguration configuration, final BacktestLaunchArguments parserdArguments )
+	public void runTest( final BacktestConfiguration configuration, final LaunchArguments parserdArguments )
 	        throws ServiceException {
 
 		// Date range is from the first of the starting month until now
@@ -193,7 +193,7 @@ public class BacktestApplication {
 		}
 	}
 
-	private void runTest( final DepositConfiguration depositAmount, final BacktestLaunchArguments parserdArguments,
+	private void runTest( final DepositConfiguration depositAmount, final LaunchArguments parserdArguments,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
 	        final ExecutorService pool ) throws BacktestInitialisationException {
 
