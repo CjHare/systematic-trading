@@ -37,7 +37,9 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicConfigurati
 import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
-import com.systematic.trading.backtest.input.BacktestLaunchArgumentParser;
+import com.systematic.trading.backtest.input.BacktestCommandLineLaunchArgumentsParser;
+import com.systematic.trading.backtest.input.BacktestLaunchArguments;
+import com.systematic.trading.backtest.input.BacktestOutputLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 
@@ -52,7 +54,8 @@ public class AllConfigurations implements BacktestConfiguration {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	public static void main( final String... args ) throws Exception {
-		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), new BacktestLaunchArgumentParser(args));
+		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(), new BacktestLaunchArguments(
+		        new BacktestCommandLineLaunchArgumentsParser(), new BacktestOutputLaunchArgument(), args));
 	}
 
 	@Override

@@ -29,15 +29,10 @@
  */
 package com.systematic.trading.backtest.input;
 
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.backtest.BacktestApplication.OutputType;
+import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 
 /**
@@ -45,21 +40,24 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
  * 
  * @author CJ Hare
  */
-public class BacktestLaunchArgumentParser {
+public class BacktestLaunchArguments {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(BacktestLaunchArgumentParser.class);
+	//TODO drop the backtest prefix
 
-	private enum ArgumentKey {
+	enum ArgumentKey {
 		OUTPUT_TYPE("-output");
 
-		private String key;
+		private final String key;
 
 		private ArgumentKey( final String key ) {
 			this.key = key;
 		}
 
-		private static Optional<ArgumentKey> get( final String arg ) {
+		public String getKey() {
+			return key;
+		}
+
+		public static Optional<ArgumentKey> get( final String arg ) {
 
 			for (final ArgumentKey candidate : ArgumentKey.values()) {
 				if (candidate.key.equals(arg)) {
@@ -75,29 +73,12 @@ public class BacktestLaunchArgumentParser {
 	//TODO pass in - alternative batch for file output
 	private static final String BASE_OUTPUT_DIRECTORY = "../../simulations/%s/";
 
-	private static final Map<String, OutputType> outputTypeMapping = new HashMap<>();
-
-	static {
-		outputTypeMapping.put("elastic_search", OutputType.ELASTIC_SEARCH);
-		outputTypeMapping.put("file_complete", OutputType.FILE_COMPLETE);
-		outputTypeMapping.put("file_minimum", OutputType.FILE_MINIMUM);
-		outputTypeMapping.put("no_display", OutputType.NO_DISPLAY);
-	}
-
 	private final OutputType outputType;
 
-	//TODO fail on missing mandatory keys, validator pattern
-
-	public BacktestLaunchArgumentParser( final String... args ) {
-
-		final Map<ArgumentKey, String> arguments = parseArguments(args);
-
-		this.outputType = outputTypeMapping.get(arguments.get(ArgumentKey.OUTPUT_TYPE));
-
-		if (hasNoOutputType()) {
-			incorrectArguments("Output argument is not in the set of supported OutputTypes: %s",
-			        arguments.get(ArgumentKey.OUTPUT_TYPE));
-		}
+	public BacktestLaunchArguments( final BacktestLaunchArgumentsParser argumentParser,
+	        final BacktestLaunchArgument<OutputType> outputArgument, final String... args ) {
+		final Map<ArgumentKey, String> arguments = argumentParser.parse(args);
+		this.outputType = outputArgument.get(arguments);
 	}
 
 	public String getBaseOutputDirectory( final DepositConfiguration depositAmount ) {
@@ -106,41 +87,5 @@ public class BacktestLaunchArgumentParser {
 
 	public OutputType getOutputType() {
 		return outputType;
-	}
-
-	private boolean hasNoOutputType() {
-		return this.outputType == null;
-	}
-
-	private void incorrectArguments( final String message, final Object... arguments ) {
-		throw new IllegalArgumentException(String.format(message, arguments));
-	}
-
-	private Map<ArgumentKey, String> parseArguments( final String... args ) {
-
-		final Map<ArgumentKey, String> argumentPairs = new EnumMap<>(ArgumentKey.class);
-
-		for (int i = 0; i < args.length; i++) {
-
-			final Optional<ArgumentKey> key = ArgumentKey.get(args[i]);
-
-			if (key.isPresent()) {
-				if (hasInsufficuentArgumentCount(i + 1, args)) {
-					incorrectArguments("Missing value for argument key %w", args[i]);
-				}
-
-				argumentPairs.put(key.get(), args[++i]);
-
-			} else {
-
-				LOG.warn(String.format("Unknown / unused argument %s", args[i]));
-			}
-		}
-
-		return argumentPairs;
-	}
-
-	private boolean hasInsufficuentArgumentCount( final int index, final String... args ) {
-		return index >= args.length;
 	}
 }
