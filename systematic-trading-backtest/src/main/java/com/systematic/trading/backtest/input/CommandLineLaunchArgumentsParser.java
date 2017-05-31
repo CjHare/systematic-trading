@@ -48,7 +48,8 @@ public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(CommandLineLaunchArgumentsParser.class);
 
-	public Map<ArgumentKey, String> parse( final String... args ) {
+	@Override
+	public Map<ArgumentKey, String> parse( final String[] args ) {
 
 		final Map<ArgumentKey, String> argumentPairs = new EnumMap<>(ArgumentKey.class);
 

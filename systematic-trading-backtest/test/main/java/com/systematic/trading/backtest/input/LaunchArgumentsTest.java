@@ -31,102 +31,131 @@ package com.systematic.trading.backtest.input;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
  * Test for the BacktestLaunchArgumentParser.
  * 
  * @author CJ Hare
  */
+@RunWith(MockitoJUnitRunner.class)
 public class LaunchArgumentsTest {
+
+	@Mock
+	private LaunchArgumentsParser argumentParser;
+
+	@Test
+	public void tooManyArguments() {
+		final String[] launchArguments = { "-output", "no_display", "another_argument" };
+		setUpArgumentMap("no_display");
+
+		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
+
+		assertEquals(OutputType.NO_DISPLAY, parser.getOutputType());
+		verify(argumentParser).parse(launchArguments);
+	}
 
 	@Test
 	public void outputTypeElasticSearch() {
 		final String[] launchArguments = { "-output", "elastic_search" };
+		setUpArgumentMap("elastic_search");
 
-		final LaunchArguments parser = new LaunchArguments(
-		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.ELASTIC_SEARCH, parser.getOutputType());
+		verify(argumentParser).parse(launchArguments);
 	}
 
 	@Test
 	public void outputTypeFileComplete() {
 		final String[] launchArguments = { "-output", "file_complete" };
+		setUpArgumentMap("file_complete");
 
-		final LaunchArguments parser = new LaunchArguments(
-		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.FILE_COMPLETE, parser.getOutputType());
+		verify(argumentParser).parse(launchArguments);
 	}
 
 	@Test
 	public void outputTypeFileMinimum() {
 		final String[] launchArguments = { "-output", "file_minimum" };
+		setUpArgumentMap("file_minimum");
 
-		final LaunchArguments parser = new LaunchArguments(
-		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.FILE_MINIMUM, parser.getOutputType());
+		verify(argumentParser).parse(launchArguments);
 	}
 
 	@Test
 	public void outputTypeNoDisplay() {
 		final String[] launchArguments = { "-output", "no_display" };
+		setUpArgumentMap("no_display");
 
-		final LaunchArguments parser = new LaunchArguments(
-		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.NO_DISPLAY, parser.getOutputType());
+		verify(argumentParser).parse(launchArguments);
 	}
 
 	@Test
 	public void tooFewArguments() {
+		when(argumentParser.parse(any(String[].class)))
+		        .thenThrow(new IllegalArgumentException("Expected exception message"));
 
 		try {
-			new LaunchArguments(new CommandLineLaunchArgumentsParser(),
-			        new OutputLaunchArgument());
+			new LaunchArguments(argumentParser, new OutputLaunchArgument());
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("Output argument is not in the set of supported OutputTypes: null", e.getMessage());
+			assertEquals("Expected exception message", e.getMessage());
 		}
-	}
-
-	@Test
-	public void tooManyArguments() {
-		final String[] launchArguments = { "-output", "no_display", "another_argument" };
-
-		final LaunchArguments parser = new LaunchArguments(
-		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
-
-		assertEquals(OutputType.NO_DISPLAY, parser.getOutputType());
 	}
 
 	@Test
 	public void withoutMatchingOutputType() {
 		final String[] launchArguments = { "-output", "unmatched output type" };
+		when(argumentParser.parse(any(String[].class)))
+		        .thenThrow(new IllegalArgumentException("Expected exception message"));
 
 		try {
-			new LaunchArguments(new CommandLineLaunchArgumentsParser(),
-			        new OutputLaunchArgument(), launchArguments);
+			new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("Output argument is not in the set of supported OutputTypes: unmatched output type",
-			        e.getMessage());
+			assertEquals("Expected exception message", e.getMessage());
 		}
 	}
 
 	@Test
 	public void getBaseOutputDirectory() {
 		final String[] launchArguments = { "-output", "no_display" };
+		setUpArgumentMap("no_display");
 
-		final LaunchArguments parser = new LaunchArguments(
-		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
 
 		assertEquals("../../simulations/WEEKLY_150/", parser.getBaseOutputDirectory(DepositConfiguration.WEEKLY_150));
+		verify(argumentParser).parse(launchArguments);
+	}
+
+	private void setUpArgumentMap( final String outputValue ) {
+		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
+
+		arguments.put(ArgumentKey.OUTPUT_TYPE, outputValue);
+
+		when(argumentParser.parse(any(String[].class))).thenReturn(arguments);
 	}
 }

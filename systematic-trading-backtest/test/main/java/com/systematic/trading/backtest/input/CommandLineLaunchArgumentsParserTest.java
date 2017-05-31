@@ -29,17 +29,37 @@
  */
 package com.systematic.trading.backtest.input;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Map;
+
+import org.junit.Test;
 
 import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
- * Parses a feed of launch arguments for the back test application.
- * 
  * @author CJ Hare
  */
-public interface LaunchArgumentsParser {
+public class CommandLineLaunchArgumentsParserTest {
 
-	//TODO change back to String... after updating mockito version
-	Map<ArgumentKey, String> parse( final String[] args );
+	@Test
+	public void tooManyArguments() {
+		final String[] launchArguments = { "-output", "no_display", "another_argument" };
+
+		final Map<ArgumentKey, String> results = new CommandLineLaunchArgumentsParser().parse(launchArguments);
+
+		assertNotNull(results);
+		assertEquals("no_display", results.get(ArgumentKey.OUTPUT_TYPE));
+	}
+
+	@Test
+	public void outputTypeElasticSearch() {
+		final String[] launchArguments = { "-output", "elastic_search" };
+
+		final Map<ArgumentKey, String> results = new CommandLineLaunchArgumentsParser().parse(launchArguments);
+
+		assertNotNull(results);
+		assertEquals("elastic_search", results.get(ArgumentKey.OUTPUT_TYPE));
+	}
 }
