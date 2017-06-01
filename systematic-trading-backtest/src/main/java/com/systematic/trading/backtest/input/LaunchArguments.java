@@ -42,8 +42,6 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
  */
 public class LaunchArguments {
 
-	//TODO drop the backtest prefix
-
 	enum ArgumentKey {
 		OUTPUT_TYPE("-output");
 
@@ -75,8 +73,8 @@ public class LaunchArguments {
 
 	private final OutputType outputType;
 
-	public LaunchArguments( final LaunchArgumentsParser argumentParser,
-	        final LaunchArgument<OutputType> outputArgument, final String... args ) {
+	public LaunchArguments( final LaunchArgumentsParser argumentParser, final LaunchArgument<OutputType> outputArgument,
+	        final String... args ) {
 		final Map<ArgumentKey, String> arguments = argumentParser.parse(args);
 		this.outputType = outputArgument.get(arguments);
 	}

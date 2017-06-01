@@ -59,18 +59,7 @@ public class LaunchArgumentsTest {
 	private LaunchArgumentsParser argumentParser;
 
 	@Test
-	public void tooManyArguments() {
-		final String[] launchArguments = { "-output", "no_display", "another_argument" };
-		setUpArgumentMap("no_display");
-
-		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
-
-		assertEquals(OutputType.NO_DISPLAY, parser.getOutputType());
-		verify(argumentParser).parse(launchArguments);
-	}
-
-	@Test
-	public void outputTypeElasticSearch() {
+	public void knownOutputType() {
 		final String[] launchArguments = { "-output", "elastic_search" };
 		setUpArgumentMap("elastic_search");
 
@@ -81,30 +70,8 @@ public class LaunchArgumentsTest {
 	}
 
 	@Test
-	public void outputTypeFileComplete() {
-		final String[] launchArguments = { "-output", "file_complete" };
-		setUpArgumentMap("file_complete");
-
-		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
-
-		assertEquals(OutputType.FILE_COMPLETE, parser.getOutputType());
-		verify(argumentParser).parse(launchArguments);
-	}
-
-	@Test
-	public void outputTypeFileMinimum() {
-		final String[] launchArguments = { "-output", "file_minimum" };
-		setUpArgumentMap("file_minimum");
-
-		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
-
-		assertEquals(OutputType.FILE_MINIMUM, parser.getOutputType());
-		verify(argumentParser).parse(launchArguments);
-	}
-
-	@Test
-	public void outputTypeNoDisplay() {
-		final String[] launchArguments = { "-output", "no_display" };
+	public void extraArguments() {
+		final String[] launchArguments = { "-output", "no_display", "another_argument" };
 		setUpArgumentMap("no_display");
 
 		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
