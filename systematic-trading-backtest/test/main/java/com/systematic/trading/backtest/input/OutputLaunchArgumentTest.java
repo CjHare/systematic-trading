@@ -29,45 +29,75 @@
  */
 package com.systematic.trading.backtest.input;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.Test;
 
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
- * Launch argument parser and validation for the output type key value pairing.
+ * Unit test for the OutputLaunchArgument.
  * 
  * @author CJ Hare
  */
-public class OutputLaunchArgument implements LaunchArgument<OutputType> {
+public class OutputLaunchArgumentTest {
 
-	private static final Map<String, OutputType> OUTPUT_TYPE_MAPPING = new HashMap<>();
-
-	static {
-		OUTPUT_TYPE_MAPPING.put("elastic_search", OutputType.ELASTIC_SEARCH);
-		OUTPUT_TYPE_MAPPING.put("file_complete", OutputType.FILE_COMPLETE);
-		OUTPUT_TYPE_MAPPING.put("file_minimum", OutputType.FILE_MINIMUM);
-		OUTPUT_TYPE_MAPPING.put("no_display", OutputType.NO_DISPLAY);
-	}
-
-	@Override
-	public OutputType get( final Map<ArgumentKey, String> arguments ) {
-		final OutputType outputType = OUTPUT_TYPE_MAPPING.get(arguments.get(ArgumentKey.OUTPUT_TYPE));
-
-		if (isUnmappedOutputType(outputType)) {
-			incorrectArguments("%s argument is not in the set of supported OutputTypes: %s",
-			        ArgumentKey.OUTPUT_TYPE.getKey(), arguments.get(ArgumentKey.OUTPUT_TYPE));
+	@Test
+	public void unknownOutputType() {
+		try {
+			new OutputLaunchArgument().get(setUpArguments("unknown"));
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("-output argument is not in the set of supported OutputTypes: unknown", e.getMessage());
 		}
-
-		return outputType;
 	}
 
-	private boolean isUnmappedOutputType( final OutputType outputType ) {
-		return outputType == null;
+	@Test
+	public void nullOutputType() {
+		try {
+			new OutputLaunchArgument().get(setUpArguments(null));
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("-output argument is not in the set of supported OutputTypes: null", e.getMessage());
+		}
 	}
 
-	private void incorrectArguments( final String message, final Object... arguments ) {
-		throw new IllegalArgumentException(String.format(message, arguments));
+	@Test
+	public void noDisplayOutputType() {
+		final OutputType output = new OutputLaunchArgument().get(setUpArguments("no_display"));
+
+		assertEquals(OutputType.NO_DISPLAY, output);
+	}
+
+	@Test
+	public void fileMinimumOutputType() {
+		final OutputType output = new OutputLaunchArgument().get(setUpArguments("file_minimum"));
+
+		assertEquals(OutputType.FILE_MINIMUM, output);
+	}
+
+	@Test
+	public void fileCompleteOutputType() {
+		final OutputType output = new OutputLaunchArgument().get(setUpArguments("file_complete"));
+
+		assertEquals(OutputType.FILE_COMPLETE, output);
+	}
+
+	@Test
+	public void elasticSearchOutputType() {
+		final OutputType output = new OutputLaunchArgument().get(setUpArguments("elastic_search"));
+
+		assertEquals(OutputType.ELASTIC_SEARCH, output);
+	}
+
+	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+		final Map<ArgumentKey, String> arguments = new HashMap<>();
+		arguments.put(ArgumentKey.OUTPUT_TYPE, value);
+		return arguments;
 	}
 }
