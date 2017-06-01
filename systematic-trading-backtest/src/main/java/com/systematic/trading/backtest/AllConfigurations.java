@@ -39,6 +39,7 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.backtest.input.LaunchArgumentValidator;
 import com.systematic.trading.backtest.input.LaunchArguments;
 import com.systematic.trading.backtest.input.OutputLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
@@ -56,8 +57,9 @@ public class AllConfigurations implements BacktestConfiguration {
 
 	public static void main( final String... args ) throws Exception {
 		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(),
-		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(),
-		                new FileBaseDirectoryLaunchArgument(), args));
+		        new LaunchArguments(new CommandLineLaunchArgumentsParser(),
+		                new OutputLaunchArgument(new LaunchArgumentValidator()),
+		                new FileBaseDirectoryLaunchArgument(new LaunchArgumentValidator()), args));
 	}
 
 	@Override

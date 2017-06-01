@@ -31,11 +31,20 @@ package com.systematic.trading.backtest.input;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.configuration.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -46,30 +55,45 @@ import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
  * 
  * @author CJ Hare
  */
+@RunWith(MockitoJUnitRunner.class)
 public class FileBaseDirectoryLaunchArgumentTest {
+
+	private static final String ERROR_MESSAGE = "%s argument is not present";
+	private static final String FIRST_ERROR_ARGUMENT = ArgumentKey.FILE_BASE_DIRECTORY.getKey();
+
+	@Mock
+	private LaunchArgumentValidator validator;
 
 	@Test
 	public void nullFileBaseOutputDirectory() {
+		doThrow(new IllegalArgumentException("error message")).when(validator).validate(any(), anyString(),
+		        anyString());
+
 		try {
-			new FileBaseDirectoryLaunchArgument().get(setUpArguments(null));
+			new FileBaseDirectoryLaunchArgument(validator).get(setUpArguments(null));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("-output_file_base_directory argument is not present", e.getMessage());
+			assertEquals("error message", e.getMessage());
+			verify(validator).validate(isNull(), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT));
 		}
 	}
 
 	@Test
 	public void relativeFileBaseOutputDirectory() {
-		final FileBaseOutputDirectory output = new FileBaseDirectoryLaunchArgument().get(setUpArguments("base"));
+		final FileBaseOutputDirectory output = new FileBaseDirectoryLaunchArgument(validator)
+		        .get(setUpArguments("base"));
 
 		assertEquals("base/WEEKLY_150/", output.getDirectory(DepositConfiguration.WEEKLY_150));
+		verify(validator).validate("base", ERROR_MESSAGE, FIRST_ERROR_ARGUMENT);
 	}
 
 	@Test
 	public void multiLevelRelativeFileBaseOutputDirectory() {
-		final FileBaseOutputDirectory output = new FileBaseDirectoryLaunchArgument().get(setUpArguments("one/two"));
+		final FileBaseOutputDirectory output = new FileBaseDirectoryLaunchArgument(validator)
+		        .get(setUpArguments("one/two"));
 
 		assertEquals("one/two/WEEKLY_200/", output.getDirectory(DepositConfiguration.WEEKLY_200));
+		verify(validator).validate("one/two", ERROR_MESSAGE, FIRST_ERROR_ARGUMENT);
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {

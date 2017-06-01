@@ -51,23 +51,20 @@ public class OutputLaunchArgument implements LaunchArgument<OutputType> {
 		OUTPUT_TYPE_MAPPING.put("no_display", OutputType.NO_DISPLAY);
 	}
 
+	/** Provides validation for the launch argument value.*/
+	private final LaunchArgumentValidator validator;
+
+	public OutputLaunchArgument( final LaunchArgumentValidator validator ) {
+		this.validator = validator;
+	}
+
 	@Override
 	public OutputType get( final Map<ArgumentKey, String> arguments ) {
 		final OutputType outputType = OUTPUT_TYPE_MAPPING.get(arguments.get(ArgumentKey.OUTPUT_TYPE));
 
-		if (isUnmappedOutputType(outputType)) {
-			incorrectArguments("%s argument is not in the set of supported OutputTypes: %s",
-			        ArgumentKey.OUTPUT_TYPE.getKey(), arguments.get(ArgumentKey.OUTPUT_TYPE));
-		}
+		validator.validate(outputType, "%s argument is not in the set of supported OutputTypes: %s",
+		        ArgumentKey.OUTPUT_TYPE.getKey(), arguments.get(ArgumentKey.OUTPUT_TYPE));
 
 		return outputType;
-	}
-
-	private boolean isUnmappedOutputType( final OutputType outputType ) {
-		return outputType == null;
-	}
-
-	private void incorrectArguments( final String message, final Object... arguments ) {
-		throw new IllegalArgumentException(String.format(message, arguments));
 	}
 }

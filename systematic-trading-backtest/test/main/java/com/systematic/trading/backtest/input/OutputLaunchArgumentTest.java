@@ -31,11 +31,20 @@ package com.systematic.trading.backtest.input;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
@@ -45,54 +54,73 @@ import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
  * 
  * @author CJ Hare
  */
+@RunWith(MockitoJUnitRunner.class)
 public class OutputLaunchArgumentTest {
+
+	private static final String ERROR_MESSAGE = "%s argument is not in the set of supported OutputTypes: %s";
+	private static final String FIRST_ERROR_ARGUMENT = ArgumentKey.OUTPUT_TYPE.getKey();
+
+	@Mock
+	private LaunchArgumentValidator validator;
 
 	@Test
 	public void unknownOutputType() {
+		doThrow(new IllegalArgumentException("error message")).when(validator).validate(any(), anyString(), anyString(),
+		        anyString());
+
 		try {
-			new OutputLaunchArgument().get(setUpArguments("unknown"));
+			new OutputLaunchArgument(validator).get(setUpArguments("unknown"));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("-output argument is not in the set of supported OutputTypes: unknown", e.getMessage());
+			assertEquals("error message", e.getMessage());
+			verify(validator).validate(isNull(), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT), eq("unknown"));
 		}
 	}
 
 	@Test
 	public void nullOutputType() {
+		doThrow(new IllegalArgumentException("error message")).when(validator).validate(any(), anyString(), anyString(),
+		        anyString());
+
 		try {
-			new OutputLaunchArgument().get(setUpArguments(null));
+			new OutputLaunchArgument(validator).get(setUpArguments(null));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("-output argument is not in the set of supported OutputTypes: null", e.getMessage());
+			assertEquals("error message", e.getMessage());
+			verify(validator).validate(isNull(), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT), isNull());
 		}
 	}
 
 	@Test
 	public void noDisplayOutputType() {
-		final OutputType output = new OutputLaunchArgument().get(setUpArguments("no_display"));
+		final OutputType output = new OutputLaunchArgument(validator).get(setUpArguments("no_display"));
 
 		assertEquals(OutputType.NO_DISPLAY, output);
+		verify(validator).validate(OutputType.NO_DISPLAY, ERROR_MESSAGE, FIRST_ERROR_ARGUMENT, "no_display");
 	}
 
 	@Test
 	public void fileMinimumOutputType() {
-		final OutputType output = new OutputLaunchArgument().get(setUpArguments("file_minimum"));
+		final OutputType output = new OutputLaunchArgument(validator).get(setUpArguments("file_minimum"));
 
 		assertEquals(OutputType.FILE_MINIMUM, output);
+		verify(validator).validate(OutputType.FILE_MINIMUM, ERROR_MESSAGE, FIRST_ERROR_ARGUMENT, "file_minimum");
 	}
 
 	@Test
 	public void fileCompleteOutputType() {
-		final OutputType output = new OutputLaunchArgument().get(setUpArguments("file_complete"));
+		final OutputType output = new OutputLaunchArgument(validator).get(setUpArguments("file_complete"));
 
 		assertEquals(OutputType.FILE_COMPLETE, output);
+		verify(validator).validate(OutputType.FILE_COMPLETE, ERROR_MESSAGE, FIRST_ERROR_ARGUMENT, "file_complete");
 	}
 
 	@Test
 	public void elasticSearchOutputType() {
-		final OutputType output = new OutputLaunchArgument().get(setUpArguments("elastic_search"));
+		final OutputType output = new OutputLaunchArgument(validator).get(setUpArguments("elastic_search"));
 
 		assertEquals(OutputType.ELASTIC_SEARCH, output);
+		verify(validator).validate(OutputType.ELASTIC_SEARCH, ERROR_MESSAGE, FIRST_ERROR_ARGUMENT, "elastic_search");
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {

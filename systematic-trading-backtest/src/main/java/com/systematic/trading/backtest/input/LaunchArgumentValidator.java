@@ -29,32 +29,24 @@
  */
 package com.systematic.trading.backtest.input;
 
-import java.util.Map;
-
-import com.systematic.trading.backtest.configuration.FileBaseOutputDirectory;
-import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
-
 /**
- * Launch argument parser for the Base directory of the file output.
+ * Common validation checks and exception responses for LaunchArguments. 
  * 
  * @author CJ Hare
  */
-public class FileBaseDirectoryLaunchArgument implements LaunchArgument<FileBaseOutputDirectory> {
+public class LaunchArgumentValidator {
 
-	/** Provides validation for the launch argument value.*/
-	private final LaunchArgumentValidator validator;
-
-	public FileBaseDirectoryLaunchArgument( final LaunchArgumentValidator validator ) {
-		this.validator = validator;
+	public void validate( final Object value, final String errorMessage, final Object... errorMessageArguments ) {
+		if (isInvalidArgument(value)) {
+			incorrectArguments(errorMessage, errorMessageArguments);
+		}
 	}
 
-	@Override
-	public FileBaseOutputDirectory get( final Map<ArgumentKey, String> arguments ) {
+	private boolean isInvalidArgument( final Object value ) {
+		return value == null;
+	}
 
-		final String directory = arguments.get(ArgumentKey.FILE_BASE_DIRECTORY);
-
-		validator.validate(directory, "%s argument is not present", ArgumentKey.FILE_BASE_DIRECTORY.getKey());
-
-		return new FileBaseOutputDirectory(directory);
+	private void incorrectArguments( final String message, final Object... arguments ) {
+		throw new IllegalArgumentException(String.format(message, arguments));
 	}
 }

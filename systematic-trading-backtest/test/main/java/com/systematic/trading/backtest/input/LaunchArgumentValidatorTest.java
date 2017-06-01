@@ -29,32 +29,40 @@
  */
 package com.systematic.trading.backtest.input;
 
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import com.systematic.trading.backtest.configuration.FileBaseOutputDirectory;
-import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
+import org.junit.Test;
 
 /**
- * Launch argument parser for the Base directory of the file output.
+ * Verification of the LaunchArgumentValidator.
  * 
  * @author CJ Hare
  */
-public class FileBaseDirectoryLaunchArgument implements LaunchArgument<FileBaseOutputDirectory> {
+public class LaunchArgumentValidatorTest {
 
-	/** Provides validation for the launch argument value.*/
-	private final LaunchArgumentValidator validator;
-
-	public FileBaseDirectoryLaunchArgument( final LaunchArgumentValidator validator ) {
-		this.validator = validator;
+	@Test
+	public void validate() {
+		new LaunchArgumentValidator().validate("", "Not expected message");
 	}
 
-	@Override
-	public FileBaseOutputDirectory get( final Map<ArgumentKey, String> arguments ) {
+	@Test
+	public void validateException() {
+		try {
+			new LaunchArgumentValidator().validate(null, "Expected error message");
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("Expected error message", e.getMessage());
+		}
+	}
 
-		final String directory = arguments.get(ArgumentKey.FILE_BASE_DIRECTORY);
-
-		validator.validate(directory, "%s argument is not present", ArgumentKey.FILE_BASE_DIRECTORY.getKey());
-
-		return new FileBaseOutputDirectory(directory);
+	@Test
+	public void validateMessage() {
+		try {
+			new LaunchArgumentValidator().validate(null, "Expected error message, %s, %s, %s", "one", "two", "three");
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("Expected error message, one, two, three", e.getMessage());
+		}
 	}
 }
