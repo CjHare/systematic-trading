@@ -59,13 +59,12 @@ public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 
 			if (key.isPresent()) {
 				if (hasInsufficuentArgumentCount(i + 1, args)) {
-					incorrectArguments("Missing value for argument key %w", args[i]);
+					incorrectArguments("Missing value for argument key %s", args[i]);
 				}
 
 				argumentPairs.put(key.get(), args[++i]);
 
 			} else {
-
 				LOG.warn(String.format("Unknown / unused argument %s", args[i]));
 			}
 		}

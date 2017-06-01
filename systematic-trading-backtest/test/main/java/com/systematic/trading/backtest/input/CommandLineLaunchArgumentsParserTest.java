@@ -31,6 +31,7 @@ package com.systematic.trading.backtest.input;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.Map;
 
@@ -51,6 +52,18 @@ public class CommandLineLaunchArgumentsParserTest {
 
 		assertNotNull(results);
 		assertEquals("no_display", results.get(ArgumentKey.OUTPUT_TYPE));
+	}
+
+	@Test
+	public void keyWithoutValue() {
+		final String[] launchArguments = { "-output" };
+
+		try {
+			new CommandLineLaunchArgumentsParser().parse(launchArguments);
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("Missing value for argument key -output", e.getMessage());
+		}
 	}
 
 	@Test
