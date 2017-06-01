@@ -57,6 +57,10 @@ import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 @RunWith(MockitoJUnitRunner.class)
 public class LaunchArgumentsTest {
 
+	private static final String ARGUMENT_PARSER_EXCEPTION_MESSAGE = "Argument parser exception message";
+	private static final String DIRCTORY_EXCEPTION_MESSAGE = "Directory exception message";
+	private static final String OUTPUT_EXCEPTION_MESSAGE = "Ooutput Type exception message";
+
 	@Mock
 	private LaunchArgumentsParser argumentParser;
 
@@ -64,15 +68,15 @@ public class LaunchArgumentsTest {
 	private LaunchArgument<OutputType> outputArgument;
 
 	@Mock
-	private LaunchArgument<FileBaseOutputDirectory> fileDirectoryArgument;
+	private LaunchArgument<FileBaseOutputDirectory> directoryArgument;
 
 	@Test
 	public void outputType() {
 		final String[] launchArguments = { "-output", "elastic_search" };
 		final Map<ArgumentKey, String> arguments = setUpArgumentMap("elastic_search");
-		when(outputArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(OutputType.ELASTIC_SEARCH);
+		setUpOutputArgument(OutputType.ELASTIC_SEARCH);
 
-		final LaunchArguments parser = new LaunchArguments(argumentParser, outputArgument, fileDirectoryArgument,
+		final LaunchArguments parser = new LaunchArguments(argumentParser, outputArgument, directoryArgument,
 		        launchArguments);
 
 		assertEquals(OutputType.ELASTIC_SEARCH, parser.getOutputType());
@@ -82,14 +86,13 @@ public class LaunchArgumentsTest {
 
 	@Test
 	public void argumentParserException() {
-		when(argumentParser.parse(any(String[].class)))
-		        .thenThrow(new IllegalArgumentException("Expected exception message"));
+		setUpArgumentParserException();
 
 		try {
-			new LaunchArguments(argumentParser, outputArgument, fileDirectoryArgument);
+			new LaunchArguments(argumentParser, outputArgument, directoryArgument);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("Expected exception message", e.getMessage());
+			assertEquals(ARGUMENT_PARSER_EXCEPTION_MESSAGE, e.getMessage());
 		}
 	}
 
@@ -97,15 +100,13 @@ public class LaunchArgumentsTest {
 	public void outputArgumentException() {
 		final String[] launchArguments = { "-output", "unmatched output type" };
 		final Map<ArgumentKey, String> arguments = setUpArgumentMap("unmatched output type");
-
-		when(outputArgument.get(anyMapOf(ArgumentKey.class, String.class)))
-		        .thenThrow(new IllegalArgumentException("Expected exception message"));
+		setUpOutputArgumentException();
 
 		try {
-			new LaunchArguments(argumentParser, outputArgument, fileDirectoryArgument, launchArguments);
+			new LaunchArguments(argumentParser, outputArgument, directoryArgument, launchArguments);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("Expected exception message", e.getMessage());
+			assertEquals(OUTPUT_EXCEPTION_MESSAGE, e.getMessage());
 			verify(outputArgument).get(arguments);
 		}
 	}
@@ -115,51 +116,66 @@ public class LaunchArgumentsTest {
 		final String[] launchArguments = { "-output", "no_display", "-output_file_base_directory",
 		        "../../simulations" };
 		final Map<ArgumentKey, String> arguments = setUpArgumentMap("no_display", "../../simulations");
-		when(fileDirectoryArgument.get(anyMapOf(ArgumentKey.class, String.class)))
-		        .thenReturn(new FileBaseOutputDirectory("directory"));
+		setUpDirectoryArgument();
 
-		final LaunchArguments parser = new LaunchArguments(argumentParser, outputArgument, fileDirectoryArgument,
+		final LaunchArguments parser = new LaunchArguments(argumentParser, outputArgument, directoryArgument,
 		        launchArguments);
 		final String directory = parser.getOutputDirectory(DepositConfiguration.WEEKLY_150);
 
 		assertEquals("directory/WEEKLY_150/", directory);
 		verify(argumentParser).parse(launchArguments);
-		verify(fileDirectoryArgument).get(arguments);
+		verify(directoryArgument).get(arguments);
 	}
 
 	@Test
 	public void getFileOutputDirectoryException() {
 		final String[] launchArguments = { "-output", "unmatched output type" };
-		when(fileDirectoryArgument.get(anyMapOf(ArgumentKey.class, String.class)))
-		        .thenThrow(new IllegalArgumentException("Expected exception message"));
+		setUpDirectoryArgumentException();
 
 		try {
-			new LaunchArguments(argumentParser, outputArgument, fileDirectoryArgument, launchArguments)
+			new LaunchArguments(argumentParser, outputArgument, directoryArgument, launchArguments)
 			        .getOutputDirectory(DepositConfiguration.WEEKLY_150);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("Expected exception message", e.getMessage());
+			assertEquals(DIRCTORY_EXCEPTION_MESSAGE, e.getMessage());
 		}
+	}
+
+	private void setUpOutputArgument( final OutputType type ) {
+		when(outputArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(type);
+	}
+
+	private void setUpArgumentParserException() {
+		when(argumentParser.parse(any(String[].class)))
+		        .thenThrow(new IllegalArgumentException(ARGUMENT_PARSER_EXCEPTION_MESSAGE));
+	}
+
+	private void setUpDirectoryArgument() {
+		when(directoryArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		        .thenReturn(new FileBaseOutputDirectory("directory"));
+	}
+
+	private void setUpOutputArgumentException() {
+		when(outputArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		        .thenThrow(new IllegalArgumentException(OUTPUT_EXCEPTION_MESSAGE));
+	}
+
+	private void setUpDirectoryArgumentException() {
+		when(directoryArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		        .thenThrow(new IllegalArgumentException(DIRCTORY_EXCEPTION_MESSAGE));
 	}
 
 	private Map<ArgumentKey, String> setUpArgumentMap( final String outputValue ) {
 		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
-
 		arguments.put(ArgumentKey.OUTPUT_TYPE, outputValue);
-
 		when(argumentParser.parse(any(String[].class))).thenReturn(arguments);
-
 		return arguments;
 	}
 
 	private Map<ArgumentKey, String> setUpArgumentMap( final String outputValue, final String fileBaseDirectory ) {
-		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
-
-		arguments.put(ArgumentKey.OUTPUT_TYPE, outputValue);
+		final Map<ArgumentKey, String> arguments = setUpArgumentMap(outputValue);
 		arguments.put(ArgumentKey.FILE_BASE_DIRECTORY, fileBaseDirectory);
-
 		when(argumentParser.parse(any(String[].class))).thenReturn(arguments);
-
 		return arguments;
 	}
 

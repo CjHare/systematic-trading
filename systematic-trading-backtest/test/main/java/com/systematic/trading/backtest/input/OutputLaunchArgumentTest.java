@@ -59,34 +59,33 @@ public class OutputLaunchArgumentTest {
 
 	private static final String ERROR_MESSAGE = "%s argument is not in the set of supported OutputTypes: %s";
 	private static final String FIRST_ERROR_ARGUMENT = ArgumentKey.OUTPUT_TYPE.getKey();
+	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
 	@Mock
 	private LaunchArgumentValidator validator;
 
 	@Test
 	public void unknownOutputType() {
-		doThrow(new IllegalArgumentException("error message")).when(validator).validate(any(), anyString(), anyString(),
-		        anyString());
+		setUpValidatorException();
 
 		try {
 			new OutputLaunchArgument(validator).get(setUpArguments("unknown"));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("error message", e.getMessage());
+			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
 			verify(validator).validate(isNull(), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT), eq("unknown"));
 		}
 	}
 
 	@Test
 	public void nullOutputType() {
-		doThrow(new IllegalArgumentException("error message")).when(validator).validate(any(), anyString(), anyString(),
-		        anyString());
+		setUpValidatorException();
 
 		try {
 			new OutputLaunchArgument(validator).get(setUpArguments(null));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("error message", e.getMessage());
+			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
 			verify(validator).validate(isNull(), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT), isNull());
 		}
 	}
@@ -121,6 +120,11 @@ public class OutputLaunchArgumentTest {
 
 		assertEquals(OutputType.ELASTIC_SEARCH, output);
 		verify(validator).validate(OutputType.ELASTIC_SEARCH, ERROR_MESSAGE, FIRST_ERROR_ARGUMENT, "elastic_search");
+	}
+
+	private void setUpValidatorException() {
+		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
+		        anyString(), anyString());
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {

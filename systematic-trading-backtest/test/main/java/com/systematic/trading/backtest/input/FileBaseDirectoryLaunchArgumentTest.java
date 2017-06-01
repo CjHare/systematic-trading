@@ -60,20 +60,20 @@ public class FileBaseDirectoryLaunchArgumentTest {
 
 	private static final String ERROR_MESSAGE = "%s argument is not present";
 	private static final String FIRST_ERROR_ARGUMENT = ArgumentKey.FILE_BASE_DIRECTORY.getKey();
+	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
 	@Mock
 	private LaunchArgumentValidator validator;
 
 	@Test
 	public void nullFileBaseOutputDirectory() {
-		doThrow(new IllegalArgumentException("error message")).when(validator).validate(any(), anyString(),
-		        anyString());
+		setUpValidatorException();
 
 		try {
 			new FileBaseDirectoryLaunchArgument(validator).get(setUpArguments(null));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("error message", e.getMessage());
+			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
 			verify(validator).validate(isNull(), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT));
 		}
 	}
@@ -94,6 +94,11 @@ public class FileBaseDirectoryLaunchArgumentTest {
 
 		assertEquals("one/two/WEEKLY_200/", output.getDirectory(DepositConfiguration.WEEKLY_200));
 		verify(validator).validate("one/two", ERROR_MESSAGE, FIRST_ERROR_ARGUMENT);
+	}
+
+	private void setUpValidatorException() {
+		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
+		        anyString());
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {
