@@ -63,7 +63,8 @@ public class LaunchArgumentsTest {
 		final String[] launchArguments = { "-output", "elastic_search" };
 		setUpArgumentMap("elastic_search");
 
-		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(),
+		        new FileBaseDirectoryLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.ELASTIC_SEARCH, parser.getOutputType());
 		verify(argumentParser).parse(launchArguments);
@@ -74,7 +75,8 @@ public class LaunchArgumentsTest {
 		final String[] launchArguments = { "-output", "no_display", "another_argument" };
 		setUpArgumentMap("no_display");
 
-		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(),
+		        new FileBaseDirectoryLaunchArgument(), launchArguments);
 
 		assertEquals(OutputType.NO_DISPLAY, parser.getOutputType());
 		verify(argumentParser).parse(launchArguments);
@@ -86,7 +88,7 @@ public class LaunchArgumentsTest {
 		        .thenThrow(new IllegalArgumentException("Expected exception message"));
 
 		try {
-			new LaunchArguments(argumentParser, new OutputLaunchArgument());
+			new LaunchArguments(argumentParser, new OutputLaunchArgument(), new FileBaseDirectoryLaunchArgument());
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals("Expected exception message", e.getMessage());
@@ -100,7 +102,8 @@ public class LaunchArgumentsTest {
 		        .thenThrow(new IllegalArgumentException("Expected exception message"));
 
 		try {
-			new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
+			new LaunchArguments(argumentParser, new OutputLaunchArgument(), new FileBaseDirectoryLaunchArgument(),
+			        launchArguments);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals("Expected exception message", e.getMessage());
@@ -109,12 +112,14 @@ public class LaunchArgumentsTest {
 
 	@Test
 	public void getBaseOutputDirectory() {
-		final String[] launchArguments = { "-output", "no_display" };
-		setUpArgumentMap("no_display");
+		final String[] launchArguments = { "-output", "no_display", "-output_file_base_directory",
+		        "../../simulations" };
+		setUpArgumentMap("no_display", "../../simulations");
 
-		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(), launchArguments);
+		final LaunchArguments parser = new LaunchArguments(argumentParser, new OutputLaunchArgument(),
+		        new FileBaseDirectoryLaunchArgument(), launchArguments);
 
-		assertEquals("../../simulations/WEEKLY_150/", parser.getBaseOutputDirectory(DepositConfiguration.WEEKLY_150));
+		assertEquals("../../simulations/WEEKLY_150/", parser.getOutputDirectory(DepositConfiguration.WEEKLY_150));
 		verify(argumentParser).parse(launchArguments);
 	}
 
@@ -125,4 +130,14 @@ public class LaunchArgumentsTest {
 
 		when(argumentParser.parse(any(String[].class))).thenReturn(arguments);
 	}
+
+	private void setUpArgumentMap( final String outputValue, final String fileBaseDirectory ) {
+		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
+
+		arguments.put(ArgumentKey.OUTPUT_TYPE, outputValue);
+		arguments.put(ArgumentKey.FILE_BASE_DIRECTORY, fileBaseDirectory);
+
+		when(argumentParser.parse(any(String[].class))).thenReturn(arguments);
+	}
+
 }

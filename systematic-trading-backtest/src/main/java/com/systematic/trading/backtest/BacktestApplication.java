@@ -199,7 +199,7 @@ public class BacktestApplication {
 
 		//TODO this should happen only once & be moved into the file DAOs
 		// Arrange output to files, only once per a run
-		final String outputDirectory = parserdArguments.getBaseOutputDirectory(depositAmount);
+		final String outputDirectory = parserdArguments.getOutputDirectory(depositAmount);
 		final OutputType type = parserdArguments.getOutputType();
 
 		if (isFileBasedDisplay(type)) {

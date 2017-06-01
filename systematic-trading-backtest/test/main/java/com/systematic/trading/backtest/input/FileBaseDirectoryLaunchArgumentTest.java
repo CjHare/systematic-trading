@@ -29,68 +29,52 @@
  */
 package com.systematic.trading.backtest.input;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+
+import org.junit.Test;
 
 import com.systematic.trading.backtest.configuration.FileBaseOutputDirectory;
-import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
- * Parses the arguments given on launch, validating and converting them.
+ * Unit test for the FileBaseDirectoryLaunchArgument.
  * 
  * @author CJ Hare
  */
-public class LaunchArguments {
+public class FileBaseDirectoryLaunchArgumentTest {
 
-	enum ArgumentKey {
-		OUTPUT_TYPE("-output"),
-		FILE_BASE_DIRECTORY("-output_file_base_directory");
-
-		private final String key;
-
-		private ArgumentKey( final String key ) {
-			this.key = key;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public static Optional<ArgumentKey> get( final String arg ) {
-
-			for (final ArgumentKey candidate : ArgumentKey.values()) {
-				if (candidate.key.equals(arg)) {
-					return Optional.of(candidate);
-				}
-			}
-
-			return Optional.empty();
-
+	@Test
+	public void nullFileBaseOutputDirectory() {
+		try {
+			new FileBaseDirectoryLaunchArgument().get(setUpArguments(null));
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("-output_file_base_directory argument is not present", e.getMessage());
 		}
 	}
 
-	/** Data source that will receive the application's output.*/
-	private final OutputType outputType;
+	@Test
+	public void relativeFileBaseOutputDirectory() {
+		final FileBaseOutputDirectory output = new FileBaseDirectoryLaunchArgument().get(setUpArguments("base"));
 
-	/** Optional argument, used with file output types.*/
-	private final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectory;
-
-	/** Parsed launch arguments.*/
-	private final Map<ArgumentKey, String> arguments;
-
-	public LaunchArguments( final LaunchArgumentsParser argumentParser, final LaunchArgument<OutputType> outputArgument,
-	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument, final String... args ) {
-		this.arguments = argumentParser.parse(args);
-		this.outputType = outputArgument.get(arguments);
-		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
+		assertEquals("base/WEEKLY_150/", output.getDirectory(DepositConfiguration.WEEKLY_150));
 	}
 
-	public String getOutputDirectory( final DepositConfiguration depositAmount ) {
-		return fileBaseOutputDirectory.get(arguments).getDirectory(depositAmount);
+	@Test
+	public void multiLevelRelativeFileBaseOutputDirectory() {
+		final FileBaseOutputDirectory output = new FileBaseDirectoryLaunchArgument().get(setUpArguments("one/two"));
+
+		assertEquals("one/two/WEEKLY_200/", output.getDirectory(DepositConfiguration.WEEKLY_200));
 	}
 
-	public OutputType getOutputType() {
-		return outputType;
+	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+		final Map<ArgumentKey, String> arguments = new HashMap<>();
+		arguments.put(ArgumentKey.FILE_BASE_DIRECTORY, value);
+		return arguments;
 	}
 }

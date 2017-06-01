@@ -30,67 +30,36 @@
 package com.systematic.trading.backtest.input;
 
 import java.util.Map;
-import java.util.Optional;
 
 import com.systematic.trading.backtest.configuration.FileBaseOutputDirectory;
-import com.systematic.trading.backtest.configuration.OutputType;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
- * Parses the arguments given on launch, validating and converting them.
+ * Launch argument parser for the Base directory of the file output.
  * 
  * @author CJ Hare
  */
-public class LaunchArguments {
+public class FileBaseDirectoryLaunchArgument implements LaunchArgument<FileBaseOutputDirectory> {
 
-	enum ArgumentKey {
-		OUTPUT_TYPE("-output"),
-		FILE_BASE_DIRECTORY("-output_file_base_directory");
+	//TODO abstract parent for these launch argument
+	
+	@Override
+	public FileBaseOutputDirectory get( final Map<ArgumentKey, String> arguments ) {
 
-		private final String key;
+		final String directory = arguments.get(ArgumentKey.FILE_BASE_DIRECTORY);
 
-		private ArgumentKey( final String key ) {
-			this.key = key;
+		if (isDirectoryMissing(directory)) {
+			incorrectArguments("%s argument is not present", ArgumentKey.FILE_BASE_DIRECTORY.getKey());
 		}
 
-		public String getKey() {
-			return key;
-		}
-
-		public static Optional<ArgumentKey> get( final String arg ) {
-
-			for (final ArgumentKey candidate : ArgumentKey.values()) {
-				if (candidate.key.equals(arg)) {
-					return Optional.of(candidate);
-				}
-			}
-
-			return Optional.empty();
-
-		}
+		return new FileBaseOutputDirectory(directory);
 	}
 
-	/** Data source that will receive the application's output.*/
-	private final OutputType outputType;
-
-	/** Optional argument, used with file output types.*/
-	private final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectory;
-
-	/** Parsed launch arguments.*/
-	private final Map<ArgumentKey, String> arguments;
-
-	public LaunchArguments( final LaunchArgumentsParser argumentParser, final LaunchArgument<OutputType> outputArgument,
-	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument, final String... args ) {
-		this.arguments = argumentParser.parse(args);
-		this.outputType = outputArgument.get(arguments);
-		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
+	private boolean isDirectoryMissing( final String directory ) {
+		return directory == null;
 	}
 
-	public String getOutputDirectory( final DepositConfiguration depositAmount ) {
-		return fileBaseOutputDirectory.get(arguments).getDirectory(depositAmount);
-	}
-
-	public OutputType getOutputType() {
-		return outputType;
+	private void incorrectArguments( final String message, final Object... arguments ) {
+		throw new IllegalArgumentException(String.format(message, arguments));
 	}
 }

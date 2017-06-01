@@ -39,6 +39,7 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
 import com.systematic.trading.backtest.input.LaunchArguments;
 import com.systematic.trading.backtest.input.OutputLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
@@ -55,8 +56,9 @@ public class SingleConfigurationSignals implements BacktestConfiguration {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	public static void main( final String... args ) throws Exception {
-		new BacktestApplication(MATH_CONTEXT).runTest(new SingleConfigurationSignals(), new LaunchArguments(
-		        new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(), args));
+		new BacktestApplication(MATH_CONTEXT).runTest(new SingleConfigurationSignals(),
+		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(),
+		                new FileBaseDirectoryLaunchArgument(), args));
 	}
 
 	@Override
