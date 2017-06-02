@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -48,48 +49,45 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 public class CulmativeTotalReturnOnInvestmentCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
-	@Test
-	public void noEvents() {
-		final CulmativeTotalReturnOnInvestmentCalculator calculator = new CulmativeTotalReturnOnInvestmentCalculator(
-		        MATH_CONTEXT);
+	private CulmativeTotalReturnOnInvestmentCalculator calculator;
 
-		assertEquals(BigDecimal.ZERO, calculator.getCumulativeReturnOnInvestment());
+	@Before
+	public void setUp() {
+		calculator = new CulmativeTotalReturnOnInvestmentCalculator(MATH_CONTEXT);
 	}
 
 	@Test
-	public void oneEvents() {
-		final CulmativeTotalReturnOnInvestmentCalculator calculator = new CulmativeTotalReturnOnInvestmentCalculator(
-		        MATH_CONTEXT);
+	public void noEvents() {
+		verfiyCulumateRoi(0);
+	}
 
-		final BigDecimal expected = BigDecimal.valueOf(101);
-		final ReturnOnInvestmentEvent eventOne = mock(ReturnOnInvestmentEvent.class);
-		when(eventOne.getPercentageChange()).thenReturn(expected);
+	@Test
+	public void oneEvent() {
 
-		calculator.event(eventOne);
+		event(101);
 
-		assertEquals(0, expected.compareTo(calculator.getCumulativeReturnOnInvestment()));
+		verfiyCulumateRoi(101);
 	}
 
 	@Test
 	public void threeEvents() {
-		final CulmativeTotalReturnOnInvestmentCalculator calculator = new CulmativeTotalReturnOnInvestmentCalculator(
-		        MATH_CONTEXT);
 
-		final BigDecimal one = BigDecimal.valueOf(22);
-		final ReturnOnInvestmentEvent eventOne = mock(ReturnOnInvestmentEvent.class);
-		when(eventOne.getPercentageChange()).thenReturn(one);
-		final BigDecimal two = BigDecimal.valueOf(33);
-		final ReturnOnInvestmentEvent eventTwo = mock(ReturnOnInvestmentEvent.class);
-		when(eventTwo.getPercentageChange()).thenReturn(two);
-		final BigDecimal three = BigDecimal.valueOf(4.35);
-		final ReturnOnInvestmentEvent eventThree = mock(ReturnOnInvestmentEvent.class);
-		when(eventThree.getPercentageChange()).thenReturn(three);
+		event(22);
+		event(33);
+		event(4.35);
 
-		calculator.event(eventOne);
-		calculator.event(eventTwo);
-		calculator.event(eventThree);
+		verfiyCulumateRoi(59.35);
+	}
 
-		final BigDecimal expected = one.add(two, MATH_CONTEXT).add(three, MATH_CONTEXT);
-		assertEquals(0, expected.compareTo(calculator.getCumulativeReturnOnInvestment()));
+	private void event( final double percentageChange ) {
+		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
+		when(event.getPercentageChange()).thenReturn(BigDecimal.valueOf(percentageChange));
+
+		calculator.event(event);
+	}
+
+	private void verfiyCulumateRoi( final double expectedCulumativeRoi ) {
+		assertEquals(String.format("%s != %s", expectedCulumativeRoi, calculator.getCumulativeReturnOnInvestment()), 0,
+		        BigDecimal.valueOf(expectedCulumativeRoi).compareTo(calculator.getCumulativeReturnOnInvestment()));
 	}
 }
