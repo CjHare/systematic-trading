@@ -35,6 +35,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
@@ -83,17 +84,23 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 	@Mock
 	private ReturnOnInvestmentEventListener listener;
 
+	/** The calculator being evaluated by the unit test.*/
+	private ReturnOnInvestmentCalculator calculator;
+
+	@Before
+	public void setUp() {
+		calculator = setUpReturnOnInvestmentCalculator();
+	}
+
 	@Test
 	public void firstUpdateNoDeposit() {
 		setUpCashBalance(4.5);
 		setUpEquityBalance(11.22);
 		setUpTradingData(99.87);
-		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
-		// Process and generate notifications
-		calculator.update(broker, cashAccount, tradingData);
+		update();
 
-		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, YESTERFAY, TODAY));
+		verifyNoRoiChange();
 	}
 
 	@Test
@@ -101,16 +108,11 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 		setUpCashBalance(4.5);
 		setUpEquityBalance(11.22);
 		setUpTradingData(99.87);
-		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
-		// Deposit the amount currently in the cash balance
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(4.5), BigDecimal.valueOf(4.5),
-		        CashEventType.DEPOSIT, TODAY));
+		deposit(0, 4.5);
+		update();
 
-		// Process and generate notifications
-		calculator.update(broker, cashAccount, tradingData);
-
-		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, YESTERFAY, TODAY));
+		verifyNoRoiChange();
 	}
 
 	@Test
@@ -118,20 +120,13 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 		setUpCashBalance(4.5);
 		setUpEquityBalance(11.22);
 		setUpTradingData(99.87);
-		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
-		// Deposit the amount currently in the cash balance
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(1.5), BigDecimal.valueOf(1.5),
-		        CashEventType.DEPOSIT, TODAY));
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(1.5), BigDecimal.valueOf(3.0), BigDecimal.valueOf(1.5),
-		        CashEventType.DEPOSIT, TODAY));
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(3.0), BigDecimal.valueOf(4.5), BigDecimal.valueOf(1.5),
-		        CashEventType.DEPOSIT, TODAY));
+		deposit(0, 1.5);
+		deposit(1.5, 1.5);
+		deposit(1.5, 3.0);
+		update();
 
-		// Process and generate notifications
-		calculator.update(broker, cashAccount, tradingData);
-
-		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, YESTERFAY, TODAY));
+		verifyNoRoiChange();
 	}
 
 	@Test
@@ -139,15 +134,11 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 		setUpCashBalance(0);
 		setUpEquityBalance(10, 11);
 		setUpTradingData(99.87, 99.87);
-		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
-		// Process and generate notifications
-		calculator.update(broker, cashAccount, tradingData);
-		calculator.update(broker, cashAccount, tradingData);
+		update();
+		update();
 
-		final InOrder eventOrder = inOrder(listener);
-		eventOrder.verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
-		eventOrder.verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
+		verifyRoiChange(TEN_PERCENT_CHANGE);
 	}
 
 	@Test
@@ -155,20 +146,12 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 		setUpCashBalance(0, 866);
 		setUpEquityBalance(10, 11);
 		setUpTradingData(99.87, 99.87);
-		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
-		// Process and generate notifications
-		calculator.update(broker, cashAccount, tradingData);
+		update();
+		deposit(0, 866);
+		update();
 
-		// Deposit the amount currently in the cash balance
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(866), BigDecimal.valueOf(866),
-		        CashEventType.DEPOSIT, TODAY));
-
-		calculator.update(broker, cashAccount, tradingData);
-
-		final InOrder eventOrder = inOrder(listener);
-		eventOrder.verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
-		eventOrder.verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
+		verifyRoiChange(TEN_PERCENT_CHANGE);
 	}
 
 	@Test
@@ -176,24 +159,14 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 		setUpCashBalance(0, 866);
 		setUpEquityBalance(10, 11);
 		setUpTradingData(99.87, 99.87);
-		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
-		// Process and generate notifications
-		calculator.update(broker, cashAccount, tradingData);
+		update();
+		deposit(0, 500);
+		deposit(500, 266);
+		deposit(866, 100);
+		update();
 
-		// Deposit the amount currently in the cash balance
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(500), BigDecimal.valueOf(500),
-		        CashEventType.DEPOSIT, TODAY));
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(500), BigDecimal.valueOf(766), BigDecimal.valueOf(266),
-		        CashEventType.DEPOSIT, TODAY));
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(766), BigDecimal.valueOf(866), BigDecimal.valueOf(100),
-		        CashEventType.DEPOSIT, TODAY));
-
-		calculator.update(broker, cashAccount, tradingData);
-
-		final InOrder eventOrder = inOrder(listener);
-		eventOrder.verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
-		eventOrder.verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
+		verifyRoiChange(TEN_PERCENT_CHANGE);
 	}
 
 	@Test
@@ -201,24 +174,41 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 		setUpCashBalance(0, 867);
 		setUpEquityBalance(10, 11);
 		setUpTradingData(100, 100);
-		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
-		// Process and generate notifications
-		calculator.update(broker, cashAccount, tradingData);
+		update();
+		deposit(0, 866);
+		interest(866, 2.5);
+		update();
 
-		// Deposit the amount currently in the cash balance
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(866), BigDecimal.valueOf(866),
-		        CashEventType.DEPOSIT, TODAY));
+		verifyRoiChange(TEN_POINT_ONE_PERCENT_CHANGE);
+	}
 
-		// Interest is counted as an increase in ROI
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(866), BigDecimal.valueOf(1),
-		        CashEventType.INTEREST, TODAY));
-
-		calculator.update(broker, cashAccount, tradingData);
-
+	private void verifyRoiChange( final BigDecimal expectedSecondDayChange ) {
 		final InOrder eventOrder = inOrder(listener);
 		eventOrder.verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
-		eventOrder.verify(listener).event(isExpectedRoiEvent(TEN_POINT_ONE_PERCENT_CHANGE, YESTERFAY, TODAY));
+		eventOrder.verify(listener).event(isExpectedRoiEvent(expectedSecondDayChange, YESTERFAY, TODAY));
+	}
+
+	private void verifyNoRoiChange() {
+		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, YESTERFAY, TODAY));
+	}
+
+	public void interest( final double balanceBefore, final double percentInterest ) {
+		calculator.event(new CashAccountEvent(BigDecimal.valueOf(balanceBefore),
+		        BigDecimal.valueOf(balanceBefore + balanceBefore * (percentInterest / 100)),
+		        BigDecimal.valueOf(percentInterest), CashEventType.INTEREST, TODAY));
+	}
+
+	public void deposit( final double balanceBefore, final double amount ) {
+		calculator.event(new CashAccountEvent(BigDecimal.valueOf(balanceBefore),
+		        BigDecimal.valueOf(balanceBefore + amount), BigDecimal.valueOf(amount), CashEventType.DEPOSIT, TODAY));
+	}
+
+	/**
+	 *	Process and generate notifications
+	 */
+	private void update() {
+		calculator.update(broker, cashAccount, tradingData);
 	}
 
 	private ReturnOnInvestmentCalculator setUpReturnOnInvestmentCalculator() {
