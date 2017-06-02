@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.analysis.roi;
 
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +37,7 @@ import java.time.Period;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.OngoingStubbing;
@@ -143,9 +145,9 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 		calculator.update(broker, cashAccount, tradingData);
 		calculator.update(broker, cashAccount, tradingData);
 
-		//TODO inOrder
-		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
-		verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
+		final InOrder eventOrder = inOrder(listener);
+		eventOrder.verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
+		eventOrder.verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
 	}
 
 	@Test
@@ -164,9 +166,9 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 
 		calculator.update(broker, cashAccount, tradingData);
 
-		//TODO inOrder
-		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
-		verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
+		final InOrder eventOrder = inOrder(listener);
+		eventOrder.verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
+		eventOrder.verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
 	}
 
 	@Test
@@ -189,9 +191,9 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 
 		calculator.update(broker, cashAccount, tradingData);
 
-		//TODO inOrder
-		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
-		verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
+		final InOrder eventOrder = inOrder(listener);
+		eventOrder.verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
+		eventOrder.verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
 	}
 
 	@Test
@@ -214,9 +216,9 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 
 		calculator.update(broker, cashAccount, tradingData);
 
-		//TODO inOrder
-		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
-		verify(listener).event(isExpectedRoiEvent(TEN_POINT_ONE_PERCENT_CHANGE, YESTERFAY, TODAY));
+		final InOrder eventOrder = inOrder(listener);
+		eventOrder.verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
+		eventOrder.verify(listener).event(isExpectedRoiEvent(TEN_POINT_ONE_PERCENT_CHANGE, YESTERFAY, TODAY));
 	}
 
 	private ReturnOnInvestmentCalculator setUpReturnOnInvestmentCalculator() {
