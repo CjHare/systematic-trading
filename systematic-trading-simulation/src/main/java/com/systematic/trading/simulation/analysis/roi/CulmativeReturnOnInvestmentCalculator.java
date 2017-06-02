@@ -77,9 +77,6 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 		final ReturnOnInvestmentEvent event = createEvent(percentageChange, tradingData.getDate());
 
 		notifyListeners(event);
-
-		// Move the previous date to now
-		previousDate = tradingData.getDate();
 	}
 
 	private void notifyListeners( final ReturnOnInvestmentEvent event ) {

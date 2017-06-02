@@ -34,12 +34,11 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
-import org.hamcrest.Description;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.OngoingStubbing;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
@@ -59,7 +58,16 @@ import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CulmativeReturnOnInvestmentCalculatorTest {
+
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+
+	private static final LocalDate TODAY = LocalDate.now();
+	private static final LocalDate YESTERFAY = TODAY.minus(Period.ofDays(1));
+	private static final LocalDate TWO_DAYS_AGO = TODAY.minus(Period.ofDays(2));
+
+	private static final BigDecimal NO_CHANGE = BigDecimal.ZERO;
+	private static final BigDecimal TEN_PERCENT_CHANGE = BigDecimal.TEN;
+	private static final BigDecimal TEN_POINT_ONE_PERCENT_CHANGE = BigDecimal.valueOf(10.1);
 
 	@Mock
 	private Brokerage broker;
@@ -75,265 +83,190 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 
 	@Test
 	public void firstUpdateNoDeposit() {
-		final BigDecimal equityBalance = BigDecimal.valueOf(11.22);
-		when(broker.getEquityBalance()).thenReturn(equityBalance);
-		final ClosingPrice closingPrice = ClosingPrice.valueOf(BigDecimal.valueOf(99.87));
-		when(tradingData.getClosingPrice()).thenReturn(closingPrice);
-		final BigDecimal cashBalance = BigDecimal.valueOf(4.5);
-		when(cashAccount.getBalance()).thenReturn(cashBalance);
-		final LocalDate now = LocalDate.now();
-		when(tradingData.getDate()).thenReturn(now);
-
-		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator(MATH_CONTEXT);
-		calculator.addListener(listener);
+		setUpCashBalance(4.5);
+		setUpEquityBalance(11.22);
+		setUpTradingData(99.87);
+		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
 		// Process and generate notifications
 		calculator.update(broker, cashAccount, tradingData);
 
-		// Verify the event is as expected
-		final BigDecimal expectedPercentageChange = BigDecimal.valueOf(0);
-		final LocalDate expectedStartDate = now.minus(Period.ofDays(1));
-
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChange, expectedStartDate, now));
+		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, YESTERFAY, TODAY));
 	}
 
 	@Test
 	public void firstUpdateWithOneDeposit() {
-		final BigDecimal equityBalance = BigDecimal.valueOf(11.22);
-		when(broker.getEquityBalance()).thenReturn(equityBalance);
-		final ClosingPrice closingPrice = ClosingPrice.valueOf(BigDecimal.valueOf(99.87));
-		when(tradingData.getClosingPrice()).thenReturn(closingPrice);
-		final BigDecimal cashBalance = BigDecimal.valueOf(4.5);
-		when(cashAccount.getBalance()).thenReturn(cashBalance);
-		final LocalDate now = LocalDate.now();
-		when(tradingData.getDate()).thenReturn(now);
-
-		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator(MATH_CONTEXT);
-		calculator.addListener(listener);
+		setUpCashBalance(4.5);
+		setUpEquityBalance(11.22);
+		setUpTradingData(99.87);
+		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
 		// Deposit the amount currently in the cash balance
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(4.5), BigDecimal.valueOf(4.5),
-		        CashEventType.DEPOSIT, now));
+		        CashEventType.DEPOSIT, TODAY));
 
 		// Process and generate notifications
 		calculator.update(broker, cashAccount, tradingData);
 
-		// Verify the event is as expected
-		final BigDecimal expectedPercentageChange = BigDecimal.valueOf(0);
-		final LocalDate expectedStartDate = now.minus(Period.ofDays(1));
-
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChange, expectedStartDate, now));
+		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, YESTERFAY, TODAY));
 	}
 
 	@Test
 	public void firstUpdateWithThreeeDeposits() {
-		final BigDecimal equityBalance = BigDecimal.valueOf(11.22);
-		when(broker.getEquityBalance()).thenReturn(equityBalance);
-		final ClosingPrice closingPrice = ClosingPrice.valueOf(BigDecimal.valueOf(99.87));
-		when(tradingData.getClosingPrice()).thenReturn(closingPrice);
-		final BigDecimal cashBalance = BigDecimal.valueOf(4.5);
-		when(cashAccount.getBalance()).thenReturn(cashBalance);
-		final LocalDate now = LocalDate.now();
-		when(tradingData.getDate()).thenReturn(now);
-
-		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator(MATH_CONTEXT);
-		calculator.addListener(listener);
+		setUpCashBalance(4.5);
+		setUpEquityBalance(11.22);
+		setUpTradingData(99.87);
+		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
 		// Deposit the amount currently in the cash balance
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(1.5), BigDecimal.valueOf(1.5),
-		        CashEventType.DEPOSIT, now));
+		        CashEventType.DEPOSIT, TODAY));
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(1.5), BigDecimal.valueOf(3.0), BigDecimal.valueOf(1.5),
-		        CashEventType.DEPOSIT, now));
+		        CashEventType.DEPOSIT, TODAY));
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(3.0), BigDecimal.valueOf(4.5), BigDecimal.valueOf(1.5),
-		        CashEventType.DEPOSIT, now));
+		        CashEventType.DEPOSIT, TODAY));
 
 		// Process and generate notifications
 		calculator.update(broker, cashAccount, tradingData);
 
-		// Verify the event is as expected
-		final BigDecimal expectedPercentageChange = BigDecimal.valueOf(0);
-		final LocalDate expectedStartDate = now.minus(Period.ofDays(1));
-
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChange, expectedStartDate, now));
+		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, YESTERFAY, TODAY));
 	}
 
 	@Test
 	public void twoUpdatesNoDeposit() {
-		final BigDecimal equityBalanceYesterday = BigDecimal.valueOf(10);
-		final BigDecimal equityBalanceToday = BigDecimal.valueOf(11);
-		when(broker.getEquityBalance()).thenReturn(equityBalanceYesterday).thenReturn(equityBalanceToday);
-		final ClosingPrice closingPriceYesterday = ClosingPrice.valueOf(BigDecimal.valueOf(99.87));
-		final ClosingPrice closingPriceToday = ClosingPrice.valueOf(BigDecimal.valueOf(99.87));
-		when(tradingData.getClosingPrice()).thenReturn(closingPriceYesterday).thenReturn(closingPriceToday);
-		final BigDecimal cashBalance = BigDecimal.valueOf(0);
-		when(cashAccount.getBalance()).thenReturn(cashBalance);
-		final LocalDate yesterday = LocalDate.now();
-		final LocalDate today = LocalDate.now();
-		when(tradingData.getDate()).thenReturn(yesterday).thenReturn(today);
-
-		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator(MATH_CONTEXT);
-		calculator.addListener(listener);
+		setUpCashBalance(0);
+		setUpEquityBalance(10, 11);
+		setUpTradingData(99.87, 99.87);
+		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
 		// Process and generate notifications
 		calculator.update(broker, cashAccount, tradingData);
 		calculator.update(broker, cashAccount, tradingData);
 
-		// Verify the event is as expected
-		final BigDecimal expectedPercentageChangeYesterday = BigDecimal.valueOf(0);
-		final BigDecimal expectedPercentageChangeToday = BigDecimal.valueOf(10);
-		final LocalDate expectedStartDate = yesterday.minus(Period.ofDays(1));
-
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChangeYesterday, expectedStartDate, yesterday));
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChangeToday, yesterday, today));
+		//TODO inOrder
+		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
+		verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
 	}
 
 	@Test
 	public void twoUpdatesOneDeposit() {
-		final BigDecimal equityBalanceYesterday = BigDecimal.valueOf(10);
-		final BigDecimal equityBalanceToday = BigDecimal.valueOf(11);
-		when(broker.getEquityBalance()).thenReturn(equityBalanceYesterday).thenReturn(equityBalanceToday);
-		final ClosingPrice closingPriceYesterday = ClosingPrice.valueOf(BigDecimal.valueOf(99.87));
-		final ClosingPrice closingPriceToday = ClosingPrice.valueOf(BigDecimal.valueOf(99.87));
-		when(tradingData.getClosingPrice()).thenReturn(closingPriceYesterday).thenReturn(closingPriceToday);
-		final BigDecimal cashBalanceYesterday = BigDecimal.valueOf(0);
-		final BigDecimal cashBalanceToday = BigDecimal.valueOf(866);
-		when(cashAccount.getBalance()).thenReturn(cashBalanceYesterday).thenReturn(cashBalanceToday);
-		final LocalDate yesterday = LocalDate.now();
-		final LocalDate today = LocalDate.now();
-		when(tradingData.getDate()).thenReturn(yesterday).thenReturn(today);
-
-		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator(MATH_CONTEXT);
-		calculator.addListener(listener);
+		setUpCashBalance(0, 866);
+		setUpEquityBalance(10, 11);
+		setUpTradingData(99.87, 99.87);
+		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
 		// Process and generate notifications
 		calculator.update(broker, cashAccount, tradingData);
 
 		// Deposit the amount currently in the cash balance
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(866), BigDecimal.valueOf(866),
-		        CashEventType.DEPOSIT, today));
+		        CashEventType.DEPOSIT, TODAY));
 
 		calculator.update(broker, cashAccount, tradingData);
 
-		// Verify the event is as expected
-		final BigDecimal expectedPercentageChangeYesterday = BigDecimal.valueOf(0);
-		final BigDecimal expectedPercentageChangeToday = BigDecimal.valueOf(10);
-		final LocalDate expectedStartDate = yesterday.minus(Period.ofDays(1));
-
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChangeYesterday, expectedStartDate, yesterday));
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChangeToday, yesterday, today));
+		//TODO inOrder
+		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
+		verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
 	}
 
 	@Test
-	public void twoUpdatesThreeDeposit() {
-		final BigDecimal equityBalanceYesterday = BigDecimal.valueOf(10);
-		final BigDecimal equityBalanceToday = BigDecimal.valueOf(11);
-		when(broker.getEquityBalance()).thenReturn(equityBalanceYesterday).thenReturn(equityBalanceToday);
-		final ClosingPrice closingPriceYesterday = ClosingPrice.valueOf(BigDecimal.valueOf(99.87));
-		final ClosingPrice closingPriceToday = ClosingPrice.valueOf(BigDecimal.valueOf(99.87));
-		when(tradingData.getClosingPrice()).thenReturn(closingPriceYesterday).thenReturn(closingPriceToday);
-		final BigDecimal cashBalanceYesterday = BigDecimal.valueOf(0);
-		final BigDecimal cashBalanceToday = BigDecimal.valueOf(866);
-		when(cashAccount.getBalance()).thenReturn(cashBalanceYesterday).thenReturn(cashBalanceToday);
-		final LocalDate yesterday = LocalDate.now();
-		final LocalDate today = LocalDate.now();
-		when(tradingData.getDate()).thenReturn(yesterday).thenReturn(today);
-
-		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator(MATH_CONTEXT);
-		calculator.addListener(listener);
+	public void twoUpdatesThreeDeposits() {
+		setUpCashBalance(0, 866);
+		setUpEquityBalance(10, 11);
+		setUpTradingData(99.87, 99.87);
+		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
 		// Process and generate notifications
 		calculator.update(broker, cashAccount, tradingData);
 
 		// Deposit the amount currently in the cash balance
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(500), BigDecimal.valueOf(500),
-		        CashEventType.DEPOSIT, today));
+		        CashEventType.DEPOSIT, TODAY));
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(500), BigDecimal.valueOf(766), BigDecimal.valueOf(266),
-		        CashEventType.DEPOSIT, today));
+		        CashEventType.DEPOSIT, TODAY));
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(766), BigDecimal.valueOf(866), BigDecimal.valueOf(100),
-		        CashEventType.DEPOSIT, today));
+		        CashEventType.DEPOSIT, TODAY));
 
 		calculator.update(broker, cashAccount, tradingData);
 
-		// Verify the event is as expected
-		final BigDecimal expectedPercentageChangeYesterday = BigDecimal.valueOf(0);
-		final BigDecimal expectedPercentageChangeToday = BigDecimal.valueOf(10);
-		final LocalDate expectedStartDate = yesterday.minus(Period.ofDays(1));
-
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChangeYesterday, expectedStartDate, yesterday));
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChangeToday, yesterday, today));
+		//TODO inOrder
+		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
+		verify(listener).event(isExpectedRoiEvent(TEN_PERCENT_CHANGE, YESTERFAY, TODAY));
 	}
 
 	@Test
 	public void twoUpdatesOneDepositPlusInterest() {
-		final BigDecimal equityBalanceYesterday = BigDecimal.valueOf(10);
-		final BigDecimal equityBalanceToday = BigDecimal.valueOf(11);
-		when(broker.getEquityBalance()).thenReturn(equityBalanceYesterday).thenReturn(equityBalanceToday);
-		final ClosingPrice closingPriceYesterday = ClosingPrice.valueOf(BigDecimal.valueOf(100));
-		final ClosingPrice closingPriceToday = ClosingPrice.valueOf(BigDecimal.valueOf(100));
-		when(tradingData.getClosingPrice()).thenReturn(closingPriceYesterday).thenReturn(closingPriceToday);
-		final BigDecimal cashBalanceYesterday = BigDecimal.valueOf(0);
-		final BigDecimal cashBalanceToday = BigDecimal.valueOf(867);
-		when(cashAccount.getBalance()).thenReturn(cashBalanceYesterday).thenReturn(cashBalanceToday);
-		final LocalDate yesterday = LocalDate.now();
-		final LocalDate today = LocalDate.now();
-		when(tradingData.getDate()).thenReturn(yesterday).thenReturn(today);
-
-		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator(MATH_CONTEXT);
-		calculator.addListener(listener);
+		setUpCashBalance(0, 867);
+		setUpEquityBalance(10, 11);
+		setUpTradingData(100, 100);
+		final ReturnOnInvestmentCalculator calculator = setUpReturnOnInvestmentCalculator();
 
 		// Process and generate notifications
 		calculator.update(broker, cashAccount, tradingData);
 
 		// Deposit the amount currently in the cash balance
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(866), BigDecimal.valueOf(866),
-		        CashEventType.DEPOSIT, today));
+		        CashEventType.DEPOSIT, TODAY));
 
 		// Interest is counted as an increase in ROI
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(0), BigDecimal.valueOf(866), BigDecimal.valueOf(1),
-		        CashEventType.INTEREST, today));
+		        CashEventType.INTEREST, TODAY));
 
 		calculator.update(broker, cashAccount, tradingData);
 
-		// Verify the event is as expected
-		final BigDecimal expectedPercentageChangeYesterday = BigDecimal.valueOf(0);
-		final BigDecimal expectedPercentageChangeToday = BigDecimal.valueOf(10.1);
-		final LocalDate expectedStartDate = yesterday.minus(Period.ofDays(1));
+		//TODO inOrder
+		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
+		verify(listener).event(isExpectedRoiEvent(TEN_POINT_ONE_PERCENT_CHANGE, YESTERFAY, TODAY));
+	}
 
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChangeYesterday, expectedStartDate, yesterday));
-		verify(listener).event(isExpectedRoiEvent(expectedPercentageChangeToday, yesterday, today));
+	private ReturnOnInvestmentCalculator setUpReturnOnInvestmentCalculator() {
+		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator(MATH_CONTEXT);
+		calculator.addListener(listener);
+		return calculator;
+	}
+
+	private void setUpEquityBalance( final double... balances ) {
+		OngoingStubbing<BigDecimal> getEquityBalance = when(broker.getEquityBalance());
+
+		for (final double balance : balances) {
+			getEquityBalance = getEquityBalance.thenReturn(BigDecimal.valueOf(balance));
+		}
+	}
+
+	private void setUpTradingData( final double... closingPrices ) {
+		setUpTradingDataClosingPrice(closingPrices);
+		setUpTradingDataDate(closingPrices.length);
+	}
+
+	private void setUpTradingDataClosingPrice( final double... closingPrices ) {
+		OngoingStubbing<ClosingPrice> getClosingPrice = when(tradingData.getClosingPrice());
+
+		for (final double closingPrice : closingPrices) {
+			getClosingPrice = getClosingPrice.thenReturn(ClosingPrice.valueOf(BigDecimal.valueOf(closingPrice)));
+		}
+	}
+
+	private void setUpCashBalance( final double... cashBalances ) {
+		OngoingStubbing<BigDecimal> getBalance = when(cashAccount.getBalance());
+
+		for (final double cashBalance : cashBalances) {
+			getBalance = getBalance.thenReturn(BigDecimal.valueOf(cashBalance));
+		}
+	}
+
+	/**
+	 * Trading data entries are sorted with oldest first.
+	 */
+	private void setUpTradingDataDate( final int days ) {
+		OngoingStubbing<LocalDate> getData = when(tradingData.getDate());
+
+		for (int i = days - 1; i >= 0; i--) {
+			getData = getData.thenReturn(TODAY.minus(Period.ofDays(i)));
+		}
 	}
 
 	private ReturnOnInvestmentEvent isExpectedRoiEvent( final BigDecimal percentageChange,
 	        final LocalDate startDateInclusive, final LocalDate endDateInclusive ) {
 		return argThat(new RoiEventMatcher(percentageChange, startDateInclusive, endDateInclusive));
-	}
-
-	class RoiEventMatcher extends ArgumentMatcher<ReturnOnInvestmentEvent> {
-		private final BigDecimal percentageChange;
-		private final LocalDate startDateExclusive;
-		private final LocalDate endDateInclusive;
-
-		RoiEventMatcher( final BigDecimal percentageChange, final LocalDate startDateExclusive,
-		        final LocalDate endDateInclusive ) {
-			this.percentageChange = percentageChange;
-			this.startDateExclusive = startDateExclusive;
-			this.endDateInclusive = endDateInclusive;
-		}
-
-		@Override
-		public boolean matches( final Object argument ) {
-			final ReturnOnInvestmentEvent event = (ReturnOnInvestmentEvent) argument;
-
-			return percentageChange.compareTo(event.getPercentageChange()) == 0
-			        && startDateExclusive.equals(event.getExclusiveStartDate())
-			        && endDateInclusive.equals(event.getInclusiveEndDate());
-		}
-
-		@Override
-		public void describeTo( Description description ) {
-			description
-			        .appendText(String.format("Percentage change: %s, Exclusive start date: %s, Inclusive end date: %s",
-			                percentageChange, startDateExclusive, endDateInclusive));
-		}
 	}
 }
