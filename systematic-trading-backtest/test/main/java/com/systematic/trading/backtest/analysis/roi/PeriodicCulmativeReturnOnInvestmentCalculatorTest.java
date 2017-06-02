@@ -29,6 +29,7 @@ import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -36,10 +37,9 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
-import org.hamcrest.Description;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -56,175 +56,111 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 public class PeriodicCulmativeReturnOnInvestmentCalculatorTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
+	private static final Period UNDER_SUMMARY_PERIOD = Period.ofDays(1);
+	private static final Period SUMMARY_PERIOD = Period.ofDays(2);
+	private static final Period OVER_SUMMARY_PERIOD = Period.ofDays(3);
+
+	private static final LocalDate STARTING_DATE = LocalDate.now();
+	private static final LocalDate UNDER_END_DATE = STARTING_DATE.plus(UNDER_SUMMARY_PERIOD);
+	private static final LocalDate END_DATE = STARTING_DATE.plus(SUMMARY_PERIOD);
+	private static final LocalDate OVER_END_DATE = STARTING_DATE.plus(OVER_SUMMARY_PERIOD);
+
 	@Mock
 	private ReturnOnInvestmentEventListener listener;
 
+	/** The ROI calculator being unit tested.*/
+	private PeriodicCulmativeReturnOnInvestmentCalculator calculator;
+
+	@Before
+	public void setUp() {
+		calculator = new PeriodicCulmativeReturnOnInvestmentCalculator(STARTING_DATE, SUMMARY_PERIOD, MATH_CONTEXT);
+		calculator.addListener(listener);
+	}
+
 	@Test
 	public void underTimePeriod() {
-		final Period summaryPeriod = Period.ofDays(2);
-		final LocalDate startingDate = LocalDate.now();
+		final ReturnOnInvestmentEvent event = setUpRoiEvent(199.33, UNDER_END_DATE);
 
-		final PeriodicCulmativeReturnOnInvestmentCalculator calculator = new PeriodicCulmativeReturnOnInvestmentCalculator(
-		        startingDate, summaryPeriod, MATH_CONTEXT);
-		calculator.addListener(listener);
+		event(event);
 
-		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
-		final BigDecimal expectedChange = BigDecimal.valueOf(199.33);
-		when(event.getPercentageChange()).thenReturn(expectedChange);
-		when(event.getInclusiveEndDate()).thenReturn(startingDate.plus(Period.ofDays(1)));
-
-		calculator.event(event);
-
-		verify(event).getPercentageChange();
-		verify(event).getInclusiveEndDate();
-		verifyNoMoreInteractions(listener);
+		verifyEventInteraction(event);
+		verifyNoCulumativeRoiEvent();
 	}
 
 	@Test
 	public void onTimePeriod() {
-		final Period summaryPeriod = Period.ofDays(2);
-		final LocalDate startingDate = LocalDate.now();
+		final ReturnOnInvestmentEvent event = setUpRoiEvent(199.33, END_DATE);
 
-		final PeriodicCulmativeReturnOnInvestmentCalculator calculator = new PeriodicCulmativeReturnOnInvestmentCalculator(
-		        startingDate, summaryPeriod, MATH_CONTEXT);
-		calculator.addListener(listener);
+		event(event);
 
-		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
-		final BigDecimal expectedChange = BigDecimal.valueOf(199.33);
-		when(event.getPercentageChange()).thenReturn(expectedChange);
-		final LocalDate expectedEndDate = startingDate.plus(Period.ofDays(2));
-		when(event.getInclusiveEndDate()).thenReturn(expectedEndDate);
-
-		calculator.event(event);
-
-		verify(event).getPercentageChange();
-		verify(event).getInclusiveEndDate();
-		verify(listener).event(isExpectedRoiEvent(expectedChange, startingDate, expectedEndDate));
-		verifyNoMoreInteractions(listener);
+		verifyEventInteraction(event);
+		verifyCulumativeRoiEvent(199.33, STARTING_DATE, END_DATE);
 	}
 
 	@Test
 	public void afterTimePeriod() {
-		final Period summaryPeriod = Period.ofDays(2);
-		final LocalDate startingDate = LocalDate.now();
+		final ReturnOnInvestmentEvent event = setUpRoiEvent(199.33, OVER_END_DATE);
 
-		final PeriodicCulmativeReturnOnInvestmentCalculator calculator = new PeriodicCulmativeReturnOnInvestmentCalculator(
-		        startingDate, summaryPeriod, MATH_CONTEXT);
-		calculator.addListener(listener);
+		event(event);
 
-		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
-		final BigDecimal expectedChange = BigDecimal.valueOf(199.33);
-		when(event.getPercentageChange()).thenReturn(expectedChange);
-		final LocalDate expectedEndDate = startingDate.plus(Period.ofDays(3));
-		when(event.getInclusiveEndDate()).thenReturn(expectedEndDate);
-
-		calculator.event(event);
-
-		verify(event).getPercentageChange();
-		verify(event).getInclusiveEndDate();
-		verify(listener).event(isExpectedRoiEvent(expectedChange, startingDate, expectedEndDate));
-		verifyNoMoreInteractions(listener);
+		verifyEventInteraction(event);
+		verifyCulumativeRoiEvent(199.33, STARTING_DATE, OVER_END_DATE);
 	}
 
 	@Test
 	public void onTimePeriodTwoEvents() {
-		final Period summaryPeriod = Period.ofDays(2);
-		final LocalDate startingDate = LocalDate.now();
+		final ReturnOnInvestmentEvent eventOne = setUpRoiEvent(19.12, UNDER_END_DATE);
+		final ReturnOnInvestmentEvent eventTwo = setUpRoiEvent(25.37, END_DATE);
 
-		final PeriodicCulmativeReturnOnInvestmentCalculator calculator = new PeriodicCulmativeReturnOnInvestmentCalculator(
-		        startingDate, summaryPeriod, MATH_CONTEXT);
-		calculator.addListener(listener);
+		event(eventOne);
+		event(eventTwo);
 
-		final ReturnOnInvestmentEvent eventOne = mock(ReturnOnInvestmentEvent.class);
-		final BigDecimal firstChange = BigDecimal.valueOf(19.12);
-		when(eventOne.getPercentageChange()).thenReturn(firstChange);
-		final LocalDate firstEndDate = startingDate.plus(Period.ofDays(1));
-		when(eventOne.getInclusiveEndDate()).thenReturn(firstEndDate);
-
-		final ReturnOnInvestmentEvent eventTwo = mock(ReturnOnInvestmentEvent.class);
-		final BigDecimal secondChange = BigDecimal.valueOf(25.37);
-		when(eventTwo.getPercentageChange()).thenReturn(secondChange);
-		final LocalDate secondEndDate = firstEndDate.plus(Period.ofDays(1));
-		when(eventTwo.getInclusiveEndDate()).thenReturn(secondEndDate);
-
-		calculator.event(eventOne);
-		calculator.event(eventTwo);
-
-		verify(eventOne).getPercentageChange();
-		verify(eventOne).getInclusiveEndDate();
-		verify(eventTwo).getPercentageChange();
-		verify(eventTwo).getInclusiveEndDate();
-
-		final BigDecimal expectedChange = firstChange.add(secondChange, MATH_CONTEXT);
-		verify(listener).event(isExpectedRoiEvent(expectedChange, startingDate, startingDate.plus(Period.ofDays(2))));
-		verifyNoMoreInteractions(listener);
+		verifyEventInteraction(eventOne);
+		verifyEventInteraction(eventTwo);
+		verifyCulumativeRoiEvent(44.49, STARTING_DATE, END_DATE);
 	}
 
 	@Test
 	public void afterTimePeriodTwoEvents() {
-		final Period summaryPeriod = Period.ofDays(2);
-		final LocalDate startingDate = LocalDate.now();
+		final ReturnOnInvestmentEvent eventOne = setUpRoiEvent(19.12, UNDER_END_DATE);
+		final ReturnOnInvestmentEvent eventTwo = setUpRoiEvent(25.37, OVER_END_DATE);
 
-		final PeriodicCulmativeReturnOnInvestmentCalculator calculator = new PeriodicCulmativeReturnOnInvestmentCalculator(
-		        startingDate, summaryPeriod, MATH_CONTEXT);
-		calculator.addListener(listener);
+		event(eventOne);
+		event(eventTwo);
 
-		final ReturnOnInvestmentEvent eventOne = mock(ReturnOnInvestmentEvent.class);
-		final BigDecimal firstChange = BigDecimal.valueOf(19.12);
-		when(eventOne.getPercentageChange()).thenReturn(firstChange);
-		final LocalDate firstEndDate = startingDate.plus(Period.ofDays(1));
-		when(eventOne.getInclusiveEndDate()).thenReturn(firstEndDate);
+		verifyEventInteraction(eventOne);
+		verifyEventInteraction(eventTwo);
+		verifyCulumativeRoiEvent(44.49, STARTING_DATE, OVER_END_DATE);
+	}
 
-		final ReturnOnInvestmentEvent eventTwo = mock(ReturnOnInvestmentEvent.class);
-		final BigDecimal secondChange = BigDecimal.valueOf(25.37);
-		when(eventTwo.getPercentageChange()).thenReturn(secondChange);
-		final LocalDate secondEndDate = firstEndDate.plus(Period.ofDays(1));
-		when(eventTwo.getInclusiveEndDate()).thenReturn(secondEndDate);
-
-		calculator.event(eventOne);
-		calculator.event(eventTwo);
-
-		verify(eventOne).getPercentageChange();
-		verify(eventOne).getInclusiveEndDate();
-		verify(eventTwo).getPercentageChange();
-		verify(eventTwo).getInclusiveEndDate();
-
-		final BigDecimal expectedChange = firstChange.add(secondChange, MATH_CONTEXT);
-		verify(listener).event(isExpectedRoiEvent(expectedChange, startingDate, startingDate.plus(Period.ofDays(2))));
+	private void verifyCulumativeRoiEvent( final double percentageChange, final LocalDate startDateInclusive,
+	        final LocalDate endDateInclusive ) {
+		verify(listener).event(isExpectedRoiEvent(percentageChange, startDateInclusive, endDateInclusive));
 		verifyNoMoreInteractions(listener);
 	}
 
-	private ReturnOnInvestmentEvent isExpectedRoiEvent( final BigDecimal percentageChange,
-	        final LocalDate startDateInclusive, final LocalDate endDateInclusive ) {
-		return argThat(new RoiEventMatcher(percentageChange, startDateInclusive, endDateInclusive));
+	private void verifyNoCulumativeRoiEvent() {
+		verifyZeroInteractions(listener);
 	}
 
-	class RoiEventMatcher extends ArgumentMatcher<ReturnOnInvestmentEvent> {
-		private final BigDecimal percentageChange;
-		private final LocalDate startDateExclusive;
-		private final LocalDate endDateInclusive;
+	private void verifyEventInteraction( final ReturnOnInvestmentEvent event ) {
+		verify(event).getPercentageChange();
+		verify(event).getInclusiveEndDate();
+	}
 
-		RoiEventMatcher( final BigDecimal percentageChange, final LocalDate startDateExclusive,
-		        final LocalDate endDateInclusive ) {
-			this.percentageChange = percentageChange;
-			this.startDateExclusive = startDateExclusive;
-			this.endDateInclusive = endDateInclusive;
-		}
+	private void event( final ReturnOnInvestmentEvent event ) {
+		calculator.event(event);
+	}
 
-		@Override
-		public boolean matches( final Object argument ) {
-			final ReturnOnInvestmentEvent event = (ReturnOnInvestmentEvent) argument;
+	private ReturnOnInvestmentEvent isExpectedRoiEvent( final double percentageChange,
+	        final LocalDate startDateInclusive, final LocalDate endDateInclusive ) {
+		return argThat(new RoiEventMatcher(BigDecimal.valueOf(percentageChange), startDateInclusive, endDateInclusive));
+	}
 
-			return percentageChange.compareTo(event.getPercentageChange()) == 0
-			        && startDateExclusive.equals(event.getExclusiveStartDate())
-			        && endDateInclusive.equals(event.getInclusiveEndDate());
-		}
-
-		@Override
-		public void describeTo( Description description ) {
-			description
-			        .appendText(String.format("Percentage change: %s, Exclusive start date: %s, Inclusive end date: %s",
-			                percentageChange, startDateExclusive, endDateInclusive));
-		}
+	private ReturnOnInvestmentEvent setUpRoiEvent( final double change, final LocalDate endDate ) {
+		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
+		when(event.getPercentageChange()).thenReturn(BigDecimal.valueOf(change));
+		when(event.getInclusiveEndDate()).thenReturn(endDate);
+		return event;
 	}
 }
