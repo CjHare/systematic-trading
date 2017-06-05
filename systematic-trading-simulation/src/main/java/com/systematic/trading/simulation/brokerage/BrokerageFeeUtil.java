@@ -35,11 +35,11 @@ import java.math.MathContext;
  */
 public class BrokerageFeeUtil {
 
-	public static final BigDecimal FIFTEEN = BigDecimal.valueOf(15);
-	public static final BigDecimal THIRTEEN = BigDecimal.valueOf(13);
-	public static final BigDecimal ELEVEN = BigDecimal.valueOf(10);
-	public static final BigDecimal TEN = BigDecimal.valueOf(10);
 	public static final BigDecimal NINE_NINTY = BigDecimal.valueOf(9.9);
+	public static final BigDecimal TEN = BigDecimal.valueOf(10);
+	public static final BigDecimal ELEVEN = BigDecimal.valueOf(10);
+	public static final BigDecimal THIRTEEN = BigDecimal.valueOf(13);
+	public static final BigDecimal FIFTEEN = BigDecimal.valueOf(15);
 
 	public static final BigDecimal TEN_BASIS_POINTS = BigDecimal.valueOf(.001);
 	public static final BigDecimal EIGHT_BASIS_POINTS = BigDecimal.valueOf(.0008);

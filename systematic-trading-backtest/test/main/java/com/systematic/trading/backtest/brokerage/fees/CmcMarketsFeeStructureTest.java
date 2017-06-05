@@ -26,15 +26,13 @@
 package com.systematic.trading.backtest.brokerage.fees;
 
 import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.ELEVEN;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.NINE_NINTY;
 import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.SEVENTY_FIVE_BASIS_POINTS;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFeeStructure;
@@ -47,138 +45,114 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * @author CJ Hare
  */
 public class CmcMarketsFeeStructureTest {
-	private final MathContext mc = MathContext.DECIMAL64;
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+	public static final BigDecimal NINE_NINTY = BigDecimal.valueOf(9.9);
+	public static final BigDecimal ELEVEN = BigDecimal.valueOf(10);
+	private static final BigDecimal FIFTY = BigDecimal.valueOf(50);
+	private static final BigDecimal FORTY = BigDecimal.valueOf(40);
+	private static final BigDecimal THIRTY_SEVEN_FIFTY = BigDecimal.valueOf(37.5);
+
+	private CmcMarketsBrokerageFeeStructure feeStructure;
+
+	@Before
+	public void setUp() {
+		feeStructure = new CmcMarketsBrokerageFeeStructure(MATH_CONTEXT);
+	}
 
 	@Test
 	public void firstTradeFlatFee() {
-		final int tradesThisMonth = 1;
-		final BigDecimal tradeValue = BigDecimal.valueOf(1000);
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
+		final BigDecimal fee = calculateFee(1000, 1);
 
-		final BigDecimal fee = feeStructure.calculateFee(tradeValue, EquityClass.STOCK, tradesThisMonth);
-
-		assertEquals(ELEVEN, fee);
+		verifyFee(ELEVEN, fee);
 	}
 
 	@Test
 	public void tenthTradeFlatFee() {
-		final int tradesThisMonth = 10;
-		final BigDecimal tradeValue = BigDecimal.valueOf(1000);
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
+		final BigDecimal fee = calculateFee(1000, 10);
 
-		final BigDecimal fee = feeStructure.calculateFee(tradeValue, EquityClass.STOCK, tradesThisMonth);
-
-		assertEquals(ELEVEN, fee);
+		verifyFee(ELEVEN, fee);
 	}
 
 	@Test
 	public void eleventhTradeFlatFee() {
-		final int tradesThisMonth = 11;
-		final BigDecimal tradeValue = BigDecimal.valueOf(1000);
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
+		final BigDecimal fee = calculateFee(1000, 11);
 
-		final BigDecimal fee = feeStructure.calculateFee(tradeValue, EquityClass.STOCK, tradesThisMonth);
-
-		assertEquals(NINE_NINTY, fee);
+		verifyFee(NINE_NINTY, fee);
 	}
 
 	@Test
 	public void thirteithTradeFlatFee() {
-		final int tradesThisMonth = 30;
-		final BigDecimal tradeValue = BigDecimal.valueOf(1000);
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
+		final BigDecimal fee = calculateFee(1000, 30);
 
-		final BigDecimal fee = feeStructure.calculateFee(tradeValue, EquityClass.STOCK, tradesThisMonth);
-
-		assertEquals(NINE_NINTY, fee);
+		verifyFee(NINE_NINTY, fee);
 	}
 
 	@Test
 	public void thirtyFirstTradeFlatFee() {
-		final int tradesThisMonth = 31;
-		final BigDecimal tradeValue = BigDecimal.valueOf(1000);
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
+		final BigDecimal fee = calculateFee(1000, 31);
 
-		final BigDecimal fee = feeStructure.calculateFee(tradeValue, EquityClass.STOCK, tradesThisMonth);
-
-		assertEquals(NINE_NINTY, fee);
+		verifyFee(NINE_NINTY, fee);
 	}
 
 	@Test
 	public void firstTradePercentageFee() {
-		final int tradesThisMonth = 1;
-		final BigDecimal tradeValue = BigDecimal.valueOf(50000);
-		final BigDecimal expectedFee = tradeValue.multiply(TEN_BASIS_POINTS, mc);
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
+		final BigDecimal fee = calculateFee(50000, 1);
 
-		final BigDecimal fee = feeStructure.calculateFee(tradeValue, EquityClass.STOCK, tradesThisMonth);
-
-		assertEquals(expectedFee, fee);
+		verifyFee(FIFTY, fee);
 	}
 
 	@Test
 	public void tenthTradePercentageFee() {
-		final int tradesThisMonth = 10;
-		final BigDecimal tradeValue = BigDecimal.valueOf(50000);
-		final BigDecimal expectedFee = tradeValue.multiply(TEN_BASIS_POINTS, mc);
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
+		final BigDecimal fee = calculateFee(50000, 10);
 
-		final BigDecimal fee = feeStructure.calculateFee(tradeValue, EquityClass.STOCK, tradesThisMonth);
-
-		assertEquals(expectedFee, fee);
+		verifyFee(FIFTY, fee);
 	}
 
 	@Test
 	public void eleventhTradePercentageFee() {
-		final int tradesThisMonth = 11;
-		final BigDecimal tradeValue = BigDecimal.valueOf(50000);
-		final BigDecimal expectedFee = tradeValue.multiply(EIGHT_BASIS_POINTS, mc);
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
+		final BigDecimal fee = calculateFee(50000, 11);
 
-		final BigDecimal fee = feeStructure.calculateFee(tradeValue, EquityClass.STOCK, tradesThisMonth);
-
-		assertEquals(expectedFee, fee);
+		verifyFee(FORTY, fee);
 	}
+
+	//TODO change the values to have decimal points in the fee
+
+	//TODO rename the tests, what they are testing i.e. boundaries
 
 	@Test
 	public void thirteithTradePercentageFee() {
-		final int tradesThisMonth = 30;
-		final BigDecimal tradeValue = BigDecimal.valueOf(50000);
-		final BigDecimal expectedFee = tradeValue.multiply(EIGHT_BASIS_POINTS, mc);
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
+		final BigDecimal fee = calculateFee(50000, 30);
 
-		final BigDecimal fee = feeStructure.calculateFee(tradeValue, EquityClass.STOCK, tradesThisMonth);
-
-		assertEquals(expectedFee, fee);
+		verifyFee(FORTY, fee);
 	}
 
 	@Test
 	public void thirtyFirstTradePercentageFee() {
-		final int tradesThisMonth = 31;
-		final BigDecimal tradeValue = BigDecimal.valueOf(50000);
-		final BigDecimal expectedFee = tradeValue.multiply(SEVENTY_FIVE_BASIS_POINTS, mc);
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
+		final BigDecimal fee = calculateFee(50000, 31);
 
-		final BigDecimal fee = feeStructure.calculateFee(tradeValue, EquityClass.STOCK, tradesThisMonth);
-
-		assertEquals(expectedFee, fee);
+		verifyFee(THIRTY_SEVEN_FIFTY, fee);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassFuture() {
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
 		feeStructure.calculateFee(BigDecimal.ZERO, EquityClass.FUTURE, 0);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassForex() {
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
 		feeStructure.calculateFee(BigDecimal.ZERO, EquityClass.FOREX, 0);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassMetal() {
-		final CmcMarketsBrokerageFeeStructure feeStructure = new CmcMarketsBrokerageFeeStructure(mc);
 		feeStructure.calculateFee(BigDecimal.ZERO, EquityClass.METAL, 0);
+	}
+
+	private BigDecimal calculateFee( final double tradeValue, final int inclusiveNumberOfTrades ) {
+		return feeStructure.calculateFee(BigDecimal.valueOf(tradeValue), EquityClass.STOCK, inclusiveNumberOfTrades);
+	}
+
+	private void verifyFee( final BigDecimal expected, final BigDecimal fee ) {
+		assertEquals(String.format("%s != %s", expected, fee), 0, expected.compareTo(fee));
 	}
 }
