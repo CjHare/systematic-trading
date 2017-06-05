@@ -48,13 +48,12 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * @author CJ Hare
  */
 public class CmcMarketsFeeStructureTest {
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	private CmcMarketsBrokerageFeeStructure feeStructure;
 
 	@Before
 	public void setUp() {
-		feeStructure = new CmcMarketsBrokerageFeeStructure(MATH_CONTEXT);
+		feeStructure = new CmcMarketsBrokerageFeeStructure(MathContext.DECIMAL64);
 	}
 
 	@Test
@@ -147,6 +146,7 @@ public class CmcMarketsFeeStructureTest {
 	}
 
 	private void verifyFee( final double expected, final BigDecimal fee ) {
-		assertEquals(String.format("Expected of %s != Fee of %s", expected, fee), 0, BigDecimal.valueOf(expected).compareTo(fee));
+		assertEquals(String.format("Expected of %s != Fee of %s", expected, fee), 0,
+		        BigDecimal.valueOf(expected).compareTo(fee));
 	}
 }
