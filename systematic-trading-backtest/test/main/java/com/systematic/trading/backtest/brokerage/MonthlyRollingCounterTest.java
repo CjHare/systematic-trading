@@ -30,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 import java.time.LocalDate;
 import java.time.Period;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.systematic.trading.simulation.brokerage.MonthlyRollingCounter;
@@ -41,85 +42,85 @@ import com.systematic.trading.simulation.brokerage.MonthlyRollingCounter;
  */
 public class MonthlyRollingCounterTest {
 
+	private MonthlyRollingCounter counter;
+
+	@Before
+	public void setUp() {
+		counter = new MonthlyRollingCounter();
+	}
+
 	@Test
 	public void addOne() {
-		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
+		incrementCurrentMonth();
 
-		final int count = counter.add(LocalDate.now());
-
-		assertEquals(1, count);
+		verifyCurrentMonthCount(1);
 	}
 
 	@Test
 	public void addTwo() {
-		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
+		incrementCurrentMonth();
+		incrementCurrentMonth();
 
-		counter.add(LocalDate.now());
-		final int count = counter.add(LocalDate.now());
-
-		assertEquals(2, count);
+		verifyCurrentMonthCount(2);
 	}
 
 	@Test
 	public void addTwoMonthSplit() {
-		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
+		incrementreviousMonth();
+		incrementCurrentMonth();
 
-		counter.add(LocalDate.now().minus(Period.ofMonths(1)));
-		final int count = counter.add(LocalDate.now());
-
-		assertEquals(1, count);
+		verifyCurrentMonthCount(1);
 	}
 
 	@Test
 	public void addTwoYearsSplit() {
-		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
+		incrementPreviousYear();
+		incrementCurrentMonth();
 
-		counter.add(LocalDate.now().minus(Period.ofYears(1)));
-		final int count = counter.add(LocalDate.now());
-
-		assertEquals(1, count);
+		verifyCurrentMonthCount(1);
 	}
 
 	@Test
 	public void addRolling() {
-		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
 
 		// Here, then back (should dump that count) then here again
-		counter.add(LocalDate.now());
-		counter.add(LocalDate.now().minus(Period.ofMonths(1)));
-		final int count = counter.add(LocalDate.now());
+		incrementCurrentMonth();
+		incrementreviousMonth();
+		incrementCurrentMonth();
 
-		assertEquals(1, count);
+		verifyCurrentMonthCount(1);
 	}
 
 	@Test
 	public void getCountZero() {
-		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
-
-		final int count = counter.get(LocalDate.now());
-
-		assertEquals(0, count);
-	}
-
-	@Test
-	public void getCountTwo() {
-		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
-
-		counter.add(LocalDate.now());
-		counter.add(LocalDate.now());
-		final int count = counter.get(LocalDate.now());
-
-		assertEquals(2, count);
+		verifyCurrentMonthCount(0);
 	}
 
 	@Test
 	public void getRollingCounterLost() {
-		final MonthlyRollingCounter counter = new MonthlyRollingCounter();
+		incrementreviousMonth();
+		incrementCurrentMonth();
 
-		counter.add(LocalDate.now().minus(Period.ofMonths(2)));
+		veriyfPreviousMonthCount(0);
+	}
+
+	private void incrementCurrentMonth() {
+		counter.add(LocalDate.now());
+	}
+
+	private void incrementreviousMonth() {
 		counter.add(LocalDate.now().minus(Period.ofMonths(1)));
-		final int count = counter.get(LocalDate.now().minus(Period.ofMonths(2)));
+	}
 
-		assertEquals(0, count);
+	private void incrementPreviousYear() {
+		counter.add(LocalDate.now().minus(Period.ofYears(1)));
+	}
+
+	private void verifyCurrentMonthCount( final int expected ) {
+		assertEquals(expected, counter.get(LocalDate.now()));
+	}
+
+	private void veriyfPreviousMonthCount( final int expected ) {
+		assertEquals(expected, counter.get(LocalDate.now().minus(Period.ofMonths(1))));
 	}
 }
