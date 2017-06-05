@@ -28,6 +28,8 @@ package com.systematic.trading.backtest.brokerage;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -59,7 +61,7 @@ public class SingleEquityClassBrokerTest {
 	private static final BigDecimal EQUITY_PRICE = BigDecimal.valueOf(101);
 
 	@Mock
-	private BrokerageTransactionFeeStructure fees;
+	private BrokerageTransactionFeeStructure feeStructure;
 
 	@Mock
 	private EquityManagementFeeStructure equityFee;
@@ -71,8 +73,10 @@ public class SingleEquityClassBrokerTest {
 
 	@Before
 	public void setUp() {
-		broker = new SingleEquityClassBroker("BrokerName", fees, equityFee, equity, LocalDate.now(),
+		broker = new SingleEquityClassBroker("BrokerName", feeStructure, equityFee, equity, LocalDate.now(),
 		        MathContext.DECIMAL64);
+
+		when(equity.getType()).thenReturn(EquityClass.STOCK);
 	}
 
 	@Test
@@ -82,6 +86,7 @@ public class SingleEquityClassBrokerTest {
 		buy(11);
 
 		verifyEquityBalance(11);
+		verifyFeeCalculation(11);
 	}
 
 	@Test
@@ -92,6 +97,7 @@ public class SingleEquityClassBrokerTest {
 
 		verifyCost(1112.23, cost);
 		verifyEquityBalance(0);
+		verifyFeeCalculation(11);
 	}
 
 	@Test
@@ -105,6 +111,7 @@ public class SingleEquityClassBrokerTest {
 		buy(11);
 
 		verifyEquityBalance(33.5);
+		verifyFeeCalculation(22.5, 11);
 	}
 
 	@Test
@@ -146,8 +153,6 @@ public class SingleEquityClassBrokerTest {
 		verifyCost(6.78787, fee);
 	}
 
-	//TODO verify calculateFee call is made
-
 	private BigDecimal sell( final double volume ) throws InsufficientEquitiesException {
 		return broker.sell(Price.valueOf(EQUITY_PRICE), EquityOrderVolume.valueOf(BigDecimal.valueOf(volume)),
 		        LocalDate.now());
@@ -174,7 +179,18 @@ public class SingleEquityClassBrokerTest {
 	}
 
 	private void setUpBrokerageFee( final double transactionCost ) {
-		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), anyInt()))
+		when(feeStructure.calculateFee(any(BigDecimal.class), any(EquityClass.class), anyInt()))
 		        .thenReturn(BigDecimal.valueOf(transactionCost));
+	}
+
+	private void verifyFeeCalculation( final double... numberOfEquities ) {
+		int count = 1;
+
+		for (final double equityCount : numberOfEquities) {
+			verify(feeStructure).calculateFee(BigDecimal.valueOf(equityCount).multiply(EQUITY_PRICE), EquityClass.STOCK,
+			        count++);
+		}
+
+		verifyNoMoreInteractions(feeStructure);
 	}
 }
