@@ -25,8 +25,6 @@
  */
 package com.systematic.trading.backtest.brokerage.fees;
 
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.SEVENTY_FIVE_BASIS_POINTS;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
@@ -42,15 +40,15 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 /**
  * Test the fee structure for Bell Direct.
  * 
+ * CMC Markets has three pricing tiers based on the number of trades in that month
+ *  1st)  Trade # 0 - 10 : $11 or 0.10%, whichever is the greater
+ *  2nd) Trade # 11 - 30 : $9.90 or 0.08%, whichever greater
+ *  3rd)    Trade # 31 + : All trades are $9.90 or 0.075%, whichever greater
+ * 
  * @author CJ Hare
  */
 public class CmcMarketsFeeStructureTest {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
-	public static final BigDecimal NINE_NINTY = BigDecimal.valueOf(9.9);
-	public static final BigDecimal ELEVEN = BigDecimal.valueOf(10);
-	private static final BigDecimal FIFTY = BigDecimal.valueOf(50);
-	private static final BigDecimal FORTY = BigDecimal.valueOf(40);
-	private static final BigDecimal THIRTY_SEVEN_FIFTY = BigDecimal.valueOf(37.5);
 
 	private CmcMarketsBrokerageFeeStructure feeStructure;
 
@@ -60,77 +58,73 @@ public class CmcMarketsFeeStructureTest {
 	}
 
 	@Test
-	public void firstTradeFlatFee() {
+	public void firstTieratFee() {
 		final BigDecimal fee = calculateFee(1000, 1);
 
-		verifyFee(ELEVEN, fee);
+		verifyFee(11, fee);
 	}
 
 	@Test
-	public void tenthTradeFlatFee() {
+	public void firstTierEdgeFlatFee() {
 		final BigDecimal fee = calculateFee(1000, 10);
 
-		verifyFee(ELEVEN, fee);
+		verifyFee(11, fee);
 	}
 
 	@Test
-	public void eleventhTradeFlatFee() {
+	public void secondTierFlatFee() {
 		final BigDecimal fee = calculateFee(1000, 11);
 
-		verifyFee(NINE_NINTY, fee);
+		verifyFee(9.9, fee);
 	}
 
 	@Test
-	public void thirteithTradeFlatFee() {
+	public void secondTierEdgeFlatFee() {
 		final BigDecimal fee = calculateFee(1000, 30);
 
-		verifyFee(NINE_NINTY, fee);
+		verifyFee(9.9, fee);
 	}
 
 	@Test
-	public void thirtyFirstTradeFlatFee() {
+	public void thirdTierFlatFee() {
 		final BigDecimal fee = calculateFee(1000, 31);
 
-		verifyFee(NINE_NINTY, fee);
+		verifyFee(9.9, fee);
 	}
 
 	@Test
-	public void firstTradePercentageFee() {
-		final BigDecimal fee = calculateFee(50000, 1);
+	public void firstTierPercentageFee() {
+		final BigDecimal fee = calculateFee(54321, 1);
 
-		verifyFee(FIFTY, fee);
+		verifyFee(54.321, fee);
 	}
 
 	@Test
-	public void tenthTradePercentageFee() {
+	public void firstTierEdgePercentageFee() {
 		final BigDecimal fee = calculateFee(50000, 10);
 
-		verifyFee(FIFTY, fee);
+		verifyFee(50, fee);
 	}
 
 	@Test
-	public void eleventhTradePercentageFee() {
+	public void secondTierPercentageFee() {
 		final BigDecimal fee = calculateFee(50000, 11);
 
-		verifyFee(FORTY, fee);
+		verifyFee(40, fee);
 	}
 
-	//TODO change the values to have decimal points in the fee
-
-	//TODO rename the tests, what they are testing i.e. boundaries
-
 	@Test
-	public void thirteithTradePercentageFee() {
+	public void secondTierEdgePercentageFee() {
 		final BigDecimal fee = calculateFee(50000, 30);
 
-		verifyFee(FORTY, fee);
+		verifyFee(40, fee);
 	}
 
 	@Test
-	public void thirtyFirstTradePercentageFee() {
+	public void thirdTierPercentageFee() {
 		final BigDecimal fee = calculateFee(50000, 31);
 
-		verifyFee(THIRTY_SEVEN_FIFTY, fee);
+		verifyFee(37.5, fee);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
@@ -152,7 +146,7 @@ public class CmcMarketsFeeStructureTest {
 		return feeStructure.calculateFee(BigDecimal.valueOf(tradeValue), EquityClass.STOCK, inclusiveNumberOfTrades);
 	}
 
-	private void verifyFee( final BigDecimal expected, final BigDecimal fee ) {
-		assertEquals(String.format("%s != %s", expected, fee), 0, expected.compareTo(fee));
+	private void verifyFee( final double expected, final BigDecimal fee ) {
+		assertEquals(String.format("%s != %s", expected, fee), 0, BigDecimal.valueOf(expected).compareTo(fee));
 	}
 }
