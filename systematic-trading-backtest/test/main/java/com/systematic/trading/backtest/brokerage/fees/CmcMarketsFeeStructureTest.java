@@ -147,6 +147,6 @@ public class CmcMarketsFeeStructureTest {
 	}
 
 	private void verifyFee( final double expected, final BigDecimal fee ) {
-		assertEquals(String.format("%s != %s", expected, fee), 0, BigDecimal.valueOf(expected).compareTo(fee));
+		assertEquals(String.format("Expected of %s != Fee of %s", expected, fee), 0, BigDecimal.valueOf(expected).compareTo(fee));
 	}
 }

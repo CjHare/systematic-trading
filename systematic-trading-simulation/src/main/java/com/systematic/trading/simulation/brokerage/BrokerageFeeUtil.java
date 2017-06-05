@@ -37,7 +37,7 @@ public class BrokerageFeeUtil {
 
 	public static final BigDecimal NINE_NINTY = BigDecimal.valueOf(9.9);
 	public static final BigDecimal TEN = BigDecimal.valueOf(10);
-	public static final BigDecimal ELEVEN = BigDecimal.valueOf(10);
+	public static final BigDecimal ELEVEN = BigDecimal.valueOf(11);
 	public static final BigDecimal THIRTEEN = BigDecimal.valueOf(13);
 	public static final BigDecimal FIFTEEN = BigDecimal.valueOf(15);
 
