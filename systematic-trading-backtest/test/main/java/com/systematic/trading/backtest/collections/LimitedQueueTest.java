@@ -27,8 +27,8 @@ package com.systematic.trading.backtest.collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.systematic.trading.collection.LimitedSizeQueue;
@@ -40,87 +40,92 @@ import com.systematic.trading.collection.LimitedSizeQueue;
  */
 public class LimitedQueueTest {
 
+	private LimitedSizeQueue<String> list;
+
+	@Before
+	public void setUp() {
+		list = new LimitedSizeQueue<String>(String.class, 2);
+	}
+
 	@Test
 	public void addUnderLimit() {
-		final int limit = 5;
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, limit);
 		final String one = "one";
 
-		// Add the data to the list
 		list.add(one);
 
-		assertEquals(1, list.size());
-		assertNotNull(list.get(0));
-		assertEquals(one, list.get(0));
+		verifyContents(one);
 	}
 
 	@Test
 	public void addOnLimit() {
-		final int limit = 2;
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, limit);
 		final String one = "one";
 		final String two = "two";
 
-		// Add the data to the list
 		list.add(one);
 		list.add(two);
 
-		assertEquals(2, list.size());
-		assertNotNull(list.get(0));
-		assertNotNull(list.get(1));
-		assertEquals(one, list.get(0));
-		assertEquals(two, list.get(1));
+		verifyContents(one, two);
 	}
 
 	@Test
 	public void addOverLimit() {
-		final int limit = 2;
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, limit);
 		final String one = "one";
 		final String two = "two";
 		final String three = "three";
 
-		// Add the data to the list
 		list.add(one);
 		list.add(two);
 		list.add(three);
 
-		assertEquals(2, list.size());
-		assertNotNull(list.get(0));
-		assertNotNull(list.get(1));
-		assertEquals(two, list.get(0));
-		assertEquals(three, list.get(1));
+		verifyContents(two, three);
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void toArrayException() {
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, 1);
-
 		list.toArray(new String[0]);
-
-		fail("Expecting exception");
 	}
 
 	@Test
-	public void toArraySizeOne() {
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, 1);
-		list.add("first");
+	public void toArray() {
+		final String[] converted = list.toArray();
 
-		final String[] a = list.toArray();
-
-		assertEquals(1, a.length);
-		assertEquals("first", a[0]);
+		verifyContents(converted);
 	}
 
 	@Test
-	public void toArraySizeTwoPopulationOne() {
-		final LimitedSizeQueue<String> list = new LimitedSizeQueue<String>(String.class, 2);
+	public void toArrayPartiallyPopulated() {
 		list.add("first");
 
-		final String[] a = list.toArray();
+		final String[] converted = list.toArray();
 
-		assertEquals(1, a.length);
-		assertEquals("first", a[0]);
+		verifyContents(converted, "first");
 	}
 
+	@Test
+	public void toArrayFullyPopulated() {
+		list.add("first");
+		list.add("second");
+
+		final String[] converted = list.toArray();
+
+		verifyContents(converted, "first", "second");
+	}
+
+	private void verifyContents( final String[] converted, final String... expectedContents ) {
+		assertEquals(expectedContents.length, converted.length);
+
+		for (int i = 0; i < expectedContents.length; i++) {
+			assertNotNull(converted[i]);
+			assertEquals(expectedContents[i], converted[i]);
+		}
+	}
+
+	private void verifyContents( final String... expectedContents ) {
+		assertEquals(expectedContents.length, list.size());
+
+		for (int i = 0; i < expectedContents.length; i++) {
+			assertNotNull(list.get(i));
+			assertEquals(expectedContents[i], list.get(i));
+		}
+	}
 }
