@@ -40,9 +40,20 @@ import org.junit.Test;
 import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
+ * CommandLineLaunchArgumentsParser test.
+ * 
  * @author CJ Hare
  */
 public class CommandLineLaunchArgumentsParserTest {
+
+	@Test
+	public void outputType() {
+		final String[] launchArguments = { "-output", "elastic_search" };
+
+		final Map<ArgumentKey, String> results = new CommandLineLaunchArgumentsParser().parse(launchArguments);
+
+		verifyOutputType("elastic_search", results);
+	}
 
 	@Test
 	public void tooManyArguments() {
@@ -50,12 +61,11 @@ public class CommandLineLaunchArgumentsParserTest {
 
 		final Map<ArgumentKey, String> results = new CommandLineLaunchArgumentsParser().parse(launchArguments);
 
-		assertNotNull(results);
-		assertEquals("no_display", results.get(ArgumentKey.OUTPUT_TYPE));
+		verifyOutputType("no_display", results);
 	}
 
 	@Test
-	public void keyWithoutValue() {
+	public void tooFewArguments() {
 		final String[] launchArguments = { "-output" };
 
 		try {
@@ -66,13 +76,8 @@ public class CommandLineLaunchArgumentsParserTest {
 		}
 	}
 
-	@Test
-	public void outputTypeElasticSearch() {
-		final String[] launchArguments = { "-output", "elastic_search" };
-
-		final Map<ArgumentKey, String> results = new CommandLineLaunchArgumentsParser().parse(launchArguments);
-
+	private void verifyOutputType( final String expectedOutputType, final Map<ArgumentKey, String> results ) {
 		assertNotNull(results);
-		assertEquals("elastic_search", results.get(ArgumentKey.OUTPUT_TYPE));
+		assertEquals(expectedOutputType, results.get(ArgumentKey.OUTPUT_TYPE));
 	}
 }
