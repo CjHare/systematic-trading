@@ -29,7 +29,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -195,14 +194,11 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		InOrder order = inOrder(rate);
 
 		for (final Pair<Double, Integer> argument : arguments) {
-			order.verify(rate).interest(matches(argument.getLeft()), eq(argument.getRight()), eq(false));
+			order.verify(rate).interest(BigDecimalMatcher.argumentMatches(argument.getLeft()), eq(argument.getRight()),
+			        eq(false));
 		}
 
 		verifyNoMoreInteractions(rate);
-	}
-
-	private BigDecimal matches( final double expected ) {
-		return argThat(new BigDecimalMatcher(BigDecimal.valueOf(expected)));
 	}
 
 	private void setUpCashAccount() {

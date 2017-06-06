@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.backtest;
 
+import static org.mockito.Matchers.argThat;
+
 import java.math.BigDecimal;
 
 import org.hamcrest.Description;
@@ -40,6 +42,10 @@ import org.mockito.ArgumentMatcher;
 public class BigDecimalMatcher extends ArgumentMatcher<BigDecimal> {
 
 	private final BigDecimal expected;
+
+	public static BigDecimal argumentMatches( final double expected ) {
+		return argThat(new BigDecimalMatcher(BigDecimal.valueOf(expected)));
+	}
 
 	public BigDecimalMatcher( final BigDecimal expected ) {
 		this.expected = expected;

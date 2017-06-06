@@ -26,6 +26,8 @@
 package com.systematic.trading.backtest.cash;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -36,11 +38,14 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.backtest.BigDecimalMatcher;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
 import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
@@ -52,102 +57,129 @@ import com.systematic.trading.simulation.order.exception.InsufficientFundsExcept
  */
 @RunWith(MockitoJUnitRunner.class)
 public class RegularDepositCashAccountDecoratorTest {
+	private static final BigDecimal DEPOSIT_AMOUNT = BigDecimal.valueOf(101);
+	private static final Period INTERVAL = Period.ofWeeks(1);
+	private static final LocalDate FIRST_DEPOSIT_DATE = LocalDate.of(2010, Month.MARCH, 1);
+	private static final LocalDate BEFORE_FIRST_DEPOSIT_DATE = FIRST_DEPOSIT_DATE.minus(Period.ofDays(1));
+	private static final LocalDate SECOND_DEPOSIT_DATE = FIRST_DEPOSIT_DATE.plus(INTERVAL);
 
 	@Mock
 	private CashAccount account;
 
-	private final BigDecimal depositAmount = BigDecimal.valueOf(101);
-	private final LocalDate firstDeposit = LocalDate.now();
-	private final Period interval = Period.ofWeeks(1);
+	private RegularDepositCashAccountDecorator regularDeposits;
+
+	@Before
+	public void setUp() {
+		regularDeposits = new RegularDepositCashAccountDecorator(DEPOSIT_AMOUNT, account, FIRST_DEPOSIT_DATE, INTERVAL);
+	}
 
 	@Test
 	public void credit() {
-		final BigDecimal creditAmount = BigDecimal.valueOf(77);
 		final LocalDate transactionDate = LocalDate.of(2010, Month.APRIL, 2);
-		final RegularDepositCashAccountDecorator regularDeposits = new RegularDepositCashAccountDecorator(depositAmount,
-		        account, firstDeposit, interval);
 
-		regularDeposits.credit(creditAmount, transactionDate);
+		credit(76.5432, transactionDate);
 
-		verify(account).credit(creditAmount, transactionDate);
-		verifyNoMoreInteractions(account);
+		verifyCredit(76.5432, transactionDate);
 	}
 
 	@Test
 	public void debit() throws InsufficientFundsException {
-		final BigDecimal creditAmount = BigDecimal.valueOf(55);
 		final LocalDate transactionDate = LocalDate.of(2010, Month.APRIL, 8);
-		final RegularDepositCashAccountDecorator regularDeposits = new RegularDepositCashAccountDecorator(depositAmount,
-		        account, firstDeposit, interval);
 
-		regularDeposits.debit(creditAmount, transactionDate);
+		debit(54.321, transactionDate);
 
-		verify(account).debit(creditAmount, transactionDate);
-		verifyNoMoreInteractions(account);
+		veriftDebit(54.321, transactionDate);
 	}
 
 	@Test
 	public void deposit() {
-		final BigDecimal creditAmount = BigDecimal.valueOf(55);
 		final LocalDate transactionDate = LocalDate.of(2010, Month.APRIL, 8);
-		final RegularDepositCashAccountDecorator regularDeposits = new RegularDepositCashAccountDecorator(depositAmount,
-		        account, firstDeposit, interval);
 
-		regularDeposits.deposit(creditAmount, transactionDate);
+		deposit(32.123, transactionDate);
 
-		verify(account).deposit(creditAmount, transactionDate);
-		verifyNoMoreInteractions(account);
+		verifyDeposit(32.123, transactionDate);
 	}
 
 	@Test
 	public void getBalance() {
-		final BigDecimal expectedBalance = BigDecimal.valueOf(345);
-		when(account.getBalance()).thenReturn(expectedBalance);
-		final RegularDepositCashAccountDecorator regularDeposits = new RegularDepositCashAccountDecorator(depositAmount,
-		        account, firstDeposit, interval);
+		setUpBalance(345);
 
-		final BigDecimal actualBalance = regularDeposits.getBalance();
-
-		assertEquals(expectedBalance, actualBalance);
-		verify(account).getBalance();
-		verifyNoMoreInteractions(account);
+		verifyBalance(345);
 	}
 
 	@Test
 	public void updateNoDeposit() {
-		final LocalDate transactionDate = LocalDate.now();
-		final RegularDepositCashAccountDecorator regularDeposits = new RegularDepositCashAccountDecorator(depositAmount,
-		        account, firstDeposit, interval);
+		update(BEFORE_FIRST_DEPOSIT_DATE);
 
-		regularDeposits.update(transactionDate);
-
-		verify(account).update(transactionDate);
-		verifyNoMoreInteractions(account);
+		verifyUpdate(BEFORE_FIRST_DEPOSIT_DATE);
 	}
 
 	@Test
 	public void updateOneDeposit() {
-		final LocalDate transactionDate = LocalDate.now().plus(Period.ofDays(1));
-		final RegularDepositCashAccountDecorator regularDeposits = new RegularDepositCashAccountDecorator(depositAmount,
-		        account, firstDeposit, interval);
+		update(FIRST_DEPOSIT_DATE);
 
-		regularDeposits.update(transactionDate);
-
-		verify(account).deposit(depositAmount, transactionDate);
-		verify(account).update(transactionDate);
-		verifyNoMoreInteractions(account);
+		verifyDeposits(FIRST_DEPOSIT_DATE, 1);
 	}
 
 	@Test
 	public void updateTwoDeposits() {
-		final LocalDate transactionDate = LocalDate.now().plus(Period.ofDays(1)).plus(interval);
-		final RegularDepositCashAccountDecorator regularDeposits = new RegularDepositCashAccountDecorator(depositAmount,
-		        account, firstDeposit, interval);
+		update(SECOND_DEPOSIT_DATE);
 
-		regularDeposits.update(transactionDate);
+		verifyDeposits(SECOND_DEPOSIT_DATE, 2);
+	}
 
-		verify(account, times(2)).deposit(depositAmount, transactionDate);
-		verify(account).update(transactionDate);
+	private void verifyBalance( final double expectedBalance ) {
+		final BigDecimal actualBalance = regularDeposits.getBalance();
+		assertEquals(String.format("Expected %s != %s", expectedBalance, actualBalance),
+		        BigDecimal.valueOf(345).compareTo(actualBalance), 0);
+		verify(account).getBalance();
+		verifyNoMoreInteractions(account);
+	}
+
+	private void verifyDeposits( final LocalDate tradingDate, final int times ) {
+		final InOrder order = inOrder(account);
+		order.verify(account, times(times)).deposit(DEPOSIT_AMOUNT, tradingDate);
+		order.verify(account).update(tradingDate);
+		verifyNoMoreInteractions(account);
+	}
+
+	private void verifyUpdate( final LocalDate tradingDate ) {
+		verify(account).update(tradingDate);
+		verifyNoMoreInteractions(account);
+	}
+
+	private void update( final LocalDate tradingDate ) {
+		regularDeposits.update(tradingDate);
+	}
+
+	private void setUpBalance( final double expectedBalance ) {
+		when(account.getBalance()).thenReturn(BigDecimal.valueOf(expectedBalance));
+	}
+
+	private void credit( final double amount, final LocalDate transactionDate ) {
+		regularDeposits.credit(BigDecimal.valueOf(amount), transactionDate);
+	}
+
+	private void verifyCredit( final double amount, final LocalDate transactionDate ) {
+		verify(account).credit(BigDecimalMatcher.argumentMatches(amount), eq(transactionDate));
+		verifyNoMoreInteractions(account);
+	}
+
+	private void debit( final double amount, final LocalDate transactionDate ) throws InsufficientFundsException {
+		regularDeposits.debit(BigDecimal.valueOf(amount), transactionDate);
+	}
+
+	private void veriftDebit( final double amount, final LocalDate transactionDate ) throws InsufficientFundsException {
+		verify(account).debit(BigDecimalMatcher.argumentMatches(amount), eq(transactionDate));
+		verifyNoMoreInteractions(account);
+	}
+
+	private void deposit( final double amount, final LocalDate transactionDate ) {
+		regularDeposits.deposit(BigDecimal.valueOf(amount), transactionDate);
+	}
+
+	private void verifyDeposit( final double amount, final LocalDate transactionDate ) {
+		verify(account).deposit(BigDecimalMatcher.argumentMatches(amount), eq(transactionDate));
 		verifyNoMoreInteractions(account);
 	}
 }

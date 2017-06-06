@@ -64,7 +64,7 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 		this.interval = interval;
 
 		// The first order needs to be on that date, not interval after
-		lastDeposit = LocalDate.from(firstDeposit).minus(interval);
+		lastDeposit = LocalDate.from(firstDeposit).minus(interval).minus(Period.ofDays(1));
 	}
 
 	@Override
