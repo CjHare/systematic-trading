@@ -93,7 +93,9 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 			final boolean isLeapYear = tradingDate.isLeapYear();
 			final int daysInterest = Period.between(lastInterestCalculation, tradingDate).getDays();
 
-			escrow = escrow.add(rate.interest(funds, daysInterest, isLeapYear), mathContext);
+			if (daysInterest > 0) {
+				escrow = escrow.add(rate.interest(funds, daysInterest, isLeapYear), mathContext);
+			}
 
 			// Update the interest date marker
 			lastInterestCalculation = tradingDate;
