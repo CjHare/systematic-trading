@@ -30,7 +30,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -38,12 +44,16 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.backtest.BigDecimalMatcher;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.model.EquityClass;
@@ -83,8 +93,6 @@ public class DateTriggeredEntryLogicTest {
 	/* The most recent update response.*/
 	private EquityOrder order;
 
-	//TODO verify interactions
-
 	@Before
 	public void setUp() {
 		logic = null;
@@ -99,8 +107,11 @@ public class DateTriggeredEntryLogicTest {
 		update();
 
 		verifyNoOrder();
+		verifyNoCashAccountActions();
+		verifyNoFeeCalculations();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void updateOrder() {
 		setUpEntryLogic(YESTERDAY, ORDER_EVERY_DAY);
@@ -111,8 +122,11 @@ public class DateTriggeredEntryLogicTest {
 		update();
 
 		verifyOrder();
+		verifyCashAccountBalanceCheck();
+		verifyFee(calculation(100, TODAY));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	/**
 	 * When the fees are higher then the order amount, there should be no order
@@ -126,6 +140,8 @@ public class DateTriggeredEntryLogicTest {
 		update();
 
 		verifyNoOrder();
+		verifyCashAccountBalanceCheck();
+		verifyFee(calculation(4, TODAY));
 	}
 
 	@Test
@@ -136,8 +152,11 @@ public class DateTriggeredEntryLogicTest {
 		update();
 
 		verifyNoOrder();
+		verifyNoCashAccountActions();
+		verifyNoFeeCalculations();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void updateBuyTwoDaysWithOrder() {
 		setUpEntryLogic(YESTERDAY, ORDER_EVERY_OTHER_DAY);
@@ -148,8 +167,11 @@ public class DateTriggeredEntryLogicTest {
 		update();
 
 		verifyOrder();
+		verifyCashAccountBalanceCheck();
+		verifyFee(calculation(100, TODAY));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void updateBuyTwoDaysRolling() {
 		setUpEntryLogic(YESTERDAY, ORDER_EVERY_OTHER_DAY);
@@ -167,8 +189,11 @@ public class DateTriggeredEntryLogicTest {
 		update();
 
 		verifyNoOrder();
+		verifyCashAccountBalanceCheck();
+		verifyFee(calculation(100, TODAY));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	/**
 	 * Make sure there is no drift in the order date.
@@ -189,6 +214,8 @@ public class DateTriggeredEntryLogicTest {
 		update();
 
 		verifyOrder();
+		verifyCashAccountBalanceCheck();
+		verifyFee(calculation(100, TODAY), calculation(100, TOMORROW));
 	}
 
 	@Test
@@ -198,6 +225,27 @@ public class DateTriggeredEntryLogicTest {
 		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds(mock(EquityOrder.class));
 
 		assertEquals(EquityOrderInsufficientFundsAction.RESUMIT, action);
+	}
+
+	private void verifyCashAccountBalanceCheck() {
+		verify(cashAccount, atLeastOnce()).getBalance();
+		verifyNoMoreInteractions(cashAccount);
+	}
+
+	private Pair<Double, LocalDate> calculation( final double tradeValue, final LocalDate tradeDate ) {
+		return new ImmutablePair<Double, LocalDate>(tradeValue, tradeDate);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void verifyFee( final Pair<Double, LocalDate>... tradeValuesAndDates ) {
+		InOrder order = inOrder(fees);
+
+		for (final Pair<Double, LocalDate> tradeValueAndDate : tradeValuesAndDates) {
+			order.verify(fees).calculateFee(BigDecimalMatcher.argumentMatches(tradeValueAndDate.getLeft()),
+			        eq(EquityClass.STOCK), eq(tradeValueAndDate.getRight()));
+		}
+
+		verifyNoMoreInteractions(fees);
 	}
 
 	private void setUpCashAccount( final double balance ) {
@@ -234,5 +282,13 @@ public class DateTriggeredEntryLogicTest {
 	private void setUpEntryLogic( final LocalDate firstOrder, final Period interval ) {
 		logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder, interval,
 		        MathContext.DECIMAL64);
+	}
+
+	private void verifyNoCashAccountActions() {
+		verifyZeroInteractions(cashAccount);
+	}
+
+	private void verifyNoFeeCalculations() {
+		verifyZeroInteractions(fees);
 	}
 }
