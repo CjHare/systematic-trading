@@ -65,7 +65,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	 * @param equityScale the number of decimal places the equity is traded in, with zero being
 	 *            whole numbers.
 	 * @param firstOrder date to place the first order.
-	 * @param interval time between creation of entry orders.
+	 * @param interval time between creation of entry orders i.e. create and order every interval days.
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
 	public DateTriggeredEntryLogic( final EquityClass equityType, final int equityScale, final LocalDate firstOrder,
