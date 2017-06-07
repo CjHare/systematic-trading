@@ -26,7 +26,9 @@
 package com.systematic.trading.backtest.logic;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -51,12 +53,30 @@ public class HoldForeverExitLogicTest {
 	@Mock
 	private TradingDayPrices data;
 
+	/** Entry logic instance created in the setUpEntryLogic.*/
+	private HoldForeverExitLogic logic;
+
+	/* The most recent update response.*/
+	private EquityOrder order;
+
+	@Before
+	public void setUp() {
+		logic = new HoldForeverExitLogic();
+	}
+
 	@Test
 	public void update() {
-		final HoldForeverExitLogic logic = new HoldForeverExitLogic();
+		updateLogic();
 
-		final EquityOrder update = logic.update(broker, data);
+		verifyNoOrder();
+	}
 
-		assertEquals(null, update);
+	private void verifyNoOrder() {
+		assertEquals(null, order);
+		verifyZeroInteractions(broker);
+	}
+
+	private void updateLogic() {
+		order = logic.update(broker, data);
 	}
 }
