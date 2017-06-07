@@ -37,10 +37,12 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -64,16 +66,67 @@ public class OutputLaunchArgumentTest {
 	@Mock
 	private LaunchArgumentValidator validator;
 
+	private OutputLaunchArgument argument;
+
+	@Before
+	private void setUp() {
+		argument = new OutputLaunchArgument(validator);
+	}
+
+	@Test
+	public void noDisplayOutputType() {
+		final String outputType = "no_display";
+		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
+
+		final OutputType output = argument.get(launchArguments);
+
+		verifyRetrievedType(OutputType.NO_DISPLAY, output);
+		veriyValidation(OutputType.NO_DISPLAY, outputType);
+	}
+
+	@Test
+	public void fileMinimumOutputType() {
+		final String outputType = "file_minimum";
+		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
+
+		final OutputType output = argument.get(launchArguments);
+
+		verifyRetrievedType(OutputType.FILE_MINIMUM, output);
+		veriyValidation(OutputType.FILE_MINIMUM, outputType);
+	}
+
+	@Test
+	public void fileCompleteOutputType() {
+		final String outputType = "file_complete";
+		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
+
+		final OutputType output = argument.get(launchArguments);
+
+		verifyRetrievedType(OutputType.FILE_COMPLETE, output);
+		veriyValidation(OutputType.FILE_COMPLETE, outputType);
+	}
+
+	@Test
+	public void elasticSearchOutputType() {
+		final String outputType = "elastic_search";
+		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
+
+		final OutputType output = argument.get(launchArguments);
+
+		verifyRetrievedType(OutputType.ELASTIC_SEARCH, output);
+		veriyValidation(OutputType.ELASTIC_SEARCH, outputType);
+	}
+
 	@Test
 	public void unknownOutputType() {
 		setUpValidatorException();
 
 		try {
-			new OutputLaunchArgument(validator).get(setUpArguments("unknown"));
+			argument.get(setUpArguments("unknown"));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			verify(validator).validate(isNull(), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT), eq("unknown"));
+			veriyValidation(null, "unknown");
 		}
 	}
 
@@ -82,44 +135,23 @@ public class OutputLaunchArgumentTest {
 		setUpValidatorException();
 
 		try {
-			new OutputLaunchArgument(validator).get(setUpArguments(null));
+			argument.get(setUpArguments(null));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			verify(validator).validate(isNull(), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT), isNull());
+			veriyValidation(null, null);
 		}
 	}
 
-	@Test
-	public void noDisplayOutputType() {
-		final OutputType output = new OutputLaunchArgument(validator).get(setUpArguments("no_display"));
+	private void verifyRetrievedType( final OutputType expected, final OutputType actual ) {
+		assertEquals(expected, actual);
 
-		assertEquals(OutputType.NO_DISPLAY, output);
-		verify(validator).validate(OutputType.NO_DISPLAY, ERROR_MESSAGE, FIRST_ERROR_ARGUMENT, "no_display");
 	}
 
-	@Test
-	public void fileMinimumOutputType() {
-		final OutputType output = new OutputLaunchArgument(validator).get(setUpArguments("file_minimum"));
-
-		assertEquals(OutputType.FILE_MINIMUM, output);
-		verify(validator).validate(OutputType.FILE_MINIMUM, ERROR_MESSAGE, FIRST_ERROR_ARGUMENT, "file_minimum");
-	}
-
-	@Test
-	public void fileCompleteOutputType() {
-		final OutputType output = new OutputLaunchArgument(validator).get(setUpArguments("file_complete"));
-
-		assertEquals(OutputType.FILE_COMPLETE, output);
-		verify(validator).validate(OutputType.FILE_COMPLETE, ERROR_MESSAGE, FIRST_ERROR_ARGUMENT, "file_complete");
-	}
-
-	@Test
-	public void elasticSearchOutputType() {
-		final OutputType output = new OutputLaunchArgument(validator).get(setUpArguments("elastic_search"));
-
-		assertEquals(OutputType.ELASTIC_SEARCH, output);
-		verify(validator).validate(OutputType.ELASTIC_SEARCH, ERROR_MESSAGE, FIRST_ERROR_ARGUMENT, "elastic_search");
+	private void veriyValidation( final OutputType outputType, final String launchArgument ) {
+		verify(validator).validate(outputType == null ? isNull() : eq(outputType), eq(ERROR_MESSAGE),
+		        eq(FIRST_ERROR_ARGUMENT), launchArgument == null ? isNull() : eq(launchArgument));
+		verifyNoMoreInteractions(validator);
 	}
 
 	private void setUpValidatorException() {
