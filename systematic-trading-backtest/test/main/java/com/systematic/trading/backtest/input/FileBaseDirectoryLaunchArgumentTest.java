@@ -41,6 +41,7 @@ import static org.mockito.Mockito.verify;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -65,40 +66,62 @@ public class FileBaseDirectoryLaunchArgumentTest {
 	@Mock
 	private LaunchArgumentValidator validator;
 
+	private FileBaseDirectoryLaunchArgument launchArgument;
+
+	@Before
+	public void setUp() {
+		launchArgument = new FileBaseDirectoryLaunchArgument(validator);
+	}
+
 	@Test
 	public void nullFileBaseOutputDirectory() {
 		setUpValidatorException();
 
 		try {
-			new FileBaseDirectoryLaunchArgument(validator).get(setUpArguments(null));
+			launchArgument.get(setUpArguments(null));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			verify(validator).validate(isNull(), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT));
+			verifyValidation(null);
 		}
 	}
 
 	@Test
 	public void relativeFileBaseOutputDirectory() {
-		final FileBaseOutputDirectory output = new FileBaseDirectoryLaunchArgument(validator)
-		        .get(setUpArguments("base"));
+		final String baseDirectory = "base";
 
-		assertEquals("base/WEEKLY_150/", output.getDirectory(DepositConfiguration.WEEKLY_150));
-		verify(validator).validate("base", ERROR_MESSAGE, FIRST_ERROR_ARGUMENT);
+		final FileBaseOutputDirectory output = getOutputDirectory(baseDirectory);
+
+		verifyDirectory(baseDirectory, output);
+		verifyValidation(baseDirectory);
 	}
 
 	@Test
 	public void multiLevelRelativeFileBaseOutputDirectory() {
-		final FileBaseOutputDirectory output = new FileBaseDirectoryLaunchArgument(validator)
-		        .get(setUpArguments("one/two"));
+		final String baseDirectory = "one/two";
 
-		assertEquals("one/two/WEEKLY_200/", output.getDirectory(DepositConfiguration.WEEKLY_200));
-		verify(validator).validate("one/two", ERROR_MESSAGE, FIRST_ERROR_ARGUMENT);
+		final FileBaseOutputDirectory output = getOutputDirectory(baseDirectory);
+
+		verifyDirectory(baseDirectory, output);
+		verifyValidation(baseDirectory);
+	}
+
+	private FileBaseOutputDirectory getOutputDirectory( final String baseDirectory ) {
+		return launchArgument.get(setUpArguments(baseDirectory));
+	}
+
+	private void verifyDirectory( final String expected, final FileBaseOutputDirectory output ) {
+		assertEquals(String.format("%s/WEEKLY_200/", expected), output.getDirectory(DepositConfiguration.WEEKLY_200));
 	}
 
 	private void setUpValidatorException() {
 		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
 		        anyString());
+	}
+
+	private void verifyValidation( final Object value ) {
+		verify(validator).validate(value == null ? isNull() : eq(value), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT));
+
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {
