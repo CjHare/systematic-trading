@@ -43,8 +43,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.EquityOrderVolumeMatcher;
-import com.systematic.trading.backtest.PriceMatcher;
+import com.systematic.trading.backtest.matcher.EquityOrderVolumeMatcher;
+import com.systematic.trading.backtest.matcher.PriceMatcher;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.model.EquityClass;

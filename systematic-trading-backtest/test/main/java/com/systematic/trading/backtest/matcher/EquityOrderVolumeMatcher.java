@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
+package com.systematic.trading.backtest.matcher;
 
 import static org.mockito.Matchers.argThat;
 
@@ -36,24 +36,29 @@ import java.math.BigDecimal;
 import org.hamcrest.Description;
 import org.mockito.ArgumentMatcher;
 
+import com.systematic.trading.simulation.order.EquityOrderVolume;
+
 /**
+ * Compares the value held by EquityOrderVolumes.
+ * 
  * @author CJ Hare
  */
-public class BigDecimalMatcher extends ArgumentMatcher<BigDecimal> {
+public class EquityOrderVolumeMatcher extends ArgumentMatcher<EquityOrderVolume> {
 
 	private final BigDecimal expected;
 
-	public static BigDecimal argumentMatches( final double expected ) {
-		return argThat(new BigDecimalMatcher(BigDecimal.valueOf(expected)));
+	public static EquityOrderVolume argumentMatches( final double expected ) {
+		return argThat(new EquityOrderVolumeMatcher(BigDecimal.valueOf(expected)));
 	}
 
-	public BigDecimalMatcher( final BigDecimal expected ) {
+	public EquityOrderVolumeMatcher( final BigDecimal expected ) {
 		this.expected = expected;
 	}
 
 	@Override
 	public boolean matches( final Object argument ) {
-		return argument instanceof BigDecimal && expected.compareTo((BigDecimal) argument) == 0;
+		return argument instanceof EquityOrderVolume
+		        && expected.compareTo(((EquityOrderVolume) argument).getVolume()) == 0;
 	}
 
 	@Override

@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest;
 
-import static com.systematic.trading.backtest.TradingDayPricesDateMatcher.argumentMatches;
+import static com.systematic.trading.backtest.matcher.TradingDayPricesDateMatcher.argumentMatches;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;

@@ -27,45 +27,41 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.analysis.roi;
+package com.systematic.trading.backtest.matcher;
 
-import java.math.BigDecimal;
+import static org.mockito.Matchers.argThat;
+
 import java.time.LocalDate;
 
 import org.hamcrest.Description;
 import org.mockito.ArgumentMatcher;
 
-import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
- * ReturnOnInvestmentEvent argument matcher.
+ * Matches the only on the date of the TradingDayPrices
  * 
  * @author CJ Hare
  */
-public class RoiEventMatcher extends ArgumentMatcher<ReturnOnInvestmentEvent> {
-	private final BigDecimal percentageChange;
-	private final LocalDate startDateExclusive;
-	private final LocalDate endDateInclusive;
+public class TradingDayPricesDateMatcher extends ArgumentMatcher<TradingDayPrices> {
 
-	RoiEventMatcher( final BigDecimal percentageChange, final LocalDate startDateExclusive,
-	        final LocalDate endDateInclusive ) {
-		this.percentageChange = percentageChange;
-		this.startDateExclusive = startDateExclusive;
-		this.endDateInclusive = endDateInclusive;
+	private final LocalDate expectedDate;
+
+	public static TradingDayPrices argumentMatches( final LocalDate expectedDate ) {
+		return argThat(new TradingDayPricesDateMatcher(expectedDate));
+	}
+
+	public TradingDayPricesDateMatcher( final LocalDate expectedDate ) {
+		this.expectedDate = expectedDate;
 	}
 
 	@Override
 	public boolean matches( final Object argument ) {
-		final ReturnOnInvestmentEvent event = (ReturnOnInvestmentEvent) argument;
-
-		return percentageChange.compareTo(event.getPercentageChange()) == 0
-		        && startDateExclusive.equals(event.getExclusiveStartDate())
-		        && endDateInclusive.equals(event.getInclusiveEndDate());
+		return argument instanceof TradingDayPrices && expectedDate.isEqual(((TradingDayPrices) argument).getDate());
 	}
 
 	@Override
-	public void describeTo( Description description ) {
-		description.appendText(String.format("Percentage change: %s, Exclusive start date: %s, Inclusive end date: %s",
-		        percentageChange, startDateExclusive, endDateInclusive));
+	public void describeTo( final Description description ) {
+		description.appendText(String.format("Expecting %s", expectedDate));
 	}
 }

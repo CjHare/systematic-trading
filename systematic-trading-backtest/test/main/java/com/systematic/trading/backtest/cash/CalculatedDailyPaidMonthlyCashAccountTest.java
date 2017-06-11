@@ -47,7 +47,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.OngoingStubbing;
 
-import com.systematic.trading.backtest.BigDecimalMatcher;
+import com.systematic.trading.backtest.matcher.BigDecimalMatcher;
 import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.simulation.cash.InterestRate;
 import com.systematic.trading.simulation.order.exception.InsufficientFundsException;

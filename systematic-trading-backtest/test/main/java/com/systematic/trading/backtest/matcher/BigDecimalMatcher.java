@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
+package com.systematic.trading.backtest.matcher;
 
 import static org.mockito.Matchers.argThat;
 
@@ -36,28 +36,24 @@ import java.math.BigDecimal;
 import org.hamcrest.Description;
 import org.mockito.ArgumentMatcher;
 
-import com.systematic.trading.data.price.Price;
-
 /**
- * Compares the value held by Price.
- * 
  * @author CJ Hare
  */
-public class PriceMatcher extends ArgumentMatcher<Price> {
+public class BigDecimalMatcher extends ArgumentMatcher<BigDecimal> {
 
 	private final BigDecimal expected;
 
-	public static Price argumentMatches( final double expected ) {
-		return argThat(new PriceMatcher(BigDecimal.valueOf(expected)));
+	public static BigDecimal argumentMatches( final double expected ) {
+		return argThat(new BigDecimalMatcher(BigDecimal.valueOf(expected)));
 	}
 
-	public PriceMatcher( final BigDecimal expected ) {
+	public BigDecimalMatcher( final BigDecimal expected ) {
 		this.expected = expected;
 	}
 
 	@Override
 	public boolean matches( final Object argument ) {
-		return argument instanceof Price && expected.compareTo(((Price) argument).getPrice()) == 0;
+		return argument instanceof BigDecimal && expected.compareTo((BigDecimal) argument) == 0;
 	}
 
 	@Override

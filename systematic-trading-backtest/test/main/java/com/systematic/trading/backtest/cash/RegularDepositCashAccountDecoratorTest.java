@@ -45,7 +45,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.BigDecimalMatcher;
+import com.systematic.trading.backtest.matcher.BigDecimalMatcher;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
 import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
