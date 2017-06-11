@@ -66,14 +66,61 @@ public class SimulationExitLogicTest {
 
 	@Mock
 	private Brokerage broker;
+
 	@Mock
 	private CashAccount funds;
+
 	@Mock
 	private EntryLogic entry;
+
 	@Mock
 	private ExitLogic exit;
+
 	@Mock
 	private ReturnOnInvestmentCalculator roiCalculator;
+
+	@Mock
+	private EquityOrder order;
+
+	private Simulation simulation;
+
+	@Test
+	public void processOrder() throws OrderException {
+		final TradingDayPrices[] sortedPoints = createOrderedDataPoints(createUnorderedDataPoints());
+		setUpTradingData(sortedPoints);
+		setUpOrder(sortedPoints);
+
+		simulationTick();
+
+		verifyExitTick(sortedPoints);
+		verifyOrder(sortedPoints);
+	}
+
+	private void verifyExitTick( final TradingDayPrices[] sortedPoints ) {
+		verify(exit).update(broker, sortedPoints[1]);
+	}
+
+	private void simulationTick() {
+		simulation.run();
+	}
+
+	private void verifyOrder( final TradingDayPrices[] sortedPoints ) throws OrderException {
+		verify(order).areExecutionConditionsMet(sortedPoints[2]);
+		verify(order).isValid(sortedPoints[2]);
+		verify(order).execute(broker, broker, funds, sortedPoints[2]);
+	}
+
+	private void setUpOrder( final TradingDayPrices[] sortedPoints ) {
+		when(order.areExecutionConditionsMet(any(TradingDayPrices.class))).thenReturn(true);
+		when(order.isValid(any(TradingDayPrices.class))).thenReturn(true);
+		when(exit.update(broker, sortedPoints[1])).thenReturn(order);
+	}
+
+	private void setUpTradingData( final TradingDayPrices[] sortedPoints ) {
+		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
+		final TickerSymbolTradingData tradingData = new BacktestTickerSymbolTradingData(equity, sortedPoints);
+		simulation = new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
+	}
 
 	private TradingDayPrices[] createUnorderedDataPoints() {
 		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
@@ -103,22 +150,4 @@ public class SimulationExitLogicTest {
 		return ordered;
 	}
 
-	@Test
-	public void processOrder() throws OrderException {
-		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
-		final TradingDayPrices[] sortedPoints = createOrderedDataPoints(createUnorderedDataPoints());
-		final TickerSymbolTradingData tradingData = new BacktestTickerSymbolTradingData(equity, sortedPoints);
-		final Simulation simulation = new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
-
-		final EquityOrder order = mock(EquityOrder.class);
-		when(order.areExecutionConditionsMet(any(TradingDayPrices.class))).thenReturn(true);
-		when(order.isValid(any(TradingDayPrices.class))).thenReturn(true);
-		when(exit.update(broker, sortedPoints[1])).thenReturn(order);
-
-		simulation.run();
-
-		verify(order).areExecutionConditionsMet(sortedPoints[2]);
-		verify(order).isValid(sortedPoints[2]);
-		verify(order).execute(broker, broker, funds, sortedPoints[2]);
-	}
 }
