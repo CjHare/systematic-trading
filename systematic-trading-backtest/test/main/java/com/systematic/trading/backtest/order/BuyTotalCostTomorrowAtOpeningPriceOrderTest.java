@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.order;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -42,15 +43,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.backtest.EquityOrderVolumeMatcher;
+import com.systematic.trading.backtest.PriceMatcher;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.OpeningPrice;
-import com.systematic.trading.data.price.Price;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
-import com.systematic.trading.simulation.order.EquityOrderVolume;
 import com.systematic.trading.simulation.order.exception.OrderException;
 
 /**
@@ -108,10 +109,10 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 		assertEquals(true, areConditionMet);
 	}
 
-	private void executeOrder() throws OrderException{
-		order.execute(fees, broker, cashAccount, todaysTrading);		
+	private void executeOrder() throws OrderException {
+		order.execute(fees, broker, cashAccount, todaysTrading);
 	}
-	
+
 	private void setUpFeeCalculation( final double fee ) {
 		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
 		        .thenReturn(BigDecimal.valueOf(fee));
@@ -126,10 +127,9 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	}
 
 	private void verifyBuyOrderPlaced( final double equityPrice, final double volume ) {
-		verify(broker).buy(Price.valueOf(BigDecimal.valueOf(equityPrice)),
-		        EquityOrderVolume.valueOf(BigDecimal.valueOf(volume)), TODAY);
+		verify(broker).buy(PriceMatcher.argumentMatches(equityPrice), EquityOrderVolumeMatcher.argumentMatches(volume),
+		        eq(TODAY));
 		verify(todaysTrading, atLeastOnce()).getDate();
 		verify(todaysTrading, atLeastOnce()).getOpeningPrice();
-
 	}
 }

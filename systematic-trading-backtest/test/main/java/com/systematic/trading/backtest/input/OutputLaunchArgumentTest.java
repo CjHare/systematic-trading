@@ -69,7 +69,7 @@ public class OutputLaunchArgumentTest {
 	private OutputLaunchArgument argument;
 
 	@Before
-	private void setUp() {
+	public void setUp() {
 		argument = new OutputLaunchArgument(validator);
 	}
 

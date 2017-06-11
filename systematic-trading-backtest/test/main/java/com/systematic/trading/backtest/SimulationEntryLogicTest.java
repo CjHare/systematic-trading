@@ -25,14 +25,18 @@
  */
 package com.systematic.trading.backtest;
 
+import static com.systematic.trading.backtest.TradingDayPricesDateMatcher.argumentMatches;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Arrays;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -77,76 +81,69 @@ public class SimulationEntryLogicTest {
 	private ExitLogic exit;
 
 	@Mock
-	private ReturnOnInvestmentCalculator roiCalculator;
+	private EquityOrder order;
 
 	@Mock
-	private EquityOrder order;
+	private ReturnOnInvestmentCalculator roiCalculator;
 
 	private Simulation simulation;
 
+	@Before
+	public void setUp() {
+		TradingDayPrices[] sortedPoints = createTradingDayPrices();
+		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
+		final TickerSymbolTradingData tradingData = new BacktestTickerSymbolTradingData(equity, sortedPoints);
+		simulation = new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
+	}
+
 	@Test
 	public void processOrder() throws OrderException {
-		final TradingDayPrices[] sortedPoints = createOrderedDataPoints(createUnorderedDataPoints());
-		setUpTradingData(sortedPoints);
-		setUpOrder();
+		setUpEntryOrder();
 
 		simulationTick();
 
-		verifyEntryTick(sortedPoints);
-		verifyOrdperPlaced(sortedPoints);
+		verifyEntryLogic();
+		verifEntryyOrderPlaced();
 	}
 
-	private void verifyEntryTick( final TradingDayPrices[] sortedPoints ) {
-		verify(entry).update(broker, funds, sortedPoints[1]);
+	private void verifyEntryLogic() {
+		final LocalDate earliestDate = LocalDate.of(2000, Month.APRIL, 1);
+		verify(entry).update(eq(broker), eq(funds), argumentMatches(earliestDate));
 	}
 
-	private void verifyOrdperPlaced( final TradingDayPrices[] sortedPoints ) throws OrderException {
-		verify(order).areExecutionConditionsMet(sortedPoints[2]);
-		verify(order).isValid(sortedPoints[2]);
-		verify(order).execute(broker, broker, funds, sortedPoints[2]);
+	private void verifEntryyOrderPlaced() throws OrderException {
+		final LocalDate secondEarliestDate = LocalDate.of(2000, Month.APRIL, 2);
+		verify(order).areExecutionConditionsMet(argumentMatches(secondEarliestDate));
+		verify(order).isValid(argumentMatches(secondEarliestDate));
+		verify(order).execute(eq(broker), eq(broker), eq(funds), argumentMatches(secondEarliestDate));
 	}
 
 	private void simulationTick() {
 		simulation.run();
 	}
 
-	private void setUpOrder() {
+	private void setUpEntryOrder() {
 		when(order.areExecutionConditionsMet(any(TradingDayPrices.class))).thenReturn(true);
 		when(order.isValid(any(TradingDayPrices.class))).thenReturn(true);
 		when(entry.update(any(Brokerage.class), any(CashAccount.class), any(TradingDayPrices.class))).thenReturn(order);
 	}
 
-	private void setUpTradingData( final TradingDayPrices[] sortedPoints ) {
-		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
-		final TickerSymbolTradingData tradingData = new BacktestTickerSymbolTradingData(equity, sortedPoints);
-		simulation = new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
+	private TradingDayPrices createTradingDayPrices( final LocalDate date ) {
+		TradingDayPrices price = mock(TradingDayPrices.class);
+		when(price.getDate()).thenReturn(date);
+		when(price.toString()).thenReturn(date.toString());
+		return price;
 	}
 
-	private TradingDayPrices[] createUnorderedDataPoints() {
+	private TradingDayPrices[] createTradingDayPrices() {
 		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
 
 		for (int i = 0; i < unordered.length; i++) {
-			unordered[i] = mock(TradingDayPrices.class);
-			when(unordered[i].getDate()).thenReturn(UNORDERED_DATE[i]);
-			when(unordered[i].toString()).thenReturn(UNORDERED_DATE[i].toString());
+			unordered[i] = createTradingDayPrices(UNORDERED_DATE[i]);
 		}
 
+		Arrays.sort(unordered, ( TradingDayPrices o1, TradingDayPrices o2 ) -> o1.getDate().compareTo(o2.getDate()));
+
 		return unordered;
-	}
-
-	private TradingDayPrices[] createOrderedDataPoints( final TradingDayPrices[] unordered ) {
-		final TradingDayPrices[] ordered = new TradingDayPrices[unordered.length];
-
-		ordered[0] = unordered[0];
-		ordered[1] = unordered[2];
-		ordered[2] = unordered[3];
-		ordered[3] = unordered[4];
-		ordered[4] = unordered[8];
-		ordered[5] = unordered[6];
-		ordered[6] = unordered[7];
-		ordered[7] = unordered[5];
-		ordered[8] = unordered[1];
-
-		return ordered;
 	}
 }
