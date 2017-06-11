@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.analysis.roi;
 
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -260,6 +259,6 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 
 	private ReturnOnInvestmentEvent isExpectedRoiEvent( final BigDecimal percentageChange,
 	        final LocalDate startDateInclusive, final LocalDate endDateInclusive ) {
-		return argThat(new RoiEventMatcher(percentageChange, startDateInclusive, endDateInclusive));
+		return RoiEventMatcher.argumentMatches(percentageChange, startDateInclusive, endDateInclusive);
 	}
 }

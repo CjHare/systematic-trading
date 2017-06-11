@@ -64,26 +64,18 @@ public class SimulationTest {
 
 	@Mock
 	private Brokerage broker;
+
 	@Mock
 	private CashAccount funds;
+
 	@Mock
 	private EntryLogic entry;
+
 	@Mock
 	private ExitLogic exit;
+
 	@Mock
 	private ReturnOnInvestmentCalculator roiCalculator;
-
-	private TradingDayPrices[] createUnorderedDataPoints() {
-		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
-
-		for (int i = 0; i < unordered.length; i++) {
-			unordered[i] = mock(TradingDayPrices.class);
-			when(unordered[i].getDate()).thenReturn(UNORDERED_DATE[i]);
-			when(unordered[i].toString()).thenReturn(UNORDERED_DATE[i].toString());
-		}
-
-		return unordered;
-	}
 
 	@Test
 	public void create() {
@@ -111,4 +103,20 @@ public class SimulationTest {
 		}
 	}
 
+	private TradingDayPrices[] createUnorderedDataPoints() {
+		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
+
+		for (int i = 0; i < unordered.length; i++) {
+			unordered[i] = createTradingDayPrices(UNORDERED_DATE[i]);
+		}
+
+		return unordered;
+	}
+
+	private TradingDayPrices createTradingDayPrices( final LocalDate date ) {
+		TradingDayPrices price = mock(TradingDayPrices.class);
+		when(price.getDate()).thenReturn(date);
+		when(price.toString()).thenReturn(date.toString());
+		return price;
+	}
 }

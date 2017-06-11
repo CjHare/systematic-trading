@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.backtest.matcher.analysis;
 
+import static org.mockito.Matchers.argThat;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -46,6 +48,11 @@ public class RoiEventMatcher extends ArgumentMatcher<ReturnOnInvestmentEvent> {
 	private final BigDecimal percentageChange;
 	private final LocalDate startDateExclusive;
 	private final LocalDate endDateInclusive;
+
+	public static ReturnOnInvestmentEvent argumentMatches( final BigDecimal percentageChange,
+	        final LocalDate startDateExclusive, final LocalDate endDateInclusive ) {
+		return argThat(new RoiEventMatcher(percentageChange, startDateExclusive, endDateInclusive));
+	}
 
 	RoiEventMatcher( final BigDecimal percentageChange, final LocalDate startDateExclusive,
 	        final LocalDate endDateInclusive ) {
