@@ -44,8 +44,10 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 public class LaunchArguments {
 
 	enum ArgumentKey {
+		END_DATE("-end_date"),
 		OUTPUT_TYPE("-output"),
-		FILE_BASE_DIRECTORY("-output_file_base_directory");
+		FILE_BASE_DIRECTORY("-output_file_base_directory"),
+		START_DATE("-start_date");
 
 		private final String key;
 
