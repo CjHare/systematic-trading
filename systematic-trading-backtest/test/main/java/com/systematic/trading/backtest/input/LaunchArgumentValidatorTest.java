@@ -65,4 +65,20 @@ public class LaunchArgumentValidatorTest {
 			assertEquals("Expected error message, one, two, three", e.getMessage());
 		}
 	}
+
+	@Test
+	public void invalidLocalDateFormat() {
+		try {
+			new LaunchArgumentValidator().validateDateFormat("invalid date format",
+			        "Expected date format error message");
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("Expected date format error message", e.getMessage());
+		}
+	}
+
+	@Test
+	public void validLocalDateFormat() {
+		new LaunchArgumentValidator().validateDateFormat("2017-06-06", "Not expected message");
+	}
 }

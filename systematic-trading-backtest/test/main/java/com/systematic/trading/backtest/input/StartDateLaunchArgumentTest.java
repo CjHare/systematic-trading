@@ -71,15 +71,15 @@ public class StartDateLaunchArgumentTest {
 		verifStartyDate(expectedStartDate, startDate);
 	}
 
-//	@Test
-//	public void invalidFormat() {
-//		final String expectedStartDate = "06-06-2017";
-//		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
-//
-//		final BacktestStartDate startDate = argument.get(launchArguments);
-//
-//		verifStartyDate(expectedStartDate, startDate);
-//	}
+	@Test
+	public void invalidFormat() {
+		final String expectedStartDate = "06-06-2017";
+		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
+
+		final BacktestStartDate startDate = argument.get(launchArguments);
+
+		verifStartyDate(expectedStartDate, startDate);
+	}
 
 	//TODO invalid & formatting issues
 

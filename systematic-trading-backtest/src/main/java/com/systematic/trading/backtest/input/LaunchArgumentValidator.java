@@ -29,6 +29,9 @@
  */
 package com.systematic.trading.backtest.input;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
 /**
  * Common validation checks and exception responses for LaunchArguments. 
  * 
@@ -42,11 +45,29 @@ public class LaunchArgumentValidator {
 		}
 	}
 
+	public void validateDateFormat( final String value, final String errorMessage,
+	        final Object... errorMessageArguments ) {
+		if (isInvalidArgument(value) || isInvalidFormat(value)) {
+			incorrectArguments(errorMessage, errorMessageArguments);
+		}
+	}
+
 	private boolean isInvalidArgument( final Object value ) {
 		return value == null;
 	}
 
 	private void incorrectArguments( final String message, final Object... arguments ) {
 		throw new IllegalArgumentException(String.format(message, arguments));
+	}
+
+	private boolean isInvalidFormat( final String value ) {
+		try {
+			LocalDate.parse(value);
+
+		} catch (final DateTimeParseException e) {
+			return true;
+		}
+
+		return false;
 	}
 }
