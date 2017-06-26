@@ -29,8 +29,17 @@
  */
 package com.systematic.trading.backtest.input;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -50,6 +59,12 @@ import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class StartDateLaunchArgumentTest {
+
+	private static final String FORMAT_ERROR_MESSAGE = "%s argument date format is invalid";
+	private static final String ERROR_MESSAGE = "%s argument is not present";
+	private static final String FIRST_ERROR_ARGUMENT = ArgumentKey.START_DATE.getKey();
+	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
+	private static final String VALIDATOR_FORMAT_EXCEPTION_MESSAGE = "Validation format exception message";
 
 	@Mock
 	private LaunchArgumentValidator validator;
@@ -72,16 +87,67 @@ public class StartDateLaunchArgumentTest {
 	}
 
 	@Test
-	public void invalidFormat() {
+	public void invaliStartDatedFormat() {
+		setUpValidatorFormatException();
 		final String expectedStartDate = "06-06-2017";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
-		final BacktestStartDate startDate = argument.get(launchArguments);
-
-		verifStartyDate(expectedStartDate, startDate);
+		try {
+			argument.get(setUpArguments(expectedStartDate));
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals(VALIDATOR_FORMAT_EXCEPTION_MESSAGE, e.getMessage());
+			veriyValidation(expectedStartDate);
+		}
 	}
 
-	//TODO invalid & formatting issues
+	@Test
+	public void missingStartDateValue() {
+		setUpValidatorException();
+
+		try {
+			argument.get(setUpArguments(""));
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
+			veriyValidationExceptionOnValidate("");
+		}
+	}
+
+	@Test
+	public void missingStartDate() {
+		setUpValidatorException();
+
+		try {
+			argument.get(new HashMap<ArgumentKey, String>());
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
+			veriyValidationExceptionOnValidate(null);
+		}
+	}
+
+	private void setUpValidatorException() {
+		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
+		        anyString());
+	}
+
+	private void setUpValidatorFormatException() {
+		doThrow(new IllegalArgumentException(VALIDATOR_FORMAT_EXCEPTION_MESSAGE)).when(validator)
+		        .validateDateFormat(anyString(), anyString(), any());
+	}
+
+	private void veriyValidation( final String launchArgument ) {
+		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
+		        eq(FIRST_ERROR_ARGUMENT));
+		verify(validator).validateDateFormat(launchArgument, FORMAT_ERROR_MESSAGE, ArgumentKey.START_DATE.getKey());
+		verifyNoMoreInteractions(validator);
+	}
+
+	private void veriyValidationExceptionOnValidate( final String launchArgument ) {
+		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
+		        eq(FIRST_ERROR_ARGUMENT));
+		verifyNoMoreInteractions(validator);
+	}
 
 	private void verifStartyDate( final String expected, final BacktestStartDate axtual ) {
 		assertNotNull(axtual);
