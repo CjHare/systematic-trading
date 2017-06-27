@@ -92,8 +92,8 @@ public class BacktestApplication {
 	        throws ServiceException {
 
 		// Date range is from the first of the starting month until now
-		final LocalDate simulationEndDate = parserdArguments.getStartDate().getDate();
-		final LocalDate simulationStartDate = parserdArguments.getEndDate().getDate();
+		final LocalDate simulationStartDate = parserdArguments.getStartDate().getDate();
+		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
 
 		// Only for the single equity
 		final EquityConfiguration equity = EquityConfiguration.SP_500_PRICE_INDEX;
@@ -102,6 +102,8 @@ public class BacktestApplication {
 		final Period warmUpPeriod = getWarmUpPeriod();
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
 		        simulationEndDate, warmUpPeriod);
+
+		//TODO output warm up period logging i,e. how many days, start, end & warm up at LOG
 
 		// Retrieve the set of trading data
 		final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityIdentity(), simulationDates);
