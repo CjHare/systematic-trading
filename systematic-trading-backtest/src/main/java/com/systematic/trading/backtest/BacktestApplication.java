@@ -103,7 +103,7 @@ public class BacktestApplication {
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
 		        simulationEndDate, warmUpPeriod);
 
-		//TODO output warm up period logging i,e. how many days, start, end & warm up at LOG
+		recordSimulationDates(warmUpPeriod, simulationDates);
 
 		// Retrieve the set of trading data
 		final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityIdentity(), simulationDates);
@@ -279,5 +279,12 @@ public class BacktestApplication {
 	private String getOutputDirectory( final String baseOutputDirectory,
 	        final BacktestBootstrapConfiguration configuration ) {
 		return String.format("%s%s", baseOutputDirectory, description.getDescription(configuration));
+	}
+
+	private void recordSimulationDates( final Period warmUpPeriod, final BacktestSimulationDates simulationDates ) {
+		LOG.info(String.format("Simulation Warm Up Period of Days: %s, Months: %s, Years: %s", warmUpPeriod.getDays(),
+		        warmUpPeriod.getMonths(), warmUpPeriod.getYears()));
+		LOG.info(String.format("Simulation Start Date: %s", simulationDates.getStartDate()));
+		LOG.info(String.format("Simulation End Date: %s", simulationDates.getEndDate()));
 	}
 }
