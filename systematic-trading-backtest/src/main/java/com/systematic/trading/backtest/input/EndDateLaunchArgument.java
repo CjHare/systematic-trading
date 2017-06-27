@@ -36,26 +36,26 @@ import com.systematic.trading.backtest.configuration.BacktestStartDate;
 import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
- * Launch argument parser and validation for the inclusive start date type key value pairing.
+ * Launch argument parser and validation for the inclusive end date type key value pairing.
  * 
  * @author CJ Hare
  */
-public class StartDateLaunchArgument implements LaunchArgument<BacktestStartDate> {
+public class EndDateLaunchArgument implements LaunchArgument<BacktestStartDate> {
 
 	/** Provides validation for the launch argument value.*/
 	private final LaunchArgumentValidator validator;
 
-	public StartDateLaunchArgument( final LaunchArgumentValidator validator ) {
+	public EndDateLaunchArgument( final LaunchArgumentValidator validator ) {
 		this.validator = validator;
 	}
 
 	@Override
 	public BacktestStartDate get( final Map<ArgumentKey, String> arguments ) {
-		final String startDate = arguments.get(ArgumentKey.START_DATE);
+		final String endDate = arguments.get(ArgumentKey.END_DATE);
 
-		validator.validate(startDate, "%s argument is not present", ArgumentKey.START_DATE.getKey());
-		validator.validateDateFormat(startDate, "%s argument date format is invalid", ArgumentKey.START_DATE.getKey());
+		validator.validate(endDate, "%s argument is not present", ArgumentKey.END_DATE.getKey());
+		validator.validateDateFormat(endDate, "%s argument date format is invalid", ArgumentKey.END_DATE.getKey());
 
-		return new BacktestStartDate(LocalDate.parse(startDate));
+		return new BacktestStartDate(LocalDate.parse(endDate));
 	}
 }
