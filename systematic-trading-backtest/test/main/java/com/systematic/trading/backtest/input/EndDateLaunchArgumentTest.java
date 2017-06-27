@@ -51,7 +51,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.configuration.BacktestStartDate;
+import com.systematic.trading.backtest.configuration.BacktestEndDate;
 import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
@@ -81,7 +81,7 @@ public class EndDateLaunchArgumentTest {
 		final String expectedStartDate = "2017-06-06";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
-		final BacktestStartDate startDate = argument.get(launchArguments);
+		final BacktestEndDate startDate = argument.get(launchArguments);
 
 		verifStartyDate(expectedStartDate, startDate);
 	}
@@ -149,10 +149,10 @@ public class EndDateLaunchArgumentTest {
 		verifyNoMoreInteractions(validator);
 	}
 
-	private void verifStartyDate( final String expected, final BacktestStartDate axtual ) {
+	private void verifStartyDate( final String expected, final BacktestEndDate axtual ) {
 		assertNotNull(axtual);
-		assertNotNull(axtual.getStartDate());
-		assertTrue(LocalDate.parse(expected).equals(axtual.getStartDate()));
+		assertNotNull(axtual.getDate());
+		assertTrue(LocalDate.parse(expected).equals(axtual.getDate()));
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {

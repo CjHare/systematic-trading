@@ -32,7 +32,7 @@ package com.systematic.trading.backtest.input;
 import java.time.LocalDate;
 import java.util.Map;
 
-import com.systematic.trading.backtest.configuration.BacktestStartDate;
+import com.systematic.trading.backtest.configuration.BacktestEndDate;
 import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
@@ -40,7 +40,7 @@ import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
  * 
  * @author CJ Hare
  */
-public class EndDateLaunchArgument implements LaunchArgument<BacktestStartDate> {
+public class EndDateLaunchArgument implements LaunchArgument<BacktestEndDate> {
 
 	/** Provides validation for the launch argument value.*/
 	private final LaunchArgumentValidator validator;
@@ -50,12 +50,12 @@ public class EndDateLaunchArgument implements LaunchArgument<BacktestStartDate> 
 	}
 
 	@Override
-	public BacktestStartDate get( final Map<ArgumentKey, String> arguments ) {
+	public BacktestEndDate get( final Map<ArgumentKey, String> arguments ) {
 		final String endDate = arguments.get(ArgumentKey.END_DATE);
 
 		validator.validate(endDate, "%s argument is not present", ArgumentKey.END_DATE.getKey());
 		validator.validateDateFormat(endDate, "%s argument date format is invalid", ArgumentKey.END_DATE.getKey());
 
-		return new BacktestStartDate(LocalDate.parse(endDate));
+		return new BacktestEndDate(LocalDate.parse(endDate));
 	}
 }

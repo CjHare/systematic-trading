@@ -38,13 +38,13 @@ import java.time.LocalDate;
  */
 public class BacktestStartDate {
 
-	private final LocalDate startDate;
+	private final LocalDate date;
 
-	public BacktestStartDate( final LocalDate startDate ) {
-		this.startDate = startDate;
+	public BacktestStartDate( final LocalDate date ) {
+		this.date = date;
 	}
 
-	public LocalDate getStartDate() {
-		return startDate;
+	public LocalDate getDate() {
+		return date;
 	}
 }

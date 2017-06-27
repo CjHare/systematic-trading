@@ -32,12 +32,14 @@ package com.systematic.trading.backtest.input;
 import java.util.Map;
 import java.util.Optional;
 
+import com.systematic.trading.backtest.configuration.BacktestEndDate;
+import com.systematic.trading.backtest.configuration.BacktestStartDate;
 import com.systematic.trading.backtest.configuration.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 
 /**
- * Parses the arguments given on launch, validating and converting them.
+ * An aggregation facade for parsing the arguments given on launch, their validation and type conversion.
  * 
  * @author CJ Hare
  */
@@ -81,15 +83,33 @@ public class LaunchArguments {
 	/** Parsed launch arguments.*/
 	private final Map<ArgumentKey, String> arguments;
 
+	/** Mandatory start date for the back test.*/
+	private final BacktestStartDate startDate;
+
+	/** Mandatory end date for the back test.*/
+	private final BacktestEndDate endDate;
+
 	public LaunchArguments( final LaunchArgumentsParser argumentParser, final LaunchArgument<OutputType> outputArgument,
+	        final LaunchArgument<BacktestStartDate> startDateArgument,
+	        final LaunchArgument<BacktestEndDate> endDateArgument,
 	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument, final String... args ) {
 		this.arguments = argumentParser.parse(args);
 		this.outputType = outputArgument.get(arguments);
 		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
+		this.startDate = startDateArgument.get(arguments);
+		this.endDate = endDateArgument.get(arguments);
 	}
 
 	public String getOutputDirectory( final DepositConfiguration depositAmount ) {
 		return fileBaseOutputDirectory.get(arguments).getDirectory(depositAmount);
+	}
+
+	public BacktestStartDate getStartDate() {
+		return startDate;
+	}
+
+	public BacktestEndDate getEndDate() {
+		return endDate;
 	}
 
 	public OutputType getOutputType() {

@@ -151,8 +151,8 @@ public class StartDateLaunchArgumentTest {
 
 	private void verifStartyDate( final String expected, final BacktestStartDate axtual ) {
 		assertNotNull(axtual);
-		assertNotNull(axtual.getStartDate());
-		assertTrue(LocalDate.parse(expected).equals(axtual.getStartDate()));
+		assertNotNull(axtual.getDate());
+		assertTrue(LocalDate.parse(expected).equals(axtual.getDate()));
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {

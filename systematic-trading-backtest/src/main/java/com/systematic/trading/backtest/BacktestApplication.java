@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -80,10 +79,6 @@ public class BacktestApplication {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(BacktestApplication.class);
 
-	/** Minimum amount of historical data needed for back testing. */
-	private static final int DAYS_IN_A_YEAR = 365;
-	private static final int HISTORY_REQUIRED = 10 * DAYS_IN_A_YEAR;
-
 	private final MathContext mathContext;
 
 	// TODO the description is specific to the type of output - file, console, elastic :. refactor - move into BacktestLaunchArgumentParser
@@ -97,9 +92,8 @@ public class BacktestApplication {
 	        throws ServiceException {
 
 		// Date range is from the first of the starting month until now
-		final LocalDate simulationEndDate = LocalDate.now();
-		final LocalDate simulationStartDate = simulationEndDate.minus(HISTORY_REQUIRED, ChronoUnit.DAYS)
-		        .withDayOfMonth(1);
+		final LocalDate simulationEndDate = parserdArguments.getStartDate().getDate();
+		final LocalDate simulationStartDate = parserdArguments.getEndDate().getDate();
 
 		// Only for the single equity
 		final EquityConfiguration equity = EquityConfiguration.SP_500_PRICE_INDEX;
