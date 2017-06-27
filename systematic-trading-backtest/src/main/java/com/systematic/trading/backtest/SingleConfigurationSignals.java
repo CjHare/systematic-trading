@@ -39,10 +39,12 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
 import com.systematic.trading.backtest.input.LaunchArgumentValidator;
 import com.systematic.trading.backtest.input.LaunchArguments;
 import com.systematic.trading.backtest.input.OutputLaunchArgument;
+import com.systematic.trading.backtest.input.StartDateLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 
@@ -57,10 +59,13 @@ public class SingleConfigurationSignals implements BacktestConfiguration {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	public static void main( final String... args ) throws Exception {
+
+		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
+
 		new BacktestApplication(MATH_CONTEXT).runTest(new SingleConfigurationSignals(),
-		        new LaunchArguments(new CommandLineLaunchArgumentsParser(),
-		                new OutputLaunchArgument(new LaunchArgumentValidator()),
-		                new FileBaseDirectoryLaunchArgument(new LaunchArgumentValidator()), args));
+		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
+		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
+		                new FileBaseDirectoryLaunchArgument(validator), args));
 	}
 
 	@Override
