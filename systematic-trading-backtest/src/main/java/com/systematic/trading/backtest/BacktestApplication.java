@@ -88,12 +88,12 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfiguration configuration, final LaunchArguments parserdArguments )
+	public void runTest( final BacktestConfiguration configuration, final LaunchArguments aArguments )
 	        throws ServiceException {
 
 		// Date range is from the first of the starting month until now
-		final LocalDate simulationStartDate = parserdArguments.getStartDate().getDate();
-		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
+		final LocalDate simulationStartDate = aArguments.getStartDate().getDate();
+		final LocalDate simulationEndDate = aArguments.getEndDate().getDate();
 
 		// Only for the single equity
 		final EquityConfiguration equity = EquityConfiguration.SP_500_PRICE_INDEX;
@@ -120,7 +120,7 @@ public class BacktestApplication {
 				final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
 				        depositAmount);
 
-				runTest(depositAmount, parserdArguments, configurations, tradingData, pool);
+				runTest(depositAmount, aArguments, configurations, tradingData, pool);
 			}
 
 		} finally {
@@ -189,14 +189,14 @@ public class BacktestApplication {
 		}
 	}
 
-	private void runTest( final DepositConfiguration depositAmount, final LaunchArguments parserdArguments,
+	private void runTest( final DepositConfiguration depositAmount, final LaunchArguments arguments,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
 	        final ExecutorService pool ) throws BacktestInitialisationException {
 
 		//TODO this should happen only once & be moved into the file DAOs
 		// Arrange output to files, only once per a run
-		final String outputDirectory = parserdArguments.getOutputDirectory(depositAmount);
-		final OutputType type = parserdArguments.getOutputType();
+		final String outputDirectory = arguments.getOutputDirectory(depositAmount);
+		final OutputType type = arguments.getOutputType();
 
 		if (isFileBasedDisplay(type)) {
 			new ClearFileDestination(outputDirectory).clear();
