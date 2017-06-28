@@ -40,9 +40,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.OutputType;
-import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
-import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
@@ -58,8 +56,6 @@ import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.backtest.output.file.CompleteFileOutputService;
 import com.systematic.trading.backtest.output.file.MinimalFileOutputService;
 import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
-import com.systematic.trading.backtest.trade.MaximumTrade;
-import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
@@ -233,32 +229,7 @@ public class BacktestApplication {
 	}
 
 	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration ) {
-		final DepositConfiguration deposit = configuration.getDeposit();
-		final BacktestSimulationDates simulationDates = configuration.getBacktestDates();
-		final BacktestBootstrapContextBulider builder = new BacktestBootstrapContextBulider(configuration.getEquity(),
-		        simulationDates, deposit, mathContext);
-		final BrokerageFeesConfiguration brokerageType = configuration.getBrokerageFees();
-		final EntryLogicConfiguration entry = configuration.getEntryLogic();
-		final MinimumTrade minimumTrade = entry.getMinimumTrade();
-		final MaximumTrade maximumTrade = entry.getMaximumTrade();
-
-		//TODO move this switch into the builder
-		//TODO follow the builder pattern too
-		switch (configuration.getEntryLogic().getType()) {
-			case PERIODIC:
-				final Period purchaseFrequency = configuration.getEntryLogic().getPeriodic().getFrequency();
-				return builder.periodic(brokerageType, purchaseFrequency);
-
-			case CONFIRMATION_SIGNAL:
-				return builder.confirmationSignal(minimumTrade, maximumTrade, brokerageType, entry);
-
-			case SAME_DAY_SIGNALS:
-				return builder.indicatorsOnSameDay(minimumTrade, maximumTrade, brokerageType, entry);
-
-			default:
-				throw new IllegalArgumentException(
-				        String.format("Unexpected entry logic type: %s", configuration.getEntryLogic().getType()));
-		}
+		return new BacktestBootstrapContextBulider(mathContext).withConfiguration(configuration).build();
 	}
 
 	private TickerSymbolTradingData getTradingData( final EquityIdentity equity,

@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFactoroy;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
@@ -69,7 +70,7 @@ import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculato
  */
 public class BacktestBootstrapContextBulider {
 
-	//TODO convert into an actually builder
+	//TODO convert into an actual builder
 
 	/** How long one year is as a period of time/ */
 	private static final Period ONE_YEAR = Period.ofYears(1);
@@ -78,36 +79,59 @@ public class BacktestBootstrapContextBulider {
 	private final MathContext mathContext;
 
 	/** Single equity to create the configuration on. */
-	private final EquityConfiguration equity;
+	private EquityConfiguration equity;
 
 	/** Weekly deposit amount into the cash account. */
-	private final DepositConfiguration deposit;
+	private DepositConfiguration deposit;
 
 	/** First date to apply the management fee on. */
 	private final LocalDate managementFeeStartDate;
 
 	/** The intended dates for the simulation. */
-	private final BacktestSimulationDates simulationDates;
+	private BacktestSimulationDates simulationDates;
 
-	public BacktestBootstrapContextBulider( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final MathContext mathContext ) {
+	private EntryLogicConfiguration.Type entryLogicType;
+
+	private EntryLogicConfiguration entryLogic;
+
+	private BrokerageFeesConfiguration brokerageType;
+
+	public BacktestBootstrapContextBulider( final MathContext mathContext ) {
 		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getStartDate());
-		this.simulationDates = simulationDates;
 		this.mathContext = mathContext;
-		this.deposit = deposit;
-		this.equity = equity;
 	}
 
-	private LocalDate getFirstDayOfYear( final LocalDate date ) {
-		return LocalDate.of(date.getYear(), 1, 1);
+	public BacktestBootstrapContextBulider withConfiguration( final BacktestBootstrapConfiguration configuration ) {
+		this.simulationDates = configuration.getBacktestDates();
+		this.deposit = configuration.getDeposit();
+		this.equity = configuration.getEquity();
+		this.brokerageType = configuration.getBrokerageFees();
+		this.entryLogic = configuration.getEntryLogic();
+		return this;
 	}
 
-	private ExitLogic getExitLogic() {
-		return new HoldForeverExitLogic();
+	public BacktestBootstrapContext build() {
+
+		switch (entryLogicType) {
+			case PERIODIC:
+				final Period purchaseFrequency = entryLogic.getPeriodic().getFrequency();
+				return periodic(brokerageType, purchaseFrequency);
+
+			case CONFIRMATION_SIGNAL:
+				return confirmationSignal(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
+				        entryLogic);
+
+			case SAME_DAY_SIGNALS:
+				return indicatorsOnSameDay(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
+				        entryLogic);
+
+			default:
+				throw new IllegalArgumentException(
+				        String.format("Unexpected entry logic type: %s", entryLogic.getType()));
+		}
 	}
 
-	public BacktestBootstrapContext periodic( final BrokerageFeesConfiguration brokerageType,
+	private BacktestBootstrapContext periodic( final BrokerageFeesConfiguration brokerageType,
 	        final Period purchaseFrequency ) {
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final LocalDate startDate = simulationDates.getStartDate();
@@ -123,7 +147,7 @@ public class BacktestBootstrapContextBulider {
 		return new BacktestBootstrapContext(entryLogic, getExitLogic(), brokerage, cashAccount, simulationDates);
 	}
 
-	public BacktestBootstrapContext confirmationSignal( final MinimumTrade minimumTrade,
+	private BacktestBootstrapContext confirmationSignal( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
 	        final EntryLogicConfiguration entry ) {
 
@@ -143,7 +167,7 @@ public class BacktestBootstrapContextBulider {
 		        indicatorGenerators);
 	}
 
-	public BacktestBootstrapContext indicatorsOnSameDay( final MinimumTrade minimumTrade,
+	private BacktestBootstrapContext indicatorsOnSameDay( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
 	        final EntryLogicConfiguration entry ) {
 
@@ -163,6 +187,14 @@ public class BacktestBootstrapContextBulider {
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
 		        indicatorGenerators);
+	}
+
+	private LocalDate getFirstDayOfYear( final LocalDate date ) {
+		return LocalDate.of(date.getYear(), 1, 1);
+	}
+
+	private ExitLogic getExitLogic() {
+		return new HoldForeverExitLogic();
 	}
 
 	private BacktestBootstrapContext getIndicatorConfiguration( final MinimumTrade minimumTrade,
