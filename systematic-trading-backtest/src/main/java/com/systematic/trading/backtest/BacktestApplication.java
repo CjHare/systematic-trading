@@ -30,6 +30,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -88,12 +89,12 @@ public class BacktestApplication {
 		this.mathContext = mathContext;
 	}
 
-	public void runTest( final BacktestConfiguration configuration, final LaunchArguments aArguments )
+	public void runTest( final BacktestConfiguration configuration, final LaunchArguments parserdArguments )
 	        throws ServiceException {
 
 		// Date range is from the first of the starting month until now
-		final LocalDate simulationStartDate = aArguments.getStartDate().getDate();
-		final LocalDate simulationEndDate = aArguments.getEndDate().getDate();
+		final LocalDate simulationStartDate = parserdArguments.getStartDate().getDate();
+		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
 
 		// Only for the single equity
 		final EquityConfiguration equity = EquityConfiguration.SP_500_PRICE_INDEX;
@@ -120,7 +121,7 @@ public class BacktestApplication {
 				final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
 				        depositAmount);
 
-				runTest(depositAmount, aArguments, configurations, tradingData, pool);
+				runTest(depositAmount, parserdArguments, configurations, tradingData, pool);
 			}
 
 		} finally {
@@ -163,11 +164,12 @@ public class BacktestApplication {
 		return Period.ofDays(windUp);
 	}
 
-	//TODO spring boot application - candidate for configuration flag
-	private BacktestOutput getOutput( final OutputType type, final BacktestBootstrapConfiguration configuration,
-	        final String baseOutputDirectory, final ExecutorService pool ) throws BacktestInitialisationException {
+	private BacktestOutput getOutput( final DepositConfiguration depositAmount, final LaunchArguments arguments,
+	        final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
+	        throws BacktestInitialisationException {
 
 		final BacktestBatchId batchId = getBatchId(configuration);
+		final OutputType type = arguments.getOutputType();
 
 		try {
 			switch (type) {
@@ -175,10 +177,12 @@ public class BacktestApplication {
 					return new ElasticBacktestOutput(batchId);
 				case FILE_COMPLETE:
 					return new CompleteFileOutputService(batchId,
-					        getOutputDirectory(baseOutputDirectory, configuration), pool, mathContext);
+					        getOutputDirectory(getOutputDirectory(depositAmount, arguments).get(), configuration), pool,
+					        mathContext);
 				case FILE_MINIMUM:
-					return new MinimalFileOutputService(batchId, getOutputDirectory(baseOutputDirectory, configuration),
-					        pool, mathContext);
+					return new MinimalFileOutputService(batchId,
+					        getOutputDirectory(getOutputDirectory(depositAmount, arguments).get(), configuration), pool,
+					        mathContext);
 				case NO_DISPLAY:
 					return new NoBacktestOutput();
 				default:
@@ -193,20 +197,10 @@ public class BacktestApplication {
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
 	        final ExecutorService pool ) throws BacktestInitialisationException {
 
-		//TODO this should happen only once & be moved into the file DAOs
-		// Arrange output to files, only once per a run
-		final String outputDirectory = arguments.getOutputDirectory(depositAmount);
-		final OutputType type = arguments.getOutputType();
-
-		if (isFileBasedDisplay(type)) {
-			new ClearFileDestination(outputDirectory).clear();
-		}
-
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
-
-			final BacktestOutput fileDisplay = getOutput(type, configuration, outputDirectory, pool);
+			final BacktestOutput output = getOutput(depositAmount, arguments, configuration, pool);
 			final BacktestBootstrapContext context = createContext(configuration);
-			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, fileDisplay, tradingData,
+			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, output, tradingData,
 			        mathContext);
 
 			LOG.info(String.format("Backtesting beginning for: %s", description.getDescription(configuration)));
@@ -219,8 +213,23 @@ public class BacktestApplication {
 		LOG.info(String.format("All Simulations have been completed for deposit amount: %s", depositAmount));
 	}
 
-	private boolean isFileBasedDisplay( final OutputType type ) {
-		return type == OutputType.FILE_COMPLETE || type == OutputType.FILE_MINIMUM;
+	private Optional<String> getOutputDirectory( final DepositConfiguration depositAmount,
+	        final LaunchArguments arguments ) {
+
+		//TODO this should happen only once & be moved into the file DAOs
+		// Arrange output to files, only once per a run
+		if (isFileBasedDisplay(arguments)) {
+			final String outputDirectory = arguments.getOutputDirectory(depositAmount);
+			new ClearFileDestination(outputDirectory).clear();
+			return Optional.of(arguments.getOutputDirectory(depositAmount));
+		}
+
+		return Optional.empty();
+	}
+
+	private boolean isFileBasedDisplay( final LaunchArguments arguments ) {
+		return arguments.getOutputType() == OutputType.FILE_COMPLETE
+		        || arguments.getOutputType() == OutputType.FILE_MINIMUM;
 	}
 
 	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration ) {
@@ -228,7 +237,6 @@ public class BacktestApplication {
 		final BacktestSimulationDates simulationDates = configuration.getBacktestDates();
 		final BacktestBootstrapContextBulider builder = new BacktestBootstrapContextBulider(configuration.getEquity(),
 		        simulationDates, deposit, mathContext);
-
 		final BrokerageFeesConfiguration brokerageType = configuration.getBrokerageFees();
 		final EntryLogicConfiguration entry = configuration.getEntryLogic();
 		final MinimumTrade minimumTrade = entry.getMinimumTrade();
