@@ -23,6 +23,7 @@
 		<module>systematic-trading-data-source-hsqldb</module>
 		<module>systematic-trading-data-stock-api</module>
 		<module>systematic-trading-data-stock-api-yahoo</module>
+		<module>systematic-trading-data-stock-api-quandl</module>
 		<module>systematic-trading-interfaces</module>
 		<module>systematic-trading-maths</module>
 		<module>systematic-trading-signals</module>

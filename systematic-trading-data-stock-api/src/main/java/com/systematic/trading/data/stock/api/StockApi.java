@@ -50,4 +50,6 @@ public interface StockApi {
 	 * @return number of days that can be retrieved each attempt.
 	 */
 	Period getMaximumDurationInSingleUpdate();
+	
+	//TODO add simultaneous call, for long time periods - meed to know then max number of connections allowed
 }
