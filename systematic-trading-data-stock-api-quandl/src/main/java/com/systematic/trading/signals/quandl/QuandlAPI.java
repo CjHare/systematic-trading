@@ -53,6 +53,8 @@ public class QuandlAPI {
 
 	//TODO code
 
+	//TODO use Jackson provider to connect - need to pass query string parameters.
+	
 	public String get( final String url ) throws CannotRetrieveDataException {
 		final HttpResponse response = sendRequest(url);
 		checkStatus(url, response);
@@ -60,6 +62,9 @@ public class QuandlAPI {
 	}
 
 	private HttpResponse sendRequest( final String url ) throws CannotRetrieveDataException {
+		
+		
+		//TODO inject the HttpClientBuilder & test (as the injection would allow mocking)
 		try {
 			return HttpClientBuilder.create().build().execute(jsonGetRequest(url));
 		} catch (ClientProtocolException e) {

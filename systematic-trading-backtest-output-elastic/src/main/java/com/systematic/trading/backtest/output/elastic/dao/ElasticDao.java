@@ -42,6 +42,7 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEve
 
 public class ElasticDao {
 
+	//TODO inject this! - configuration value
 	/** Location of the elastic search end point. */
 	private static final String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
 
