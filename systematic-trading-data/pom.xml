@@ -15,9 +15,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data-stock-api-yahoo</artifactId>
-			<version>${systematic.trading.data.stock.api.yahoo.version}</version>
+			<artifactId>systematic-trading-data-api-yahoo</artifactId>
+			<version>${systematic.trading.data.api.yahoo.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-data-api-quandl</artifactId>
+			<version>${systematic.trading.data.api.quandl.version}</version>
+		</dependency>		
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-data-orm-hibernate</artifactId>
