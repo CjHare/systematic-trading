@@ -23,47 +23,23 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.yahoo.util;
+package com.systematic.trading.data.api.exception;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.systematic.trading.exception.ServiceException;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
+/**
+ * Problem encountered during using the stock API.
+ * 
+ * @author CJ Hare
+ */
+public class CannotRetrieveDataException extends ServiceException {
+	private static final long serialVersionUID = 1L;
 
-import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
+	public CannotRetrieveDataException( final String message, final Throwable cause ) {
+		super(message, cause);
+	}
 
-public class HttpUtil {
-
-	public String httpGet( final String url ) throws CannotRetrieveDataException {
-		final StringBuilder result = new StringBuilder();
-
-		try {
-			final HttpClient httpClient = HttpClientBuilder.create().build();
-			final HttpGet getRequest = new HttpGet(url);
-			getRequest.addHeader("accept", "application/json");
-
-			final HttpResponse response = httpClient.execute(getRequest);
-
-			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s, HTTP error code : %s",
-				        url, response.getStatusLine().getStatusCode()));
-			}
-
-			final BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-			String output;
-			while ((output = br.readLine()) != null) {
-				result.append(output);
-			}
-
-		} catch (final IOException e) {
-			throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s", url), e);
-		}
-
-		return result.toString();
+	public CannotRetrieveDataException( final String message ) {
+		super(message);
 	}
 }

@@ -23,23 +23,33 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.stock.api.exception;
+package com.systematic.trading.data.api;
 
-import com.systematic.trading.exception.ServiceException;
+import java.time.LocalDate;
+import java.time.Period;
 
-/**
- * Problem encountered during using the stock API.
- * 
- * @author CJ Hare
- */
-public class CannotRetrieveDataException extends ServiceException {
-	private static final long serialVersionUID = 1L;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 
-	public CannotRetrieveDataException( final String message, final Throwable cause ) {
-		super(message, cause);
-	}
+public interface StockApi {
 
-	public CannotRetrieveDataException( final String message ) {
-		super(message);
-	}
+	/**
+	 * 
+	 * @param symbol ticker symbol for the stock to retrieve data on.
+	 * @param inclusiveStartDate the inclusive start date for the data points.
+	 * @param exclusiveEndDate the exclusive end date for the data points.
+	 * @return the given data parsed into domain objects.
+	 * @throws CannotRetrieveDataException problem encountered in retrieving the stock data.
+	 */
+	TradingDayPrices[] getStockData( String symbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate )
+	        throws CannotRetrieveDataException;
+
+	/**
+	 * Maximum number of time that may be retrieved in one attempt.
+	 * 
+	 * @return number of days that can be retrieved each attempt.
+	 */
+	Period getMaximumDurationInSingleUpdate();
+	
+	//TODO add simultaneous call, for long time periods - meed to know then max number of connections allowed
 }

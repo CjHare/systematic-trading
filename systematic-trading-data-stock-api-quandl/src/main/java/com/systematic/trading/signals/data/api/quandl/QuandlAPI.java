@@ -27,14 +27,14 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.quandl;
+package com.systematic.trading.signals.data.api.quandl;
 
 import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.stock.api.StockApi;
-import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.api.StockApi;
+import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 
 /**
  * Retrieval of equity data from the Quandl API endpoint.

@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.yahoo;
+package com.systematic.trading.data.api.yahoo;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -43,14 +43,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.api.StockApi;
+import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
-import com.systematic.trading.data.stock.api.StockApi;
-import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.yahoo.util.HttpUtil;
 
 public class YahooStockApi implements StockApi {
 	private static final Logger LOG = LogManager.getLogger(YahooStockApi.class);

@@ -23,33 +23,47 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.stock.api;
+package com.systematic.trading.data.api.yahoo;
 
-import java.time.LocalDate;
-import java.time.Period;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 
-public interface StockApi {
+import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 
-	/**
-	 * 
-	 * @param symbol ticker symbol for the stock to retrieve data on.
-	 * @param inclusiveStartDate the inclusive start date for the data points.
-	 * @param exclusiveEndDate the exclusive end date for the data points.
-	 * @return the given data parsed into domain objects.
-	 * @throws CannotRetrieveDataException problem encountered in retrieving the stock data.
-	 */
-	TradingDayPrices[] getStockData( String symbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate )
-	        throws CannotRetrieveDataException;
+public class HttpUtil {
 
-	/**
-	 * Maximum number of time that may be retrieved in one attempt.
-	 * 
-	 * @return number of days that can be retrieved each attempt.
-	 */
-	Period getMaximumDurationInSingleUpdate();
-	
-	//TODO add simultaneous call, for long time periods - meed to know then max number of connections allowed
+	public String httpGet( final String url ) throws CannotRetrieveDataException {
+		final StringBuilder result = new StringBuilder();
+
+		try {
+			final HttpClient httpClient = HttpClientBuilder.create().build();
+			final HttpGet getRequest = new HttpGet(url);
+			getRequest.addHeader("accept", "application/json");
+
+			final HttpResponse response = httpClient.execute(getRequest);
+
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s, HTTP error code : %s",
+				        url, response.getStatusLine().getStatusCode()));
+			}
+
+			final BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+			String output;
+			while ((output = br.readLine()) != null) {
+				result.append(output);
+			}
+
+		} catch (final IOException e) {
+			throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s", url), e);
+		}
+
+		return result.toString();
+	}
 }

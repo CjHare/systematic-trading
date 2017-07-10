@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.quandl;
+package com.systematic.trading.signals.data.api.quandl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,7 +39,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 
 /**
  * Utility to connect for connecting to an endpoint and retrieving the response body as a String.
