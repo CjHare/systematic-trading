@@ -9,7 +9,7 @@
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>systematic-trading-data-stock-api-yahoo</artifactId>
+	<artifactId>systematic-trading-data-api-quandl</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
@@ -44,8 +44,8 @@
 		<!-- Systematic Trading -->
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data-stock-api</artifactId>
-			<version>${systematic.trading.data.stock.api.version}</version>
+			<artifactId>systematic-trading-data-api</artifactId>
+			<version>${systematic.trading.data.api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>

@@ -31,7 +31,7 @@
 		<systematic.trading.data.version>0.0.1-SNAPSHOT</systematic.trading.data.version>
 		<systematic.trading.simulation.version>0.0.1-SNAPSHOT</systematic.trading.simulation.version>
 		<systematic.trading.backtest.version>0.0.1-SNAPSHOT</systematic.trading.backtest.version>
-		<systematic.trading.data.stock.api.yahoo.version>0.0.1-SNAPSHOT</systematic.trading.data.stock.api.yahoo.version>
+		<systematic.trading.data.api.yahoo.version>0.0.1-SNAPSHOT</systematic.trading.data.api.yahoo.version>
 		<systematic.trading.data.hibernate.version>0.0.1-SNAPSHOT</systematic.trading.data.hibernate.version>		
 		<systematic.trading.interfaces.version>0.0.1-SNAPSHOT</systematic.trading.interfaces.version>
 		<systematic.trading.maths.version>0.0.1-SNAPSHOT</systematic.trading.maths.version>
