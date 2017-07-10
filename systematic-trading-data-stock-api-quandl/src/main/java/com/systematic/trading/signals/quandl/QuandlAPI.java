@@ -29,83 +29,39 @@
  */
 package com.systematic.trading.signals.quandl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.time.Period;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.stock.api.StockApi;
 import com.systematic.trading.data.stock.api.exception.CannotRetrieveDataException;
 
 /**
- * Invocation of the JSON HTTP GET Quandl endpoint.
+ * Retrieval of equity data from the Quandl API endpoint.
  * 
  * @author CJ Hare
  */
-public class QuandlAPI {
+public class QuandlAPI implements StockApi {
+
+	@Override
+	public TradingDayPrices[] getStockData( final String symbol, final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+
+		//TODO use Jackson provider to connect - need to pass query string parameters.
+
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	//TODO check if up
 	//TODO test call
 
-	//TODO code
+	//TODO add a connection limit & use that
 
-	//TODO use Jackson provider to connect - need to pass query string parameters.
-	
-	public String get( final String url ) throws CannotRetrieveDataException {
-		final HttpResponse response = sendRequest(url);
-		checkStatus(url, response);
-		return parseResponse(url, response);
-	}
+	//TODO this should not be used, split the calls into may simultaneous calls instead, i.e. years / months - based on connection limit
+	@Override
+	public Period getMaximumDurationInSingleUpdate() {
 
-	private HttpResponse sendRequest( final String url ) throws CannotRetrieveDataException {
-		
-		
-		//TODO inject the HttpClientBuilder & test (as the injection would allow mocking)
-		try {
-			return HttpClientBuilder.create().build().execute(jsonGetRequest(url));
-		} catch (ClientProtocolException e) {
-			throw new CannotRetrieveDataException(String.format("Protocol issue retrieving URL: %s", url), e);
-		} catch (IOException e) {
-			throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s", url), e);
-		}
-	}
-
-	private void checkStatus( final String url, final HttpResponse response ) throws CannotRetrieveDataException {
-		if (hasHttpIssue(response)) {
-			throw new CannotRetrieveDataException(String.format("Failed retrieving URL: %s, HTTP error code : %s", url,
-			        response.getStatusLine().getStatusCode()));
-		}
-	}
-
-	private boolean hasHttpIssue( final HttpResponse response ) {
-		return response.getStatusLine().getStatusCode() != HttpStatus.SC_OK;
-	}
-
-	private String parseResponse( final String url, final HttpResponse response ) throws CannotRetrieveDataException {
-		final StringBuilder result = new StringBuilder();
-
-		try {
-			final BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-			String output;
-			while ((output = br.readLine()) != null) {
-				result.append(output);
-			}
-
-		} catch (final IOException e) {
-			throw new CannotRetrieveDataException(String.format("Problem parsing response for URL: %s", url), e);
-		}
-
-		return result.toString();
-	}
-
-	private HttpGet jsonGetRequest( final String url ) {
-		final HttpGet getRequest = new HttpGet(url);
-		getRequest.addHeader("accept", "application/json");
-		return getRequest;
+		return Period.ofYears(10);
 	}
 }
