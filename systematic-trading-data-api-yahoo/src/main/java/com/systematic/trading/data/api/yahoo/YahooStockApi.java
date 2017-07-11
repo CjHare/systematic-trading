@@ -43,7 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.api.StockApi;
+import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.data.price.ClosingPrice;
@@ -51,7 +51,7 @@ import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 
-public class YahooStockApi implements StockApi {
+public class YahooStockApi implements EquityApi {
 	private static final Logger LOG = LogManager.getLogger(YahooStockApi.class);
 
 	private static final String API_PART_ONE = "http://query.yahooapis.com/v1/public/yql?q=select%20Date,Open,High,Low,Close%20from%20yahoo.finance.historicaldata%20where%20symbol=%22";

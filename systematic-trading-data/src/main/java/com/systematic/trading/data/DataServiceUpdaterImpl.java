@@ -30,7 +30,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.data.api.StockApi;
+import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.api.yahoo.YahooStockApi;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
@@ -44,7 +44,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
-	private final StockApi api = new YahooStockApi();
+	private final EquityApi api = new YahooStockApi();
 
 	private DataServiceUpdaterImpl() {
 	}

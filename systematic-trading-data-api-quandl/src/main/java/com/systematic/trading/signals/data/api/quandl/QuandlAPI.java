@@ -33,7 +33,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.api.StockApi;
+import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 
 /**
@@ -41,7 +41,7 @@ import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
  * 
  * @author CJ Hare
  */
-public class QuandlAPI implements StockApi {
+public class QuandlAPI implements EquityApi {
 
 	@Override
 	public TradingDayPrices[] getStockData( final String symbol, final LocalDate inclusiveStartDate,
