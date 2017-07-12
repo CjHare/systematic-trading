@@ -51,7 +51,7 @@ public class QuandlDao {
 	/** Location of the quandl end point. */
 	private static final String QUANDL_ENDPOINT_URL = "https://www.quandl.com";
 
-	//TODO inject this! - configuration value
+	//TODO move this into a local configuration file i.e. don't have it commited in the repo.
 	/** User specific key for accessing the Quandl API. */
 	private static final String QUANDL_API_KEY = "dZYJxfPu4E5U5-S26KEv";
 
