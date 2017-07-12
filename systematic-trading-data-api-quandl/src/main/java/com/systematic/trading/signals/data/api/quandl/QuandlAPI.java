@@ -32,21 +32,35 @@ package com.systematic.trading.signals.data.api.quandl;
 import java.time.LocalDate;
 import java.time.Period;
 
+import javax.ws.rs.core.Response;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 
 /**
- * Retrieval of equity data from the Quandl API endpoint.
+ * Retrieval of equity data from the Quandl data service.
  * 
  * @author CJ Hare
  */
 public class QuandlAPI implements EquityApi {
 
+	private final QuandlDao dao = new QuandlDao();
+
 	@Override
 	public TradingDayPrices[] getStockData( final String symbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 
+		final Response quandlReply = dao.get(symbol, inclusiveStartDate, exclusiveEndDate);
+		
+		//TODO check response code / error - should be in dao & catch / log/re-wrap here?
+
+		//TODO array of values
+		
+//		quandlReply.readEntity(entityType);
+		
 		//TODO use Jackson provider to connect - need to pass query string parameters.
 
 		// TODO Auto-generated method stub
