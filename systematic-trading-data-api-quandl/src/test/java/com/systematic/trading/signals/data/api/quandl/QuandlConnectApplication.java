@@ -29,6 +29,12 @@
  */
 package com.systematic.trading.signals.data.api.quandl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
+import java.util.List;
+
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -52,11 +58,10 @@ public class QuandlConnectApplication {
 
 	private static final String QUANDL_ENDPOINT_URL = "https://www.quandl.com";
 
-	//TODO move this into a local configuration file i.e. don't have it commited in the repo.
-	private static final String QUANDL_API_KEY = "dZYJxfPu4E5U5-S26KEv";
-
 	public static void main( final String[] args ) throws JsonProcessingException {
 		new QuandlConnectApplication().get();
+
+		System.out.println("No AssertException or other RuntimeExceptions means the test connection succeeded!");
 	}
 
 	private final WebTarget root;
@@ -90,7 +95,29 @@ public class QuandlConnectApplication {
 		final String path = "api/v3/datatables/WIKI/PRICES.json";
 		return root.path(path).queryParam("qopts.columns", "date,open,high,low,close")
 		        .queryParam("date.gte", "20150115").queryParam("date.lt", "20150401").queryParam("ticker", "AAPL")
-		        .queryParam("api_key", QUANDL_API_KEY);
+		        .queryParam("api_key", getQuandlApiKey());
+	}
+
+	/**
+	 * Retrieve the user specific API key for accessing Quandl.
+	 */
+	private String getQuandlApiKey() {
+
+		try {
+			List<String> lines = Files.readAllLines(Paths.get("src/test/resources/quandl.key"));
+
+			if (lines.size() != 1) {
+				throw new AssertionError("Populate the quandl.key file with your Quandl API key");
+			}
+
+			return lines.get(0);
+		} catch (final NoSuchFileException e) {
+			throw new AssertionError(
+			        "Sign up free for Quandl, then create a file for your API at /src/test/resources/quandl.key");
+
+		} catch (final IOException e) {
+			throw new AssertionError("Problem reading API key from file", e);
+		}
 	}
 
 	/**
