@@ -43,7 +43,6 @@ import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.ColumnResource;
-import com.systematic.trading.signals.data.api.quandl.model.DatatableResource;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
@@ -58,25 +57,8 @@ public class QuandlAPI implements EquityApi {
 	@Override
 	public TradingDayPrices[] getStockData( final String symbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
-
 		final QuandlResponseResource response = dao.get(symbol, inclusiveStartDate, exclusiveEndDate);
-
-		final DatatableResource datatable = response.getDatatable();
-		final List<ColumnResource> columns = datatable.getColumns();
-		final List<List<Object>> data = datatable.getData();
-
-		//TODO data integrity? 
-
-		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<LocalDate, TradingDayPrices>();
-
-		for (final List<Object> tuple : data) {
-			final LocalDate tradingDate = getTradingDate(columns, tuple);
-
-			prices.put(tradingDate, new TradingDayPricesImpl(tradingDate, getOpeningPrice(columns, tuple),
-			        getLowestPrice(columns, tuple), getHighestPrice(columns, tuple), getClosingPrice(columns, tuple)));
-		}
-
-		return prices.values().toArray(new TradingDayPrices[0]);
+		return convertResponse(response.getDatatable().getColumns(), response.getDatatable().getData());
 	}
 
 	//TODO check if the service is up
@@ -90,6 +72,24 @@ public class QuandlAPI implements EquityApi {
 	public Period getMaximumDurationInSingleUpdate() {
 
 		return Period.ofYears(10);
+	}
+
+	/**
+	 * Verifies the expected data is present and converts into JSON data into the domain model.
+	 */
+	private TradingDayPrices[] convertResponse( final List<ColumnResource> columns, final List<List<Object>> data )
+	        throws CannotRetrieveDataException {
+		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<LocalDate, TradingDayPrices>();
+
+		for (final List<Object> tuple : data) {
+			final LocalDate tradingDate = getTradingDate(columns, tuple);
+
+			prices.put(tradingDate, new TradingDayPricesImpl(tradingDate, getOpeningPrice(columns, tuple),
+			        getLowestPrice(columns, tuple), getHighestPrice(columns, tuple), getClosingPrice(columns, tuple)));
+		}
+
+		return prices.values().toArray(new TradingDayPrices[0]);
+
 	}
 
 	//TODO move this around
