@@ -39,6 +39,8 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
  * Data Access Object for retrieving data from the Quandl API.
@@ -46,6 +48,8 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
  * @author CJ Hare
  */
 public class QuandlDao {
+
+	private static final int HTTP_OK = 200;
 
 	//TODO inject this! - configuration value
 	/** Location of the quandl end point. */
@@ -68,19 +72,29 @@ public class QuandlDao {
 
 		// End point target root
 		this.root = ClientBuilder.newClient(clientConfig).target(QUANDL_ENDPOINT_URL);
-
 	}
 
-	public Response get( final String symbol, final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
+	public QuandlResponseResource get( final String symbol, final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+		final WebTarget url = createUrl();
+		final Response response = url.request(MediaType.APPLICATION_JSON).get();
 
-		//TODO builder? - as we're using table specific details / query params
-		//TODO the builder depends on which table the data is to be retrieved from, programmatic decision.
+		verifyResponse(url, response);
 
+		return response.readEntity(QuandlResponseResource.class);
+	}
+
+	private WebTarget createUrl() {
 		final String path = "api/v3/datatables/WIKI/PRICES.json";
-		final WebTarget url = root.path(path).queryParam("qopts.columns", "date,open,high,low,close")
+		return root.path(path).queryParam("qopts.columns", "date,open,high,low,close")
 		        .queryParam("date.gte", "20150115").queryParam("date.lt", "20150401").queryParam("ticker", "AAPL")
 		        .queryParam("api_key", QUANDL_API_KEY);
+	}
 
-		return url.request(MediaType.APPLICATION_JSON).get();
+	private void verifyResponse( final WebTarget url, final Response response ) throws CannotRetrieveDataException {
+		if (response.getStatus() != HTTP_OK) {
+			throw new CannotRetrieveDataException(
+			        String.format("Failed to retrieve data, HTTP code: %s, request: %s", response.getStatus(), url));
+		}
 	}
 }
