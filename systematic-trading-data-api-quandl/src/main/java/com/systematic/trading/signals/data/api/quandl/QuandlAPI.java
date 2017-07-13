@@ -29,13 +29,21 @@
  */
 package com.systematic.trading.signals.data.api.quandl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
+import java.util.TreeMap;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
+import com.systematic.trading.signals.data.api.quandl.model.ColumnResource;
+import com.systematic.trading.signals.data.api.quandl.model.DatatableResource;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
@@ -53,16 +61,22 @@ public class QuandlAPI implements EquityApi {
 
 		final QuandlResponseResource response = dao.get(symbol, inclusiveStartDate, exclusiveEndDate);
 
-		//TODO check response code / error - should be in dao & catch / log/re-wrap here?
+		final DatatableResource datatable = response.getDatatable();
+		final List<ColumnResource> columns = datatable.getColumns();
+		final List<List<Object>> data = datatable.getData();
 
-		//TODO array of values
+		//TODO data integrity? 
 
-		//		quandlReply.readEntity(entityType);
+		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<LocalDate, TradingDayPrices>();
 
-		//TODO use Jackson provider to connect - need to pass query string parameters.
+		for (final List<Object> tuple : data) {
+			final LocalDate tradingDate = getTradingDate(columns, tuple);
 
-		// TODO Auto-generated method stub
-		return null;
+			prices.put(tradingDate, new TradingDayPricesImpl(tradingDate, getOpeningPrice(columns, tuple),
+			        getLowestPrice(columns, tuple), getHighestPrice(columns, tuple), getClosingPrice(columns, tuple)));
+		}
+
+		return prices.values().toArray(new TradingDayPrices[0]);
 	}
 
 	//TODO check if the service is up
@@ -76,5 +90,47 @@ public class QuandlAPI implements EquityApi {
 	public Period getMaximumDurationInSingleUpdate() {
 
 		return Period.ofYears(10);
+	}
+
+	//TODO move this around
+	private static final String NAME_DATE = "date";
+	private static final String NAME_OPEN_PRICE = "open";
+	private static final String NAME_HIGH_PRICE = "high";
+	private static final String NAME_LOW_PRICE = "low";
+	private static final String NAME_CLOSE_PRICE = "close";
+
+	private BigDecimal getOpeningPrice( final List<ColumnResource> columns, final List<Object> tuple )
+	        throws CannotRetrieveDataException {
+		return (BigDecimal) tuple.get(getIndexOf(columns, NAME_OPEN_PRICE));
+	}
+
+	private BigDecimal getLowestPrice( final List<ColumnResource> columns, final List<Object> tuple )
+	        throws CannotRetrieveDataException {
+		return (BigDecimal) tuple.get(getIndexOf(columns, NAME_LOW_PRICE));
+	}
+
+	private BigDecimal getHighestPrice( final List<ColumnResource> columns, final List<Object> tuple )
+	        throws CannotRetrieveDataException {
+		return (BigDecimal) tuple.get(getIndexOf(columns, NAME_HIGH_PRICE));
+	}
+
+	private BigDecimal getClosingPrice( final List<ColumnResource> columns, final List<Object> tuple )
+	        throws CannotRetrieveDataException {
+		return (BigDecimal) tuple.get(getIndexOf(columns, NAME_CLOSE_PRICE));
+	}
+
+	private LocalDate getTradingDate( final List<ColumnResource> columns, final List<Object> tuple )
+	        throws CannotRetrieveDataException {
+		return (LocalDate) tuple.get(getIndexOf(columns, NAME_DATE));
+	}
+
+	private int getIndexOf( final List<ColumnResource> columns, final String name ) throws CannotRetrieveDataException {
+		for (int i = 0; i < columns.size(); i++) {
+			if (StringUtils.equals(name, columns.get(i).getName())) {
+				return i;
+			}
+		}
+
+		throw new CannotRetrieveDataException(String.format("Missing an expected column: %s", name));
 	}
 }

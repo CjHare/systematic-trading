@@ -45,6 +45,8 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
 /**
  * Data Access Object for retrieving data from the Quandl API.
  * 
+ * DAO's responsibility is ensure the Quandl reply contains the expected JSON format, not the data integrity.
+ * 
  * @author CJ Hare
  */
 public class QuandlDao {
@@ -64,6 +66,8 @@ public class QuandlDao {
 
 	//TODO use an exectuor pool for the Java-RS operations?
 	// final ExecutorService pool
+
+	//TODO retry behaviour
 
 	public QuandlDao() {
 
