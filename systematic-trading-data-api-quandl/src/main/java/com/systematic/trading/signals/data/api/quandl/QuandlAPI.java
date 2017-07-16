@@ -41,7 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
-import com.systematic.trading.maths.TradingDayPricesImpl;
+import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.ColumnResource;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
