@@ -92,6 +92,7 @@ public class BacktestApplication {
 		final LocalDate simulationStartDate = parserdArguments.getStartDate().getDate();
 		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
 
+		//TODO the ticker symbols & type should be input
 		// Only for the single equity
 		final EquityConfiguration equity = EquityConfiguration.SP_500_PRICE_INDEX;
 
