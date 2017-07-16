@@ -32,9 +32,9 @@ import java.util.List;
 
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.api.yahoo.YahooStockApi;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
+import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
@@ -44,7 +44,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
-	private final EquityApi api = new YahooStockApi();
+
+	//TODO inject this - configuration 
+	private final EquityApi api = new QuandlAPI();
 
 	private DataServiceUpdaterImpl() {
 	}
