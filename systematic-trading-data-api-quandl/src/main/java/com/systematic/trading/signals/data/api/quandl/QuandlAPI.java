@@ -32,6 +32,7 @@ package com.systematic.trading.signals.data.api.quandl;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -51,6 +52,7 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
  * @author CJ Hare
  */
 public class QuandlAPI implements EquityApi {
+	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	private final QuandlDao dao = new QuandlDao();
 
@@ -121,7 +123,7 @@ public class QuandlAPI implements EquityApi {
 
 	private LocalDate getTradingDate( final List<ColumnResource> columns, final List<Object> tuple )
 	        throws CannotRetrieveDataException {
-		return (LocalDate) tuple.get(getIndexOf(columns, NAME_DATE));
+		return LocalDate.parse((String) tuple.get(getIndexOf(columns, NAME_DATE)), QUANDL_DATE_FORMAT);
 	}
 
 	private int getIndexOf( final List<ColumnResource> columns, final String name ) throws CannotRetrieveDataException {
