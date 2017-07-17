@@ -75,8 +75,7 @@ public abstract class FileOutput implements BacktestOutput {
 			throw new IllegalArgumentException(
 			        String.format("Failed to create / access directory: %s", outputDirectory));
 		} else {
-			LOG.info(String.format("Output directory mapping: %s -> %s", outputDirectory,
-			        outputDirectoryFile.getCanonicalPath()));
+			LOG.info(String.format("Output directory: %s", outputDirectoryFile.getCanonicalPath()));
 		}
 
 		return outputDirectoryFile.getCanonicalPath();
