@@ -70,7 +70,7 @@ import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculato
  */
 public class BacktestBootstrapContextBulider {
 
-	//TODO convert into an actual builder
+	//TODO convert into an actual builder pattern
 
 	/** How long one year is as a period of time/ */
 	private static final Period ONE_YEAR = Period.ofYears(1);
@@ -85,23 +85,22 @@ public class BacktestBootstrapContextBulider {
 	private DepositConfiguration deposit;
 
 	/** First date to apply the management fee on. */
-	private final LocalDate managementFeeStartDate;
+	private LocalDate managementFeeStartDate;
 
 	/** The intended dates for the simulation. */
 	private BacktestSimulationDates simulationDates;
-
-	private EntryLogicConfiguration.Type entryLogicType;
 
 	private EntryLogicConfiguration entryLogic;
 
 	private BrokerageFeesConfiguration brokerageType;
 
 	public BacktestBootstrapContextBulider( final MathContext mathContext ) {
-		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getStartDate());
 		this.mathContext = mathContext;
 	}
 
 	public BacktestBootstrapContextBulider withConfiguration( final BacktestBootstrapConfiguration configuration ) {
+		this.simulationDates = configuration.getBacktestDates();
+		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getStartDate());
 		this.simulationDates = configuration.getBacktestDates();
 		this.deposit = configuration.getDeposit();
 		this.equity = configuration.getEquity();
@@ -112,7 +111,7 @@ public class BacktestBootstrapContextBulider {
 
 	public BacktestBootstrapContext build() {
 
-		switch (entryLogicType) {
+		switch (entryLogic.getType()) {
 			case PERIODIC:
 				final Period purchaseFrequency = entryLogic.getPeriodic().getFrequency();
 				return periodic(brokerageType, purchaseFrequency);

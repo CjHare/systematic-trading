@@ -1,0 +1,40 @@
+
+#######################
+### Backtest Events ###
+#######################
+
+Data set for SPY from 2015-01-15 to 2015-03-31
+Simulation dates for SPY from 2007-06-01 to 2017-06-01
+Simulation warm up period for SPY of P110D
+# trading days: 52 over 75 days (69.33 percentage trading days)
+
+=== Cash Events ===
+=== Order Events ===
+=== Brokerage Events ===
+Cash Account - DEPOSIT: 150.0 - funds .0 -> 150.0 on 2015-01-15
+Cash Account - DEPOSIT: 150.0 - funds 150.0 -> 300.0 on 2015-01-15
+Cash Account - DEPOSIT: 150.0 - funds 300.0 -> 450.0 on 2015-01-15
+Cash Account - INTEREST: .55 - funds 450.0 -> 450.55 on 2007-07-01
+Cash Account - INTEREST: .57 - funds 450.55 -> 451.13 on 2007-08-01
+Cash Account - INTEREST: .56 - funds 451.7 -> 452.26 on 2007-10-01
+Cash Account - INTEREST: .58 - funds 452.26 -> 452.84 on 2007-11-01
+Cash Account - INTEREST: .57 - funds 451.13 -> 451.7 on 2007-09-01
+Cash Account - INTEREST: .56 - funds 452.84 -> 453.39 on 2007-12-01
+Cash Account - INTEREST: .58 - funds 453.39 -> 453.97 on 2008-01-01
+Cash Account - DEPOSIT: 150.0 - funds 453.97 -> 603.97 on 2015-01-21
+Cash Account - DEPOSIT: 150.0 - funds 603.97 -> 753.97 on 2015-01-28
+Cash Account - INTEREST: .68 - funds 753.97 -> 754.66 on 2015-02-01
+Cash Account - DEPOSIT: 150.0 - funds 754.66 -> 904.66 on 2015-02-04
+Cash Account - DEPOSIT: 150.0 - funds 904.66 -> 1054.66 on 2015-02-12
+Cash Account - DEPOSIT: 150.0 - funds 1054.66 -> 1204.66 on 2015-02-19
+Cash Account - DEPOSIT: 150.0 - funds 1204.66 -> 1354.66 on 2015-02-26
+Cash Account - INTEREST: 1.23 - funds 1354.66 -> 1355.89 on 2015-03-01
+Cash Account - DEPOSIT: 150.0 - funds 1355.89 -> 1505.89 on 2015-03-05
+Cash Account - DEPOSIT: 150.0 - funds 1505.89 -> 1655.89 on 2015-03-09
+Cash Account - DEPOSIT: 150.0 - funds 1655.89 -> 1805.89 on 2015-03-16
+Cash Account - DEPOSIT: 150.0 - funds 1805.89 -> 1955.89 on 2015-03-23
+Place Order - ENTRY total cost 1955.89 created after c.o.b on 2015-03-25
+Cash Account - DEBIT: 1955.88 - funds 1955.89 -> .01 on 2015-03-26
+Brokerage Account - BUY: 15.57 - equity balance .0 -> 15.57 on 2015-03-26
+Cash Account - DEPOSIT: 150.0 - funds .01 -> 150.01 on 2015-03-30
+Place Order - ENTRY total cost 500.0 created after c.o.b on 2015-03-30
