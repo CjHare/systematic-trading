@@ -1,0 +1,5 @@
+Execute start-database-server.bat
+Execute database-browser.bat
+Change the type combobox to 'HSQL Database Engine Server'
+Change the URL to 'jdbc:hsqldb:hsql://localhost:9002/xdb'
+Click OK
