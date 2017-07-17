@@ -1,2 +1,0 @@
-=== Brokerage Events ===
-Brokerage Account - BUY: 15.57 - equity balance .0 -> 15.57 on 2015-03-26

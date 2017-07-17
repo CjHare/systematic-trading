@@ -1,3 +1,0 @@
-=== Order Events ===
-Place Order - ENTRY total cost 1955.89 created after c.o.b on 2015-03-25
-Place Order - ENTRY total cost 500.0 created after c.o.b on 2015-03-30
