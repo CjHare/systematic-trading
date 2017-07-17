@@ -70,9 +70,11 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  */
 public class CompleteFileOutputService extends FileOutput implements BacktestOutput {
 
+	private final BacktestBatchId batchId;
+	private final ExecutorService pool;
 	private final MathContext mathContext;
-
 	private final String baseDirectory;
+
 	private ReturnOnInvestmentEventListener roiDisplay;
 	private ReturnOnInvestmentEventListener roiDailyDisplay;
 	private ReturnOnInvestmentEventListener roiMonthlyDisplay;
@@ -86,9 +88,6 @@ public class CompleteFileOutputService extends FileOutput implements BacktestOut
 	private NetWorthSummaryDao netWorthDisplay;
 	private NetWorthEventListener netWorthComparisonDisplay;
 	private EquityEventListener equityEventDisplay;
-	private final ExecutorService pool;
-
-	private final BacktestBatchId batchId;
 
 	public CompleteFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
 	        final ExecutorService pool, final MathContext mathContext ) throws IOException {

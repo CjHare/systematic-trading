@@ -55,7 +55,7 @@ public class ReturnOnInvestmentFileDao implements ReturnOnInvestmentEventListene
 		this.file = file;
 		this.roiType = roiType;
 
-		file.write("=== Return On Investment Events ===\n");
+		file.write("=== Return On Investment Events ===%n");
 	}
 
 	public String createOutput( final ReturnOnInvestmentEvent event ) {
@@ -69,17 +69,17 @@ public class ReturnOnInvestmentFileDao implements ReturnOnInvestmentEventListene
 		final Period elapsed = Period.between(startDateInclusive, endDateExclusive);
 
 		if (isDailyRoiOutput(elapsed)) {
-			output.append(String.format("Daily - ROI: %s percent over %s day(s), from %s to %s",
+			output.append(String.format("Daily - ROI: %s percent over %s day(s), from %s to %s%n",
 			        formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive));
 		}
 
 		if (isMonthlyRoiOutput(elapsed)) {
-			output.append(String.format("Monthly - ROI: %s percent over %s month(s), from %s to %s",
+			output.append(String.format("Monthly - ROI: %s percent over %s month(s), from %s to %s%n",
 			        formattedPercentageChange, getRoundedMonths(elapsed), startDateInclusive, endDateExclusive));
 		}
 
 		if (isYearlyRoiOutput(elapsed)) {
-			output.append(String.format("Yearly - ROI: %s percent over %s year(s), from %s to %s",
+			output.append(String.format("Yearly - ROI: %s percent over %s year(s), from %s to %s%n",
 			        formattedPercentageChange, getRoundedYears(elapsed), startDateInclusive, endDateExclusive));
 		}
 
