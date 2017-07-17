@@ -73,7 +73,8 @@ public class QuandlAPI implements EquityApi {
 	@Override
 	public Period getMaximumDurationInSingleUpdate() {
 
-		return Period.ofYears(10);
+		//TODO when too much / too big a payload is returned, threads hang waiting for responses (i.e. 1yr not 10yrs)
+		return Period.ofYears(1);
 	}
 
 	/**

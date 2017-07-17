@@ -119,6 +119,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 				movedStartDate = movedEndDate;
 				movedEndDate = movedStartDate.plus(maximum);
+
+				//Ensure we end on the correct date
+				movedEndDate = endDate.isBefore(movedEndDate) ? endDate : movedEndDate;
 			}
 
 		} else {
