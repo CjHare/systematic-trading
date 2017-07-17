@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.output.file;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.MathContext;
 import java.util.concurrent.ExecutorService;
@@ -72,15 +71,7 @@ public class MinimalFileOutputService extends FileOutput implements BacktestOutp
 
 	public MinimalFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
 	        final ExecutorService pool, final MathContext mathContext ) throws IOException {
-
-		// Ensure the directory exists
-		final File outputDirectoryFile = new File(outputDirectory);
-		if (!outputDirectoryFile.exists() && !outputDirectoryFile.mkdirs()) {
-			throw new IllegalArgumentException(
-			        String.format("Failed to create / access directory: %s", outputDirectory));
-		}
-
-		this.baseDirectory = outputDirectoryFile.getCanonicalPath();
+		this.baseDirectory = getVerifiedDirectory(outputDirectory);
 		this.mathContext = mathContext;
 		this.pool = pool;
 		this.batchId = batchId;

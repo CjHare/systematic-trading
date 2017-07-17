@@ -25,6 +25,12 @@
  */
 package com.systematic.trading.backtest.output.file;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
 import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
@@ -37,6 +43,8 @@ import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener
  * @author CJ Hare
  */
 public abstract class FileOutput implements BacktestOutput {
+
+	private static final Logger LOG = LogManager.getLogger(FileOutput.class);
 
 	protected abstract EventStatisticsDao getEventStatisticsDao();
 
@@ -52,14 +60,31 @@ public abstract class FileOutput implements BacktestOutput {
 		}
 	}
 
-	private void simulationCompleted() {
-		getEventStatisticsDao().outputEventStatistics();
-		getNetWorthSummaryDao().outputNetWorth();
-	}
-
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
 		getNetWorthEventListener().event(event, state);
 		getNetWorthSummaryDao().event(event, state);
 	}
+
+	/**
+	 * Retrieves the base directory, after verifying it's existence.
+	 */
+	protected String getVerifiedDirectory( final String outputDirectory ) throws IOException {
+		final File outputDirectoryFile = new File(outputDirectory);
+		if (!outputDirectoryFile.exists() && !outputDirectoryFile.mkdirs()) {
+			throw new IllegalArgumentException(
+			        String.format("Failed to create / access directory: %s", outputDirectory));
+		} else {
+			LOG.info(String.format("Output directory mapping: %s -> %s", outputDirectory,
+			        outputDirectoryFile.getCanonicalPath()));
+		}
+
+		return outputDirectoryFile.getCanonicalPath();
+	}
+
+	private void simulationCompleted() {
+		getEventStatisticsDao().outputEventStatistics();
+		getNetWorthSummaryDao().outputNetWorth();
+	}
+
 }
