@@ -14,6 +14,7 @@
 
 	<modules>
 		<module>systematic-trading-parent</module>
+		<module>systematic-trading-model</module>
 		<module>systematic-trading-backtest</module>
 		<module>systematic-trading-backtest-model</module>
 		<module>systematic-trading-backtest-output-elastic</module>
@@ -24,7 +25,6 @@
 		<module>systematic-trading-data-api</module>
 		<module>systematic-trading-data-api-yahoo</module>
 		<module>systematic-trading-data-api-quandl</module>
-		<module>systematic-trading-model</module>
 		<module>systematic-trading-maths</module>
 		<module>systematic-trading-signals</module>
 		<module>systematic-trading-simulation</module>
