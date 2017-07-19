@@ -43,8 +43,6 @@ import java.util.List;
  */
 public class SystematicTradingMathsAssert {
 
-	//TODO tidy this up!
-
 	private static final int TWO_DECIMAL_PLACES = 2;
 
 	public static void assertValue( final double expected, final List<BigDecimal> actual ) {
@@ -56,24 +54,35 @@ public class SystematicTradingMathsAssert {
 	}
 
 	public static void assertValues( final double[] expected, final List<BigDecimal> actual ) {
-		assertNotNull("Need an expected array", expected);
-		assertNotNull("Need an actual/results array", actual);
-		assertEquals("Actual length != Expected length", expected.length, actual.size());
+		assertArraySizeEqual(expected, actual);
 
 		for (int i = 0; i < expected.length; i++) {
-			assertEquals(String.format("%s != %s", expected[i], actual.get(i)), 0,
-			        BigDecimal.valueOf(expected[i]).compareTo(actual.get(i)));
+			assertBigDecimalEquals(expected, actual, i);
 		}
 	}
 
 	public static void assertValuesTwoDecimalPlaces( final double[] expected, final List<BigDecimal> actual ) {
+		assertArraySizeEqual(expected, actual);
+
+		for (int i = 0; i < expected.length; i++) {
+			assertBigDecimalEquals(expected, actual, i, RoundingMode.HALF_EVEN);
+		}
+	}
+
+	private static void assertBigDecimalEquals( final double[] expected, final List<BigDecimal> actual, final int i ) {
+		assertEquals(String.format("%s != %s", expected[i], actual.get(i)), 0,
+		        BigDecimal.valueOf(expected[i]).compareTo(actual.get(i)));
+	}
+
+	private static void assertBigDecimalEquals( final double[] expected, final List<BigDecimal> actual, final int i,
+	        final RoundingMode mode ) {
+		assertEquals(String.format("%s != %s", expected[i], actual.get(i)), 0,
+		        BigDecimal.valueOf(expected[i]).compareTo(actual.get(i).setScale(TWO_DECIMAL_PLACES, mode)));
+	}
+
+	private static void assertArraySizeEqual( final double[] expected, final List<?> actual ) {
 		assertNotNull("Need an expected array", expected);
 		assertNotNull("Need an actual/results array", actual);
 		assertEquals("Actual length != Expected length", expected.length, actual.size());
-
-		for (int i = 0; i < expected.length; i++) {
-			assertEquals(String.format("%s != %s", expected[i], actual.get(i)), 0, BigDecimal.valueOf(expected[i])
-			        .compareTo(actual.get(i).setScale(TWO_DECIMAL_PLACES, RoundingMode.HALF_EVEN)));
-		}
 	}
 }
