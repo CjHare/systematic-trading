@@ -39,7 +39,13 @@ public class BacktestSimulationDates {
 	private final LocalDate endDate;
 	private final Period warmUp;
 
-	public BacktestSimulationDates( final LocalDate startDate, final LocalDate endDate, final Period warmUp ) {
+	/**
+	 * @param startDate must be before or on the end date.
+	 * @param endDate must be on or after the start date.
+	 */
+	public BacktestSimulationDates( final LocalDate startDate, final LocalDate endDate, final Period warmUp )
+	        throws InvalidSimulationDatesException {
+		validateDates(startDate, endDate);
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.warmUp = warmUp;
@@ -55,5 +61,12 @@ public class BacktestSimulationDates {
 
 	public Period getWarmUp() {
 		return warmUp;
+	}
+
+	private void validateDates( final LocalDate startDate, final LocalDate endDate )
+	        throws InvalidSimulationDatesException {
+		if (startDate.isAfter(endDate)) {
+			throw new InvalidSimulationDatesException(String.format("%s %s", startDate, endDate));
+		}
 	}
 }
