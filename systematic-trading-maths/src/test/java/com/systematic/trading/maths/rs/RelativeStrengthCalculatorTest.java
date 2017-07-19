@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.maths.rs;
 
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValuesTwoDecimalPlaces;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -32,11 +33,9 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,10 +43,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.formula.rs.RelativeStrengthCalculator;
 import com.systematic.trading.maths.formula.rs.RelativeStrengthDataPoint;
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
  * Verifies the behaviour of RelativeStrengthCalculator.
@@ -73,30 +72,9 @@ public class RelativeStrengthCalculatorTest {
 
 		assertNotNull(rsi);
 		assertEquals(daysOfRsiValues, rsi.size());
-		assertValueEquals(2.39, rsi.get(0));
-		assertValueEquals(1.94, rsi.get(1));
-		assertValueEquals(1.96, rsi.get(2));
-		assertValueEquals(2.26, rsi.get(3));
-		assertValueEquals(1.95, rsi.get(4));
-		assertValueEquals(1.34, rsi.get(5));
-		assertValueEquals(1.67, rsi.get(6));
-		assertValueEquals(1.70, rsi.get(7));
-		assertValueEquals(1.25, rsi.get(8));
-		assertValueEquals(1.64, rsi.get(9));
-		assertValueEquals(1.18, rsi.get(10));
-		assertValueEquals(0.99, rsi.get(11));
-		assertValueEquals(0.65, rsi.get(12));
-		assertValueEquals(0.69, rsi.get(13));
-		assertValueEquals(0.7, rsi.get(14));
-		assertValueEquals(0.82, rsi.get(15));
-		assertValueEquals(0.58, rsi.get(16));
-		assertValueEquals(0.48, rsi.get(17));
-		assertValueEquals(0.6, rsi.get(18));
-	}
-
-	private void assertValueEquals( final double expected, final RelativeStrengthDataPoint actual ) {
-		assertEquals(BigDecimal.valueOf(expected).setScale(2, RoundingMode.HALF_EVEN),
-		        actual.getValue().setScale(2, RoundingMode.HALF_EVEN));
+		assertValuesTwoDecimalPlaces(new double[] { 2.39, 1.94, 1.96, 2.26, 1.95, 1.34, 1.67, 1.70, 1.25, 1.64, 1.18,
+		        0.99, 0.65, 0.69, 0.7, 0.82, 0.58, 0.48, 0.6 },
+		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
 	}
 
 	@Test
@@ -112,10 +90,8 @@ public class RelativeStrengthCalculatorTest {
 
 		assertNotNull(rsi);
 		assertEquals(daysOfRsiValues, rsi.size());
-		assertValueEquals(0.0, rsi.get(0));
-		assertValueEquals(0.0, rsi.get(1));
-		assertValueEquals(0.0, rsi.get(2));
-		assertValueEquals(0.0, rsi.get(3));
+		assertValuesTwoDecimalPlaces(new double[] { 0, 0, 0, 0 },
+		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -176,10 +152,8 @@ public class RelativeStrengthCalculatorTest {
 
 		assertNotNull(rsi);
 		assertEquals(daysOfRsiValues, rsi.size());
-		assertValueEquals(0.81, rsi.get(0));
-		assertValueEquals(0.86, rsi.get(1));
-		assertValueEquals(0.89, rsi.get(2));
-		assertValueEquals(0.92, rsi.get(3));
+		assertValuesTwoDecimalPlaces(new double[] { 0.81, 0.86, 0.89, 0.92 },
+		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, dataSize - lookback);
@@ -199,10 +173,8 @@ public class RelativeStrengthCalculatorTest {
 
 		assertNotNull(rsi);
 		assertEquals(daysOfRsiValues, rsi.size());
-		assertValueEquals(0.00, rsi.get(0));
-		assertValueEquals(0.00, rsi.get(1));
-		assertValueEquals(0.00, rsi.get(2));
-		assertValueEquals(0.00, rsi.get(3));
+		assertValuesTwoDecimalPlaces(new double[] { 0, 0, 0, 0 },
+		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, dataSize - lookback);
@@ -231,18 +203,9 @@ public class RelativeStrengthCalculatorTest {
 
 		assertNotNull(rsi);
 		assertEquals(2 * dataSize - lookback, rsi.size());
-		assertValueEquals(0.81, rsi.get(0));
-		assertValueEquals(0.86, rsi.get(1));
-		assertValueEquals(0.89, rsi.get(2));
-		assertValueEquals(0.92, rsi.get(3));
-		assertValueEquals(2.94, rsi.get(4));
-		assertValueEquals(8.82, rsi.get(5));
-		assertValueEquals(3.78, rsi.get(6));
-		assertValueEquals(2.15, rsi.get(7));
-		assertValueEquals(1.36, rsi.get(8));
-		assertValueEquals(0.91, rsi.get(9));
-		assertValueEquals(0.64, rsi.get(10));
-		assertValueEquals(0.45, rsi.get(11));
+		assertValuesTwoDecimalPlaces(
+		        new double[] { 0.81, 0.86, 0.89, 0.92, 2.94, 8.82, 3.78, 2.15, 1.36, 0.91, 0.64, 0.45 },
+		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, dataSize - lookback);
@@ -271,18 +234,9 @@ public class RelativeStrengthCalculatorTest {
 
 		assertNotNull(rsi);
 		assertEquals(2 * dataSize - lookback, rsi.size());
-		assertValueEquals(0.00, rsi.get(0));
-		assertValueEquals(0.00, rsi.get(1));
-		assertValueEquals(0.00, rsi.get(2));
-		assertValueEquals(0.00, rsi.get(3));
-		assertValueEquals(0.00, rsi.get(4));
-		assertValueEquals(0.11, rsi.get(5));
-		assertValueEquals(0.26, rsi.get(6));
-		assertValueEquals(0.47, rsi.get(7));
-		assertValueEquals(0.73, rsi.get(8));
-		assertValueEquals(1.09, rsi.get(9));
-		assertValueEquals(1.57, rsi.get(10));
-		assertValueEquals(2.21, rsi.get(11));
+		assertValuesTwoDecimalPlaces(
+		        new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.11, 0.26, 0.47, 0.73, 1.09, 1.57, 2.21 },
+		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, dataSize - lookback);
@@ -292,8 +246,8 @@ public class RelativeStrengthCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(1), BigDecimal.valueOf(0),
-			        BigDecimal.valueOf(2), BigDecimal.valueOf(1));
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(1).withLowestPrice(0).withHighestPrice(2)
+			        .withClosingPrice(1).build();
 		}
 
 		return prices;
@@ -303,8 +257,8 @@ public class RelativeStrengthCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(i + 1), BigDecimal.valueOf(i),
-			        BigDecimal.valueOf(i + 2), BigDecimal.valueOf(i + 1));
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(i + 1).withLowestPrice(i).withHighestPrice(i + 2)
+			        .withClosingPrice(i + 1).build();
 		}
 
 		return prices;
@@ -316,8 +270,8 @@ public class RelativeStrengthCalculatorTest {
 		final int base = count * 2;
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(base - i + 1),
-			        BigDecimal.valueOf(base + i), BigDecimal.valueOf(base + i + 2), BigDecimal.valueOf(base - i + 1));
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(base - i + 1).withLowestPrice(base + i)
+			        .withHighestPrice(base + i + 2).withClosingPrice(base - i + 1).build();
 		}
 
 		return prices;
@@ -334,8 +288,8 @@ public class RelativeStrengthCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[exampleCloseValues.length];
 
 		for (int i = 0; i < prices.length; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-			        BigDecimal.valueOf(exampleCloseValues[i]));
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(0).withLowestPrice(0).withHighestPrice(0)
+			        .withClosingPrice(exampleCloseValues[i]).build();
 		}
 
 		return prices;

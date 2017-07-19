@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.maths.indicator.stochastic;
 
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValuesTwoDecimalPlaces;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -34,8 +36,6 @@ import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.Test;
@@ -44,8 +44,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
  * Verifies the StochasticPercentageKCalculator.
@@ -58,39 +58,6 @@ public class StochasticPercentageKCalculatorTest {
 
 	@Mock
 	private Validator validator;
-
-	private TradingDayPrices[] createFlatPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(1), BigDecimal.valueOf(1),
-			        BigDecimal.valueOf(1), BigDecimal.valueOf(1));
-		}
-
-		return prices;
-	}
-
-	private TradingDayPrices[] createPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(1), BigDecimal.valueOf(0),
-			        BigDecimal.valueOf(2), BigDecimal.valueOf(1));
-		}
-
-		return prices;
-	}
-
-	private TradingDayPrices[] createIncreasingPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(i + 1), BigDecimal.valueOf(i / 2),
-			        BigDecimal.valueOf(2 * i), BigDecimal.valueOf(i + 1));
-		}
-
-		return prices;
-	}
 
 	@Test
 	public void percentageKThreePoints() {
@@ -106,9 +73,7 @@ public class StochasticPercentageKCalculatorTest {
 
 		assertNotNull(pk);
 		assertEquals(numberDataPoints - lookback, pk.size());
-		assertEquals(BigDecimal.valueOf(50.0), pk.get(0));
-		assertEquals(BigDecimal.valueOf(50.0), pk.get(1));
-		assertEquals(BigDecimal.valueOf(50.0), pk.get(2));
+		assertValues(new double[] { 50, 50, 50 }, pk);
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, numberDataPoints);
@@ -128,8 +93,7 @@ public class StochasticPercentageKCalculatorTest {
 
 		assertNotNull(pk);
 		assertEquals(numberDataPoints - lookback, pk.size());
-		assertEquals(BigDecimal.valueOf(0.0), pk.get(0).setScale(1, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(0.0), pk.get(1).setScale(1, RoundingMode.HALF_EVEN));
+		assertValuesTwoDecimalPlaces(new double[] { 0, 0 }, pk);
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, numberDataPoints);
@@ -197,10 +161,7 @@ public class StochasticPercentageKCalculatorTest {
 
 		assertNotNull(pk);
 		assertEquals(numberDataPoints - lookback, pk.size());
-		assertEquals(BigDecimal.valueOf(100.0), pk.get(0).setScale(1, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(100.0), pk.get(1).setScale(1, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(80.0), pk.get(2).setScale(1, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(71.43), pk.get(3).setScale(2, RoundingMode.HALF_EVEN));
+		assertValuesTwoDecimalPlaces(new double[] { 100, 100, 80, 71.43 }, pk);
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, numberDataPoints);
@@ -220,15 +181,42 @@ public class StochasticPercentageKCalculatorTest {
 
 		assertNotNull(pk);
 		assertEquals(numberDataPoints - lookback, pk.size());
-		assertEquals(BigDecimal.valueOf(83.33), pk.get(0).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(75.0), pk.get(1).setScale(1, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(66.67), pk.get(2).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(63.64), pk.get(3).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(58.33), pk.get(4).setScale(2, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(57.14), pk.get(5).setScale(2, RoundingMode.HALF_EVEN));
+		assertValuesTwoDecimalPlaces(new double[] { 83.33, 75, 66.67, 63.64, 58.33, 57.14 }, pk);
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, numberDataPoints);
 	}
 
+	private TradingDayPrices[] createFlatPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(1).withLowestPrice(1).withHighestPrice(1)
+			        .withClosingPrice(1).build();
+		}
+
+		return prices;
+	}
+
+	private TradingDayPrices[] createPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(1).withLowestPrice(0).withHighestPrice(2)
+			        .withClosingPrice(1).build();
+		}
+
+		return prices;
+	}
+
+	private TradingDayPrices[] createIncreasingPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(i + 1).withLowestPrice(i / 2)
+			        .withHighestPrice(2 * i).withClosingPrice(i + 1).build();
+		}
+
+		return prices;
+	}
 }

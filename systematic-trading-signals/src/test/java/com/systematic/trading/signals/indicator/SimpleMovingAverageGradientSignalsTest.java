@@ -36,6 +36,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 
 /**
@@ -46,6 +47,7 @@ import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSigna
 public class SimpleMovingAverageGradientSignalsTest {
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+	private static final String NO_TICKER_SYMBOL = null;
 
 	private final int lookback = 10;
 
@@ -110,8 +112,8 @@ public class SimpleMovingAverageGradientSignalsTest {
 	private TradingDayPrices[] createTradingPrices() {
 		final TradingDayPrices[] data = new TradingDayPrices[dateValues.length];
 		for (int i = 0; i < dateValues.length; i++) {
-			data[i] = new TradingDayPricesImpl(LocalDate.now().plusDays(dateValues[i]), BigDecimal.ZERO,
-			        BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(closingPrice[i]));
+			data[i] = new TradingDayPricesImpl(NO_TICKER_SYMBOL, LocalDate.now().plusDays(dateValues[i]),
+			        BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(closingPrice[i]));
 		}
 
 		return data;

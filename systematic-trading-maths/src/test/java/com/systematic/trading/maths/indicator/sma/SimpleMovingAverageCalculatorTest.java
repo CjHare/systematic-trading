@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.sma;
 
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -34,7 +35,6 @@ import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.Test;
@@ -43,8 +43,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
  * Verifying the behaviour for a SimpleMovingAverageCalculator.
@@ -57,28 +57,6 @@ public class SimpleMovingAverageCalculatorTest {
 
 	@Mock
 	private Validator validator;
-
-	private TradingDayPrices[] createPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(1), BigDecimal.valueOf(0),
-			        BigDecimal.valueOf(2), BigDecimal.valueOf(1));
-		}
-
-		return prices;
-	}
-
-	private TradingDayPrices[] createIncreasingPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(i + 1), BigDecimal.valueOf(i),
-			        BigDecimal.valueOf(i + 2), BigDecimal.valueOf(i + 1));
-		}
-
-		return prices;
-	}
 
 	@Test
 	public void smaTwoPoints() {
@@ -94,10 +72,7 @@ public class SimpleMovingAverageCalculatorTest {
 
 		assertNotNull(sma);
 		assertEquals(4, sma.size());
-		assertEquals(BigDecimal.ONE, sma.get(0));
-		assertEquals(BigDecimal.ONE, sma.get(1));
-		assertEquals(BigDecimal.ONE, sma.get(2));
-		assertEquals(BigDecimal.ONE, sma.get(3));
+		assertValues(new double[] { 1, 1, 1, 1 }, sma);
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, numberDataPoints);
@@ -165,13 +140,31 @@ public class SimpleMovingAverageCalculatorTest {
 
 		assertNotNull(sma);
 		assertEquals(5, sma.size());
-		assertEquals(BigDecimal.valueOf(1.5), sma.get(0));
-		assertEquals(BigDecimal.valueOf(2.5), sma.get(1));
-		assertEquals(BigDecimal.valueOf(3.5), sma.get(2));
-		assertEquals(BigDecimal.valueOf(4.5), sma.get(3));
-		assertEquals(BigDecimal.valueOf(5.5), sma.get(4));
+		assertValues(new double[] { 1.5, 2.5, 3.5, 4.5, 5.5 }, sma);
 
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, numberDataPoints);
+	}
+
+	private TradingDayPrices[] createPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(1).withLowestPrice(0).withHighestPrice(2)
+			        .withClosingPrice(1).build();
+		}
+
+		return prices;
+	}
+
+	private TradingDayPrices[] createIncreasingPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(i + 1).withLowestPrice(1).withHighestPrice(i + 2)
+			        .withClosingPrice(i + 1).build();
+		}
+
+		return prices;
 	}
 }

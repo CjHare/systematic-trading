@@ -25,6 +25,9 @@
  */
 package com.systematic.trading.maths.indicator.ema;
 
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValue;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValuesTwoDecimalPlaces;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -35,8 +38,6 @@ import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +47,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
  * Test the ExponentialMovingAverageCalculator.
@@ -61,48 +62,6 @@ public class ExponentialMovingAverageCalculatorTest {
 	@Mock
 	private Validator validator;
 
-	private TradingDayPrices[] createPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(1), BigDecimal.valueOf(0),
-			        BigDecimal.valueOf(2), BigDecimal.valueOf(1));
-		}
-
-		return prices;
-	}
-
-	private TradingDayPrices[] createIncreasingPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(i + 1), BigDecimal.valueOf(i),
-			        BigDecimal.valueOf(i + 2), BigDecimal.valueOf(i + 1));
-		}
-
-		return prices;
-	}
-
-	private List<BigDecimal> createIncreasingDecimalPrices( final int count ) {
-		final List<BigDecimal> prices = new ArrayList<BigDecimal>(count);
-
-		for (int i = 0; i < count; i++) {
-			prices.add(BigDecimal.valueOf(i));
-		}
-
-		return prices;
-	}
-
-	private List<BigDecimal> createDecimalPrices( final int count ) {
-		final List<BigDecimal> prices = new ArrayList<BigDecimal>(count);
-
-		for (int i = 0; i < count; i++) {
-			prices.add(BigDecimal.valueOf(1));
-		}
-
-		return prices;
-	}
-
 	@Test
 	public void emaOnePoints() {
 		final int lookback = 2;
@@ -115,7 +74,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		assertNotNull(ema);
 		assertEquals(1, ema.size());
-		assertEquals(BigDecimal.ONE, ema.get(0).setScale(0, RoundingMode.HALF_EVEN));
+		assertValue(1, ema);
 
 		verify(validator).verifyEnoughValues(data, lookback);
 		verify(validator).verifyZeroNullEntries(data);
@@ -134,8 +93,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		assertNotNull(ema);
 		assertEquals(2, ema.size());
-		assertEquals(BigDecimal.ONE, ema.get(0).setScale(0, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.ONE, ema.get(1).setScale(0, RoundingMode.HALF_EVEN));
+		assertValues(new double[] { 1, 1 }, ema);
 
 		verify(validator).verifyEnoughValues(data, lookback);
 		verify(validator).verifyZeroNullEntries(data);
@@ -170,9 +128,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		assertNotNull(ema);
 		assertEquals(3, ema.size());
-		assertEquals(BigDecimal.valueOf(1.5), ema.get(0).setScale(1, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(2.5), ema.get(1).setScale(1, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(3.67), ema.get(2).setScale(2, RoundingMode.HALF_EVEN));
+		assertValuesTwoDecimalPlaces(new double[] { 1.5, 2.5, 3.67 }, ema);
 
 		verify(validator).verifyEnoughValues(data, lookback);
 		verify(validator).verifyZeroNullEntries(data);
@@ -206,9 +162,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		assertNotNull(ema);
 		assertEquals(3, ema.size());
-		assertEquals(BigDecimal.ONE, ema.get(0).setScale(0, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.ONE, ema.get(1).setScale(0, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.ONE, ema.get(2).setScale(0, RoundingMode.HALF_EVEN));
+		assertValues(new double[] { 1, 1, 1 }, ema);
 
 		verify(validator).verifyEnoughValues(data, lookback);
 		verify(validator).verifyZeroNullEntries(data);
@@ -227,9 +181,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		assertNotNull(ema);
 		assertEquals(3, ema.size());
-		assertEquals(BigDecimal.valueOf(0.5), ema.get(0).setScale(1, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(1.5), ema.get(1).setScale(1, RoundingMode.HALF_EVEN));
-		assertEquals(BigDecimal.valueOf(2.67), ema.get(2).setScale(2, RoundingMode.HALF_EVEN));
+		assertValuesTwoDecimalPlaces(new double[] { 0.5, 1.5, 2.67 }, ema);
 
 		verify(validator).verifyEnoughValues(data, lookback);
 		verify(validator).verifyZeroNullEntries(data);
@@ -260,5 +212,47 @@ public class ExponentialMovingAverageCalculatorTest {
 		final int requiredDays = calculator.getMinimumNumberOfPrices();
 
 		assertEquals(lookback, requiredDays);
+	}
+
+	private TradingDayPrices[] createPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(1).withLowestPrice(0).withHighestPrice(2)
+			        .withClosingPrice(1).build();
+		}
+
+		return prices;
+	}
+
+	private TradingDayPrices[] createIncreasingPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(i + 1).withLowestPrice(1).withHighestPrice(i + 2)
+			        .withClosingPrice(i + 1).build();
+		}
+
+		return prices;
+	}
+
+	private List<BigDecimal> createIncreasingDecimalPrices( final int count ) {
+		final List<BigDecimal> prices = new ArrayList<BigDecimal>(count);
+
+		for (int i = 0; i < count; i++) {
+			prices.add(BigDecimal.valueOf(i));
+		}
+
+		return prices;
+	}
+
+	private List<BigDecimal> createDecimalPrices( final int count ) {
+		final List<BigDecimal> prices = new ArrayList<BigDecimal>(count);
+
+		for (int i = 0; i < count; i++) {
+			prices.add(BigDecimal.valueOf(1));
+		}
+
+		return prices;
 	}
 }

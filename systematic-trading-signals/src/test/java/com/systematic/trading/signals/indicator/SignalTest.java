@@ -6,10 +6,12 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.impl.TradingDayPricesImpl;
 
 public abstract class SignalTest {
 
 	protected static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+	private static final String NO_TICKER_SYMBOL = null;
 
 	protected TradingDayPrices[] createFlatTradingDayPrices( final int count, final int price ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
@@ -69,6 +71,7 @@ public abstract class SignalTest {
 		final BigDecimal safeClosingPrice = closingPrice.compareTo(BigDecimal.ZERO) > 0 ? closingPrice
 		        : BigDecimal.ZERO;
 
-		return new TradingDayPricesImpl(date, safeOpeningPrice, safeLowestPrice, safeHighestPrice, safeClosingPrice);
+		return new TradingDayPricesImpl(NO_TICKER_SYMBOL, date, safeOpeningPrice, safeLowestPrice, safeHighestPrice,
+		        safeClosingPrice);
 	}
 }

@@ -49,11 +49,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
+import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
  * Verifies the behaviour of the MovingAverageConvergenceDivergenceCalculator.
@@ -74,17 +74,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Mock
 	private Validator validator;
-
-	private TradingDayPrices[] createPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now().plusDays(i), BigDecimal.valueOf(1),
-			        BigDecimal.valueOf(0), BigDecimal.valueOf(2), BigDecimal.valueOf(1));
-		}
-
-		return prices;
-	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void noResults() {
@@ -112,26 +101,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		        fastEma, slowEma, signalEma, validator);
 
 		calculator.macd(data);
-	}
-
-	private List<BigDecimal> createFlatValuesList( final int size, final double value ) {
-		final List<BigDecimal> values = new ArrayList<BigDecimal>(size);
-
-		for (int i = 0; i < size; i++) {
-			values.add(BigDecimal.valueOf(value));
-		}
-
-		return values;
-	}
-
-	private List<BigDecimal> createIncreasingValuesList( final int size, final int startingValue ) {
-		final List<BigDecimal> values = new ArrayList<BigDecimal>(size);
-
-		for (int i = 0; i < size; i++) {
-			values.add(BigDecimal.valueOf(startingValue + i));
-		}
-
-		return values;
 	}
 
 	@Test
@@ -313,6 +282,37 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verify(fastEma).ema(data);
 		verify(slowEma).ema(data);
 		verify(signalEma, never()).ema(any(TradingDayPrices[].class));
+	}
+
+	private TradingDayPrices[] createPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i)).withOpeningPrice(1)
+			        .withLowestPrice(0).withHighestPrice(2).withClosingPrice(1).build();
+		}
+
+		return prices;
+	}
+
+	private List<BigDecimal> createFlatValuesList( final int size, final double value ) {
+		final List<BigDecimal> values = new ArrayList<BigDecimal>(size);
+
+		for (int i = 0; i < size; i++) {
+			values.add(BigDecimal.valueOf(value));
+		}
+
+		return values;
+	}
+
+	private List<BigDecimal> createIncreasingValuesList( final int size, final int startingValue ) {
+		final List<BigDecimal> values = new ArrayList<BigDecimal>(size);
+
+		for (int i = 0; i < size; i++) {
+			values.add(BigDecimal.valueOf(startingValue + i));
+		}
+
+		return values;
 	}
 
 	private List<BigDecimal> isBigDecimalListOf( final BigDecimal... bigDecimals ) {

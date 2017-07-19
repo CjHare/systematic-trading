@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.atr;
 
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -33,7 +34,6 @@ import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.Test;
@@ -42,8 +42,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.TradingDayPricesImpl;
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
  * Tests the behaviour of the AverageTrueRangeCalculator.
@@ -57,52 +57,11 @@ public class AverageTrueRangeCalculatorTest {
 	@Mock
 	private Validator validator;
 
-	private TradingDayPrices[] createPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(1), BigDecimal.valueOf(0),
-			        BigDecimal.valueOf(2), BigDecimal.valueOf(1));
-		}
-
-		return prices;
-	}
-
-	private TradingDayPrices[] createIncreasingPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(count), BigDecimal.valueOf(0),
-			        BigDecimal.valueOf(count + i * 5), BigDecimal.valueOf(count));
-		}
-
-		return prices;
-	}
-
-	private TradingDayPrices[] createThreeTypesOfVolatility( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
-
-		// Biggest swing is between today's high & low
-		for (int i = 0; i < count - 2; i++) {
-			prices[i] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(count), BigDecimal.valueOf(0),
-			        BigDecimal.valueOf(count), BigDecimal.valueOf(count));
-		}
-
-		// Biggest swing is between the highest of today and yesterday's close
-		prices[count - 2] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(count),
-		        BigDecimal.valueOf(2 * count), BigDecimal.valueOf(5 * count), BigDecimal.valueOf(2 * count));
-
-		// Biggest swing is between the low of today and yesterday's close
-		prices[count - 1] = new TradingDayPricesImpl(LocalDate.now(), BigDecimal.valueOf(count), BigDecimal.valueOf(0),
-		        BigDecimal.valueOf(count), BigDecimal.valueOf(count));
-
-		return prices;
-	}
-
 	@Test
 	public void atrFlat() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 1;
+
 		final TradingDayPrices[] data = createPrices(numberDataPoints);
 
 		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
@@ -114,9 +73,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		assertNotNull(atr);
 		assertEquals(numberDataPoints, atr.size());
-		assertEquals(BigDecimal.valueOf(2), atr.get(0));
-		assertEquals(BigDecimal.valueOf(2), atr.get(1));
-		assertEquals(BigDecimal.valueOf(2), atr.get(2));
+		assertValues(new double[] { 2, 2, 2 }, atr);
 	}
 
 	@Test
@@ -134,11 +91,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		assertNotNull(atr);
 		assertEquals(numberDataPoints, atr.size());
-		assertEquals(BigDecimal.valueOf(5), atr.get(0));
-		assertEquals(BigDecimal.valueOf(6.25), atr.get(1));
-		assertEquals(BigDecimal.valueOf(8.4375), atr.get(2));
-		assertEquals(BigDecimal.valueOf(11.328125), atr.get(3));
-		assertEquals(BigDecimal.valueOf(14.74609375), atr.get(4));
+		assertValues(new double[] { 5, 6.25, 8.4375, 11.328125, 14.74609375 }, atr);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -184,10 +137,48 @@ public class AverageTrueRangeCalculatorTest {
 
 		assertNotNull(atr);
 		assertEquals(numberDataPoints, atr.size());
-		assertEquals(BigDecimal.valueOf(5), atr.get(0));
-		assertEquals(BigDecimal.valueOf(5), atr.get(1));
-		assertEquals(BigDecimal.valueOf(5), atr.get(2));
-		assertEquals(BigDecimal.valueOf(8.75), atr.get(3));
-		assertEquals(BigDecimal.valueOf(9.0625), atr.get(4));
+		assertValues(new double[] { 5, 5, 5, 8.75, 9.0625 }, atr);
+	}
+
+	private TradingDayPrices[] createPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(1).withLowestPrice(0).withHighestPrice(2)
+			        .withClosingPrice(1).build();
+		}
+
+		return prices;
+	}
+
+	private TradingDayPrices[] createIncreasingPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(count).withLowestPrice(0)
+			        .withHighestPrice(count + i * 5).withClosingPrice(1).build();
+		}
+
+		return prices;
+	}
+
+	private TradingDayPrices[] createThreeTypesOfVolatility( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		// Biggest swing is between today's high & low
+		for (int i = 0; i < count - 2; i++) {
+			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(count).withLowestPrice(0).withHighestPrice(count)
+			        .withClosingPrice(count).build();
+		}
+
+		// Biggest swing is between the highest of today and yesterday's close
+		prices[count - 2] = new TradingDayPricesBuilder().withOpeningPrice(count).withLowestPrice(count)
+		        .withHighestPrice(5 * count).withClosingPrice(2 * count).build();
+
+		// Biggest swing is between the low of today and yesterday's close
+		prices[count - 1] = new TradingDayPricesBuilder().withOpeningPrice(count).withLowestPrice(0)
+		        .withHighestPrice(count).withClosingPrice(count).build();
+
+		return prices;
 	}
 }
