@@ -32,7 +32,7 @@
 		<systematic.trading.data.api.version>0.0.1-SNAPSHOT</systematic.trading.data.api.version>		
 		<systematic.trading.data.api.yahoo.version>0.0.1-SNAPSHOT</systematic.trading.data.api.yahoo.version>
 		<systematic.trading.data.api.quandl.version>0.0.1-SNAPSHOT</systematic.trading.data.api.quandl.version>
-		<systematic.trading.interfaces.version>0.0.1-SNAPSHOT</systematic.trading.interfaces.version>
+		<systematic.trading.model.version>0.0.1-SNAPSHOT</systematic.trading.model.version>
 		<systematic.trading.maths.version>0.0.1-SNAPSHOT</systematic.trading.maths.version>
 		<systematic.trading.signals.version>0.0.1-SNAPSHOT</systematic.trading.signals.version>
 		<systematic.trading.simulation.version>0.0.1-SNAPSHOT</systematic.trading.simulation.version>		

@@ -38,8 +38,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-interfaces</artifactId>
-			<version>${systematic.trading.interfaces.version}</version>
+			<artifactId>systematic-trading-model</artifactId>
+			<version>${systematic.trading.model.version}</version>
 		</dependency>
 
 		<!-- Logging framework -->

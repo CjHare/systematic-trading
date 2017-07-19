@@ -9,7 +9,7 @@
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>systematic-trading-interfaces</artifactId>
+	<artifactId>systematic-trading-model</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
