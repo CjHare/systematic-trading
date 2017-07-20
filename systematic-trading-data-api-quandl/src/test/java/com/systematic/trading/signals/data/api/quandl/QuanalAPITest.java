@@ -171,6 +171,28 @@ public class QuanalAPITest {
 		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
+	@Test
+	public void getStockDataTwoTuples() throws CannotRetrieveDataException {
+		setUpTwoTupleQuandlResponse();
+
+		final String tickerSymbol = randomTickerSymbol();
+		final LocalDate inclusiveStartDate = randomStartDate();
+		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
+
+		final TradingDayPrices[] prices = callQuandl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+
+		verifyTradingDayPrices(prices, new double[] { 2.8, 2.05, 3.99, 2.81, 2.5, 1.75, 3.25, 2.8 });
+		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	}
+
+	private void setUpTwoTupleQuandlResponse() throws CannotRetrieveDataException {
+		final List<List<Object>> data = new ArrayList<>();
+		data.add(createTuple("2012-01-23", 2.8, 2.05, 3.99, 2.81));
+		data.add(createTuple("2012-01-24", 2.5, 1.75, 3.25, 2.8));
+
+		setUpQandlResponse(getStandardColumns(), data);
+	}
+
 	private void setUpOneTupleQuandlResponse() throws CannotRetrieveDataException {
 		final List<List<Object>> data = new ArrayList<>();
 		data.add(createTuple("2010-12-01", 2.5, 1.75, 3.25, 2.8));
@@ -219,14 +241,6 @@ public class QuanalAPITest {
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 		verify(dao).get(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 		verifyNoMoreInteractions(dao);
-	}
-
-	private List<List<Object>> getStandardData() {
-		final List<List<Object>> data = new ArrayList<>();
-		data.add(createTuple("2012-01-22", 2.5, 1.75, 3.25, 2.8));
-		data.add(createTuple("2012-01-23", 2.8, 2.05, 3.99, 2.81));
-		return data;
-
 	}
 
 	private List<Object> createTuple( final String date, final double open, final double high, final double low,
