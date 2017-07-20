@@ -86,8 +86,7 @@ public class QuanalAPITest {
 		final LocalDate inclusiveStartDate = randomStartDate();
 		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
 
-		final TradingDayPrices[] prices = new QuandlAPI(dao).getStockData(tickerSymbol, inclusiveStartDate,
-		        exclusiveEndDate);
+		final TradingDayPrices[] prices = callQuandl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
 		verifyTradingDayPrices(prices);
 		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
@@ -101,12 +100,7 @@ public class QuanalAPITest {
 		final LocalDate inclusiveStartDate = randomStartDate();
 		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
 
-		try {
-			new QuandlAPI(dao).getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
-			fail("Expecting exception");
-		} catch (final CannotRetrieveDataException e) {
-			verifyMissingColumnMessage("date", e);
-		}
+		callQuandlExpectingMissingColumn("date", tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
 		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
@@ -119,14 +113,63 @@ public class QuanalAPITest {
 		final LocalDate inclusiveStartDate = randomStartDate();
 		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
 
+		callQuandlExpectingMissingColumn("open", tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+
+		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	}
+
+	@Test
+	public void getStockDataMissingLowColumn() throws CannotRetrieveDataException {
+		setUpMissingLowColumnQuandlResponse();
+
+		final String tickerSymbol = randomTickerSymbol();
+		final LocalDate inclusiveStartDate = randomStartDate();
+		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
+
+		callQuandlExpectingMissingColumn("low", tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+
+		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	}
+
+	@Test
+	public void getStockDataMissingHighColumn() throws CannotRetrieveDataException {
+		setUpMissingHighColumnQuandlResponse();
+
+		final String tickerSymbol = randomTickerSymbol();
+		final LocalDate inclusiveStartDate = randomStartDate();
+		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
+
+		callQuandlExpectingMissingColumn("high", tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+
+		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	}
+
+	@Test
+	public void getStockDataMissingCloseColumn() throws CannotRetrieveDataException {
+		setUpMissingCloseColumnQuandlResponse();
+
+		final String tickerSymbol = randomTickerSymbol();
+		final LocalDate inclusiveStartDate = randomStartDate();
+		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
+
+		callQuandlExpectingMissingColumn("close", tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+
+		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	}
+
+	private TradingDayPrices[] callQuandl( final String tickerSymbol, final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+		return new QuandlAPI(dao).getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	}
+
+	private void callQuandlExpectingMissingColumn( final String name, final String tickerSymbol,
+	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
 		try {
 			new QuandlAPI(dao).getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 			fail("Expecting exception");
 		} catch (final CannotRetrieveDataException e) {
-			verifyMissingColumnMessage("open", e);
+			verifyMissingColumnMessage(name, e);
 		}
-
-		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
 	private void verifyMissingColumnMessage( final String name, final Exception e ) {
@@ -194,6 +237,36 @@ public class QuanalAPITest {
 		columns.add(createColumn("high", "BigDecimal(34,12)"));
 		columns.add(createColumn("low", "BigDecimal(34,12)"));
 		columns.add(createColumn("close", "BigDecimal(34,12)"));
+
+		setUpQandlResponse(columns, new ArrayList<>());
+	}
+
+	private void setUpMissingLowColumnQuandlResponse() throws CannotRetrieveDataException {
+		final List<ColumnResource> columns = new ArrayList<>();
+		columns.add(createColumn("date", "Date"));
+		columns.add(createColumn("open", "BigDecimal(34,12)"));
+		columns.add(createColumn("high", "BigDecimal(34,12)"));
+		columns.add(createColumn("close", "BigDecimal(34,12)"));
+
+		setUpQandlResponse(columns, new ArrayList<>());
+	}
+
+	private void setUpMissingHighColumnQuandlResponse() throws CannotRetrieveDataException {
+		final List<ColumnResource> columns = new ArrayList<>();
+		columns.add(createColumn("date", "Date"));
+		columns.add(createColumn("open", "BigDecimal(34,12)"));
+		columns.add(createColumn("low", "BigDecimal(34,12)"));
+		columns.add(createColumn("close", "BigDecimal(34,12)"));
+
+		setUpQandlResponse(columns, new ArrayList<>());
+	}
+
+	private void setUpMissingCloseColumnQuandlResponse() throws CannotRetrieveDataException {
+		final List<ColumnResource> columns = new ArrayList<>();
+		columns.add(createColumn("date", "Date"));
+		columns.add(createColumn("open", "BigDecimal(34,12)"));
+		columns.add(createColumn("high", "BigDecimal(34,12)"));
+		columns.add(createColumn("low", "BigDecimal(34,12)"));
 
 		setUpQandlResponse(columns, new ArrayList<>());
 	}
