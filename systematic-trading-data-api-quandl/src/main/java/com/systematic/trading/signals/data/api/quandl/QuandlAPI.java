@@ -30,6 +30,7 @@
 package com.systematic.trading.signals.data.api.quandl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -117,9 +118,10 @@ public class QuandlAPI implements EquityApi {
 	private static final String NAME_HIGH_PRICE = "high";
 	private static final String NAME_LOW_PRICE = "low";
 	private static final String NAME_CLOSE_PRICE = "close";
-
-	private BigDecimal getgPrice( final Object closingPrice ) throws CannotRetrieveDataException {
-		return new BigDecimal((Double) closingPrice);
+	private static final int TWO_DECIMAL_PLACES = 2;
+	
+	private BigDecimal getgPrice( final Object price ) throws CannotRetrieveDataException {
+		return new BigDecimal((Double) price).setScale(TWO_DECIMAL_PLACES, RoundingMode.HALF_EVEN);
 	}
 
 	private LocalDate getTradingDate( final Object date ) throws CannotRetrieveDataException {

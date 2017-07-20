@@ -157,6 +157,27 @@ public class QuanalAPITest {
 		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
+	@Test
+	public void getStockDataOneTuple() throws CannotRetrieveDataException {
+		setUpOneTupleQuandlResponse();
+
+		final String tickerSymbol = randomTickerSymbol();
+		final LocalDate inclusiveStartDate = randomStartDate();
+		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
+
+		final TradingDayPrices[] prices = callQuandl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+
+		verifyTradingDayPrices(prices, new double[] { 2.5, 1.75, 3.25, 2.8 });
+		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	}
+
+	private void setUpOneTupleQuandlResponse() throws CannotRetrieveDataException {
+		final List<List<Object>> data = new ArrayList<>();
+		data.add(createTuple("2010-12-01", 2.5, 1.75, 3.25, 2.8));
+
+		setUpQandlResponse(getStandardColumns(), data);
+	}
+
 	private TradingDayPrices[] callQuandl( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 		return new QuandlAPI(dao).getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
@@ -176,8 +197,22 @@ public class QuanalAPITest {
 		assertEquals(String.format("Missing expected column: %s", name), e.getMessage());
 	}
 
-	private void verifyTradingDayPrices( final TradingDayPrices[] prices ) {
+	private void verifyTradingDayPrices( final TradingDayPrices[] prices, final double... expected ) {
 		assertNotNull(prices);
+		assertEquals("Number of prices does not match expectations", expected.length / 4, prices.length);
+
+		for (int i = 0, j = 0; i < expected.length; i += 4, j++) {
+			verifyBigDecimalEquals(expected[i], prices[j].getOpeningPrice().getPrice());
+			verifyBigDecimalEquals(expected[i + 1], prices[j].getLowestPrice().getPrice());
+			verifyBigDecimalEquals(expected[i + 2], prices[j].getHighestPrice().getPrice());
+			verifyBigDecimalEquals(expected[i + 3], prices[j].getClosingPrice().getPrice());
+		}
+	}
+
+	private void verifyBigDecimalEquals( final double expected, final BigDecimal actual ) {
+		assertEquals(String.format("Expected %s != %s", expected, actual), 0,
+		        BigDecimal.valueOf(expected).compareTo(actual));
+
 	}
 
 	private void verifyQuandlCall( final String tickerSymbol, final LocalDate inclusiveStartDate,
@@ -188,19 +223,20 @@ public class QuanalAPITest {
 
 	private List<List<Object>> getStandardData() {
 		final List<List<Object>> data = new ArrayList<>();
-		data.add(createTuple(LocalDate.now(), 2.5, 1.75, 3.25, 2.8));
-		data.add(createTuple(LocalDate.now(), 2.8, 2.05, 3.99, 2.81));
+		data.add(createTuple("2012-01-22", 2.5, 1.75, 3.25, 2.8));
+		data.add(createTuple("2012-01-23", 2.8, 2.05, 3.99, 2.81));
 		return data;
+
 	}
 
-	private List<Object> createTuple( final LocalDate date, final double open, final double high, final double low,
+	private List<Object> createTuple( final String date, final double open, final double high, final double low,
 	        final double close ) {
 		final List<Object> tuple = new ArrayList<>();
 		tuple.add(date);
-		tuple.add(BigDecimal.valueOf(open));
-		tuple.add(BigDecimal.valueOf(high));
-		tuple.add(BigDecimal.valueOf(low));
-		tuple.add(BigDecimal.valueOf(close));
+		tuple.add(open);
+		tuple.add(high);
+		tuple.add(low);
+		tuple.add(close);
 		return tuple;
 	}
 
@@ -208,8 +244,8 @@ public class QuanalAPITest {
 		final List<ColumnResource> columns = new ArrayList<>();
 		columns.add(createColumn("date", "Date"));
 		columns.add(createColumn("open", "BigDecimal(34,12)"));
-		columns.add(createColumn("high", "BigDecimal(34,12)"));
 		columns.add(createColumn("low", "BigDecimal(34,12)"));
+		columns.add(createColumn("high", "BigDecimal(34,12)"));
 		columns.add(createColumn("close", "BigDecimal(34,12)"));
 		return columns;
 	}
@@ -224,8 +260,8 @@ public class QuanalAPITest {
 	private void setUpMissingDateColumnQuandlResponse() throws CannotRetrieveDataException {
 		final List<ColumnResource> columns = new ArrayList<>();
 		columns.add(createColumn("open", "BigDecimal(34,12)"));
-		columns.add(createColumn("high", "BigDecimal(34,12)"));
 		columns.add(createColumn("low", "BigDecimal(34,12)"));
+		columns.add(createColumn("high", "BigDecimal(34,12)"));
 		columns.add(createColumn("close", "BigDecimal(34,12)"));
 
 		setUpQandlResponse(columns, new ArrayList<>());
@@ -234,8 +270,8 @@ public class QuanalAPITest {
 	private void setUpMissingOpenColumnQuandlResponse() throws CannotRetrieveDataException {
 		final List<ColumnResource> columns = new ArrayList<>();
 		columns.add(createColumn("date", "Date"));
-		columns.add(createColumn("high", "BigDecimal(34,12)"));
 		columns.add(createColumn("low", "BigDecimal(34,12)"));
+		columns.add(createColumn("high", "BigDecimal(34,12)"));
 		columns.add(createColumn("close", "BigDecimal(34,12)"));
 
 		setUpQandlResponse(columns, new ArrayList<>());
@@ -265,8 +301,8 @@ public class QuanalAPITest {
 		final List<ColumnResource> columns = new ArrayList<>();
 		columns.add(createColumn("date", "Date"));
 		columns.add(createColumn("open", "BigDecimal(34,12)"));
-		columns.add(createColumn("high", "BigDecimal(34,12)"));
 		columns.add(createColumn("low", "BigDecimal(34,12)"));
+		columns.add(createColumn("high", "BigDecimal(34,12)"));
 
 		setUpQandlResponse(columns, new ArrayList<>());
 	}
