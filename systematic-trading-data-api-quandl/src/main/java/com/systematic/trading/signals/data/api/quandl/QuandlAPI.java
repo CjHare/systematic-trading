@@ -89,6 +89,8 @@ public class QuandlAPI implements EquityApi {
 	        final List<List<Object>> data ) throws CannotRetrieveDataException {
 		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<LocalDate, TradingDayPrices>();
 
+		//TODO check for the columns even when no data returned
+		
 		for (final List<Object> tuple : data) {
 			final LocalDate tradingDate = getTradingDate(columns, tuple);
 
@@ -139,6 +141,6 @@ public class QuandlAPI implements EquityApi {
 			}
 		}
 
-		throw new CannotRetrieveDataException(String.format("Missing an expected column: %s", name));
+		throw new CannotRetrieveDataException(String.format("Missing expected column: %s", name));
 	}
 }

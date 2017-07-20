@@ -31,6 +31,7 @@ package com.systematic.trading.signals.data.api.quandl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -38,6 +39,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -91,6 +93,28 @@ public class QuanalAPITest {
 		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
+	@Test
+	public void getStockDataMissingDateColumn() throws CannotRetrieveDataException {
+		setUpMissingDateColumnQuandlResponse();
+
+		final String tickerSymbol = randomTickerSymbol();
+		final LocalDate inclusiveStartDate = randomStartDate();
+		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
+
+		try {
+			new QuandlAPI(dao).getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+			fail("Expecting exception");
+		} catch (final CannotRetrieveDataException e) {
+			verifyMissingColumnMessage("Date", e);
+		}
+
+		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	}
+
+	private void verifyMissingColumnMessage( final String name, final Exception e ) {
+		assertEquals(String.format("Missing expected column: %s", name), e.getMessage());
+	}
+
 	private void verifyTradingDayPrices( final TradingDayPrices[] prices ) {
 		assertNotNull(prices);
 	}
@@ -101,14 +125,59 @@ public class QuanalAPITest {
 		verifyNoMoreInteractions(dao);
 	}
 
-	/**
-	 * Response containing the structure but no data.
-	 */
+	private List<List<Object>> getStandardData() {
+		final List<List<Object>> data = new ArrayList<>();
+		data.add(createTuple(LocalDate.now(), 2.5, 1.75, 3.25, 2.8));
+		data.add(createTuple(LocalDate.now(), 2.8, 2.05, 3.99, 2.81));
+		return data;
+	}
+
+	private List<Object> createTuple( final LocalDate date, final double open, final double high, final double low,
+	        final double close ) {
+		final List<Object> tuple = new ArrayList<>();
+		tuple.add(date);
+		tuple.add(BigDecimal.valueOf(open));
+		tuple.add(BigDecimal.valueOf(high));
+		tuple.add(BigDecimal.valueOf(low));
+		tuple.add(BigDecimal.valueOf(close));
+		return tuple;
+	}
+
+	private List<ColumnResource> getStandardColumns() {
+		final List<ColumnResource> columns = new ArrayList<>();
+		columns.add(createColumn("date", "Date"));
+		columns.add(createColumn("open", "BigDecimal(34,12)"));
+		columns.add(createColumn("high", "BigDecimal(34,12)"));
+		columns.add(createColumn("low", "BigDecimal(34,12)"));
+		columns.add(createColumn("close", "BigDecimal(34,12)"));
+		return columns;
+	}
+
+	private ColumnResource createColumn( final String name, final String type ) {
+		final ColumnResource column = new ColumnResource();
+		column.setName(name);
+		column.setType(type);
+		return column;
+	}
+
+	private void setUpMissingDateColumnQuandlResponse() throws CannotRetrieveDataException {
+		final List<ColumnResource> columns = new ArrayList<>();
+		columns.add(createColumn("open", "BigDecimal(34,12)"));
+		columns.add(createColumn("high", "BigDecimal(34,12)"));
+		columns.add(createColumn("low", "BigDecimal(34,12)"));
+		columns.add(createColumn("close", "BigDecimal(34,12)"));
+
+		setUpQandlResponse(columns, new ArrayList<>());
+	}
+
 	private void setUpEmptyQuandlResponse() throws CannotRetrieveDataException {
+		setUpQandlResponse(new ArrayList<>(), new ArrayList<>());
+	}
+
+	private void setUpQandlResponse( final List<ColumnResource> columns, final List<List<Object>> data )
+	        throws CannotRetrieveDataException {
 		final QuandlResponseResource response = new QuandlResponseResource();
 		final DatatableResource datatable = new DatatableResource();
-		final List<ColumnResource> columns = new ArrayList<>();
-		final List<List<Object>> data = new ArrayList<>();
 		datatable.setData(data);
 		datatable.setColumns(columns);
 		response.setDatatable(datatable);
