@@ -35,6 +35,7 @@ import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
+import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
@@ -46,7 +47,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
 
 	//TODO inject this - configuration 
-	private final EquityApi api = new QuandlAPI();
+	private final EquityApi api = new QuandlAPI(new QuandlDao());
 
 	private DataServiceUpdaterImpl() {
 	}

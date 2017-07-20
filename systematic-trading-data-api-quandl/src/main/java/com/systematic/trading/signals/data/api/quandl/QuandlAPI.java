@@ -54,7 +54,11 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
 public class QuandlAPI implements EquityApi {
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-	private final QuandlDao dao = new QuandlDao();
+	private final QuandlDao dao;
+
+	public QuandlAPI( final QuandlDao dao ) {
+		this.dao = dao;
+	}
 
 	@Override
 	public TradingDayPrices[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
