@@ -29,23 +29,14 @@
  */
 package com.systematic.trading.signals.data.api.quandl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.TreeMap;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
-import com.systematic.trading.signals.data.api.quandl.model.ColumnResource;
-import com.systematic.trading.signals.data.api.quandl.model.DatatableResource;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
@@ -54,25 +45,25 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
  * @author CJ Hare
  */
 public class QuandlAPI implements EquityApi {
-	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private static final Period MAXIMUM_RETRIEVAL_PER_CALL = Period.ofYears(1);
 
 	private final QuandlDao dao;
 
-	public QuandlAPI( final QuandlDao dao ) {
+	private final QuandlResponseFormat dataFormat;
+
+	public QuandlAPI( final QuandlDao dao, final QuandlResponseFormat dataFormat ) {
 		this.dao = dao;
+		this.dataFormat = dataFormat;
 	}
 
 	@Override
 	public TradingDayPrices[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 		final QuandlResponseResource response = dao.get(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
-		return convertResponse(tickerSymbol, response.getDatatable());
+		return dataFormat.convert(tickerSymbol, response.getDatatable());
 	}
 
-	//TODO check if the service is up
-
-	//TODO test call, ensure the data return is working
+	//TODO retry behaviour, on certain HTTP problems
 
 	//TODO add a connection limit & use that
 
@@ -82,59 +73,5 @@ public class QuandlAPI implements EquityApi {
 
 		//TODO when too much / too big a payload is returned, threads hang waiting for responses (i.e. 1yr not 10yrs)
 		return MAXIMUM_RETRIEVAL_PER_CALL;
-	}
-
-	/**
-	 * Verifies the expected data is present and converts into JSON data into the domain model.
-	 */
-	private TradingDayPrices[] convertResponse( final String tickerSymbol, final DatatableResource datatable )
-	        throws CannotRetrieveDataException {
-		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<LocalDate, TradingDayPrices>();
-		final List<ColumnResource> columns = datatable.getColumns();
-		final List<List<Object>> data = datatable.getData();
-
-		final int dateIndex = getIndexOf(columns, NAME_DATE);
-		final int openPriceIndex = getIndexOf(columns, NAME_OPEN_PRICE);
-		final int highPriceIndex = getIndexOf(columns, NAME_HIGH_PRICE);
-		final int lowPriceIndex = getIndexOf(columns, NAME_LOW_PRICE);
-		final int closePriceIndex = getIndexOf(columns, NAME_CLOSE_PRICE);
-
-		for (final List<Object> tuple : data) {
-			final LocalDate tradingDate = getTradingDate(tuple.get(dateIndex));
-
-			prices.put(tradingDate,
-			        new TradingDayPricesImpl(tickerSymbol, tradingDate, getgPrice(tuple.get(openPriceIndex)),
-			                getgPrice(tuple.get(lowPriceIndex)), getgPrice(tuple.get(highPriceIndex)),
-			                getgPrice(tuple.get(closePriceIndex))));
-		}
-
-		return prices.values().toArray(new TradingDayPrices[0]);
-
-	}
-
-	//TODO move this around
-	private static final String NAME_DATE = "date";
-	private static final String NAME_OPEN_PRICE = "open";
-	private static final String NAME_HIGH_PRICE = "high";
-	private static final String NAME_LOW_PRICE = "low";
-	private static final String NAME_CLOSE_PRICE = "close";
-	private static final int TWO_DECIMAL_PLACES = 2;
-	
-	private BigDecimal getgPrice( final Object price ) throws CannotRetrieveDataException {
-		return new BigDecimal((Double) price).setScale(TWO_DECIMAL_PLACES, RoundingMode.HALF_EVEN);
-	}
-
-	private LocalDate getTradingDate( final Object date ) throws CannotRetrieveDataException {
-		return LocalDate.parse((String) date, QUANDL_DATE_FORMAT);
-	}
-
-	private int getIndexOf( final List<ColumnResource> columns, final String name ) throws CannotRetrieveDataException {
-		for (int i = 0; i < columns.size(); i++) {
-			if (StringUtils.equals(name, columns.get(i).getName())) {
-				return i;
-			}
-		}
-
-		throw new CannotRetrieveDataException(String.format("Missing expected column: %s", name));
 	}
 }

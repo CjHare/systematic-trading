@@ -57,6 +57,7 @@ import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.ColumnResource;
 import com.systematic.trading.signals.data.api.quandl.model.DatatableResource;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
@@ -70,9 +71,12 @@ public class QuanalAPITest {
 	@Mock
 	private QuandlDao dao;
 
+	@Mock
+	private QuandlResponseFormat dataFormat;
+
 	@Test
 	public void maximumRetrievalPeriodPerCall() {
-		final Period actual = new QuandlAPI(dao).getMaximumDurationInSingleUpdate();
+		final Period actual = new QuandlAPI(dao, dataFormat).getMaximumDurationInSingleUpdate();
 
 		verfiyMaximumRetrieval(actual);
 		verifyNoQuandlCall();
@@ -223,13 +227,13 @@ public class QuanalAPITest {
 
 	private TradingDayPrices[] callQuandl( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
-		return new QuandlAPI(dao).getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		return new QuandlAPI(dao, dataFormat).getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
 	private void callQuandlExpectingMissingColumn( final String name, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
 		try {
-			new QuandlAPI(dao).getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+			new QuandlAPI(dao, dataFormat).getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 			fail("Expecting exception");
 		} catch (final CannotRetrieveDataException e) {
 			verifyMissingColumnMessage(name, e);
