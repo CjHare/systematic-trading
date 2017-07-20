@@ -44,6 +44,7 @@ import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.ColumnResource;
+import com.systematic.trading.signals.data.api.quandl.model.DatatableResource;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
@@ -65,7 +66,7 @@ public class QuandlAPI implements EquityApi {
 	public TradingDayPrices[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 		final QuandlResponseResource response = dao.get(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
-		return convertResponse(tickerSymbol, response.getDatatable().getColumns(), response.getDatatable().getData());
+		return convertResponse(tickerSymbol, response.getDatatable());
 	}
 
 	//TODO check if the service is up
@@ -85,17 +86,25 @@ public class QuandlAPI implements EquityApi {
 	/**
 	 * Verifies the expected data is present and converts into JSON data into the domain model.
 	 */
-	private TradingDayPrices[] convertResponse( final String tickerSymbol, final List<ColumnResource> columns,
-	        final List<List<Object>> data ) throws CannotRetrieveDataException {
+	private TradingDayPrices[] convertResponse( final String tickerSymbol, final DatatableResource datatable )
+	        throws CannotRetrieveDataException {
 		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<LocalDate, TradingDayPrices>();
+		final List<ColumnResource> columns = datatable.getColumns();
+		final List<List<Object>> data = datatable.getData();
 
-		//TODO check for the columns even when no data returned
-		
+		final int dateIndex = getIndexOf(columns, NAME_DATE);
+		final int openPriceIndex = getIndexOf(columns, NAME_OPEN_PRICE);
+		final int highPriceIndex = getIndexOf(columns, NAME_HIGH_PRICE);
+		final int lowPriceIndex = getIndexOf(columns, NAME_LOW_PRICE);
+		final int closePriceIndex = getIndexOf(columns, NAME_CLOSE_PRICE);
+
 		for (final List<Object> tuple : data) {
-			final LocalDate tradingDate = getTradingDate(columns, tuple);
+			final LocalDate tradingDate = getTradingDate(tuple.get(dateIndex));
 
-			prices.put(tradingDate, new TradingDayPricesImpl(tickerSymbol, tradingDate, getOpeningPrice(columns, tuple),
-			        getLowestPrice(columns, tuple), getHighestPrice(columns, tuple), getClosingPrice(columns, tuple)));
+			prices.put(tradingDate,
+			        new TradingDayPricesImpl(tickerSymbol, tradingDate, getgPrice(tuple.get(openPriceIndex)),
+			                getgPrice(tuple.get(lowPriceIndex)), getgPrice(tuple.get(highPriceIndex)),
+			                getgPrice(tuple.get(closePriceIndex))));
 		}
 
 		return prices.values().toArray(new TradingDayPrices[0]);
@@ -109,29 +118,12 @@ public class QuandlAPI implements EquityApi {
 	private static final String NAME_LOW_PRICE = "low";
 	private static final String NAME_CLOSE_PRICE = "close";
 
-	private BigDecimal getOpeningPrice( final List<ColumnResource> columns, final List<Object> tuple )
-	        throws CannotRetrieveDataException {
-		return new BigDecimal((Double) tuple.get(getIndexOf(columns, NAME_OPEN_PRICE)));
+	private BigDecimal getgPrice( final Object closingPrice ) throws CannotRetrieveDataException {
+		return new BigDecimal((Double) closingPrice);
 	}
 
-	private BigDecimal getLowestPrice( final List<ColumnResource> columns, final List<Object> tuple )
-	        throws CannotRetrieveDataException {
-		return new BigDecimal((Double) tuple.get(getIndexOf(columns, NAME_LOW_PRICE)));
-	}
-
-	private BigDecimal getHighestPrice( final List<ColumnResource> columns, final List<Object> tuple )
-	        throws CannotRetrieveDataException {
-		return new BigDecimal((Double) tuple.get(getIndexOf(columns, NAME_HIGH_PRICE)));
-	}
-
-	private BigDecimal getClosingPrice( final List<ColumnResource> columns, final List<Object> tuple )
-	        throws CannotRetrieveDataException {
-		return new BigDecimal((Double) tuple.get(getIndexOf(columns, NAME_CLOSE_PRICE)));
-	}
-
-	private LocalDate getTradingDate( final List<ColumnResource> columns, final List<Object> tuple )
-	        throws CannotRetrieveDataException {
-		return LocalDate.parse((String) tuple.get(getIndexOf(columns, NAME_DATE)), QUANDL_DATE_FORMAT);
+	private LocalDate getTradingDate( final Object date ) throws CannotRetrieveDataException {
+		return LocalDate.parse((String) date, QUANDL_DATE_FORMAT);
 	}
 
 	private int getIndexOf( final List<ColumnResource> columns, final String name ) throws CannotRetrieveDataException {
