@@ -53,6 +53,7 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
  */
 public class QuandlAPI implements EquityApi {
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private static final Period MAXIMUM_RETRIEVAL_PER_CALL = Period.ofYears(1);
 
 	private final QuandlDao dao;
 
@@ -78,7 +79,7 @@ public class QuandlAPI implements EquityApi {
 	public Period getMaximumDurationInSingleUpdate() {
 
 		//TODO when too much / too big a payload is returned, threads hang waiting for responses (i.e. 1yr not 10yrs)
-		return Period.ofYears(1);
+		return MAXIMUM_RETRIEVAL_PER_CALL;
 	}
 
 	/**
