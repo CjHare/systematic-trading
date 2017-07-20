@@ -172,6 +172,20 @@ public class QuanalAPITest {
 	}
 
 	@Test
+	public void getStockDataSuffledColumns() throws CannotRetrieveDataException {
+		setUpSuffledColumnsQuandlResponse();
+
+		final String tickerSymbol = randomTickerSymbol();
+		final LocalDate inclusiveStartDate = randomStartDate();
+		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
+
+		final TradingDayPrices[] prices = callQuandl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+
+		verifyTradingDayPrices(prices, new double[] { 3.25, 2.5, 2.8, 1.75 });
+		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	}
+
+	@Test
 	public void getStockDataTwoTuples() throws CannotRetrieveDataException {
 		setUpTwoTupleQuandlResponse();
 
@@ -198,6 +212,13 @@ public class QuanalAPITest {
 		data.add(createTuple("2010-12-01", 2.5, 1.75, 3.25, 2.8));
 
 		setUpQandlResponse(getStandardColumns(), data);
+	}
+
+	private void setUpSuffledColumnsQuandlResponse() throws CannotRetrieveDataException {
+		final List<List<Object>> data = new ArrayList<>();
+		data.add(createTuple("2010-12-01", 2.5, 1.75, 3.25, 2.8));
+
+		setUpQandlResponse(getShuffledColumns(), data);
 	}
 
 	private TradingDayPrices[] callQuandl( final String tickerSymbol, final LocalDate inclusiveStartDate,
@@ -264,11 +285,14 @@ public class QuanalAPITest {
 		return columns;
 	}
 
-	private ColumnResource createColumn( final String name, final String type ) {
-		final ColumnResource column = new ColumnResource();
-		column.setName(name);
-		column.setType(type);
-		return column;
+	private List<ColumnResource> getShuffledColumns() {
+		final List<ColumnResource> columns = new ArrayList<>();
+		columns.add(createColumn("date", "Date"));
+		columns.add(createColumn("low", "BigDecimal(34,12)"));
+		columns.add(createColumn("close", "BigDecimal(34,12)"));
+		columns.add(createColumn("open", "BigDecimal(34,12)"));
+		columns.add(createColumn("high", "BigDecimal(34,12)"));
+		return columns;
 	}
 
 	private void setUpMissingDateColumnQuandlResponse() throws CannotRetrieveDataException {
@@ -319,6 +343,13 @@ public class QuanalAPITest {
 		columns.add(createColumn("high", "BigDecimal(34,12)"));
 
 		setUpQandlResponse(columns, new ArrayList<>());
+	}
+
+	private ColumnResource createColumn( final String name, final String type ) {
+		final ColumnResource column = new ColumnResource();
+		column.setName(name);
+		column.setType(type);
+		return column;
 	}
 
 	private void setUpEmptyQuandlResponse() throws CannotRetrieveDataException {
