@@ -36,6 +36,7 @@ import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
@@ -47,7 +48,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
 
 	//TODO inject this - configuration 
-	private final EquityApi api = new QuandlAPI(new QuandlDao());
+	private final EquityApi api = new QuandlAPI(new QuandlDao(), new QuandlResponseFormat());
 
 	private DataServiceUpdaterImpl() {
 	}
