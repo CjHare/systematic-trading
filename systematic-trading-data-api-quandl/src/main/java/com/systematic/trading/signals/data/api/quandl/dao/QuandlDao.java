@@ -81,9 +81,9 @@ public class QuandlDao {
 		this.root = ClientBuilder.newClient(clientConfig).target(QUANDL_ENDPOINT_URL);
 	}
 
-	public QuandlResponseResource get( final String symbol, final LocalDate inclusiveStartDate,
+	public QuandlResponseResource get( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
-		final WebTarget url = createUrl(inclusiveStartDate, exclusiveEndDate);
+		final WebTarget url = createUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 		final Response response = url.request(MediaType.APPLICATION_JSON).get();
 
 		verifyResponse(url, response);
@@ -91,15 +91,15 @@ public class QuandlDao {
 		return response.readEntity(QuandlResponseResource.class);
 	}
 
-	private WebTarget createUrl( final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
-		//TODO input ticker symbol
+	private WebTarget createUrl( final String tickerSymbol, final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) {
 
-		//TODO  move these String into constants
+		//TODO  move these String / keys into constants
 
 		final String path = "api/v3/datatables/WIKI/PRICES.json";
 		return root.path(path).queryParam("qopts.columns", "date,open,high,low,close")
 		        .queryParam("date.gte", inclusiveStartDate.format(QUANDL_DATE_FORMAT))
-		        .queryParam("date.lt", exclusiveEndDate.format(QUANDL_DATE_FORMAT)).queryParam("ticker", "AAPL")
+		        .queryParam("date.lt", exclusiveEndDate.format(QUANDL_DATE_FORMAT)).queryParam("ticker", tickerSymbol)
 		        .queryParam("api_key", QUANDL_API_KEY);
 	}
 
