@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.quandl;
+package com.systematic.trading.signals.data.api.quandl.app;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -104,7 +104,7 @@ public class QuandlConnectApplication {
 	private String getQuandlApiKey() {
 
 		try {
-			List<String> lines = Files.readAllLines(Paths.get("src/test/resources/quandl.key"));
+			List<String> lines = Files.readAllLines(Paths.get("api-key/quandl.key"));
 
 			if (lines.size() != 1) {
 				throw new AssertionError("Populate the quandl.key file with your Quandl API key");
@@ -113,7 +113,7 @@ public class QuandlConnectApplication {
 			return lines.get(0);
 		} catch (final NoSuchFileException e) {
 			throw new AssertionError(
-			        "Sign up free for Quandl, then create a file for your API at /src/test/resources/quandl.key");
+			        "Sign up free for Quandl, then create a file for your API at /api-key/quandl.key");
 
 		} catch (final IOException e) {
 			throw new AssertionError("Problem reading API key from file", e);
