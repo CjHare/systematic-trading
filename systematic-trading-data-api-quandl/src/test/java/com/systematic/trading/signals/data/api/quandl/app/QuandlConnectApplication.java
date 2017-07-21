@@ -104,7 +104,7 @@ public class QuandlConnectApplication {
 	private String getQuandlApiKey() {
 
 		try {
-			List<String> lines = Files.readAllLines(Paths.get("api-key/quandl.key"));
+			List<String> lines = Files.readAllLines(Paths.get("configuration/quandl.key"));
 
 			if (lines.size() != 1) {
 				throw new AssertionError("Populate the quandl.key file with your Quandl API key");
@@ -113,7 +113,7 @@ public class QuandlConnectApplication {
 			return lines.get(0);
 		} catch (final NoSuchFileException e) {
 			throw new AssertionError(
-			        "Sign up free for Quandl, then create a file for your API at /api-key/quandl.key");
+			        "Sign up free for Quandl, then create a file for your API at configuration/quandl.key");
 
 		} catch (final IOException e) {
 			throw new AssertionError("Problem reading API key from file", e);

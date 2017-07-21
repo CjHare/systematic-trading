@@ -81,8 +81,16 @@ public class BacktestApplication {
 	// TODO the description is specific to the type of output - file, console, elastic :. refactor - move into BacktestLaunchArgumentParser
 	private final DescriptionGenerator description = new DescriptionGenerator();
 
-	public BacktestApplication( final MathContext mathContext ) {
+	private final DataServiceUpdater updateService;
+
+	public BacktestApplication( final MathContext mathContext ) throws ServiceException {
 		this.mathContext = mathContext;
+
+		try {
+			this.updateService = new DataServiceUpdaterImpl();
+		} catch (IOException e) {
+			throw new BacktestInitialisationException(e);
+		}
 	}
 
 	public void runTest( final BacktestConfiguration configuration, final LaunchArguments parserdArguments )
@@ -239,8 +247,7 @@ public class BacktestApplication {
 		final LocalDate startDate = simulationDate.getStartDate().minus(simulationDate.getWarmUp());
 		final LocalDate endDate = simulationDate.getEndDate();
 
-		// Retrieve and cache data range from remote data source
-		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
+		// Retrieve and cache data range from remote data source		
 		updateService.get(equity.getTickerSymbol(), startDate, endDate);
 
 		// Retrieve from local cache the desired data range

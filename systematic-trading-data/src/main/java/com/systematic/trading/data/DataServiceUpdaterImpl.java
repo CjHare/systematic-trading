@@ -25,36 +25,46 @@
  */
 package com.systematic.trading.data;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.configuration.ConfigurationLoader;
+import com.systematic.trading.data.configuration.KeyLoader;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
+import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
-	private static final DataServiceUpdater INSTANCE = new DataServiceUpdaterImpl();
-
 	/** Average number of data points above which assumes the month already retrieve covered. */
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
+	//TODO configuration file location - property injection candidate
+	private static final String QUANDL_PROPERTIES_FILE = "configuration/quandl.properties";
+
+	//TODO configuration file location - property injection candidate
+	private static final String QUANDL_API_KEY_FILE = "configuration/quandl.key";
+
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
 
-	//TODO inject this - configuration 
-	private final EquityApi api = new QuandlAPI(new QuandlDao(), new QuandlResponseFormat());
+	private final EquityApi api;
 
-	private DataServiceUpdaterImpl() {
-	}
+	public DataServiceUpdaterImpl() throws IOException {
 
-	public static DataServiceUpdater getInstance() {
-		return INSTANCE;
+		final Properties quandlProperties = new ConfigurationLoader().load(QUANDL_PROPERTIES_FILE);
+		final String endpoint = quandlProperties.getProperty("endpoint");
+		final String apiKey = new KeyLoader().load(QUANDL_API_KEY_FILE);
+
+		this.api = new QuandlAPI(new QuandlDao(new QuandlConfiguration(endpoint, apiKey)), new QuandlResponseFormat());
 	}
 
 	@Override

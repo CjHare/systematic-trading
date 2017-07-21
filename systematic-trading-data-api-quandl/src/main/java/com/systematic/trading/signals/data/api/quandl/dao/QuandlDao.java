@@ -41,6 +41,7 @@ import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
@@ -54,31 +55,25 @@ public class QuandlDao {
 
 	private static final int HTTP_OK = 200;
 
-	//TODO inject this! - configuration value
-	/** Location of the quandl end point. */
-	private static final String QUANDL_ENDPOINT_URL = "https://www.quandl.com";
-
-	//TODO move this into a local configuration file i.e. don't have it commited in the repo.
-	/** User specific key for accessing the Quandl API. */
-	private static final String QUANDL_API_KEY = "dZYJxfPu4E5U5-S26KEv";
-
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyMMdd");
 
 	/** Base of the Restful end point. */
 	private final WebTarget root;
 
+	private final String apiKey;
+
 	//TODO use an exectuor pool for the Java-RS operations?
 	// final ExecutorService pool
 
-	//TODO retry behaviour
-
-	public QuandlDao() {
+	public QuandlDao( final QuandlConfiguration quandl ) {
 
 		// Registering the provider for POJO -> JSON
 		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
 
 		// End point target root
-		this.root = ClientBuilder.newClient(clientConfig).target(QUANDL_ENDPOINT_URL);
+		this.root = ClientBuilder.newClient(clientConfig).target(quandl.getEndpoint());
+
+		this.apiKey = quandl.getApiKey();
 	}
 
 	public QuandlResponseResource get( final String tickerSymbol, final LocalDate inclusiveStartDate,
@@ -100,7 +95,7 @@ public class QuandlDao {
 		return root.path(path).queryParam("qopts.columns", "date,open,high,low,close")
 		        .queryParam("date.gte", inclusiveStartDate.format(QUANDL_DATE_FORMAT))
 		        .queryParam("date.lt", exclusiveEndDate.format(QUANDL_DATE_FORMAT)).queryParam("ticker", tickerSymbol)
-		        .queryParam("api_key", QUANDL_API_KEY);
+		        .queryParam("api_key", apiKey);
 	}
 
 	private void verifyResponse( final WebTarget url, final Response response ) throws CannotRetrieveDataException {
