@@ -49,10 +49,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
 	//TODO configuration file location - property injection candidate
-	private static final String QUANDL_PROPERTIES_FILE = "configuration/quandl.properties";
+	private static final String QUANDL_PROPERTIES_FILE = "quandl.properties";
 
 	//TODO configuration file location - property injection candidate
-	private static final String QUANDL_API_KEY_FILE = "configuration/quandl.key";
+	private static final String QUANDL_API_KEY_FILE = "quandl.key";
 
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
 

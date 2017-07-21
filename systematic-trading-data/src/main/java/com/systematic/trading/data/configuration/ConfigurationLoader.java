@@ -47,13 +47,12 @@ public class ConfigurationLoader {
 	private static final Logger LOG = LogManager.getLogger(ConfigurationLoader.class);
 
 	public Properties load( final String propertyFile ) throws IOException {
-
-		Properties properties = new Properties();
+		final Properties properties = new Properties();
 
 		try (InputStream input = new FileInputStream(propertyFile)) {
 			properties.load(input);
 		} catch (IOException e) {
-			LOG.error("Cannt load property file {}", () -> String.format("%s %s", propertyFile, e.getMessage()));
+			LOG.error("Cannt load property file {}", () -> String.format("%s, %s", propertyFile, e.getMessage()));
 			throw e;
 		}
 
