@@ -102,7 +102,7 @@ public class BacktestApplication {
 
 		//TODO the ticker symbols & type should be input
 		// Only for the single equity
-		final EquityConfiguration equity = EquityConfiguration.SP_500_PRICE_INDEX;
+		final EquityConfiguration equity = EquityConfiguration.BERKSHIRE_HATHAWAY;
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final Period warmUpPeriod = getWarmUpPeriod();

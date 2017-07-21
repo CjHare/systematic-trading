@@ -36,7 +36,7 @@ import com.systematic.trading.model.EquityIdentity;
 public enum EquityConfiguration {
 
 	//TODO currently this is not needed, just have the ticker symbol(s) injected instead
-	SP_500_PRICE_INDEX("SPY", EquityClass.STOCK, 4);
+	BERKSHIRE_HATHAWAY("BRK_A", EquityClass.STOCK, 4);
 
 	private final String tickerSymbol;
 	private final EquityClass equityType;
