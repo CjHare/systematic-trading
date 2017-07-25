@@ -30,6 +30,8 @@
 package com.systematic.trading.data.configuration;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
@@ -41,23 +43,35 @@ import java.util.List;
  * @author CJ Hare
  */
 public class KeyLoader {
+	private static final String ERROR_MISSING_KEY_FILE = "Missing api key file, sign up for your desired service and put the key into a file named %s on the classpath";
+	private static final String ERROR_EMPTY_KEY_FILE = "Problem reading API key from file at %s";
+
+	private static final ClassLoader CLASSPATH = KeyLoader.class.getClassLoader();
+
+	//TODO AssertionError? a check exception would be better? 
 
 	public String load( final String keyFileLocation ) {
 		try {
-			List<String> lines = Files.readAllLines(Paths.get(keyFileLocation));
+
+			final URL location = CLASSPATH.getResource(keyFileLocation);
+
+			if (location == null) {
+				throw new AssertionError(String.format(ERROR_MISSING_KEY_FILE, keyFileLocation));
+			}
+
+			List<String> lines = Files.readAllLines(Paths.get(location.toURI()));
 
 			if (lines.size() != 1) {
-				throw new AssertionError(String.format("Missing api key file %s", keyFileLocation));
+				throw new AssertionError(String.format(ERROR_EMPTY_KEY_FILE, keyFileLocation));
 			}
 
 			return lines.get(0);
-		} catch (final NoSuchFileException e) {
-			throw new AssertionError(String.format(
-			        "Missing api key file, sign up for your desired service and put the key into a file at %s",
-			        keyFileLocation));
+		} catch (final NoSuchFileException | URISyntaxException e) {
+			throw new AssertionError(
+			        String.format(String.format(ERROR_MISSING_KEY_FILE, keyFileLocation), keyFileLocation));
 
 		} catch (final IOException e) {
-			throw new AssertionError("Problem reading API key from file", e);
+			throw new AssertionError(String.format(ERROR_EMPTY_KEY_FILE, keyFileLocation), e);
 		}
 	}
 }
