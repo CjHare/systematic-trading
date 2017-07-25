@@ -8,24 +8,25 @@
 	<packaging>pom</packaging>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
 		<apache.commons.lang.version>3.6</apache.commons.lang.version>
 		<apache.commons.text.version>1.1</apache.commons.text.version>
 		<apache.http.components.version>4.4.1</apache.http.components.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-		<junit.version>4.12</junit.version>
-		<jna.version>4.1.0</jna.version>
-		<mockito.version>1.10.19</mockito.version>
-		<maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
-		<sonar-jacoco-listeners.version>3.8</sonar-jacoco-listeners.version>
-		<jee.version>7.0</jee.version>
-		<log4j.version>2.8.2</log4j.version>
-		<hypersql.version>2.3.3</hypersql.version>
-		<org.json.version>20141113</org.json.version>
-		<hibernate.version>4.3.10.Final</hibernate.version>
-		<jersey.client.version>2.25</jersey.client.version>
+		<apache.log4j.version>2.8.2</apache.log4j.version>		
 		<jackson.version>2.5.4</jackson.version>
+		<java.version>1.8</java.version>
+		<jee.version>7.0</jee.version>
+		<jersey.client.version>2.25</jersey.client.version>
+		<jna.version>4.1.0</jna.version>
+		<junit.version>4.12</junit.version>
+		<hibernate.version>4.3.10.Final</hibernate.version>
+		<hypersql.version>2.3.3</hypersql.version>
+		<maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
+		<mockito.version>1.10.19</mockito.version>
+		<org.json.version>20141113</org.json.version>
+		<sonar-jacoco-listeners.version>3.8</sonar-jacoco-listeners.version>
 
 		<systematic.trading.backtest.version>0.0.1-SNAPSHOT</systematic.trading.backtest.version>
 		<systematic.trading.data.version>0.0.1-SNAPSHOT</systematic.trading.data.version>
