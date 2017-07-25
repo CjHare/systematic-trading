@@ -74,11 +74,11 @@ public abstract class FileOutput implements BacktestOutput {
 		if (!outputDirectoryFile.exists() && !outputDirectoryFile.mkdirs()) {
 			throw new IllegalArgumentException(
 			        String.format("Failed to create / access directory: %s", outputDirectory));
-		} else {
-			LOG.info(String.format("Output directory: %s", outputDirectoryFile.getCanonicalPath()));
 		}
 
-		return outputDirectoryFile.getCanonicalPath();
+		final String directory = outputDirectoryFile.getCanonicalPath();
+		LOG.info("Output directory: {}", () -> directory);
+		return directory;
 	}
 
 	private void simulationCompleted() {

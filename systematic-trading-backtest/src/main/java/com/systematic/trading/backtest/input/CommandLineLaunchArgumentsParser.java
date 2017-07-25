@@ -65,7 +65,8 @@ public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 				argumentPairs.put(key.get(), args[++i]);
 
 			} else {
-				LOG.warn(String.format("Unknown / unused argument %s", args[i]));
+				final String unknown = args[i];
+				LOG.warn("Unknown / unused argument {}", () -> unknown);
 			}
 		}
 

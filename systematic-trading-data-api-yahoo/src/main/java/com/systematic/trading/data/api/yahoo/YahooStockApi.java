@@ -91,7 +91,8 @@ public class YahooStockApi implements EquityApi {
 			final JSONObject query = json.getJSONObject("query");
 			final int numberOfQuotes = query.getInt("count");
 
-			LOG.info(String.format("%s data points returned for ticker symbol %s", numberOfQuotes, tickerSymbol));
+			LOG.info("{}",
+			        () -> String.format("%s data points returned for ticker symbol %s", numberOfQuotes, tickerSymbol));
 
 			switch (numberOfQuotes) {
 				case 0:
@@ -149,7 +150,7 @@ public class YahooStockApi implements EquityApi {
 	public TradingDayPrices[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 		final String uri = getJsonUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
-		LOG.info(String.format("%s API call to: %s", tickerSymbol, uri));
+		LOG.info("{}", () -> String.format("%s API call to: %s", tickerSymbol, uri));
 
 		final String json = HTTP_UTILS.httpGet(uri);
 

@@ -140,7 +140,7 @@ public class TodaysBuySignals {
 		final String tickerSymbol = equity.getSymbol();
 		final TradingDayPrices[] data = service.get(tickerSymbol, startDate, endDate);
 
-		LOG.info(String.format("%s data points returned: %s", tickerSymbol, data == null ? null : data.length));
+		LOG.info("{}", () -> String.format("%s data points returned: %s", tickerSymbol, data == null ? null : data.length));
 
 		return data;
 	}

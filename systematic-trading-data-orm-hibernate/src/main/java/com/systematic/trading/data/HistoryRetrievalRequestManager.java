@@ -70,7 +70,7 @@ public class HistoryRetrievalRequestManager {
 			tx.commit();
 		} catch (final HibernateException e) {
 			// May already have the record inserted
-			LOG.info(String.format("Failed to save request for %s %s %s", request.getTickerSymbol(),
+			LOG.info("{}", () -> String.format("Failed to save request for %s %s %s", request.getTickerSymbol(),
 			        request.getInclusiveStartDate(), request.getExclusiveEndDate()));
 			LOG.debug(e);
 
@@ -113,8 +113,8 @@ public class HistoryRetrievalRequestManager {
 		try {
 			session.delete(request);
 		} catch (final HibernateException e) {
-			LOG.info(String.format("Error deleting entry for %s %s %s", request.getTickerSymbol(),
-			        request.getInclusiveStartDate(), request.getExclusiveEndDate()), e);
+			LOG.info("{}", () -> String.format("Error deleting entry for %s %s %s %s", request.getTickerSymbol(),
+			        request.getInclusiveStartDate(), request.getExclusiveEndDate(), e.getMessage()));
 			LOG.debug(e);
 		}
 

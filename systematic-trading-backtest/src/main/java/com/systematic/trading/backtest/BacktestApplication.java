@@ -208,14 +208,14 @@ public class BacktestApplication {
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, output, tradingData,
 			        mathContext);
 
-			LOG.info(String.format("Backtesting beginning for: %s", description.getDescription(configuration)));
+			LOG.info("Backtesting beginning for: {}", () -> description.getDescription(configuration));
 
 			bootstrap.run();
 
-			LOG.info(String.format("Backtesting complete for: %s", description.getDescription(configuration)));
+			LOG.info("Backtesting complete for: {}", () -> description.getDescription(configuration));
 		}
 
-		LOG.info(String.format("All Simulations have been completed for deposit amount: %s", depositAmount));
+		LOG.info("All Simulations have been completed for deposit amount: {}", () -> depositAmount);
 	}
 
 	private void clearOutputDirectory( final DepositConfiguration depositAmount, final LaunchArguments arguments ) {
@@ -274,9 +274,9 @@ public class BacktestApplication {
 	}
 
 	private void recordSimulationDates( final Period warmUpPeriod, final BacktestSimulationDates simulationDates ) {
-		LOG.info(String.format("Simulation Warm Up Period of Days: %s, Months: %s, Years: %s", warmUpPeriod.getDays(),
-		        warmUpPeriod.getMonths(), warmUpPeriod.getYears()));
-		LOG.info(String.format("Simulation Start Date: %s", simulationDates.getStartDate()));
-		LOG.info(String.format("Simulation End Date: %s", simulationDates.getEndDate()));
+		LOG.info("{}", () -> String.format("Simulation Warm Up Period of Days: %s, Months: %s, Years: %s",
+		        warmUpPeriod.getDays(), warmUpPeriod.getMonths(), warmUpPeriod.getYears()));
+		LOG.info("Simulation Start Date: {}", simulationDates.getStartDate());
+		LOG.info("Simulation End Date: {}", simulationDates.getEndDate());
 	}
 }

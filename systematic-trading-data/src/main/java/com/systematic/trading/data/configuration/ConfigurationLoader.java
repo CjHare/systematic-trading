@@ -56,7 +56,7 @@ public class ConfigurationLoader {
 		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {
 			properties.load(input);
 		} catch (IOException e) {
-			LOG.error("Cannt load property file {}", () -> String.format("%s, %s", propertyFile, e.getMessage()));
+			LOG.error("{}", () -> String.format("Cannt load property file %s, %s", propertyFile, e.getMessage()));
 			throw e;
 		}
 
