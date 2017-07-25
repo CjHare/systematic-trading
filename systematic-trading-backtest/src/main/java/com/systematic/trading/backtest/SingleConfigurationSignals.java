@@ -62,7 +62,7 @@ public class SingleConfigurationSignals implements BacktestConfiguration {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication(MATH_CONTEXT).runTest(new SingleConfigurationSignals(),
+		new BacktestApplication(MATH_CONTEXT).runBacktest(new SingleConfigurationSignals(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new FileBaseDirectoryLaunchArgument(validator), args));

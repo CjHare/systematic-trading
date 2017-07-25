@@ -93,7 +93,7 @@ public class BacktestApplication {
 		}
 	}
 
-	public void runTest( final BacktestConfiguration configuration, final LaunchArguments parserdArguments )
+	public void runBacktest( final BacktestConfiguration configuration, final LaunchArguments parserdArguments )
 	        throws ServiceException {
 
 		// Date range is from the first of the starting month until now
@@ -125,8 +125,8 @@ public class BacktestApplication {
 			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
 				final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
 				        depositAmount);
-
-				runTest(depositAmount, parserdArguments, configurations, tradingData, pool);
+				clearOutputDirectory(depositAmount, parserdArguments);
+				runBacktest(depositAmount, parserdArguments, configurations, tradingData, pool);
 			}
 
 		} finally {
@@ -198,7 +198,7 @@ public class BacktestApplication {
 		}
 	}
 
-	private void runTest( final DepositConfiguration depositAmount, final LaunchArguments arguments,
+	private void runBacktest( final DepositConfiguration depositAmount, final LaunchArguments arguments,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
 	        final ExecutorService pool ) throws BacktestInitialisationException {
 
@@ -218,18 +218,23 @@ public class BacktestApplication {
 		LOG.info(String.format("All Simulations have been completed for deposit amount: %s", depositAmount));
 	}
 
-	private Optional<String> getOutputDirectory( final DepositConfiguration depositAmount,
-	        final LaunchArguments arguments ) {
+	private void clearOutputDirectory( final DepositConfiguration depositAmount, final LaunchArguments arguments ) {
+		//TODO delete must run BEFORE any of the tests! that'll ensure race conditions are avoided
 
 		//TODO this should happen only once & be moved into the file DAOs
+		//TODO currently deleting at the deposit level, move up? i.e. ..\results\WEEKLY_150\
 		// Arrange output to files, only once per a run
+
 		if (isFileBasedDisplay(arguments)) {
 			final String outputDirectory = arguments.getOutputDirectory(depositAmount);
 			new ClearFileDestination(outputDirectory).clear();
-			return Optional.of(arguments.getOutputDirectory(depositAmount));
 		}
+	}
 
-		return Optional.empty();
+	private Optional<String> getOutputDirectory( final DepositConfiguration depositAmount,
+	        final LaunchArguments arguments ) {
+		return isFileBasedDisplay(arguments) ? Optional.of(arguments.getOutputDirectory(depositAmount))
+		        : Optional.empty();
 	}
 
 	private boolean isFileBasedDisplay( final LaunchArguments arguments ) {

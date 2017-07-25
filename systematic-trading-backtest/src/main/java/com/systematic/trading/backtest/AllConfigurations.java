@@ -61,7 +61,7 @@ public class AllConfigurations implements BacktestConfiguration {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication(MATH_CONTEXT).runTest(new AllConfigurations(),
+		new BacktestApplication(MATH_CONTEXT).runBacktest(new AllConfigurations(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new FileBaseDirectoryLaunchArgument(validator), args));
