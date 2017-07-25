@@ -13,7 +13,6 @@
 	</properties>
 
 	<modules>
-		<module>systematic-trading-parent</module>
 		<module>systematic-trading-model</module>
 		<module>systematic-trading-backtest</module>
 		<module>systematic-trading-backtest-model</module>
