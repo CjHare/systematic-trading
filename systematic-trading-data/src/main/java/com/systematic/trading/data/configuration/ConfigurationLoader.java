@@ -29,7 +29,6 @@
  */
 package com.systematic.trading.data.configuration;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -44,12 +43,17 @@ import org.apache.logging.log4j.Logger;
  */
 public class ConfigurationLoader {
 
+	private static final ClassLoader CLASSPATH = ConfigurationLoader.class.getClassLoader();
+
 	private static final Logger LOG = LogManager.getLogger(ConfigurationLoader.class);
 
+	/**
+	 * Loads the properties from a file avaialble on the classpath.
+	 */
 	public Properties load( final String propertyFile ) throws IOException {
 		final Properties properties = new Properties();
 
-		try (InputStream input = new FileInputStream(propertyFile)) {
+		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {
 			properties.load(input);
 		} catch (IOException e) {
 			LOG.error("Cannt load property file {}", () -> String.format("%s, %s", propertyFile, e.getMessage()));
