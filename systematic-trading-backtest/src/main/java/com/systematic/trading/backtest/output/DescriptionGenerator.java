@@ -168,7 +168,7 @@ public class DescriptionGenerator {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add("Maximum");
 		out.add(convertToPercetage(trade.getValue()));
-		out.add("spercent");
+		out.add("percent");
 		return out.toString();
 	}
 
