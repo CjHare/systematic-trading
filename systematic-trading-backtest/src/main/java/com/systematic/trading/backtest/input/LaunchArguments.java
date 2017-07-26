@@ -37,6 +37,7 @@ import com.systematic.trading.backtest.configuration.BacktestStartDate;
 import com.systematic.trading.backtest.configuration.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.equity.TickerSymbol;
 
 /**
  * An aggregation facade for parsing the arguments given on launch, their validation and type conversion.
@@ -49,7 +50,8 @@ public class LaunchArguments {
 		END_DATE("-end_date"),
 		OUTPUT_TYPE("-output"),
 		FILE_BASE_DIRECTORY("-output_file_base_directory"),
-		START_DATE("-start_date");
+		START_DATE("-start_date"),
+		TICKER_SYMBOL("-ticker_symbol");
 
 		private final String key;
 
@@ -89,15 +91,19 @@ public class LaunchArguments {
 	/** Mandatory end date for the back test.*/
 	private final BacktestEndDate endDate;
 
+	/** Ticker Symbol to perform the back testing on.*/
+	private final TickerSymbol tickerSymbol;
+
 	public LaunchArguments( final LaunchArgumentsParser argumentParser, final LaunchArgument<OutputType> outputArgument,
 	        final LaunchArgument<BacktestStartDate> startDateArgument,
-	        final LaunchArgument<BacktestEndDate> endDateArgument,
+	        final LaunchArgument<BacktestEndDate> endDateArgument, final LaunchArgument<TickerSymbol> tickerSymbol,
 	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument, final String... args ) {
 		this.arguments = argumentParser.parse(args);
 		this.outputType = outputArgument.get(arguments);
 		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
 		this.startDate = startDateArgument.get(arguments);
 		this.endDate = endDateArgument.get(arguments);
+		this.tickerSymbol = tickerSymbol.get(arguments);
 	}
 
 	public String getOutputDirectory( final DepositConfiguration depositAmount ) {
@@ -114,5 +120,9 @@ public class LaunchArguments {
 
 	public OutputType getOutputType() {
 		return outputType;
+	}
+
+	public TickerSymbol getTickerSymbol() {
+		return tickerSymbol;
 	}
 }

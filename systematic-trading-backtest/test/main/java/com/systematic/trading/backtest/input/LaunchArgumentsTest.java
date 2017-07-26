@@ -50,6 +50,7 @@ import com.systematic.trading.backtest.configuration.BacktestStartDate;
 import com.systematic.trading.backtest.configuration.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
@@ -65,6 +66,7 @@ public class LaunchArgumentsTest {
 	private static final String OUTPUT_EXCEPTION_MESSAGE = "Ooutput Type exception message";
 	private static final String START_DATE_ARGUMENT_EXCEPTION_MESSAGE = "Start Date argument exception message";
 	private static final String END_DATE_ARGUMENT_EXCEPTION_MESSAGE = "End Date argument exception message";
+	private static final String TICKER_SYMBOL_ARGUMENT_EXCEPTION_MESSAGE = "Ticker Symbol argument exception message";
 
 	@Mock
 	private LaunchArgumentsParser argumentParser;
@@ -81,6 +83,9 @@ public class LaunchArgumentsTest {
 	@Mock
 	private LaunchArgument<BacktestEndDate> endDateArgument;
 
+	@Mock
+	private LaunchArgument<TickerSymbol> tickerSymbolArgument;
+
 	@Test
 	public void outputType() {
 		final String outputType = "elastic_search";
@@ -89,7 +94,7 @@ public class LaunchArgumentsTest {
 		setUpOutputArgument(OutputType.ELASTIC_SEARCH);
 
 		final LaunchArguments parser = new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument,
-		        endDateArgument, directoryArgument, launchArguments);
+		        endDateArgument, tickerSymbolArgument, directoryArgument, launchArguments);
 
 		verifyOutputType(OutputType.ELASTIC_SEARCH, parser);
 		verifyArgumentsParsed(launchArguments);
@@ -105,7 +110,7 @@ public class LaunchArgumentsTest {
 		setUpDirectoryArgument(outputDirectory);
 
 		final LaunchArguments parser = new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument,
-		        endDateArgument, directoryArgument, launchArguments);
+		        endDateArgument, tickerSymbolArgument, directoryArgument, launchArguments);
 
 		verifyOutputDirectory(outputDirectory, parser);
 		verifyArgumentsParsed(launchArguments);
@@ -121,7 +126,7 @@ public class LaunchArgumentsTest {
 
 		try {
 			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        directoryArgument, launchArguments);
+			        tickerSymbolArgument, directoryArgument, launchArguments);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(OUTPUT_EXCEPTION_MESSAGE, e.getMessage());
@@ -136,7 +141,8 @@ public class LaunchArgumentsTest {
 
 		try {
 			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        directoryArgument, launchArguments).getOutputDirectory(DepositConfiguration.WEEKLY_150);
+			        tickerSymbolArgument, directoryArgument, launchArguments)
+			                .getOutputDirectory(DepositConfiguration.WEEKLY_150);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(DIRCTORY_EXCEPTION_MESSAGE, e.getMessage());
@@ -149,7 +155,7 @@ public class LaunchArgumentsTest {
 
 		try {
 			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        directoryArgument);
+			        tickerSymbolArgument, directoryArgument);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(ARGUMENT_PARSER_EXCEPTION_MESSAGE, e.getMessage());
@@ -162,7 +168,7 @@ public class LaunchArgumentsTest {
 
 		try {
 			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        directoryArgument);
+			        tickerSymbolArgument, directoryArgument);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(START_DATE_ARGUMENT_EXCEPTION_MESSAGE, e.getMessage());
@@ -175,10 +181,23 @@ public class LaunchArgumentsTest {
 
 		try {
 			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        directoryArgument);
+			        tickerSymbolArgument, directoryArgument);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(END_DATE_ARGUMENT_EXCEPTION_MESSAGE, e.getMessage());
+		}
+	}
+
+	@Test
+	public void tickerSymbolArgumentException() {
+		setUpTickerSymbolArgumentxception();
+
+		try {
+			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
+			        tickerSymbolArgument, directoryArgument);
+			fail("expecting an exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals(TICKER_SYMBOL_ARGUMENT_EXCEPTION_MESSAGE, e.getMessage());
 		}
 	}
 
@@ -223,6 +242,11 @@ public class LaunchArgumentsTest {
 	private void setUpEndDateArgumentxception() {
 		when(argumentParser.parse(any(String[].class)))
 		        .thenThrow(new IllegalArgumentException(END_DATE_ARGUMENT_EXCEPTION_MESSAGE));
+	}
+
+	private void setUpTickerSymbolArgumentxception() {
+		when(argumentParser.parse(any(String[].class)))
+		        .thenThrow(new IllegalArgumentException(TICKER_SYMBOL_ARGUMENT_EXCEPTION_MESSAGE));
 	}
 
 	private void setUpDirectoryArgument( final String directory ) {

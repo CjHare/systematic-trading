@@ -27,60 +27,22 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.input;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-
-import org.apache.commons.lang3.StringUtils;
+package com.systematic.trading.backtest.configuration.equity;
 
 /**
- * Common validation checks and exception responses for LaunchArguments. 
+ * Ticker symbol for an equity.
  * 
  * @author CJ Hare
  */
-public class LaunchArgumentValidator {
+public class TickerSymbol {
 
-	public void validate( final Object value, final String errorMessage, final Object... errorMessageArguments ) {
-		if (isInvalidArgument(value)) {
-			incorrectArguments(errorMessage, errorMessageArguments);
-		}
+	private final String symbol;
+
+	public TickerSymbol( final String symbol ) {
+		this.symbol = symbol;
 	}
 
-	public void validateDateFormat( final String value, final String errorMessage,
-	        final Object... errorMessageArguments ) {
-		if (isInvalidArgument(value) || isInvalidFormat(value)) {
-			incorrectArguments(errorMessage, errorMessageArguments);
-		}
-	}
-
-	public void validateNotEmpty( final String value, final String errorMessage,
-	        final Object... errorMessageArguments ) {
-		if (isInvalidArgument(value) || isEmpty(value)) {
-			incorrectArguments(errorMessage, errorMessageArguments);
-		}
-	}
-
-	private boolean isEmpty( final String value ) {
-		return StringUtils.isEmpty(value);
-	}
-
-	private boolean isInvalidArgument( final Object value ) {
-		return value == null;
-	}
-
-	private void incorrectArguments( final String message, final Object... arguments ) {
-		throw new IllegalArgumentException(String.format(message, arguments));
-	}
-
-	private boolean isInvalidFormat( final String value ) {
-		try {
-			LocalDate.parse(value);
-
-		} catch (final DateTimeParseException e) {
-			return true;
-		}
-
-		return false;
+	public String getSymbol() {
+		return symbol;
 	}
 }

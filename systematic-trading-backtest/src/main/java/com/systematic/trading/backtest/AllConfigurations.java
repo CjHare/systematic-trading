@@ -44,6 +44,7 @@ import com.systematic.trading.backtest.input.LaunchArgumentValidator;
 import com.systematic.trading.backtest.input.LaunchArguments;
 import com.systematic.trading.backtest.input.OutputLaunchArgument;
 import com.systematic.trading.backtest.input.StartDateLaunchArgument;
+import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 
@@ -64,6 +65,7 @@ public class AllConfigurations implements BacktestConfiguration {
 		new BacktestApplication(MATH_CONTEXT).runBacktest(new AllConfigurations(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
+		                new TickerSymbolLaunchArgument(validator),
 		                new FileBaseDirectoryLaunchArgument(validator), args));
 	}
 

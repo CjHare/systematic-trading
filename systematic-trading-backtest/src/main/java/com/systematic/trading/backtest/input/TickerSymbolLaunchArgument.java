@@ -29,58 +29,32 @@
  */
 package com.systematic.trading.backtest.input;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
+import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import com.systematic.trading.backtest.configuration.equity.TickerSymbol;
+import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
 /**
- * Common validation checks and exception responses for LaunchArguments. 
+ * Launch argument parser and validation for the inclusive start date type key value pairing.
  * 
  * @author CJ Hare
  */
-public class LaunchArgumentValidator {
+public class TickerSymbolLaunchArgument implements LaunchArgument<TickerSymbol> {
 
-	public void validate( final Object value, final String errorMessage, final Object... errorMessageArguments ) {
-		if (isInvalidArgument(value)) {
-			incorrectArguments(errorMessage, errorMessageArguments);
-		}
+	/** Provides validation for the launch argument value.*/
+	private final LaunchArgumentValidator validator;
+
+	public TickerSymbolLaunchArgument( final LaunchArgumentValidator validator ) {
+		this.validator = validator;
 	}
 
-	public void validateDateFormat( final String value, final String errorMessage,
-	        final Object... errorMessageArguments ) {
-		if (isInvalidArgument(value) || isInvalidFormat(value)) {
-			incorrectArguments(errorMessage, errorMessageArguments);
-		}
-	}
+	@Override
+	public TickerSymbol get( final Map<ArgumentKey, String> arguments ) {
+		final String symbol = arguments.get(ArgumentKey.TICKER_SYMBOL);
 
-	public void validateNotEmpty( final String value, final String errorMessage,
-	        final Object... errorMessageArguments ) {
-		if (isInvalidArgument(value) || isEmpty(value)) {
-			incorrectArguments(errorMessage, errorMessageArguments);
-		}
-	}
+		validator.validate(symbol, "%s argument is not present", ArgumentKey.TICKER_SYMBOL.getKey());
+		validator.validateNotEmpty(symbol, "%s argument cannot be empty", ArgumentKey.TICKER_SYMBOL.getKey());
 
-	private boolean isEmpty( final String value ) {
-		return StringUtils.isEmpty(value);
-	}
-
-	private boolean isInvalidArgument( final Object value ) {
-		return value == null;
-	}
-
-	private void incorrectArguments( final String message, final Object... arguments ) {
-		throw new IllegalArgumentException(String.format(message, arguments));
-	}
-
-	private boolean isInvalidFormat( final String value ) {
-		try {
-			LocalDate.parse(value);
-
-		} catch (final DateTimeParseException e) {
-			return true;
-		}
-
-		return false;
+		return new TickerSymbol(symbol);
 	}
 }

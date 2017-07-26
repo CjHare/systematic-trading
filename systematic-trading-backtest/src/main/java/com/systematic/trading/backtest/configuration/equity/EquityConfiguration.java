@@ -33,25 +33,22 @@ import com.systematic.trading.model.EquityIdentity;
  * 
  * @author CJ Hare
  */
-public enum EquityConfiguration {
+public class EquityConfiguration {
 
-	//TODO currently this is not needed, just have the ticker symbol(s) injected instead
-	BERKSHIRE_HATHAWAY("BRK_A", EquityClass.STOCK, 4);
+	private static final int SCALE = 4;
 
 	private final String tickerSymbol;
 	private final EquityClass equityType;
-	private final int scale;
 	private final EquityManagementFeeConfiguration managementFee;
 
-	EquityConfiguration( final String tickerSymbol, final EquityClass equityType, final int scale ) {
+	public EquityConfiguration( final String tickerSymbol, final EquityClass equityType ) {
 		this.tickerSymbol = tickerSymbol;
 		this.equityType = equityType;
-		this.scale = scale;
 		this.managementFee = EquityManagementFeeConfiguration.NONE;
 	}
 
 	public EquityIdentity getEquityIdentity() {
-		return new EquityIdentity(tickerSymbol, equityType, scale);
+		return new EquityIdentity(tickerSymbol, equityType, SCALE);
 	}
 
 	public EquityManagementFeeConfiguration getManagementFee() {

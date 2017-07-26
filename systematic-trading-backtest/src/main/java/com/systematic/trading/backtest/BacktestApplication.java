@@ -63,6 +63,7 @@ import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
+import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
 
@@ -100,9 +101,9 @@ public class BacktestApplication {
 		final LocalDate simulationStartDate = parserdArguments.getStartDate().getDate();
 		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
 
-		//TODO the ticker symbols & type should be input
-		// Only for the single equity
-		final EquityConfiguration equity = EquityConfiguration.BERKSHIRE_HATHAWAY;
+		// Currently only for the single equity
+		final EquityConfiguration equity = new EquityConfiguration(parserdArguments.getTickerSymbol().getSymbol(),
+		        EquityClass.STOCK);
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final Period warmUpPeriod = getWarmUpPeriod();
