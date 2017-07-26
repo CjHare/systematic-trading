@@ -27,10 +27,10 @@ package com.systematic.trading.data.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 
 import com.systematic.trading.data.HistoryRetrievalRequest;
 
@@ -44,16 +44,20 @@ public class HibernateUtil {
 
 	private static SessionFactory buildSessionFactory() {
 		try {
-			final Configuration configuration = new Configuration();
+
+			final Configuration configuration = new Configuration().configure();
 			configuration.configure("hibernate.cfg.xml");
 
-			final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-			        .applySettings(configuration.getProperties()).build();
+			final StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
+			        .applySettings(configuration.getProperties());
 
 			configuration.addAnnotatedClass(HistoryRetrievalRequest.class);
-			// addPackage("com.xyz") //add package if used.
 
-			return configuration.buildSessionFactory(serviceRegistry);
+			final SessionFactory factory = configuration.buildSessionFactory(builder.build());
+
+			verifyDatabaseConnection(factory);
+
+			return factory;
 
 		} catch (final Exception ex) {
 			LOG.error("Initial SessionFactory creation failed.", ex);
@@ -65,4 +69,19 @@ public class HibernateUtil {
 		return SESSION_FACTORY;
 	}
 
+	private static void verifyDatabaseConnection( final SessionFactory factory ) {
+		final Session session = factory.getCurrentSession();
+
+		// When the database server is absent the beginTransaction fails
+		session.beginTransaction();
+
+		// Just in case the database is present but not 'connected'
+		if (!session.isConnected()) {
+			throw new ExceptionInInitializerError("Failed to connect to database");
+
+		}
+
+		// ...and release the resources
+		session.getTransaction().commit();
+	}
 }
