@@ -45,6 +45,8 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
  * @author CJ Hare
  */
 public class QuandlAPI implements EquityApi {
+	
+	//TODO move into the quandl properties
 	private static final Period MAXIMUM_RETRIEVAL_PER_CALL = Period.ofYears(1);
 
 	private final QuandlDao dao;

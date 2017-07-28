@@ -99,6 +99,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			final LocalDate inclusiveStartDate = request.getInclusiveStartDate().toLocalDate();
 			final LocalDate exclusiveEndDate = request.getExclusiveEndDate().toLocalDate();
 
+			//TODO use an exectuor pool for the Java-RS operations, i.e. many requests asynchronously
+			// final ExecutorService pool
+
 			// Pull the data from the Stock API
 			final TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 

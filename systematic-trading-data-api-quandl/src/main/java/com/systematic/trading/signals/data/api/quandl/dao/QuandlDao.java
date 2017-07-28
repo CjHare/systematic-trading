@@ -61,6 +61,7 @@ public class QuandlDao {
 	private static final Logger LOG = LogManager.getLogger(QuandlDao.class);
 	private static final int HTTP_OK = 200;
 
+	//TODO move into the quandl configuration
 	//TODO Candiate for converting to instance variable & injection
 	private static final int NUMBER_OF_RETRIES = 3;
 
@@ -71,10 +72,8 @@ public class QuandlDao {
 	/** Base of the Restful end point. */
 	private final WebTarget root;
 
+	/** User key for accessing the Quandl end point.*/
 	private final String apiKey;
-
-	//TODO use an exectuor pool for the Java-RS operations?
-	// final ExecutorService pool
 
 	public QuandlDao( final QuandlConfiguration quandl ) {
 
