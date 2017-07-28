@@ -31,12 +31,15 @@ package com.systematic.trading.signals.data.api.quandl.dao;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -53,9 +56,16 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
  */
 public class QuandlDao {
 
+	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyMMdd");
+	private static final Logger LOG = LogManager.getLogger(QuandlDao.class);
 	private static final int HTTP_OK = 200;
 
-	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyMMdd");
+	//TODO Candiate for converting to instance variable & injection
+	private static final int NUMBER_OF_RETRIES = 3;
+
+	//TODO Candiate for converting to instance variable & injection
+	/** Increasing amount of time between retry attempts.*/
+	private static final int BACK_OFF_MS = 500;
 
 	/** Base of the Restful end point. */
 	private final WebTarget root;
@@ -79,9 +89,8 @@ public class QuandlDao {
 	public QuandlResponseResource get( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 		final WebTarget url = createUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
-		final Response response = url.request(MediaType.APPLICATION_JSON).get();
 
-		verifyResponse(url, response);
+		final Response response = get(url);
 
 		return response.readEntity(QuandlResponseResource.class);
 	}
@@ -98,10 +107,30 @@ public class QuandlDao {
 		        .queryParam("api_key", apiKey);
 	}
 
-	private void verifyResponse( final WebTarget url, final Response response ) throws CannotRetrieveDataException {
-		if (response.getStatus() != HTTP_OK) {
-			throw new CannotRetrieveDataException(
-			        String.format("Failed to retrieve data, HTTP code: %s, request: %s", response.getStatus(), url));
-		}
+	private Response get( final WebTarget url ) throws CannotRetrieveDataException {
+		int attempt = 1;
+
+		do {
+			final Response response = url.request(MediaType.APPLICATION_JSON).get();
+
+			if (isResponseOk(url, response)) {
+				return response;
+			} else {
+				LOG.warn(String.format("Failed to retrieve data, HTTP code: %s, request: %s", response.getStatus(),
+				        url));
+
+				try {
+					TimeUnit.MILLISECONDS.sleep(attempt * BACK_OFF_MS);
+				} catch (InterruptedException e) {
+				}
+			}
+
+		} while (++attempt <= NUMBER_OF_RETRIES);
+
+		throw new CannotRetrieveDataException(String.format("Failed to retrieve data forrequest: %s", url));
+	}
+
+	private boolean isResponseOk( final WebTarget url, final Response response ) {
+		return response.getStatus() != HTTP_OK;
 	}
 }
