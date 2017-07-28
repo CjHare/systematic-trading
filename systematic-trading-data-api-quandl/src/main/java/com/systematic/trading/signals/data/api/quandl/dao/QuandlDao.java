@@ -44,6 +44,7 @@ import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.signals.data.api.quandl.WikisDatabase;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
@@ -97,14 +98,11 @@ public class QuandlDao {
 
 	private WebTarget createUrl( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) {
-
-		//TODO  move these String / keys into constants
-
-		final String path = "api/v3/datatables/WIKI/PRICES.json";
-		return root.path(path).queryParam("qopts.columns", "date,open,high,low,close")
-		        .queryParam("date.gte", inclusiveStartDate.format(QUANDL_DATE_FORMAT))
-		        .queryParam("date.lt", exclusiveEndDate.format(QUANDL_DATE_FORMAT)).queryParam("ticker", tickerSymbol)
-		        .queryParam("api_key", apiKey);
+		return root.path(WikisDatabase.PATH)
+		        .queryParam(WikisDatabase.COLUMN_NAMES_KEY, WikisDatabase.COLUMN_NAMES_VALUE)
+		        .queryParam(WikisDatabase.START_DATE_KEY, inclusiveStartDate.format(QUANDL_DATE_FORMAT))
+		        .queryParam(WikisDatabase.END_DATE_KEY, exclusiveEndDate.format(QUANDL_DATE_FORMAT))
+		        .queryParam(WikisDatabase.TICKER_SYMBOL_KEY, tickerSymbol).queryParam(WikisDatabase.API_KEY, apiKey);
 	}
 
 	private Response get( final WebTarget url ) throws CannotRetrieveDataException {
