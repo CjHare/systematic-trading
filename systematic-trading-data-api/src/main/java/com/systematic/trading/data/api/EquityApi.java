@@ -54,7 +54,19 @@ public interface EquityApi {
 	 * 
 	 * @return number of days that can be retrieved each attempt.
 	 */
-	Period getMaximumDurationInSingleUpdate();
+	Period getMaximumDurationPerConnection();
 
-	//TODO add simultaneous call, for long time periods - meed to know then max number of connections allowed
+	/**
+	 * Number of concurrent calls accepted by the API.
+	 * 
+	 * @return number of threads that may simultaneously call the API.
+	 */
+	int getMaximumConcurrentConnections();
+
+	/**
+	 * Maximum number of seconds that a retrieval will take.
+	 * 
+	 * @return maximum time allowed for a call, worst scenario (i.e. full retries). 
+	 */
+	int getMaximumRetrievalTimeSeconds();
 }

@@ -52,12 +52,16 @@ public class QuandlAPI implements EquityApi {
 	private final QuandlResponseFormat dataFormat;
 
 	private final Period maximumDurationPerConnection;
+	private final int maximumConcurrentConnections;
+	private final int maximumRetrievalTimeSeconds;
 
 	public QuandlAPI( final QuandlDao dao, final QuandlConfiguration configuration,
 	        final QuandlResponseFormat dataFormat ) {
 		this.dao = dao;
 		this.dataFormat = dataFormat;
 		this.maximumDurationPerConnection = Period.ofMonths(configuration.getMaximumMonthsPerConnection());
+		this.maximumConcurrentConnections = configuration.getMaximumConcurrentConnections();
+		this.maximumRetrievalTimeSeconds = configuration.getMaximumRetrievalTimeSeconds();
 	}
 
 	@Override
@@ -67,11 +71,18 @@ public class QuandlAPI implements EquityApi {
 		return dataFormat.convert(tickerSymbol, response.getDatatable());
 	}
 
-	//TODO add a connection limit & use that
-
-	//TODO this should not be used, split the calls into may simultaneous calls instead, i.e. years / months - based on connection limit
 	@Override
-	public Period getMaximumDurationInSingleUpdate() {
+	public Period getMaximumDurationPerConnection() {
 		return maximumDurationPerConnection;
+	}
+
+	@Override
+	public int getMaximumConcurrentConnections() {
+		return maximumConcurrentConnections;
+	}
+
+	@Override
+	public int getMaximumRetrievalTimeSeconds() {
+		return maximumRetrievalTimeSeconds;
 	}
 }

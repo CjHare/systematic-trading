@@ -31,6 +31,12 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
@@ -44,6 +50,8 @@ import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
+
+	private static final Logger LOG = LogManager.getLogger(DataServiceUpdaterImpl.class);
 
 	/** Average number of data points above which assumes the month already retrieve covered. */
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
@@ -67,19 +75,21 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final String endpoint = quandlProperties.getProperty("endpoint");
 		final int numberOfRetries = Integer.parseInt(quandlProperties.getProperty("number_of_retries"));
 		final int retryBackOffMs = Integer.parseInt(quandlProperties.getProperty("retry_backoff_ms"));
-		final int maxConcurrentConnections = Integer
+		final int maximumRetrievalTimeSeconds = Integer
+		        .parseInt(quandlProperties.getProperty("maximum_retrieval_time_seconds"));
+		final int maximumConcurrentConnections = Integer
 		        .parseInt(quandlProperties.getProperty("maximum_concurrent_connections"));
-		final int maxConnectionsPerSecond = Integer
+		final int maximumConnectionsPerSecond = Integer
 		        .parseInt(quandlProperties.getProperty("maximum_connections_per_second"));
-		final int maxMonthsPerConnection = Integer
+		final int maximumMonthsPerConnection = Integer
 		        .parseInt(quandlProperties.getProperty("maximum_months_retrieved_per_connection"));
 
 		//TODO validation of the required properties needed for each API
 		//TODO move the configuration reading elsewhereW
 
 		final QuandlConfiguration configuration = new QuandlConfiguration(endpoint, apiKey, numberOfRetries,
-		        retryBackOffMs, maxConcurrentConnections, maxConnectionsPerSecond, maxMonthsPerConnection
-		        );
+		        retryBackOffMs, maximumRetrievalTimeSeconds, maximumConcurrentConnections, maximumConnectionsPerSecond,
+		        maximumMonthsPerConnection);
 
 		this.api = new QuandlAPI(new QuandlDao(configuration), configuration, new QuandlResponseFormat());
 	}
@@ -101,6 +111,12 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 
 		processHistoryRetrievalRequests(outstandingRequests);
+
+		//TODO private
+		final List<HistoryRetrievalRequest> remainingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
+		if (!remainingRequests.isEmpty()) {
+			throw new CannotRetrieveDataException("Failed to retrieve all the required data");
+		}
 	}
 
 	/**
@@ -109,6 +125,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests )
 	        throws CannotRetrieveDataException {
 		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
+		final ExecutorService pool = Executors.newFixedThreadPool(api.getMaximumConcurrentConnections());
 
 		for (final HistoryRetrievalRequest request : requests) {
 
@@ -116,17 +133,37 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			final LocalDate inclusiveStartDate = request.getInclusiveStartDate().toLocalDate();
 			final LocalDate exclusiveEndDate = request.getExclusiveEndDate().toLocalDate();
 
-			//TODO use an exectuor pool for the Java-RS operations, i.e. many requests asynchronously
-			// final ExecutorService pool
+			pool.execute(() -> {
+				try {
+					// Pull the data from the Stock API
+					TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate,
+					        exclusiveEndDate);
 
-			// Pull the data from the Stock API
-			final TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+					// Push to the data source
+					dao.create(tradingData);
 
-			// Push to the data source
-			dao.create(tradingData);
+					// Remove the request from the queue
+					requestManager.delete(request);
 
-			// Remove the request from the queue
-			requestManager.delete(request);
+				} catch (CannotRetrieveDataException e) {
+					LOG.error(e);
+
+					// Single failure means all remaining and any active attempts must be ceased
+					pool.shutdownNow();
+				}
+			});
+		}
+
+		//TODO private methods
+		final int timeout = requests.size() * api.getMaximumRetrievalTimeSeconds();
+
+		try {
+			if (!pool.awaitTermination(timeout, TimeUnit.SECONDS)) {
+				throw new CannotRetrieveDataException(
+				        String.format("API calls failed to complete in the expected timeout of %s seconds", timeout));
+			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 		}
 	}
 
@@ -136,7 +173,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private List<HistoryRetrievalRequest> sliceHistoryRetrievalRequest( final String tickerSymbol,
 	        final LocalDate startDate, final LocalDate endDate ) {
 
-		final Period maximum = api.getMaximumDurationInSingleUpdate();
+		final Period maximum = api.getMaximumDurationPerConnection();
 		final List<HistoryRetrievalRequest> requests = new ArrayList<>();
 
 		if (isDurationTooLong(maximum, Period.between(startDate, endDate))) {

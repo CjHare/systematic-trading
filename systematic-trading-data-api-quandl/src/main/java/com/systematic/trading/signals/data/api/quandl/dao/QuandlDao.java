@@ -125,7 +125,7 @@ public class QuandlDao {
 
 		} while (++attempt <= numberOfRetries);
 
-		throw new CannotRetrieveDataException(String.format("Failed to retrieve data forrequest: %s", url));
+		throw new CannotRetrieveDataException(String.format("Failed to retrieve data for request: %s", url));
 	}
 
 	private boolean isResponseOk( final WebTarget url, final Response response ) {

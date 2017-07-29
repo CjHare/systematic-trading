@@ -59,6 +59,9 @@ public class YahooStockApi implements EquityApi {
 	private static final String API_PART_THREE = "%22%20and%20endDate=%22";
 	private static final String API_PART_FOUR = "%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 
+	private static final int NUMBER_CONCURRENT_CONNECTIONS = 1;
+	private static final int MAXIMUM_RETRIEVAL_TIME = 5000;
+
 	// Dividend API
 	//	http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.dividendhistory%20where%20symbol=%22VGS.AX%22%20and%20startDate=%222015-01-01%22%20and%20endDate=%222015-02-01%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys
 
@@ -158,7 +161,18 @@ public class YahooStockApi implements EquityApi {
 	}
 
 	@Override
-	public Period getMaximumDurationInSingleUpdate() {
+	public Period getMaximumDurationPerConnection() {
 		return Period.ofYears(1);
+	}
+
+
+	@Override
+	public int getMaximumConcurrentConnections() {
+		return NUMBER_CONCURRENT_CONNECTIONS;
+	}
+
+	@Override
+	public int getMaximumRetrievalTimeSeconds() {
+		return MAXIMUM_RETRIEVAL_TIME;
 	}
 }

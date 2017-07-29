@@ -80,7 +80,7 @@ public class QuanalAPITest {
 	public void maximumRetrievalPeriodPerCall() {
 		final Period expected = setUpMaximumRetrieval();
 
-		final Period actual = new QuandlAPI(dao, configuration, dataFormat).getMaximumDurationInSingleUpdate();
+		final Period actual = new QuandlAPI(dao, configuration, dataFormat).getMaximumDurationPerConnection();
 
 		verfiyMaximumRetrieval(expected, actual);
 		verifyNoQuandlCall();
