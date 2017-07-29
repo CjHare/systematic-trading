@@ -61,19 +61,17 @@ public class QuandlDao {
 	private static final Logger LOG = LogManager.getLogger(QuandlDao.class);
 	private static final int HTTP_OK = 200;
 
-	//TODO move into the quandl configuration
-	//TODO Candiate for converting to instance variable & injection
-	private static final int NUMBER_OF_RETRIES = 3;
-
-	//TODO Candiate for converting to instance variable & injection
-	/** Increasing amount of time between retry attempts.*/
-	private static final int BACK_OFF_MS = 500;
-
 	/** Base of the Restful end point. */
 	private final WebTarget root;
 
 	/** User key for accessing the Quandl end point.*/
 	private final String apiKey;
+
+	/** Base one, number of attempts per a Quandl call.*/
+	private final int numberOfRetries;
+
+	/** Staggered wait time between retry attempts.*/
+	private final int retryBackoffMs;
 
 	public QuandlDao( final QuandlConfiguration quandl ) {
 
@@ -84,6 +82,8 @@ public class QuandlDao {
 		this.root = ClientBuilder.newClient(clientConfig).target(quandl.getEndpoint());
 
 		this.apiKey = quandl.getApiKey();
+		this.numberOfRetries = quandl.getNumberOfRetries();
+		this.retryBackoffMs = quandl.getRetryBackOffMs();
 	}
 
 	public QuandlResponseResource get( final String tickerSymbol, final LocalDate inclusiveStartDate,
@@ -117,12 +117,12 @@ public class QuandlDao {
 				        url));
 
 				try {
-					TimeUnit.MILLISECONDS.sleep(attempt * BACK_OFF_MS);
+					TimeUnit.MILLISECONDS.sleep(attempt * retryBackoffMs);
 				} catch (InterruptedException e) {
 				}
 			}
 
-		} while (++attempt <= NUMBER_OF_RETRIES);
+		} while (++attempt <= numberOfRetries);
 
 		throw new CannotRetrieveDataException(String.format("Failed to retrieve data forrequest: %s", url));
 	}

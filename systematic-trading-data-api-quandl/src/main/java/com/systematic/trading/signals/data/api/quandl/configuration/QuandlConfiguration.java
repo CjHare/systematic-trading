@@ -38,10 +38,15 @@ public class QuandlConfiguration {
 
 	private final String endpoint;
 	private final String apiKey;
+	private final int numberOfRetries;
+	private final int retryBackOffMs;
 
-	public QuandlConfiguration( final String endpoint, final String apiKey ) {
+	public QuandlConfiguration( final String endpoint, final String apiKey, final int numberOfRetries,
+	        final int retryBackOffMs ) {
 		this.endpoint = endpoint;
 		this.apiKey = apiKey;
+		this.numberOfRetries = numberOfRetries;
+		this.retryBackOffMs = retryBackOffMs;
 	}
 
 	/**
@@ -56,5 +61,19 @@ public class QuandlConfiguration {
 	 */
 	public String getApiKey() {
 		return apiKey;
+	}
+
+	/**
+	 * @return number of times to attempt a single call to Quandl.
+	 */
+	public int getNumberOfRetries() {
+		return numberOfRetries;
+	}
+
+	/**
+	 * @return time staggering for the retries.
+	 */
+	public int getRetryBackOffMs() {
+		return retryBackOffMs;
 	}
 }

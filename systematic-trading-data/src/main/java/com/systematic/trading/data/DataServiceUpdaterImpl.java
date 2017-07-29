@@ -60,11 +60,18 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	public DataServiceUpdaterImpl() throws IOException {
 
+		final String apiKey = new KeyLoader().load(QUANDL_API_KEY_FILE);
 		final Properties quandlProperties = new ConfigurationLoader().load(QUANDL_PROPERTIES_FILE);
 		final String endpoint = quandlProperties.getProperty("endpoint");
-		final String apiKey = new KeyLoader().load(QUANDL_API_KEY_FILE);
+		final int numberOfRetries = Integer.parseInt(quandlProperties.getProperty("number_of_retries"));
+		final int retryBackOffMs = Integer.parseInt(quandlProperties.getProperty("retry_backoff_ms"));
 
-		this.api = new QuandlAPI(new QuandlDao(new QuandlConfiguration(endpoint, apiKey)), new QuandlResponseFormat());
+		//TODO validation of the required properties needed for each API
+		//TODO move the configuration reading elsewhereW
+
+		this.api = new QuandlAPI(
+		        new QuandlDao(new QuandlConfiguration(endpoint, apiKey, numberOfRetries, retryBackOffMs)),
+		        new QuandlResponseFormat());
 	}
 
 	@Override
