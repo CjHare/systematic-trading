@@ -58,7 +58,7 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
 public class QuandlDao {
 
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyMMdd");
-	
+
 	private static final Logger LOG = LogManager.getLogger(QuandlDao.class);
 	private static final int HTTP_OK = 200;
 
@@ -109,6 +109,8 @@ public class QuandlDao {
 		int attempt = 1;
 
 		do {
+			LOG.info("Retrieving from {}", url);
+
 			final Response response = url.request(MediaType.APPLICATION_JSON).get();
 
 			if (isResponseOk(url, response)) {
@@ -129,6 +131,6 @@ public class QuandlDao {
 	}
 
 	private boolean isResponseOk( final WebTarget url, final Response response ) {
-		return response.getStatus() != HTTP_OK;
+		return response.getStatus() == HTTP_OK;
 	}
 }

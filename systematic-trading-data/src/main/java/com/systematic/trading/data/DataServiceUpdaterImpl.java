@@ -124,6 +124,11 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 */
 	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests )
 	        throws CannotRetrieveDataException {
+
+		if (requests.isEmpty()) {
+			return;
+		}
+
 		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
 		final ExecutorService pool = Executors.newFixedThreadPool(api.getMaximumConcurrentConnections());
 
@@ -154,9 +159,11 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			});
 		}
 
+		//TODO this hard time out will not cater for throttling!
 		//TODO private methods
 		final int timeout = requests.size() * api.getMaximumRetrievalTimeSeconds();
-
+		pool.shutdown();
+		
 		try {
 			if (!pool.awaitTermination(timeout, TimeUnit.SECONDS)) {
 				throw new CannotRetrieveDataException(
