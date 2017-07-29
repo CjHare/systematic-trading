@@ -60,18 +60,28 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	public DataServiceUpdaterImpl() throws IOException {
 
+		//TODO move the quandl specific config into that project
+
 		final String apiKey = new KeyLoader().load(QUANDL_API_KEY_FILE);
 		final Properties quandlProperties = new ConfigurationLoader().load(QUANDL_PROPERTIES_FILE);
 		final String endpoint = quandlProperties.getProperty("endpoint");
 		final int numberOfRetries = Integer.parseInt(quandlProperties.getProperty("number_of_retries"));
 		final int retryBackOffMs = Integer.parseInt(quandlProperties.getProperty("retry_backoff_ms"));
+		final int maxConcurrentConnections = Integer
+		        .parseInt(quandlProperties.getProperty("maximum_concurrent_connections"));
+		final int maxConnectionsPerSecond = Integer
+		        .parseInt(quandlProperties.getProperty("maximum_connections_per_second"));
+		final int maxMonthsPerConnection = Integer
+		        .parseInt(quandlProperties.getProperty("maximum_months_retrieved_per_connection"));
 
 		//TODO validation of the required properties needed for each API
 		//TODO move the configuration reading elsewhereW
 
-		this.api = new QuandlAPI(
-		        new QuandlDao(new QuandlConfiguration(endpoint, apiKey, numberOfRetries, retryBackOffMs)),
-		        new QuandlResponseFormat());
+		final QuandlConfiguration configuration = new QuandlConfiguration(endpoint, apiKey, numberOfRetries,
+		        retryBackOffMs, maxConcurrentConnections, maxConnectionsPerSecond, maxMonthsPerConnection
+		        );
+
+		this.api = new QuandlAPI(new QuandlDao(configuration), configuration, new QuandlResponseFormat());
 	}
 
 	@Override

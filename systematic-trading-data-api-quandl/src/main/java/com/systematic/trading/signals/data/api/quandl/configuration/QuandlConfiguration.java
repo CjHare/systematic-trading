@@ -40,13 +40,20 @@ public class QuandlConfiguration {
 	private final String apiKey;
 	private final int numberOfRetries;
 	private final int retryBackOffMs;
+	private final int maximumConcurrentConnections;
+	private final int maximumConnectionsPerSecond;
+	private final int maximumMonthsPerConnection;
 
 	public QuandlConfiguration( final String endpoint, final String apiKey, final int numberOfRetries,
-	        final int retryBackOffMs ) {
+	        final int retryBackOffMs, final int maximumConcurrentConnections, final int maximumConnectionsPerSecond,
+	        final int maximumMonthsPerConnection ) {
 		this.endpoint = endpoint;
 		this.apiKey = apiKey;
 		this.numberOfRetries = numberOfRetries;
 		this.retryBackOffMs = retryBackOffMs;
+		this.maximumConcurrentConnections = maximumConcurrentConnections;
+		this.maximumConnectionsPerSecond = maximumConnectionsPerSecond;
+		this.maximumMonthsPerConnection = maximumMonthsPerConnection;
 	}
 
 	/**
@@ -75,5 +82,17 @@ public class QuandlConfiguration {
 	 */
 	public int getRetryBackOffMs() {
 		return retryBackOffMs;
+	}
+
+	public int getMaximumConcurrentConnections() {
+		return maximumConcurrentConnections;
+	}
+
+	public int getMaximumConnectionsPerSecond() {
+		return maximumConnectionsPerSecond;
+	}
+
+	public int getMaximumMonthsPerConnection() {
+		return maximumMonthsPerConnection;
 	}
 }

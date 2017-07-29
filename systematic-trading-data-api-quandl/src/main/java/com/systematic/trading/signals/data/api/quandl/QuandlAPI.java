@@ -35,6 +35,7 @@ import java.time.Period;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
@@ -45,17 +46,18 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
  * @author CJ Hare
  */
 public class QuandlAPI implements EquityApi {
-	
-	//TODO move into the quandl properties
-	private static final Period MAXIMUM_RETRIEVAL_PER_CALL = Period.ofYears(1);
 
 	private final QuandlDao dao;
 
 	private final QuandlResponseFormat dataFormat;
 
-	public QuandlAPI( final QuandlDao dao, final QuandlResponseFormat dataFormat ) {
+	private final Period maximumDurationPerConnection;
+
+	public QuandlAPI( final QuandlDao dao, final QuandlConfiguration configuration,
+	        final QuandlResponseFormat dataFormat ) {
 		this.dao = dao;
 		this.dataFormat = dataFormat;
+		this.maximumDurationPerConnection = Period.ofMonths(configuration.getMaximumMonthsPerConnection());
 	}
 
 	@Override
@@ -65,15 +67,11 @@ public class QuandlAPI implements EquityApi {
 		return dataFormat.convert(tickerSymbol, response.getDatatable());
 	}
 
-	//TODO retry behaviour, on certain HTTP problems
-
 	//TODO add a connection limit & use that
 
 	//TODO this should not be used, split the calls into may simultaneous calls instead, i.e. years / months - based on connection limit
 	@Override
 	public Period getMaximumDurationInSingleUpdate() {
-
-		//TODO when too much / too big a payload is returned, threads hang waiting for responses (i.e. 1yr not 10yrs)
-		return MAXIMUM_RETRIEVAL_PER_CALL;
+		return maximumDurationPerConnection;
 	}
 }

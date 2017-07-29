@@ -42,6 +42,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.text.RandomStringGenerator;
@@ -52,6 +53,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.DatatableResource;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
@@ -69,13 +71,18 @@ public class QuanalAPITest {
 	private QuandlDao dao;
 
 	@Mock
+	private QuandlConfiguration configuration;
+
+	@Mock
 	private QuandlResponseFormat dataFormat;
 
 	@Test
 	public void maximumRetrievalPeriodPerCall() {
-		final Period actual = new QuandlAPI(dao, dataFormat).getMaximumDurationInSingleUpdate();
+		final Period expected = setUpMaximumRetrieval();
 
-		verfiyMaximumRetrieval(actual);
+		final Period actual = new QuandlAPI(dao, configuration, dataFormat).getMaximumDurationInSingleUpdate();
+
+		verfiyMaximumRetrieval(expected, actual);
 		verifyNoQuandlCall();
 	}
 
@@ -95,7 +102,8 @@ public class QuanalAPITest {
 
 	private TradingDayPrices[] callQuandl( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
-		return new QuandlAPI(dao, dataFormat).getStockData(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		return new QuandlAPI(dao, configuration, dataFormat).getStockData(tickerSymbol, inclusiveStartDate,
+		        exclusiveEndDate);
 	}
 
 	private void verifyTradingDayPrices( final TradingDayPrices[] expected, final TradingDayPrices[] actual ) {
@@ -150,8 +158,17 @@ public class QuanalAPITest {
 		return new RandomStringGenerator.Builder().withinRange('a', 'z').build().generate(4);
 	}
 
-	private void verfiyMaximumRetrieval( final Period actual ) {
-		assertEquals(Period.ofYears(1), actual);
+	/**
+	 * Generates a random number of months as the maximum to retrieve.
+	 */
+	private Period setUpMaximumRetrieval() {
+		final int months = new Random().nextInt(12);
+		when(configuration.getMaximumMonthsPerConnection()).thenReturn(months);
+		return Period.ofMonths(months);
+	}
+
+	private void verfiyMaximumRetrieval( final Period expected, final Period actual ) {
+		assertEquals("Number of months to retrieve does not match", expected, actual);
 	}
 
 	private void verifyNoQuandlCall() {

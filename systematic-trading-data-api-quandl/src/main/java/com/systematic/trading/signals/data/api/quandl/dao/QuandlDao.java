@@ -58,6 +58,7 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
 public class QuandlDao {
 
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyMMdd");
+	
 	private static final Logger LOG = LogManager.getLogger(QuandlDao.class);
 	private static final int HTTP_OK = 200;
 
