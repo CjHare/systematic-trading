@@ -34,7 +34,8 @@ import java.time.Period;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
-import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.model.BlockingRingBuffer;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
@@ -54,6 +55,7 @@ public class QuandlAPI implements EquityApi {
 	private final Period maximumDurationPerConnection;
 	private final int maximumConcurrentConnections;
 	private final int maximumRetrievalTimeSeconds;
+	private final int maximumConnectionsPerSecond;
 
 	public QuandlAPI( final QuandlDao dao, final QuandlConfiguration configuration,
 	        final QuandlResponseFormat dataFormat ) {
@@ -62,12 +64,13 @@ public class QuandlAPI implements EquityApi {
 		this.maximumDurationPerConnection = Period.ofMonths(configuration.getMaximumMonthsPerConnection());
 		this.maximumConcurrentConnections = configuration.getMaximumConcurrentConnections();
 		this.maximumRetrievalTimeSeconds = configuration.getMaximumRetrievalTimeSeconds();
+		this.maximumConnectionsPerSecond = configuration.getMaximumConcurrentConnections();
 	}
 
 	@Override
 	public TradingDayPrices[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
-		final QuandlResponseResource response = dao.get(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	        final LocalDate exclusiveEndDate, final BlockingRingBuffer throttler ) throws CannotRetrieveDataException {
+		final QuandlResponseResource response = dao.get(tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
 		return dataFormat.convert(tickerSymbol, response.getDatatable());
 	}
 
@@ -84,5 +87,10 @@ public class QuandlAPI implements EquityApi {
 	@Override
 	public int getMaximumRetrievalTimeSeconds() {
 		return maximumRetrievalTimeSeconds;
+	}
+
+	@Override
+	public int getMaximumConnectionsPerSecond() {
+		return maximumConnectionsPerSecond;
 	}
 }

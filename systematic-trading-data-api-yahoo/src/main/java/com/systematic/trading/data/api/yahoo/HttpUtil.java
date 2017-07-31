@@ -34,7 +34,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.exception.CannotRetrieveDataException;
 
 public class HttpUtil {
 

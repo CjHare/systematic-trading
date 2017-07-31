@@ -41,7 +41,7 @@ import org.apache.commons.text.RandomStringGenerator;
 import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.exception.CannotRetrieveDataException;
 
 /**
  * Various conditions for parsing the Datatable response object from Quandl.

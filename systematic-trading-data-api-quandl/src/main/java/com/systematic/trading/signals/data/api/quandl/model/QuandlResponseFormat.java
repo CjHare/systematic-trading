@@ -39,7 +39,7 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.impl.TradingDayPricesImpl;
 
 /**

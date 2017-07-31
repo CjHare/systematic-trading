@@ -22,7 +22,6 @@
 		<module>systematic-trading-data-model</module>
 		<module>systematic-trading-data-orm-hibernate</module>
 		<module>systematic-trading-data-source-hsqldb</module>
-		<module>systematic-trading-data-api</module>
 		<module>systematic-trading-data-api-yahoo</module>
 		<module>systematic-trading-data-api-quandl</module>
 		<module>systematic-trading-maths</module>

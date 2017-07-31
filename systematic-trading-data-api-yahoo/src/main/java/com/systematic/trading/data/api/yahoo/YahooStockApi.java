@@ -44,8 +44,9 @@ import org.json.JSONObject;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
-import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.impl.TradingDayPricesImpl;
+import com.systematic.trading.data.model.BlockingRingBuffer;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
@@ -61,6 +62,7 @@ public class YahooStockApi implements EquityApi {
 
 	private static final int NUMBER_CONCURRENT_CONNECTIONS = 1;
 	private static final int MAXIMUM_RETRIEVAL_TIME = 5000;
+	private static final int MAXIMUM_CONNECTION_PER_SECOND = 10;
 
 	// Dividend API
 	//	http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.dividendhistory%20where%20symbol=%22VGS.AX%22%20and%20startDate=%222015-01-01%22%20and%20endDate=%222015-02-01%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys
@@ -151,10 +153,11 @@ public class YahooStockApi implements EquityApi {
 
 	@Override
 	public TradingDayPrices[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+	        final LocalDate exclusiveEndDate, final BlockingRingBuffer throttler ) throws CannotRetrieveDataException {
 		final String uri = getJsonUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 		LOG.info("{}", () -> String.format("%s API call to: %s", tickerSymbol, uri));
 
+		throttler.add();
 		final String json = HTTP_UTILS.httpGet(uri);
 
 		return parseJson(tickerSymbol, json);
@@ -165,7 +168,6 @@ public class YahooStockApi implements EquityApi {
 		return Period.ofYears(1);
 	}
 
-
 	@Override
 	public int getMaximumConcurrentConnections() {
 		return NUMBER_CONCURRENT_CONNECTIONS;
@@ -174,5 +176,10 @@ public class YahooStockApi implements EquityApi {
 	@Override
 	public int getMaximumRetrievalTimeSeconds() {
 		return MAXIMUM_RETRIEVAL_TIME;
+	}
+
+	@Override
+	public int getMaximumConnectionsPerSecond() {
+		return MAXIMUM_CONNECTION_PER_SECOND;
 	}
 }

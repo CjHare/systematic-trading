@@ -52,7 +52,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.model.BlockingRingBuffer;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.DatatableResource;
@@ -75,6 +76,9 @@ public class QuanalAPITest {
 
 	@Mock
 	private QuandlResponseFormat dataFormat;
+
+	@Mock
+	private BlockingRingBuffer throttler;
 
 	@Test
 	public void maximumRetrievalPeriodPerCall() {
@@ -103,7 +107,7 @@ public class QuanalAPITest {
 	private TradingDayPrices[] callQuandl( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 		return new QuandlAPI(dao, configuration, dataFormat).getStockData(tickerSymbol, inclusiveStartDate,
-		        exclusiveEndDate);
+		        exclusiveEndDate, throttler);
 	}
 
 	private void verifyTradingDayPrices( final TradingDayPrices[] expected, final TradingDayPrices[] actual ) {
@@ -117,15 +121,17 @@ public class QuanalAPITest {
 
 	private void verifyQuandlCall( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
-		verify(dao).get(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		verify(dao).get(tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
 		verifyNoMoreInteractions(dao);
+		verifyNoMoreInteractions(throttler);
 	}
 
 	private TradingDayPrices[] setUpQuandlResponse() throws CannotRetrieveDataException {
 		final QuandlResponseResource response = new QuandlResponseResource();
 		final DatatableResource datatable = mock(DatatableResource.class);
 		response.setDatatable(datatable);
-		when(dao.get(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(response);
+		when(dao.get(anyString(), any(LocalDate.class), any(LocalDate.class), any(BlockingRingBuffer.class)))
+		        .thenReturn(response);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[2];
 		prices[0] = mock(TradingDayPrices.class);
@@ -173,5 +179,6 @@ public class QuanalAPITest {
 
 	private void verifyNoQuandlCall() {
 		verifyZeroInteractions(dao);
+		verifyZeroInteractions(throttler);
 	}
 }

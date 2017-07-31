@@ -13,13 +13,19 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-maths</artifactId>
+			<version>${systematic.trading.maths.version}</version>
+		</dependency>
+
 		<!-- Logging framework -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>${apache.log4j.version}</version>
 		</dependency>
-	
+
 	</dependencies>
 
 </project>

@@ -44,8 +44,8 @@
 		<!-- Systematic Trading -->
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data-api</artifactId>
-			<version>${systematic.trading.data.api.version}</version>
+			<artifactId>systematic-trading-data-model</artifactId>
+			<version>${systematic.trading.data.model.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>

@@ -26,8 +26,10 @@
 package com.systematic.trading.data;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -39,11 +41,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.data.api.EquityApi;
-import com.systematic.trading.data.api.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.configuration.ConfigurationLoader;
 import com.systematic.trading.data.configuration.KeyLoader;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
+import com.systematic.trading.data.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.model.BlockingRingBuffer;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
@@ -52,6 +55,8 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private static final Logger LOG = LogManager.getLogger(DataServiceUpdaterImpl.class);
+
+	private static final Duration ONE_SECOND = Duration.of(1, ChronoUnit.SECONDS);
 
 	/** Average number of data points above which assumes the month already retrieve covered. */
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
@@ -132,7 +137,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
 		final ExecutorService pool = Executors.newFixedThreadPool(api.getMaximumConcurrentConnections());
 
-//		final BlockingR
+		//TODO make ring buffer abstract, with implementation - better variable name
+		final BlockingRingBuffer ringBuffer = new BlockingRingBuffer(api.getMaximumConnectionsPerSecond(), ONE_SECOND);
+
+		//TODO clean up thread
 		
 		for (final HistoryRetrievalRequest request : requests) {
 
@@ -144,7 +152,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 				try {
 					// Pull the data from the Stock API
 					TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate,
-					        exclusiveEndDate);
+					        exclusiveEndDate, ringBuffer);
 
 					// Push to the data source
 					dao.create(tradingData);
@@ -165,7 +173,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		//TODO private methods
 		final int timeout = requests.size() * api.getMaximumRetrievalTimeSeconds();
 		pool.shutdown();
-		
+
 		try {
 			if (!pool.awaitTermination(timeout, TimeUnit.SECONDS)) {
 				throw new CannotRetrieveDataException(
