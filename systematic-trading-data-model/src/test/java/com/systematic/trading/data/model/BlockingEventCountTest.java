@@ -41,41 +41,41 @@ import org.junit.Test;
 /**
  * @author CJ Hare
  */
-public class BlockingRingBufferTest {
+public class BlockingEventCountTest {
 
 	private static final Duration EXPIRY = Duration.of(100, ChronoUnit.MILLIS);
 
 	@Test
 	public void add() {
-		new BlockingRingBuffer(1, EXPIRY).add();
+		new BlockingEventCount(1, EXPIRY).add();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void addNoSpace() {
-		new BlockingRingBuffer(0, EXPIRY).add();
+		new BlockingEventCount(0, EXPIRY).add();
 	}
 
 	@Test
 	public void addMore() throws InterruptedException {
-		final BlockingRingBuffer ringBuffer = new BlockingRingBuffer(1, EXPIRY);
+		final BlockingEventCount events = new BlockingEventCount(1, EXPIRY);
 
-		addEvent(ringBuffer);
+		addEvent(events);
 
-		addExpectingBlocking(ringBuffer);
+		addExpectingBlocking(events);
 	}
 
 	@Test
 	public void addTwiceWithClean() throws InterruptedException {
-		final BlockingRingBuffer ringBuffer = new BlockingRingBuffer(1, EXPIRY);
+		final BlockingEventCount events = new BlockingEventCount(1, EXPIRY);
 
-		addEvent(ringBuffer);
+		addEvent(events);
 
-		cleanRingBuffer(ringBuffer);
+		cleanRingBuffer(events);
 
-		addEvent(ringBuffer);
+		addEvent(events);
 	}
 
-	private void addEvent( final BlockingRingBuffer ringBuffer ) throws InterruptedException {
+	private void addEvent( final BlockingEventCount ringBuffer ) throws InterruptedException {
 		final Thread expectedImmediateAdd = new Thread(() -> {
 			ringBuffer.add();
 		});
@@ -91,12 +91,12 @@ public class BlockingRingBufferTest {
 	/**
 	 * Blocks until all the entries are expired then cleans the bufferRing.
 	 */
-	private void cleanRingBuffer( final BlockingRingBuffer ringBuffer ) throws InterruptedException {
+	private void cleanRingBuffer( final BlockingEventCount ringBuffer ) throws InterruptedException {
 		TimeUnit.MILLISECONDS.sleep(110);
 		ringBuffer.clean();
 	}
 
-	private void addExpectingBlocking( final BlockingRingBuffer ringBuffer ) throws InterruptedException {
+	private void addExpectingBlocking( final BlockingEventCount ringBuffer ) throws InterruptedException {
 		final Thread expectedToWait = new Thread(() -> {
 			ringBuffer.add();
 		});

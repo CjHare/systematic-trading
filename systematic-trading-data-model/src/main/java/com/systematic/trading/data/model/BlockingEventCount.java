@@ -38,20 +38,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A ring buffer is a fixed size circular queue.
+ *  Implemented as a ring buffer, a fixed size circular queue.
  * 
  *  The BlockingRingBuffer provides throttling functionality, limiting a rolling count of events per a second. 
  *  
  * @author CJ Hare
  */
-public class BlockingRingBuffer {
+public class BlockingEventCount {
 
-	private static final Logger LOG = LogManager.getLogger(BlockingRingBuffer.class);
+	private static final Logger LOG = LogManager.getLogger(BlockingEventCount.class);
 
 	private final BlockingQueue<LocalTime> ringBuffer;
 	private final Duration expiry;
 
-	public BlockingRingBuffer( final int eventsPerDuration, final Duration expiry ) {
+	public BlockingEventCount( final int eventsPerDuration, final Duration expiry ) {
 		this.ringBuffer = new LinkedBlockingQueue<>(eventsPerDuration);
 		this.expiry = expiry;
 	}

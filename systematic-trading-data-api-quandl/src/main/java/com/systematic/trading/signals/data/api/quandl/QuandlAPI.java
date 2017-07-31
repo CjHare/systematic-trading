@@ -35,7 +35,7 @@ import java.time.Period;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.model.BlockingRingBuffer;
+import com.systematic.trading.data.model.BlockingEventCount;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
@@ -69,7 +69,7 @@ public class QuandlAPI implements EquityApi {
 
 	@Override
 	public TradingDayPrices[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate, final BlockingRingBuffer throttler ) throws CannotRetrieveDataException {
+	        final LocalDate exclusiveEndDate, final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 		final QuandlResponseResource response = dao.get(tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
 		return dataFormat.convert(tickerSymbol, response.getDatatable());
 	}

@@ -41,13 +41,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.data.api.EquityApi;
-import com.systematic.trading.data.concurrent.ThrottlerCleanUp;
+import com.systematic.trading.data.concurrent.EventCountCleanUp;
 import com.systematic.trading.data.configuration.ConfigurationLoader;
 import com.systematic.trading.data.configuration.KeyLoader;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.model.BlockingRingBuffer;
+import com.systematic.trading.data.model.BlockingEventCount;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
@@ -139,10 +139,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final ExecutorService pool = Executors.newFixedThreadPool(api.getMaximumConcurrentConnections());
 
 		//TODO make ring buffer abstract, with implementation - better variable name
-		final BlockingRingBuffer ringBuffer = new BlockingRingBuffer(api.getMaximumConnectionsPerSecond(), ONE_SECOND);
+		final BlockingEventCount eventCount = new BlockingEventCount(api.getMaximumConnectionsPerSecond(), ONE_SECOND);
 
 		//TODO clean up - private method
-		final ThrottlerCleanUp throttlerCleanUp = new ThrottlerCleanUp(ringBuffer, ONE_SECOND);
+		final EventCountCleanUp throttlerCleanUp = new EventCountCleanUp(eventCount, ONE_SECOND);
 		final Thread cleanUp = new Thread(throttlerCleanUp);
 		cleanUp.setDaemon(true);
 		cleanUp.start();
@@ -157,7 +157,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 				try {
 					// Pull the data from the Stock API
 					TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate,
-					        exclusiveEndDate, ringBuffer);
+					        exclusiveEndDate, eventCount);
 
 					// Push to the data source
 					dao.create(tradingData);

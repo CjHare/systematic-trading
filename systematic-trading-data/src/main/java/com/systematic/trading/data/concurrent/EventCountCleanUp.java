@@ -34,27 +34,27 @@ import java.time.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.data.model.BlockingRingBuffer;
+import com.systematic.trading.data.model.BlockingEventCount;
 
 /**
  * Clean up runnable to flush / clean up the Ring Buffer at regular intervals.
  * 
  * @author CJ Hare
  */
-public class ThrottlerCleanUp implements Runnable {
+public class EventCountCleanUp implements Runnable {
 
-	private static final Logger LOG = LogManager.getLogger(ThrottlerCleanUp.class);
+	private static final Logger LOG = LogManager.getLogger(EventCountCleanUp.class);
 
 	/** Sync variable for controlling the end of the runnable.*/
 	private volatile boolean running;
 
 	/** The ring buffer that gets cleaned.*/
-	private final BlockingRingBuffer ringBuffer;
+	private final BlockingEventCount ringBuffer;
 
 	/** Frequency of the clean up.*/
 	private final Duration interval;
 
-	public ThrottlerCleanUp( final BlockingRingBuffer ringBuffer, final Duration interval ) {
+	public EventCountCleanUp( final BlockingEventCount ringBuffer, final Duration interval ) {
 		this.ringBuffer = ringBuffer;
 		this.interval = interval;
 		running = true;

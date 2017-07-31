@@ -53,7 +53,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.model.BlockingRingBuffer;
+import com.systematic.trading.data.model.BlockingEventCount;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.DatatableResource;
@@ -78,7 +78,7 @@ public class QuanalAPITest {
 	private QuandlResponseFormat dataFormat;
 
 	@Mock
-	private BlockingRingBuffer throttler;
+	private BlockingEventCount throttler;
 
 	@Test
 	public void maximumRetrievalPeriodPerCall() {
@@ -130,7 +130,7 @@ public class QuanalAPITest {
 		final QuandlResponseResource response = new QuandlResponseResource();
 		final DatatableResource datatable = mock(DatatableResource.class);
 		response.setDatatable(datatable);
-		when(dao.get(anyString(), any(LocalDate.class), any(LocalDate.class), any(BlockingRingBuffer.class)))
+		when(dao.get(anyString(), any(LocalDate.class), any(LocalDate.class), any(BlockingEventCount.class)))
 		        .thenReturn(response);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[2];

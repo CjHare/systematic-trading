@@ -44,7 +44,7 @@ import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.model.BlockingRingBuffer;
+import com.systematic.trading.data.model.BlockingEventCount;
 import com.systematic.trading.signals.data.api.quandl.WikisDatabase;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
@@ -89,7 +89,7 @@ public class QuandlDao {
 	}
 
 	public QuandlResponseResource get( final String tickerSymbol, final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate, final BlockingRingBuffer throttler ) throws CannotRetrieveDataException {
+	        final LocalDate exclusiveEndDate, final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 		final WebTarget url = createUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
 		final Response response = get(url, throttler);
@@ -106,7 +106,7 @@ public class QuandlDao {
 		        .queryParam(WikisDatabase.TICKER_SYMBOL_KEY, tickerSymbol).queryParam(WikisDatabase.API_KEY, apiKey);
 	}
 
-	private Response get( final WebTarget url, final BlockingRingBuffer throttler ) throws CannotRetrieveDataException {
+	private Response get( final WebTarget url, final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 		int attempt = 1;
 
 		do {

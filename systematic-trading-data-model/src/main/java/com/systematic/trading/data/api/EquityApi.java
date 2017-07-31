@@ -30,7 +30,7 @@ import java.time.Period;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.model.BlockingRingBuffer;
+import com.systematic.trading.data.model.BlockingEventCount;
 
 /**
  * External data source for equity price information.
@@ -49,7 +49,7 @@ public interface EquityApi {
 	 * @throws CannotRetrieveDataException problem encountered in retrieving the stock data.
 	 */
 	TradingDayPrices[] getStockData( String symbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate,
-	        BlockingRingBuffer ringBuffer ) throws CannotRetrieveDataException;
+	        BlockingEventCount ringBuffer ) throws CannotRetrieveDataException;
 
 	/**
 	 * Maximum number of time that may be retrieved in one attempt.

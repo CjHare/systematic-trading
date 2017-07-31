@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.data.model.BlockingRingBuffer;
+import com.systematic.trading.data.model.BlockingEventCount;
 
 /**
  * Ensures the throttler class exhibits the correct behaviour.
@@ -52,16 +52,16 @@ import com.systematic.trading.data.model.BlockingRingBuffer;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ThrottlerCleanUpTest {
+public class EventCountCleanUpTest {
 
 	@Mock
-	private BlockingRingBuffer ringBuffer;
+	private BlockingEventCount ringBuffer;
 
 	private Duration interval = Duration.of(5, ChronoUnit.MILLIS);
 
 	@Test
 	public void end() throws InterruptedException {
-		final ThrottlerCleanUp throttlerCode = new ThrottlerCleanUp(ringBuffer, interval);
+		final EventCountCleanUp throttlerCode = new EventCountCleanUp(ringBuffer, interval);
 		final Thread throttler = start(throttlerCode);
 
 		end(throttlerCode);
@@ -71,7 +71,7 @@ public class ThrottlerCleanUpTest {
 
 	@Test
 	public void interval() throws InterruptedException {
-		final ThrottlerCleanUp throttlerCode = new ThrottlerCleanUp(ringBuffer, interval);
+		final EventCountCleanUp throttlerCode = new EventCountCleanUp(ringBuffer, interval);
 		start(throttlerCode);
 
 		waitForTwoDurations();
@@ -93,14 +93,14 @@ public class ThrottlerCleanUpTest {
 		verifyZeroInteractions(ringBuffer);
 	}
 
-	private void end( final ThrottlerCleanUp throttlerCleanUp ) throws InterruptedException {
+	private void end( final EventCountCleanUp throttlerCleanUp ) throws InterruptedException {
 		throttlerCleanUp.end();
 
 		// Wait for at least one loop to pick up the end i.e. close off the run()
 		TimeUnit.MILLISECONDS.sleep(8);
 	}
 
-	private Thread start( final ThrottlerCleanUp throttlerCleanUp ) {
+	private Thread start( final EventCountCleanUp throttlerCleanUp ) {
 		final Thread cleanUp = new Thread(throttlerCleanUp);
 		cleanUp.setDaemon(true);
 		cleanUp.start();
