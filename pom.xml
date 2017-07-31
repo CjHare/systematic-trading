@@ -19,6 +19,7 @@
 		<module>systematic-trading-backtest-output-elastic</module>
 		<module>systematic-trading-backtest-output-file</module>
 		<module>systematic-trading-data</module>
+		<module>systematic-trading-data-model</module>
 		<module>systematic-trading-data-orm-hibernate</module>
 		<module>systematic-trading-data-source-hsqldb</module>
 		<module>systematic-trading-data-api</module>
