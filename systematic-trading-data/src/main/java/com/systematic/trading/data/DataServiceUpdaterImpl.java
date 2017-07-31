@@ -41,13 +41,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.data.api.EquityApi;
+import com.systematic.trading.data.collections.BlockingEventCount;
+import com.systematic.trading.data.collections.BlockingEventCountQueue;
 import com.systematic.trading.data.concurrent.EventCountCleanUp;
 import com.systematic.trading.data.configuration.ConfigurationLoader;
 import com.systematic.trading.data.configuration.KeyLoader;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.model.BlockingEventCount;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
@@ -118,7 +119,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		processHistoryRetrievalRequests(outstandingRequests);
 
-		//TODO private
+		ensureAllRetrievalRequestsProcessed(tickerSymbol);
+	}
+
+	private void ensureAllRetrievalRequestsProcessed( final String tickerSymbol ) throws CannotRetrieveDataException {
 		final List<HistoryRetrievalRequest> remainingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 		if (!remainingRequests.isEmpty()) {
 			throw new CannotRetrieveDataException("Failed to retrieve all the required data");
@@ -137,15 +141,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
 		final ExecutorService pool = Executors.newFixedThreadPool(api.getMaximumConcurrentConnections());
-
-		//TODO make ring buffer abstract, with implementation - better variable name
-		final BlockingEventCount eventCount = new BlockingEventCount(api.getMaximumConnectionsPerSecond(), ONE_SECOND);
-
-		//TODO clean up - private method
-		final EventCountCleanUp throttlerCleanUp = new EventCountCleanUp(eventCount, ONE_SECOND);
-		final Thread cleanUp = new Thread(throttlerCleanUp);
-		cleanUp.setDaemon(true);
-		cleanUp.start();
+		final BlockingEventCount activeConnectionCount = new BlockingEventCountQueue(
+		        api.getMaximumConnectionsPerSecond(), ONE_SECOND);
+		final EventCountCleanUp activeConnectionCountCleaner = startEventCountCleaner(activeConnectionCount);
 
 		for (final HistoryRetrievalRequest request : requests) {
 
@@ -157,7 +155,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 				try {
 					// Pull the data from the Stock API
 					TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate,
-					        exclusiveEndDate, eventCount);
+					        exclusiveEndDate, activeConnectionCount);
 
 					// Push to the data source
 					dao.create(tradingData);
@@ -188,7 +186,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			Thread.currentThread().interrupt();
 		}
 
-		throttlerCleanUp.end();
+		activeConnectionCountCleaner.end();
 	}
 
 	/**
@@ -223,6 +221,17 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		}
 
 		return requests;
+	}
+
+	/**
+	 * Spawns a daemon thread to perform the periodic (every second) clean of the event count.
+	 */
+	private EventCountCleanUp startEventCountCleaner( final BlockingEventCount eventCount ) {
+		final EventCountCleanUp throttlerCleanUp = new EventCountCleanUp(eventCount, ONE_SECOND);
+		final Thread cleanUp = new Thread(throttlerCleanUp);
+		cleanUp.setDaemon(true);
+		cleanUp.start();
+		return throttlerCleanUp;
 	}
 
 	/**

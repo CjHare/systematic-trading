@@ -27,57 +27,22 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.model;
-
-import java.time.Duration;
-import java.time.LocalTime;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package com.systematic.trading.data.collections;
 
 /**
- *  Implemented as a ring buffer, a fixed size circular queue.
- * 
- *  The BlockingRingBuffer provides throttling functionality, limiting a rolling count of events per a second. 
+ * A circular, or FIFO list of time tagged events.
  *  
  * @author CJ Hare
  */
-public class BlockingEventCount {
-
-	private static final Logger LOG = LogManager.getLogger(BlockingEventCount.class);
-
-	private final BlockingQueue<LocalTime> ringBuffer;
-	private final Duration expiry;
-
-	public BlockingEventCount( final int eventsPerDuration, final Duration expiry ) {
-		this.ringBuffer = new LinkedBlockingQueue<>(eventsPerDuration);
-		this.expiry = expiry;
-	}
+public interface BlockingEventCount {
 
 	/**
-	 * Blocking operation that returns when the time of now could be added to the ring buffer.
+	 * Blocking operation that returns when the current time could be added to the set of events.
 	 */
-	public void add() {
-		try {
-			ringBuffer.put(LocalTime.now());
-		} catch (InterruptedException e) {
-			LOG.warn("Interrupted when attempting ", e);
-		}
-	}
+	public void add();
 
 	/**
-	 * Clears any expired entries in the ring buffer.
+	 * Clears any and all expired entries.
 	 */
-	public synchronized void clean() {
-		final LocalTime expired = LocalTime.now().minus(expiry);
-		final int entries = ringBuffer.size();
-
-		for (int i = 0; i < entries; i++) {
-			if (expired.isAfter(ringBuffer.peek())) {
-				ringBuffer.remove();
-			}
-		}
-	}
+	public void clean();
 }

@@ -43,8 +43,8 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.model.BlockingEventCount;
 import com.systematic.trading.signals.data.api.quandl.WikisDatabase;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;

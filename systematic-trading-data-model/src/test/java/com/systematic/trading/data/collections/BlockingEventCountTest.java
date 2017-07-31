@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.model;
+package com.systematic.trading.data.collections;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -38,6 +38,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import com.systematic.trading.data.collections.BlockingEventCount;
+
 /**
  * @author CJ Hare
  */
@@ -47,17 +49,17 @@ public class BlockingEventCountTest {
 
 	@Test
 	public void add() {
-		new BlockingEventCount(1, EXPIRY).add();
+		create(1).add();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void addNoSpace() {
-		new BlockingEventCount(0, EXPIRY).add();
+		create(0).add();
 	}
 
 	@Test
 	public void addMore() throws InterruptedException {
-		final BlockingEventCount events = new BlockingEventCount(1, EXPIRY);
+		final BlockingEventCount events = create(1);
 
 		addEvent(events);
 
@@ -66,13 +68,17 @@ public class BlockingEventCountTest {
 
 	@Test
 	public void addTwiceWithClean() throws InterruptedException {
-		final BlockingEventCount events = new BlockingEventCount(1, EXPIRY);
+		final BlockingEventCount events = create(1);
 
 		addEvent(events);
 
 		cleanRingBuffer(events);
 
 		addEvent(events);
+	}
+
+	private BlockingEventCount create( final int size ) {
+		return new BlockingEventCountQueue(size, EXPIRY);
 	}
 
 	private void addEvent( final BlockingEventCount ringBuffer ) throws InterruptedException {

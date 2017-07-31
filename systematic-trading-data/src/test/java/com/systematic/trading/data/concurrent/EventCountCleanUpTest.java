@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.data.model.BlockingEventCount;
+import com.systematic.trading.data.collections.BlockingEventCount;
 
 /**
  * Ensures the throttler class exhibits the correct behaviour.

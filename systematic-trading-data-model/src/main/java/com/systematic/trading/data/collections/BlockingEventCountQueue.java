@@ -27,53 +27,50 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.concurrent;
+package com.systematic.trading.data.collections;
 
 import java.time.Duration;
+import java.time.LocalTime;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.data.collections.BlockingEventCount;
-
 /**
- * Clean up runnable to flush / clean up the Ring Buffer at regular intervals.
+ * BlockingEventCount backed with a blocking queue.
  * 
  * @author CJ Hare
  */
-public class EventCountCleanUp implements Runnable {
+public class BlockingEventCountQueue implements BlockingEventCount {
+	private static final Logger LOG = LogManager.getLogger(BlockingEventCount.class);
 
-	private static final Logger LOG = LogManager.getLogger(EventCountCleanUp.class);
+	private final BlockingQueue<LocalTime> ringBuffer;
+	private final Duration expiry;
 
-	/** Sync variable for controlling the end of the runnable.*/
-	private volatile boolean running;
-
-	/** The ring buffer that gets cleaned.*/
-	private final BlockingEventCount ringBuffer;
-
-	/** Frequency of the clean up.*/
-	private final Duration interval;
-
-	public EventCountCleanUp( final BlockingEventCount ringBuffer, final Duration interval ) {
-		this.ringBuffer = ringBuffer;
-		this.interval = interval;
-		running = true;
+	public BlockingEventCountQueue( final int eventsPerDuration, final Duration expiry ) {
+		this.ringBuffer = new LinkedBlockingQueue<>(eventsPerDuration);
+		this.expiry = expiry;
 	}
 
 	@Override
-	public void run() {
-		while (running) {
-			ringBuffer.clean();
-
-			try {
-				Thread.sleep(interval.toMillis());
-			} catch (InterruptedException e) {
-				LOG.warn(e);
-			}
+	public void add() {
+		try {
+			ringBuffer.put(LocalTime.now());
+		} catch (InterruptedException e) {
+			LOG.warn("Interrupted when attempting ", e);
 		}
 	}
 
-	public void end() {
-		running = false;
+	@Override
+	public synchronized void clean() {
+		final LocalTime expired = LocalTime.now().minus(expiry);
+		final int entries = ringBuffer.size();
+
+		for (int i = 0; i < entries; i++) {
+			if (expired.isAfter(ringBuffer.peek())) {
+				ringBuffer.remove();
+			}
+		}
 	}
 }

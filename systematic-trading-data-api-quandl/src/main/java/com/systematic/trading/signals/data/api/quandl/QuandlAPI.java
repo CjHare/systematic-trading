@@ -34,8 +34,8 @@ import java.time.Period;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
+import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.model.BlockingEventCount;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
