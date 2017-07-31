@@ -140,8 +140,27 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		//TODO make ring buffer abstract, with implementation - better variable name
 		final BlockingRingBuffer ringBuffer = new BlockingRingBuffer(api.getMaximumConnectionsPerSecond(), ONE_SECOND);
 
-		//TODO clean up thread
-		
+		// TODO uusing a boolean here is bad news - do something else
+//		boolean cleanUp = true;
+
+		//TODO clean up - private method
+
+		final Thread throttlerCleanUp = new Thread(() -> {
+
+			while (true) {
+				ringBuffer.add();
+
+				try {
+					Thread.sleep(ONE_SECOND.toMillis());
+				} catch (InterruptedException e) {
+					LOG.warn(e);
+				}
+			}
+		});
+
+		throttlerCleanUp.setDaemon(true);
+		throttlerCleanUp.start();
+
 		for (final HistoryRetrievalRequest request : requests) {
 
 			final String tickerSymbol = request.getTickerSymbol();
@@ -182,6 +201,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
+		
+		//TODO this is to close / end the throttle clean up thread
+	//	cleanUp = false;
 	}
 
 	/**
