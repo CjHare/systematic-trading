@@ -132,6 +132,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
 		final ExecutorService pool = Executors.newFixedThreadPool(api.getMaximumConcurrentConnections());
 
+//		final BlockingR
+		
 		for (final HistoryRetrievalRequest request : requests) {
 
 			final String tickerSymbol = request.getTickerSymbol();

@@ -29,7 +29,8 @@
  */
 package com.systematic.trading.data.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -58,33 +59,44 @@ public class BlockingRingBufferTest {
 	public void addMore() throws InterruptedException {
 		final BlockingRingBuffer ringBuffer = new BlockingRingBuffer(1, EXPIRY);
 
-		ringBuffer.add();
+		addEvent(ringBuffer);
 
-		final Thread expectedToWait = addExpectingBlocking(ringBuffer);
-
-		assertEquals("Thread should still be waiting", true, expectedToWait.isAlive());
+		addExpectingBlocking(ringBuffer);
 	}
 
 	@Test
 	public void addTwiceWithClean() throws InterruptedException {
 		final BlockingRingBuffer ringBuffer = new BlockingRingBuffer(1, EXPIRY);
 
-		ringBuffer.add();
+		addEvent(ringBuffer);
 
 		cleanRingBuffer(ringBuffer);
 
-		ringBuffer.add();
+		addEvent(ringBuffer);
+	}
+
+	private void addEvent( final BlockingRingBuffer ringBuffer ) throws InterruptedException {
+		final Thread expectedImmediateAdd = new Thread(() -> {
+			ringBuffer.add();
+		});
+
+		expectedImmediateAdd.setDaemon(true);
+		expectedImmediateAdd.start();
+
+		TimeUnit.MILLISECONDS.sleep(5);
+
+		assertFalse("add() should have succeeded and deamon thread closed", expectedImmediateAdd.isAlive());
 	}
 
 	/**
-	 * Blocks until all the entries are expured then cleans the bufferRing.
+	 * Blocks until all the entries are expired then cleans the bufferRing.
 	 */
-	private void cleanRingBuffer( final BlockingRingBuffer bufferRing ) throws InterruptedException {
-		TimeUnit.MILLISECONDS.sleep(100);
-		bufferRing.clean();
+	private void cleanRingBuffer( final BlockingRingBuffer ringBuffer ) throws InterruptedException {
+		TimeUnit.MILLISECONDS.sleep(110);
+		ringBuffer.clean();
 	}
 
-	private Thread addExpectingBlocking( final BlockingRingBuffer ringBuffer ) throws InterruptedException {
+	private void addExpectingBlocking( final BlockingRingBuffer ringBuffer ) throws InterruptedException {
 		final Thread expectedToWait = new Thread(() -> {
 			ringBuffer.add();
 		});
@@ -94,6 +106,6 @@ public class BlockingRingBufferTest {
 
 		TimeUnit.MILLISECONDS.sleep(50);
 
-		return expectedToWait;
+		assertTrue("Thread should still be waiting", expectedToWait.isAlive());
 	}
 }
