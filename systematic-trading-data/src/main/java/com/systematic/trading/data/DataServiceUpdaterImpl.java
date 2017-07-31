@@ -41,6 +41,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.data.api.EquityApi;
+import com.systematic.trading.data.concurrent.ThrottlerCleanUp;
 import com.systematic.trading.data.configuration.ConfigurationLoader;
 import com.systematic.trading.data.configuration.KeyLoader;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
@@ -140,26 +141,11 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		//TODO make ring buffer abstract, with implementation - better variable name
 		final BlockingRingBuffer ringBuffer = new BlockingRingBuffer(api.getMaximumConnectionsPerSecond(), ONE_SECOND);
 
-		// TODO uusing a boolean here is bad news - do something else
-//		boolean cleanUp = true;
-
 		//TODO clean up - private method
-
-		final Thread throttlerCleanUp = new Thread(() -> {
-
-			while (true) {
-				ringBuffer.add();
-
-				try {
-					Thread.sleep(ONE_SECOND.toMillis());
-				} catch (InterruptedException e) {
-					LOG.warn(e);
-				}
-			}
-		});
-
-		throttlerCleanUp.setDaemon(true);
-		throttlerCleanUp.start();
+		final ThrottlerCleanUp throttlerCleanUp = new ThrottlerCleanUp(ringBuffer, ONE_SECOND);
+		final Thread cleanUp = new Thread(throttlerCleanUp);
+		cleanUp.setDaemon(true);
+		cleanUp.start();
 
 		for (final HistoryRetrievalRequest request : requests) {
 
@@ -201,9 +187,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
-		
-		//TODO this is to close / end the throttle clean up thread
-	//	cleanUp = false;
+
+		throttlerCleanUp.end();
 	}
 
 	/**

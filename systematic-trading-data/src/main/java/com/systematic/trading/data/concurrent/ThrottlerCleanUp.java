@@ -27,57 +27,53 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.model;
+package com.systematic.trading.data.concurrent;
 
 import java.time.Duration;
-import java.time.LocalTime;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.data.model.BlockingRingBuffer;
+
 /**
- * A ring buffer is a fixed size circular queue.
+ * Clean up runnable to flush / clean up the Ring Buffer at regular intervals.
  * 
- *  The BlockingRingBuffer provides throttling functionality, limiting a rolling count of events per a second. 
- *  
  * @author CJ Hare
  */
-public class BlockingRingBuffer {
+public class ThrottlerCleanUp implements Runnable {
 
-	private static final Logger LOG = LogManager.getLogger(BlockingRingBuffer.class);
+	private static final Logger LOG = LogManager.getLogger(ThrottlerCleanUp.class);
 
-	private final BlockingQueue<LocalTime> ringBuffer;
-	private final Duration expiry;
+	/** Sync variable for controlling the end of the runnable.*/
+	private volatile boolean running;
 
-	public BlockingRingBuffer( final int eventsPerDuration, final Duration expiry ) {
-		this.ringBuffer = new LinkedBlockingQueue<>(eventsPerDuration);
-		this.expiry = expiry;
+	/** The ring buffer that gets cleaned.*/
+	private final BlockingRingBuffer ringBuffer;
+
+	/** Frequency of the clean up.*/
+	private final Duration interval;
+
+	public ThrottlerCleanUp( final BlockingRingBuffer ringBuffer, final Duration interval ) {
+		this.ringBuffer = ringBuffer;
+		this.interval = interval;
+		running = true;
 	}
 
-	/**
-	 * Blocking operation that returns when the time of now could be added to the ring buffer.
-	 */
-	public void add() {
-		try {
-			ringBuffer.put(LocalTime.now());
-		} catch (InterruptedException e) {
-			LOG.warn("Interrupted when attempting ", e);
-		}
-	}
+	@Override
+	public void run() {
+		while (running) {
+			ringBuffer.clean();
 
-	/**
-	 * Clears any expired entries in the ring buffer.
-	 */
-	public synchronized void clean() {
-		final LocalTime expired = LocalTime.now().minus(expiry);
-		final int entries = ringBuffer.size();
-
-		for (int i = 0; i < entries; i++) {
-			if (expired.isAfter(ringBuffer.peek())) {
-				ringBuffer.remove();
+			try {
+				Thread.sleep(interval.toMillis());
+			} catch (InterruptedException e) {
+				LOG.warn(e);
 			}
 		}
+	}
+
+	public void end() {
+		running = false;
 	}
 }
