@@ -117,9 +117,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 
-		processHistoryRetrievalRequests(outstandingRequests);
-
-		ensureAllRetrievalRequestsProcessed(tickerSymbol);
+		if (!outstandingRequests.isEmpty()) {
+			processHistoryRetrievalRequests(outstandingRequests);
+			ensureAllRetrievalRequestsProcessed(tickerSymbol);
+		}
 	}
 
 	private void ensureAllRetrievalRequestsProcessed( final String tickerSymbol ) throws CannotRetrieveDataException {
@@ -134,11 +135,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 */
 	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests )
 	        throws CannotRetrieveDataException {
-
-		if (requests.isEmpty()) {
-			return;
-		}
-
 		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
 		final ExecutorService pool = Executors.newFixedThreadPool(api.getMaximumConcurrentConnections());
 		final BlockingEventCount activeConnectionCount = new BlockingEventCountQueue(
@@ -172,8 +168,12 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			});
 		}
 
-		//TODO this hard time out will not cater for throttling!
-		//TODO private methods
+		shutdown(pool, requests);
+		activeConnectionCountCleaner.end();
+	}
+
+	private void shutdown( final ExecutorService pool, final List<HistoryRetrievalRequest> requests )
+	        throws CannotRetrieveDataException {
 		final int timeout = requests.size() * api.getMaximumRetrievalTimeSeconds();
 		pool.shutdown();
 
@@ -185,8 +185,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
-
-		activeConnectionCountCleaner.end();
 	}
 
 	/**
