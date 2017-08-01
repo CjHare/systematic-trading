@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.data.configuration;
 
+import com.systematic.trading.data.exception.ConfigurationValidationException;
+
 /**
  * Validator for a configuration value.
  * 
@@ -41,6 +43,7 @@ public interface ConfigurationValidator<T> {
 	 * 
 	 * @param toValidate object to validate, with the implicit requirement of object being of type T.
 	 * @return the validated input.
+	 * @throws ConfigurationValidationException problem encountered during validation.
 	 */
-	T validate( String input );
+	T validate( String input ) throws ConfigurationValidationException;
 }

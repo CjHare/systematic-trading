@@ -38,6 +38,7 @@ import com.systematic.trading.data.configuration.ConfigurationValidator;
 import com.systematic.trading.data.configuration.IntegerConfigurationValidator;
 import com.systematic.trading.data.configuration.KeyLoader;
 import com.systematic.trading.data.configuration.UrlConfigurationValidator;
+import com.systematic.trading.data.exception.ConfigurationValidationException;
 
 /**
  * Deals with the loading and validation of the Quandl configuration.
@@ -45,8 +46,6 @@ import com.systematic.trading.data.configuration.UrlConfigurationValidator;
  * @author CJ Hare
  */
 public class QuandlConfigurationLoader {
-
-	//TODO validation exception that extends service
 
 	private static final String QUANDL_PROPERTIES_FILE = "quandl.properties";
 	private static final String QUANDL_API_KEY_FILE = "quandl.key";
@@ -69,7 +68,7 @@ public class QuandlConfigurationLoader {
 		this.maximumMonthsPerConnectionsValidator = new IntegerConfigurationValidator(1, Integer.MAX_VALUE);
 	}
 
-	public EquityApiConfiguration load() throws IOException {
+	public EquityApiConfiguration load() throws IOException, ConfigurationValidationException {
 		final String apiKey = new KeyLoader().load(QUANDL_API_KEY_FILE);
 		final Properties properties = new ConfigurationLoader().load(QUANDL_PROPERTIES_FILE);
 
@@ -92,12 +91,12 @@ public class QuandlConfigurationLoader {
 	}
 
 	private String getStringProperty( final Properties properties, final QuandlProperty property,
-	        final ConfigurationValidator<String> validator ) {
+	        final ConfigurationValidator<String> validator ) throws ConfigurationValidationException {
 		return validator.validate(getProperty(properties, property));
 	}
 
 	private int getIntegerProperty( final Properties properties, final QuandlProperty property,
-	        final ConfigurationValidator<Integer> validator ) {
+	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
 		return validator.validate(getProperty(properties, property));
 	}
 

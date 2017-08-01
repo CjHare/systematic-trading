@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.data.configuration;
 
+import com.systematic.trading.data.exception.ConfigurationValidationException;
+
 /**
  * Validates input as a integer.
  * 
@@ -56,19 +58,19 @@ public class IntegerConfigurationValidator implements ConfigurationValidator<Int
 	}
 
 	@Override
-	public Integer validate( final String input ) {
+	public Integer validate( final String input ) throws ConfigurationValidationException {
 
 		final Integer value;
 
 		try {
 			value = Integer.parseInt((String) input);
 		} catch (final NumberFormatException e) {
-			throw new IllegalArgumentException(String.format(
+			throw new ConfigurationValidationException(String.format(
 			        "Expecting either an String value containing an Integer to parse, but given: \"%s\"", input));
 		}
 
 		if (isOutsideRange(value)) {
-			throw new IllegalArgumentException(
+			throw new ConfigurationValidationException(
 			        String.format("Expecting an Integer within inclusive range of: %s to %s, but given: %s",
 			                minimumInclusive, maximumInclusive, input));
 

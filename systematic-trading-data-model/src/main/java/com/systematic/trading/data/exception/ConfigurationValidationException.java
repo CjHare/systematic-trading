@@ -27,29 +27,21 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.configuration;
+package com.systematic.trading.data.exception;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import com.systematic.trading.data.exception.ConfigurationValidationException;
+import com.systematic.trading.exception.ServiceException;
 
 /**
- * Validates input as a URL.
+ * Problem has occurred when attempting validation of configuration data.
  * 
  * @author CJ Hare
  */
-public class UrlConfigurationValidator implements ConfigurationValidator<String> {
+public class ConfigurationValidationException extends ServiceException {
 
-	@Override
-	public String validate( final String input ) throws ConfigurationValidationException {
+	/** Serialization identity. */
+	private static final long serialVersionUID = 1L;
 
-		try {
-			new URL(input);
-		} catch (MalformedURLException e) {
-			throw new ConfigurationValidationException(String.format("Invalid URL has been provided: \"%s\"", input));
-		}
-
-		return input;
+	public ConfigurationValidationException( final String message ) {
+		super(message);
 	}
 }

@@ -47,6 +47,7 @@ import com.systematic.trading.data.concurrent.EventCountCleanUp;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
+import com.systematic.trading.data.exception.ConfigurationValidationException;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfigurationLoader;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
@@ -67,7 +68,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private final EquityApi api;
 
-	public DataServiceUpdaterImpl() throws IOException {
+	public DataServiceUpdaterImpl() throws IOException, ConfigurationValidationException {
 
 		final EquityApiConfiguration configuration = new QuandlConfigurationLoader().load();
 		this.api = new QuandlAPI(new QuandlDao(configuration), configuration, new QuandlResponseFormat());
