@@ -34,7 +34,10 @@ import java.util.Properties;
 
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.configuration.ConfigurationLoader;
+import com.systematic.trading.data.configuration.ConfigurationValidator;
+import com.systematic.trading.data.configuration.IntegerConfigurationValidator;
 import com.systematic.trading.data.configuration.KeyLoader;
+import com.systematic.trading.data.configuration.UrlConfigurationValidator;
 
 /**
  * Deals with the loading and validation of the Quandl configuration.
@@ -43,27 +46,62 @@ import com.systematic.trading.data.configuration.KeyLoader;
  */
 public class QuandlConfigurationLoader {
 
+	//TODO validation exception that extends service
+
 	private static final String QUANDL_PROPERTIES_FILE = "quandl.properties";
 	private static final String QUANDL_API_KEY_FILE = "quandl.key";
 
+	private final ConfigurationValidator<Integer> numberOfRetiresValidator;
+	private final ConfigurationValidator<Integer> retryBackOffValidator;
+	private final ConfigurationValidator<Integer> maximumRetrievalTimeValidator;
+	private final ConfigurationValidator<Integer> maximumConcurrentConnectionValidator;
+	private final ConfigurationValidator<Integer> maximumConnectionsPerSecondValidator;
+	private final ConfigurationValidator<Integer> maximumMonthsPerConnectionsValidator;
+	private final ConfigurationValidator<String> endpointValidator;
+
+	public QuandlConfigurationLoader() {
+		this.endpointValidator = new UrlConfigurationValidator();
+		this.numberOfRetiresValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
+		this.retryBackOffValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
+		this.maximumRetrievalTimeValidator = new IntegerConfigurationValidator(500, Integer.MAX_VALUE);
+		this.maximumConcurrentConnectionValidator = new IntegerConfigurationValidator(1, Integer.MAX_VALUE);
+		this.maximumConnectionsPerSecondValidator = new IntegerConfigurationValidator(1, Integer.MAX_VALUE);
+		this.maximumMonthsPerConnectionsValidator = new IntegerConfigurationValidator(1, Integer.MAX_VALUE);
+	}
+
 	public EquityApiConfiguration load() throws IOException {
 		final String apiKey = new KeyLoader().load(QUANDL_API_KEY_FILE);
-		final Properties quandlProperties = new ConfigurationLoader().load(QUANDL_PROPERTIES_FILE);
-		final String endpoint = quandlProperties.getProperty("endpoint");
-		final int numberOfRetries = Integer.parseInt(quandlProperties.getProperty("number_of_retries"));
-		final int retryBackOffMs = Integer.parseInt(quandlProperties.getProperty("retry_backoff_ms"));
-		final int maximumRetrievalTimeSeconds = Integer
-		        .parseInt(quandlProperties.getProperty("maximum_retrieval_time_seconds"));
-		final int maximumConcurrentConnections = Integer
-		        .parseInt(quandlProperties.getProperty("maximum_concurrent_connections"));
-		final int maximumConnectionsPerSecond = Integer
-		        .parseInt(quandlProperties.getProperty("maximum_connections_per_second"));
-		final int maximumMonthsPerConnection = Integer
-		        .parseInt(quandlProperties.getProperty("maximum_months_retrieved_per_connection"));
+		final Properties properties = new ConfigurationLoader().load(QUANDL_PROPERTIES_FILE);
 
-		//TODO validation of the required properties needed for each API
+		final String endpoint = getStringProperty(properties, QuandlProperty.ENDPOINT, endpointValidator);
+		final int numberOfRetries = getIntegerProperty(properties, QuandlProperty.NUMBER_OF_RETRIES,
+		        numberOfRetiresValidator);
+		final int retryBackOffMs = getIntegerProperty(properties, QuandlProperty.RETRY_BACKOFF_MS,
+		        retryBackOffValidator);
+		final int maximumRetrievalTimeSeconds = getIntegerProperty(properties,
+		        QuandlProperty.MAXIMUM_RETRIEVAL_TIME_SECONDS, maximumRetrievalTimeValidator);
+		final int maximumConcurrentConnections = getIntegerProperty(properties,
+		        QuandlProperty.MAXIMUM_CONCURRENT_CONNECTIONS, maximumConcurrentConnectionValidator);
+		final int maximumConnectionsPerSecond = getIntegerProperty(properties,
+		        QuandlProperty.MAXIMUM_CONNECTIONS_PER_SECOND, maximumConnectionsPerSecondValidator);
+		final int maximumMonthsPerConnection = getIntegerProperty(properties,
+		        QuandlProperty.MAXIMUM_MONTHS_RETRIEVED_PER_CONNECTION, maximumMonthsPerConnectionsValidator);
 
 		return new QuandlConfiguration(endpoint, apiKey, numberOfRetries, retryBackOffMs, maximumRetrievalTimeSeconds,
 		        maximumConcurrentConnections, maximumConnectionsPerSecond, maximumMonthsPerConnection);
+	}
+
+	private String getStringProperty( final Properties properties, final QuandlProperty property,
+	        final ConfigurationValidator<String> validator ) {
+		return validator.validate(getProperty(properties, property));
+	}
+
+	private int getIntegerProperty( final Properties properties, final QuandlProperty property,
+	        final ConfigurationValidator<Integer> validator ) {
+		return validator.validate(getProperty(properties, property));
+	}
+
+	private String getProperty( final Properties properties, final QuandlProperty property ) {
+		return properties.getProperty(property.getKey());
 	}
 }
