@@ -32,7 +32,6 @@ import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -45,13 +44,11 @@ import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.collections.BlockingEventCountQueue;
 import com.systematic.trading.data.concurrent.EventCountCleanUp;
-import com.systematic.trading.data.configuration.ConfigurationLoader;
-import com.systematic.trading.data.configuration.KeyLoader;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
-import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
+import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfigurationLoader;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 
@@ -66,41 +63,13 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	/** Average number of data points above which assumes the month already retrieve covered. */
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
-	//TODO configuration file location - property injection candidate
-	private static final String QUANDL_PROPERTIES_FILE = "quandl.properties";
-
-	//TODO configuration file location - property injection candidate
-	private static final String QUANDL_API_KEY_FILE = "quandl.key";
-
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
 
 	private final EquityApi api;
 
 	public DataServiceUpdaterImpl() throws IOException {
 
-		//TODO move the quandl specific config into that project
-
-		final String apiKey = new KeyLoader().load(QUANDL_API_KEY_FILE);
-		final Properties quandlProperties = new ConfigurationLoader().load(QUANDL_PROPERTIES_FILE);
-		final String endpoint = quandlProperties.getProperty("endpoint");
-		final int numberOfRetries = Integer.parseInt(quandlProperties.getProperty("number_of_retries"));
-		final int retryBackOffMs = Integer.parseInt(quandlProperties.getProperty("retry_backoff_ms"));
-		final int maximumRetrievalTimeSeconds = Integer
-		        .parseInt(quandlProperties.getProperty("maximum_retrieval_time_seconds"));
-		final int maximumConcurrentConnections = Integer
-		        .parseInt(quandlProperties.getProperty("maximum_concurrent_connections"));
-		final int maximumConnectionsPerSecond = Integer
-		        .parseInt(quandlProperties.getProperty("maximum_connections_per_second"));
-		final int maximumMonthsPerConnection = Integer
-		        .parseInt(quandlProperties.getProperty("maximum_months_retrieved_per_connection"));
-
-		//TODO validation of the required properties needed for each API
-		//TODO move the configuration reading elsewhereW
-
-		final EquityApiConfiguration configuration = new QuandlConfiguration(endpoint, apiKey, numberOfRetries,
-		        retryBackOffMs, maximumRetrievalTimeSeconds, maximumConcurrentConnections, maximumConnectionsPerSecond,
-		        maximumMonthsPerConnection);
-
+		final EquityApiConfiguration configuration = new QuandlConfigurationLoader().load();
 		this.api = new QuandlAPI(new QuandlDao(configuration), configuration, new QuandlResponseFormat());
 	}
 
