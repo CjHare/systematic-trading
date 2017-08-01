@@ -71,8 +71,8 @@ public class QuandlConfigurationDao {
 	}
 
 	public EquityApiConfiguration get() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
-		final String apiKey = new ApiKeyDao().load(QUANDL_API_KEY_FILE);
-		final Properties properties = new ConfigurationDao().load(QUANDL_PROPERTIES_FILE);
+		final String apiKey = new ApiKeyDao().get(QUANDL_API_KEY_FILE);
+		final Properties properties = new ConfigurationDao().get(QUANDL_PROPERTIES_FILE);
 
 		final String endpoint = getStringProperty(properties, QuandlProperty.ENDPOINT, endpointValidator);
 		final int numberOfRetries = getIntegerProperty(properties, QuandlProperty.NUMBER_OF_RETRIES,

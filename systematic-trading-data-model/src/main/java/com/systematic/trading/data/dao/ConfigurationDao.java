@@ -52,7 +52,7 @@ public class ConfigurationDao {
 	/**
 	 * Loads the properties from a file avaialble on the classpath.
 	 */
-	public Properties load( final String propertyFile ) throws CannotRetrieveConfigurationException {
+	public Properties get( final String propertyFile ) throws CannotRetrieveConfigurationException {
 		final Properties properties = new Properties();
 
 		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {

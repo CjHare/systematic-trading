@@ -50,7 +50,7 @@ public class ApiKeyDao {
 
 	private static final ClassLoader CLASSPATH = ApiKeyDao.class.getClassLoader();
 
-	public String load( final String keyFileLocation ) throws CannotRetrieveConfigurationException {
+	public String get( final String keyFileLocation ) throws CannotRetrieveConfigurationException {
 		try {
 
 			final URL location = CLASSPATH.getResource(keyFileLocation);
