@@ -58,8 +58,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private static final Logger LOG = LogManager.getLogger(DataServiceUpdaterImpl.class);
 
-	private static final Duration ONE_SECOND = Duration.of(1, ChronoUnit.SECONDS);
+	/** Invoke the clean operation on the throttler, ten times a second.*/
+	private static final Duration THROTTLER_CLEAN_INTERVAL = Duration.of(100, ChronoUnit.MILLIS);
 
+	//TODO this should be a percentage, no?
 	/** Average number of data points above which assumes the month already retrieve covered. */
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
@@ -138,7 +140,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
 		final ExecutorService pool = Executors.newFixedThreadPool(api.getMaximumConcurrentConnections());
 		final BlockingEventCount activeConnectionCount = new BlockingEventCountQueue(
-		        api.getMaximumConnectionsPerSecond(), ONE_SECOND);
+		        api.getMaximumConnectionsPerSecond(), THROTTLER_CLEAN_INTERVAL);
 		final EventCountCleanUp activeConnectionCountCleaner = startEventCountCleaner(activeConnectionCount);
 
 		for (final HistoryRetrievalRequest request : requests) {
@@ -225,7 +227,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 * Spawns a daemon thread to perform the periodic (every second) clean of the event count.
 	 */
 	private EventCountCleanUp startEventCountCleaner( final BlockingEventCount eventCount ) {
-		final EventCountCleanUp throttlerCleanUp = new EventCountCleanUp(eventCount, ONE_SECOND);
+		final EventCountCleanUp throttlerCleanUp = new EventCountCleanUp(eventCount, THROTTLER_CLEAN_INTERVAL);
 		final Thread cleanUp = new Thread(throttlerCleanUp);
 		cleanUp.setDaemon(true);
 		cleanUp.start();
