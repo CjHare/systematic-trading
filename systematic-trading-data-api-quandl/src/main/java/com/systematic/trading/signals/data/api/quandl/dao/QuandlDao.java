@@ -43,10 +43,10 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.WikisDatabase;
-import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
@@ -75,17 +75,17 @@ public class QuandlDao {
 	/** Staggered wait time between retry attempts.*/
 	private final int retryBackoffMs;
 
-	public QuandlDao( final QuandlConfiguration quandl ) {
+	public QuandlDao( final EquityApiConfiguration configuration ) {
 
 		// Registering the provider for POJO -> JSON
 		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
 
 		// End point target root
-		this.root = ClientBuilder.newClient(clientConfig).target(quandl.getEndpoint());
+		this.root = ClientBuilder.newClient(clientConfig).target(configuration.getEndpoint());
 
-		this.apiKey = quandl.getApiKey();
-		this.numberOfRetries = quandl.getNumberOfRetries();
-		this.retryBackoffMs = quandl.getRetryBackOffMs();
+		this.apiKey = configuration.getApiKey();
+		this.numberOfRetries = configuration.getNumberOfRetries();
+		this.retryBackoffMs = configuration.getRetryBackOffMs();
 	}
 
 	public QuandlResponseResource get( final String tickerSymbol, final LocalDate inclusiveStartDate,

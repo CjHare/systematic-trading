@@ -29,12 +29,14 @@
  */
 package com.systematic.trading.signals.data.api.quandl.configuration;
 
+import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
+
 /**
  * Configuration data for the Quandl service.
  * 
  * @author CJ Hare
  */
-public class QuandlConfiguration {
+public class QuandlConfiguration implements EquityApiConfiguration {
 
 	private final String endpoint;
 	private final String apiKey;
@@ -58,46 +60,42 @@ public class QuandlConfiguration {
 		this.maximumMonthsPerConnection = maximumMonthsPerConnection;
 	}
 
-	/**
-	 * @return base URL for the Quandl web service.
-	 */
+	@Override
 	public String getEndpoint() {
 		return endpoint;
 	}
 
-	/**
-	 * @return key to be used when using Quandl's API.
-	 */
+	@Override
 	public String getApiKey() {
 		return apiKey;
 	}
 
-	/**
-	 * @return number of times to attempt a single call to Quandl.
-	 */
+	@Override
 	public int getNumberOfRetries() {
 		return numberOfRetries;
 	}
 
-	/**
-	 * @return time staggering for the retries.
-	 */
+	@Override
 	public int getRetryBackOffMs() {
 		return retryBackOffMs;
 	}
 
+	@Override
 	public int getMaximumRetrievalTimeSeconds() {
 		return maximumRetrievalTimeSeconds;
 	}
 
+	@Override
 	public int getMaximumConcurrentConnections() {
 		return maximumConcurrentConnections;
 	}
 
+	@Override
 	public int getMaximumConnectionsPerSecond() {
 		return maximumConnectionsPerSecond;
 	}
 
+	@Override
 	public int getMaximumMonthsPerConnection() {
 		return maximumMonthsPerConnection;
 	}

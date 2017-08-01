@@ -41,6 +41,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.data.api.EquityApi;
+import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.collections.BlockingEventCountQueue;
 import com.systematic.trading.data.concurrent.EventCountCleanUp;
@@ -96,7 +97,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		//TODO validation of the required properties needed for each API
 		//TODO move the configuration reading elsewhereW
 
-		final QuandlConfiguration configuration = new QuandlConfiguration(endpoint, apiKey, numberOfRetries,
+		final EquityApiConfiguration configuration = new QuandlConfiguration(endpoint, apiKey, numberOfRetries,
 		        retryBackOffMs, maximumRetrievalTimeSeconds, maximumConcurrentConnections, maximumConnectionsPerSecond,
 		        maximumMonthsPerConnection);
 
