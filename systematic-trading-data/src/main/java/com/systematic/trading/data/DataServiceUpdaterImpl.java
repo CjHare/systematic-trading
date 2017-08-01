@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.data;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
@@ -46,10 +45,11 @@ import com.systematic.trading.data.collections.BlockingEventCountQueue;
 import com.systematic.trading.data.concurrent.EventCountCleanUp;
 import com.systematic.trading.data.dao.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
+import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.exception.ConfigurationValidationException;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
-import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfigurationLoader;
+import com.systematic.trading.signals.data.api.quandl.dao.QuandlConfigurationDao;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 
@@ -68,9 +68,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private final EquityApi api;
 
-	public DataServiceUpdaterImpl() throws IOException, ConfigurationValidationException {
+	public DataServiceUpdaterImpl() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 
-		final EquityApiConfiguration configuration = new QuandlConfigurationLoader().load();
+		final EquityApiConfiguration configuration = new QuandlConfigurationDao().get();
 		this.api = new QuandlAPI(new QuandlDao(configuration), configuration, new QuandlResponseFormat());
 	}
 

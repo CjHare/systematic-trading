@@ -27,25 +27,27 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.quandl.configuration;
+package com.systematic.trading.signals.data.api.quandl.dao;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
-import com.systematic.trading.data.configuration.ConfigurationLoader;
 import com.systematic.trading.data.configuration.ConfigurationValidator;
 import com.systematic.trading.data.configuration.IntegerConfigurationValidator;
-import com.systematic.trading.data.configuration.KeyLoader;
 import com.systematic.trading.data.configuration.UrlConfigurationValidator;
+import com.systematic.trading.data.dao.ApiKeyDao;
+import com.systematic.trading.data.dao.ConfigurationDao;
+import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.ConfigurationValidationException;
+import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
+import com.systematic.trading.signals.data.api.quandl.configuration.QuandlProperty;
 
 /**
  * Deals with the loading and validation of the Quandl configuration.
  * 
  * @author CJ Hare
  */
-public class QuandlConfigurationLoader {
+public class QuandlConfigurationDao {
 
 	private static final String QUANDL_PROPERTIES_FILE = "quandl.properties";
 	private static final String QUANDL_API_KEY_FILE = "quandl.key";
@@ -58,7 +60,7 @@ public class QuandlConfigurationLoader {
 	private final ConfigurationValidator<Integer> maximumMonthsPerConnectionsValidator;
 	private final ConfigurationValidator<String> endpointValidator;
 
-	public QuandlConfigurationLoader() {
+	public QuandlConfigurationDao() {
 		this.endpointValidator = new UrlConfigurationValidator();
 		this.numberOfRetiresValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
 		this.retryBackOffValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
@@ -68,9 +70,9 @@ public class QuandlConfigurationLoader {
 		this.maximumMonthsPerConnectionsValidator = new IntegerConfigurationValidator(1, Integer.MAX_VALUE);
 	}
 
-	public EquityApiConfiguration load() throws IOException, ConfigurationValidationException {
-		final String apiKey = new KeyLoader().load(QUANDL_API_KEY_FILE);
-		final Properties properties = new ConfigurationLoader().load(QUANDL_PROPERTIES_FILE);
+	public EquityApiConfiguration get() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+		final String apiKey = new ApiKeyDao().load(QUANDL_API_KEY_FILE);
+		final Properties properties = new ConfigurationDao().load(QUANDL_PROPERTIES_FILE);
 
 		final String endpoint = getStringProperty(properties, QuandlProperty.ENDPOINT, endpointValidator);
 		final int numberOfRetries = getIntegerProperty(properties, QuandlProperty.NUMBER_OF_RETRIES,

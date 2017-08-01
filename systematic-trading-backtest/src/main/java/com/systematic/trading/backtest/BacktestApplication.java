@@ -89,7 +89,7 @@ public class BacktestApplication {
 
 		try {
 			this.updateService = new DataServiceUpdaterImpl();
-		} catch (IOException e) {
+		} catch (ServiceException e) {
 			throw new BacktestInitialisationException(e);
 		}
 	}

@@ -28,20 +28,24 @@ package com.systematic.trading.data.exception;
 import com.systematic.trading.exception.ServiceException;
 
 /**
- * Problem encountered during using the stock API.
+ * Problem encountered during retrieving the configuration data.
  * 
  * @author CJ Hare
  */
-public class CannotRetrieveDataException extends ServiceException {
-	
+public class CannotRetrieveConfigurationException extends ServiceException {
+
 	/** Serialization identity. */
 	private static final long serialVersionUID = 1L;
 
-	public CannotRetrieveDataException( final String message, final Throwable cause ) {
+	public CannotRetrieveConfigurationException( final String message, final Throwable cause ) {
 		super(message, cause);
 	}
 
-	public CannotRetrieveDataException( final String message ) {
+	public CannotRetrieveConfigurationException( final Throwable cause ) {
+		super(cause);
+	}
+
+	public CannotRetrieveConfigurationException( final String message ) {
 		super(message);
 	}
 }
