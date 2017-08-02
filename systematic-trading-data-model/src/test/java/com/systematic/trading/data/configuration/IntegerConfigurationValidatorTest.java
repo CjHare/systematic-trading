@@ -29,59 +29,74 @@
  */
 package com.systematic.trading.data.configuration;
 
+import java.util.Random;
+
+import org.junit.Test;
+
 import com.systematic.trading.data.exception.ConfigurationValidationException;
 
 /**
- * Validates input as a integer.
+ * IntegerConfigurationValidator needs to validate String parsing with an acceptable range.
  * 
  * @author CJ Hare
  */
-public class IntegerConfigurationValidator implements ConfigurationValidator<Integer> {
+public class IntegerConfigurationValidatorTest {
 
-	private final int minimumInclusive;
-	private final int maximumInclusive;
+	private static final int MAX = Integer.MAX_VALUE - 1;
+	private static final int MIN = Integer.MIN_VALUE + 1;
 
-	/**
-	 * Input must be within the given bounds,
-	 */
-	public IntegerConfigurationValidator( final int minimumInclusive, final int maximumInclusive ) {
-		this.minimumInclusive = minimumInclusive;
-		this.maximumInclusive = maximumInclusive;
+	private IntegerConfigurationValidator validator;
 
-		verifyMinimumLessThenMaximum();
+	@Test
+	public void onMinimum() throws ConfigurationValidationException {
+		final int minimumValue = random();
+
+		setupValidator(minimumValue, MAX);
+
+		validate(minimumValue);
 	}
 
-	@Override
-	public Integer validate( final String input ) throws ConfigurationValidationException {
+	@Test(expected = ConfigurationValidationException.class)
+	public void belowMinimum() throws ConfigurationValidationException {
+		final int minimumValue = random();
 
-		final Integer value;
+		setupValidator(minimumValue, MAX);
 
-		try {
-			value = Integer.parseInt((String) input);
-		} catch (final NumberFormatException e) {
-			throw new ConfigurationValidationException(String.format(
-			        "Expecting either an String value containing an Integer to parse, but given: \"%s\"", input));
-		}
-
-		if (isOutsideRange(value)) {
-			throw new ConfigurationValidationException(
-			        String.format("Expecting an Integer within inclusive range of: %s to %s, but given: %s",
-			                minimumInclusive, maximumInclusive, input));
-
-		}
-
-		return value;
+		validate(minimumValue - 1);
 	}
 
-	private boolean isOutsideRange( final int value ) {
-		return value < minimumInclusive || value > maximumInclusive;
+	@Test
+	public void onMaximum() throws ConfigurationValidationException {
+		final int maximumValue = random();
+
+		setupValidator(MIN, maximumValue);
+
+		validate(maximumValue);
 	}
 
-	private void verifyMinimumLessThenMaximum() {
-		if (minimumInclusive > maximumInclusive) {
-			throw new IllegalArgumentException(
-			        String.format("Minimum is expected to be less then the maximum, minumum: %s, maximum: %s",
-			                minimumInclusive, maximumInclusive));
-		}
+	@Test(expected = ConfigurationValidationException.class)
+	public void aboveMaximum() throws ConfigurationValidationException {
+		final int maximumValue = random();
+
+		setupValidator(MIN, maximumValue);
+
+		validate(maximumValue + 1);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void minimumAboveMaximum() {
+		setupValidator(MAX, MIN);
+	}
+
+	private void validate( final int value ) throws ConfigurationValidationException {
+		validator.validate(String.valueOf(value));
+	}
+
+	private int random() {
+		return new Random().nextInt(MAX);
+	}
+
+	private void setupValidator( final int minimum, final int maximum ) {
+		validator = new IntegerConfigurationValidator(minimum, maximum);
 	}
 }
