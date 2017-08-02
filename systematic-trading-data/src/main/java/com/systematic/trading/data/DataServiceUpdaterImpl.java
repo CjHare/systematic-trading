@@ -49,8 +49,8 @@ import com.systematic.trading.data.exception.CannotRetrieveConfigurationExceptio
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.exception.ConfigurationValidationException;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
-import com.systematic.trading.signals.data.api.quandl.dao.QuandlConfigurationDao;
-import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
+import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
+import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlApiDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
@@ -70,8 +70,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	public DataServiceUpdaterImpl() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 
-		final EquityApiConfiguration configuration = new QuandlConfigurationDao().get();
-		this.api = new QuandlAPI(new QuandlDao(configuration), configuration, new QuandlResponseFormat());
+		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().get();
+		this.api = new QuandlAPI(new HttpQuandlApiDao(configuration), configuration, new QuandlResponseFormat());
 	}
 
 	@Override

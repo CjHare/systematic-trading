@@ -29,14 +29,6 @@
  */
 package com.systematic.trading.data.dao;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Paths;
-import java.util.List;
-
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 
 /**
@@ -44,34 +36,14 @@ import com.systematic.trading.data.exception.CannotRetrieveConfigurationExceptio
  * 
  * @author CJ Hare
  */
-public class ApiKeyDao {
-	private static final String ERROR_MISSING_KEY_FILE = "Missing api key file, sign up for your desired service and put the key into a file named %s on the classpath";
-	private static final String ERROR_EMPTY_KEY_FILE = "Problem reading API key from file at %s";
+public interface ApiKeyDao {
 
-	private static final ClassLoader CLASSPATH = ApiKeyDao.class.getClassLoader();
-
-	public String get( final String keyFileLocation ) throws CannotRetrieveConfigurationException {
-		try {
-
-			final URL location = CLASSPATH.getResource(keyFileLocation);
-
-			if (location == null) {
-				throw new CannotRetrieveConfigurationException(String.format(ERROR_MISSING_KEY_FILE, keyFileLocation));
-			}
-
-			List<String> lines = Files.readAllLines(Paths.get(location.toURI()));
-
-			if (lines.size() != 1) {
-				throw new CannotRetrieveConfigurationException(String.format(ERROR_EMPTY_KEY_FILE, keyFileLocation));
-			}
-
-			return lines.get(0);
-		} catch (final NoSuchFileException | URISyntaxException e) {
-			throw new CannotRetrieveConfigurationException(
-			        String.format(String.format(ERROR_MISSING_KEY_FILE, keyFileLocation), keyFileLocation));
-
-		} catch (final IOException e) {
-			throw new CannotRetrieveConfigurationException(String.format(ERROR_EMPTY_KEY_FILE, keyFileLocation), e);
-		}
-	}
+	/**
+	 * Retrieves the API Key.
+	 * 
+	 * @param keyFileLocation file containing only the API key.
+	 * @return API key.
+	 * @throws CannotRetrieveConfigurationException problem encountered retrieving the API key.
+	 */
+	String get( String keyFileLocation ) throws CannotRetrieveConfigurationException;
 }

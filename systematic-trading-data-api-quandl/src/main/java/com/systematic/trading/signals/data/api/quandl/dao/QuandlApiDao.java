@@ -27,25 +27,33 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.dao;
+package com.systematic.trading.signals.data.api.quandl.dao;
 
-import java.util.Properties;
+import java.time.LocalDate;
 
-import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
+import com.systematic.trading.data.collections.BlockingEventCount;
+import com.systematic.trading.data.exception.CannotRetrieveDataException;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
- * Common behaviour for retrieving a configuration properties.
+ * Data Access Object for retrieving data from the Quandl API.
+ * 
+ * DAO's responsibility is ensure the Quandl reply contains the expected JSON format, not the data integrity.
  * 
  * @author CJ Hare
  */
-public interface ConfigurationDao {
+public interface QuandlApiDao {
 
 	/**
-	 * Retrieves the properties from a given location.
+	 * Retrieve historical equity price data from Quandl.
 	 * 
-	 * @param propertyFile file containing properties to retrieve.
-	 * @return properties contained within.
-	 * @throws CannotRetrieveConfigurationException problem encountered retrieving properties.
+	 * @param tickerSymbol identifier of the equity to retrieve.
+	 * @param inclusiveStartDate the first day of the historical data to retrieve.
+	 * @param exclusiveEndDate the last day of the historical data to retrieve.
+	 * @param throttler synchronization object to limit the connections to the Quandl API.
+	 * @return retrieved Quandl data structure.
+	 * @throws CannotRetrieveDataException problem encountered during connecting to the Quandl API.
 	 */
-	Properties get( String propertyFile ) throws CannotRetrieveConfigurationException;
+	QuandlResponseResource get( String tickerSymbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate,
+	        BlockingEventCount throttler ) throws CannotRetrieveDataException;
 }

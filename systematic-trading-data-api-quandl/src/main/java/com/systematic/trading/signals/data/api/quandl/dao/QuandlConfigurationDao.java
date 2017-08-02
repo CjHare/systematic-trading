@@ -29,80 +29,23 @@
  */
 package com.systematic.trading.signals.data.api.quandl.dao;
 
-import java.util.Properties;
-
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
-import com.systematic.trading.data.configuration.ConfigurationValidator;
-import com.systematic.trading.data.configuration.IntegerConfigurationValidator;
-import com.systematic.trading.data.configuration.UrlConfigurationValidator;
-import com.systematic.trading.data.dao.ApiKeyDao;
-import com.systematic.trading.data.dao.ConfigurationDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.ConfigurationValidationException;
-import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
-import com.systematic.trading.signals.data.api.quandl.configuration.QuandlProperty;
 
 /**
  * Deals with the loading and validation of the Quandl configuration.
  * 
  * @author CJ Hare
  */
-public class QuandlConfigurationDao {
+public interface QuandlConfigurationDao {
 
-	private static final String QUANDL_PROPERTIES_FILE = "quandl.properties";
-	private static final String QUANDL_API_KEY_FILE = "quandl.key";
-
-	private final ConfigurationValidator<Integer> numberOfRetiresValidator;
-	private final ConfigurationValidator<Integer> retryBackOffValidator;
-	private final ConfigurationValidator<Integer> maximumRetrievalTimeValidator;
-	private final ConfigurationValidator<Integer> maximumConcurrentConnectionValidator;
-	private final ConfigurationValidator<Integer> maximumConnectionsPerSecondValidator;
-	private final ConfigurationValidator<Integer> maximumMonthsPerConnectionsValidator;
-	private final ConfigurationValidator<String> endpointValidator;
-
-	public QuandlConfigurationDao() {
-		this.endpointValidator = new UrlConfigurationValidator();
-		this.numberOfRetiresValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
-		this.retryBackOffValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
-		this.maximumRetrievalTimeValidator = new IntegerConfigurationValidator(500, Integer.MAX_VALUE);
-		this.maximumConcurrentConnectionValidator = new IntegerConfigurationValidator(1, Integer.MAX_VALUE);
-		this.maximumConnectionsPerSecondValidator = new IntegerConfigurationValidator(1, Integer.MAX_VALUE);
-		this.maximumMonthsPerConnectionsValidator = new IntegerConfigurationValidator(1, Integer.MAX_VALUE);
-	}
-
-	public EquityApiConfiguration get() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
-		final String apiKey = new ApiKeyDao().get(QUANDL_API_KEY_FILE);
-		final Properties properties = new ConfigurationDao().get(QUANDL_PROPERTIES_FILE);
-
-		final String endpoint = getStringProperty(properties, QuandlProperty.ENDPOINT, endpointValidator);
-		final int numberOfRetries = getIntegerProperty(properties, QuandlProperty.NUMBER_OF_RETRIES,
-		        numberOfRetiresValidator);
-		final int retryBackOffMs = getIntegerProperty(properties, QuandlProperty.RETRY_BACKOFF_MS,
-		        retryBackOffValidator);
-		final int maximumRetrievalTimeSeconds = getIntegerProperty(properties,
-		        QuandlProperty.MAXIMUM_RETRIEVAL_TIME_SECONDS, maximumRetrievalTimeValidator);
-		final int maximumConcurrentConnections = getIntegerProperty(properties,
-		        QuandlProperty.MAXIMUM_CONCURRENT_CONNECTIONS, maximumConcurrentConnectionValidator);
-		final int maximumConnectionsPerSecond = getIntegerProperty(properties,
-		        QuandlProperty.MAXIMUM_CONNECTIONS_PER_SECOND, maximumConnectionsPerSecondValidator);
-		final int maximumMonthsPerConnection = getIntegerProperty(properties,
-		        QuandlProperty.MAXIMUM_MONTHS_RETRIEVED_PER_CONNECTION, maximumMonthsPerConnectionsValidator);
-
-		return new QuandlConfiguration(endpoint, apiKey, numberOfRetries, retryBackOffMs, maximumRetrievalTimeSeconds,
-		        maximumConcurrentConnections, maximumConnectionsPerSecond, maximumMonthsPerConnection);
-	}
-
-	private String getStringProperty( final Properties properties, final QuandlProperty property,
-	        final ConfigurationValidator<String> validator ) throws ConfigurationValidationException {
-		return validator.validate(getProperty(properties, property));
-	}
-
-	private int getIntegerProperty( final Properties properties, final QuandlProperty property,
-	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
-		return validator.validate(getProperty(properties, property));
-	}
-
-	private String getProperty( final Properties properties, final QuandlProperty property ) {
-		return properties.getProperty(property.getKey());
-	}
+	/**
+	 * Retrieves the Quandll configuration.
+	 * 
+	 * @return configuration data for the Quandl API.
+	 * @throws ConfigurationValidationException problem encountered during validation.
+	 * @throws CannotRetrieveConfigurationException problem encountered during retrieval.
+	 */
+	EquityApiConfiguration get() throws ConfigurationValidationException, CannotRetrieveConfigurationException;
 }

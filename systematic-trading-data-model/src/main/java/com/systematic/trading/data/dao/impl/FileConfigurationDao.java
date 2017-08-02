@@ -27,25 +27,40 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.dao;
+package com.systematic.trading.data.dao.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.systematic.trading.data.dao.ConfigurationDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 
 /**
- * Common behaviour for retrieving a configuration properties.
+ * 
  * 
  * @author CJ Hare
  */
-public interface ConfigurationDao {
+public class FileConfigurationDao implements ConfigurationDao {
 
-	/**
-	 * Retrieves the properties from a given location.
-	 * 
-	 * @param propertyFile file containing properties to retrieve.
-	 * @return properties contained within.
-	 * @throws CannotRetrieveConfigurationException problem encountered retrieving properties.
-	 */
-	Properties get( String propertyFile ) throws CannotRetrieveConfigurationException;
+	private static final ClassLoader CLASSPATH = ConfigurationDao.class.getClassLoader();
+
+	private static final Logger LOG = LogManager.getLogger(ConfigurationDao.class);
+
+	@Override
+	public Properties get( final String propertyFile ) throws CannotRetrieveConfigurationException {
+		final Properties properties = new Properties();
+
+		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {
+			properties.load(input);
+		} catch (IOException e) {
+			LOG.error("{}", () -> String.format("Cannt load property file %s, %s", propertyFile, e.getMessage()));
+			throw new CannotRetrieveConfigurationException(e);
+		}
+
+		return properties;
+	}
 }

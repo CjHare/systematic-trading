@@ -37,7 +37,7 @@ import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.data.api.quandl.dao.QuandlDao;
+import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
@@ -48,7 +48,7 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResour
  */
 public class QuandlAPI implements EquityApi {
 
-	private final QuandlDao dao;
+	private final QuandlApiDao dao;
 
 	private final QuandlResponseFormat dataFormat;
 
@@ -57,7 +57,7 @@ public class QuandlAPI implements EquityApi {
 	private final int maximumRetrievalTimeSeconds;
 	private final int maximumConnectionsPerSecond;
 
-	public QuandlAPI( final QuandlDao dao, final EquityApiConfiguration configuration,
+	public QuandlAPI( final QuandlApiDao dao, final EquityApiConfiguration configuration,
 	        final QuandlResponseFormat dataFormat ) {
 		this.dao = dao;
 		this.dataFormat = dataFormat;

@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.quandl.dao;
+package com.systematic.trading.signals.data.api.quandl.dao.impl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -47,20 +47,19 @@ import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.WikisDatabase;
+import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
- * Data Access Object for retrieving data from the Quandl API.
- * 
- * DAO's responsibility is ensure the Quandl reply contains the expected JSON format, not the data integrity.
+ * HTTP connection to the Quandl API.
  * 
  * @author CJ Hare
  */
-public class QuandlDao {
+public class HttpQuandlApiDao implements QuandlApiDao {
 
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyMMdd");
 
-	private static final Logger LOG = LogManager.getLogger(QuandlDao.class);
+	private static final Logger LOG = LogManager.getLogger(QuandlApiDao.class);
 	private static final int HTTP_OK = 200;
 
 	/** Base of the Restful end point. */
@@ -75,7 +74,7 @@ public class QuandlDao {
 	/** Staggered wait time between retry attempts.*/
 	private final int retryBackoffMs;
 
-	public QuandlDao( final EquityApiConfiguration configuration ) {
+	public HttpQuandlApiDao( final EquityApiConfiguration configuration ) {
 
 		// Registering the provider for POJO -> JSON
 		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
@@ -88,6 +87,7 @@ public class QuandlDao {
 		this.retryBackoffMs = configuration.getRetryBackOffMs();
 	}
 
+	@Override
 	public QuandlResponseResource get( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate, final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 		final WebTarget url = createUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
