@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.output.elastic;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
+import com.systematic.trading.backtest.output.elastic.dao.impl.HttpElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.index.brokerage.ElasticBrokerageIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.cash.ElasticCashIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.equity.ElasticEquityIndex;
@@ -59,7 +60,7 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	private final ElasticEquityIndex equityIndex;
 
 	public ElasticBacktestOutput( final BacktestBatchId id ) {
-		final ElasticDao dao = new ElasticDao();
+		final ElasticDao dao = new HttpElasticDao();
 		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(id, dao);
 		this.cashIndex = new ElasticCashIndex(id, dao);
 		this.orderIndex = new ElasticOrderIndex(id, dao);
