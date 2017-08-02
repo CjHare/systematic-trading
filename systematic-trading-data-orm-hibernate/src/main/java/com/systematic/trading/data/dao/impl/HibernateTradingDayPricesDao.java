@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.dao;
+package com.systematic.trading.data.dao.impl;
 
 import java.math.BigInteger;
 import java.sql.Date;
@@ -39,6 +39,7 @@ import org.hibernate.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.data.util.TradingDayPricesUtil;
 
