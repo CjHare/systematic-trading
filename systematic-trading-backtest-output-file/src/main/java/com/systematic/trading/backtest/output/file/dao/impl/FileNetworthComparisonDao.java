@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
+package com.systematic.trading.backtest.output.file.dao.impl;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -33,21 +33,20 @@ import java.util.StringJoiner;
 
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.BacktestSimulationDates;
+import com.systematic.trading.backtest.output.file.dao.NetworthComparisonDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.maths.formula.CompoundAnnualGrowthRate;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 
 /**
- * Persists the comparison displays into a file.
+ * Formats the comparison displays ready for output.
  * <p/>
- * Assumption is the directory is already empty.
  * 
  * @author CJ Hare
  */
-public class ComparisonFileDao implements NetWorthEventListener {
+public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
 	private static final DecimalFormat FOUR_DECIMAL_PLACES = new DecimalFormat(".0000");
@@ -61,7 +60,7 @@ public class ComparisonFileDao implements NetWorthEventListener {
 	private final FileMultithreading file;
 	private final MathContext mathContext;
 
-	public ComparisonFileDao( final BacktestBatchId batchId, final BacktestSimulationDates dates,
+	public FileNetworthComparisonDao( final BacktestBatchId batchId, final BacktestSimulationDates dates,
 	        final EventStatistics statistics, final FileMultithreading file, final MathContext mathContext ) {
 		this.batchId = batchId;
 		this.mathContext = mathContext;

@@ -23,36 +23,37 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
+package com.systematic.trading.backtest.output.file.dao.impl;
 
 import java.text.DecimalFormat;
 
+import com.systematic.trading.backtest.output.file.dao.EquityEventDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
-import com.systematic.trading.simulation.cash.event.CashEvent;
-import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.equity.event.EquityEvent;
 
 /**
  * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public class CashEventFileDao implements CashEventListener {
+public class FileEquityEventDao implements EquityEventDao {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
 	private final FileMultithreading file;
 
-	public CashEventFileDao( final FileMultithreading file ) {
+	public FileEquityEventDao( final FileMultithreading file ) {
 		this.file = file;
 
-		file.write("=== Cash Events ===\n");
+		file.write("=== Equity Events ===\n");
 	}
 
 	@Override
-	public void event( final CashEvent event ) {
-		file.write(String.format("Cash Account - %s: %s - funds %s -> %s on %s%n", event.getType(),
-		        TWO_DECIMAL_PLACES.format(event.getAmount()), TWO_DECIMAL_PLACES.format(event.getFundsBefore()),
-		        TWO_DECIMAL_PLACES.format(event.getFundsAfter()), event.getTransactionDate()));
+	public void event( EquityEvent event ) {
+		file.write(String.format("Equity Event - %s: %s - equity balance %s -> %s on %s%n", event.getType(),
+		        TWO_DECIMAL_PLACES.format(event.getEquityAmount()),
+		        TWO_DECIMAL_PLACES.format(event.getStartingEquityBalance()),
+		        TWO_DECIMAL_PLACES.format(event.getEndEquityBalance()), event.getTransactionDate()));
 	}
 }

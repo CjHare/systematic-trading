@@ -23,11 +23,12 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
+package com.systematic.trading.backtest.output.file.dao.impl;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
+import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
@@ -38,7 +39,7 @@ import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestme
  * 
  * @author CJ Hare
  */
-public class NetWorthSummaryFileDao implements NetWorthSummaryDao {
+public class FileNetWorthSummaryDao implements NetWorthSummaryDao {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
@@ -50,7 +51,7 @@ public class NetWorthSummaryFileDao implements NetWorthSummaryDao {
 	/** The last net worth recording, which makes it into the summary. */
 	private NetWorthEvent lastEvent;
 
-	public NetWorthSummaryFileDao( final CumulativeReturnOnInvestment cumulativeRoi,
+	public FileNetWorthSummaryDao( final CumulativeReturnOnInvestment cumulativeRoi,
 	        final FileMultithreading file ) {
 		this.cumulativeRoi = cumulativeRoi;
 		this.file = file;

@@ -29,9 +29,9 @@ import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.output.file.dao.BrokerageEventFileDao;
-import com.systematic.trading.backtest.output.file.dao.CashEventFileDao;
 import com.systematic.trading.backtest.output.file.dao.OrderEventFileDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileBrokerageEventDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileCashEventDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
@@ -59,9 +59,9 @@ public class EventListenerOutput implements CashEventListener, OrderEventListene
 
 		file.write(createHeaderOutput(tradingData, dates));
 
-		this.cashEventListener = new CashEventFileDao(file);
+		this.cashEventListener = new FileCashEventDao(file);
 		this.orderEventListener = new OrderEventFileDao(file);
-		this.brokerageEventListener = new BrokerageEventFileDao(file);
+		this.brokerageEventListener = new FileBrokerageEventDao(file);
 	}
 
 	private String createHeaderOutput( final TickerSymbolTradingData tradingData,

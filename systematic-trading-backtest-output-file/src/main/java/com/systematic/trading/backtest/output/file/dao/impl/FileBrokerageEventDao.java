@@ -23,27 +23,27 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
+package com.systematic.trading.backtest.output.file.dao.impl;
 
 import java.text.DecimalFormat;
 
+import com.systematic.trading.backtest.output.file.dao.BrokerageEventDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 
 /**
  * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public class BrokerageEventFileDao implements BrokerageEventListener {
+public class FileBrokerageEventDao implements BrokerageEventDao {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
 	private final FileMultithreading file;
 
-	public BrokerageEventFileDao( final FileMultithreading file ) {
+	public FileBrokerageEventDao( final FileMultithreading file ) {
 		this.file = file;
 
 		file.write("=== Brokerage Events ===\n");

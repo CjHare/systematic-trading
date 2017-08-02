@@ -23,30 +23,36 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
+package com.systematic.trading.backtest.output.file.dao.impl;
 
+import java.text.DecimalFormat;
+
+import com.systematic.trading.backtest.output.file.dao.CashEventDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
-import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
-import com.systematic.trading.signals.model.event.SignalAnalysisListener;
+import com.systematic.trading.simulation.cash.event.CashEvent;
 
 /**
- * Interested in displaying signal analysis events.
+ * Simple output to the console for the events.
  * 
  * @author CJ Hare
  */
-public class SignalAnalysisFileDao implements SignalAnalysisListener {
+public class FileCashEventDao implements CashEventDao {
+
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
 	/** Display responsible for handling the file output. */
 	private final FileMultithreading file;
 
-	public SignalAnalysisFileDao( final FileMultithreading file ) {
+	public FileCashEventDao( final FileMultithreading file ) {
 		this.file = file;
 
-		file.write("=== Signal Analysis Events ===\n");
+		file.write("=== Cash Events ===\n");
 	}
 
 	@Override
-	public void event( final SignalAnalysisEvent event ) {
-		file.write(String.format("Signal event: %s on date: %s%n", event.getSignalType(), event.getSignalDate()));
+	public void event( final CashEvent event ) {
+		file.write(String.format("Cash Account - %s: %s - funds %s -> %s on %s%n", event.getType(),
+		        TWO_DECIMAL_PLACES.format(event.getAmount()), TWO_DECIMAL_PLACES.format(event.getFundsBefore()),
+		        TWO_DECIMAL_PLACES.format(event.getFundsAfter()), event.getTransactionDate()));
 	}
 }

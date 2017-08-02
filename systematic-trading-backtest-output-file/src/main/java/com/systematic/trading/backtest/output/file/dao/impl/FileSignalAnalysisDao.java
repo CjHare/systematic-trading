@@ -23,37 +23,30 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
+package com.systematic.trading.backtest.output.file.dao.impl;
 
-import java.text.DecimalFormat;
-
+import com.systematic.trading.backtest.output.file.dao.SignalAnalysisDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
-import com.systematic.trading.simulation.equity.event.EquityEvent;
-import com.systematic.trading.simulation.equity.event.EquityEventListener;
+import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 
 /**
- * Simple output to the console for the events.
+ * Interested in displaying signal analysis events.
  * 
  * @author CJ Hare
  */
-public class EquityEventFileDao implements EquityEventListener {
-
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
+public class FileSignalAnalysisDao implements SignalAnalysisDao {
 
 	/** Display responsible for handling the file output. */
 	private final FileMultithreading file;
 
-	public EquityEventFileDao( final FileMultithreading file ) {
+	public FileSignalAnalysisDao( final FileMultithreading file ) {
 		this.file = file;
 
-		file.write("=== Equity Events ===\n");
+		file.write("=== Signal Analysis Events ===\n");
 	}
 
 	@Override
-	public void event( EquityEvent event ) {
-		file.write(String.format("Equity Event - %s: %s - equity balance %s -> %s on %s%n", event.getType(),
-		        TWO_DECIMAL_PLACES.format(event.getEquityAmount()),
-		        TWO_DECIMAL_PLACES.format(event.getStartingEquityBalance()),
-		        TWO_DECIMAL_PLACES.format(event.getEndEquityBalance()), event.getTransactionDate()));
+	public void event( final SignalAnalysisEvent event ) {
+		file.write(String.format("Signal event: %s on date: %s%n", event.getSignalType(), event.getSignalDate()));
 	}
 }

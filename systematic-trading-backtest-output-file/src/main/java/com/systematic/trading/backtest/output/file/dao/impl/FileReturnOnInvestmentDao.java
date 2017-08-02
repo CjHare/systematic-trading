@@ -23,24 +23,24 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
+package com.systematic.trading.backtest.output.file.dao.impl;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 
+import com.systematic.trading.backtest.output.file.dao.ReturnOnInvestmentDao;
 import com.systematic.trading.backtest.output.file.model.ReturnOnInvestmentPeriod;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 
 /**
  * Outputs the ROI to the console.
  * 
  * @author CJ Hare
  */
-public class ReturnOnInvestmentFileDao implements ReturnOnInvestmentEventListener {
+public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat("#.##");
 
@@ -49,8 +49,7 @@ public class ReturnOnInvestmentFileDao implements ReturnOnInvestmentEventListene
 
 	private final ReturnOnInvestmentPeriod roiType;
 
-	public ReturnOnInvestmentFileDao( final ReturnOnInvestmentPeriod roiType,
-	        final FileMultithreading file ) {
+	public FileReturnOnInvestmentDao( final ReturnOnInvestmentPeriod roiType, final FileMultithreading file ) {
 
 		this.file = file;
 		this.roiType = roiType;

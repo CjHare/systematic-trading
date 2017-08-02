@@ -23,13 +23,14 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
+package com.systematic.trading.backtest.output.file.dao.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.backtest.output.file.util.HistogramOutput;
 import com.systematic.trading.simulation.analysis.statistics.BrokerageEventStatistics;
@@ -43,7 +44,7 @@ import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistic
  * 
  * @author CJ Hare
  */
-public class EventStatisticsFileDao implements EventStatisticsDao {
+public class FileEventStatisticsDao implements EventStatisticsDao {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
 
@@ -54,7 +55,7 @@ public class EventStatisticsFileDao implements EventStatisticsDao {
 
 	private final EventStatistics statistics;
 
-	public EventStatisticsFileDao( final EventStatistics statistics, final FileMultithreading file ) {
+	public FileEventStatisticsDao( final EventStatistics statistics, final FileMultithreading file ) {
 		this.statistics = statistics;
 		this.file = file;
 		this.histogram = new HistogramOutput();

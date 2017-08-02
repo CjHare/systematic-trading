@@ -32,11 +32,11 @@ import java.util.concurrent.ExecutorService;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.BacktestOutput;
-import com.systematic.trading.backtest.output.file.dao.ComparisonFileDao;
 import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
-import com.systematic.trading.backtest.output.file.dao.EventStatisticsFileDao;
 import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
-import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryFileDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileEventStatisticsDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileNetWorthSummaryDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileNetworthComparisonDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
@@ -83,11 +83,11 @@ public class MinimalFileOutputService extends FileOutput implements BacktestOutp
 	        final TradingDayPrices lastTradingDay ) {
 
 		final FileMultithreading statisticsFile = getFileDisplay("/statistics.txt");
-		this.statisticsDisplay = new EventStatisticsFileDao(eventStatistics, statisticsFile);
-		this.netWorthDisplay = new NetWorthSummaryFileDao(cumulativeRoi, statisticsFile);
+		this.statisticsDisplay = new FileEventStatisticsDao(eventStatistics, statisticsFile);
+		this.netWorthDisplay = new FileNetWorthSummaryDao(cumulativeRoi, statisticsFile);
 
 		final FileMultithreading comparisonFile = getFileDisplay("/../summary.txt");
-		netWorthComparisonDisplay = new ComparisonFileDao(batchId, dates, eventStatistics, comparisonFile, mathContext);
+		netWorthComparisonDisplay = new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile, mathContext);
 	}
 
 	private FileMultithreading getFileDisplay( final String suffix ) {

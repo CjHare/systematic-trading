@@ -32,34 +32,35 @@ import java.util.concurrent.ExecutorService;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.BacktestOutput;
-import com.systematic.trading.backtest.output.file.dao.BrokerageEventFileDao;
-import com.systematic.trading.backtest.output.file.dao.CashEventFileDao;
-import com.systematic.trading.backtest.output.file.dao.ComparisonFileDao;
-import com.systematic.trading.backtest.output.file.dao.EquityEventFileDao;
+import com.systematic.trading.backtest.output.file.dao.BrokerageEventDao;
+import com.systematic.trading.backtest.output.file.dao.CashEventDao;
+import com.systematic.trading.backtest.output.file.dao.EquityEventDao;
 import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
-import com.systematic.trading.backtest.output.file.dao.EventStatisticsFileDao;
 import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
-import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryFileDao;
+import com.systematic.trading.backtest.output.file.dao.NetworthComparisonDao;
 import com.systematic.trading.backtest.output.file.dao.OrderEventFileDao;
-import com.systematic.trading.backtest.output.file.dao.ReturnOnInvestmentFileDao;
-import com.systematic.trading.backtest.output.file.dao.SignalAnalysisFileDao;
+import com.systematic.trading.backtest.output.file.dao.ReturnOnInvestmentDao;
+import com.systematic.trading.backtest.output.file.dao.SignalAnalysisDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileBrokerageEventDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileCashEventDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileEquityEventDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileEventStatisticsDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileNetWorthSummaryDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileNetworthComparisonDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileReturnOnInvestmentDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileSignalAnalysisDao;
 import com.systematic.trading.backtest.output.file.model.ReturnOnInvestmentPeriod;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
-import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
-import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEvent;
-import com.systematic.trading.simulation.cash.event.CashEventListener;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
-import com.systematic.trading.simulation.equity.event.EquityEventListener;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
@@ -75,19 +76,19 @@ public class CompleteFileOutputService extends FileOutput implements BacktestOut
 	private final MathContext mathContext;
 	private final String baseDirectory;
 
-	private ReturnOnInvestmentEventListener roiDisplay;
-	private ReturnOnInvestmentEventListener roiDailyDisplay;
-	private ReturnOnInvestmentEventListener roiMonthlyDisplay;
-	private ReturnOnInvestmentEventListener roiYearlyDisplay;
+	private ReturnOnInvestmentDao roiDisplay;
+	private ReturnOnInvestmentDao roiDailyDisplay;
+	private ReturnOnInvestmentDao roiMonthlyDisplay;
+	private ReturnOnInvestmentDao roiYearlyDisplay;
 	private EventListenerOutput eventDisplay;
-	private CashEventListener cashEventDisplay;
-	private BrokerageEventListener brokerageEventDisplay;
+	private CashEventDao cashEventDisplay;
+	private BrokerageEventDao brokerageEventDisplay;
 	private OrderEventListener ordertEventDisplay;
-	private SignalAnalysisListener signalAnalysisDisplay;
+	private SignalAnalysisDao signalAnalysisDisplay;
 	private EventStatisticsDao statisticsDisplay;
 	private NetWorthSummaryDao netWorthDisplay;
-	private NetWorthEventListener netWorthComparisonDisplay;
-	private EquityEventListener equityEventDisplay;
+	private NetworthComparisonDao netWorthComparisonDisplay;
+	private EquityEventDao equityEventDisplay;
 
 	public CompleteFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
 	        final ExecutorService pool, final MathContext mathContext ) throws IOException {
@@ -103,44 +104,45 @@ public class CompleteFileOutputService extends FileOutput implements BacktestOut
 	        final TradingDayPrices lastTradingDay ) {
 
 		final FileMultithreading returnOnInvestmentFile = getFileDisplay("/return-on-investment.txt");
-		this.roiDisplay = new ReturnOnInvestmentFileDao(ReturnOnInvestmentPeriod.ALL, returnOnInvestmentFile);
+		this.roiDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.ALL, returnOnInvestmentFile);
 
 		final FileMultithreading returnOnInvestmentDailyFilen = getFileDisplay("/return-on-investment-daily.txt");
-		this.roiDailyDisplay = new ReturnOnInvestmentFileDao(ReturnOnInvestmentPeriod.DAILY,
+		this.roiDailyDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.DAILY,
 		        returnOnInvestmentDailyFilen);
 
 		final FileMultithreading returnOnInvestmentMonthlyFile = getFileDisplay("/return-on-investment-monthly.txt");
-		this.roiMonthlyDisplay = new ReturnOnInvestmentFileDao(ReturnOnInvestmentPeriod.MONTHLY,
+		this.roiMonthlyDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.MONTHLY,
 		        returnOnInvestmentMonthlyFile);
 
 		final FileMultithreading returnOnInvestmentYearlyFile = getFileDisplay("/return-on-investment-yearly.txt");
-		this.roiYearlyDisplay = new ReturnOnInvestmentFileDao(ReturnOnInvestmentPeriod.YEARLY,
+		this.roiYearlyDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.YEARLY,
 		        returnOnInvestmentYearlyFile);
 
 		final FileMultithreading eventFile = getFileDisplay("/events.txt");
 		this.eventDisplay = new EventListenerOutput(tradingData, dates, eventFile);
 
 		final FileMultithreading cashEventFile = getFileDisplay("/events-cash.txt");
-		this.cashEventDisplay = new CashEventFileDao(cashEventFile);
+		this.cashEventDisplay = new FileCashEventDao(cashEventFile);
 
 		final FileMultithreading orderEventFile = getFileDisplay("/events-order.txt");
 		this.ordertEventDisplay = new OrderEventFileDao(orderEventFile);
 
 		final FileMultithreading brokerageEventFile = getFileDisplay("/events-brokerage.txt");
-		this.brokerageEventDisplay = new BrokerageEventFileDao(brokerageEventFile);
+		this.brokerageEventDisplay = new FileBrokerageEventDao(brokerageEventFile);
 
 		final FileMultithreading equityEventFile = getFileDisplay("/events-equity.txt");
-		this.equityEventDisplay = new EquityEventFileDao(equityEventFile);
+		this.equityEventDisplay = new FileEquityEventDao(equityEventFile);
 
 		final FileMultithreading statisticsFile = getFileDisplay("/statistics.txt");
-		this.statisticsDisplay = new EventStatisticsFileDao(eventStatistics, statisticsFile);
-		this.netWorthDisplay = new NetWorthSummaryFileDao(cumulativeRoi, statisticsFile);
+		this.statisticsDisplay = new FileEventStatisticsDao(eventStatistics, statisticsFile);
+		this.netWorthDisplay = new FileNetWorthSummaryDao(cumulativeRoi, statisticsFile);
 
 		final FileMultithreading signalAnalysisFile = getFileDisplay("/signals.txt");
-		this.signalAnalysisDisplay = new SignalAnalysisFileDao(signalAnalysisFile);
+		this.signalAnalysisDisplay = new FileSignalAnalysisDao(signalAnalysisFile);
 
 		final FileMultithreading comparisonFile = getFileDisplay("/../summary.csv");
-		netWorthComparisonDisplay = new ComparisonFileDao(batchId, dates, eventStatistics, comparisonFile, mathContext);
+		netWorthComparisonDisplay = new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile,
+		        mathContext);
 	}
 
 	private FileMultithreading getFileDisplay( final String suffix ) {
