@@ -57,7 +57,7 @@ public class EventCountCleanUpTest {
 	@Mock
 	private BlockingEventCount ringBuffer;
 
-	private Duration interval = Duration.of(5, ChronoUnit.MILLIS);
+	private Duration interval = Duration.of(50, ChronoUnit.MILLIS);
 
 	@Test
 	public void end() throws InterruptedException {
@@ -85,7 +85,7 @@ public class EventCountCleanUpTest {
 	}
 
 	private void waitForTwoDurations() throws InterruptedException {
-		TimeUnit.MILLISECONDS.sleep(interval.toMillis() * 3 - 1);
+		TimeUnit.MILLISECONDS.sleep(interval.toMillis() * 2 + (interval.toMillis() / 20));
 	}
 
 	private void verifyEnded( final Thread cleanUpThread ) {
