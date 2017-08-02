@@ -29,81 +29,41 @@
  */
 package com.systematic.trading.data.configuration;
 
-import java.util.Random;
-
+import org.junit.Before;
 import org.junit.Test;
 
 import com.systematic.trading.data.exception.ConfigurationValidationException;
 
 /**
- * IntegerConfigurationValidator needs to validate String parsing with an acceptable range.
+ * UrlConfigurationValidator.
  * 
  * @author CJ Hare
  */
-public class IntegerConfigurationValidatorTest {
+public class UrlConfigurationValidatorTest {
 
-	private static final int MAX = Integer.MAX_VALUE - 1;
-	private static final int MIN = Integer.MIN_VALUE + 1;
+	private UrlConfigurationValidator validator;
 
-	private IntegerConfigurationValidator validator;
-
-	@Test
-	public void onMinimum() throws ConfigurationValidationException {
-		final int minimumValue = random();
-
-		setupValidator(minimumValue, MAX);
-
-		validate(minimumValue);
-	}
-
-	@Test(expected = ConfigurationValidationException.class)
-	public void belowMinimum() throws ConfigurationValidationException {
-		final int minimumValue = random();
-
-		setupValidator(minimumValue, MAX);
-
-		validate(minimumValue - 1);
-	}
-
-	@Test
-	public void onMaximum() throws ConfigurationValidationException {
-		final int maximumValue = random();
-
-		setupValidator(MIN, maximumValue);
-
-		validate(maximumValue);
-	}
-
-	@Test(expected = ConfigurationValidationException.class)
-	public void aboveMaximum() throws ConfigurationValidationException {
-		final int maximumValue = random();
-
-		setupValidator(MIN, maximumValue);
-
-		validate(maximumValue + 1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void minimumAboveMaximum() {
-		setupValidator(MAX, MIN);
+	@Before
+	public void setUp() {
+		this.validator = new UrlConfigurationValidator();
 	}
 
 	@Test(expected = ConfigurationValidationException.class)
 	public void noValue() throws ConfigurationValidationException {
-		setupValidator(MIN, MAX);
-
 		validate(null);
 	}
 
-	private void validate( final Integer value ) throws ConfigurationValidationException {
-		validator.validate(String.valueOf(value));
+	@Test
+	public void validUrl() throws ConfigurationValidationException {
+		validate("https://validurl.com");
 	}
 
-	private int random() {
-		return new Random().nextInt(MAX);
+	@Test(expected = ConfigurationValidationException.class)
+	public void invalidUrl() throws ConfigurationValidationException {
+		validate("invalidUrl.com");
 	}
 
-	private void setupValidator( final int minimum, final int maximum ) {
-		validator = new IntegerConfigurationValidator(minimum, maximum);
+	private void validate( final String value ) throws ConfigurationValidationException {
+		validator.validate(value);
 	}
 }
