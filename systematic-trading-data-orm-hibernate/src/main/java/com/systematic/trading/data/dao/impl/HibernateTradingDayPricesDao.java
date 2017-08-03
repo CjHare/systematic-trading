@@ -41,11 +41,13 @@ import org.hibernate.exception.ConstraintViolationException;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.util.HibernateUtil;
-import com.systematic.trading.data.util.TradingDayPricesUtil;
+import com.systematic.trading.data.util.TradingDayPricesParser;
 
 public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 
 	private static final Logger LOG = LogManager.getLogger(HibernateTradingDayPricesDao.class);
+
+	private final TradingDayPricesParser tradingDayPricesParser = new TradingDayPricesParser();
 
 	@Override
 	public void create( final TradingDayPrices[] data ) {
@@ -142,7 +144,7 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		}
 
 		// Convert result entries into the DataPoint
-		return TradingDayPricesUtil.getInstance().parseDataPoint(tickerSymbol, result.get(0));
+		return tradingDayPricesParser.parseDataPoint(tickerSymbol, result.get(0));
 	}
 
 	@Override
@@ -170,7 +172,7 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		// Convert result entries into the DataPoint
 		final TradingDayPrices[] data = new TradingDayPrices[result.size()];
 		for (int i = 0; i < data.length; i++) {
-			data[i] = TradingDayPricesUtil.getInstance().parseDataPoint(tickerSymbol, result.get(i));
+			data[i] = tradingDayPricesParser.parseDataPoint(tickerSymbol, result.get(i));
 		}
 
 		return data;

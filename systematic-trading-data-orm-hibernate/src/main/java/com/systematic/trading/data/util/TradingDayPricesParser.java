@@ -36,16 +36,12 @@ import com.systematic.trading.data.price.HighestEquityPrice;
 import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 
-public class TradingDayPricesUtil {
-
-	private static final TradingDayPricesUtil INSTANCE = new TradingDayPricesUtil();
-
-	private TradingDayPricesUtil() {
-	}
-
-	public static final TradingDayPricesUtil getInstance() {
-		return INSTANCE;
-	}
+/**
+ * Provides utility operations for dealing with TradingDayPrices.
+ * 
+ * @author CJ Hare
+ */
+public class TradingDayPricesParser {
 
 	public TradingDayPrices parseDataPoint( final String tickerSymbol, final Object uncast ) {
 		final Object[] data = (Object[]) uncast;

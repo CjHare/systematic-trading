@@ -81,13 +81,16 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		// Ensure there's a table for the data
 		dao.createTableIfAbsent(tickerSymbol);
 
-		// TODO of partial data, retrieve & discard
-
+		//TODO split the requests into months - check DB whether full month is stored locally (add table / marker)
+		
 		final List<HistoryRetrievalRequest> unfilteredRequests = sliceHistoryRetrievalRequest(tickerSymbol, startDate,
 		        endDate);
 		final List<HistoryRetrievalRequest> filteredRequests = removeRedundantRequests(unfilteredRequests);
 		storeHistoryRetrievalRequests(filteredRequests);
 
+		//TODO refactor, into another class, candidate to put into a job
+		//TODO leave a todo for later implementation / description
+		
 		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 
 		if (!outstandingRequests.isEmpty()) {
@@ -212,14 +215,16 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		List<HistoryRetrievalRequest> filtered = new ArrayList<>();
 
 		for (final HistoryRetrievalRequest request : requests) {
-			filtered = removeIfRedundantRequest(request, filtered);
+			filtered = addOnlyRelevantRequest(request, filtered);
 		}
 
 		return filtered;
 	}
 
-	private List<HistoryRetrievalRequest> removeIfRedundantRequest( final HistoryRetrievalRequest request,
+	private List<HistoryRetrievalRequest> addOnlyRelevantRequest( final HistoryRetrievalRequest request,
 	        final List<HistoryRetrievalRequest> filtered ) {
+
+		//TODO change this, decision on when request is relevant
 
 		final String tickerSymbol = request.getTickerSymbol();
 		final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
@@ -263,6 +268,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	}
 
 	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
+
+		//TODO validate data retrieved, if it's complete -> fail (put into the retrieval manager0
+
 		return HistoryRetrievalRequestManager.getInstance().get(tickerSymbol);
 	}
 }
