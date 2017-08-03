@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
- * DataPoint management outside of ORM, for better database performance.
+ * Trading Day Prices DAO.
  * 
  * @author CJ Hare
  */

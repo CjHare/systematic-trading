@@ -43,6 +43,11 @@ import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.data.util.TradingDayPricesParser;
 
+/**
+ * DAO dealing with the Trading Day Prices history via Hibernate.
+ * 
+ * @author CJ Hare
+ */
 public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 
 	private static final Logger LOG = LogManager.getLogger(HibernateTradingDayPricesDao.class);
@@ -52,6 +57,8 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 	@Override
 	public void create( final TradingDayPrices[] data ) {
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
+		//TODO remove data that already exists, prior to calling this method so the insert doesn't fail
 		final Transaction tx = session.beginTransaction();
 
 		for (final TradingDayPrices d : data) {
@@ -79,49 +86,12 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		session.getTransaction().commit();
 	}
 
-	public void create( final TradingDayPrices data, final Session session ) {
-		final String sql = String.format(
-		        "INSERT INTO history_%s (date, opening_price, lowest_price, highest_price, closing_price) VALUES (:date, :opening_price, :lowest_price, :highest_price, :closing_price)",
-		        sanitise(data.getTickerSymbol()));
-
-		final Query query = session.createSQLQuery(sql);
-		query.setDate("date", Date.valueOf(data.getDate()));
-		query.setBigDecimal("opening_price", data.getOpeningPrice().getPrice());
-		query.setBigDecimal("lowest_price", data.getLowestPrice().getPrice());
-		query.setBigDecimal("highest_price", data.getHighestPrice().getPrice());
-		query.setBigDecimal("closing_price", data.getClosingPrice().getPrice());
-
-		try {
-			query.executeUpdate();
-		} catch (final HibernateException e) {
-			throw new HibernateException(
-			        String.format("Failed inserting %s on %s", data.getTickerSymbol(), data.getDate()), e);
-		}
-	}
-
 	@Override
 	public void createTableIfAbsent( final String tickerSymbol ) {
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		createTable(tickerSymbol, session);
 		session.getTransaction().commit();
-	}
-
-	public void createTable( final String tickerSymbol, final Session session ) {
-		final StringBuilder template = new StringBuilder();
-		template.append("CREATE TABLE IF NOT EXISTS history_%s (");
-		template.append("date DATE,");
-		template.append("opening_price DECIMAL(8,2) NOT NULL,");
-		template.append("lowest_price DECIMAL(8,2) NOT NULL,");
-		template.append("highest_price DECIMAL(8,2) NOT NULL,");
-		template.append("closing_price DECIMAL(8,2) NOT NULL,");
-		template.append("PRIMARY KEY (date) );");
-
-		final String sql = String.format(template.toString(), sanitise(tickerSymbol));
-
-		final Query query = session.createSQLQuery(sql);
-
-		query.executeUpdate();
 	}
 
 	@Override
@@ -178,10 +148,6 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		return data;
 	}
 
-	private String sanitise( final String unsanitised ) {
-		return unsanitised.replaceAll("\\.", "_").replaceAll("[-+.^:,]", "_").toLowerCase();
-	}
-
 	@Override
 	public long count( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 
@@ -199,5 +165,46 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		tx.commit();
 
 		return count.longValue();
+	}
+
+	private void create( final TradingDayPrices data, final Session session ) {
+		final String sql = String.format(
+		        "INSERT INTO history_%s (date, opening_price, lowest_price, highest_price, closing_price) VALUES (:date, :opening_price, :lowest_price, :highest_price, :closing_price)",
+		        sanitise(data.getTickerSymbol()));
+
+		final Query query = session.createSQLQuery(sql);
+		query.setDate("date", Date.valueOf(data.getDate()));
+		query.setBigDecimal("opening_price", data.getOpeningPrice().getPrice());
+		query.setBigDecimal("lowest_price", data.getLowestPrice().getPrice());
+		query.setBigDecimal("highest_price", data.getHighestPrice().getPrice());
+		query.setBigDecimal("closing_price", data.getClosingPrice().getPrice());
+
+		try {
+			query.executeUpdate();
+		} catch (final HibernateException e) {
+			throw new HibernateException(
+			        String.format("Failed inserting %s on %s", data.getTickerSymbol(), data.getDate()), e);
+		}
+	}
+
+	private void createTable( final String tickerSymbol, final Session session ) {
+		final StringBuilder template = new StringBuilder();
+		template.append("CREATE TABLE IF NOT EXISTS history_%s (");
+		template.append("date DATE,");
+		template.append("opening_price DECIMAL(8,2) NOT NULL,");
+		template.append("lowest_price DECIMAL(8,2) NOT NULL,");
+		template.append("highest_price DECIMAL(8,2) NOT NULL,");
+		template.append("closing_price DECIMAL(8,2) NOT NULL,");
+		template.append("PRIMARY KEY (date) );");
+
+		final String sql = String.format(template.toString(), sanitise(tickerSymbol));
+
+		final Query query = session.createSQLQuery(sql);
+
+		query.executeUpdate();
+	}
+
+	private String sanitise( final String unsanitised ) {
+		return unsanitised.replaceAll("\\.", "_").replaceAll("[-+.^:,]", "_").toLowerCase();
 	}
 }
