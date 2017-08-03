@@ -123,6 +123,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final List<RetrievedMonthTradingPrices> retrieved = new ArrayList<>();
 
 		//TODO slice the requests on whole months, i.e. not half way through ...it'll make like easier
+		//TODO currently Feburary is not being stored, but that's due to the slicing
 
 		for (final HistoryRetrievalRequest fulfilled : fulfilledRequests) {
 
@@ -134,7 +135,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 				retrieved.add(createRetrievedMonth(tickerSymbol, start));
 			}
 
-			LocalDate between = start.plusMonths(1);
+			LocalDate between = start.withDayOfMonth(1).plusMonths(1);
 
 			while (between.isBefore(end) && hasDifferentYearMonth(between, end)) {
 				retrieved.add(createRetrievedMonth(tickerSymbol, between));
