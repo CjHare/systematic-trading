@@ -55,8 +55,12 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 	private String tickerSymbol;
 
 	@Id
-	@Column(name = "year_month", nullable = false)
-	private YearMonth yearMonth;
+	@Column(name = "month", nullable = false)
+	private int month;
+
+	@Id
+	@Column(name = "year", nullable = false)
+	private int year;
 
 	public HibernateRetrievedMonthTradingPrices() {
 		// Default constructor used by Hiberante
@@ -64,7 +68,8 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 
 	public HibernateRetrievedMonthTradingPrices( final String tickerSymbol, final YearMonth yearMonth ) {
 		this.tickerSymbol = tickerSymbol;
-		this.yearMonth = yearMonth;
+		this.year = yearMonth.getYear();
+		this.month = yearMonth.getMonthValue();
 	}
 
 	@Override
@@ -74,7 +79,7 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 
 	@Override
 	public YearMonth getYearMonth() {
-		return yearMonth;
+		return YearMonth.of(year, month);
 	}
 
 	public void setTickerSymbol( final String tickerSymbol ) {
@@ -82,6 +87,15 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 	}
 
 	public void setYearMonth( final YearMonth yearMonth ) {
-		this.yearMonth = yearMonth;
+		this.year = yearMonth.getYear();
+		this.month = yearMonth.getMonthValue();
+	}
+
+	public void setMonth( int month ) {
+		this.month = month;
+	}
+
+	public void setYear( int year ) {
+		this.year = year;
 	}
 }

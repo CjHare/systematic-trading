@@ -135,7 +135,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			}
 
 			LocalDate between = start.plusMonths(1);
-			while (between.isBefore(end)) {
+
+			while (between.isBefore(end) && hasDifferentYearMonth(between, end)) {
 				retrieved.add(createRetrievedMonth(tickerSymbol, between));
 				between = between.plusMonths(1);
 			}
@@ -146,6 +147,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		}
 
 		retrievedMonthsDao.create(retrieved);
+	}
+
+	private boolean hasDifferentYearMonth( final LocalDate a, final LocalDate b ) {
+		return a.getYear() != b.getYear() || a.getMonthValue() != b.getMonthValue();
 	}
 
 	private RetrievedMonthTradingPrices createRetrievedMonth( final String tickerSymbol, final LocalDate yearMonth ) {
