@@ -67,7 +67,10 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 			} catch (final HibernateException e) {
 
 				if (e.getCause() instanceof ConstraintViolationException) {
-					LOG.info(e.getMessage());
+					LOG.error(e.getMessage());
+					
+					
+					//TODO if there's a constraint violation, rollback?
 				} else {
 					throw e;
 				}

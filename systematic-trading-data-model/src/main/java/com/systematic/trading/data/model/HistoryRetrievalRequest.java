@@ -37,13 +37,7 @@ public interface HistoryRetrievalRequest {
 
 	String getTickerSymbol();
 
-	void setTickerSymbol( String tickerSymbol );
-
 	Date getInclusiveStartDate();
 
-	void setInclusiveStartDate( Date inclusiveStartDate );
-
 	Date getExclusiveEndDate();
-
-	void setExclusiveEndDate( Date exclusiveEndDate );
 }

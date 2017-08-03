@@ -25,9 +25,11 @@
  */
 package com.systematic.trading.data;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,14 +46,18 @@ import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.collections.BlockingEventCountQueue;
 import com.systematic.trading.data.concurrent.EventCountCleanUp;
 import com.systematic.trading.data.dao.PendingRetrievalRequestDao;
+import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.dao.impl.HibernatePendingRetrievalRequestDao;
+import com.systematic.trading.data.dao.impl.HibernateRetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.exception.ConfigurationValidationException;
 import com.systematic.trading.data.model.HibernateHistoryRetrievalRequest;
+import com.systematic.trading.data.model.HibernateRetrievedMonthTradingPrices;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
+import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlApiDao;
@@ -70,6 +76,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private final TradingDayPricesDao tradingDayPricesDao = new HibernateTradingDayPricesDao();
 	private final PendingRetrievalRequestDao pendingRetrievalRequestDao = new HibernatePendingRetrievalRequestDao();
+	private final RetrievedMonthTradingPricesDao retrievedMonthsDao = new HibernateRetrievedMonthTradingPricesDao();
 
 	private final EquityApi api;
 
@@ -101,6 +108,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		if (!outstandingRequests.isEmpty()) {
 			processHistoryRetrievalRequests(outstandingRequests);
 			ensureAllRetrievalRequestsProcessed(tickerSymbol);
+			storeRetrievedMonths(outstandingRequests);
 		}
 	}
 
@@ -109,6 +117,65 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		if (!remainingRequests.isEmpty()) {
 			throw new CannotRetrieveDataException("Failed to retrieve all the required data");
 		}
+	}
+
+	private void storeRetrievedMonths( final List<HistoryRetrievalRequest> fulfilledRequests ) {
+		final List<RetrievedMonthTradingPrices> retrieved = new ArrayList<>();
+
+		//TODO slice the requests on whole months, i.e. not half way through ...it'll make like easier
+
+		for (final HistoryRetrievalRequest fulfilled : fulfilledRequests) {
+
+			final String tickerSymbol = fulfilled.getTickerSymbol();
+			final LocalDate start = fulfilled.getInclusiveStartDate().toLocalDate();
+			final LocalDate end = fulfilled.getExclusiveEndDate().toLocalDate();
+
+			if (isBeginningTradingMonth(start)) {
+				retrieved.add(createRetrievedMonth(tickerSymbol, start));
+			}
+
+			LocalDate between = start.plusMonths(1);
+			while (between.isBefore(end)) {
+				retrieved.add(createRetrievedMonth(tickerSymbol, between));
+				between = between.plusMonths(1);
+			}
+
+			if (isEndTradingMonth(end)) {
+				retrieved.add(createRetrievedMonth(tickerSymbol, end));
+			}
+		}
+
+		retrievedMonthsDao.create(retrieved);
+	}
+
+	private RetrievedMonthTradingPrices createRetrievedMonth( final String tickerSymbol, final LocalDate yearMonth ) {
+		return new HibernateRetrievedMonthTradingPrices(tickerSymbol,
+		        YearMonth.of(yearMonth.getYear(), yearMonth.getMonth().getValue()));
+	}
+
+	private boolean isEndTradingMonth( final LocalDate contender ) {
+		final YearMonth ym = YearMonth.of(contender.getYear(), contender.getMonth());
+		return isLastDayOfMonth(contender, ym) || isLastFridayOfMonth(contender, ym);
+	}
+
+	private boolean isBeginningTradingMonth( final LocalDate contender ) {
+		return isFirstDayOfMonth(contender) || isFirstMondayOfMonth(contender);
+	}
+
+	private boolean isFirstMondayOfMonth( final LocalDate contender ) {
+		return contender.getDayOfWeek() == DayOfWeek.MONDAY && contender.getDayOfMonth() < DayOfWeek.values().length;
+	}
+
+	private boolean isFirstDayOfMonth( final LocalDate contender ) {
+		return contender.getDayOfMonth() == 1;
+	}
+
+	private boolean isLastDayOfMonth( final LocalDate contender, final YearMonth ym ) {
+		return contender.getDayOfMonth() == ym.lengthOfMonth();
+	}
+
+	private boolean isLastFridayOfMonth( final LocalDate contender, final YearMonth ym ) {
+		return contender.getDayOfMonth() > ym.lengthOfMonth() - 3 && contender.getDayOfWeek() == DayOfWeek.FRIDAY;
 	}
 
 	/**
@@ -192,9 +259,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 				//Ensure we end on the correct date
 				movedEndDate = endDate.isBefore(movedEndDate) ? endDate : movedEndDate;
 			}
-
 		} else {
-
 			requests.add(new HibernateHistoryRetrievalRequest(tickerSymbol, startDate, endDate));
 		}
 

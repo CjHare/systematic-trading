@@ -40,63 +40,42 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.systematic.trading.data.dao.PendingRetrievalRequestDao;
-import com.systematic.trading.data.model.HibernateHistoryRetrievalRequest;
-import com.systematic.trading.data.model.HistoryRetrievalRequest;
+import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
+import com.systematic.trading.data.model.HibernateRetrievedMonthTradingPrices;
+import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 
 /**
- * Retrieval request DAO to Hibernate DB. 
+ * Hibernate implementation for the store for retrieved trading prices.
  * 
  * @author CJ Hare
  */
-public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequestDao {
+public class HibernateRetrievedMonthTradingPricesDao implements RetrievedMonthTradingPricesDao {
 
-	private static final Logger LOG = LogManager.getLogger(HibernatePendingRetrievalRequestDao.class);
+	private static final Logger LOG = LogManager.getLogger(HibernateRetrievedMonthTradingPricesDao.class);
 
 	@Override
-	public void create( final List<HistoryRetrievalRequest> requests ) {
-
+	public void create( final List<RetrievedMonthTradingPrices> retrieved ) {
 		final Session session = HibernateUtil.getSessionFactory().openSession();
-		for (final HistoryRetrievalRequest request : requests) {
-			create((HibernateHistoryRetrievalRequest) request, session);
+		for (final RetrievedMonthTradingPrices r : retrieved) {
+			create((HibernateRetrievedMonthTradingPrices) r, session);
 		}
 
 		session.close();
 	}
 
-	private void create( final HibernateHistoryRetrievalRequest request, final Session session ) {
-
-		final Transaction tx = session.beginTransaction();
-
-		try {
-			session.save(request);
-			tx.commit();
-		} catch (final HibernateException e) {
-			// May already have the record inserted
-			LOG.info("{}", () -> String.format("Failed to save request for %s %s %s", request.getTickerSymbol(),
-			        request.getInclusiveStartDate(), request.getExclusiveEndDate()));
-			LOG.debug(e);
-
-			if (tx != null && tx.isActive()) {
-				tx.rollback();
-			}
-		}
-	}
-
 	@Override
-	public List<HistoryRetrievalRequest> get( final String tickerSymbol ) {
-
+	public List<RetrievedMonthTradingPrices> get( final String tickerSymbol ) {
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx = session.beginTransaction();
 
 		try {
 			final Query query = session
-			        .createQuery("from HibernateHistoryRetrievalRequest where ticker_symbol= :ticker_symbol");
+			        .createQuery("from already_retrieved_yearmonth where ticker_symbol= :ticker_symbol");
 			query.setString("ticker_symbol", tickerSymbol);
 
 			final List<?> uncast = query.list();
-			return uncast.stream().map(u -> (HistoryRetrievalRequest) u).collect(Collectors.toList());
+			return uncast.stream().map(u -> (RetrievedMonthTradingPrices) u).collect(Collectors.toList());
 
 		} catch (final HibernateException e) {
 			LOG.error(e);
@@ -110,19 +89,20 @@ public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequ
 		return new ArrayList<>(0);
 	}
 
-	@Override
-	public void delete( final HistoryRetrievalRequest request ) {
-		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		Transaction tx = session.beginTransaction();
+	private void create( final HibernateRetrievedMonthTradingPrices request, final Session session ) {
+		final Transaction tx = session.beginTransaction();
 
 		try {
-			session.delete(request);
+			session.save(request);
+			tx.commit();
 		} catch (final HibernateException e) {
-			LOG.error("{}", () -> String.format("Error deleting entry for %s %s %s %s", request.getTickerSymbol(),
-			        request.getInclusiveStartDate(), request.getExclusiveEndDate(), e.getMessage()));
+			LOG.error("{}", () -> String.format("Failed to save request for %s %s", request.getTickerSymbol(),
+			        request.getYearMonth()));
 			LOG.error(e);
-		}
 
-		tx.commit();
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+		}
 	}
 }

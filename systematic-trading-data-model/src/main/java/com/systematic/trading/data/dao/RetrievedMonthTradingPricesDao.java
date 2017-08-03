@@ -31,27 +31,27 @@ package com.systematic.trading.data.dao;
 
 import java.util.List;
 
-import com.systematic.trading.data.model.HistoryRetrievalRequest;
+import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
 
 /**
  * Data Access Object to dealing with whether the trading data for a ticker symbol on any given month, has already been retrieved.
  * 
  * @author CJ Hare
  */
-public interface MonthAlreadyRetrievedDao {
+public interface RetrievedMonthTradingPricesDao {
 
 	/**
 	 * Creates the entry for the completed retrieval requests.
 	 * 
 	 * @param requests history retrieval requests that has been completed.
 	 */
-	void create( List<HistoryRetrievalRequest> requests );
+	void create( List<RetrievedMonthTradingPrices> retrieved );
 
 	/**
-	 * Retrieve the moths of already obtained price data.
+	 * Retrieve the months of already obtained price data.
 	 * 
 	 * @param tickerSymbol symbol of the equity who history to retrieve.
 	 * @return ally full months of already obtained.
 	 */
-	List<HistoryRetrievalRequest> get( String tickerSymbol );
+	List<RetrievedMonthTradingPrices> get( String tickerSymbol );
 }

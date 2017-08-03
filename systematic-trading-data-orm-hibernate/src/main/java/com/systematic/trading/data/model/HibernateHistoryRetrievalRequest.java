@@ -76,7 +76,6 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 		return tickerSymbol;
 	}
 
-	@Override
 	public void setTickerSymbol( final String tickerSymbol ) {
 		this.tickerSymbol = tickerSymbol;
 	}
@@ -86,7 +85,6 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 		return inclusiveStartDate;
 	}
 
-	@Override
 	public void setInclusiveStartDate( final Date inclusiveStartDate ) {
 		this.inclusiveStartDate = inclusiveStartDate;
 	}
@@ -96,7 +94,6 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 		return exclusiveEndDate;
 	}
 
-	@Override
 	public void setExclusiveEndDate( final Date exclusiveEndDate ) {
 		this.exclusiveEndDate = exclusiveEndDate;
 	}
