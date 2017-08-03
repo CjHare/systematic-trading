@@ -45,6 +45,8 @@ import javax.persistence.Table;
 @Table(name = "history_retrieval_queue", indexes = @Index(columnList = "ticker_symbol"))
 public class HistoryRetrievalRequest implements Serializable {
 
+	//TODO abstraction, move the hibernate into specific package
+	
 	/** Serialisation is required as we are using a composite primary key. */
 	private static final long serialVersionUID = 1L;
 

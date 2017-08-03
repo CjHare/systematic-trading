@@ -43,7 +43,9 @@ import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.collections.BlockingEventCountQueue;
 import com.systematic.trading.data.concurrent.EventCountCleanUp;
+import com.systematic.trading.data.dao.RetrievalRequestDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
+import com.systematic.trading.data.dao.impl.HibernateRetrievalRequestDao;
 import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
@@ -64,7 +66,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	/** Average number of data points above which assumes the month already retrieve covered. */
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
-	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
+	private final TradingDayPricesDao tradingDayPricesDao = new HibernateTradingDayPricesDao();
+	private final RetrievalRequestDao retrievalRequestDao = new HibernateRetrievalRequestDao();
 
 	private final EquityApi api;
 
@@ -79,10 +82,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	        throws CannotRetrieveDataException {
 
 		// Ensure there's a table for the data
-		dao.createTableIfAbsent(tickerSymbol);
+		tradingDayPricesDao.createTableIfAbsent(tickerSymbol);
 
 		//TODO split the requests into months - check DB whether full month is stored locally (add table / marker)
-		
+
 		final List<HistoryRetrievalRequest> unfilteredRequests = sliceHistoryRetrievalRequest(tickerSymbol, startDate,
 		        endDate);
 		final List<HistoryRetrievalRequest> filteredRequests = removeRedundantRequests(unfilteredRequests);
@@ -90,7 +93,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		//TODO refactor, into another class, candidate to put into a job
 		//TODO leave a todo for later implementation / description
-		
+
 		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 
 		if (!outstandingRequests.isEmpty()) {
@@ -111,7 +114,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 */
 	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests )
 	        throws CannotRetrieveDataException {
-		final HistoryRetrievalRequestManager requestManager = HistoryRetrievalRequestManager.getInstance();
 		final ExecutorService pool = Executors.newFixedThreadPool(api.getMaximumConcurrentConnections());
 		final BlockingEventCount activeConnectionCount = new BlockingEventCountQueue(
 		        api.getMaximumConnectionsPerSecond(), THROTTLER_CLEAN_INTERVAL);
@@ -130,10 +132,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 					        exclusiveEndDate, activeConnectionCount);
 
 					// Push to the data source
-					dao.create(tradingData);
+					tradingDayPricesDao.create(tradingData);
 
 					// Remove the request from the queue
-					requestManager.delete(request);
+					retrievalRequestDao.delete(request);
 
 				} catch (CannotRetrieveDataException e) {
 					LOG.error(e);
@@ -230,7 +232,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
 		final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
 
-		final long count = dao.count(tickerSymbol, startDate, endDate);
+		final long count = tradingDayPricesDao.count(tickerSymbol, startDate, endDate);
 
 		if (count == 0) {
 			// Zero data exists :. we need data
@@ -264,13 +266,13 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 * These we store as a defensive approach in case of partial failure during processing.
 	 */
 	private void storeHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests ) {
-		HistoryRetrievalRequestManager.getInstance().create(requests);
+		retrievalRequestDao.create(requests);
 	}
 
 	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
 
 		//TODO validate data retrieved, if it's complete -> fail (put into the retrieval manager0
 
-		return HistoryRetrievalRequestManager.getInstance().get(tickerSymbol);
+		return retrievalRequestDao.get(tickerSymbol);
 	}
 }
