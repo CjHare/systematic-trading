@@ -32,20 +32,10 @@ import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
 
 public class HibernateDataService implements DataService {
 
-	private static final HibernateDataService INSTANCE = new HibernateDataService();
-
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
-
-	private HibernateDataService() {
-	}
-
-	public static DataService getInstance() {
-		return INSTANCE;
-	}
 
 	@Override
 	public TradingDayPrices[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 		return dao.get(tickerSymbol, startDate, endDate);
 	}
-
 }

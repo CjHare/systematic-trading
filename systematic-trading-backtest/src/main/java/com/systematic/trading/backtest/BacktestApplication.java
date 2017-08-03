@@ -56,7 +56,6 @@ import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.backtest.output.file.CompleteFileOutputService;
 import com.systematic.trading.backtest.output.file.MinimalFileOutputService;
 import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
-import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
@@ -257,8 +256,7 @@ public class BacktestApplication {
 		updateService.get(equity.getTickerSymbol(), startDate, endDate);
 
 		// Retrieve from local cache the desired data range
-		final DataService service = HibernateDataService.getInstance();
-		final TradingDayPrices[] data = service.get(equity.getTickerSymbol(), startDate, endDate);
+		final TradingDayPrices[] data = new HibernateDataService().get(equity.getTickerSymbol(), startDate, endDate);
 
 		return new BacktestTickerSymbolTradingData(equity, data);
 	}
