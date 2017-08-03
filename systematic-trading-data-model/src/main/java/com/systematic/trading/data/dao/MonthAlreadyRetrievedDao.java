@@ -31,34 +31,27 @@ package com.systematic.trading.data.dao;
 
 import java.util.List;
 
-import com.systematic.trading.data.HistoryRetrievalRequest;
+import com.systematic.trading.data.model.HistoryRetrievalRequest;
 
 /**
- * Data Access Object to dealing with retrieval requests.
+ * Data Access Object to dealing with whether the trading data for a ticker symbol on any given month, has already been retrieved.
  * 
  * @author CJ Hare
  */
-public interface RetrievalRequestDao {
+public interface MonthAlreadyRetrievedDao {
 
 	/**
-	 * Creates the pending retrieval requests.
+	 * Creates the entry for the completed retrieval requests.
 	 * 
-	 * @param requests history retrieval requests to persist.
+	 * @param requests history retrieval requests that has been completed.
 	 */
 	void create( List<HistoryRetrievalRequest> requests );
 
 	/**
-	 * Retrieve the pending history requests.
+	 * Retrieve the moths of already obtained price data.
 	 * 
 	 * @param tickerSymbol symbol of the equity who history to retrieve.
-	 * @return pending history retrieval requests.
+	 * @return ally full months of already obtained.
 	 */
 	List<HistoryRetrievalRequest> get( String tickerSymbol );
-
-	/**
-	 * Remove a pending history retrieval request.
-	 * 
-	 * @param request will be removed from the pending list.
-	 */
-	void delete( HistoryRetrievalRequest request );
 }

@@ -32,7 +32,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-import com.systematic.trading.data.HistoryRetrievalRequest;
+import com.systematic.trading.data.model.HibernateHistoryRetrievalRequest;
 
 public class HibernateUtil {
 
@@ -51,7 +51,7 @@ public class HibernateUtil {
 			final StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
 			        .applySettings(configuration.getProperties());
 
-			configuration.addAnnotatedClass(HistoryRetrievalRequest.class);
+			configuration.addAnnotatedClass(HibernateHistoryRetrievalRequest.class);
 
 			final SessionFactory factory = configuration.buildSessionFactory(builder.build());
 

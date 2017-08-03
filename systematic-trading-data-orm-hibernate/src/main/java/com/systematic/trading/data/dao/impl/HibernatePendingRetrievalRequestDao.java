@@ -31,6 +31,7 @@ package com.systematic.trading.data.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,8 +40,9 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.systematic.trading.data.HistoryRetrievalRequest;
-import com.systematic.trading.data.dao.RetrievalRequestDao;
+import com.systematic.trading.data.dao.PendingRetrievalRequestDao;
+import com.systematic.trading.data.model.HibernateHistoryRetrievalRequest;
+import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.util.HibernateUtil;
 
 /**
@@ -48,22 +50,22 @@ import com.systematic.trading.data.util.HibernateUtil;
  * 
  * @author CJ Hare
  */
-public class HibernateRetrievalRequestDao implements RetrievalRequestDao {
+public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequestDao {
 
-	private static final Logger LOG = LogManager.getLogger(HibernateRetrievalRequestDao.class);
+	private static final Logger LOG = LogManager.getLogger(HibernatePendingRetrievalRequestDao.class);
 
 	@Override
 	public void create( final List<HistoryRetrievalRequest> requests ) {
 
 		final Session session = HibernateUtil.getSessionFactory().openSession();
 		for (final HistoryRetrievalRequest request : requests) {
-			create(request, session);
+			create((HibernateHistoryRetrievalRequest) request, session);
 		}
 
 		session.close();
 	}
 
-	private void create( final HistoryRetrievalRequest request, final Session session ) {
+	private void create( final HibernateHistoryRetrievalRequest request, final Session session ) {
 
 		final Transaction tx = session.beginTransaction();
 
@@ -90,10 +92,12 @@ public class HibernateRetrievalRequestDao implements RetrievalRequestDao {
 		Transaction tx = session.beginTransaction();
 
 		try {
-			final Query query = session.createQuery("from HistoryRetrievalRequest where ticker_symbol= :ticker_symbol");
+			final Query query = session
+			        .createQuery("from HibernateHistoryRetrievalRequest where ticker_symbol= :ticker_symbol");
 			query.setString("ticker_symbol", tickerSymbol);
 
-			return query.list();
+			final List<HibernateHistoryRetrievalRequest> uncast = query.list();
+			return uncast.stream().map(u -> (HistoryRetrievalRequest) u).collect(Collectors.toList());
 
 		} catch (final HibernateException e) {
 			LOG.error(e);

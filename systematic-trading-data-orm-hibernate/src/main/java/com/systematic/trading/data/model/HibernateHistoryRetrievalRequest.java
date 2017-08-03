@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data;
+package com.systematic.trading.data.model;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -43,10 +43,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "history_retrieval_queue", indexes = @Index(columnList = "ticker_symbol"))
-public class HistoryRetrievalRequest implements Serializable {
+public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRetrievalRequest {
 
-	//TODO abstraction, move the hibernate into specific package
-	
 	/** Serialisation is required as we are using a composite primary key. */
 	private static final long serialVersionUID = 1L;
 
@@ -62,37 +60,43 @@ public class HistoryRetrievalRequest implements Serializable {
 	@Column(name = "end", nullable = false)
 	private Date exclusiveEndDate;
 
-	public HistoryRetrievalRequest() {
+	public HibernateHistoryRetrievalRequest() {
 		// Default constructor used by Hiberante
 	}
 
-	public HistoryRetrievalRequest( final String tickerSymbol, final LocalDate inclusiveStartDate,
+	public HibernateHistoryRetrievalRequest( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) {
 		this.tickerSymbol = tickerSymbol;
 		this.inclusiveStartDate = Date.valueOf(inclusiveStartDate);
 		this.exclusiveEndDate = Date.valueOf(exclusiveEndDate);
 	}
 
+	@Override
 	public String getTickerSymbol() {
 		return tickerSymbol;
 	}
 
+	@Override
 	public void setTickerSymbol( final String tickerSymbol ) {
 		this.tickerSymbol = tickerSymbol;
 	}
 
+	@Override
 	public Date getInclusiveStartDate() {
 		return inclusiveStartDate;
 	}
 
+	@Override
 	public void setInclusiveStartDate( final Date inclusiveStartDate ) {
 		this.inclusiveStartDate = inclusiveStartDate;
 	}
 
+	@Override
 	public Date getExclusiveEndDate() {
 		return exclusiveEndDate;
 	}
 
+	@Override
 	public void setExclusiveEndDate( final Date exclusiveEndDate ) {
 		this.exclusiveEndDate = exclusiveEndDate;
 	}

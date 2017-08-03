@@ -43,13 +43,15 @@ import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.collections.BlockingEventCountQueue;
 import com.systematic.trading.data.concurrent.EventCountCleanUp;
-import com.systematic.trading.data.dao.RetrievalRequestDao;
+import com.systematic.trading.data.dao.PendingRetrievalRequestDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
-import com.systematic.trading.data.dao.impl.HibernateRetrievalRequestDao;
+import com.systematic.trading.data.dao.impl.HibernatePendingRetrievalRequestDao;
 import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.exception.ConfigurationValidationException;
+import com.systematic.trading.data.model.HibernateHistoryRetrievalRequest;
+import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlApiDao;
@@ -67,7 +69,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
 
 	private final TradingDayPricesDao tradingDayPricesDao = new HibernateTradingDayPricesDao();
-	private final RetrievalRequestDao retrievalRequestDao = new HibernateRetrievalRequestDao();
+	private final PendingRetrievalRequestDao pendingRetrievalRequestDao = new HibernatePendingRetrievalRequestDao();
 
 	private final EquityApi api;
 
@@ -135,7 +137,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 					tradingDayPricesDao.create(tradingData);
 
 					// Remove the request from the queue
-					retrievalRequestDao.delete(request);
+					pendingRetrievalRequestDao.delete(request);
 
 				} catch (CannotRetrieveDataException e) {
 					LOG.error(e);
@@ -182,7 +184,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 			while (endDate.isAfter(movedStartDate)) {
 
-				requests.add(new HistoryRetrievalRequest(tickerSymbol, movedStartDate, movedEndDate));
+				requests.add(new HibernateHistoryRetrievalRequest(tickerSymbol, movedStartDate, movedEndDate));
 
 				movedStartDate = movedEndDate;
 				movedEndDate = movedStartDate.plus(maximum);
@@ -193,7 +195,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		} else {
 
-			requests.add(new HistoryRetrievalRequest(tickerSymbol, startDate, endDate));
+			requests.add(new HibernateHistoryRetrievalRequest(tickerSymbol, startDate, endDate));
 		}
 
 		return requests;
@@ -266,13 +268,13 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 * These we store as a defensive approach in case of partial failure during processing.
 	 */
 	private void storeHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests ) {
-		retrievalRequestDao.create(requests);
+		pendingRetrievalRequestDao.create(requests);
 	}
 
 	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
 
 		//TODO validate data retrieved, if it's complete -> fail (put into the retrieval manager0
 
-		return retrievalRequestDao.get(tickerSymbol);
+		return pendingRetrievalRequestDao.get(tickerSymbol);
 	}
 }

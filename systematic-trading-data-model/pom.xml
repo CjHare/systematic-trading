@@ -26,6 +26,13 @@
 			<version>${apache.log4j.version}</version>
 		</dependency>
 
+		<!--Needed for agnostic JPA 2.x -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>${jee.version}</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 </project>
