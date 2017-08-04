@@ -39,7 +39,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +50,7 @@ import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.matcher.RetrievedMonthTradingPricesListMatcher;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
+import com.systematic.trading.data.util.TickerSymbolGenerator;
 
 /**
  * Does the RetrievedYearMonthRecorder record the year months correctly?
@@ -72,7 +72,7 @@ public class RetrievedYearMonthRecorderTest {
 	@Before
 	public void setUp() {
 		recorder = new RetrievedYearMonthRecorder(retrievedMonthsDao);
-		tickerSymbol = generateTickerSymbol();
+		tickerSymbol = TickerSymbolGenerator.generate();
 	}
 
 	@Test
@@ -244,19 +244,5 @@ public class RetrievedYearMonthRecorderTest {
 
 	private void verifyNoMonthsRetrieved() {
 		verifyZeroInteractions(retrievedMonthsDao);
-	}
-
-	private String generateTickerSymbol() {
-		final int leftLimit = 97; // letter 'a'
-		final int rightLimit = 122; // letter 'z'
-		final int range = rightLimit - leftLimit;
-		final int length = 4;
-
-		final StringBuilder symbol = new StringBuilder(length);
-		for (int i = 0; i < length; i++) {
-			symbol.append((char) (ThreadLocalRandom.current().nextInt(range) + leftLimit));
-		}
-
-		return symbol.toString();
 	}
 }

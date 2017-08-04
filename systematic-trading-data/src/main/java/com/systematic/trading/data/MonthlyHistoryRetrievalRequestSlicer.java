@@ -47,8 +47,8 @@ public class MonthlyHistoryRetrievalRequestSlicer {
 	/**
 	 * Split up the date range into monthly chunks.
 	 */
-	public List<HistoryRetrievalRequest> slice( final String tickerSymbol,
-	        final LocalDate startDateInclusive, final LocalDate endDateExclusive ) {
+	public List<HistoryRetrievalRequest> slice( final String tickerSymbol, final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) {
 
 		final List<HistoryRetrievalRequest> requests = new ArrayList<>();
 		final YearMonth endYearMonth = YearMonth.of(endDateExclusive.getYear(), endDateExclusive.getMonth());
@@ -63,7 +63,7 @@ public class MonthlyHistoryRetrievalRequestSlicer {
 
 		// Monthly entry for every in between
 		while (isNotReached(endYearMonth, workingInclusiveStartDate)) {
-			final LocalDate nextMonthStart = getBeginningNextMonth(startDateInclusive);
+			final LocalDate nextMonthStart = getBeginningNextMonth(workingInclusiveStartDate);
 			requests.add(new HibernateHistoryRetrievalRequest(tickerSymbol, workingInclusiveStartDate, nextMonthStart));
 			workingInclusiveStartDate = nextMonthStart;
 		}
