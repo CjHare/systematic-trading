@@ -27,9 +27,7 @@ package com.systematic.trading.data;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,6 +42,7 @@ import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.collections.BlockingEventCountQueue;
 import com.systematic.trading.data.concurrent.EventCountCleanUp;
 import com.systematic.trading.data.dao.PendingRetrievalRequestDao;
+import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.dao.impl.HibernatePendingRetrievalRequestDao;
 import com.systematic.trading.data.dao.impl.HibernateRetrievedMonthTradingPricesDao;
@@ -53,7 +52,9 @@ import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.exception.ConfigurationValidationException;
 import com.systematic.trading.data.history.HistoryRetrievalRequestSlicer;
 import com.systematic.trading.data.history.RetrievedHistoryPeriodRecorder;
+import com.systematic.trading.data.history.UnnecessaryHistoryRequestFilter;
 import com.systematic.trading.data.history.impl.MonthlyHistoryRetrievalRequestSlicer;
+import com.systematic.trading.data.history.impl.MonthlyUnnecessaryHistoryRequestFilter;
 import com.systematic.trading.data.history.impl.RetrievedYearMonthRecorder;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
@@ -68,23 +69,23 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	/** Invoke the clean operation on the throttler, ten times a second.*/
 	private static final Duration THROTTLER_CLEAN_INTERVAL = Duration.of(100, ChronoUnit.MILLIS);
 
-	//TODO this should be a percentage, no?
-	/** Average number of data points above which assumes the month already retrieve covered. */
-	private static final int MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD = 15;
-
 	private final EquityApi api;
 	private final PendingRetrievalRequestDao pendingRetrievalRequestDao;
 	private final RetrievedHistoryPeriodRecorder retrievedHistoryRecorder;
 	private final TradingDayPricesDao tradingDayPricesDao;
 	private final HistoryRetrievalRequestSlicer historyRetrievalRequestSlicer;
+	private final UnnecessaryHistoryRequestFilter unecessaryRequestFilter;
 
 	public DataServiceUpdaterImpl() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+		final RetrievedMonthTradingPricesDao retrievedHistoryDao = new HibernateRetrievedMonthTradingPricesDao();
+
 		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().get();
 		this.api = new QuandlAPI(new HttpQuandlApiDao(configuration), configuration, new QuandlResponseFormat());
-		this.retrievedHistoryRecorder = new RetrievedYearMonthRecorder(new HibernateRetrievedMonthTradingPricesDao());
+		this.retrievedHistoryRecorder = new RetrievedYearMonthRecorder(retrievedHistoryDao);
 		this.pendingRetrievalRequestDao = new HibernatePendingRetrievalRequestDao();
 		this.tradingDayPricesDao = new HibernateTradingDayPricesDao();
 		this.historyRetrievalRequestSlicer = new MonthlyHistoryRetrievalRequestSlicer();
+		this.unecessaryRequestFilter = new MonthlyUnnecessaryHistoryRequestFilter(retrievedHistoryDao);
 	}
 
 	@Override
@@ -99,7 +100,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		//TODO remove any already retrieve months
 
-		final List<HistoryRetrievalRequest> filteredRequests = removeRedundantRequests(unfilteredRequests);
+		final List<HistoryRetrievalRequest> filteredRequests = unecessaryRequestFilter.filter(unfilteredRequests);
 
 		//TODO will need this again
 		//		final Period maximum = api.getMaximumDurationPerConnection();
@@ -192,54 +193,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		cleanUp.setDaemon(true);
 		cleanUp.start();
 		return throttlerCleanUp;
-	}
-
-	/**
-	 * Remove requests where the full set of data already has already been retrieved.
-	 */
-	private List<HistoryRetrievalRequest> removeRedundantRequests( final List<HistoryRetrievalRequest> requests ) {
-		List<HistoryRetrievalRequest> filtered = new ArrayList<>();
-
-		for (final HistoryRetrievalRequest request : requests) {
-			filtered = addOnlyRelevantRequest(request, filtered);
-		}
-
-		return filtered;
-	}
-
-	private List<HistoryRetrievalRequest> addOnlyRelevantRequest( final HistoryRetrievalRequest request,
-	        final List<HistoryRetrievalRequest> filtered ) {
-
-		//TODO change this, decision on when request is relevant
-
-		final String tickerSymbol = request.getTickerSymbol();
-		final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
-		final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
-
-		final long count = tradingDayPricesDao.count(tickerSymbol, startDate, endDate);
-
-		if (count == 0) {
-			// Zero data exists :. we need data
-			filtered.add(request);
-		} else {
-			final Period interval = Period.between(startDate, endDate);
-
-			if (interval.toTotalMonths() > 0) {
-				final long meanDataPointsPerMonth = count / interval.toTotalMonths();
-
-				if (meanDataPointsPerMonth < MINIMUM_MEAN_DATA_POINTS_PER_MONTH_THRESHOLD) {
-					// Insufficient data exists :. we need data
-					filtered.add(request);
-				}
-			} else {
-				// Under one month means we're in days difference
-				if (count <= interval.getDays()) {
-					filtered.add(request);
-				}
-			}
-		}
-
-		return filtered;
 	}
 
 	/**
