@@ -98,4 +98,14 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 	public void setYear( int year ) {
 		this.year = year;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder out = new StringBuilder("HibernateRetrievedMonthTradingPrices [tickerSymbol=")
+		        .append(tickerSymbol);
+		out.append(", month=").append(month);
+		out.append(", year=").append(year);
+		out.append("]");
+		return out.toString();
+	}
 }
