@@ -51,7 +51,6 @@ import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.exception.ConfigurationValidationException;
-import com.systematic.trading.data.model.HibernateHistoryRetrievalRequest;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
@@ -89,13 +88,18 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		// Ensure there's a table for the data
 		tradingDayPricesDao.createTableIfAbsent(tickerSymbol);
 
-		//TODO split the requests into months - check DB whether full month is stored locally (add table / marker)
+		final List<HistoryRetrievalRequest> unfilteredRequests = new MonthlyHistoryRetrievalRequestSlicer()
+		        .slice(tickerSymbol, startDate, endDate);
 
-		//TODO slice the requests on whole months, i.e. not half way through ...it'll make like easier
-		//TODO currently Feburary is not being stored, but that's due to the slicing
-		final List<HistoryRetrievalRequest> unfilteredRequests = sliceHistoryRetrievalRequest(tickerSymbol, startDate,
-		        endDate);
+		//TODO remove any already retrieve months
+
 		final List<HistoryRetrievalRequest> filteredRequests = removeRedundantRequests(unfilteredRequests);
+
+		//TODO will need this again
+		//		final Period maximum = api.getMaximumDurationPerConnection();
+
+		//TODO merge the requests again
+
 		storeHistoryRetrievalRequests(filteredRequests);
 
 		//TODO refactor, into another class, candidate to put into a job
@@ -116,9 +120,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			throw new CannotRetrieveDataException("Failed to retrieve all the required data");
 		}
 	}
-
-	//TODO retrieveed months - sotre
-	//TODO retrieved months - exclude already retrieved
 
 	/**
 	 * Get the history requests from the stock API.
@@ -174,38 +175,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
-	}
-
-	/**
-	 * Split up the date range into manageable size pieces.
-	 */
-	private List<HistoryRetrievalRequest> sliceHistoryRetrievalRequest( final String tickerSymbol,
-	        final LocalDate startDate, final LocalDate endDate ) {
-
-		final Period maximum = api.getMaximumDurationPerConnection();
-		final List<HistoryRetrievalRequest> requests = new ArrayList<>();
-
-		if (isDurationTooLong(maximum, Period.between(startDate, endDate))) {
-
-			// Split up the requests for processing
-			LocalDate movedStartDate = startDate;
-			LocalDate movedEndDate = startDate.plus(maximum);
-
-			while (endDate.isAfter(movedStartDate)) {
-
-				requests.add(new HibernateHistoryRetrievalRequest(tickerSymbol, movedStartDate, movedEndDate));
-
-				movedStartDate = movedEndDate;
-				movedEndDate = movedStartDate.plus(maximum);
-
-				//Ensure we end on the correct date
-				movedEndDate = endDate.isBefore(movedEndDate) ? endDate : movedEndDate;
-			}
-		} else {
-			requests.add(new HibernateHistoryRetrievalRequest(tickerSymbol, startDate, endDate));
-		}
-
-		return requests;
 	}
 
 	/**
@@ -267,10 +236,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		return filtered;
 	}
 
-	private boolean isDurationTooLong( final Period maximum, final Period actual ) {
-		return actual.toTotalMonths() > maximum.toTotalMonths();
-	}
-
 	/**
 	 * These we store as a defensive approach in case of partial failure during processing.
 	 */
@@ -279,9 +244,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	}
 
 	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
-
-		//TODO validate data retrieved, if it's complete -> fail (put into the retrieval manager0
-
 		return pendingRetrievalRequestDao.get(tickerSymbol);
 	}
 }
