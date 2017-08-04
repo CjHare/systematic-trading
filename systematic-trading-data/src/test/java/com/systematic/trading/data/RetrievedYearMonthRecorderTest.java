@@ -93,11 +93,91 @@ public class RetrievedYearMonthRecorderTest {
 	public void oneWholeMonth() {
 		final LocalDate start = LocalDate.of(2010, 5, 1);
 		final LocalDate end = LocalDate.of(2010, 5, 31);
-		final List<HistoryRetrievalRequest> fulfilled = create(start, end);
+		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
 
 		recorder.retrieved(fulfilled);
 
 		verifyMonths(YearMonth.of(2010, 5));
+	}
+
+	@Test
+	public void oneWholeMonthPlusEndEdge() {
+		final LocalDate start = LocalDate.of(2010, 5, 1);
+		final LocalDate end = LocalDate.of(2010, 6, 20);
+		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
+
+		recorder.retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5));
+	}
+
+	@Test
+	public void oneWholeMonthPlusStartEdge() {
+		final LocalDate start = LocalDate.of(2010, 4, 7);
+		final LocalDate end = LocalDate.of(2010, 5, 31);
+		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
+
+		recorder.retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5));
+	}
+
+	@Test
+	public void oneWholeMonthPlusBothEdges() {
+		final LocalDate start = LocalDate.of(2010, 4, 7);
+		final LocalDate end = LocalDate.of(2010, 6, 19);
+		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
+
+		recorder.retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5));
+	}
+
+	@Test
+	public void twoWholeMonths() {
+		final LocalDate start = LocalDate.of(2010, 5, 1);
+		final LocalDate end = LocalDate.of(2010, 6, 30);
+		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
+
+		recorder.retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5), YearMonth.of(2010, 6));
+	}
+
+	@Test
+	public void oneYearOneMonth() {
+		final LocalDate start = LocalDate.of(2010, 5, 1);
+		final LocalDate end = LocalDate.of(2011, 6, 30);
+		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
+
+		recorder.retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5), YearMonth.of(2010, 6), YearMonth.of(2010, 7), YearMonth.of(2010, 8),
+		        YearMonth.of(2010, 9), YearMonth.of(2010, 10), YearMonth.of(2010, 11), YearMonth.of(2010, 12),
+		        YearMonth.of(2011, 1), YearMonth.of(2011, 2), YearMonth.of(2011, 3), YearMonth.of(2011, 4),
+		        YearMonth.of(2011, 5), YearMonth.of(2011, 6));
+	}
+
+	@Test
+	public void twoRequestsOneWholeMonth() {
+		final List<HistoryRetrievalRequest> fulfilled = asList(
+		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 5, 31)),
+		        create(LocalDate.of(2010, 5, 31), LocalDate.of(2010, 6, 30)));
+
+		recorder.retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5), YearMonth.of(2010, 6));
+	}
+
+	@Test
+	public void twoRequestsSplitMonths() {
+		final List<HistoryRetrievalRequest> fulfilled = asList(
+		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 6, 15)),
+		        create(LocalDate.of(2010, 6, 15), LocalDate.of(2010, 7, 31)));
+
+		recorder.retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5), YearMonth.of(2010, 6), YearMonth.of(2010, 7));
 	}
 
 	private void verifyMonths( final YearMonth... month ) {
@@ -124,7 +204,8 @@ public class RetrievedYearMonthRecorderTest {
 
 				@Override
 				public String toString() {
-					return new StringBuilder().append(tickerSymbol).append(", ").append(ym).toString();
+					return new StringBuilder("[RetrievedMonthTradingPrices, tickerSymbol=").append(tickerSymbol)
+					        .append(", ").append("YearMonth=").append(ym).append("]").toString();
 				}
 			});
 		}
@@ -132,11 +213,18 @@ public class RetrievedYearMonthRecorderTest {
 		return retrieved;
 	}
 
-	private List<HistoryRetrievalRequest> create( final LocalDate start, final LocalDate end ) {
+	private List<HistoryRetrievalRequest> asList( final HistoryRetrievalRequest... requests ) {
 		final List<HistoryRetrievalRequest> fulfilled = new ArrayList<HistoryRetrievalRequest>();
 
-		fulfilled.add(new HistoryRetrievalRequest() {
+		for (final HistoryRetrievalRequest request : requests) {
+			fulfilled.add(request);
+		}
 
+		return fulfilled;
+	}
+
+	private HistoryRetrievalRequest create( final LocalDate start, final LocalDate end ) {
+		return new HistoryRetrievalRequest() {
 			@Override
 			public String getTickerSymbol() {
 				return tickerSymbol;
@@ -151,9 +239,7 @@ public class RetrievedYearMonthRecorderTest {
 			public Date getExclusiveEndDate() {
 				return Date.valueOf(end);
 			}
-		});
-
-		return fulfilled;
+		};
 	}
 
 	private void verifyNoMonthsRetrieved() {

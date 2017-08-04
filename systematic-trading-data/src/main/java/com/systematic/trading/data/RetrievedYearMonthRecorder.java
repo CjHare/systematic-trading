@@ -98,19 +98,19 @@ public class RetrievedYearMonthRecorder {
 
 	private boolean isMonthCompletedByOtherRequests( final LocalDate end,
 	        final List<HistoryRetrievalRequest> fulfilledRequests ) {
-		LocalDate expectedStart = end.plusDays(1);
+		LocalDate expectedStart = end;
 
 		// Unordered list :. cannot guarantee where to find following request(s)
 		for (int i = 0; i < fulfilledRequests.size(); i++) {
 			final LocalDate contender = fulfilledRequests.get(i).getInclusiveStartDate().toLocalDate();
 
 			if (expectedStart.isEqual(contender)) {
-				if (isEndTradingMonth(contender)) {
+				if (isEndTradingMonth(fulfilledRequests.get(i).getExclusiveEndDate().toLocalDate())) {
 					return true;
 				}
 
 				// Start the search again from the beginning with the next expected start
-				expectedStart = fulfilledRequests.get(i).getExclusiveEndDate().toLocalDate().plusDays(1);
+				expectedStart = fulfilledRequests.get(i).getExclusiveEndDate().toLocalDate();
 				i = 0;
 			}
 		}
