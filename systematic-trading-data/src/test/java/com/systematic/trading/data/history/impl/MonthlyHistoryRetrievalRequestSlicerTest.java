@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data;
+package com.systematic.trading.data.history.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,6 +40,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.systematic.trading.data.history.impl.MonthlyHistoryRetrievalRequestSlicer;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.util.TickerSymbolGenerator;
 

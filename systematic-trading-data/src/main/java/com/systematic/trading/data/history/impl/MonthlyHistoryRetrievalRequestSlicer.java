@@ -27,13 +27,14 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data;
+package com.systematic.trading.data.history.impl;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.data.history.HistoryRetrievalRequestSlicer;
 import com.systematic.trading.data.model.HibernateHistoryRetrievalRequest;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 
@@ -42,8 +43,9 @@ import com.systematic.trading.data.model.HistoryRetrievalRequest;
  * 
  * @author CJ Hare
  */
-public class MonthlyHistoryRetrievalRequestSlicer {
+public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalRequestSlicer {
 
+	@Override
 	/**
 	 * Split up the date range into monthly chunks.
 	 */

@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data;
+package com.systematic.trading.data.history.impl;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
+import com.systematic.trading.data.history.RetrievedHistoryPeriodRecorder;
 import com.systematic.trading.data.model.HibernateRetrievedMonthTradingPrices;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
@@ -45,18 +46,14 @@ import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
  * 
  * @author CJ Hare
  */
-public class RetrievedYearMonthRecorder {
+public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorder {
 	private final RetrievedMonthTradingPricesDao retrievedMonthsDao;
 
 	public RetrievedYearMonthRecorder( final RetrievedMonthTradingPricesDao retrievedMonthsDao ) {
 		this.retrievedMonthsDao = retrievedMonthsDao;
 	}
 
-	/**
-	 * The given data has been successfully retrieved from the remote source.
-	 * 
-	 * @param fulfilledRequests days, months and years of price data that now will be available from the local data source.
-	 */
+	@Override
 	public void retrieved( final List<HistoryRetrievalRequest> fulfilledRequests ) {
 		if (fulfilledRequests == null || fulfilledRequests.isEmpty()) {
 			return;

@@ -51,6 +51,10 @@ import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.exception.ConfigurationValidationException;
+import com.systematic.trading.data.history.HistoryRetrievalRequestSlicer;
+import com.systematic.trading.data.history.RetrievedHistoryPeriodRecorder;
+import com.systematic.trading.data.history.impl.MonthlyHistoryRetrievalRequestSlicer;
+import com.systematic.trading.data.history.impl.RetrievedYearMonthRecorder;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
@@ -70,15 +74,17 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private final EquityApi api;
 	private final PendingRetrievalRequestDao pendingRetrievalRequestDao;
-	private final RetrievedYearMonthRecorder retrievedYearMonthRecorder;
+	private final RetrievedHistoryPeriodRecorder retrievedHistoryRecorder;
 	private final TradingDayPricesDao tradingDayPricesDao;
+	private final HistoryRetrievalRequestSlicer historyRetrievalRequestSlicer;
 
 	public DataServiceUpdaterImpl() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().get();
 		this.api = new QuandlAPI(new HttpQuandlApiDao(configuration), configuration, new QuandlResponseFormat());
-		this.retrievedYearMonthRecorder = new RetrievedYearMonthRecorder(new HibernateRetrievedMonthTradingPricesDao());
+		this.retrievedHistoryRecorder = new RetrievedYearMonthRecorder(new HibernateRetrievedMonthTradingPricesDao());
 		this.pendingRetrievalRequestDao = new HibernatePendingRetrievalRequestDao();
 		this.tradingDayPricesDao = new HibernateTradingDayPricesDao();
+		this.historyRetrievalRequestSlicer = new MonthlyHistoryRetrievalRequestSlicer();
 	}
 
 	@Override
@@ -88,8 +94,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		// Ensure there's a table for the data
 		tradingDayPricesDao.createTableIfAbsent(tickerSymbol);
 
-		final List<HistoryRetrievalRequest> unfilteredRequests = new MonthlyHistoryRetrievalRequestSlicer()
-		        .slice(tickerSymbol, startDate, endDate);
+		final List<HistoryRetrievalRequest> unfilteredRequests = historyRetrievalRequestSlicer.slice(tickerSymbol,
+		        startDate, endDate);
 
 		//TODO remove any already retrieve months
 
@@ -110,7 +116,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		if (!outstandingRequests.isEmpty()) {
 			processHistoryRetrievalRequests(outstandingRequests);
 			ensureAllRetrievalRequestsProcessed(tickerSymbol);
-			retrievedYearMonthRecorder.retrieved(outstandingRequests);
+			retrievedHistoryRecorder.retrieved(outstandingRequests);
 		}
 	}
 

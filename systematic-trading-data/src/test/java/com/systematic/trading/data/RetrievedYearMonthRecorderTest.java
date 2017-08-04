@@ -47,6 +47,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
+import com.systematic.trading.data.history.impl.RetrievedYearMonthRecorder;
 import com.systematic.trading.data.matcher.RetrievedMonthTradingPricesListMatcher;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
