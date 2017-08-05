@@ -29,6 +29,17 @@
  */
 package com.systematic.trading.data.history.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +48,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.history.UnnecessaryHistoryRequestFilter;
+import com.systematic.trading.data.model.HistoryRetrievalRequest;
+import com.systematic.trading.data.util.HistoryRetrievalRequestUtil;
 import com.systematic.trading.data.util.TickerSymbolGenerator;
 
 /**
@@ -49,6 +62,8 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Mock
 	private RetrievedMonthTradingPricesDao retrievedHistoryDao;
+
+	private final HistoryRetrievalRequestUtil historyRetrievalRequestUtil = new HistoryRetrievalRequestUtil();
 
 	/** Instance being tested.*/
 	private UnnecessaryHistoryRequestFilter filter;
@@ -63,7 +78,46 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 	}
 
 	@Test
-	public void a() {
+	public void filterNull() {
+		final List<HistoryRetrievalRequest> filtered = filter.filter(null);
+
+		verfiyNothingFiltered(filtered);
+	}
+
+	@Test
+	public void filterNone() {
+		final List<HistoryRetrievalRequest> filtered = filter.filter(new ArrayList<>());
+
+		verfiyNothingFiltered(filtered);
+	}
+
+	@Test
+	public void filterMonthRequestNoHistory() {
+		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
+		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 5, 31)));
+
+		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+
+		assertNotNull(filtered);
+		assertEquals(1, filtered.size());
 		
+		//TODO contents match those provided
+		
+		verify(retrievedHistoryDao).get(tickerSymbol, 2010, 2010);
+		verifyNoMoreInteractions(retrievedHistoryDao);
+	}
+
+	private List<HistoryRetrievalRequest> asList( final HistoryRetrievalRequest... requests ) {
+		return historyRetrievalRequestUtil.asList(requests);
+	}
+
+	private HistoryRetrievalRequest create( final LocalDate start, final LocalDate end ) {
+		return historyRetrievalRequestUtil.create(tickerSymbol, start, end);
+	}
+
+	private void verfiyNothingFiltered( final List<HistoryRetrievalRequest> filtered ) {
+		assertNotNull(filtered);
+		assertTrue(filtered.isEmpty());
+		verifyZeroInteractions(retrievedHistoryDao);
 	}
 }

@@ -34,7 +34,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -51,6 +50,7 @@ import com.systematic.trading.data.history.impl.RetrievedYearMonthRecorder;
 import com.systematic.trading.data.matcher.RetrievedMonthTradingPricesListMatcher;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
+import com.systematic.trading.data.util.HistoryRetrievalRequestUtil;
 import com.systematic.trading.data.util.TickerSymbolGenerator;
 
 /**
@@ -63,6 +63,8 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Mock
 	private RetrievedMonthTradingPricesDao retrievedMonthsDao;
+
+	private final HistoryRetrievalRequestUtil historyRetrievalRequestUtil = new HistoryRetrievalRequestUtil();
 
 	/** Instance being tested.*/
 	private RetrievedYearMonthRecorder recorder;
@@ -215,32 +217,11 @@ public class RetrievedYearMonthRecorderTest {
 	}
 
 	private List<HistoryRetrievalRequest> asList( final HistoryRetrievalRequest... requests ) {
-		final List<HistoryRetrievalRequest> fulfilled = new ArrayList<HistoryRetrievalRequest>();
-
-		for (final HistoryRetrievalRequest request : requests) {
-			fulfilled.add(request);
-		}
-
-		return fulfilled;
+		return historyRetrievalRequestUtil.asList(requests);
 	}
 
 	private HistoryRetrievalRequest create( final LocalDate start, final LocalDate end ) {
-		return new HistoryRetrievalRequest() {
-			@Override
-			public String getTickerSymbol() {
-				return tickerSymbol;
-			}
-
-			@Override
-			public Date getInclusiveStartDate() {
-				return Date.valueOf(start);
-			}
-
-			@Override
-			public Date getExclusiveEndDate() {
-				return Date.valueOf(end);
-			}
-		};
+		return historyRetrievalRequestUtil.create(tickerSymbol, start, end);
 	}
 
 	private void verifyNoMonthsRetrieved() {

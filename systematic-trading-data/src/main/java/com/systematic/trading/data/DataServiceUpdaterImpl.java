@@ -97,9 +97,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		final List<HistoryRetrievalRequest> unfilteredRequests = historyRetrievalRequestSlicer.slice(tickerSymbol,
 		        startDate, endDate);
-
-		//TODO remove any already retrieve months
-
 		final List<HistoryRetrievalRequest> filteredRequests = unecessaryRequestFilter.filter(unfilteredRequests);
 
 		//TODO will need this again
@@ -108,9 +105,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		//TODO merge the requests again
 
 		storeHistoryRetrievalRequests(filteredRequests);
-
-		//TODO refactor, into another class, candidate to put into a job
-		//TODO leave a todo for later implementation / description
 
 		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 

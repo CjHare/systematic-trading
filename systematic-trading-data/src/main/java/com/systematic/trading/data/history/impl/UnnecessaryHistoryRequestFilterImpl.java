@@ -57,6 +57,10 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 	@Override
 	public List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> unfilteredRequests ) {
+		if (unfilteredRequests == null) {
+			return new ArrayList<>(0);
+		}
+
 		final List<HistoryRetrievalRequest> filtered = new ArrayList<>(unfilteredRequests.size());
 		final Map<String, List<HistoryRetrievalRequest>> tickerSymbolRequests = splitByTickerSymbol(unfilteredRequests);
 
@@ -142,14 +146,16 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 			if (unknown == retrieved.getYearMonth()) {
 				if (unknown == end) {
-					return true;
+					// Entire range is covered by already retrieved data
+					return false;
 				}
 
+				// Progress to the next year month in the range
 				unknown = unknown.plusMonths(1);
 				i = 0;
 			}
 		}
 
-		return false;
+		return true;
 	}
 }
