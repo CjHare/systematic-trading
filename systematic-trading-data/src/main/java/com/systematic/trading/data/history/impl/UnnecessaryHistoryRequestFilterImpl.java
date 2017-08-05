@@ -47,11 +47,11 @@ import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
  * 
  * @author CJ Hare
  */
-public class UnnecessaryHistoryRequestImpl implements UnnecessaryHistoryRequestFilter {
+public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRequestFilter {
 
 	private final RetrievedMonthTradingPricesDao retrievedHistoryDao;
 
-	public UnnecessaryHistoryRequestImpl( final RetrievedMonthTradingPricesDao retrievedHistoryDao ) {
+	public UnnecessaryHistoryRequestFilterImpl( final RetrievedMonthTradingPricesDao retrievedHistoryDao ) {
 		this.retrievedHistoryDao = retrievedHistoryDao;
 	}
 
