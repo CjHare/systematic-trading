@@ -31,7 +31,9 @@ package com.systematic.trading.data.history.impl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.history.UnnecessaryHistoryRequestFilter;
@@ -39,33 +41,83 @@ import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
 
 /**
- * Filter for unnecessary remote history requests, accepting requests one month in size.
+ * Filter for unnecessary remote history requests.
  * 
  * @author CJ Hare
  */
-public class MonthlyUnnecessaryHistoryRequestFilter implements UnnecessaryHistoryRequestFilter {
+public class UnnecessaryHistoryRequestImpl implements UnnecessaryHistoryRequestFilter {
 
 	private final RetrievedMonthTradingPricesDao retrievedHistoryDao;
 
-	public MonthlyUnnecessaryHistoryRequestFilter( final RetrievedMonthTradingPricesDao retrievedHistoryDao ) {
+	public UnnecessaryHistoryRequestImpl( final RetrievedMonthTradingPricesDao retrievedHistoryDao ) {
 		this.retrievedHistoryDao = retrievedHistoryDao;
 	}
 
 	@Override
 	public List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> unfilteredRequests ) {
-		List<HistoryRetrievalRequest> filtered = new ArrayList<>();
+		final List<HistoryRetrievalRequest> filtered = new ArrayList<>(unfilteredRequests.size());
+		final Map<String, List<HistoryRetrievalRequest>> tickerSymbolRequests = splitByTickerSymbol(unfilteredRequests);
 
-		for (final HistoryRetrievalRequest request : unfilteredRequests) {
-			filtered = addOnlyRelevantRequest(request, filtered);
+		for (final String tickerSymbol : tickerSymbolRequests.keySet()) {
+			final List<HistoryRetrievalRequest> requests = tickerSymbolRequests.get(tickerSymbol);
+
+			filtered.addAll(keepRelevantRequests(requests,
+			        getRetrievedMonths(tickerSymbol, getEarliestStartDate(requests), getLatestEndDate(requests))));
 		}
 
 		return filtered;
 	}
 
-	private List<HistoryRetrievalRequest> addOnlyRelevantRequest( final HistoryRetrievalRequest request,
-	        final List<HistoryRetrievalRequest> filtered ) {
+	private LocalDate getEarliestStartDate( final List<HistoryRetrievalRequest> requests ) {
 
-		//TODO change this, decision on when request is relevant
+		//TODO code
+
+		return null;
+	}
+
+	private LocalDate getLatestEndDate( final List<HistoryRetrievalRequest> requests ) {
+
+		//TODO code
+
+		return null;
+	}
+
+	private List<RetrievedMonthTradingPrices> getRetrievedMonths( final String tickerSymbol,
+	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
+
+		//TODO code
+
+		return null;
+	}
+
+	private Map<String, List<HistoryRetrievalRequest>> splitByTickerSymbol(
+	        final List<HistoryRetrievalRequest> unfilteredRequests ) {
+		final HashMap<String, List<HistoryRetrievalRequest>> split = new HashMap<>();
+
+		//TODO code
+
+		return split;
+	}
+
+	private List<HistoryRetrievalRequest> keepRelevantRequests( final List<HistoryRetrievalRequest> requests,
+	        List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
+		List<HistoryRetrievalRequest> filtered = new ArrayList<>(requests.size());
+
+		for (final HistoryRetrievalRequest request : requests) {
+			if (isRelevantRequest(request)) {
+				filtered.add(request);
+			}
+		}
+
+		return filtered;
+	}
+
+	/**
+	 * The price date range in the request is not stored in the local data source.
+	 */
+	private boolean isRelevantRequest( final HistoryRetrievalRequest request ) {
+
+		//TODO pass in all data, work out whether request is covered in here.
 
 		final String tickerSymbol = request.getTickerSymbol();
 		final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
@@ -77,6 +129,6 @@ public class MonthlyUnnecessaryHistoryRequestFilter implements UnnecessaryHistor
 		//TODO compare the returned list, ensure it covers everything within the date range
 		//TODO otherwise retrieve the request
 
-		return filtered;
+		return false;
 	}
 }

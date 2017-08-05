@@ -54,7 +54,7 @@ import com.systematic.trading.data.history.HistoryRetrievalRequestSlicer;
 import com.systematic.trading.data.history.RetrievedHistoryPeriodRecorder;
 import com.systematic.trading.data.history.UnnecessaryHistoryRequestFilter;
 import com.systematic.trading.data.history.impl.MonthlyHistoryRetrievalRequestSlicer;
-import com.systematic.trading.data.history.impl.MonthlyUnnecessaryHistoryRequestFilter;
+import com.systematic.trading.data.history.impl.UnnecessaryHistoryRequestImpl;
 import com.systematic.trading.data.history.impl.RetrievedYearMonthRecorder;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
@@ -85,7 +85,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		this.pendingRetrievalRequestDao = new HibernatePendingRetrievalRequestDao();
 		this.tradingDayPricesDao = new HibernateTradingDayPricesDao();
 		this.historyRetrievalRequestSlicer = new MonthlyHistoryRetrievalRequestSlicer();
-		this.unecessaryRequestFilter = new MonthlyUnnecessaryHistoryRequestFilter(retrievedHistoryDao);
+		this.unecessaryRequestFilter = new UnnecessaryHistoryRequestImpl(retrievedHistoryDao);
 	}
 
 	@Override
