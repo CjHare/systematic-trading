@@ -44,7 +44,7 @@ import javax.persistence.Table;
  * @author CJ Hare
  */
 @Entity
-@Table(name = "already_retrieved_yearmonth", indexes = @Index(columnList = "ticker_symbol"))
+@Table(name = "already_retrieved_year_month", indexes = @Index(columnList = "ticker_symbol"))
 public class HibernateRetrievedMonthTradingPrices implements Serializable, RetrievedMonthTradingPrices {
 
 	/** Serialisation is required as we are using a composite primary key. */

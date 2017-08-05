@@ -29,7 +29,9 @@
  */
 package com.systematic.trading.data.history.impl;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,32 +71,44 @@ public class UnnecessaryHistoryRequestImpl implements UnnecessaryHistoryRequestF
 	}
 
 	private LocalDate getEarliestStartDate( final List<HistoryRetrievalRequest> requests ) {
+		Date earliest = requests.get(0).getInclusiveStartDate();
 
-		//TODO code
+		for (int i = 1; i < requests.size(); i++) {
+			if (requests.get(i).getInclusiveStartDate().getTime() < earliest.getTime()) {
+				earliest = requests.get(i).getInclusiveStartDate();
+			}
+		}
 
-		return null;
+		return earliest.toLocalDate();
 	}
 
 	private LocalDate getLatestEndDate( final List<HistoryRetrievalRequest> requests ) {
+		Date latest = requests.get(0).getExclusiveEndDate();
 
-		//TODO code
+		for (int i = 1; i < requests.size(); i++) {
+			if (requests.get(i).getExclusiveEndDate().getTime() > latest.getTime()) {
+				latest = requests.get(i).getExclusiveEndDate();
+			}
+		}
 
-		return null;
+		return latest.toLocalDate();
 	}
 
 	private List<RetrievedMonthTradingPrices> getRetrievedMonths( final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
-
-		//TODO code
-
-		return null;
+		return retrievedHistoryDao.get(tickerSymbol, inclusiveStartDate.getYear(), exclusiveEndDate.getYear());
 	}
 
 	private Map<String, List<HistoryRetrievalRequest>> splitByTickerSymbol(
 	        final List<HistoryRetrievalRequest> unfilteredRequests ) {
 		final HashMap<String, List<HistoryRetrievalRequest>> split = new HashMap<>();
 
-		//TODO code
+		for (final HistoryRetrievalRequest unfilteredRequest : unfilteredRequests) {
+			final String key = unfilteredRequest.getTickerSymbol();
+			final List<HistoryRetrievalRequest> requests = split.containsKey(key) ? split.get(key) : new ArrayList<>();
+			requests.add(unfilteredRequest);
+			split.put(unfilteredRequest.getTickerSymbol(), requests);
+		}
 
 		return split;
 	}
@@ -104,7 +118,7 @@ public class UnnecessaryHistoryRequestImpl implements UnnecessaryHistoryRequestF
 		List<HistoryRetrievalRequest> filtered = new ArrayList<>(requests.size());
 
 		for (final HistoryRetrievalRequest request : requests) {
-			if (isRelevantRequest(request)) {
+			if (isRelevantRequest(request, alreadyRetrieved)) {
 				filtered.add(request);
 			}
 		}
@@ -115,19 +129,26 @@ public class UnnecessaryHistoryRequestImpl implements UnnecessaryHistoryRequestF
 	/**
 	 * The price date range in the request is not stored in the local data source.
 	 */
-	private boolean isRelevantRequest( final HistoryRetrievalRequest request ) {
-
-		//TODO pass in all data, work out whether request is covered in here.
-
-		final String tickerSymbol = request.getTickerSymbol();
+	private boolean isRelevantRequest( final HistoryRetrievalRequest request,
+	        List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
 		final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
 		final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
 
-		//TODO need a date limited get, i.e. pass in the dates
-		final List<RetrievedMonthTradingPrices> alreadyRetrieved = retrievedHistoryDao.get(tickerSymbol);
+		YearMonth unknown = YearMonth.of(startDate.getYear(), startDate.getMonthValue());
+		final YearMonth end = YearMonth.of(endDate.getYear(), endDate.getMonthValue());
 
-		//TODO compare the returned list, ensure it covers everything within the date range
-		//TODO otherwise retrieve the request
+		for (int i = 0; i < alreadyRetrieved.size(); i++) {
+			final RetrievedMonthTradingPrices retrieved = alreadyRetrieved.get(i);
+
+			if (unknown == retrieved.getYearMonth()) {
+				if (unknown == end) {
+					return true;
+				}
+
+				unknown = unknown.plusMonths(1);
+				i = 0;
+			}
+		}
 
 		return false;
 	}

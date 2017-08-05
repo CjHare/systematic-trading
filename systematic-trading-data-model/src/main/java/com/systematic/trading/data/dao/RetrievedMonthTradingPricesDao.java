@@ -51,7 +51,9 @@ public interface RetrievedMonthTradingPricesDao {
 	 * Retrieve the months of already obtained price data.
 	 * 
 	 * @param tickerSymbol symbol of the equity who history to retrieve.
+	 * @param startYear beginning year for the range of values to retrieve.
+	 * @param endYear last year for the range of values to retrieve.
 	 * @return ally full months of already obtained.
 	 */
-	List<RetrievedMonthTradingPrices> get( String tickerSymbol );
+	List<RetrievedMonthTradingPrices> get( String tickerSymbol, int startYear, int endYear );
 }

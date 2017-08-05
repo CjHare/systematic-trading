@@ -65,14 +65,16 @@ public class HibernateRetrievedMonthTradingPricesDao implements RetrievedMonthTr
 	}
 
 	@Override
-	public List<RetrievedMonthTradingPrices> get( final String tickerSymbol ) {
+	public List<RetrievedMonthTradingPrices> get( final String tickerSymbol, final int startYear, final int endYear ) {
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		Transaction tx = session.beginTransaction();
 
 		try {
-			final Query query = session
-			        .createQuery("from already_retrieved_yearmonth where ticker_symbol= :ticker_symbol");
+			final Query query = session.createQuery(
+			        "from already_retrieved_year_month where ticker_symbol= :ticker_symbol and year >= :start_year and year <= :end_year");
 			query.setString("ticker_symbol", tickerSymbol);
+			query.setInteger("start_year", startYear);
+			query.setInteger("end_year", endYear);
 
 			final List<?> uncast = query.list();
 			return uncast.stream().map(u -> (RetrievedMonthTradingPrices) u).collect(Collectors.toList());
