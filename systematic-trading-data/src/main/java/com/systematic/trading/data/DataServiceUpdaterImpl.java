@@ -50,12 +50,14 @@ import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.exception.ConfigurationValidationException;
+import com.systematic.trading.data.history.HistoryRetrievalRequestMerger;
 import com.systematic.trading.data.history.HistoryRetrievalRequestSlicer;
 import com.systematic.trading.data.history.RetrievedHistoryPeriodRecorder;
 import com.systematic.trading.data.history.UnnecessaryHistoryRequestFilter;
+import com.systematic.trading.data.history.impl.HistoryRetrievalRequestMergerImpl;
 import com.systematic.trading.data.history.impl.MonthlyHistoryRetrievalRequestSlicer;
-import com.systematic.trading.data.history.impl.UnnecessaryHistoryRequestFilterImpl;
 import com.systematic.trading.data.history.impl.RetrievedYearMonthRecorder;
+import com.systematic.trading.data.history.impl.UnnecessaryHistoryRequestFilterImpl;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
@@ -75,6 +77,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private final TradingDayPricesDao tradingDayPricesDao;
 	private final HistoryRetrievalRequestSlicer historyRetrievalRequestSlicer;
 	private final UnnecessaryHistoryRequestFilter unecessaryRequestFilter;
+	private final HistoryRetrievalRequestMerger historyRetrievalRequestMerger;
 
 	public DataServiceUpdaterImpl() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 		final RetrievedMonthTradingPricesDao retrievedHistoryDao = new HibernateRetrievedMonthTradingPricesDao();
@@ -86,6 +89,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		this.tradingDayPricesDao = new HibernateTradingDayPricesDao();
 		this.historyRetrievalRequestSlicer = new MonthlyHistoryRetrievalRequestSlicer();
 		this.unecessaryRequestFilter = new UnnecessaryHistoryRequestFilterImpl(retrievedHistoryDao);
+		this.historyRetrievalRequestMerger = new HistoryRetrievalRequestMergerImpl();
 	}
 
 	@Override
@@ -95,16 +99,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		// Ensure there's a table for the data
 		tradingDayPricesDao.createTableIfAbsent(tickerSymbol);
 
-		final List<HistoryRetrievalRequest> unfilteredRequests = historyRetrievalRequestSlicer.slice(tickerSymbol,
-		        startDate, endDate);
-		final List<HistoryRetrievalRequest> filteredRequests = unecessaryRequestFilter.filter(unfilteredRequests);
-
-		//TODO will need this again
-		//		final Period maximum = api.getMaximumDurationPerConnection();
-
-		//TODO merge the requests again
-
-		storeHistoryRetrievalRequests(filteredRequests);
+		lodgeOnlyNeededHistoryRetrievalRequests(tickerSymbol, startDate, endDate);
 
 		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 
@@ -189,14 +184,29 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		return throttlerCleanUp;
 	}
 
-	/**
-	 * These we store as a defensive approach in case of partial failure during processing.
-	 */
-	private void storeHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests ) {
+	private void lodgeOnlyNeededHistoryRetrievalRequests( final String tickerSymbol, final LocalDate startDate,
+	        final LocalDate endDate ) {
+		lodge(merge(filter(slice(tickerSymbol, startDate, endDate))));
+	}
+
+	private void lodge( final List<HistoryRetrievalRequest> requests ) {
 		pendingRetrievalRequestDao.create(requests);
 	}
 
 	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
 		return pendingRetrievalRequestDao.get(tickerSymbol);
+	}
+
+	private List<HistoryRetrievalRequest> slice( final String tickerSymbol, final LocalDate startDate,
+	        final LocalDate endDate ) {
+		return historyRetrievalRequestSlicer.slice(tickerSymbol, startDate, endDate);
+	}
+
+	private List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> requests ) {
+		return unecessaryRequestFilter.filter(requests);
+	}
+
+	private List<HistoryRetrievalRequest> merge( final List<HistoryRetrievalRequest> requests ) {
+		return historyRetrievalRequestMerger.merge(requests, api.getMaximumDurationPerConnection());
 	}
 }
