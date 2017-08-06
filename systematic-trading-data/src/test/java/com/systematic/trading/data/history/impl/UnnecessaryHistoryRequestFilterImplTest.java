@@ -32,6 +32,7 @@ package com.systematic.trading.data.history.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -44,6 +45,7 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -124,6 +126,76 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		verifyLocalHistoryRequest(startYear, endYear);
 	}
 
+	@Test
+	public void filterUnnecessaryTwoMonthRequest() {
+		final int startYear = 2010;
+		final int endYear = 2010;
+		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
+		        create(LocalDate.of(startYear, 5, 1), LocalDate.of(endYear, 7, 1)));
+		setUpLocalHistory(YearMonth.of(startYear, 5), YearMonth.of(startYear, 6));
+
+		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+
+		verifyNoRequests(filtered);
+		verifyLocalHistoryRequest(startYear, endYear);
+	}
+
+	@Test
+	public void filterPartiallyCoveredRequest() {
+		final int startYear = 2010;
+		final int endYear = 2010;
+		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
+		        create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 12, 31)));
+		setUpLocalHistory(YearMonth.of(startYear, 7), YearMonth.of(startYear, 8), YearMonth.of(startYear, 10));
+
+		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+
+		verifyRetrievalRequests(unfilteredRequests, filtered);
+		verifyLocalHistoryRequest(startYear, endYear);
+	}
+
+	@Test
+	public void filterSomeUnnecessaryRequests() {
+		final int startYear = 2010;
+		final int endYear = 2010;
+		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
+		        create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 7, 1)),
+		        create(LocalDate.of(startYear, 7, 1), LocalDate.of(endYear, 8, 1)),
+		        create(LocalDate.of(startYear, 8, 1), LocalDate.of(endYear, 9, 1)),
+		        create(LocalDate.of(startYear, 9, 1), LocalDate.of(endYear, 10, 1)),
+		        create(LocalDate.of(startYear, 10, 1), LocalDate.of(endYear, 11, 1)),
+		        create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1)));
+		setUpLocalHistory(YearMonth.of(startYear, 7), YearMonth.of(startYear, 8), YearMonth.of(startYear, 10));
+
+		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+
+		verifyRetrievalRequests(asList(create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 7, 1)),
+		        create(LocalDate.of(startYear, 9, 1), LocalDate.of(endYear, 10, 1)),
+		        create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1))), filtered);
+		verifyLocalHistoryRequest(startYear, endYear);
+	}
+
+	@Test
+	public void filterSomeUnnecessaryRequestsDisordered() {
+		final int startYear = 2010;
+		final int endYear = 2010;
+		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
+		        create(LocalDate.of(startYear, 10, 1), LocalDate.of(endYear, 11, 1)),
+		        create(LocalDate.of(startYear, 9, 1), LocalDate.of(endYear, 10, 1)),
+		        create(LocalDate.of(startYear, 7, 1), LocalDate.of(endYear, 8, 1)),
+		        create(LocalDate.of(startYear, 8, 1), LocalDate.of(endYear, 9, 1)),
+		        create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 7, 1)),
+		        create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1)));
+		setUpLocalHistory(YearMonth.of(startYear, 7), YearMonth.of(startYear, 8), YearMonth.of(startYear, 10));
+
+		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+
+		verifyRetrievalRequests(asList(create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 7, 1)),
+		        create(LocalDate.of(startYear, 9, 1), LocalDate.of(endYear, 10, 1)),
+		        create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1))), filtered);
+		verifyLocalHistoryRequest(startYear, endYear);
+	}
+
 	private void setUpLocalHistory( final YearMonth... ym ) {
 		when(retrievedHistoryDao.get(anyString(), anyInt(), anyInt()))
 		        .thenReturn(retrievedMonthTradingPricesUtil.create(tickerSymbol, ym));
@@ -139,7 +211,26 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		assertNotNull(actual);
 		assertEquals(expected.size(), actual.size());
 		for (final HistoryRetrievalRequest expectedRequest : expected) {
-			assertTrue(String.format("Expecting ", expectedRequest), actual.contains(expectedRequest));
+			contains(expectedRequest, actual);
+		}
+	}
+
+	private void contains( final HistoryRetrievalRequest expected, final List<HistoryRetrievalRequest> actualValues ) {
+		boolean found = false;
+
+		for (final HistoryRetrievalRequest actual : actualValues) {
+			found = StringUtils.equals(expected.getTickerSymbol(), actual.getTickerSymbol())
+			        && expected.getInclusiveStartDate().equals(actual.getInclusiveStartDate())
+			        && expected.getExclusiveEndDate().equals(actual.getExclusiveEndDate());
+
+			if (found) {
+				break;
+			}
+		}
+
+		if (!found) {
+			fail(String.format("Faled to find a HistoryRetrievalRequest with ticker: %s, start date: %s, end date: %s",
+			        expected.getTickerSymbol(), expected.getInclusiveStartDate(), expected.getExclusiveEndDate()));
 		}
 	}
 

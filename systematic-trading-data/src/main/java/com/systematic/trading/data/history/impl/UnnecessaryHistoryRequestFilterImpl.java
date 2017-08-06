@@ -136,7 +136,7 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 	private boolean isRelevantRequest( final HistoryRetrievalRequest request,
 	        List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
 		final LocalDate startDate = request.getInclusiveStartDate().toLocalDate();
-		final LocalDate endDate = request.getExclusiveEndDate().toLocalDate();
+		final LocalDate endDate = request.getExclusiveEndDate().toLocalDate().minusDays(1);
 
 		YearMonth unknown = YearMonth.of(startDate.getYear(), startDate.getMonthValue());
 		final YearMonth end = YearMonth.of(endDate.getYear(), endDate.getMonthValue());
