@@ -49,8 +49,8 @@ import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.history.impl.RetrievedYearMonthRecorder;
 import com.systematic.trading.data.matcher.RetrievedMonthTradingPricesListMatcher;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
-import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
 import com.systematic.trading.data.util.HistoryRetrievalRequestUtil;
+import com.systematic.trading.data.util.RetrievedMonthTradingPricesUtil;
 import com.systematic.trading.data.util.TickerSymbolGenerator;
 
 /**
@@ -65,6 +65,7 @@ public class RetrievedYearMonthRecorderTest {
 	private RetrievedMonthTradingPricesDao retrievedMonthsDao;
 
 	private final HistoryRetrievalRequestUtil historyRetrievalRequestUtil = new HistoryRetrievalRequestUtil();
+	private final RetrievedMonthTradingPricesUtil retrievedMonthTradingPricesUtil = new RetrievedMonthTradingPricesUtil();
 
 	/** Instance being tested.*/
 	private RetrievedYearMonthRecorder recorder;
@@ -184,36 +185,9 @@ public class RetrievedYearMonthRecorderTest {
 	}
 
 	private void verifyMonths( final YearMonth... month ) {
-
-		verify(retrievedMonthsDao).create(argThat(new RetrievedMonthTradingPricesListMatcher(create(month))));
+		verify(retrievedMonthsDao).create(argThat(new RetrievedMonthTradingPricesListMatcher(
+		        retrievedMonthTradingPricesUtil.create(tickerSymbol, month))));
 		verifyNoMoreInteractions(retrievedMonthsDao);
-	}
-
-	private List<RetrievedMonthTradingPrices> create( final YearMonth... yms ) {
-		final List<RetrievedMonthTradingPrices> retrieved = new ArrayList<>();
-
-		for (final YearMonth ym : yms) {
-			retrieved.add(new RetrievedMonthTradingPrices() {
-
-				@Override
-				public YearMonth getYearMonth() {
-					return ym;
-				}
-
-				@Override
-				public String getTickerSymbol() {
-					return tickerSymbol;
-				}
-
-				@Override
-				public String toString() {
-					return new StringBuilder("[RetrievedMonthTradingPrices, tickerSymbol=").append(tickerSymbol)
-					        .append(", ").append("YearMonth=").append(ym).append("]").toString();
-				}
-			});
-		}
-
-		return retrieved;
 	}
 
 	private List<HistoryRetrievalRequest> asList( final HistoryRetrievalRequest... requests ) {

@@ -144,8 +144,8 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		for (int i = 0; i < alreadyRetrieved.size(); i++) {
 			final RetrievedMonthTradingPrices retrieved = alreadyRetrieved.get(i);
 
-			if (unknown == retrieved.getYearMonth()) {
-				if (unknown == end) {
+			if (unknown.equals(retrieved.getYearMonth())) {
+				if (unknown.equals(end)) {
 					// Entire range is covered by already retrieved data
 					return false;
 				}

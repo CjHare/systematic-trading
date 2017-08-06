@@ -32,11 +32,15 @@ package com.systematic.trading.data.history.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +54,7 @@ import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.history.UnnecessaryHistoryRequestFilter;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.util.HistoryRetrievalRequestUtil;
+import com.systematic.trading.data.util.RetrievedMonthTradingPricesUtil;
 import com.systematic.trading.data.util.TickerSymbolGenerator;
 
 /**
@@ -64,6 +69,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 	private RetrievedMonthTradingPricesDao retrievedHistoryDao;
 
 	private final HistoryRetrievalRequestUtil historyRetrievalRequestUtil = new HistoryRetrievalRequestUtil();
+	private final RetrievedMonthTradingPricesUtil retrievedMonthTradingPricesUtil = new RetrievedMonthTradingPricesUtil();
 
 	/** Instance being tested.*/
 	private UnnecessaryHistoryRequestFilter filter;
@@ -81,14 +87,16 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 	public void filterNull() {
 		final List<HistoryRetrievalRequest> filtered = filter.filter(null);
 
-		verfiyNothingFiltered(filtered);
+		verifyNoRequests(filtered);
+		verfiyNoLoclaHistoryRequest(filtered);
 	}
 
 	@Test
 	public void filterNone() {
 		final List<HistoryRetrievalRequest> filtered = filter.filter(new ArrayList<>());
 
-		verfiyNothingFiltered(filtered);
+		verifyNoRequests(filtered);
+		verfiyNoLoclaHistoryRequest(filtered);
 	}
 
 	@Test
@@ -98,13 +106,41 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
 
-		assertNotNull(filtered);
-		assertEquals(1, filtered.size());
-		
-		//TODO contents match those provided
-		
-		verify(retrievedHistoryDao).get(tickerSymbol, 2010, 2010);
+		verifyRetrievalRequests(unfilteredRequests, filtered);
+		verifyLocalHistoryRequest(2010, 2010);
+	}
+
+	@Test
+	public void filterUnnecessaryMonthRequest() {
+		final int startYear = 2010;
+		final int endYear = 2010;
+		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
+		        create(LocalDate.of(startYear, 5, 1), LocalDate.of(endYear, 5, 31)));
+		setUpLocalHistory(YearMonth.of(startYear, 5));
+
+		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+
+		verifyNoRequests(filtered);
+		verifyLocalHistoryRequest(startYear, endYear);
+	}
+
+	private void setUpLocalHistory( final YearMonth... ym ) {
+		when(retrievedHistoryDao.get(anyString(), anyInt(), anyInt()))
+		        .thenReturn(retrievedMonthTradingPricesUtil.create(tickerSymbol, ym));
+	}
+
+	private void verifyLocalHistoryRequest( final int startYear, final int endYear ) {
+		verify(retrievedHistoryDao).get(tickerSymbol, startYear, endYear);
 		verifyNoMoreInteractions(retrievedHistoryDao);
+	}
+
+	private void verifyRetrievalRequests( final List<HistoryRetrievalRequest> expected,
+	        final List<HistoryRetrievalRequest> actual ) {
+		assertNotNull(actual);
+		assertEquals(expected.size(), actual.size());
+		for (final HistoryRetrievalRequest expectedRequest : expected) {
+			assertTrue(String.format("Expecting ", expectedRequest), actual.contains(expectedRequest));
+		}
 	}
 
 	private List<HistoryRetrievalRequest> asList( final HistoryRetrievalRequest... requests ) {
@@ -115,9 +151,12 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		return historyRetrievalRequestUtil.create(tickerSymbol, start, end);
 	}
 
-	private void verfiyNothingFiltered( final List<HistoryRetrievalRequest> filtered ) {
+	private void verifyNoRequests( final List<HistoryRetrievalRequest> filtered ) {
 		assertNotNull(filtered);
-		assertTrue(filtered.isEmpty());
+		assertTrue("Expecing no requests left after filtering", filtered.isEmpty());
+	}
+
+	private void verfiyNoLoclaHistoryRequest( final List<HistoryRetrievalRequest> filtered ) {
 		verifyZeroInteractions(retrievedHistoryDao);
 	}
 }
