@@ -59,6 +59,7 @@ import com.systematic.trading.data.history.impl.MonthlyHistoryRetrievalRequestSl
 import com.systematic.trading.data.history.impl.RetrievedYearMonthRecorder;
 import com.systematic.trading.data.history.impl.UnnecessaryHistoryRequestFilterImpl;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
+import com.systematic.trading.data.model.builder.impl.HibernateHistoryRetrievalRequestBuilder;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlApiDao;
@@ -89,7 +90,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		this.tradingDayPricesDao = new HibernateTradingDayPricesDao();
 		this.historyRetrievalRequestSlicer = new MonthlyHistoryRetrievalRequestSlicer();
 		this.unecessaryRequestFilter = new UnnecessaryHistoryRequestFilterImpl(retrievedHistoryDao);
-		this.historyRetrievalRequestMerger = new HistoryRetrievalRequestMergerImpl();
+		this.historyRetrievalRequestMerger = new HistoryRetrievalRequestMergerImpl(
+		        new HibernateHistoryRetrievalRequestBuilder());
 	}
 
 	@Override
