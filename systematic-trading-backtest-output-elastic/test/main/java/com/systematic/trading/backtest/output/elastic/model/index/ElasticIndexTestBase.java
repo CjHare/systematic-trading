@@ -25,8 +25,8 @@
  */
 package com.systematic.trading.backtest.output.elastic.model.index;
 
-import static com.systematic.trading.backtest.output.elastic.model.index.ElasticMatcher.equalsBacktestId;
-import static com.systematic.trading.backtest.output.elastic.model.index.ElasticMatcher.equalsJson;
+import static com.systematic.trading.backtest.output.elastic.model.index.matcher.ElasticMatcher.equalsBacktestId;
+import static com.systematic.trading.backtest.output.elastic.model.index.matcher.ElasticMatcher.equalsJson;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;

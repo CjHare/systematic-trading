@@ -23,55 +23,28 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index;
+package com.systematic.trading.backtest.output.elastic.model.index.matcher;
 
-import java.util.Optional;
+import static org.mockito.Matchers.argThat;
+
+import java.time.LocalDate;
 
 import javax.ws.rs.client.Entity;
 
-import org.apache.commons.lang3.StringUtils;
-import org.hamcrest.Description;
-import org.mockito.ArgumentMatcher;
+import com.systematic.trading.backtest.BacktestBatchId;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+public class ElasticMatcher {
 
-/**
- * Matcher for a sub-string within an JSON Entity.
- * 
- * @author CJ Hare
- */
-public class JsonEntityMatcher extends ArgumentMatcher<Entity<?>> {
-
-	private final ObjectMapper mapper = new ObjectMapper();
-	private final String expectedJson;
-
-	public JsonEntityMatcher( final String expectedJson ) {
-		this.expectedJson = expectedJson;
+	public static BacktestBatchId equalsBacktestId( final String batchId ) {
+		return argThat(new BacktestBatchIdMatcher(batchId));
 	}
 
-	public boolean matches( Object argument ) {
-
-		if (argument instanceof Entity<?>) {
-
-			final Entity<?> entity = (Entity<?>) argument;
-			final Optional<String> jsonEntity = parseEntity(entity);
-			return jsonEntity.isPresent() && StringUtils.contains(jsonEntity.get(), expectedJson);
-		}
-
-		return false;
+	public static Entity<?> equalsJson( final String json ) {
+		return argThat(new JsonEntityMatcher(json));
 	}
 
-	@Override
-	public void describeTo( Description description ) {
-		description.appendText(expectedJson);
+	public static Entity<?> equalsJson( final String json, final LocalDate transactionDate ) {
+		return argThat(new JsonEntityWithDateMatcher(json, transactionDate));
 	}
 
-	private Optional<String> parseEntity( final Entity<?> entity ) {
-		try {
-			return Optional.of(mapper.writeValueAsString(entity.getEntity()));
-		} catch (JsonProcessingException e) {
-			return Optional.empty();
-		}
-	}
 }
