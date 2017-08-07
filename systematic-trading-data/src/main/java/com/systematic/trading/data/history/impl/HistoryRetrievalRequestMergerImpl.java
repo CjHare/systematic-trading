@@ -30,11 +30,11 @@
 package com.systematic.trading.data.history.impl;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.systematic.trading.data.history.HistoryRetrievalRequestMerger;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
@@ -56,6 +56,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	@Override
 	/**
 	 * Assumed all requests are for the same ticker symbol.
+	 * Will only merge requests, no slicing or splitting will occur.
 	 */
 	public List<HistoryRetrievalRequest> merge( final List<HistoryRetrievalRequest> unsortedRequests,
 	        final Period maximum ) {
@@ -68,49 +69,65 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		HistoryRetrievalRequestBuilder mergedRequest = resetBuilder(sortedRequests.get(0));
 		Period remaining = maximum;
 
-		for (int i = 0; i < sortedRequests.size() - 1; i++) {
+		for (int i = 0; i < sortedRequests.size(); i++) {
+			final Optional<HistoryRetrievalRequest> lastRequest = getLastRequest(i, sortedRequests);
 			final HistoryRetrievalRequest request = sortedRequests.get(i);
-			final HistoryRetrievalRequest nextRequest = sortedRequests.get(i + 1);
+			final Optional<HistoryRetrievalRequest> nextRequest = getNexrRequest(i, sortedRequests);
 			final Period requestLength = getRequestLength(request);
 
-			if (areConsecutive(request, nextRequest)) {
-				if (hasEnoughTime(requestLength, remaining)) {
+			if (nextRequest.isPresent()) {
+				if (areConsecutive(request, nextRequest.get())) {
+					if (hasEnoughTime(requestLength, remaining)) {
 
-					// Decrement the remaining time by this request's
-					remaining = remaining.minus(requestLength);
+						// Decrement the remaining time by this request's
+						remaining = remaining.minus(requestLength);
 
-					if (remaining.isZero()) {
+						if (remaining.isZero()) {
+							merged.add(mergedRequest.withExclusiveEndDate(request.getExclusiveEndDate()).build());
+
+							// Reset the  time for the next request to merge, update the start date
+							remaining = maximum;
+							mergedRequest = resetBuilder(nextRequest.get().getInclusiveStartDate());
+						}
+					} else {
+
+						// Insufficient time to merge the entire next record
+						if (lastRequest.isPresent()) {
+							merged.add(mergedRequest.withExclusiveEndDate(lastRequest.get().getExclusiveEndDate())
+							        .build());
+							mergedRequest = resetBuilder(request.getInclusiveStartDate());
+						}
+
 						merged.add(mergedRequest.withExclusiveEndDate(request.getExclusiveEndDate()).build());
-
-						// Reset the  time for the next request to merge, update the start date
 						remaining = maximum;
-						mergedRequest = resetBuilder(nextRequest.getInclusiveStartDate());
+						mergedRequest = resetBuilder(nextRequest.get().getInclusiveStartDate());
+
 					}
 				} else {
-
-					// Partial request covered
-					final LocalDate exclusiveEndDate = getExclusiveEndDate(nextRequest, remaining);
-					merged.add(mergedRequest.withExclusiveEndDate(exclusiveEndDate).build());
-
-					// Reset the  time for the next request to merge, update the start date
+					// Break in the consecutive chain
+					merged.add(mergedRequest.withExclusiveEndDate(request.getExclusiveEndDate()).build());
 					remaining = maximum;
-					mergedRequest = resetBuilder(exclusiveEndDate);
-
+					mergedRequest = resetBuilder(nextRequest.get().getInclusiveStartDate());
 				}
 			} else {
-				// Break in the consecutive chain
-				merged.add(mergedRequest.withExclusiveEndDate(request.getExclusiveEndDate()).build());
-				remaining = maximum;
-				mergedRequest = resetBuilder(nextRequest.getInclusiveStartDate());
+				// Create the final merged request
+				merged.add(mergedRequest
+				        .withExclusiveEndDate(sortedRequests.get(sortedRequests.size() - 1).getExclusiveEndDate())
+				        .build());
 			}
-
 		}
-		
-		// Create the final merged request
-		merged.add(mergedRequest
-		        .withExclusiveEndDate(sortedRequests.get(sortedRequests.size() - 1).getExclusiveEndDate()).build());
 
 		return merged;
+	}
+
+	private Optional<HistoryRetrievalRequest> getLastRequest( final int i,
+	        final List<HistoryRetrievalRequest> requests ) {
+		return i > 0 ? Optional.of(requests.get(i - 1)) : Optional.empty();
+	}
+
+	private Optional<HistoryRetrievalRequest> getNexrRequest( final int i,
+	        final List<HistoryRetrievalRequest> requests ) {
+		return i < requests.size() - 1 ? Optional.of(requests.get(i + 1)) : Optional.empty();
 	}
 
 	/**
@@ -119,10 +136,6 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	private Period getRequestLength( final HistoryRetrievalRequest request ) {
 		return Period.between(request.getInclusiveStartDate().toLocalDate(),
 		        request.getExclusiveEndDate().toLocalDate());
-	}
-
-	private LocalDate getExclusiveEndDate( final HistoryRetrievalRequest request, final Period remaining ) {
-		return request.getInclusiveStartDate().toLocalDate().plusDays(1).plus(remaining);
 	}
 
 	private boolean areConsecutive( final HistoryRetrievalRequest first, final HistoryRetrievalRequest second ) {
@@ -145,10 +158,6 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	}
 
 	private HistoryRetrievalRequestBuilder resetBuilder( final Date inclsuiveStartDate ) {
-		return builder.withInclusiveStartDate(inclsuiveStartDate);
-	}
-
-	private HistoryRetrievalRequestBuilder resetBuilder( final LocalDate inclsuiveStartDate ) {
 		return builder.withInclusiveStartDate(inclsuiveStartDate);
 	}
 }
