@@ -71,7 +71,7 @@ public class HibernateRetrievedMonthTradingPricesDao implements RetrievedMonthTr
 
 		try {
 			final Query query = session.createQuery(
-			        "from already_retrieved_year_month where ticker_symbol= :ticker_symbol and year >= :start_year and year <= :end_year");
+			        "from HibernateRetrievedMonthTradingPrices where ticker_symbol= :ticker_symbol and year >= :start_year and year <= :end_year");
 			query.setString("ticker_symbol", tickerSymbol);
 			query.setInteger("start_year", startYear);
 			query.setInteger("end_year", endYear);
