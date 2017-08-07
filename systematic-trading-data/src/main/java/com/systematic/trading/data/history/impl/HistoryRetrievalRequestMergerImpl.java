@@ -59,7 +59,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	 */
 	public List<HistoryRetrievalRequest> merge( final List<HistoryRetrievalRequest> unsortedRequests,
 	        final Period maximum ) {
-		if (unsortedRequests.isEmpty() || unsortedRequests.size() == 1) {
+		if (unsortedRequests == null || unsortedRequests.isEmpty() || unsortedRequests.size() == 1 || maximum == null) {
 			return unsortedRequests;
 		}
 
@@ -105,6 +105,10 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 			}
 
 		}
+		
+		// Create the final merged request
+		merged.add(mergedRequest
+		        .withExclusiveEndDate(sortedRequests.get(sortedRequests.size() - 1).getExclusiveEndDate()).build());
 
 		return merged;
 	}
@@ -114,7 +118,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	 */
 	private Period getRequestLength( final HistoryRetrievalRequest request ) {
 		return Period.between(request.getInclusiveStartDate().toLocalDate(),
-		        request.getExclusiveEndDate().toLocalDate().minusDays(1));
+		        request.getExclusiveEndDate().toLocalDate());
 	}
 
 	private LocalDate getExclusiveEndDate( final HistoryRetrievalRequest request, final Period remaining ) {
@@ -126,7 +130,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	}
 
 	private boolean hasEnoughTime( final Period requestLength, final Period remaining ) {
-		return remaining.minus(requestLength).isNegative();
+		return !remaining.minus(requestLength).isNegative();
 	}
 
 	private List<HistoryRetrievalRequest> sortByStartDate( final List<HistoryRetrievalRequest> requests ) {

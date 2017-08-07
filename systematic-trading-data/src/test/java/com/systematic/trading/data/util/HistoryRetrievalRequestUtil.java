@@ -29,10 +29,14 @@
  */
 package com.systematic.trading.data.util;
 
+import static org.junit.Assert.fail;
+
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 
@@ -70,5 +74,24 @@ public class HistoryRetrievalRequestUtil {
 				return Date.valueOf(end);
 			}
 		};
+	}
+
+	public void contains( final HistoryRetrievalRequest expected, final List<HistoryRetrievalRequest> actualValues ) {
+		boolean found = false;
+
+		for (final HistoryRetrievalRequest actual : actualValues) {
+			found = StringUtils.equals(expected.getTickerSymbol(), actual.getTickerSymbol())
+			        && expected.getInclusiveStartDate().equals(actual.getInclusiveStartDate())
+			        && expected.getExclusiveEndDate().equals(actual.getExclusiveEndDate());
+
+			if (found) {
+				break;
+			}
+		}
+
+		if (!found) {
+			fail(String.format("Faled to find a HistoryRetrievalRequest with ticker: %s, start date: %s, end date: %s",
+			        expected.getTickerSymbol(), expected.getInclusiveStartDate(), expected.getExclusiveEndDate()));
+		}
 	}
 }

@@ -32,7 +32,6 @@ package com.systematic.trading.data.history.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -45,7 +44,6 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -211,26 +209,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		assertNotNull(actual);
 		assertEquals(expected.size(), actual.size());
 		for (final HistoryRetrievalRequest expectedRequest : expected) {
-			contains(expectedRequest, actual);
-		}
-	}
-
-	private void contains( final HistoryRetrievalRequest expected, final List<HistoryRetrievalRequest> actualValues ) {
-		boolean found = false;
-
-		for (final HistoryRetrievalRequest actual : actualValues) {
-			found = StringUtils.equals(expected.getTickerSymbol(), actual.getTickerSymbol())
-			        && expected.getInclusiveStartDate().equals(actual.getInclusiveStartDate())
-			        && expected.getExclusiveEndDate().equals(actual.getExclusiveEndDate());
-
-			if (found) {
-				break;
-			}
-		}
-
-		if (!found) {
-			fail(String.format("Faled to find a HistoryRetrievalRequest with ticker: %s, start date: %s, end date: %s",
-			        expected.getTickerSymbol(), expected.getInclusiveStartDate(), expected.getExclusiveEndDate()));
+			historyRetrievalRequestUtil.contains(expectedRequest, actual);
 		}
 	}
 
