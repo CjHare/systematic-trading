@@ -74,8 +74,10 @@ public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequ
 			tx.commit();
 		} catch (final HibernateException e) {
 			// May already have the record inserted
-			LOG.info("{}", () -> String.format("Failed to save request for %s %s %s", request.getTickerSymbol(),
-			        request.getInclusiveStartDate(), request.getExclusiveEndDate()));
+			LOG.info("{}",
+			        () -> String.format("Failed to save request for %s, %s to %s, problem: %s",
+			                request.getTickerSymbol(), request.getInclusiveStartDate(), request.getExclusiveEndDate(),
+			                e.getMessage()));
 			LOG.debug(e);
 
 			if (tx != null && tx.isActive()) {

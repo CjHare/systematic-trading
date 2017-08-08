@@ -57,8 +57,6 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 	@Override
 	public void create( final TradingDayPrices[] data ) {
 		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-
-		//TODO remove data that already exists, prior to calling this method so the insert doesn't fail
 		final Transaction tx = session.beginTransaction();
 
 		for (final TradingDayPrices d : data) {
@@ -67,10 +65,8 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 			} catch (final HibernateException e) {
 
 				if (e.getCause() instanceof ConstraintViolationException) {
-					LOG.error(e.getMessage());
-					
-					
-					//TODO if there's a constraint violation, rollback?
+					// Only constraint violation here will be primary key, or attempting to insert data already present
+					LOG.debug(e.getMessage());
 				} else {
 					throw e;
 				}
