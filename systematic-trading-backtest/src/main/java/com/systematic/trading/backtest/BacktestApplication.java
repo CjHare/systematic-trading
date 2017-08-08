@@ -252,8 +252,21 @@ public class BacktestApplication {
 		final LocalDate startDate = simulationDate.getStartDate().minus(simulationDate.getWarmUp());
 		final LocalDate endDate = simulationDate.getEndDate();
 
+		if (startDate.getDayOfMonth() != 1) {
+			LOG.info(String.format(
+			        "Remote data retrieval for start date: %s has been adjusted to the beginning of the month ",
+			        startDate));
+		}
+
+		if (endDate.getDayOfMonth() != 1) {
+			LOG.warn(
+			        "With the current data retrieval implementation, an End date of the first day of the month is more efficient");
+		}
+
+		final LocalDate retrievalStartDate = startDate.withDayOfMonth(1);
+
 		// Retrieve and cache data range from remote data source		
-		updateService.get(equity.getTickerSymbol(), startDate, endDate);
+		updateService.get(equity.getTickerSymbol(), retrievalStartDate, endDate);
 
 		// Retrieve from local cache the desired data range
 		final TradingDayPrices[] data = new HibernateDataService().get(equity.getTickerSymbol(), startDate, endDate);
