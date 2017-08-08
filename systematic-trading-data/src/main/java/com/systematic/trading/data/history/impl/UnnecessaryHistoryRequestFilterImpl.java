@@ -29,10 +29,10 @@
  */
 package com.systematic.trading.data.history.impl;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +62,8 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		}
 
 		final List<HistoryRetrievalRequest> filtered = new ArrayList<>(unfilteredRequests.size());
-		final Map<String, List<HistoryRetrievalRequest>> tickerSymbolRequests = splitByTickerSymbol(unfilteredRequests);
+		final Map<String, List<HistoryRetrievalRequest>> tickerSymbolRequests = splitByTickerSymbolSortByStartDate(
+		        unfilteredRequests);
 
 		for (final String tickerSymbol : tickerSymbolRequests.keySet()) {
 			final List<HistoryRetrievalRequest> requests = tickerSymbolRequests.get(tickerSymbol);
@@ -75,27 +76,11 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 	}
 
 	private LocalDate getEarliestStartDate( final List<HistoryRetrievalRequest> requests ) {
-		Date earliest = requests.get(0).getInclusiveStartDate();
-
-		for (int i = 1; i < requests.size(); i++) {
-			if (requests.get(i).getInclusiveStartDate().getTime() < earliest.getTime()) {
-				earliest = requests.get(i).getInclusiveStartDate();
-			}
-		}
-
-		return earliest.toLocalDate();
+		return requests.get(0).getInclusiveStartDate().toLocalDate();
 	}
 
 	private LocalDate getLatestEndDate( final List<HistoryRetrievalRequest> requests ) {
-		Date latest = requests.get(0).getExclusiveEndDate();
-
-		for (int i = 1; i < requests.size(); i++) {
-			if (requests.get(i).getExclusiveEndDate().getTime() > latest.getTime()) {
-				latest = requests.get(i).getExclusiveEndDate();
-			}
-		}
-
-		return latest.toLocalDate();
+		return requests.get(requests.size() - 1).getExclusiveEndDate().toLocalDate();
 	}
 
 	private List<RetrievedMonthTradingPrices> getRetrievedMonths( final String tickerSymbol,
@@ -103,7 +88,7 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		return retrievedHistoryDao.get(tickerSymbol, inclusiveStartDate.getYear(), exclusiveEndDate.getYear());
 	}
 
-	private Map<String, List<HistoryRetrievalRequest>> splitByTickerSymbol(
+	private Map<String, List<HistoryRetrievalRequest>> splitByTickerSymbolSortByStartDate(
 	        final List<HistoryRetrievalRequest> unfilteredRequests ) {
 		final HashMap<String, List<HistoryRetrievalRequest>> split = new HashMap<>();
 
@@ -111,10 +96,16 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 			final String key = unfilteredRequest.getTickerSymbol();
 			final List<HistoryRetrievalRequest> requests = split.containsKey(key) ? split.get(key) : new ArrayList<>();
 			requests.add(unfilteredRequest);
-			split.put(unfilteredRequest.getTickerSymbol(), requests);
+			split.put(unfilteredRequest.getTickerSymbol(), sortByStartDate(requests));
 		}
 
 		return split;
+	}
+
+	private List<HistoryRetrievalRequest> sortByStartDate( final List<HistoryRetrievalRequest> requests ) {
+		Collections.sort(requests, ( HistoryRetrievalRequest a, HistoryRetrievalRequest b ) -> a.getInclusiveStartDate()
+		        .compareTo(b.getInclusiveStartDate()));
+		return requests;
 	}
 
 	private List<HistoryRetrievalRequest> keepRelevantRequests( final List<HistoryRetrievalRequest> requests,

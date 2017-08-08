@@ -30,7 +30,7 @@
 package com.systematic.trading.data.concurrent;
 
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -80,7 +80,7 @@ public class EventCountCleanUpTest {
 	}
 
 	private void verifyCleanEvents( final int times ) {
-		verify(ringBuffer, times(times)).clean();
+		verify(ringBuffer, atLeast(times)).clean();
 		verifyNoMoreInteractions(ringBuffer);
 	}
 
