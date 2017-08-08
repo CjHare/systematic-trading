@@ -68,49 +68,47 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		HistoryRetrievalRequestBuilder mergedRequest = resetBuilder(sortedRequests.get(0));
 		Period remaining = maximum;
 
-		for (int i = 0; i < sortedRequests.size(); i++) {
+		for (int i = 0; i < sortedRequests.size() - 1; i++) {
 			final Optional<HistoryRetrievalRequest> lastRequest = getLastRequest(i, sortedRequests);
 			final HistoryRetrievalRequest request = sortedRequests.get(i);
 			final Optional<HistoryRetrievalRequest> nextRequest = getNexrRequest(i, sortedRequests);
 			final Period requestLength = getRequestLength(request);
 
-			if (nextRequest.isPresent()) {
-				if (areConsecutive(request, nextRequest.get())) {
-					if (hasEnoughTime(requestLength, remaining)) {
+			if (areConsecutive(request, nextRequest.get())) {
+				if (hasEnoughTime(requestLength, remaining)) {
 
-						// Decrement the remaining time by this request's
-						remaining = remaining.minus(requestLength);
+					// Decrement the remaining time by this request's
+					remaining = remaining.minus(requestLength);
 
-						if (remaining.isZero()) {
-							merged.add(createRequest(request, mergedRequest));
-
-							// Reset the  time for the next request to merge, update the start date
-							remaining = maximum;
-							mergedRequest = resetBuilder(nextRequest.get());
-						}
-					} else {
-
-						// Insufficient time to merge the entire next record
-						if (lastRequest.isPresent()) {
-							merged.add(createRequest(lastRequest.get(), mergedRequest));
-							mergedRequest = resetBuilder(request);
-						}
-
+					if (remaining.isZero()) {
 						merged.add(createRequest(request, mergedRequest));
+
+						// Reset the  time for the next request to merge, update the start date
 						remaining = maximum;
 						mergedRequest = resetBuilder(nextRequest.get());
-
 					}
 				} else {
-					// Break in the consecutive chain
+
+					// Insufficient time to merge the entire next record
+					if (lastRequest.isPresent()) {
+						merged.add(createRequest(lastRequest.get(), mergedRequest));
+						mergedRequest = resetBuilder(request);
+					}
+
 					merged.add(createRequest(request, mergedRequest));
 					remaining = maximum;
 					mergedRequest = resetBuilder(nextRequest.get());
+
 				}
 			} else {
-				merged.add(createLastRequest(sortedRequests, mergedRequest));
+				// Break in the consecutive chain
+				merged.add(createRequest(request, mergedRequest));
+				remaining = maximum;
+				mergedRequest = resetBuilder(nextRequest.get());
 			}
 		}
+
+		merged.add(createLastRequest(sortedRequests, mergedRequest));
 
 		return merged;
 	}
