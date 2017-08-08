@@ -29,7 +29,6 @@
  */
 package com.systematic.trading.data.history.impl;
 
-import java.sql.Date;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,7 +59,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	 */
 	public List<HistoryRetrievalRequest> merge( final List<HistoryRetrievalRequest> unsortedRequests,
 	        final Period maximum ) {
-		if (unsortedRequests == null || unsortedRequests.isEmpty() || unsortedRequests.size() == 1 || maximum == null) {
+		if (hasInsufficentRequestsToMerge(unsortedRequests) || isInvalid(maximum)) {
 			return unsortedRequests;
 		}
 
@@ -83,41 +82,57 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 						remaining = remaining.minus(requestLength);
 
 						if (remaining.isZero()) {
-							merged.add(mergedRequest.withExclusiveEndDate(request.getExclusiveEndDate()).build());
+							merged.add(createRequest(request, mergedRequest));
 
 							// Reset the  time for the next request to merge, update the start date
 							remaining = maximum;
-							mergedRequest = resetBuilder(nextRequest.get().getInclusiveStartDate());
+							mergedRequest = resetBuilder(nextRequest.get());
 						}
 					} else {
 
 						// Insufficient time to merge the entire next record
 						if (lastRequest.isPresent()) {
-							merged.add(mergedRequest.withExclusiveEndDate(lastRequest.get().getExclusiveEndDate())
-							        .build());
-							mergedRequest = resetBuilder(request.getInclusiveStartDate());
+							merged.add(createRequest(lastRequest.get(), mergedRequest));
+							mergedRequest = resetBuilder(request);
 						}
 
-						merged.add(mergedRequest.withExclusiveEndDate(request.getExclusiveEndDate()).build());
+						merged.add(createRequest(request, mergedRequest));
 						remaining = maximum;
-						mergedRequest = resetBuilder(nextRequest.get().getInclusiveStartDate());
+						mergedRequest = resetBuilder(nextRequest.get());
 
 					}
 				} else {
 					// Break in the consecutive chain
-					merged.add(mergedRequest.withExclusiveEndDate(request.getExclusiveEndDate()).build());
+					merged.add(createRequest(request, mergedRequest));
 					remaining = maximum;
-					mergedRequest = resetBuilder(nextRequest.get().getInclusiveStartDate());
+					mergedRequest = resetBuilder(nextRequest.get());
 				}
 			} else {
-				// Create the final merged request
-				merged.add(mergedRequest
-				        .withExclusiveEndDate(sortedRequests.get(sortedRequests.size() - 1).getExclusiveEndDate())
-				        .build());
+				merged.add(createLastRequest(sortedRequests, mergedRequest));
 			}
 		}
 
 		return merged;
+	}
+
+	private HistoryRetrievalRequest createRequest( final HistoryRetrievalRequest request,
+	        final HistoryRetrievalRequestBuilder mergedRequest ) {
+		return mergedRequest.withExclusiveEndDate(request.getExclusiveEndDate()).build();
+
+	}
+
+	private HistoryRetrievalRequest createLastRequest( final List<HistoryRetrievalRequest> sortedRequests,
+	        final HistoryRetrievalRequestBuilder mergedRequest ) {
+		return mergedRequest.withExclusiveEndDate(sortedRequests.get(sortedRequests.size() - 1).getExclusiveEndDate())
+		        .build();
+	}
+
+	private boolean hasInsufficentRequestsToMerge( final List<HistoryRetrievalRequest> unsortedRequests ) {
+		return unsortedRequests == null || unsortedRequests.isEmpty() || unsortedRequests.size() == 1;
+	}
+
+	private boolean isInvalid( final Period maximum ) {
+		return maximum == null || maximum.isZero();
 	}
 
 	private Optional<HistoryRetrievalRequest> getLastRequest( final int i,
@@ -155,9 +170,5 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	private HistoryRetrievalRequestBuilder resetBuilder( final HistoryRetrievalRequest request ) {
 		return builder.withTickerSymbol(request.getTickerSymbol())
 		        .withInclusiveStartDate(request.getInclusiveStartDate());
-	}
-
-	private HistoryRetrievalRequestBuilder resetBuilder( final Date inclsuiveStartDate ) {
-		return builder.withInclusiveStartDate(inclsuiveStartDate);
 	}
 }
