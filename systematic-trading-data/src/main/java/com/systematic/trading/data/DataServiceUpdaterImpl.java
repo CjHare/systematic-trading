@@ -141,6 +141,11 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 					TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate,
 					        exclusiveEndDate, activeConnectionCount);
 
+					if (tradingData.length == 0) {
+						LOG.warn(String.format("No data has been returned for symbol: %s for %s to %s", tickerSymbol,
+						        inclusiveStartDate, exclusiveEndDate));
+					}
+
 					// Push to the data source
 					tradingDayPricesDao.create(tradingData);
 
