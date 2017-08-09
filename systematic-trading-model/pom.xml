@@ -5,7 +5,7 @@
 		<groupId>com.systematic.trading</groupId>
 		<artifactId>systematic-trading-parent</artifactId>
 		<version>1.0.0</version>
-		<relativePath></relativePath>
+		<relativePath>../systematic-trading-parent/pom.xml</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
