@@ -97,7 +97,7 @@ public class EventCountCleanUpTest {
 		throttlerCleanUp.end();
 
 		// Wait for at least one loop to pick up the end i.e. close off the run()
-		TimeUnit.MILLISECONDS.sleep(8);
+		TimeUnit.MILLISECONDS.sleep(25);
 	}
 
 	private Thread start( final EventCountCleanUp throttlerCleanUp ) {
