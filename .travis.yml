@@ -3,9 +3,9 @@ sudo: false
 install: true
 addons:
   sonarcloud:
-    organization: "Systematic-Trading" # the key of the org you chose at step #3
+    organization: "f0d14f9e0cd14afd133b69b43acd309298533e33" # the key of the org you chose at step #3
     token:
-      secure: f0d14f9e0cd14afd133b69b43acd309298533e33 # encrypted value of your token
+      secure:  "QZGv6oHx1eCspWpyQNA7wGOJpxdKGAqh+YrIMde9joLTxSzCdDxUhRKSeo1HH4J1iww8ac47hyB9TZseqLic5rlUL/ue8UIi8l0hRtOSyQ+cFV9cR0uNRlrURtkQ2akBUJEwB6CTgNB/XKnRTVE9d26Gw2wSaxbG6gQzDUN5LFeXKRbwNQ/e+swR/2fYrTv8bBbierfG11q3f0Myf/xkcLGPpCSdrFzMwegt8b8hXW2ggZ4YzsQKVUtVnmzrggpIrviaJbLUfZddv6t2WEFidqYhUV+0djEGkNNmdyhIW5swRFDoY1nClUtanNGFf01+hKgcx5N+qSkXfgl/2NQvuGCCNAlF7h1aZE4+XYI82Mp5E6LOiyfKcQRB1kZNMLo4tN7TpU0xV93NKUHT53RnP/EDCsNKhhOGfaZQGNnjv+HqfJT7aMf2teA1tGpnijtX3oRA47YReDp06ACdGUUaaO2iVMrNRdviJ+B41BnDD85fJ6M632neBzweTBT3PCccr/wQvOh7MaIW4uF43/UQ0yz93n2mywuXmZlQKQ1XR4Hj3KxkQtI9BTAl8xGONMYXHEvRF+6iRcU6QVk7VdxZb5OZjEy/HJTKwn2vp6izAkkwtrpOXAboiFS/NZ1a+/OxxOwQm//DMze03jw+YQQTKT5VMxmr7gsCvSILeqB52i0=" # encrypted value of your token
 jdk:
   - oraclejdk8
 script:
