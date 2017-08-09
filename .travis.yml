@@ -1,16 +1,17 @@
-language: 
-  java
-before_script: 
-  mvn clean install -f systematic-trading-parent/pom.xml 
-sudo: 
-  false
-script:
-  mvn verify -B
+language: java
+sudo: false
+install: true
 addons:
   sonarcloud:
     organization: "Systematic-Trading" # the key of the org you chose at step #3
     token:
       secure: f0d14f9e0cd14afd133b69b43acd309298533e33 # encrypted value of your token
+jdk:
+  - oraclejdk8
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
