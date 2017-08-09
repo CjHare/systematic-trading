@@ -1,3 +1,8 @@
-language: java
-before_script: mvn clean install -f systematic-trading-parent/pom.xml 
-sudo: false
+language: 
+  java
+before_script: 
+  mvn clean install -f systematic-trading-parent/pom.xml 
+sudo: 
+  false
+script:
+  mvn verify -B
