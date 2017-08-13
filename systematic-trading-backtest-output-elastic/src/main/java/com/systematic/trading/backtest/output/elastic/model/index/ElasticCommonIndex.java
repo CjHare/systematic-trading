@@ -34,6 +34,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
+import com.systematic.trading.backtest.output.elastic.model.ElasticEmptyIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
@@ -65,8 +66,11 @@ public abstract class ElasticCommonIndex {
 	public ElasticCommonIndex( final BacktestBatchId id, final ElasticDao dao ) {
 		this.id = id;
 		this.dao = dao;
+
+		init(id);
 	}
 
+	//TODO make this private & fix up the tests
 	public void init( final BacktestBatchId id ) {
 
 		if (isIndexMissing()) {
@@ -109,7 +113,11 @@ public abstract class ElasticCommonIndex {
 
 	private boolean isIndexMappingMissing( final BacktestBatchId id ) {
 		final Response response = dao.get(getIndexName(), id);
-		return response.getStatus() != 200;
+
+		//TODO mapping shouls be 200 & empty JSON
+
+		return response.getStatus() != 200
+		        || (response.getStatus() == 200 && response.readEntity(ElasticEmptyIndexMapping.class) != null);
 	}
 
 	private void createIndex() {

@@ -128,7 +128,7 @@ public class HttpElasticDao implements ElasticDao {
 	}
 
 	private String getMappingPath( final ElasticIndexName indexName, final BacktestBatchId id ) {
-		return String.format("%s/_mapping/%s", indexName.getName(), id.getName());
+		return String.format("%s/_mapping/%s/", indexName.getName(), id.getName());
 	}
 
 	private boolean isInvalidResponse( final ElasticIndexName indexName, final BacktestBatchId id,

@@ -66,7 +66,7 @@ public class ElasticReturnOnInvestmentEventResource {
 		final StringBuilder out = new StringBuilder("ElasticReturnOnInvestmentEventResource [");
 		out.append("percentageChange=");
 		out.append(percentageChange);
-		out.append("exlusiveStartDate=");
+		out.append(", exlusiveStartDate=");
 		out.append(exlusiveStartDate);
 		out.append(", inclusiveEndDate=");
 		out.append(inclusiveEndDate);
