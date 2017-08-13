@@ -61,8 +61,8 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 
 		final StringBuilder output = new StringBuilder();
 		final BigDecimal percentageChange = event.getPercentageChange();
-		final LocalDate startDateInclusive = event.getExclusiveStartDate();
-		final LocalDate endDateExclusive = event.getInclusiveEndDate();
+		final LocalDate startDateInclusive = event.getInclusiveStartDate();
+		final LocalDate endDateExclusive = event.getExclusiveEndDate();
 
 		final String formattedPercentageChange = TWO_DECIMAL_PLACES.format(percentageChange);
 		final Period elapsed = Period.between(startDateInclusive, endDateExclusive);

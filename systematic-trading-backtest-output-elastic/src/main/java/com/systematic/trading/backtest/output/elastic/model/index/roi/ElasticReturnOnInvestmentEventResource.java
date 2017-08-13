@@ -27,8 +27,14 @@ package com.systematic.trading.backtest.output.elastic.model.index.roi;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 
 /**
@@ -39,14 +45,25 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 @JsonInclude(Include.NON_NULL)
 public class ElasticReturnOnInvestmentEventResource {
 
+	@JsonProperty("percentage_change")
 	private final float percentageChange;
-	private final LocalDate exlusiveStartDate;
-	private final LocalDate inclusiveEndDate;
+
+	@JsonProperty("inclusive_start_date")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonSerialize(using = LocalDateSerializer.class)
+	private final LocalDate inclusiveStartDate;
+
+	@JsonProperty("exclusive_end_date")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonSerialize(using = LocalDateSerializer.class)
+	private final LocalDate exclusiveEndDate;
 
 	public ElasticReturnOnInvestmentEventResource( final ReturnOnInvestmentEvent event ) {
 		this.percentageChange = event.getPercentageChange().floatValue();
-		this.exlusiveStartDate = event.getExclusiveStartDate();
-		this.inclusiveEndDate = event.getInclusiveEndDate();
+		this.inclusiveStartDate = event.getInclusiveStartDate();
+		this.exclusiveEndDate = event.getExclusiveEndDate();
 	}
 
 	public float getPercentageChange() {
@@ -54,11 +71,11 @@ public class ElasticReturnOnInvestmentEventResource {
 	}
 
 	public LocalDate getExlusiveStartDate() {
-		return exlusiveStartDate;
+		return inclusiveStartDate;
 	}
 
 	public LocalDate getInclusiveEndDate() {
-		return inclusiveEndDate;
+		return exclusiveEndDate;
 	}
 
 	@Override
@@ -66,10 +83,10 @@ public class ElasticReturnOnInvestmentEventResource {
 		final StringBuilder out = new StringBuilder("ElasticReturnOnInvestmentEventResource [");
 		out.append("percentageChange=");
 		out.append(percentageChange);
-		out.append(", exlusiveStartDate=");
-		out.append(exlusiveStartDate);
-		out.append(", inclusiveEndDate=");
-		out.append(inclusiveEndDate);
+		out.append(", inlusiveStartDate=");
+		out.append(inclusiveStartDate);
+		out.append(", exclusiveEndDate=");
+		out.append(exclusiveEndDate);
 		out.append("]");
 		return out.toString();
 	}

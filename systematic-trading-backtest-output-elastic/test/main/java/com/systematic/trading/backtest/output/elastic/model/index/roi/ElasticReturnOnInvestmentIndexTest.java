@@ -112,7 +112,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 		index.init(id);
 		index.event(event);
 
-		verifyEventCalls(batchId, event.getInclusiveEndDate());
+		verifyEventCalls(batchId, event.getExclusiveEndDate());
 	}
 
 	private ReturnOnInvestmentEvent getEvent() {
@@ -122,8 +122,8 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 		final LocalDate exclusiveStartDate = LocalDate.now();
 
 		when(event.getPercentageChange()).thenReturn(percentageChange);
-		when(event.getInclusiveEndDate()).thenReturn(inclusiveEndDate);
-		when(event.getExclusiveStartDate()).thenReturn(exclusiveStartDate);
+		when(event.getExclusiveEndDate()).thenReturn(inclusiveEndDate);
+		when(event.getInclusiveStartDate()).thenReturn(exclusiveStartDate);
 
 		return event;
 	}

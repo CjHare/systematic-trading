@@ -60,12 +60,12 @@ public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
 	}
 
 	@Override
-	public LocalDate getExclusiveStartDate() {
+	public LocalDate getInclusiveStartDate() {
 		return exclusiveStartDate;
 	}
 
 	@Override
-	public LocalDate getInclusiveEndDate() {
+	public LocalDate getExclusiveEndDate() {
 		return inclusiveEndDate;
 	}
 

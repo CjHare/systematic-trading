@@ -49,12 +49,12 @@ public interface ReturnOnInvestmentEvent extends Event {
 	 * 
 	 * @return beginning of the time frame providing the ROI.
 	 */
-	LocalDate getExclusiveStartDate();
+	LocalDate getInclusiveStartDate();
 
 	/**
 	 * Inclusive end date for the event.
 	 * 
 	 * @return terminating date of the time frame providing the ROI.
 	 */
-	LocalDate getInclusiveEndDate();
+	LocalDate getExclusiveEndDate();
 }
