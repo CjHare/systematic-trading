@@ -127,6 +127,8 @@ public class HttpElasticDao implements ElasticDao {
 
 	}
 
+	//TODO need without the _mapping for poating / putting data
+	//TODO only need the _mapping for inserting / updating mapping
 	private String getMappingPath( final ElasticIndexName indexName, final BacktestBatchId id ) {
 		return String.format("%s/_mapping/%s/", indexName.getName(), id.getName());
 	}

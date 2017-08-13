@@ -45,19 +45,8 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 @JsonInclude(Include.NON_NULL)
 public class ElasticReturnOnInvestmentEventResource {
 
-	@JsonProperty("percentage_change")
 	private final float percentageChange;
-
-	@JsonProperty("inclusive_start_date")
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	@JsonDeserialize(using = LocalDateDeserializer.class)
-	@JsonSerialize(using = LocalDateSerializer.class)
 	private final LocalDate inclusiveStartDate;
-
-	@JsonProperty("exclusive_end_date")
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	@JsonDeserialize(using = LocalDateDeserializer.class)
-	@JsonSerialize(using = LocalDateSerializer.class)
 	private final LocalDate exclusiveEndDate;
 
 	public ElasticReturnOnInvestmentEventResource( final ReturnOnInvestmentEvent event ) {
@@ -66,14 +55,24 @@ public class ElasticReturnOnInvestmentEventResource {
 		this.exclusiveEndDate = event.getExclusiveEndDate();
 	}
 
+	@JsonProperty("percentage_change")
 	public float getPercentageChange() {
 		return percentageChange;
 	}
 
+	//TODO these JsonProperty need to be constants
+	@JsonProperty("inclusive_start_date")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonSerialize(using = LocalDateSerializer.class)
 	public LocalDate getExlusiveStartDate() {
 		return inclusiveStartDate;
 	}
 
+	@JsonProperty("exclusive_end_date")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonSerialize(using = LocalDateSerializer.class)
 	public LocalDate getInclusiveEndDate() {
 		return exclusiveEndDate;
 	}
