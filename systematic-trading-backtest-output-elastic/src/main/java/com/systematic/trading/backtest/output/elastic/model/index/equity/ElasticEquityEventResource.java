@@ -27,8 +27,12 @@ package com.systematic.trading.backtest.output.elastic.model.index.equity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
+import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 
 /**
@@ -55,26 +59,33 @@ public class ElasticEquityEventResource {
 		this.transactionDate = event.getTransactionDate();
 	}
 
+	@JsonProperty(ElasticTypeName.EVENT)
 	public String getEvent() {
 		return event;
 	}
 
+	@JsonProperty(ElasticTypeName.IDENTITY)
 	public String getIdentity() {
 		return identity;
 	}
 
+	@JsonProperty(ElasticTypeName.STARTING_EQUITY_BALANCE)
 	public float getStartingEquityBalance() {
 		return startingEquityBalance;
 	}
 
+	@JsonProperty(ElasticTypeName.END_EQUITY_BALANCE)
 	public float getEndEquityBalance() {
 		return endEquityBalance;
 	}
 
+	@JsonProperty(ElasticTypeName.EQUITY_AMOUNT)
 	public float getEquityAmount() {
 		return equityAmount;
 	}
 
+	@JsonProperty(ElasticTypeName.TRANSACTION_DATE)
+	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getTransactionDate() {
 		return transactionDate;
 	}

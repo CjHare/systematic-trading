@@ -27,8 +27,12 @@ package com.systematic.trading.backtest.output.elastic.model.index.cash;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
+import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 
 /**
@@ -53,22 +57,28 @@ public class ElasticCashEventResource {
 		this.transactionDate = event.getTransactionDate();
 	}
 
+	@JsonProperty(ElasticTypeName.EVENT)
 	public String getEvent() {
 		return event;
 	}
 
+	@JsonProperty(ElasticTypeName.AMOUNT)
 	public float getAmount() {
 		return amount;
 	}
 
+	@JsonProperty(ElasticTypeName.FUNDS_BEFORE)
 	public float getFundsBefore() {
 		return fundsBefore;
 	}
 
+	@JsonProperty(ElasticTypeName.FUNDS_AFTER)
 	public float getFundsAfter() {
 		return fundsAfter;
 	}
 
+	@JsonProperty(ElasticTypeName.TRANSACTION_DATE)
+	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getTransactionDate() {
 		return transactionDate;
 	}

@@ -31,10 +31,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
+import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 
 /**
@@ -55,24 +53,19 @@ public class ElasticReturnOnInvestmentEventResource {
 		this.exclusiveEndDate = event.getExclusiveEndDate();
 	}
 
-	@JsonProperty("percentage_change")
+	@JsonProperty(ElasticTypeName.PERCENTAGE_CHANGE)
 	public float getPercentageChange() {
 		return percentageChange;
 	}
 
-	//TODO these JsonProperty need to be constants
-	@JsonProperty("inclusive_start_date")
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	@JsonDeserialize(using = LocalDateDeserializer.class)
-	@JsonSerialize(using = LocalDateSerializer.class)
+	@JsonProperty(ElasticTypeName.INCLUSIVE_START_DATE)
+	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getExlusiveStartDate() {
 		return inclusiveStartDate;
 	}
 
-	@JsonProperty("exclusive_end_date")
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	@JsonDeserialize(using = LocalDateDeserializer.class)
-	@JsonSerialize(using = LocalDateSerializer.class)
+	@JsonProperty(ElasticTypeName.EXCLUSIVE_END_DATE)
+	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getInclusiveEndDate() {
 		return exclusiveEndDate;
 	}

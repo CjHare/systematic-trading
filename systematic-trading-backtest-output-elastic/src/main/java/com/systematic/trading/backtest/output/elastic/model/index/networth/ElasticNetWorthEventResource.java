@@ -27,8 +27,12 @@ package com.systematic.trading.backtest.output.elastic.model.index.networth;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
+import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 
 /**
@@ -55,26 +59,33 @@ public class ElasticNetWorthEventResource {
 		this.eventDate = event.getEventDate();
 	}
 
+	@JsonProperty(ElasticTypeName.EVENT)
 	public String getEvent() {
 		return event;
 	}
 
+	@JsonProperty(ElasticTypeName.CASH_BALANCE)
 	public float getCashBalance() {
 		return cashBalance;
 	}
 
+	@JsonProperty(ElasticTypeName.EQUITY_BALANCE)
 	public float getEquityBalance() {
 		return equityBalance;
 	}
 
+	@JsonProperty(ElasticTypeName.EQUITY_BALANCE_VALUE)
 	public float getEquityBalanceValue() {
 		return equityBalanceValue;
 	}
 
+	@JsonProperty(ElasticTypeName.NETWORTH)
 	public float getNetworth() {
 		return networth;
 	}
 
+	@JsonProperty(ElasticTypeName.EVENT_DATE)
+	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getEventDate() {
 		return eventDate;
 	}

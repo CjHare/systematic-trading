@@ -38,6 +38,8 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.ClientConfig;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
@@ -65,11 +67,14 @@ public class HttpElasticDao implements ElasticDao {
 	public HttpElasticDao() {
 
 		// Registering the provider for POJO -> JSON
-		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
+		final ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		final JacksonJsonProvider provider = new JacksonJsonProvider();
+		provider.setMapper(mapper);
+		final ClientConfig config = new ClientConfig(provider);
 
 		// End point target root
-		this.root = ClientBuilder.newClient(clientConfig).target(ELASTIC_ENDPOINT_URL);
-
+		this.root = ClientBuilder.newClient(config).target(ELASTIC_ENDPOINT_URL);
 	}
 
 	@Override
