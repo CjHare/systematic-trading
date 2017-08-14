@@ -38,13 +38,13 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
  */
 public interface ElasticDao {
 
-	Response get( ElasticIndexName indexName );
+	Response getIndex( ElasticIndexName indexName );
 
-	Response get( ElasticIndexName indexName, BacktestBatchId id );
+	Response getMapping( ElasticIndexName indexName, BacktestBatchId id );
 
-	void post( ElasticIndexName indexName, BacktestBatchId id, Entity<?> requestBody );
+	void postType( ElasticIndexName indexName, BacktestBatchId id, Entity<?> requestBody );
 
-	void put( ElasticIndexName indexName, BacktestBatchId id, Entity<?> requestBody );
+	void putMapping( ElasticIndexName indexName, BacktestBatchId id, Entity<?> requestBody );
 
 	void put( ElasticIndexName indexName, Entity<?> requestBody );
 }

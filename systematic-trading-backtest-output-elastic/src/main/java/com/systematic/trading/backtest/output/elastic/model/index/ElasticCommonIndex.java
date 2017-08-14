@@ -90,7 +90,7 @@ public abstract class ElasticCommonIndex {
 	}
 
 	protected void post( final BacktestBatchId id, final Entity<?> requestBody ) {
-		dao.post(getIndexName(), id, requestBody);
+		dao.postType(getIndexName(), id, requestBody);
 	}
 
 	protected ElasticIndex getIndex() {
@@ -107,12 +107,12 @@ public abstract class ElasticCommonIndex {
 	}
 
 	private boolean isIndexMissing() {
-		final Response response = dao.get(getIndexName());
+		final Response response = dao.getIndex(getIndexName());
 		return response.getStatus() != 200;
 	}
 
 	private boolean isIndexMappingMissing( final BacktestBatchId id ) {
-		final Response response = dao.get(getIndexName(), id);
+		final Response response = dao.getMapping(getIndexName(), id);
 
 		//TODO mapping shouls be 200 & empty JSON
 
@@ -125,6 +125,6 @@ public abstract class ElasticCommonIndex {
 	}
 
 	private void createIndexMapping( final BacktestBatchId id ) {
-		dao.put(getIndexName(), id, Entity.json(getIndexMapping()));
+		dao.putMapping(getIndexName(), id, Entity.json(getIndexMapping()));
 	}
 }

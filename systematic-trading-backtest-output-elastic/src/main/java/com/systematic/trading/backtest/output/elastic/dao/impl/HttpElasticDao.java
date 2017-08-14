@@ -73,19 +73,19 @@ public class HttpElasticDao implements ElasticDao {
 	}
 
 	@Override
-	public Response get( final ElasticIndexName indexName ) {
+	public Response getIndex( final ElasticIndexName indexName ) {
 		final String path = indexName.getName();
 		return root.path(path).request(MediaType.APPLICATION_JSON).get();
 	}
 
 	@Override
-	public Response get( final ElasticIndexName indexName, final BacktestBatchId id ) {
+	public Response getMapping( final ElasticIndexName indexName, final BacktestBatchId id ) {
 		final String path = getMappingPath(indexName, id);
 		return root.path(path).request(MediaType.APPLICATION_JSON).get();
 	}
 
-	public void post( final ElasticIndexName indexName, final BacktestBatchId id, final Entity<?> requestBody ) {
-		final WebTarget url = root.path(getMappingPath(indexName, id));
+	public void postType( final ElasticIndexName indexName, final BacktestBatchId id, final Entity<?> requestBody ) {
+		final WebTarget url = root.path(getTypePath(indexName, id));
 
 		// Using the elastic search ID auto-generation, so we're using a post not a put
 		final Response response = url.request().post(requestBody);
@@ -105,7 +105,7 @@ public class HttpElasticDao implements ElasticDao {
 	}
 
 	@Override
-	public void put( final ElasticIndexName indexName, final BacktestBatchId id, final Entity<?> requestBody ) {
+	public void putMapping( final ElasticIndexName indexName, final BacktestBatchId id, final Entity<?> requestBody ) {
 
 		final String path = getMappingPath(indexName, id);
 		final Response response = root.path(path).request().put(requestBody);
@@ -127,10 +127,18 @@ public class HttpElasticDao implements ElasticDao {
 
 	}
 
-	//TODO need without the _mapping for poating / putting data
-	//TODO only need the _mapping for inserting / updating mapping
+	/**
+	 * Path for retrieving or putting mapping data to elastic search.
+	 */
 	private String getMappingPath( final ElasticIndexName indexName, final BacktestBatchId id ) {
 		return String.format("%s/_mapping/%s/", indexName.getName(), id.getName());
+	}
+
+	/**
+	 * Path for retrieving or putting type data to elastic search.
+	 */
+	private String getTypePath( final ElasticIndexName indexName, final BacktestBatchId id ) {
+		return String.format("%s/%s/", indexName.getName(), id.getName());
 	}
 
 	private boolean isInvalidResponse( final ElasticIndexName indexName, final BacktestBatchId id,
