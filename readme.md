@@ -6,8 +6,7 @@ https://sonarcloud.io/api/badges/measure?key=com.systematic.trading:systematic-t
 https://sonarcloud.io/api/badges/measure?key=com.systematic.trading:systematic-trading&metric=security_rating)](https://sonarcloud.io/dashboard/index/com.systematic.trading:systematic-trading)
 [![Maintainability](
 https://sonarcloud.io/api/badges/measure?key=com.systematic.trading:systematic-trading&metric=sqale_rating)](https://sonarcloud.io/dashboard/index/com.systematic.trading:systematic-trading)
-[![Code Coverage](
-https://sonarcloud.io/api/badges/measure?key=com.systematic.trading:systematic-trading&metric=coverage)](https://sonarcloud.io/dashboard/index/com.systematic.trading:systematic-trading)
+
 
 How to run
 
