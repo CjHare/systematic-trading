@@ -54,13 +54,13 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"signal_date\":{\"type\":\"date\"},\"signal_type\":{\"type\":\"text\"},\"direction_type\":{\"type\":\"text\"}}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"signalType\":\"STOCHASTIC\",\"directionType\":\"BULLISH\",\"signalDate\":{";
+	private static final String JSON_POST_INDEX_TYPE = "{\"signal_type\":\"STOCHASTIC\",\"direction_type\":\"BULLISH\",\"signal_date\":{";
 
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(id, getDao());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 
 		index.init(id);
 
@@ -73,7 +73,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(id, getDao());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 
 		index.init(id);
 
@@ -87,7 +87,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(id, getDao());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 
 		try {
 			index.init(id);
@@ -107,12 +107,12 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(id, getDao());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 
 		final SignalAnalysisEvent event = getEvent();
 
 		index.init(id);
-		index.event(event);
+		index.event(id, event);
 
 		verifyEventCalls(batchId, event.getSignalDate());
 	}
@@ -131,7 +131,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 	}
 
 	@Override
-	protected String getPostIndexType() {
+	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;
 	}
 

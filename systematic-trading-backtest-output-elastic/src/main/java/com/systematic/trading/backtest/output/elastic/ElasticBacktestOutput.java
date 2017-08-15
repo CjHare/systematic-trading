@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.output.elastic;
 
 import com.systematic.trading.backtest.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.dao.impl.HttpElasticDao;
@@ -36,9 +37,13 @@ import com.systematic.trading.backtest.output.elastic.model.index.networth.Elast
 import com.systematic.trading.backtest.output.elastic.model.index.order.ElasticOrderIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.roi.ElasticReturnOnInvestmentIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.signal.analysis.ElasticSignalAnalysisIndex;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
+import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
@@ -59,40 +64,58 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	private final ElasticNetworthIndex networthIndex;
 	private final ElasticEquityIndex equityIndex;
 
+	//TODO multi-threading posting is currently synchronous ...and slow!
+
+	private final BacktestBatchId id;
+
 	public ElasticBacktestOutput( final BacktestBatchId id ) {
 		final ElasticDao dao = new HttpElasticDao();
-		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(id, dao);
-		this.cashIndex = new ElasticCashIndex(id, dao);
-		this.orderIndex = new ElasticOrderIndex(id, dao);
-		this.brokerageIndex = new ElasticBrokerageIndex(id, dao);
-		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(id, dao);
-		this.networthIndex = new ElasticNetworthIndex(id, dao);
-		this.equityIndex = new ElasticEquityIndex(id, dao);
+		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao);
+		this.cashIndex = new ElasticCashIndex(dao);
+		this.orderIndex = new ElasticOrderIndex(dao);
+		this.brokerageIndex = new ElasticBrokerageIndex(dao);
+		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(dao);
+		this.networthIndex = new ElasticNetworthIndex(dao);
+		this.equityIndex = new ElasticEquityIndex(dao);
+		this.id = id;
+	}
+
+	@Override
+	public void init( TickerSymbolTradingData tradingData, BacktestSimulationDates dates,
+	        EventStatistics eventStatistics, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
+	        TradingDayPrices lastTradingDay ) {
+		signalAnalysisIndex.init(id);
+		cashIndex.init(id);
+		orderIndex.init(id);
+		brokerageIndex.init(id);
+		returnOnInvestmentIndex.init(id);
+		networthIndex.init(id);
+		equityIndex.init(id);
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
-		signalAnalysisIndex.event(event);
+		signalAnalysisIndex.event(id, event);
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
-		cashIndex.event(event);
+		cashIndex.event(id, event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		orderIndex.event(event);
+		orderIndex.event(id, event);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		brokerageIndex.event(event);
+		brokerageIndex.event(id, event);
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		returnOnInvestmentIndex.event(event);
+		returnOnInvestmentIndex.event(id, event);
 	}
 
 	@Override
@@ -101,11 +124,11 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
-		networthIndex.event(event);
+		networthIndex.event(id, event);
 	}
 
 	@Override
 	public void event( final EquityEvent event ) {
-		equityIndex.event(event);
+		equityIndex.event(id, event);
 	}
 }

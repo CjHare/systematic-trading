@@ -54,13 +54,13 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"amount\":{\"type\":\"float\"},\"funds_after\":{\"type\":\"float\"},\"funds_before\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Credit\",\"amount\":12.34,\"fundsBefore\":500.12,\"fundsAfter\":512.46,\"transactionDate\":{";
+	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Credit\",\"amount\":12.34,\"funds_before\":500.12,\"funds_after\":512.46,\"transaction_date\":{";
 
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticCashIndex index = new ElasticCashIndex(id, getDao());
+		final ElasticCashIndex index = new ElasticCashIndex(getDao());
 
 		index.init(id);
 
@@ -73,7 +73,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticCashIndex index = new ElasticCashIndex(id, getDao());
+		final ElasticCashIndex index = new ElasticCashIndex(getDao());
 
 		index.init(id);
 
@@ -87,7 +87,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticCashIndex index = new ElasticCashIndex(id, getDao());
+		final ElasticCashIndex index = new ElasticCashIndex(getDao());
 
 		try {
 			index.init(id);
@@ -107,11 +107,11 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticCashIndex index = new ElasticCashIndex(id, getDao());
+		final ElasticCashIndex index = new ElasticCashIndex(getDao());
 		final CashEvent event = getEvent();
 
 		index.init(id);
-		index.event(event);
+		index.event(id, event);
 
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}
@@ -134,7 +134,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 	}
 
 	@Override
-	protected String getPostIndexType() {
+	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;
 	}
 

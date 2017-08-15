@@ -45,12 +45,12 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  */
 public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
 
-	public ElasticReturnOnInvestmentIndex( final BacktestBatchId id, final ElasticDao dao ) {
-		super(id, dao);
+	public ElasticReturnOnInvestmentIndex( final ElasticDao dao ) {
+		super(dao);
 	}
 
-	public void event( final ReturnOnInvestmentEvent event ) {
-		post(getBacktestBatchId(), Entity.json(new ElasticReturnOnInvestmentEventResource(event)));
+	public void event( final BacktestBatchId id, final ReturnOnInvestmentEvent event ) {
+		post(id, Entity.json(new ElasticReturnOnInvestmentEventResource(event)));
 	}
 
 	@Override

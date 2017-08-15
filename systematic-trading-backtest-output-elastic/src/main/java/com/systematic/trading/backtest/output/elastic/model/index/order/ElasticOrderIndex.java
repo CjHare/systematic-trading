@@ -45,12 +45,12 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  */
 public class ElasticOrderIndex extends ElasticCommonIndex {
 
-	public ElasticOrderIndex( final BacktestBatchId id, final ElasticDao dao ) {
-		super(id, dao);
+	public ElasticOrderIndex( final ElasticDao dao ) {
+		super(dao);
 	}
 
-	public void event( final OrderEvent event ) {
-		post(getBacktestBatchId(), Entity.json(new ElasticOrderEventResource(event)));
+	public void event( final BacktestBatchId id, final OrderEvent event ) {
+		post(id, Entity.json(new ElasticOrderEventResource(event)));
 	}
 
 	@Override

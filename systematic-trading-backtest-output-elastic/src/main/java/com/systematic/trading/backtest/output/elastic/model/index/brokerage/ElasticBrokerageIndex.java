@@ -45,12 +45,12 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
  */
 public class ElasticBrokerageIndex extends ElasticCommonIndex {
 
-	public ElasticBrokerageIndex( final BacktestBatchId id, final ElasticDao dao ) {
-		super(id, dao);
+	public ElasticBrokerageIndex( final ElasticDao dao ) {
+		super(dao);
 	}
 
-	public void event( final BrokerageEvent event ) {
-		post(getBacktestBatchId(), Entity.json(new ElasticBrokerageEventResource(event)));
+	public void event( final BacktestBatchId id, final BrokerageEvent event ) {
+		post(id, Entity.json(new ElasticBrokerageEventResource(event)));
 	}
 
 	@Override

@@ -45,12 +45,12 @@ import com.systematic.trading.simulation.equity.event.EquityEvent;
  */
 public class ElasticEquityIndex extends ElasticCommonIndex {
 
-	public ElasticEquityIndex( final BacktestBatchId id, final ElasticDao dao ) {
-		super(id, dao);
+	public ElasticEquityIndex( final ElasticDao dao ) {
+		super(dao);
 	}
 
-	public void event( final EquityEvent event ) {
-		post(getBacktestBatchId(), Entity.json(new ElasticEquityEventResource(event)));
+	public void event( final BacktestBatchId id, final EquityEvent event ) {
+		post(id, Entity.json(new ElasticEquityEventResource(event)));
 	}
 
 	@Override

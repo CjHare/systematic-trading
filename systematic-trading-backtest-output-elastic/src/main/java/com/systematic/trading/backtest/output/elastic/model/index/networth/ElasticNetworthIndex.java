@@ -45,12 +45,12 @@ import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
  */
 public class ElasticNetworthIndex extends ElasticCommonIndex {
 
-	public ElasticNetworthIndex( final BacktestBatchId id, final ElasticDao dao ) {
-		super(id, dao);
+	public ElasticNetworthIndex( final ElasticDao dao ) {
+		super(dao);
 	}
 
-	public void event( final NetWorthEvent event ) {
-		post(getBacktestBatchId(), Entity.json(new ElasticNetWorthEventResource(event)));
+	public void event( final BacktestBatchId id, final NetWorthEvent event ) {
+		post(id, Entity.json(new ElasticNetWorthEventResource(event)));
 	}
 
 	@Override

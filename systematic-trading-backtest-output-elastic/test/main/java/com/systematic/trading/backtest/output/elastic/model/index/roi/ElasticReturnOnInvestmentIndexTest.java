@@ -52,14 +52,14 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"inclusive_start_date\":{\"type\":\"date\"},\"inclusive_end_date\":{\"type\":\"date\"},\"percentage_change\":{\"type\":\"float\"}}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"percentageChange\":12.34,\"exlusiveStartDate\":{";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"inclusive_start_date\":{\"type\":\"date\"},\"exclusive_end_date\":{\"type\":\"date\"},\"percentage_change\":{\"type\":\"float\"}}}";
+	private static final String JSON_POST_INDEX_TYPE = "{\"percentage_change\":12.34,\"";
 
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(id, getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 
 		index.init(id);
 
@@ -72,7 +72,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(id, getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 
 		index.init(id);
 
@@ -86,7 +86,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(id, getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 
 		try {
 			index.init(id);
@@ -106,11 +106,11 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(id, getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 		final ReturnOnInvestmentEvent event = getEvent();
 
 		index.init(id);
-		index.event(event);
+		index.event(id, event);
 
 		verifyEventCalls(batchId, event.getExclusiveEndDate());
 	}
@@ -129,7 +129,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 	}
 
 	@Override
-	protected String getPostIndexType() {
+	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;
 	}
 

@@ -60,17 +60,13 @@ public abstract class ElasticCommonIndex {
 	/** Access to Elastic Search endpoint.*/
 	private final ElasticDao dao;
 
-	/** Identity of the back testing  run.*/
-	private final BacktestBatchId id;
-
-	public ElasticCommonIndex( final BacktestBatchId id, final ElasticDao dao ) {
-		this.id = id;
+	public ElasticCommonIndex( final ElasticDao dao ) {
 		this.dao = dao;
-
-		init(id);
 	}
 
-	//TODO make this private & fix up the tests
+	/**
+	 * Ensures the index and mapping are created, and verifies there is not existing data.
+	 */
 	public void init( final BacktestBatchId id ) {
 
 		if (isIndexMissing()) {
@@ -83,10 +79,6 @@ public abstract class ElasticCommonIndex {
 			throw new ElasticException(
 			        String.format("Existing mapping (and potentially already existing results) found for: %s", id));
 		}
-	}
-
-	protected BacktestBatchId getBacktestBatchId() {
-		return id;
 	}
 
 	protected void post( final BacktestBatchId id, final Entity<?> requestBody ) {
@@ -114,7 +106,7 @@ public abstract class ElasticCommonIndex {
 	private boolean isIndexMappingMissing( final BacktestBatchId id ) {
 		final Response response = dao.getMapping(getIndexName(), id);
 
-		//TODO mapping shouls be 200 & empty JSON
+		//TODO mapping shouls be 200 & empty JSON - test with data present - currently exceptional
 
 		return response.getStatus() != 200
 		        || (response.getStatus() == 200 && response.readEntity(ElasticEmptyIndexMapping.class) != null);

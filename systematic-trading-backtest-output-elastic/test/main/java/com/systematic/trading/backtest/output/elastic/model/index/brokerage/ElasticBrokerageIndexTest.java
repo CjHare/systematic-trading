@@ -54,13 +54,13 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"transaction_fee\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Buy\",\"equityAmount\":12.34,\"startingEquityBalance\":512.46,\"endEquityBalance\":500.12,\"transactionFee\":606.98,\"transactionDate\":{";
+	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Buy\",\"equity_amount\":12.34,\"starting_equity_balance\":512.46,\"end_equity_balance\":500.12,\"transaction_fee\":606.98,\"transaction_date\":{";
 
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(id, getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
 
 		index.init(id);
 
@@ -73,7 +73,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(id, getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
 
 		index.init(id);
 
@@ -87,7 +87,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(id, getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
 
 		try {
 			index.init(id);
@@ -107,11 +107,11 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(id, getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
 		final BrokerageEvent event = getEvent();
 
 		index.init(id);
-		index.event(event);
+		index.event(id, event);
 
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}
@@ -136,7 +136,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 	}
 
 	@Override
-	protected String getPostIndexType() {
+	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;
 	}
 

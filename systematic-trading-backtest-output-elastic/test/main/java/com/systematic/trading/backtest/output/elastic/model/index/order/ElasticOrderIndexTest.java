@@ -54,13 +54,13 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"total_cost\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"ENTRY\",\"totalCost\":12.34,\"transactionDate\":{";
+	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"ENTRY\",\"total_cost\":12.34,\"transaction_date\":{";
 
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
 
 		index.init(id);
 
@@ -73,7 +73,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
 
 		index.init(id);
 
@@ -87,7 +87,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
 
 		try {
 			index.init(id);
@@ -107,11 +107,11 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(id, getDao());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
 		final OrderEvent event = getEvent();
 
 		index.init(id);
-		index.event(event);
+		index.event(id, event);
 
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}
@@ -130,7 +130,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 	}
 
 	@Override
-	protected String getPostIndexType() {
+	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;
 	}
 

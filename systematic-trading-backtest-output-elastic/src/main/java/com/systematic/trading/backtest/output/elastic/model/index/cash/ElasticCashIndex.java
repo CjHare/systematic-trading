@@ -45,12 +45,12 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
  */
 public class ElasticCashIndex extends ElasticCommonIndex {
 
-	public ElasticCashIndex( final BacktestBatchId id, final ElasticDao dao ) {
-		super(id, dao);
+	public ElasticCashIndex( final ElasticDao dao ) {
+		super(dao);
 	}
 
-	public void event( final CashEvent event ) {
-		post(getBacktestBatchId(), Entity.json(new ElasticCashEventResource(event)));
+	public void event( final BacktestBatchId id, final CashEvent event ) {
+		post(id, Entity.json(new ElasticCashEventResource(event)));
 	}
 
 	@Override

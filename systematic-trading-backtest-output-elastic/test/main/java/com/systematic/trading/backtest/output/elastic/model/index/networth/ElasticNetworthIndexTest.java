@@ -54,13 +54,13 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"equity_balance_value\":{\"type\":\"float\"},\"event_date\":{\"type\":\"date\"},\"networth\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"},\"cash_balance\":{\"type\":\"float\"},\"equity_balance\":{\"type\":\"float\"}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Completed\",\"cashBalance\":500.12,\"equityBalance\":12.34,\"equityBalanceValue\":512.46,\"networth\":606.98,\"eventDate\":{";
+	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Completed\",\"cash_balance\":500.12,\"equity_balance\":12.34,\"equity_balance_value\":512.46,\"networth\":606.98,\"event_date\":{";
 
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(id, getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 
 		index.init(id);
 
@@ -73,7 +73,7 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(id, getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 
 		index.init(id);
 
@@ -87,7 +87,7 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(id, getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 
 		try {
 			index.init(id);
@@ -107,11 +107,11 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(id, getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 		final NetWorthEvent event = getEvent();
 
 		index.init(id);
-		index.event(event);
+		index.event(id, event);
 
 		verifyEventCalls(batchId, event.getEventDate());
 	}
@@ -136,7 +136,7 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 	}
 
 	@Override
-	protected String getPostIndexType() {
+	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;
 	}
 

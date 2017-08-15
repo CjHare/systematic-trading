@@ -45,12 +45,12 @@ import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
  */
 public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 
-	public ElasticSignalAnalysisIndex( final BacktestBatchId id, final ElasticDao dao ) {
-		super(id, dao);
+	public ElasticSignalAnalysisIndex( final ElasticDao dao ) {
+		super(dao);
 	}
 
-	public void event( final SignalAnalysisEvent event ) {
-		post(getBacktestBatchId(), Entity.json(new ElasticSignalAnalysisEventResource(event)));
+	public void event( final BacktestBatchId id, final SignalAnalysisEvent event ) {
+		post(id, Entity.json(new ElasticSignalAnalysisEventResource(event)));
 	}
 
 	@Override

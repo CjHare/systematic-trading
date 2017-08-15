@@ -29,6 +29,7 @@ import static com.systematic.trading.backtest.output.elastic.model.index.matcher
 import static com.systematic.trading.backtest.output.elastic.model.index.matcher.ElasticMatcher.equalsJson;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -46,6 +47,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
+import com.systematic.trading.backtest.output.elastic.model.ElasticEmptyIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 
 /**
@@ -81,7 +83,8 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	protected void verifyGetIndexType() {
-		verify(getIndexTypeResponse).getStatus();
+		verify(getIndexTypeResponse, atLeastOnce()).getStatus();
+		verify(getIndexTypeResponse).readEntity(ElasticEmptyIndexMapping.class);
 		verifyNoMoreInteractions(getIndexTypeResponse);
 	}
 
@@ -89,10 +92,11 @@ public abstract class ElasticIndexTestBase {
 		final InOrder order = inOrder(dao);
 		order.verify(dao).getIndex(getIndexName());
 		order.verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
-		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId), equalsJson(getJsonPutIndexMapping()));
+		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
+		        equalsJson(getJsonPutIndexMapping()));
 
 		order.verify(dao).postType(eq(getIndexName()), equalsBacktestId(batchId),
-		        equalsJson(getPostIndexType(), transactionDate));
+		        equalsJson(getPostIndex(), transactionDate));
 		verifyNoMoreInteractions(dao);
 
 		verifyGetIndex();
@@ -115,7 +119,8 @@ public abstract class ElasticIndexTestBase {
 		final InOrder order = inOrder(dao);
 		order.verify(dao).getIndex(getIndexName());
 		order.verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
-		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId), equalsJson(getJsonPutIndexMapping()));
+		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
+		        equalsJson(getJsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);
 
 		verifyGetIndex();
@@ -126,7 +131,8 @@ public abstract class ElasticIndexTestBase {
 		order.verify(dao).getIndex(getIndexName());
 		order.verify(dao).put(eq(getIndexName()), equalsJson(getJsonPutIndex()));
 		order.verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
-		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId), equalsJson(getJsonPutIndexMapping()));
+		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
+		        equalsJson(getJsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);
 	}
 
@@ -142,7 +148,7 @@ public abstract class ElasticIndexTestBase {
 		return dao;
 	}
 
-	protected abstract String getPostIndexType();
+	protected abstract String getPostIndex();
 
 	protected abstract String getJsonPutIndex();
 
