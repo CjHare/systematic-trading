@@ -137,7 +137,7 @@ public class BacktestApplication {
 		LOG.info("Finished outputting results");
 	}
 
-	private static void closePool( final ExecutorService pool ) {
+	private void closePool( final ExecutorService pool ) {
 		pool.shutdown();
 
 		LOG.info("Waiting at most 90 minutes for result output to complete...");
@@ -148,7 +148,7 @@ public class BacktestApplication {
 		}
 	}
 
-	private static Period getWarmUpPeriod() {
+	private Period getWarmUpPeriod() {
 		int windUp = 0;
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
