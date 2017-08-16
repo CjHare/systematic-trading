@@ -27,25 +27,26 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
+package com.systematic.trading.backtest.output.elastic.dao;
 
-import com.systematic.trading.backtest.output.file.configuration.BackestOutputFileConfiguration;
+import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.exception.ConfigurationValidationException;
 
 /**
- * Deals with the loading and validation of the back test output to file configuration.
+ * Deals with the loading and validation of the back test output to Elastic search configuration.
  * 
  * @author CJ Hare
  */
 public interface BackestOutputFileConfigurationDao {
 
 	/**
-	 * Retrieves the back test file output configuration.
+	 * Retrieves the back test elastic output configuration.
 	 * 
-	 * @return validated configuration data for the file output.
+	 * @return validated configuration data for the elastic search output.
 	 * @throws ConfigurationValidationException problem encountered during validation.
 	 * @throws CannotRetrieveConfigurationException problem encountered during retrieval.
 	 */
-	BackestOutputFileConfiguration get() throws ConfigurationValidationException, CannotRetrieveConfigurationException;
+	BackestOutputElasticConfiguration get()
+	        throws ConfigurationValidationException, CannotRetrieveConfigurationException;
 }

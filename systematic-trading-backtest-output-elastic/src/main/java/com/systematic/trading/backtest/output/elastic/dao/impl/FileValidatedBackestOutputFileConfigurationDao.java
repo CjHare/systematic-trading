@@ -27,14 +27,14 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao.impl;
+package com.systematic.trading.backtest.output.elastic.dao.impl;
 
 import java.util.Properties;
 
-import com.systematic.trading.backtest.output.file.configuration.BackestOutputFileConfiguration;
-import com.systematic.trading.backtest.output.file.configuration.BacktestOutputFileProperty;
-import com.systematic.trading.backtest.output.file.configuration.impl.BackestOutputFileConfigurationImpl;
-import com.systematic.trading.backtest.output.file.dao.BackestOutputFileConfigurationDao;
+import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
+import com.systematic.trading.backtest.output.elastic.configuration.BacktestOutputElasticProperty;
+import com.systematic.trading.backtest.output.elastic.configuration.impl.BackestOutputFileConfigurationImpl;
+import com.systematic.trading.backtest.output.elastic.dao.BackestOutputFileConfigurationDao;
 import com.systematic.trading.configuration.ConfigurationValidator;
 import com.systematic.trading.configuration.IntegerConfigurationValidator;
 import com.systematic.trading.data.dao.impl.FileConfigurationDao;
@@ -42,12 +42,12 @@ import com.systematic.trading.data.exception.CannotRetrieveConfigurationExceptio
 import com.systematic.trading.exception.ConfigurationValidationException;
 
 /**
- * Providing validation of the configuration properties for the file output of the back test.
+ * Providing validation of the configuration properties for the elastic output of the back test.
  * 
  * @author CJ Hare
  */
 public class FileValidatedBackestOutputFileConfigurationDao implements BackestOutputFileConfigurationDao {
-	private static final String BACKTEST_OUTPUT_PROPERTIES_FILE = "backtest_output_file.properties";
+	private static final String BACKTEST_OUTPUT_ELASTIC_PROPERTIES_FILE = "backtest_output_elastic.properties";
 
 	private final ConfigurationValidator<Integer> numberOfThreadsValidator;
 
@@ -56,22 +56,22 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 	}
 
 	@Override
-	public BackestOutputFileConfiguration get()
+	public BackestOutputElasticConfiguration get()
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
-		final Properties properties = new FileConfigurationDao().get(BACKTEST_OUTPUT_PROPERTIES_FILE);
+		final Properties properties = new FileConfigurationDao().get(BACKTEST_OUTPUT_ELASTIC_PROPERTIES_FILE);
 
-		final int numberOfThreads = getIntegerProperty(properties, BacktestOutputFileProperty.NUMBER_OF_THREADS,
-		        numberOfThreadsValidator);
+		final int numberOfThreads = getIntegerProperty(properties,
+		        BacktestOutputElasticProperty.NUMBER_OF_THREADS, numberOfThreadsValidator);
 
 		return new BackestOutputFileConfigurationImpl(numberOfThreads);
 	}
 
-	private int getIntegerProperty( final Properties properties, final BacktestOutputFileProperty property,
+	private int getIntegerProperty( final Properties properties, final BacktestOutputElasticProperty property,
 	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
 		return validator.validate(getProperty(properties, property));
 	}
 
-	private String getProperty( final Properties properties, final BacktestOutputFileProperty property ) {
+	private String getProperty( final Properties properties, final BacktestOutputElasticProperty property ) {
 		return properties.getProperty(property.getKey());
 	}
 }

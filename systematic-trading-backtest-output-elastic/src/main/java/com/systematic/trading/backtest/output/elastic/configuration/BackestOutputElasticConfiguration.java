@@ -27,25 +27,19 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
-
-import com.systematic.trading.backtest.output.file.configuration.BackestOutputFileConfiguration;
-import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
-import com.systematic.trading.exception.ConfigurationValidationException;
+package com.systematic.trading.backtest.output.elastic.configuration;
 
 /**
- * Deals with the loading and validation of the back test output to file configuration.
+ * General configuration data useful for the output of back test data to Elastic search.
  * 
  * @author CJ Hare
  */
-public interface BackestOutputFileConfigurationDao {
+public interface BackestOutputElasticConfiguration {
 
 	/**
-	 * Retrieves the back test file output configuration.
+	 * Retrieves the number of threads, determining the maximum number of connections to Elastic search to perform concurrently.
 	 * 
-	 * @return validated configuration data for the file output.
-	 * @throws ConfigurationValidationException problem encountered during validation.
-	 * @throws CannotRetrieveConfigurationException problem encountered during retrieval.
+	 * @return
 	 */
-	BackestOutputFileConfiguration get() throws ConfigurationValidationException, CannotRetrieveConfigurationException;
+	int getNumberOfThreads();
 }

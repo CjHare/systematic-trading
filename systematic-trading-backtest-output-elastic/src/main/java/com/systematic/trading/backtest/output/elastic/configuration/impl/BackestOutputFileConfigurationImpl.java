@@ -27,25 +27,25 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.dao;
+package com.systematic.trading.backtest.output.elastic.configuration.impl;
 
-import com.systematic.trading.backtest.output.file.configuration.BackestOutputFileConfiguration;
-import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
-import com.systematic.trading.exception.ConfigurationValidationException;
+import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
 
 /**
- * Deals with the loading and validation of the back test output to file configuration.
+ * Implementation for the BackestOutputFileConfiguration.
  * 
  * @author CJ Hare
  */
-public interface BackestOutputFileConfigurationDao {
+public class BackestOutputFileConfigurationImpl implements BackestOutputElasticConfiguration {
 
-	/**
-	 * Retrieves the back test file output configuration.
-	 * 
-	 * @return validated configuration data for the file output.
-	 * @throws ConfigurationValidationException problem encountered during validation.
-	 * @throws CannotRetrieveConfigurationException problem encountered during retrieval.
-	 */
-	BackestOutputFileConfiguration get() throws ConfigurationValidationException, CannotRetrieveConfigurationException;
+	private final int numberOfThreads;
+
+	public BackestOutputFileConfigurationImpl( final int numberOfThreads ) {
+		this.numberOfThreads = numberOfThreads;
+	}
+
+	@Override
+	public int getNumberOfThreads() {
+		return numberOfThreads;
+	}
 }
