@@ -27,46 +27,26 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.dao.impl;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.data.dao.ConfigurationDao;
-import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
+package com.systematic.trading.backtest.configuration;
 
 /**
- * 
+ * General configuration data useful for the back test data.
  * 
  * @author CJ Hare
  */
-public class FileConfigurationDao implements ConfigurationDao {
+public interface BackestConfiguration {
 
-	private static final ClassLoader CLASSPATH = ConfigurationDao.class.getClassLoader();
+	/**
+	 * Retrieves the number of threads, determining the maximum number of file writes to perform concurrently.
+	 * 
+	 * @return number of threads to use when using the file back test output.
+	 */
+	int getNumberOfFileOutputThreads();
 
-	private static final Logger LOG = LogManager.getLogger(ConfigurationDao.class);
-
-	@Override
-	public Properties get( final String propertyFile ) throws CannotRetrieveConfigurationException {
-		final Properties properties = new Properties();
-
-		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {
-
-			if (input == null) {
-				throw new CannotRetrieveConfigurationException(
-				        String.format("Cannt load property file %s on classpath", propertyFile));
-			}
-
-			properties.load(input);
-		} catch (IOException e) {
-			LOG.error("{}", () -> String.format("Cannt load property file %s, %s", propertyFile, e.getMessage()));
-			throw new CannotRetrieveConfigurationException(e);
-		}
-
-		return properties;
-	}
+	/**
+	 * Retrieves the number of threads, determining the maximum number of connections to perform concurrently.
+	 * 
+	 * @return number of threads to use when connecting to Elastic search to push the back test output.
+	 */
+	int getNumberOfElasticOutputThreads();
 }

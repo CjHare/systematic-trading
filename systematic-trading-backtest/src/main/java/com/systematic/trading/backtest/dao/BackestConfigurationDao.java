@@ -27,46 +27,25 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.dao.impl;
+package com.systematic.trading.backtest.dao;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.data.dao.ConfigurationDao;
+import com.systematic.trading.backtest.configuration.BackestConfiguration;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
+import com.systematic.trading.exception.ConfigurationValidationException;
 
 /**
- * 
+ * Deals with the loading and validation of the back test configuration.
  * 
  * @author CJ Hare
  */
-public class FileConfigurationDao implements ConfigurationDao {
+public interface BackestConfigurationDao {
 
-	private static final ClassLoader CLASSPATH = ConfigurationDao.class.getClassLoader();
-
-	private static final Logger LOG = LogManager.getLogger(ConfigurationDao.class);
-
-	@Override
-	public Properties get( final String propertyFile ) throws CannotRetrieveConfigurationException {
-		final Properties properties = new Properties();
-
-		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {
-
-			if (input == null) {
-				throw new CannotRetrieveConfigurationException(
-				        String.format("Cannt load property file %s on classpath", propertyFile));
-			}
-
-			properties.load(input);
-		} catch (IOException e) {
-			LOG.error("{}", () -> String.format("Cannt load property file %s, %s", propertyFile, e.getMessage()));
-			throw new CannotRetrieveConfigurationException(e);
-		}
-
-		return properties;
-	}
+	/**
+	 * Retrieves the back test file output configuration.
+	 * 
+	 * @return validated configuration data for the file output.
+	 * @throws ConfigurationValidationException problem encountered during validation.
+	 * @throws CannotRetrieveConfigurationException problem encountered during retrieval.
+	 */
+	BackestConfiguration get() throws ConfigurationValidationException, CannotRetrieveConfigurationException;
 }

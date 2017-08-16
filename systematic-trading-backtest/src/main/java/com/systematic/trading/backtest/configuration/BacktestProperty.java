@@ -27,46 +27,25 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.dao.impl;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.data.dao.ConfigurationDao;
-import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
+package com.systematic.trading.backtest.configuration;
 
 /**
- * 
+ * Keys for the back test output file properties.
  * 
  * @author CJ Hare
  */
-public class FileConfigurationDao implements ConfigurationDao {
+public enum BacktestProperty {
 
-	private static final ClassLoader CLASSPATH = ConfigurationDao.class.getClassLoader();
+	NUMBER_OF_FILE_OUTPUT_THREADS("number_of_file_output_threads"),
+	NUMBER_OF_ELASTIC_OUTPUT_THREADS("number_of_elastic_output_threads");
 
-	private static final Logger LOG = LogManager.getLogger(ConfigurationDao.class);
+	private final String key;
 
-	@Override
-	public Properties get( final String propertyFile ) throws CannotRetrieveConfigurationException {
-		final Properties properties = new Properties();
+	BacktestProperty( final String key ) {
+		this.key = key;
+	}
 
-		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {
-
-			if (input == null) {
-				throw new CannotRetrieveConfigurationException(
-				        String.format("Cannt load property file %s on classpath", propertyFile));
-			}
-
-			properties.load(input);
-		} catch (IOException e) {
-			LOG.error("{}", () -> String.format("Cannt load property file %s, %s", propertyFile, e.getMessage()));
-			throw new CannotRetrieveConfigurationException(e);
-		}
-
-		return properties;
+	public String getKey() {
+		return key;
 	}
 }

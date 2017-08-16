@@ -27,46 +27,33 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.dao.impl;
+package com.systematic.trading.backtest.configuration.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.data.dao.ConfigurationDao;
-import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
+import com.systematic.trading.backtest.configuration.BackestConfiguration;
 
 /**
- * 
+ * Implementation for the BackestOutputFileConfiguration.
  * 
  * @author CJ Hare
  */
-public class FileConfigurationDao implements ConfigurationDao {
+public class BackestConfigurationImpl implements BackestConfiguration {
 
-	private static final ClassLoader CLASSPATH = ConfigurationDao.class.getClassLoader();
+	private final int numberOfFileOutputThreads;
+	private final int numberOfElasticOutputThreads;
 
-	private static final Logger LOG = LogManager.getLogger(ConfigurationDao.class);
+	public BackestConfigurationImpl( final int numberOfFileOutputThreads,
+	        final int numberOfElasticOutputThreads ) {
+		this.numberOfFileOutputThreads = numberOfFileOutputThreads;
+		this.numberOfElasticOutputThreads = numberOfElasticOutputThreads;
+	}
 
 	@Override
-	public Properties get( final String propertyFile ) throws CannotRetrieveConfigurationException {
-		final Properties properties = new Properties();
+	public int getNumberOfFileOutputThreads() {
+		return numberOfFileOutputThreads;
+	}
 
-		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {
-
-			if (input == null) {
-				throw new CannotRetrieveConfigurationException(
-				        String.format("Cannt load property file %s on classpath", propertyFile));
-			}
-
-			properties.load(input);
-		} catch (IOException e) {
-			LOG.error("{}", () -> String.format("Cannt load property file %s, %s", propertyFile, e.getMessage()));
-			throw new CannotRetrieveConfigurationException(e);
-		}
-
-		return properties;
+	@Override
+	public int getNumberOfElasticOutputThreads() {
+		return numberOfElasticOutputThreads;
 	}
 }

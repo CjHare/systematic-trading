@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.backtest.configuration.BackestConfiguration;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -47,6 +48,7 @@ import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
+import com.systematic.trading.backtest.dao.impl.FileValidatedBackestConfigurationDao;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.input.LaunchArguments;
 import com.systematic.trading.backtest.output.BacktestOutput;
@@ -60,7 +62,9 @@ import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.util.HibernateUtil;
+import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
@@ -114,24 +118,23 @@ public class BacktestApplication {
 		// Retrieve the set of trading data
 		final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityIdentity(), simulationDates);
 
-		// Multi-threading support
-		final int cores = Runtime.getRuntime().availableProcessors();
-		final ExecutorService pool = Executors.newFixedThreadPool(cores);
+		// Multi-threading support for output classes
+		final ExecutorService outputpool = getOutputPool(parserdArguments);
 
 		// TODO run the test over the full period with exclusion on filters
-		// TODO no deposits until actual start date
+		// TODO no deposits until actual start date, rather then from the warm-up period
 
 		try {
 			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
 				final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
 				        depositAmount);
 				clearOutputDirectory(depositAmount, parserdArguments);
-				runBacktest(depositAmount, parserdArguments, configurations, tradingData, pool);
+				runBacktest(depositAmount, parserdArguments, configurations, tradingData, outputpool);
 			}
 
 		} finally {
 			HibernateUtil.getSessionFactory().close();
-			closePool(pool);
+			closePool(outputpool);
 		}
 
 		LOG.info("Finished outputting results");
@@ -169,6 +172,24 @@ public class BacktestApplication {
 		return Period.ofDays(windUp);
 	}
 
+	private ExecutorService getOutputPool( final LaunchArguments arguments )
+	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+		final OutputType type = arguments.getOutputType();
+		final BackestConfiguration configuration = new FileValidatedBackestConfigurationDao().get();
+
+		switch (type) {
+			case ELASTIC_SEARCH:
+				return Executors.newFixedThreadPool(configuration.getNumberOfElasticOutputThreads());
+			case FILE_COMPLETE:
+			case FILE_MINIMUM:
+				return Executors.newFixedThreadPool(configuration.getNumberOfFileOutputThreads());
+			case NO_DISPLAY:
+				return Executors.newSingleThreadScheduledExecutor();
+			default:
+				throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
+		}
+	}
+
 	private BacktestOutput getOutput( final DepositConfiguration depositAmount, final LaunchArguments arguments,
 	        final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
 	        throws BacktestInitialisationException {
@@ -200,10 +221,10 @@ public class BacktestApplication {
 
 	private void runBacktest( final DepositConfiguration depositAmount, final LaunchArguments arguments,
 	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
-	        final ExecutorService pool ) throws BacktestInitialisationException {
+	        final ExecutorService outputPool ) throws BacktestInitialisationException {
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
-			final BacktestOutput output = getOutput(depositAmount, arguments, configuration, pool);
+			final BacktestOutput output = getOutput(depositAmount, arguments, configuration, outputPool);
 			final BacktestBootstrapContext context = createContext(configuration);
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, output, tradingData,
 			        mathContext);
