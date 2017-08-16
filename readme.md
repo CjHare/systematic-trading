@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/CjHare/systematic-trading.svg?branch=master)](https://travis-ci.org/CjHare/systematic-trading)
-[![Quality Gate](https://sonarcloud.io/api/badges/gate?key=com.systematic.trading:systematic-trading)](https://sonarcloud.io/dashboard/index/com.systematic.trading:systematic-trading)
 [![Reliability](
 https://sonarcloud.io/api/badges/measure?key=com.systematic.trading:systematic-trading&metric=reliability_rating)](https://sonarcloud.io/dashboard/index/com.systematic.trading:systematic-trading)
 [![Security](
