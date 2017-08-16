@@ -27,9 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.exception;
-
-import com.systematic.trading.exception.ServiceException;
+package com.systematic.trading.exception;
 
 /**
  * Problem has occurred when attempting validation of configuration data.

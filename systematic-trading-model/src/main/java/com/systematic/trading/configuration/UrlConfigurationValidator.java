@@ -27,23 +27,29 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.configuration;
+package com.systematic.trading.configuration;
 
-import com.systematic.trading.data.exception.ConfigurationValidationException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import com.systematic.trading.exception.ConfigurationValidationException;
 
 /**
- * Validator for a configuration value.
+ * Validates input as a URL.
  * 
  * @author CJ Hare
  */
-public interface ConfigurationValidator<T> {
+public class UrlConfigurationValidator implements ConfigurationValidator<String> {
 
-	/**
-	 * Validates the given input.
-	 * 
-	 * @param toValidate object to validate, with the implicit requirement of object being of type T.
-	 * @return the validated input.
-	 * @throws ConfigurationValidationException problem encountered during validation.
-	 */
-	T validate( String input ) throws ConfigurationValidationException;
+	@Override
+	public String validate( final String input ) throws ConfigurationValidationException {
+
+		try {
+			new URL(input);
+		} catch (MalformedURLException e) {
+			throw new ConfigurationValidationException(String.format("Invalid URL has been provided: \"%s\"", input));
+		}
+
+		return input;
+	}
 }

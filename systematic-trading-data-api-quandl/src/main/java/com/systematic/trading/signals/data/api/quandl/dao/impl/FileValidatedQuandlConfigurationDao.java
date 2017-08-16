@@ -31,14 +31,14 @@ package com.systematic.trading.signals.data.api.quandl.dao.impl;
 
 import java.util.Properties;
 
+import com.systematic.trading.configuration.ConfigurationValidator;
+import com.systematic.trading.configuration.IntegerConfigurationValidator;
+import com.systematic.trading.configuration.UrlConfigurationValidator;
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
-import com.systematic.trading.data.configuration.ConfigurationValidator;
-import com.systematic.trading.data.configuration.IntegerConfigurationValidator;
-import com.systematic.trading.data.configuration.UrlConfigurationValidator;
 import com.systematic.trading.data.dao.impl.FileApiKeyDao;
 import com.systematic.trading.data.dao.impl.FileConfigurationDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
-import com.systematic.trading.data.exception.ConfigurationValidationException;
+import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlProperty;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlConfigurationDao;

@@ -49,7 +49,6 @@ import com.systematic.trading.data.dao.impl.HibernateRetrievedMonthTradingPrices
 import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.exception.ConfigurationValidationException;
 import com.systematic.trading.data.history.HistoryRetrievalRequestMerger;
 import com.systematic.trading.data.history.HistoryRetrievalRequestSlicer;
 import com.systematic.trading.data.history.RetrievedHistoryPeriodRecorder;
@@ -60,6 +59,7 @@ import com.systematic.trading.data.history.impl.RetrievedYearMonthRecorder;
 import com.systematic.trading.data.history.impl.UnnecessaryHistoryRequestFilterImpl;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.builder.impl.HibernateHistoryRetrievalRequestBuilder;
+import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlApiDao;

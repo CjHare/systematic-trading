@@ -32,7 +32,8 @@ package com.systematic.trading.data.configuration;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.data.exception.ConfigurationValidationException;
+import com.systematic.trading.configuration.UrlConfigurationValidator;
+import com.systematic.trading.exception.ConfigurationValidationException;
 
 /**
  * UrlConfigurationValidator.

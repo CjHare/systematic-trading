@@ -31,7 +31,7 @@ package com.systematic.trading.signals.data.api.quandl.dao;
 
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
-import com.systematic.trading.data.exception.ConfigurationValidationException;
+import com.systematic.trading.exception.ConfigurationValidationException;
 
 /**
  * Deals with the loading and validation of the Quandl configuration.
