@@ -27,11 +27,13 @@ package com.systematic.trading.backtest.output;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.time.Period;
 import java.util.StringJoiner;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
+import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
@@ -68,6 +70,18 @@ public class DescriptionGenerator {
 		return out.toString();
 	}
 
+	public String getDescription( final BacktestBootstrapConfiguration configuration,
+	        final DepositConfiguration depositAmount ) {
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add(equity(configuration.getEquity()));
+		out.add(brokerage(configuration.getBrokerageFees()));
+		out.add(deposit(depositAmount));
+		out.add(cashAccount(configuration.getCashAccount()));
+		out.add(getEntryLogic(configuration.getEntryLogic()));
+		out.add(EXIT_LOGIC);
+		return out.toString();
+	}
+
 	public String getEntryLogic( final EntryLogicConfiguration entry ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 
@@ -88,6 +102,26 @@ public class DescriptionGenerator {
 		out.add(minimumTradeValue(entry.getMinimumTrade()));
 		out.add(maximumTradeValue(entry.getMaximumTrade()));
 		return out.toString();
+	}
+
+	private String deposit( final DepositConfiguration depositAmount ) {
+		return String.format("Deposit_%s_%s", depositAmount.getAmount(), getNiceDisplay(depositAmount.getFrequency()));
+	}
+
+	private String getNiceDisplay( final Period time ) {
+		if (Period.ofDays(7).equals(time)) {
+			return "Weekly";
+		}
+
+		if (Period.ofMonths(1).equals(time)) {
+			return "Monthly";
+		}
+
+		if (Period.ofYears(1).equals(time)) {
+			return "Yearly";
+		}
+
+		return time.toString();
 	}
 
 	private String entryPeriodic( final EntryLogicConfiguration entry ) {

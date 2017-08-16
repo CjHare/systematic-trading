@@ -194,7 +194,7 @@ public class BacktestApplication {
 	        final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
 	        throws BacktestInitialisationException {
 
-		final BacktestBatchId batchId = getBatchId(configuration);
+		final BacktestBatchId batchId = getBatchId(configuration, depositAmount);
 		final OutputType type = arguments.getOutputType();
 
 		try {
@@ -229,11 +229,11 @@ public class BacktestApplication {
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, output, tradingData,
 			        mathContext);
 
-			LOG.info("Backtesting beginning for: {}", () -> description.getDescription(configuration));
+			LOG.info("Backtesting beginning for: {}", () -> description.getDescription(configuration, depositAmount));
 
 			bootstrap.run();
 
-			LOG.info("Backtesting complete for: {}", () -> description.getDescription(configuration));
+			LOG.info("Backtesting complete for: {}", () -> description.getDescription(configuration, depositAmount));
 		}
 
 		LOG.info("All Simulations have been completed for deposit amount: {}", () -> depositAmount);
@@ -295,8 +295,9 @@ public class BacktestApplication {
 		return new BacktestTickerSymbolTradingData(equity, data);
 	}
 
-	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration ) {
-		return new BacktestBatchId(description.getDescription(configuration),
+	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration,
+	        final DepositConfiguration depositAmount ) {
+		return new BacktestBatchId(description.getDescription(configuration, depositAmount),
 		        description.getEntryLogic(configuration.getEntryLogic()),
 		        configuration.getEntryLogic().getMinimumTrade(), configuration.getEntryLogic().getMaximumTrade());
 	}
