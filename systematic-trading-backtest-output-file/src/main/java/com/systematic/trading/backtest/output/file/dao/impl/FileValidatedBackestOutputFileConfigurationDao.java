@@ -29,8 +29,15 @@
  */
 package com.systematic.trading.backtest.output.file.dao.impl;
 
+import java.util.Properties;
+
 import com.systematic.trading.backtest.output.file.configuration.BackestOutputFileConfiguration;
+import com.systematic.trading.backtest.output.file.configuration.BacktestOutputFileProperty;
+import com.systematic.trading.backtest.output.file.configuration.impl.BackestOutputFileConfigurationImpl;
 import com.systematic.trading.backtest.output.file.dao.BackestOutputFileConfigurationDao;
+import com.systematic.trading.configuration.ConfigurationValidator;
+import com.systematic.trading.configuration.IntegerConfigurationValidator;
+import com.systematic.trading.data.dao.impl.FileConfigurationDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.exception.ConfigurationValidationException;
 
@@ -40,11 +47,31 @@ import com.systematic.trading.exception.ConfigurationValidationException;
  * @author CJ Hare
  */
 public class FileValidatedBackestOutputFileConfigurationDao implements BackestOutputFileConfigurationDao {
+	private static final String BACKTEST_OUTPUT_PROPERTIES_FILE = "backtest_output_file.properties";
+
+	private final ConfigurationValidator<Integer> numberOfThreadsValidator;
+
+	public FileValidatedBackestOutputFileConfigurationDao() {
+		this.numberOfThreadsValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
+	}
 
 	@Override
 	public BackestOutputFileConfiguration get()
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
-		// TODO Auto-generated method stub
-		return null;
+		final Properties properties = new FileConfigurationDao().get(BACKTEST_OUTPUT_PROPERTIES_FILE);
+
+		final int maximumNumberOfThreads = getIntegerProperty(properties, BacktestOutputFileProperty.NUMBER_OF_THREADS,
+		        numberOfThreadsValidator);
+
+		return new BackestOutputFileConfigurationImpl(maximumNumberOfThreads);
+	}
+
+	private int getIntegerProperty( final Properties properties, final BacktestOutputFileProperty property,
+	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
+		return validator.validate(getProperty(properties, property));
+	}
+
+	private String getProperty( final Properties properties, final BacktestOutputFileProperty property ) {
+		return properties.getProperty(property.getKey());
 	}
 }
