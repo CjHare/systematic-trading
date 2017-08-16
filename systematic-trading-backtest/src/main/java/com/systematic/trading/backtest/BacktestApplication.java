@@ -200,7 +200,7 @@ public class BacktestApplication {
 		try {
 			switch (type) {
 				case ELASTIC_SEARCH:
-					return new ElasticBacktestOutput(batchId);
+					return new ElasticBacktestOutput(batchId, pool);
 				case FILE_COMPLETE:
 					return new CompleteFileOutputService(batchId,
 					        getOutputDirectory(getOutputDirectory(depositAmount, arguments).get(), configuration), pool,

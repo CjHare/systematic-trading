@@ -25,6 +25,8 @@
  */
 package com.systematic.trading.backtest.output.elastic;
 
+import java.util.concurrent.ExecutorService;
+
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.BacktestOutput;
@@ -63,12 +65,10 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	private final ElasticReturnOnInvestmentIndex returnOnInvestmentIndex;
 	private final ElasticNetworthIndex networthIndex;
 	private final ElasticEquityIndex equityIndex;
+	private final ExecutorService pool;
+	private final BacktestBatchId batchId;
 
-	//TODO multi-threading posting is currently synchronous ...and slow!
-
-	private final BacktestBatchId id;
-
-	public ElasticBacktestOutput( final BacktestBatchId id ) {
+	public ElasticBacktestOutput( final BacktestBatchId batchId, final ExecutorService pool ) {
 		final ElasticDao dao = new HttpElasticDao();
 		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao);
 		this.cashIndex = new ElasticCashIndex(dao);
@@ -77,45 +77,46 @@ public class ElasticBacktestOutput implements BacktestOutput {
 		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(dao);
 		this.networthIndex = new ElasticNetworthIndex(dao);
 		this.equityIndex = new ElasticEquityIndex(dao);
-		this.id = id;
+		this.batchId = batchId;
+		this.pool = pool;
 	}
 
 	@Override
 	public void init( TickerSymbolTradingData tradingData, BacktestSimulationDates dates,
 	        EventStatistics eventStatistics, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
 	        TradingDayPrices lastTradingDay ) {
-		signalAnalysisIndex.init(id);
-		cashIndex.init(id);
-		orderIndex.init(id);
-		brokerageIndex.init(id);
-		returnOnInvestmentIndex.init(id);
-		networthIndex.init(id);
-		equityIndex.init(id);
+		signalAnalysisIndex.init(batchId);
+		cashIndex.init(batchId);
+		orderIndex.init(batchId);
+		brokerageIndex.init(batchId);
+		returnOnInvestmentIndex.init(batchId);
+		networthIndex.init(batchId);
+		equityIndex.init(batchId);
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
-		signalAnalysisIndex.event(id, event);
+		pool.submit(() -> signalAnalysisIndex.event(batchId, event));
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
-		cashIndex.event(id, event);
+		pool.submit(() -> cashIndex.event(batchId, event));
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		orderIndex.event(id, event);
+		pool.submit(() -> orderIndex.event(batchId, event));
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		brokerageIndex.event(id, event);
+		pool.submit(() -> brokerageIndex.event(batchId, event));
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		returnOnInvestmentIndex.event(id, event);
+		pool.submit(() -> returnOnInvestmentIndex.event(batchId, event));
 	}
 
 	@Override
@@ -124,11 +125,11 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
-		networthIndex.event(id, event);
+		pool.submit(() -> networthIndex.event(batchId, event));
 	}
 
 	@Override
 	public void event( final EquityEvent event ) {
-		equityIndex.event(id, event);
+		pool.submit(() -> equityIndex.event(batchId, event));
 	}
 }
