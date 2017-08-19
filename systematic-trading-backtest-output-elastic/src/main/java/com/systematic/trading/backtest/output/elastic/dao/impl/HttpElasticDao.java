@@ -61,9 +61,6 @@ public class HttpElasticDao implements ElasticDao {
 	/** Base of the elastic search Restful end point. */
 	private final WebTarget root;
 
-	//TODO use an exectuor pool for the Java-RS operations?
-	// final ExecutorService pool
-
 	public HttpElasticDao() {
 
 		// Registering the provider for POJO -> JSON

@@ -50,29 +50,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(Include.NON_NULL)
 public class ElasticIndexMapping {
 
-	//TODO ? strucutre with a @JsonCreator to accept format of
-	//TODO used when reading the index to verify structure is correct
-	//{"signal-analysis":{"aliases":{},"mappings":{"signal-analysis":{"properties":{"event":{"type":"text"}}}},"settings":{"index":{"creation_date":"1487497092304","number_of_shards":"5","number_of_replicas":"1","uuid":"dUnk_vL9QbOR8J5hCmIgkg","version":{"created":"5010199"},"provided_name":"signal-analysis"}}}}
-
 	/** Elastic key for the index type */
 	private static final String TYPE = "type";
 
 	@JsonProperty("properties")
 	private final Map<String, Object> typeMapping;
 
+	public ElasticIndexMapping( final Map<String, Object> typeMapping ) {
+		this.typeMapping = typeMapping;
+	}
+
 	public ElasticIndexMapping( final Pair<ElasticFieldName, ElasticFieldType> field ) {
 		this(Arrays.asList(field));
 	}
 
 	public ElasticIndexMapping( final List<Pair<ElasticFieldName, ElasticFieldType>> fields ) {
-
 		final Map<String, Object> message = new HashMap<>();
 
 		for (final Pair<ElasticFieldName, ElasticFieldType> field : fields) {
 			message.put(getName(field), getType(field));
 		}
 
-		typeMapping = Collections.unmodifiableMap(message);
+		this.typeMapping = Collections.unmodifiableMap(message);
 	}
 
 	public Map<String, Object> getTypeMapping() {
