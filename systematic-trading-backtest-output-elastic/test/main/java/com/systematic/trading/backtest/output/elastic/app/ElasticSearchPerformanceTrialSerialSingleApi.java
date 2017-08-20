@@ -34,16 +34,25 @@ import java.time.LocalDate;
 import org.apache.commons.lang3.time.StopWatch;
 
 /**
- * Stand alone application for comparing the performance between the single and bulk APIs.
+ * Stand alone application for clocking the time in performing posting of records to Elastic Search using the single record API.
  * 
  * @author CJ Hare
  */
-public class ElasticSearchPerformanceTrialSingleVsBulkTest {
+public class ElasticSearchPerformanceTrialSerialSingleApi {
+
+	/** Number of records to post to elastic search. */
+	private static final int NUMBER_OF_RECORDS = 1000;
+
+	/** The same text used for every record. */
+	private static final String TEXT = "Sample_text";
+
+	/** The same date used for every record. */
+	private static final LocalDate DATE = LocalDate.now();
 
 	private final ElasticSearchFacade elastic = new ElasticSearchFacade();
 
 	public static void main( final String... args ) {
-		new ElasticSearchPerformanceTrialSingleVsBulkTest().execute();
+		new ElasticSearchPerformanceTrialSerialSingleApi().execute();
 	}
 
 	public void execute() {
@@ -65,22 +74,31 @@ public class ElasticSearchPerformanceTrialSingleVsBulkTest {
 		final StopWatch timer = new StopWatch();
 		timer.start();
 
-		final String text = "AAAaa";
-		final float value = 101;
-		final LocalDate date = LocalDate.now();
-
-		elastic.postType(new ElasticSearchPerformanceTrialResource(text, value, date));
+		for (int i = 0; i < NUMBER_OF_RECORDS; i++) {
+			elastic.postType(createRecord(i));
+		}
 
 		timer.stop();
 		return timer;
 	}
 
+	/**
+	 * @param value the only difference between each record.
+	 */
+	private ElasticSearchPerformanceTrialResource createRecord( final int value ) {
+		return new ElasticSearchPerformanceTrialResource(TEXT, value, DATE);
+	}
+
 	private void summarise( final StopWatch timer ) {
-		System.out.println(String.format("Execution time: %,d nanoseconds, %,d milliseconds, %.2f seconds",
-		        timer.getNanoTime(), timer.getTime(), getSeconds(timer)));
+		System.out.println(String.format("%,d Records executed in: %.2f seconds, %.2f records per second",
+		        NUMBER_OF_RECORDS, getSeconds(timer), getRecordsInsertedPerSecond(timer)));
 	}
 
 	private float getSeconds( final StopWatch timer ) {
 		return timer.getTime() / 1000f;
+	}
+
+	private float getRecordsInsertedPerSecond( final StopWatch timer ) {
+		return NUMBER_OF_RECORDS / getSeconds(timer);
 	}
 }
