@@ -31,6 +31,8 @@ package com.systematic.trading.backtest.output.elastic.app;
 
 import java.time.LocalDate;
 
+import org.apache.commons.lang3.time.StopWatch;
+
 /**
  * Stand alone application for comparing the performance between the single and bulk APIs.
  * 
@@ -47,8 +49,7 @@ public class ElasticSearchPerformanceTrialSingleVsBulkTest {
 	public void execute() {
 		clear();
 		setUp();
-		sendData();
-		summarise();
+		summarise(sendData());
 	}
 
 	private void clear() {
@@ -60,15 +61,26 @@ public class ElasticSearchPerformanceTrialSingleVsBulkTest {
 		elastic.putMapping();
 	}
 
-	private void sendData() {
+	private StopWatch sendData() {
+		final StopWatch timer = new StopWatch();
+		timer.start();
+
 		final String text = "AAAaa";
 		final float value = 101;
 		final LocalDate date = LocalDate.now();
 
 		elastic.postType(new ElasticSearchPerformanceTrialResource(text, value, date));
+
+		timer.stop();
+		return timer;
 	}
 
-	private void summarise() {
-		System.out.println("DONE!");
+	private void summarise( final StopWatch timer ) {
+		System.out.println(String.format("Execution time: %,d nanoseconds, %,d milliseconds, %.2f seconds",
+		        timer.getNanoTime(), timer.getTime(), getSeconds(timer)));
+	}
+
+	private float getSeconds( final StopWatch timer ) {
+		return timer.getTime() / 1000f;
 	}
 }
