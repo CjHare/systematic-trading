@@ -51,17 +51,17 @@ public class ElasticSearchPerformanceTrialResource {
 		this.date = date;
 	}
 
-	@JsonProperty(ElasticSearchPerformanceTrial.TEXT_FIELD_NAME)
+	@JsonProperty(ElasticSearchPerformanceTrialFields.TEXT_FIELD_NAME)
 	public String getText() {
 		return text;
 	}
 
-	@JsonProperty(ElasticSearchPerformanceTrial.FLOAT_FIELD_NAME)
+	@JsonProperty(ElasticSearchPerformanceTrialFields.FLOAT_FIELD_NAME)
 	public float getValue() {
 		return value;
 	}
 
-	@JsonProperty(ElasticSearchPerformanceTrial.DATE_FIELD_NAME)
+	@JsonProperty(ElasticSearchPerformanceTrialFields.DATE_FIELD_NAME)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getDate() {
 		return date;

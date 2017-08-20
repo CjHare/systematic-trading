@@ -29,40 +29,74 @@
  */
 package com.systematic.trading.backtest.output.elastic.app;
 
+import java.time.LocalDate;
+
+import org.apache.commons.lang3.time.StopWatch;
+
 /**
- * Constants used during the Elastic Search performance trial
+ * Behaviour for evaluating Elastic search performance. 
  * 
  * @author CJ Hare
  */
-public interface ElasticSearchPerformanceTrial {
+public class ElasticSearchPerformanceTrial {
 
-	/** Elastic key for the index type */
-	String TYPE = "type";
+	/** The same text used for every record. */
+	private static final String TEXT = "Sample_text";
 
-	/** 
-	 * The number of primary shards that an index should have, which defaults to 5. 
-	 * This setting cannot be changed after index creation.
+	/** The same date used for every record. */
+	private static final LocalDate DATE = LocalDate.now();
+
+	private final ElasticSearchFacade elastic = new ElasticSearchFacade();
+	private final int numberOfRecords;
+
+	public ElasticSearchPerformanceTrial( final int numberOfRecords ) {
+		this.numberOfRecords = numberOfRecords;
+	}
+
+	public void execute() {
+		clear();
+		setUp();
+		summarise(sendData());
+	}
+
+	private void clear() {
+		elastic.delete();
+	}
+
+	private void setUp() {
+		elastic.putIndex();
+		elastic.putMapping();
+	}
+
+	private StopWatch sendData() {
+		final StopWatch timer = new StopWatch();
+		timer.start();
+
+		for (int i = 0; i < numberOfRecords; i++) {
+			elastic.postType(createRecord(i));
+		}
+
+		timer.stop();
+		return timer;
+	}
+
+	/**
+	 * @param value the only difference between each record.
 	 */
-	int DEFAULT_NUMBER_OF_SHARDS = 5;
+	private ElasticSearchPerformanceTrialResource createRecord( final int value ) {
+		return new ElasticSearchPerformanceTrialResource(TEXT, value, DATE);
+	}
 
-	/** The number of replica shards (copies) that each primary shard should have, which defaults to 1. */
-	int DEFAULT_NUMBER_OF_REPLICAS = 1;
+	private void summarise( final StopWatch timer ) {
+		System.out.println(String.format("%,d Records executed in: %.2f seconds, %.2f records per second",
+		        numberOfRecords, getSeconds(timer), getRecordsInsertedPerSecond(timer)));
+	}
 
-	/** Location of the elastic search end point. */
-	String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
+	private float getSeconds( final StopWatch timer ) {
+		return timer.getTime() / 1000f;
+	}
 
-	/** Name of the index to during for the trial.*/
-	String INDEX_NAME = "test_index";
-
-	/** The type mapping to manipulate the documents under.*/
-	String MAPPING_NAME = "test_mapping";
-
-	/** Key value for the date type field. */
-	String DATE_FIELD_NAME = "date_field";
-
-	/** Key value for the float type field. */
-	String FLOAT_FIELD_NAME = "float_field";
-
-	/** Key value for the test type field. */
-	String TEXT_FIELD_NAME = "text_field";
+	private float getRecordsInsertedPerSecond( final StopWatch timer ) {
+		return numberOfRecords / getSeconds(timer);
+	}
 }

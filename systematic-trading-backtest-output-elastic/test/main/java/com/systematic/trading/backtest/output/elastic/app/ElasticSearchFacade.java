@@ -29,15 +29,13 @@
  */
 package com.systematic.trading.backtest.output.elastic.app;
 
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial.DATE_FIELD_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial.DEFAULT_NUMBER_OF_REPLICAS;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial.DEFAULT_NUMBER_OF_SHARDS;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial.ELASTIC_ENDPOINT_URL;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial.FLOAT_FIELD_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial.INDEX_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial.MAPPING_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial.TEXT_FIELD_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial.TYPE;
+import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.DATE_FIELD_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.ELASTIC_ENDPOINT_URL;
+import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.FLOAT_FIELD_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.INDEX_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.MAPPING_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.TEXT_FIELD_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.TYPE;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
@@ -70,6 +68,15 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEve
  * @author CJ Hare
  */
 public class ElasticSearchFacade {
+
+	/** 
+	 * The number of primary shards that an index should have, which defaults to 5. 
+	 * This setting cannot be changed after index creation.
+	 */
+	private static final int DEFAULT_NUMBER_OF_SHARDS = 5;
+
+	/** The number of replica shards (copies) that each primary shard should have, which defaults to 1. */
+	private static final int DEFAULT_NUMBER_OF_REPLICAS = 1;
 
 	/** Base of the elastic search Restful end point. */
 	private final WebTarget root;
