@@ -23,13 +23,14 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app;
+package com.systematic.trading.backtest.output.elastic.app.resource;
 
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

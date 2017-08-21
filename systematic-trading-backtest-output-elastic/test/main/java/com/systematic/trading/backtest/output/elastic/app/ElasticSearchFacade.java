@@ -29,15 +29,15 @@
  */
 package com.systematic.trading.backtest.output.elastic.app;
 
+import java.util.AbstractMap.SimpleEntry;
+
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.DATE_FIELD_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.ELASTIC_ENDPOINT_URL;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.FLOAT_FIELD_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.INDEX_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.MAPPING_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.TEXT_FIELD_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.TYPE;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +53,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
@@ -68,6 +69,9 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEve
  * @author CJ Hare
  */
 public class ElasticSearchFacade {
+
+	/** Location of the elastic search end point. */
+	private static final String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
 
 	/** 
 	 * The number of primary shards that an index should have, which defaults to 5. 

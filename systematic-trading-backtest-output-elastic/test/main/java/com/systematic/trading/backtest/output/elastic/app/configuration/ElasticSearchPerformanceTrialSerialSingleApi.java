@@ -30,6 +30,8 @@
 package com.systematic.trading.backtest.output.elastic.app.configuration;
 
 import com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial;
+import com.systematic.trading.backtest.output.elastic.app.output.PerformanceTrialFileAppenderOutput;
+import com.systematic.trading.exception.ServiceException;
 
 /**
  * Stand alone application for clocking the time in performing posting of records to Elastic Search.
@@ -46,7 +48,10 @@ public class ElasticSearchPerformanceTrialSerialSingleApi {
 	/** Number of records to post to elastic search. */
 	private static final int NUMBER_OF_RECORDS = 1000;
 
-	public static void main( final String... args ) {
-		new ElasticSearchPerformanceTrial(NUMBER_OF_RECORDS).execute();
+	private static final String OUTPUT_FILE = "ElasticSearchPerformanceTrialSerialSingleApi.txt";
+
+	public static void main( final String... args ) throws ServiceException {
+		new PerformanceTrialFileAppenderOutput(OUTPUT_FILE)
+		        .display(new ElasticSearchPerformanceTrial(NUMBER_OF_RECORDS).execute());
 	}
 }

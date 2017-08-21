@@ -27,30 +27,37 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app;
+package com.systematic.trading.backtest.output.elastic.app.model;
+
+import java.time.Duration;
 
 /**
- * Constants used during the Elastic Search performance trial
+ * Collection of the summary data from an Elastic Search Performance Trial.
  * 
  * @author CJ Hare
  */
-public interface ElasticSearchPerformanceTrialFields {
+public class PerformanceTrialSummary {
 
-	/** Elastic key for the index type */
-	String TYPE = "type";
+	private final int numberOfRecords;
+	private final Duration elapsed;
+	private final float recordsPerSecond;
 
-	/** Name of the index to during for the trial.*/
-	String INDEX_NAME = "test_index";
+	public PerformanceTrialSummary( final int numberOfRecords, final Duration elapsed,
+	        final float recordsPerSecond ) {
+		this.numberOfRecords = numberOfRecords;
+		this.elapsed = elapsed;
+		this.recordsPerSecond = recordsPerSecond;
+	}
 
-	/** The type mapping to manipulate the documents under.*/
-	String MAPPING_NAME = "test_mapping";
+	public int getNumberOfRecords() {
+		return numberOfRecords;
+	}
 
-	/** Key value for the date type field. */
-	String DATE_FIELD_NAME = "date_field";
+	public Duration getElapsed() {
+		return elapsed;
+	}
 
-	/** Key value for the float type field. */
-	String FLOAT_FIELD_NAME = "float_field";
-
-	/** Key value for the test type field. */
-	String TEXT_FIELD_NAME = "text_field";
+	public float getRecordsPerSecond() {
+		return recordsPerSecond;
+	}
 }

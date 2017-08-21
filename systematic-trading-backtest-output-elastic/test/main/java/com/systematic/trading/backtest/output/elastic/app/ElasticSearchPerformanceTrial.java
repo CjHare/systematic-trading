@@ -29,9 +29,13 @@
  */
 package com.systematic.trading.backtest.output.elastic.app;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
 import org.apache.commons.lang3.time.StopWatch;
+
+import com.systematic.trading.backtest.output.elastic.app.model.PerformanceTrialSummary;
+import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 
 /**
  * Behaviour for evaluating Elastic search performance. 
@@ -53,10 +57,10 @@ public class ElasticSearchPerformanceTrial {
 		this.numberOfRecords = numberOfRecords;
 	}
 
-	public void execute() {
+	public PerformanceTrialSummary execute() {
 		clear();
 		setUp();
-		summarise(sendData());
+		return summarise(sendData());
 	}
 
 	private void clear() {
@@ -87,13 +91,13 @@ public class ElasticSearchPerformanceTrial {
 		return new ElasticSearchPerformanceTrialResource(TEXT, value, DATE);
 	}
 
-	private void summarise( final StopWatch timer ) {
-		System.out.println(String.format("%,d Records executed in: %.2f seconds, %.2f records per second",
-		        numberOfRecords, getSeconds(timer), getRecordsInsertedPerSecond(timer)));
+	private PerformanceTrialSummary summarise( final StopWatch timer ) {
+		return new PerformanceTrialSummary(numberOfRecords, Duration.ofSeconds(getSeconds(timer)),
+		        getRecordsInsertedPerSecond(timer));
 	}
 
-	private float getSeconds( final StopWatch timer ) {
-		return timer.getTime() / 1000f;
+	private long getSeconds( final StopWatch timer ) {
+		return timer.getTime() / 1000l;
 	}
 
 	private float getRecordsInsertedPerSecond( final StopWatch timer ) {
