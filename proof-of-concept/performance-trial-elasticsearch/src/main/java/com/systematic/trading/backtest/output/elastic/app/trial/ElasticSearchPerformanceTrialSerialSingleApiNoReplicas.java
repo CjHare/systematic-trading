@@ -41,24 +41,24 @@ import com.systematic.trading.exception.ServiceException;
  *    Serial execution
  *    Single record API
  * 
- *  Elastic Index Configuration (default):
+ * Elastic Index Configuration:
  *    5 Shards
- *    1 Replica
- *   
+ *    0 Replica
+ * 
  * Optional input:
  *   args[0] == number of records
  *   args[0] == output file
  * 
  * @author CJ Hare
  */
-public class ElasticSearchPerformanceTrialSerialSingleApi {
+public class ElasticSearchPerformanceTrialSerialSingleApiNoReplicas {
 
-	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialSerialSingleApi";
+	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialSerialSingleApiNoReplicas";
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
 		        .display(new ElasticSearchPerformanceTrial(
 		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
-		                new ElasticSearchConfigurationBuilder().build()).execute());
+		                new ElasticSearchConfigurationBuilder().withReplicas(0).build()).execute());
 	}
 }

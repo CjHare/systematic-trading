@@ -46,7 +46,7 @@ public class PerformanceTrialOutputFormatter {
 	private final int SECONDS_PER_MINUTE = 60;
 
 	public String format( final String trialId, final PerformanceTrialSummary summary ) {
-		return String.format("%s, %,d, %s, %.2f, %s", trialId, summary.getNumberOfRecords(),
+		return String.format("%s, %d, %s, %.2f, %s", trialId, summary.getNumberOfRecords(),
 		        format(summary.getElapsed()), summary.getRecordsPerSecond(), System.lineSeparator());
 	}
 
