@@ -39,8 +39,6 @@ import com.systematic.trading.backtest.output.elastic.app.exception.PerformanceT
 import com.systematic.trading.backtest.output.elastic.app.model.PerformanceTrialSummary;
 import com.systematic.trading.exception.ServiceException;
 
-import PerformanceTrialFileAppenderOutput.PerformanceTrialOutputFormatter;
-
 /**
  * Output of the performance trial results to a file, replacing the output file each time.
  * 
