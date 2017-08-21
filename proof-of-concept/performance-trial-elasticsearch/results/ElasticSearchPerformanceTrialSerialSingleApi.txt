@@ -1,2 +1,0 @@
-1,000 Records inserted in: 0:01:21, throughput of: 12.00 records per second, 
-1,000 Records inserted in: 0:01:20, throughput of: 12.50 records per second, 

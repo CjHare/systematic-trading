@@ -33,11 +33,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.Duration;
 
 import com.systematic.trading.backtest.output.elastic.app.exception.PerformanceTrialException;
 import com.systematic.trading.backtest.output.elastic.app.model.PerformanceTrialSummary;
 import com.systematic.trading.exception.ServiceException;
+
+import PerformanceTrialFileAppenderOutput.PerformanceTrialOutputFormatter;
 
 /**
  * Output of the performance trial results to a file.
@@ -46,52 +47,23 @@ import com.systematic.trading.exception.ServiceException;
  */
 public class PerformanceTrialFileAppenderOutput implements PerformanceTrialOutput {
 
-	private static final String NEGATIVE_SIGN = "-";
-	private static final String EMPTY_STRING = "";
-	private final int SECONDS_PER_HOUR = 3600;
-	private final int SECONDS_PER_MINUTE = 60;
-
+	private final PerformanceTrialOutputFormatter outputFormat = new PerformanceTrialOutputFormatter();
 	private final String filename;
+	private final String trialId;
 
-	public PerformanceTrialFileAppenderOutput( final String filename ) {
+	public PerformanceTrialFileAppenderOutput( final String filename, final String trialId ) {
 		this.filename = filename;
+		this.trialId = trialId;
 	}
 
 	@Override
 	public void display( final PerformanceTrialSummary summary ) throws ServiceException {
 
 		try {
-			Files.write(Paths.get(filename),
-			        String.format("%,d Records inserted in: %s, throughput of: %.2f records per second, %s",
-			                summary.getNumberOfRecords(), format(summary.getElapsed()), summary.getRecordsPerSecond(),
-			                System.lineSeparator()).getBytes(),
+			Files.write(Paths.get(filename), outputFormat.format(trialId, summary).getBytes(),
 			        StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 		} catch (final IOException e) {
 			throw new PerformanceTrialException(e);
 		}
-	}
-
-	/**
-	 * @param duration in the format of: hours:minutes:seconds
-	 */
-	private String format( final Duration duration ) {
-		return String.format("%s%d:%02d:%02d", isNegative(duration) ? NEGATIVE_SIGN : EMPTY_STRING, getHours(duration),
-		        getMinutes(duration), getSeconds(duration));
-	}
-
-	private boolean isNegative( final Duration duration ) {
-		return duration.getSeconds() < 0;
-	}
-
-	private long getHours( final Duration duration ) {
-		return Math.abs(duration.getSeconds()) / SECONDS_PER_HOUR;
-	}
-
-	private long getMinutes( final Duration duration ) {
-		return (Math.abs(duration.getSeconds()) % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE;
-	}
-
-	private long getSeconds( final Duration duration ) {
-		return Math.abs(duration.getSeconds()) % SECONDS_PER_MINUTE;
 	}
 }

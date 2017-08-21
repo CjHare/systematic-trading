@@ -31,7 +31,6 @@ package com.systematic.trading.backtest.output.elastic.app.trial;
 
 import com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
-import com.systematic.trading.backtest.output.elastic.app.output.PerformanceTrialFileAppenderOutput;
 import com.systematic.trading.exception.ServiceException;
 
 /**
@@ -42,18 +41,20 @@ import com.systematic.trading.exception.ServiceException;
  *    Serial execution
  *    Single record API
  * 
+ * Optional input:
+ *   args[0] == number of records
+ *   args[0] == output file
+ * 
  * @author CJ Hare
  */
 public class ElasticSearchPerformanceTrialSerialSingleApi {
 
-	/** Number of records to post to elastic search. */
-	private static final int NUMBER_OF_RECORDS = 1000;
-
-	private static final String OUTPUT_FILE = "results/ElasticSearchPerformanceTrialSerialSingleApi.txt";
+	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialSerialSingleApi";
 
 	public static void main( final String... args ) throws ServiceException {
-		new PerformanceTrialFileAppenderOutput(OUTPUT_FILE).display(
-		        new ElasticSearchPerformanceTrial(NUMBER_OF_RECORDS, new ElasticSearchConfigurationBuilder().build())
-		                .execute());
+		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
+		        .display(new ElasticSearchPerformanceTrial(
+		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
+		                new ElasticSearchConfigurationBuilder().build()).execute());
 	}
 }

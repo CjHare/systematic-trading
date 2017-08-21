@@ -27,36 +27,45 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app.model;
+package com.systematic.trading.backtest.output.elastic.app.output;
 
-import java.time.Duration;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+
+import com.systematic.trading.backtest.output.elastic.app.exception.PerformanceTrialException;
+import com.systematic.trading.backtest.output.elastic.app.model.PerformanceTrialSummary;
+import com.systematic.trading.exception.ServiceException;
+
+import PerformanceTrialFileAppenderOutput.PerformanceTrialOutputFormatter;
 
 /**
- * Collection of the summary data from an Elastic Search Performance Trial.
+ * Output of the performance trial results to a file, replacing the output file each time.
  * 
  * @author CJ Hare
  */
-public class PerformanceTrialSummary {
+public class PerformanceTrialOverwriteFileOutput implements PerformanceTrialOutput {
 
-	private final int numberOfRecords;
-	private final Duration elapsed;
-	private final float recordsPerSecond;
+	private final PerformanceTrialOutputFormatter outputFormat = new PerformanceTrialOutputFormatter();
+	private final String filename;
+	private final String trialId;
 
-	public PerformanceTrialSummary( final int numberOfRecords, final Duration elapsed, final float recordsPerSecond ) {
-		this.numberOfRecords = numberOfRecords;
-		this.elapsed = elapsed;
-		this.recordsPerSecond = recordsPerSecond;
+	public PerformanceTrialOverwriteFileOutput( final String filename, final String trialId ) {
+		this.filename = filename;
+		this.trialId = trialId;
 	}
 
-	public int getNumberOfRecords() {
-		return numberOfRecords;
-	}
+	@Override
+	public void display( final PerformanceTrialSummary summary ) throws ServiceException {
 
-	public Duration getElapsed() {
-		return elapsed;
-	}
-
-	public float getRecordsPerSecond() {
-		return recordsPerSecond;
+		try {
+			final Path path = Paths.get(filename);
+			Files.deleteIfExists(path);
+			Files.write(path, outputFormat.format(trialId, summary).getBytes(), StandardOpenOption.CREATE_NEW);
+		} catch (final IOException e) {
+			throw new PerformanceTrialException(e);
+		}
 	}
 }

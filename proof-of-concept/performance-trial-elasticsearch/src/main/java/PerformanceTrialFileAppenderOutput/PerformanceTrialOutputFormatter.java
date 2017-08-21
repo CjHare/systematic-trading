@@ -27,36 +27,50 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app.model;
+package PerformanceTrialFileAppenderOutput;
 
 import java.time.Duration;
 
+import com.systematic.trading.backtest.output.elastic.app.model.PerformanceTrialSummary;
+
 /**
- * Collection of the summary data from an Elastic Search Performance Trial.
+ * Generic format for the ouptut of the summary display.
  * 
  * @author CJ Hare
  */
-public class PerformanceTrialSummary {
+public class PerformanceTrialOutputFormatter {
 
-	private final int numberOfRecords;
-	private final Duration elapsed;
-	private final float recordsPerSecond;
+	private static final String NEGATIVE_SIGN = "-";
+	private static final String EMPTY_STRING = "";
+	private final int SECONDS_PER_HOUR = 3600;
+	private final int SECONDS_PER_MINUTE = 60;
 
-	public PerformanceTrialSummary( final int numberOfRecords, final Duration elapsed, final float recordsPerSecond ) {
-		this.numberOfRecords = numberOfRecords;
-		this.elapsed = elapsed;
-		this.recordsPerSecond = recordsPerSecond;
+	public String format( final String trialId, final PerformanceTrialSummary summary ) {
+		return String.format("%s, %,d, %s, %.2f, %s", trialId, summary.getNumberOfRecords(),
+		        format(summary.getElapsed()), summary.getRecordsPerSecond(), System.lineSeparator());
 	}
 
-	public int getNumberOfRecords() {
-		return numberOfRecords;
+	/**
+	 * @param duration in the format of: hours:minutes:seconds
+	 */
+	private String format( final Duration duration ) {
+		return String.format("%s%d:%02d:%02d", isNegative(duration) ? NEGATIVE_SIGN : EMPTY_STRING, getHours(duration),
+		        getMinutes(duration), getSeconds(duration));
 	}
 
-	public Duration getElapsed() {
-		return elapsed;
+	private boolean isNegative( final Duration duration ) {
+		return duration.getSeconds() < 0;
 	}
 
-	public float getRecordsPerSecond() {
-		return recordsPerSecond;
+	private long getHours( final Duration duration ) {
+		return Math.abs(duration.getSeconds()) / SECONDS_PER_HOUR;
+	}
+
+	private long getMinutes( final Duration duration ) {
+		return (Math.abs(duration.getSeconds()) % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE;
+	}
+
+	private long getSeconds( final Duration duration ) {
+		return Math.abs(duration.getSeconds()) % SECONDS_PER_MINUTE;
 	}
 }
