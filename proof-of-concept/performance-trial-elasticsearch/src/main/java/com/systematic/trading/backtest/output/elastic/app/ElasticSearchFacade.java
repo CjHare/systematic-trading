@@ -52,6 +52,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
@@ -69,22 +70,12 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEve
  */
 public class ElasticSearchFacade {
 
-	/** Location of the elastic search end point. */
-	private static final String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
-
-	/** 
-	 * The number of primary shards that an index should have, which defaults to 5. 
-	 * This setting cannot be changed after index creation.
-	 */
-	private static final int DEFAULT_NUMBER_OF_SHARDS = 5;
-
-	/** The number of replica shards (copies) that each primary shard should have, which defaults to 1. */
-	private static final int DEFAULT_NUMBER_OF_REPLICAS = 1;
-
 	/** Base of the elastic search Restful end point. */
 	private final WebTarget root;
 
-	public ElasticSearchFacade() {
+	private final ElasticSearchConfiguration configuration;
+
+	public ElasticSearchFacade( final ElasticSearchConfiguration elasticConfig ) {
 
 		// Registering the provider for POJO -> JSON
 		final ObjectMapper mapper = new ObjectMapper();
@@ -94,7 +85,9 @@ public class ElasticSearchFacade {
 		final ClientConfig config = new ClientConfig(provider);
 
 		// End point target root
-		this.root = ClientBuilder.newClient(config).target(ELASTIC_ENDPOINT_URL);
+		this.root = ClientBuilder.newClient(config).target(elasticConfig.getEndpoint());
+
+		this.configuration = elasticConfig;
 	}
 
 	/**
@@ -155,7 +148,7 @@ public class ElasticSearchFacade {
 	}
 
 	private Entity<?> getIndexRequestBody() {
-		return Entity.json(new ElasticIndex(DEFAULT_NUMBER_OF_SHARDS, DEFAULT_NUMBER_OF_REPLICAS));
+		return Entity.json(new ElasticIndex(configuration.getNumberOfShards(), configuration.getNumberOfReplicas()));
 	}
 
 	private String getMappingPath() {

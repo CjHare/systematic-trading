@@ -34,6 +34,7 @@ import java.time.LocalDate;
 
 import org.apache.commons.lang3.time.StopWatch;
 
+import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
 import com.systematic.trading.backtest.output.elastic.app.model.PerformanceTrialSummary;
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 
@@ -50,11 +51,12 @@ public class ElasticSearchPerformanceTrial {
 	/** The same date used for every record. */
 	private static final LocalDate DATE = LocalDate.now();
 
-	private final ElasticSearchFacade elastic = new ElasticSearchFacade();
+	private final ElasticSearchFacade elastic;
 	private final int numberOfRecords;
 
-	public ElasticSearchPerformanceTrial( final int numberOfRecords ) {
+	public ElasticSearchPerformanceTrial( final int numberOfRecords, final ElasticSearchConfiguration elasticConfig ) {
 		this.numberOfRecords = numberOfRecords;
+		this.elastic = new ElasticSearchFacade(elasticConfig);
 	}
 
 	public PerformanceTrialSummary execute() {

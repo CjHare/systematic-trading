@@ -29,30 +29,32 @@
  */
 package com.systematic.trading.backtest.output.elastic.app.configuration;
 
-import com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial;
-import com.systematic.trading.backtest.output.elastic.app.output.PerformanceTrialFileAppenderOutput;
-import com.systematic.trading.exception.ServiceException;
-
 /**
- * Stand alone application for clocking the time in performing posting of records to Elastic Search.
- * 
- *  Trial Configuration:
- *    1,000 records
- *    Serial execution
- *    Single record API
+ * Configuration properties for elastic search.
  * 
  * @author CJ Hare
  */
-public class ElasticSearchPerformanceTrialSerialSingleApi {
+public class ElasticSearchConfiguration {
 
-	/** Number of records to post to elastic search. */
-	private static final int NUMBER_OF_RECORDS = 1000;
+	private final String endpoint;
+	private final int numberOfShards;
+	private final int numberOfReplicas;
 
-	private static final String OUTPUT_FILE = "results/ElasticSearchPerformanceTrialSerialSingleApi.txt";
+	public ElasticSearchConfiguration( final String endpoint, final int numberOfShards, final int numberOfReplicas ) {
+		this.endpoint = endpoint;
+		this.numberOfShards = numberOfShards;
+		this.numberOfReplicas = numberOfReplicas;
+	}
 
-	public static void main( final String... args ) throws ServiceException {
-		new PerformanceTrialFileAppenderOutput(OUTPUT_FILE).display(
-		        new ElasticSearchPerformanceTrial(NUMBER_OF_RECORDS, new ElasticSearchConfigurationBuilder().build())
-		                .execute());
+	public String getEndpoint() {
+		return endpoint;
+	}
+
+	public int getNumberOfShards() {
+		return numberOfShards;
+	}
+
+	public int getNumberOfReplicas() {
+		return numberOfReplicas;
 	}
 }

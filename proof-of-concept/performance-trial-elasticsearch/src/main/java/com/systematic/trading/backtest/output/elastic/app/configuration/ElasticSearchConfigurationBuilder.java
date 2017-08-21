@@ -29,30 +29,57 @@
  */
 package com.systematic.trading.backtest.output.elastic.app.configuration;
 
-import com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial;
-import com.systematic.trading.backtest.output.elastic.app.output.PerformanceTrialFileAppenderOutput;
-import com.systematic.trading.exception.ServiceException;
-
 /**
- * Stand alone application for clocking the time in performing posting of records to Elastic Search.
- * 
- *  Trial Configuration:
- *    1,000 records
- *    Serial execution
- *    Single record API
+ * Configuration builder for Elastic Search.
  * 
  * @author CJ Hare
  */
-public class ElasticSearchPerformanceTrialSerialSingleApi {
+public class ElasticSearchConfigurationBuilder {
 
-	/** Number of records to post to elastic search. */
-	private static final int NUMBER_OF_RECORDS = 1000;
+	/** Location of the elastic search end point. */
+	private static final String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
 
-	private static final String OUTPUT_FILE = "results/ElasticSearchPerformanceTrialSerialSingleApi.txt";
+	/** 
+	 * The number of primary shards that an index should have, which defaults to 5. 
+	 * This setting cannot be changed after index creation.
+	 */
+	private static final int DEFAULT_NUMBER_OF_SHARDS = 5;
 
-	public static void main( final String... args ) throws ServiceException {
-		new PerformanceTrialFileAppenderOutput(OUTPUT_FILE).display(
-		        new ElasticSearchPerformanceTrial(NUMBER_OF_RECORDS, new ElasticSearchConfigurationBuilder().build())
-		                .execute());
+	/** The number of replica shards (copies) that each primary shard should have, which defaults to 1. */
+	private static final int DEFAULT_NUMBER_OF_REPLICAS = 1;
+
+	private String endpoint;
+	private Integer numberOfShards;
+	private Integer numberOfReplicas;
+
+	public ElasticSearchConfigurationBuilder withEndpoint( final String endpoint ) {
+		this.endpoint = endpoint;
+		return this;
+	}
+
+	public ElasticSearchConfigurationBuilder withShards( final int numberOfShards ) {
+		this.numberOfShards = numberOfShards;
+		return this;
+	}
+
+	public ElasticSearchConfigurationBuilder withReplicas( final int numberOfReplicas ) {
+		this.numberOfReplicas = numberOfReplicas;
+		return this;
+	}
+
+	public ElasticSearchConfiguration build() {
+		return new ElasticSearchConfiguration(getEndpoint(), getNumberOfShards(), numberOfReplicas());
+	}
+
+	private String getEndpoint() {
+		return endpoint == null ? ELASTIC_ENDPOINT_URL : endpoint;
+	}
+
+	private int getNumberOfShards() {
+		return numberOfShards == null ? DEFAULT_NUMBER_OF_SHARDS : numberOfShards;
+	}
+
+	private int numberOfReplicas() {
+		return numberOfReplicas == null ? DEFAULT_NUMBER_OF_REPLICAS : numberOfReplicas;
 	}
 }
