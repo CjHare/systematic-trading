@@ -31,6 +31,9 @@ package com.systematic.trading.backtest.output.elastic.app;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -52,11 +55,18 @@ public class ElasticSearchPerformanceTrial {
 	private static final LocalDate DATE = LocalDate.now();
 
 	private final ElasticSearchFacade elastic;
+	private final int numberOfThreads;
 	private final int numberOfRecords;
 
-	public ElasticSearchPerformanceTrial( final int numberOfRecords, final ElasticSearchConfiguration elasticConfig ) {
+	public ElasticSearchPerformanceTrial( final int numberOfRecords, final int numberOfThreads,
+	        final ElasticSearchConfiguration elasticConfig ) {
 		this.numberOfRecords = numberOfRecords;
+		this.numberOfThreads = numberOfThreads;
 		this.elastic = new ElasticSearchFacade(elasticConfig);
+	}
+
+	public ElasticSearchPerformanceTrial( final int numberOfRecords, final ElasticSearchConfiguration elasticConfig ) {
+		this(numberOfRecords, 1, elasticConfig);
 	}
 
 	public PerformanceTrialSummary execute() {
@@ -75,15 +85,33 @@ public class ElasticSearchPerformanceTrial {
 	}
 
 	private StopWatch sendData() {
+		final ExecutorService pool = Executors.newFixedThreadPool(numberOfThreads);
+		final CountDownLatch countDown = new CountDownLatch(numberOfRecords);
+
 		final StopWatch timer = new StopWatch();
 		timer.start();
 
 		for (int i = 0; i < numberOfRecords; i++) {
-			elastic.postType(createRecord(i));
+			final ElasticSearchPerformanceTrialResource record = createRecord(i);
+			pool.submit(() -> {
+				elastic.postType(record);
+				countDown.countDown();
+			});
 		}
 
+		wait(countDown);
 		timer.stop();
+
 		return timer;
+	}
+
+	private void wait( final CountDownLatch countDown ) {
+		try {
+			countDown.await();
+		} catch (final InterruptedException e) {
+			// Preserve interrupt status
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	/**
