@@ -103,6 +103,6 @@ public class ElasticSearchPerformanceTrial {
 	}
 
 	private float getRecordsInsertedPerSecond( final StopWatch timer ) {
-		return numberOfRecords / getSeconds(timer);
+		return numberOfRecords / (float) getSeconds(timer);
 	}
 }
