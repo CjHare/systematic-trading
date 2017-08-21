@@ -48,7 +48,7 @@ public class ElasticSearchPerformanceTrialSerialSingleApi {
 	/** Number of records to post to elastic search. */
 	private static final int NUMBER_OF_RECORDS = 1000;
 
-	private static final String OUTPUT_FILE = "ElasticSearchPerformanceTrialSerialSingleApi.txt";
+	private static final String OUTPUT_FILE = "results/ElasticSearchPerformanceTrialSerialSingleApi.txt";
 
 	public static void main( final String... args ) throws ServiceException {
 		new PerformanceTrialFileAppenderOutput(OUTPUT_FILE)

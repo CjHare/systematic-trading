@@ -29,8 +29,6 @@
  */
 package com.systematic.trading.backtest.output.elastic.app;
 
-import java.util.AbstractMap.SimpleEntry;
-
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.DATE_FIELD_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.FLOAT_FIELD_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.INDEX_NAME;
@@ -38,6 +36,7 @@ import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPe
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.TEXT_FIELD_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.TYPE;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
 
