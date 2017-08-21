@@ -27,9 +27,10 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app.configuration;
+package com.systematic.trading.backtest.output.elastic.app.trial;
 
 import com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial;
+import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
 import com.systematic.trading.backtest.output.elastic.app.output.PerformanceTrialFileAppenderOutput;
 import com.systematic.trading.exception.ServiceException;
 
