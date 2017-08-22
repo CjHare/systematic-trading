@@ -100,6 +100,7 @@ public class ElasticSearchPerformanceTrial {
 		}
 
 		wait(countDown);
+		pool.shutdown();
 		timer.stop();
 
 		return timer;

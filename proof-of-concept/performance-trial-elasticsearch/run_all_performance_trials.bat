@@ -1,4 +1,4 @@
-REM @echo off
+@echo off
 REM Build the project & start the elastic search server before running the performance trials
 
 SET numberOfRecords=125
