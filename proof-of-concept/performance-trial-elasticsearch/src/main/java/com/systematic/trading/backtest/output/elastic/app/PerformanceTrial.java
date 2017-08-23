@@ -43,7 +43,7 @@ import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearch
  * 
  * @author CJ Hare
  */
-public abstract class ElasticSearchPerformanceTrial {
+public abstract class PerformanceTrial {
 
 	/** The same text used for every record. */
 	private static final String TEXT = "Sample_text";
@@ -55,14 +55,14 @@ public abstract class ElasticSearchPerformanceTrial {
 	private final int numberOfRecords;
 	private final boolean disableIndexRefresh;
 
-	public ElasticSearchPerformanceTrial( final int numberOfRecords, final int numberOfThreads,
+	public PerformanceTrial( final int numberOfRecords, final int numberOfThreads,
 	        final ElasticSearchConfiguration elasticConfig ) {
 		this.numberOfRecords = numberOfRecords;
 		this.elastic = new ElasticSearchFacade(elasticConfig);
 		this.disableIndexRefresh = elasticConfig.isDisableIndexRefresh();
 	}
 
-	public ElasticSearchPerformanceTrial( final int numberOfRecords, final ElasticSearchConfiguration elasticConfig ) {
+	public PerformanceTrial( final int numberOfRecords, final ElasticSearchConfiguration elasticConfig ) {
 		this(numberOfRecords, 1, elasticConfig);
 	}
 

@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.output.elastic.app.trial;
 
-import com.systematic.trading.backtest.output.elastic.app.ElasticSearchParallellPerformanceTrial;
+import com.systematic.trading.backtest.output.elastic.app.ParallellSingleApiPerformanceTrial;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
 import com.systematic.trading.exception.ServiceException;
 
@@ -62,7 +62,7 @@ public class ElasticSearchParallelPerformanceTrialManyThreadsSingleApi {
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
-		        .display(new ElasticSearchParallellPerformanceTrial(
+		        .display(new ParallellSingleApiPerformanceTrial(
 		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args), NUMBER_OF_THREADS,
 		                new ElasticSearchConfigurationBuilder().build()).execute());
 	}

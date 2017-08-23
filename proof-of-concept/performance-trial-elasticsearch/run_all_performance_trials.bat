@@ -14,12 +14,13 @@ echo ----------------------------------------------
 
 call :removeExistingOutputFile
 
-call :runtTrial ElasticSerialSearchPerformanceTrialSingleApi
-call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiNoReplicas
-call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiOneShard
-call :runtTrial ElasticSearchParallelPerformanceTrialSingleApi
-call :runtTrial ElasticSearchParallelPerformanceTrialManyThreadsSingleApi
-call :runtTrial ElasticSerialSearchPerformanceTrialSingleApiIndexRefreshDisabled
+REM call :runtTrial ElasticSerialSearchPerformanceTrialSingleApi
+REM call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiNoReplicas
+REM call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiOneShard
+REM call :runtTrial ElasticSearchParallelPerformanceTrialSingleApi
+REM call :runtTrial ElasticSearchParallelPerformanceTrialManyThreadsSingleApi
+REM call :runtTrial ElasticSerialSearchPerformanceTrialSingleApiIndexRefreshDisabled
+call :runtTrial ElasticSerialSearchPerformanceTrialBulkApi
 
 echo ----------------------------------------------
 echo All results written to %outputFile%

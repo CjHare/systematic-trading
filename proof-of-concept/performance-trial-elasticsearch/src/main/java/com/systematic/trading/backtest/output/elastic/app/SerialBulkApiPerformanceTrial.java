@@ -29,9 +29,8 @@
  */
 package com.systematic.trading.backtest.output.elastic.app;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -39,50 +38,43 @@ import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticS
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 
 /**
- * Performance trial with each calls to elastic search being concurrently.
+ * Performance trial with each call to elastic search being performed one after the other (serially).
  * 
  * @author CJ Hare
  */
-public class ElasticSearchParallellPerformanceTrial extends ElasticSearchPerformanceTrial {
+public class SerialBulkApiPerformanceTrial extends PerformanceTrial {
 
-	private final int numberOfThreads;
+	/** Number of records to send in a single bulk call. */
+	private final int bucketSize;
 
-	public ElasticSearchParallellPerformanceTrial( final int numberOfRecords, final int numberOfThreads,
-	        final ElasticSearchConfiguration elasticConfig ) {
+	public SerialBulkApiPerformanceTrial( int numberOfRecords, ElasticSearchConfiguration elasticConfig ) {
 		super(numberOfRecords, elasticConfig);
-		this.numberOfThreads = numberOfThreads;
+
+		//TODO confiig # of records to send, i.e. count up 1Kb, 10Kb, 20Kb
+		this.bucketSize = 100;
 	}
 
 	protected StopWatch sendData() {
 		final int numberOfRecords = getNumberOfRecords();
 		final ElasticSearchFacade elastic = getFacade();
-		final ExecutorService pool = Executors.newFixedThreadPool(numberOfThreads);
-		final CountDownLatch countDown = new CountDownLatch(numberOfRecords);
 
 		final StopWatch timer = new StopWatch();
 		timer.start();
 
-		for (int i = 0; i < numberOfRecords; i++) {
-			final ElasticSearchPerformanceTrialResource record = createRecord(i);
-			pool.submit(() -> {
-				elastic.postType(record);
-				countDown.countDown();
-			});
+		for (int i = 0; i < numberOfRecords; i += bucketSize) {
+
+			final List<ElasticSearchPerformanceTrialResource> bucket = new ArrayList<>(bucketSize);
+			for (int j = 0; j < bucketSize; j++) {
+				bucket.add(createRecord(i + j));
+			}
+
+			elastic.postTypes(bucket);
+
 		}
 
-		wait(countDown);
-		pool.shutdown();
 		timer.stop();
 
 		return timer;
 	}
 
-	private void wait( final CountDownLatch countDown ) {
-		try {
-			countDown.await();
-		} catch (final InterruptedException e) {
-			// Preserve interrupt status
-			Thread.currentThread().interrupt();
-		}
-	}
 }

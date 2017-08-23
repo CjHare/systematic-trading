@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields;
+import com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -52,17 +52,17 @@ public class ElasticSearchPerformanceTrialResource {
 		this.date = date;
 	}
 
-	@JsonProperty(ElasticSearchPerformanceTrialFields.TEXT_FIELD_NAME)
+	@JsonProperty(PerformanceTrialFields.TEXT_FIELD_NAME)
 	public String getText() {
 		return text;
 	}
 
-	@JsonProperty(ElasticSearchPerformanceTrialFields.FLOAT_FIELD_NAME)
+	@JsonProperty(PerformanceTrialFields.FLOAT_FIELD_NAME)
 	public float getValue() {
 		return value;
 	}
 
-	@JsonProperty(ElasticSearchPerformanceTrialFields.DATE_FIELD_NAME)
+	@JsonProperty(PerformanceTrialFields.DATE_FIELD_NAME)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getDate() {
 		return date;

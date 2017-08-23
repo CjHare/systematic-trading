@@ -29,35 +29,31 @@
  */
 package com.systematic.trading.backtest.output.elastic.app;
 
-import org.apache.commons.lang3.time.StopWatch;
-
-import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
-
 /**
- * Performance trial with each call to elastic search being performed one after the other (serially).
+ * Constants used during the Elastic Search performance trial
  * 
  * @author CJ Hare
  */
-public class ElasticSearchSerialPerformanceTrial extends ElasticSearchPerformanceTrial {
+public interface PerformanceTrialFields {
 
-	public ElasticSearchSerialPerformanceTrial( int numberOfRecords, ElasticSearchConfiguration elasticConfig ) {
-		super(numberOfRecords, elasticConfig);
-	}
+	/** Elastic key for the index type */
+	String TYPE = "type";
 
-	protected StopWatch sendData() {
-		final int numberOfRecords = getNumberOfRecords();
-		final ElasticSearchFacade elastic = getFacade();
+	/** Name of the index to during for the trial.*/
+	String INDEX_NAME = "test_index";
 
-		final StopWatch timer = new StopWatch();
-		timer.start();
+	/** Sub-directory for the settings of an index.*/
+	String SETTINGS = "_settings";
 
-		for (int i = 0; i < numberOfRecords; i++) {
-			elastic.postType(createRecord(i));
-		}
+	/** The type mapping to manipulate the documents under.*/
+	String MAPPING_NAME = "test_mapping";
 
-		timer.stop();
+	/** Key value for the date type field. */
+	String DATE_FIELD_NAME = "date_field";
 
-		return timer;
-	}
+	/** Key value for the float type field. */
+	String FLOAT_FIELD_NAME = "float_field";
 
+	/** Key value for the test type field. */
+	String TEXT_FIELD_NAME = "text_field";
 }

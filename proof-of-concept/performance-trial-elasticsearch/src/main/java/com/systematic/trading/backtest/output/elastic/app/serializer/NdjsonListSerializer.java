@@ -27,44 +27,44 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app.trial;
+package com.systematic.trading.backtest.output.elastic.app.serializer;
 
-import com.systematic.trading.backtest.output.elastic.app.ParallellSingleApiPerformanceTrial;
-import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
-import com.systematic.trading.exception.ServiceException;
+import java.io.IOException;
+import java.util.List;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 /**
- * Stand alone application for clocking the time in performing posting of records to Elastic Search.
- * 
- * Investigating:
- *   Effect of delegating to unbounded queue (single threaded ExecutorService)
- * 
- *  Trial Configuration:
- *    1,000 records
- *    Concurrent execution
- *    Single record API
- * 
- *  Elastic Index Configuration (default):
- *    5 Shards
- *    1 Replica
- *   
- * Optional input:
- *   args[0] == number of records
- *   args[0] == output file
+ * Serialiser for application/x-ndjson (JSON with \n for a element separator)
  * 
  * @author CJ Hare
  */
-public class ElasticSearchParallelPerformanceTrialSingleApi {
+public class NdjsonListSerializer extends StdSerializer<List<?>> {
 
-	private static final String TRIAL_ID = ElasticSearchParallelPerformanceTrialSingleApi.class.getSimpleName();
+	//TODO this is a customer serializer for Elasticsearch Builk API - rename!
 
-	/** Number of threads determines the size of the executor thread pool. */
-	private static final int NUMBER_OF_THREADS = 1;
+	/** Classes serial ID. */
+	private static final long serialVersionUID = 1L;
 
-	public static void main( final String... args ) throws ServiceException {
-		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
-		        .display(new ParallellSingleApiPerformanceTrial(
-		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args), NUMBER_OF_THREADS,
-		                new ElasticSearchConfigurationBuilder().build()).execute());
+	public NdjsonListSerializer() {
+		super(List.class, false);
+	}
+
+	@Override
+	/**
+	 * NOTE: the final line of data must end with a newline character \n.
+	 */
+	public void serialize( final List<?> values, final JsonGenerator gen, final SerializerProvider provider )
+	        throws IOException {
+
+		for (Object o : values) {
+			gen.writeRawValue("{ \"index\": {}}");
+			gen.writeRawValue("\n");
+
+			gen.writeObject(o);
+			gen.writeRawValue("\n");
+		}
 	}
 }

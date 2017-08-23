@@ -29,16 +29,17 @@
  */
 package com.systematic.trading.backtest.output.elastic.app;
 
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.DATE_FIELD_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.FLOAT_FIELD_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.INDEX_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.MAPPING_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.SETTINGS;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.TEXT_FIELD_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.TYPE;
+import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.DATE_FIELD_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.FLOAT_FIELD_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.INDEX_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.MAPPING_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.SETTINGS;
+import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.TEXT_FIELD_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.TYPE;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -51,11 +52,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
 import com.systematic.trading.backtest.output.elastic.app.model.index.ElasticIndexSettingsResource;
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
+import com.systematic.trading.backtest.output.elastic.app.serializer.NdjsonListSerializer;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
@@ -78,20 +81,37 @@ public class ElasticSearchFacade {
 	/** Base of the elastic search Restful end point. */
 	private final WebTarget root;
 
+	/** Base of the elastic search Restful end point, serializes with Ndjson. */
+	private final WebTarget bulkApiRoot;
+
 	private final int numberOfShards;
 	private final int numberOfReplicas;
+
+	private final static MediaType APPLICATION_NDJSON_TYPE = new MediaType("application", "x-ndjson");
 
 	public ElasticSearchFacade( final ElasticSearchConfiguration elasticConfig ) {
 
 		// Registering the provider for POJO -> JSON
-		final ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-		final JacksonJsonProvider provider = new JacksonJsonProvider();
-		provider.setMapper(mapper);
-		final ClientConfig config = new ClientConfig(provider);
+		final ObjectMapper jsonMapper = new ObjectMapper();
+		jsonMapper.registerModule(new JavaTimeModule());
+		final JacksonJsonProvider jsonProvider = new JacksonJsonProvider();
+		jsonProvider.setMapper(jsonMapper);
+		final ClientConfig jsonConfig = new ClientConfig(jsonProvider);
 
-		// End point target root
-		this.root = ClientBuilder.newClient(config).target(elasticConfig.getEndpoint());
+		this.root = ClientBuilder.newClient(jsonConfig).target(elasticConfig.getEndpoint());
+
+		// Registering the provider for POJO -> NDJSON
+		final ObjectMapper ndjsonMapper = new ObjectMapper();
+		final SimpleModule ndjsonModule = new SimpleModule("Ndjson List Serializer");
+		ndjsonModule.addSerializer(new NdjsonListSerializer());
+		ndjsonMapper.registerModule(ndjsonModule);
+		ndjsonMapper.registerModule(new JavaTimeModule());
+		final JacksonJsonProvider ndjsonProvider = new JacksonJsonProvider();
+		ndjsonProvider.setMapper(ndjsonMapper);
+
+		final ClientConfig ndjsonConfig = new ClientConfig(ndjsonProvider);
+
+		this.bulkApiRoot = ClientBuilder.newClient(ndjsonConfig).target(elasticConfig.getEndpoint());
 
 		this.numberOfShards = elasticConfig.getNumberOfShards();
 		this.numberOfReplicas = elasticConfig.getNumberOfReplicas();
@@ -138,7 +158,7 @@ public class ElasticSearchFacade {
 		final WebTarget url = root.path(getTypePath());
 
 		// Using the elastic search ID auto-generation, so we're using a post not a put
-		final Response response = url.request().post(requestBody);
+		final Response response = url.request(MediaType.APPLICATION_JSON).post(requestBody);
 
 		if (response.getStatus() != 201) {
 			throw new ElasticException(
@@ -152,6 +172,30 @@ public class ElasticSearchFacade {
 			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
 			        eventResponse, url, requestBody));
 		}
+	}
+
+	public void postTypes( final List<ElasticSearchPerformanceTrialResource> request ) {
+		// https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html
+		// https://www.elastic.co/guide/en/elasticsearch/guide/current/bulk.html
+		final Entity<?> requestBody = Entity.json(request);
+		final WebTarget url = bulkApiRoot.path(getTypePath()).path("_bulk");
+
+		// Bulk API uses only HTTP POST for all operations
+		final Response response = url.request(APPLICATION_NDJSON_TYPE).post(requestBody);
+
+		if (response.getStatus() != 200) {
+			throw new ElasticException(
+			        String.format("Expecting a HTTP 200 instead receieved HTTP %s, URL: %s, body: %s",
+			                response.getStatus(), url, requestBody));
+		}
+
+		final ElasticPostEventResponse eventResponse = response.readEntity(ElasticPostEventResponse.class);
+
+		//TODO Bulk API response is customer - needs a new object
+//		if (isInvalidResponse(eventResponse)) {
+//			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
+//			        eventResponse, url, requestBody));
+//		}
 	}
 
 	public void disableIndexRefresh() {

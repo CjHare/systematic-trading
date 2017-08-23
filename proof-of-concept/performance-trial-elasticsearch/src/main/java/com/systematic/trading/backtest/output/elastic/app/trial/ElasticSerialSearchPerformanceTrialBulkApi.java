@@ -27,33 +27,41 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app;
+package com.systematic.trading.backtest.output.elastic.app.trial;
+
+import com.systematic.trading.backtest.output.elastic.app.SerialBulkApiPerformanceTrial;
+import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
+import com.systematic.trading.exception.ServiceException;
 
 /**
- * Constants used during the Elastic Search performance trial
+ * Stand alone application for clocking the time in performing posting of records to Elastic Search.
+ * 
+ * Investigating:
+ *   Baseline / reference point.
+ * 
+ *  Trial Configuration:
+ *    1,000 records
+ *    Serial execution
+ *    Single record API
+ * 
+ *  Elastic Index Configuration (default):
+ *    5 Shards
+ *    1 Replica
+ *   
+ * Optional input:
+ *   args[0] == number of records
+ *   args[0] == output file
  * 
  * @author CJ Hare
  */
-public interface ElasticSearchPerformanceTrialFields {
+public class ElasticSerialSearchPerformanceTrialBulkApi {
 
-	/** Elastic key for the index type */
-	String TYPE = "type";
+	private static final String TRIAL_ID = ElasticSerialSearchPerformanceTrialBulkApi.class.getSimpleName();
 
-	/** Name of the index to during for the trial.*/
-	String INDEX_NAME = "test_index";
-
-	/** Sub-directory for the settings of an index.*/
-	String SETTINGS = "_settings";
-
-	/** The type mapping to manipulate the documents under.*/
-	String MAPPING_NAME = "test_mapping";
-
-	/** Key value for the date type field. */
-	String DATE_FIELD_NAME = "date_field";
-
-	/** Key value for the float type field. */
-	String FLOAT_FIELD_NAME = "float_field";
-
-	/** Key value for the test type field. */
-	String TEXT_FIELD_NAME = "text_field";
+	public static void main( final String... args ) throws ServiceException {
+		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
+		        .display(new SerialBulkApiPerformanceTrial(
+		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
+		                new ElasticSearchConfigurationBuilder().build()).execute());
+	}
 }
