@@ -58,13 +58,13 @@ public class ElasticSearchParallelPerformanceTrialSingleApi {
 
 	private static final String TRIAL_ID = ElasticSearchParallelPerformanceTrialSingleApi.class.getSimpleName();
 
-	/** Number of threads determines the size of the executor thread pool, concurrent regardless of size. */
-	private static final int NUMBER_OF_THREAD = 1;
+	/** Number of threads determines the size of the executor thread pool. */
+	private static final int NUMBER_OF_THREADS = 1;
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
 		        .display(new ElasticSearchParallellPerformanceTrial(
-		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args), NUMBER_OF_THREAD,
+		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args), NUMBER_OF_THREADS,
 		                new ElasticSearchConfigurationBuilder().build()).execute());
 	}
 }
