@@ -56,7 +56,7 @@ import com.systematic.trading.exception.ServiceException;
  */
 public class ElasticSerialSearchPerformanceTrialSingleApi {
 
-	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialSerialSingleApi";
+	private static final String TRIAL_ID = ElasticSerialSearchPerformanceTrialSingleApi.class.getSimpleName();
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)

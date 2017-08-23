@@ -56,13 +56,14 @@ import com.systematic.trading.exception.ServiceException;
  */
 public class ElasticSearchParallelPerformanceTrialManyThreadsSingleApi {
 
-	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialMultiThreadedSingleApi";
-	private static final int NUMBER_OF_THREAD = 25;
+	private static final String TRIAL_ID = ElasticSearchParallelPerformanceTrialManyThreadsSingleApi.class
+	        .getSimpleName();
+	private static final int NUMBER_OF_THREADS = 25;
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
 		        .display(new ElasticSearchParallellPerformanceTrial(
-		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args), NUMBER_OF_THREAD,
+		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args), NUMBER_OF_THREADS,
 		                new ElasticSearchConfigurationBuilder().build()).execute());
 	}
 }

@@ -56,7 +56,7 @@ import com.systematic.trading.exception.ServiceException;
  */
 public class ElasticSearchParallelPerformanceTrialSingleApi {
 
-	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialMultiThreadedSingleApi";
+	private static final String TRIAL_ID = ElasticSearchParallelPerformanceTrialSingleApi.class.getSimpleName();
 
 	/** Number of threads determines the size of the executor thread pool, concurrent regardless of size. */
 	private static final int NUMBER_OF_THREAD = 1;
