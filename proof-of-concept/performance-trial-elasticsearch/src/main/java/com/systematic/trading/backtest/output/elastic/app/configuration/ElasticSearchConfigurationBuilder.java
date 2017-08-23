@@ -51,6 +51,7 @@ public class ElasticSearchConfigurationBuilder {
 	private String endpoint;
 	private Integer numberOfShards;
 	private Integer numberOfReplicas;
+	private boolean disableIndexRefresh;
 
 	public ElasticSearchConfigurationBuilder withEndpoint( final String endpoint ) {
 		this.endpoint = endpoint;
@@ -67,8 +68,14 @@ public class ElasticSearchConfigurationBuilder {
 		return this;
 	}
 
+	public ElasticSearchConfigurationBuilder withDisableIndexRefresh( final boolean disableIndexRefresh ) {
+		this.disableIndexRefresh = disableIndexRefresh;
+		return this;
+	}
+
 	public ElasticSearchConfiguration build() {
-		return new ElasticSearchConfiguration(getEndpoint(), getNumberOfShards(), numberOfReplicas());
+		return new ElasticSearchConfiguration(getEndpoint(), getNumberOfShards(), numberOfReplicas(),
+		        disableIndexRefresh);
 	}
 
 	private String getEndpoint() {

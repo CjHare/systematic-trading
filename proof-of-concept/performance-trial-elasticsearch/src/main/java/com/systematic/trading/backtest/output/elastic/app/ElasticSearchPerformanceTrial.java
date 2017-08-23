@@ -53,11 +53,13 @@ public abstract class ElasticSearchPerformanceTrial {
 
 	private final ElasticSearchFacade elastic;
 	private final int numberOfRecords;
+	private final boolean disableIndexRefresh;
 
 	public ElasticSearchPerformanceTrial( final int numberOfRecords, final int numberOfThreads,
 	        final ElasticSearchConfiguration elasticConfig ) {
 		this.numberOfRecords = numberOfRecords;
 		this.elastic = new ElasticSearchFacade(elasticConfig);
+		this.disableIndexRefresh = elasticConfig.isDisableIndexRefresh();
 	}
 
 	public ElasticSearchPerformanceTrial( final int numberOfRecords, final ElasticSearchConfiguration elasticConfig ) {
@@ -67,7 +69,9 @@ public abstract class ElasticSearchPerformanceTrial {
 	public PerformanceTrialSummary execute() {
 		clear();
 		setUp();
-		return summarise(sendData());
+		final PerformanceTrialSummary summary = summarise(sendData());
+		tearDown();
+		return summary;
 	}
 
 	protected abstract StopWatch sendData();
@@ -94,6 +98,16 @@ public abstract class ElasticSearchPerformanceTrial {
 	private void setUp() {
 		elastic.putIndex();
 		elastic.putMapping();
+
+		if (disableIndexRefresh) {
+			elastic.disableIndexRefresh();
+		}
+	}
+
+	private void tearDown() {
+		if (disableIndexRefresh) {
+			elastic.enableIndexRefresh();
+		}
 	}
 
 	private PerformanceTrialSummary summarise( final StopWatch timer ) {

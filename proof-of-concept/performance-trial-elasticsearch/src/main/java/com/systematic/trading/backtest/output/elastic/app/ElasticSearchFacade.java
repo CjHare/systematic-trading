@@ -33,6 +33,7 @@ import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPe
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.FLOAT_FIELD_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.INDEX_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.MAPPING_NAME;
+import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.SETTINGS;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.TEXT_FIELD_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrialFields.TYPE;
 
@@ -53,6 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
+import com.systematic.trading.backtest.output.elastic.app.model.index.ElasticIndexSettingsResource;
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
@@ -70,10 +72,14 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEve
  */
 public class ElasticSearchFacade {
 
+	private static final String INDEX_SETTING_DISABLE_REFRESH = "-1";
+	private static final String INDEX_SETTING_DEFAULT_REFRESH = "1s";
+
 	/** Base of the elastic search Restful end point. */
 	private final WebTarget root;
 
-	private final ElasticSearchConfiguration configuration;
+	private final int numberOfShards;
+	private final int numberOfReplicas;
 
 	public ElasticSearchFacade( final ElasticSearchConfiguration elasticConfig ) {
 
@@ -87,7 +93,8 @@ public class ElasticSearchFacade {
 		// End point target root
 		this.root = ClientBuilder.newClient(config).target(elasticConfig.getEndpoint());
 
-		this.configuration = elasticConfig;
+		this.numberOfShards = elasticConfig.getNumberOfShards();
+		this.numberOfReplicas = elasticConfig.getNumberOfReplicas();
 	}
 
 	/**
@@ -147,8 +154,35 @@ public class ElasticSearchFacade {
 		}
 	}
 
+	public void disableIndexRefresh() {
+		final Response response = root.path(INDEX_NAME).path(SETTINGS).request().put(getDisableRefreshRequestBody());
+
+		if (response.getStatus() != 200) {
+			throw new ElasticException(
+			        String.format("Failed to put the disable index settings to index: %s, status: %s", INDEX_NAME,
+			                response.getStatus()));
+		}
+	}
+
+	public void enableIndexRefresh() {
+		final Response response = root.path(INDEX_NAME).path(SETTINGS).request().put(getEnableRefreshRequestBody());
+
+		if (response.getStatus() != 200) {
+			throw new ElasticException(String.format("Failed to put the enable index settings to index: %s, status: %s",
+			        INDEX_NAME, response.getStatus()));
+		}
+	}
+
 	private Entity<?> getIndexRequestBody() {
-		return Entity.json(new ElasticIndex(configuration.getNumberOfShards(), configuration.getNumberOfReplicas()));
+		return Entity.json(new ElasticIndex(numberOfShards, numberOfReplicas));
+	}
+
+	private Entity<?> getDisableRefreshRequestBody() {
+		return Entity.json(new ElasticIndexSettingsResource(INDEX_SETTING_DISABLE_REFRESH));
+	}
+
+	private Entity<?> getEnableRefreshRequestBody() {
+		return Entity.json(new ElasticIndexSettingsResource(INDEX_SETTING_DEFAULT_REFRESH));
 	}
 
 	private String getMappingPath() {

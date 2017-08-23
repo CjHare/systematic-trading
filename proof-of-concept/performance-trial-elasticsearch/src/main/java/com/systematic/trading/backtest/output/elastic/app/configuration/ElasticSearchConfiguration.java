@@ -39,11 +39,14 @@ public class ElasticSearchConfiguration {
 	private final String endpoint;
 	private final int numberOfShards;
 	private final int numberOfReplicas;
+	private final boolean disableIndexRefresh;
 
-	public ElasticSearchConfiguration( final String endpoint, final int numberOfShards, final int numberOfReplicas ) {
+	public ElasticSearchConfiguration( final String endpoint, final int numberOfShards, final int numberOfReplicas,
+	        final boolean disableIndexRefresh ) {
 		this.endpoint = endpoint;
 		this.numberOfShards = numberOfShards;
 		this.numberOfReplicas = numberOfReplicas;
+		this.disableIndexRefresh = disableIndexRefresh;
 	}
 
 	public String getEndpoint() {
@@ -56,5 +59,12 @@ public class ElasticSearchConfiguration {
 
 	public int getNumberOfReplicas() {
 		return numberOfReplicas;
+	}
+
+	/**
+	 * WWhether the index refresh should be disabled during the updating.
+	 */
+	public boolean isDisableIndexRefresh() {
+		return disableIndexRefresh;
 	}
 }
