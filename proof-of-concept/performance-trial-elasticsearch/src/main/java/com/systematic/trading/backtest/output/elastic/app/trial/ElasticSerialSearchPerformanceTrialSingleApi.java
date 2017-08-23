@@ -29,36 +29,39 @@
  */
 package com.systematic.trading.backtest.output.elastic.app.trial;
 
-import com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial;
+import com.systematic.trading.backtest.output.elastic.app.ElasticSearchSerialPerformanceTrial;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
 import com.systematic.trading.exception.ServiceException;
 
 /**
  * Stand alone application for clocking the time in performing posting of records to Elastic Search.
  * 
+ * Investigating:
+ *   Baseline / reference point.
+ * 
  *  Trial Configuration:
  *    1,000 records
  *    Serial execution
  *    Single record API
  * 
- * Elastic Index Configuration:
+ *  Elastic Index Configuration (default):
  *    5 Shards
- *    0 Replica
- * 
+ *    1 Replica
+ *   
  * Optional input:
  *   args[0] == number of records
  *   args[0] == output file
  * 
  * @author CJ Hare
  */
-public class ElasticSearchPerformanceTrialSerialSingleApiNoReplicas {
+public class ElasticSerialSearchPerformanceTrialSingleApi {
 
-	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialSerialSingleApiNoReplicas";
+	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialSerialSingleApi";
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
-		        .display(new ElasticSearchPerformanceTrial(
+		        .display(new ElasticSearchSerialPerformanceTrial(
 		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
-		                new ElasticSearchConfigurationBuilder().withReplicas(0).build()).execute());
+		                new ElasticSearchConfigurationBuilder().build()).execute());
 	}
 }

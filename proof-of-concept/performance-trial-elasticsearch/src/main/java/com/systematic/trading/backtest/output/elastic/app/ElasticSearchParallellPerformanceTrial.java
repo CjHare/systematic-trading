@@ -29,83 +29,60 @@
  */
 package com.systematic.trading.backtest.output.elastic.app;
 
-import java.time.Duration;
-import java.time.LocalDate;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.time.StopWatch;
 
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
-import com.systematic.trading.backtest.output.elastic.app.model.PerformanceTrialSummary;
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 
 /**
- * Behaviour for evaluating Elastic search performance. 
+ * Performance trial with each calls to elastic search being concurrently.
  * 
  * @author CJ Hare
  */
-public abstract class ElasticSearchPerformanceTrial {
+public class ElasticSearchParallellPerformanceTrial extends ElasticSearchPerformanceTrial {
 
-	/** The same text used for every record. */
-	private static final String TEXT = "Sample_text";
+	private final int numberOfThreads;
 
-	/** The same date used for every record. */
-	private static final LocalDate DATE = LocalDate.now();
-
-	private final ElasticSearchFacade elastic;
-	private final int numberOfRecords;
-
-	public ElasticSearchPerformanceTrial( final int numberOfRecords, final int numberOfThreads,
+	public ElasticSearchParallellPerformanceTrial( final int numberOfRecords, final int numberOfThreads,
 	        final ElasticSearchConfiguration elasticConfig ) {
-		this.numberOfRecords = numberOfRecords;
-		this.elastic = new ElasticSearchFacade(elasticConfig);
+		super(numberOfRecords, elasticConfig);
+		this.numberOfThreads = numberOfThreads;
 	}
 
-	public ElasticSearchPerformanceTrial( final int numberOfRecords, final ElasticSearchConfiguration elasticConfig ) {
-		this(numberOfRecords, 1, elasticConfig);
+	protected StopWatch sendData() {
+		final int numberOfRecords = getNumberOfRecords();
+		final ElasticSearchFacade elastic = getFacade();
+		final ExecutorService pool = Executors.newFixedThreadPool(numberOfThreads);
+		final CountDownLatch countDown = new CountDownLatch(numberOfRecords);
+
+		final StopWatch timer = new StopWatch();
+		timer.start();
+
+		for (int i = 0; i < numberOfRecords; i++) {
+			final ElasticSearchPerformanceTrialResource record = createRecord(i);
+			pool.submit(() -> {
+				elastic.postType(record);
+				countDown.countDown();
+			});
+		}
+
+		wait(countDown);
+		pool.shutdown();
+		timer.stop();
+
+		return timer;
 	}
 
-	public PerformanceTrialSummary execute() {
-		clear();
-		setUp();
-		return summarise(sendData());
-	}
-
-	protected abstract StopWatch sendData();
-
-	/**
-	 * @param value the only difference between each record.
-	 */
-	protected ElasticSearchPerformanceTrialResource createRecord( final int value ) {
-		return new ElasticSearchPerformanceTrialResource(TEXT, value, DATE);
-	}
-
-	protected ElasticSearchFacade getFacade() {
-		return elastic;
-	}
-
-	protected int getNumberOfRecords() {
-		return numberOfRecords;
-	}
-
-	private void clear() {
-		elastic.delete();
-	}
-
-	private void setUp() {
-		elastic.putIndex();
-		elastic.putMapping();
-	}
-
-	private PerformanceTrialSummary summarise( final StopWatch timer ) {
-		return new PerformanceTrialSummary(numberOfRecords, Duration.ofSeconds(getSeconds(timer)),
-		        getRecordsInsertedPerSecond(timer));
-	}
-
-	private long getSeconds( final StopWatch timer ) {
-		return timer.getTime() / 1000l;
-	}
-
-	private float getRecordsInsertedPerSecond( final StopWatch timer ) {
-		return numberOfRecords / (float) getSeconds(timer);
+	private void wait( final CountDownLatch countDown ) {
+		try {
+			countDown.await();
+		} catch (final InterruptedException e) {
+			// Preserve interrupt status
+			Thread.currentThread().interrupt();
+		}
 	}
 }

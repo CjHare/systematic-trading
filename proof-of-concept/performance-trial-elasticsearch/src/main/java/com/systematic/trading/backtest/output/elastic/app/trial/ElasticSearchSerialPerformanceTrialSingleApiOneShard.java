@@ -29,20 +29,23 @@
  */
 package com.systematic.trading.backtest.output.elastic.app.trial;
 
-import com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial;
+import com.systematic.trading.backtest.output.elastic.app.ElasticSearchSerialPerformanceTrial;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
 import com.systematic.trading.exception.ServiceException;
 
 /**
  * Stand alone application for clocking the time in performing posting of records to Elastic Search.
  * 
+* Investigating:
+ *   Effect of Shards on insert performance.
+ * 
  *  Trial Configuration:
  *    1,000 records
- *    Concurrent execution
+ *    Serial execution
  *    Single record API
  * 
  *  Elastic Index Configuration (default):
- *    5 Shards
+ *    1 Shards
  *    1 Replica
  *   
  * Optional input:
@@ -51,15 +54,14 @@ import com.systematic.trading.exception.ServiceException;
  * 
  * @author CJ Hare
  */
-public class ElasticSearchPerformanceTrialMultiThreadedSingleApi {
+public class ElasticSearchSerialPerformanceTrialSingleApiOneShard {
 
-	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialMultiThreadedSingleApi";
-	private static final int NUMBER_OF_THREAD = 25;
+	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialSerialSingleApiOneShard";
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
-		        .display(new ElasticSearchPerformanceTrial(
-		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args), NUMBER_OF_THREAD,
-		                new ElasticSearchConfigurationBuilder().build()).execute());
+		        .display(new ElasticSearchSerialPerformanceTrial(
+		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
+		                new ElasticSearchConfigurationBuilder().withShards(1).build()).execute());
 	}
 }

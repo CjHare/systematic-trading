@@ -27,38 +27,37 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app.trial;
+package com.systematic.trading.backtest.output.elastic.app;
 
-import com.systematic.trading.backtest.output.elastic.app.ElasticSearchPerformanceTrial;
-import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
-import com.systematic.trading.exception.ServiceException;
+import org.apache.commons.lang3.time.StopWatch;
+
+import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
 
 /**
- * Stand alone application for clocking the time in performing posting of records to Elastic Search.
- * 
- *  Trial Configuration:
- *    1,000 records
- *    Serial execution
- *    Single record API
- * 
- *  Elastic Index Configuration (default):
- *    1 Shards
- *    1 Replica
- *   
- * Optional input:
- *   args[0] == number of records
- *   args[0] == output file
+ * Performance trial with each call to elastic search being performed one after the other (serially).
  * 
  * @author CJ Hare
  */
-public class ElasticSearchPerformanceTrialSerialSingleApiOneShard {
+public class ElasticSearchSerialPerformanceTrial extends ElasticSearchPerformanceTrial {
 
-	private static final String TRIAL_ID = "ElasticSearchPerformanceTrialSerialSingleApiOneShard";
-
-	public static void main( final String... args ) throws ServiceException {
-		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
-		        .display(new ElasticSearchPerformanceTrial(
-		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
-		                new ElasticSearchConfigurationBuilder().withShards(1).build()).execute());
+	public ElasticSearchSerialPerformanceTrial( int numberOfRecords, ElasticSearchConfiguration elasticConfig ) {
+		super(numberOfRecords, elasticConfig);
 	}
+
+	protected StopWatch sendData() {
+		final int numberOfRecords = getNumberOfRecords();
+		final ElasticSearchFacade elastic = getFacade();
+
+		final StopWatch timer = new StopWatch();
+		timer.start();
+
+		for (int i = 0; i < numberOfRecords; i++) {
+			elastic.postType(createRecord(i));
+		}
+
+		timer.stop();
+
+		return timer;
+	}
+
 }
