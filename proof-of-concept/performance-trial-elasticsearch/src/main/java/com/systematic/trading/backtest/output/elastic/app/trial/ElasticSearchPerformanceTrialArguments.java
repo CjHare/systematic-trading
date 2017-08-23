@@ -48,8 +48,8 @@ public class ElasticSearchPerformanceTrialArguments {
 
 	public static PerformanceTrialOutput getOutput( final String trialId, final String... args ) {
 		return hasOutputFileArgument(args)
-		        ? new PerformanceTrialOverwriteFileOutput(geOutputFile(trialId, args), trialId)
-		        : new PerformanceTrialFileAppenderOutput(geOutputFile(trialId, args), trialId);
+		        ? new PerformanceTrialFileAppenderOutput(geOutputFile(trialId, args), trialId)
+		        : new PerformanceTrialOverwriteFileOutput(geOutputFile(trialId, args), trialId);
 	}
 
 	public static int getNumberOfRecords( final String... args ) {
