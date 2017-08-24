@@ -37,11 +37,14 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 /**
- * Serialiser for application/x-ndjson (JSON with \n for a element separator)
+ * Serializer for application/x-ndjson (JSON with \n for a element separator)
  * 
  * @author CJ Hare
  */
 public class NdjsonListSerializer extends StdSerializer<List<?>> {
+
+	/** NDJSON is JSON (non-pretty printed) with a new line delimiter after each line. */
+	private static final String NEW_LINE_DELIMITER = "\n";
 
 	//TODO this is a customer serializer for Elasticsearch Builk API - rename!
 
@@ -61,10 +64,10 @@ public class NdjsonListSerializer extends StdSerializer<List<?>> {
 
 		for (Object o : values) {
 			gen.writeRawValue("{ \"index\": {}}");
-			gen.writeRawValue("\n");
+			gen.writeRawValue(NEW_LINE_DELIMITER);
 
 			gen.writeObject(o);
-			gen.writeRawValue("\n");
+			gen.writeRawValue(NEW_LINE_DELIMITER);
 		}
 	}
 }

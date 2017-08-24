@@ -49,16 +49,14 @@ public class SerialBulkApiPerformanceTrial extends PerformanceTrial {
 
 	public SerialBulkApiPerformanceTrial( int numberOfRecords, ElasticSearchConfiguration elasticConfig ) {
 		super(numberOfRecords, elasticConfig);
-
-		//TODO confiig # of records to send, i.e. count up 1Kb, 10Kb, 20Kb
-		this.bucketSize = 100;
+		this.bucketSize = elasticConfig.getBulkApiBucketSize();
 	}
 
 	protected StopWatch sendData() {
 		final int numberOfRecords = getNumberOfRecords();
 		final ElasticSearchFacade elastic = getFacade();
-
 		final StopWatch timer = new StopWatch();
+
 		timer.start();
 
 		for (int i = 0; i < numberOfRecords; i += bucketSize) {
@@ -69,12 +67,10 @@ public class SerialBulkApiPerformanceTrial extends PerformanceTrial {
 			}
 
 			elastic.postTypes(bucket);
-
 		}
 
 		timer.stop();
 
 		return timer;
 	}
-
 }

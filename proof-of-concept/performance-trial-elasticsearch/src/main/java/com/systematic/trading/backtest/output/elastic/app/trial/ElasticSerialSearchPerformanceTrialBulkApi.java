@@ -31,6 +31,7 @@ package com.systematic.trading.backtest.output.elastic.app.trial;
 
 import com.systematic.trading.backtest.output.elastic.app.SerialBulkApiPerformanceTrial;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
+import com.systematic.trading.backtest.output.elastic.app.trial.input.ElasticSearchPerformanceTrialArguments;
 import com.systematic.trading.exception.ServiceException;
 
 /**

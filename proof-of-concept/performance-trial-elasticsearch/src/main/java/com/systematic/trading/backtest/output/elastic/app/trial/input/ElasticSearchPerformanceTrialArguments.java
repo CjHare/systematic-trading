@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app.trial;
+package com.systematic.trading.backtest.output.elastic.app.trial.input;
 
 import com.systematic.trading.backtest.output.elastic.app.output.PerformanceTrialFileAppenderOutput;
 import com.systematic.trading.backtest.output.elastic.app.output.PerformanceTrialOutput;
@@ -44,7 +44,7 @@ public class ElasticSearchPerformanceTrialArguments {
 	private static final int ARGUMENT_INDEX_OUTPUT_FILE = 1;
 
 	/** Number of records to post to elastic search. */
-	private static final int DEFAULT_NUMBER_OF_RECORDS = 1000;
+	private static final int DEFAULT_NUMBER_OF_RECORDS = 4000;
 
 	public static PerformanceTrialOutput getOutput( final String trialId, final String... args ) {
 		return hasOutputFileArgument(args)

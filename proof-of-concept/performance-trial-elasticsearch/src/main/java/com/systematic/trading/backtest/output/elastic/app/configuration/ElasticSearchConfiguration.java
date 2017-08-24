@@ -41,12 +41,16 @@ public class ElasticSearchConfiguration {
 	private final int numberOfReplicas;
 	private final boolean disableIndexRefresh;
 
+	/** Number of records to send to the Bulk API in a single call. */
+	private final int bulkApiBucketSize;
+
 	public ElasticSearchConfiguration( final String endpoint, final int numberOfShards, final int numberOfReplicas,
-	        final boolean disableIndexRefresh ) {
+	        final boolean disableIndexRefresh, final int bulkApiBucketSize ) {
 		this.endpoint = endpoint;
 		this.numberOfShards = numberOfShards;
 		this.numberOfReplicas = numberOfReplicas;
 		this.disableIndexRefresh = disableIndexRefresh;
+		this.bulkApiBucketSize = bulkApiBucketSize;
 	}
 
 	public String getEndpoint() {
@@ -66,5 +70,9 @@ public class ElasticSearchConfiguration {
 	 */
 	public boolean isDisableIndexRefresh() {
 		return disableIndexRefresh;
+	}
+
+	public int getBulkApiBucketSize() {
+		return bulkApiBucketSize;
 	}
 }

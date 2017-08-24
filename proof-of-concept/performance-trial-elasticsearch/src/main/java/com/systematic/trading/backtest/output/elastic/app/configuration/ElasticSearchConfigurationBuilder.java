@@ -39,6 +39,9 @@ public class ElasticSearchConfigurationBuilder {
 	/** Location of the elastic search end point. */
 	private static final String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
 
+	/** HTTP pay load size ~10KiB (10240 bytes). */
+	private static final int DEFAULT_BULK_API_BUCKET_SIZE =600;
+
 	/** 
 	 * The number of primary shards that an index should have, which defaults to 5. 
 	 * This setting cannot be changed after index creation.
@@ -51,6 +54,7 @@ public class ElasticSearchConfigurationBuilder {
 	private String endpoint;
 	private Integer numberOfShards;
 	private Integer numberOfReplicas;
+	private Integer bulkApiBucketSize;
 	private boolean disableIndexRefresh;
 
 	public ElasticSearchConfigurationBuilder withEndpoint( final String endpoint ) {
@@ -74,8 +78,8 @@ public class ElasticSearchConfigurationBuilder {
 	}
 
 	public ElasticSearchConfiguration build() {
-		return new ElasticSearchConfiguration(getEndpoint(), getNumberOfShards(), numberOfReplicas(),
-		        disableIndexRefresh);
+		return new ElasticSearchConfiguration(getEndpoint(), getNumberOfShards(), getNumberOfReplicas(),
+		        disableIndexRefresh, getBulkApiBucketSize());
 	}
 
 	private String getEndpoint() {
@@ -86,7 +90,11 @@ public class ElasticSearchConfigurationBuilder {
 		return numberOfShards == null ? DEFAULT_NUMBER_OF_SHARDS : numberOfShards;
 	}
 
-	private int numberOfReplicas() {
+	private int getNumberOfReplicas() {
 		return numberOfReplicas == null ? DEFAULT_NUMBER_OF_REPLICAS : numberOfReplicas;
+	}
+
+	private int getBulkApiBucketSize() {
+		return bulkApiBucketSize == null ? DEFAULT_BULK_API_BUCKET_SIZE : bulkApiBucketSize;
 	}
 }
