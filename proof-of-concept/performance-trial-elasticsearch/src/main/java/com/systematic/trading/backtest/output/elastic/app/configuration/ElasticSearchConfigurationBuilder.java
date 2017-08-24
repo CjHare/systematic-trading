@@ -77,6 +77,11 @@ public class ElasticSearchConfigurationBuilder {
 		return this;
 	}
 
+	public ElasticSearchConfigurationBuilder withBulkApiBucketSize( final int bucketSize ) {
+		this.bulkApiBucketSize = bucketSize;
+		return this;
+	}
+
 	public ElasticSearchConfiguration build() {
 		return new ElasticSearchConfiguration(getEndpoint(), getNumberOfShards(), getNumberOfReplicas(),
 		        disableIndexRefresh, getBulkApiBucketSize());

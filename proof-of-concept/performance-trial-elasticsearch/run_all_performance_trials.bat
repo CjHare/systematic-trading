@@ -2,7 +2,7 @@
 SETLOCAL
 REM Build the project & start the elastic search server before running the performance trials
 
-SET numberOfRecords=1250
+SET numberOfRecords=12500
 SET outputFile=results\all_trials.csv
 SET library="target/performance-trial-elasticsearch-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 SET javaOptions=-Xms1G -Xmx1G
@@ -21,6 +21,8 @@ call :runtTrial ElasticSearchParallelPerformanceTrialSingleApi
 call :runtTrial ElasticSearchParallelPerformanceTrialManyThreadsSingleApi
 call :runtTrial ElasticSerialSearchPerformanceTrialSingleApiIndexRefreshDisabled
 call :runtTrial ElasticSerialSearchPerformanceTrialBulkApi
+call :runtTrial ElasticSerialSearchPerformanceTrialBulkApiTinyPayload
+call :runtTrial ElasticSerialSearchPerformanceTrialBulkApiLargePayload
 
 echo ----------------------------------------------
 echo All results written to %outputFile%
