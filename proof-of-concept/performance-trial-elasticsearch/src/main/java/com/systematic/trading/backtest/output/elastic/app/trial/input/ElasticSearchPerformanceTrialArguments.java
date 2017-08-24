@@ -44,7 +44,7 @@ public class ElasticSearchPerformanceTrialArguments {
 	private static final int ARGUMENT_INDEX_OUTPUT_FILE = 1;
 
 	/** Number of records to post to elastic search. */
-	private static final int DEFAULT_NUMBER_OF_RECORDS = 4000;
+	private static final int DEFAULT_NUMBER_OF_RECORDS = 2000;
 
 	public static PerformanceTrialOutput getOutput( final String trialId, final String... args ) {
 		return hasOutputFileArgument(args)

@@ -39,8 +39,8 @@ public class ElasticSearchConfigurationBuilder {
 	/** Location of the elastic search end point. */
 	private static final String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
 
-	/** HTTP pay load size ~10KiB (10240 bytes). */
-	private static final int DEFAULT_BULK_API_BUCKET_SIZE =600;
+	/** HTTP pay load size ~10KiB (10240 bytes - each created index entry is about 90 bytes). */
+	private static final int DEFAULT_BULK_API_BUCKET_SIZE = 1200;
 
 	/** 
 	 * The number of primary shards that an index should have, which defaults to 5. 
