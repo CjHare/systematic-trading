@@ -15,8 +15,8 @@ echo ----------------------------------------------
 call :removeExistingOutputFile
 
 call :runtTrial ElasticSerialSearchPerformanceTrialSingleApi
-call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiNoReplicas
 call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiOneShard
+call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiNoReplicas
 call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiIndexRefreshDisabled
 
 call :runtTrial ElasticSearchParallelPerformanceTrialSingleApi
@@ -25,6 +25,7 @@ call :runtTrial ElasticSearchParallelPerformanceTrialManyThreadsSingleApi
 call :runtTrial ElasticSearchSerialPerformanceTrialBulkApi
 call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiTinyPayload
 call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiLargePayload
+call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiRefreshDisabled
 
 call :runtTrial ElasticSearchParallelPerformanceTrialBulkApi
 call :runtTrial ElasticSearchParallelPerformanceTrialBulkApiManyThreads
