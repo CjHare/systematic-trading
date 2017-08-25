@@ -38,7 +38,7 @@ import com.systematic.trading.exception.ServiceException;
  * Stand alone application for clocking the time in performing posting of records to Elastic Search.
  * 
  * Investigating:
- *   Effect of off-loading the Elastic Search call to a queue for a single separate thread.
+ *   Effect of off-loading the Elastic Search call to a queue for a multiple threads.
  * 
  *  Trial Configuration:
  *    1,000 records
@@ -55,12 +55,12 @@ import com.systematic.trading.exception.ServiceException;
  * 
  * @author CJ Hare
  */
-public class ElasticSearchParallelPerformanceTrialBulkApi {
+public class ElasticSearchParallelPerformanceTrialBulkApiManyThreads {
 
-	private static final String TRIAL_ID = ElasticSearchParallelPerformanceTrialBulkApi.class.getSimpleName();
+	private static final String TRIAL_ID = ElasticSearchParallelPerformanceTrialBulkApiManyThreads.class.getSimpleName();
 
 	/** Number of threads determines the size of the executor thread pool. */
-	private static final int NUMBER_OF_THREADS = 1;
+	private static final int NUMBER_OF_THREADS = 25;
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)

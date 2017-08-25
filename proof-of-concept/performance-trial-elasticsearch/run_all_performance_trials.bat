@@ -27,6 +27,8 @@ call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiTinyPayload
 call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiLargePayload
 
 call :runtTrial ElasticSearchParallelPerformanceTrialBulkApi
+call :runtTrial ElasticSearchParallelPerformanceTrialBulkApiManyThreads
+
 
 echo ----------------------------------------------
 echo All results written to %outputFile%
