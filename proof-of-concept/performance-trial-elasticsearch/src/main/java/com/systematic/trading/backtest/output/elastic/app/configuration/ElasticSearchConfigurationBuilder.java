@@ -56,6 +56,8 @@ public class ElasticSearchConfigurationBuilder {
 	private Integer numberOfReplicas;
 	private Integer bulkApiBucketSize;
 	private boolean disableIndexRefresh;
+	private boolean bulkApiMetaContainsIndex;
+	private boolean bulkApiMetaContainsType;
 
 	public ElasticSearchConfigurationBuilder withEndpoint( final String endpoint ) {
 		this.endpoint = endpoint;
@@ -82,9 +84,19 @@ public class ElasticSearchConfigurationBuilder {
 		return this;
 	}
 
+	public ElasticSearchConfigurationBuilder withBulkApiMetaContainsIndex( final boolean bulkApiMetaContainsIndex ) {
+		this.bulkApiMetaContainsIndex = bulkApiMetaContainsIndex;
+		return this;
+	}
+
+	public ElasticSearchConfigurationBuilder withBulkApiMetaContainsType( final boolean bulkApiMetaContainsType ) {
+		this.bulkApiMetaContainsType = bulkApiMetaContainsType;
+		return this;
+	}
+
 	public ElasticSearchConfiguration build() {
 		return new ElasticSearchConfiguration(getEndpoint(), getNumberOfShards(), getNumberOfReplicas(),
-		        disableIndexRefresh, getBulkApiBucketSize());
+		        disableIndexRefresh, getBulkApiBucketSize(), bulkApiMetaContainsIndex, bulkApiMetaContainsType);
 	}
 
 	private String getEndpoint() {

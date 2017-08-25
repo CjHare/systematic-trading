@@ -44,13 +44,22 @@ public class ElasticSearchConfiguration {
 	/** Number of records to send to the Bulk API in a single call. */
 	private final int bulkApiBucketSize;
 
+	/** Optional, when present bulk API populates the meta with the index name, */
+	private final boolean bulkApiMetaContainsIndex;
+
+	/** Optional, when present bulk API populates the meta with the type name. */
+	private final boolean bulkApiMetaContainsType;
+
 	public ElasticSearchConfiguration( final String endpoint, final int numberOfShards, final int numberOfReplicas,
-	        final boolean disableIndexRefresh, final int bulkApiBucketSize ) {
+	        final boolean disableIndexRefresh, final int bulkApiBucketSize, final boolean bulkApiMetaContainsIndex,
+	        final boolean bulkApiMetaContainsType ) {
 		this.endpoint = endpoint;
 		this.numberOfShards = numberOfShards;
 		this.numberOfReplicas = numberOfReplicas;
 		this.disableIndexRefresh = disableIndexRefresh;
 		this.bulkApiBucketSize = bulkApiBucketSize;
+		this.bulkApiMetaContainsIndex = bulkApiMetaContainsIndex;
+		this.bulkApiMetaContainsType = bulkApiMetaContainsType;
 	}
 
 	public String getEndpoint() {
@@ -74,5 +83,13 @@ public class ElasticSearchConfiguration {
 
 	public int getBulkApiBucketSize() {
 		return bulkApiBucketSize;
+	}
+
+	public boolean isBulkApiMetaContainsIndex() {
+		return bulkApiMetaContainsIndex;
+	}
+
+	public boolean isBulkApiMetaContainsType() {
+		return bulkApiMetaContainsType;
 	}
 }

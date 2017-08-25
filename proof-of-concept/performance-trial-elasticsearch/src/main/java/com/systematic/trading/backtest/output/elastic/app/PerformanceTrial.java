@@ -58,12 +58,16 @@ public abstract class PerformanceTrial {
 	private final ElasticSearchFacade elastic;
 	private final int numberOfRecords;
 	private final boolean disableIndexRefresh;
+	private final boolean bulkApiMetaContainsIndex;
+	private final boolean bulkApiMetaContainsType;
 
 	public PerformanceTrial( final int numberOfRecords, final int numberOfThreads,
 	        final ElasticSearchConfiguration elasticConfig ) {
 		this.numberOfRecords = numberOfRecords;
 		this.elastic = new ElasticSearchFacade(elasticConfig);
 		this.disableIndexRefresh = elasticConfig.isDisableIndexRefresh();
+		this.bulkApiMetaContainsIndex = elasticConfig.isBulkApiMetaContainsIndex();
+		this.bulkApiMetaContainsType = elasticConfig.isBulkApiMetaContainsType();
 	}
 
 	public PerformanceTrial( final int numberOfRecords, final ElasticSearchConfiguration elasticConfig ) {
@@ -88,15 +92,9 @@ public abstract class PerformanceTrial {
 	}
 
 	protected ElasticSearchBulkApiMetaDataResource createBulkApiMeta() {
-		return new ElasticSearchBulkApiMetaDataResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, null, null, null);
-	}
-
-	protected ElasticSearchBulkApiMetaDataResource createBulkApiMeta( final String index ) {
-		return new ElasticSearchBulkApiMetaDataResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, index, null, null);
-	}
-
-	protected ElasticSearchBulkApiMetaDataResource createBulkApiMeta( final String index, final String type ) {
-		return new ElasticSearchBulkApiMetaDataResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, index, type, null);
+		return new ElasticSearchBulkApiMetaDataResource(ACTION_CREATE_GENERATE_DOCUMENT_ID,
+		        bulkApiMetaContainsIndex ? PerformanceTrialFields.INDEX_NAME : null,
+		        bulkApiMetaContainsType ? PerformanceTrialFields.MAPPING_NAME : null, null);
 	}
 
 	protected ElasticSearchFacade getFacade() {
