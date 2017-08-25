@@ -27,30 +27,57 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app;
+package com.systematic.trading.backtest.output.elastic.app.resource;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * Constants used during the Elastic Search performance trial
+ * The action and meta data required to accompany all source entries for the Bulk API.
  * 
  * @author CJ Hare
  */
-public interface PerformanceTrialFields {
+@JsonInclude(Include.NON_EMPTY)
+public class ElasticSearchBulkApiMetaDataResource {
 
-	/** Elastic key for the index type */
-	String TYPE = "type";
+	/** Always need to have an action. */
+	@JsonInclude(Include.ALWAYS)
+	private final String action;
 
-	/** Name of the index to during for the trial.*/
-	String INDEX_NAME = "test_index";
+	/** Name of the elastic search index (optional). */
+	private final String index;
 
-	/** The type mapping to manipulate the documents under.*/
-	String MAPPING_NAME = "test_mapping";
+	/** Name of the elastic search type (optional). */
+	private final String type;
 
-	/** Key value for the date type field. */
-	String DATE_FIELD_NAME = "date_field";
+	/** Id of the document to act on (optional). */
+	private final String id;
 
-	/** Key value for the float type field. */
-	String FLOAT_FIELD_NAME = "float_field";
+	public ElasticSearchBulkApiMetaDataResource( final String action, final String index, final String type,
+	        final String id ) {
+		this.action = action;
+		this.index = index;
+		this.type = type;
+		this.id = id;
+	}
 
-	/** Key value for the test type field. */
-	String TEXT_FIELD_NAME = "text_field";
+	public ElasticSearchBulkApiMetaDataResource( final String action ) {
+		this(action, null, null, null);
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public String getIndex() {
+		return index;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getId() {
+		return id;
+	}
 }

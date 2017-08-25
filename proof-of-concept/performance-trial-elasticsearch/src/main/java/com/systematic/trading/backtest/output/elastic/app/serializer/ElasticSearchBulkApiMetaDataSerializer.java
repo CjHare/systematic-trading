@@ -30,39 +30,55 @@
 package com.systematic.trading.backtest.output.elastic.app.serializer;
 
 import java.io.IOException;
-import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.systematic.trading.backtest.output.elastic.app.ElasticSearchFields;
+import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchBulkApiMetaDataResource;
 
 /**
  * Serializer for application/x-ndjson (JSON with \n for a element separator)
  * 
  * @author CJ Hare
  */
-public class NdjsonListSerializer extends StdSerializer<List<?>> {
-
-	/** NDJSON is JSON (non-pretty printed) with a new line delimiter after each line. */
-	private static final String NEW_LINE_DELIMITER = "\n";
+public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<ElasticSearchBulkApiMetaDataResource> {
 
 	/** Classes serial ID. */
 	private static final long serialVersionUID = 1L;
 
-	public NdjsonListSerializer() {
-		super(List.class, false);
+	public ElasticSearchBulkApiMetaDataSerializer() {
+		super(ElasticSearchBulkApiMetaDataResource.class, false);
 	}
 
 	@Override
-	/**
-	 * NOTE: the final line of data must end with a newline character \n.
-	 */
-	public void serialize( final List<?> values, final JsonGenerator gen, final SerializerProvider provider )
-	        throws IOException {
+	public void serialize( final ElasticSearchBulkApiMetaDataResource value, final JsonGenerator gen,
+	        final SerializerProvider provider ) throws IOException {
 
-		for (Object o : values) {
-			gen.writeObject(o);
-			gen.writeRawValue(NEW_LINE_DELIMITER);
+		gen.writeStartObject();
+		gen.writeFieldName(value.getAction());
+		writeMeta(value, gen);
+		gen.writeEndObject();
+	}
+
+	private void writeMeta( final ElasticSearchBulkApiMetaDataResource value, final JsonGenerator gen )
+	        throws IOException {
+		gen.writeStartObject();
+
+		if (StringUtils.isNotBlank(value.getIndex())) {
+			gen.writeStringField(ElasticSearchFields.INDEX, value.getIndex());
 		}
+
+		if (StringUtils.isNotBlank(value.getType())) {
+			gen.writeStringField(ElasticSearchFields.TYPE, value.getType());
+		}
+
+		if (StringUtils.isNotBlank(value.getId())) {
+			gen.writeStringField(ElasticSearchFields.ID, value.getType());
+		}
+
+		gen.writeEndObject();
 	}
 }

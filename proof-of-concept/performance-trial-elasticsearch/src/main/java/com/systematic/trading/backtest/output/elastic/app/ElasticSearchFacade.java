@@ -33,7 +33,6 @@ import static com.systematic.trading.backtest.output.elastic.app.PerformanceTria
 import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.FLOAT_FIELD_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.INDEX_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.MAPPING_NAME;
-import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.SETTINGS;
 import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.TEXT_FIELD_NAME;
 import static com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields.TYPE;
 
@@ -58,6 +57,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
 import com.systematic.trading.backtest.output.elastic.app.model.index.ElasticIndexSettingsResource;
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
+import com.systematic.trading.backtest.output.elastic.app.serializer.ElasticSearchBulkApiMetaDataSerializer;
 import com.systematic.trading.backtest.output.elastic.app.serializer.NdjsonListSerializer;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
@@ -104,6 +104,7 @@ public class ElasticSearchFacade {
 		final ObjectMapper ndjsonMapper = new ObjectMapper();
 		final SimpleModule ndjsonModule = new SimpleModule("Ndjson List Serializer");
 		ndjsonModule.addSerializer(new NdjsonListSerializer());
+		ndjsonModule.addSerializer(new ElasticSearchBulkApiMetaDataSerializer());
 		ndjsonMapper.registerModule(ndjsonModule);
 		ndjsonMapper.registerModule(new JavaTimeModule());
 		final JacksonJsonProvider ndjsonProvider = new JacksonJsonProvider();
@@ -174,7 +175,7 @@ public class ElasticSearchFacade {
 		}
 	}
 
-	public void postTypes( final List<ElasticSearchPerformanceTrialResource> request ) {
+	public void postTypes( final List<?> request ) {
 		// https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html
 		// https://www.elastic.co/guide/en/elasticsearch/guide/current/bulk.html
 		final Entity<?> requestBody = Entity.json(request);
@@ -192,14 +193,15 @@ public class ElasticSearchFacade {
 		final ElasticPostEventResponse eventResponse = response.readEntity(ElasticPostEventResponse.class);
 
 		//TODO Bulk API response is customer - needs a new object
-//		if (isInvalidResponse(eventResponse)) {
-//			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
-//			        eventResponse, url, requestBody));
-//		}
+		//		if (isInvalidResponse(eventResponse)) {
+		//			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
+		//			        eventResponse, url, requestBody));
+		//		}
 	}
 
 	public void disableIndexRefresh() {
-		final Response response = root.path(INDEX_NAME).path(SETTINGS).request().put(getDisableRefreshRequestBody());
+		final Response response = root.path(INDEX_NAME).path(ElasticSearchFields.SETTINGS).request()
+		        .put(getDisableRefreshRequestBody());
 
 		if (response.getStatus() != 200) {
 			throw new ElasticException(
@@ -209,7 +211,8 @@ public class ElasticSearchFacade {
 	}
 
 	public void enableIndexRefresh() {
-		final Response response = root.path(INDEX_NAME).path(SETTINGS).request().put(getEnableRefreshRequestBody());
+		final Response response = root.path(INDEX_NAME).path(ElasticSearchFields.SETTINGS).request()
+		        .put(getEnableRefreshRequestBody());
 
 		if (response.getStatus() != 200) {
 			throw new ElasticException(String.format("Failed to put the enable index settings to index: %s, status: %s",

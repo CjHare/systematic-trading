@@ -37,7 +37,6 @@ import java.util.concurrent.ExecutorService;
 import org.apache.commons.lang3.time.StopWatch;
 
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
-import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 
 /**
  * Performance trial with each call to elastic search being performed one after the other (serially).
@@ -67,8 +66,9 @@ public class ParallelBulkApiPerformanceTrial extends ParallellPerformanceTrial {
 
 		for (int i = 0; i < numberOfRecords; i += bucketSize) {
 
-			final List<ElasticSearchPerformanceTrialResource> bucket = new ArrayList<>(bucketSize);
+			final List<Object> bucket = new ArrayList<>(2 * bucketSize);
 			for (int j = 0; j < bucketSize; j++) {
+				bucket.add(createBulkApiMeta());
 				bucket.add(createRecord(i + j));
 			}
 

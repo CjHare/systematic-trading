@@ -36,6 +36,7 @@ import org.apache.commons.lang3.time.StopWatch;
 
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
 import com.systematic.trading.backtest.output.elastic.app.model.PerformanceTrialSummary;
+import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchBulkApiMetaDataResource;
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 
 /**
@@ -44,6 +45,9 @@ import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearch
  * @author CJ Hare
  */
 public abstract class PerformanceTrial {
+
+	/** Bulk API action for creating document and generating it's ID. */
+	private static final String ACTION_CREATE_GENERATE_DOCUMENT_ID = "index";
 
 	/** The same text used for every record. */
 	private static final String TEXT = "Sample_text";
@@ -81,6 +85,18 @@ public abstract class PerformanceTrial {
 	 */
 	protected ElasticSearchPerformanceTrialResource createRecord( final int value ) {
 		return new ElasticSearchPerformanceTrialResource(TEXT, value, DATE);
+	}
+
+	protected ElasticSearchBulkApiMetaDataResource createBulkApiMeta() {
+		return new ElasticSearchBulkApiMetaDataResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, null, null, null);
+	}
+
+	protected ElasticSearchBulkApiMetaDataResource createBulkApiMeta( final String index ) {
+		return new ElasticSearchBulkApiMetaDataResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, index, null, null);
+	}
+
+	protected ElasticSearchBulkApiMetaDataResource createBulkApiMeta( final String index, final String type ) {
+		return new ElasticSearchBulkApiMetaDataResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, index, type, null);
 	}
 
 	protected ElasticSearchFacade getFacade() {

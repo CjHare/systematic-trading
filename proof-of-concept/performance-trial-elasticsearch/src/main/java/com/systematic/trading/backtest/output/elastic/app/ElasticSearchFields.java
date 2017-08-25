@@ -30,27 +30,21 @@
 package com.systematic.trading.backtest.output.elastic.app;
 
 /**
- * Constants used during the Elastic Search performance trial
+ * Document centered path and property names used when dealing with Elastic Search.
  * 
  * @author CJ Hare
  */
-public interface PerformanceTrialFields {
+public interface ElasticSearchFields {
 
-	/** Elastic key for the index type */
-	String TYPE = "type";
+	/** Sub-directory for the settings of an index.*/
+	String SETTINGS = "_settings";
 
-	/** Name of the index to during for the trial.*/
-	String INDEX_NAME = "test_index";
+	/** Meta identifier for an Elastic Search index. */
+	String INDEX = "_index";
 
-	/** The type mapping to manipulate the documents under.*/
-	String MAPPING_NAME = "test_mapping";
+	/** Meta identifier for an Elastic Search type. */
+	String TYPE = "_type";
 
-	/** Key value for the date type field. */
-	String DATE_FIELD_NAME = "date_field";
-
-	/** Key value for the float type field. */
-	String FLOAT_FIELD_NAME = "float_field";
-
-	/** Key value for the test type field. */
-	String TEXT_FIELD_NAME = "text_field";
+	/** Meta identifier for an Elastic Search id. */
+	String ID = "_id";
 }
