@@ -1,0 +1,9 @@
+ElasticSerialSearchPerformanceTrialSingleApi,12500, 0:17:54,11.64,100%
+ElasticSearchSerialPerformanceTrialSingleApiNoReplicas,12500, 0:17:46,11.73,100%
+ElasticSearchSerialPerformanceTrialSingleApiOneShard,12500, 0:16:42,12.48,107%
+ElasticSearchParallelPerformanceTrialSingleApi,12500, 0:17:42,11.77,101.12%
+ElasticSearchParallelPerformanceTrialManyThreadsSingleApi,12500, 0:04:44,44.01,378%
+ElasticSerialSearchPerformanceTrialSingleApiIndexRefreshDisabled,12500, 0:16:21,12.74,109%
+ElasticSerialSearchPerformanceTrialBulkApi,12500, 0:00:03,4166.67,35796%
+ElasticSerialSearchPerformanceTrialBulkApiTinyPayload,12500, 0:00:24,520.83,4474%
+ElasticSerialSearchPerformanceTrialBulkApiLargePayload,12500, 0:00:01,12500,107388%

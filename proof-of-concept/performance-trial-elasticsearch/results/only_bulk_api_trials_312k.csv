@@ -1,0 +1,8 @@
+ElasticSearchSerialPerformanceTrialBulkApi,312500, 0:01:11,4401.41,100%
+ElasticSearchSerialPerformanceTrialBulkApiTinyPayload,312500, 0:12:17,424.02,9%
+ElasticSearchSerialPerformanceTrialBulkApiLargePayload,312500, 0:00:44,7102.27,161%
+ElasticSearchSerialPerformanceTrialBulkApiRefreshDisabled,312500, 0:01:16,4111.84,93%
+ElasticSearchSerialPerformanceTrialBulkApiMetaContainsIndex,312500, 0:01:18,4006.41,91%
+ElasticSearchSerialPerformanceTrialBulkApiMetaContainsIndexType,312500, 0:01:20,3906.25,88%
+ElasticSearchParallelPerformanceTrialBulkApi,312500, 0:01:17,4058.44,92%
+ElasticSearchParallelPerformanceTrialBulkApiManyThreads,312500, 0:00:24,13020.83,295%
