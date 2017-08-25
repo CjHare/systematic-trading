@@ -38,7 +38,8 @@ import com.systematic.trading.exception.ServiceException;
  * Stand alone application for clocking the time in performing posting of records to Elastic Search.
  * 
  * Investigating:
- *   20 KiB of requests to the bulk API.
+ *   Baseline / reference point.
+ *    10 KiB of requests to the bulk API.
  * 
  *  Trial Configuration:
  *    1,000 records
@@ -55,18 +56,14 @@ import com.systematic.trading.exception.ServiceException;
  * 
  * @author CJ Hare
  */
-public class ElasticSerialSearchPerformanceTrialBulkApiLargePayload {
+public class ElasticSearchSerialPerformanceTrialBulkApi {
 
-	private static final String TRIAL_ID = ElasticSerialSearchPerformanceTrialBulkApiLargePayload.class.getSimpleName();
-
-	/** HTTP pay load size ~10KiB (10240 bytes - each created index entry is about 90 bytes). */
-	private static final int TINY_BUCKET_SIZE = 2400;
+	private static final String TRIAL_ID = ElasticSearchSerialPerformanceTrialBulkApi.class.getSimpleName();
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
 		        .display(new SerialBulkApiPerformanceTrial(
 		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
-		                new ElasticSearchConfigurationBuilder().withBulkApiBucketSize(TINY_BUCKET_SIZE).build())
-		                        .execute());
+		                new ElasticSearchConfigurationBuilder().build()).execute());
 	}
 }

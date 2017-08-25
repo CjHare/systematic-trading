@@ -17,12 +17,15 @@ call :removeExistingOutputFile
 call :runtTrial ElasticSerialSearchPerformanceTrialSingleApi
 call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiNoReplicas
 call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiOneShard
+call :runtTrial ElasticSearchSerialPerformanceTrialSingleApiIndexRefreshDisabled
+
 call :runtTrial ElasticSearchParallelPerformanceTrialSingleApi
 call :runtTrial ElasticSearchParallelPerformanceTrialManyThreadsSingleApi
-call :runtTrial ElasticSerialSearchPerformanceTrialSingleApiIndexRefreshDisabled
-call :runtTrial ElasticSerialSearchPerformanceTrialBulkApi
-call :runtTrial ElasticSerialSearchPerformanceTrialBulkApiTinyPayload
-call :runtTrial ElasticSerialSearchPerformanceTrialBulkApiLargePayload
+
+call :runtTrial ElasticSearchSerialPerformanceTrialBulkApi
+call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiTinyPayload
+call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiLargePayload
+
 call :runtTrial ElasticSearchParallelPerformanceTrialBulkApi
 
 echo ----------------------------------------------

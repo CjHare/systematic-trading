@@ -38,7 +38,7 @@ import com.systematic.trading.exception.ServiceException;
  * Stand alone application for clocking the time in performing posting of records to Elastic Search.
  * 
  * Investigating:
- *   Baseline / reference point.
+ *   Effect of disabling Elastic index refreshing during update.
  * 
  *  Trial Configuration:
  *    1,000 records
@@ -55,14 +55,15 @@ import com.systematic.trading.exception.ServiceException;
  * 
  * @author CJ Hare
  */
-public class ElasticSerialSearchPerformanceTrialSingleApi {
+public class ElasticSearchSerialPerformanceTrialSingleApiIndexRefreshDisabled {
 
-	private static final String TRIAL_ID = ElasticSerialSearchPerformanceTrialSingleApi.class.getSimpleName();
+	private static final String TRIAL_ID = ElasticSearchSerialPerformanceTrialSingleApiIndexRefreshDisabled.class
+	        .getSimpleName();
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
 		        .display(new SerialSingleApiPerformanceTrial(
 		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
-		                new ElasticSearchConfigurationBuilder().build()).execute());
+		                new ElasticSearchConfigurationBuilder().withDisableIndexRefresh(true).build()).execute());
 	}
 }

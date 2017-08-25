@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.output.elastic.app.trial;
 
-import com.systematic.trading.backtest.output.elastic.app.SerialSingleApiPerformanceTrial;
+import com.systematic.trading.backtest.output.elastic.app.SerialBulkApiPerformanceTrial;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
 import com.systematic.trading.backtest.output.elastic.app.trial.input.ElasticSearchPerformanceTrialArguments;
 import com.systematic.trading.exception.ServiceException;
@@ -38,7 +38,7 @@ import com.systematic.trading.exception.ServiceException;
  * Stand alone application for clocking the time in performing posting of records to Elastic Search.
  * 
  * Investigating:
- *   Effect of disabling Elastic index refreshing during update.
+ *   20 KiB of requests to the bulk API.
  * 
  *  Trial Configuration:
  *    1,000 records
@@ -55,15 +55,18 @@ import com.systematic.trading.exception.ServiceException;
  * 
  * @author CJ Hare
  */
-public class ElasticSerialSearchPerformanceTrialSingleApiIndexRefreshDisabled {
+public class ElasticSearchSerialPerformanceTrialBulkApiLargePayload {
 
-	private static final String TRIAL_ID = ElasticSerialSearchPerformanceTrialSingleApiIndexRefreshDisabled.class
-	        .getSimpleName();
+	private static final String TRIAL_ID = ElasticSearchSerialPerformanceTrialBulkApiLargePayload.class.getSimpleName();
+
+	/** HTTP pay load size ~10KiB (10240 bytes - each created index entry is about 90 bytes). */
+	private static final int TINY_BUCKET_SIZE = 2400;
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
-		        .display(new SerialSingleApiPerformanceTrial(
+		        .display(new SerialBulkApiPerformanceTrial(
 		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
-		                new ElasticSearchConfigurationBuilder().withDisableIndexRefresh(true).build()).execute());
+		                new ElasticSearchConfigurationBuilder().withBulkApiBucketSize(TINY_BUCKET_SIZE).build())
+		                        .execute());
 	}
 }
