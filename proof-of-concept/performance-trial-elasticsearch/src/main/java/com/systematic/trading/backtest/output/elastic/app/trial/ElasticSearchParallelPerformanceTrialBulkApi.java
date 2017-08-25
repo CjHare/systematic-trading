@@ -27,49 +27,46 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app;
+package com.systematic.trading.backtest.output.elastic.app.trial;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-
-import org.apache.commons.lang3.time.StopWatch;
-
-import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
-import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
+import com.systematic.trading.backtest.output.elastic.app.ParallelBulkApiPerformanceTrial;
+import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
+import com.systematic.trading.backtest.output.elastic.app.trial.input.ElasticSearchPerformanceTrialArguments;
+import com.systematic.trading.exception.ServiceException;
 
 /**
- * Performance trial with each calls to elastic search being concurrently.
+ * Stand alone application for clocking the time in performing posting of records to Elastic Search.
+ * 
+ * Investigating:
+ *   Baseline / reference point.
+ *    10 KiB of requests to the bulk API.
+ * 
+ *  Trial Configuration:
+ *    1,000 records
+ *    Serial execution
+ *    Single record API
+ * 
+ *  Elastic Index Configuration (default):
+ *    5 Shards
+ *    1 Replica
+ *   
+ * Optional input:
+ *   args[0] == number of records
+ *   args[0] == output file
  * 
  * @author CJ Hare
  */
-public class ParallellSingleApiPerformanceTrial extends ParallellPerformanceTrial {
+public class ElasticSearchParallelPerformanceTrialBulkApi {
 
-	public ParallellSingleApiPerformanceTrial( final int numberOfRecords, final int numberOfThreads,
-	        final ElasticSearchConfiguration elasticConfig ) {
-		super(numberOfRecords, numberOfThreads, elasticConfig);
-	}
+	private static final String TRIAL_ID = ElasticSearchParallelPerformanceTrialBulkApi.class.getSimpleName();
 
-	protected StopWatch sendData() {
-		final int numberOfRecords = getNumberOfRecords();
-		final ElasticSearchFacade elastic = getFacade();
-		final ExecutorService pool = getPool();
-		final CountDownLatch countDown = new CountDownLatch(numberOfRecords);
+	/** Number of threads determines the size of the executor thread pool. */
+	private static final int NUMBER_OF_THREADS = 10;
 
-		final StopWatch timer = new StopWatch();
-		timer.start();
-
-		for (int i = 0; i < numberOfRecords; i++) {
-			final ElasticSearchPerformanceTrialResource record = createRecord(i);
-			pool.submit(() -> {
-				elastic.postType(record);
-				countDown.countDown();
-			});
-		}
-
-		wait(countDown);
-		pool.shutdown();
-		timer.stop();
-
-		return timer;
+	public static void main( final String... args ) throws ServiceException {
+		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
+		        .display(new ParallelBulkApiPerformanceTrial(
+		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args), NUMBER_OF_THREADS,
+		                new ElasticSearchConfigurationBuilder().build()).execute());
 	}
 }

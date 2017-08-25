@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.backtest.output.elastic.app;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -38,32 +40,43 @@ import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticS
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 
 /**
- * Performance trial with each calls to elastic search being concurrently.
+ * Performance trial with each call to elastic search being performed one after the other (serially).
  * 
  * @author CJ Hare
  */
-public class ParallellSingleApiPerformanceTrial extends ParallellPerformanceTrial {
+public class ParallelBulkApiPerformanceTrial extends ParallellPerformanceTrial {
 
-	public ParallellSingleApiPerformanceTrial( final int numberOfRecords, final int numberOfThreads,
-	        final ElasticSearchConfiguration elasticConfig ) {
+	/** Number of records to send in a single bulk call. */
+	private final int bucketSize;
+
+	public ParallelBulkApiPerformanceTrial( int numberOfRecords, final int numberOfThreads,
+	        ElasticSearchConfiguration elasticConfig ) {
 		super(numberOfRecords, numberOfThreads, elasticConfig);
+		this.bucketSize = elasticConfig.getBulkApiBucketSize();
 	}
 
 	protected StopWatch sendData() {
 		final int numberOfRecords = getNumberOfRecords();
 		final ElasticSearchFacade elastic = getFacade();
 		final ExecutorService pool = getPool();
-		final CountDownLatch countDown = new CountDownLatch(numberOfRecords);
+		final int numberOfBuckets = numberOfRecords / bucketSize + 1;
+		final CountDownLatch countDown = new CountDownLatch(numberOfBuckets);
 
 		final StopWatch timer = new StopWatch();
 		timer.start();
 
-		for (int i = 0; i < numberOfRecords; i++) {
-			final ElasticSearchPerformanceTrialResource record = createRecord(i);
+		for (int i = 0; i < numberOfRecords; i += bucketSize) {
+
+			final List<ElasticSearchPerformanceTrialResource> bucket = new ArrayList<>(bucketSize);
+			for (int j = 0; j < bucketSize; j++) {
+				bucket.add(createRecord(i + j));
+			}
+
 			pool.submit(() -> {
-				elastic.postType(record);
+				elastic.postTypes(bucket);
 				countDown.countDown();
 			});
+
 		}
 
 		wait(countDown);

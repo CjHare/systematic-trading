@@ -31,45 +31,36 @@ package com.systematic.trading.backtest.output.elastic.app;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-
-import org.apache.commons.lang3.time.StopWatch;
+import java.util.concurrent.Executors;
 
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
-import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 
 /**
- * Performance trial with each calls to elastic search being concurrently.
+ * Generic parallel behaviour for multi-threaded performance trials.
  * 
  * @author CJ Hare
  */
-public class ParallellSingleApiPerformanceTrial extends ParallellPerformanceTrial {
+public abstract class ParallellPerformanceTrial extends PerformanceTrial {
 
-	public ParallellSingleApiPerformanceTrial( final int numberOfRecords, final int numberOfThreads,
+	/** Number of threads to concurrently handle BulkApi calls. */
+	private final int numberOfThreads;
+
+	public ParallellPerformanceTrial( final int numberOfRecords, final int numberOfThreads,
 	        final ElasticSearchConfiguration elasticConfig ) {
-		super(numberOfRecords, numberOfThreads, elasticConfig);
+		super(numberOfRecords, elasticConfig);
+		this.numberOfThreads = numberOfThreads;
 	}
 
-	protected StopWatch sendData() {
-		final int numberOfRecords = getNumberOfRecords();
-		final ElasticSearchFacade elastic = getFacade();
-		final ExecutorService pool = getPool();
-		final CountDownLatch countDown = new CountDownLatch(numberOfRecords);
+	protected ExecutorService getPool() {
+		return Executors.newFixedThreadPool(numberOfThreads);
+	}
 
-		final StopWatch timer = new StopWatch();
-		timer.start();
-
-		for (int i = 0; i < numberOfRecords; i++) {
-			final ElasticSearchPerformanceTrialResource record = createRecord(i);
-			pool.submit(() -> {
-				elastic.postType(record);
-				countDown.countDown();
-			});
+	protected void wait( final CountDownLatch countDown ) {
+		try {
+			countDown.await();
+		} catch (final InterruptedException e) {
+			// Preserve interrupt status
+			Thread.currentThread().interrupt();
 		}
-
-		wait(countDown);
-		pool.shutdown();
-		timer.stop();
-
-		return timer;
 	}
 }

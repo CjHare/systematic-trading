@@ -23,6 +23,7 @@ call :runtTrial ElasticSerialSearchPerformanceTrialSingleApiIndexRefreshDisabled
 call :runtTrial ElasticSerialSearchPerformanceTrialBulkApi
 call :runtTrial ElasticSerialSearchPerformanceTrialBulkApiTinyPayload
 call :runtTrial ElasticSerialSearchPerformanceTrialBulkApiLargePayload
+call :runtTrial ElasticSearchParallelPerformanceTrialBulkApi
 
 echo ----------------------------------------------
 echo All results written to %outputFile%
