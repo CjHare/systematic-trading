@@ -38,9 +38,11 @@ import com.systematic.trading.exception.ServiceException;
  * Stand alone application for clocking the time in performing posting of records to Elastic Search.
  * 
  * Investigating:
+ *   Performance for optimal configuration
  *   20 KiB of requests to the bulk API.
- *   Effect of disabling Elastic index refreshing during update.
- *   Effect of off-loading the Elastic Search call to a queue for a multiple threads.
+ *   Disabling Elastic index refreshing during update.
+ *   Off-loading the Elastic Search call to a queue for a multiple threads.
+ *   No Replicas.
  * 
  *  Trial Configuration:
  *    1,000 records
@@ -69,11 +71,9 @@ public class ElasticSearchSerialPerformanceTrialBulkApiOptimal {
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
-		        .display(
-		                new ParallelBulkApiPerformanceTrial(
-		                        ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
-		                        NUMBER_OF_THREADS, new ElasticSearchConfigurationBuilder()
-		                                .withBulkApiBucketSize(BUCKET_SIZE).withDisableIndexRefresh(true).build())
-		                                        .execute());
+		        .display(new ParallelBulkApiPerformanceTrial(
+		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args), NUMBER_OF_THREADS,
+		                new ElasticSearchConfigurationBuilder().withBulkApiBucketSize(BUCKET_SIZE)
+		                        .withDisableIndexRefresh(true).withReplicas(0).build()).execute());
 	}
 }

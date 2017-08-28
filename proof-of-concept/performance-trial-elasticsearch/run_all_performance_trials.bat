@@ -32,6 +32,7 @@ call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiMetaContainsIndexType
 call :runtTrial ElasticSearchParallelPerformanceTrialBulkApi
 call :runtTrial ElasticSearchParallelPerformanceTrialBulkApiManyThreads
 
+call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiOptimal
 
 echo ----------------------------------------------
 echo All results written to %outputFile%

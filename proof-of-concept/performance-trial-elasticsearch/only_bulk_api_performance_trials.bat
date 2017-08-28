@@ -23,6 +23,7 @@ call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiMetaContainsIndexType
 call :runtTrial ElasticSearchParallelPerformanceTrialBulkApi
 call :runtTrial ElasticSearchParallelPerformanceTrialBulkApiManyThreads
 
+call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiOptimal
 
 REM This test is way too slow ~10x longer then the base line ElasticSearchSerialPerformanceTrialBulkApi
 REM call :runtTrial ElasticSearchSerialPerformanceTrialBulkApiTinyPayload
