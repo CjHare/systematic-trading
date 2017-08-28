@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.output.elastic.app.trial;
 
-import com.systematic.trading.backtest.output.elastic.app.SerialBulkApiPerformanceTrial;
+import com.systematic.trading.backtest.output.elastic.app.ParallelBulkApiPerformanceTrial;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfigurationBuilder;
 import com.systematic.trading.backtest.output.elastic.app.trial.input.ElasticSearchPerformanceTrialArguments;
 import com.systematic.trading.exception.ServiceException;
@@ -38,7 +38,9 @@ import com.systematic.trading.exception.ServiceException;
  * Stand alone application for clocking the time in performing posting of records to Elastic Search.
  * 
  * Investigating:
- *   1 KiB of requests to the bulk API.
+ *   20 KiB of requests to the bulk API.
+ *   Effect of disabling Elastic index refreshing during update.
+ *   Effect of off-loading the Elastic Search call to a queue for a multiple threads.
  * 
  *  Trial Configuration:
  *    1,000 records
@@ -55,18 +57,23 @@ import com.systematic.trading.exception.ServiceException;
  * 
  * @author CJ Hare
  */
-public class ElasticSearchSerialPerformanceTrialBulkApiTinyPayload {
+public class ElasticSearchSerialPerformanceTrialBulkApiOptimal {
 
-	private static final String TRIAL_ID = ElasticSearchSerialPerformanceTrialBulkApiTinyPayload.class.getSimpleName();
+	private static final String TRIAL_ID = ElasticSearchSerialPerformanceTrialBulkApiOptimal.class.getSimpleName();
+
+	/** Number of threads determines the size of the executor thread pool. */
+	private static final int NUMBER_OF_THREADS = 25;
 
 	/** HTTP pay load size ~10KiB (10240 bytes - each created index entry is about 90 bytes). */
-	private static final int BUCKET_SIZE = 120;
+	private static final int BUCKET_SIZE = 2400;
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
-		        .display(new SerialBulkApiPerformanceTrial(
-		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
-		                new ElasticSearchConfigurationBuilder().withBulkApiBucketSize(BUCKET_SIZE).build())
-		                        .execute());
+		        .display(
+		                new ParallelBulkApiPerformanceTrial(
+		                        ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
+		                        NUMBER_OF_THREADS, new ElasticSearchConfigurationBuilder()
+		                                .withBulkApiBucketSize(BUCKET_SIZE).withDisableIndexRefresh(true).build())
+		                                        .execute());
 	}
 }

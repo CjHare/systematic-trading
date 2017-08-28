@@ -60,13 +60,13 @@ public class ElasticSearchSerialPerformanceTrialBulkApiLargePayload {
 	private static final String TRIAL_ID = ElasticSearchSerialPerformanceTrialBulkApiLargePayload.class.getSimpleName();
 
 	/** HTTP pay load size ~10KiB (10240 bytes - each created index entry is about 90 bytes). */
-	private static final int TINY_BUCKET_SIZE = 2400;
+	private static final int BUCKET_SIZE = 2400;
 
 	public static void main( final String... args ) throws ServiceException {
 		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
 		        .display(new SerialBulkApiPerformanceTrial(
 		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args),
-		                new ElasticSearchConfigurationBuilder().withBulkApiBucketSize(TINY_BUCKET_SIZE).build())
+		                new ElasticSearchConfigurationBuilder().withBulkApiBucketSize(BUCKET_SIZE).build())
 		                        .execute());
 	}
 }
