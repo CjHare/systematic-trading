@@ -56,8 +56,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
 import com.systematic.trading.backtest.output.elastic.app.model.index.ElasticIndexSettingsResource;
-import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchBulkApiResponseResource;
-import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
+import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialRequestResource;
 import com.systematic.trading.backtest.output.elastic.app.serializer.ElasticSearchBulkApiMetaDataSerializer;
 import com.systematic.trading.backtest.output.elastic.app.serializer.NdjsonListSerializer;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
@@ -65,6 +64,7 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEventResponse;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticBulkApiResponseResource;
 
 /**
  * Facade to Elastic Search, abstracting the index and mappings.
@@ -155,7 +155,7 @@ public class ElasticSearchFacade {
 		}
 	}
 
-	public void postType( final ElasticSearchPerformanceTrialResource request ) {
+	public void postType( final ElasticSearchPerformanceTrialRequestResource request ) {
 		final Entity<?> requestBody = Entity.json(request);
 		final WebTarget url = root.path(getTypePath());
 
@@ -189,8 +189,8 @@ public class ElasticSearchFacade {
 			                response.getStatus(), url, requestBody));
 		}
 
-		final ElasticSearchBulkApiResponseResource eventResponse = response
-		        .readEntity(ElasticSearchBulkApiResponseResource.class);
+		final ElasticBulkApiResponseResource eventResponse = response
+		        .readEntity(ElasticBulkApiResponseResource.class);
 
 		if (isInvalidResponse(eventResponse)) {
 			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
@@ -243,7 +243,7 @@ public class ElasticSearchFacade {
 		return new SimpleEntry<String, String>(TYPE, field);
 	}
 
-	private boolean isInvalidResponse( final ElasticSearchBulkApiResponseResource eventResponse ) {
+	private boolean isInvalidResponse( final ElasticBulkApiResponseResource eventResponse ) {
 		return eventResponse.hasErrors();
 	}
 

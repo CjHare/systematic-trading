@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app.resource;
+package com.systematic.trading.backtest.output.elastic.resource;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -38,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_EMPTY)
-public class ElasticSearchBulkApiMetaDataResource {
+public class ElasticBulkApiMetaDataRequestResource {
 
 	/** Always need to have an action. */
 	@JsonInclude(Include.ALWAYS)
@@ -53,7 +53,7 @@ public class ElasticSearchBulkApiMetaDataResource {
 	/** Id of the document to act on (optional). */
 	private final String id;
 
-	public ElasticSearchBulkApiMetaDataResource( final String action, final String index, final String type,
+	public ElasticBulkApiMetaDataRequestResource( final String action, final String index, final String type,
 	        final String id ) {
 		this.action = action;
 		this.index = index;
@@ -61,7 +61,7 @@ public class ElasticSearchBulkApiMetaDataResource {
 		this.id = id;
 	}
 
-	public ElasticSearchBulkApiMetaDataResource( final String action ) {
+	public ElasticBulkApiMetaDataRequestResource( final String action ) {
 		this(action, null, null, null);
 	}
 

@@ -37,24 +37,24 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.systematic.trading.backtest.output.elastic.app.ElasticSearchFields;
-import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchBulkApiMetaDataResource;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticBulkApiMetaDataRequestResource;
 
 /**
  * Serializer for application/x-ndjson (JSON with \n for a element separator)
  * 
  * @author CJ Hare
  */
-public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<ElasticSearchBulkApiMetaDataResource> {
+public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<ElasticBulkApiMetaDataRequestResource> {
 
 	/** Classes serial ID. */
 	private static final long serialVersionUID = 1L;
 
 	public ElasticSearchBulkApiMetaDataSerializer() {
-		super(ElasticSearchBulkApiMetaDataResource.class, false);
+		super(ElasticBulkApiMetaDataRequestResource.class, false);
 	}
 
 	@Override
-	public void serialize( final ElasticSearchBulkApiMetaDataResource value, final JsonGenerator gen,
+	public void serialize( final ElasticBulkApiMetaDataRequestResource value, final JsonGenerator gen,
 	        final SerializerProvider provider ) throws IOException {
 
 		gen.writeStartObject();
@@ -63,7 +63,7 @@ public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<Elasti
 		gen.writeEndObject();
 	}
 
-	private void writeMeta( final ElasticSearchBulkApiMetaDataResource value, final JsonGenerator gen )
+	private void writeMeta( final ElasticBulkApiMetaDataRequestResource value, final JsonGenerator gen )
 	        throws IOException {
 		gen.writeStartObject();
 

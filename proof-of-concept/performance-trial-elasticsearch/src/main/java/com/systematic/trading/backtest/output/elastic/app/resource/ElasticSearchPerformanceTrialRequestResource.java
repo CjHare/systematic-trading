@@ -40,13 +40,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticSearchPerformanceTrialResource {
+public class ElasticSearchPerformanceTrialRequestResource {
 
 	private final String text;
 	private final float value;
 	private final LocalDate date;
 
-	public ElasticSearchPerformanceTrialResource( final String text, final float value, final LocalDate date ) {
+	public ElasticSearchPerformanceTrialRequestResource( final String text, final float value, final LocalDate date ) {
 		this.text = text;
 		this.value = value;
 		this.date = date;

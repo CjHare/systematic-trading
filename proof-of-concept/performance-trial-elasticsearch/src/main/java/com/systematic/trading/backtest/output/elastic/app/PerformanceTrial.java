@@ -36,8 +36,8 @@ import org.apache.commons.lang3.time.StopWatch;
 
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
 import com.systematic.trading.backtest.output.elastic.app.model.PerformanceTrialSummary;
-import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchBulkApiMetaDataResource;
-import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
+import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialRequestResource;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticBulkApiMetaDataRequestResource;
 
 /**
  * Behaviour for evaluating Elastic search performance. 
@@ -87,12 +87,12 @@ public abstract class PerformanceTrial {
 	/**
 	 * @param value the only difference between each record.
 	 */
-	protected ElasticSearchPerformanceTrialResource createRecord( final int value ) {
-		return new ElasticSearchPerformanceTrialResource(TEXT, value, DATE);
+	protected ElasticSearchPerformanceTrialRequestResource createRecord( final int value ) {
+		return new ElasticSearchPerformanceTrialRequestResource(TEXT, value, DATE);
 	}
 
-	protected ElasticSearchBulkApiMetaDataResource createBulkApiMeta() {
-		return new ElasticSearchBulkApiMetaDataResource(ACTION_CREATE_GENERATE_DOCUMENT_ID,
+	protected ElasticBulkApiMetaDataRequestResource createBulkApiMeta() {
+		return new ElasticBulkApiMetaDataRequestResource(ACTION_CREATE_GENERATE_DOCUMENT_ID,
 		        bulkApiMetaContainsIndex ? PerformanceTrialFields.INDEX_NAME : null,
 		        bulkApiMetaContainsType ? PerformanceTrialFields.MAPPING_NAME : null, null);
 	}

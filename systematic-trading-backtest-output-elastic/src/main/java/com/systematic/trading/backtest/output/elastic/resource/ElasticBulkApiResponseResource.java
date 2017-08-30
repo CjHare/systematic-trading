@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app.resource;
+package com.systematic.trading.backtest.output.elastic.resource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -41,12 +41,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author CJ Hare
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ElasticSearchBulkApiResponseResource {
+public class ElasticBulkApiResponseResource {
 
 	private final boolean errors;
 
 	@JsonCreator
-	public ElasticSearchBulkApiResponseResource( @JsonProperty("errors") final boolean errors ) {
+	public ElasticBulkApiResponseResource( @JsonProperty("errors") final boolean errors ) {
 		this.errors = errors;
 	}
 

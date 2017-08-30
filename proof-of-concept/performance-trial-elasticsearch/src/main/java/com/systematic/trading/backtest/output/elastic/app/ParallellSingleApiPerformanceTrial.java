@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutorService;
 import org.apache.commons.lang3.time.StopWatch;
 
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
-import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
+import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialRequestResource;
 
 /**
  * Performance trial with each calls to elastic search being concurrently.
@@ -59,7 +59,7 @@ public class ParallellSingleApiPerformanceTrial extends ParallellPerformanceTria
 		timer.start();
 
 		for (int i = 0; i < numberOfRecords; i++) {
-			final ElasticSearchPerformanceTrialResource record = createRecord(i);
+			final ElasticSearchPerformanceTrialRequestResource record = createRecord(i);
 			pool.submit(() -> {
 				elastic.postType(record);
 				countDown.countDown();
