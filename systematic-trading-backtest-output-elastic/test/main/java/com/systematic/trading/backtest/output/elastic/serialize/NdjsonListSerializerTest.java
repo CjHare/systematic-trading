@@ -29,44 +29,96 @@
  */
 package com.systematic.trading.backtest.output.elastic.serialize;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 /**
- * Serializer for application/x-ndjson (JSON with \n for a element separator)
+ * Verifying behaviour of the NdjsonListSerializer.
  * 
  * @author CJ Hare
  */
-public class NdjsonListSerializer extends StdSerializer<List<?>> {
+@RunWith(MockitoJUnitRunner.class)
+public class NdjsonListSerializerTest {
 
 	/** NDJSON is JSON (non-pretty printed) with a new line delimiter after each line. */
 	private static final String NEW_LINE_DELIMITER = "\n";
 
-	/** Classes serial ID. */
-	private static final long serialVersionUID = 1L;
+	@Mock
+	private JsonGenerator gen;
 
-	public NdjsonListSerializer() {
-		super(List.class, false);
+	@Mock
+	private SerializerProvider provider;
+
+	private NdjsonListSerializer serializer;
+
+	@Before
+	public void setUp() {
+		serializer = new NdjsonListSerializer();
 	}
 
-	@Override
-	/**
-	 * NOTE: the final line of data must end with a newline character \n.
-	 */
-	public void serialize( final List<?> values, final JsonGenerator gen, final SerializerProvider provider )
-	        throws IOException {
+	@Test
+	public void serializeNullArray() throws IOException {
+		serializer.serialize(null, gen, provider);
 
-		if (values == null) {
-			return;
+		verifyNoJson();
+	}
+
+	@Test
+	public void serializeEmptyArray() throws IOException {
+		final List<?> values = new ArrayList<>();
+
+		serializer.serialize(values, gen, provider);
+
+		verifyNoJson();
+	}
+
+	@Test
+	public void serializeSingleEntry() throws IOException {
+		final List<String> values = new ArrayList<>();
+		values.add("the_only_value");
+
+		serializer.serialize(values, gen, provider);
+
+		verifyJson("the_only_value");
+	}
+
+	@Test
+	public void serializeMultipleEntries() throws IOException {
+		final List<String> values = new ArrayList<>();
+		values.add("first_value");
+		values.add("second_value");
+		values.add("third_value");
+
+		serializer.serialize(values, gen, provider);
+
+		verifyJson("first_value", "second_value", "third_value");
+	}
+
+	private void verifyJson( final String... expexted ) throws IOException {
+		for (String o : expexted) {
+			verify(gen).writeObject(o);
 		}
 
-		for (Object o : values) {
-			gen.writeObject(o);
-			gen.writeRawValue(NEW_LINE_DELIMITER);
-		}
+		verify(gen, times(expexted.length)).writeRawValue(NEW_LINE_DELIMITER);
+		verifyNoMoreInteractions(gen);
+	}
+
+	private void verifyNoJson() {
+		verifyZeroInteractions(gen);
 	}
 }

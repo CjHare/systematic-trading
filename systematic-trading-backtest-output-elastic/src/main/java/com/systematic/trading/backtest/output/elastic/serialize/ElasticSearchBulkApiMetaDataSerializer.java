@@ -65,6 +65,10 @@ public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<Elasti
 	public void serialize( final ElasticBulkApiMetaDataRequestResource value, final JsonGenerator gen,
 	        final SerializerProvider provider ) throws IOException {
 
+		if (value == null) {
+			return;
+		}
+
 		gen.writeStartObject();
 		gen.writeFieldName(value.getAction());
 		writeMeta(value, gen);
@@ -84,7 +88,7 @@ public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<Elasti
 		}
 
 		if (StringUtils.isNotBlank(value.getId())) {
-			gen.writeStringField(ID, value.getType());
+			gen.writeStringField(ID, value.getId());
 		}
 
 		gen.writeEndObject();
