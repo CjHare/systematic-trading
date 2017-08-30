@@ -27,42 +27,29 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app.serializer;
+package com.systematic.trading.backtest.output.elastic.resource;
 
-import java.io.IOException;
-import java.util.List;
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Serializer for application/x-ndjson (JSON with \n for a element separator)
+ * Resource for updating the settings on an Elastic Search Index.
  * 
  * @author CJ Hare
  */
-public class NdjsonListSerializer extends StdSerializer<List<?>> {
+@JsonInclude(Include.NON_NULL)
+public class ElasticIndexSettingsRequestResource {
 
-	/** NDJSON is JSON (non-pretty printed) with a new line delimiter after each line. */
-	private static final String NEW_LINE_DELIMITER = "\n";
+	/** Seconds between refreshes of the index, default is 1, -1 is off. */
+	private final String interval;
 
-	/** Classes serial ID. */
-	private static final long serialVersionUID = 1L;
-
-	public NdjsonListSerializer() {
-		super(List.class, false);
+	public ElasticIndexSettingsRequestResource( final String interval ) {
+		this.interval = interval;
 	}
 
-	@Override
-	/**
-	 * NOTE: the final line of data must end with a newline character \n.
-	 */
-	public void serialize( final List<?> values, final JsonGenerator gen, final SerializerProvider provider )
-	        throws IOException {
-
-		for (Object o : values) {
-			gen.writeObject(o);
-			gen.writeRawValue(NEW_LINE_DELIMITER);
-		}
+	@JsonProperty("refresh_interval")
+	public String getInterval() {
+		return interval;
 	}
 }

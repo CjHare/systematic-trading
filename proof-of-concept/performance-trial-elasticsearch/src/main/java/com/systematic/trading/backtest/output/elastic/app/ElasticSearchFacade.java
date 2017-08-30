@@ -55,16 +55,16 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
-import com.systematic.trading.backtest.output.elastic.app.model.index.ElasticIndexSettingsResource;
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialRequestResource;
-import com.systematic.trading.backtest.output.elastic.app.serializer.ElasticSearchBulkApiMetaDataSerializer;
-import com.systematic.trading.backtest.output.elastic.app.serializer.NdjsonListSerializer;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEventResponse;
 import com.systematic.trading.backtest.output.elastic.resource.ElasticBulkApiResponseResource;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticIndexSettingsRequestResource;
+import com.systematic.trading.backtest.output.elastic.serialize.ElasticSearchBulkApiMetaDataSerializer;
+import com.systematic.trading.backtest.output.elastic.serialize.NdjsonListSerializer;
 
 /**
  * Facade to Elastic Search, abstracting the index and mappings.
@@ -224,11 +224,11 @@ public class ElasticSearchFacade {
 	}
 
 	private Entity<?> getDisableRefreshRequestBody() {
-		return Entity.json(new ElasticIndexSettingsResource(INDEX_SETTING_DISABLE_REFRESH));
+		return Entity.json(new ElasticIndexSettingsRequestResource(INDEX_SETTING_DISABLE_REFRESH));
 	}
 
 	private Entity<?> getEnableRefreshRequestBody() {
-		return Entity.json(new ElasticIndexSettingsResource(INDEX_SETTING_DEFAULT_REFRESH));
+		return Entity.json(new ElasticIndexSettingsRequestResource(INDEX_SETTING_DEFAULT_REFRESH));
 	}
 
 	private String getMappingPath() {

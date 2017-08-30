@@ -27,58 +27,42 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.app.serializer;
+package com.systematic.trading.backtest.output.elastic.serialize;
 
 import java.io.IOException;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.systematic.trading.backtest.output.elastic.app.ElasticSearchFields;
-import com.systematic.trading.backtest.output.elastic.resource.ElasticBulkApiMetaDataRequestResource;
 
 /**
  * Serializer for application/x-ndjson (JSON with \n for a element separator)
  * 
  * @author CJ Hare
  */
-public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<ElasticBulkApiMetaDataRequestResource> {
+public class NdjsonListSerializer extends StdSerializer<List<?>> {
+
+	/** NDJSON is JSON (non-pretty printed) with a new line delimiter after each line. */
+	private static final String NEW_LINE_DELIMITER = "\n";
 
 	/** Classes serial ID. */
 	private static final long serialVersionUID = 1L;
 
-	public ElasticSearchBulkApiMetaDataSerializer() {
-		super(ElasticBulkApiMetaDataRequestResource.class, false);
+	public NdjsonListSerializer() {
+		super(List.class, false);
 	}
 
 	@Override
-	public void serialize( final ElasticBulkApiMetaDataRequestResource value, final JsonGenerator gen,
-	        final SerializerProvider provider ) throws IOException {
-
-		gen.writeStartObject();
-		gen.writeFieldName(value.getAction());
-		writeMeta(value, gen);
-		gen.writeEndObject();
-	}
-
-	private void writeMeta( final ElasticBulkApiMetaDataRequestResource value, final JsonGenerator gen )
+	/**
+	 * NOTE: the final line of data must end with a newline character \n.
+	 */
+	public void serialize( final List<?> values, final JsonGenerator gen, final SerializerProvider provider )
 	        throws IOException {
-		gen.writeStartObject();
 
-		if (StringUtils.isNotBlank(value.getIndex())) {
-			gen.writeStringField(ElasticSearchFields.INDEX, value.getIndex());
+		for (Object o : values) {
+			gen.writeObject(o);
+			gen.writeRawValue(NEW_LINE_DELIMITER);
 		}
-
-		if (StringUtils.isNotBlank(value.getType())) {
-			gen.writeStringField(ElasticSearchFields.TYPE, value.getType());
-		}
-
-		if (StringUtils.isNotBlank(value.getId())) {
-			gen.writeStringField(ElasticSearchFields.ID, value.getType());
-		}
-
-		gen.writeEndObject();
 	}
 }

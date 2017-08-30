@@ -38,13 +38,4 @@ public interface ElasticSearchFields {
 
 	/** Sub-directory for the settings of an index.*/
 	String SETTINGS = "_settings";
-
-	/** Meta identifier for an Elastic Search index. */
-	String INDEX = "_index";
-
-	/** Meta identifier for an Elastic Search type. */
-	String TYPE = "_type";
-
-	/** Meta identifier for an Elastic Search id. */
-	String ID = "_id";
 }
