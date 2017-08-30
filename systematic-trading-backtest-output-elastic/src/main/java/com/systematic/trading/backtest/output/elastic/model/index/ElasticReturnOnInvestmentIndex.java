@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.brokerage;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
 import java.util.Arrays;
 
@@ -35,36 +35,34 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticCommonIndex;
-import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticReturnOnInvestmentEventRequestResource;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 
 /**
- * Elastic Search index for brokerage events.
+ * Elastic Search index for return on investments events.
  * 
  * @author CJ Hare
  */
-public class ElasticBrokerageIndex extends ElasticCommonIndex {
+public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
 
-	public ElasticBrokerageIndex( final ElasticDao dao ) {
+	public ElasticReturnOnInvestmentIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 
-	public void event( final BacktestBatchId id, final BrokerageEvent event ) {
-		post(id, Entity.json(new ElasticBrokerageEventResource(event)));
+	public void event( final BacktestBatchId id, final ReturnOnInvestmentEvent event ) {
+		post(id, Entity.json(new ElasticReturnOnInvestmentEventRequestResource(event)));
 	}
 
 	@Override
 	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.BROKERAGE;
+		return ElasticIndexName.RETURN_ON_INVESTMENT;
 	}
 
 	@Override
 	protected ElasticIndexMapping getIndexMapping() {
-		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
-		        getPair(ElasticFieldName.EQUITY_AMOUNT, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.STARTING_EQUITY_BALANCE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.END_EQUITY_BALANCE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE),
-		        getPair(ElasticFieldName.TRANSACTION_FEE, ElasticFieldType.FLOAT)));
+		return new ElasticIndexMapping(
+		        Arrays.asList(getPair(ElasticFieldName.PERCENTAGE_CHANGE, ElasticFieldType.FLOAT),
+		                getPair(ElasticFieldName.INCLUSIVE_START_DATE, ElasticFieldType.DATE),
+		                getPair(ElasticFieldName.EXCLUSIVE_END_DATE, ElasticFieldType.DATE)));
 	}
 }

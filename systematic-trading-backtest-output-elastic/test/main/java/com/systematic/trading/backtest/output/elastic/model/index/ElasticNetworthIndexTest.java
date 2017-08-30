@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.equity;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -40,11 +40,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticIndexTestBase;
-import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.model.EquityIdentity;
-import com.systematic.trading.simulation.equity.event.EquityEvent;
-import com.systematic.trading.simulation.equity.event.EquityEvent.EquityEventType;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticNetworthIndex;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent.NetWorthEventType;
 
 /**
  * Purpose being to Verify the JSON messages to Elastic Search.
@@ -52,17 +50,17 @@ import com.systematic.trading.simulation.equity.event.EquityEvent.EquityEventTyp
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ElasticEquityIndexTest extends ElasticIndexTestBase {
+public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"identity\":{\"type\":\"text\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Management Fee\",\"identity\":\"ATA\",\"starting_equity_balance\":512.46,\"end_equity_balance\":500.12,\"equity_amount\":12.34,\"transaction_date\":{";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"equity_balance_value\":{\"type\":\"float\"},\"event_date\":{\"type\":\"date\"},\"networth\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"},\"cash_balance\":{\"type\":\"float\"},\"equity_balance\":{\"type\":\"float\"}}";
+	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Completed\",\"cash_balance\":500.12,\"equity_balance\":12.34,\"equity_balance_value\":512.46,\"networth\":606.98,\"event_date\":{";
 
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 
 		index.init(id);
 
@@ -75,7 +73,7 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 
 		index.init(id);
 
@@ -89,7 +87,7 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 
 		try {
 			index.init(id);
@@ -109,30 +107,30 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
-		final EquityEvent event = getEvent();
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
+		final NetWorthEvent event = getEvent();
 
 		index.init(id);
 		index.event(id, event);
 
-		verifyEventCalls(batchId, event.getTransactionDate());
+		verifyEventCalls(batchId, event.getEventDate());
 	}
 
-	private EquityEvent getEvent() {
-		final EquityEvent event = mock(EquityEvent.class);
-		final BigDecimal equityAmount = BigDecimal.valueOf(12.34);
-		final BigDecimal startingEquityBalance = BigDecimal.valueOf(512.46);
-		final BigDecimal endEquityBalance = BigDecimal.valueOf(500.12);
-		final LocalDate transactionDate = LocalDate.now();
-		final EquityEventType eventType = EquityEventType.MANAGEMENT_FEE;
-		final EquityIdentity identity = new EquityIdentity("ATA", EquityClass.STOCK, 2);
+	private NetWorthEvent getEvent() {
+		final NetWorthEvent event = mock(NetWorthEvent.class);
+		final BigDecimal equityBalance = BigDecimal.valueOf(12.34);
+		final BigDecimal equityBalanceValue = BigDecimal.valueOf(512.46);
+		final BigDecimal cashBalance = BigDecimal.valueOf(500.12);
+		final BigDecimal networth = BigDecimal.valueOf(606.98);
+		final LocalDate eventDate = LocalDate.now();
+		final NetWorthEventType eventType = NetWorthEventType.COMPLETED;
 
-		when(event.getStartingEquityBalance()).thenReturn(startingEquityBalance);
-		when(event.getEndEquityBalance()).thenReturn(endEquityBalance);
-		when(event.getTransactionDate()).thenReturn(transactionDate);
-		when(event.getEquityAmount()).thenReturn(equityAmount);
+		when(event.getEquityBalance()).thenReturn(equityBalance);
+		when(event.getEquityBalanceValue()).thenReturn(equityBalanceValue);
+		when(event.getCashBalance()).thenReturn(cashBalance);
+		when(event.getEventDate()).thenReturn(eventDate);
+		when(event.getNetWorth()).thenReturn(networth);
 		when(event.getType()).thenReturn(eventType);
-		when(event.getIdentity()).thenReturn(identity);
 
 		return event;
 	}
@@ -154,6 +152,6 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 
 	@Override
 	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.EQUITY;
+		return ElasticIndexName.NETWORTH;
 	}
 }

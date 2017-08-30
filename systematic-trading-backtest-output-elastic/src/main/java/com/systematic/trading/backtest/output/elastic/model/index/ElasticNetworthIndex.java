@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.signal.analysis;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
 import java.util.Arrays;
 
@@ -35,33 +35,36 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticCommonIndex;
-import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticNetWorthEventRequestResource;
+import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 
 /**
- * Elastic Search index for signal analysis events.
+ * Elastic Search index for Net worth events.
  * 
  * @author CJ Hare
  */
-public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
+public class ElasticNetworthIndex extends ElasticCommonIndex {
 
-	public ElasticSignalAnalysisIndex( final ElasticDao dao ) {
+	public ElasticNetworthIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 
-	public void event( final BacktestBatchId id, final SignalAnalysisEvent event ) {
-		post(id, Entity.json(new ElasticSignalAnalysisEventResource(event)));
+	public void event( final BacktestBatchId id, final NetWorthEvent event ) {
+		post(id, Entity.json(new ElasticNetWorthEventRequestResource(event)));
 	}
 
 	@Override
 	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.SIGNAL_ANALYSIS;
+		return ElasticIndexName.NETWORTH;
 	}
 
 	@Override
 	protected ElasticIndexMapping getIndexMapping() {
-		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.SIGNAL_TYPE, ElasticFieldType.TEXT),
-		        getPair(ElasticFieldName.DIRECTION_TYPE, ElasticFieldType.TEXT),
-		        getPair(ElasticFieldName.SIGNAL_DATE, ElasticFieldType.DATE)));
+		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
+		        getPair(ElasticFieldName.CASH_BALANCE, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.EQUITY_BALANCE_VALUE, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.NETWORTH, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.EVENT_DATE, ElasticFieldType.DATE)));
 	}
 }

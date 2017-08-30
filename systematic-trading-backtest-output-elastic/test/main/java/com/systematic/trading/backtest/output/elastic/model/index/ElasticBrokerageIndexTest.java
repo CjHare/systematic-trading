@@ -23,13 +23,14 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.signal.analysis;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.junit.Test;
@@ -39,10 +40,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticIndexTestBase;
-import com.systematic.trading.signals.model.IndicatorDirectionType;
-import com.systematic.trading.signals.model.IndicatorSignalType;
-import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent.BrokerageAccountEventType;
 
 /**
  * Purpose being to Verify the JSON messages to Elastic Search.
@@ -50,17 +49,17 @@ import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
+public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"signal_date\":{\"type\":\"date\"},\"signal_type\":{\"type\":\"text\"},\"direction_type\":{\"type\":\"text\"}}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"signal_type\":\"STOCHASTIC\",\"direction_type\":\"BULLISH\",\"signal_date\":{";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"transaction_fee\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
+	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Buy\",\"equity_amount\":12.34,\"starting_equity_balance\":512.46,\"end_equity_balance\":500.12,\"transaction_fee\":606.98,\"transaction_date\":{";
 
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
 
 		index.init(id);
 
@@ -73,7 +72,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
 
 		index.init(id);
 
@@ -87,7 +86,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
 
 		try {
 			index.init(id);
@@ -107,25 +106,30 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
-
-		final SignalAnalysisEvent event = getEvent();
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+		final BrokerageEvent event = getEvent();
 
 		index.init(id);
 		index.event(id, event);
 
-		verifyEventCalls(batchId, event.getSignalDate());
+		verifyEventCalls(batchId, event.getTransactionDate());
 	}
 
-	private SignalAnalysisEvent getEvent() {
-		final SignalAnalysisEvent event = mock(SignalAnalysisEvent.class);
-		final IndicatorSignalType type = IndicatorSignalType.STOCHASTIC;
-		final IndicatorDirectionType direction = IndicatorDirectionType.BULLISH;
-		final LocalDate signalDate = LocalDate.now();
+	private BrokerageEvent getEvent() {
+		final BrokerageEvent event = mock(BrokerageEvent.class);
+		final BigDecimal amount = BigDecimal.valueOf(12.34);
+		final BigDecimal startingEquityBalance = BigDecimal.valueOf(512.46);
+		final BigDecimal endEquityBalance = BigDecimal.valueOf(500.12);
+		final BigDecimal transactionFee = BigDecimal.valueOf(606.98);
+		final LocalDate transactionDate = LocalDate.now();
+		final BrokerageAccountEventType eventType = BrokerageAccountEventType.BUY;
 
-		when(event.getSignalType()).thenReturn(type);
-		when(event.getDirectionType()).thenReturn(direction);
-		when(event.getSignalDate()).thenReturn(signalDate);
+		when(event.getEquityAmount()).thenReturn(amount);
+		when(event.getStartingEquityBalance()).thenReturn(startingEquityBalance);
+		when(event.getEndEquityBalance()).thenReturn(endEquityBalance);
+		when(event.getTransactionDate()).thenReturn(transactionDate);
+		when(event.getTransactionFee()).thenReturn(transactionFee);
+		when(event.getType()).thenReturn(eventType);
 
 		return event;
 	}
@@ -147,6 +151,6 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	@Override
 	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.SIGNAL_ANALYSIS;
+		return ElasticIndexName.BROKERAGE;
 	}
 }

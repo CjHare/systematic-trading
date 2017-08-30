@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.brokerage;
+package com.systematic.trading.backtest.output.elastic.resource;
 
 import java.time.LocalDate;
 
@@ -41,7 +41,7 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticBrokerageEventResource {
+public class ElasticBrokerageEventRequestResource {
 
 	private final String event;
 	private final float equityAmount;
@@ -50,7 +50,7 @@ public class ElasticBrokerageEventResource {
 	private final float transactionFee;
 	private final LocalDate transactionDate;
 
-	public ElasticBrokerageEventResource( final BrokerageEvent event ) {
+	public ElasticBrokerageEventRequestResource( final BrokerageEvent event ) {
 		this.event = event.getType().getName();
 		this.equityAmount = event.getEquityAmount().floatValue();
 		this.startingEquityBalance = event.getStartingEquityBalance().floatValue();

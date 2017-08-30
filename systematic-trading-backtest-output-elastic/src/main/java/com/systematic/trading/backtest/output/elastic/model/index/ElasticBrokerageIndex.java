@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.networth;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
 import java.util.Arrays;
 
@@ -35,36 +35,36 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticCommonIndex;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticBrokerageEventRequestResource;
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 
 /**
- * Elastic Search index for Net worth events.
+ * Elastic Search index for brokerage events.
  * 
  * @author CJ Hare
  */
-public class ElasticNetworthIndex extends ElasticCommonIndex {
+public class ElasticBrokerageIndex extends ElasticCommonIndex {
 
-	public ElasticNetworthIndex( final ElasticDao dao ) {
+	public ElasticBrokerageIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 
-	public void event( final BacktestBatchId id, final NetWorthEvent event ) {
-		post(id, Entity.json(new ElasticNetWorthEventResource(event)));
+	public void event( final BacktestBatchId id, final BrokerageEvent event ) {
+		post(id, Entity.json(new ElasticBrokerageEventRequestResource(event)));
 	}
 
 	@Override
 	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.NETWORTH;
+		return ElasticIndexName.BROKERAGE;
 	}
 
 	@Override
 	protected ElasticIndexMapping getIndexMapping() {
 		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
-		        getPair(ElasticFieldName.CASH_BALANCE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.EQUITY_BALANCE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.EQUITY_BALANCE_VALUE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.NETWORTH, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.EVENT_DATE, ElasticFieldType.DATE)));
+		        getPair(ElasticFieldName.EQUITY_AMOUNT, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.STARTING_EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.END_EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE),
+		        getPair(ElasticFieldName.TRANSACTION_FEE, ElasticFieldType.FLOAT)));
 	}
 }

@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.cash;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
 import java.util.Arrays;
 
@@ -35,35 +35,33 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticCommonIndex;
-import com.systematic.trading.simulation.cash.event.CashEvent;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticOrderEventRequestResource;
+import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Elastic Search index for cash events.
+ * Elastic Search index for order events.
  * 
  * @author CJ Hare
  */
-public class ElasticCashIndex extends ElasticCommonIndex {
+public class ElasticOrderIndex extends ElasticCommonIndex {
 
-	public ElasticCashIndex( final ElasticDao dao ) {
+	public ElasticOrderIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 
-	public void event( final BacktestBatchId id, final CashEvent event ) {
-		post(id, Entity.json(new ElasticCashEventResource(event)));
+	public void event( final BacktestBatchId id, final OrderEvent event ) {
+		post(id, Entity.json(new ElasticOrderEventRequestResource(event)));
 	}
 
 	@Override
 	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.CASH;
+		return ElasticIndexName.ORDER;
 	}
 
 	@Override
 	protected ElasticIndexMapping getIndexMapping() {
 		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
-		        getPair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.TOTAL_COST, ElasticFieldType.FLOAT),
 		        getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 }

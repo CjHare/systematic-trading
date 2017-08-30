@@ -23,33 +23,37 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.order;
+package com.systematic.trading.backtest.output.elastic.resource;
 
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
-import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.simulation.cash.event.CashEvent;
 
 /**
- * Resource for an brokerage event to send to Elastic search. 
+ * Resource to send to Elastic Search for a CashEvent.
  * 
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticOrderEventResource {
+public class ElasticCashEventRequestResource {
 
 	private final String event;
-	private final float totalCost;
+	private final float amount;
+	private final float fundsBefore;
+	private final float fundsAfter;
 	private final LocalDate transactionDate;
 
-	public ElasticOrderEventResource( final OrderEvent event ) {
-		this.event = event.getType().name();
-		this.totalCost = event.getTotalCost().floatValue();
+	public ElasticCashEventRequestResource( final CashEvent event ) {
+		this.event = event.getType().getName();
+		this.amount = event.getAmount().floatValue();
+		this.fundsBefore = event.getFundsBefore().floatValue();
+		this.fundsAfter = event.getFundsAfter().floatValue();
 		this.transactionDate = event.getTransactionDate();
 	}
 
@@ -58,9 +62,19 @@ public class ElasticOrderEventResource {
 		return event;
 	}
 
-	@JsonProperty(ElasticTypeName.TOTAL_COST)
-	public float getTotalCost() {
-		return totalCost;
+	@JsonProperty(ElasticTypeName.AMOUNT)
+	public float getAmount() {
+		return amount;
+	}
+
+	@JsonProperty(ElasticTypeName.FUNDS_BEFORE)
+	public float getFundsBefore() {
+		return fundsBefore;
+	}
+
+	@JsonProperty(ElasticTypeName.FUNDS_AFTER)
+	public float getFundsAfter() {
+		return fundsAfter;
 	}
 
 	@JsonProperty(ElasticTypeName.TRANSACTION_DATE)
@@ -71,11 +85,15 @@ public class ElasticOrderEventResource {
 
 	@Override
 	public String toString() {
-		final StringBuilder out = new StringBuilder("ElasticOrderEventResource [");
+		final StringBuilder out = new StringBuilder("ElasticCashEventResource [");
 		out.append("event=");
 		out.append(event);
-		out.append(", totalCost=");
-		out.append(totalCost);
+		out.append(", amount=");
+		out.append(amount);
+		out.append(", fundsBefore=");
+		out.append(fundsBefore);
+		out.append(", fundsAfter=");
+		out.append(fundsAfter);
 		out.append(", transactionDate=");
 		out.append(transactionDate);
 		out.append("]");

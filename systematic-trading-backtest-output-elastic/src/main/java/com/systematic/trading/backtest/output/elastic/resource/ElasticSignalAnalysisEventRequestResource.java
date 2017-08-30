@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.networth;
+package com.systematic.trading.backtest.output.elastic.resource;
 
 import java.time.LocalDate;
 
@@ -33,78 +33,51 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 
 /**
- * Resource for converting Net worth Events to input for Elastic Search.
+ * Resource for an brokerage event to send to Elastic search. 
  * 
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticNetWorthEventResource {
+public class ElasticSignalAnalysisEventRequestResource {
 
-	private final String event;
-	private final float cashBalance;
-	private final float equityBalance;
-	private final float equityBalanceValue;
-	private final float networth;
-	private final LocalDate eventDate;
+	private final String signalType;
+	private final String directionType;
+	private final LocalDate signalDate;
 
-	public ElasticNetWorthEventResource( final NetWorthEvent event ) {
-		this.event = event.getType().getName();
-		this.cashBalance = event.getCashBalance().floatValue();
-		this.equityBalance = event.getEquityBalance().floatValue();
-		this.equityBalanceValue = event.getEquityBalanceValue().floatValue();
-		this.networth = event.getNetWorth().floatValue();
-		this.eventDate = event.getEventDate();
+	public ElasticSignalAnalysisEventRequestResource( final SignalAnalysisEvent event ) {
+		this.signalType = event.getSignalType().name();
+		this.directionType = event.getDirectionType().name();
+		this.signalDate = event.getSignalDate();
 	}
 
-	@JsonProperty(ElasticTypeName.EVENT)
-	public String getEvent() {
-		return event;
+	@JsonProperty(ElasticTypeName.SIGNAL_TYPE)
+	public String getSignalType() {
+		return signalType;
 	}
 
-	@JsonProperty(ElasticTypeName.CASH_BALANCE)
-	public float getCashBalance() {
-		return cashBalance;
+	@JsonProperty(ElasticTypeName.DIRECTION_TYPE)
+	public String getDirectionType() {
+		return directionType;
 	}
 
-	@JsonProperty(ElasticTypeName.EQUITY_BALANCE)
-	public float getEquityBalance() {
-		return equityBalance;
-	}
-
-	@JsonProperty(ElasticTypeName.EQUITY_BALANCE_VALUE)
-	public float getEquityBalanceValue() {
-		return equityBalanceValue;
-	}
-
-	@JsonProperty(ElasticTypeName.NETWORTH)
-	public float getNetworth() {
-		return networth;
-	}
-
-	@JsonProperty(ElasticTypeName.EVENT_DATE)
+	@JsonProperty(ElasticTypeName.SIGNAL_DATE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
-	public LocalDate getEventDate() {
-		return eventDate;
+	public LocalDate getSignalDate() {
+		return signalDate;
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder out = new StringBuilder("ElasticNetWorthEventResource [");
-		out.append("event=");
-		out.append(event);
-		out.append("cashBalance=");
-		out.append(cashBalance);
-		out.append(", equityBalance=");
-		out.append(equityBalance);
-		out.append(", equityBalanceValue=");
-		out.append(equityBalanceValue);
-		out.append(", networth=");
-		out.append(networth);
-		out.append(", eventDate=");
-		out.append(eventDate);
+		final StringBuilder out = new StringBuilder("ElasticReturnOnInvestmentEventResource [");
+		out.append("signalType=");
+		out.append(signalType);
+		out.append(", directionType=");
+		out.append(directionType);
+		out.append(", signalDate=");
+		out.append(signalDate);
 		out.append("]");
 		return out.toString();
 	}

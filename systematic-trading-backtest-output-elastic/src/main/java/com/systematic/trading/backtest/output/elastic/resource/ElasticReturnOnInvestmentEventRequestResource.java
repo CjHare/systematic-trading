@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.roi;
+package com.systematic.trading.backtest.output.elastic.resource;
 
 import java.time.LocalDate;
 
@@ -41,13 +41,13 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticReturnOnInvestmentEventResource {
+public class ElasticReturnOnInvestmentEventRequestResource {
 
 	private final float percentageChange;
 	private final LocalDate inclusiveStartDate;
 	private final LocalDate exclusiveEndDate;
 
-	public ElasticReturnOnInvestmentEventResource( final ReturnOnInvestmentEvent event ) {
+	public ElasticReturnOnInvestmentEventRequestResource( final ReturnOnInvestmentEvent event ) {
 		this.percentageChange = event.getPercentageChange().floatValue();
 		this.inclusiveStartDate = event.getInclusiveStartDate();
 		this.exclusiveEndDate = event.getExclusiveEndDate();

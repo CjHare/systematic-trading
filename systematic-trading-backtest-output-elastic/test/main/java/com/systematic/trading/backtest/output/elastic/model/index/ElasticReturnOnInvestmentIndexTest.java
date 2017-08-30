@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.brokerage;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -40,9 +40,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticIndexTestBase;
-import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
-import com.systematic.trading.simulation.brokerage.event.BrokerageEvent.BrokerageAccountEventType;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticReturnOnInvestmentIndex;
+import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 
 /**
  * Purpose being to Verify the JSON messages to Elastic Search.
@@ -50,17 +49,17 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent.Brokerag
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
+public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"transaction_fee\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Buy\",\"equity_amount\":12.34,\"starting_equity_balance\":512.46,\"end_equity_balance\":500.12,\"transaction_fee\":606.98,\"transaction_date\":{";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"inclusive_start_date\":{\"type\":\"date\"},\"exclusive_end_date\":{\"type\":\"date\"},\"percentage_change\":{\"type\":\"float\"}}}";
+	private static final String JSON_POST_INDEX_TYPE = "{\"percentage_change\":12.34,\"";
 
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 
 		index.init(id);
 
@@ -73,7 +72,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 
 		index.init(id);
 
@@ -87,7 +86,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 
 		try {
 			index.init(id);
@@ -107,30 +106,24 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
-		final BrokerageEvent event = getEvent();
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
+		final ReturnOnInvestmentEvent event = getEvent();
 
 		index.init(id);
 		index.event(id, event);
 
-		verifyEventCalls(batchId, event.getTransactionDate());
+		verifyEventCalls(batchId, event.getExclusiveEndDate());
 	}
 
-	private BrokerageEvent getEvent() {
-		final BrokerageEvent event = mock(BrokerageEvent.class);
-		final BigDecimal amount = BigDecimal.valueOf(12.34);
-		final BigDecimal startingEquityBalance = BigDecimal.valueOf(512.46);
-		final BigDecimal endEquityBalance = BigDecimal.valueOf(500.12);
-		final BigDecimal transactionFee = BigDecimal.valueOf(606.98);
-		final LocalDate transactionDate = LocalDate.now();
-		final BrokerageAccountEventType eventType = BrokerageAccountEventType.BUY;
+	private ReturnOnInvestmentEvent getEvent() {
+		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
+		final BigDecimal percentageChange = BigDecimal.valueOf(12.34);
+		final LocalDate inclusiveEndDate = LocalDate.now();
+		final LocalDate exclusiveStartDate = LocalDate.now();
 
-		when(event.getEquityAmount()).thenReturn(amount);
-		when(event.getStartingEquityBalance()).thenReturn(startingEquityBalance);
-		when(event.getEndEquityBalance()).thenReturn(endEquityBalance);
-		when(event.getTransactionDate()).thenReturn(transactionDate);
-		when(event.getTransactionFee()).thenReturn(transactionFee);
-		when(event.getType()).thenReturn(eventType);
+		when(event.getPercentageChange()).thenReturn(percentageChange);
+		when(event.getExclusiveEndDate()).thenReturn(inclusiveEndDate);
+		when(event.getInclusiveStartDate()).thenReturn(exclusiveStartDate);
 
 		return event;
 	}
@@ -152,6 +145,6 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 	@Override
 	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.BROKERAGE;
+		return ElasticIndexName.RETURN_ON_INVESTMENT;
 	}
 }

@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.equity;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
 import java.util.Arrays;
 
@@ -35,36 +35,35 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticCommonIndex;
-import com.systematic.trading.simulation.equity.event.EquityEvent;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticCashEventRequestResource;
+import com.systematic.trading.simulation.cash.event.CashEvent;
 
 /**
- * Elastic Search index for equity events.
+ * Elastic Search index for cash events.
  * 
  * @author CJ Hare
  */
-public class ElasticEquityIndex extends ElasticCommonIndex {
+public class ElasticCashIndex extends ElasticCommonIndex {
 
-	public ElasticEquityIndex( final ElasticDao dao ) {
+	public ElasticCashIndex( final ElasticDao dao ) {
 		super(dao);
 	}
 
-	public void event( final BacktestBatchId id, final EquityEvent event ) {
-		post(id, Entity.json(new ElasticEquityEventResource(event)));
+	public void event( final BacktestBatchId id, final CashEvent event ) {
+		post(id, Entity.json(new ElasticCashEventRequestResource(event)));
 	}
 
 	@Override
 	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.EQUITY;
+		return ElasticIndexName.CASH;
 	}
 
 	@Override
 	protected ElasticIndexMapping getIndexMapping() {
 		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
-		        getPair(ElasticFieldName.IDENTITY, ElasticFieldType.TEXT),
-		        getPair(ElasticFieldName.EQUITY_AMOUNT, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.STARTING_EQUITY_BALANCE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.END_EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
+		        getPair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT),
 		        getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 }

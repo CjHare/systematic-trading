@@ -23,14 +23,13 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index.order;
+package com.systematic.trading.backtest.output.elastic.model.index;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.junit.Test;
@@ -40,9 +39,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticIndexTestBase;
-import com.systematic.trading.simulation.order.event.OrderEvent;
-import com.systematic.trading.simulation.order.event.OrderEvent.EquityOrderType;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalAnalysisIndex;
+import com.systematic.trading.signals.model.IndicatorDirectionType;
+import com.systematic.trading.signals.model.IndicatorSignalType;
+import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 
 /**
  * Purpose being to Verify the JSON messages to Elastic Search.
@@ -50,17 +50,17 @@ import com.systematic.trading.simulation.order.event.OrderEvent.EquityOrderType;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ElasticOrderIndexTest extends ElasticIndexTestBase {
+public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"total_cost\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"ENTRY\",\"total_cost\":12.34,\"transaction_date\":{";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"signal_date\":{\"type\":\"date\"},\"signal_type\":{\"type\":\"text\"},\"direction_type\":{\"type\":\"text\"}}}";
+	private static final String JSON_POST_INDEX_TYPE = "{\"signal_type\":\"STOCHASTIC\",\"direction_type\":\"BULLISH\",\"signal_date\":{";
 
 	@Test
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 
 		index.init(id);
 
@@ -73,7 +73,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 
 		index.init(id);
 
@@ -87,7 +87,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 
 		try {
 			index.init(id);
@@ -107,24 +107,25 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
-		final OrderEvent event = getEvent();
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
+
+		final SignalAnalysisEvent event = getEvent();
 
 		index.init(id);
 		index.event(id, event);
 
-		verifyEventCalls(batchId, event.getTransactionDate());
+		verifyEventCalls(batchId, event.getSignalDate());
 	}
 
-	private OrderEvent getEvent() {
-		final OrderEvent event = mock(OrderEvent.class);
-		final BigDecimal totalCost = BigDecimal.valueOf(12.34);
-		final LocalDate transactionDate = LocalDate.now();
-		final EquityOrderType eventType = EquityOrderType.ENTRY;
+	private SignalAnalysisEvent getEvent() {
+		final SignalAnalysisEvent event = mock(SignalAnalysisEvent.class);
+		final IndicatorSignalType type = IndicatorSignalType.STOCHASTIC;
+		final IndicatorDirectionType direction = IndicatorDirectionType.BULLISH;
+		final LocalDate signalDate = LocalDate.now();
 
-		when(event.getTotalCost()).thenReturn(totalCost);
-		when(event.getTransactionDate()).thenReturn(transactionDate);
-		when(event.getType()).thenReturn(eventType);
+		when(event.getSignalType()).thenReturn(type);
+		when(event.getDirectionType()).thenReturn(direction);
+		when(event.getSignalDate()).thenReturn(signalDate);
 
 		return event;
 	}
@@ -146,6 +147,6 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 	@Override
 	protected ElasticIndexName getIndexName() {
-		return ElasticIndexName.ORDER;
+		return ElasticIndexName.SIGNAL_ANALYSIS;
 	}
 }
