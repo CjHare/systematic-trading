@@ -56,6 +56,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
 import com.systematic.trading.backtest.output.elastic.app.model.index.ElasticIndexSettingsResource;
+import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchBulkApiResponseResource;
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialResource;
 import com.systematic.trading.backtest.output.elastic.app.serializer.ElasticSearchBulkApiMetaDataSerializer;
 import com.systematic.trading.backtest.output.elastic.app.serializer.NdjsonListSerializer;
@@ -176,8 +177,6 @@ public class ElasticSearchFacade {
 	}
 
 	public void postTypes( final List<?> request ) {
-		// https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html
-		// https://www.elastic.co/guide/en/elasticsearch/guide/current/bulk.html
 		final Entity<?> requestBody = Entity.json(request);
 		final WebTarget url = bulkApiRoot.path(getTypePath()).path("_bulk");
 
@@ -190,13 +189,13 @@ public class ElasticSearchFacade {
 			                response.getStatus(), url, requestBody));
 		}
 
-		final ElasticPostEventResponse eventResponse = response.readEntity(ElasticPostEventResponse.class);
+		final ElasticSearchBulkApiResponseResource eventResponse = response
+		        .readEntity(ElasticSearchBulkApiResponseResource.class);
 
-		//TODO Bulk API response is customer - needs a new object
-		//		if (isInvalidResponse(eventResponse)) {
-		//			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
-		//			        eventResponse, url, requestBody));
-		//		}
+		if (isInvalidResponse(eventResponse)) {
+			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
+			        eventResponse, url, requestBody));
+		}
 	}
 
 	public void disableIndexRefresh() {
@@ -242,6 +241,10 @@ public class ElasticSearchFacade {
 
 	private Map.Entry<String, String> getType( final String field ) {
 		return new SimpleEntry<String, String>(TYPE, field);
+	}
+
+	private boolean isInvalidResponse( final ElasticSearchBulkApiResponseResource eventResponse ) {
+		return eventResponse.hasErrors();
 	}
 
 	private boolean isInvalidResponse( final ElasticPostEventResponse eventResponse ) {
