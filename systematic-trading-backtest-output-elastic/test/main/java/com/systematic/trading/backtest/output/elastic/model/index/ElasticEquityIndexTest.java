@@ -40,7 +40,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticEquityIndex;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
@@ -118,23 +117,22 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}
 
-	private EquityEvent getEvent() {
-		final EquityEvent event = mock(EquityEvent.class);
-		final BigDecimal equityAmount = BigDecimal.valueOf(12.34);
-		final BigDecimal startingEquityBalance = BigDecimal.valueOf(512.46);
-		final BigDecimal endEquityBalance = BigDecimal.valueOf(500.12);
-		final LocalDate transactionDate = LocalDate.now();
-		final EquityEventType eventType = EquityEventType.MANAGEMENT_FEE;
-		final EquityIdentity identity = new EquityIdentity("ATA", EquityClass.STOCK, 2);
+	@Test
+	public void disableRefreshInterval() {
+		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
 
-		when(event.getStartingEquityBalance()).thenReturn(startingEquityBalance);
-		when(event.getEndEquityBalance()).thenReturn(endEquityBalance);
-		when(event.getTransactionDate()).thenReturn(transactionDate);
-		when(event.getEquityAmount()).thenReturn(equityAmount);
-		when(event.getType()).thenReturn(eventType);
-		when(event.getIdentity()).thenReturn(identity);
+		index.setRefreshInterval(false);
 
-		return event;
+		verfiyRefreshInterval(false);
+	}
+
+	@Test
+	public void enableRefreshInterval() {
+		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
+
+		index.setRefreshInterval(true);
+
+		verfiyRefreshInterval(true);
 	}
 
 	@Override
@@ -155,5 +153,24 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 	@Override
 	protected ElasticIndexName getIndexName() {
 		return ElasticIndexName.EQUITY;
+	}
+
+	private EquityEvent getEvent() {
+		final EquityEvent event = mock(EquityEvent.class);
+		final BigDecimal equityAmount = BigDecimal.valueOf(12.34);
+		final BigDecimal startingEquityBalance = BigDecimal.valueOf(512.46);
+		final BigDecimal endEquityBalance = BigDecimal.valueOf(500.12);
+		final LocalDate transactionDate = LocalDate.now();
+		final EquityEventType eventType = EquityEventType.MANAGEMENT_FEE;
+		final EquityIdentity identity = new EquityIdentity("ATA", EquityClass.STOCK, 2);
+
+		when(event.getStartingEquityBalance()).thenReturn(startingEquityBalance);
+		when(event.getEndEquityBalance()).thenReturn(endEquityBalance);
+		when(event.getTransactionDate()).thenReturn(transactionDate);
+		when(event.getEquityAmount()).thenReturn(equityAmount);
+		when(event.getType()).thenReturn(eventType);
+		when(event.getIdentity()).thenReturn(identity);
+
+		return event;
 	}
 }

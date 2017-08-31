@@ -115,23 +115,22 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}
 
-	private BrokerageEvent getEvent() {
-		final BrokerageEvent event = mock(BrokerageEvent.class);
-		final BigDecimal amount = BigDecimal.valueOf(12.34);
-		final BigDecimal startingEquityBalance = BigDecimal.valueOf(512.46);
-		final BigDecimal endEquityBalance = BigDecimal.valueOf(500.12);
-		final BigDecimal transactionFee = BigDecimal.valueOf(606.98);
-		final LocalDate transactionDate = LocalDate.now();
-		final BrokerageAccountEventType eventType = BrokerageAccountEventType.BUY;
+	@Test
+	public void disableRefreshInterval() {
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
 
-		when(event.getEquityAmount()).thenReturn(amount);
-		when(event.getStartingEquityBalance()).thenReturn(startingEquityBalance);
-		when(event.getEndEquityBalance()).thenReturn(endEquityBalance);
-		when(event.getTransactionDate()).thenReturn(transactionDate);
-		when(event.getTransactionFee()).thenReturn(transactionFee);
-		when(event.getType()).thenReturn(eventType);
+		index.setRefreshInterval(false);
 
-		return event;
+		verfiyRefreshInterval(false);
+	}
+
+	@Test
+	public void enableRefreshInterval() {
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+
+		index.setRefreshInterval(true);
+
+		verfiyRefreshInterval(true);
 	}
 
 	@Override
@@ -152,5 +151,24 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 	@Override
 	protected ElasticIndexName getIndexName() {
 		return ElasticIndexName.BROKERAGE;
+	}
+
+	private BrokerageEvent getEvent() {
+		final BrokerageEvent event = mock(BrokerageEvent.class);
+		final BigDecimal amount = BigDecimal.valueOf(12.34);
+		final BigDecimal startingEquityBalance = BigDecimal.valueOf(512.46);
+		final BigDecimal endEquityBalance = BigDecimal.valueOf(500.12);
+		final BigDecimal transactionFee = BigDecimal.valueOf(606.98);
+		final LocalDate transactionDate = LocalDate.now();
+		final BrokerageAccountEventType eventType = BrokerageAccountEventType.BUY;
+
+		when(event.getEquityAmount()).thenReturn(amount);
+		when(event.getStartingEquityBalance()).thenReturn(startingEquityBalance);
+		when(event.getEndEquityBalance()).thenReturn(endEquityBalance);
+		when(event.getTransactionDate()).thenReturn(transactionDate);
+		when(event.getTransactionFee()).thenReturn(transactionFee);
+		when(event.getType()).thenReturn(eventType);
+
+		return event;
 	}
 }

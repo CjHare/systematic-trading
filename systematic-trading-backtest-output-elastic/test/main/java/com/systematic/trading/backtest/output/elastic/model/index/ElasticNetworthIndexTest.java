@@ -116,23 +116,22 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 		verifyEventCalls(batchId, event.getEventDate());
 	}
 
-	private NetWorthEvent getEvent() {
-		final NetWorthEvent event = mock(NetWorthEvent.class);
-		final BigDecimal equityBalance = BigDecimal.valueOf(12.34);
-		final BigDecimal equityBalanceValue = BigDecimal.valueOf(512.46);
-		final BigDecimal cashBalance = BigDecimal.valueOf(500.12);
-		final BigDecimal networth = BigDecimal.valueOf(606.98);
-		final LocalDate eventDate = LocalDate.now();
-		final NetWorthEventType eventType = NetWorthEventType.COMPLETED;
+	@Test
+	public void disableRefreshInterval() {
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
 
-		when(event.getEquityBalance()).thenReturn(equityBalance);
-		when(event.getEquityBalanceValue()).thenReturn(equityBalanceValue);
-		when(event.getCashBalance()).thenReturn(cashBalance);
-		when(event.getEventDate()).thenReturn(eventDate);
-		when(event.getNetWorth()).thenReturn(networth);
-		when(event.getType()).thenReturn(eventType);
+		index.setRefreshInterval(false);
 
-		return event;
+		verfiyRefreshInterval(false);
+	}
+
+	@Test
+	public void enableRefreshInterval() {
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
+
+		index.setRefreshInterval(true);
+
+		verfiyRefreshInterval(true);
 	}
 
 	@Override
@@ -153,5 +152,24 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 	@Override
 	protected ElasticIndexName getIndexName() {
 		return ElasticIndexName.NETWORTH;
+	}
+
+	private NetWorthEvent getEvent() {
+		final NetWorthEvent event = mock(NetWorthEvent.class);
+		final BigDecimal equityBalance = BigDecimal.valueOf(12.34);
+		final BigDecimal equityBalanceValue = BigDecimal.valueOf(512.46);
+		final BigDecimal cashBalance = BigDecimal.valueOf(500.12);
+		final BigDecimal networth = BigDecimal.valueOf(606.98);
+		final LocalDate eventDate = LocalDate.now();
+		final NetWorthEventType eventType = NetWorthEventType.COMPLETED;
+
+		when(event.getEquityBalance()).thenReturn(equityBalance);
+		when(event.getEquityBalanceValue()).thenReturn(equityBalanceValue);
+		when(event.getCashBalance()).thenReturn(cashBalance);
+		when(event.getEventDate()).thenReturn(eventDate);
+		when(event.getNetWorth()).thenReturn(networth);
+		when(event.getType()).thenReturn(eventType);
+
+		return event;
 	}
 }

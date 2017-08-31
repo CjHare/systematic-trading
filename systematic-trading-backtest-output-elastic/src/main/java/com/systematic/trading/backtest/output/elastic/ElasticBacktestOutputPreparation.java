@@ -30,6 +30,15 @@
 package com.systematic.trading.backtest.output.elastic;
 
 import com.systematic.trading.backtest.output.BacktestOutputPreparation;
+import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
+import com.systematic.trading.backtest.output.elastic.dao.impl.HttpElasticDao;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticBrokerageIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticCashIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticEquityIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticNetworthIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticOrderIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticReturnOnInvestmentIndex;
+import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalAnalysisIndex;
 
 /**
  * Turns off the index refreshes during the bulk API operations.
@@ -40,15 +49,22 @@ public class ElasticBacktestOutputPreparation implements BacktestOutputPreparati
 
 	@Override
 	public void setUp() {
-
-		//TODO disable settings on all indexes
-
+		setRefreshInterval(false);
 	}
 
 	@Override
 	public void tearDown() {
+		setRefreshInterval(true);
+	}
 
-		//TODO enable settings on all indexes
-
+	private void setRefreshInterval( final boolean enabled ) {
+		final ElasticDao dao = new HttpElasticDao();
+		new ElasticSignalAnalysisIndex(dao).setRefreshInterval(enabled);
+		new ElasticCashIndex(dao).setRefreshInterval(enabled);
+		new ElasticOrderIndex(dao).setRefreshInterval(enabled);
+		new ElasticBrokerageIndex(dao).setRefreshInterval(enabled);
+		new ElasticReturnOnInvestmentIndex(dao).setRefreshInterval(enabled);
+		new ElasticNetworthIndex(dao).setRefreshInterval(enabled);
+		new ElasticEquityIndex(dao).setRefreshInterval(enabled);
 	}
 }

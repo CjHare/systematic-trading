@@ -58,6 +58,12 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 @RunWith(MockitoJUnitRunner.class)
 public abstract class ElasticIndexTestBase {
 
+	/** Value to disable the refresh interval. */
+	private static final String INDEX_SETTING_REFRESH_DISABLE = "-1";
+
+	/** Default value for the refresh interval. */
+	private static final String INDEX_SETTING_REFRESH_DEFAULT = "1s";
+
 	@Mock
 	private ElasticDao dao;
 
@@ -146,6 +152,14 @@ public abstract class ElasticIndexTestBase {
 
 	protected ElasticDao getDao() {
 		return dao;
+	}
+
+	protected void verfiyRefreshInterval( final boolean enabled ) {
+		final String expectedJson = String.format("\"refresh_interval\":\"%s\"",
+		        enabled ? INDEX_SETTING_REFRESH_DEFAULT : INDEX_SETTING_REFRESH_DISABLE);
+
+		verify(dao).putSetting(eq(getIndexName()), equalsJson(expectedJson));
+		verifyNoMoreInteractions(dao);
 	}
 
 	protected abstract String getPostIndex();

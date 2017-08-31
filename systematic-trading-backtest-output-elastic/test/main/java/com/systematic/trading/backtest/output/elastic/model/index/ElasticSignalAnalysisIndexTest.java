@@ -39,7 +39,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalAnalysisIndex;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
@@ -117,17 +116,22 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 		verifyEventCalls(batchId, event.getSignalDate());
 	}
 
-	private SignalAnalysisEvent getEvent() {
-		final SignalAnalysisEvent event = mock(SignalAnalysisEvent.class);
-		final IndicatorSignalType type = IndicatorSignalType.STOCHASTIC;
-		final IndicatorDirectionType direction = IndicatorDirectionType.BULLISH;
-		final LocalDate signalDate = LocalDate.now();
+	@Test
+	public void disableRefreshInterval() {
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
 
-		when(event.getSignalType()).thenReturn(type);
-		when(event.getDirectionType()).thenReturn(direction);
-		when(event.getSignalDate()).thenReturn(signalDate);
+		index.setRefreshInterval(false);
 
-		return event;
+		verfiyRefreshInterval(false);
+	}
+
+	@Test
+	public void enableRefreshInterval() {
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao());
+
+		index.setRefreshInterval(true);
+
+		verfiyRefreshInterval(true);
 	}
 
 	@Override
@@ -148,5 +152,18 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 	@Override
 	protected ElasticIndexName getIndexName() {
 		return ElasticIndexName.SIGNAL_ANALYSIS;
+	}
+
+	private SignalAnalysisEvent getEvent() {
+		final SignalAnalysisEvent event = mock(SignalAnalysisEvent.class);
+		final IndicatorSignalType type = IndicatorSignalType.STOCHASTIC;
+		final IndicatorDirectionType direction = IndicatorDirectionType.BULLISH;
+		final LocalDate signalDate = LocalDate.now();
+
+		when(event.getSignalType()).thenReturn(type);
+		when(event.getDirectionType()).thenReturn(direction);
+		when(event.getSignalDate()).thenReturn(signalDate);
+
+		return event;
 	}
 }

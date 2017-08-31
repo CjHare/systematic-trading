@@ -40,6 +40,7 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticIndexSettingsRequestResource;
 
 /**
  * Behaviour  common for indexes put into Elastic Search
@@ -47,6 +48,12 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
  * @author CJ Hare
  */
 public abstract class ElasticCommonIndex {
+
+	/** Value to disable the refresh interval. */
+	private static final String INDEX_SETTING_REFRESH_DISABLE = "-1";
+
+	/** Default value for the refresh interval. */
+	private static final String INDEX_SETTING_REFRESH_DEFAULT = "1s";
 
 	/** 
 	 * The number of primary shards that an index should have, which defaults to 5. 
@@ -79,6 +86,11 @@ public abstract class ElasticCommonIndex {
 			throw new ElasticException(
 			        String.format("Existing mapping (and potentially already existing results) found for: %s", id));
 		}
+	}
+
+	public void setRefreshInterval( final boolean enabled ) {
+		dao.putSetting(getIndexName(), Entity.json(new ElasticIndexSettingsRequestResource(
+		        enabled ? INDEX_SETTING_REFRESH_DEFAULT : INDEX_SETTING_REFRESH_DISABLE)));
 	}
 
 	protected void post( final BacktestBatchId id, final Entity<?> requestBody ) {

@@ -126,7 +126,22 @@ public class HttpElasticDao implements ElasticDao {
 		if (response.getStatus() != 200) {
 			throw new ElasticException(String.format("Failed to put the index to: %s", path));
 		}
+	}
 
+	@Override
+	public void putSetting( final ElasticIndexName indexName, final Entity<?> requestBody ) {
+
+		final String path = getSettingPath(indexName);
+		final Response response = root.path(path).request().put(requestBody);
+
+		if (response.getStatus() != 200) {
+			throw new ElasticException(String.format("Failed to put the index setting to: %s", path));
+		}
+
+	}
+
+	private String getSettingPath( final ElasticIndexName indexName ) {
+		return String.format("%s/_settings", indexName.getName());
 	}
 
 	/**

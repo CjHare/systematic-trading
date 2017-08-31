@@ -40,7 +40,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticCashIndex;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
 
@@ -116,21 +115,22 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}
 
-	private CashEvent getEvent() {
-		final CashEvent event = mock(CashEvent.class);
-		final BigDecimal amount = BigDecimal.valueOf(12.34);
-		final BigDecimal fundsAfter = BigDecimal.valueOf(512.46);
-		final BigDecimal fundsBefore = BigDecimal.valueOf(500.12);
-		final LocalDate transactionDate = LocalDate.now();
-		final CashEventType eventType = CashEventType.CREDIT;
+	@Test
+	public void disableRefreshInterval() {
+		final ElasticCashIndex index = new ElasticCashIndex(getDao());
 
-		when(event.getAmount()).thenReturn(amount);
-		when(event.getFundsAfter()).thenReturn(fundsAfter);
-		when(event.getFundsBefore()).thenReturn(fundsBefore);
-		when(event.getTransactionDate()).thenReturn(transactionDate);
-		when(event.getType()).thenReturn(eventType);
+		index.setRefreshInterval(false);
 
-		return event;
+		verfiyRefreshInterval(false);
+	}
+
+	@Test
+	public void enableRefreshInterval() {
+		final ElasticCashIndex index = new ElasticCashIndex(getDao());
+
+		index.setRefreshInterval(true);
+
+		verfiyRefreshInterval(true);
 	}
 
 	@Override
@@ -151,5 +151,22 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 	@Override
 	protected ElasticIndexName getIndexName() {
 		return ElasticIndexName.CASH;
+	}
+
+	private CashEvent getEvent() {
+		final CashEvent event = mock(CashEvent.class);
+		final BigDecimal amount = BigDecimal.valueOf(12.34);
+		final BigDecimal fundsAfter = BigDecimal.valueOf(512.46);
+		final BigDecimal fundsBefore = BigDecimal.valueOf(500.12);
+		final LocalDate transactionDate = LocalDate.now();
+		final CashEventType eventType = CashEventType.CREDIT;
+
+		when(event.getAmount()).thenReturn(amount);
+		when(event.getFundsAfter()).thenReturn(fundsAfter);
+		when(event.getFundsBefore()).thenReturn(fundsBefore);
+		when(event.getTransactionDate()).thenReturn(transactionDate);
+		when(event.getType()).thenReturn(eventType);
+
+		return event;
 	}
 }

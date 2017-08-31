@@ -47,4 +47,6 @@ public interface ElasticDao {
 	void putMapping( ElasticIndexName indexName, BacktestBatchId id, Entity<?> requestBody );
 
 	void put( ElasticIndexName indexName, Entity<?> requestBody );
+
+	void putSetting( ElasticIndexName indexName, Entity<?> requestBody );
 }

@@ -115,17 +115,22 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 		verifyEventCalls(batchId, event.getExclusiveEndDate());
 	}
 
-	private ReturnOnInvestmentEvent getEvent() {
-		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
-		final BigDecimal percentageChange = BigDecimal.valueOf(12.34);
-		final LocalDate inclusiveEndDate = LocalDate.now();
-		final LocalDate exclusiveStartDate = LocalDate.now();
+	@Test
+	public void disableRefreshInterval() {
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
 
-		when(event.getPercentageChange()).thenReturn(percentageChange);
-		when(event.getExclusiveEndDate()).thenReturn(inclusiveEndDate);
-		when(event.getInclusiveStartDate()).thenReturn(exclusiveStartDate);
+		index.setRefreshInterval(false);
 
-		return event;
+		verfiyRefreshInterval(false);
+	}
+
+	@Test
+	public void enableRefreshInterval() {
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
+
+		index.setRefreshInterval(true);
+
+		verfiyRefreshInterval(true);
 	}
 
 	@Override
@@ -146,5 +151,18 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 	@Override
 	protected ElasticIndexName getIndexName() {
 		return ElasticIndexName.RETURN_ON_INVESTMENT;
+	}
+
+	private ReturnOnInvestmentEvent getEvent() {
+		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
+		final BigDecimal percentageChange = BigDecimal.valueOf(12.34);
+		final LocalDate inclusiveEndDate = LocalDate.now();
+		final LocalDate exclusiveStartDate = LocalDate.now();
+
+		when(event.getPercentageChange()).thenReturn(percentageChange);
+		when(event.getExclusiveEndDate()).thenReturn(inclusiveEndDate);
+		when(event.getInclusiveStartDate()).thenReturn(exclusiveStartDate);
+
+		return event;
 	}
 }

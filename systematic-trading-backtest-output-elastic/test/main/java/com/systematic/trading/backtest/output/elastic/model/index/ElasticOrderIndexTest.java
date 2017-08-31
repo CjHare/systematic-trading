@@ -40,7 +40,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticOrderIndex;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent.EquityOrderType;
 
@@ -116,17 +115,22 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 		verifyEventCalls(batchId, event.getTransactionDate());
 	}
 
-	private OrderEvent getEvent() {
-		final OrderEvent event = mock(OrderEvent.class);
-		final BigDecimal totalCost = BigDecimal.valueOf(12.34);
-		final LocalDate transactionDate = LocalDate.now();
-		final EquityOrderType eventType = EquityOrderType.ENTRY;
+	@Test
+	public void disableRefreshInterval() {
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
 
-		when(event.getTotalCost()).thenReturn(totalCost);
-		when(event.getTransactionDate()).thenReturn(transactionDate);
-		when(event.getType()).thenReturn(eventType);
+		index.setRefreshInterval(false);
 
-		return event;
+		verfiyRefreshInterval(false);
+	}
+
+	@Test
+	public void enableRefreshInterval() {
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao());
+
+		index.setRefreshInterval(true);
+
+		verfiyRefreshInterval(true);
 	}
 
 	@Override
@@ -147,5 +151,18 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 	@Override
 	protected ElasticIndexName getIndexName() {
 		return ElasticIndexName.ORDER;
+	}
+
+	private OrderEvent getEvent() {
+		final OrderEvent event = mock(OrderEvent.class);
+		final BigDecimal totalCost = BigDecimal.valueOf(12.34);
+		final LocalDate transactionDate = LocalDate.now();
+		final EquityOrderType eventType = EquityOrderType.ENTRY;
+
+		when(event.getTotalCost()).thenReturn(totalCost);
+		when(event.getTransactionDate()).thenReturn(transactionDate);
+		when(event.getType()).thenReturn(eventType);
+
+		return event;
 	}
 }
