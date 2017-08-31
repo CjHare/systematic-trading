@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.backtest.output.elastic;
 
+import java.util.concurrent.ExecutorService;
+
 import com.systematic.trading.backtest.output.BacktestOutputPreparation;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.dao.impl.HttpElasticDao;
@@ -47,6 +49,10 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalA
  */
 public class ElasticBacktestOutputPreparation implements BacktestOutputPreparation {
 
+	//TODO dummy config instead of these (they're only used for bulk API calls)
+	private static final int NO_BUCKET = 0;
+	private static final ExecutorService NO_POOL = null;
+
 	@Override
 	public void setUp() {
 		setRefreshInterval(false);
@@ -59,12 +65,12 @@ public class ElasticBacktestOutputPreparation implements BacktestOutputPreparati
 
 	private void setRefreshInterval( final boolean enabled ) {
 		final ElasticDao dao = new HttpElasticDao();
-		new ElasticSignalAnalysisIndex(dao).setRefreshInterval(enabled);
-		new ElasticCashIndex(dao).setRefreshInterval(enabled);
-		new ElasticOrderIndex(dao).setRefreshInterval(enabled);
-		new ElasticBrokerageIndex(dao).setRefreshInterval(enabled);
-		new ElasticReturnOnInvestmentIndex(dao).setRefreshInterval(enabled);
-		new ElasticNetworthIndex(dao).setRefreshInterval(enabled);
-		new ElasticEquityIndex(dao).setRefreshInterval(enabled);
+		new ElasticSignalAnalysisIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
+		new ElasticCashIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
+		new ElasticOrderIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
+		new ElasticBrokerageIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
+		new ElasticReturnOnInvestmentIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
+		new ElasticNetworthIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
+		new ElasticEquityIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
 	}
 }

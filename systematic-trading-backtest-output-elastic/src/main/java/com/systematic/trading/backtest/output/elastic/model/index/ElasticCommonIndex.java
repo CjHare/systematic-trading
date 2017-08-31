@@ -25,6 +25,10 @@
  */
 package com.systematic.trading.backtest.output.elastic.model.index;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
@@ -40,6 +44,7 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticBulkApiMetaDataRequestResource;
 import com.systematic.trading.backtest.output.elastic.resource.ElasticIndexSettingsRequestResource;
 
 /**
@@ -49,6 +54,10 @@ import com.systematic.trading.backtest.output.elastic.resource.ElasticIndexSetti
  */
 public abstract class ElasticCommonIndex {
 
+	/** Bulk API action for creating document and generating it's ID. */
+	private static final String ACTION_CREATE_GENERATE_DOCUMENT_ID = "index";
+
+	//TODO move these into configuration values
 	/** Value to disable the refresh interval. */
 	private static final String INDEX_SETTING_REFRESH_DISABLE = "-1";
 
@@ -67,8 +76,23 @@ public abstract class ElasticCommonIndex {
 	/** Access to Elastic Search endpoint.*/
 	private final ElasticDao dao;
 
-	public ElasticCommonIndex( final ElasticDao dao ) {
+	/** Number of requests that are grouped together for the Bulk API.*/
+	private final int bulkApiBucketSize;
+
+	/** Storage for the meta and source requests. */
+	private List<Object> bulkApiBucket;
+
+	/** Delegate worker threads that deal with performing sending to Elastic. */
+	private final ExecutorService pool;
+
+	//TODO refactor the pool & size  into a configuration object
+	public ElasticCommonIndex( final ElasticDao dao, final ExecutorService pool, final int bulkApiBucketSize ) {
 		this.dao = dao;
+		this.pool = pool;
+
+		// Each source request (document to created) is accompanied by a meta object
+		this.bulkApiBucketSize = 2 * bulkApiBucketSize;
+		this.bulkApiBucket = new ArrayList<>(this.bulkApiBucketSize);
 	}
 
 	/**
@@ -93,8 +117,27 @@ public abstract class ElasticCommonIndex {
 		        enabled ? INDEX_SETTING_REFRESH_DEFAULT : INDEX_SETTING_REFRESH_DISABLE)));
 	}
 
-	protected void post( final BacktestBatchId id, final Entity<?> requestBody ) {
-		dao.postType(getIndexName(), id, requestBody);
+	public void flush() {
+		send(bulkApiBucket);
+	}
+
+	protected <T> void create( final BacktestBatchId id, final T requestResource ) {
+		bulkApiBucket.add(createBulkApiMeta(id));
+		bulkApiBucket.add(requestResource);
+
+		if (isBulkApiBucketFull()) {
+			send(bulkApiBucket);
+			bulkApiBucket = new ArrayList<>(bulkApiBucketSize);
+
+		}
+	}
+
+	private void send( final List<?> requests ) {
+		pool.submit(() -> dao.postTypes(getIndexName(), Entity.json(requests)));
+	}
+
+	protected ElasticBulkApiMetaDataRequestResource createBulkApiMeta( final BacktestBatchId id ) {
+		return new ElasticBulkApiMetaDataRequestResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, null, id.getName(), null);
 	}
 
 	protected ElasticIndex getIndex() {
@@ -108,6 +151,10 @@ public abstract class ElasticCommonIndex {
 	protected Pair<ElasticFieldName, ElasticFieldType> getPair( final ElasticFieldName name,
 	        final ElasticFieldType type ) {
 		return new ImmutablePair<ElasticFieldName, ElasticFieldType>(name, type);
+	}
+
+	private boolean isBulkApiBucketFull() {
+		return bulkApiBucket.size() >= bulkApiBucketSize;
 	}
 
 	private boolean isIndexMissing() {

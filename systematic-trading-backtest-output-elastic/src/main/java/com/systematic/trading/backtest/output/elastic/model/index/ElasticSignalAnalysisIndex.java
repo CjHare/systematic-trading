@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.output.elastic.model.index;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
 
 import javax.ws.rs.client.Entity;
 
@@ -45,12 +46,12 @@ import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
  */
 public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 
-	public ElasticSignalAnalysisIndex( final ElasticDao dao ) {
-		super(dao);
+	public ElasticSignalAnalysisIndex( final ElasticDao dao, final ExecutorService pool, final int bulkApiBucketSize ) {
+		super(dao, pool, bulkApiBucketSize);
 	}
 
 	public void event( final BacktestBatchId id, final SignalAnalysisEvent event ) {
-		post(id, Entity.json(new ElasticSignalAnalysisEventRequestResource(event)));
+		create(id, Entity.json(new ElasticSignalAnalysisEventRequestResource(event)));
 	}
 
 	@Override

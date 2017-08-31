@@ -35,17 +35,19 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEventResponse;
+import com.systematic.trading.backtest.output.elastic.resource.ElasticBulkApiResponseResource;
+import com.systematic.trading.backtest.output.elastic.serialize.ElasticSearchBulkApiMetaDataSerializer;
+import com.systematic.trading.backtest.output.elastic.serialize.NdjsonListSerializer;
 
 /**
  * Connection to Elastic search over the HTTP API.
@@ -54,12 +56,18 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEve
  */
 public class HttpElasticDao implements ElasticDao {
 
+	/** The Elastic Search Bulk API uses new line separate JSON. */
+	private final static MediaType APPLICATION_NDJSON_TYPE = new MediaType("application", "x-ndjson");
+
 	//TODO inject this! - configuration value
 	/** Location of the elastic search end point. */
 	private static final String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
 
 	/** Base of the elastic search Restful end point. */
 	private final WebTarget root;
+
+	/** Base of the elastic search Restful end point, serializes with Nd-json. */
+	private final WebTarget bulkApiRoot;
 
 	public HttpElasticDao() {
 
@@ -72,6 +80,20 @@ public class HttpElasticDao implements ElasticDao {
 
 		// End point target root
 		this.root = ClientBuilder.newClient(config).target(ELASTIC_ENDPOINT_URL);
+
+		// Registering the provider for POJO -> NDJSON
+		final ObjectMapper ndjsonMapper = new ObjectMapper();
+		final SimpleModule ndjsonModule = new SimpleModule("Ndjson List Serializer");
+		ndjsonModule.addSerializer(new NdjsonListSerializer());
+		ndjsonModule.addSerializer(new ElasticSearchBulkApiMetaDataSerializer());
+		ndjsonMapper.registerModule(ndjsonModule);
+		ndjsonMapper.registerModule(new JavaTimeModule());
+		final JacksonJsonProvider ndjsonProvider = new JacksonJsonProvider();
+		ndjsonProvider.setMapper(ndjsonMapper);
+
+		final ClientConfig ndjsonConfig = new ClientConfig(ndjsonProvider);
+
+		this.bulkApiRoot = ClientBuilder.newClient(ndjsonConfig).target(ELASTIC_ENDPOINT_URL);
 	}
 
 	@Override
@@ -86,21 +108,22 @@ public class HttpElasticDao implements ElasticDao {
 		return root.path(path).request(MediaType.APPLICATION_JSON).get();
 	}
 
-	public void postType( final ElasticIndexName indexName, final BacktestBatchId id, final Entity<?> requestBody ) {
-		final WebTarget url = root.path(getTypePath(indexName, id));
+	@Override
+	public void postTypes( final ElasticIndexName indexName, final Entity<?> requestBody ) {
+		final WebTarget url = bulkApiRoot.path(getIndexBulkApiPath(indexName));
 
-		// Using the elastic search ID auto-generation, so we're using a post not a put
-		final Response response = url.request().post(requestBody);
+		// Bulk API uses only HTTP POST for all operations
+		final Response response = url.request(APPLICATION_NDJSON_TYPE).post(requestBody);
 
-		if (response.getStatus() != 201) {
+		if (response.getStatus() != 200) {
 			throw new ElasticException(
-			        String.format("Expecting a HTTP 201 instead receieved HTTP %s, URL: %s, body: %s",
+			        String.format("Expecting a HTTP 200 instead receieved HTTP %s, URL: %s, body: %s",
 			                response.getStatus(), url, requestBody));
 		}
 
-		final ElasticPostEventResponse eventResponse = response.readEntity(ElasticPostEventResponse.class);
+		final ElasticBulkApiResponseResource eventResponse = response.readEntity(ElasticBulkApiResponseResource.class);
 
-		if (isInvalidResponse(indexName, id, eventResponse)) {
+		if (isInvalidResponse(eventResponse)) {
 			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
 			        eventResponse, url, requestBody));
 		}
@@ -151,22 +174,11 @@ public class HttpElasticDao implements ElasticDao {
 		return String.format("%s/_mapping/%s/", indexName.getName(), id.getName());
 	}
 
-	/**
-	 * Path for retrieving or putting type data to elastic search.
-	 */
-	private String getTypePath( final ElasticIndexName indexName, final BacktestBatchId id ) {
-		return String.format("%s/%s/", indexName.getName(), id.getName());
+	private String getIndexBulkApiPath( final ElasticIndexName indexName ) {
+		return String.format("%s/_bulk", indexName.getName());
 	}
 
-	private boolean isInvalidResponse( final ElasticIndexName indexName, final BacktestBatchId id,
-	        final ElasticPostEventResponse eventResponse ) {
-		return !isValidResponse(indexName, id, eventResponse);
-	}
-
-	private boolean isValidResponse( final ElasticIndexName indexName, final BacktestBatchId id,
-	        final ElasticPostEventResponse eventResponse ) {
-		return eventResponse.isCreated() && eventResponse.isResultCreated()
-		        && StringUtils.equals(indexName.getName(), eventResponse.getIndex())
-		        && StringUtils.equals(id.getName(), eventResponse.getType());
+	private boolean isInvalidResponse( final ElasticBulkApiResponseResource eventResponse ) {
+		return eventResponse.hasErrors();
 	}
 }

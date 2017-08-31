@@ -40,7 +40,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticNetworthIndex;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent.NetWorthEventType;
 
@@ -60,7 +59,7 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getBucketSize());
 
 		index.init(id);
 
@@ -73,7 +72,7 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getBucketSize());
 
 		index.init(id);
 
@@ -87,7 +86,7 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getBucketSize());
 
 		try {
 			index.init(id);
@@ -107,7 +106,7 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getBucketSize());
 		final NetWorthEvent event = getEvent();
 
 		index.init(id);
@@ -118,7 +117,7 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void disableRefreshInterval() {
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getBucketSize());
 
 		index.setRefreshInterval(false);
 
@@ -127,7 +126,7 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void enableRefreshInterval() {
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao());
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getBucketSize());
 
 		index.setRefreshInterval(true);
 

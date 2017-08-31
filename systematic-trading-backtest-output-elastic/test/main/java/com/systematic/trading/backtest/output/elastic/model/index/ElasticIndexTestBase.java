@@ -36,6 +36,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.ws.rs.core.Response;
 
@@ -101,8 +103,7 @@ public abstract class ElasticIndexTestBase {
 		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
 		        equalsJson(getJsonPutIndexMapping()));
 
-		order.verify(dao).postType(eq(getIndexName()), equalsBacktestId(batchId),
-		        equalsJson(getPostIndex(), transactionDate));
+		order.verify(dao).postTypes(eq(getIndexName()), equalsJson(getPostIndex(), transactionDate));
 		verifyNoMoreInteractions(dao);
 
 		verifyGetIndex();
@@ -152,6 +153,14 @@ public abstract class ElasticIndexTestBase {
 
 	protected ElasticDao getDao() {
 		return dao;
+	}
+
+	protected ExecutorService getPool() {
+		return Executors.newSingleThreadExecutor();
+	}
+
+	protected int getBucketSize() {
+		return 1;
 	}
 
 	protected void verfiyRefreshInterval( final boolean enabled ) {

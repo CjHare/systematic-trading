@@ -59,7 +59,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticCashIndex index = new ElasticCashIndex(getDao());
+		final ElasticCashIndex index = new ElasticCashIndex(getDao(), getPool(), getBucketSize());
 
 		index.init(id);
 
@@ -72,7 +72,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticCashIndex index = new ElasticCashIndex(getDao());
+		final ElasticCashIndex index = new ElasticCashIndex(getDao(), getPool(), getBucketSize());
 
 		index.init(id);
 
@@ -86,7 +86,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticCashIndex index = new ElasticCashIndex(getDao());
+		final ElasticCashIndex index = new ElasticCashIndex(getDao(), getPool(), getBucketSize());
 
 		try {
 			index.init(id);
@@ -106,7 +106,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticCashIndex index = new ElasticCashIndex(getDao());
+		final ElasticCashIndex index = new ElasticCashIndex(getDao(), getPool(), getBucketSize());
 		final CashEvent event = getEvent();
 
 		index.init(id);
@@ -117,7 +117,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void disableRefreshInterval() {
-		final ElasticCashIndex index = new ElasticCashIndex(getDao());
+		final ElasticCashIndex index = new ElasticCashIndex(getDao(), getPool(), getBucketSize());
 
 		index.setRefreshInterval(false);
 
@@ -126,7 +126,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void enableRefreshInterval() {
-		final ElasticCashIndex index = new ElasticCashIndex(getDao());
+		final ElasticCashIndex index = new ElasticCashIndex(getDao(), getPool(), getBucketSize());
 
 		index.setRefreshInterval(true);
 

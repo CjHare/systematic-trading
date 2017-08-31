@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.output.elastic.model.index;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
 
 import javax.ws.rs.client.Entity;
 
@@ -45,12 +46,13 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  */
 public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
 
-	public ElasticReturnOnInvestmentIndex( final ElasticDao dao ) {
-		super(dao);
+	public ElasticReturnOnInvestmentIndex( final ElasticDao dao, final ExecutorService pool,
+	        final int bulkApiBucketSize ) {
+		super(dao, pool, bulkApiBucketSize);
 	}
 
 	public void event( final BacktestBatchId id, final ReturnOnInvestmentEvent event ) {
-		post(id, Entity.json(new ElasticReturnOnInvestmentEventRequestResource(event)));
+		create(id, Entity.json(new ElasticReturnOnInvestmentEventRequestResource(event)));
 	}
 
 	@Override

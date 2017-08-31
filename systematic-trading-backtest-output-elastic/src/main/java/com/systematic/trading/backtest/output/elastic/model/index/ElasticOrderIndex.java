@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.output.elastic.model.index;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
 
 import javax.ws.rs.client.Entity;
 
@@ -45,12 +46,12 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  */
 public class ElasticOrderIndex extends ElasticCommonIndex {
 
-	public ElasticOrderIndex( final ElasticDao dao ) {
-		super(dao);
+	public ElasticOrderIndex( final ElasticDao dao, final ExecutorService pool, final int bulkApiBucketSize ) {
+		super(dao, pool, bulkApiBucketSize);
 	}
 
 	public void event( final BacktestBatchId id, final OrderEvent event ) {
-		post(id, Entity.json(new ElasticOrderEventRequestResource(event)));
+		create(id, Entity.json(new ElasticOrderEventRequestResource(event)));
 	}
 
 	@Override

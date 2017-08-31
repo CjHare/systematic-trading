@@ -59,7 +59,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao(), getPool(), getBucketSize());
 
 		index.init(id);
 
@@ -72,7 +72,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao(), getPool(), getBucketSize());
 
 		index.init(id);
 
@@ -86,7 +86,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao(), getPool(), getBucketSize());
 
 		try {
 			index.init(id);
@@ -106,7 +106,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao(), getPool(), getBucketSize());
 		final BrokerageEvent event = getEvent();
 
 		index.init(id);
@@ -117,7 +117,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void disableRefreshInterval() {
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao(), getPool(), getBucketSize());
 
 		index.setRefreshInterval(false);
 
@@ -126,7 +126,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void enableRefreshInterval() {
-		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao());
+		final ElasticBrokerageIndex index = new ElasticBrokerageIndex(getDao(), getPool(), getBucketSize());
 
 		index.setRefreshInterval(true);
 

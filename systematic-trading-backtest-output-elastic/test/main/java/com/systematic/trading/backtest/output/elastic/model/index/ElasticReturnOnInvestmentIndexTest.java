@@ -40,7 +40,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticReturnOnInvestmentIndex;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 
 /**
@@ -59,7 +58,8 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
+		        getBucketSize());
 
 		index.init(id);
 
@@ -72,7 +72,8 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
+		        getBucketSize());
 
 		index.init(id);
 
@@ -86,7 +87,8 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
+		        getBucketSize());
 
 		try {
 			index.init(id);
@@ -106,7 +108,8 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
+		        getBucketSize());
 		final ReturnOnInvestmentEvent event = getEvent();
 
 		index.init(id);
@@ -117,7 +120,8 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void disableRefreshInterval() {
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
+		        getBucketSize());
 
 		index.setRefreshInterval(false);
 
@@ -126,7 +130,8 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void enableRefreshInterval() {
-		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao());
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
+		        getBucketSize());
 
 		index.setRefreshInterval(true);
 

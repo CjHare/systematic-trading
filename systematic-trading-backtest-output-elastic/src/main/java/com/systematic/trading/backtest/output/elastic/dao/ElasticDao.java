@@ -42,7 +42,7 @@ public interface ElasticDao {
 
 	Response getMapping( ElasticIndexName indexName, BacktestBatchId id );
 
-	void postType( ElasticIndexName indexName, BacktestBatchId id, Entity<?> requestBody );
+	void postTypes( ElasticIndexName indexName, Entity<?> requestBody );
 
 	void putMapping( ElasticIndexName indexName, BacktestBatchId id, Entity<?> requestBody );
 

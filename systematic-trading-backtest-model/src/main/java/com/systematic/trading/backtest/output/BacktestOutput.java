@@ -55,4 +55,10 @@ public interface BacktestOutput
 	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
 	        final TradingDayPrices lastTradingDay ) {
 	}
+
+	/**
+	 * Last call to have any data written to the output destination.
+	 */
+	default void flush() {
+	}
 }

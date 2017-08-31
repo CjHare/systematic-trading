@@ -61,7 +61,7 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
+		final ElasticEquityIndex index = new ElasticEquityIndex(getDao(), getPool(), getBucketSize());
 
 		index.init(id);
 
@@ -74,7 +74,7 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
+		final ElasticEquityIndex index = new ElasticEquityIndex(getDao(), getPool(), getBucketSize());
 
 		index.init(id);
 
@@ -88,7 +88,7 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
+		final ElasticEquityIndex index = new ElasticEquityIndex(getDao(), getPool(), getBucketSize());
 
 		try {
 			index.init(id);
@@ -108,7 +108,7 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
+		final ElasticEquityIndex index = new ElasticEquityIndex(getDao(), getPool(), getBucketSize());
 		final EquityEvent event = getEvent();
 
 		index.init(id);
@@ -119,7 +119,7 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void disableRefreshInterval() {
-		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
+		final ElasticEquityIndex index = new ElasticEquityIndex(getDao(), getPool(), getBucketSize());
 
 		index.setRefreshInterval(false);
 
@@ -128,7 +128,7 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void enableRefreshInterval() {
-		final ElasticEquityIndex index = new ElasticEquityIndex(getDao());
+		final ElasticEquityIndex index = new ElasticEquityIndex(getDao(), getPool(), getBucketSize());
 
 		index.setRefreshInterval(true);
 

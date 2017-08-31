@@ -52,7 +52,7 @@ import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Puts the event data into Elastic Search using the rest HTTP end point.
+ * A Facade for getting the event data into Elastic Search using the rest HTTP end point.
  * 
  * @author CJ Hare
  */
@@ -65,20 +65,22 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	private final ElasticReturnOnInvestmentIndex returnOnInvestmentIndex;
 	private final ElasticNetworthIndex networthIndex;
 	private final ElasticEquityIndex equityIndex;
-	private final ExecutorService pool;
 	private final BacktestBatchId batchId;
 
 	public ElasticBacktestOutput( final BacktestBatchId batchId, final ExecutorService pool ) {
+
+		//TODO configuration value - input!
+		final int bulkApiBucketSize = 24000;
+
 		final ElasticDao dao = new HttpElasticDao();
-		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao);
-		this.cashIndex = new ElasticCashIndex(dao);
-		this.orderIndex = new ElasticOrderIndex(dao);
-		this.brokerageIndex = new ElasticBrokerageIndex(dao);
-		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(dao);
-		this.networthIndex = new ElasticNetworthIndex(dao);
-		this.equityIndex = new ElasticEquityIndex(dao);
+		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao, pool, bulkApiBucketSize);
+		this.cashIndex = new ElasticCashIndex(dao, pool, bulkApiBucketSize);
+		this.orderIndex = new ElasticOrderIndex(dao, pool, bulkApiBucketSize);
+		this.brokerageIndex = new ElasticBrokerageIndex(dao, pool, bulkApiBucketSize);
+		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(dao, pool, bulkApiBucketSize);
+		this.networthIndex = new ElasticNetworthIndex(dao, pool, bulkApiBucketSize);
+		this.equityIndex = new ElasticEquityIndex(dao, pool, bulkApiBucketSize);
 		this.batchId = batchId;
-		this.pool = pool;
 	}
 
 	@Override
@@ -95,28 +97,41 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	}
 
 	@Override
+	public void flush() {
+		signalAnalysisIndex.flush();
+		cashIndex.flush();
+		orderIndex.flush();
+		brokerageIndex.flush();
+		returnOnInvestmentIndex.flush();
+		networthIndex.flush();
+		equityIndex.flush();
+	}
+
+	//TODO move the pool into the index
+	//TODO configuration for # of concurrent connections?
+	@Override
 	public void event( final SignalAnalysisEvent event ) {
-		pool.submit(() -> signalAnalysisIndex.event(batchId, event));
+		signalAnalysisIndex.event(batchId, event);
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
-		pool.submit(() -> cashIndex.event(batchId, event));
+		cashIndex.event(batchId, event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
-		pool.submit(() -> orderIndex.event(batchId, event));
+		orderIndex.event(batchId, event);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		pool.submit(() -> brokerageIndex.event(batchId, event));
+		brokerageIndex.event(batchId, event);
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		pool.submit(() -> returnOnInvestmentIndex.event(batchId, event));
+		returnOnInvestmentIndex.event(batchId, event);
 	}
 
 	@Override
@@ -125,11 +140,11 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
-		pool.submit(() -> networthIndex.event(batchId, event));
+		networthIndex.event(batchId, event);
 	}
 
 	@Override
 	public void event( final EquityEvent event ) {
-		pool.submit(() -> equityIndex.event(batchId, event));
+		equityIndex.event(batchId, event);
 	}
 }

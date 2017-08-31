@@ -55,12 +55,12 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
+import com.systematic.trading.backtest.output.elastic.app.resource.ElasticPostEventResponseResource;
 import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearchPerformanceTrialRequestResource;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndex;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
-import com.systematic.trading.backtest.output.elastic.model.index.ElasticPostEventResponse;
 import com.systematic.trading.backtest.output.elastic.resource.ElasticBulkApiResponseResource;
 import com.systematic.trading.backtest.output.elastic.resource.ElasticIndexSettingsRequestResource;
 import com.systematic.trading.backtest.output.elastic.serialize.ElasticSearchBulkApiMetaDataSerializer;
@@ -168,7 +168,7 @@ public class ElasticSearchFacade {
 			                response.getStatus(), url, requestBody));
 		}
 
-		final ElasticPostEventResponse eventResponse = response.readEntity(ElasticPostEventResponse.class);
+		final ElasticPostEventResponseResource eventResponse = response.readEntity(ElasticPostEventResponseResource.class);
 
 		if (isInvalidResponse(eventResponse)) {
 			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
@@ -247,11 +247,11 @@ public class ElasticSearchFacade {
 		return eventResponse.hasErrors();
 	}
 
-	private boolean isInvalidResponse( final ElasticPostEventResponse eventResponse ) {
+	private boolean isInvalidResponse( final ElasticPostEventResponseResource eventResponse ) {
 		return !isValidResponse(eventResponse);
 	}
 
-	private boolean isValidResponse( final ElasticPostEventResponse eventResponse ) {
+	private boolean isValidResponse( final ElasticPostEventResponseResource eventResponse ) {
 		return eventResponse.isCreated() && eventResponse.isResultCreated()
 		        && StringUtils.equals(INDEX_NAME, eventResponse.getIndex())
 		        && StringUtils.equals(MAPPING_NAME, eventResponse.getType());

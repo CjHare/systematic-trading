@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.elastic.model.index;
+package com.systematic.trading.backtest.output.elastic.app.resource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author CJ Hare
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ElasticPostEventResponse {
+public class ElasticPostEventResponseResource {
 
 	private final String created;
 	private final String id;
@@ -44,7 +44,7 @@ public class ElasticPostEventResponse {
 	private final String type;
 
 	@JsonCreator
-	public ElasticPostEventResponse( @JsonProperty("_index") final String index,
+	public ElasticPostEventResponseResource( @JsonProperty("_index") final String index,
 	        @JsonProperty("_type") final String type, @JsonProperty("_id") final String id,
 	        @JsonProperty("result") final String result, @JsonProperty("created") final String created ) {
 		this.created = created;

@@ -34,6 +34,8 @@ import com.systematic.trading.backtest.trade.MinimumTrade;
  * @author CJ Hare
  */
 public class BacktestBatchId {
+
+	/** Unique identifier. */
 	private final String name;
 
 	//TODO these three are needed by the file output - maybe split into another object?
