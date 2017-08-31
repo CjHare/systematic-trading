@@ -48,6 +48,9 @@ public interface BacktestOutput
         extends CashEventListener, OrderEventListener, BrokerageEventListener, ReturnOnInvestmentEventListener,
         SimulationStateListener, NetWorthEventListener, SignalAnalysisListener, EquityEventListener {
 
+	/**
+	 * Initialisation of the output that occurs prior to performing each simulation.
+	 */
 	default void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
 	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
 	        final TradingDayPrices lastTradingDay ) {

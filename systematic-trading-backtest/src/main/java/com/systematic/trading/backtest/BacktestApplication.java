@@ -52,9 +52,11 @@ import com.systematic.trading.backtest.dao.impl.FileValidatedBackestConfiguratio
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.input.LaunchArguments;
 import com.systematic.trading.backtest.output.BacktestOutput;
+import com.systematic.trading.backtest.output.BacktestOutputPreparation;
 import com.systematic.trading.backtest.output.DescriptionGenerator;
 import com.systematic.trading.backtest.output.NoBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
+import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutputPreparation;
 import com.systematic.trading.backtest.output.file.CompleteFileOutputService;
 import com.systematic.trading.backtest.output.file.MinimalFileOutputService;
 import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
@@ -124,6 +126,9 @@ public class BacktestApplication {
 		// TODO run the test over the full period with exclusion on filters
 		// TODO no deposits until actual start date, rather then from the warm-up period
 
+		final BacktestOutputPreparation outputPreparation = getOutput(parserdArguments);
+		outputPreparation.setUp();
+
 		try {
 			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
 				final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
@@ -136,6 +141,8 @@ public class BacktestApplication {
 			HibernateUtil.getSessionFactory().close();
 			closePool(outputpool);
 		}
+
+		outputPreparation.tearDown();
 
 		LOG.info("Finished outputting results");
 	}
@@ -170,6 +177,22 @@ public class BacktestApplication {
 		}
 
 		return Period.ofDays(windUp);
+	}
+
+	private BacktestOutputPreparation getOutput( final LaunchArguments arguments ) {
+		final OutputType type = arguments.getOutputType();
+
+		switch (type) {
+			case ELASTIC_SEARCH:
+				return new ElasticBacktestOutputPreparation();
+			case FILE_COMPLETE:
+			case FILE_MINIMUM:
+			case NO_DISPLAY:
+				return new BacktestOutputPreparation() {
+				};
+			default:
+				throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
+		}
 	}
 
 	private ExecutorService getOutputPool( final LaunchArguments arguments )
