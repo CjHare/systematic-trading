@@ -83,7 +83,7 @@ public class ElasticIndexMapping {
 	}
 
 	private Map.Entry<String, String> getType( final Pair<ElasticFieldName, ElasticFieldType> field ) {
-		return new SimpleEntry<String, String>(TYPE, field.getRight().getName());
+		return new SimpleEntry<>(TYPE, field.getRight().getName());
 	}
 
 	@Override
