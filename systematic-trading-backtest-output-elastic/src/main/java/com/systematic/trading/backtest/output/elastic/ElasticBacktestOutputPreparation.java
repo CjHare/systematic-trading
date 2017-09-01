@@ -55,12 +55,24 @@ public class ElasticBacktestOutputPreparation implements BacktestOutputPreparati
 
 	@Override
 	public void setUp() {
+		ensureIndexesExist();
 		setRefreshInterval(false);
 	}
 
 	@Override
 	public void tearDown() {
 		setRefreshInterval(true);
+	}
+
+	private void ensureIndexesExist() {
+		final ElasticDao dao = new HttpElasticDao();
+		new ElasticSignalAnalysisIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
+		new ElasticCashIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
+		new ElasticOrderIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
+		new ElasticBrokerageIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
+		new ElasticReturnOnInvestmentIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
+		new ElasticNetworthIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
+		new ElasticEquityIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
 	}
 
 	private void setRefreshInterval( final boolean enabled ) {

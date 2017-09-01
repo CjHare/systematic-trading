@@ -76,7 +76,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 		index.init(id);
 
-		verifyPresentIndexMissingMappingCalls(batchId);
+		verifyMissingMappingCalls(batchId);
 	}
 
 	@Test
@@ -97,7 +97,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 			        e.getMessage());
 		}
 
-		verifyPresentIndexPresentMappingCalls(batchId);
+		verifyPresentMappingCalls(batchId);
 	}
 
 	@Test

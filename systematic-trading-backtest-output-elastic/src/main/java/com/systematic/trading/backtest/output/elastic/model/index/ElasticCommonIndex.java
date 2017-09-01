@@ -99,16 +99,17 @@ public abstract class ElasticCommonIndex {
 	 * Ensures the index and mapping are created, and verifies there is not existing data.
 	 */
 	public void init( final BacktestBatchId id ) {
-
-		if (isIndexMissing()) {
-			createIndex();
-		}
-
 		if (isIndexMappingMissing(id)) {
 			createIndexMapping(id);
 		} else {
 			throw new ElasticException(
 			        String.format("Existing mapping (and potentially already existing results) found for: %s", id));
+		}
+	}
+
+	public void ensureIndexExists() {
+		if (isIndexMissing()) {
+			createIndex();
 		}
 	}
 

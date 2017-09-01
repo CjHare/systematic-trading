@@ -85,7 +85,7 @@ public abstract class ElasticIndexTestBase {
 		return new BacktestBatchId(id, null, null, null);
 	}
 
-	protected void verifyGetIndex() {
+	private void verifyGetIndex() {
 		verify(getIndexResponse).getStatus();
 		verifyNoMoreInteractions(getIndexResponse);
 	}
@@ -98,7 +98,6 @@ public abstract class ElasticIndexTestBase {
 
 	protected void verifyEventCalls( final String batchId, final LocalDate transactionDate ) {
 		final InOrder order = inOrder(dao);
-		order.verify(dao).getIndex(getIndexName());
 		order.verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
 		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
 		        equalsJson(getJsonPutIndexMapping()));
@@ -106,37 +105,41 @@ public abstract class ElasticIndexTestBase {
 		order.verify(dao).postTypes(eq(getIndexName()), equalsJson(getPostIndex(), transactionDate));
 		verifyNoMoreInteractions(dao);
 
-		verifyGetIndex();
-
 		verify(getIndexTypeResponse).getStatus();
 		verifyNoMoreInteractions(getIndexTypeResponse);
 	}
 
-	protected void verifyPresentIndexPresentMappingCalls( final String batchId ) {
-		final InOrder order = inOrder(dao);
-		order.verify(dao).getIndex(getIndexName());
-		order.verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
+	protected void verifyPresentMappingCalls( final String batchId ) {
+		verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
 		verifyNoMoreInteractions(dao);
 
-		verifyGetIndex();
 		verifyGetIndexType();
 	}
 
-	protected void verifyPresentIndexMissingMappingCalls( final String batchId ) {
+	protected void verifyMissingMappingCalls( final String batchId ) {
 		final InOrder order = inOrder(dao);
-		order.verify(dao).getIndex(getIndexName());
 		order.verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
 		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
 		        equalsJson(getJsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);
+	}
+
+	//TODO use
+	protected void verifyIndexPresent() {
+		verify(dao).getIndex(getIndexName());
+		verifyNoMoreInteractions(dao);
 
 		verifyGetIndex();
 	}
 
+	//TODO code
+	protected void verifyPutIndexCall() {
+		verify(dao).put(eq(getIndexName()), equalsJson(getJsonPutIndex()));
+		verifyNoMoreInteractions(dao);
+	}
+
 	protected void verifyMissingIndexCalls( final String batchId ) {
 		final InOrder order = inOrder(dao);
-		order.verify(dao).getIndex(getIndexName());
-		order.verify(dao).put(eq(getIndexName()), equalsJson(getJsonPutIndex()));
 		order.verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
 		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
 		        equalsJson(getJsonPutIndexMapping()));
