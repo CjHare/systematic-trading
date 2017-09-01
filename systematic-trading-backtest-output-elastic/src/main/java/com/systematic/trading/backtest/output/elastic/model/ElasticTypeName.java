@@ -34,28 +34,27 @@ package com.systematic.trading.backtest.output.elastic.model;
  * 
  * @author CJ Hare
  */
-public interface ElasticTypeName {
-
-	String AMOUNT = "amount";
-	String CASH_BALANCE = "cash_balance";
-	String DIRECTION_TYPE = "direction_type";
-	String END_EQUITY_BALANCE = "end_equity_balance";
-	String EQUITY_BALANCE = "equity_balance";
-	String EQUITY_BALANCE_VALUE = "equity_balance_value";
-	String EQUITY_AMOUNT = "equity_amount";
-	String EVENT = "event";
-	String EVENT_DATE = "event_date";
-	String EXCLUSIVE_END_DATE = "exclusive_end_date";
-	String FUNDS_AFTER = "funds_after";
-	String FUNDS_BEFORE = "funds_before";
-	String IDENTITY = "identity";
-	String INCLUSIVE_START_DATE = "inclusive_start_date";
-	String NETWORTH = "networth";
-	String PERCENTAGE_CHANGE = "percentage_change";
-	String SIGNAL_DATE = "signal_date";
-	String SIGNAL_TYPE = "signal_type";
-	String STARTING_EQUITY_BALANCE = "starting_equity_balance";
-	String TRANSACTION_DATE = "transaction_date";
-	String TRANSACTION_FEE = "transaction_fee";
-	String TOTAL_COST = "total_cost";
+public final class ElasticTypeName {
+	public static final String AMOUNT = "amount";
+	public static final String CASH_BALANCE = "cash_balance";
+	public static final String DIRECTION_TYPE = "direction_type";
+	public static final String END_EQUITY_BALANCE = "end_equity_balance";
+	public static final String EQUITY_BALANCE = "equity_balance";
+	public static final String EQUITY_BALANCE_VALUE = "equity_balance_value";
+	public static final String EQUITY_AMOUNT = "equity_amount";
+	public static final String EVENT = "event";
+	public static final String EVENT_DATE = "event_date";
+	public static final String EXCLUSIVE_END_DATE = "exclusive_end_date";
+	public static final String FUNDS_AFTER = "funds_after";
+	public static final String FUNDS_BEFORE = "funds_before";
+	public static final String IDENTITY = "identity";
+	public static final String INCLUSIVE_START_DATE = "inclusive_start_date";
+	public static final String NETWORTH = "networth";
+	public static final String PERCENTAGE_CHANGE = "percentage_change";
+	public static final String SIGNAL_DATE = "signal_date";
+	public static final String SIGNAL_TYPE = "signal_type";
+	public static final String STARTING_EQUITY_BALANCE = "starting_equity_balance";
+	public static final String TRANSACTION_DATE = "transaction_date";
+	public static final String TRANSACTION_FEE = "transaction_fee";
+	public static final String TOTAL_COST = "total_cost";
 }
