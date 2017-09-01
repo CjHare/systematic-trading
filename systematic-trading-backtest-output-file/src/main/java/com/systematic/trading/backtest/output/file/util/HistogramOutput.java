@@ -71,7 +71,7 @@ public class HistogramOutput {
 		// bins covering the whole range of values
 		final BigDecimal binSize = largest.subtract(smallest).divide(TEN);
 
-		int bin = 1;
+		long bin = 1;
 		while (binSize.multiply(BigDecimal.valueOf(bin)).add(smallest).compareTo(value) <= 0) {
 			bin++;
 		}
