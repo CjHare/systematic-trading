@@ -151,7 +151,7 @@ public abstract class ElasticCommonIndex {
 
 	protected Pair<ElasticFieldName, ElasticFieldType> getPair( final ElasticFieldName name,
 	        final ElasticFieldType type ) {
-		return new ImmutablePair<ElasticFieldName, ElasticFieldType>(name, type);
+		return new ImmutablePair<>(name, type);
 	}
 
 	private boolean isBulkApiBucketFull() {
