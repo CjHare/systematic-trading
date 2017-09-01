@@ -105,8 +105,6 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 			return false;
 		@SuppressWarnings("unchecked")
 		LimitedSizeQueue<E> other = (LimitedSizeQueue<E>) obj;
-		if (limit != other.limit)
-			return false;
-		return true;
+		return limit == other.limit;
 	}
 }
