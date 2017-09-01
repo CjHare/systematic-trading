@@ -74,7 +74,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 			final Optional<HistoryRetrievalRequest> nextRequest = getNexrRequest(i, sortedRequests);
 			final Period requestLength = getRequestLength(request);
 
-			if (areConsecutive(request, nextRequest.get())) {
+			if (nextRequest.isPresent() && areConsecutive(request, nextRequest.get())) {
 				if (hasEnoughTime(requestLength, remaining)) {
 
 					// Decrement the remaining time by this request's
@@ -116,7 +116,6 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	private HistoryRetrievalRequest createRequest( final HistoryRetrievalRequest request,
 	        final HistoryRetrievalRequestBuilder mergedRequest ) {
 		return mergedRequest.withExclusiveEndDate(request.getExclusiveEndDate()).build();
-
 	}
 
 	private HistoryRetrievalRequest createLastRequest( final List<HistoryRetrievalRequest> sortedRequests,
