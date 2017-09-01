@@ -53,7 +53,7 @@ public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 
 		final Map<ArgumentKey, String> argumentPairs = new EnumMap<>(ArgumentKey.class);
 
-		for (int i = 0; i < args.length; i++) {
+		for (int i = 0; i < args.length; i += 2) {
 
 			final Optional<ArgumentKey> key = ArgumentKey.get(args[i]);
 
@@ -62,7 +62,7 @@ public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 					incorrectArguments("Missing value for argument key %s", args[i]);
 				}
 
-				argumentPairs.put(key.get(), args[++i]);
+				argumentPairs.put(key.get(), args[i + 1]);
 
 			} else {
 				final String unknown = args[i];
