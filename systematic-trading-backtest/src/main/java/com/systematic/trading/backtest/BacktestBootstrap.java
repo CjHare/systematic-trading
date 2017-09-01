@@ -148,8 +148,5 @@ public class BacktestBootstrap {
 
 		// Run the simulation until completion
 		simulation.run();
-
-		// Ensure all the events get out
-		output.flush();
 	}
 }

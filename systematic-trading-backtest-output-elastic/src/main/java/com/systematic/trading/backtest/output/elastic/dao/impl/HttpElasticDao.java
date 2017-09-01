@@ -57,7 +57,7 @@ import com.systematic.trading.backtest.output.elastic.serialize.NdjsonListSerial
 public class HttpElasticDao implements ElasticDao {
 
 	/** The Elastic Search Bulk API uses new line separate JSON. */
-	private final static MediaType APPLICATION_NDJSON_TYPE = new MediaType("application", "x-ndjson");
+	private static final MediaType APPLICATION_NDJSON_TYPE = new MediaType("application", "x-ndjson");
 
 	//TODO inject this! - configuration value
 	/** Location of the elastic search end point. */

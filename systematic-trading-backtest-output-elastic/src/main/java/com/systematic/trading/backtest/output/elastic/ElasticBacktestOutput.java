@@ -96,17 +96,6 @@ public class ElasticBacktestOutput implements BacktestOutput {
 		equityIndex.init(batchId);
 	}
 
-	@Override
-	public void flush() {
-		signalAnalysisIndex.flush();
-		cashIndex.flush();
-		orderIndex.flush();
-		brokerageIndex.flush();
-		returnOnInvestmentIndex.flush();
-		networthIndex.flush();
-		equityIndex.flush();
-	}
-
 	//TODO move the pool into the index
 	//TODO configuration for # of concurrent connections?
 	@Override
@@ -136,6 +125,17 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void stateChanged( final SimulationState transitionedState ) {
+
+		// Ensure the events are pushed when the simulation is complete
+		if (SimulationState.COMPLETE == transitionedState) {
+			signalAnalysisIndex.flush();
+			cashIndex.flush();
+			orderIndex.flush();
+			brokerageIndex.flush();
+			returnOnInvestmentIndex.flush();
+			networthIndex.flush();
+			equityIndex.flush();
+		}
 	}
 
 	@Override
