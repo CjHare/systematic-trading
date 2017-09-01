@@ -89,9 +89,9 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		final int primeValue = 31;
 		int result = super.hashCode();
-		result = prime * result + limit;
+		result = primeValue * result + limit;
 		return result;
 	}
 
