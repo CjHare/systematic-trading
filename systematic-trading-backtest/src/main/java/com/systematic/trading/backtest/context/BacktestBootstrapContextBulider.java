@@ -140,10 +140,10 @@ public class BacktestBootstrapContextBulider {
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 		final Brokerage brokerage = BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
 		        startDate, mathContext);
-		final EntryLogic entryLogic = EntryLogicFactory.getInstance().create(equity.getEquityIdentity(), startDate,
+		final EntryLogic entry = EntryLogicFactory.getInstance().create(equity.getEquityIdentity(), startDate,
 		        purchaseFrequency, mathContext);
 
-		return new BacktestBootstrapContext(entryLogic, getExitLogic(), brokerage, cashAccount, simulationDates);
+		return new BacktestBootstrapContext(entry, getExitLogic(), brokerage, cashAccount, simulationDates);
 	}
 
 	private BacktestBootstrapContext confirmationSignal( final MinimumTrade minimumTrade,
@@ -206,7 +206,7 @@ public class BacktestBootstrapContextBulider {
 		        new AbsoluteTradeValueCalculator(minimumTrade.getValue()),
 		        new RelativeTradeValueCalculator(maximumTrade.getValue(), mathContext));
 
-		final EntryLogic entryLogic = EntryLogicFactory.getInstance().create(equity.getEquityIdentity(), tradeValue,
+		final EntryLogic entry = EntryLogicFactory.getInstance().create(equity.getEquityIdentity(), tradeValue,
 		        simulationDates, filter, mathContext, indicators);
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
 		        equity.getEquityIdentity(),
@@ -215,7 +215,7 @@ public class BacktestBootstrapContextBulider {
 		        startDate, mathContext);
 		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit, mathContext);
 
-		return new BacktestBootstrapContext(entryLogic, getExitLogic(), cmcMarkets, cashAccount, simulationDates);
+		return new BacktestBootstrapContext(entry, getExitLogic(), cmcMarkets, cashAccount, simulationDates);
 	}
 
 	private EquityManagementFeeCalculator createFeeCalculator( final EquityManagementFeeConfiguration managementFee ) {
