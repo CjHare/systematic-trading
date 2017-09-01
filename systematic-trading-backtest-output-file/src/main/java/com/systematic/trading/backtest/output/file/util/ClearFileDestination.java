@@ -26,6 +26,8 @@
 package com.systematic.trading.backtest.output.file.util;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * Empties the destination directory of all files and folders.
@@ -40,18 +42,14 @@ public class ClearFileDestination {
 		this.outputDirectory = outputDirectory;
 	}
 
-	public void clear() {
+	public void clear() throws IOException {
 
 		// Ensure the directory exists
 		final File outputDirectoryFile = new File(outputDirectory);
 
-		if (outputDirectoryFile.exists())
-
-		{
+		if (outputDirectoryFile.exists()) {
 			deleteSubDirectories(outputDirectoryFile);
-		} else
-
-		{
+		} else {
 			if (!outputDirectoryFile.mkdirs()) {
 				throw new IllegalArgumentException(
 				        String.format("Failed to create / access directory parent directory: %s", outputDirectory));
@@ -70,7 +68,7 @@ public class ClearFileDestination {
 		}
 	}
 
-	private void deleteSubDirectories( final File directory ) {
+	private void deleteSubDirectories( final File directory ) throws IOException {
 
 		for (final File file : directory.listFiles()) {
 
@@ -78,10 +76,7 @@ public class ClearFileDestination {
 				deleteSubDirectories(file);
 			}
 
-			if (!file.delete()) {
-				throw new IllegalArgumentException(String.format("Failed to delete: %s", directory));
-			}
+			Files.delete(file.toPath());
 		}
 	}
-
 }

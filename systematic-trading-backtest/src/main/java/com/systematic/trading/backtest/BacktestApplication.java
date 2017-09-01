@@ -260,7 +260,8 @@ public class BacktestApplication {
 		LOG.info("All Simulations have been completed for deposit amount: {}", () -> depositAmount);
 	}
 
-	private void clearOutputDirectory( final DepositConfiguration depositAmount, final LaunchArguments arguments ) {
+	private void clearOutputDirectory( final DepositConfiguration depositAmount, final LaunchArguments arguments )
+	        throws ServiceException {
 		//TODO delete must run BEFORE any of the tests! that'll ensure race conditions are avoided
 
 		//TODO this should happen only once & be moved into the file DAOs
@@ -269,7 +270,11 @@ public class BacktestApplication {
 
 		if (isFileBasedDisplay(arguments)) {
 			final String outputDirectory = arguments.getOutputDirectory(depositAmount);
-			new ClearFileDestination(outputDirectory).clear();
+			try {
+				new ClearFileDestination(outputDirectory).clear();
+			} catch (final IOException e) {
+				throw new BacktestInitialisationException(e);
+			}
 		}
 	}
 
