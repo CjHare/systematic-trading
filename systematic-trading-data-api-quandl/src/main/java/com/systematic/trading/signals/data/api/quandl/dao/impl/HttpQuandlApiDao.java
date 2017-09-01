@@ -117,19 +117,28 @@ public class HttpQuandlApiDao implements QuandlApiDao {
 
 			if (isResponseOk(url, response)) {
 				return response;
+
 			} else {
 				LOG.warn(String.format("Failed to retrieve data, HTTP code: %s, request: %s", response.getStatus(),
 				        url));
 
-				try {
-					TimeUnit.MILLISECONDS.sleep(attempt * retryBackoffMs);
-				} catch (InterruptedException e) {
-				}
+				waitBackOffDuration(attempt);
 			}
 
 		} while (++attempt <= numberOfRetries);
 
 		throw new CannotRetrieveDataException(String.format("Failed to retrieve data for request: %s", url));
+	}
+
+	private void waitBackOffDuration( final int attempt ) {
+		try {
+			TimeUnit.MILLISECONDS.sleep(attempt * retryBackoffMs);
+		} catch (InterruptedException e) {
+			LOG.warn("Wait between retrieval calls interrupted", e);
+
+			// Restore interrupted state...
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	private boolean isResponseOk( final WebTarget url, final Response response ) {
