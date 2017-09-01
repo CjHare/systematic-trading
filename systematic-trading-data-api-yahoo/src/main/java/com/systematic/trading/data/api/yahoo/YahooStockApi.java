@@ -29,7 +29,6 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -111,7 +110,7 @@ public class YahooStockApi implements EquityApi {
 				break;
 			}
 
-		} catch (final JSONException | ParseException e) {
+		} catch (final JSONException e) {
 			final String message = String.format("Failed in parsing JSON for: %s", tickerSymbol);
 			LOG.error(message, e);
 			LOG.error(result);
@@ -122,14 +121,14 @@ public class YahooStockApi implements EquityApi {
 	}
 
 	private List<TradingDayPrices> parseQuoteAsJsonObject( List<TradingDayPrices> data, final JSONObject query,
-	        final String tickerSymbol ) throws ParseException {
+	        final String tickerSymbol ) {
 		final JSONObject result = query.getJSONObject("results");
 		data.add(parseQuote(tickerSymbol, result.getJSONObject("quote")));
 		return data;
 	}
 
 	private List<TradingDayPrices> parseQuoteAsJsonArray( List<TradingDayPrices> data, final JSONObject query,
-	        final int numberOfQuotes, final String tickerSymbol ) throws ParseException {
+	        final int numberOfQuotes, final String tickerSymbol ) {
 		final JSONObject results = query.getJSONObject("results");
 		final JSONArray quote = results.getJSONArray("quote");
 		for (int i = 0; i < numberOfQuotes; i++) {
