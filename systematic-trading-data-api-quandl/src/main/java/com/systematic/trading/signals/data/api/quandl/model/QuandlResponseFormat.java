@@ -61,7 +61,7 @@ public class QuandlResponseFormat {
 	 */
 	public TradingDayPrices[] convert( final String tickerSymbol, final DatatableResource datatable )
 	        throws CannotRetrieveDataException {
-		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<LocalDate, TradingDayPrices>();
+		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<>();
 		final List<ColumnResource> columns = datatable.getColumns();
 		final List<List<Object>> data = datatable.getData();
 
