@@ -37,9 +37,24 @@ package com.systematic.trading.backtest.output.elastic.configuration;
 public interface BackestOutputElasticConfiguration {
 
 	/**
-	 * Retrieves the number of threads, determining the maximum number of connections to Elastic search to perform concurrently.
+	 * The number of primary shards that an index should have, which defaults to 5. 
+	 * This setting cannot be changed after index creation.
 	 * 
-	 * @return
+	 * @return number of Elastic search nodes to share the data across.
 	 */
-	int getNumberOfThreads();
+	int getNumberOfShards();
+
+	/**
+	 * The number of replica shards (copies) that each primary shard should have, which defaults to 1. 	
+	 * 
+	 * @return number of Elastic search replications for each index.
+	 */
+	int getNumberOfReplicas();
+
+	/**
+	 * Retrieve the number of records to send to the Elastic Search bulk API.
+	 * 
+	 * @return maximum number of records to send to the bulk API.
+	 */
+	int getBulkApiBucketSize();
 }

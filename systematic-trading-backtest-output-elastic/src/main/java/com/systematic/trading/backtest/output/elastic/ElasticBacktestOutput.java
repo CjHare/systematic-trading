@@ -30,7 +30,9 @@ import java.util.concurrent.ExecutorService;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.BacktestOutput;
+import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
+import com.systematic.trading.backtest.output.elastic.dao.impl.FileValidatedBackestOutputFileConfigurationDao;
 import com.systematic.trading.backtest.output.elastic.dao.impl.HttpElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticBrokerageIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticCashIndex;
@@ -40,6 +42,8 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticOrderIn
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticReturnOnInvestmentIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalAnalysisIndex;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
+import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
@@ -67,19 +71,17 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	private final ElasticEquityIndex equityIndex;
 	private final BacktestBatchId batchId;
 
-	public ElasticBacktestOutput( final BacktestBatchId batchId, final ExecutorService pool ) {
-
-		//TODO configuration value - input!
-		final int bulkApiBucketSize = 24000;
-
+	public ElasticBacktestOutput( final BacktestBatchId batchId, final ExecutorService pool )
+	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+		final BackestOutputElasticConfiguration config = new FileValidatedBackestOutputFileConfigurationDao().get();
 		final ElasticDao dao = new HttpElasticDao();
-		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao, pool, bulkApiBucketSize);
-		this.cashIndex = new ElasticCashIndex(dao, pool, bulkApiBucketSize);
-		this.orderIndex = new ElasticOrderIndex(dao, pool, bulkApiBucketSize);
-		this.brokerageIndex = new ElasticBrokerageIndex(dao, pool, bulkApiBucketSize);
-		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(dao, pool, bulkApiBucketSize);
-		this.networthIndex = new ElasticNetworthIndex(dao, pool, bulkApiBucketSize);
-		this.equityIndex = new ElasticEquityIndex(dao, pool, bulkApiBucketSize);
+		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao, pool, config);
+		this.cashIndex = new ElasticCashIndex(dao, pool, config);
+		this.orderIndex = new ElasticOrderIndex(dao, pool, config);
+		this.brokerageIndex = new ElasticBrokerageIndex(dao, pool, config);
+		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(dao, pool, config);
+		this.networthIndex = new ElasticNetworthIndex(dao, pool, config);
+		this.equityIndex = new ElasticEquityIndex(dao, pool, config);
 		this.batchId = batchId;
 	}
 
@@ -96,8 +98,6 @@ public class ElasticBacktestOutput implements BacktestOutput {
 		equityIndex.init(batchId);
 	}
 
-	//TODO move the pool into the index
-	//TODO configuration for # of concurrent connections?
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
 		signalAnalysisIndex.event(batchId, event);

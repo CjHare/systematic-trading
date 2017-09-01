@@ -36,6 +36,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.systematic.trading.backtest.BacktestBatchId;
+import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticEmptyIndexMapping;
@@ -57,21 +58,11 @@ public abstract class ElasticCommonIndex {
 	/** Bulk API action for creating document and generating it's ID. */
 	private static final String ACTION_CREATE_GENERATE_DOCUMENT_ID = "index";
 
-	//TODO move these into configuration values
 	/** Value to disable the refresh interval. */
 	private static final String INDEX_SETTING_REFRESH_DISABLE = "-1";
 
 	/** Default value for the refresh interval. */
 	private static final String INDEX_SETTING_REFRESH_DEFAULT = "1s";
-
-	/** 
-	 * The number of primary shards that an index should have, which defaults to 5. 
-	 * This setting cannot be changed after index creation.
-	 */
-	private static final int DEFAULT_NUMBER_OF_SHARDS = 5;
-
-	/** The number of replica shards (copies) that each primary shard should have, which defaults to 1. 	 */
-	private static final int DEFAULT_NUMBER_OF_REPLICAS = 1;
 
 	/** Access to Elastic Search endpoint.*/
 	private final ElasticDao dao;
@@ -85,14 +76,23 @@ public abstract class ElasticCommonIndex {
 	/** Delegate worker threads that deal with performing sending to Elastic. */
 	private final ExecutorService pool;
 
-	//TODO refactor the pool & size  into a configuration object
-	public ElasticCommonIndex( final ElasticDao dao, final ExecutorService pool, final int bulkApiBucketSize ) {
+	/** Elastic Search primary shards. */
+	private final int numberOfShards;
+
+	/** Elastic Search replications of the primary shards. */
+	private final int numberOfReplicas;
+
+	public ElasticCommonIndex( final ElasticDao dao, final ExecutorService pool,
+	        final BackestOutputElasticConfiguration config ) {
 		this.dao = dao;
 		this.pool = pool;
 
 		// Each source request (document to created) is accompanied by a meta object
-		this.bulkApiBucketSize = 2 * bulkApiBucketSize;
+		this.bulkApiBucketSize = 2 * config.getBulkApiBucketSize();
 		this.bulkApiBucket = new ArrayList<>(this.bulkApiBucketSize);
+
+		this.numberOfShards = config.getNumberOfShards();
+		this.numberOfReplicas = config.getNumberOfReplicas();
 	}
 
 	/**
@@ -138,11 +138,12 @@ public abstract class ElasticCommonIndex {
 	}
 
 	protected ElasticBulkApiMetaDataRequestResource createBulkApiMeta( final BacktestBatchId id ) {
+		//TODO put this into a builder & move ACTION_CREATE_GENERATE_DOCUMENT_ID out of this class
 		return new ElasticBulkApiMetaDataRequestResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, null, id.getName(), null);
 	}
 
 	protected ElasticIndex getIndex() {
-		return new ElasticIndex(DEFAULT_NUMBER_OF_SHARDS, DEFAULT_NUMBER_OF_REPLICAS);
+		return new ElasticIndex(numberOfShards, numberOfReplicas);
 	}
 
 	protected abstract ElasticIndexMapping getIndexMapping();

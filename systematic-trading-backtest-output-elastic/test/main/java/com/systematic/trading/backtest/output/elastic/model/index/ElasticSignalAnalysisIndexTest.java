@@ -59,7 +59,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getBucketSize());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
 
 		index.init(id);
 
@@ -72,7 +72,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getBucketSize());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
 
 		index.init(id);
 
@@ -86,7 +86,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getBucketSize());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
 
 		try {
 			index.init(id);
@@ -106,7 +106,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getBucketSize());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
 
 		final SignalAnalysisEvent event = getEvent();
 
@@ -118,7 +118,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void disableRefreshInterval() {
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getBucketSize());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
 
 		index.setRefreshInterval(false);
 
@@ -127,7 +127,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void enableRefreshInterval() {
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getBucketSize());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
 
 		index.setRefreshInterval(true);
 
@@ -136,7 +136,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void ensureIndexExists() {
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getBucketSize());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
 
 		index.ensureIndexExists();
 

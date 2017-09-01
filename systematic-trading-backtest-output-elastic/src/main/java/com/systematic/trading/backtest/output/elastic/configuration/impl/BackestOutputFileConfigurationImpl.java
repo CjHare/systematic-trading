@@ -38,14 +38,29 @@ import com.systematic.trading.backtest.output.elastic.configuration.BackestOutpu
  */
 public class BackestOutputFileConfigurationImpl implements BackestOutputElasticConfiguration {
 
-	private final int numberOfThreads;
+	private final int numberOfShards;
+	private final int numberOfReplicas;
+	private final int bulkApiBucketSize;
 
-	public BackestOutputFileConfigurationImpl( final int numberOfThreads ) {
-		this.numberOfThreads = numberOfThreads;
+	public BackestOutputFileConfigurationImpl( final int numberOfShards, final int numberOfReplicas,
+	        final int bulkApiBucketSize ) {
+		this.numberOfShards = numberOfShards;
+		this.numberOfReplicas = numberOfReplicas;
+		this.bulkApiBucketSize = bulkApiBucketSize;
 	}
 
 	@Override
-	public int getNumberOfThreads() {
-		return numberOfThreads;
+	public int getNumberOfShards() {
+		return numberOfShards;
+	}
+
+	@Override
+	public int getNumberOfReplicas() {
+		return numberOfReplicas;
+	}
+
+	@Override
+	public int getBulkApiBucketSize() {
+		return bulkApiBucketSize;
 	}
 }

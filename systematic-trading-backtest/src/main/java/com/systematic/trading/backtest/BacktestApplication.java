@@ -236,7 +236,7 @@ public class BacktestApplication {
 				default:
 					throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
 			}
-		} catch (final IOException e) {
+		} catch (final IOException | ConfigurationValidationException | CannotRetrieveConfigurationException e) {
 			throw new BacktestInitialisationException(e);
 		}
 	}

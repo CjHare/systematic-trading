@@ -32,6 +32,8 @@ package com.systematic.trading.backtest.output.elastic;
 import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.output.BacktestOutputPreparation;
+import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
+import com.systematic.trading.backtest.output.elastic.configuration.impl.BackestOutputFileConfigurationImpl;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.dao.impl.HttpElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticBrokerageIndex;
@@ -49,8 +51,10 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalA
  */
 public class ElasticBacktestOutputPreparation implements BacktestOutputPreparation {
 
-	//TODO dummy config instead of these (they're only used for bulk API calls)
-	private static final int NO_BUCKET = 0;
+	/** Only dummy values are needed during the preparation step. */
+	private static final BackestOutputElasticConfiguration CONFIG = new BackestOutputFileConfigurationImpl(0, 0, 0);
+
+	/** Pool is only used for Bulk API requests, which are not used during the preparation. */
 	private static final ExecutorService NO_POOL = null;
 
 	@Override
@@ -66,23 +70,23 @@ public class ElasticBacktestOutputPreparation implements BacktestOutputPreparati
 
 	private void ensureIndexesExist() {
 		final ElasticDao dao = new HttpElasticDao();
-		new ElasticSignalAnalysisIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
-		new ElasticCashIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
-		new ElasticOrderIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
-		new ElasticBrokerageIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
-		new ElasticReturnOnInvestmentIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
-		new ElasticNetworthIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
-		new ElasticEquityIndex(dao, NO_POOL, NO_BUCKET).ensureIndexExists();
+		new ElasticSignalAnalysisIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
+		new ElasticCashIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
+		new ElasticOrderIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
+		new ElasticBrokerageIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
+		new ElasticReturnOnInvestmentIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
+		new ElasticNetworthIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
+		new ElasticEquityIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
 	}
 
 	private void setRefreshInterval( final boolean enabled ) {
 		final ElasticDao dao = new HttpElasticDao();
-		new ElasticSignalAnalysisIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
-		new ElasticCashIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
-		new ElasticOrderIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
-		new ElasticBrokerageIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
-		new ElasticReturnOnInvestmentIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
-		new ElasticNetworthIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
-		new ElasticEquityIndex(dao, NO_POOL, NO_BUCKET).setRefreshInterval(enabled);
+		new ElasticSignalAnalysisIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
+		new ElasticCashIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
+		new ElasticOrderIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
+		new ElasticBrokerageIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
+		new ElasticReturnOnInvestmentIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
+		new ElasticNetworthIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
+		new ElasticEquityIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
 	}
 }

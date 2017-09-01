@@ -59,7 +59,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getBucketSize());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
 
 		index.init(id);
 
@@ -72,7 +72,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getBucketSize());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
 
 		index.init(id);
 
@@ -86,7 +86,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getBucketSize());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
 
 		try {
 			index.init(id);
@@ -106,7 +106,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getBucketSize());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
 		final OrderEvent event = getEvent();
 
 		index.init(id);
@@ -117,7 +117,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void disableRefreshInterval() {
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getBucketSize());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
 
 		index.setRefreshInterval(false);
 
@@ -126,7 +126,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void enableRefreshInterval() {
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getBucketSize());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
 
 		index.setRefreshInterval(true);
 
@@ -135,7 +135,7 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void ensureIndexExists() {
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getBucketSize());
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
 
 		index.ensureIndexExists();
 

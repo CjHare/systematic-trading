@@ -48,6 +48,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.BacktestBatchId;
+import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
+import com.systematic.trading.backtest.output.elastic.configuration.impl.BackestOutputFileConfigurationImpl;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.ElasticEmptyIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
@@ -157,8 +159,8 @@ public abstract class ElasticIndexTestBase {
 		return Executors.newSingleThreadExecutor();
 	}
 
-	protected int getBucketSize() {
-		return 1;
+	protected BackestOutputElasticConfiguration getElasticConfig() {
+		return new BackestOutputFileConfigurationImpl(5, 1, 1);
 	}
 
 	protected void verfiyRefreshInterval( final boolean enabled ) {

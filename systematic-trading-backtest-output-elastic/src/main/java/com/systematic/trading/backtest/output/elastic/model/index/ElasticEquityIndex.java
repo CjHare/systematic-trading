@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutorService;
 import javax.ws.rs.client.Entity;
 
 import com.systematic.trading.backtest.BacktestBatchId;
+import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
@@ -46,8 +47,9 @@ import com.systematic.trading.simulation.equity.event.EquityEvent;
  */
 public class ElasticEquityIndex extends ElasticCommonIndex {
 
-	public ElasticEquityIndex( final ElasticDao dao, final ExecutorService pool, final int bulkApiBucketSize ) {
-		super(dao, pool, bulkApiBucketSize);
+	public ElasticEquityIndex( final ElasticDao dao, final ExecutorService pool,
+	        final BackestOutputElasticConfiguration config ) {
+		super(dao, pool, config);
 	}
 
 	public void event( final BacktestBatchId id, final EquityEvent event ) {

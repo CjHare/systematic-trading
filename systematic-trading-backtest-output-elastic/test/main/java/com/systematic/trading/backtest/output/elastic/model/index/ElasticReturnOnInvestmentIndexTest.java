@@ -59,7 +59,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
 		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
-		        getBucketSize());
+		        getElasticConfig());
 
 		index.init(id);
 
@@ -73,7 +73,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
 		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
-		        getBucketSize());
+		        getElasticConfig());
 
 		index.init(id);
 
@@ -88,7 +88,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
 		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
-		        getBucketSize());
+		        getElasticConfig());
 
 		try {
 			index.init(id);
@@ -109,7 +109,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
 		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
-		        getBucketSize());
+		        getElasticConfig());
 		final ReturnOnInvestmentEvent event = getEvent();
 
 		index.init(id);
@@ -121,7 +121,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 	@Test
 	public void disableRefreshInterval() {
 		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
-		        getBucketSize());
+		        getElasticConfig());
 
 		index.setRefreshInterval(false);
 
@@ -131,7 +131,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 	@Test
 	public void enableRefreshInterval() {
 		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
-		        getBucketSize());
+		        getElasticConfig());
 
 		index.setRefreshInterval(true);
 
@@ -141,7 +141,7 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 	@Test
 	public void ensureIndexExists() {
 		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
-		        getBucketSize());
+		        getElasticConfig());
 
 		index.ensureIndexExists();
 
