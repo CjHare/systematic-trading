@@ -38,8 +38,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import com.systematic.trading.data.collections.BlockingEventCount;
-
 /**
  * @author CJ Hare
  */

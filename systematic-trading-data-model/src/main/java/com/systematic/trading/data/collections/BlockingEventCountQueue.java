@@ -57,8 +57,12 @@ public class BlockingEventCountQueue implements BlockingEventCount {
 	public void add() {
 		try {
 			ringBuffer.put(LocalTime.now());
-		} catch (InterruptedException e) {
+
+		} catch (final InterruptedException e) {
 			LOG.warn("Interrupted when attempting ", e);
+
+			// Restore interrupted state...
+			Thread.currentThread().interrupt();
 		}
 	}
 
