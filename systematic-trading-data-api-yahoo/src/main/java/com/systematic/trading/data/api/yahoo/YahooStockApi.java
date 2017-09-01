@@ -139,8 +139,7 @@ public class YahooStockApi implements EquityApi {
 		return data;
 	}
 
-	private TradingDayPricesImpl parseQuote( final String tickerSymbol, final JSONObject quote ) throws ParseException {
-
+	private TradingDayPricesImpl parseQuote( final String tickerSymbol, final JSONObject quote ) {
 		final String unparseDdate = quote.getString("Date");
 		final LocalDate date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(unparseDdate));
 		final ClosingPrice closingPrice = ClosingPrice.valueOf(BigDecimal.valueOf(quote.getDouble("Close")));
