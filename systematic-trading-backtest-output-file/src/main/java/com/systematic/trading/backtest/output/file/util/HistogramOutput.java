@@ -45,19 +45,21 @@ public class HistogramOutput {
 
 		BigDecimal smallestKey = BigDecimal.valueOf(Double.MAX_VALUE);
 		BigDecimal largestKey = BigDecimal.ZERO;
-		for (final BigDecimal equities : events.keySet()) {
-			if (smallestKey.compareTo(equities) > 0) {
-				smallestKey = equities;
+		for (final Map.Entry<BigDecimal, BigInteger> equities : events.entrySet()) {
+			final BigDecimal frequency = equities.getKey();
+			if (smallestKey.compareTo(frequency) > 0) {
+				smallestKey = frequency;
 			}
-			if (largestKey.compareTo(equities) < 0) {
-				largestKey = equities;
+			if (largestKey.compareTo(frequency) < 0) {
+				largestKey = frequency;
 			}
 		}
 
 		final Map<String, BigInteger> binnedBuyEvents = new TreeMap<>();
-		for (final BigDecimal equities : events.keySet()) {
-			final String bin = getBin(smallestKey, largestKey, equities);
-			final BigInteger count = events.get(equities);
+		for (final Map.Entry<BigDecimal, BigInteger> equities : events.entrySet()) {
+			final BigDecimal frequency = equities.getKey();
+			final String bin = getBin(smallestKey, largestKey, frequency);
+			final BigInteger count = events.get(frequency);
 			binnedBuyEvents.put(bin, binnedBuyEvents.get(bin) == null ? count : binnedBuyEvents.get(bin).add(count));
 		}
 
