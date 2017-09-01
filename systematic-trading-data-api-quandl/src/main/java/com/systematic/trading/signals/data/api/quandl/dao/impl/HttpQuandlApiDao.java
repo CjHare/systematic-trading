@@ -115,7 +115,7 @@ public class HttpQuandlApiDao implements QuandlApiDao {
 			throttler.add();
 			final Response response = url.request(MediaType.APPLICATION_JSON).get();
 
-			if (isResponseOk(url, response)) {
+			if (isResponseOk(response)) {
 				return response;
 
 			} else {
@@ -141,7 +141,7 @@ public class HttpQuandlApiDao implements QuandlApiDao {
 		}
 	}
 
-	private boolean isResponseOk( final WebTarget url, final Response response ) {
+	private boolean isResponseOk( final Response response ) {
 		return response.getStatus() == HTTP_OK;
 	}
 }
