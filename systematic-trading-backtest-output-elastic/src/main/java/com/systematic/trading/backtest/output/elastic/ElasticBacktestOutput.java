@@ -32,7 +32,6 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
-import com.systematic.trading.backtest.output.elastic.dao.impl.FileValidatedBackestOutputFileConfigurationDao;
 import com.systematic.trading.backtest.output.elastic.dao.impl.HttpElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticBrokerageIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticCashIndex;
@@ -42,8 +41,6 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticOrderIn
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticReturnOnInvestmentIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalAnalysisIndex;
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
-import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
@@ -71,9 +68,8 @@ public class ElasticBacktestOutput implements BacktestOutput {
 	private final ElasticEquityIndex equityIndex;
 	private final BacktestBatchId batchId;
 
-	public ElasticBacktestOutput( final BacktestBatchId batchId, final ExecutorService pool )
-	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
-		final BackestOutputElasticConfiguration config = new FileValidatedBackestOutputFileConfigurationDao().get();
+	public ElasticBacktestOutput( final BacktestBatchId batchId, final ExecutorService pool,
+	        final BackestOutputElasticConfiguration config ) {
 		final ElasticDao dao = new HttpElasticDao();
 		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao, pool, config);
 		this.cashIndex = new ElasticCashIndex(dao, pool, config);

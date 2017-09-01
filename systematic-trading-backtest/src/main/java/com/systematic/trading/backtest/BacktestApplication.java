@@ -56,6 +56,8 @@ import com.systematic.trading.backtest.output.DescriptionGenerator;
 import com.systematic.trading.backtest.output.NoBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutputPreparation;
+import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
+import com.systematic.trading.backtest.output.elastic.dao.impl.FileValidatedBackestOutputFileConfigurationDao;
 import com.systematic.trading.backtest.output.file.CompleteFileOutputService;
 import com.systematic.trading.backtest.output.file.MinimalFileOutputService;
 import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
@@ -122,10 +124,14 @@ public class BacktestApplication {
 		// Multi-threading support for output classes
 		final ExecutorService outputpool = getOutputPool(parserdArguments);
 
+		//TODO there's a more generic way to implement this configuration
+		final BackestOutputElasticConfiguration elasticConfiguration = new FileValidatedBackestOutputFileConfigurationDao()
+		        .get();
+
 		// TODO run the test over the full period with exclusion on filters
 		// TODO no deposits until actual start date, rather then from the warm-up period
 
-		final BacktestOutputPreparation outputPreparation = getOutput(parserdArguments);
+		final BacktestOutputPreparation outputPreparation = getOutput(parserdArguments, elasticConfiguration);
 		outputPreparation.setUp();
 
 		try {
@@ -133,7 +139,8 @@ public class BacktestApplication {
 				final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
 				        depositAmount);
 				clearOutputDirectory(depositAmount, parserdArguments);
-				runBacktest(depositAmount, parserdArguments, configurations, tradingData, outputpool);
+				runBacktest(depositAmount, parserdArguments, configurations, elasticConfiguration, tradingData,
+				        outputpool);
 			}
 
 		} finally {
@@ -178,12 +185,13 @@ public class BacktestApplication {
 		return Period.ofDays(windUp);
 	}
 
-	private BacktestOutputPreparation getOutput( final LaunchArguments arguments ) {
+	private BacktestOutputPreparation getOutput( final LaunchArguments arguments,
+	        final BackestOutputElasticConfiguration elasticConfiguration ) {
 		final OutputType type = arguments.getOutputType();
 
 		switch (type) {
 			case ELASTIC_SEARCH:
-				return new ElasticBacktestOutputPreparation();
+				return new ElasticBacktestOutputPreparation(elasticConfiguration);
 			case FILE_COMPLETE:
 			case FILE_MINIMUM:
 			case NO_DISPLAY:
@@ -213,7 +221,8 @@ public class BacktestApplication {
 	}
 
 	private BacktestOutput getOutput( final DepositConfiguration depositAmount, final LaunchArguments arguments,
-	        final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
+	        final BacktestBootstrapConfiguration configuration,
+	        final BackestOutputElasticConfiguration elasticConfiguration, final ExecutorService pool )
 	        throws BacktestInitialisationException {
 
 		final BacktestBatchId batchId = getBatchId(configuration, depositAmount);
@@ -222,7 +231,7 @@ public class BacktestApplication {
 		try {
 			switch (type) {
 				case ELASTIC_SEARCH:
-					return new ElasticBacktestOutput(batchId, pool);
+					return new ElasticBacktestOutput(batchId, pool, elasticConfiguration);
 				case FILE_COMPLETE:
 					return new CompleteFileOutputService(batchId,
 					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool,
@@ -236,17 +245,19 @@ public class BacktestApplication {
 				default:
 					throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
 			}
-		} catch (final IOException | ConfigurationValidationException | CannotRetrieveConfigurationException e) {
+		} catch (final IOException e) {
 			throw new BacktestInitialisationException(e);
 		}
 	}
 
 	private void runBacktest( final DepositConfiguration depositAmount, final LaunchArguments arguments,
-	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
+	        final List<BacktestBootstrapConfiguration> configurations,
+	        final BackestOutputElasticConfiguration elasticConfiguration, final TickerSymbolTradingData tradingData,
 	        final ExecutorService outputPool ) throws BacktestInitialisationException {
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
-			final BacktestOutput output = getOutput(depositAmount, arguments, configuration, outputPool);
+			final BacktestOutput output = getOutput(depositAmount, arguments, configuration, elasticConfiguration,
+			        outputPool);
 			final BacktestBootstrapContext context = createContext(configuration);
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData, mathContext);
 

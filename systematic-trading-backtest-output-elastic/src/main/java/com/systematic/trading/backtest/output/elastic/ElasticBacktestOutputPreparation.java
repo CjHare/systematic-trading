@@ -33,7 +33,6 @@ import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.output.BacktestOutputPreparation;
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
-import com.systematic.trading.backtest.output.elastic.configuration.impl.BackestOutputFileConfigurationImpl;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.dao.impl.HttpElasticDao;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticBrokerageIndex;
@@ -51,11 +50,27 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalA
  */
 public class ElasticBacktestOutputPreparation implements BacktestOutputPreparation {
 
-	/** Only dummy values are needed during the preparation step. */
-	private static final BackestOutputElasticConfiguration CONFIG = new BackestOutputFileConfigurationImpl(0, 0, 0);
-
 	/** Pool is only used for Bulk API requests, which are not used during the preparation. */
 	private static final ExecutorService NO_POOL = null;
+
+	private final ElasticSignalAnalysisIndex signalAnalysisIndex;
+	private final ElasticCashIndex cashIndex;
+	private final ElasticOrderIndex orderIndex;
+	private final ElasticBrokerageIndex brokerageIndex;
+	private final ElasticReturnOnInvestmentIndex returnOnInvestmentIndex;
+	private final ElasticNetworthIndex networthIndex;
+	private final ElasticEquityIndex equityIndex;
+
+	public ElasticBacktestOutputPreparation( final BackestOutputElasticConfiguration config ) {
+		final ElasticDao dao = new HttpElasticDao();
+		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao, NO_POOL, config);
+		this.cashIndex = new ElasticCashIndex(dao, NO_POOL, config);
+		this.orderIndex = new ElasticOrderIndex(dao, NO_POOL, config);
+		this.brokerageIndex = new ElasticBrokerageIndex(dao, NO_POOL, config);
+		this.returnOnInvestmentIndex = new ElasticReturnOnInvestmentIndex(dao, NO_POOL, config);
+		this.networthIndex = new ElasticNetworthIndex(dao, NO_POOL, config);
+		this.equityIndex = new ElasticEquityIndex(dao, NO_POOL, config);
+	}
 
 	@Override
 	public void setUp() {
@@ -69,24 +84,22 @@ public class ElasticBacktestOutputPreparation implements BacktestOutputPreparati
 	}
 
 	private void ensureIndexesExist() {
-		final ElasticDao dao = new HttpElasticDao();
-		new ElasticSignalAnalysisIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
-		new ElasticCashIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
-		new ElasticOrderIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
-		new ElasticBrokerageIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
-		new ElasticReturnOnInvestmentIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
-		new ElasticNetworthIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
-		new ElasticEquityIndex(dao, NO_POOL, CONFIG).ensureIndexExists();
+		signalAnalysisIndex.ensureIndexExists();
+		cashIndex.ensureIndexExists();
+		orderIndex.ensureIndexExists();
+		brokerageIndex.ensureIndexExists();
+		returnOnInvestmentIndex.ensureIndexExists();
+		networthIndex.ensureIndexExists();
+		equityIndex.ensureIndexExists();
 	}
 
 	private void setRefreshInterval( final boolean enabled ) {
-		final ElasticDao dao = new HttpElasticDao();
-		new ElasticSignalAnalysisIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
-		new ElasticCashIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
-		new ElasticOrderIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
-		new ElasticBrokerageIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
-		new ElasticReturnOnInvestmentIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
-		new ElasticNetworthIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
-		new ElasticEquityIndex(dao, NO_POOL, CONFIG).setRefreshInterval(enabled);
+		signalAnalysisIndex.setRefreshInterval(enabled);
+		cashIndex.setRefreshInterval(enabled);
+		orderIndex.setRefreshInterval(enabled);
+		brokerageIndex.setRefreshInterval(enabled);
+		returnOnInvestmentIndex.setRefreshInterval(enabled);
+		networthIndex.setRefreshInterval(enabled);
+		equityIndex.setRefreshInterval(enabled);
 	}
 }
