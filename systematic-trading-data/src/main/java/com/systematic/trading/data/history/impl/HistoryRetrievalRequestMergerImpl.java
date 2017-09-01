@@ -71,10 +71,10 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		for (int i = 0; i < sortedRequests.size() - 1; i++) {
 			final Optional<HistoryRetrievalRequest> lastRequest = getLastRequest(i, sortedRequests);
 			final HistoryRetrievalRequest request = sortedRequests.get(i);
-			final Optional<HistoryRetrievalRequest> nextRequest = getNexrRequest(i, sortedRequests);
+			final HistoryRetrievalRequest nextRequest = getNexrRequest(i, sortedRequests);
 			final Period requestLength = getRequestLength(request);
 
-			if (nextRequest.isPresent() && areConsecutive(request, nextRequest.get())) {
+			if (areConsecutive(request, nextRequest)) {
 				if (hasEnoughTime(requestLength, remaining)) {
 
 					// Decrement the remaining time by this request's
@@ -85,7 +85,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 
 						// Reset the  time for the next request to merge, update the start date
 						remaining = maximum;
-						mergedRequest = resetBuilder(nextRequest.get());
+						mergedRequest = resetBuilder(nextRequest);
 					}
 				} else {
 
@@ -97,14 +97,14 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 
 					merged.add(createRequest(request, mergedRequest));
 					remaining = maximum;
-					mergedRequest = resetBuilder(nextRequest.get());
+					mergedRequest = resetBuilder(nextRequest);
 
 				}
 			} else {
 				// Break in the consecutive chain
 				merged.add(createRequest(request, mergedRequest));
 				remaining = maximum;
-				mergedRequest = resetBuilder(nextRequest.get());
+				mergedRequest = resetBuilder(nextRequest);
 			}
 		}
 
@@ -137,9 +137,8 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		return i > 0 ? Optional.of(requests.get(i - 1)) : Optional.empty();
 	}
 
-	private Optional<HistoryRetrievalRequest> getNexrRequest( final int i,
-	        final List<HistoryRetrievalRequest> requests ) {
-		return i < requests.size() - 1 ? Optional.of(requests.get(i + 1)) : Optional.empty();
+	private HistoryRetrievalRequest getNexrRequest( final int i, final List<HistoryRetrievalRequest> requests ) {
+		return requests.get(i + 1);
 	}
 
 	/**
