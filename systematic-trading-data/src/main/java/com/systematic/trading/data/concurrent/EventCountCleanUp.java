@@ -68,7 +68,10 @@ public class EventCountCleanUp implements Runnable {
 			try {
 				Thread.sleep(interval.toMillis());
 			} catch (InterruptedException e) {
-				LOG.warn(e);
+				LOG.error(e);
+
+				// Restore interrupted state...
+				Thread.currentThread().interrupt();
 			}
 		}
 	}
