@@ -34,6 +34,10 @@ package com.systematic.trading.backtest.output.elastic.model;
  * 
  * @author CJ Hare
  */
-public interface ElasticFormat {
-	String LOCAL_DATE = "yyyy-MM-dd";
+public final class ElasticFormat {
+
+	public static final String LOCAL_DATE = "yyyy-MM-dd";
+
+	private ElasticFormat() {
+	}
 }
