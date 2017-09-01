@@ -30,7 +30,6 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -226,11 +225,11 @@ public class BacktestApplication {
 					return new ElasticBacktestOutput(batchId, pool);
 				case FILE_COMPLETE:
 					return new CompleteFileOutputService(batchId,
-					        getOutputDirectory(getOutputDirectory(depositAmount, arguments).get(), configuration), pool,
+					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool,
 					        mathContext);
 				case FILE_MINIMUM:
 					return new MinimalFileOutputService(batchId,
-					        getOutputDirectory(getOutputDirectory(depositAmount, arguments).get(), configuration), pool,
+					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool,
 					        mathContext);
 				case NO_DISPLAY:
 					return new NoBacktestOutput();
@@ -275,10 +274,8 @@ public class BacktestApplication {
 		}
 	}
 
-	private Optional<String> getOutputDirectory( final DepositConfiguration depositAmount,
-	        final LaunchArguments arguments ) {
-		return isFileBasedDisplay(arguments) ? Optional.of(arguments.getOutputDirectory(depositAmount))
-		        : Optional.empty();
+	private String getOutputDirectory( final DepositConfiguration depositAmount, final LaunchArguments arguments ) {
+		return isFileBasedDisplay(arguments) ? arguments.getOutputDirectory(depositAmount) : "";
 	}
 
 	private boolean isFileBasedDisplay( final LaunchArguments arguments ) {
