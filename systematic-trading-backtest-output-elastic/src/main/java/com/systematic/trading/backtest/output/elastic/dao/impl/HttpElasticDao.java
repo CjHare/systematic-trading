@@ -147,7 +147,8 @@ public class HttpElasticDao implements ElasticDao {
 		final Response response = root.path(path).request().put(requestBody);
 
 		if (response.getStatus() != 200) {
-			throw new ElasticException(String.format("Failed to put the index to: %s", path));
+			throw new ElasticException(
+			        String.format("Failed to put the index to: %s, http status: %s", path, response.getStatus()));
 		}
 	}
 
