@@ -63,8 +63,8 @@ public class HistogramOutput {
 			binnedBuyEvents.put(bin, binnedBuyEvents.get(bin) == null ? count : binnedBuyEvents.get(bin).add(count));
 		}
 
-		for (final String bin : binnedBuyEvents.keySet()) {
-			output.append(String.format("%s : %s%n", bin, binnedBuyEvents.get(bin)));
+		for (final Map.Entry<String, BigInteger> bin : binnedBuyEvents.entrySet()) {
+			output.append(String.format("%s : %s%n", bin.getKey(), bin.getValue()));
 		}
 	}
 
