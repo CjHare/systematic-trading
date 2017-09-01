@@ -248,8 +248,7 @@ public class BacktestApplication {
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final BacktestOutput output = getOutput(depositAmount, arguments, configuration, outputPool);
 			final BacktestBootstrapContext context = createContext(configuration);
-			final BacktestBootstrap bootstrap = new BacktestBootstrap(configuration, context, output, tradingData,
-			        mathContext);
+			final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData, mathContext);
 
 			LOG.info("Backtesting beginning for: {}", () -> description.getDescription(configuration, depositAmount));
 
