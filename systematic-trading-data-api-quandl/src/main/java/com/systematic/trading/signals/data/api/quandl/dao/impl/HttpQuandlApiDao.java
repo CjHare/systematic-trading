@@ -130,7 +130,7 @@ public class HttpQuandlApiDao implements QuandlApiDao {
 		throw new CannotRetrieveDataException(String.format("Failed to retrieve data for request: %s", url));
 	}
 
-	private void waitBackOffDuration( final int attempt ) {
+	private void waitBackOffDuration( final long attempt ) {
 		try {
 			TimeUnit.MILLISECONDS.sleep(attempt * retryBackoffMs);
 		} catch (InterruptedException e) {
