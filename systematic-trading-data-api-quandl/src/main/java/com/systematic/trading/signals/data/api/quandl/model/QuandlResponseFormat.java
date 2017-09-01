@@ -84,11 +84,11 @@ public class QuandlResponseFormat {
 
 	}
 
-	private BigDecimal getgPrice( final Object price ) throws CannotRetrieveDataException {
+	private BigDecimal getgPrice( final Object price ) {
 		return new BigDecimal((Double) price).setScale(TWO_DECIMAL_PLACES, RoundingMode.HALF_EVEN);
 	}
 
-	private LocalDate getTradingDate( final Object date ) throws CannotRetrieveDataException {
+	private LocalDate getTradingDate( final Object date ) {
 		return LocalDate.parse((String) date, QUANDL_DATE_FORMAT);
 	}
 

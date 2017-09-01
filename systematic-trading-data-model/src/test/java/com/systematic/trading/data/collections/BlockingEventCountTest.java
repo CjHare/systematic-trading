@@ -87,7 +87,7 @@ public class BlockingEventCountTest {
 		expectedImmediateAdd.setDaemon(true);
 		expectedImmediateAdd.start();
 
-		TimeUnit.MILLISECONDS.sleep(20);
+		TimeUnit.MILLISECONDS.sleep(50);
 
 		assertFalse("add() should have succeeded and deamon thread closed", expectedImmediateAdd.isAlive());
 	}
