@@ -72,8 +72,14 @@ public class BlockingEventCountQueue implements BlockingEventCount {
 		final int entries = ringBuffer.size();
 
 		for (int i = 0; i < entries; i++) {
-			if (expired.isAfter(ringBuffer.peek())) {
-				ringBuffer.remove();
+			final LocalTime candidate = ringBuffer.peek();
+
+			if (expired.isAfter(candidate)) {
+				final LocalTime removed = ringBuffer.remove();
+
+				if (candidate != removed) {
+					LOG.error(String.format("Attempted to remove: %s, but removed: %s", candidate, removed));
+				}
 			}
 		}
 	}
