@@ -134,6 +134,15 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 		verfiyRefreshInterval(true);
 	}
 
+	@Test
+	public void ensureIndexExists() {
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getBucketSize());
+
+		index.ensureIndexExists();
+
+		verifyPutIndexCall();
+	}
+
 	@Override
 	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;

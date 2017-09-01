@@ -133,6 +133,15 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 		verfiyRefreshInterval(true);
 	}
 
+	@Test
+	public void ensureIndexExists() {
+		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getBucketSize());
+
+		index.ensureIndexExists();
+
+		verifyPutIndexCall();
+	}
+
 	@Override
 	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;

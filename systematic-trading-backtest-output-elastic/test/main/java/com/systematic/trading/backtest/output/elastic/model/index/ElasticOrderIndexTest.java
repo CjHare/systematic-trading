@@ -133,6 +133,15 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 		verfiyRefreshInterval(true);
 	}
 
+	@Test
+	public void ensureIndexExists() {
+		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getBucketSize());
+
+		index.ensureIndexExists();
+
+		verifyPutIndexCall();
+	}
+
 	@Override
 	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;

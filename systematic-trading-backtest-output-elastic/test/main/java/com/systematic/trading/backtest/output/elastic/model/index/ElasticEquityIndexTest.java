@@ -135,6 +135,15 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 		verfiyRefreshInterval(true);
 	}
 
+	@Test
+	public void ensureIndexExists() {
+		final ElasticEquityIndex index = new ElasticEquityIndex(getDao(), getPool(), getBucketSize());
+
+		index.ensureIndexExists();
+
+		verifyPutIndexCall();
+	}
+
 	@Override
 	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;

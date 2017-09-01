@@ -124,18 +124,13 @@ public abstract class ElasticIndexTestBase {
 		verifyNoMoreInteractions(dao);
 	}
 
-	//TODO use
-	protected void verifyIndexPresent() {
-		verify(dao).getIndex(getIndexName());
+	protected void verifyPutIndexCall() {
+		final InOrder order = inOrder(dao);
+		order.verify(dao).getIndex(getIndexName());
+		order.verify(dao).put(eq(getIndexName()), equalsJson(getJsonPutIndex()));
 		verifyNoMoreInteractions(dao);
 
 		verifyGetIndex();
-	}
-
-	//TODO code
-	protected void verifyPutIndexCall() {
-		verify(dao).put(eq(getIndexName()), equalsJson(getJsonPutIndex()));
-		verifyNoMoreInteractions(dao);
 	}
 
 	protected void verifyMissingIndexCalls( final String batchId ) {

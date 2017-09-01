@@ -138,6 +138,16 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 		verfiyRefreshInterval(true);
 	}
 
+	@Test
+	public void ensureIndexExists() {
+		final ElasticReturnOnInvestmentIndex index = new ElasticReturnOnInvestmentIndex(getDao(), getPool(),
+		        getBucketSize());
+
+		index.ensureIndexExists();
+
+		verifyPutIndexCall();
+	}
+
 	@Override
 	protected String getPostIndex() {
 		return JSON_POST_INDEX_TYPE;
