@@ -36,7 +36,7 @@ public enum PeriodicFilterConfiguration {
 	WEEKLY(Period.ofWeeks(1)),
 	MONTHLY(Period.ofMonths(1));
 
-	private final Period frequency;
+	private final transient Period frequency;
 
 	PeriodicFilterConfiguration( final Period frequency ) {
 		this.frequency = frequency;
