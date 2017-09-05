@@ -10,10 +10,12 @@ https://sonarcloud.io/api/badges/measure?key=com.systematic.trading:systematic-t
 
 ## What?
 An application for the analysis and comparison of trading strategies over an equity's historical time period.
+
 Provides back testing with different available configurations for periodic funds depositing, position sizing, entry and exit signals, based off date or a time series price data momentum indicator.
 
 
 ## Why?
+Taking the broad abstraction of trading into three broad categories of triggers (trigger used for deciding entry & exit), position sizing (money management) and psychology, this project is my attempt to take a hold of the later.
 
 
 ### How to run
