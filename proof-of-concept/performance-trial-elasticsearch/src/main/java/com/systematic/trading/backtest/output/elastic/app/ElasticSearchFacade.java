@@ -88,8 +88,6 @@ public class ElasticSearchFacade {
 	private final int numberOfShards;
 	private final int numberOfReplicas;
 
-	private final static MediaType APPLICATION_NDJSON_TYPE = new MediaType("application", "x-ndjson");
-
 	public ElasticSearchFacade( final ElasticSearchConfiguration elasticConfig ) {
 
 		// Registering the provider for POJO -> JSON
@@ -168,7 +166,8 @@ public class ElasticSearchFacade {
 			                response.getStatus(), url, requestBody));
 		}
 
-		final ElasticPostEventResponseResource eventResponse = response.readEntity(ElasticPostEventResponseResource.class);
+		final ElasticPostEventResponseResource eventResponse = response
+		        .readEntity(ElasticPostEventResponseResource.class);
 
 		if (isInvalidResponse(eventResponse)) {
 			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",
@@ -181,7 +180,7 @@ public class ElasticSearchFacade {
 		final WebTarget url = bulkApiRoot.path(getTypePath()).path("_bulk");
 
 		// Bulk API uses only HTTP POST for all operations
-		final Response response = url.request(APPLICATION_NDJSON_TYPE).post(requestBody);
+		final Response response = url.request().post(requestBody);
 
 		if (response.getStatus() != 200) {
 			throw new ElasticException(
@@ -189,8 +188,7 @@ public class ElasticSearchFacade {
 			                response.getStatus(), url, requestBody));
 		}
 
-		final ElasticBulkApiResponseResource eventResponse = response
-		        .readEntity(ElasticBulkApiResponseResource.class);
+		final ElasticBulkApiResponseResource eventResponse = response.readEntity(ElasticBulkApiResponseResource.class);
 
 		if (isInvalidResponse(eventResponse)) {
 			throw new ElasticException(String.format("Unexpected response: %s, to request URL: %s, body: %s",

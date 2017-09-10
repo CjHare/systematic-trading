@@ -56,9 +56,6 @@ import com.systematic.trading.backtest.output.elastic.serialize.NdjsonListSerial
  */
 public class HttpElasticDao implements ElasticDao {
 
-	/** The Elastic Search Bulk API uses new line separate JSON. */
-	private static final MediaType APPLICATION_NDJSON_TYPE = new MediaType("application", "x-ndjson");
-
 	//TODO inject this! - configuration value
 	/** Location of the elastic search end point. */
 	private static final String ELASTIC_ENDPOINT_URL = "http://localhost:9200";
@@ -113,7 +110,7 @@ public class HttpElasticDao implements ElasticDao {
 		final WebTarget url = bulkApiRoot.path(getIndexBulkApiPath(indexName));
 
 		// Bulk API uses only HTTP POST for all operations
-		final Response response = url.request(APPLICATION_NDJSON_TYPE).post(requestBody);
+		final Response response = url.request(MediaType.APPLICATION_JSON).post(requestBody);
 
 		if (response.getStatus() != 200) {
 			throw new ElasticException(
