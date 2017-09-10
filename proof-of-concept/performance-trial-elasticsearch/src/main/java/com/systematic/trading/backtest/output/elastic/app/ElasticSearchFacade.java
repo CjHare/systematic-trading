@@ -180,7 +180,7 @@ public class ElasticSearchFacade {
 		final WebTarget url = bulkApiRoot.path(getTypePath()).path("_bulk");
 
 		// Bulk API uses only HTTP POST for all operations
-		final Response response = url.request().post(requestBody);
+		final Response response = url.request(MediaType.APPLICATION_JSON).post(requestBody);
 
 		if (response.getStatus() != 200) {
 			throw new ElasticException(
