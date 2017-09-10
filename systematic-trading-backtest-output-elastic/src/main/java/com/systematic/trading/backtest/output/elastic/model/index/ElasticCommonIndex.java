@@ -119,7 +119,9 @@ public abstract class ElasticCommonIndex {
 	}
 
 	public void flush() {
-		send(bulkApiBucket);
+		if (!bulkApiBucket.isEmpty()) {
+			send(bulkApiBucket);
+		}
 	}
 
 	protected <T> void create( final BacktestBatchId id, final T requestResource ) {
