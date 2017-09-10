@@ -149,6 +149,8 @@ public class HttpElasticDao implements ElasticDao {
 		}
 	}
 
+	//TODO move the Entity.json() operations into this DAO
+	
 	@Override
 	public void putSetting( final ElasticIndexName indexName, final Entity<?> requestBody ) {
 
