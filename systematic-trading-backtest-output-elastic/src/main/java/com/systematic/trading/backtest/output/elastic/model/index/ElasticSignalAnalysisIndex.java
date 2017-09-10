@@ -28,8 +28,6 @@ package com.systematic.trading.backtest.output.elastic.model.index;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 
-import javax.ws.rs.client.Entity;
-
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
@@ -53,7 +51,7 @@ public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 	}
 
 	public void event( final BacktestBatchId id, final SignalAnalysisEvent event ) {
-		create(id, Entity.json(new ElasticSignalAnalysisEventRequestResource(event)));
+		create(id, new ElasticSignalAnalysisEventRequestResource(event));
 	}
 
 	@Override
