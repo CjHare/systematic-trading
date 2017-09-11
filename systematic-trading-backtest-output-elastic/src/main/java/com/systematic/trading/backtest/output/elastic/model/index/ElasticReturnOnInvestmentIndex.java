@@ -63,6 +63,7 @@ public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
 	protected ElasticIndexMapping getIndexMapping() {
 		return new ElasticIndexMapping(
 		        Arrays.asList(getPair(ElasticFieldName.PERCENTAGE_CHANGE, ElasticFieldType.FLOAT),
+		                getPair(ElasticFieldName.FREQUENCY, ElasticFieldType.TEXT),
 		                getPair(ElasticFieldName.INCLUSIVE_START_DATE, ElasticFieldType.DATE),
 		                getPair(ElasticFieldName.EXCLUSIVE_END_DATE, ElasticFieldType.DATE)));
 	}

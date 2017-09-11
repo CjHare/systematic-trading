@@ -26,6 +26,7 @@
 package com.systematic.trading.backtest.output.elastic.resource;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -46,16 +47,36 @@ public class ElasticReturnOnInvestmentEventRequestResource {
 	private final float percentageChange;
 	private final LocalDate inclusiveStartDate;
 	private final LocalDate exclusiveEndDate;
+	private final Period frequency;
 
 	public ElasticReturnOnInvestmentEventRequestResource( final ReturnOnInvestmentEvent event ) {
 		this.percentageChange = event.getPercentageChange().floatValue();
 		this.inclusiveStartDate = event.getInclusiveStartDate();
 		this.exclusiveEndDate = event.getExclusiveEndDate();
+		this.frequency = Period.between(inclusiveStartDate, exclusiveEndDate);
 	}
 
 	@JsonProperty(ElasticTypeName.PERCENTAGE_CHANGE)
 	public float getPercentageChange() {
 		return percentageChange;
+	}
+
+	@JsonProperty(ElasticTypeName.FREQUENCY)
+	public String getFrequency() {
+
+		if (frequency.getDays() > 6) {
+			return "Weekly";
+		}
+
+		if (frequency.getMonths() > 0 || frequency.getDays() >= 26) {
+			return "Monthly";
+		}
+
+		if (frequency.getYears() > 0 || frequency.getMonths() >= 11) {
+			return "Yearly";
+		}
+
+		return "Daily";
 	}
 
 	@JsonProperty(ElasticTypeName.INCLUSIVE_START_DATE)

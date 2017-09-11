@@ -47,6 +47,7 @@ public final class ElasticTypeName {
 	public static final String EXCLUSIVE_END_DATE = "exclusive_end_date";
 	public static final String FUNDS_AFTER = "funds_after";
 	public static final String FUNDS_BEFORE = "funds_before";
+	public static final String FREQUENCY = "frequency";
 	public static final String IDENTITY = "identity";
 	public static final String INCLUSIVE_START_DATE = "inclusive_start_date";
 	public static final String NETWORTH = "networth";
