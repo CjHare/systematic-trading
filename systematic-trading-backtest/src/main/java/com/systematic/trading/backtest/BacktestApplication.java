@@ -135,13 +135,13 @@ public class BacktestApplication {
 		outputPreparation.setUp();
 
 		try {
-			for (final DepositConfiguration depositAmount : DepositConfiguration.values()) {
-				final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
-				        depositAmount);
-				clearOutputDirectory(depositAmount, parserdArguments);
-				runBacktest(depositAmount, parserdArguments, configurations, elasticConfiguration, tradingData,
-				        outputpool);
-			}
+			//TODO convert into input arguments
+			final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
+			
+			final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
+			        depositAmount);
+			clearOutputDirectory(depositAmount, parserdArguments);
+			runBacktest(depositAmount, parserdArguments, configurations, elasticConfiguration, tradingData, outputpool);
 
 		} finally {
 			HibernateUtil.getSessionFactory().close();
