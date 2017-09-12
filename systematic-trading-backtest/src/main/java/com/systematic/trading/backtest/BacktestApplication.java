@@ -124,6 +124,7 @@ public class BacktestApplication {
 		// Multi-threading support for output classes
 		final ExecutorService outputpool = getOutputPool(parserdArguments);
 
+		//TODO because of this line every configuration need to elastic configuration on cp, bad, bad, bad!g 
 		//TODO there's a more generic way to implement this configuration
 		final BackestOutputElasticConfiguration elasticConfiguration = new FileValidatedBackestOutputFileConfigurationDao()
 		        .get();
