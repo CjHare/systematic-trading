@@ -46,7 +46,7 @@ public class BackestOutputElasticConfigurationSingleton {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(BackestOutputElasticConfigurationSingleton.class);
 
-	private static BackestOutputElasticConfiguration INSTANCE;
+	private static final BackestOutputElasticConfiguration INSTANCE;
 
 	static {
 		try {
@@ -59,5 +59,9 @@ public class BackestOutputElasticConfigurationSingleton {
 
 	public static BackestOutputElasticConfiguration getConfiguration() {
 		return INSTANCE;
+	}
+
+	private BackestOutputElasticConfigurationSingleton() {
+		// Singleton is not be constructed
 	}
 }
