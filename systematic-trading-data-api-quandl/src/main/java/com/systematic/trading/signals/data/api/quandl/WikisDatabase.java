@@ -34,13 +34,16 @@ package com.systematic.trading.signals.data.api.quandl;
  * 
  * @author CJ Hare
  */
-public interface WikisDatabase {
+public final class WikisDatabase {
 
-	String PATH = "api/v3/datatables/WIKI/PRICES.json";
-	String COLUMN_NAMES_KEY = "qopts.columns";
-	String COLUMN_NAMES_VALUE = "date,open,high,low,close";
-	String START_DATE_KEY = "date.gte";
-	String END_DATE_KEY = "date.lt";
-	String TICKER_SYMBOL_KEY = "ticker";
-	String API_KEY = "api_key";
+	public static String PATH = "api/v3/datatables/WIKI/PRICES.json";
+	public static String COLUMN_NAMES_KEY = "qopts.columns";
+	public static String COLUMN_NAMES_VALUE = "date,open,high,low,close";
+	public static String START_DATE_KEY = "date.gte";
+	public static String END_DATE_KEY = "date.lt";
+	public static String TICKER_SYMBOL_KEY = "ticker";
+	public static String API_KEY = "api_key";
+
+	private WikisDatabase() {
+	}
 }
