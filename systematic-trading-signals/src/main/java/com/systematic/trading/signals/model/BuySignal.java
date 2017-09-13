@@ -28,6 +28,10 @@ package com.systematic.trading.signals.model;
 import java.time.LocalDate;
 
 public class BuySignal {
+
+	/** Prime number to help keep the hash code unique.*/
+	private static final int PRIME_VALUE = 31;
+
 	private final LocalDate date;
 
 	public BuySignal( final LocalDate date ) {
@@ -50,7 +54,6 @@ public class BuySignal {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		return prime + date.hashCode();
+		return PRIME_VALUE + date.hashCode();
 	}
 }

@@ -34,6 +34,9 @@ import java.math.BigDecimal;
  */
 public class EquityOrderVolume {
 
+	/** Prime number to help keep the hash code unique.*/
+	private static final int PRIME_VALUE = 31;
+
 	private final BigDecimal volume;
 
 	private EquityOrderVolume( final BigDecimal volume ) {
@@ -75,9 +78,8 @@ public class EquityOrderVolume {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((volume == null) ? 0 : volume.hashCode());
+		result = PRIME_VALUE * result + ((volume == null) ? 0 : volume.hashCode());
 		return result;
 	}
 }
