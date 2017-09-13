@@ -39,21 +39,13 @@ import com.systematic.trading.backtest.configuration.BackestConfiguration;
 public class BackestConfigurationImpl implements BackestConfiguration {
 
 	private final int numberOfFileOutputThreads;
-	private final int numberOfElasticOutputThreads;
 
-	public BackestConfigurationImpl( final int numberOfFileOutputThreads,
-	        final int numberOfElasticOutputThreads ) {
+	public BackestConfigurationImpl( final int numberOfFileOutputThreads ) {
 		this.numberOfFileOutputThreads = numberOfFileOutputThreads;
-		this.numberOfElasticOutputThreads = numberOfElasticOutputThreads;
 	}
 
 	@Override
 	public int getNumberOfFileOutputThreads() {
 		return numberOfFileOutputThreads;
-	}
-
-	@Override
-	public int getNumberOfElasticOutputThreads() {
-		return numberOfElasticOutputThreads;
 	}
 }

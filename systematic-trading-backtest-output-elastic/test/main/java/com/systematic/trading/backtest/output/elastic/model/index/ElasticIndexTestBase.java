@@ -160,7 +160,7 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	protected BackestOutputElasticConfiguration getElasticConfig() {
-		return new BackestOutputFileConfigurationImpl(5, 1, 1);
+		return new BackestOutputFileConfigurationImpl(7, 5, 1, 1);
 	}
 
 	protected void verfiyRefreshInterval( final boolean enabled ) {

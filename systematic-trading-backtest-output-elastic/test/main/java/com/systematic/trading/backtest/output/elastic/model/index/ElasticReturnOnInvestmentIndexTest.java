@@ -51,7 +51,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"inclusive_start_date\":{\"type\":\"date\"},\"exclusive_end_date\":{\"type\":\"date\"},\"percentage_change\":{\"type\":\"float\"}}}";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"inclusive_start_date\":{\"type\":\"date\"},\"exclusive_end_date\":{\"type\":\"date\"},\"percentage_change\":{\"type\":\"float\"},\"frequency\":{\"type\":\"text\"}}}";
 	private static final String JSON_POST_INDEX_TYPE = "{\"percentage_change\":12.34,\"";
 
 	@Test

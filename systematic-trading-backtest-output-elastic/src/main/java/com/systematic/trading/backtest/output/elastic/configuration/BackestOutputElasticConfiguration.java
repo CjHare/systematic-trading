@@ -57,4 +57,11 @@ public interface BackestOutputElasticConfiguration {
 	 * @return maximum number of records to send to the bulk API.
 	 */
 	int getBulkApiQueueSize();
+
+	/**
+	 * Number of concurrent connections to establish to Elastic Search.
+	 * 
+	 * @return number of threads for outputting data to Elastic Search.
+	 */
+	int getNumberOfConnections();
 }

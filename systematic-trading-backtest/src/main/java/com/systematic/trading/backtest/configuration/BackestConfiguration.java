@@ -42,11 +42,4 @@ public interface BackestConfiguration {
 	 * @return number of threads to use when using the file back test output.
 	 */
 	int getNumberOfFileOutputThreads();
-
-	/**
-	 * Retrieves the number of threads, determining the maximum number of connections to perform concurrently.
-	 * 
-	 * @return number of threads to use when connecting to Elastic search to push the back test output.
-	 */
-	int getNumberOfElasticOutputThreads();
 }

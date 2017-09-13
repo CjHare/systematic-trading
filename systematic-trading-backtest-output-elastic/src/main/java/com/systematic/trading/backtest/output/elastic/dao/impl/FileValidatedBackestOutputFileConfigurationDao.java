@@ -49,11 +49,13 @@ import com.systematic.trading.exception.ConfigurationValidationException;
 public class FileValidatedBackestOutputFileConfigurationDao implements BackestOutputFileConfigurationDao {
 	private static final String BACKTEST_OUTPUT_ELASTIC_PROPERTIES_FILE = "backtest_output_elastic.properties";
 
+	private final ConfigurationValidator<Integer> numberOfConnectionsValidator;
 	private final ConfigurationValidator<Integer> numberOfShardsValidator;
 	private final ConfigurationValidator<Integer> numberOfReplicasValidator;
 	private final ConfigurationValidator<Integer> bulkApiBucketSizeValidator;
 
 	public FileValidatedBackestOutputFileConfigurationDao() {
+		this.numberOfConnectionsValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
 		this.numberOfShardsValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
 		this.numberOfReplicasValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
 		this.bulkApiBucketSizeValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
@@ -64,6 +66,8 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 		final Properties properties = new FileConfigurationDao().get(BACKTEST_OUTPUT_ELASTIC_PROPERTIES_FILE);
 
+		final int numberOfConnections = getIntegerProperty(properties,
+		        BacktestOutputElasticProperty.NUMBER_OF_CONNECTIONS, numberOfConnectionsValidator);
 		final int numberOfShards = getIntegerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_SHARDS,
 		        numberOfShardsValidator);
 		final int numberOfReplicas = getIntegerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_REPLICAS,
@@ -71,7 +75,8 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 		final int bulkApiBucketSize = getIntegerProperty(properties, BacktestOutputElasticProperty.BULK_API_BUCKET_SIZE,
 		        bulkApiBucketSizeValidator);
 
-		return new BackestOutputFileConfigurationImpl(numberOfShards, numberOfReplicas, bulkApiBucketSize);
+		return new BackestOutputFileConfigurationImpl(numberOfConnections, numberOfShards, numberOfReplicas,
+		        bulkApiBucketSize);
 	}
 
 	private int getIntegerProperty( final Properties properties, final BacktestOutputElasticProperty property,

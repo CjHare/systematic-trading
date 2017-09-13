@@ -41,9 +41,11 @@ public class BackestOutputFileConfigurationImpl implements BackestOutputElasticC
 	private final int numberOfShards;
 	private final int numberOfReplicas;
 	private final int bulkApiQueueSize;
+	private final int numberOfConnections;
 
-	public BackestOutputFileConfigurationImpl( final int numberOfShards, final int numberOfReplicas,
-	        final int bulkApiQueueSize ) {
+	public BackestOutputFileConfigurationImpl( final int numberOfConnections, final int numberOfShards,
+	        final int numberOfReplicas, final int bulkApiQueueSize ) {
+		this.numberOfConnections = numberOfConnections;
 		this.numberOfShards = numberOfShards;
 		this.numberOfReplicas = numberOfReplicas;
 		this.bulkApiQueueSize = bulkApiQueueSize;
@@ -62,5 +64,10 @@ public class BackestOutputFileConfigurationImpl implements BackestOutputElasticC
 	@Override
 	public int getBulkApiQueueSize() {
 		return bulkApiQueueSize;
+	}
+
+	@Override
+	public int getNumberOfConnections() {
+		return numberOfConnections;
 	}
 }

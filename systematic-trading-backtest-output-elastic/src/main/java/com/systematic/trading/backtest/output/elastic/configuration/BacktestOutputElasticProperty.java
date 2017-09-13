@@ -36,6 +36,7 @@ package com.systematic.trading.backtest.output.elastic.configuration;
  */
 public enum BacktestOutputElasticProperty {
 
+	NUMBER_OF_CONNECTIONS("number_of_connections"),
 	NUMBER_OF_SHARDS("number_of_shards"),
 	NUMBER_OF_REPLICAS("number_of_replicas"),
 	BULK_API_BUCKET_SIZE("bulk_api_bucket_size");

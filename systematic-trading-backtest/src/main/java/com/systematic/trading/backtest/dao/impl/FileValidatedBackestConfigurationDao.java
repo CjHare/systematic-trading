@@ -50,11 +50,9 @@ public class FileValidatedBackestConfigurationDao implements BackestConfiguratio
 	private static final String BACKTEST_PROPERTIES_FILE = "backtest.properties";
 
 	private final ConfigurationValidator<Integer> numberOfFileOutputThreadsValidator;
-	private final ConfigurationValidator<Integer> numberOfElasticOutputThreadsValidator;
 
 	public FileValidatedBackestConfigurationDao() {
 		this.numberOfFileOutputThreadsValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
-		this.numberOfElasticOutputThreadsValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
 	}
 
 	@Override
@@ -63,10 +61,8 @@ public class FileValidatedBackestConfigurationDao implements BackestConfiguratio
 
 		final int numberOfFileOutputThreads = getIntegerProperty(properties,
 		        BacktestProperty.NUMBER_OF_FILE_OUTPUT_THREADS, numberOfFileOutputThreadsValidator);
-		final int numberOfElasticOutputThreads = getIntegerProperty(properties,
-		        BacktestProperty.NUMBER_OF_ELASTIC_OUTPUT_THREADS, numberOfElasticOutputThreadsValidator);
 
-		return new BackestConfigurationImpl(numberOfFileOutputThreads, numberOfElasticOutputThreads);
+		return new BackestConfigurationImpl(numberOfFileOutputThreads);
 	}
 
 	private int getIntegerProperty( final Properties properties, final BacktestProperty property,

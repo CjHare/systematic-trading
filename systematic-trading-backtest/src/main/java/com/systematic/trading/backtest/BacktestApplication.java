@@ -39,7 +39,6 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.configuration.BackestConfiguration;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -208,14 +207,15 @@ public class BacktestApplication {
 	private ExecutorService getOutputPool( final LaunchArguments arguments )
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 		final OutputType type = arguments.getOutputType();
-		final BackestConfiguration configuration = new FileValidatedBackestConfigurationDao().get();
 
 		switch (type) {
 			case ELASTIC_SEARCH:
-				return Executors.newFixedThreadPool(configuration.getNumberOfElasticOutputThreads());
+				return Executors.newFixedThreadPool(
+				        BackestOutputElasticConfigurationSingleton.getConfiguration().getNumberOfConnections());
 			case FILE_COMPLETE:
 			case FILE_MINIMUM:
-				return Executors.newFixedThreadPool(configuration.getNumberOfFileOutputThreads());
+				return Executors.newFixedThreadPool(
+				        new FileValidatedBackestConfigurationDao().get().getNumberOfFileOutputThreads());
 			case NO_DISPLAY:
 				return Executors.newSingleThreadScheduledExecutor();
 			default:
