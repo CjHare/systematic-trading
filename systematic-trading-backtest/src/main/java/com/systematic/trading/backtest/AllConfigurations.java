@@ -102,12 +102,11 @@ public class AllConfigurations implements BacktestConfiguration {
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
 
-		for (final MaximumTrade maximumTrade : MaximumTrade.values()) {
-			for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-				configurations.addAll(
-				        getConfigurations(simulationDates, deposit, equity, brokerage, minimumTrade, maximumTrade));
-			}
-		}
+		final MaximumTrade maximumTrade = MaximumTrade.QUARTER;
+		final MinimumTrade minimumTrade = MinimumTrade.TWO_THOUSAND;
+
+		configurations
+		        .addAll(getConfigurations(simulationDates, deposit, equity, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}
