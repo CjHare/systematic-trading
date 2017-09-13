@@ -39,7 +39,7 @@ public interface BackestOutputFileConfiguration {
 	/**
 	 * Retrieves the number of threads, determining the maximum number of file writes to perform concurrently.
 	 * 
-	 * @return
+	 * @return number of threads to write concurrently.
 	 */
 	int getNumberOfThreads();
 }

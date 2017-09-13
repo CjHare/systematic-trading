@@ -48,7 +48,6 @@ import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
-import com.systematic.trading.backtest.dao.impl.FileValidatedBackestConfigurationDao;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.input.LaunchArguments;
 import com.systematic.trading.backtest.output.BacktestOutput;
@@ -60,6 +59,7 @@ import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutputPrepa
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfigurationSingleton;
 import com.systematic.trading.backtest.output.file.CompleteFileOutputService;
 import com.systematic.trading.backtest.output.file.MinimalFileOutputService;
+import com.systematic.trading.backtest.output.file.dao.impl.FileValidatedBackestOutputFileConfigurationDao;
 import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
@@ -215,7 +215,7 @@ public class BacktestApplication {
 			case FILE_COMPLETE:
 			case FILE_MINIMUM:
 				return Executors.newFixedThreadPool(
-				        new FileValidatedBackestConfigurationDao().get().getNumberOfFileOutputThreads());
+				        new FileValidatedBackestOutputFileConfigurationDao().get().getNumberOfThreads());
 			case NO_DISPLAY:
 				return Executors.newSingleThreadScheduledExecutor();
 			default:
