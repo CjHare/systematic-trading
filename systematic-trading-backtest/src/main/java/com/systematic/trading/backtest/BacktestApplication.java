@@ -27,6 +27,7 @@ package com.systematic.trading.backtest;
 
 import java.io.IOException;
 import java.math.MathContext;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -135,10 +137,13 @@ public class BacktestApplication {
 		final BacktestOutputPreparation outputPreparation = getOutput(parserdArguments, elasticConfiguration);
 		outputPreparation.setUp();
 
+		final StopWatch timer = new StopWatch();
+		timer.start();
+
 		try {
 			//TODO convert into input arguments
 			final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
-			
+
 			final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
 			        depositAmount);
 			clearOutputDirectory(depositAmount, parserdArguments);
@@ -149,9 +154,12 @@ public class BacktestApplication {
 			closePool(outputpool);
 		}
 
+		timer.stop();
+
 		outputPreparation.tearDown();
 
-		LOG.info("Finished outputting results");
+		LOG.info(
+		        () -> String.format("Finished outputting results, time taken: %s", Duration.ofMillis(timer.getTime())));
 	}
 
 	private void closePool( final ExecutorService pool ) {
