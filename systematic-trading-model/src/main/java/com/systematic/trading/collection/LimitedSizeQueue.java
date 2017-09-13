@@ -35,6 +35,9 @@ import java.util.LinkedList;
 public class LimitedSizeQueue<E> extends LinkedList<E> {
 	private static final long serialVersionUID = 1L;
 
+	/** Hash coding needs a prime number to help keep things unique. */
+	private static final int PRIME_VALUE = 31;
+
 	/** Maximum size of the queue. */
 	private final int limit;
 
@@ -89,9 +92,8 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 
 	@Override
 	public int hashCode() {
-		final int primeValue = 31;
 		int result = super.hashCode();
-		result = primeValue * result + limit;
+		result = PRIME_VALUE * result + limit;
 		return result;
 	}
 
