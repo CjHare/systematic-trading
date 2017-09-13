@@ -35,6 +35,7 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldName;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
+import com.systematic.trading.backtest.output.elastic.model.ElasticReturnOnInvestmentEventFrequency;
 import com.systematic.trading.backtest.output.elastic.resource.ElasticReturnOnInvestmentEventRequestResource;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 
@@ -51,7 +52,8 @@ public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
 	}
 
 	public void event( final BacktestBatchId id, final ReturnOnInvestmentEvent event ) {
-		create(id, new ElasticReturnOnInvestmentEventRequestResource(event));
+		create(id, new ElasticReturnOnInvestmentEventRequestResource(event,
+		        new ElasticReturnOnInvestmentEventFrequency(event).getFrequency()));
 	}
 
 	@Override
