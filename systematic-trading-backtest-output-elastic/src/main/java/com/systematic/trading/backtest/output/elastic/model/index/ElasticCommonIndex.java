@@ -68,10 +68,10 @@ public abstract class ElasticCommonIndex {
 	private final ElasticDao dao;
 
 	/** Number of requests that are grouped together for the Bulk API.*/
-	private final int bulkApiBucketSize;
+	private final int bulkApiQueueSize;
 
 	/** Storage for the meta and source requests. */
-	private List<Object> bulkApiBucket;
+	private List<Object> bulkApiQueue;
 
 	/** Delegate worker threads that deal with performing sending to Elastic. */
 	private final ExecutorService pool;
@@ -88,8 +88,8 @@ public abstract class ElasticCommonIndex {
 		this.pool = pool;
 
 		// Each source request (document to created) is accompanied by a meta object
-		this.bulkApiBucketSize = 2 * config.getBulkApiBucketSize();
-		this.bulkApiBucket = new ArrayList<>(this.bulkApiBucketSize);
+		this.bulkApiQueueSize = 2 * config.getBulkApiQueueSize();
+		this.bulkApiQueue = new ArrayList<>(this.bulkApiQueueSize);
 
 		this.numberOfShards = config.getNumberOfShards();
 		this.numberOfReplicas = config.getNumberOfReplicas();
@@ -119,18 +119,18 @@ public abstract class ElasticCommonIndex {
 	}
 
 	public void flush() {
-		if (!bulkApiBucket.isEmpty()) {
-			send(bulkApiBucket);
+		if (!bulkApiQueue.isEmpty()) {
+			send(bulkApiQueue);
 		}
 	}
 
 	protected <T> void create( final BacktestBatchId id, final T requestResource ) {
-		bulkApiBucket.add(createBulkApiMeta(id));
-		bulkApiBucket.add(requestResource);
+		bulkApiQueue.add(createBulkApiMeta(id));
+		bulkApiQueue.add(requestResource);
 
 		if (isBulkApiBucketFull()) {
-			send(bulkApiBucket);
-			bulkApiBucket = new ArrayList<>(bulkApiBucketSize);
+			send(bulkApiQueue);
+			bulkApiQueue = new ArrayList<>(bulkApiQueueSize);
 
 		}
 	}
@@ -158,7 +158,7 @@ public abstract class ElasticCommonIndex {
 	}
 
 	private boolean isBulkApiBucketFull() {
-		return bulkApiBucket.size() >= bulkApiBucketSize;
+		return bulkApiQueue.size() >= bulkApiQueueSize;
 	}
 
 	private boolean isIndexMissing() {

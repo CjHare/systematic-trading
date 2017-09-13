@@ -56,5 +56,5 @@ public interface BackestOutputElasticConfiguration {
 	 * 
 	 * @return maximum number of records to send to the bulk API.
 	 */
-	int getBulkApiBucketSize();
+	int getBulkApiQueueSize();
 }
