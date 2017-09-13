@@ -200,7 +200,7 @@ public class BacktestApplication {
 				return new BacktestOutputPreparation() {
 				};
 			default:
-				throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
+				throw new IllegalArgumentException(unsupportedMessage(type));
 		}
 	}
 
@@ -219,7 +219,7 @@ public class BacktestApplication {
 			case NO_DISPLAY:
 				return Executors.newSingleThreadScheduledExecutor();
 			default:
-				throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
+				throw new IllegalArgumentException(unsupportedMessage(type));
 		}
 	}
 
@@ -246,7 +246,7 @@ public class BacktestApplication {
 				case NO_DISPLAY:
 					return new NoBacktestOutput();
 				default:
-					throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
+					throw new IllegalArgumentException(unsupportedMessage(type));
 			}
 		} catch (final IOException e) {
 			throw new BacktestInitialisationException(e);
@@ -348,5 +348,9 @@ public class BacktestApplication {
 		        warmUpPeriod.getDays(), warmUpPeriod.getMonths(), warmUpPeriod.getYears()));
 		LOG.info("Simulation Start Date: {}", simulationDates.getStartDate());
 		LOG.info("Simulation End Date: {}", simulationDates.getEndDate());
+	}
+
+	private String unsupportedMessage( final OutputType type ) {
+		return String.format("Output Type unsupported: %s", type);
 	}
 }
