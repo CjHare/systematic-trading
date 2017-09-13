@@ -25,13 +25,9 @@
  */
 package com.systematic.trading.backtest.output.elastic.resource;
 
-import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 
@@ -41,27 +37,19 @@ import com.systematic.trading.simulation.equity.event.EquityEvent;
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticEquityEventRequestResource {
+public class ElasticEquityEventRequestResource extends TransactionDateEventResource {
 
-	private final String event;
 	private final String identity;
 	private final float startingEquityBalance;
 	private final float endEquityBalance;
 	private final float equityAmount;
-	private final LocalDate transactionDate;
 
 	public ElasticEquityEventRequestResource( final EquityEvent event ) {
-		this.event = event.getType().getName();
+		super(event.getType().getName(), event.getTransactionDate());
 		this.identity = event.getIdentity().getTickerSymbol();
 		this.startingEquityBalance = event.getStartingEquityBalance().floatValue();
 		this.endEquityBalance = event.getEndEquityBalance().floatValue();
 		this.equityAmount = event.getEquityAmount().floatValue();
-		this.transactionDate = event.getTransactionDate();
-	}
-
-	@JsonProperty(ElasticTypeName.EVENT)
-	public String getEvent() {
-		return event;
 	}
 
 	@JsonProperty(ElasticTypeName.IDENTITY)
@@ -84,17 +72,10 @@ public class ElasticEquityEventRequestResource {
 		return equityAmount;
 	}
 
-	@JsonProperty(ElasticTypeName.TRANSACTION_DATE)
-	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
-	public LocalDate getTransactionDate() {
-		return transactionDate;
-	}
-
 	@Override
 	public String toString() {
 		final StringBuilder out = new StringBuilder("ElasticEquityEventResource [");
-		out.append("event=");
-		out.append(event);
+		out.append(super.toString());
 		out.append("identity=");
 		out.append(identity);
 		out.append(", startingEquityBalance=");
@@ -103,8 +84,6 @@ public class ElasticEquityEventRequestResource {
 		out.append(endEquityBalance);
 		out.append(", equityAmount=");
 		out.append(equityAmount);
-		out.append(", transactionDate=");
-		out.append(transactionDate);
 		out.append("]");
 		return out.toString();
 	}

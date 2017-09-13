@@ -25,13 +25,9 @@
  */
 package com.systematic.trading.backtest.output.elastic.resource;
 
-import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 
@@ -41,27 +37,19 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticBrokerageEventRequestResource {
+public class ElasticBrokerageEventRequestResource extends TransactionDateEventResource {
 
-	private final String event;
 	private final float equityAmount;
 	private final float startingEquityBalance;
 	private final float endEquityBalance;
 	private final float transactionFee;
-	private final LocalDate transactionDate;
 
 	public ElasticBrokerageEventRequestResource( final BrokerageEvent event ) {
-		this.event = event.getType().getName();
+		super(event.getType().getName(), event.getTransactionDate());
 		this.equityAmount = event.getEquityAmount().floatValue();
 		this.startingEquityBalance = event.getStartingEquityBalance().floatValue();
 		this.endEquityBalance = event.getEndEquityBalance().floatValue();
 		this.transactionFee = event.getTransactionFee().floatValue();
-		this.transactionDate = event.getTransactionDate();
-	}
-
-	@JsonProperty(ElasticTypeName.EVENT)
-	public String getEvent() {
-		return event;
 	}
 
 	@JsonProperty(ElasticTypeName.EQUITY_AMOUNT)
@@ -84,17 +72,10 @@ public class ElasticBrokerageEventRequestResource {
 		return transactionFee;
 	}
 
-	@JsonProperty(ElasticTypeName.TRANSACTION_DATE)
-	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
-	public LocalDate getTransactionDate() {
-		return transactionDate;
-	}
-
 	@Override
 	public String toString() {
 		final StringBuilder out = new StringBuilder("ElasticBrokerageEventResource [");
-		out.append("event=");
-		out.append(event);
+		out.append(super.toString());
 		out.append(", equityAmount=");
 		out.append(equityAmount);
 		out.append(", startingEquityBalance=");
@@ -103,8 +84,6 @@ public class ElasticBrokerageEventRequestResource {
 		out.append(endEquityBalance);
 		out.append(", transactionFee=");
 		out.append(transactionFee);
-		out.append(", transactionDate=");
-		out.append(transactionDate);
 		out.append("]");
 		return out.toString();
 	}

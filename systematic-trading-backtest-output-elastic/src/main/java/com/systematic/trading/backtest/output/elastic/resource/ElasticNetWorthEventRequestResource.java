@@ -41,9 +41,8 @@ import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticNetWorthEventRequestResource {
+public class ElasticNetWorthEventRequestResource extends EventResource {
 
-	private final String event;
 	private final float cashBalance;
 	private final float equityBalance;
 	private final float equityBalanceValue;
@@ -51,17 +50,12 @@ public class ElasticNetWorthEventRequestResource {
 	private final LocalDate eventDate;
 
 	public ElasticNetWorthEventRequestResource( final NetWorthEvent event ) {
-		this.event = event.getType().getName();
+		super(event.getType().getName());
 		this.cashBalance = event.getCashBalance().floatValue();
 		this.equityBalance = event.getEquityBalance().floatValue();
 		this.equityBalanceValue = event.getEquityBalanceValue().floatValue();
 		this.networth = event.getNetWorth().floatValue();
 		this.eventDate = event.getEventDate();
-	}
-
-	@JsonProperty(ElasticTypeName.EVENT)
-	public String getEvent() {
-		return event;
 	}
 
 	@JsonProperty(ElasticTypeName.CASH_BALANCE)
@@ -93,8 +87,7 @@ public class ElasticNetWorthEventRequestResource {
 	@Override
 	public String toString() {
 		final StringBuilder out = new StringBuilder("ElasticNetWorthEventResource [");
-		out.append("event=");
-		out.append(event);
+		out.append(super.toString());
 		out.append("cashBalance=");
 		out.append(cashBalance);
 		out.append(", equityBalance=");

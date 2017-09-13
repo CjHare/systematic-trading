@@ -41,21 +41,15 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticOrderEventRequestResource {
+public class ElasticOrderEventRequestResource extends EventResource {
 
-	private final String event;
 	private final float totalCost;
 	private final LocalDate transactionDate;
 
 	public ElasticOrderEventRequestResource( final OrderEvent event ) {
-		this.event = event.getType().name();
+		super(event.getType().name());
 		this.totalCost = event.getTotalCost().floatValue();
 		this.transactionDate = event.getTransactionDate();
-	}
-
-	@JsonProperty(ElasticTypeName.EVENT)
-	public String getEvent() {
-		return event;
 	}
 
 	@JsonProperty(ElasticTypeName.TOTAL_COST)
@@ -72,8 +66,7 @@ public class ElasticOrderEventRequestResource {
 	@Override
 	public String toString() {
 		final StringBuilder out = new StringBuilder("ElasticOrderEventResource [");
-		out.append("event=");
-		out.append(event);
+		out.append(super.toString());
 		out.append(", totalCost=");
 		out.append(totalCost);
 		out.append(", transactionDate=");

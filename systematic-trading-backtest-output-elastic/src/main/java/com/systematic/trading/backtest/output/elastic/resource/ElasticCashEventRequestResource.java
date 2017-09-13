@@ -25,13 +25,9 @@
  */
 package com.systematic.trading.backtest.output.elastic.resource;
 
-import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 
@@ -41,25 +37,17 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticCashEventRequestResource {
+public class ElasticCashEventRequestResource extends TransactionDateEventResource {
 
-	private final String event;
 	private final float amount;
 	private final float fundsBefore;
 	private final float fundsAfter;
-	private final LocalDate transactionDate;
 
 	public ElasticCashEventRequestResource( final CashEvent event ) {
-		this.event = event.getType().getName();
+		super(event.getType().getName(), event.getTransactionDate());
 		this.amount = event.getAmount().floatValue();
 		this.fundsBefore = event.getFundsBefore().floatValue();
 		this.fundsAfter = event.getFundsAfter().floatValue();
-		this.transactionDate = event.getTransactionDate();
-	}
-
-	@JsonProperty(ElasticTypeName.EVENT)
-	public String getEvent() {
-		return event;
 	}
 
 	@JsonProperty(ElasticTypeName.AMOUNT)
@@ -77,25 +65,16 @@ public class ElasticCashEventRequestResource {
 		return fundsAfter;
 	}
 
-	@JsonProperty(ElasticTypeName.TRANSACTION_DATE)
-	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
-	public LocalDate getTransactionDate() {
-		return transactionDate;
-	}
-
 	@Override
 	public String toString() {
 		final StringBuilder out = new StringBuilder("ElasticCashEventResource [");
-		out.append("event=");
-		out.append(event);
+		out.append(super.toString());
 		out.append(", amount=");
 		out.append(amount);
 		out.append(", fundsBefore=");
 		out.append(fundsBefore);
 		out.append(", fundsAfter=");
 		out.append(fundsAfter);
-		out.append(", transactionDate=");
-		out.append(transactionDate);
 		out.append("]");
 		return out.toString();
 	}
