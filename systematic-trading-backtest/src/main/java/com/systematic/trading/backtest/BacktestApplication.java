@@ -126,10 +126,7 @@ public class BacktestApplication {
 		// Multi-threading support for output classes
 		final ExecutorService outputpool = getOutputPool(parserdArguments);
 
-		//TODO because of this line every configuration need to elastic configuration on cp, bad, bad, bad!g 
-		//TODO there's a more generic way to implement this configuration
-		final BackestOutputElasticConfiguration elasticConfiguration = new FileValidatedBackestOutputFileConfigurationDao()
-		        .get();
+		final BackestOutputElasticConfiguration elasticConfiguration = getOutputConfiguration(parserdArguments);
 
 		// TODO run the test over the full period with exclusion on filters
 		// TODO no deposits until actual start date, rather then from the warm-up period
@@ -160,6 +157,22 @@ public class BacktestApplication {
 
 		LOG.info(
 		        () -> String.format("Finished outputting results, time taken: %s", Duration.ofMillis(timer.getTime())));
+	}
+
+	private BackestOutputElasticConfiguration getOutputConfiguration( final LaunchArguments arguments )
+	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+		final OutputType type = arguments.getOutputType();
+
+		switch (type) {
+			case ELASTIC_SEARCH:
+				return new FileValidatedBackestOutputFileConfigurationDao().get();
+			case FILE_COMPLETE:
+			case FILE_MINIMUM:
+			case NO_DISPLAY:
+				return null;
+			default:
+				throw new IllegalArgumentException(String.format("Display Type not catered for: %s", type));
+		}
 	}
 
 	private void closePool( final ExecutorService pool ) {
