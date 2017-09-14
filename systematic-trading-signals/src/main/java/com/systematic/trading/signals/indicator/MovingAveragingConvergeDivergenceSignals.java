@@ -25,7 +25,9 @@
  */
 package com.systematic.trading.signals.indicator;
 
+import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,9 @@ import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
+import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.maths.model.DatedSignal;
+import com.systematic.trading.maths.model.SignalType;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
@@ -67,7 +71,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		//TODO validate the number of data items meets the minimum
 
 		//TODO generate the down signals too
-		final List<DatedSignal> signals = macd.macd(data);
+		final List<DatedSignal> signals = calculateBullishSignals(macd.macd(data));
 
 		final List<IndicatorSignal> converted = new ArrayList<>(signals.size());
 
@@ -79,6 +83,46 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		return converted;
 	}
 
+	//TODO refactor into a bullish signal behaviour module
+	private List<DatedSignal> calculateBullishSignals( final MovingAverageConvergenceDivergenceLines lines ) {
+
+		final List<BigDecimal> macdValues = lines.getMacdValues();
+		final List<BigDecimal> signaLine = lines.getSignaLine();
+		final List<LocalDate> signalLineDates = lines.getSignalLineDates();
+
+		final List<DatedSignal> signals = new ArrayList<>();
+
+		// We're only interested in shared indexes, both right most aligned with data[]
+		final int macdValuesOffset = Math.max(0, macdValues.size() - signaLine.size());
+		final int signalLineOffset = Math.max(0, signaLine.size() - macdValues.size());
+		final int endIndex = Math.min(signaLine.size(), macdValues.size());
+
+		// Buy signal is from a cross over of the signal line, for crossing over the origin
+		BigDecimal todayMacd;
+		BigDecimal todaySignalLine;
+		BigDecimal yesterdayMacd;
+		BigDecimal yesterdaySignalLine;
+		LocalDate todaySignalLineDate;
+
+		for (int index = 1; index < endIndex; index++) {
+
+			todayMacd = macdValues.get(index + macdValuesOffset);
+			yesterdayMacd = macdValues.get(index + macdValuesOffset - 1);
+			todaySignalLine = signaLine.get(index + signalLineOffset);
+			yesterdaySignalLine = signaLine.get(index + signalLineOffset - 1);
+			todaySignalLineDate = signalLineDates.get(index + signalLineOffset);
+
+			// The MACD trends up, with crossing the signal line OR trending up and crossing the zero line
+			if (crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
+			        || crossingOrigin(yesterdayMacd, todayMacd)) {
+				signals.add(new DatedSignal(todaySignalLineDate, SignalType.BULLISH));
+			}
+		}
+
+		return signals;
+
+	}
+
 	@Override
 	public int getRequiredNumberOfTradingDays() {
 		return requiredNumberOfTradingDays;
@@ -87,5 +131,17 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	@Override
 	public IndicatorSignalType getSignalType() {
 		return IndicatorSignalType.MACD;
+	}
+
+	private boolean crossingSignalLine( final BigDecimal yesterdayMacd, final BigDecimal todayMacd,
+	        final BigDecimal yesterdaySignalLine, final BigDecimal todaySignalLine ) {
+		/* Between yesterday and today: - MACD need to be moving upwards - today's MACD needs to be
+		 * above today's signal line - yesterday's MACD needs to be below yesterday's signal line */
+		return todayMacd.compareTo(yesterdayMacd) > 0 && todayMacd.compareTo(todaySignalLine) >= 0
+		        && yesterdaySignalLine.compareTo(yesterdayMacd) > 0;
+	}
+
+	private boolean crossingOrigin( final BigDecimal yesterdayMacd, final BigDecimal todayMacd ) {
+		return crossingSignalLine(yesterdayMacd, todayMacd, BigDecimal.ZERO, BigDecimal.ZERO);
 	}
 }

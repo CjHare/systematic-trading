@@ -25,10 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.macd;
 
-import java.util.List;
-
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.model.DatedSignal;
 
 /**
  * Moving average convergence divergence (MACD) is a trend-following momentum indicator showing the
@@ -62,7 +59,7 @@ public interface MovingAverageConvergenceDivergence {
 	 * Calculates the moving average convergence divergence
 	 * 
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @return signals from the MACD.
+	 * @return the MACD lines calculated.
 	 */
-	List<DatedSignal> macd( TradingDayPrices[] data );
+	MovingAverageConvergenceDivergenceLines macd( TradingDayPrices[] data );
 }

@@ -76,4 +76,6 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 
 		assertEquals(LocalDate.now().minus(buyPriceSpike, ChronoUnit.DAYS), results.get(0).getDate());
 	}
+	
+	//TODO add tests for bullish signal generation from MACD lines
 }

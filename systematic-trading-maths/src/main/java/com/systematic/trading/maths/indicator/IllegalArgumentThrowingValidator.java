@@ -34,6 +34,7 @@ import java.util.List;
  */
 public class IllegalArgumentThrowingValidator implements Validator {
 
+	//TODO cater for null list - maybe this method becomes redundant after maths rewrite?
 	@Override
 	public <T> void verifyZeroNullEntries( final List<T> values ) {
 		for (final T value : values) {
@@ -43,6 +44,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 		}
 	}
 
+	//TODO cater for null array
 	@Override
 	public <T> void verifyZeroNullEntries( final T[] values ) {
 		for (final T value : values) {
