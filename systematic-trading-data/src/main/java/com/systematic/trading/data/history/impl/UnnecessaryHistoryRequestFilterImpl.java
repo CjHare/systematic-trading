@@ -34,8 +34,10 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.history.UnnecessaryHistoryRequestFilter;
@@ -132,21 +134,22 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		YearMonth unknown = YearMonth.of(startDate.getYear(), startDate.getMonthValue());
 		final YearMonth end = YearMonth.of(endDate.getYear(), endDate.getMonthValue());
 
-		for (int i = 0; i < alreadyRetrieved.size(); i++) {
-			final RetrievedMonthTradingPrices retrieved = alreadyRetrieved.get(i);
+		final Set<YearMonth> retrieved = new HashSet<>();
 
-			if (unknown.equals(retrieved.getYearMonth())) {
-				if (unknown.equals(end)) {
-					// Entire range is covered by already retrieved data
-					return false;
-				}
-
-				// Progress to the next year month in the range
-				unknown = unknown.plusMonths(1);
-				i = 0;
-			}
+		for (final RetrievedMonthTradingPrices prices : alreadyRetrieved) {
+			retrieved.add(prices.getYearMonth());
 		}
 
-		return true;
+		while (!unknown.isAfter(end)) {
+
+			if (!retrieved.contains(unknown)) {
+				return true;
+			}
+
+			// Progress to the next year month in the range
+			unknown = unknown.plusMonths(1);
+		}
+
+		return false;
 	}
 }
