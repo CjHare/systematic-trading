@@ -30,6 +30,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
@@ -81,14 +82,8 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		final List<DatedSignal> signals = calculateBullishSignals(macd.macd(data), earliestSignalDate,
 		        latestSignalDate);
 
-		final List<IndicatorSignal> converted = new ArrayList<>(signals.size());
-
-		for (final DatedSignal signal : signals) {
-			converted.add(
-			        new IndicatorSignal(signal.getDate(), IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH));
-		}
-
-		return converted;
+		return signals.stream().map(signal -> new IndicatorSignal(signal.getDate(), IndicatorSignalType.MACD,
+		        IndicatorDirectionType.BULLISH)).collect(Collectors.toList());
 	}
 
 	//TODO refactor into a bullish signal behaviour module
@@ -115,17 +110,20 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		for (int index = 1; index < endIndex; index++) {
 
-			todayMacd = macdValues.get(index + macdValuesOffset);
-			yesterdayMacd = macdValues.get(index + macdValuesOffset - 1);
-			todaySignalLine = signaLine.get(index + signalLineOffset);
-			yesterdaySignalLine = signaLine.get(index + signalLineOffset - 1);
 			todaySignalLineDate = signalLineDates.get(index + signalLineOffset);
 
-			// The MACD trends up, with crossing the signal line OR trending up and crossing the zero line
-			if (isWithinSignalRange(earliestSignalDate, latestSignalDate, todaySignalLineDate)
-			        && (crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
-			                || crossingOrigin(yesterdayMacd, todayMacd))) {
-				signals.add(new DatedSignal(todaySignalLineDate, SignalType.BULLISH));
+			if (isWithinSignalRange(earliestSignalDate, latestSignalDate, todaySignalLineDate)) {
+
+				todayMacd = macdValues.get(index + macdValuesOffset);
+				yesterdayMacd = macdValues.get(index + macdValuesOffset - 1);
+				todaySignalLine = signaLine.get(index + signalLineOffset);
+				yesterdaySignalLine = signaLine.get(index + signalLineOffset - 1);
+
+				// The MACD trends up, with crossing the signal line OR trending up and crossing the zero line
+				if (crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
+				        || crossingOrigin(yesterdayMacd, todayMacd)) {
+					signals.add(new DatedSignal(todaySignalLineDate, SignalType.BULLISH));
+				}
 			}
 		}
 
