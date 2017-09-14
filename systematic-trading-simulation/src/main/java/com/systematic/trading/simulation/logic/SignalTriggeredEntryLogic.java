@@ -99,6 +99,7 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		// Add the day's data to the rolling queue
 		tradingData.add(data);
 
+		//TODO pass through the date, as some calculators store last date :. that can be removed & they become state less
 		// Create signals from the available trading data
 		final List<BuySignal> signals = buyLongAnalysis.analyse(tradingData.toArray());
 

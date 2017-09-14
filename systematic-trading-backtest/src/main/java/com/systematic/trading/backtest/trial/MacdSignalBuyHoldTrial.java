@@ -53,11 +53,11 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 
 /**
- * MACD signals @ 150 weekly deposit back test.
+ * MACD crossover signals @ 150 weekly deposit back test.
  * 
  * @author CJ Hare
  */
-public class MacdSignalTrial implements BacktestConfiguration {
+public class MacdSignalBuyHoldTrial implements BacktestConfiguration {
 
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
@@ -66,7 +66,7 @@ public class MacdSignalTrial implements BacktestConfiguration {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication(MATH_CONTEXT).runBacktest(new MacdSignalTrial(),
+		new BacktestApplication(MATH_CONTEXT).runBacktest(new MacdSignalBuyHoldTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
