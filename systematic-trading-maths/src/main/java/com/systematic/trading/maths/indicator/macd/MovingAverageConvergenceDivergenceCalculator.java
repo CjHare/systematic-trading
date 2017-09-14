@@ -56,9 +56,6 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
-	/** The date of the last processed price data. */
-	private LocalDate lastDateProcessed = LocalDate.MIN;
-
 	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverage fastEma,
 	        final ExponentialMovingAverage slowEma, final ExponentialMovingAverage signalEma,
 	        final Validator validator ) {
@@ -98,8 +95,6 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 
 		final List<DatedSignal> bullishSignals = calculateBullishSignals(macdValues, signaLine, signalLineDates);
 
-		lastDateProcessed = data[data.length - 1].getDate();
-
 		return bullishSignals;
 	}
 
@@ -129,8 +124,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 			todaySignalLineDate = signalLineDates.get(index + signalLineOffset);
 
 			// The MACD trends up, with crossing the signal line OR trending up and crossing the zero line
-			if (isAfterLastDateProcessed(todaySignalLineDate)
-			        && crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
+			if (crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
 			        || crossingOrigin(yesterdayMacd, todayMacd)) {
 				signals.add(new DatedSignal(todaySignalLineDate, SignalType.BULLISH));
 			}
@@ -138,10 +132,6 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 
 		return signals;
 
-	}
-
-	private boolean isAfterLastDateProcessed( final LocalDate date ) {
-		return date.isAfter(lastDateProcessed);
 	}
 
 	private boolean crossingSignalLine( final BigDecimal yesterdayMacd, final BigDecimal todayMacd,
