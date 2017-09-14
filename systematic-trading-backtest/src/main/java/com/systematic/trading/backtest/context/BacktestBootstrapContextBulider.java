@@ -72,6 +72,9 @@ public class BacktestBootstrapContextBulider {
 
 	//TODO convert into an actual builder pattern
 
+	/** Number of days previous to include in signal generation for same day signals. */
+	private static final int SIGNAL_SAME_DAY = 0;
+
 	/** How long one year is as a period of time/ */
 	private static final Period ONE_YEAR = Period.ofYears(1);
 
@@ -158,9 +161,12 @@ public class BacktestBootstrapContextBulider {
 		        entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange(),
 		        entry.getConfirmationSignal().getType().getConfirmationDayRange());
 
+		final int signalFilterRange = entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange()
+		        + entry.getConfirmationSignal().getType().getConfirmationDayRange();
+
 		final IndicatorSignalGenerator[] indicatorGenerators = {
-		        IndicatorSignalGeneratorFactory.getInstance().create(anchor, mathContext),
-		        IndicatorSignalGeneratorFactory.getInstance().create(confirmation, mathContext) };
+		        IndicatorSignalGeneratorFactory.getInstance().create(anchor, signalFilterRange, mathContext),
+		        IndicatorSignalGeneratorFactory.getInstance().create(confirmation, signalFilterRange, mathContext) };
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
 		        indicatorGenerators);
@@ -181,7 +187,8 @@ public class BacktestBootstrapContextBulider {
 		final IndicatorSignalGenerator[] indicatorGenerators = new IndicatorSignalGenerator[indicators.length];
 
 		for (int i = 0; i < indicatorGenerators.length; i++) {
-			indicatorGenerators[i] = IndicatorSignalGeneratorFactory.getInstance().create(indicators[i], mathContext);
+			indicatorGenerators[i] = IndicatorSignalGeneratorFactory.getInstance().create(indicators[i],
+			        SIGNAL_SAME_DAY, mathContext);
 		}
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,

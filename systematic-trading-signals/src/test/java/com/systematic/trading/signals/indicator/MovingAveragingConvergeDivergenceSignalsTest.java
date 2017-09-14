@@ -16,6 +16,8 @@ import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 
+	private static final int SIGNAL_WITHIN_LAST_WEEK = 7;
+
 	@Test
 	public void getRequiredNumberOfTradingDays() {
 		final int fastTimePeriods = 10;
@@ -23,7 +25,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 		final int signalTimePeriods = 7;
 
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(
-		        fastTimePeriods, slowTimePeriods, signalTimePeriods, MATH_CONTEXT);
+		        fastTimePeriods, slowTimePeriods, signalTimePeriods, SIGNAL_WITHIN_LAST_WEEK, MATH_CONTEXT);
 
 		assertEquals(37, signals.getRequiredNumberOfTradingDays());
 	}
@@ -31,7 +33,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 	@Test
 	public void getSignalType() {
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(10, 20, 7,
-		        MathContext.DECIMAL64);
+		        SIGNAL_WITHIN_LAST_WEEK, MathContext.DECIMAL64);
 
 		assertEquals(IndicatorSignalType.MACD, signals.getSignalType());
 	}
@@ -43,7 +45,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 		final int signalTimePeriods = 7;
 
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(
-		        fastTimePeriods, slowTimePeriods, signalTimePeriods, MATH_CONTEXT);
+		        fastTimePeriods, slowTimePeriods, signalTimePeriods, SIGNAL_WITHIN_LAST_WEEK, MATH_CONTEXT);
 
 		final TradingDayPrices[] data = createFlatTradingDayPrices(37, 10);
 
@@ -61,7 +63,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 		final int signalTimePeriods = 7;
 
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(
-		        fastTimePeriods, slowTimePeriods, signalTimePeriods, MATH_CONTEXT);
+		        fastTimePeriods, slowTimePeriods, signalTimePeriods, SIGNAL_WITHIN_LAST_WEEK, MATH_CONTEXT);
 
 		// Create a down, then an up-spike
 		final TradingDayPrices[] data = addStep(15, 15, -100,
@@ -76,6 +78,6 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 
 		assertEquals(LocalDate.now().minus(buyPriceSpike, ChronoUnit.DAYS), results.get(0).getDate());
 	}
-	
+
 	//TODO add tests for bullish signal generation from MACD lines
 }

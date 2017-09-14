@@ -48,8 +48,11 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	private final MovingAverageConvergenceDivergence macd;
 	private final int requiredNumberOfTradingDays;
 
+	/** Number of days either before the latest (current) trading date to generate signals on. */
+	private final int signalFilterRange;
+
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
-	        final int signalTimePeriods, final MathContext mathContext ) {
+	        final int signalTimePeriods, final int signalFilterRange, final MathContext mathContext ) {
 
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(fastTimePeriods,
 		        new IllegalArgumentThrowingValidator(), mathContext);
@@ -63,6 +66,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		this.requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
 		        + signalEma.getMinimumNumberOfPrices();
+		this.signalFilterRange = signalFilterRange;
 	}
 
 	@Override
@@ -70,8 +74,12 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		//TODO validate the number of data items meets the minimum
 
+		final LocalDate earliestSignalDate = data[data.length - 1].getDate().minusDays(signalFilterRange);
+		final LocalDate latestSignalDate = data[data.length - 1].getDate();
+
 		//TODO generate the down signals too
-		final List<DatedSignal> signals = calculateBullishSignals(macd.macd(data));
+		final List<DatedSignal> signals = calculateBullishSignals(macd.macd(data), earliestSignalDate,
+		        latestSignalDate);
 
 		final List<IndicatorSignal> converted = new ArrayList<>(signals.size());
 
@@ -84,7 +92,8 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	}
 
 	//TODO refactor into a bullish signal behaviour module
-	private List<DatedSignal> calculateBullishSignals( final MovingAverageConvergenceDivergenceLines lines ) {
+	private List<DatedSignal> calculateBullishSignals( final MovingAverageConvergenceDivergenceLines lines,
+	        final LocalDate earliestSignalDate, final LocalDate latestSignalDate ) {
 
 		final List<BigDecimal> macdValues = lines.getMacdValues();
 		final List<BigDecimal> signaLine = lines.getSignaLine();
@@ -113,14 +122,14 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 			todaySignalLineDate = signalLineDates.get(index + signalLineOffset);
 
 			// The MACD trends up, with crossing the signal line OR trending up and crossing the zero line
-			if (crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
-			        || crossingOrigin(yesterdayMacd, todayMacd)) {
+			if (isWithinSignalRange(earliestSignalDate, latestSignalDate, todaySignalLineDate)
+			        && (crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
+			                || crossingOrigin(yesterdayMacd, todayMacd))) {
 				signals.add(new DatedSignal(todaySignalLineDate, SignalType.BULLISH));
 			}
 		}
 
 		return signals;
-
 	}
 
 	@Override
@@ -131,6 +140,20 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	@Override
 	public IndicatorSignalType getSignalType() {
 		return IndicatorSignalType.MACD;
+	}
+
+	private boolean isWithinSignalRange( final LocalDate earliestSignalDate, final LocalDate latestSignalDate,
+	        final LocalDate candidate ) {
+		return isWithinEarliestSignalRange(earliestSignalDate, candidate)
+		        && isWithinLatestSignalRange(latestSignalDate, candidate);
+	}
+
+	private boolean isWithinEarliestSignalRange( final LocalDate earliestSignalDate, final LocalDate candidate ) {
+		return !candidate.isBefore(earliestSignalDate);
+	}
+
+	private boolean isWithinLatestSignalRange( final LocalDate latestSignalDate, final LocalDate candidate ) {
+		return !candidate.isAfter(latestSignalDate);
 	}
 
 	private boolean crossingSignalLine( final BigDecimal yesterdayMacd, final BigDecimal todayMacd,

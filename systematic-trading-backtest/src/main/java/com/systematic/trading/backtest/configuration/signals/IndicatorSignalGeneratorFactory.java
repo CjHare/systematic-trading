@@ -48,10 +48,14 @@ public class IndicatorSignalGeneratorFactory {
 		return INSTANCE;
 	}
 
-	public IndicatorSignalGenerator create( final SignalConfiguration signal, final MathContext mathContext ) {
+	/**
+	 * @param signalFilterRange how many days previous to latest trading date to generate signals on.
+	 */
+	public IndicatorSignalGenerator create( final SignalConfiguration signal, final int signalFilterRange,
+	        final MathContext mathContext ) {
 
 		if (signal instanceof MacdConfiguration) {
-			return create((MacdConfiguration) signal, mathContext);
+			return create((MacdConfiguration) signal, signalFilterRange, mathContext);
 		}
 		if (signal instanceof RsiConfiguration) {
 			return create((RsiConfiguration) signal, mathContext);
@@ -63,15 +67,18 @@ public class IndicatorSignalGeneratorFactory {
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
-	private IndicatorSignalGenerator create( final MacdConfiguration macd, final MathContext mathContext ) {
+	private IndicatorSignalGenerator create( final MacdConfiguration macd, final int signalFilterRange,
+	        final MathContext mathContext ) {
 		return new MovingAveragingConvergeDivergenceSignals(macd.getFastTimePeriods(), macd.getSlowTimePeriods(),
-		        macd.getSignalTimePeriods(), mathContext);
+		        macd.getSignalTimePeriods(), signalFilterRange, mathContext);
 	}
 
+	//TODO use signalFilterRange
 	private IndicatorSignalGenerator create( final RsiConfiguration rsi, final MathContext mathContext ) {
 		return new RelativeStrengthIndexSignals(rsi.getLookback(), rsi.getOversold(), rsi.getOverbought(), mathContext);
 	}
 
+	//TODO use signalFilterRange
 	private IndicatorSignalGenerator create( final SmaConfiguration sma, final MathContext mathContext ) {
 		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), sma.getGradient(),
 		        mathContext);

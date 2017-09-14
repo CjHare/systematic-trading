@@ -79,6 +79,9 @@ public class MacdSignalBuyHoldTrial implements BacktestConfiguration {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
+		// Comparison baseline 
+		configurations.add(BaselineTrial.getConfiguration(equity, simulationDates, deposit));
+
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
 		final MacdConfiguration macdConfiguration = MacdConfiguration.MEDIUM;

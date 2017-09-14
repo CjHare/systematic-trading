@@ -57,11 +57,11 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 
 /**
- * Executes 1200 configurations, scatter gun approach.
+ * Executes over 1200 configurations, scatter gun approach.
  * 
  * @author CJ Hare
  */
-public class TwelveHundredTrials implements BacktestConfiguration {
+public class TooManyTrials implements BacktestConfiguration {
 
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
@@ -70,7 +70,7 @@ public class TwelveHundredTrials implements BacktestConfiguration {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication(MATH_CONTEXT).runBacktest(new TwelveHundredTrials(),
+		new BacktestApplication(MATH_CONTEXT).runBacktest(new TooManyTrials(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
