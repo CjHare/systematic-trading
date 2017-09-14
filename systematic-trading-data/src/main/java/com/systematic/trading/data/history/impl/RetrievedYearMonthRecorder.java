@@ -34,6 +34,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.history.RetrievedHistoryPeriodRecorder;
@@ -97,18 +99,20 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 	        final List<HistoryRetrievalRequest> fulfilledRequests ) {
 		LocalDate expectedStart = end;
 
-		// Unordered list :. cannot guarantee where to find following request(s)
-		for (int i = 0; i < fulfilledRequests.size(); i++) {
-			final LocalDate contender = fulfilledRequests.get(i).getInclusiveStartDate().toLocalDate();
+		final SortedSet<HistoryRetrievalRequest> byStartDate = new TreeSet<>(
+		        ( a, b ) -> a.getInclusiveStartDate().compareTo(b.getInclusiveStartDate()));
+		fulfilledRequests.stream().forEach(request -> byStartDate.add(request));
+
+		for (final HistoryRetrievalRequest fulfilled : byStartDate) {
+			final LocalDate contender = fulfilled.getInclusiveStartDate().toLocalDate();
 
 			if (expectedStart.isEqual(contender)) {
-				if (isEndTradingMonth(fulfilledRequests.get(i).getExclusiveEndDate().toLocalDate())) {
+				if (isEndTradingMonth(fulfilled.getExclusiveEndDate().toLocalDate())) {
 					return true;
 				}
 
-				// Start the search again from the beginning with the next expected start
-				expectedStart = fulfilledRequests.get(i).getExclusiveEndDate().toLocalDate();
-				i = 0;
+				// Continue to see whether the month is complete by another request
+				expectedStart = fulfilled.getExclusiveEndDate().toLocalDate();
 			}
 		}
 
