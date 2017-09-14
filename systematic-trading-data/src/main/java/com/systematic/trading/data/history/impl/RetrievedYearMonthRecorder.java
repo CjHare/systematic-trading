@@ -101,7 +101,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 
 		final SortedSet<HistoryRetrievalRequest> byStartDate = new TreeSet<>(
 		        ( a, b ) -> a.getInclusiveStartDate().compareTo(b.getInclusiveStartDate()));
-		fulfilledRequests.stream().forEach(request -> byStartDate.add(request));
+		fulfilledRequests.stream().forEach(byStartDate::add);
 
 		for (final HistoryRetrievalRequest fulfilled : byStartDate) {
 			final LocalDate contender = fulfilled.getInclusiveStartDate().toLocalDate();
