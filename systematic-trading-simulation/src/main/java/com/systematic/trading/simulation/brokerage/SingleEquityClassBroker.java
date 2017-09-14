@@ -146,15 +146,6 @@ public class SingleEquityClassBroker implements Brokerage {
 		return transactionFee.calculateFee(tradeValue, type, monthlyTradeCounter.get(tradeDate));
 	}
 
-	/**
-	 * Retrieves the current number of equities held.
-	 * 
-	 * @return the number of single type equities held, including any fractions.
-	 */
-	public BigDecimal getBalance() {
-		return equityBalance;
-	}
-
 	private void notifyListeners( final BrokerageEvent event ) {
 		for (final BrokerageEventListener listener : brokerageListeners) {
 			listener.event(event);
