@@ -65,11 +65,11 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		final Map<String, List<HistoryRetrievalRequest>> tickerSymbolRequests = splitByTickerSymbolSortByStartDate(
 		        unfilteredRequests);
 
-		for (final String tickerSymbol : tickerSymbolRequests.keySet()) {
-			final List<HistoryRetrievalRequest> requests = tickerSymbolRequests.get(tickerSymbol);
+		for (final Map.Entry<String, List<HistoryRetrievalRequest>> entry : tickerSymbolRequests.entrySet()) {
+			final List<HistoryRetrievalRequest> requests = entry.getValue();
 
 			filtered.addAll(keepRelevantRequests(requests,
-			        getRetrievedMonths(tickerSymbol, getEarliestStartDate(requests), getLatestEndDate(requests))));
+			        getRetrievedMonths(entry.getKey(), getEarliestStartDate(requests), getLatestEndDate(requests))));
 		}
 
 		return filtered;
