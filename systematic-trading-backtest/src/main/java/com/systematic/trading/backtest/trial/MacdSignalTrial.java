@@ -23,12 +23,15 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
+package com.systematic.trading.backtest.trial;
 
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.backtest.BacktestApplication;
+import com.systematic.trading.backtest.BacktestConfiguration;
+import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
@@ -50,11 +53,11 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 
 /**
- * MACD signals @ 150 weekly deposit.
+ * MACD signals @ 150 weekly deposit back test.
  * 
  * @author CJ Hare
  */
-public class SingleConfigurationSignals implements BacktestConfiguration {
+public class MacdSignalTrial implements BacktestConfiguration {
 
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
@@ -63,7 +66,7 @@ public class SingleConfigurationSignals implements BacktestConfiguration {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication(MATH_CONTEXT).runBacktest(new SingleConfigurationSignals(),
+		new BacktestApplication(MATH_CONTEXT).runBacktest(new MacdSignalTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
