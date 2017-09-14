@@ -68,8 +68,6 @@ public class FileMultithreading {
 
 				fileChannel.write(ByteBuffer.wrap(content.getBytes()));
 
-				fileChannel.close();
-				
 			} catch (final IOException e) {
 				LOG.error(e);
 			}
