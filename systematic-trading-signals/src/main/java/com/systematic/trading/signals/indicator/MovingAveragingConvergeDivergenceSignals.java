@@ -49,11 +49,11 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	private final MovingAverageConvergenceDivergence macd;
 	private final int requiredNumberOfTradingDays;
 
-	/** Number of days either before the latest (current) trading date to generate signals on. */
-	private final int signalFilterRange;
+	/** Number of trading days before the latest (current) trading date to generate signals on. */
+	private final int previousTradingDaySignalRange;
 
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
-	        final int signalTimePeriods, final int signalFilterRange, final MathContext mathContext ) {
+	        final int signalTimePeriods, final int previousTradingDaySignalRange, final MathContext mathContext ) {
 
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(fastTimePeriods,
 		        new IllegalArgumentThrowingValidator(), mathContext);
@@ -67,7 +67,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		this.requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
 		        + signalEma.getMinimumNumberOfPrices();
-		this.signalFilterRange = signalFilterRange;
+		this.previousTradingDaySignalRange = previousTradingDaySignalRange;
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		//TODO validate the number of data items meets the minimum
 
-		final LocalDate earliestSignalDate = data[data.length - 1].getDate().minusDays(signalFilterRange);
+		final LocalDate earliestSignalDate = data[data.length - 1 - previousTradingDaySignalRange].getDate();
 		final LocalDate latestSignalDate = data[data.length - 1].getDate();
 
 		//TODO generate the down signals too

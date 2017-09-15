@@ -161,12 +161,12 @@ public class BacktestBootstrapContextBulider {
 		        entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange(),
 		        entry.getConfirmationSignal().getType().getConfirmationDayRange());
 
-		final int signalFilterRange = entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange()
+		final int previousTradingDaySignalRange = entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange()
 		        + entry.getConfirmationSignal().getType().getConfirmationDayRange();
 
 		final IndicatorSignalGenerator[] indicatorGenerators = {
-		        IndicatorSignalGeneratorFactory.getInstance().create(anchor, signalFilterRange, mathContext),
-		        IndicatorSignalGeneratorFactory.getInstance().create(confirmation, signalFilterRange, mathContext) };
+		        IndicatorSignalGeneratorFactory.getInstance().create(anchor, previousTradingDaySignalRange, mathContext),
+		        IndicatorSignalGeneratorFactory.getInstance().create(confirmation, previousTradingDaySignalRange, mathContext) };
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
 		        indicatorGenerators);

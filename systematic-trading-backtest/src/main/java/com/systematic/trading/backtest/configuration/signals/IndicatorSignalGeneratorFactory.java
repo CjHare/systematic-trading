@@ -49,13 +49,13 @@ public class IndicatorSignalGeneratorFactory {
 	}
 
 	/**
-	 * @param signalFilterRange how many days previous to latest trading date to generate signals on.
+	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
 	 */
-	public IndicatorSignalGenerator create( final SignalConfiguration signal, final int signalFilterRange,
+	public IndicatorSignalGenerator create( final SignalConfiguration signal, final int previousTradingDaySignalRange,
 	        final MathContext mathContext ) {
 
 		if (signal instanceof MacdConfiguration) {
-			return create((MacdConfiguration) signal, signalFilterRange, mathContext);
+			return create((MacdConfiguration) signal, previousTradingDaySignalRange, mathContext);
 		}
 		if (signal instanceof RsiConfiguration) {
 			return create((RsiConfiguration) signal, mathContext);
@@ -67,10 +67,10 @@ public class IndicatorSignalGeneratorFactory {
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
-	private IndicatorSignalGenerator create( final MacdConfiguration macd, final int signalFilterRange,
+	private IndicatorSignalGenerator create( final MacdConfiguration macd, final int previousTradingDaySignalRange,
 	        final MathContext mathContext ) {
 		return new MovingAveragingConvergeDivergenceSignals(macd.getFastTimePeriods(), macd.getSlowTimePeriods(),
-		        macd.getSignalTimePeriods(), signalFilterRange, mathContext);
+		        macd.getSignalTimePeriods(), previousTradingDaySignalRange, mathContext);
 	}
 
 	//TODO use signalFilterRange
