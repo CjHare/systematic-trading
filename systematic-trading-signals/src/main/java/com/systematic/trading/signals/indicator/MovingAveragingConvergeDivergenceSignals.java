@@ -76,7 +76,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 		//TODO validate the number of data items meets the minimum
 
 		final LocalDate earliestSignalDate = filter.getEarliestSignalDate(data);
-		final LocalDate latestSignalDate = data[data.length - 1].getDate();
+		final LocalDate latestSignalDate = filter.getLatestSignalDate(data);
 
 		//TODO generate the down signals too
 		final List<DatedSignal> signals = calculateBullishSignals(macd.macd(data), earliestSignalDate,

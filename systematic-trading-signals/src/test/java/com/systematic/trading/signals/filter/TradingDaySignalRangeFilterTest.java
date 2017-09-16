@@ -60,7 +60,7 @@ public class TradingDaySignalRangeFilterTest {
 
 		final LocalDate earliest = new TradingDaySignalRangeFilter(range).getEarliestSignalDate(data);
 
-		verifyEarliest(0, earliest);
+		verifySignalDate(0, earliest);
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public class TradingDaySignalRangeFilterTest {
 
 		final LocalDate earliest = new TradingDaySignalRangeFilter(range).getEarliestSignalDate(data);
 
-		verifyEarliest(1, earliest);
+		verifySignalDate(1, earliest);
 	}
 
 	@Test
@@ -80,10 +80,40 @@ public class TradingDaySignalRangeFilterTest {
 
 		final LocalDate earliest = new TradingDaySignalRangeFilter(range).getEarliestSignalDate(data);
 
-		verifyEarliest(0, earliest);
+		verifySignalDate(0, earliest);
 	}
 
-	private void verifyEarliest( final int expectedDaySinceEpoch, final LocalDate earliest ) {
+	@Test
+	public void earliestSinalDateSingleDate() {
+		final int range = 1;
+		final TradingDayPrices[] data = createTradingDays(range);
+
+		final LocalDate earliest = new TradingDaySignalRangeFilter(range).getEarliestSignalDate(data);
+
+		verifySignalDate(0, earliest);
+	}
+
+	@Test
+	public void latestSignalDate() {
+		final int range = random();
+		final TradingDayPrices[] data = createTradingDays(range);
+
+		final LocalDate latest = new TradingDaySignalRangeFilter(range).getLatestSignalDate(data);
+
+		verifySignalDate(range, latest);
+	}
+
+	@Test
+	public void latestSignalDateSingleValue() {
+		final int range = 1;
+		final TradingDayPrices[] data = createTradingDays(range);
+
+		final LocalDate latest = new TradingDaySignalRangeFilter(range).getLatestSignalDate(data);
+
+		verifySignalDate(range, latest);
+	}
+
+	private void verifySignalDate( final int expectedDaySinceEpoch, final LocalDate earliest ) {
 		assertEquals(LocalDate.ofEpochDay(expectedDaySinceEpoch), earliest);
 	}
 
@@ -100,6 +130,6 @@ public class TradingDaySignalRangeFilterTest {
 	}
 
 	private int random() {
-		return RNG.nextInt(RANGE_MAXIMUM);
+		return RNG.nextInt(RANGE_MAXIMUM) + 5;
 	}
 }
