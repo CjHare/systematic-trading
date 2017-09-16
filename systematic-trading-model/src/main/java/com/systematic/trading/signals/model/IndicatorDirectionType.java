@@ -30,6 +30,7 @@ package com.systematic.trading.signals.model;
  * 
  * @author CJ Hare
  */
+//TODO delete this class & use SignalType instead - duplication!
 public enum IndicatorDirectionType {
 	BULLISH,
 	BEARISH

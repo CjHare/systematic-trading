@@ -79,11 +79,10 @@ public class MovingAveragingConvergenceDivergenceSignals implements IndicatorSig
 
 		final MovingAverageConvergenceDivergenceLines lines = macd.macd(data);
 
-		final List<DatedSignal> signals = new ArrayList<>();
 		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
 
 		for (final SignalCalculator<MovingAverageConvergenceDivergenceLines> calculator : signalCalculators) {
-			signals.addAll(calculator.calculateSignals(lines, signalRange));
+			final List<DatedSignal> signals = calculator.calculateSignals(lines, signalRange);
 
 			for (final DatedSignal signal : signals) {
 				indicatorSignals
