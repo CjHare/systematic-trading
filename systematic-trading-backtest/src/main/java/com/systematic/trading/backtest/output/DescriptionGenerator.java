@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.output;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.Period;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
@@ -37,6 +38,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
+import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
@@ -142,8 +144,10 @@ public class DescriptionGenerator {
 	}
 
 	public String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
-		if (entry.getConfirmationSignal().isPresent()) {
-			final ConfirmationSignalFilterConfiguration confirmation = entry.getConfirmationSignal().get();
+		final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal = entry.getConfirmationSignal();
+
+		if (confirmationSignal.isPresent()) {
+			final ConfirmationSignalFilterConfiguration confirmation = confirmationSignal.get();
 			final int delay = confirmation.getType().getDelayUntilConfirmationRange();
 			final int range = confirmation.getType().getConfirmationDayRange();
 			final StringJoiner out = new StringJoiner(SEPARATOR);
@@ -162,9 +166,11 @@ public class DescriptionGenerator {
 	}
 
 	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
-		if (entry.getSameDaySignals().isPresent()) {
+		final Optional<SameDayFilterConfiguration> sameDayFilter = entry.getSameDaySignals();
+
+		if (sameDayFilter.isPresent()) {
 			final StringJoiner out = new StringJoiner(SEPARATOR);
-			final SignalConfiguration[] signals = entry.getSameDaySignals().get().getSignals();
+			final SignalConfiguration[] signals = sameDayFilter.get().getSignals();
 			if (signals.length != 1) {
 				out.add("SameDay");
 			}

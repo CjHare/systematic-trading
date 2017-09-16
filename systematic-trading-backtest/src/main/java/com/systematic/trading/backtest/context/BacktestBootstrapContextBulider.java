@@ -41,6 +41,7 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicFactory;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityManagementFeeConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
+import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.IndicatorSignalGeneratorFactory;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
@@ -158,13 +159,15 @@ public class BacktestBootstrapContextBulider {
 			throw new IllegalArgumentException("Cannot create a signal confirmation with a confirmation signal");
 		}
 
+		final ConfirmationSignalFilterConfiguration confirmationSignal = entry.getConfirmationSignal().get();
+
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final SignalConfiguration anchor = entry.getConfirmationSignal().get().getAnchor();
 		final SignalConfiguration confirmation = entry.getConfirmationSignal().get().getConfirmation();
 
 		final SignalFilter filter = new ConfirmationIndicatorsSignalFilter(anchor.getType(), confirmation.getType(),
-		        entry.getConfirmationSignal().get().getType().getDelayUntilConfirmationRange(),
-		        entry.getConfirmationSignal().get().getType().getConfirmationDayRange());
+		        confirmationSignal.getType().getDelayUntilConfirmationRange(),
+		        confirmationSignal.getType().getConfirmationDayRange());
 
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
 
