@@ -44,6 +44,8 @@ import com.systematic.trading.backtest.configuration.signals.IndicatorSignalGene
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.signals.filter.SignalRangeFilter;
+import com.systematic.trading.signals.filter.TradingDaySignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.filter.ConfirmationIndicatorsSignalFilter;
@@ -71,9 +73,6 @@ import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculato
 public class BacktestBootstrapContextBulider {
 
 	//TODO convert into an actual builder pattern
-
-	/** Number of days previous to include in signal generation for same day signals. */
-	private static final int SIGNAL_SAME_DAY = 0;
 
 	/** How long one year is as a period of time/ */
 	private static final Period ONE_YEAR = Period.ofYears(1);
@@ -161,12 +160,13 @@ public class BacktestBootstrapContextBulider {
 		        entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange(),
 		        entry.getConfirmationSignal().getType().getConfirmationDayRange());
 
-		final int previousTradingDaySignalRange = entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange()
-		        + entry.getConfirmationSignal().getType().getConfirmationDayRange();
+		final SignalRangeFilter signalRangeFilter = new TradingDaySignalRangeFilter(
+		        entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange()
+		                + entry.getConfirmationSignal().getType().getConfirmationDayRange());
 
 		final IndicatorSignalGenerator[] indicatorGenerators = {
-		        IndicatorSignalGeneratorFactory.getInstance().create(anchor, previousTradingDaySignalRange, mathContext),
-		        IndicatorSignalGeneratorFactory.getInstance().create(confirmation, previousTradingDaySignalRange, mathContext) };
+		        IndicatorSignalGeneratorFactory.getInstance().create(anchor, signalRangeFilter, mathContext),
+		        IndicatorSignalGeneratorFactory.getInstance().create(confirmation, signalRangeFilter, mathContext) };
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
 		        indicatorGenerators);
@@ -186,9 +186,13 @@ public class BacktestBootstrapContextBulider {
 		final SignalFilter filter = new IndicatorsOnSameDaySignalFilter(indicatorTypes);
 		final IndicatorSignalGenerator[] indicatorGenerators = new IndicatorSignalGenerator[indicators.length];
 
+		final SignalRangeFilter signalRangeFilter = new TradingDaySignalRangeFilter(
+		        entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange()
+		                + entry.getConfirmationSignal().getType().getConfirmationDayRange());
+
 		for (int i = 0; i < indicatorGenerators.length; i++) {
 			indicatorGenerators[i] = IndicatorSignalGeneratorFactory.getInstance().create(indicators[i],
-			        SIGNAL_SAME_DAY, mathContext);
+			        signalRangeFilter, mathContext);
 		}
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,

@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.configuration.signals;
 
 import java.math.MathContext;
 
+import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
@@ -51,11 +52,11 @@ public class IndicatorSignalGeneratorFactory {
 	/**
 	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
 	 */
-	public IndicatorSignalGenerator create( final SignalConfiguration signal, final int previousTradingDaySignalRange,
+	public IndicatorSignalGenerator create( final SignalConfiguration signal, final SignalRangeFilter filter,
 	        final MathContext mathContext ) {
 
 		if (signal instanceof MacdConfiguration) {
-			return create((MacdConfiguration) signal, previousTradingDaySignalRange, mathContext);
+			return create((MacdConfiguration) signal, filter, mathContext);
 		}
 		if (signal instanceof RsiConfiguration) {
 			return create((RsiConfiguration) signal, mathContext);
@@ -67,10 +68,10 @@ public class IndicatorSignalGeneratorFactory {
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
-	private IndicatorSignalGenerator create( final MacdConfiguration macd, final int previousTradingDaySignalRange,
+	private IndicatorSignalGenerator create( final MacdConfiguration macd, final SignalRangeFilter filter,
 	        final MathContext mathContext ) {
 		return new MovingAveragingConvergeDivergenceSignals(macd.getFastTimePeriods(), macd.getSlowTimePeriods(),
-		        macd.getSignalTimePeriods(), previousTradingDaySignalRange, mathContext);
+		        macd.getSignalTimePeriods(), filter, mathContext);
 	}
 
 	//TODO use signalFilterRange

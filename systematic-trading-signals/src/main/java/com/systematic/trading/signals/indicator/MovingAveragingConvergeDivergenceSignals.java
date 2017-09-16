@@ -41,6 +41,7 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
+import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
@@ -49,11 +50,10 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	private final MovingAverageConvergenceDivergence macd;
 	private final int requiredNumberOfTradingDays;
 
-	/** Number of trading days before the latest (current) trading date to generate signals on. */
-	private final int previousTradingDaySignalRange;
+	private final SignalRangeFilter filter;
 
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
-	        final int signalTimePeriods, final int previousTradingDaySignalRange, final MathContext mathContext ) {
+	        final int signalTimePeriods, final SignalRangeFilter filter, final MathContext mathContext ) {
 
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(fastTimePeriods,
 		        new IllegalArgumentThrowingValidator(), mathContext);
@@ -67,7 +67,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		this.requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
 		        + signalEma.getMinimumNumberOfPrices();
-		this.previousTradingDaySignalRange = previousTradingDaySignalRange;
+		this.filter = filter;
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		//TODO validate the number of data items meets the minimum
 
-		final LocalDate earliestSignalDate = data[data.length - 1 - previousTradingDaySignalRange].getDate();
+		final LocalDate earliestSignalDate = filter.getEarliestSignalDate(data);
 		final LocalDate latestSignalDate = data[data.length - 1].getDate();
 
 		//TODO generate the down signals too

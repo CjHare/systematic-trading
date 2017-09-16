@@ -2,30 +2,45 @@ package com.systematic.trading.signals.indicator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 
-	private static final int SIGNAL_WITHIN_LAST_WEEK = 7;
+	private static final int FAST_TIME_PERIODS = 10;
+
+	@Mock
+	private SignalRangeFilter filter;
+
+	@Before
+	public void setUp() {
+		when(filter.getEarliestSignalDate(any(TradingDayPrices[].class))).thenReturn(getStartDate(FAST_TIME_PERIODS));
+	}
 
 	@Test
 	public void getRequiredNumberOfTradingDays() {
-		final int fastTimePeriods = 10;
 		final int slowTimePeriods = 20;
 		final int signalTimePeriods = 7;
 
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(
-		        fastTimePeriods, slowTimePeriods, signalTimePeriods, SIGNAL_WITHIN_LAST_WEEK, MATH_CONTEXT);
+		        FAST_TIME_PERIODS, slowTimePeriods, signalTimePeriods, filter, MATH_CONTEXT);
 
 		assertEquals(37, signals.getRequiredNumberOfTradingDays());
 	}
@@ -33,19 +48,18 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 	@Test
 	public void getSignalType() {
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(10, 20, 7,
-		        SIGNAL_WITHIN_LAST_WEEK, MathContext.DECIMAL64);
+		        filter, MathContext.DECIMAL64);
 
 		assertEquals(IndicatorSignalType.MACD, signals.getSignalType());
 	}
 
 	@Test
 	public void calculateSignalsFlatline() {
-		final int fastTimePeriods = 10;
 		final int slowTimePeriods = 20;
 		final int signalTimePeriods = 7;
 
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(
-		        fastTimePeriods, slowTimePeriods, signalTimePeriods, SIGNAL_WITHIN_LAST_WEEK, MATH_CONTEXT);
+		        FAST_TIME_PERIODS, slowTimePeriods, signalTimePeriods, filter, MATH_CONTEXT);
 
 		final TradingDayPrices[] data = createFlatTradingDayPrices(37, 10);
 
@@ -56,14 +70,13 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 	}
 
 	@Test
-	public void calculateOneSignals() {
+	public void calculateOneSignal() {
 		final int buyPriceSpike = 7;
-		final int fastTimePeriods = 10;
 		final int slowTimePeriods = 20;
 		final int signalTimePeriods = 7;
 
 		final MovingAveragingConvergeDivergenceSignals signals = new MovingAveragingConvergeDivergenceSignals(
-		        fastTimePeriods, slowTimePeriods, signalTimePeriods, SIGNAL_WITHIN_LAST_WEEK, MATH_CONTEXT);
+		        FAST_TIME_PERIODS, slowTimePeriods, signalTimePeriods, filter, MATH_CONTEXT);
 
 		// Create a down, then an up-spike
 		final TradingDayPrices[] data = addStep(15, 15, -100,

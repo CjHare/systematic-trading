@@ -16,7 +16,7 @@ public abstract class SignalTest {
 	protected TradingDayPrices[] createFlatTradingDayPrices( final int count, final int price ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
-		final LocalDate startDate = LocalDate.now().minus(count, ChronoUnit.DAYS);
+		final LocalDate startDate = getStartDate(count);
 
 		for (int i = 0; i < count; i++) {
 			prices[i] = createPrice(startDate.plus(i, ChronoUnit.DAYS), BigDecimal.valueOf(price),
@@ -24,6 +24,10 @@ public abstract class SignalTest {
 		}
 
 		return prices;
+	}
+
+	protected LocalDate getStartDate( final int count ) {
+		return LocalDate.now().minus(count, ChronoUnit.DAYS);
 	}
 
 	/**
