@@ -36,7 +36,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.systematic.trading.maths.model.DatedValue;
+import com.systematic.trading.maths.DatedValue;
 
 public class StochasticOscillatorSignalsTest {
 

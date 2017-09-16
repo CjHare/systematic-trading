@@ -23,30 +23,70 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.model;
+package com.systematic.trading.maths;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.data.price.HighestEquityPrice;
+import com.systematic.trading.data.price.LowestPrice;
+import com.systematic.trading.data.price.OpeningPrice;
+
 /**
- * Tuple of a date and a signal type.
+ * Data object pairing a date and a value.
  * 
  * @author CJ Hare
  */
-public class DatedSignal {
+public class DatedValue implements TradingDayPrices {
 
 	private final LocalDate date;
-	private final SignalType type;
+	private final BigDecimal value;
 
-	public DatedSignal( final LocalDate date, final SignalType type ) {
+	public DatedValue( final LocalDate date, final BigDecimal value ) {
+
+		if (date == null || value == null) {
+			throw new IllegalArgumentException(
+			        String.format("Expecting non null date and value, given Date: %s and Value: %s", date, value));
+		}
+
 		this.date = date;
-		this.type = type;
+		this.value = value;
 	}
 
+	@Override
 	public LocalDate getDate() {
 		return date;
 	}
 
-	public SignalType getType() {
-		return type;
+	public BigDecimal getValue() {
+		return value;
+	}
+
+	@Override
+	public ClosingPrice getClosingPrice() {
+		// Immutable value is verified as non-null in constructor
+		return ClosingPrice.valueOf(value);
+	}
+
+	@Override
+	public LowestPrice getLowestPrice() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public HighestEquityPrice getHighestPrice() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public OpeningPrice getOpeningPrice() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String getTickerSymbol() {
+		throw new UnsupportedOperationException();
 	}
 }

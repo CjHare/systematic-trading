@@ -31,12 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.DatedValue;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageK;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageKCalculator;
-import com.systematic.trading.maths.model.DatedValue;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 

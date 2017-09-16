@@ -35,9 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.systematic.trading.maths.DatedSignal;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
-import com.systematic.trading.maths.model.DatedSignal;
-import com.systematic.trading.maths.model.SignalType;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 

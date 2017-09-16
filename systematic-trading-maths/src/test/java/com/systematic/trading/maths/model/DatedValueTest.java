@@ -7,6 +7,8 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
+import com.systematic.trading.maths.DatedValue;
+
 public class DatedValueTest {
 
 	private final LocalDate validDate = LocalDate.now();

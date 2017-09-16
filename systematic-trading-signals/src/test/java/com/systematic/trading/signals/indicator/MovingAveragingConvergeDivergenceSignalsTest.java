@@ -22,10 +22,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.DatedSignal;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
-import com.systematic.trading.maths.model.DatedSignal;
-import com.systematic.trading.maths.model.SignalType;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 

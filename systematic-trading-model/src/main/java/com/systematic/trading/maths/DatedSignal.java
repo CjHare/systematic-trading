@@ -23,70 +23,30 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.model;
+package com.systematic.trading.maths;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestEquityPrice;
-import com.systematic.trading.data.price.LowestPrice;
-import com.systematic.trading.data.price.OpeningPrice;
-
 /**
- * Data object pairing a date and a value.
+ * Tuple of a date and a signal type.
  * 
  * @author CJ Hare
  */
-public class DatedValue implements TradingDayPrices {
+public class DatedSignal {
 
 	private final LocalDate date;
-	private final BigDecimal value;
+	private final SignalType type;
 
-	public DatedValue( final LocalDate date, final BigDecimal value ) {
-
-		if (date == null || value == null) {
-			throw new IllegalArgumentException(
-			        String.format("Expecting non null date and value, given Date: %s and Value: %s", date, value));
-		}
-
+	public DatedSignal( final LocalDate date, final SignalType type ) {
 		this.date = date;
-		this.value = value;
+		this.type = type;
 	}
 
-	@Override
 	public LocalDate getDate() {
 		return date;
 	}
 
-	public BigDecimal getValue() {
-		return value;
-	}
-
-	@Override
-	public ClosingPrice getClosingPrice() {
-		// Immutable value is verified as non-null in constructor
-		return ClosingPrice.valueOf(value);
-	}
-
-	@Override
-	public LowestPrice getLowestPrice() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public HighestEquityPrice getHighestPrice() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public OpeningPrice getOpeningPrice() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getTickerSymbol() {
-		throw new UnsupportedOperationException();
+	public SignalType getType() {
+		return type;
 	}
 }

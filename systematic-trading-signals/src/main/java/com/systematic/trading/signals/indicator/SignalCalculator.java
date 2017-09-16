@@ -33,7 +33,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.systematic.trading.maths.model.DatedSignal;
+import com.systematic.trading.maths.DatedSignal;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 
 /**
