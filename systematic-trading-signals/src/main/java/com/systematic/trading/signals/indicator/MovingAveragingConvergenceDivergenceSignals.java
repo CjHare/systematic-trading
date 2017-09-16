@@ -73,7 +73,7 @@ public class MovingAveragingConvergenceDivergenceSignals implements IndicatorSig
 
 		//TODO validate the number of data items meets the minimum
 
-		final Predicate<LocalDate> signalRange = ( candidate ) -> dateRangeFilter.isWithinSignalRange(
+		final Predicate<LocalDate> signalRange = candidate -> dateRangeFilter.isWithinSignalRange(
 		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
 
 		final MovingAverageConvergenceDivergenceLines lines = macd.macd(data);

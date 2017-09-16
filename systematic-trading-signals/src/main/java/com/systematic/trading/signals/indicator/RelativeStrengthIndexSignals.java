@@ -90,7 +90,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		//TODO validate minimum nummber of points given
 
-		final Predicate<LocalDate> signalRange = ( candidate ) -> dateRangeFilter.isWithinSignalRange(
+		final Predicate<LocalDate> signalRange = candidate -> dateRangeFilter.isWithinSignalRange(
 		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
 
 		final List<RelativeStrengthIndexDataPoint> rsiData = rsi.rsi(data);
