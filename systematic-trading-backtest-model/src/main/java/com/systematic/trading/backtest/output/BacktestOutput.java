@@ -28,7 +28,7 @@ package com.systematic.trading.backtest.output;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
-import com.systematic.trading.signals.model.event.SignalAnalysisListener;
+import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.SimulationStateListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;

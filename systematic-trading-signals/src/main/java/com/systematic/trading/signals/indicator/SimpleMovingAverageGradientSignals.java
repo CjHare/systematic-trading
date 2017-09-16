@@ -36,10 +36,10 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
+import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.model.IndicatorDirectionType;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
  * Interested in the Simple Moving Average (SMA) gradient, whether it is negative (downward),flat

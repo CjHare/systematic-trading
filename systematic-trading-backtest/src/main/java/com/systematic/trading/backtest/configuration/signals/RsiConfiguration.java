@@ -27,7 +27,7 @@ package com.systematic.trading.backtest.configuration.signals;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.signals.model.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalType;
 
 /**
  * Configuration for the MACD signal calculator.

@@ -22,10 +22,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.IndicatorDirectionType;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfirmationIndicatorsSignalFilterTest {

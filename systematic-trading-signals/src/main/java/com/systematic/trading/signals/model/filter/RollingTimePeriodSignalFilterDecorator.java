@@ -34,9 +34,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
+import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
  * Decorator to apply to filters that excludes signals dated outside a time period from the latest

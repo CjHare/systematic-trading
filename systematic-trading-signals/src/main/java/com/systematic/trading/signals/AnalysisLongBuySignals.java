@@ -34,15 +34,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.event.SignalAnalysisEvent;
+import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 import com.systematic.trading.signals.model.event.IndicatorSignalEvent;
-import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
-import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 public class AnalysisLongBuySignals implements AnalysisBuySignals {

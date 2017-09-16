@@ -38,10 +38,10 @@ import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
+import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.model.IndicatorDirectionType;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 

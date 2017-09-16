@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.output;
 
-import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;

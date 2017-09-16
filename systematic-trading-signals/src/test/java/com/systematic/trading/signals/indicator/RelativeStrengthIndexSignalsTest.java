@@ -42,9 +42,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.model.IndicatorDirectionType;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RelativeStrengthIndexSignalsTest extends SignalTest {

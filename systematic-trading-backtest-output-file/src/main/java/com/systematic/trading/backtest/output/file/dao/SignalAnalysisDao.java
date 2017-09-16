@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.output.file.dao;
 
-import com.systematic.trading.signals.model.event.SignalAnalysisListener;
+import com.systematic.trading.signal.event.SignalAnalysisListener;
 
 /**
  * Output for the signal analysis events.

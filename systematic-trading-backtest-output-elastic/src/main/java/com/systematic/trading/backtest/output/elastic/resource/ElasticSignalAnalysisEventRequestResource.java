@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
-import com.systematic.trading.signals.model.event.SignalAnalysisEvent;
+import com.systematic.trading.signal.event.SignalAnalysisEvent;
 
 /**
  * Resource for an brokerage event to send to Elastic search. 

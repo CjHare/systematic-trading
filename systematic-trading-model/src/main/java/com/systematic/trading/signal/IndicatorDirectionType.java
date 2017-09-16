@@ -23,38 +23,15 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.model.event;
-
-import java.time.LocalDate;
-
-import com.systematic.trading.signals.model.IndicatorDirectionType;
-import com.systematic.trading.signals.model.IndicatorSignalType;
+package com.systematic.trading.signal;
 
 /**
- * An interesting event that occurs when analysing data to generate signals.
+ * Direction of movement.
  * 
  * @author CJ Hare
  */
-public interface SignalAnalysisEvent {
-
-	/**
-	 * The type of signals that were being analysed.
-	 * 
-	 * @return the type of indicator signals generated.
-	 */
-	IndicatorSignalType getSignalType();
-
-	/**
-	 * Date of the signal event occurrence.
-	 * 
-	 * @return date of the signal, when there is one.
-	 */
-	LocalDate getSignalDate();
-
-	/**
-	 * The direction of the indicator signal generated from analysis.
-	 * 
-	 * @return the direction of the signal.
-	 */
-	IndicatorDirectionType getDirectionType();
+//TODO delete this class & use SignalType instead - duplication!
+public enum IndicatorDirectionType {
+	BULLISH,
+	BEARISH
 }

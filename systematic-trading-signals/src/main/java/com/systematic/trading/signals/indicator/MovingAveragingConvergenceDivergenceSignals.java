@@ -35,9 +35,9 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.DatedSignal;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
+import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class MovingAveragingConvergenceDivergenceSignals implements IndicatorSignalGenerator {
 

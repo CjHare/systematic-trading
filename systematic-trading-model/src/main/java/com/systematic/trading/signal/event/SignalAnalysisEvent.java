@@ -23,20 +23,38 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.model.event;
+package com.systematic.trading.signal.event;
+
+import java.time.LocalDate;
+
+import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.signal.IndicatorSignalType;
 
 /**
- * Interested in events created during analysis to generate signals.
+ * An interesting event that occurs when analysing data to generate signals.
  * 
  * @author CJ Hare
  */
-@FunctionalInterface
-public interface SignalAnalysisListener {
+public interface SignalAnalysisEvent {
 
 	/**
-	 * Event has occurred that may be of interest to the listener.
+	 * The type of signals that were being analysed.
 	 * 
-	 * @param event something wicked this way comes.
+	 * @return the type of indicator signals generated.
 	 */
-	void event( SignalAnalysisEvent event );
+	IndicatorSignalType getSignalType();
+
+	/**
+	 * Date of the signal event occurrence.
+	 * 
+	 * @return date of the signal, when there is one.
+	 */
+	LocalDate getSignalDate();
+
+	/**
+	 * The direction of the indicator signal generated from analysis.
+	 * 
+	 * @return the direction of the signal.
+	 */
+	IndicatorDirectionType getDirectionType();
 }

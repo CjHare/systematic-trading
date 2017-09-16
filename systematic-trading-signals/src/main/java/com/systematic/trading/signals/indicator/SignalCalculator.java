@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.systematic.trading.maths.DatedSignal;
-import com.systematic.trading.signals.model.IndicatorDirectionType;
+import com.systematic.trading.signal.IndicatorDirectionType;
 
 /**
  * Calculator for bullish or bearish signals from an indicator type T. 

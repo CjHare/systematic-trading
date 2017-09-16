@@ -28,8 +28,8 @@ package com.systematic.trading.signals;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.event.SignalAnalysisListener;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
 /**

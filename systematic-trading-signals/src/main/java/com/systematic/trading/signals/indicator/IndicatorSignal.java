@@ -27,8 +27,8 @@ package com.systematic.trading.signals.indicator;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.signals.model.IndicatorDirectionType;
-import com.systematic.trading.signals.model.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.signal.IndicatorSignalType;
 
 public class IndicatorSignal {
 	private final LocalDate date;

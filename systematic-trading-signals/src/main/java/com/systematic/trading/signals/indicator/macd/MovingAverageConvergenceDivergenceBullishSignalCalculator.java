@@ -38,8 +38,8 @@ import java.util.function.Predicate;
 import com.systematic.trading.maths.DatedSignal;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
+import com.systematic.trading.signal.IndicatorDirectionType;
 import com.systematic.trading.signals.indicator.SignalCalculator;
-import com.systematic.trading.signals.model.IndicatorDirectionType;
 
 /**
  * MACD bullish signal calculator, takes the MACD lines calculated from the price data and calculates bullish signals from it.

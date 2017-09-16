@@ -32,7 +32,7 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
-import com.systematic.trading.signals.model.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalType;
 
 /**
  * Verify the NotEnoughDataPointsEvent.

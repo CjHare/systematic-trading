@@ -32,9 +32,9 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
+import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.model.IndicatorDirectionType;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
  * Verifies the IndicatorSignalEvent.

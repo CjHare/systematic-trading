@@ -27,9 +27,10 @@ package com.systematic.trading.signals.model.event;
 
 import java.time.LocalDate;
 
+import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.model.IndicatorDirectionType;
-import com.systematic.trading.signals.model.IndicatorSignalType;
 
 /**
  * There were too many data points to perform the desired analysis.

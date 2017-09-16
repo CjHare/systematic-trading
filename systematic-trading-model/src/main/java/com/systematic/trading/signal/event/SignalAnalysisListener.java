@@ -23,11 +23,20 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.model;
+package com.systematic.trading.signal.event;
 
-public enum IndicatorSignalType {
-	MACD,
-	RSI,
-	SMA,
-	STOCHASTIC;
+/**
+ * Interested in events created during analysis to generate signals.
+ * 
+ * @author CJ Hare
+ */
+@FunctionalInterface
+public interface SignalAnalysisListener {
+
+	/**
+	 * Event has occurred that may be of interest to the listener.
+	 * 
+	 * @param event something wicked this way comes.
+	 */
+	void event( SignalAnalysisEvent event );
 }
