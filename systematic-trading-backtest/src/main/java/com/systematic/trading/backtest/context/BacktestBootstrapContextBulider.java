@@ -155,19 +155,18 @@ public class BacktestBootstrapContextBulider {
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
 	        final EntryLogicConfiguration entry ) {
 
-		if (!entry.getConfirmationSignal().isPresent()) {
+		final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal = entry.getConfirmationSignal();
+		if (!confirmationSignal.isPresent()) {
 			throw new IllegalArgumentException("Cannot create a signal confirmation with a confirmation signal");
 		}
-
-		final ConfirmationSignalFilterConfiguration confirmationSignal = entry.getConfirmationSignal().get();
 
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final SignalConfiguration anchor = entry.getConfirmationSignal().get().getAnchor();
 		final SignalConfiguration confirmation = entry.getConfirmationSignal().get().getConfirmation();
 
 		final SignalFilter filter = new ConfirmationIndicatorsSignalFilter(anchor.getType(), confirmation.getType(),
-		        confirmationSignal.getType().getDelayUntilConfirmationRange(),
-		        confirmationSignal.getType().getConfirmationDayRange());
+		        confirmationSignal.get().getType().getDelayUntilConfirmationRange(),
+		        confirmationSignal.get().getType().getConfirmationDayRange());
 
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
 
