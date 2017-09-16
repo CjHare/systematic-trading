@@ -27,16 +27,15 @@ package com.systematic.trading.signals.indicator;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalType;
 
 public class IndicatorSignal {
 	private final LocalDate date;
 	private final IndicatorSignalType signal;
-	private final IndicatorDirectionType direction;
+	private final SignalType direction;
 
-	public IndicatorSignal( final LocalDate date, final IndicatorSignalType signal,
-	        final IndicatorDirectionType direction ) {
+	public IndicatorSignal( final LocalDate date, final IndicatorSignalType signal, final SignalType direction ) {
 		this.date = date;
 		this.signal = signal;
 		this.direction = direction;
@@ -50,7 +49,7 @@ public class IndicatorSignal {
 		return signal;
 	}
 
-	public IndicatorDirectionType getDirection() {
+	public SignalType getDirection() {
 		return direction;
 	}
 }

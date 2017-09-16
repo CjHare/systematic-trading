@@ -32,12 +32,12 @@ import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.DatedValue;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageK;
 import com.systematic.trading.maths.indicator.stochastic.StochasticPercentageKCalculator;
-import com.systematic.trading.signal.IndicatorDirectionType;
 import com.systematic.trading.signal.IndicatorSignalType;
 
 /**
@@ -125,7 +125,7 @@ public class StochasticOscillatorSignals implements IndicatorSignalGenerator {
 			// OR trending up and crossing the zero line
 			if (crossingSignalLine(pointYesterday, pointToday, signalLineToday, signalLineYesterday)) {
 				buySignals.add(new IndicatorSignal(dataPoint[index + offset].getDate(), IndicatorSignalType.STOCHASTIC,
-				        IndicatorDirectionType.BULLISH));
+				        SignalType.BULLISH));
 			}
 
 		}

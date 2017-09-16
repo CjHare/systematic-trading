@@ -42,7 +42,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 
@@ -76,7 +76,7 @@ public class RelativeStrengthIndexSignalsTest extends SignalTest {
 		assertNotNull(results);
 		assertEquals(1, results.size());
 		assertEquals(IndicatorSignalType.RSI, results.get(0).getSignal());
-		assertEquals(IndicatorDirectionType.BULLISH, results.get(0).getDirection());
+		assertEquals(SignalType.BULLISH, results.get(0).getDirection());
 		assertEquals(LocalDate.now().minus(buyPriceSpike, ChronoUnit.DAYS), results.get(0).getDate());
 	}
 
@@ -98,7 +98,7 @@ public class RelativeStrengthIndexSignalsTest extends SignalTest {
 		assertNotNull(results);
 		assertEquals(1, results.size());
 		assertEquals(IndicatorSignalType.RSI, results.get(0).getSignal());
-		assertEquals(IndicatorDirectionType.BEARISH, results.get(0).getDirection());
+		assertEquals(SignalType.BEARISH, results.get(0).getDirection());
 		assertEquals(LocalDate.now().minus(buyPriceSpike, ChronoUnit.DAYS), results.get(0).getDate());
 	}
 

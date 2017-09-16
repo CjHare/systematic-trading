@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
@@ -55,7 +55,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 
 	private void setUpAnchorSignal() {
 		final List<IndicatorSignal> anchorSignals = new ArrayList<>();
-		anchorSignals.add(new IndicatorSignal(LocalDate.now(), anchorSignalType, IndicatorDirectionType.BULLISH));
+		anchorSignals.add(new IndicatorSignal(LocalDate.now(), anchorSignalType, SignalType.BULLISH));
 		signals.put(anchorSignalType, anchorSignals);
 	}
 
@@ -68,7 +68,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 	private void setUpWrongConfirmationSignal() {
 		final List<IndicatorSignal> wrongConfirmationSignals = new ArrayList<>();
 		wrongConfirmationSignals
-		        .add(new IndicatorSignal(LocalDate.now(), wrongConfirmationSignalType, IndicatorDirectionType.BULLISH));
+		        .add(new IndicatorSignal(LocalDate.now(), wrongConfirmationSignalType, SignalType.BULLISH));
 		signals.put(wrongConfirmationSignalType, wrongConfirmationSignals);
 	}
 
@@ -160,7 +160,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 	public void confirmationSignalOnFirstDayOfRangeNoDelay() {
 		setUpAnchorSignal();
 		setUpConfirmationSignal(new IndicatorSignal(LocalDate.now().plus(0, ChronoUnit.DAYS), confirmationSignalType,
-		        IndicatorDirectionType.BULLISH));
+		        SignalType.BULLISH));
 		filter = new ConfirmationIndicatorsSignalFilter(anchorSignalType, confirmationSignalType, 0,
 		        confirmationDayRange);
 
@@ -175,7 +175,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 	public void confirmationSignalOnLastDayOfRangeNoDelay() {
 		setUpAnchorSignal();
 		setUpConfirmationSignal(new IndicatorSignal(LocalDate.now().plus(confirmationDayRange, ChronoUnit.DAYS),
-		        confirmationSignalType, IndicatorDirectionType.BULLISH));
+		        confirmationSignalType, SignalType.BULLISH));
 		filter = new ConfirmationIndicatorsSignalFilter(anchorSignalType, confirmationSignalType, 0,
 		        confirmationDayRange);
 
@@ -191,7 +191,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 		setUpAnchorSignal();
 		setUpConfirmationSignal(
 		        new IndicatorSignal(LocalDate.now().plus(daysUntilStartOfConfirmationRange, ChronoUnit.DAYS),
-		                confirmationSignalType, IndicatorDirectionType.BULLISH));
+		                confirmationSignalType, SignalType.BULLISH));
 
 		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
 
@@ -204,10 +204,8 @@ public class ConfirmationIndicatorsSignalFilterTest {
 	public void confirmationSignalOnLastDayOfRangeTwoDayDelay() {
 		setUpAnchorSignal();
 		setUpConfirmationSignal(
-		        new IndicatorSignal(
-		                LocalDate.now().plus(daysUntilStartOfConfirmationRange, ChronoUnit.DAYS)
-		                        .plus(confirmationDayRange, ChronoUnit.DAYS),
-		                confirmationSignalType, IndicatorDirectionType.BULLISH));
+		        new IndicatorSignal(LocalDate.now().plus(daysUntilStartOfConfirmationRange, ChronoUnit.DAYS)
+		                .plus(confirmationDayRange, ChronoUnit.DAYS), confirmationSignalType, SignalType.BULLISH));
 
 		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
 
@@ -221,7 +219,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 		setUpAnchorSignal();
 		setUpConfirmationSignal(
 		        new IndicatorSignal(LocalDate.now().plus(daysUntilStartOfConfirmationRange - 1, ChronoUnit.DAYS),
-		                confirmationSignalType, IndicatorDirectionType.BULLISH));
+		                confirmationSignalType, SignalType.BULLISH));
 
 		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
 
@@ -235,7 +233,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 		setUpAnchorSignal();
 		setUpConfirmationSignal(new IndicatorSignal(
 		        LocalDate.now().plus(daysUntilStartOfConfirmationRange + confirmationDayRange + 1, ChronoUnit.DAYS),
-		        confirmationSignalType, IndicatorDirectionType.BULLISH));
+		        confirmationSignalType, SignalType.BULLISH));
 
 		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
 

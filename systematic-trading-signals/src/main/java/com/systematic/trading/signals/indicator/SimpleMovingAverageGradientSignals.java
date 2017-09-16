@@ -33,10 +33,10 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
-import com.systematic.trading.signal.IndicatorDirectionType;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
@@ -131,20 +131,17 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 				switch (signalGenerated) {
 					case POSITIVE:
 						if (isPositiveGardient(previous, sma.get(index))) {
-							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA,
-							        IndicatorDirectionType.BULLISH));
+							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA, SignalType.BULLISH));
 						}
 					break;
 					case FLAT:
 						if (isFlatGardient(previous, sma.get(index))) {
-							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA,
-							        IndicatorDirectionType.BULLISH));
+							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA, SignalType.BULLISH));
 						}
 					break;
 					case NEGATIVE:
 						if (isNegativeGardient(previous, sma.get(index))) {
-							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA,
-							        IndicatorDirectionType.BULLISH));
+							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA, SignalType.BULLISH));
 						}
 					break;
 					default:

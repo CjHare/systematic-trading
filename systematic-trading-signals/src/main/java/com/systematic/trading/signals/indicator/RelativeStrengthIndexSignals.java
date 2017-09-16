@@ -33,12 +33,12 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.formula.rs.RelativeStrengthCalculator;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
-import com.systematic.trading.signal.IndicatorDirectionType;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
@@ -112,8 +112,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		for (final RelativeStrengthIndexDataPoint today : rsiData) {
 			if (signalRange.test(today.getDate()) && isOversold(yesterday, today)) {
-				signals.add(
-				        new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
+				signals.add(new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, SignalType.BULLISH));
 			}
 
 			yesterday = today;
@@ -129,8 +128,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		for (final RelativeStrengthIndexDataPoint today : rsiData) {
 			if (signalRange.test(today.getDate()) && isOverbrought(yesterday, today)) {
-				signals.add(
-				        new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.BEARISH));
+				signals.add(new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, SignalType.BEARISH));
 			}
 
 			yesterday = today;

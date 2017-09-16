@@ -27,11 +27,11 @@ package com.systematic.trading.signal.event;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalType;
 
 /**
- * An interesting event that occurs when analysing data to generate signals.
+ * An interesting event that occurs when analyzing data to generate signals.
  * 
  * @author CJ Hare
  */
@@ -56,5 +56,5 @@ public interface SignalAnalysisEvent {
 	 * 
 	 * @return the direction of the signal.
 	 */
-	IndicatorDirectionType getDirectionType();
+	SignalType getDirectionType();
 }

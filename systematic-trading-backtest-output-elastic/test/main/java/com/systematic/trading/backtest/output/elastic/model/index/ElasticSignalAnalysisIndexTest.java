@@ -39,7 +39,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 
@@ -59,7 +59,8 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 	public void initMissingIndex() {
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(),
+		        getElasticConfig());
 
 		index.init(id);
 
@@ -72,7 +73,8 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(),
+		        getElasticConfig());
 
 		index.init(id);
 
@@ -86,7 +88,8 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(),
+		        getElasticConfig());
 
 		try {
 			index.init(id);
@@ -106,7 +109,8 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 		final String batchId = "MissingIndexBatchForTesting";
 		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(),
+		        getElasticConfig());
 
 		final SignalAnalysisEvent event = getEvent();
 
@@ -118,7 +122,8 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void disableRefreshInterval() {
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(),
+		        getElasticConfig());
 
 		index.setRefreshInterval(false);
 
@@ -127,7 +132,8 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void enableRefreshInterval() {
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(),
+		        getElasticConfig());
 
 		index.setRefreshInterval(true);
 
@@ -136,7 +142,8 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	@Test
 	public void ensureIndexExists() {
-		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
+		final ElasticSignalAnalysisIndex index = new ElasticSignalAnalysisIndex(getDao(), getPool(),
+		        getElasticConfig());
 
 		index.ensureIndexExists();
 
@@ -166,7 +173,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 	private SignalAnalysisEvent getEvent() {
 		final SignalAnalysisEvent event = mock(SignalAnalysisEvent.class);
 		final IndicatorSignalType type = IndicatorSignalType.STOCHASTIC;
-		final IndicatorDirectionType direction = IndicatorDirectionType.BULLISH;
+		final SignalType direction = SignalType.BULLISH;
 		final LocalDate signalDate = LocalDate.now();
 
 		when(event.getSignalType()).thenReturn(type);

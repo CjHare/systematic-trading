@@ -47,7 +47,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
@@ -170,11 +170,11 @@ public class RollingTimePeriodSignalFilterDecoratorTest {
 		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
 
 		final List<IndicatorSignal> rsiSignals = new ArrayList<IndicatorSignal>();
-		rsiSignals.add(new IndicatorSignal(date, IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
+		rsiSignals.add(new IndicatorSignal(date, IndicatorSignalType.RSI, SignalType.BULLISH));
 		signals.put(IndicatorSignalType.RSI, rsiSignals);
 
 		final List<IndicatorSignal> macdSignals = new ArrayList<IndicatorSignal>();
-		macdSignals.add(new IndicatorSignal(date, IndicatorSignalType.MACD, IndicatorDirectionType.BULLISH));
+		macdSignals.add(new IndicatorSignal(date, IndicatorSignalType.MACD, SignalType.BULLISH));
 		signals.put(IndicatorSignalType.MACD, macdSignals);
 
 		return signals;

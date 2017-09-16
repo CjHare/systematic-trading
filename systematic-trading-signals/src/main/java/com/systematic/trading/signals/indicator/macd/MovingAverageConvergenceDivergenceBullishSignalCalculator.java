@@ -38,7 +38,6 @@ import java.util.function.Predicate;
 import com.systematic.trading.maths.DatedSignal;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
-import com.systematic.trading.signal.IndicatorDirectionType;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 
 /**
@@ -50,8 +49,8 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculator
         implements SignalCalculator<MovingAverageConvergenceDivergenceLines> {
 
 	@Override
-	public IndicatorDirectionType getType() {
-		return IndicatorDirectionType.BULLISH;
+	public SignalType getType() {
+		return SignalType.BULLISH;
 	}
 
 	@Override

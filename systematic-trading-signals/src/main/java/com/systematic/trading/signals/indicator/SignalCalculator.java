@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.systematic.trading.maths.DatedSignal;
-import com.systematic.trading.signal.IndicatorDirectionType;
+import com.systematic.trading.maths.SignalType;
 
 /**
  * Calculator for bullish or bearish signals from an indicator type T. 
@@ -57,5 +57,5 @@ public interface SignalCalculator<T> {
 	 * 
 	 * @return type of signal created by the calculator.
 	 */
-	IndicatorDirectionType getType();
+	SignalType getType();
 }
