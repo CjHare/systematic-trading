@@ -26,12 +26,22 @@
 package com.systematic.trading.backtest.configuration.signals;
 
 import java.math.MathContext;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
+import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
+import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
+import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
+import com.systematic.trading.signals.indicator.MovingAveragingConvergenceDivergenceSignals;
 import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
+import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceBullishSignalCalculator;
 
 /**
  * Creates the signal instances.
@@ -68,10 +78,28 @@ public class IndicatorSignalGeneratorFactory {
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
-	private IndicatorSignalGenerator create( final MacdConfiguration macd, final SignalRangeFilter filter,
+	private IndicatorSignalGenerator create( final MacdConfiguration macdConfiguration, final SignalRangeFilter filter,
 	        final MathContext mathContext ) {
-		return new MovingAveragingConvergeDivergenceSignals(macd.getFastTimePeriods(), macd.getSlowTimePeriods(),
-		        macd.getSignalTimePeriods(), filter, mathContext);
+
+		final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators = new ArrayList<>();
+		//TODO generate the down (bearish) signals too
+		signalCalculators.add(new MovingAverageConvergenceDivergenceBullishSignalCalculator());
+
+		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(
+		        macdConfiguration.getFastTimePeriods(), new IllegalArgumentThrowingValidator(), mathContext);
+		final ExponentialMovingAverage slowEma = new ExponentialMovingAverageCalculator(
+		        macdConfiguration.getSlowTimePeriods(), new IllegalArgumentThrowingValidator(), mathContext);
+		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(
+		        macdConfiguration.getSignalTimePeriods(), new IllegalArgumentThrowingValidator(), mathContext);
+
+		final int requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
+		        + signalEma.getMinimumNumberOfPrices();
+
+		final MovingAverageConvergenceDivergence macd = new MovingAverageConvergenceDivergenceCalculator(fastEma,
+		        slowEma, signalEma, new IllegalArgumentThrowingValidator());
+
+		return new MovingAveragingConvergenceDivergenceSignals(macd, requiredNumberOfTradingDays, signalCalculators,
+		        filter, mathContext);
 	}
 
 	private IndicatorSignalGenerator create( final RsiConfiguration rsi, final SignalRangeFilter filter,
