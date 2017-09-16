@@ -41,9 +41,9 @@ public class InclusiveDatelRangeFilter {
 	/**
 	 * Determines whether the candidate date falls within the given date range.
 	 * 
-	 * @param earliestInclusiveDate inclusive date for the earliest signal.
-	 * @param latestInclusiveDate inclusive date for the latest signal.
-	 * @param candidate date being evaluated.
+	 * @param earliestInclusiveDate inclusive date for the earliest signal, not <code>null</code>.
+	 * @param latestInclusiveDate inclusive date for the latest signal, not <code>null</code>.
+	 * @param candidate date being evaluated, not <code>null</code>.
 	 * @return <code>true</code> when date with within the range, <code>false</code> otherwise.
 	 */
 	public boolean isWithinSignalRange( final LocalDate earliestInclusiveDate, final LocalDate latestInclusiveDate,
