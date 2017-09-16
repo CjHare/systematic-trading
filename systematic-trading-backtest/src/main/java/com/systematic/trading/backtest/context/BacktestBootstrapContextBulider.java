@@ -156,13 +156,14 @@ public class BacktestBootstrapContextBulider {
 	        final EntryLogicConfiguration entry ) {
 
 		final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal = entry.getConfirmationSignal();
+
 		if (!confirmationSignal.isPresent()) {
 			throw new IllegalArgumentException("Cannot create a signal confirmation with a confirmation signal");
 		}
 
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
-		final SignalConfiguration anchor = entry.getConfirmationSignal().get().getAnchor();
-		final SignalConfiguration confirmation = entry.getConfirmationSignal().get().getConfirmation();
+		final SignalConfiguration anchor = confirmationSignal.get().getAnchor();
+		final SignalConfiguration confirmation = confirmationSignal.get().getConfirmation();
 
 		final SignalFilter filter = new ConfirmationIndicatorsSignalFilter(anchor.getType(), confirmation.getType(),
 		        confirmationSignal.get().getType().getDelayUntilConfirmationRange(),
@@ -209,10 +210,11 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private SignalRangeFilter getSignalRangeFilter( final EntryLogicConfiguration entry ) {
-		if (entry.getConfirmationSignal().isPresent()) {
-			return new TradingDaySignalRangeFilter(
-			        entry.getConfirmationSignal().get().getType().getDelayUntilConfirmationRange()
-			                + entry.getConfirmationSignal().get().getType().getConfirmationDayRange());
+		final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal = entry.getConfirmationSignal();
+
+		if (confirmationSignal.isPresent()) {
+			return new TradingDaySignalRangeFilter(confirmationSignal.get().getType().getDelayUntilConfirmationRange()
+			        + confirmationSignal.get().getType().getConfirmationDayRange());
 		}
 
 		return new TradingDaySignalRangeFilter(0);
