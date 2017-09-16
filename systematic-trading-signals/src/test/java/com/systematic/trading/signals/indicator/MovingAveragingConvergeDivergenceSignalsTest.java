@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -195,8 +194,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	}
 
 	private MovingAveragingConvergenceDivergenceSignals setUpMacdSignals() {
-		return new MovingAveragingConvergenceDivergenceSignals(macd, REQUIRED_TRADING_DAYS, signalCalculators, filter,
-		        MathContext.DECIMAL64);
+		return new MovingAveragingConvergenceDivergenceSignals(macd, REQUIRED_TRADING_DAYS, signalCalculators, filter);
 	}
 
 	private void removeSignalCalculators() {

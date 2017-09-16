@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.signals.indicator;
 
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +58,7 @@ public class MovingAveragingConvergenceDivergenceSignals implements IndicatorSig
 	public MovingAveragingConvergenceDivergenceSignals( final MovingAverageConvergenceDivergence macd,
 	        final int requiredNumberOfTradingDays,
 	        final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators,
-	        final SignalRangeFilter filter, final MathContext mathContext ) {
+	        final SignalRangeFilter filter ) {
 
 		this.macd = macd;
 		this.requiredNumberOfTradingDays = requiredNumberOfTradingDays;

@@ -99,7 +99,7 @@ public class IndicatorSignalGeneratorFactory {
 		        slowEma, signalEma, new IllegalArgumentThrowingValidator());
 
 		return new MovingAveragingConvergenceDivergenceSignals(macd, requiredNumberOfTradingDays, signalCalculators,
-		        filter, mathContext);
+		        filter);
 	}
 
 	private IndicatorSignalGenerator create( final RsiConfiguration rsi, final SignalRangeFilter filter,
