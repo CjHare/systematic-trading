@@ -32,6 +32,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest extends SignalTest {
 	@Before
 	public void setUp() {
 		when(filter.getEarliestSignalDate(any(TradingDayPrices[].class))).thenReturn(getStartDate(FAST_TIME_PERIODS));
+		when(filter.getLatestSignalDate(any(TradingDayPrices[].class))).thenReturn(getEndDate());
 	}
 
 	@Test

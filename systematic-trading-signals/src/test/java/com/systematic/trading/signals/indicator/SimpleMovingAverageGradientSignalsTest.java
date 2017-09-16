@@ -27,16 +27,23 @@ package com.systematic.trading.signals.indicator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.impl.TradingDayPricesImpl;
+import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
 
 /**
@@ -44,6 +51,7 @@ import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSigna
  * 
  * @author CJ Hare
  */
+@RunWith(MockitoJUnitRunner.class)
 public class SimpleMovingAverageGradientSignalsTest {
 
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
@@ -56,13 +64,22 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 	private final long[] dateValues = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
+	@Mock
+	private SignalRangeFilter filter;
+
+	@Before
+	public void setUp() {
+		when(filter.getEarliestSignalDate(any(TradingDayPrices[].class))).thenReturn(LocalDate.now());
+		when(filter.getLatestSignalDate(any(TradingDayPrices[].class))).thenReturn(LocalDate.now().plusDays(19));
+	}
+
 	@Test
 	public void signalsPositive() {
 		final TradingDayPrices[] data = createTradingPrices();
 		final int daysGradient = data.length - 1 - lookback;
 
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals(lookback,
-		        daysGradient, GradientType.POSITIVE, MATH_CONTEXT);
+		        daysGradient, GradientType.POSITIVE, filter, MATH_CONTEXT);
 
 		final List<IndicatorSignal> signals = smaGradient.calculateSignals(data);
 
@@ -80,7 +97,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final int daysGradient = data.length - lookback;
 
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals(1, daysGradient,
-		        GradientType.FLAT, MATH_CONTEXT);
+		        GradientType.FLAT, filter, MATH_CONTEXT);
 
 		final List<IndicatorSignal> signals = smaGradient.calculateSignals(data);
 
@@ -96,7 +113,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final int daysGradient = data.length - 1 - lookback;
 
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals(lookback,
-		        daysGradient, GradientType.NEGATIVE, MATH_CONTEXT);
+		        daysGradient, GradientType.NEGATIVE, filter, MATH_CONTEXT);
 
 		final List<IndicatorSignal> signals = smaGradient.calculateSignals(data);
 
@@ -124,7 +141,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final int daysGradient = 7;
 
 		final SimpleMovingAverageGradientSignals smaGradient = new SimpleMovingAverageGradientSignals(lookback,
-		        daysGradient, GradientType.NEGATIVE, MATH_CONTEXT);
+		        daysGradient, GradientType.NEGATIVE, filter, MATH_CONTEXT);
 
 		assertEquals(lookback + daysGradient, smaGradient.getRequiredNumberOfTradingDays());
 	}

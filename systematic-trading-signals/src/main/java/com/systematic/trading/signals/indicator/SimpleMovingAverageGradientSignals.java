@@ -27,13 +27,17 @@ package com.systematic.trading.signals.indicator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
+import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
+import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
@@ -54,6 +58,9 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
+	/** Provides date range filtering. */
+	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
+
 	/** On which type of gradient does a signal get generated. */
 	private final GradientType signalGenerated;
 
@@ -66,21 +73,25 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	/** Responsible for calculating the simple moving average. */
 	private final SimpleMovingAverage movingAverage;
 
-	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
-	        final GradientType signalGenerated, final MathContext mathContext ) {
+	/** Range of signal dates of interest. */
+	private final SignalRangeFilter signalRangeFilter;
 
-		this(lookback, daysOfGradient, signalGenerated, mathContext, new SimpleMovingAverageCalculator(lookback,
+	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
+	        final GradientType signalGenerated, final SignalRangeFilter filter, final MathContext mathContext ) {
+
+		this(lookback, daysOfGradient, signalGenerated, filter, mathContext, new SimpleMovingAverageCalculator(lookback,
 		        daysOfGradient, new IllegalArgumentThrowingValidator(), mathContext));
 	}
 
 	private SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
-	        final GradientType signalGenerated, final MathContext mathContext,
+	        final GradientType signalGenerated, final SignalRangeFilter filter, final MathContext mathContext,
 	        final SimpleMovingAverageCalculator movingAverage ) {
 		this.signalGenerated = signalGenerated;
 		this.daysOfGradient = daysOfGradient;
 		this.movingAverage = movingAverage;
 		this.mathContext = mathContext;
 		this.lookback = lookback;
+		this.signalRangeFilter = filter;
 	}
 
 	@Override
@@ -88,17 +99,21 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 
 		//TODO validate the number of data items meets the minimum
 
+		final Predicate<LocalDate> signalRange = ( candidate ) -> dateRangeFilter.isWithinSignalRange(
+		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
+
 		final List<BigDecimal> sma = movingAverage.sma(data);
 
 		// Only look at the gradient if there's more than one sma result
 		if (!sma.isEmpty()) {
-			return analysisGradient(data, sma);
+			return analysisGradient(data, sma, signalRange);
 		}
 
 		return new ArrayList<>();
 	}
 
-	private List<IndicatorSignal> analysisGradient( final TradingDayPrices[] data, final List<BigDecimal> sma ) {
+	private List<IndicatorSignal> analysisGradient( final TradingDayPrices[] data, final List<BigDecimal> sma,
+	        final Predicate<LocalDate> signalRange ) {
 		final List<IndicatorSignal> signals = new ArrayList<>();
 
 		// We're only using the right most values of the data
@@ -108,28 +123,33 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 		BigDecimal previous = sma.get(0);
 		for (int index = 1; index < sma.size(); index++) {
 
-			//TODO generate the down signals too
-			switch (signalGenerated) {
-				case POSITIVE:
-					if (isPositiveGardient(previous, sma.get(index))) {
-						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
-						        IndicatorDirectionType.BULLISH));
-					}
-				break;
-				case FLAT:
-					if (isFlatGardient(previous, sma.get(index))) {
-						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
-						        IndicatorDirectionType.BULLISH));
-					}
-				break;
-				case NEGATIVE:
-					if (isNegativeGardient(previous, sma.get(index))) {
-						signals.add(new IndicatorSignal(data[index + offset].getDate(), IndicatorSignalType.SMA,
-						        IndicatorDirectionType.BULLISH));
-					}
-				break;
-				default:
-					throw new IllegalArgumentException(String.format("%s enum is unexpected", signalGenerated));
+			final LocalDate today = data[index + offset].getDate();
+
+			if (signalRange.test(today)) {
+
+				//TODO generate the down signals too
+				switch (signalGenerated) {
+					case POSITIVE:
+						if (isPositiveGardient(previous, sma.get(index))) {
+							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA,
+							        IndicatorDirectionType.BULLISH));
+						}
+					break;
+					case FLAT:
+						if (isFlatGardient(previous, sma.get(index))) {
+							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA,
+							        IndicatorDirectionType.BULLISH));
+						}
+					break;
+					case NEGATIVE:
+						if (isNegativeGardient(previous, sma.get(index))) {
+							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA,
+							        IndicatorDirectionType.BULLISH));
+						}
+					break;
+					default:
+						throw new IllegalArgumentException(String.format("%s enum is unexpected", signalGenerated));
+				}
 			}
 
 			previous = sma.get(index);

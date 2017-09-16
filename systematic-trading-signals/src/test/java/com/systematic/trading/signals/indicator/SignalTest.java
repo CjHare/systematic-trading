@@ -27,7 +27,11 @@ public abstract class SignalTest {
 	}
 
 	protected LocalDate getStartDate( final int count ) {
-		return LocalDate.now().minus(count, ChronoUnit.DAYS);
+		return getEndDate().minus(count, ChronoUnit.DAYS);
+	}
+
+	protected LocalDate getEndDate() {
+		return LocalDate.now();
 	}
 
 	/**

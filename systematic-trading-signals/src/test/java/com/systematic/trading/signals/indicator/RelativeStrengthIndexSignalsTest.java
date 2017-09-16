@@ -27,26 +27,45 @@ package com.systematic.trading.signals.indicator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
+@RunWith(MockitoJUnitRunner.class)
 public class RelativeStrengthIndexSignalsTest extends SignalTest {
+
+	private static final int TIME_PERIODS = 30;
+
+	@Mock
+	private SignalRangeFilter filter;
+
+	@Before
+	public void setUp() {
+		when(filter.getEarliestSignalDate(any(TradingDayPrices[].class))).thenReturn(getStartDate(TIME_PERIODS));
+		when(filter.getLatestSignalDate(any(TradingDayPrices[].class))).thenReturn(getEndDate());
+	}
 
 	@Test
 	public void oversold() {
 		final int buyPriceSpike = 7;
 
 		final RelativeStrengthIndexSignals signals = new RelativeStrengthIndexSignals(5, BigDecimal.valueOf(30),
-		        BigDecimal.valueOf(70), MATH_CONTEXT);
+		        BigDecimal.valueOf(70), filter, MATH_CONTEXT);
 
 		// Create a down, then an up-spike
 		final TradingDayPrices[] data = addStep(15, 15, -100,
@@ -68,7 +87,7 @@ public class RelativeStrengthIndexSignalsTest extends SignalTest {
 		final int buyPriceSpike = 27;
 
 		final RelativeStrengthIndexSignals signals = new RelativeStrengthIndexSignals(lookback, BigDecimal.valueOf(30),
-		        BigDecimal.valueOf(70), MATH_CONTEXT);
+		        BigDecimal.valueOf(70), filter, MATH_CONTEXT);
 
 		// Create a up then an down-spike
 		final TradingDayPrices[] data = addLinearChange(0, 10, 5,
@@ -86,7 +105,7 @@ public class RelativeStrengthIndexSignalsTest extends SignalTest {
 	@Test
 	public void getMaximumNumberOfTradingDaysRequired() {
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals(5, BigDecimal.valueOf(30),
-		        BigDecimal.valueOf(70), MATH_CONTEXT);
+		        BigDecimal.valueOf(70), filter, MATH_CONTEXT);
 
 		assertEquals(7, rsi.getRequiredNumberOfTradingDays());
 	}
@@ -94,7 +113,7 @@ public class RelativeStrengthIndexSignalsTest extends SignalTest {
 	@Test
 	public void getSignalType() {
 		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals(5, BigDecimal.valueOf(30),
-		        BigDecimal.valueOf(70), MATH_CONTEXT);
+		        BigDecimal.valueOf(70), filter, MATH_CONTEXT);
 
 		assertEquals(IndicatorSignalType.RSI, rsi.getSignalType());
 	}

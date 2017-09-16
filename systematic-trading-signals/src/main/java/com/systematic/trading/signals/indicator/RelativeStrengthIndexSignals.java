@@ -27,8 +27,10 @@ package com.systematic.trading.signals.indicator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.formula.rs.RelativeStrengthCalculator;
@@ -36,6 +38,8 @@ import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
+import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
+import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
@@ -43,6 +47,9 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 	/** The least number of data points that enables RSI signal generation. */
 	private static final int MINIMUM_DAYS_OF_RSI_VALUES = 2;
+
+	/** Provides date range filtering. */
+	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
 
 	private final RelativeStrengthIndex rsi;
 
@@ -55,15 +62,19 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	/** Threshold for when the RSI is considered as over brought.*/
 	private final BigDecimal overbrought;
 
+	/** Range of signal dates of interest. */
+	private final SignalRangeFilter signalRangeFilter;
+
 	/**
 	 * @param lookback the number of data points to use in calculations.
 	 * @param daysOfRsiValues the number of RSI values desired.
 	 */
 	public RelativeStrengthIndexSignals( final int lookback, final BigDecimal oversold, final BigDecimal overbrought,
-	        final MathContext mathContext ) {
+	        final SignalRangeFilter filter, final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + MINIMUM_DAYS_OF_RSI_VALUES;
 		this.overbrought = overbrought;
 		this.oversold = oversold;
+		this.signalRangeFilter = filter;
 		this.rsi = new RelativeStrengthIndexCalculator(
 		        new RelativeStrengthCalculator(lookback, new IllegalArgumentThrowingValidator(), mathContext),
 		        new IllegalArgumentThrowingValidator(), mathContext);
@@ -79,8 +90,12 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 		//TODO validate minimum nummber of points given
 
+		final Predicate<LocalDate> signalRange = ( candidate ) -> dateRangeFilter.isWithinSignalRange(
+		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
+
 		final List<RelativeStrengthIndexDataPoint> rsiData = rsi.rsi(data);
-		return addSellSignals(rsiData, addBuySignals(rsiData, new ArrayList<>()));
+
+		return addSellSignals(rsiData, addBuySignals(rsiData, new ArrayList<>(), signalRange), signalRange);
 	}
 
 	@Override
@@ -89,12 +104,14 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	}
 
 	private List<IndicatorSignal> addBuySignals( final List<RelativeStrengthIndexDataPoint> rsiData,
-	        final List<IndicatorSignal> signals ) {
+	        final List<IndicatorSignal> signals, final Predicate<LocalDate> signalRange ) {
+
+		//TODO apply a date filter on signals
 
 		RelativeStrengthIndexDataPoint yesterday = rsiData.get(0);
 
 		for (final RelativeStrengthIndexDataPoint today : rsiData) {
-			if (isOversold(yesterday, today)) {
+			if (signalRange.test(today.getDate()) && isOversold(yesterday, today)) {
 				signals.add(
 				        new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.BULLISH));
 			}
@@ -106,12 +123,12 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	}
 
 	private List<IndicatorSignal> addSellSignals( final List<RelativeStrengthIndexDataPoint> rsiData,
-	        final List<IndicatorSignal> signals ) {
+	        final List<IndicatorSignal> signals, final Predicate<LocalDate> signalRange ) {
 
 		RelativeStrengthIndexDataPoint yesterday = rsiData.get(0);
 
 		for (final RelativeStrengthIndexDataPoint today : rsiData) {
-			if (isOverbrought(yesterday, today)) {
+			if (signalRange.test(today.getDate()) && isOverbrought(yesterday, today)) {
 				signals.add(
 				        new IndicatorSignal(today.getDate(), IndicatorSignalType.RSI, IndicatorDirectionType.BEARISH));
 			}

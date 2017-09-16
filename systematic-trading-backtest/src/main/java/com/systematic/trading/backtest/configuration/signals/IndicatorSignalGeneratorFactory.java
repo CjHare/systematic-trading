@@ -59,10 +59,10 @@ public class IndicatorSignalGeneratorFactory {
 			return create((MacdConfiguration) signal, filter, mathContext);
 		}
 		if (signal instanceof RsiConfiguration) {
-			return create((RsiConfiguration) signal, mathContext);
+			return create((RsiConfiguration) signal, filter, mathContext);
 		}
 		if (signal instanceof SmaConfiguration) {
-			return create((SmaConfiguration) signal, mathContext);
+			return create((SmaConfiguration) signal, filter, mathContext);
 		}
 
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
@@ -74,14 +74,15 @@ public class IndicatorSignalGeneratorFactory {
 		        macd.getSignalTimePeriods(), filter, mathContext);
 	}
 
-	//TODO use signalFilterRange
-	private IndicatorSignalGenerator create( final RsiConfiguration rsi, final MathContext mathContext ) {
-		return new RelativeStrengthIndexSignals(rsi.getLookback(), rsi.getOversold(), rsi.getOverbought(), mathContext);
+	private IndicatorSignalGenerator create( final RsiConfiguration rsi, final SignalRangeFilter filter,
+	        final MathContext mathContext ) {
+		return new RelativeStrengthIndexSignals(rsi.getLookback(), rsi.getOversold(), rsi.getOverbought(), filter,
+		        mathContext);
 	}
 
-	//TODO use signalFilterRange
-	private IndicatorSignalGenerator create( final SmaConfiguration sma, final MathContext mathContext ) {
+	private IndicatorSignalGenerator create( final SmaConfiguration sma, final SignalRangeFilter filter,
+	        final MathContext mathContext ) {
 		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), sma.getGradient(),
-		        mathContext);
+		        filter, mathContext);
 	}
 }

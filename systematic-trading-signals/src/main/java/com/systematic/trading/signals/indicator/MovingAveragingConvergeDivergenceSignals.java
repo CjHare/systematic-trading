@@ -30,6 +30,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.systematic.trading.data.TradingDayPrices;
@@ -41,16 +42,24 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.maths.model.DatedSignal;
 import com.systematic.trading.maths.model.SignalType;
+import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.model.IndicatorDirectionType;
 import com.systematic.trading.signals.model.IndicatorSignalType;
 
 public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignalGenerator {
 
+	/** Provides date range filtering. */
+	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
+
+	/** Calculates the MACD lines to use in signal analysis. */
 	private final MovingAverageConvergenceDivergence macd;
+
+	/** Minimum number of trading days required for MACD signal generation. */
 	private final int requiredNumberOfTradingDays;
 
-	private final SignalRangeFilter filter;
+	/** Range of signal dates of interest. */
+	private final SignalRangeFilter signalRangeFilter;
 
 	public MovingAveragingConvergeDivergenceSignals( final int fastTimePeriods, final int slowTimePeriods,
 	        final int signalTimePeriods, final SignalRangeFilter filter, final MathContext mathContext ) {
@@ -67,7 +76,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		this.requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
 		        + signalEma.getMinimumNumberOfPrices();
-		this.filter = filter;
+		this.signalRangeFilter = filter;
 	}
 
 	@Override
@@ -75,12 +84,11 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 		//TODO validate the number of data items meets the minimum
 
-		final LocalDate earliestSignalDate = filter.getEarliestSignalDate(data);
-		final LocalDate latestSignalDate = filter.getLatestSignalDate(data);
+		final Predicate<LocalDate> signalRange = ( candidate ) -> dateRangeFilter.isWithinSignalRange(
+		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
 
 		//TODO generate the down signals too
-		final List<DatedSignal> signals = calculateBullishSignals(macd.macd(data), earliestSignalDate,
-		        latestSignalDate);
+		final List<DatedSignal> signals = calculateBullishSignals(macd.macd(data), signalRange);
 
 		return signals.stream().map(signal -> new IndicatorSignal(signal.getDate(), IndicatorSignalType.MACD,
 		        IndicatorDirectionType.BULLISH)).collect(Collectors.toList());
@@ -88,7 +96,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 	//TODO refactor into a bullish signal behaviour module
 	private List<DatedSignal> calculateBullishSignals( final MovingAverageConvergenceDivergenceLines lines,
-	        final LocalDate earliestSignalDate, final LocalDate latestSignalDate ) {
+	        final Predicate<LocalDate> signalRange ) {
 
 		final List<BigDecimal> macdValues = lines.getMacdValues();
 		final List<BigDecimal> signaLine = lines.getSignaLine();
@@ -112,7 +120,7 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 
 			todaySignalLineDate = signalLineDates.get(index + signalLineOffset);
 
-			if (isWithinSignalRange(earliestSignalDate, latestSignalDate, todaySignalLineDate)) {
+			if (signalRange.test(todaySignalLineDate)) {
 
 				todayMacd = macdValues.get(index + macdValuesOffset);
 				yesterdayMacd = macdValues.get(index + macdValuesOffset - 1);
@@ -138,20 +146,6 @@ public class MovingAveragingConvergeDivergenceSignals implements IndicatorSignal
 	@Override
 	public IndicatorSignalType getSignalType() {
 		return IndicatorSignalType.MACD;
-	}
-
-	private boolean isWithinSignalRange( final LocalDate earliestSignalDate, final LocalDate latestSignalDate,
-	        final LocalDate candidate ) {
-		return isWithinEarliestSignalRange(earliestSignalDate, candidate)
-		        && isWithinLatestSignalRange(latestSignalDate, candidate);
-	}
-
-	private boolean isWithinEarliestSignalRange( final LocalDate earliestSignalDate, final LocalDate candidate ) {
-		return !candidate.isBefore(earliestSignalDate);
-	}
-
-	private boolean isWithinLatestSignalRange( final LocalDate latestSignalDate, final LocalDate candidate ) {
-		return !candidate.isAfter(latestSignalDate);
 	}
 
 	private boolean crossingSignalLine( final BigDecimal yesterdayMacd, final BigDecimal todayMacd,
