@@ -36,6 +36,7 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
@@ -51,6 +52,9 @@ public class DescriptionGenerator {
 	//TODO add the dates for the test too
 
 	//TODO deposit amounts / frequency for elastic
+
+	/** When there's nothing more to say. */
+	private static final String NO_DESCRIPTION = "";
 
 	private static final String SEPARATOR = "_";
 
@@ -138,31 +142,40 @@ public class DescriptionGenerator {
 	}
 
 	public String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
-		final int delay = entry.getConfirmationSignal().getType().getDelayUntilConfirmationRange();
-		final int range = entry.getConfirmationSignal().getType().getConfirmationDayRange();
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(entry.getConfirmationSignal().getAnchor().getDescription());
-		out.add("confirmedBy");
-		out.add(entry.getConfirmationSignal().getConfirmation().getDescription());
-		out.add("in");
-		out.add(String.valueOf(delay));
-		out.add("to");
-		out.add(String.valueOf(delay + range));
-		out.add("days");
-		return out.toString();
+		if (entry.getConfirmationSignal().isPresent()) {
+			final ConfirmationSignalFilterConfiguration confirmation = entry.getConfirmationSignal().get();
+			final int delay = confirmation.getType().getDelayUntilConfirmationRange();
+			final int range = confirmation.getType().getConfirmationDayRange();
+			final StringJoiner out = new StringJoiner(SEPARATOR);
+			out.add(confirmation.getAnchor().getDescription());
+			out.add("confirmedBy");
+			out.add(confirmation.getConfirmation().getDescription());
+			out.add("in");
+			out.add(String.valueOf(delay));
+			out.add("to");
+			out.add(String.valueOf(delay + range));
+			out.add("days");
+			return out.toString();
+		}
+
+		return NO_DESCRIPTION;
 	}
 
 	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		final SignalConfiguration[] signals = entry.getSameDaySignals().getSignals();
-		if (signals.length != 1) {
-			out.add("SameDay");
+		if (entry.getSameDaySignals().isPresent()) {
+			final StringJoiner out = new StringJoiner(SEPARATOR);
+			final SignalConfiguration[] signals = entry.getSameDaySignals().get().getSignals();
+			if (signals.length != 1) {
+				out.add("SameDay");
+			}
+
+			for (final SignalConfiguration signal : signals) {
+				out.add(signal.getDescription());
+			}
+			return out.toString();
 		}
 
-		for (final SignalConfiguration signal : signals) {
-			out.add(signal.getDescription());
-		}
-		return out.toString();
+		return NO_DESCRIPTION;
 	}
 
 	private String equity( final EquityConfiguration equity ) {

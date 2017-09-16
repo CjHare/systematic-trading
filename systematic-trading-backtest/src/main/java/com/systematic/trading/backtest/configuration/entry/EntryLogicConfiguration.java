@@ -1,5 +1,7 @@
 package com.systematic.trading.backtest.configuration.entry;
 
+import java.util.Optional;
+
 import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
@@ -16,8 +18,8 @@ public class EntryLogicConfiguration {
 
 	private final Type type;
 	private final PeriodicFilterConfiguration periodic;
-	private final ConfirmationSignalFilterConfiguration confirmationSignal;
-	private final SameDayFilterConfiguration sameDaySignals;
+	private final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal;
+	private final Optional<SameDayFilterConfiguration> sameDaySignals;
 	private final MaximumTrade maximumTrade;
 	private final MinimumTrade minimumTrade;
 
@@ -25,8 +27,8 @@ public class EntryLogicConfiguration {
 	        final MinimumTrade minimumTrade ) {
 		this.type = Type.PERIODIC;
 		this.periodic = periodic;
-		this.confirmationSignal = null;
-		this.sameDaySignals = null;
+		this.confirmationSignal = Optional.empty();
+		this.sameDaySignals = Optional.empty();
 		this.maximumTrade = maximumTrade;
 		this.minimumTrade = minimumTrade;
 	}
@@ -35,8 +37,8 @@ public class EntryLogicConfiguration {
 	        final MaximumTrade maximumTrade, final MinimumTrade minimumTrade ) {
 		this.type = Type.CONFIRMATION_SIGNAL;
 		this.periodic = null;
-		this.confirmationSignal = confirmationSignal;
-		this.sameDaySignals = null;
+		this.confirmationSignal = Optional.of(confirmationSignal);
+		this.sameDaySignals = Optional.empty();
 		this.maximumTrade = maximumTrade;
 		this.minimumTrade = minimumTrade;
 	}
@@ -45,8 +47,8 @@ public class EntryLogicConfiguration {
 	        final MinimumTrade minimumTrade ) {
 		this.type = Type.SAME_DAY_SIGNALS;
 		this.periodic = null;
-		this.confirmationSignal = null;
-		this.sameDaySignals = sameDaySignals;
+		this.confirmationSignal = Optional.empty();
+		this.sameDaySignals = Optional.of(sameDaySignals);
 		this.maximumTrade = maximumTrade;
 		this.minimumTrade = minimumTrade;
 	}
@@ -59,11 +61,11 @@ public class EntryLogicConfiguration {
 		return periodic;
 	}
 
-	public ConfirmationSignalFilterConfiguration getConfirmationSignal() {
+	public Optional<ConfirmationSignalFilterConfiguration> getConfirmationSignal() {
 		return confirmationSignal;
 	}
 
-	public SameDayFilterConfiguration getSameDaySignals() {
+	public Optional<SameDayFilterConfiguration> getSameDaySignals() {
 		return sameDaySignals;
 	}
 
