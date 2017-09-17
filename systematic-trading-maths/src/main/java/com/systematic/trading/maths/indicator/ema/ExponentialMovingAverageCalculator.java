@@ -76,6 +76,8 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		this.validator = validator;
 		this.lookback = lookback;
 		this.wrapper = new Data();
+		
+		//TODO validate lookback > 0
 	}
 
 	@Override

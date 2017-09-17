@@ -87,7 +87,7 @@ public class IndicatorSignalGeneratorFactory {
 		final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new MovingAverageConvergenceDivergenceUptrendSignalCalculator());
 
-		return create(macdConfiguration.getFastTimePeriods(), macdConfiguration.getSlowTimePeriods(), 0, filter,
+		return create(macdConfiguration.getFastTimePeriods(), macdConfiguration.getSlowTimePeriods(), 1, filter,
 		        signalCalculators, mathContext);
 	}
 
