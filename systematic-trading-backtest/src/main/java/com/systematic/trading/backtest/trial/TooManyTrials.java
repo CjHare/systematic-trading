@@ -186,6 +186,16 @@ public class TooManyTrials implements BacktestConfiguration {
 			}
 		}
 
+		// SMA only
+		for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
+			entry = new EntryLogicConfiguration(
+			        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, smaConfiguration), maximumTrade,
+			        minimumTrade);
+			configurations.add(new BacktestBootstrapConfiguration(simulationDates, brokerage,
+			        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
+			        ExitLogicConfiguration.HOLD_FOREVER));
+		}
+
 		return configurations;
 	}
 }
