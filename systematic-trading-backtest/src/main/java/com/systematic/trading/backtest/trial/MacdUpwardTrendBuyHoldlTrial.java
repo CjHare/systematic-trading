@@ -84,13 +84,16 @@ public class MacdUpwardTrendBuyHoldlTrial implements BacktestConfiguration {
 		configurations.add(BaselineTrial.getConfiguration(equity, simulationDates, deposit));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
-		final MinimumTrade minimumTrade = MinimumTrade.ONE_THOUSAND;
+		final MinimumTrade[] minimumTrades = { MinimumTrade.FIVE_HUNDRED, MinimumTrade.TWO_THOUSAND };
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
 
-		configurations.addAll(
-		        getMacdUptrendConfigurations(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-		configurations
-		        .addAll(getSmaConfigurations(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		for (final MinimumTrade minimumTrade : minimumTrades) {
+
+			configurations.addAll(getMacdUptrendConfigurations(equity, simulationDates, deposit, brokerage,
+			        minimumTrade, maximumTrade));
+			configurations.addAll(
+			        getSmaConfigurations(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		}
 
 		return configurations;
 	}
