@@ -57,38 +57,29 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculator
 	public List<DatedSignal> calculateSignals( final MovingAverageConvergenceDivergenceLines lines,
 	        Predicate<LocalDate> signalRange ) {
 
-		final List<BigDecimal> macdValues = lines.getMacdValues();
+		//TODO after UT, refactor to have the date as a pair / sorted maps not lists
+		final List<BigDecimal> macd = lines.getMacdValues();
 		final List<BigDecimal> signaLine = lines.getSignaLine();
 		final List<LocalDate> signalLineDates = lines.getSignalLineDates();
-
 		final List<DatedSignal> signals = new ArrayList<>();
 
-		// We're only interested in shared indexes, both right most aligned with data[]
-		final int macdValuesOffset = Math.max(0, macdValues.size() - signaLine.size());
-		final int signalLineOffset = Math.max(0, signaLine.size() - macdValues.size());
-		final int endIndex = Math.min(signaLine.size(), macdValues.size());
-
-		// Buy signal is from a cross over of the signal line, for crossing over the origin
-		BigDecimal todayMacd;
-		BigDecimal todaySignalLine;
-		BigDecimal yesterdayMacd;
-		BigDecimal yesterdaySignalLine;
-		LocalDate todaySignalLineDate;
+		// We're only interested in shared dates, align the access to be the right most aligned
+		final int todayMacdOffset = Math.max(0, macd.size() - signaLine.size());
+		final int yesterdayMacdOffset = todayMacdOffset - 1;
+		final int todaySignalLineOffset = Math.max(0, signaLine.size() - macd.size());
+		final int yesterdaySignalLineOffset = todaySignalLineOffset - 1;
+		final int endIndex = Math.min(signaLine.size(), macd.size());
 
 		for (int index = 1; index < endIndex; index++) {
 
-			todaySignalLineDate = signalLineDates.get(index + signalLineOffset);
+			final LocalDate todaySignalLineDate = signalLineDates.get(index + todaySignalLineOffset);
 
 			if (signalRange.test(todaySignalLineDate)) {
 
-				todayMacd = macdValues.get(index + macdValuesOffset);
-				yesterdayMacd = macdValues.get(index + macdValuesOffset - 1);
-				todaySignalLine = signaLine.get(index + signalLineOffset);
-				yesterdaySignalLine = signaLine.get(index + signalLineOffset - 1);
+				if (isBullishSignal(macd.get(index + todayMacdOffset), macd.get(index + yesterdayMacdOffset),
+				        signaLine.get(index + todaySignalLineOffset),
+				        signaLine.get(index + yesterdaySignalLineOffset))) {
 
-				// The MACD trends up, with crossing the signal line OR trending up and crossing the zero line
-				if (crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
-				        || crossingOrigin(yesterdayMacd, todayMacd)) {
 					signals.add(new DatedSignal(todaySignalLineDate, SignalType.BULLISH));
 				}
 			}
@@ -97,15 +88,39 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculator
 		return signals;
 	}
 
+	/**
+	 *  Buy (Bullish) signal is from a cross over of the signal line, or crossing over the origin
+	 */
+	private boolean isBullishSignal( final BigDecimal todayMacd, final BigDecimal yesterdayMacd,
+	        final BigDecimal todaySignalLine, final BigDecimal yesterdaySignalLine ) {
+		return crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
+		        || crossingOrigin(yesterdayMacd, todayMacd);
+	}
+
+	/* 
+	 * Between yesterday and today: - MACD need to be moving upwards - today's MACD needs to be
+	 * above today's signal line - yesterday's MACD needs to be below yesterday's signal line
+	 */
 	private boolean crossingSignalLine( final BigDecimal yesterdayMacd, final BigDecimal todayMacd,
 	        final BigDecimal yesterdaySignalLine, final BigDecimal todaySignalLine ) {
-		/* Between yesterday and today: - MACD need to be moving upwards - today's MACD needs to be
-		 * above today's signal line - yesterday's MACD needs to be below yesterday's signal line */
-		return todayMacd.compareTo(yesterdayMacd) > 0 && todayMacd.compareTo(todaySignalLine) >= 0
-		        && yesterdaySignalLine.compareTo(yesterdayMacd) > 0;
+		return isHigher(todayMacd, yesterdayMacd) && isEvenOrHigher(todayMacd, todaySignalLine)
+		        && isHigher(yesterdaySignalLine, yesterdayMacd);
+	}
+
+	private boolean isHigher( final BigDecimal today, final BigDecimal yesterday ) {
+		return today.compareTo(yesterday) > 0;
+	}
+
+	private boolean isEvenOrHigher( final BigDecimal today, final BigDecimal yesterday ) {
+		return today.compareTo(yesterday) >= 0;
+	}
+
+	private boolean isEvenOrLower( final BigDecimal today, final BigDecimal yesterday ) {
+		return today.compareTo(yesterday) <= 0;
 	}
 
 	private boolean crossingOrigin( final BigDecimal yesterdayMacd, final BigDecimal todayMacd ) {
-		return crossingSignalLine(yesterdayMacd, todayMacd, BigDecimal.ZERO, BigDecimal.ZERO);
+		return isHigher(todayMacd, yesterdayMacd) && isEvenOrHigher(todayMacd, BigDecimal.ZERO)
+		        && isEvenOrLower(yesterdayMacd, BigDecimal.ZERO);
 	}
 }

@@ -1,4 +1,4 @@
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.macd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -27,6 +27,9 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.signals.indicator.macd.MovingAveragingConvergenceDivergenceSignals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MovingAveragingConvergeDivergenceSignalsTest {

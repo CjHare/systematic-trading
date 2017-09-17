@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.macd;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,6 +37,9 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.SignalCalculator;
 
 public class MovingAveragingConvergenceDivergenceSignals implements IndicatorSignalGenerator {
 
@@ -84,8 +87,7 @@ public class MovingAveragingConvergenceDivergenceSignals implements IndicatorSig
 			final List<DatedSignal> signals = calculator.calculateSignals(lines, signalRange);
 
 			for (final DatedSignal signal : signals) {
-				indicatorSignals
-				        .add(new IndicatorSignal(signal.getDate(), IndicatorSignalType.MACD, calculator.getType()));
+				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalType(), calculator.getType()));
 			}
 		}
 
