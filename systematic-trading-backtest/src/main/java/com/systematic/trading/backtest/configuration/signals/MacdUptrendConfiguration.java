@@ -63,6 +63,6 @@ public enum MacdUptrendConfiguration implements SignalConfiguration {
 
 	@Override
 	public IndicatorSignalType getType() {
-		return IndicatorSignalType.MACD_UPTREND;
+		return IndicatorSignalType.MACD;
 	}
 }
