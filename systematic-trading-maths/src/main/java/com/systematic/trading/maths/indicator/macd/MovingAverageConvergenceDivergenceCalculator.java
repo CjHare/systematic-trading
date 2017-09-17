@@ -78,28 +78,23 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		final int fastEmaOffset = Math.max(0, fastEmaValues.size() - slowEmaValues.size());
 		final int emaEndIndex = Math.min(slowEmaValues.size(), fastEmaValues.size());
 		final List<BigDecimal> macdValues = new NonNullableArrayList<>(emaEndIndex);
+		final SortedMap<LocalDate, BigDecimal> macd = new TreeMap<>();
+		final int macdValuesOffset = data.length - emaEndIndex;
 
 		// MACD is the fast - slow EMAs
 		for (int i = 0; i < emaEndIndex; i++) {
-			macdValues.add(fastEmaValues.get(i + fastEmaOffset).subtract(slowEmaValues.get(i + slowEmaOffset)));
+			final BigDecimal value = fastEmaValues.get(i + fastEmaOffset)
+			        .subtract(slowEmaValues.get(i + slowEmaOffset));
+			macdValues.add(value);
+			macd.put(data[i + macdValuesOffset].getDate(), value);
 		}
 
 		final List<BigDecimal> signaLineEma = signalEma.ema(macdValues);
-
-		// The signal line matches with the right most values of the data array
 		final SortedMap<LocalDate, BigDecimal> signalLine = new TreeMap<>();
 		final int signalLineOffset = data.length - signaLineEma.size();
 
 		for (int i = signalLineOffset; i < data.length; i++) {
 			signalLine.put(data[i].getDate(), signaLineEma.get(i - signalLineOffset));
-		}
-
-		//TODO move this into the loop further up this method
-		final SortedMap<LocalDate, BigDecimal> macd = new TreeMap<>();
-		final int macdValuesOffset = data.length - emaEndIndex;
-
-		for (int i = macdValuesOffset; i < data.length; i++) {
-			macd.put(data[i].getDate(), macdValues.get(i));
 		}
 
 		return new MovingAverageConvergenceDivergenceLines(macd, signalLine);
