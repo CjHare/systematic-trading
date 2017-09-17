@@ -41,6 +41,17 @@ import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 
+/**
+ * Given time series price date, creates MACD lines and any appropriate bullish generates signals.
+ * <p/>
+ * Bullish signal criteria:
+ * <ul>
+ * <li>MACD line crossing over the signal line.</li>
+ * <li>MACD line crossing over the origin.</li>
+ * </ul>
+ * 
+ * @author CJ Hare
+ */
 public class MovingAveragingConvergenceDivergenceSignals implements IndicatorSignalGenerator {
 
 	/** Provides date range filtering. */

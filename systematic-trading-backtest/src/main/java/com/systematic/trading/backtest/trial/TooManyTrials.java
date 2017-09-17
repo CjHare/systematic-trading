@@ -43,6 +43,7 @@ import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFi
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
+import com.systematic.trading.backtest.configuration.signals.MacdUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
@@ -191,6 +192,16 @@ public class TooManyTrials implements BacktestConfiguration {
 			entry = new EntryLogicConfiguration(
 			        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, smaConfiguration), maximumTrade,
 			        minimumTrade);
+			configurations.add(new BacktestBootstrapConfiguration(simulationDates, brokerage,
+			        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
+			        ExitLogicConfiguration.HOLD_FOREVER));
+		}
+
+		// MACD Uptrend only
+		for (final MacdUptrendConfiguration macdConfiguration : MacdUptrendConfiguration.values()) {
+			entry = new EntryLogicConfiguration(
+			        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration),
+			        maximumTrade, minimumTrade);
 			configurations.add(new BacktestBootstrapConfiguration(simulationDates, brokerage,
 			        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
 			        ExitLogicConfiguration.HOLD_FOREVER));

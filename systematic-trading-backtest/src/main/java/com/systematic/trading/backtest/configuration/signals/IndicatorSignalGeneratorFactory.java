@@ -41,6 +41,7 @@ import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceBullishSignalCalculator;
+import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceUptrendSignalCalculator;
 import com.systematic.trading.signals.indicator.macd.MovingAveragingConvergenceDivergenceSignals;
 
 /**
@@ -68,6 +69,9 @@ public class IndicatorSignalGeneratorFactory {
 		if (signal instanceof MacdConfiguration) {
 			return create((MacdConfiguration) signal, filter, mathContext);
 		}
+		if (signal instanceof MacdUptrendConfiguration) {
+			return create((MacdUptrendConfiguration) signal, filter, mathContext);
+		}
 		if (signal instanceof RsiConfiguration) {
 			return create((RsiConfiguration) signal, filter, mathContext);
 		}
@@ -78,6 +82,15 @@ public class IndicatorSignalGeneratorFactory {
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
+	private IndicatorSignalGenerator create( final MacdUptrendConfiguration macdConfiguration,
+	        final SignalRangeFilter filter, final MathContext mathContext ) {
+		final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators = new ArrayList<>();
+		signalCalculators.add(new MovingAverageConvergenceDivergenceUptrendSignalCalculator());
+
+		return create(macdConfiguration.getFastTimePeriods(), macdConfiguration.getSlowTimePeriods(), 0, filter,
+		        signalCalculators, mathContext);
+	}
+
 	private IndicatorSignalGenerator create( final MacdConfiguration macdConfiguration, final SignalRangeFilter filter,
 	        final MathContext mathContext ) {
 
@@ -85,12 +98,21 @@ public class IndicatorSignalGeneratorFactory {
 		//TODO generate the down (bearish) signals too
 		signalCalculators.add(new MovingAverageConvergenceDivergenceBullishSignalCalculator());
 
-		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(
-		        macdConfiguration.getFastTimePeriods(), new IllegalArgumentThrowingValidator(), mathContext);
-		final ExponentialMovingAverage slowEma = new ExponentialMovingAverageCalculator(
-		        macdConfiguration.getSlowTimePeriods(), new IllegalArgumentThrowingValidator(), mathContext);
-		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(
-		        macdConfiguration.getSignalTimePeriods(), new IllegalArgumentThrowingValidator(), mathContext);
+		return create(macdConfiguration.getFastTimePeriods(), macdConfiguration.getSlowTimePeriods(),
+		        macdConfiguration.getSignalTimePeriods(), filter, signalCalculators, mathContext);
+	}
+
+	private IndicatorSignalGenerator create( final int fastTimePeriods, final int slowTimePeriod,
+	        final int signalTimePeriods, final SignalRangeFilter filter,
+	        final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators,
+	        final MathContext mathContext ) {
+
+		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(fastTimePeriods,
+		        new IllegalArgumentThrowingValidator(), mathContext);
+		final ExponentialMovingAverage slowEma = new ExponentialMovingAverageCalculator(slowTimePeriod,
+		        new IllegalArgumentThrowingValidator(), mathContext);
+		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(signalTimePeriods,
+		        new IllegalArgumentThrowingValidator(), mathContext);
 
 		final int requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
 		        + signalEma.getMinimumNumberOfPrices();

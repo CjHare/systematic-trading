@@ -40,7 +40,7 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicConfigurati
 import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
-import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
+import com.systematic.trading.backtest.configuration.signals.MacdUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
@@ -84,36 +84,34 @@ public class MacdUpwardTrendBuyHoldlTrial implements BacktestConfiguration {
 		configurations.add(BaselineTrial.getConfiguration(equity, simulationDates, deposit));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
-		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
-		final MacdConfiguration macdConfiguration = MacdConfiguration.MEDIUM;
+		final MinimumTrade minimumTrade = MinimumTrade.ONE_THOUSAND;
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
 
-		//TODO code - multi run
-
-		configurations
-		        .add(getConfiguration(equity, simulationDates, deposit, macdConfiguration, minimumTrade, maximumTrade));
-
+		configurations.addAll(
+		        getMacdUptrendConfigurations(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 		configurations
 		        .addAll(getSmaConfigurations(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}
 
-	private BacktestBootstrapConfiguration getConfiguration( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getMacdUptrendConfigurations( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final MacdConfiguration macdConfiguration, final MinimumTrade minimumTrade,
+	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
+		EntryLogicConfiguration entry;
 
-		//TODO code - multi run
+		for (final MacdUptrendConfiguration macdConfiguration : MacdUptrendConfiguration.values()) {
+			entry = new EntryLogicConfiguration(
+			        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration),
+			        maximumTrade, minimumTrade);
+			configurations.add(new BacktestBootstrapConfiguration(simulationDates, brokerage,
+			        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
+			        ExitLogicConfiguration.HOLD_FOREVER));
+		}
 
-		final SameDayFilterConfiguration filterConfiguration = new SameDayFilterConfiguration(
-		        SameDayFilterConfiguration.Type.ALL, macdConfiguration);
-
-		final EntryLogicConfiguration entry = new EntryLogicConfiguration(filterConfiguration, maximumTrade,
-		        minimumTrade);
-		return new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
-		        ExitLogicConfiguration.HOLD_FOREVER);
+		return configurations;
 	}
 
 	private List<BacktestBootstrapConfiguration> getSmaConfigurations( final EquityConfiguration equity,

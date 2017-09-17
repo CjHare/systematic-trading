@@ -23,12 +23,46 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signal;
+package com.systematic.trading.backtest.configuration.signals;
 
-public enum IndicatorSignalType {
-	MACD,
-	MACD_UPTREND,
-	RSI,
-	SMA,
-	STOCHASTIC;
+import com.systematic.trading.signal.IndicatorSignalType;
+
+/**
+ * Configuration for the up trend MACD signal calculator.
+ * 
+ * @author CJ Hare
+ */
+public enum MacdUptrendConfiguration implements SignalConfiguration {
+
+	SHORT(6, 13, "ShortMACDUptrend"),
+	MEDIUM(12, 26, "MediumMACDUptrend"),
+	LONG(24, 52, "LongMACDUptrend");
+
+	private final String description;
+	private final int fastTimePeriods;
+	private final int slowTimePeriods;
+
+	MacdUptrendConfiguration( final int fastTimePeriods, final int slowTimePeriods, final String description ) {
+		this.description = description;
+		this.fastTimePeriods = fastTimePeriods;
+		this.slowTimePeriods = slowTimePeriods;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	public int getFastTimePeriods() {
+		return fastTimePeriods;
+	}
+
+	public int getSlowTimePeriods() {
+		return slowTimePeriods;
+	}
+
+	@Override
+	public IndicatorSignalType getType() {
+		return IndicatorSignalType.MACD_UPTREND;
+	}
 }
