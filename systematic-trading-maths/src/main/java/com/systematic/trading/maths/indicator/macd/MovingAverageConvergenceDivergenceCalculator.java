@@ -85,20 +85,23 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		}
 
 		final List<BigDecimal> signaLineEma = signalEma.ema(macdValues);
-		final List<LocalDate> signalLineDates = new NonNullableArrayList<>(data.length);
-
-		final SortedMap<LocalDate, BigDecimal> signalLine = new TreeMap<>();
 
 		// The signal line matches with the right most values of the data array
+		final SortedMap<LocalDate, BigDecimal> signalLine = new TreeMap<>();
 		final int signalLineOffset = data.length - signaLineEma.size();
-		for (int i = signalLineOffset; i < data.length; i++) {
-			signalLineDates.add(data[i].getDate());
 
+		for (int i = signalLineOffset; i < data.length; i++) {
 			signalLine.put(data[i].getDate(), signaLineEma.get(i - signalLineOffset));
 		}
 
-		//TODO use signal line
-		
-		return new MovingAverageConvergenceDivergenceLines(macdValues, signaLineEma, signalLineDates);
+		//TODO move this into the loop further up this method
+		final SortedMap<LocalDate, BigDecimal> macd = new TreeMap<>();
+		final int macdValuesOffset = data.length - emaEndIndex;
+
+		for (int i = macdValuesOffset; i < data.length; i++) {
+			macd.put(data[i].getDate(), macdValues.get(i));
+		}
+
+		return new MovingAverageConvergenceDivergenceLines(macd, signalLine);
 	}
 }

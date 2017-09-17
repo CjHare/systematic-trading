@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.macd;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -40,6 +41,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -104,7 +108,6 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	@Test
 	public void macd() {
 		final TradingDayPrices[] dataSet = createPrices(5);
-		final List<LocalDate> signalLineDates = createLocalDates(5);
 		final List<BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
 		final List<BigDecimal> macdValues = asBigDecimal(-2.3, -1.4, -2.5, -1.0, 0.25);
 		setUpFastEma(1, 3, 3, 5, 6.25);
@@ -113,14 +116,13 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final MovingAverageConvergenceDivergenceLines lines = calculator.macd(dataSet);
 
-		verifyMacdLines(lines, macdValues, signalLine, signalLineDates);
+		verifyMacdLines(lines, asSortedMap(macdValues), asSortedMap(signalLine));
 		verfiyEmaCalls(dataSet, macdValues);
 	}
 
 	@Test
 	public void macdSameSizeFastSlowEma() {
 		final TradingDayPrices[] dataSet = createPrices(5);
-		final List<LocalDate> signalLineDates = createLocalDates(5);
 		final List<BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
 		final List<BigDecimal> macdValues = asBigDecimal(-0.1, 0.8, -0.3, 0.6, 0.75);
 		setUpFastEma(1, 3, 3, 5, 6.25);
@@ -129,14 +131,13 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final MovingAverageConvergenceDivergenceLines lines = calculator.macd(dataSet);
 
-		verifyMacdLines(lines, macdValues, signalLine, signalLineDates);
+		verifyMacdLines(lines, asSortedMap(macdValues), asSortedMap(signalLine));
 		verfiyEmaCalls(dataSet, macdValues);
 	}
 
 	@Test
 	public void macdLargerFastThenSlowEma() {
 		final TradingDayPrices[] dataSet = createPrices(5);
-		final List<LocalDate> signalLineDates = createLocalDates(5);
 		final List<BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
 		final List<BigDecimal> macdValues = asBigDecimal(1.9, 2.8, 2.95, 2.6, 2.5);
 		setUpFastEma(1, 3, 3, 5, 6.25, 7, 8);
@@ -145,17 +146,39 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 		final MovingAverageConvergenceDivergenceLines lines = calculator.macd(dataSet);
 
-		verifyMacdLines(lines, macdValues, signalLine, signalLineDates);
+		verifyMacdLines(lines, asSortedMap(macdValues), asSortedMap(signalLine));
 		verfiyEmaCalls(dataSet, macdValues);
 	}
 
+	private SortedMap<LocalDate, BigDecimal> asSortedMap( final List<BigDecimal> expectedValues ) {
+		final SortedMap<LocalDate, BigDecimal> map = new TreeMap<>();
+
+		for (int i = 0; i < expectedValues.size(); i++) {
+			map.put(LocalDate.ofEpochDay(i), expectedValues.get(i));
+		}
+
+		return map;
+	}
+
 	private void verifyMacdLines( final MovingAverageConvergenceDivergenceLines lines,
-	        final List<BigDecimal> macdValues, final List<BigDecimal> signalLine,
-	        final List<LocalDate> signalLineDates ) {
+	        final SortedMap<LocalDate, BigDecimal> expectedMacd,
+	        final SortedMap<LocalDate, BigDecimal> expectedSignalLine ) {
 		assertNotNull(lines);
-		assertEquals(macdValues, lines.getMacd());
-		assertEquals(signalLine, lines.getSignaLine());
-		assertEquals(signalLineDates, lines.getSignalLineDates());
+
+		verifySortedMap(expectedMacd, lines.getMacd());
+		verifySortedMap(expectedSignalLine, lines.getSignalLine());
+	}
+
+	private void verifySortedMap( final SortedMap<LocalDate, BigDecimal> expected,
+	        final SortedMap<LocalDate, BigDecimal> actual ) {
+		assertNotNull(actual);
+		assertNotNull(expected);
+		assertEquals(expected.size(), actual.size());
+
+		for (final Map.Entry<LocalDate, BigDecimal> entry : expected.entrySet()) {
+			assertTrue(String.format("Mising key: %s", entry.getKey()), actual.containsKey(entry.getKey()));
+			assertEquals(entry.getValue(), actual.get(entry.getKey()));
+		}
 	}
 
 	private void verfiyEmaCalls( final TradingDayPrices[] dataSet, final List<BigDecimal> macdValues ) {

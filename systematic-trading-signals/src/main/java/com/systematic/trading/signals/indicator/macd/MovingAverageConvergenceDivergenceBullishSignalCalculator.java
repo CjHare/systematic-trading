@@ -33,6 +33,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 import java.util.function.Predicate;
 
 import com.systematic.trading.maths.DatedSignal;
@@ -57,32 +59,23 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculator
 	public List<DatedSignal> calculateSignals( final MovingAverageConvergenceDivergenceLines lines,
 	        Predicate<LocalDate> signalRange ) {
 
-		//TODO after UT, refactor to have the date as a pair / sorted maps not lists
-		final List<BigDecimal> macd = lines.getMacd();
-		final List<BigDecimal> signaLine = lines.getSignaLine();
-		final List<LocalDate> signalLineDates = lines.getSignalLineDates();
+		final SortedMap<LocalDate, BigDecimal> macd = lines.getMacd();
+		final SortedMap<LocalDate, BigDecimal> signaLine = lines.getSignalLine();
 		final List<DatedSignal> signals = new ArrayList<>();
 
-		// We're only interested in shared dates, align the access to be the right most aligned
-		final int todayMacdOffset = Math.max(0, macd.size() - signaLine.size());
-		final int yesterdayMacdOffset = todayMacdOffset - 1;
-		final int todaySignalLineOffset = Math.max(0, signaLine.size() - macd.size());
-		final int yesterdaySignalLineOffset = todaySignalLineOffset - 1;
-		final int endIndex = Math.min(signaLine.size(), macd.size());
+		// SortedMaps ordered by date, need to skip the first entry, using yesterday as a flag
+		LocalDate yesterday = null;
 
-		for (int index = 1; index < endIndex; index++) {
+		for (final Map.Entry<LocalDate, BigDecimal> macdEntry : macd.entrySet()) {
+			final LocalDate today = macdEntry.getKey();
 
-			final LocalDate todaySignalLineDate = signalLineDates.get(index + todaySignalLineOffset);
+			if (yesterday != null && signalRange.test(today) && isBullishSignal(macd.get(today), macd.get(yesterday),
+			        signaLine.get(today), signaLine.get(yesterday))) {
 
-			if (signalRange.test(todaySignalLineDate)) {
-
-				if (isBullishSignal(macd.get(index + todayMacdOffset), macd.get(index + yesterdayMacdOffset),
-				        signaLine.get(index + todaySignalLineOffset),
-				        signaLine.get(index + yesterdaySignalLineOffset))) {
-
-					signals.add(new DatedSignal(todaySignalLineDate, SignalType.BULLISH));
-				}
+				signals.add(new DatedSignal(today, getType()));
 			}
+
+			yesterday = today;
 		}
 
 		return signals;

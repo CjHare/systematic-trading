@@ -38,8 +38,9 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 
 import org.junit.Before;
@@ -69,21 +70,18 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	private Predicate<LocalDate> signalRange;
 
 	private SignalCalculator<MovingAverageConvergenceDivergenceLines> signalCalculator;
-	private List<BigDecimal> macd;
-	private List<BigDecimal> signaLine;
-	private List<LocalDate> signalLineDates;
+	private SortedMap<LocalDate, BigDecimal> macd;
+	private SortedMap<LocalDate, BigDecimal> signaLine;
 
 	@Before
 	public void setUp() {
 		signalCalculator = new MovingAverageConvergenceDivergenceBullishSignalCalculator();
 
-		macd = new ArrayList<>();
-		signaLine = new ArrayList<>();
-		signalLineDates = new ArrayList<>();
+		macd = new TreeMap<>();
+		signaLine = new TreeMap<>();
 
 		when(lines.getMacd()).thenReturn(macd);
-		when(lines.getSignaLine()).thenReturn(signaLine);
-		when(lines.getSignalLineDates()).thenReturn(signalLineDates);
+		when(lines.getSignalLine()).thenReturn(signaLine);
 
 		setUpDateRange(true);
 	}
@@ -105,7 +103,6 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	@Test
 	public void calculateSignalsOnceCrossnigSignalLine() {
 		final int numberSignalLinesDates = 4;
-		setUpDates(numberSignalLinesDates);
 		setUpSignalLine(0, 0.1, 0.2, 0.3);
 		setUpMacd(-1, 0.2, 1, 1.2);
 
@@ -119,7 +116,6 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	@Test
 	public void calculateSignalsOnceCrossnigSignalLineOutsideDateRange() {
 		final int numberSignalLinesDates = 4;
-		setUpDates(numberSignalLinesDates);
 		setUpSignalLine(0, 0.1, 0.2, 0.3);
 		setUpMacd(-1, 0.2, 1, 1.2);
 		setUpDateRange(false);
@@ -136,7 +132,6 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	 */
 	public void calculateSignalsOnceExtendedCrossnigSignalLine() {
 		final int numberSignalLinesDates = 5;
-		setUpDates(numberSignalLinesDates);
 		setUpSignalLine(0, 0.1, 0.1, 0.2, 0.3);
 		setUpMacd(-1, 0.1, 0.1, 1, 1.2);
 
@@ -154,7 +149,6 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	 */
 	public void calculateSignalsOnceTouchOffCrossnigSignalLine() {
 		final int numberSignalLinesDates = 4;
-		setUpDates(numberSignalLinesDates);
 		setUpSignalLine(0, 0.1, 0.2, 0.3);
 		setUpMacd(1, 0.1, 1, 1.2);
 
@@ -171,7 +165,6 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	 */
 	public void calculateSignalsPositiveGradientsMacdBelowNoCrossnigSignalLine() {
 		final int numberSignalLinesDates = 4;
-		setUpDates(numberSignalLinesDates);
 		setUpSignalLine(3, 3.1, 3.2, 3.3);
 		setUpMacd(1, 1.1, 1.2, 1.3);
 
@@ -187,7 +180,6 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	 */
 	public void calculateSignalsPositiveGradientsMacdAboveoCrossnigSignalLine() {
 		final int numberSignalLinesDates = 4;
-		setUpDates(numberSignalLinesDates);
 		setUpSignalLine(0, 0.1, 0.2, 0.3);
 		setUpMacd(1, 1.1, 1.2, 1.3);
 
@@ -200,7 +192,6 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	@Test
 	public void calculateSignalsCrossnigOrigin() {
 		final int numberSignalLinesDates = 4;
-		setUpDates(numberSignalLinesDates);
 		setUpSignalLine(5, 5, 5, 5);
 		setUpMacd(-1, 0.1, 1, 0);
 
@@ -217,7 +208,6 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	 */
 	public void calculateSignalsExtendedCrossnigOrigin() {
 		final int numberSignalLinesDates = 5;
-		setUpDates(numberSignalLinesDates);
 		setUpSignalLine(5, 5, 5, 5, 5);
 		setUpMacd(-0.2, 0, 0, 0.1, 0.2);
 
@@ -235,7 +225,6 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	 */
 	public void calculateSignalsTouchDownCrossnigOrigin() {
 		final int numberSignalLinesDates = 5;
-		setUpDates(numberSignalLinesDates);
 		setUpSignalLine(5, 5, 5, 5, 5);
 		setUpMacd(0.2, 0, 0, 0.1, 0.2);
 
@@ -249,7 +238,6 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	@Test
 	public void calculateSignalsMacdUpwardTrendBelowOrigin() {
 		final int numberSignalLinesDates = 5;
-		setUpDates(numberSignalLinesDates);
 		setUpSignalLine(5, 5, 5, 5, 5);
 		setUpMacd(-2, -1.4, -1.2, -0.8, -0.2);
 
@@ -266,7 +254,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 	private void verifySignalRangeTests( final int size ) {
 
 		final InOrder order = inOrder(lines, signalRange);
-		order.verify(lines).getSignalLineDates();
+		order.verify(lines).getSignalLine();
 
 		// Starting index @ 1, because there cannot be a signal on the first day :. excluded
 		for (int i = 1; i < size; i++) {
@@ -286,21 +274,13 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 		assertEquals(SignalType.BULLISH, signal.getType());
 	}
 
-	private void setUpDates( final int size ) {
-		for (int i = 0; i < size; i++) {
-			signalLineDates.add(LocalDate.ofEpochDay(i));
-		}
-	}
-
 	private void setUpSignalLine( final double... values ) {
-		for (final double value : values) {
-			signaLine.add(BigDecimal.valueOf(value));
-		}
+		for (int i = 0; i < values.length; i++)
+			signaLine.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
 	}
 
 	private void setUpMacd( final double... values ) {
-		for (final double value : values) {
-			macd.add(BigDecimal.valueOf(value));
-		}
+		for (int i = 0; i < values.length; i++)
+			macd.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
 	}
 }

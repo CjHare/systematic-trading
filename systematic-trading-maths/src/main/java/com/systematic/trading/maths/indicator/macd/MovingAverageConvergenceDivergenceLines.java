@@ -31,7 +31,7 @@ package com.systematic.trading.maths.indicator.macd;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.SortedMap;
 
 /**
  * MACD calculated lines, appropriate for determining signals or trends.
@@ -40,27 +40,20 @@ import java.util.List;
  */
 public class MovingAverageConvergenceDivergenceLines {
 
-	//TODO encapsulate a more meaningful relationship between these values
-	private final List<BigDecimal> macdValues;
-	private final List<BigDecimal> signaLine;
-	private final List<LocalDate> signalLineDates;
+	private final SortedMap<LocalDate, BigDecimal> macd;
+	private final SortedMap<LocalDate, BigDecimal> signalLine;
 
-	public MovingAverageConvergenceDivergenceLines( final List<BigDecimal> macdValues, final List<BigDecimal> signaLine,
-	        final List<LocalDate> signalLineDates ) {
-		this.macdValues = macdValues;
-		this.signaLine = signaLine;
-		this.signalLineDates = signalLineDates;
+	public MovingAverageConvergenceDivergenceLines( final SortedMap<LocalDate, BigDecimal> macd,
+	        final SortedMap<LocalDate, BigDecimal> signalLine ) {
+		this.macd = macd;
+		this.signalLine = signalLine;
 	}
 
-	public List<BigDecimal> getMacd() {
-		return macdValues;
+	public SortedMap<LocalDate, BigDecimal> getMacd() {
+		return macd;
 	}
 
-	public List<BigDecimal> getSignaLine() {
-		return signaLine;
+	public SortedMap<LocalDate, BigDecimal> getSignalLine() {
+		return signalLine;
 	}
-
-	public List<LocalDate> getSignalLineDates() {
-		return signalLineDates;
-	}	
 }
