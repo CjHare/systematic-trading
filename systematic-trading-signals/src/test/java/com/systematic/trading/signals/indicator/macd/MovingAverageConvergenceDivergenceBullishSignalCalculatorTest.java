@@ -81,7 +81,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculatorTest {
 		signaLine = new ArrayList<>();
 		signalLineDates = new ArrayList<>();
 
-		when(lines.getMacdValues()).thenReturn(macd);
+		when(lines.getMacd()).thenReturn(macd);
 		when(lines.getSignaLine()).thenReturn(signaLine);
 		when(lines.getSignalLineDates()).thenReturn(signalLineDates);
 

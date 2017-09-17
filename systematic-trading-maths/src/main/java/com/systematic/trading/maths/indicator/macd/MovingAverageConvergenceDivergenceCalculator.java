@@ -28,6 +28,8 @@ package com.systematic.trading.maths.indicator.macd;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
@@ -64,6 +66,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 
 	@Override
 	public MovingAverageConvergenceDivergenceLines macd( final TradingDayPrices[] data ) {
+		//TODO data != null
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, 1);
 
@@ -81,14 +84,21 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 			macdValues.add(fastEmaValues.get(i + fastEmaOffset).subtract(slowEmaValues.get(i + slowEmaOffset)));
 		}
 
-		final List<BigDecimal> signaLine = signalEma.ema(macdValues);
+		final List<BigDecimal> signaLineEma = signalEma.ema(macdValues);
 		final List<LocalDate> signalLineDates = new NonNullableArrayList<>(data.length);
 
+		final SortedMap<LocalDate, BigDecimal> signalLine = new TreeMap<>();
+
 		// The signal line matches with the right most values of the data array
-		for (int i = data.length - signaLine.size(); i < data.length; i++) {
+		final int signalLineOffset = data.length - signaLineEma.size();
+		for (int i = signalLineOffset; i < data.length; i++) {
 			signalLineDates.add(data[i].getDate());
+
+			signalLine.put(data[i].getDate(), signaLineEma.get(i - signalLineOffset));
 		}
 
-		return new MovingAverageConvergenceDivergenceLines(macdValues, signaLine, signalLineDates);
+		//TODO use signal line
+		
+		return new MovingAverageConvergenceDivergenceLines(macdValues, signaLineEma, signalLineDates);
 	}
 }

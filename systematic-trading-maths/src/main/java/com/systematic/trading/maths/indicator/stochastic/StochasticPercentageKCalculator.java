@@ -74,7 +74,7 @@ public class StochasticPercentageKCalculator implements StochasticPercentageK {
 
 	@Override
 	public List<BigDecimal> percentageK( final TradingDayPrices[] data ) {
-
+		//TODO data != null
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 

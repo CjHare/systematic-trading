@@ -153,7 +153,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	        final List<BigDecimal> macdValues, final List<BigDecimal> signalLine,
 	        final List<LocalDate> signalLineDates ) {
 		assertNotNull(lines);
-		assertEquals(macdValues, lines.getMacdValues());
+		assertEquals(macdValues, lines.getMacd());
 		assertEquals(signalLine, lines.getSignaLine());
 		assertEquals(signalLineDates, lines.getSignalLineDates());
 	}

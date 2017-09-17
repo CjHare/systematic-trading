@@ -52,7 +52,7 @@ public class MovingAverageConvergenceDivergenceLines {
 		this.signalLineDates = signalLineDates;
 	}
 
-	public List<BigDecimal> getMacdValues() {
+	public List<BigDecimal> getMacd() {
 		return macdValues;
 	}
 
@@ -62,6 +62,5 @@ public class MovingAverageConvergenceDivergenceLines {
 
 	public List<LocalDate> getSignalLineDates() {
 		return signalLineDates;
-	}
-
+	}	
 }

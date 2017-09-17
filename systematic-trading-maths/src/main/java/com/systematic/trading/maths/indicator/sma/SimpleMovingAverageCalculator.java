@@ -73,7 +73,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 
 	@Override
 	public List<BigDecimal> sma( final TradingDayPrices[] data ) {
-
+		//TODO data != null
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 

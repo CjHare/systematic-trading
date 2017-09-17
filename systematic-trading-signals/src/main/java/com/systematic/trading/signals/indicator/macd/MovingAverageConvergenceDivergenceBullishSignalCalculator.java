@@ -58,7 +58,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculator
 	        Predicate<LocalDate> signalRange ) {
 
 		//TODO after UT, refactor to have the date as a pair / sorted maps not lists
-		final List<BigDecimal> macd = lines.getMacdValues();
+		final List<BigDecimal> macd = lines.getMacd();
 		final List<BigDecimal> signaLine = lines.getSignaLine();
 		final List<LocalDate> signalLineDates = lines.getSignalLineDates();
 		final List<DatedSignal> signals = new ArrayList<>();

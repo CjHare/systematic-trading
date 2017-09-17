@@ -85,7 +85,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 
 	@Override
 	public List<BigDecimal> ema( final TradingDayPrices[] data ) {
-
+		//TODO data != null
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, lookback);
 

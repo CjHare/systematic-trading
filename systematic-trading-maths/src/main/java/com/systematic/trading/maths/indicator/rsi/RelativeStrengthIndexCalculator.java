@@ -83,6 +83,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	@Override
 	public List<RelativeStrengthIndexDataPoint> rsi( final TradingDayPrices[] data ) {
 		final List<RelativeStrengthDataPoint> relativeStrengthValues = rs.rs(data);
+		//TODO data != null
 		validator.verifyZeroNullEntries(data);
 
 		final List<RelativeStrengthIndexDataPoint> relativeStrengthIndexValues = new NonNullableArrayList<>(
