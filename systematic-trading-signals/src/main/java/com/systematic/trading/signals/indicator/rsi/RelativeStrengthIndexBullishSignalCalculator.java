@@ -70,10 +70,10 @@ public class RelativeStrengthIndexBullishSignalCalculator
 		final List<DatedSignal> signals = new ArrayList<>();
 
 		//TODO getting the first value? how about when there aren't any?
-		RelativeStrengthIndexDataPoint yesterday = rsiLine.get(0);
+		RelativeStrengthIndexDataPoint yesterday = null;
 
 		for (final RelativeStrengthIndexDataPoint today : rsiLine) {
-			if (signalRange.test(today.getDate()) && isOversold(yesterday, today)) {
+			if (yesterday != null && signalRange.test(today.getDate()) && isOversold(yesterday, today)) {
 				signals.add(new DatedSignal(today.getDate(), getType()));
 			}
 
@@ -85,6 +85,6 @@ public class RelativeStrengthIndexBullishSignalCalculator
 
 	private boolean isOversold( final RelativeStrengthIndexDataPoint yesterday,
 	        final RelativeStrengthIndexDataPoint today ) {
-		return yesterday.getValue().compareTo(oversold) <= 0 && today.getValue().compareTo(oversold) >= 0;
+		return today.getValue().compareTo(oversold) <= 0 && yesterday.getValue().compareTo(oversold) >= 0;
 	}
 }

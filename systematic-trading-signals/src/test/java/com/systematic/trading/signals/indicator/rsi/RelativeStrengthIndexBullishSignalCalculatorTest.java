@@ -59,14 +59,14 @@ import com.systematic.trading.signals.model.DatedSignal;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class RelativeStrengthIndexBearishSignalCalculatorTest {
+public class RelativeStrengthIndexBullishSignalCalculatorTest {
 
-	private static final double OVER_BROUGHT = 0.7;
+	private static final double OVER_SOLD = 0.3;
 
 	@Mock
 	private Predicate<LocalDate> signalRange;
 
-	private RelativeStrengthIndexBearishSignalCalculator calculator;
+	private RelativeStrengthIndexBullishSignalCalculator calculator;
 
 	private List<RelativeStrengthIndexDataPoint> rsi;
 
@@ -80,11 +80,11 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 
 	@Test
 	public void getType() {
-		assertEquals(SignalType.BEARISH, calculator.getType());
+		assertEquals(SignalType.BULLISH, calculator.getType());
 	}
 
 	@Test
-	public void neverOversold() {
+	public void neverUndersold() {
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
@@ -93,9 +93,9 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalOversoldOutsideDateRange() {
+	public void calculateSignalUndersoldOutsideDateRange() {
 		final int numberSignalLinesDates = 4;
-		setUpRsi(0.5, 0.7, 0.8, 0.75);
+		setUpRsi(0.5, 0.2, 0.1, 0.15);
 		setUpDateRange(false);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -105,9 +105,9 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalOversold() {
+	public void calculateSignalUndersold() {
 		final int numberSignalLinesDates = 4;
-		setUpRsi(0.5, 0.69, 0.8, 0.75);
+		setUpRsi(0.5, 0.4, 0.3, 0.5);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
@@ -117,9 +117,9 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalOversoldTouchDown() {
+	public void calculateSignalUndersoldTouch() {
 		final int numberSignalLinesDates = 4;
-		setUpRsi(1, 0.7, 0.8, 0.75);
+		setUpRsi(0.1, 0.3, 0.2, 0.15);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
@@ -129,9 +129,9 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalTwiceOversold() {
+	public void calculateSignalTwiceUndersold() {
 		final int numberSignalLinesDates = 4;
-		setUpRsi(0.4, 0.9, 0.5, 0.75);
+		setUpRsi(0.9, 0.2, 0.5, 0.3);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
@@ -142,9 +142,9 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalOnOversold() {
+	public void calculateSignalOnUndersold() {
 		final int numberSignalLinesDates = 5;
-		setUpRsi(0.4, 0.7, 0.7, 0.8, 0.75);
+		setUpRsi(0.4, 0.3, 0.3, 0.2, 0.5);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
@@ -161,7 +161,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	private void setUpCalculator() {
-		calculator = new RelativeStrengthIndexBearishSignalCalculator(BigDecimal.valueOf(OVER_BROUGHT));
+		calculator = new RelativeStrengthIndexBullishSignalCalculator(BigDecimal.valueOf(OVER_SOLD));
 	}
 
 	private void verifySignals( final int expectedSize, final List<DatedSignal> signals ) {
@@ -171,7 +171,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 
 	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {
 		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.getDate());
-		assertEquals(SignalType.BEARISH, signal.getType());
+		assertEquals(SignalType.BULLISH, signal.getType());
 	}
 
 	private void verifySignalRangeTests( final int size ) {
