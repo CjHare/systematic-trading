@@ -23,9 +23,11 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths;
+package com.systematic.trading.signals.model;
 
 import java.time.LocalDate;
+
+import com.systematic.trading.maths.SignalType;
 
 /**
  * Tuple of a date and a signal type.

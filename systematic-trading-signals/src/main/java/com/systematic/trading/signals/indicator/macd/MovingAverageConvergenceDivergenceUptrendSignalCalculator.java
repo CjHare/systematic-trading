@@ -37,10 +37,10 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.function.Predicate;
 
-import com.systematic.trading.maths.DatedSignal;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.signals.model.DatedSignal;
 
 /**
  * MACD up trend signal calculator, takes the MACD lines calculated from the price data, ignores the signal line, 

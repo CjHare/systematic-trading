@@ -50,10 +50,10 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.maths.DatedSignal;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.signals.model.DatedSignal;
 
 /**
  * Verifying the MovingAverageConvergenceDivergenceUptrendSignalCalculator.

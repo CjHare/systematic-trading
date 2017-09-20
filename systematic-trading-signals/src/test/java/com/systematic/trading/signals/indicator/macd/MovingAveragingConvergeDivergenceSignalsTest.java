@@ -21,7 +21,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.DatedSignal;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
@@ -30,6 +29,7 @@ import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.indicator.macd.MovingAveragingConvergenceDivergenceSignals;
+import com.systematic.trading.signals.model.DatedSignal;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MovingAveragingConvergeDivergenceSignalsTest {

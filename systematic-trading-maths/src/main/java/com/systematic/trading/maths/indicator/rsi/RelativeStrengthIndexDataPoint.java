@@ -10,6 +10,7 @@ import java.time.LocalDate;
  */
 public class RelativeStrengthIndexDataPoint {
 
+	//TODO delete & replace with a SortedMap
 	private final BigDecimal value;
 	private final LocalDate date;
 
