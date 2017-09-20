@@ -45,6 +45,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
+import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexSignals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RelativeStrengthIndexSignalsTest extends SignalTest {

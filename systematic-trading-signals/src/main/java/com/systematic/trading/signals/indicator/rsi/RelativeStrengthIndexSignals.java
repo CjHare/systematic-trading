@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.rsi;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -42,7 +42,14 @@ import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 
+/**
+ * Given time series price date, creates RSI values and any appropriate signals.
+ * 
+ * @author CJ Hare
+ */
 public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 
 	/** The least number of data points that enables RSI signal generation. */
@@ -51,6 +58,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	/** Provides date range filtering. */
 	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
 
+	/** Calculates the RSI values from time series data. */
 	private final RelativeStrengthIndex rsi;
 
 	/** Required number of data points required for RSI calculation. */
@@ -78,6 +86,8 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		this.rsi = new RelativeStrengthIndexCalculator(
 		        new RelativeStrengthCalculator(lookback, new IllegalArgumentThrowingValidator(), mathContext),
 		        new IllegalArgumentThrowingValidator(), mathContext);
+		
+		//TODO validate there's at least one signal calculator 
 	}
 
 	@Override
