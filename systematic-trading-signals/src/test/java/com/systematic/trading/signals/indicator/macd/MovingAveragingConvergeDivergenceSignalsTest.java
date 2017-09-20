@@ -64,7 +64,6 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		signalCalculators.add(secondCalculator);
 
 		data = new TradingDayPrices[0];
-
 	}
 
 	@Test

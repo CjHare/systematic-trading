@@ -29,12 +29,14 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.maths.formula.rs.RelativeStrengthCalculator;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
@@ -127,14 +129,20 @@ public class IndicatorSignalGeneratorFactory {
 		        filter);
 	}
 
-	private IndicatorSignalGenerator create( final RsiConfiguration rsi, final SignalRangeFilter filter,
+	private IndicatorSignalGenerator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter,
 	        final MathContext mathContext ) {
 
 		final List<SignalCalculator<List<RelativeStrengthIndexDataPoint>>> signalCalculators = new ArrayList<>();
-		signalCalculators.add(new RelativeStrengthIndexBullishSignalCalculator(rsi.getOversold()));
-		signalCalculators.add(new RelativeStrengthIndexBearishSignalCalculator(rsi.getOverbought()));
+		signalCalculators.add(new RelativeStrengthIndexBullishSignalCalculator(rsiConfiguration.getOversold()));
+		signalCalculators.add(new RelativeStrengthIndexBearishSignalCalculator(rsiConfiguration.getOverbought()));
 
-		return new RelativeStrengthIndexSignals(rsi.getLookback(), signalCalculators, filter, mathContext);
+		final RelativeStrengthIndexCalculator rsi = new RelativeStrengthIndexCalculator(
+		        new RelativeStrengthCalculator(rsiConfiguration.getLookback(), new IllegalArgumentThrowingValidator(),
+		                mathContext),
+		        new IllegalArgumentThrowingValidator(), mathContext);
+
+		return new RelativeStrengthIndexSignals(rsiConfiguration.getLookback(), rsi, signalCalculators, filter,
+		        mathContext);
 	}
 
 	private IndicatorSignalGenerator create( final SmaConfiguration sma, final SignalRangeFilter filter,

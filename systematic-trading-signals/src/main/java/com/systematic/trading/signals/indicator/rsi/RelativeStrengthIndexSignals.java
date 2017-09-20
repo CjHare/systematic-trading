@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.formula.rs.RelativeStrengthCalculator;
-import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
@@ -74,15 +72,13 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	 * @param lookback the number of data points to use in calculations.
 	 * @param daysOfRsiValues the number of RSI values desired.
 	 */
-	public RelativeStrengthIndexSignals( final int lookback,
-	        List<SignalCalculator<List<RelativeStrengthIndexDataPoint>>> signalCalculators,
+	public RelativeStrengthIndexSignals( final int lookback, final RelativeStrengthIndexCalculator rsi,
+	        final List<SignalCalculator<List<RelativeStrengthIndexDataPoint>>> signalCalculators,
 	        final SignalRangeFilter filter, final MathContext mathContext ) {
 		this.minimumNumberOfPrices = lookback + MINIMUM_DAYS_OF_RSI_VALUES;
 		this.signalRangeFilter = filter;
 		this.signalCalculators = signalCalculators;
-		this.rsi = new RelativeStrengthIndexCalculator(
-		        new RelativeStrengthCalculator(lookback, new IllegalArgumentThrowingValidator(), mathContext),
-		        new IllegalArgumentThrowingValidator(), mathContext);
+		this.rsi = rsi;
 
 		//TODO validate there's at least one signal calculator 
 	}
