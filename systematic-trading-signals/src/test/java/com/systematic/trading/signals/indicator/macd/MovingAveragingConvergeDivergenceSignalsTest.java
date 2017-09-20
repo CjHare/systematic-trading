@@ -28,7 +28,6 @@ import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.SignalCalculator;
-import com.systematic.trading.signals.indicator.macd.MovingAveragingConvergenceDivergenceSignals;
 import com.systematic.trading.signals.model.DatedSignal;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -88,7 +87,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final List<IndicatorSignal> signals = macdSignals.calculateSignals(data);
 
 		verifySignals(signals);
-		verifyMacdCaclculator();
+		verifyMacdCaclculation();
 	}
 
 	@Test
@@ -98,7 +97,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final List<IndicatorSignal> signals = macdSignals.calculateSignals(data);
 
 		verifySignals(signals);
-		verifyMacdCaclculator();
+		verifyMacdCaclculation();
 		verifyFirstCalculatorSignals();
 		verifySecondCalculatorSignals();
 	}
@@ -113,7 +112,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final List<IndicatorSignal> signals = macdSignals.calculateSignals(data);
 
 		verifySignals(signals, firstSignal, secondSignal);
-		verifyMacdCaclculator();
+		verifyMacdCaclculation();
 		verifyFirstCalculatorSignals(2);
 		verifySecondCalculatorSignals();
 	}
@@ -128,7 +127,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final List<IndicatorSignal> signals = macdSignals.calculateSignals(data);
 
 		verifySignals(signals, firstSignal, secondSignal);
-		verifyMacdCaclculator();
+		verifyMacdCaclculation();
 		verifyFirstCalculatorSignals();
 		verifySecondCalculatorSignals(2);
 	}
@@ -144,7 +143,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final List<IndicatorSignal> signals = macdSignals.calculateSignals(data);
 
 		verifySignals(signals, secondSignal, firstSignal);
-		verifyMacdCaclculator();
+		verifyMacdCaclculation();
 		verifyFirstCalculatorSignals(1);
 		verifySecondCalculatorSignals(1);
 	}
@@ -174,7 +173,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		}
 	}
 
-	private void verifyMacdCaclculator() {
+	private void verifyMacdCaclculation() {
 		verify(macd).macd(data);
 		verifyNoMoreInteractions(macd);
 	}
