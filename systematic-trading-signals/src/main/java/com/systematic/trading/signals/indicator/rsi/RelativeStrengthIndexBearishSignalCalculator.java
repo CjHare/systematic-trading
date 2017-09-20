@@ -43,7 +43,7 @@ import com.systematic.trading.signals.model.DatedSignal;
 /**
  * Given RSI line points calculates when the following bearish events occurred:
  * <ul>
- * <li>Overbrought; RSI moved from being below the over brought line to above it.</li>
+ * <li>Overbrought; RSI moved from being on or below the over brought line to above it.</li>
  * </ul>
  * 
  * @author CJ Hare
@@ -70,10 +70,10 @@ public class RelativeStrengthIndexBearishSignalCalculator
 		final List<DatedSignal> signals = new ArrayList<>();
 
 		//TODO getting the first value? how about when there aren't any?
-		RelativeStrengthIndexDataPoint yesterday = rsiLine.get(0);
+		RelativeStrengthIndexDataPoint yesterday = null;
 
 		for (final RelativeStrengthIndexDataPoint today : rsiLine) {
-			if (signalRange.test(today.getDate()) && isOverbrought(yesterday, today)) {
+			if (yesterday != null && signalRange.test(today.getDate()) && isOverbrought(yesterday, today)) {
 				signals.add(new DatedSignal(today.getDate(), getType()));
 			}
 
@@ -85,6 +85,6 @@ public class RelativeStrengthIndexBearishSignalCalculator
 
 	private boolean isOverbrought( final RelativeStrengthIndexDataPoint yesterday,
 	        final RelativeStrengthIndexDataPoint today ) {
-		return yesterday.getValue().compareTo(overbrought) >= 0 && today.getValue().compareTo(overbrought) <= 0;
+		return today.getValue().compareTo(overbrought) >= 0 && yesterday.getValue().compareTo(overbrought) <= 0;
 	}
 }

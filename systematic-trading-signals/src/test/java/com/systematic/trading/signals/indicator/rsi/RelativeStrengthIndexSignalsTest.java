@@ -56,6 +56,11 @@ import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.model.DatedSignal;
 
+/**
+ * Verify the behaviour of the RelativeStrengthIndexSignals.
+ * 
+ * @author CJ Hare
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class RelativeStrengthIndexSignalsTest {
 
@@ -92,7 +97,6 @@ public class RelativeStrengthIndexSignalsTest {
 		data = new TradingDayPrices[0];
 
 		line = new ArrayList<>();
-
 	}
 
 	@Test
