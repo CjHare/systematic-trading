@@ -34,7 +34,7 @@ import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSigna
  * @author CJ Hare
  */
 public enum SmaConfiguration implements SignalConfiguration {
-
+	//TODO rename this to uptrend
 	SHORT(20, GradientType.POSITIVE, 5, "PositiveShortSMA"),
 	MEDIUM(50, GradientType.POSITIVE, 7, "PositiveMediumSMA"),
 	LONG(100, GradientType.POSITIVE, 10, "PositiveLongSMA");

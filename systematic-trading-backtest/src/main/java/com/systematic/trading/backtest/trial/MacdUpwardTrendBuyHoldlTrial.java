@@ -34,13 +34,10 @@ import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
-import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
-import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdUptrendConfiguration;
+import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
@@ -63,6 +60,8 @@ public class MacdUpwardTrendBuyHoldlTrial implements BacktestConfiguration {
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
+	private TrialHoldForever trial = new TrialHoldForever();
+
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
@@ -81,7 +80,8 @@ public class MacdUpwardTrendBuyHoldlTrial implements BacktestConfiguration {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Comparison baseline 
-		configurations.add(BaselineTrial.getConfiguration(equity, simulationDates, deposit));
+		configurations.add(trial.getBuyWeeklyHoldForever(equity, simulationDates, deposit,
+		        BrokerageFeesConfiguration.VANGUARD_RETAIL));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final MinimumTrade[] minimumTrades = { MinimumTrade.FIVE_HUNDRED, MinimumTrade.TWO_THOUSAND };
@@ -89,50 +89,42 @@ public class MacdUpwardTrendBuyHoldlTrial implements BacktestConfiguration {
 
 		for (final MinimumTrade minimumTrade : minimumTrades) {
 
-			configurations.addAll(getMacdUptrendConfigurations(equity, simulationDates, deposit, brokerage,
-			        minimumTrade, maximumTrade));
 			configurations.addAll(
-			        getSmaConfigurations(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			        getAllMacdUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations
+			        .addAll(getAllSmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 		}
 
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getMacdUptrendConfigurations( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getAllMacdUptrends( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
-		EntryLogicConfiguration entry;
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
+		        SmaConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdUptrendConfiguration macdConfiguration : MacdUptrendConfiguration.values()) {
-			entry = new EntryLogicConfiguration(
-			        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration),
-			        maximumTrade, minimumTrade);
-			configurations.add(new BacktestBootstrapConfiguration(simulationDates, brokerage,
-			        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
-			        ExitLogicConfiguration.HOLD_FOREVER));
+			configurations.add(trial.getMacdUptrendHoldForever(equity, simulationDates, deposit, brokerage,
+			        minimumTrade, maximumTrade, macdConfiguration));
 		}
 
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getSmaConfigurations( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getAllSmaUptrends( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
-		EntryLogicConfiguration entry;
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(SmaConfiguration.values().length);
 
 		for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-			entry = new EntryLogicConfiguration(
-			        new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, smaConfiguration), maximumTrade,
-			        minimumTrade);
-			configurations.add(new BacktestBootstrapConfiguration(simulationDates, brokerage,
-			        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
-			        ExitLogicConfiguration.HOLD_FOREVER));
+			configurations.add(trial.getSmaUptrendHoldForever(equity, simulationDates, deposit, brokerage, minimumTrade,
+			        maximumTrade, smaConfiguration));
 		}
 
 		return configurations;
 	}
+
 }

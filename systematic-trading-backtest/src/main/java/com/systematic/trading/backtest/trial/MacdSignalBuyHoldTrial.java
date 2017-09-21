@@ -62,6 +62,8 @@ public class MacdSignalBuyHoldTrial implements BacktestConfiguration {
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
+	private TrialHoldForever trial = new TrialHoldForever();
+
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
@@ -80,7 +82,8 @@ public class MacdSignalBuyHoldTrial implements BacktestConfiguration {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Comparison baseline 
-		configurations.add(BaselineTrial.getConfiguration(equity, simulationDates, deposit));
+		configurations.add(trial.getBuyWeeklyHoldForever(equity, simulationDates, deposit,
+		        BrokerageFeesConfiguration.VANGUARD_RETAIL));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
