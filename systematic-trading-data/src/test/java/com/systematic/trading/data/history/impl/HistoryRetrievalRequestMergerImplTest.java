@@ -165,13 +165,13 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void threeConsercutiveRequestsSpanningMaximum() {
-		final List<HistoryRetrievalRequest> toMerge = asList(create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 7, 1)),
-		        create(LocalDate.of(2010, 7, 1), LocalDate.of(2010, 9, 1)),
-		        create(LocalDate.of(2010, 9, 1), LocalDate.of(2010, 11, 1)));
+		final List<HistoryRetrievalRequest> toMerge = asList(create(LocalDate.of(2010, 3, 1), LocalDate.of(2010, 6, 1)),
+		        create(LocalDate.of(2010, 6, 1), LocalDate.of(2010, 9, 1)),
+		        create(LocalDate.of(2010, 9, 1), LocalDate.of(2010, 12, 1)));
 		final List<HistoryRetrievalRequest> expected = asList(
-		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 7, 1)),
-		        create(LocalDate.of(2010, 7, 1), LocalDate.of(2010, 9, 1)),
-		        create(LocalDate.of(2010, 9, 1), LocalDate.of(2010, 11, 1)));
+		        create(LocalDate.of(2010, 3, 1), LocalDate.of(2010, 6, 1)),
+		        create(LocalDate.of(2010, 6, 1), LocalDate.of(2010, 9, 1)),
+		        create(LocalDate.of(2010, 9, 1), LocalDate.of(2010, 12, 1)));
 		setUpBuilder(expected);
 
 		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, MAXIMUM);
