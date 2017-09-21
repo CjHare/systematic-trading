@@ -40,6 +40,7 @@ import com.systematic.trading.data.dao.impl.FileConfigurationDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
+import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConnectionConfiguration;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlProperty;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlConfigurationDao;
 
@@ -89,7 +90,9 @@ public class FileValidatedQuandlConfigurationDao implements QuandlConfigurationD
 		final int maximumMonthsPerConnection = getIntegerProperty(properties,
 		        QuandlProperty.MAXIMUM_MONTHS_RETRIEVED_PER_CONNECTION, maximumMonthsPerConnectionsValidator);
 
-		return new QuandlConfiguration(endpoint, apiKey, numberOfRetries, retryBackOffMs, maximumRetrievalTimeSeconds,
+		return new QuandlConfiguration(
+		        new QuandlConnectionConfiguration(endpoint, apiKey, numberOfRetries, retryBackOffMs,
+		                maximumRetrievalTimeSeconds),
 		        maximumConcurrentConnections, maximumConnectionsPerSecond, maximumMonthsPerConnection);
 	}
 

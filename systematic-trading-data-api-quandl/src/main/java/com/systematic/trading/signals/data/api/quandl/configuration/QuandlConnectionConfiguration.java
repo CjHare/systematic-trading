@@ -29,67 +29,43 @@
  */
 package com.systematic.trading.signals.data.api.quandl.configuration;
 
-import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
-
 /**
- * Configuration data for the Quandl service.
- * 
  * @author CJ Hare
  */
-public class QuandlConfiguration implements EquityApiConfiguration {
+public class QuandlConnectionConfiguration {
 
-	private final int maximumConcurrentConnections;
-	private final int maximumConnectionsPerSecond;
-	private final int maximumMonthsPerConnection;
+	private final String endpoint;
+	private final String apiKey;
+	private final int numberOfRetries;
+	private final int retryBackOffMs;
+	private final int maximumRetrievalTimeSeconds;
 
-	private final QuandlConnectionConfiguration connectionConfiguration;
-
-	public QuandlConfiguration( final QuandlConnectionConfiguration connectionConfiguration,
-	        final int maximumConcurrentConnections, final int maximumConnectionsPerSecond,
-	        final int maximumMonthsPerConnection ) {
-		this.connectionConfiguration = connectionConfiguration;
-		this.maximumConcurrentConnections = maximumConcurrentConnections;
-		this.maximumConnectionsPerSecond = maximumConnectionsPerSecond;
-		this.maximumMonthsPerConnection = maximumMonthsPerConnection;
+	public QuandlConnectionConfiguration( final String endpoint, final String apiKey, final int numberOfRetries,
+	        final int retryBackOffMs, final int maximumRetrievalTimeSeconds ) {
+		this.endpoint = endpoint;
+		this.apiKey = apiKey;
+		this.numberOfRetries = numberOfRetries;
+		this.retryBackOffMs = retryBackOffMs;
+		this.maximumRetrievalTimeSeconds = maximumRetrievalTimeSeconds;
 	}
 
-	@Override
 	public String getEndpoint() {
-		return connectionConfiguration.getEndpoint();
+		return endpoint;
 	}
 
-	@Override
 	public String getApiKey() {
-		return connectionConfiguration.getApiKey();
+		return apiKey;
 	}
 
-	@Override
 	public int getNumberOfRetries() {
-		return connectionConfiguration.getNumberOfRetries();
+		return numberOfRetries;
 	}
 
-	@Override
 	public int getRetryBackOffMs() {
-		return connectionConfiguration.getRetryBackOffMs();
+		return retryBackOffMs;
 	}
 
-	@Override
 	public int getMaximumRetrievalTimeSeconds() {
-		return connectionConfiguration.getMaximumRetrievalTimeSeconds();
-	}
-
-	@Override
-	public int getMaximumConcurrentConnections() {
-		return maximumConcurrentConnections;
-	}
-
-	@Override
-	public int getMaximumConnectionsPerSecond() {
-		return maximumConnectionsPerSecond;
-	}
-
-	@Override
-	public int getMaximumMonthsPerConnection() {
-		return maximumMonthsPerConnection;
+		return maximumRetrievalTimeSeconds;
 	}
 }
