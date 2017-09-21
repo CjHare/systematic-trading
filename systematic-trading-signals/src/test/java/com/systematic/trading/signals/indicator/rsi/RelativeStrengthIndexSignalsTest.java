@@ -34,7 +34,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -208,7 +207,7 @@ public class RelativeStrengthIndexSignalsTest {
 	}
 
 	private RelativeStrengthIndexSignals setUpRsiSignals() {
-		return new RelativeStrengthIndexSignals(LOOKBACK, rsi, signalCalculators, filter, MathContext.DECIMAL64);
+		return new RelativeStrengthIndexSignals(LOOKBACK, rsi, signalCalculators, filter);
 	}
 
 	private void verifyRsiCaclculation() {

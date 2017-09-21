@@ -141,8 +141,7 @@ public class IndicatorSignalGeneratorFactory {
 		                mathContext),
 		        new IllegalArgumentThrowingValidator(), mathContext);
 
-		return new RelativeStrengthIndexSignals(rsiConfiguration.getLookback(), rsi, signalCalculators, filter,
-		        mathContext);
+		return new RelativeStrengthIndexSignals(rsiConfiguration.getLookback(), rsi, signalCalculators, filter);
 	}
 
 	private IndicatorSignalGenerator create( final SmaConfiguration sma, final SignalRangeFilter filter,

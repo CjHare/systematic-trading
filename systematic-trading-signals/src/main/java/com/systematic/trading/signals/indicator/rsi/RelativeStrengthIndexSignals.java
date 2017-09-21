@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.signals.indicator.rsi;
 
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +74,8 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	 * @param daysOfRsiValues the number of RSI values desired.
 	 */
 	public RelativeStrengthIndexSignals( final int lookback, final RelativeStrengthIndexCalculator rsi,
-	        final List<SignalCalculator<RelativeStrengthIndexLines>> signalCalculators, final SignalRangeFilter filter,
-	        final MathContext mathContext ) {
+	        final List<SignalCalculator<RelativeStrengthIndexLines>> signalCalculators,
+	        final SignalRangeFilter filter ) {
 		this.minimumNumberOfPrices = lookback + MINIMUM_DAYS_OF_RSI_VALUES;
 		this.signalRangeFilter = filter;
 		this.signalCalculators = signalCalculators;
