@@ -30,16 +30,10 @@
 package com.systematic.trading.signals.indicator.rsi;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
 
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLines;
 import com.systematic.trading.signals.indicator.SignalCalculator;
-import com.systematic.trading.signals.model.DatedSignal;
 
 /**
  * Given RSI line points calculates when the following bullish events occurred:
@@ -50,7 +44,8 @@ import com.systematic.trading.signals.model.DatedSignal;
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexBullishSignalCalculator implements SignalCalculator<RelativeStrengthIndexLines> {
+public class RelativeStrengthIndexBullishSignalCalculator extends RelativeStrengthIndexSignalCalculator
+        implements SignalCalculator<RelativeStrengthIndexLines> {
 
 	/** Threshold for when the RSI is considered as over sold.*/
 	private final BigDecimal oversold;
@@ -65,29 +60,10 @@ public class RelativeStrengthIndexBullishSignalCalculator implements SignalCalcu
 	}
 
 	@Override
-	public List<DatedSignal> calculateSignals( final RelativeStrengthIndexLines rsiLine,
-	        final Predicate<LocalDate> signalRange ) {
-
-		final List<DatedSignal> signals = new ArrayList<>();
-		Map.Entry<LocalDate, BigDecimal> yesterday = null;
-
-		for (Map.Entry<LocalDate, BigDecimal> today : rsiLine.getRsi().entrySet()) {
-
-			if (yesterday != null && signalRange.test(today.getKey())
-			        && hasMomentumDirectionChanged(yesterday.getValue(), today.getValue())) {
-				signals.add(new DatedSignal(today.getKey(), getType()));
-			}
-
-			yesterday = today;
-		}
-
-		return signals;
-	}
-
 	/**
 	 * Has the RSI moved from below or on the over sold line to above it?
 	 */
-	private boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today ) {
+	protected boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today ) {
 		return today.compareTo(oversold) > 0 && yesterday.compareTo(oversold) <= 0;
 	}
 }
