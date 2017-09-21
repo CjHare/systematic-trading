@@ -48,8 +48,8 @@ import com.systematic.trading.signals.filter.SignalRangeFilter;
  * @author CJ Hare
  */
 public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenerator {
-//TODO replace this class with SAM & EMA signals, supported using the origin, instead of inter-day gradient
 	
+	//TODO this is confusing, split up like the RSI, bullish / bearish indicators
 	/**
 	 * Trigger gradient  for a bullish signal.
 	 */
