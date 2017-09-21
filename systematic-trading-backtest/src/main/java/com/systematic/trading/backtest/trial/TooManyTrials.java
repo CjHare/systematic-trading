@@ -35,8 +35,11 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
+import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
+import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
@@ -51,18 +54,18 @@ import com.systematic.trading.backtest.input.StartDateLaunchArgument;
 import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
+import com.systematic.trading.backtest.trial.configuration.TrialConfigurationBuilder;
 
 /**
  * Executes over 1200 configurations, scatter gun approach.
  * 
  * @author CJ Hare
  */
-public class TooManyTrials implements BacktestConfiguration {
+public class TooManyTrials extends BaseTrialConfiguration implements BacktestConfiguration {
 
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
-
-	private TrialHoldForever trial = new TrialHoldForever();
 
 	public static void main( final String... args ) throws Exception {
 
@@ -81,15 +84,14 @@ public class TooManyTrials implements BacktestConfiguration {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Vanguard Retail - baseline
-		configurations.add(trial.getBuyWeeklyHoldForever(equity, simulationDates, deposit,
-		        BrokerageFeesConfiguration.VANGUARD_RETAIL));
+		configurations.add(getBaseline(equity, simulationDates, deposit));
 
 		// All signal based use the trading account
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
 
 		// Date based buying
-		configurations.add(trial.getBuyWeeklyHoldForever(equity, simulationDates, deposit, brokerage));
-		configurations.add(trial.getBuyMonthlyHoldForever(equity, simulationDates, deposit, brokerage));
+		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicFilterConfiguration.WEEKLY));
+		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicFilterConfiguration.MONTHLY));
 
 		final MaximumTrade maximumTrade = MaximumTrade.QUARTER;
 		final MinimumTrade minimumTrade = MinimumTrade.TWO_THOUSAND;
@@ -114,6 +116,13 @@ public class TooManyTrials implements BacktestConfiguration {
 		return configurations;
 	}
 
+	private BacktestBootstrapConfiguration getConfiguration( final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+	        final BrokerageFeesConfiguration brokerage, final EntryLogicConfiguration entryLogic ) {
+		return new TrialConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
+		        .withDeposit(deposit).withBrokerage(brokerage).withEntry(entryLogic).build();
+	}
+
 	private List<BacktestBootstrapConfiguration> getAllMacdConfirmedByRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
@@ -125,9 +134,9 @@ public class TooManyTrials implements BacktestConfiguration {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 				for (final ConfirmationSignalFilterConfiguration.Type filterConfiguration : ConfirmationSignalFilterConfiguration.Type
 				        .values()) {
-					configurations.add(trial.getMacdConfirmedByRsiHoldForever(equity, simulationDates, deposit,
-					        brokerage, minimumTrade, maximumTrade, macdConfiguration, rsiConfiguration,
-					        filterConfiguration));
+					configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+					        new EntryLogicConfiguration(new ConfirmationSignalFilterConfiguration(filterConfiguration,
+					                macdConfiguration, rsiConfiguration), maximumTrade, minimumTrade)));
 				}
 			}
 		}
@@ -144,8 +153,9 @@ public class TooManyTrials implements BacktestConfiguration {
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-				configurations.add(trial.getMacdRsiHoldForever(equity, simulationDates, deposit, brokerage,
-				        minimumTrade, maximumTrade, macdConfiguration, rsiConfiguration));
+				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+				        new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
+				                macdConfiguration, rsiConfiguration), maximumTrade, minimumTrade)));
 			}
 		}
 
@@ -160,8 +170,9 @@ public class TooManyTrials implements BacktestConfiguration {
 		        SmaConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-			configurations.add(trial.getMacdHoldForever(equity, simulationDates, deposit, brokerage, minimumTrade,
-			        maximumTrade, macdConfiguration));
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			        new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
+			                macdConfiguration, macdConfiguration), maximumTrade, minimumTrade)));
 		}
 
 		return configurations;
@@ -177,8 +188,11 @@ public class TooManyTrials implements BacktestConfiguration {
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 				for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-					configurations.add(trial.getMacdSmaRsiHoldForever(equity, simulationDates, deposit, brokerage,
-					        minimumTrade, maximumTrade, macdConfiguration, smaConfiguration, rsiConfiguration));
+					configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+					        new EntryLogicConfiguration(
+					                new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
+					                        macdConfiguration, smaConfiguration, rsiConfiguration),
+					                maximumTrade, minimumTrade)));
 				}
 			}
 		}
@@ -195,8 +209,9 @@ public class TooManyTrials implements BacktestConfiguration {
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-				configurations.add(trial.getMacdSmaHoldForever(equity, simulationDates, deposit, brokerage,
-				        minimumTrade, maximumTrade, macdConfiguration, smaConfiguration));
+				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+				        new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
+				                macdConfiguration, smaConfiguration), maximumTrade, minimumTrade)));
 			}
 		}
 
@@ -212,8 +227,9 @@ public class TooManyTrials implements BacktestConfiguration {
 
 		for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-				configurations.add(trial.getSmaUptrendRsiHoldForever(equity, simulationDates, deposit, brokerage,
-				        minimumTrade, maximumTrade, smaConfiguration, rsiConfiguration));
+				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+				        new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
+				                smaConfiguration, rsiConfiguration), maximumTrade, minimumTrade)));
 			}
 		}
 
@@ -227,8 +243,10 @@ public class TooManyTrials implements BacktestConfiguration {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(SmaConfiguration.values().length);
 
 		for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-			configurations.add(trial.getSmaUptrendHoldForever(equity, simulationDates, deposit, brokerage, minimumTrade,
-			        maximumTrade, smaConfiguration));
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			        new EntryLogicConfiguration(
+			                new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, smaConfiguration),
+			                maximumTrade, minimumTrade)));
 		}
 
 		return configurations;
@@ -242,8 +260,10 @@ public class TooManyTrials implements BacktestConfiguration {
 		        MacdUptrendConfiguration.values().length);
 
 		for (final MacdUptrendConfiguration macdConfiguration : MacdUptrendConfiguration.values()) {
-			configurations.add(trial.getMacdUptrendHoldForever(equity, simulationDates, deposit, brokerage,
-			        minimumTrade, maximumTrade, macdConfiguration));
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			        new EntryLogicConfiguration(
+			                new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration),
+			                maximumTrade, minimumTrade)));
 		}
 
 		return configurations;

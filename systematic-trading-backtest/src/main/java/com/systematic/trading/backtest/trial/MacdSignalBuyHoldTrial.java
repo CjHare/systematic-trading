@@ -51,18 +51,17 @@ import com.systematic.trading.backtest.input.StartDateLaunchArgument;
 import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
 
 /**
  * MACD crossover signals @ 150 weekly deposit back test.
  * 
  * @author CJ Hare
  */
-public class MacdSignalBuyHoldTrial implements BacktestConfiguration {
+public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements BacktestConfiguration {
 
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
-
-	private TrialHoldForever trial = new TrialHoldForever();
 
 	public static void main( final String... args ) throws Exception {
 
@@ -82,8 +81,7 @@ public class MacdSignalBuyHoldTrial implements BacktestConfiguration {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Comparison baseline 
-		configurations.add(trial.getBuyWeeklyHoldForever(equity, simulationDates, deposit,
-		        BrokerageFeesConfiguration.VANGUARD_RETAIL));
+		configurations.add(getBaseline(equity, simulationDates, deposit));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;

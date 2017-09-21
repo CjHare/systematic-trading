@@ -35,7 +35,9 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
@@ -49,18 +51,18 @@ import com.systematic.trading.backtest.input.StartDateLaunchArgument;
 import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
+import com.systematic.trading.backtest.trial.configuration.TrialConfigurationBuilder;
 
 /**
  * MACD upward trend is when the fast EMA is above the slow EMA, denoting a upward trend in price movement.
  * 
  * @author CJ Hare
  */
-public class MacdUpwardTrendBuyHoldlTrial implements BacktestConfiguration {
+public class MacdUpwardTrendBuyHoldlTrial extends BaseTrialConfiguration implements BacktestConfiguration {
 
 	/** Accuracy for BigDecimal operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
-
-	private TrialHoldForever trial = new TrialHoldForever();
 
 	public static void main( final String... args ) throws Exception {
 
@@ -80,8 +82,7 @@ public class MacdUpwardTrendBuyHoldlTrial implements BacktestConfiguration {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Comparison baseline 
-		configurations.add(trial.getBuyWeeklyHoldForever(equity, simulationDates, deposit,
-		        BrokerageFeesConfiguration.VANGUARD_RETAIL));
+		configurations.add(getBaseline(equity, simulationDates, deposit));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final MinimumTrade[] minimumTrades = { MinimumTrade.FIVE_HUNDRED, MinimumTrade.TWO_THOUSAND };
@@ -98,6 +99,13 @@ public class MacdUpwardTrendBuyHoldlTrial implements BacktestConfiguration {
 		return configurations;
 	}
 
+	private BacktestBootstrapConfiguration getConfiguration( final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+	        final BrokerageFeesConfiguration brokerage, final EntryLogicConfiguration entryLogic ) {
+		return new TrialConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
+		        .withDeposit(deposit).withBrokerage(brokerage).withEntry(entryLogic).build();
+	}
+
 	private List<BacktestBootstrapConfiguration> getAllMacdUptrends( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
@@ -106,8 +114,10 @@ public class MacdUpwardTrendBuyHoldlTrial implements BacktestConfiguration {
 		        SmaConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdUptrendConfiguration macdConfiguration : MacdUptrendConfiguration.values()) {
-			configurations.add(trial.getMacdUptrendHoldForever(equity, simulationDates, deposit, brokerage,
-			        minimumTrade, maximumTrade, macdConfiguration));
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			        new EntryLogicConfiguration(
+			                new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration),
+			                maximumTrade, minimumTrade)));
 		}
 
 		return configurations;
@@ -120,11 +130,12 @@ public class MacdUpwardTrendBuyHoldlTrial implements BacktestConfiguration {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(SmaConfiguration.values().length);
 
 		for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
-			configurations.add(trial.getSmaUptrendHoldForever(equity, simulationDates, deposit, brokerage, minimumTrade,
-			        maximumTrade, smaConfiguration));
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			        new EntryLogicConfiguration(
+			                new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, smaConfiguration),
+			                maximumTrade, minimumTrade)));
 		}
 
 		return configurations;
 	}
-
 }
