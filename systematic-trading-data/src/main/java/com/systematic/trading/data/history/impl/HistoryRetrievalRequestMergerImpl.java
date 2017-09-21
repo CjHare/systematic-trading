@@ -77,20 +77,18 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		Period remaining = maximum;
 
 		for (int i = 0; i < numberOfRequests; i++) {
-			final Optional<HistoryRetrievalRequest> lastRequest = getLastRequest(i, sortedRequests);
-			final HistoryRetrievalRequest request = sortedRequests.get(i);
-			final HistoryRetrievalRequest nextRequest = getNextRequest(i, sortedRequests);
 
-			final Triple<Optional<HistoryRetrievalRequest>, Period, HistoryRetrievalRequestBuilder> result = mergeRequest(
-			        maximum, lastRequest, request, nextRequest, remaining, mergingRequests);
+			final Triple<Optional<HistoryRetrievalRequest>, Period, HistoryRetrievalRequestBuilder> mergeOutcome = mergeRequest(
+			        maximum, getLastRequest(i, sortedRequests), sortedRequests.get(i),
+			        getNextRequest(i, sortedRequests), remaining, mergingRequests);
 
-			final Optional<HistoryRetrievalRequest> a = result.getLeft();
-			if (a.isPresent()) {
-				mergedRequests.add(a.get());
+			final Optional<HistoryRetrievalRequest> mergedRequest = mergeOutcome.getLeft();
+			if (mergedRequest.isPresent()) {
+				mergedRequests.add(mergedRequest.get());
 			}
 
-			remaining = result.getMiddle();
-			mergingRequests = result.getRight();
+			remaining = mergeOutcome.getMiddle();
+			mergingRequests = mergeOutcome.getRight();
 		}
 
 		mergedRequests.add(createLastRequest(sortedRequests, mergingRequests));
