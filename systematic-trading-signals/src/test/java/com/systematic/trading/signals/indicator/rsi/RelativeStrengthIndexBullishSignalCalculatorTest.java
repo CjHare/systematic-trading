@@ -84,63 +84,67 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	}
 
 	@Test
-	public void neverUndersold() {
-
+	public void calculateSignaNeverUndersold() {
+		setUpRsi(0.5, 0.4, 0.6, 0.5);
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(0);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
-	public void calculateSignalUndersoldOutsideDateRange() {
-		final int numberSignalLinesDates = 4;
+	public void calculateSignaAlwaysUndersold() {
+		setUpRsi(0.1, 0.2, 0.25, 0.1);
+		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void calculateSignalOutsideDateRange() {
 		setUpRsi(0.5, 0.2, 0.1, 0.15);
 		setUpDateRange(false);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
-	public void calculateSignalUndersold() {
-		final int numberSignalLinesDates = 4;
+	public void calculateSignalUndersoldCrossover() {
 		setUpRsi(0.5, 0.4, 0.29, 0.5);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(1, signals);
 		verfiyDatedSignal(3, signals.get(0));
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
-	public void calculateSignalOnUndersoldNoSignal() {
-		final int numberSignalLinesDates = 4;
-		setUpRsi(0.5, 0.4, 0.3, 0.3);
+	public void calculateSignalOnUndersold() {
+		setUpRsi(0.3, 0.3, 0.3, 0.3);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
 	public void calculateSignalTouchUndersold() {
-		final int numberSignalLinesDates = 4;
 		setUpRsi(0.1, 0.3, 0.2, 0.15);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
 	public void calculateSignalTwiceUndersold() {
-		final int numberSignalLinesDates = 6;
 		setUpRsi(0.9, 0.2, 0.5, 0.3, 0.4, 0.3);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -148,19 +152,18 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 		verifySignals(2, signals);
 		verfiyDatedSignal(2, signals.get(0));
 		verfiyDatedSignal(4, signals.get(1));
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(6);
 	}
 
 	@Test
-	public void calculateSignalOnUndersold() {
-		final int numberSignalLinesDates = 5;
+	public void calculateSignalFallBelowThenOnUndersoldCrossover() {
 		setUpRsi(0.4, 0.3, 0.3, 0.2, 0.5);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(1, signals);
 		verfiyDatedSignal(4, signals.get(0));
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(5);
 	}
 
 	private void setUpRsi( final double... values ) {

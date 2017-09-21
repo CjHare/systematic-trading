@@ -84,52 +84,62 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void neverOversold() {
+	public void calculateSignalNeverOversold() {
+		setUpRsi(0.5, 0.6, 0.6, 0.5);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(0);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
-	public void calculateSignalOversoldOutsideDateRange() {
-		final int numberSignalLinesDates = 4;
+	public void calculateSignalAlwaysOversold() {
+		setUpRsi(0.7, 0.8, 0.9, 0.75);
+
+		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void calculateSignalOutsideDateRange() {
 		setUpRsi(0.5, 0.7, 0.8, 0.75);
 		setUpDateRange(false);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
-	public void calculateSignalOversold() {
-		final int numberSignalLinesDates = 4;
+	public void calculateSignalOversoldCrossover() {
 		setUpRsi(1, 0.69, 0.8, 0.7);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(1, signals);
 		verfiyDatedSignal(1, signals.get(0));
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
-	public void calculateSignalTouchOversoldNoSignal() {
-		final int numberSignalLinesDates = 4;
+	/**
+	 * No signal unless the RSI line crosses below the over sold threshold.
+	 */
+	public void calculateSignalTouchOversold() {
 		setUpRsi(1, 0.7, 0.8, 0.75);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
-	public void calculateSignalTwiceOversold() {
-		final int numberSignalLinesDates = 4;
+	public void calculateSignalTwiceCrossoverOversold() {
 		setUpRsi(1, 0.4, 0.9, 0.6);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -137,23 +147,21 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 		verifySignals(2, signals);
 		verfiyDatedSignal(1, signals.get(0));
 		verfiyDatedSignal(3, signals.get(1));
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
-	public void calculateSignalNoSignalsOnOversold() {
-		final int numberSignalLinesDates = 5;
-		setUpRsi(0.4, 0.7, 0.7, 0.8, 0.75);
+	public void calculateSignalsOnOversold() {
+		setUpRsi(0.7, 0.7, 0.7, 0.7, 0.7);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(5);
 	}
 
 	@Test
-	public void calculateSignalOnOversold() {
-		final int numberSignalLinesDates = 5;
+	public void calculateSignalOnOversoldThenCrossover() {
 		setUpRsi(0.7, 0.7, 0.5, 0.8, 0.45);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -161,7 +169,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 		verifySignals(2, signals);
 		verfiyDatedSignal(2, signals.get(0));
 		verfiyDatedSignal(4, signals.get(1));
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(5);
 	}
 
 	private void setUpRsi( final double... values ) {
