@@ -35,8 +35,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Triple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.systematic.trading.data.history.HistoryRetrievalRequestMerger;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
@@ -73,36 +73,30 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	        final Period maximum ) {
 		final List<HistoryRetrievalRequest> mergedRequests = new ArrayList<>(sortedRequests.size());
 		HistoryRetrievalRequestBuilder mergingRequests = resetBuilder(sortedRequests.get(0));
-		final int numberOfRequests = sortedRequests.size() - 1;
+		final int lastRequestIndex = sortedRequests.size() - 1;
 		Period remaining = maximum;
 
-		for (int i = 0; i < numberOfRequests; i++) {
+		for (int i = 0; i < lastRequestIndex; i++) {
 
-			final Triple<Optional<HistoryRetrievalRequest>, Period, HistoryRetrievalRequestBuilder> mergeOutcome = mergeRequest(
-			        maximum, getLastRequest(i, sortedRequests), sortedRequests.get(i),
-			        getNextRequest(i, sortedRequests), remaining, mergingRequests);
+			final Pair<Period, HistoryRetrievalRequestBuilder> mergeOutcome = mergeRequest(maximum,
+			        getLastRequest(i, sortedRequests), sortedRequests.get(i), getNextRequest(i, sortedRequests),
+			        remaining, mergingRequests, mergedRequests);
 
-			final Optional<HistoryRetrievalRequest> mergedRequest = mergeOutcome.getLeft();
-			if (mergedRequest.isPresent()) {
-				mergedRequests.add(mergedRequest.get());
-			}
-
-			remaining = mergeOutcome.getMiddle();
+			remaining = mergeOutcome.getLeft();
 			mergingRequests = mergeOutcome.getRight();
 		}
 
-		mergedRequests.add(createLastRequest(sortedRequests, mergingRequests));
+		mergedRequests.add(createLastRequest(sortedRequests.get(lastRequestIndex), mergingRequests));
 
 		return mergedRequests;
 	}
 
-	private Triple<Optional<HistoryRetrievalRequest>, Period, HistoryRetrievalRequestBuilder> mergeRequest(
-	        final Period maximum, final Optional<HistoryRetrievalRequest> lastRequest,
-	        final HistoryRetrievalRequest request, final HistoryRetrievalRequest nextRequest, Period remaining,
-	        final HistoryRetrievalRequestBuilder mergingRequests ) {
+	private Pair<Period, HistoryRetrievalRequestBuilder> mergeRequest( final Period maximum,
+	        final Optional<HistoryRetrievalRequest> lastRequest, final HistoryRetrievalRequest request,
+	        final HistoryRetrievalRequest nextRequest, Period remaining,
+	        final HistoryRetrievalRequestBuilder mergingRequests, final List<HistoryRetrievalRequest> mergedRequests ) {
 		final Period requestLength = getRequestLength(request);
 		HistoryRetrievalRequestBuilder nextMergingRequests = mergingRequests;
-		HistoryRetrievalRequest created = null;
 		Period nextRequestRemaining;
 
 		if (areConsecutive(request, nextRequest)) {
@@ -112,7 +106,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 				nextRequestRemaining = remaining.minus(requestLength);
 
 				if (nextRequestRemaining.isZero()) {
-					created = createRequest(request, mergingRequests);
+					mergedRequests.add(createRequest(request, mergingRequests));
 
 					// Reset the  time for the next request to merge, update the start date
 					nextRequestRemaining = maximum;
@@ -122,24 +116,23 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 
 				// Insufficient time to merge the entire next record
 				if (lastRequest.isPresent()) {
-					created = createRequest(lastRequest.get(), mergingRequests);
+					mergedRequests.add(createRequest(lastRequest.get(), mergingRequests));
 					nextMergingRequests = resetBuilder(request);
 				}
 
-				created = createRequest(request, mergingRequests);
+				mergedRequests.add(createRequest(request, nextMergingRequests));
 				nextRequestRemaining = maximum;
 				nextMergingRequests = resetBuilder(nextRequest);
 
 			}
 		} else {
 			// Break in the consecutive chain
-			created = createRequest(request, mergingRequests);
+			mergedRequests.add(createRequest(request, mergingRequests));
 			nextRequestRemaining = maximum;
 			nextMergingRequests = resetBuilder(nextRequest);
 		}
 
-		return new ImmutableTriple<>(created == null ? Optional.empty() : Optional.of(created), nextRequestRemaining,
-		        nextMergingRequests);
+		return new ImmutablePair<>(nextRequestRemaining, nextMergingRequests);
 	}
 
 	private HistoryRetrievalRequest createRequest( final HistoryRetrievalRequest request,
@@ -147,10 +140,9 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		return mergedRequest.withExclusiveEndDate(request.getExclusiveEndDate()).build();
 	}
 
-	private HistoryRetrievalRequest createLastRequest( final List<HistoryRetrievalRequest> sortedRequests,
+	private HistoryRetrievalRequest createLastRequest( final HistoryRetrievalRequest lastRequest,
 	        final HistoryRetrievalRequestBuilder mergedRequest ) {
-		return mergedRequest.withExclusiveEndDate(sortedRequests.get(sortedRequests.size() - 1).getExclusiveEndDate())
-		        .build();
+		return mergedRequest.withExclusiveEndDate(lastRequest.getExclusiveEndDate()).build();
 	}
 
 	private boolean hasInsufficentRequestsToMerge( final List<HistoryRetrievalRequest> unsortedRequests ) {
