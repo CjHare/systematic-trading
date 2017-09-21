@@ -61,7 +61,7 @@ public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 
 	@Override
 	protected ElasticIndexMapping getIndexMapping() {
-		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.SIGNAL_TYPE, ElasticFieldType.TEXT),
+		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.SIGNAL_TYPE, ElasticFieldType.KEYWORD),
 		        getPair(ElasticFieldName.DIRECTION_TYPE, ElasticFieldType.TEXT),
 		        getPair(ElasticFieldName.SIGNAL_DATE, ElasticFieldType.DATE)));
 	}

@@ -61,7 +61,7 @@ public class ElasticCashIndex extends ElasticCommonIndex {
 
 	@Override
 	protected ElasticIndexMapping getIndexMapping() {
-		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
+		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
 		        getPair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
 		        getPair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
 		        getPair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT),

@@ -33,6 +33,7 @@ package com.systematic.trading.backtest.output.elastic.model;
 public enum ElasticFieldType {
 
 	DATE("date"),
+	KEYWORD("keyword"),
 	FLOAT("float"),
 	TEXT("text");
 
