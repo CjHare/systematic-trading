@@ -75,14 +75,14 @@ public class RelativeStrengthIndexCalculatorTest {
 		        validator, MATH_CONTEXT);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
-		final List<RelativeStrengthIndexDataPoint> rsi = calculator.rsi(prices);
+		final RelativeStrengthIndexLines rsi = calculator.rsi(prices);
 
 		assertNotNull(rsi);
-		assertEquals(relativeStrengthCount, rsi.size());
-		assertValueEquals(67.21, rsi.get(0));
-		assertValueEquals(75.31, rsi.get(1));
-		assertValueEquals(80.20, rsi.get(2));
-		assertValueEquals(83.47, rsi.get(3));
+		assertEquals(relativeStrengthCount, rsi.getRsi().size());
+		assertValueEquals(67.21, 0, rsi);
+		assertValueEquals(75.31, 1, rsi);
+		assertValueEquals(80.20, 2, rsi);
+		assertValueEquals(83.47, 3, rsi);
 
 		verify(relativeStrength).rs(prices);
 	}
@@ -96,36 +96,40 @@ public class RelativeStrengthIndexCalculatorTest {
 		        validator, MATH_CONTEXT);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
-		final List<RelativeStrengthIndexDataPoint> rsi = calculator.rsi(prices);
+		final RelativeStrengthIndexLines rsi = calculator.rsi(prices);
 
 		assertNotNull(rsi);
-		assertEquals(19, rsi.size());
-		assertValueEquals(70.53, rsi.get(0));
-		assertValueEquals(66.32, rsi.get(1));
-		assertValueEquals(66.55, rsi.get(2));
-		assertValueEquals(69.41, rsi.get(3));
-		assertValueEquals(66.35, rsi.get(4));
-		assertValueEquals(57.97, rsi.get(5));
-		assertValueEquals(62.93, rsi.get(6));
-		assertValueEquals(63.26, rsi.get(7));
-		assertValueEquals(56.06, rsi.get(8));
-		assertValueEquals(62.38, rsi.get(9));
-		assertValueEquals(54.71, rsi.get(10));
-		assertValueEquals(50.42, rsi.get(11));
-		assertValueEquals(39.99, rsi.get(12));
-		assertValueEquals(41.46, rsi.get(13));
-		assertValueEquals(41.87, rsi.get(14));
-		assertValueEquals(45.46, rsi.get(15));
-		assertValueEquals(37.30, rsi.get(16));
-		assertValueEquals(33.08, rsi.get(17));
-		assertValueEquals(37.77, rsi.get(18));
+		assertEquals(19, rsi.getRsi().size());
+		assertValueEquals(70.53, 0, rsi);
+		assertValueEquals(66.32, 1, rsi);
+		assertValueEquals(66.55, 2, rsi);
+		assertValueEquals(69.41, 3, rsi);
+		assertValueEquals(66.35, 4, rsi);
+		assertValueEquals(57.97, 5, rsi);
+		assertValueEquals(62.93, 6, rsi);
+		assertValueEquals(63.26, 7, rsi);
+		assertValueEquals(56.06, 8, rsi);
+		assertValueEquals(62.38, 9, rsi);
+		assertValueEquals(54.71, 10, rsi);
+		assertValueEquals(50.42, 11, rsi);
+		assertValueEquals(39.99, 12, rsi);
+		assertValueEquals(41.46, 13, rsi);
+		assertValueEquals(41.87, 14, rsi);
+		assertValueEquals(45.46, 15, rsi);
+		assertValueEquals(37.30, 16, rsi);
+		assertValueEquals(33.08, 17, rsi);
+		assertValueEquals(37.77, 18, rsi);
 
 		verify(relativeStrength).rs(prices);
 	}
 
-	private void assertValueEquals( final double expected, final RelativeStrengthIndexDataPoint actual ) {
+	private void assertValueEquals( final double expected, final int index, final RelativeStrengthIndexLines actual ) {
 		assertEquals(BigDecimal.valueOf(expected).setScale(2, RoundingMode.HALF_EVEN),
-		        actual.getValue().setScale(2, RoundingMode.HALF_EVEN));
+		        actual.getRsi().get(getDate(index)).setScale(2, RoundingMode.HALF_EVEN));
+	}
+
+	private LocalDate getDate( final int index ) {
+		return LocalDate.now().plus(index, ChronoUnit.DAYS);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -152,7 +156,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		final List<RelativeStrengthDataPoint> data = new ArrayList<>(count);
 
 		for (int i = 0; i < count; i++) {
-			data.add(new RelativeStrengthDataPoint(LocalDate.now().plus(count, ChronoUnit.DAYS),
+			data.add(new RelativeStrengthDataPoint(LocalDate.now().plus(i, ChronoUnit.DAYS),
 			        BigDecimal.valueOf(i + 2.05)));
 		}
 

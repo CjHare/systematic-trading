@@ -38,8 +38,9 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 
 import org.junit.Before;
@@ -50,7 +51,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLines;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
@@ -66,16 +67,15 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	@Mock
 	private Predicate<LocalDate> signalRange;
 
-	private RelativeStrengthIndexBullishSignalCalculator calculator;
+	@Mock
+	private RelativeStrengthIndexLines rsi;
 
-	private List<RelativeStrengthIndexDataPoint> rsi;
+	private RelativeStrengthIndexBullishSignalCalculator calculator;
 
 	@Before
 	public void setUp() {
 		setUpCalculator();
 		setUpDateRange(true);
-
-		rsi = new ArrayList<>();
 	}
 
 	@Test
@@ -164,8 +164,13 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	}
 
 	private void setUpRsi( final double... values ) {
-		for (int i = 0; i < values.length; i++)
-			rsi.add(new RelativeStrengthIndexDataPoint(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i])));
+		SortedMap<LocalDate, BigDecimal> line = new TreeMap<>();
+
+		for (int i = 0; i < values.length; i++) {
+			line.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
+		}
+
+		when(rsi.getRsi()).thenReturn(line);
 	}
 
 	private void setUpCalculator() {

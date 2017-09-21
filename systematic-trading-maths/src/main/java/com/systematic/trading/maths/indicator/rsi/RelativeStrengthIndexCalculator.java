@@ -27,9 +27,11 @@ package com.systematic.trading.maths.indicator.rsi;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.formula.rs.RelativeStrength;
 import com.systematic.trading.maths.formula.rs.RelativeStrengthDataPoint;
@@ -81,20 +83,19 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	}
 
 	@Override
-	public List<RelativeStrengthIndexDataPoint> rsi( final TradingDayPrices[] data ) {
+	public RelativeStrengthIndexLines rsi( final TradingDayPrices[] data ) {
 		final List<RelativeStrengthDataPoint> relativeStrengthValues = rs.rs(data);
 		//TODO data != null
 		validator.verifyZeroNullEntries(data);
 
-		final List<RelativeStrengthIndexDataPoint> relativeStrengthIndexValues = new NonNullableArrayList<>(
-		        relativeStrengthValues.size());
+		final SortedMap<LocalDate, BigDecimal> rsi = new TreeMap<>();
 
 		/* RSI = 100 - 100 /( 1 + RS ) */
 		for (final RelativeStrengthDataPoint dataPoint : relativeStrengthValues) {
-			relativeStrengthIndexValues.add(new RelativeStrengthIndexDataPoint(dataPoint.getDate(),
-			        ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(dataPoint.getValue()), mathContext))));
+			rsi.put(dataPoint.getDate(),
+			        ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(dataPoint.getValue()), mathContext)));
 		}
 
-		return relativeStrengthIndexValues;
+		return new RelativeStrengthIndexLines(rsi);
 	}
 }

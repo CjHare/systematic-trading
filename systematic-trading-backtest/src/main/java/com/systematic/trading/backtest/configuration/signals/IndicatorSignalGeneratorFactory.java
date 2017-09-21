@@ -37,7 +37,7 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLines;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.SignalCalculator;
@@ -132,7 +132,7 @@ public class IndicatorSignalGeneratorFactory {
 	private IndicatorSignalGenerator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter,
 	        final MathContext mathContext ) {
 
-		final List<SignalCalculator<List<RelativeStrengthIndexDataPoint>>> signalCalculators = new ArrayList<>();
+		final List<SignalCalculator<RelativeStrengthIndexLines>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new RelativeStrengthIndexBullishSignalCalculator(rsiConfiguration.getOversold()));
 		signalCalculators.add(new RelativeStrengthIndexBearishSignalCalculator(rsiConfiguration.getOverbought()));
 

@@ -49,7 +49,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLines;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
@@ -77,16 +77,17 @@ public class RelativeStrengthIndexSignalsTest {
 	private RelativeStrengthIndexCalculator rsi;
 
 	@Mock
-	private SignalCalculator<List<RelativeStrengthIndexDataPoint>> firstCalculator;
+	private SignalCalculator<RelativeStrengthIndexLines> firstCalculator;
 
 	@Mock
-	private SignalCalculator<List<RelativeStrengthIndexDataPoint>> secondCalculator;
+	private SignalCalculator<RelativeStrengthIndexLines> secondCalculator;
 
-	private List<SignalCalculator<List<RelativeStrengthIndexDataPoint>>> signalCalculators;
+	private List<SignalCalculator<RelativeStrengthIndexLines>> signalCalculators;
 
 	private TradingDayPrices[] data;
 
-	private List<RelativeStrengthIndexDataPoint> line;
+	@Mock
+	private RelativeStrengthIndexLines line;
 
 	@Before
 	public void setUp() {
@@ -96,7 +97,7 @@ public class RelativeStrengthIndexSignalsTest {
 
 		data = new TradingDayPrices[0];
 
-		line = new ArrayList<>();
+		when(rsi.rsi(any(TradingDayPrices[].class))).thenReturn(line);
 	}
 
 	@Test
@@ -195,14 +196,15 @@ public class RelativeStrengthIndexSignalsTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void setUpCalculator( SignalCalculator<List<RelativeStrengthIndexDataPoint>> calculator,
+	private void setUpCalculator( SignalCalculator<RelativeStrengthIndexLines> calculator,
 	        final DatedSignal... signals ) {
 		final List<DatedSignal> datedSignals = new ArrayList<>();
 		for (final DatedSignal signal : signals) {
 			datedSignals.add(signal);
 		}
 
-		when(calculator.calculateSignals(any(List.class), any(Predicate.class))).thenReturn(datedSignals);
+		when(calculator.calculateSignals(any(RelativeStrengthIndexLines.class), any(Predicate.class)))
+		        .thenReturn(datedSignals);
 	}
 
 	private RelativeStrengthIndexSignals setUpRsiSignals() {
@@ -240,7 +242,7 @@ public class RelativeStrengthIndexSignalsTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void verifyCalculatorSignals( final SignalCalculator<List<RelativeStrengthIndexDataPoint>> calculator,
+	private void verifyCalculatorSignals( final SignalCalculator<RelativeStrengthIndexLines> calculator,
 	        final int typeCount ) {
 		verify(calculator).calculateSignals(eq(line), any(Predicate.class));
 		verify(calculator, times(typeCount)).getType();

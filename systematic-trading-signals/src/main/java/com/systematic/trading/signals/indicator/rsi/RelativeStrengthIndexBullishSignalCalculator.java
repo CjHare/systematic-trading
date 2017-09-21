@@ -33,10 +33,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexDataPoint;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLines;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.model.DatedSignal;
 
@@ -49,8 +50,7 @@ import com.systematic.trading.signals.model.DatedSignal;
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexBullishSignalCalculator
-        implements SignalCalculator<List<RelativeStrengthIndexDataPoint>> {
+public class RelativeStrengthIndexBullishSignalCalculator implements SignalCalculator<RelativeStrengthIndexLines> {
 
 	/** Threshold for when the RSI is considered as over sold.*/
 	private final BigDecimal oversold;
@@ -65,18 +65,17 @@ public class RelativeStrengthIndexBullishSignalCalculator
 	}
 
 	@Override
-	public List<DatedSignal> calculateSignals( List<RelativeStrengthIndexDataPoint> rsiLine,
-	        Predicate<LocalDate> signalRange ) {
+	public List<DatedSignal> calculateSignals( final RelativeStrengthIndexLines rsiLine,
+	        final Predicate<LocalDate> signalRange ) {
 
 		final List<DatedSignal> signals = new ArrayList<>();
+		Map.Entry<LocalDate, BigDecimal> yesterday = null;
 
-		//TODO getting the first value? how about when there aren't any?
-		RelativeStrengthIndexDataPoint yesterday = null;
+		for (Map.Entry<LocalDate, BigDecimal> today : rsiLine.getRsi().entrySet()) {
 
-		for (final RelativeStrengthIndexDataPoint today : rsiLine) {
-			if (yesterday != null && signalRange.test(today.getDate())
-			        && hasMomentumDirectionChanged(yesterday, today)) {
-				signals.add(new DatedSignal(today.getDate(), getType()));
+			if (yesterday != null && signalRange.test(today.getKey())
+			        && hasMomentumDirectionChanged(yesterday.getValue(), today.getValue())) {
+				signals.add(new DatedSignal(today.getKey(), getType()));
 			}
 
 			yesterday = today;
@@ -88,8 +87,7 @@ public class RelativeStrengthIndexBullishSignalCalculator
 	/**
 	 * Has the RSI moved from below or on the over sold line to above it?
 	 */
-	private boolean hasMomentumDirectionChanged( final RelativeStrengthIndexDataPoint yesterday,
-	        final RelativeStrengthIndexDataPoint today ) {
-		return today.getValue().compareTo(oversold) > 0 && yesterday.getValue().compareTo(oversold) <= 0;
+	private boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today ) {
+		return today.compareTo(oversold) > 0 && yesterday.compareTo(oversold) <= 0;
 	}
 }
