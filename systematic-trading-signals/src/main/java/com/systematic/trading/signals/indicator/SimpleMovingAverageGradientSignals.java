@@ -42,13 +42,17 @@ import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 
 /**
- * Interested in the Simple Moving Average (SMA) gradient, whether it is negative (downward),flat
+ * The Simple Moving Average (SMA) gradient, whether it is negative (downward),flat
  * (no change) or positive (upward).
  * 
  * @author CJ Hare
  */
 public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenerator {
-
+//TODO replace this class with SAM & EMA signals, supported using the origin, instead of inter-day gradient
+	
+	/**
+	 * Trigger gradient  for a bullish signal.
+	 */
 	public enum GradientType {
 		NEGATIVE,
 		FLAT,
@@ -106,13 +110,13 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 
 		// Only look at the gradient if there's more than one sma result
 		if (!sma.isEmpty()) {
-			return analysisGradient(data, sma, signalRange);
+			return analyseGradient(data, sma, signalRange);
 		}
 
 		return new ArrayList<>();
 	}
 
-	private List<IndicatorSignal> analysisGradient( final TradingDayPrices[] data, final List<BigDecimal> sma,
+	private List<IndicatorSignal> analyseGradient( final TradingDayPrices[] data, final List<BigDecimal> sma,
 	        final Predicate<LocalDate> signalRange ) {
 		final List<IndicatorSignal> signals = new ArrayList<>();
 
