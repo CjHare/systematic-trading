@@ -63,12 +63,17 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 			return unsortedRequests;
 		}
 
-		final List<HistoryRetrievalRequest> merged = new ArrayList<>(unsortedRequests.size());
-		final List<HistoryRetrievalRequest> sortedRequests = sortByStartDate(unsortedRequests);
+		return mergeRequests(sortByStartDate(unsortedRequests), maximum);
+	}
+
+	private List<HistoryRetrievalRequest> mergeRequests( final List<HistoryRetrievalRequest> sortedRequests,
+	        final Period maximum ) {
+		final List<HistoryRetrievalRequest> merged = new ArrayList<>(sortedRequests.size());
 		HistoryRetrievalRequestBuilder mergedRequest = resetBuilder(sortedRequests.get(0));
+		final int numberOfRequests = sortedRequests.size() - 1;
 		Period remaining = maximum;
 
-		for (int i = 0; i < sortedRequests.size() - 1; i++) {
+		for (int i = 0; i < numberOfRequests; i++) {
 			final Optional<HistoryRetrievalRequest> lastRequest = getLastRequest(i, sortedRequests);
 			final HistoryRetrievalRequest request = sortedRequests.get(i);
 			final HistoryRetrievalRequest nextRequest = getNexrRequest(i, sortedRequests);
