@@ -107,31 +107,30 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	@Test
 	public void calculateSignalOversold() {
 		final int numberSignalLinesDates = 4;
-		setUpRsi(0.5, 0.69, 0.8, 0.75);
+		setUpRsi(1, 0.69, 0.8, 0.7);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(1, signals);
-		verfiyDatedSignal(2, signals.get(0));
+		verfiyDatedSignal(1, signals.get(0));
 		verifySignalRangeTests(numberSignalLinesDates);
 	}
 
 	@Test
-	public void calculateSignalOversoldTouchDown() {
+	public void calculateSignalTouchOversoldNoSignal() {
 		final int numberSignalLinesDates = 4;
 		setUpRsi(1, 0.7, 0.8, 0.75);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
-		verifySignals(1, signals);
-		verfiyDatedSignal(2, signals.get(0));
+		verifySignals(0, signals);
 		verifySignalRangeTests(numberSignalLinesDates);
 	}
 
 	@Test
 	public void calculateSignalTwiceOversold() {
 		final int numberSignalLinesDates = 4;
-		setUpRsi(0.4, 0.9, 0.5, 0.75);
+		setUpRsi(1, 0.4, 0.9, 0.6);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
@@ -142,16 +141,26 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalOnOversold() {
+	public void calculateSignalNoSignalsOnOversold() {
 		final int numberSignalLinesDates = 5;
 		setUpRsi(0.4, 0.7, 0.7, 0.8, 0.75);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
-		verifySignals(3, signals);
-		verfiyDatedSignal(1, signals.get(0));
-		verfiyDatedSignal(2, signals.get(1));
-		verfiyDatedSignal(3, signals.get(2));
+		verifySignals(0, signals);
+		verifySignalRangeTests(numberSignalLinesDates);
+	}
+
+	@Test
+	public void calculateSignalOnOversold() {
+		final int numberSignalLinesDates = 5;
+		setUpRsi(0.7, 0.7, 0.5, 0.8, 0.45);
+
+		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
+
+		verifySignals(2, signals);
+		verfiyDatedSignal(2, signals.get(0));
+		verfiyDatedSignal(4, signals.get(1));
 		verifySignalRangeTests(numberSignalLinesDates);
 	}
 

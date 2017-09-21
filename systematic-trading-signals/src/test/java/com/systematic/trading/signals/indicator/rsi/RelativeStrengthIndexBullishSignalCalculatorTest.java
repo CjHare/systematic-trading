@@ -107,37 +107,47 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	@Test
 	public void calculateSignalUndersold() {
 		final int numberSignalLinesDates = 4;
-		setUpRsi(0.5, 0.4, 0.3, 0.5);
+		setUpRsi(0.5, 0.4, 0.29, 0.5);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(1, signals);
-		verfiyDatedSignal(2, signals.get(0));
+		verfiyDatedSignal(3, signals.get(0));
 		verifySignalRangeTests(numberSignalLinesDates);
 	}
 
 	@Test
-	public void calculateSignalUndersoldTouch() {
+	public void calculateSignalOnUndersoldNoSignal() {
+		final int numberSignalLinesDates = 4;
+		setUpRsi(0.5, 0.4, 0.3, 0.3);
+
+		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(numberSignalLinesDates);
+	}
+
+	@Test
+	public void calculateSignalTouchUndersold() {
 		final int numberSignalLinesDates = 4;
 		setUpRsi(0.1, 0.3, 0.2, 0.15);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
-		verifySignals(1, signals);
-		verfiyDatedSignal(2, signals.get(0));
+		verifySignals(0, signals);
 		verifySignalRangeTests(numberSignalLinesDates);
 	}
 
 	@Test
 	public void calculateSignalTwiceUndersold() {
-		final int numberSignalLinesDates = 4;
-		setUpRsi(0.9, 0.2, 0.5, 0.3);
+		final int numberSignalLinesDates = 6;
+		setUpRsi(0.9, 0.2, 0.5, 0.3, 0.4, 0.3);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
 		verifySignals(2, signals);
-		verfiyDatedSignal(1, signals.get(0));
-		verfiyDatedSignal(3, signals.get(1));
+		verfiyDatedSignal(2, signals.get(0));
+		verfiyDatedSignal(4, signals.get(1));
 		verifySignalRangeTests(numberSignalLinesDates);
 	}
 
@@ -148,10 +158,8 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
-		verifySignals(3, signals);
-		verfiyDatedSignal(1, signals.get(0));
-		verfiyDatedSignal(2, signals.get(1));
-		verfiyDatedSignal(3, signals.get(2));
+		verifySignals(1, signals);
+		verfiyDatedSignal(4, signals.get(0));
 		verifySignalRangeTests(numberSignalLinesDates);
 	}
 

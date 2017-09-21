@@ -45,6 +45,8 @@ import com.systematic.trading.signals.model.DatedSignal;
 
 /**
  * Given time series price date, creates RSI values and any appropriate signals.
+ * <p/>
+ * The RSI is most reliable in a ranging market and may give misleading signals in a trending market.
  * 
  * @author CJ Hare
  */

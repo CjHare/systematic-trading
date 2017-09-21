@@ -43,7 +43,8 @@ import com.systematic.trading.signals.model.DatedSignal;
 /**
  * Given RSI line points calculates when the following bearish events occurred:
  * <ul>
- * <li>Overbrought; RSI moved from being on or below the over brought line to above it.</li>
+ * <li>Overbrought; RSI moved from being on or above the over brought line to below, 
+ * 					signaling a change the direction of momentum.</li>
  * </ul>
  * 
  * @author CJ Hare
@@ -73,7 +74,8 @@ public class RelativeStrengthIndexBearishSignalCalculator
 		RelativeStrengthIndexDataPoint yesterday = null;
 
 		for (final RelativeStrengthIndexDataPoint today : rsiLine) {
-			if (yesterday != null && signalRange.test(today.getDate()) && isOverbrought(yesterday, today)) {
+			if (yesterday != null && signalRange.test(today.getDate())
+			        && hasMomentumDirectionChanged(yesterday, today)) {
 				signals.add(new DatedSignal(today.getDate(), getType()));
 			}
 
@@ -83,8 +85,12 @@ public class RelativeStrengthIndexBearishSignalCalculator
 		return signals;
 	}
 
-	private boolean isOverbrought( final RelativeStrengthIndexDataPoint yesterday,
+	/**
+	 * Has the RSI moved from above or on the over sold line to below it?
+	 */
+	private boolean hasMomentumDirectionChanged( final RelativeStrengthIndexDataPoint yesterday,
 	        final RelativeStrengthIndexDataPoint today ) {
-		return today.getValue().compareTo(overbrought) >= 0 && yesterday.getValue().compareTo(overbrought) <= 0;
+		return today.getValue().compareTo(overbrought) < 0 && yesterday.getValue().compareTo(overbrought) >= 0;
 	}
+
 }

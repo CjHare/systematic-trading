@@ -43,7 +43,8 @@ import com.systematic.trading.signals.model.DatedSignal;
 /**
  * Given RSI line points calculates when the following bullish events occurred:
  * <ul>
- * <li>Oversold; RSI moved from being above the over sold line to below.</li>
+ * <li>Oversold; RSI moved from being below or on the over sold line to above
+ * 					signaling a change the direction of momentum.</li>
  * </ul>
  * 
  * @author CJ Hare
@@ -73,7 +74,8 @@ public class RelativeStrengthIndexBullishSignalCalculator
 		RelativeStrengthIndexDataPoint yesterday = null;
 
 		for (final RelativeStrengthIndexDataPoint today : rsiLine) {
-			if (yesterday != null && signalRange.test(today.getDate()) && isOversold(yesterday, today)) {
+			if (yesterday != null && signalRange.test(today.getDate())
+			        && hasMomentumDirectionChanged(yesterday, today)) {
 				signals.add(new DatedSignal(today.getDate(), getType()));
 			}
 
@@ -83,8 +85,11 @@ public class RelativeStrengthIndexBullishSignalCalculator
 		return signals;
 	}
 
-	private boolean isOversold( final RelativeStrengthIndexDataPoint yesterday,
+	/**
+	 * Has the RSI moved from below or on the over sold line to above it?
+	 */
+	private boolean hasMomentumDirectionChanged( final RelativeStrengthIndexDataPoint yesterday,
 	        final RelativeStrengthIndexDataPoint today ) {
-		return today.getValue().compareTo(oversold) <= 0 && yesterday.getValue().compareTo(oversold) >= 0;
+		return today.getValue().compareTo(oversold) > 0 && yesterday.getValue().compareTo(oversold) <= 0;
 	}
 }
