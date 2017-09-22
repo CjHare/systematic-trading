@@ -25,21 +25,16 @@
  */
 package com.systematic.trading.signals.indicator.rsi;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signal.IndicatorSignalType;
-import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
 import com.systematic.trading.signals.indicator.SignalCalculator;
-import com.systematic.trading.signals.model.DatedSignal;
 
 /**
  * Given time series price date, creates RSI values and any appropriate signals.
@@ -48,25 +43,17 @@ import com.systematic.trading.signals.model.DatedSignal;
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
+public class RelativeStrengthIndexSignals extends IndicatorSignalsBase<RelativeStrengthIndexLine>
+        implements IndicatorSignalGenerator {
 
 	/** The least number of data points that enables RSI signal generation. */
 	private static final int MINIMUM_DAYS_OF_RSI_VALUES = 2;
-
-	/** Provides date range filtering. */
-	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
 
 	/** Calculates the RSI values from time series data. */
 	private final RelativeStrengthIndex rsi;
 
 	/** Required number of data points required for RSI calculation. */
 	private final int minimumNumberOfPrices;
-
-	/** Range of signal dates of interest. */
-	private final SignalRangeFilter signalRangeFilter;
-
-	/** Calculators that each parse the signal output to potentially create signals.  */
-	private final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators;
 
 	/**
 	 * @param lookback the number of data points to use in calculations.
@@ -75,9 +62,8 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	public RelativeStrengthIndexSignals( final int lookback, final RelativeStrengthIndex rsi,
 	        final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators,
 	        final SignalRangeFilter filter ) {
+		super(signalCalculators, filter);
 		this.minimumNumberOfPrices = lookback + MINIMUM_DAYS_OF_RSI_VALUES;
-		this.signalRangeFilter = filter;
-		this.signalCalculators = signalCalculators;
 		this.rsi = rsi;
 
 		//TODO validate there's at least one signal calculator 
@@ -89,30 +75,12 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	}
 
 	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
-
-		//TODO validate minimum nummber of points given
-
-		final Predicate<LocalDate> signalRange = candidate -> dateRangeFilter.isWithinSignalRange(
-		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
-
-		final RelativeStrengthIndexLine rsiLine = rsi.rsi(data);
-
-		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
-
-		for (final SignalCalculator<RelativeStrengthIndexLine> calculator : signalCalculators) {
-			final List<DatedSignal> signals = calculator.calculateSignals(rsiLine, signalRange);
-
-			for (final DatedSignal signal : signals) {
-				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalType(), calculator.getType()));
-			}
-		}
-
-		return indicatorSignals;
+	public IndicatorSignalType getSignalType() {
+		return IndicatorSignalType.RSI;
 	}
 
 	@Override
-	public IndicatorSignalType getSignalType() {
-		return IndicatorSignalType.RSI;
+	protected RelativeStrengthIndexLine indicatorCalculation( final TradingDayPrices[] data ) {
+		return rsi.rsi(data);
 	}
 }

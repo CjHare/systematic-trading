@@ -25,21 +25,16 @@
  */
 package com.systematic.trading.signals.indicator.sma;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalType;
-import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
 import com.systematic.trading.signals.indicator.SignalCalculator;
-import com.systematic.trading.signals.model.DatedSignal;
 
 /**
  * The Simple Moving Average (SMA) gradient, whether it is negative (downward),flat
@@ -47,10 +42,8 @@ import com.systematic.trading.signals.model.DatedSignal;
  * 
  * @author CJ Hare
  */
-public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenerator {
-
-	/** Provides date range filtering. */
-	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
+public class SimpleMovingAverageGradientSignals extends IndicatorSignalsBase<SimpleMovingAverageLine>
+        implements IndicatorSignalGenerator {
 
 	/** Number of days to average the value on. */
 	private final int lookback;
@@ -61,45 +54,15 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	/** Responsible for calculating the simple moving average. */
 	private final SimpleMovingAverage sma;
 
-	/** Range of signal dates of interest. */
-	private final SignalRangeFilter signalRangeFilter;
-
-	/** Calculators that will be used to generate signals. */
-	private final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators;
-
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
 	        final SimpleMovingAverage sma, final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators,
 	        final SignalRangeFilter filter ) {
-		this.signalCalculators = signalCalculators;
+		super(signalCalculators, filter);
 		this.daysOfGradient = daysOfGradient;
-		this.sma = sma;
 		this.lookback = lookback;
-		this.signalRangeFilter = filter;
+		this.sma = sma;
 
 		//TODO validate there's at least one signal calculator 
-	}
-
-	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
-
-		//TODO validate the number of data items meets the minimum
-
-		final Predicate<LocalDate> signalRange = candidate -> dateRangeFilter.isWithinSignalRange(
-		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
-
-		final SimpleMovingAverageLine smaLine = sma.sma(data);
-
-		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
-
-		for (final SignalCalculator<SimpleMovingAverageLine> calculator : signalCalculators) {
-			final List<DatedSignal> signals = calculator.calculateSignals(smaLine, signalRange);
-
-			for (final DatedSignal signal : signals) {
-				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalType(), calculator.getType()));
-			}
-		}
-
-		return indicatorSignals;
 	}
 
 	@Override
@@ -110,5 +73,10 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	@Override
 	public IndicatorSignalType getSignalType() {
 		return IndicatorSignalType.SMA;
+	}
+
+	@Override
+	protected SimpleMovingAverageLine indicatorCalculation( final TradingDayPrices[] data ) {
+		return sma.sma(data);
 	}
 }

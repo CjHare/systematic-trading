@@ -25,31 +25,24 @@
  */
 package com.systematic.trading.signals.indicator.macd;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.signal.IndicatorSignalType;
-import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
 import com.systematic.trading.signals.indicator.SignalCalculator;
-import com.systematic.trading.signals.model.DatedSignal;
 
 /**
  * Given time series price date, creates MACD lines and any appropriate signals.
  * 
  * @author CJ Hare
  */
-public class MovingAveragingConvergenceDivergenceSignals implements IndicatorSignalGenerator {
-
-	/** Provides date range filtering. */
-	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
+public class MovingAveragingConvergenceDivergenceSignals
+        extends IndicatorSignalsBase<MovingAverageConvergenceDivergenceLines> implements IndicatorSignalGenerator {
 
 	/** Calculates the MACD lines to use in signal analysis. */
 	private final MovingAverageConvergenceDivergence macd;
@@ -57,46 +50,15 @@ public class MovingAveragingConvergenceDivergenceSignals implements IndicatorSig
 	/** Minimum number of trading days required for MACD signal generation. */
 	private final int requiredNumberOfTradingDays;
 
-	/** Range of signal dates of interest. */
-	private final SignalRangeFilter signalRangeFilter;
-
-	/** Calculators that each parse the signal output to potentially create signals.  */
-	private final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators;
-
 	public MovingAveragingConvergenceDivergenceSignals( final MovingAverageConvergenceDivergence macd,
 	        final int requiredNumberOfTradingDays,
 	        final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators,
 	        final SignalRangeFilter filter ) {
-
+		super(signalCalculators, filter);
 		this.macd = macd;
 		this.requiredNumberOfTradingDays = requiredNumberOfTradingDays;
-		this.signalRangeFilter = filter;
-		this.signalCalculators = signalCalculators;
 
 		//TODO validate there's at least one signal calculator 
-	}
-
-	@Override
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
-
-		//TODO validate the number of data items meets the minimum
-
-		final Predicate<LocalDate> signalRange = candidate -> dateRangeFilter.isWithinSignalRange(
-		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
-
-		final MovingAverageConvergenceDivergenceLines lines = macd.macd(data);
-
-		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
-
-		for (final SignalCalculator<MovingAverageConvergenceDivergenceLines> calculator : signalCalculators) {
-			final List<DatedSignal> signals = calculator.calculateSignals(lines, signalRange);
-
-			for (final DatedSignal signal : signals) {
-				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalType(), calculator.getType()));
-			}
-		}
-
-		return indicatorSignals;
 	}
 
 	@Override
@@ -107,5 +69,10 @@ public class MovingAveragingConvergenceDivergenceSignals implements IndicatorSig
 	@Override
 	public IndicatorSignalType getSignalType() {
 		return IndicatorSignalType.MACD;
+	}
+
+	@Override
+	protected MovingAverageConvergenceDivergenceLines indicatorCalculation( final TradingDayPrices[] data ) {
+		return macd.macd(data);
 	}
 }
