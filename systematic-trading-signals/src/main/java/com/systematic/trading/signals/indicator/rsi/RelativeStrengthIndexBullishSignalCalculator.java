@@ -32,7 +32,7 @@ package com.systematic.trading.signals.indicator.rsi;
 import java.math.BigDecimal;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLines;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 
 /**
@@ -45,7 +45,7 @@ import com.systematic.trading.signals.indicator.SignalCalculator;
  * @author CJ Hare
  */
 public class RelativeStrengthIndexBullishSignalCalculator extends RelativeStrengthIndexSignalCalculator
-        implements SignalCalculator<RelativeStrengthIndexLines> {
+        implements SignalCalculator<RelativeStrengthIndexLine> {
 
 	/** Threshold for when the RSI is considered as over sold.*/
 	private final BigDecimal oversold;

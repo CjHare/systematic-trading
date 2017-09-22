@@ -51,7 +51,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLines;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
@@ -68,7 +68,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	private Predicate<LocalDate> signalRange;
 
 	@Mock
-	private RelativeStrengthIndexLines rsi;
+	private RelativeStrengthIndexLine rsi;
 
 	private RelativeStrengthIndexBearishSignalCalculator calculator;
 

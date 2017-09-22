@@ -27,26 +27,35 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator.rsi;
+package com.systematic.trading.signals.indicator.sma;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.SortedMap;
+import java.util.List;
+import java.util.function.Predicate;
+
+import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
+import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.signals.model.DatedSignal;
 
 /**
- * Representation of the RSI line.
+ * Bullish signal calculation for a SMA.
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexLines {
+public class SimpleMovingAverageBullishSignalCalculator implements SignalCalculator<SimpleMovingAverageLine> {
 
-	private final SortedMap<LocalDate, BigDecimal> rsi;
-
-	public RelativeStrengthIndexLines( final SortedMap<LocalDate, BigDecimal> rsi ) {
-		this.rsi = rsi;
+	@Override
+	public List<DatedSignal> calculateSignals( final SimpleMovingAverageLine indicatorOutput,
+	        final Predicate<LocalDate> signalRange ) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public SortedMap<LocalDate, BigDecimal> getRsi() {
-		return rsi;
+	@Override
+	public SignalType getType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
 }

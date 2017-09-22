@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLines;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
@@ -67,14 +67,14 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	private final SignalRangeFilter signalRangeFilter;
 
 	/** Calculators that each parse the signal output to potentially create signals.  */
-	private final List<SignalCalculator<RelativeStrengthIndexLines>> signalCalculators;
+	private final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators;
 
 	/**
 	 * @param lookback the number of data points to use in calculations.
 	 * @param daysOfRsiValues the number of RSI values desired.
 	 */
 	public RelativeStrengthIndexSignals( final int lookback, final RelativeStrengthIndexCalculator rsi,
-	        final List<SignalCalculator<RelativeStrengthIndexLines>> signalCalculators,
+	        final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators,
 	        final SignalRangeFilter filter ) {
 		this.minimumNumberOfPrices = lookback + MINIMUM_DAYS_OF_RSI_VALUES;
 		this.signalRangeFilter = filter;
@@ -97,11 +97,11 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 		final Predicate<LocalDate> signalRange = candidate -> dateRangeFilter.isWithinSignalRange(
 		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
 
-		final RelativeStrengthIndexLines rsiLine = rsi.rsi(data);
+		final RelativeStrengthIndexLine rsiLine = rsi.rsi(data);
 
 		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
 
-		for (final SignalCalculator<RelativeStrengthIndexLines> calculator : signalCalculators) {
+		for (final SignalCalculator<RelativeStrengthIndexLine> calculator : signalCalculators) {
 			final List<DatedSignal> signals = calculator.calculateSignals(rsiLine, signalRange);
 
 			for (final DatedSignal signal : signals) {

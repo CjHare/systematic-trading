@@ -26,7 +26,7 @@
 package com.systematic.trading.backtest.configuration.signals;
 
 import com.systematic.trading.signal.IndicatorSignalType;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
+import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageGradientSignals.GradientType;
 
 /**
  * Configuration for the SMA signal calculator.

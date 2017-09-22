@@ -27,43 +27,26 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator.rsi;
+package com.systematic.trading.maths.indicator.sma;
 
 import java.math.BigDecimal;
-
-import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
-import com.systematic.trading.signals.indicator.SignalCalculator;
+import java.time.LocalDate;
+import java.util.SortedMap;
 
 /**
- * Given RSI line points calculates when the following bearish events occurred:
- * <ul>
- * <li>Overbrought; RSI moved from being on or above the over brought line to below, 
- * 					signaling a change the direction of momentum.</li>
- * </ul>
+ * Representation of the SMA line.
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexBearishSignalCalculator extends RelativeStrengthIndexSignalCalculator
-        implements SignalCalculator<RelativeStrengthIndexLine> {
+public class SimpleMovingAverageLine {
 
-	/** Threshold for when the RSI is considered as over brought.*/
-	private final BigDecimal overbrought;
+	private final SortedMap<LocalDate, BigDecimal> sma;
 
-	public RelativeStrengthIndexBearishSignalCalculator( final BigDecimal overbrought ) {
-		this.overbrought = overbrought;
+	public SimpleMovingAverageLine( final SortedMap<LocalDate, BigDecimal> sma ) {
+		this.sma = sma;
 	}
 
-	@Override
-	public SignalType getType() {
-		return SignalType.BEARISH;
-	}
-
-	@Override
-	/**
-	 * Has the RSI moved from above or on the over sold line to below it?
-	 */
-	protected boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today ) {
-		return today.compareTo(overbrought) < 0 && yesterday.compareTo(overbrought) >= 0;
+	public SortedMap<LocalDate, BigDecimal> getSma() {
+		return sma;
 	}
 }

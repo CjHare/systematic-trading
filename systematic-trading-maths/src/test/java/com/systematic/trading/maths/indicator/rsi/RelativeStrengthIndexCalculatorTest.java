@@ -75,7 +75,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		        validator, MATH_CONTEXT);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
-		final RelativeStrengthIndexLines rsi = calculator.rsi(prices);
+		final RelativeStrengthIndexLine rsi = calculator.rsi(prices);
 
 		assertNotNull(rsi);
 		assertEquals(relativeStrengthCount, rsi.getRsi().size());
@@ -96,7 +96,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		        validator, MATH_CONTEXT);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
-		final RelativeStrengthIndexLines rsi = calculator.rsi(prices);
+		final RelativeStrengthIndexLine rsi = calculator.rsi(prices);
 
 		assertNotNull(rsi);
 		assertEquals(19, rsi.getRsi().size());
@@ -123,7 +123,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		verify(relativeStrength).rs(prices);
 	}
 
-	private void assertValueEquals( final double expected, final int index, final RelativeStrengthIndexLines actual ) {
+	private void assertValueEquals( final double expected, final int index, final RelativeStrengthIndexLine actual ) {
 		assertEquals(BigDecimal.valueOf(expected).setScale(2, RoundingMode.HALF_EVEN),
 		        actual.getRsi().get(getDate(index)).setScale(2, RoundingMode.HALF_EVEN));
 	}

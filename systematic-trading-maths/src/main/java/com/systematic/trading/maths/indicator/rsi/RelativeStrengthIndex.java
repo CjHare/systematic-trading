@@ -48,5 +48,5 @@ public interface RelativeStrengthIndex {
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return relative strength index values.
 	 */
-	public RelativeStrengthIndexLines rsi( TradingDayPrices[] data );
+	public RelativeStrengthIndexLine rsi( TradingDayPrices[] data );
 }

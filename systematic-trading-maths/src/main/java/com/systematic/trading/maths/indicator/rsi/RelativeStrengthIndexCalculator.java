@@ -83,7 +83,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	}
 
 	@Override
-	public RelativeStrengthIndexLines rsi( final TradingDayPrices[] data ) {
+	public RelativeStrengthIndexLine rsi( final TradingDayPrices[] data ) {
 		final List<RelativeStrengthDataPoint> relativeStrengthValues = rs.rs(data);
 		//TODO data != null
 		validator.verifyZeroNullEntries(data);
@@ -96,6 +96,6 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 			        ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(dataPoint.getValue()), mathContext)));
 		}
 
-		return new RelativeStrengthIndexLines(rsi);
+		return new RelativeStrengthIndexLine(rsi);
 	}
 }

@@ -37,17 +37,17 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLines;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
- * Generic RSI signal calculatoions.
+ * Generic RSI signal calculation.
  * 
  * @author CJ Hare
  */
 public abstract class RelativeStrengthIndexSignalCalculator {
 
-	public List<DatedSignal> calculateSignals( final RelativeStrengthIndexLines rsiLine,
+	public List<DatedSignal> calculateSignals( final RelativeStrengthIndexLine rsiLine,
 	        final Predicate<LocalDate> signalRange ) {
 
 		final List<DatedSignal> signals = new ArrayList<>();

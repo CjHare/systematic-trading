@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.indicator.sma;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -40,6 +40,8 @@ import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
+import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 
 /**
  * The Simple Moving Average (SMA) gradient, whether it is negative (downward),flat

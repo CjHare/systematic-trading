@@ -37,17 +37,17 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLines;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.SignalCalculator;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
 import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceBullishSignalCalculator;
 import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceUptrendSignalCalculator;
 import com.systematic.trading.signals.indicator.macd.MovingAveragingConvergenceDivergenceSignals;
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBearishSignalCalculator;
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBullishSignalCalculator;
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageGradientSignals;
 
 /**
  * Creates the signal instances.
@@ -132,7 +132,7 @@ public class IndicatorSignalGeneratorFactory {
 	private IndicatorSignalGenerator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter,
 	        final MathContext mathContext ) {
 
-		final List<SignalCalculator<RelativeStrengthIndexLines>> signalCalculators = new ArrayList<>();
+		final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new RelativeStrengthIndexBullishSignalCalculator(rsiConfiguration.getOversold()));
 		signalCalculators.add(new RelativeStrengthIndexBearishSignalCalculator(rsiConfiguration.getOverbought()));
 
