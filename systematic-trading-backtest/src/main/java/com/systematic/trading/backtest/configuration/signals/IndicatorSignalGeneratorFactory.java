@@ -38,6 +38,7 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
@@ -153,8 +154,10 @@ public class IndicatorSignalGeneratorFactory {
 		final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new SimpleMovingAverageBullishGradientSignalCalculator());
 
-		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), signalCalculators,
-		        filter, new SimpleMovingAverageCalculator(sma.getLookback(), sma.getDaysOfGradient(),
-		                new IllegalArgumentThrowingValidator(), mathContext));
+		final SimpleMovingAverage calculator = new SimpleMovingAverageCalculator(sma.getLookback(),
+		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator(), mathContext);
+
+		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), calculator,
+		        signalCalculators, filter);
 	}
 }

@@ -32,7 +32,6 @@ import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
-import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
@@ -60,7 +59,7 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	private final int daysOfGradient;
 
 	/** Responsible for calculating the simple moving average. */
-	private final SimpleMovingAverage movingAverage;
+	private final SimpleMovingAverage sma;
 
 	/** Range of signal dates of interest. */
 	private final SignalRangeFilter signalRangeFilter;
@@ -69,11 +68,11 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	private final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators;
 
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
-	        final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators, final SignalRangeFilter filter,
-	        final SimpleMovingAverageCalculator movingAverage ) {
+	        final SimpleMovingAverage sma, final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators,
+	        final SignalRangeFilter filter ) {
 		this.signalCalculators = signalCalculators;
 		this.daysOfGradient = daysOfGradient;
-		this.movingAverage = movingAverage;
+		this.sma = sma;
 		this.lookback = lookback;
 		this.signalRangeFilter = filter;
 
@@ -88,7 +87,7 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 		final Predicate<LocalDate> signalRange = candidate -> dateRangeFilter.isWithinSignalRange(
 		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
 
-		final SimpleMovingAverageLine smaLine = movingAverage.sma(data);
+		final SimpleMovingAverageLine smaLine = sma.sma(data);
 
 		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
 

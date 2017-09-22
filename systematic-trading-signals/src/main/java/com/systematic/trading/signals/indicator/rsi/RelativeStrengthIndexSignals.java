@@ -32,7 +32,6 @@ import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
@@ -73,7 +72,7 @@ public class RelativeStrengthIndexSignals implements IndicatorSignalGenerator {
 	 * @param lookback the number of data points to use in calculations.
 	 * @param daysOfRsiValues the number of RSI values desired.
 	 */
-	public RelativeStrengthIndexSignals( final int lookback, final RelativeStrengthIndexCalculator rsi,
+	public RelativeStrengthIndexSignals( final int lookback, final RelativeStrengthIndex rsi,
 	        final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators,
 	        final SignalRangeFilter filter ) {
 		this.minimumNumberOfPrices = lookback + MINIMUM_DAYS_OF_RSI_VALUES;
