@@ -26,30 +26,25 @@
 package com.systematic.trading.backtest.configuration.signals;
 
 import com.systematic.trading.signal.IndicatorSignalType;
-import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageGradientSignals.GradientType;
 
 /**
  * Configuration for the SMA signal calculator.
  * 
  * @author CJ Hare
  */
-public enum SmaConfiguration implements SignalConfiguration {
-	//TODO rename this to uptrend
-	SHORT(20, GradientType.POSITIVE, 5, "PositiveShortSMA"),
-	MEDIUM(50, GradientType.POSITIVE, 7, "PositiveMediumSMA"),
-	LONG(100, GradientType.POSITIVE, 10, "PositiveLongSMA");
+public enum SmaGradientConfiguration implements SignalConfiguration {
+	SHORT(20, 5, "Short-SMA-Gradient"),
+	MEDIUM(50, 7, "Medium-SMA-Gradient"),
+	LONG(100, 10, "Long-SMA-Gradient");
 
 	private final String description;
 	private final int lookback;
 	private final int daysOfGradient;
-	private final GradientType type;
 
-	SmaConfiguration( final int lookback, final GradientType type, final int daysOfGradient,
-	        final String description ) {
+	SmaGradientConfiguration( final int lookback, final int daysOfGradient, final String description ) {
 		this.daysOfGradient = daysOfGradient;
 		this.description = description;
 		this.lookback = lookback;
-		this.type = type;
 	}
 
 	@Override
@@ -63,10 +58,6 @@ public enum SmaConfiguration implements SignalConfiguration {
 
 	public int getDaysOfGradient() {
 		return daysOfGradient;
-	}
-
-	public GradientType getGradient() {
-		return type;
 	}
 
 	@Override

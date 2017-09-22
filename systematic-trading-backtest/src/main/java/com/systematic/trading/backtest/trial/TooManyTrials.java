@@ -43,7 +43,7 @@ import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfigu
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
-import com.systematic.trading.backtest.configuration.signals.SmaConfiguration;
+import com.systematic.trading.backtest.configuration.signals.SmaGradientConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
@@ -128,7 +128,7 @@ public class TooManyTrials extends BaseTrialConfiguration implements BacktestCon
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
@@ -149,7 +149,7 @@ public class TooManyTrials extends BaseTrialConfiguration implements BacktestCon
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
@@ -167,7 +167,7 @@ public class TooManyTrials extends BaseTrialConfiguration implements BacktestCon
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
@@ -183,10 +183,10 @@ public class TooManyTrials extends BaseTrialConfiguration implements BacktestCon
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-			for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
+			for (final SmaGradientConfiguration smaConfiguration : SmaGradientConfiguration.values()) {
 				for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 					configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 					        new EntryLogicConfiguration(
@@ -205,10 +205,10 @@ public class TooManyTrials extends BaseTrialConfiguration implements BacktestCon
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-			for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
+			for (final SmaGradientConfiguration smaConfiguration : SmaGradientConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 				        new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
 				                macdConfiguration, smaConfiguration), maximumTrade, minimumTrade)));
@@ -223,9 +223,9 @@ public class TooManyTrials extends BaseTrialConfiguration implements BacktestCon
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
 
-		for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
+		for (final SmaGradientConfiguration smaConfiguration : SmaGradientConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 				        new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
@@ -240,9 +240,9 @@ public class TooManyTrials extends BaseTrialConfiguration implements BacktestCon
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(SmaConfiguration.values().length);
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(SmaGradientConfiguration.values().length);
 
-		for (final SmaConfiguration smaConfiguration : SmaConfiguration.values()) {
+		for (final SmaGradientConfiguration smaConfiguration : SmaGradientConfiguration.values()) {
 			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 			        new EntryLogicConfiguration(
 			                new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, smaConfiguration),

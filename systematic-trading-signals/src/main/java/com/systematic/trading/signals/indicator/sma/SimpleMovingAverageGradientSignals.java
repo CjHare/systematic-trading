@@ -34,7 +34,6 @@ import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.signal.IndicatorSignalType;
@@ -50,25 +49,12 @@ import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
  * @author CJ Hare
  */
 public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenerator {
-	
-	//TODO this is confusing, split up like the RSI, bullish / bearish indicators
-	/**
-	 * Trigger gradient  for a bullish signal.
-	 */
-	public enum GradientType {
-		NEGATIVE,
-		FLAT,
-		POSITIVE
-	}
 
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
 	/** Provides date range filtering. */
 	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
-
-	/** On which type of gradient does a signal get generated. */
-	private final GradientType signalGenerated;
 
 	/** Number of days to average the value on. */
 	private final int lookback;
@@ -83,21 +69,15 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	private final SignalRangeFilter signalRangeFilter;
 
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
-	        final GradientType signalGenerated, final SignalRangeFilter filter, final MathContext mathContext ) {
-
-		this(lookback, daysOfGradient, signalGenerated, filter, mathContext, new SimpleMovingAverageCalculator(lookback,
-		        daysOfGradient, new IllegalArgumentThrowingValidator(), mathContext));
-	}
-
-	private SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
-	        final GradientType signalGenerated, final SignalRangeFilter filter, final MathContext mathContext,
+	        final SignalRangeFilter filter, final MathContext mathContext,
 	        final SimpleMovingAverageCalculator movingAverage ) {
-		this.signalGenerated = signalGenerated;
 		this.daysOfGradient = daysOfGradient;
 		this.movingAverage = movingAverage;
 		this.mathContext = mathContext;
 		this.lookback = lookback;
 		this.signalRangeFilter = filter;
+
+		//TODO validate there's at least one signal calculator 
 	}
 
 	@Override
@@ -134,24 +114,8 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 			if (signalRange.test(today)) {
 
 				//TODO generate the down signals too
-				switch (signalGenerated) {
-					case POSITIVE:
-						if (isPositiveGardient(previous, sma.get(index))) {
-							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA, SignalType.BULLISH));
-						}
-					break;
-					case FLAT:
-						if (isFlatGardient(previous, sma.get(index))) {
-							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA, SignalType.BULLISH));
-						}
-					break;
-					case NEGATIVE:
-						if (isNegativeGardient(previous, sma.get(index))) {
-							signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA, SignalType.BULLISH));
-						}
-					break;
-					default:
-						throw new IllegalArgumentException(String.format("%s enum is unexpected", signalGenerated));
+				if (isPositiveGardient(previous, sma.get(index))) {
+					signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA, SignalType.BULLISH));
 				}
 			}
 
@@ -163,14 +127,6 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 
 	private boolean isPositiveGardient( final BigDecimal previous, final BigDecimal current ) {
 		return current.subtract(previous, mathContext).compareTo(BigDecimal.ZERO) > 0;
-	}
-
-	private boolean isNegativeGardient( final BigDecimal previous, final BigDecimal current ) {
-		return current.subtract(previous, mathContext).compareTo(BigDecimal.ZERO) < 0;
-	}
-
-	private boolean isFlatGardient( final BigDecimal previous, final BigDecimal current ) {
-		return current.subtract(previous, mathContext).compareTo(BigDecimal.ZERO) == 0;
 	}
 
 	@Override
