@@ -29,8 +29,12 @@
  */
 package com.systematic.trading.signals.indicator.sma;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 import java.util.function.Predicate;
 
 import com.systematic.trading.maths.SignalType;
@@ -39,23 +43,42 @@ import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
- * Bullish signal calculation for a SMA.
+ * Bullish signal calculation based on the gradient of a SMA.
+ * <p/>
+ * Gradient of the SMA is evaluated, when it's positive it's considered bullish, otherwise it's not.
  * 
  * @author CJ Hare
  */
-public class SimpleMovingAverageBullishSignalCalculator implements SignalCalculator<SimpleMovingAverageLine> {
+public class SimpleMovingAverageBullishGradientSignalCalculator implements SignalCalculator<SimpleMovingAverageLine> {
+
+	@Override
+	public SignalType getType() {
+		return SignalType.BULLISH;
+	}
 
 	@Override
 	public List<DatedSignal> calculateSignals( final SimpleMovingAverageLine indicatorOutput,
 	        final Predicate<LocalDate> signalRange ) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final SortedMap<LocalDate, BigDecimal> sma = indicatorOutput.getSma();
+		final List<DatedSignal> signals = new ArrayList<>();
+		Map.Entry<LocalDate, BigDecimal> previousEntry = null;
+
+		for (final Map.Entry<LocalDate, BigDecimal> entry : sma.entrySet()) {
+			final LocalDate today = entry.getKey();
+
+			if (previousEntry != null && signalRange.test(today) && isPositiveGradient(entry, previousEntry)) {
+				signals.add(new DatedSignal(today, getType()));
+			}
+
+			previousEntry = entry;
+		}
+
+		return signals;
 	}
 
-	@Override
-	public SignalType getType() {
-		// TODO Auto-generated method stub
-		return null;
+	private boolean isPositiveGradient( final Map.Entry<LocalDate, BigDecimal> entry,
+	        final Map.Entry<LocalDate, BigDecimal> previousEtnry ) {
+		return entry.getValue().subtract(previousEtnry.getValue()).compareTo(BigDecimal.ZERO) > 0;
 	}
-
 }
