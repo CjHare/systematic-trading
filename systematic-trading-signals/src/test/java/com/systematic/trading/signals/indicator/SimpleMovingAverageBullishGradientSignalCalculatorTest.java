@@ -91,14 +91,86 @@ public class SimpleMovingAverageBullishGradientSignalCalculatorTest {
 	@Test
 	public void outOfDateRange() {
 		setUpDateRange(false);
-		final int numberSignalLinesDates = 3;
 		setUpSma(1, 1.1, 1.2);
 
 		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(3);
+	}
 
+	@Test
+	public void tooFewValues() {
+		setUpSma(0.5);
+
+		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(0);
+	}
+
+	@Test
+	public void noValues() {
+
+		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(0);
+	}
+
+	@Test
+	public void flatline() {
+		setUpSma(0.5, 0.5, 0.5, 0.5);
+
+		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void downardGradient() {
+		setUpSma(0.5, 0.4, 0.3, 0.2);
+
+		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void upwardGradient() {
+		setUpSma(0.5, 0.6, 0.7, 0.8);
+
+		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+
+		verifySignals(3, signals);
+		verfiyDatedSignal(1, signals.get(0));
+		verfiyDatedSignal(2, signals.get(1));
+		verfiyDatedSignal(3, signals.get(2));
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void upwardGradientThenFlat() {
+		setUpSma(0.5, 0.6, 0.6);
+
+		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+
+		verifySignals(1, signals);
+		verfiyDatedSignal(1, signals.get(0));
+		verifySignalRangeTests(3);
+	}
+
+	@Test
+	public void downwardThenUpwardGradientThenFlat() {
+		setUpSma(0.55, 0.5, 0.4, 0.4, 0.5);
+
+		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+
+		verifySignals(1, signals);
+		verfiyDatedSignal(4, signals.get(0));
+		verifySignalRangeTests(5);
 	}
 
 	private void verifySignalRangeTests( final int size ) {
