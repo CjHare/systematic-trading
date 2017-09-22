@@ -84,7 +84,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalNeverOversold() {
+	public void neverOversold() {
 		setUpRsi(0.5, 0.6, 0.6, 0.5);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -94,7 +94,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalAlwaysOversold() {
+	public void alwaysOversold() {
 		setUpRsi(0.7, 0.8, 0.9, 0.75);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -104,7 +104,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalOutsideDateRange() {
+	public void outsideDateRange() {
 		setUpRsi(0.5, 0.7, 0.8, 0.75);
 		setUpDateRange(false);
 
@@ -115,7 +115,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalOversoldCrossover() {
+	public void oversoldCrossover() {
 		setUpRsi(1, 0.69, 0.8, 0.7);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -129,7 +129,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	/**
 	 * No signal unless the RSI line crosses below the over sold threshold.
 	 */
-	public void calculateSignalTouchOversold() {
+	public void touchOversold() {
 		setUpRsi(1, 0.7, 0.8, 0.75);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -139,7 +139,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalTwiceCrossoverOversold() {
+	public void twiceCrossoverOversold() {
 		setUpRsi(1, 0.4, 0.9, 0.6);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -151,7 +151,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalsOnOversold() {
+	public void onOversold() {
 		setUpRsi(0.7, 0.7, 0.7, 0.7, 0.7);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -161,7 +161,7 @@ public class RelativeStrengthIndexBearishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalOnOversoldThenCrossover() {
+	public void onOversoldThenCrossover() {
 		setUpRsi(0.7, 0.7, 0.5, 0.8, 0.45);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);

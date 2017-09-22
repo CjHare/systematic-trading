@@ -84,7 +84,7 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignaNeverUndersold() {
+	public void neverUndersold() {
 		setUpRsi(0.5, 0.4, 0.6, 0.5);
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
@@ -93,7 +93,7 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignaAlwaysUndersold() {
+	public void alwaysUndersold() {
 		setUpRsi(0.1, 0.2, 0.25, 0.1);
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
 
@@ -102,7 +102,7 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalOutsideDateRange() {
+	public void outsideDateRange() {
 		setUpRsi(0.5, 0.2, 0.1, 0.15);
 		setUpDateRange(false);
 
@@ -113,7 +113,7 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalUndersoldCrossover() {
+	public void undersoldCrossover() {
 		setUpRsi(0.5, 0.4, 0.29, 0.5);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -124,7 +124,7 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalOnUndersold() {
+	public void signalOnUndersold() {
 		setUpRsi(0.3, 0.3, 0.3, 0.3);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -134,7 +134,7 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalTouchUndersold() {
+	public void touchUndersold() {
 		setUpRsi(0.1, 0.3, 0.2, 0.15);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -144,7 +144,7 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalTwiceUndersold() {
+	public void twiceUndersold() {
 		setUpRsi(0.9, 0.2, 0.5, 0.3, 0.4, 0.3);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
@@ -156,7 +156,7 @@ public class RelativeStrengthIndexBullishSignalCalculatorTest {
 	}
 
 	@Test
-	public void calculateSignalFallBelowThenOnUndersoldCrossover() {
+	public void fallBelowThenOnUndersoldCrossover() {
 		setUpRsi(0.4, 0.3, 0.3, 0.2, 0.5);
 
 		final List<DatedSignal> signals = calculator.calculateSignals(rsi, signalRange);
