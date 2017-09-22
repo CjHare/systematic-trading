@@ -39,6 +39,7 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.SignalCalculator;
@@ -48,6 +49,7 @@ import com.systematic.trading.signals.indicator.macd.MovingAveragingConvergenceD
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBearishSignalCalculator;
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBullishSignalCalculator;
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexSignals;
+import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageBullishGradientSignalCalculator;
 import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageGradientSignals;
 
 /**
@@ -147,8 +149,12 @@ public class IndicatorSignalGeneratorFactory {
 
 	private IndicatorSignalGenerator create( final SmaGradientConfiguration sma, final SignalRangeFilter filter,
 	        final MathContext mathContext ) {
-		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), filter, mathContext,
-		        new SimpleMovingAverageCalculator(sma.getLookback(), sma.getDaysOfGradient(),
+
+		final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators = new ArrayList<>();
+		signalCalculators.add(new SimpleMovingAverageBullishGradientSignalCalculator());
+
+		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), signalCalculators,
+		        filter, new SimpleMovingAverageCalculator(sma.getLookback(), sma.getDaysOfGradient(),
 		                new IllegalArgumentThrowingValidator(), mathContext));
 	}
 }

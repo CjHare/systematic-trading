@@ -27,9 +27,10 @@ package com.systematic.trading.maths.indicator.sma;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 
@@ -72,23 +73,21 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	}
 
 	@Override
-	public List<BigDecimal> sma( final TradingDayPrices[] data ) {
+	public SimpleMovingAverageLine sma( final TradingDayPrices[] data ) {
 		//TODO data != null
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
+		final SortedMap<LocalDate, BigDecimal> sma = new TreeMap<>();
 		final int endSmaIndex = data.length - 1;
 		final int startSmaIndex = endSmaIndex - daysOfSmaValues;
 
-		// Account for <= in the following loop
-		final List<BigDecimal> smaValues = new NonNullableArrayList<>(1 + endSmaIndex - startSmaIndex);
-
 		// Start at the end and work towards the origin
 		for (int i = startSmaIndex; i <= endSmaIndex; i++) {
-			smaValues.add(simpleAverage(i, data));
+			sma.put(data[i].getDate(), simpleAverage(i, data));
 		}
 
-		return smaValues;
+		return new SimpleMovingAverageLine(sma);
 	}
 
 	/**

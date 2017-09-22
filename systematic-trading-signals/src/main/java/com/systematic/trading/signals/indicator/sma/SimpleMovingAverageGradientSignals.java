@@ -25,22 +25,22 @@
  */
 package com.systematic.trading.signals.indicator.sma;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalType;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.signals.model.DatedSignal;
 
 /**
  * The Simple Moving Average (SMA) gradient, whether it is negative (downward),flat
@@ -49,9 +49,6 @@ import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
  * @author CJ Hare
  */
 public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenerator {
-
-	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext mathContext;
 
 	/** Provides date range filtering. */
 	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
@@ -68,12 +65,15 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 	/** Range of signal dates of interest. */
 	private final SignalRangeFilter signalRangeFilter;
 
+	/** Calculators that will be used to generate signals. */
+	private final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators;
+
 	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
-	        final SignalRangeFilter filter, final MathContext mathContext,
+	        final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators, final SignalRangeFilter filter,
 	        final SimpleMovingAverageCalculator movingAverage ) {
+		this.signalCalculators = signalCalculators;
 		this.daysOfGradient = daysOfGradient;
 		this.movingAverage = movingAverage;
-		this.mathContext = mathContext;
 		this.lookback = lookback;
 		this.signalRangeFilter = filter;
 
@@ -88,45 +88,19 @@ public class SimpleMovingAverageGradientSignals implements IndicatorSignalGenera
 		final Predicate<LocalDate> signalRange = candidate -> dateRangeFilter.isWithinSignalRange(
 		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
 
-		final List<BigDecimal> sma = movingAverage.sma(data);
+		final SimpleMovingAverageLine smaLine = movingAverage.sma(data);
 
-		// Only look at the gradient if there's more than one sma result
-		if (!sma.isEmpty()) {
-			return analyseGradient(data, sma, signalRange);
-		}
+		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
 
-		return new ArrayList<>();
-	}
+		for (final SignalCalculator<SimpleMovingAverageLine> calculator : signalCalculators) {
+			final List<DatedSignal> signals = calculator.calculateSignals(smaLine, signalRange);
 
-	private List<IndicatorSignal> analyseGradient( final TradingDayPrices[] data, final List<BigDecimal> sma,
-	        final Predicate<LocalDate> signalRange ) {
-		final List<IndicatorSignal> signals = new ArrayList<>();
-
-		// We're only using the right most values of the data
-		final int offset = data.length - sma.size();
-
-		// Start with the first value, bump the index
-		BigDecimal previous = sma.get(0);
-		for (int index = 1; index < sma.size(); index++) {
-
-			final LocalDate today = data[index + offset].getDate();
-
-			if (signalRange.test(today)) {
-
-				//TODO generate the down signals too
-				if (isPositiveGardient(previous, sma.get(index))) {
-					signals.add(new IndicatorSignal(today, IndicatorSignalType.SMA, SignalType.BULLISH));
-				}
+			for (final DatedSignal signal : signals) {
+				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalType(), calculator.getType()));
 			}
-
-			previous = sma.get(index);
 		}
 
-		return signals;
-	}
-
-	private boolean isPositiveGardient( final BigDecimal previous, final BigDecimal current ) {
-		return current.subtract(previous, mathContext).compareTo(BigDecimal.ZERO) > 0;
+		return indicatorSignals;
 	}
 
 	@Override

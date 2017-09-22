@@ -34,7 +34,10 @@ import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Utility Assert operations.
@@ -61,6 +64,16 @@ public class SystematicTradingMathsAssert {
 		}
 	}
 
+	public static void assertValues( final double[] expected, final SortedMap<LocalDate, BigDecimal> actual ) {
+		assertArraySizeEqual(expected, actual);
+
+		int i = 0;
+		for (final Map.Entry<LocalDate, BigDecimal> entry : actual.entrySet()) {
+			assertBigDecimalEquals(expected[i], entry.getValue(), RoundingMode.HALF_EVEN);
+			i++;
+		}
+	}
+
 	public static void assertValuesTwoDecimalPlaces( final double[] expected, final List<BigDecimal> actual ) {
 		assertArraySizeEqual(expected, actual);
 
@@ -76,11 +89,22 @@ public class SystematicTradingMathsAssert {
 
 	private static void assertBigDecimalEquals( final double[] expected, final List<BigDecimal> actual, final int i,
 	        final RoundingMode mode ) {
-		assertEquals(String.format("%s != %s", expected[i], actual.get(i)), 0,
-		        BigDecimal.valueOf(expected[i]).compareTo(actual.get(i).setScale(TWO_DECIMAL_PLACES, mode)));
+		assertBigDecimalEquals(expected[i], actual.get(i), mode);
+	}
+
+	private static void assertBigDecimalEquals( final double expected, final BigDecimal actual,
+	        final RoundingMode mode ) {
+		assertEquals(String.format("%s != %s", expected, actual), 0,
+		        BigDecimal.valueOf(expected).compareTo(actual.setScale(TWO_DECIMAL_PLACES, mode)));
 	}
 
 	private static void assertArraySizeEqual( final double[] expected, final List<?> actual ) {
+		assertNotNull("Need an expected array", expected);
+		assertNotNull("Need an actual/results array", actual);
+		assertEquals("Actual length != Expected length", expected.length, actual.size());
+	}
+
+	private static void assertArraySizeEqual( final double[] expected, final Map<?, ?> actual ) {
 		assertNotNull("Need an expected array", expected);
 		assertNotNull("Need an actual/results array", actual);
 		assertEquals("Actual length != Expected length", expected.length, actual.size());

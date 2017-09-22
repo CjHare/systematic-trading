@@ -25,9 +25,6 @@
  */
 package com.systematic.trading.maths.indicator.sma;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
@@ -42,5 +39,5 @@ public interface SimpleMovingAverage {
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return simple moving average values.
 	 */
-	public List<BigDecimal> sma( TradingDayPrices[] data );
+	public SimpleMovingAverageLine sma( TradingDayPrices[] data );
 }
