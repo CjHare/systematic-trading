@@ -52,7 +52,7 @@ import com.systematic.trading.signal.event.SignalAnalysisEvent;
 public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"signal_date\":{\"type\":\"date\"},\"signal_type\":{\"type\":\"text\"},\"direction_type\":{\"type\":\"text\"}}}";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"signal_date\":{\"type\":\"date\"},\"signal_type\":{\"type\":\"keyword\"},\"direction_type\":{\"type\":\"text\"}}}";
 	private static final String JSON_POST_INDEX_TYPE = "{\"signal_type\":\"STOCHASTIC\",\"direction_type\":\"BULLISH\",\"signal_date\":{";
 
 	@Test

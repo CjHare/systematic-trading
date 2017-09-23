@@ -52,8 +52,8 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent.Brokerag
 public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"transaction_fee\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Buy\",\"equity_amount\":12.34,\"starting_equity_balance\":512.46,\"end_equity_balance\":500.12,\"transaction_fee\":606.98,\"transaction_date\":{";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"transaction_fee\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"}}}";
+	private static final String JSON_POST_INDEX_TYPE = "{\"action\":\"index\",\"type\":\"MissingIndexBatchForTesting\"},{\"event\":\"Buy\",\"transaction_date\":{\"year\":1992,\"month\":\"APRIL\",\"chronology\":{\"id\":\"ISO\",\"calendarType\":\"iso8601\"},\"dayOfMonth\":30,\"dayOfWeek\":\"THURSDAY\",\"dayOfYear\":121,\"era\":\"CE\",\"monthValue\":4,\"leapYear\":true},\"equity_amount\":12.34,\"starting_equity_balance\":512.46,\"end_equity_balance\":500.12,\"transaction_fee\":606.98}";
 
 	@Test
 	public void initMissingIndex() {
@@ -168,7 +168,7 @@ public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 		final BigDecimal startingEquityBalance = BigDecimal.valueOf(512.46);
 		final BigDecimal endEquityBalance = BigDecimal.valueOf(500.12);
 		final BigDecimal transactionFee = BigDecimal.valueOf(606.98);
-		final LocalDate transactionDate = LocalDate.now();
+		final LocalDate transactionDate = LocalDate.of(1992, 4, 30);
 		final BrokerageAccountEventType eventType = BrokerageAccountEventType.BUY;
 
 		when(event.getEquityAmount()).thenReturn(amount);

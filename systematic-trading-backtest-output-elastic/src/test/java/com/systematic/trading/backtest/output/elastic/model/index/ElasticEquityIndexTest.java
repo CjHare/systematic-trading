@@ -54,8 +54,8 @@ import com.systematic.trading.simulation.equity.event.EquityEvent.EquityEventTyp
 public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"identity\":{\"type\":\"text\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Management Fee\",\"identity\":\"ATA\",\"starting_equity_balance\":512.46,\"end_equity_balance\":500.12,\"equity_amount\":12.34,\"transaction_date\":{";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"identity\":{\"type\":\"text\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"}}";
+	private static final String JSON_POST_INDEX_TYPE = "{\"action\":\"index\",\"type\":\"MissingIndexBatchForTesting\"},{\"event\":\"Management_Fee\",\"transaction_date\":{\"year\":1990,\"month\":\"JUNE\",\"chronology\":{\"id\":\"ISO\",\"calendarType\":\"iso8601\"},\"dayOfMonth\":30,\"dayOfWeek\":\"SATURDAY\",\"dayOfYear\":181,\"era\":\"CE\",\"monthValue\":6,\"leapYear\":false},\"identity\":\"ATA\",\"starting_equity_balance\":512.46,\"end_equity_balance\":500.12,\"equity_amount\":12.34}";
 
 	@Test
 	public void initMissingIndex() {
@@ -169,7 +169,7 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 		final BigDecimal equityAmount = BigDecimal.valueOf(12.34);
 		final BigDecimal startingEquityBalance = BigDecimal.valueOf(512.46);
 		final BigDecimal endEquityBalance = BigDecimal.valueOf(500.12);
-		final LocalDate transactionDate = LocalDate.now();
+		final LocalDate transactionDate = LocalDate.of(1990, 6, 30);
 		final EquityEventType eventType = EquityEventType.MANAGEMENT_FEE;
 		final EquityIdentity identity = new EquityIdentity("ATA", EquityClass.STOCK, 2);
 

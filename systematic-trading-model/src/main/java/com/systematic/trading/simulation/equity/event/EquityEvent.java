@@ -39,7 +39,7 @@ import com.systematic.trading.model.EquityIdentity;
 public interface EquityEvent extends Event {
 
 	public enum EquityEventType {
-		MANAGEMENT_FEE("Management Fee");
+		MANAGEMENT_FEE("Management_Fee");
 
 		private final String name;
 

@@ -52,7 +52,7 @@ import com.systematic.trading.simulation.order.event.OrderEvent.EquityOrderType;
 public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"total_cost\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"total_cost\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"}}}";
 	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"ENTRY\",\"total_cost\":12.34,\"transaction_date\":{";
 
 	@Test

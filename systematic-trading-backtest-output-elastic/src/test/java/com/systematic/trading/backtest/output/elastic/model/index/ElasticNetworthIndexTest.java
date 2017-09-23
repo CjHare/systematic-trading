@@ -52,7 +52,7 @@ import com.systematic.trading.simulation.analysis.networth.NetWorthEvent.NetWort
 public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"equity_balance_value\":{\"type\":\"float\"},\"event_date\":{\"type\":\"date\"},\"networth\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"},\"cash_balance\":{\"type\":\"float\"},\"equity_balance\":{\"type\":\"float\"}}";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"equity_balance_value\":{\"type\":\"float\"},\"event_date\":{\"type\":\"date\"},\"networth\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"},\"cash_balance\":{\"type\":\"float\"},\"equity_balance\":{\"type\":\"float\"}}";
 	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Completed\",\"cash_balance\":500.12,\"equity_balance\":12.34,\"equity_balance_value\":512.46,\"networth\":606.98,\"event_date\":{";
 
 	@Test

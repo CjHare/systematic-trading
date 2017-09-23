@@ -52,8 +52,8 @@ import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
 public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"amount\":{\"type\":\"float\"},\"funds_after\":{\"type\":\"float\"},\"funds_before\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Credit\",\"amount\":12.34,\"funds_before\":500.12,\"funds_after\":512.46,\"transaction_date\":{";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"amount\":{\"type\":\"float\"},\"funds_after\":{\"type\":\"float\"},\"funds_before\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"}}";
+	private static final String JSON_POST_INDEX_TYPE = "{\"action\":\"index\",\"type\":\"MissingIndexBatchForTesting\"},{\"event\":\"Credit\",\"transaction_date\":{\"year\":1991,\"month\":\"MAY\",\"chronology\":{\"id\":\"ISO\",\"calendarType\":\"iso8601\"},\"dayOfMonth\":29,\"dayOfWeek\":\"WEDNESDAY\",\"dayOfYear\":149,\"era\":\"CE\",\"monthValue\":5,\"leapYear\":false},\"amount\":12.34,\"funds_before\":500.12,\"funds_after\":512.46}";
 
 	@Test
 	public void initMissingIndex() {
@@ -167,7 +167,7 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 		final BigDecimal amount = BigDecimal.valueOf(12.34);
 		final BigDecimal fundsAfter = BigDecimal.valueOf(512.46);
 		final BigDecimal fundsBefore = BigDecimal.valueOf(500.12);
-		final LocalDate transactionDate = LocalDate.now();
+		final LocalDate transactionDate = LocalDate.of(1991, 5, 29);
 		final CashEventType eventType = CashEventType.CREDIT;
 
 		when(event.getAmount()).thenReturn(amount);
