@@ -33,7 +33,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.List;
 
 import org.junit.Test;
@@ -52,7 +51,6 @@ import com.systematic.trading.maths.util.TradingDayPricesBuilder;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class AverageTrueRangeCalculatorTest {
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
 	private Validator validator;
@@ -64,7 +62,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		final TradingDayPrices[] data = createPrices(numberDataPoints);
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator);
 
 		final List<BigDecimal> atr = calculator.atr(data);
 
@@ -82,7 +80,7 @@ public class AverageTrueRangeCalculatorTest {
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator);
 
 		final List<BigDecimal> atr = calculator.atr(data);
 
@@ -91,7 +89,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		assertNotNull(atr);
 		assertEquals(numberDataPoints, atr.size());
-		assertValues(new double[] { 5, 6.25, 8.4375, 11.328125, 14.74609375 }, atr);
+		assertValues(new double[] { 5, 6.25, 8.4375, 11.32812, 14.74609 }, atr);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -103,7 +101,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator);
 
 		calculator.atr(data);
 	}
@@ -117,7 +115,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator);
 
 		calculator.atr(data);
 	}
@@ -128,7 +126,7 @@ public class AverageTrueRangeCalculatorTest {
 		final int numberDataPoints = lookback + 1;
 		final TradingDayPrices[] data = createThreeTypesOfVolatility(numberDataPoints);
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator, MATH_CONTEXT);
+		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator);
 
 		final List<BigDecimal> atr = calculator.atr(data);
 

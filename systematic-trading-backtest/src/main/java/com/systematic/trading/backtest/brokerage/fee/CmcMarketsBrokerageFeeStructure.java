@@ -46,15 +46,8 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  */
 public class CmcMarketsBrokerageFeeStructure implements BrokerageTransactionFeeStructure {
 
-	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext mathContext;
-
-	/**
-	 * @param mathContext math context defining the scale and precision to apply to operations.
-	 */
-	public CmcMarketsBrokerageFeeStructure( final MathContext mathContext ) {
-		this.mathContext = mathContext;
-	}
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	@Override
 	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
@@ -78,15 +71,15 @@ public class CmcMarketsBrokerageFeeStructure implements BrokerageTransactionFeeS
 
 		// Your first 10 trades per month = $11 or 0.1%
 		if (tradesThisMonth < 11) {
-			brokerage = applyLargest(tradeValue, ELEVEN, TEN_BASIS_POINTS, mathContext);
+			brokerage = applyLargest(tradeValue, ELEVEN, TEN_BASIS_POINTS, MATH_CONTEXT);
 		}
 		// Your 11th to 30th trades per month = $9.90 or 0.8%
 		else if (tradesThisMonth < 31) {
-			brokerage = applyLargest(tradeValue, NINE_NINTY, EIGHT_BASIS_POINTS, mathContext);
+			brokerage = applyLargest(tradeValue, NINE_NINTY, EIGHT_BASIS_POINTS, MATH_CONTEXT);
 		}
 		// Your 31st trade onwards per month = $9.90 or 0.75%
 		else {
-			brokerage = applyLargest(tradeValue, NINE_NINTY, SEVENTY_FIVE_BASIS_POINTS, mathContext);
+			brokerage = applyLargest(tradeValue, NINE_NINTY, SEVENTY_FIVE_BASIS_POINTS, MATH_CONTEXT);
 		}
 
 		return brokerage;

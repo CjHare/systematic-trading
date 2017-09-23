@@ -28,7 +28,6 @@ package com.systematic.trading.backtest.brokerage.fees;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +52,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Before
 	public void setUp() {
-		feeStructure = new CmcMarketsBrokerageFeeStructure(MathContext.DECIMAL64);
+		feeStructure = new CmcMarketsBrokerageFeeStructure();
 	}
 
 	@Test

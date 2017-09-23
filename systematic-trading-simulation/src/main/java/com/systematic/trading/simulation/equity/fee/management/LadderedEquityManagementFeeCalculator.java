@@ -39,19 +39,17 @@ import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculato
  */
 public class LadderedEquityManagementFeeCalculator implements EquityManagementFeeCalculator {
 
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
+
 	/** Upper range for each of the fee bands. */
 	private final BigDecimal[] range;
 
 	/** Percentage fee to apply to the matching index in the band array. */
 	private final BigDecimal[] percentageFee;
 
-	/** All the mathematical operation works within the context. */
-	private final MathContext mathContext;
-
-	public LadderedEquityManagementFeeCalculator( final BigDecimal[] range, final BigDecimal[] percentageFee,
-	        final MathContext mathContext ) {
+	public LadderedEquityManagementFeeCalculator( final BigDecimal[] range, final BigDecimal[] percentageFee ) {
 		this.percentageFee = percentageFee;
-		this.mathContext = mathContext;
 		this.range = range;
 
 		if (range.length + 1 != percentageFee.length) {
@@ -65,7 +63,7 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 	public BigDecimal calculateFee( final BigDecimal numberOfEquities, final ClosingPrice singleEquityValue,
 	        final Period durationToCalculate ) {
 
-		final BigDecimal holdingsValue = numberOfEquities.multiply(singleEquityValue.getPrice(), mathContext);
+		final BigDecimal holdingsValue = numberOfEquities.multiply(singleEquityValue.getPrice(), MATH_CONTEXT);
 		BigDecimal fee = BigDecimal.ZERO;
 		BigDecimal topEndOfLastRange = BigDecimal.ZERO;
 
@@ -75,14 +73,14 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 
 			if (holdingsValue.compareTo(range[i]) < 0) {
 				// The the holdings is below the top end of this range
-				spread = holdingsValue.subtract(topEndOfLastRange, mathContext);
-				fee = fee.add(spread.multiply(percentageFee[i], mathContext), mathContext);
+				spread = holdingsValue.subtract(topEndOfLastRange, MATH_CONTEXT);
+				fee = fee.add(spread.multiply(percentageFee[i], MATH_CONTEXT), MATH_CONTEXT);
 
 			} else {
 				// Holdings cover all this range (preceeding ones too)
-				spread = range[i].subtract(topEndOfLastRange, mathContext);
+				spread = range[i].subtract(topEndOfLastRange, MATH_CONTEXT);
 				topEndOfLastRange = range[i];
-				fee = fee.add(spread.multiply(percentageFee[i], mathContext), mathContext);
+				fee = fee.add(spread.multiply(percentageFee[i], MATH_CONTEXT), MATH_CONTEXT);
 			}
 		}
 
@@ -90,7 +88,7 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 		fee = applyFlatFee(holdingsValue, fee);
 
 		// Convert fee amount into equities
-		return fee.divide(singleEquityValue.getPrice(), mathContext);
+		return fee.divide(singleEquityValue.getPrice(), MATH_CONTEXT);
 	}
 
 	private BigDecimal applyFlatFee( final BigDecimal holdingsValue, final BigDecimal fee ) {
@@ -103,14 +101,14 @@ public class LadderedEquityManagementFeeCalculator implements EquityManagementFe
 
 			// Only apply the flat fee when the holdings exceed the upper bounds
 			if (holdingsValue.compareTo(range[range.length - 1]) > 0) {
-				flatRateFeeSpread = holdingsValue.subtract(range[range.length - 1], mathContext);
+				flatRateFeeSpread = holdingsValue.subtract(range[range.length - 1], MATH_CONTEXT);
 			} else {
 				flatRateFeeSpread = BigDecimal.ZERO;
 			}
 		}
 
-		final BigDecimal flatRateFee = flatRateFeeSpread.multiply(percentageFee[range.length], mathContext);
+		final BigDecimal flatRateFee = flatRateFeeSpread.multiply(percentageFee[range.length], MATH_CONTEXT);
 
-		return fee.add(flatRateFee, mathContext);
+		return fee.add(flatRateFee, MATH_CONTEXT);
 	}
 }

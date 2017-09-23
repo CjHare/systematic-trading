@@ -32,7 +32,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -54,7 +53,6 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PeriodicCulmativeReturnOnInvestmentCalculatorTest {
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	private static final Period UNDER_SUMMARY_PERIOD = Period.ofDays(1);
 	private static final Period SUMMARY_PERIOD = Period.ofDays(2);
@@ -73,7 +71,7 @@ public class PeriodicCulmativeReturnOnInvestmentCalculatorTest {
 
 	@Before
 	public void setUp() {
-		calculator = new PeriodicCulmativeReturnOnInvestmentCalculator(STARTING_DATE, SUMMARY_PERIOD, MATH_CONTEXT);
+		calculator = new PeriodicCulmativeReturnOnInvestmentCalculator(STARTING_DATE, SUMMARY_PERIOD);
 		calculator.addListener(listener);
 	}
 

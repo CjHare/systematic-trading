@@ -52,6 +52,9 @@ public class CashAccountFactory {
 
 	private static final CashAccountFactory INSTANCE = new CashAccountFactory();
 
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
+
 	private CashAccountFactory() {
 	}
 
@@ -59,8 +62,7 @@ public class CashAccountFactory {
 		return INSTANCE;
 	}
 
-	public CashAccount create( final LocalDate startDate, final DepositConfiguration deposit,
-	        final MathContext mathContext ) {
+	public CashAccount create( final LocalDate startDate, final DepositConfiguration deposit ) {
 
 		final BigDecimal depositAmount = deposit.getAmount();
 		final Period depositFrequency = deposit.getFrequency();
@@ -68,9 +70,9 @@ public class CashAccountFactory {
 		// TODO all these into a configuration - interest rate, deposit & frequency
 		final BigDecimal annualRate = BigDecimal.valueOf(1.5);
 		final InterestRate annualInterestRate = InterestRateFactory.getInstance()
-		        .create(InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, mathContext);
+		        .create(InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, MATH_CONTEXT);
 		final CashAccount underlyingAccount = create(CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
-		        annualInterestRate, BigDecimal.ZERO, startDate, mathContext);
+		        annualInterestRate, BigDecimal.ZERO, startDate, MATH_CONTEXT);
 		return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate, depositFrequency);
 	}
 

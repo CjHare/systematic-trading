@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.configuration.signals;
 
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,56 +71,54 @@ public class IndicatorSignalGeneratorFactory {
 	/**
 	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
 	 */
-	public IndicatorSignalGenerator create( final SignalConfiguration signal, final SignalRangeFilter filter,
-	        final MathContext mathContext ) {
+	public IndicatorSignalGenerator create( final SignalConfiguration signal, final SignalRangeFilter filter ) {
 
 		if (signal instanceof MacdConfiguration) {
-			return create((MacdConfiguration) signal, filter, mathContext);
+			return create((MacdConfiguration) signal, filter);
 		}
 		if (signal instanceof MacdUptrendConfiguration) {
-			return create((MacdUptrendConfiguration) signal, filter, mathContext);
+			return create((MacdUptrendConfiguration) signal, filter);
 		}
 		if (signal instanceof RsiConfiguration) {
-			return create((RsiConfiguration) signal, filter, mathContext);
+			return create((RsiConfiguration) signal, filter);
 		}
 		if (signal instanceof SmaGradientConfiguration) {
-			return create((SmaGradientConfiguration) signal, filter, mathContext);
+			return create((SmaGradientConfiguration) signal, filter);
 		}
 
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
 	private IndicatorSignalGenerator create( final MacdUptrendConfiguration macdConfiguration,
-	        final SignalRangeFilter filter, final MathContext mathContext ) {
+	        final SignalRangeFilter filter ) {
 		final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new MovingAverageConvergenceDivergenceUptrendSignalCalculator());
 
 		return create(macdConfiguration.getFastTimePeriods(), macdConfiguration.getSlowTimePeriods(), 1, filter,
-		        signalCalculators, mathContext);
+		        signalCalculators);
 	}
 
-	private IndicatorSignalGenerator create( final MacdConfiguration macdConfiguration, final SignalRangeFilter filter,
-	        final MathContext mathContext ) {
+	private IndicatorSignalGenerator create( final MacdConfiguration macdConfiguration,
+	        final SignalRangeFilter filter ) {
 
 		final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators = new ArrayList<>();
 		//TODO generate the down (bearish) signals too
 		signalCalculators.add(new MovingAverageConvergenceDivergenceBullishSignalCalculator());
 
 		return create(macdConfiguration.getFastTimePeriods(), macdConfiguration.getSlowTimePeriods(),
-		        macdConfiguration.getSignalTimePeriods(), filter, signalCalculators, mathContext);
+		        macdConfiguration.getSignalTimePeriods(), filter, signalCalculators);
 	}
 
 	private IndicatorSignalGenerator create( final int fastTimePeriods, final int slowTimePeriod,
 	        final int signalTimePeriods, final SignalRangeFilter filter,
-	        final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators,
-	        final MathContext mathContext ) {
+	        final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators ) {
 
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(fastTimePeriods,
-		        new IllegalArgumentThrowingValidator(), mathContext);
+		        new IllegalArgumentThrowingValidator());
 		final ExponentialMovingAverage slowEma = new ExponentialMovingAverageCalculator(slowTimePeriod,
-		        new IllegalArgumentThrowingValidator(), mathContext);
+		        new IllegalArgumentThrowingValidator());
 		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(signalTimePeriods,
-		        new IllegalArgumentThrowingValidator(), mathContext);
+		        new IllegalArgumentThrowingValidator());
 
 		final int requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
 		        + signalEma.getMinimumNumberOfPrices();
@@ -133,29 +130,26 @@ public class IndicatorSignalGeneratorFactory {
 		        filter);
 	}
 
-	private IndicatorSignalGenerator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter,
-	        final MathContext mathContext ) {
+	private IndicatorSignalGenerator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter ) {
 
 		final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new RelativeStrengthIndexBullishSignalCalculator(rsiConfiguration.getOversold()));
 		signalCalculators.add(new RelativeStrengthIndexBearishSignalCalculator(rsiConfiguration.getOverbought()));
 
 		final RelativeStrengthIndexCalculator rsi = new RelativeStrengthIndexCalculator(
-		        new RelativeStrengthCalculator(rsiConfiguration.getLookback(), new IllegalArgumentThrowingValidator(),
-		                mathContext),
-		        new IllegalArgumentThrowingValidator(), mathContext);
+		        new RelativeStrengthCalculator(rsiConfiguration.getLookback(), new IllegalArgumentThrowingValidator()),
+		        new IllegalArgumentThrowingValidator());
 
 		return new RelativeStrengthIndexSignals(rsiConfiguration.getLookback(), rsi, signalCalculators, filter);
 	}
 
-	private IndicatorSignalGenerator create( final SmaGradientConfiguration sma, final SignalRangeFilter filter,
-	        final MathContext mathContext ) {
+	private IndicatorSignalGenerator create( final SmaGradientConfiguration sma, final SignalRangeFilter filter ) {
 
 		final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new SimpleMovingAverageBullishGradientSignalCalculator());
 
 		final SimpleMovingAverage calculator = new SimpleMovingAverageCalculator(sma.getLookback(),
-		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator(), mathContext);
+		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
 		return new SimpleMovingAverageGradientSignals(sma.getLookback(), sma.getDaysOfGradient(), calculator,
 		        signalCalculators, filter);

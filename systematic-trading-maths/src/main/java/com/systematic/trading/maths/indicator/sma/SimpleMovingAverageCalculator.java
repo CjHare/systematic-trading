@@ -42,7 +42,7 @@ import com.systematic.trading.maths.indicator.Validator;
 public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
-	private final MathContext mathContext;
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** Required number of data points required for SMA calculation. */
 	private final int minimumNumberOfPrices;
@@ -61,13 +61,10 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	 * @param daysOfSmaValues the number of trading days to calculate the RSI value.
 	 * @param validator validates and parses input.
 	 * @param store source for the storage array.
-	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues, final Validator validator,
-	        final MathContext mathContext ) {
+	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues, final Validator validator ) {
 		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
 		this.daysOfSmaValues = daysOfSmaValues;
-		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
 	}
@@ -101,6 +98,6 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 			average = average.add(data[i].getClosingPrice().getPrice());
 		}
 
-		return average.divide(BigDecimal.valueOf(lookback), mathContext);
+		return average.divide(BigDecimal.valueOf(lookback), MATH_CONTEXT);
 	}
 }

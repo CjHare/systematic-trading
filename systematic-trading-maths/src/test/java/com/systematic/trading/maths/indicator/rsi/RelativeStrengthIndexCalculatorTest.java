@@ -33,7 +33,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -57,7 +56,6 @@ import com.systematic.trading.maths.indicator.Validator;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class RelativeStrengthIndexCalculatorTest {
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
 	private Validator validator;
@@ -72,7 +70,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		when(relativeStrength.rs(any(TradingDayPrices[].class))).thenReturn(rsData);
 
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
 		final RelativeStrengthIndexLine rsi = calculator.rsi(prices);
@@ -93,7 +91,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		when(relativeStrength.rs(any(TradingDayPrices[].class))).thenReturn(rsData);
 
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
 		final RelativeStrengthIndexLine rsi = calculator.rsi(prices);
@@ -137,7 +135,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		calculator.rsi(new TradingDayPrices[] {});
 	}
@@ -147,7 +145,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		calculator.rsi(new TradingDayPrices[] {});
 	}

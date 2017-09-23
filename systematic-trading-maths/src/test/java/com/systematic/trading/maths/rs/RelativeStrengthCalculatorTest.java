@@ -33,7 +33,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-import java.math.MathContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +54,6 @@ import com.systematic.trading.maths.util.TradingDayPricesBuilder;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class RelativeStrengthCalculatorTest {
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
 	private Validator validator;
@@ -66,7 +64,7 @@ public class RelativeStrengthCalculatorTest {
 		final int lookback = 14;
 		final int daysOfRsiValues = data.length - lookback;
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator, MATH_CONTEXT);
+		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
 
 		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
 
@@ -84,7 +82,7 @@ public class RelativeStrengthCalculatorTest {
 		final int lookback = 4;
 		final int daysOfRsiValues = dataSize - lookback;
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator, MATH_CONTEXT);
+		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
 
 		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
 
@@ -104,7 +102,7 @@ public class RelativeStrengthCalculatorTest {
 
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator, MATH_CONTEXT);
+		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
 
 		calculator.rs(data);
 	}
@@ -119,7 +117,7 @@ public class RelativeStrengthCalculatorTest {
 
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator, MATH_CONTEXT);
+		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
 
 		calculator.rs(data);
 	}
@@ -133,7 +131,7 @@ public class RelativeStrengthCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
 		        anyInt());
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator, MATH_CONTEXT);
+		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
 
 		calculator.rs(data);
 	}
@@ -146,7 +144,7 @@ public class RelativeStrengthCalculatorTest {
 		final int lookback = 4;
 		final int daysOfRsiValues = dataSize - lookback;
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator, MATH_CONTEXT);
+		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
 
 		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
 
@@ -167,7 +165,7 @@ public class RelativeStrengthCalculatorTest {
 		final int lookback = 4;
 		final int daysOfRsiValues = dataSize - lookback;
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator, MATH_CONTEXT);
+		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
 
 		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
 
@@ -197,7 +195,7 @@ public class RelativeStrengthCalculatorTest {
 
 		final int lookback = 4;
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator, MATH_CONTEXT);
+		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
 
 		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
 
@@ -228,7 +226,7 @@ public class RelativeStrengthCalculatorTest {
 
 		final int lookback = 4;
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator, MATH_CONTEXT);
+		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
 
 		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
 

@@ -55,7 +55,7 @@ import com.systematic.trading.maths.indicator.Validator;
 public class RelativeStrengthCalculator implements RelativeStrength {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
-	private final MathContext mathContext;
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** The number of trading days to look back for calculation. */
 	private final int lookback;
@@ -66,10 +66,9 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 	/**
 	 * @param lookback the number of days to use when calculating the RS.
 	 * @param validator validates and parses input.
-	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
+	 * @param MATH_CONTEXT the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthCalculator( final int lookback, final Validator validator, final MathContext mathContext ) {
-		this.mathContext = mathContext;
+	public RelativeStrengthCalculator( final int lookback, final Validator validator ) {
 		this.validator = validator;
 		this.lookback = lookback;
 	}
@@ -98,7 +97,7 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 		ClosingPrice closeYesterday = data[startWindupIndex].getClosingPrice();
 
 		// Calculate the starting values via SMA
-		final UpwardsToDownwardsMovement initialLookback = new UpwardsToDownwardsMovement(mathContext);
+		final UpwardsToDownwardsMovement initialLookback = new UpwardsToDownwardsMovement(MATH_CONTEXT);
 
 		for (int i = startWindupIndex; i < endWindupIndex; i++) {
 			closeToday = data[i].getClosingPrice();
@@ -107,12 +106,12 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 
 				// Today's price is higher then yesterdays
 				case 1:
-					initialLookback.addUpwards(closeToday.subtract(closeYesterday, mathContext));
+					initialLookback.addUpwards(closeToday.subtract(closeYesterday, MATH_CONTEXT));
 				break;
 
 				// Today's price is lower then yesterdays
 				case -1:
-					initialLookback.addDownwards(closeYesterday.subtract(closeToday, mathContext));
+					initialLookback.addDownwards(closeYesterday.subtract(closeToday, MATH_CONTEXT));
 				break;
 
 				// When equal there's no movement, both are zero
@@ -161,13 +160,13 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 			switch (closeToday.compareTo(closeYesterday)) {
 
 				case 1: // Today's price is higher then yesterdays
-					currentGain = closeToday.subtract(closeYesterday, mathContext);
+					currentGain = closeToday.subtract(closeYesterday, MATH_CONTEXT);
 					currentLoss = BigDecimal.ZERO;
 				break;
 
 				case -1: // Today's price is lower then yesterdays
 					currentGain = BigDecimal.ZERO;
-					currentLoss = closeYesterday.subtract(closeToday, mathContext);
+					currentLoss = closeYesterday.subtract(closeToday, MATH_CONTEXT);
 				break;
 
 				case 0: // When equal there's no movement, both are zero
@@ -178,15 +177,15 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 				break;
 			}
 
-			upward = upward.multiply(archive, mathContext).add(currentGain, mathContext).divide(history, mathContext);
-			downward = downward.multiply(archive, mathContext).add(currentLoss, mathContext).divide(history,
-			        mathContext);
+			upward = upward.multiply(archive, MATH_CONTEXT).add(currentGain, MATH_CONTEXT).divide(history, MATH_CONTEXT);
+			downward = downward.multiply(archive, MATH_CONTEXT).add(currentLoss, MATH_CONTEXT).divide(history,
+			        MATH_CONTEXT);
 
 			if (isZeroOrBelow(downward)) {
 				// There's no downward, then avoid dividing by zero
 				relativeStrength = upward;
 			} else {
-				relativeStrength = upward.divide(downward, mathContext);
+				relativeStrength = upward.divide(downward, MATH_CONTEXT);
 			}
 
 			relativeStrengthValues.add(new RelativeStrengthDataPoint(data[i].getDate(), relativeStrength));

@@ -57,13 +57,11 @@ import com.systematic.trading.maths.indicator.Validator;
  */
 public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
-	//TODO fix this class, test against, flat, v shape, n shape as well as both gradients
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** Constant for the value of 100. */
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
-
-	/** Scale, precision and rounding to apply to mathematical operations. */
-	private final MathContext mathContext;
 
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
@@ -73,11 +71,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 
 	/**
 	 * @param validator validates and parses input.
-	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthIndexCalculator( final RelativeStrength rs, final Validator validator,
-	        final MathContext mathContext ) {
-		this.mathContext = mathContext;
+	public RelativeStrengthIndexCalculator( final RelativeStrength rs, final Validator validator ) {
 		this.validator = validator;
 		this.rs = rs;
 	}
@@ -93,7 +88,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 		/* RSI = 100 - 100 /( 1 + RS ) */
 		for (final RelativeStrengthDataPoint dataPoint : relativeStrengthValues) {
 			rsi.put(dataPoint.getDate(),
-			        ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(dataPoint.getValue()), mathContext)));
+			        ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(dataPoint.getValue()), MATH_CONTEXT)));
 		}
 
 		return new RelativeStrengthIndexLine(rsi);

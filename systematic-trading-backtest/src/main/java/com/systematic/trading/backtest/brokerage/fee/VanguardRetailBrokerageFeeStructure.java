@@ -41,15 +41,8 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  */
 public class VanguardRetailBrokerageFeeStructure implements BrokerageTransactionFeeStructure {
 
-	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext mathContext;
-
-	/**
-	 * @param mathContext math context defining the scale and precision to apply to operations.
-	 */
-	public VanguardRetailBrokerageFeeStructure( final MathContext mathContext ) {
-		this.mathContext = mathContext;
-	}
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	@Override
 	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
@@ -59,7 +52,7 @@ public class VanguardRetailBrokerageFeeStructure implements BrokerageTransaction
 		switch (type) {
 			case BOND:
 			case STOCK:
-				brokerage = tradeValue.multiply(TEN_BASIS_POINTS, mathContext);
+				brokerage = tradeValue.multiply(TEN_BASIS_POINTS, MATH_CONTEXT);
 			break;
 			default:
 				throw new UnsupportedEquityClass(type);

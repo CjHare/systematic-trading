@@ -28,7 +28,6 @@ package com.systematic.trading.simulation.equity.fee.management;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 import org.junit.Test;
 
@@ -41,14 +40,12 @@ import com.systematic.trading.data.price.ClosingPrice;
  */
 public class LadderedEquityManagementFeeCalculatorTest {
 
-	public static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
-
 	@Test
 	public void flatFeeOnlyOneShare() {
 		final BigDecimal[] range = new BigDecimal[0];
 		final BigDecimal[] percentageFee = { new BigDecimal(0.1) };
 		final LadderedEquityManagementFeeCalculator fee = new LadderedEquityManagementFeeCalculator(range,
-		        percentageFee, MATH_CONTEXT);
+		        percentageFee);
 
 		final BigDecimal numberOfEquities = BigDecimal.valueOf(1);
 		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
@@ -63,7 +60,7 @@ public class LadderedEquityManagementFeeCalculatorTest {
 		final BigDecimal[] range = new BigDecimal[0];
 		final BigDecimal[] percentageFee = { new BigDecimal(0.1) };
 		final LadderedEquityManagementFeeCalculator fee = new LadderedEquityManagementFeeCalculator(range,
-		        percentageFee, MATH_CONTEXT);
+		        percentageFee);
 
 		final BigDecimal numberOfEquities = BigDecimal.valueOf(45.75);
 		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));

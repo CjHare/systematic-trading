@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.output.file;
 
 import java.io.IOException;
-import java.math.MathContext;
 import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.BacktestBatchId;
@@ -73,7 +72,6 @@ public class CompleteFileOutputService extends FileOutput implements BacktestOut
 
 	private final BacktestBatchId batchId;
 	private final ExecutorService pool;
-	private final MathContext mathContext;
 	private final String baseDirectory;
 
 	private ReturnOnInvestmentDao roiDisplay;
@@ -91,9 +89,8 @@ public class CompleteFileOutputService extends FileOutput implements BacktestOut
 	private EquityEventDao equityEventDisplay;
 
 	public CompleteFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
-	        final ExecutorService pool, final MathContext mathContext ) throws IOException {
+	        final ExecutorService pool ) throws IOException {
 		this.baseDirectory = getVerifiedDirectory(outputDirectory);
-		this.mathContext = mathContext;
 		this.pool = pool;
 		this.batchId = batchId;
 	}
@@ -141,8 +138,7 @@ public class CompleteFileOutputService extends FileOutput implements BacktestOut
 		this.signalAnalysisDisplay = new FileSignalAnalysisDao(signalAnalysisFile);
 
 		final FileMultithreading comparisonFile = getFileDisplay("/../summary.csv");
-		netWorthComparisonDisplay = new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile,
-		        mathContext);
+		netWorthComparisonDisplay = new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile);
 	}
 
 	private FileMultithreading getFileDisplay( final String suffix ) {

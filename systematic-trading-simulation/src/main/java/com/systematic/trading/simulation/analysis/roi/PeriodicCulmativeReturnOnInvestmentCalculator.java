@@ -43,8 +43,8 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  */
 public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentEventListener {
 
-	/** Context for BigDecimal operations. */
-	private final MathContext mathContext;
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** Parties interested in ROI events. */
 	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<>();
@@ -64,10 +64,8 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 	/** Running total of the ROI for the period so far. */
 	private BigDecimal cumulativeROI = BigDecimal.ZERO;
 
-	public PeriodicCulmativeReturnOnInvestmentCalculator( final LocalDate startingDate, final Period summaryPeriod,
-	        final MathContext mathContext ) {
+	public PeriodicCulmativeReturnOnInvestmentCalculator( final LocalDate startingDate, final Period summaryPeriod ) {
 		this.date = startingDate;
-		this.mathContext = mathContext;
 		this.summaryPeriod = summaryPeriod;
 
 		lastSummaryDate = startingDate;
@@ -91,7 +89,7 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 	public void event( final ReturnOnInvestmentEvent event ) {
 		final BigDecimal percentageChange = event.getPercentageChange();
 		date = event.getExclusiveEndDate();
-		cumulativeROI = cumulativeROI.add(percentageChange, mathContext);
+		cumulativeROI = cumulativeROI.add(percentageChange, MATH_CONTEXT);
 
 		if (nextSummaryDate.isBefore(date) || nextSummaryDate.equals(date)) {
 			notifyListeners(cumulativeROI, lastSummaryDate, date);

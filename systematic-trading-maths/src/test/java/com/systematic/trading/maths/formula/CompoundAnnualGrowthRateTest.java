@@ -28,7 +28,6 @@ package com.systematic.trading.maths.formula;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 import org.junit.Test;
 
@@ -39,13 +38,10 @@ import org.junit.Test;
  */
 public class CompoundAnnualGrowthRateTest {
 
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
-
 	@Test
 	public void powerHalf() {
 		// Calculating "1.21".pow("0.5") to return "1.1".
-		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(BigDecimal.ONE, BigDecimal.valueOf(1.21), 2,
-		        MATH_CONTEXT);
+		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(BigDecimal.ONE, BigDecimal.valueOf(1.21), 2);
 
 		assertEquals(10.0, cagr.doubleValue(), 0.0001);
 	}

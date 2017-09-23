@@ -32,7 +32,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-import java.math.MathContext;
 import java.time.LocalDate;
 
 import org.junit.Test;
@@ -51,7 +50,6 @@ import com.systematic.trading.maths.util.TradingDayPricesBuilder;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleMovingAverageCalculatorTest {
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
 	private Validator validator;
@@ -64,7 +62,7 @@ public class SimpleMovingAverageCalculatorTest {
 		final int daysOfSmaValues = numberDataPoints - lookback;
 
 		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		final SimpleMovingAverageLine sma = calculator.sma(data);
 
@@ -86,7 +84,7 @@ public class SimpleMovingAverageCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
 		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		calculator.sma(data);
 	}
@@ -102,7 +100,7 @@ public class SimpleMovingAverageCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
 		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		calculator.sma(data);
 	}
@@ -118,7 +116,7 @@ public class SimpleMovingAverageCalculatorTest {
 		        anyInt());
 
 		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		calculator.sma(data);
 	}
@@ -131,7 +129,7 @@ public class SimpleMovingAverageCalculatorTest {
 		final int daysOfSmaValues = numberDataPoints - lookback;
 
 		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		final SimpleMovingAverageLine sma = calculator.sma(data);
 

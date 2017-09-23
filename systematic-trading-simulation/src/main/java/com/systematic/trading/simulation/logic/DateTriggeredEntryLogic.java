@@ -46,14 +46,14 @@ import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsActio
  */
 public class DateTriggeredEntryLogic implements EntryLogic {
 
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
+
 	/** Time between creation of entry orders. */
 	private final Period interval;
 
 	/** The last date purchase order was created. */
 	private LocalDate lastOrder;
-
-	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext mathContext;
 
 	/** The type of equity being traded. */
 	private final EquityClass type;
@@ -69,8 +69,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
 	public DateTriggeredEntryLogic( final EquityClass equityType, final int equityScale, final LocalDate firstOrder,
-	        final Period interval, final MathContext mathContext ) {
-		this.mathContext = mathContext;
+	        final Period interval ) {
 		this.interval = interval;
 		this.scale = equityScale;
 		this.type = equityType;
@@ -90,12 +89,12 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 			final BigDecimal maximumTransactionCost = fees.calculateFee(amount, type, data.getDate());
 			final BigDecimal closingPrice = data.getClosingPrice().getPrice();
 
-			final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, mathContext)
-			        .divide(closingPrice, mathContext).setScale(scale, BigDecimal.ROUND_DOWN);
+			final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, MATH_CONTEXT)
+			        .divide(closingPrice, MATH_CONTEXT).setScale(scale, BigDecimal.ROUND_DOWN);
 
 			if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
 				lastOrder = tradingDate.minus(Period.ofDays(1));
-				return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, mathContext);
+				return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, MATH_CONTEXT);
 			}
 		}
 

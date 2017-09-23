@@ -40,6 +40,9 @@ import java.math.MathContext;
  */
 public class CompoundAnnualGrowthRate {
 
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
+
 	private static final BigDecimal ONE_HHUNDRED = BigDecimal.valueOf(100);
 
 	private CompoundAnnualGrowthRate() {
@@ -56,16 +59,14 @@ public class CompoundAnnualGrowthRate {
 	 * @param startValue beginning amount.
 	 * @param finishValue amount at end of investment term.
 	 * @param years number of years between the beginning value and finish value.
-	 * @param mathContext context to perform mathematical operations within.
 	 * @return the compound annual growth rate, as a signed percentage.
 	 */
-	public static BigDecimal calculate( final BigDecimal startValue, final BigDecimal finishValue, final int years,
-	        final MathContext mathContext ) {
+	public static BigDecimal calculate( final BigDecimal startValue, final BigDecimal finishValue, final int years ) {
 
-		final double change = finishValue.divide(startValue, mathContext).doubleValue();
-		final double power = BigDecimal.ONE.divide(BigDecimal.valueOf(years), mathContext).doubleValue();
+		final double change = finishValue.divide(startValue, MATH_CONTEXT).doubleValue();
+		final double power = BigDecimal.ONE.divide(BigDecimal.valueOf(years), MATH_CONTEXT).doubleValue();
 
-		return BigDecimal.valueOf(Math.pow(change, power)).subtract(BigDecimal.ONE, mathContext).multiply(ONE_HHUNDRED,
-		        mathContext);
+		return BigDecimal.valueOf(Math.pow(change, power)).subtract(BigDecimal.ONE, MATH_CONTEXT).multiply(ONE_HHUNDRED,
+		        MATH_CONTEXT);
 	}
 }

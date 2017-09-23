@@ -55,6 +55,9 @@ import com.systematic.trading.simulation.order.exception.InsufficientEquitiesExc
  */
 public class SingleEquityClassBroker implements Brokerage {
 
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
+
 	/** Fee structure to apply to equity transactions. */
 	private final BrokerageTransactionFeeStructure transactionFee;
 
@@ -73,9 +76,6 @@ public class SingleEquityClassBroker implements Brokerage {
 	/** Deals with keeping track of the number of trades on a rolling basis. */
 	private final MonthlyRollingCounter monthlyTradeCounter;
 
-	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext mathContext;
-
 	/** Parties interested in listening to brokerage events. */
 	private final List<BrokerageEventListener> brokerageListeners = new ArrayList<>();
 
@@ -86,28 +86,27 @@ public class SingleEquityClassBroker implements Brokerage {
 	private final String brokerName;
 
 	public SingleEquityClassBroker( final String brokerName, final BrokerageTransactionFeeStructure fees,
-	        final EquityManagementFeeStructure managementFees, final EquityIdentity equity, final LocalDate startDate,
-	        final MathContext mathContext ) {
+	        final EquityManagementFeeStructure managementFees, final EquityIdentity equity,
+	        final LocalDate startDate ) {
 		this.brokerName = brokerName;
 		this.monthlyTradeCounter = new MonthlyRollingCounter();
 		this.lastManagementFee = managementFees.getLastManagementFeeDate(startDate);
 		this.equityManagementFee = managementFees;
 		this.transactionFee = fees;
 		this.equityBalance = BigDecimal.ZERO;
-		this.mathContext = mathContext;
 		this.equity = equity;
 	}
 
 	@Override
 	public void buy( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
 
-		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), mathContext);
+		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), MATH_CONTEXT);
 		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
 		final BigDecimal tradeFee = transactionFee.calculateFee(tradeValue, equity.getType(), tradesThisMonth);
 
 		// Adding the equity purchases to the balance
 		final BigDecimal startingEquityBalance = equityBalance;
-		equityBalance = equityBalance.add(volume.getVolume(), mathContext);
+		equityBalance = equityBalance.add(volume.getVolume(), MATH_CONTEXT);
 
 		// Record of the buy transaction
 		notifyListeners(new BrokerageAccountEvent(startingEquityBalance, equityBalance, volume.getVolume(),
@@ -119,13 +118,13 @@ public class SingleEquityClassBroker implements Brokerage {
 	        throws InsufficientEquitiesException {
 
 		final BigDecimal startingEquityBalance = equityBalance;
-		equityBalance = equityBalance.subtract(volume.getVolume(), mathContext);
+		equityBalance = equityBalance.subtract(volume.getVolume(), MATH_CONTEXT);
 
 		if (equityBalance.compareTo(BigDecimal.ZERO) < 0) {
 			throw new InsufficientEquitiesException();
 		}
 
-		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), mathContext);
+		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), MATH_CONTEXT);
 		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
 		final BigDecimal tradeFee = transactionFee.calculateFee(tradeValue, equity.getType(), tradesThisMonth);
 
@@ -133,7 +132,7 @@ public class SingleEquityClassBroker implements Brokerage {
 		notifyListeners(new BrokerageAccountEvent(startingEquityBalance, equityBalance, volume.getVolume(),
 		        BrokerageAccountEventType.SELL, tradeDate, tradeValue, tradeFee));
 
-		return tradeValue.subtract(tradeFee, mathContext);
+		return tradeValue.subtract(tradeFee, MATH_CONTEXT);
 	}
 
 	@Override
@@ -160,11 +159,11 @@ public class SingleEquityClassBroker implements Brokerage {
 
 	@Override
 	public BigDecimal calculateBuy( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
-		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), mathContext);
+		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), MATH_CONTEXT);
 		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
 		final BigDecimal tradeFee = transactionFee.calculateFee(tradeValue, equity.getType(), tradesThisMonth);
 
-		return tradeValue.add(tradeFee, mathContext);
+		return tradeValue.add(tradeFee, MATH_CONTEXT);
 	}
 
 	@Override
@@ -193,10 +192,10 @@ public class SingleEquityClassBroker implements Brokerage {
 
 			final BigDecimal startingEquityBalance = equityBalance;
 			final BigDecimal transactionValue = tradingData.getClosingPrice().getPrice().multiply(feeInEquities,
-			        mathContext);
+			        MATH_CONTEXT);
 
 			// Erode the original equity balance with the management fee
-			equityBalance = equityBalance.subtract(feeInEquities, mathContext);
+			equityBalance = equityBalance.subtract(feeInEquities, MATH_CONTEXT);
 
 			lastManagementFee = equityManagementFee.getLastManagementFeeDate(tradingDate);
 

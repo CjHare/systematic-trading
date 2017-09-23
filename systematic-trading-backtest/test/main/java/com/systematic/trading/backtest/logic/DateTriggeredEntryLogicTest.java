@@ -40,7 +40,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -280,8 +279,7 @@ public class DateTriggeredEntryLogicTest {
 	}
 
 	private void setUpEntryLogic( final LocalDate firstOrder, final Period interval ) {
-		logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder, interval,
-		        MathContext.DECIMAL64);
+		logic = new DateTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, firstOrder, interval);
 	}
 
 	private void verifyNoCashAccountActions() {

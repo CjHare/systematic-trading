@@ -39,13 +39,13 @@ import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculato
  */
 public class FlatEquityManagementFeeCalculator implements EquityManagementFeeCalculator {
 
-	private final MathContext mathContext;
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	private final BigDecimal percentageFee;
 
-	public FlatEquityManagementFeeCalculator( final BigDecimal percentageFee, final MathContext mathContext ) {
+	public FlatEquityManagementFeeCalculator( final BigDecimal percentageFee ) {
 		this.percentageFee = percentageFee;
-		this.mathContext = mathContext;
 	}
 
 	@Override
@@ -54,11 +54,10 @@ public class FlatEquityManagementFeeCalculator implements EquityManagementFeeCal
 
 		if (durationToCalculate.getYears() > 0) {
 			final BigDecimal fee = percentageFee.multiply(BigDecimal.valueOf(durationToCalculate.getYears()),
-			        mathContext);
-			return numberOfEquities.multiply(fee, mathContext);
+			        MATH_CONTEXT);
+			return numberOfEquities.multiply(fee, MATH_CONTEXT);
 		}
 
 		return BigDecimal.ZERO;
 	}
-
 }

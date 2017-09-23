@@ -28,7 +28,6 @@ package com.systematic.trading.simulation.equity.fee.management;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.Period;
 
 import org.junit.Test;
@@ -42,12 +41,9 @@ import com.systematic.trading.data.price.ClosingPrice;
  */
 public class FlatEquityManagementFeeCalculatorTest {
 
-	public static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
-
 	@Test
 	public void flatFeeOnlyOneShare() {
-		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1),
-		        MATH_CONTEXT);
+		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1));
 
 		final BigDecimal numberOfEquities = BigDecimal.valueOf(1);
 		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
@@ -59,8 +55,7 @@ public class FlatEquityManagementFeeCalculatorTest {
 
 	@Test
 	public void flatFeeOnlyManyShare() {
-		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1),
-		        MATH_CONTEXT);
+		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1));
 
 		final BigDecimal numberOfEquities = BigDecimal.valueOf(45.75);
 		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
@@ -72,8 +67,7 @@ public class FlatEquityManagementFeeCalculatorTest {
 
 	@Test
 	public void flatFeeOnlyManyShareManyYears() {
-		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1),
-		        MATH_CONTEXT);
+		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1));
 
 		final BigDecimal numberOfEquities = BigDecimal.valueOf(45.75);
 		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));

@@ -49,7 +49,7 @@ import com.systematic.trading.maths.indicator.Validator;
 public class ExponentialMovingAverageCalculator implements ExponentialMovingAverage {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
-	private final MathContext mathContext;
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** Constant used for smoothing the moving average. */
 	private final BigDecimal smoothingConstant;
@@ -68,15 +68,13 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public ExponentialMovingAverageCalculator( final int lookback, final Validator validator,
-	        final MathContext mathContext ) {
+	public ExponentialMovingAverageCalculator( final int lookback, final Validator validator ) {
 		// Look back provides one of the days of EMA values
 		this.smoothingConstant = calculateSmoothingConstant(lookback);
-		this.mathContext = mathContext;
 		this.validator = validator;
 		this.lookback = lookback;
 		this.wrapper = new Data();
-		
+
 		//TODO validate lookback > 0
 	}
 
@@ -122,11 +120,11 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
 
 		for (int i = startSmaIndex; i < endSmaIndex; i++) {
-			simpleMovingAverage = simpleMovingAverage.add(data.getPrice(i), mathContext);
+			simpleMovingAverage = simpleMovingAverage.add(data.getPrice(i), MATH_CONTEXT);
 		}
 
 		simpleMovingAverage = simpleMovingAverage.divide(BigDecimal.valueOf((long) endSmaIndex - startSmaIndex),
-		        mathContext);
+		        MATH_CONTEXT);
 
 		final int startEmaIndex = endSmaIndex;
 		BigDecimal yesterday = simpleMovingAverage;
@@ -141,8 +139,8 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 			today = data.getPrice(i);
 
 			/* EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) */
-			emaValues.add((today.subtract(yesterday, mathContext)).multiply(smoothingConstant, mathContext)
-			        .add(yesterday, mathContext));
+			emaValues.add((today.subtract(yesterday, MATH_CONTEXT)).multiply(smoothingConstant, MATH_CONTEXT)
+			        .add(yesterday, MATH_CONTEXT));
 
 			yesterday = today;
 		}

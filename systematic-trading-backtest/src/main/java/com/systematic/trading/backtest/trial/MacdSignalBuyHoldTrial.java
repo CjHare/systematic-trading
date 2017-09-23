@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.trial;
 
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,14 +59,11 @@ import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguratio
  */
 public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements BacktestConfiguration {
 
-	/** Accuracy for BigDecimal operations. */
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
-
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication(MATH_CONTEXT).runBacktest(new MacdSignalBuyHoldTrial(),
+		new BacktestApplication().runBacktest(new MacdSignalBuyHoldTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),

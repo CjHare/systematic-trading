@@ -27,7 +27,6 @@ package com.systematic.trading.backtest.configuration.brokerage;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.math.MathContext;
 import java.time.LocalDate;
 
 import org.apache.logging.log4j.LogManager;
@@ -62,12 +61,11 @@ public class BrokerageFactoroy {
 	/**
 	 * Create an instance of the fee structure.
 	 */
-	private BrokerageTransactionFeeStructure createFeeStructure( final BrokerageFeesConfiguration fee,
-	        final MathContext mathContext ) {
+	private BrokerageTransactionFeeStructure createFeeStructure( final BrokerageFeesConfiguration fee ) {
 
 		try {
-			Constructor<?> cons = fee.getType().getConstructor(MathContext.class);
-			return (BrokerageTransactionFeeStructure) cons.newInstance(mathContext);
+			Constructor<?> cons = fee.getType().getConstructor();
+			return (BrokerageTransactionFeeStructure) cons.newInstance();
 		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
 		        | IllegalArgumentException | InvocationTargetException e) {
 			LOG.error(e);
@@ -77,13 +75,12 @@ public class BrokerageFactoroy {
 	}
 
 	public Brokerage create( final EquityWithFeeConfiguration equity, final BrokerageFeesConfiguration fees,
-	        final LocalDate startDate, final MathContext mathContext ) {
+	        final LocalDate startDate ) {
 
-		final BrokerageTransactionFeeStructure tradingFeeStructure = createFeeStructure(fees, mathContext);
+		final BrokerageTransactionFeeStructure tradingFeeStructure = createFeeStructure(fees);
 		final EquityManagementFeeStructure equityManagementFee = equity.getManagementFee();
 		final EquityIdentity equityId = equity.getIdentity();
 
-		return new SingleEquityClassBroker(fees.name(), tradingFeeStructure, equityManagementFee, equityId, startDate,
-		        mathContext);
+		return new SingleEquityClassBroker(fees.name(), tradingFeeStructure, equityManagementFee, equityId, startDate);
 	}
 }

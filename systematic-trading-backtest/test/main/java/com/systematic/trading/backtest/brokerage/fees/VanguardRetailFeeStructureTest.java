@@ -28,7 +28,6 @@ package com.systematic.trading.backtest.brokerage.fees;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Before;
@@ -49,7 +48,7 @@ public class VanguardRetailFeeStructureTest {
 
 	@Before
 	public void setUp() {
-		feeStructure = new VanguardRetailBrokerageFeeStructure(MathContext.DECIMAL64);
+		feeStructure = new VanguardRetailBrokerageFeeStructure();
 	}
 
 	@Test

@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.output.file;
 
 import java.io.IOException;
-import java.math.MathContext;
 import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.BacktestBatchId;
@@ -60,8 +59,6 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  */
 public class MinimalFileOutputService extends FileOutput implements BacktestOutput {
 
-	private final MathContext mathContext;
-
 	private final String baseDirectory;
 	private EventStatisticsDao statisticsDisplay;
 	private NetWorthSummaryDao netWorthDisplay;
@@ -70,9 +67,8 @@ public class MinimalFileOutputService extends FileOutput implements BacktestOutp
 	private final BacktestBatchId batchId;
 
 	public MinimalFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
-	        final ExecutorService pool, final MathContext mathContext ) throws IOException {
+	        final ExecutorService pool ) throws IOException {
 		this.baseDirectory = getVerifiedDirectory(outputDirectory);
-		this.mathContext = mathContext;
 		this.pool = pool;
 		this.batchId = batchId;
 	}
@@ -87,7 +83,7 @@ public class MinimalFileOutputService extends FileOutput implements BacktestOutp
 		this.netWorthDisplay = new FileNetWorthSummaryDao(cumulativeRoi, statisticsFile);
 
 		final FileMultithreading comparisonFile = getFileDisplay("/../summary.txt");
-		netWorthComparisonDisplay = new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile, mathContext);
+		netWorthComparisonDisplay = new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile);
 	}
 
 	private FileMultithreading getFileDisplay( final String suffix ) {

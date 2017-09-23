@@ -50,8 +50,8 @@ import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsActio
  */
 public class SignalTriggeredEntryLogic implements EntryLogic {
 
-	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext mathContext;
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** The type of equity being traded. */
 	private final EquityClass type;
@@ -77,9 +77,8 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	 * @param mathContext scale and precision to apply to mathematical operations.
 	 */
 	public SignalTriggeredEntryLogic( final EquityClass equityType, final int equityScale,
-	        final TradeValueLogic tradeValue, final AnalysisBuySignals analysis, final MathContext mathContext ) {
+	        final TradeValueLogic tradeValue, final AnalysisBuySignals analysis ) {
 		this.buyLongAnalysis = analysis;
-		this.mathContext = mathContext;
 		this.tradeValue = tradeValue;
 		this.scale = equityScale;
 		this.type = equityType;
@@ -132,11 +131,11 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 		final LocalDate tradingDate = data.getDate();
 		final BigDecimal maximumTransactionCost = fees.calculateFee(amount, type, tradingDate);
 		final BigDecimal closingPrice = data.getClosingPrice().getPrice();
-		final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, mathContext)
-		        .divide(closingPrice, mathContext).setScale(scale, BigDecimal.ROUND_DOWN);
+		final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, MATH_CONTEXT)
+		        .divide(closingPrice, MATH_CONTEXT).setScale(scale, BigDecimal.ROUND_DOWN);
 
 		if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
-			return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, mathContext);
+			return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, MATH_CONTEXT);
 		}
 
 		return null;

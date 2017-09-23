@@ -37,7 +37,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +56,6 @@ import com.systematic.trading.maths.util.TradingDayPricesBuilder;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ExponentialMovingAverageCalculatorTest {
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	@Mock
 	private Validator validator;
@@ -68,7 +66,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createPrices(lookback);
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		final List<BigDecimal> ema = calculator.ema(data);
 
@@ -87,7 +85,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createPrices(numberDataPoints);
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		final List<BigDecimal> ema = calculator.ema(data);
 
@@ -110,7 +108,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		        anyInt());
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		calculator.ema(data);
 	}
@@ -122,7 +120,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		final List<BigDecimal> ema = calculator.ema(data);
 
@@ -144,7 +142,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		calculator.ema(data);
 	}
@@ -156,7 +154,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final List<BigDecimal> data = createDecimalPrices(numberDataPoints);
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		final List<BigDecimal> ema = calculator.ema(data);
 
@@ -175,7 +173,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final List<BigDecimal> data = createIncreasingDecimalPrices(numberDataPoints);
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		final List<BigDecimal> ema = calculator.ema(data);
 
@@ -197,7 +195,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		        anyInt());
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		calculator.ema(data);
 	}
@@ -207,7 +205,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final int lookback = 2;
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator, MATH_CONTEXT);
+		        validator);
 
 		final int requiredDays = calculator.getMinimumNumberOfPrices();
 

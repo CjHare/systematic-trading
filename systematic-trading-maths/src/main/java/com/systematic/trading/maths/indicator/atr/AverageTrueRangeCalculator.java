@@ -41,7 +41,7 @@ import com.systematic.trading.maths.indicator.Validator;
 public class AverageTrueRangeCalculator implements AverageTrueRange {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
-	private final MathContext mathContext;
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** Constant used for multiplying the previous ATR in the average calculation. */
 	private final BigDecimal priorMultiplier;
@@ -59,26 +59,24 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	 * @param lookback the number of days to use when calculating the ATR, also the number of days
 	 *            prior to the averaging becoming correct.
 	 * @param validator validates and parses input.
-	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public AverageTrueRangeCalculator( final int lookback, final Validator validator, final MathContext mathContext ) {
+	public AverageTrueRangeCalculator( final int lookback, final Validator validator ) {
 		this.minimumNumberOfPrices = lookback;
 		this.priorMultiplier = BigDecimal.valueOf(lookback - 1L);
 		this.lookbackDivider = BigDecimal.valueOf(lookback);
-		this.mathContext = mathContext;
 		this.validator = validator;
 	}
 
 	private BigDecimal trueRangeMethodOne( final TradingDayPrices today ) {
-		return today.getHighestPrice().subtract(today.getLowestPrice(), mathContext).abs();
+		return today.getHighestPrice().subtract(today.getLowestPrice(), MATH_CONTEXT).abs();
 	}
 
 	private BigDecimal trueRangeMethodTwo( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		return today.getHighestPrice().subtract(yesterday.getClosingPrice(), mathContext).abs();
+		return today.getHighestPrice().subtract(yesterday.getClosingPrice(), MATH_CONTEXT).abs();
 	}
 
 	private BigDecimal trueRangeMethodThree( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		return today.getLowestPrice().subtract(yesterday.getClosingPrice(), mathContext).abs();
+		return today.getLowestPrice().subtract(yesterday.getClosingPrice(), MATH_CONTEXT).abs();
 	}
 
 	/**
@@ -104,7 +102,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 		/* For a look back of 14: Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the
 		 * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14 */
 		return priorAverageTrueRange.multiply(priorMultiplier).add(currentTrueRange).divide(lookbackDivider,
-		        mathContext);
+		        MATH_CONTEXT);
 	}
 
 	@Override

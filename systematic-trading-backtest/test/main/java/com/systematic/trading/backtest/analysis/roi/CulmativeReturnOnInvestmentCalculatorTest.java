@@ -30,7 +30,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -61,8 +60,6 @@ import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CulmativeReturnOnInvestmentCalculatorTest {
-
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	private static final LocalDate TODAY = LocalDate.now();
 	private static final LocalDate YESTERFAY = TODAY.minus(Period.ofDays(1));
@@ -212,7 +209,7 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 	}
 
 	private ReturnOnInvestmentCalculator setUpReturnOnInvestmentCalculator() {
-		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator(MATH_CONTEXT);
+		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator();
 		calculator.addListener(listener);
 		return calculator;
 	}

@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.context;
 
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
@@ -80,9 +79,6 @@ public class BacktestBootstrapContextBulider {
 	/** How long one year is as a period of time/ */
 	private static final Period ONE_YEAR = Period.ofYears(1);
 
-	/** Accuracy for BigDecimal operations. */
-	private final MathContext mathContext;
-
 	/** Single equity to create the configuration on. */
 	private EquityConfiguration equity;
 
@@ -98,10 +94,6 @@ public class BacktestBootstrapContextBulider {
 	private EntryLogicConfiguration entryLogic;
 
 	private BrokerageFeesConfiguration brokerageType;
-
-	public BacktestBootstrapContextBulider( final MathContext mathContext ) {
-		this.mathContext = mathContext;
-	}
 
 	public BacktestBootstrapContextBulider withConfiguration( final BacktestBootstrapConfiguration configuration ) {
 		this.simulationDates = configuration.getBacktestDates();
@@ -139,14 +131,14 @@ public class BacktestBootstrapContextBulider {
 	        final Period purchaseFrequency ) {
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final LocalDate startDate = simulationDates.getStartDate();
-		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit, mathContext);
+		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit);
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
 		        equity.getEquityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 		final Brokerage brokerage = BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
-		        startDate, mathContext);
+		        startDate);
 		final EntryLogic entry = EntryLogicFactory.getInstance().create(equity.getEquityIdentity(), startDate,
-		        purchaseFrequency, mathContext);
+		        purchaseFrequency);
 
 		return new BacktestBootstrapContext(entry, getExitLogic(), brokerage, cashAccount, simulationDates);
 	}
@@ -172,8 +164,8 @@ public class BacktestBootstrapContextBulider {
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
 
 		final IndicatorSignalGenerator[] indicatorGenerators = {
-		        IndicatorSignalGeneratorFactory.getInstance().create(anchor, signalRangeFilter, mathContext),
-		        IndicatorSignalGeneratorFactory.getInstance().create(confirmation, signalRangeFilter, mathContext) };
+		        IndicatorSignalGeneratorFactory.getInstance().create(anchor, signalRangeFilter),
+		        IndicatorSignalGeneratorFactory.getInstance().create(confirmation, signalRangeFilter) };
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
 		        indicatorGenerators);
@@ -197,7 +189,7 @@ public class BacktestBootstrapContextBulider {
 
 		for (int i = 0; i < indicatorGenerators.length; i++) {
 			indicatorGenerators[i] = IndicatorSignalGeneratorFactory.getInstance().create(indicators[i],
-			        signalRangeFilter, mathContext);
+			        signalRangeFilter);
 		}
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
@@ -236,16 +228,16 @@ public class BacktestBootstrapContextBulider {
 		final LocalDate startDate = simulationDates.getStartDate();
 		final BoundedTradeValue tradeValue = new BoundedTradeValue(
 		        new AbsoluteTradeValueCalculator(minimumTrade.getValue()),
-		        new RelativeTradeValueCalculator(maximumTrade.getValue(), mathContext));
+		        new RelativeTradeValueCalculator(maximumTrade.getValue()));
 
 		final EntryLogic entry = EntryLogicFactory.getInstance().create(equity.getEquityIdentity(), tradeValue,
-		        simulationDates, filter, mathContext, indicators);
+		        simulationDates, filter, indicators);
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
 		        equity.getEquityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 		final Brokerage cmcMarkets = BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
-		        startDate, mathContext);
-		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit, mathContext);
+		        startDate);
+		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit);
 
 		return new BacktestBootstrapContext(entry, getExitLogic(), cmcMarkets, cashAccount, simulationDates);
 	}
@@ -254,10 +246,10 @@ public class BacktestBootstrapContextBulider {
 		switch (managementFee) {
 			case VANGUARD_MSCI_INT_RETAIL:
 				return new LadderedEquityManagementFeeCalculator(managementFee.getFeeRange(),
-				        managementFee.getPercentageFee(), mathContext);
+				        managementFee.getPercentageFee());
 
 			case VGS:
-				return new FlatEquityManagementFeeCalculator(managementFee.getPercentageFee()[0], mathContext);
+				return new FlatEquityManagementFeeCalculator(managementFee.getPercentageFee()[0]);
 
 			case NONE:
 			default:

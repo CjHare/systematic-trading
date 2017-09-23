@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.trial;
 
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,14 +60,11 @@ import com.systematic.trading.backtest.trial.configuration.TrialConfigurationBui
  */
 public class MacdUpwardTrendBuyHoldlTrial extends BaseTrialConfiguration implements BacktestConfiguration {
 
-	/** Accuracy for BigDecimal operations. */
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
-
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication(MATH_CONTEXT).runBacktest(new MacdUpwardTrendBuyHoldlTrial(),
+		new BacktestApplication().runBacktest(new MacdUpwardTrendBuyHoldlTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
@@ -127,7 +123,8 @@ public class MacdUpwardTrendBuyHoldlTrial extends BaseTrialConfiguration impleme
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(SmaGradientConfiguration.values().length);
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
+		        SmaGradientConfiguration.values().length);
 
 		for (final SmaGradientConfiguration smaConfiguration : SmaGradientConfiguration.values()) {
 			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,

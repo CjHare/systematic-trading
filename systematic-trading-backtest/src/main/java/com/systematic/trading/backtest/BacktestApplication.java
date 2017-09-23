@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest;
 
 import java.io.IOException;
-import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
@@ -83,15 +82,12 @@ public class BacktestApplication {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(BacktestApplication.class);
 
-	private final MathContext mathContext;
-
 	// TODO the description is specific to the type of output - file, console, elastic :. refactor - move into BacktestLaunchArgumentParser
 	private final DescriptionGenerator description = new DescriptionGenerator();
 
 	private final DataServiceUpdater updateService;
 
-	public BacktestApplication( final MathContext mathContext ) throws ServiceException {
-		this.mathContext = mathContext;
+	public BacktestApplication() throws ServiceException {
 
 		try {
 			this.updateService = new DataServiceUpdaterImpl();
@@ -237,12 +233,10 @@ public class BacktestApplication {
 					        BackestOutputElasticConfigurationSingleton.getConfiguration());
 				case FILE_COMPLETE:
 					return new CompleteFileOutputService(batchId,
-					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool,
-					        mathContext);
+					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool);
 				case FILE_MINIMUM:
 					return new MinimalFileOutputService(batchId,
-					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool,
-					        mathContext);
+					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool);
 				case NO_DISPLAY:
 					return new NoBacktestOutput();
 				default:
@@ -260,7 +254,7 @@ public class BacktestApplication {
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final BacktestOutput output = getOutput(depositAmount, arguments, configuration, outputPool);
 			final BacktestBootstrapContext context = createContext(configuration);
-			final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData, mathContext);
+			final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
 			LOG.info("Backtesting beginning for: {}", () -> description.getDescription(configuration, depositAmount));
 
@@ -300,7 +294,7 @@ public class BacktestApplication {
 	}
 
 	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration ) {
-		return new BacktestBootstrapContextBulider(mathContext).withConfiguration(configuration).build();
+		return new BacktestBootstrapContextBulider().withConfiguration(configuration).build();
 	}
 
 	private TickerSymbolTradingData getTradingData( final EquityIdentity equity,

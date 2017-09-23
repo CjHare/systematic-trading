@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest;
 
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -56,9 +55,6 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  */
 public class BacktestBootstrap {
 
-	/** Context for BigDecimal operations. */
-	private final MathContext mathContext;
-
 	/** Display information from the back testing. */
 	private final BacktestOutput output;
 
@@ -68,9 +64,8 @@ public class BacktestBootstrap {
 	private final TickerSymbolTradingData tradingData;
 
 	public BacktestBootstrap( final BacktestBootstrapContext context, final BacktestOutput output,
-	        final TickerSymbolTradingData tradingData, final MathContext mathContext ) {
+	        final TickerSymbolTradingData tradingData ) {
 		this.context = context;
-		this.mathContext = mathContext;
 		this.tradingData = tradingData;
 		this.output = output;
 	}
@@ -90,22 +85,21 @@ public class BacktestBootstrap {
 		// TODO run with a full output & check no deposits & signals
 
 		// Cumulative recording of investment progression
-		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator(mathContext);
+		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator();
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-		        earliestDate, Period.ofDays(1), mathContext);
+		        earliestDate, Period.ofDays(1));
 		roi.addListener(dailyRoi);
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-		        earliestDate, Period.ofMonths(1), mathContext);
+		        earliestDate, Period.ofMonths(1));
 		roi.addListener(monthlyRoi);
 
 		final PeriodicCulmativeReturnOnInvestmentCalculator yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
-		        earliestDate, Period.ofYears(1), mathContext);
+		        earliestDate, Period.ofYears(1));
 		roi.addListener(yearlyRoi);
 
-		final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi = new CulmativeTotalReturnOnInvestmentCalculator(
-		        mathContext);
+		final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi = new CulmativeTotalReturnOnInvestmentCalculator();
 		roi.addListener(cumulativeRoi);
 
 		final EntryLogic entry = context.getEntryLogic();

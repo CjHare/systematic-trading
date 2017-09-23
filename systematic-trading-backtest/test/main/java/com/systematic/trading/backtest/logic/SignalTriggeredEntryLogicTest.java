@@ -39,7 +39,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,8 +100,8 @@ public class SignalTriggeredEntryLogicTest {
 
 		logic = new SignalTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE,
 		        new BoundedTradeValue(new AbsoluteTradeValueCalculator(BigDecimal.ONE),
-		                new RelativeTradeValueCalculator(BigDecimal.ONE, MathContext.DECIMAL64)),
-		        buyLongAnalysis, MathContext.DECIMAL64);
+		                new RelativeTradeValueCalculator(BigDecimal.ONE)),
+		        buyLongAnalysis);
 	}
 
 	@Test

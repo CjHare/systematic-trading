@@ -51,8 +51,8 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	/** Used for the conversion to percentage. */
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
-	/** Context for BigDecimal operations. */
-	private final MathContext mathContext;
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** Parties interested in ROI events. */
 	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<>();
@@ -65,10 +65,6 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 
 	/** Running total of the amount deposited since the last net worth calculation. */
 	private BigDecimal depositedSincePreviousNetWorth = BigDecimal.ZERO;
-
-	public CulmativeReturnOnInvestmentCalculator( final MathContext mathContext ) {
-		this.mathContext = mathContext;
-	}
 
 	@Override
 	public void update( final Brokerage broker, final CashAccount cashAccount, final TradingDayPrices tradingData ) {
@@ -113,9 +109,9 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 
 		final BigDecimal equityBalance = broker.getEquityBalance();
 		final BigDecimal lastClosingPrice = tradingData.getClosingPrice().getPrice();
-		final BigDecimal holdingsValue = equityBalance.multiply(lastClosingPrice, mathContext);
+		final BigDecimal holdingsValue = equityBalance.multiply(lastClosingPrice, MATH_CONTEXT);
 		final BigDecimal cashBalance = cashAccount.getBalance();
-		final BigDecimal netWorth = cashBalance.add(holdingsValue, mathContext);
+		final BigDecimal netWorth = cashBalance.add(holdingsValue, MATH_CONTEXT);
 
 		final BigDecimal percentageChange;
 
@@ -124,14 +120,14 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 			percentageChange = BigDecimal.ZERO;
 		} else {
 			// Difference / previous worth
-			final BigDecimal absoluteChange = netWorth.subtract(previousNetWorth, mathContext)
-			        .subtract(depositedSincePreviousNetWorth, mathContext);
+			final BigDecimal absoluteChange = netWorth.subtract(previousNetWorth, MATH_CONTEXT)
+			        .subtract(depositedSincePreviousNetWorth, MATH_CONTEXT);
 
 			if (BigDecimal.ZERO.compareTo(absoluteChange) == 0) {
 				percentageChange = BigDecimal.ZERO;
 			} else {
-				percentageChange = absoluteChange.divide(previousNetWorth, mathContext).multiply(ONE_HUNDRED,
-				        mathContext);
+				percentageChange = absoluteChange.divide(previousNetWorth, MATH_CONTEXT).multiply(ONE_HUNDRED,
+				        MATH_CONTEXT);
 			}
 		}
 
@@ -147,7 +143,7 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 
 		if (CashEventType.DEPOSIT == cashEvent.getType()) {
 			// Add the deposit to the running total
-			depositedSincePreviousNetWorth = depositedSincePreviousNetWorth.add(cashEvent.getAmount(), mathContext);
+			depositedSincePreviousNetWorth = depositedSincePreviousNetWorth.add(cashEvent.getAmount(), MATH_CONTEXT);
 		}
 	}
 }

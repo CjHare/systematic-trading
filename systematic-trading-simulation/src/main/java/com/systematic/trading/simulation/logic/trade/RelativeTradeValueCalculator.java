@@ -35,15 +35,14 @@ import java.math.MathContext;
  */
 public class RelativeTradeValueCalculator implements TradeValueCalculator {
 
-	/** Scale and precision to apply to mathematical operations. */
-	private final MathContext mathContext;
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** Value between zero and one, the percentage of the funds to use in a trade. */
 	private final BigDecimal percentage;
 
-	public RelativeTradeValueCalculator( final BigDecimal percentage, final MathContext mathContext ) {
+	public RelativeTradeValueCalculator( final BigDecimal percentage ) {
 		this.percentage = percentage;
-		this.mathContext = mathContext;
 	}
 
 	@Override
@@ -58,6 +57,6 @@ public class RelativeTradeValueCalculator implements TradeValueCalculator {
 
 	@Override
 	public BigDecimal getTradeValue( final BigDecimal funds ) {
-		return funds.multiply(percentage, mathContext);
+		return funds.multiply(percentage, MATH_CONTEXT);
 	}
 }

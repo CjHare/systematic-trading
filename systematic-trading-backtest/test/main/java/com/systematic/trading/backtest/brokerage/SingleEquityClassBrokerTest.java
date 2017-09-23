@@ -33,7 +33,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
 
 import org.junit.Before;
@@ -73,8 +72,7 @@ public class SingleEquityClassBrokerTest {
 
 	@Before
 	public void setUp() {
-		broker = new SingleEquityClassBroker("BrokerName", feeStructure, equityFee, equity, LocalDate.now(),
-		        MathContext.DECIMAL64);
+		broker = new SingleEquityClassBroker("BrokerName", feeStructure, equityFee, equity, LocalDate.now());
 
 		when(equity.getType()).thenReturn(EquityClass.STOCK);
 	}

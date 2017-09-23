@@ -30,7 +30,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,13 +46,12 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CulmativeTotalReturnOnInvestmentCalculatorTest {
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
 
 	private CulmativeTotalReturnOnInvestmentCalculator calculator;
 
 	@Before
 	public void setUp() {
-		calculator = new CulmativeTotalReturnOnInvestmentCalculator(MATH_CONTEXT);
+		calculator = new CulmativeTotalReturnOnInvestmentCalculator();
 	}
 
 	@Test

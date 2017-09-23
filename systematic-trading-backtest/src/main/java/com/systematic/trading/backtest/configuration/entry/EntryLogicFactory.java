@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.configuration.entry;
 
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -66,18 +65,17 @@ public class EntryLogicFactory {
 	}
 
 	public EntryLogic create( final EquityIdentity equity, final LocalDate startDate,
-	        final DepositConfiguration deposit, final MathContext mathContext ) {
+	        final DepositConfiguration deposit ) {
 		final Period frequency = deposit.getFrequency();
-		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency, mathContext);
+		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency);
 	}
 
-	public EntryLogic create( final EquityIdentity equity, final LocalDate startDate, final Period frequency,
-	        final MathContext mathContext ) {
-		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency, mathContext);
+	public EntryLogic create( final EquityIdentity equity, final LocalDate startDate, final Period frequency ) {
+		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency);
 	}
 
 	public EntryLogic create( final EquityIdentity equity, final TradeValueLogic tradeValue,
-	        final BacktestSimulationDates simulationDates, final SignalFilter filter, final MathContext mathContext,
+	        final BacktestSimulationDates simulationDates, final SignalFilter filter,
 	        final IndicatorSignalGenerator[] entrySignals ) {
 		final LocalDate simulationStartDate = simulationDates.getStartDate();
 		final LocalDate simulationEndDate = simulationDates.getEndDate();
@@ -89,7 +87,6 @@ public class EntryLogicFactory {
 		filters.add(decoratedFilter);
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals(Arrays.asList(entrySignals), filters);
-		return new SignalTriggeredEntryLogic(equity.getType(), equity.getScale(), tradeValue, buyLongAnalysis,
-		        mathContext);
+		return new SignalTriggeredEntryLogic(equity.getType(), equity.getScale(), tradeValue, buyLongAnalysis);
 	}
 }

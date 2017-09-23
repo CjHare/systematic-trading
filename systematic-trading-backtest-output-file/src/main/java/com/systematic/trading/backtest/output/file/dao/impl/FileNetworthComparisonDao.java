@@ -48,6 +48,9 @@ import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
  */
 public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
+
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
 	private static final DecimalFormat FOUR_DECIMAL_PLACES = new DecimalFormat(".0000");
 	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
@@ -58,12 +61,10 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 	private final EventStatistics statistics;
 	private final BacktestBatchId batchId;
 	private final FileMultithreading file;
-	private final MathContext mathContext;
 
 	public FileNetworthComparisonDao( final BacktestBatchId batchId, final BacktestSimulationDates dates,
-	        final EventStatistics statistics, final FileMultithreading file, final MathContext mathContext ) {
+	        final EventStatistics statistics, final FileMultithreading file ) {
 		this.batchId = batchId;
-		this.mathContext = mathContext;
 		this.statistics = statistics;
 		this.file = file;
 		this.dates = dates;
@@ -94,7 +95,7 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private String profit( final NetWorthEvent event ) {
 		return String.format("Profit: %s", TWO_DECIMAL_PLACES.format(
-		        event.getNetWorth().subtract(statistics.getCashEventStatistics().getAmountDeposited(), mathContext)));
+		        event.getNetWorth().subtract(statistics.getCashEventStatistics().getAmountDeposited(), MATH_CONTEXT)));
 	}
 
 	private String deposited() {
@@ -111,8 +112,7 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 		final Period duration = Period.between(dates.getStartDate(), dates.getEndDate());
 		final BigDecimal deposited = statistics.getCashEventStatistics().getAmountDeposited();
 		final BigDecimal netWorth = event.getNetWorth();
-		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears(),
-		        mathContext);
+		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears());
 
 		return String.format("CAGR: %s", FOUR_DECIMAL_PLACES.format(cagr));
 	}
