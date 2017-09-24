@@ -33,9 +33,9 @@ import com.systematic.trading.signal.IndicatorSignalType;
  * @author CJ Hare
  */
 public enum SmaGradientConfiguration implements SignalConfiguration {
-	SHORT(20, 5, "Short-SMA-Gradient"),
-	MEDIUM(50, 7, "Medium-SMA-Gradient"),
-	LONG(100, 10, "Long-SMA-Gradient");
+	SHORT(20, 5, "SMA-Gradient-Short"),
+	MEDIUM(50, 7, "SMA-Gradient-Medium"),
+	LONG(100, 10, "SMA-Gradient-Long");
 
 	private final String description;
 	private final int lookback;

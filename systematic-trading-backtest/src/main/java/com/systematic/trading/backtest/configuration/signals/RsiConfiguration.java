@@ -36,8 +36,9 @@ import com.systematic.trading.signal.IndicatorSignalType;
  */
 public enum RsiConfiguration implements SignalConfiguration {
 
-	SHORT(7, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "Short-RSI"),
-	MEDIUM(14, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "Medium-RSI");
+	SHORT(7, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Short"),
+	MEDIUM(14, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Medium"),
+	LONG(21, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Long");
 
 	private final String description;
 	private final int lookback;

@@ -34,9 +34,9 @@ import com.systematic.trading.signal.IndicatorSignalType;
  */
 public enum MacdUptrendConfiguration implements SignalConfiguration {
 
-	SHORT(6, 13, "Short-MACD-Uptrend"),
-	MEDIUM(12, 26, "Medium-MACD-Uptrend"),
-	LONG(24, 52, "Long-MACD-Uptrend");
+	SHORT(6, 13, "MACD-Uptrend-Short"),
+	MEDIUM(12, 26, "MACD-Uptrend-Medium"),
+	LONG(24, 52, "MACD-Uptrend-Long");
 
 	private final String description;
 	private final int fastTimePeriods;
