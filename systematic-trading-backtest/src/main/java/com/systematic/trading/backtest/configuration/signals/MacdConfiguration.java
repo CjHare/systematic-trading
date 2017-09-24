@@ -36,7 +36,7 @@ public enum MacdConfiguration implements SignalConfiguration {
 
 	SHORT(6, 13, 5, "Short-MACD"),
 	MEDIUM(12, 26, 9, "Medium-MACD"),
-	LONG(24, 52, 18, "LongM-ACD");
+	LONG(24, 52, 18, "Long-MACD");
 
 	private final String description;
 	private final int fastTimePeriods;
