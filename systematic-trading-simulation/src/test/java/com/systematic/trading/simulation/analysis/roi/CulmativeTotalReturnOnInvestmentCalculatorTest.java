@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.analysis.roi;
+package com.systematic.trading.simulation.analysis.roi;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -61,7 +61,6 @@ public class CulmativeTotalReturnOnInvestmentCalculatorTest {
 
 	@Test
 	public void oneEvent() {
-
 		event(101);
 
 		verfiyCulumateRoi(101);
@@ -69,7 +68,6 @@ public class CulmativeTotalReturnOnInvestmentCalculatorTest {
 
 	@Test
 	public void threeEvents() {
-
 		event(22);
 		event(33);
 		event(4.35);
