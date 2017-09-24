@@ -46,7 +46,7 @@ import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
  * 
  * @author CJ Hare
  */
-public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator {
+public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 
 	/** Parties interested in ROI events. */
 	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<>();

@@ -36,7 +36,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  * 
  * @author CJ Hare
  */
-public class CulmativeTotalReturnOnInvestmentCalculator
+public class CulmativeTotalReturnOnInvestment
         implements ReturnOnInvestmentEventListener, CumulativeReturnOnInvestment {
 
 	/** Running total of the ROI. */

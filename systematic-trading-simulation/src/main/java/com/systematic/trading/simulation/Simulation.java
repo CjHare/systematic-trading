@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
-import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.logic.EntryLogic;
@@ -79,7 +79,7 @@ public class Simulation {
 	private final Period interval = Period.ofDays(1);
 
 	/** Return on investment calculator. */
-	private final ReturnOnInvestmentCalculator roi;
+	private final ReturnOnInvestmentListener roi;
 
 	/** Listeners interested in entry events. */
 	private final List<OrderEventListener> orderEventListeners = new ArrayList<>();
@@ -91,7 +91,7 @@ public class Simulation {
 	private final TickerSymbolTradingData tradingData;
 
 	public Simulation( final TickerSymbolTradingData tradingData, final Brokerage broker, final CashAccount funds,
-	        final ReturnOnInvestmentCalculator roi, final EntryLogic entry, final ExitLogic exit ) {
+	        final ReturnOnInvestmentListener roi, final EntryLogic entry, final ExitLogic exit ) {
 
 		this.entry = entry;
 		this.exit = exit;

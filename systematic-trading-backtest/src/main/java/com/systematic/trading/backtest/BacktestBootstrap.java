@@ -35,9 +35,9 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;
 import com.systematic.trading.simulation.SimulationStateListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthSummaryEventGenerator;
-import com.systematic.trading.simulation.analysis.roi.CulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
-import com.systematic.trading.simulation.analysis.roi.PeriodicCulmativeReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.CulmativeReturnOnInvestment;
+import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestment;
+import com.systematic.trading.simulation.analysis.roi.PeriodicCulmativeReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.statistics.CumulativeEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.Brokerage;
@@ -85,21 +85,21 @@ public class BacktestBootstrap {
 		// TODO run with a full output & check no deposits & signals
 
 		// Cumulative recording of investment progression
-		final CulmativeReturnOnInvestmentCalculator roi = new CulmativeReturnOnInvestmentCalculator();
+		final CulmativeReturnOnInvestment roi = new CulmativeReturnOnInvestment();
 
-		final PeriodicCulmativeReturnOnInvestmentCalculator dailyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
+		final PeriodicCulmativeReturnOnInvestment dailyRoi = new PeriodicCulmativeReturnOnInvestment(
 		        earliestDate, Period.ofDays(1));
 		roi.addListener(dailyRoi);
 
-		final PeriodicCulmativeReturnOnInvestmentCalculator monthlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
+		final PeriodicCulmativeReturnOnInvestment monthlyRoi = new PeriodicCulmativeReturnOnInvestment(
 		        earliestDate, Period.ofMonths(1));
 		roi.addListener(monthlyRoi);
 
-		final PeriodicCulmativeReturnOnInvestmentCalculator yearlyRoi = new PeriodicCulmativeReturnOnInvestmentCalculator(
+		final PeriodicCulmativeReturnOnInvestment yearlyRoi = new PeriodicCulmativeReturnOnInvestment(
 		        earliestDate, Period.ofYears(1));
 		roi.addListener(yearlyRoi);
 
-		final CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi = new CulmativeTotalReturnOnInvestmentCalculator();
+		final CulmativeTotalReturnOnInvestment cumulativeRoi = new CulmativeTotalReturnOnInvestment();
 		roi.addListener(cumulativeRoi);
 
 		final EntryLogic entry = context.getEntryLogic();

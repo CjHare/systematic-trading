@@ -36,22 +36,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 
 /**
- * Tests the behaviour of the CulmativeTotalReturnOnInvestmentCalculator.
+ * Tests the behaviour of the CulmativeTotalReturnOnInvestment.
  * 
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CulmativeTotalReturnOnInvestmentCalculatorTest {
+public class CulmativeTotalReturnOnInvestmentTest {
 
-	private CulmativeTotalReturnOnInvestmentCalculator calculator;
+	private CulmativeTotalReturnOnInvestment calculator;
 
 	@Before
 	public void setUp() {
-		calculator = new CulmativeTotalReturnOnInvestmentCalculator();
+		calculator = new CulmativeTotalReturnOnInvestment();
 	}
 
 	@Test

@@ -44,7 +44,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
-import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
@@ -83,7 +83,7 @@ public class ElasticBacktestOutput implements BacktestOutput {
 
 	@Override
 	public void init( TickerSymbolTradingData tradingData, BacktestSimulationDates dates,
-	        EventStatistics eventStatistics, CulmativeTotalReturnOnInvestmentCalculator cumulativeRoi,
+	        EventStatistics eventStatistics, CulmativeTotalReturnOnInvestment cumulativeRoi,
 	        TradingDayPrices lastTradingDay ) {
 		signalAnalysisIndex.init(batchId);
 		cashIndex.init(batchId);

@@ -47,7 +47,7 @@ import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;
-import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentCalculator;
+import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.logic.EntryLogic;
@@ -84,7 +84,7 @@ public class SimulationEntryLogicTest {
 	private EquityOrder order;
 
 	@Mock
-	private ReturnOnInvestmentCalculator roiCalculator;
+	private ReturnOnInvestmentListener roiCalculator;
 
 	private Simulation simulation;
 

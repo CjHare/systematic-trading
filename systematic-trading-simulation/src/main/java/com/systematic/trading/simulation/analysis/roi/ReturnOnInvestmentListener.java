@@ -36,7 +36,7 @@ import com.systematic.trading.simulation.cash.event.CashEventListener;
  * 
  * @author CJ Hare
  */
-public interface ReturnOnInvestmentCalculator extends CashEventListener {
+public interface ReturnOnInvestmentListener extends CashEventListener {
 
 	/**
 	 * Updates the recording of the ROI.

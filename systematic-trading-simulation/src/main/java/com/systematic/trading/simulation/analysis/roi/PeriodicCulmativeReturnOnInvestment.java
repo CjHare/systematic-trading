@@ -41,7 +41,7 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  * 
  * @author CJ Hare
  */
-public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentEventListener {
+public class PeriodicCulmativeReturnOnInvestment implements ReturnOnInvestmentEventListener {
 
 	/** Parties interested in ROI events. */
 	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<>();
@@ -61,7 +61,7 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 	/** Running total of the ROI for the period so far. */
 	private final ReturnOnInvestment cumulativeROI;
 
-	public PeriodicCulmativeReturnOnInvestmentCalculator( final LocalDate startingDate, final Period summaryPeriod ) {
+	public PeriodicCulmativeReturnOnInvestment( final LocalDate startingDate, final Period summaryPeriod ) {
 		this.date = startingDate;
 		this.summaryPeriod = summaryPeriod;
 		this.lastSummaryDate = startingDate;

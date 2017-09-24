@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.analysis.roi;
+package com.systematic.trading.simulation.analysis.roi;
 
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
@@ -41,17 +41,15 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.OngoingStubbing;
 
-import com.systematic.trading.backtest.matcher.analysis.RoiEventMatcher;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.simulation.analysis.roi.CulmativeReturnOnInvestmentCalculator;
-import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.event.CashAccountEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
+import com.systematic.trading.simulation.matcher.RoiEventMatcher;
 
 /**
  * Tests the CulmativeReturnOnInvestmentCalculator.
@@ -59,7 +57,7 @@ import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CulmativeReturnOnInvestmentCalculatorTest {
+public class CulmativeReturnOnInvestmentTest {
 
 	private static final LocalDate TODAY = LocalDate.now();
 	private static final LocalDate YESTERFAY = TODAY.minus(Period.ofDays(1));
@@ -82,7 +80,7 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 	private ReturnOnInvestmentEventListener listener;
 
 	/** The calculator being evaluated by the unit test.*/
-	private ReturnOnInvestmentCalculator calculator;
+	private ReturnOnInvestmentListener calculator;
 
 	@Before
 	public void setUp() {
@@ -208,8 +206,8 @@ public class CulmativeReturnOnInvestmentCalculatorTest {
 		calculator.update(broker, cashAccount, tradingData);
 	}
 
-	private ReturnOnInvestmentCalculator setUpReturnOnInvestmentCalculator() {
-		final ReturnOnInvestmentCalculator calculator = new CulmativeReturnOnInvestmentCalculator();
+	private ReturnOnInvestmentListener setUpReturnOnInvestmentCalculator() {
+		final ReturnOnInvestmentListener calculator = new CulmativeReturnOnInvestment();
 		calculator.addListener(listener);
 		return calculator;
 	}

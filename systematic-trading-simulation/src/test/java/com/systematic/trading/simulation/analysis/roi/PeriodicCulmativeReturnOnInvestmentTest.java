@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.analysis.roi;
+package com.systematic.trading.simulation.analysis.roi;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -41,18 +41,17 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.matcher.analysis.RoiEventMatcher;
-import com.systematic.trading.simulation.analysis.roi.PeriodicCulmativeReturnOnInvestmentCalculator;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
+import com.systematic.trading.simulation.matcher.RoiEventMatcher;
 
 /**
- * Tests the PeriodicCulmativeReturnOnInvestmentCalculator.
+ * Tests the PeriodicCulmativeReturnOnInvestment.
  * 
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PeriodicCulmativeReturnOnInvestmentCalculatorTest {
+public class PeriodicCulmativeReturnOnInvestmentTest {
 
 	private static final Period UNDER_SUMMARY_PERIOD = Period.ofDays(1);
 	private static final Period SUMMARY_PERIOD = Period.ofDays(2);
@@ -67,11 +66,11 @@ public class PeriodicCulmativeReturnOnInvestmentCalculatorTest {
 	private ReturnOnInvestmentEventListener listener;
 
 	/** The ROI calculator being unit tested.*/
-	private PeriodicCulmativeReturnOnInvestmentCalculator calculator;
+	private PeriodicCulmativeReturnOnInvestment calculator;
 
 	@Before
 	public void setUp() {
-		calculator = new PeriodicCulmativeReturnOnInvestmentCalculator(STARTING_DATE, SUMMARY_PERIOD);
+		calculator = new PeriodicCulmativeReturnOnInvestment(STARTING_DATE, SUMMARY_PERIOD);
 		calculator.addListener(listener);
 	}
 
