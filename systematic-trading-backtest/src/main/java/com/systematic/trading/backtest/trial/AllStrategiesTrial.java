@@ -30,6 +30,7 @@
 package com.systematic.trading.backtest.trial;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -37,7 +38,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
+import com.systematic.trading.backtest.BacktestSimulationDates;
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
+import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
@@ -83,5 +88,16 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 
 	public AllStrategiesTrial() {
 		super(BrokerageFeesConfiguration.CMC_MARKETS, getPositionSizing());
+	}
+
+	@Override
+	public List<BacktestBootstrapConfiguration> get( EquityConfiguration equity,
+	        BacktestSimulationDates simulationDates, DepositConfiguration deposit ) {
+		List<BacktestBootstrapConfiguration> configurations = super.get(equity, simulationDates, deposit);
+
+		// Vanguard Retail - baseline
+		configurations.add(getBaseline(equity, simulationDates, deposit));
+
+		return configurations;
 	}
 }

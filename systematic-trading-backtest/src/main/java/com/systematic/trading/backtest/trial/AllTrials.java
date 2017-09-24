@@ -71,9 +71,6 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
-		// Vanguard Retail - baseline
-		configurations.add(getBaseline(equity, simulationDates, deposit));
-
 		// Date based buying
 		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicFilterConfiguration.WEEKLY));
 		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicFilterConfiguration.MONTHLY));
