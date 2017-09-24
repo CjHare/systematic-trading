@@ -26,12 +26,12 @@
 package com.systematic.trading.simulation.analysis.roi;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.systematic.trading.maths.formula.ReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventImpl;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
@@ -42,9 +42,6 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  * @author CJ Hare
  */
 public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentEventListener {
-
-	/** Scale, precision and rounding to apply to mathematical operations. */
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** Parties interested in ROI events. */
 	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<>();
@@ -62,14 +59,28 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 	private LocalDate date;
 
 	/** Running total of the ROI for the period so far. */
-	private BigDecimal cumulativeROI = BigDecimal.ZERO;
+	private final ReturnOnInvestment cumulativeROI;
 
 	public PeriodicCulmativeReturnOnInvestmentCalculator( final LocalDate startingDate, final Period summaryPeriod ) {
 		this.date = startingDate;
 		this.summaryPeriod = summaryPeriod;
+		this.lastSummaryDate = startingDate;
+		this.nextSummaryDate = startingDate.plus(summaryPeriod);
+		this.cumulativeROI = new ReturnOnInvestment();
+	}
 
-		lastSummaryDate = startingDate;
-		nextSummaryDate = startingDate.plus(summaryPeriod);
+	@Override
+	public void event( final ReturnOnInvestmentEvent event ) {
+		final BigDecimal percentageChange = event.getPercentageChange();
+		date = event.getExclusiveEndDate();
+		cumulativeROI.add(percentageChange);
+
+		if (nextSummaryDate.isBefore(date) || nextSummaryDate.equals(date)) {
+			notifyListeners(cumulativeROI.get(), lastSummaryDate, date);
+			cumulativeROI.reset();
+			lastSummaryDate = date;
+			nextSummaryDate = nextSummaryDate.plus(summaryPeriod);
+		}
 	}
 
 	private void notifyListeners( final BigDecimal percentageChange, final LocalDate exclusiveStartDate,
@@ -85,17 +96,4 @@ public class PeriodicCulmativeReturnOnInvestmentCalculator implements ReturnOnIn
 		}
 	}
 
-	@Override
-	public void event( final ReturnOnInvestmentEvent event ) {
-		final BigDecimal percentageChange = event.getPercentageChange();
-		date = event.getExclusiveEndDate();
-		cumulativeROI = cumulativeROI.add(percentageChange, MATH_CONTEXT);
-
-		if (nextSummaryDate.isBefore(date) || nextSummaryDate.equals(date)) {
-			notifyListeners(cumulativeROI, lastSummaryDate, date);
-			cumulativeROI = BigDecimal.ZERO;
-			lastSummaryDate = date;
-			nextSummaryDate = nextSummaryDate.plus(summaryPeriod);
-		}
-	}
 }

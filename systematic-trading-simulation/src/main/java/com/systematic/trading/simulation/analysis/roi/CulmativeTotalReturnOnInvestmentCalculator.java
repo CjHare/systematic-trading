@@ -26,8 +26,8 @@
 package com.systematic.trading.simulation.analysis.roi;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
+import com.systematic.trading.maths.formula.ReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 
@@ -39,19 +39,16 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 public class CulmativeTotalReturnOnInvestmentCalculator
         implements ReturnOnInvestmentEventListener, CumulativeReturnOnInvestment {
 
-	/** Scale, precision and rounding to apply to mathematical operations. */
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
-
 	/** Running total of the ROI. */
-	private BigDecimal cumulativeROI = BigDecimal.ZERO;
+	private final ReturnOnInvestment cumulativeROI = new ReturnOnInvestment();
 
 	@Override
 	public BigDecimal getCumulativeReturnOnInvestment() {
-		return cumulativeROI;
+		return cumulativeROI.get();
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		cumulativeROI = cumulativeROI.add(event.getPercentageChange(), MATH_CONTEXT);
+		cumulativeROI.add(event.getPercentageChange());
 	}
 }

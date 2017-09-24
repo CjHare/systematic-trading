@@ -82,6 +82,10 @@ public class SystematicTradingMathsAssert {
 		}
 	}
 
+	public static void assertBigDecimalEquals( final double expected, BigDecimal actual ) {
+		assertEquals(String.format("%s != %s", expected, actual), 0, BigDecimal.valueOf(expected).compareTo(actual));
+	}
+
 	private static void assertBigDecimalEquals( final double[] expected, final List<BigDecimal> actual, final int i ) {
 		assertEquals(String.format("%s != %s", expected[i], actual.get(i)), 0,
 		        BigDecimal.valueOf(expected[i]).compareTo(actual.get(i)));
