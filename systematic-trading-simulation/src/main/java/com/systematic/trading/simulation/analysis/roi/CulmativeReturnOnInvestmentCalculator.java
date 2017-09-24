@@ -26,13 +26,13 @@
 package com.systematic.trading.simulation.analysis.roi;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.formula.Networth;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventImpl;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
@@ -48,23 +48,17 @@ import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
  */
 public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestmentCalculator {
 
-	/** Used for the conversion to percentage. */
-	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
-
-	/** Scale, precision and rounding to apply to mathematical operations. */
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
-
 	/** Parties interested in ROI events. */
 	private final List<ReturnOnInvestmentEventListener> listeners = new ArrayList<>();
 
 	/** Net Worth as recorded on previous update. */
-	private BigDecimal previousNetWorth;
+	private Networth previousNetWorth;
 
 	/** Date of the last update on recording of net worth. */
 	private LocalDate previousDate;
 
 	/** Running total of the amount deposited since the last net worth calculation. */
-	private BigDecimal depositedSincePreviousNetWorth = BigDecimal.ZERO;
+	private final Networth adjustment = new Networth();
 
 	@Override
 	public void update( final Brokerage broker, final CashAccount cashAccount, final TradingDayPrices tradingData ) {
@@ -107,11 +101,9 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 	private BigDecimal calculatePercentageChangeInNetWorth( final Brokerage broker, final CashAccount cashAccount,
 	        final TradingDayPrices tradingData ) {
 
-		final BigDecimal equityBalance = broker.getEquityBalance();
-		final BigDecimal lastClosingPrice = tradingData.getClosingPrice().getPrice();
-		final BigDecimal holdingsValue = equityBalance.multiply(lastClosingPrice, MATH_CONTEXT);
-		final BigDecimal cashBalance = cashAccount.getBalance();
-		final BigDecimal netWorth = cashBalance.add(holdingsValue, MATH_CONTEXT);
+		final Networth netWorth = new Networth();
+		netWorth.addEquity(broker.getEquityBalance(), tradingData.getClosingPrice().getPrice());
+		netWorth.add(cashAccount.getBalance());
 
 		final BigDecimal percentageChange;
 
@@ -119,21 +111,12 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 		if (previousNetWorth == null) {
 			percentageChange = BigDecimal.ZERO;
 		} else {
-			// Difference / previous worth
-			final BigDecimal absoluteChange = netWorth.subtract(previousNetWorth, MATH_CONTEXT)
-			        .subtract(depositedSincePreviousNetWorth, MATH_CONTEXT);
-
-			if (BigDecimal.ZERO.compareTo(absoluteChange) == 0) {
-				percentageChange = BigDecimal.ZERO;
-			} else {
-				percentageChange = absoluteChange.divide(previousNetWorth, MATH_CONTEXT).multiply(ONE_HUNDRED,
-				        MATH_CONTEXT);
-			}
+			percentageChange = previousNetWorth.percentageChange(netWorth, adjustment);
 		}
 
 		// Reset the counters
 		previousNetWorth = netWorth;
-		depositedSincePreviousNetWorth = BigDecimal.ZERO;
+		adjustment.reset();
 
 		return percentageChange;
 	}
@@ -143,7 +126,7 @@ public class CulmativeReturnOnInvestmentCalculator implements ReturnOnInvestment
 
 		if (CashEventType.DEPOSIT == cashEvent.getType()) {
 			// Add the deposit to the running total
-			depositedSincePreviousNetWorth = depositedSincePreviousNetWorth.add(cashEvent.getAmount(), MATH_CONTEXT);
+			adjustment.add(cashEvent.getAmount());
 		}
 	}
 }
