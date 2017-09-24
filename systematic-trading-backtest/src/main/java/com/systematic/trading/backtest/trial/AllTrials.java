@@ -27,8 +27,10 @@ package com.systematic.trading.backtest.trial;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import com.systematic.trading.backtest.BacktestApplication;
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
@@ -43,14 +45,6 @@ import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaGradientConfiguration;
-import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
-import com.systematic.trading.backtest.input.EndDateLaunchArgument;
-import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
-import com.systematic.trading.backtest.input.LaunchArgumentValidator;
-import com.systematic.trading.backtest.input.LaunchArguments;
-import com.systematic.trading.backtest.input.OutputLaunchArgument;
-import com.systematic.trading.backtest.input.StartDateLaunchArgument;
-import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
@@ -61,17 +55,15 @@ import com.systematic.trading.backtest.trial.configuration.TrialConfigurationBui
  * 
  * @author CJ Hare
  */
-public class TooManyTrials extends BaseTrialConfiguration implements BacktestConfiguration {
+public abstract class AllTrials extends BaseTrialConfiguration implements BacktestConfiguration {
 
-	public static void main( final String... args ) throws Exception {
+	private final BrokerageFeesConfiguration brokerage;
+	private final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes;
 
-		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
-
-		new BacktestApplication().runBacktest(new TooManyTrials(),
-		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
-		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
-		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
-		                args));
+	public AllTrials( final BrokerageFeesConfiguration brokerage,
+	        final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes ) {
+		this.brokerage = brokerage;
+		this.tradeSizes = tradeSizes;
 	}
 
 	@Override
@@ -82,32 +74,31 @@ public class TooManyTrials extends BaseTrialConfiguration implements BacktestCon
 		// Vanguard Retail - baseline
 		configurations.add(getBaseline(equity, simulationDates, deposit));
 
-		// All signal based use the trading account
-		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.CMC_MARKETS;
-
 		// Date based buying
 		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicFilterConfiguration.WEEKLY));
 		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicFilterConfiguration.MONTHLY));
 
-		final MaximumTrade maximumTrade = MaximumTrade.QUARTER;
-		final MinimumTrade minimumTrade = MinimumTrade.TWO_THOUSAND;
+		for (final Pair<MinimumTrade, MaximumTrade> tradeSize : tradeSizes) {
+			final MinimumTrade minimumTrade = tradeSize.getLeft();
+			final MaximumTrade maximumTrade = tradeSize.getRight();
 
-		// Signal based buying
-		configurations.addAll(
-		        getAllMacdConfirmedByRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-		configurations
-		        .addAll(getAllSameDayMacdRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-		configurations.addAll(getAllMacd(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-		configurations.addAll(
-		        getAllSameDayMacdSmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-		configurations
-		        .addAll(getAllSameDayMacdSma(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-		configurations
-		        .addAll(getAllSameDaySmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-		configurations
-		        .addAll(getAllSmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-		configurations
-		        .addAll(getAllMacdUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			// Signal based buying
+			configurations.addAll(
+			        getAllMacdConfirmedByRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(
+			        getAllSameDayMacdRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(getAllMacd(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(
+			        getAllSameDayMacdSmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(
+			        getAllSameDayMacdSma(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(
+			        getAllSameDaySmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations
+			        .addAll(getAllSmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(
+			        getAllMacdUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		}
 
 		return configurations;
 	}
