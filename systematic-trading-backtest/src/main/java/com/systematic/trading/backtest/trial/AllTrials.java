@@ -44,7 +44,7 @@ import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfigu
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
-import com.systematic.trading.backtest.configuration.signals.SmaGradientConfiguration;
+import com.systematic.trading.backtest.configuration.signals.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
@@ -112,7 +112,7 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaUptrendConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
@@ -133,7 +133,7 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaUptrendConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
@@ -151,7 +151,7 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaUptrendConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
@@ -167,10 +167,10 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaUptrendConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-			for (final SmaGradientConfiguration smaConfiguration : SmaGradientConfiguration.values()) {
+			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
 				for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 					configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 					        new EntryLogicConfiguration(
@@ -189,10 +189,10 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaUptrendConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-			for (final SmaGradientConfiguration smaConfiguration : SmaGradientConfiguration.values()) {
+			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 				        new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
 				                macdConfiguration, smaConfiguration), maximumTrade, minimumTrade)));
@@ -207,9 +207,9 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaGradientConfiguration.values().length * RsiConfiguration.values().length);
+		        SmaUptrendConfiguration.values().length * RsiConfiguration.values().length);
 
-		for (final SmaGradientConfiguration smaConfiguration : SmaGradientConfiguration.values()) {
+		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 				        new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
@@ -225,9 +225,9 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaGradientConfiguration.values().length);
+		        SmaUptrendConfiguration.values().length);
 
-		for (final SmaGradientConfiguration smaConfiguration : SmaGradientConfiguration.values()) {
+		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
 			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 			        new EntryLogicConfiguration(
 			                new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, smaConfiguration),

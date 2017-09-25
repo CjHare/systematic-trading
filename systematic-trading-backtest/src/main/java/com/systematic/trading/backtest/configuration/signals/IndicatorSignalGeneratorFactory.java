@@ -82,8 +82,8 @@ public class IndicatorSignalGeneratorFactory {
 		if (signal instanceof RsiConfiguration) {
 			return create((RsiConfiguration) signal, filter);
 		}
-		if (signal instanceof SmaGradientConfiguration) {
-			return create((SmaGradientConfiguration) signal, filter);
+		if (signal instanceof SmaUptrendConfiguration) {
+			return create((SmaUptrendConfiguration) signal, filter);
 		}
 
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
@@ -143,7 +143,7 @@ public class IndicatorSignalGeneratorFactory {
 		return new RelativeStrengthIndexSignals(rsiConfiguration.getLookback(), rsi, signalCalculators, filter);
 	}
 
-	private IndicatorSignalGenerator create( final SmaGradientConfiguration sma, final SignalRangeFilter filter ) {
+	private IndicatorSignalGenerator create( final SmaUptrendConfiguration sma, final SignalRangeFilter filter ) {
 
 		final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new SimpleMovingAverageBullishGradientSignalCalculator());

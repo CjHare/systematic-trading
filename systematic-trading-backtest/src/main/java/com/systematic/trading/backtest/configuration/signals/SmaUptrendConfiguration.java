@@ -32,16 +32,16 @@ import com.systematic.trading.signal.IndicatorSignalType;
  * 
  * @author CJ Hare
  */
-public enum SmaGradientConfiguration implements SignalConfiguration {
-	SHORT(20, 5, "SMA-Gradient-Short"),
-	MEDIUM(50, 7, "SMA-Gradient-Medium"),
-	LONG(100, 10, "SMA-Gradient-Long");
+public enum SmaUptrendConfiguration implements SignalConfiguration {
+	SHORT(20, 5, "SMA-Uptrend-Short"),
+	MEDIUM(50, 7, "SMA-Uptrend-Medium"),
+	LONG(100, 10, "SMA-Uptrend-Long");
 
 	private final String description;
 	private final int lookback;
 	private final int daysOfGradient;
 
-	SmaGradientConfiguration( final int lookback, final int daysOfGradient, final String description ) {
+	SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
 		this.daysOfGradient = daysOfGradient;
 		this.description = description;
 		this.lookback = lookback;
