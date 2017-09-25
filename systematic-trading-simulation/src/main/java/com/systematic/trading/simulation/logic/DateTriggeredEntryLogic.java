@@ -93,7 +93,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 			        .divide(closingPrice, MATH_CONTEXT).setScale(scale, BigDecimal.ROUND_DOWN);
 
 			if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
-				lastOrder = tradingDate.minus(Period.ofDays(1));
+				updateLastOrder(tradingDate);
 				return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, MATH_CONTEXT);
 			}
 		}
@@ -102,7 +102,16 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	}
 
 	private boolean isOrderTime( final LocalDate tradingDate ) {
-		return tradingDate.isAfter(lastOrder.plus(interval));
+		return !tradingDate.isBefore(lastOrder.plus(interval));
+	}
+
+	/**
+	 * Full intervals to bring the date as close to today as possible, without going beyond.
+	 */
+	private void updateLastOrder( final LocalDate today ) {
+		while (lastOrder.isBefore(today)) {
+			lastOrder = lastOrder.plus(interval);
+		}
 	}
 
 	@Override

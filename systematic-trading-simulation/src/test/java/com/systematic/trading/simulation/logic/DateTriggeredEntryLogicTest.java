@@ -72,6 +72,7 @@ public class DateTriggeredEntryLogicTest {
 	private static final int EQUITY_SCALE = 4;
 	private static final Period ORDER_EVERY_DAY = Period.ofDays(1);
 	private static final Period ORDER_EVERY_OTHER_DAY = Period.ofDays(2);
+	private static final Period ORDER_ONCE_A_WEEK = Period.ofDays(7);
 	private static final LocalDate YESTERDAY = LocalDate.now().minus(Period.ofDays(1));
 	private static final LocalDate TODAY = LocalDate.now();
 	private static final LocalDate TOMORROW = LocalDate.now().plus(Period.ofDays(1));
@@ -100,7 +101,7 @@ public class DateTriggeredEntryLogicTest {
 	@Test
 	public void updateNoOrder() {
 		setUpEntryLogic();
-		setUpData(20, TODAY);
+		setUpData(20, YESTERDAY);
 
 		update();
 
@@ -145,7 +146,7 @@ public class DateTriggeredEntryLogicTest {
 	@Test
 	public void updateBuyTwoDaysNoOrder() {
 		setUpEntryLogic(TODAY, ORDER_EVERY_OTHER_DAY);
-		setUpData(1, TODAY);
+		setUpData(1, YESTERDAY);
 
 		update();
 
@@ -172,7 +173,7 @@ public class DateTriggeredEntryLogicTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void updateBuyTwoDaysRolling() {
-		setUpEntryLogic(YESTERDAY, ORDER_EVERY_OTHER_DAY);
+		setUpEntryLogic(TODAY, ORDER_ONCE_A_WEEK);
 		setUpData(20, TODAY);
 		setUpFeeCalculation(5);
 		setUpCashAccount(100);
