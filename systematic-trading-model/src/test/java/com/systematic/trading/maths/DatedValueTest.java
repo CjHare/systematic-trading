@@ -1,4 +1,4 @@
-package com.systematic.trading.maths.model;
+package com.systematic.trading.maths;
 
 import static org.junit.Assert.assertEquals;
 
