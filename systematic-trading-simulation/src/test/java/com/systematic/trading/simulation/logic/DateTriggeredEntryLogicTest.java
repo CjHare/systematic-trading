@@ -55,6 +55,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.matcher.BigDecimalMatcher;
@@ -74,6 +75,7 @@ public class DateTriggeredEntryLogicTest {
 	private static final Period ORDER_EVERY_OTHER_DAY = Period.ofDays(2);
 	private static final Period ORDER_ONCE_A_WEEK = Period.ofDays(7);
 	private static final LocalDate YESTERDAY = LocalDate.now().minus(Period.ofDays(1));
+	private static final LocalDate LAST_MONTH = LocalDate.now().minus(Period.ofMonths(1));
 	private static final LocalDate TODAY = LocalDate.now();
 	private static final LocalDate TOMORROW = LocalDate.now().plus(Period.ofDays(1));
 
@@ -100,7 +102,7 @@ public class DateTriggeredEntryLogicTest {
 
 	@Test
 	public void updateNoOrder() {
-		setUpEntryLogic();
+		setUpEntryLogic(TODAY, ORDER_ONCE_A_WEEK);
 		setUpData(20, YESTERDAY);
 
 		update();
@@ -144,7 +146,7 @@ public class DateTriggeredEntryLogicTest {
 	}
 
 	@Test
-	public void updateBuyTwoDaysNoOrder() {
+	public void updateTwoDaysNoOrder() {
 		setUpEntryLogic(TODAY, ORDER_EVERY_OTHER_DAY);
 		setUpData(1, YESTERDAY);
 
@@ -157,7 +159,7 @@ public class DateTriggeredEntryLogicTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void updateBuyTwoDaysWithOrder() {
+	public void updateTwoDaysWithOrder() {
 		setUpEntryLogic(YESTERDAY, ORDER_EVERY_OTHER_DAY);
 		setUpData(20, TODAY);
 		setUpFeeCalculation(5);
@@ -172,8 +174,36 @@ public class DateTriggeredEntryLogicTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void updateBuyTwoDaysRolling() {
-		setUpEntryLogic(TODAY, ORDER_ONCE_A_WEEK);
+	public void updateMultipleIntervals() {
+		setUpEntryLogic(LAST_MONTH, ORDER_EVERY_OTHER_DAY);
+		setUpData(20, TODAY);
+		setUpFeeCalculation(5);
+		setUpCashAccount(100);
+
+		update();
+
+		verifyOrder();
+		verifyCashAccountBalanceCheck();
+		verifyFee(calculation(100, TODAY));
+
+		// Change the trading day to tomorrow - should not have an order
+		setUpData(18, TOMORROW);
+
+		update();
+
+		verifyNoOrder();
+		verifyCashAccountBalanceCheck();
+		verifyFee(calculation(100, TODAY));
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	/**
+	 * Make sure there is no drift in the order date.
+	 */
+	public void updateEnsureNoDrift() {
+		setUpEntryLogic(YESTERDAY, ORDER_EVERY_OTHER_DAY);
 		setUpData(20, TODAY);
 		setUpFeeCalculation(5);
 		setUpCashAccount(100);
@@ -192,38 +222,24 @@ public class DateTriggeredEntryLogicTest {
 		verifyFee(calculation(100, TODAY));
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test
-	/**
-	 * Make sure there is no drift in the order date.
-	 */
-	public void updateEnsureNoDrift() {
-		setUpEntryLogic(YESTERDAY, ORDER_EVERY_DAY);
-		setUpData(20, TODAY);
-		setUpFeeCalculation(5);
-		setUpCashAccount(100);
-
-		update();
-
-		verifyOrder();
-
-		// Change the trading day to tomorrow - should not have an order
-		setUpData(18, TOMORROW);
-
-		update();
-
-		verifyOrder();
-		verifyCashAccountBalanceCheck();
-		verifyFee(calculation(100, TODAY), calculation(100, TOMORROW));
-	}
-
 	@Test
 	public void actionOnInsufficentFunds() {
-		setUpEntryLogic();
+		setUpEntryLogic(TODAY, ORDER_ONCE_A_WEEK);
 
 		final EquityOrderInsufficientFundsAction action = logic.actionOnInsufficentFunds(mock(EquityOrder.class));
 
 		assertEquals(EquityOrderInsufficientFundsAction.RESUMIT, action);
+	}
+
+	@Test
+	public void addListener() {
+		setUpEntryLogic(TODAY, ORDER_ONCE_A_WEEK);
+
+		logic.addListener(mock(SignalAnalysisListener.class));
+
+		verifyNoOrder();
+		verifyNoCashAccountActions();
+		verifyNoFeeCalculations();
 	}
 
 	private void verifyCashAccountBalanceCheck() {
@@ -272,10 +288,6 @@ public class DateTriggeredEntryLogicTest {
 
 	private void update() {
 		order = logic.update(fees, cashAccount, data);
-	}
-
-	private void setUpEntryLogic() {
-		setUpEntryLogic(LocalDate.now(), Period.ofDays(1));
 	}
 
 	private void setUpEntryLogic( final LocalDate firstOrder, final Period interval ) {

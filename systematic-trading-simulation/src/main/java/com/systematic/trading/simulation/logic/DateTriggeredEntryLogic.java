@@ -102,7 +102,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	}
 
 	private boolean isOrderTime( final LocalDate tradingDate ) {
-		return !tradingDate.isBefore(lastOrder.plus(interval));
+		return tradingDate.isAfter(lastOrder.plus(interval));
 	}
 
 	/**
@@ -112,6 +112,8 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 		while (lastOrder.isBefore(today)) {
 			lastOrder = lastOrder.plus(interval);
 		}
+
+		lastOrder = lastOrder.minus(interval);
 	}
 
 	@Override
