@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.order;
+package com.systematic.trading.simulation.order;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -43,15 +43,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.matcher.EquityOrderVolumeMatcher;
-import com.systematic.trading.backtest.matcher.PriceMatcher;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
+import com.systematic.trading.simulation.matcher.EquityOrderVolumeMatcher;
+import com.systematic.trading.simulation.matcher.PriceMatcher;
 import com.systematic.trading.simulation.order.exception.OrderException;
 
 /**

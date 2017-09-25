@@ -23,60 +23,80 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.logic;
+package com.systematic.trading.simulation.cash;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verifyZeroInteractions;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
-import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
-import com.systematic.trading.simulation.order.EquityOrder;
+import com.systematic.trading.simulation.cash.FlatInterestRate;
 
 /**
- * Testing the hold forever exit logic.
+ * Testing the flat interest rate.
  * 
  * @author CJ Hare
  */
-@RunWith(MockitoJUnitRunner.class)
-public class HoldForeverExitLogicTest {
+public class FlatInterestRateTest {
 
-	@Mock
-	private BrokerageTransaction broker;
+	private static final BigDecimal FUNDS = BigDecimal.valueOf(1000000);
 
-	@Mock
-	private TradingDayPrices data;
-
-	/** Entry logic instance created in the setUpEntryLogic.*/
-	private HoldForeverExitLogic logic;
-
-	/* The most recent update response.*/
-	private EquityOrder order;
+	private FlatInterestRate rate;
 
 	@Before
 	public void setUp() {
-		logic = new HoldForeverExitLogic();
+		rate = new FlatInterestRate(BigDecimal.valueOf(7.5), MathContext.DECIMAL64);
 	}
 
 	@Test
-	public void update() {
-		updateLogic();
+	public void zeroDaysInterest() {
+		final BigDecimal interest = interest(0);
 
-		verifyNoOrder();
+		verifyInterest(0, interest);
 	}
 
-	private void verifyNoOrder() {
-		assertEquals(null, order);
-		verifyZeroInteractions(broker);
+	@Test
+	public void oneDaysInterest() {
+		final BigDecimal interest = interest(1);
+
+		verifyInterest(205.4794520547945, interest);
 	}
 
-	private void updateLogic() {
-		order = logic.update(broker, data);
+	@Test
+	public void oneDaysInterestLeapYear() {
+		final BigDecimal interest = interestLeapYear(1);
+
+		verifyInterest(204.9180327868852, interest);
+	}
+
+	@Test
+	public void tenDaysInterest() {
+
+		final BigDecimal interest = interest(10);
+
+		verifyInterest(2054.794520547945, interest);
+	}
+
+	@Test
+	public void tenDaysInterestLeapYear() {
+		final BigDecimal interest = interestLeapYear(10);
+
+		verifyInterest(2049.180327868852, interest);
+	}
+
+	private BigDecimal interest( final int days ) {
+		return rate.interest(FUNDS, days, false);
+	}
+
+	private BigDecimal interestLeapYear( final int days ) {
+		return rate.interest(FUNDS, days, true);
+	}
+
+	private void verifyInterest( final double expected, final BigDecimal interest ) {
+		assertEquals(String.format("Expected %s != %s", expected, interest),
+		        BigDecimal.valueOf(expected).compareTo(interest), 0);
 	}
 }

@@ -23,80 +23,104 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.cash;
+package com.systematic.trading.simulation.brokerage;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
+import java.time.LocalDate;
+import java.time.Period;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.simulation.cash.FlatInterestRate;
+import com.systematic.trading.simulation.brokerage.MonthlyRollingCounter;
 
 /**
- * Testing the flat interest rate.
+ * Ensuring the Monthly Rolling Counter behaves correctly.
  * 
  * @author CJ Hare
  */
-public class FlatInterestRateTest {
+public class MonthlyRollingCounterTest {
 
-	private static final BigDecimal FUNDS = BigDecimal.valueOf(1000000);
-
-	private FlatInterestRate rate;
+	private MonthlyRollingCounter counter;
 
 	@Before
 	public void setUp() {
-		rate = new FlatInterestRate(BigDecimal.valueOf(7.5), MathContext.DECIMAL64);
+		counter = new MonthlyRollingCounter();
 	}
 
 	@Test
-	public void zeroDaysInterest() {
-		final BigDecimal interest = interest(0);
+	public void addOne() {
+		incrementCurrentMonth();
 
-		verifyInterest(0, interest);
+		verifyCurrentMonthCount(1);
 	}
 
 	@Test
-	public void oneDaysInterest() {
-		final BigDecimal interest = interest(1);
+	public void addTwo() {
+		incrementCurrentMonth();
+		incrementCurrentMonth();
 
-		verifyInterest(205.4794520547945, interest);
+		verifyCurrentMonthCount(2);
 	}
 
 	@Test
-	public void oneDaysInterestLeapYear() {
-		final BigDecimal interest = interestLeapYear(1);
+	public void addTwoMonthSplit() {
+		incrementreviousMonth();
+		incrementCurrentMonth();
 
-		verifyInterest(204.9180327868852, interest);
+		verifyCurrentMonthCount(1);
 	}
 
 	@Test
-	public void tenDaysInterest() {
+	public void addTwoYearsSplit() {
+		incrementPreviousYear();
+		incrementCurrentMonth();
 
-		final BigDecimal interest = interest(10);
-
-		verifyInterest(2054.794520547945, interest);
+		verifyCurrentMonthCount(1);
 	}
 
 	@Test
-	public void tenDaysInterestLeapYear() {
-		final BigDecimal interest = interestLeapYear(10);
+	public void addRolling() {
 
-		verifyInterest(2049.180327868852, interest);
+		// Here, then back (should dump that count) then here again
+		incrementCurrentMonth();
+		incrementreviousMonth();
+		incrementCurrentMonth();
+
+		verifyCurrentMonthCount(1);
 	}
 
-	private BigDecimal interest( final int days ) {
-		return rate.interest(FUNDS, days, false);
+	@Test
+	public void getCountZero() {
+		verifyCurrentMonthCount(0);
 	}
 
-	private BigDecimal interestLeapYear( final int days ) {
-		return rate.interest(FUNDS, days, true);
+	@Test
+	public void getRollingCounterLost() {
+		incrementreviousMonth();
+		incrementCurrentMonth();
+
+		veriyfPreviousMonthCount(0);
 	}
 
-	private void verifyInterest( final double expected, final BigDecimal interest ) {
-		assertEquals(String.format("Expected %s != %s", expected, interest),
-		        BigDecimal.valueOf(expected).compareTo(interest), 0);
+	private void incrementCurrentMonth() {
+		counter.add(LocalDate.now());
+	}
+
+	private void incrementreviousMonth() {
+		counter.add(LocalDate.now().minus(Period.ofMonths(1)));
+	}
+
+	private void incrementPreviousYear() {
+		counter.add(LocalDate.now().minus(Period.ofYears(1)));
+	}
+
+	private void verifyCurrentMonthCount( final int expected ) {
+		assertEquals(expected, counter.get(LocalDate.now()));
+	}
+
+	private void veriyfPreviousMonthCount( final int expected ) {
+		assertEquals(expected, counter.get(LocalDate.now().minus(Period.ofMonths(1))));
 	}
 }

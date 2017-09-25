@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.collections;
+package com.systematic.trading.collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -38,7 +38,7 @@ import com.systematic.trading.collection.LimitedSizeQueue;
  * 
  * @author CJ Hare
  */
-public class LimitedQueueTest {
+public class LimitedSizeQueueTest {
 
 	private LimitedSizeQueue<String> list;
 

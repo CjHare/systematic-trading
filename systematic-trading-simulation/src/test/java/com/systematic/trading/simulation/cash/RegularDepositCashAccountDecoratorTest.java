@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.cash;
+package com.systematic.trading.simulation.cash;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
@@ -45,9 +45,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.matcher.BigDecimalMatcher;
-import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
+import com.systematic.trading.simulation.matcher.BigDecimalMatcher;
 import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
 
 /**
