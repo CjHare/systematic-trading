@@ -33,9 +33,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.formula.rs.RelativeStrength;
-import com.systematic.trading.maths.formula.rs.RelativeStrengthDataPoint;
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.maths.indicator.rs.RelativeStrength;
+import com.systematic.trading.maths.indicator.rs.RelativeStrengthDataPoint;
 
 /**
  * Relative Strength Index - RSI

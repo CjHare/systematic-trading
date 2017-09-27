@@ -28,13 +28,13 @@ package com.systematic.trading.backtest.configuration.signals;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.maths.formula.rs.RelativeStrengthCalculator;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
+import com.systematic.trading.maths.indicator.rs.RelativeStrengthCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;

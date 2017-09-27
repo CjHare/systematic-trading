@@ -1,4 +1,4 @@
-package com.systematic.trading.maths.formula.rs;
+package com.systematic.trading.maths.indicator.rs;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
