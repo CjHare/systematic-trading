@@ -34,8 +34,8 @@ import com.systematic.trading.signal.IndicatorSignalId;
  */
 public enum SmaUptrendConfiguration implements SignalConfiguration {
 	SHORT(20, 5, "SMA-Uptrend-Short"),
-	MEDIUM(50, 7, "SMA-Uptrend-Medium"),
-	LONG(100, 10, "SMA-Uptrend-Long");
+	MEDIUM(50, 5, "SMA-Uptrend-Medium"),
+	LONG(100, 5, "SMA-Uptrend-Long");
 
 	private final String description;
 	private final int lookback;
