@@ -40,8 +40,6 @@ import com.systematic.trading.maths.indicator.rs.RelativeStrengthDataPoint;
 /**
  * Relative Strength Index - RSI
  * 
- * Uses the n-period smoothed moving average relative strength (J. Welles Wilder approach).
- * 
  * @author CJ Hare
  */
 public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
