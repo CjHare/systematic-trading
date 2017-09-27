@@ -26,7 +26,7 @@
 package com.systematic.trading.signal;
 
 /**
- * Unique description of the indicator signal.
+ * A unique textual description of the indicator signal.
  * 
  * @author CJ Hare
  */
@@ -43,7 +43,7 @@ public class IndicatorSignalId {
 
 		//TODO validate name != null or empty string
 		
-		//TODO implement a static set flyweight style pattern, enforce uniqueness on getUniqueValueOf()
+		//TODO implement a static set flyweight style pattern, enforce uniqueness on create()
 	}
 
 	public String getName() {
