@@ -42,11 +42,7 @@ import com.systematic.trading.maths.indicator.Validator;
  * 
  * RS = Average of x days' up closes / Average of x days' down closes.
  * 
- * Uses the EMA in calculation of the relative strength (J. Welles Wilder approach), not the SMA.
- * 
- * Taking the prior value plus the current value is a smoothing technique similar to that used in
- * exponential moving average calculation. This also means that RSI values become more accurate as
- * the calculation period extends.
+ * Uses the EMA in calculation of the relative strength (J. Welles Wilder approach), not Culter's SMA approach.
  * 
  * Until there has been an upwards movements in the data set, RS value will be zero.
  * 
@@ -177,6 +173,11 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 				break;
 			}
 
+			/**
+			 * Wilder originally formulated the calculation of the moving average as: newval = (prevval * (period - 1) + newdata) / period. 
+			 * This is fully equivalent to the exponential smoothing of a n-period smoothed moving average (SMMA). 
+			 */
+			
 			upward = upward.multiply(archive, MATH_CONTEXT).add(currentGain, MATH_CONTEXT).divide(history, MATH_CONTEXT);
 			downward = downward.multiply(archive, MATH_CONTEXT).add(currentLoss, MATH_CONTEXT).divide(history,
 			        MATH_CONTEXT);

@@ -40,18 +40,7 @@ import com.systematic.trading.maths.indicator.rs.RelativeStrengthDataPoint;
 /**
  * Relative Strength Index - RSI
  * 
- * A technical momentum indicator that compares the magnitude of recent gains to recent losses in an
- * attempt to determine over bought and over sold conditions of an asset.
- * 
- * RSI = 100 - 100/(1 + RS*)
- * 
- * Where RS = Average of x days' up closes / Average of x days' down closes.
- * 
- * Uses the EMA in calculation of the relative strength (J. Welles Wilder approach), not the SMA.
- * 
- * Taking the prior value plus the current value is a smoothing technique similar to that used in
- * exponential moving average calculation. This also means that RSI values become more accurate as
- * the calculation period extends.
+ * Uses the n-period smoothed moving average relative strength (J. Welles Wilder approach).
  * 
  * @author CJ Hare
  */
