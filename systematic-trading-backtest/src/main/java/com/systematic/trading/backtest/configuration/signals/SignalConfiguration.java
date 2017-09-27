@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.signals;
 
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 
 /**
  * Generic details about configurations.
@@ -46,5 +46,5 @@ public interface SignalConfiguration {
 	 * 
 	 * @return the type of signal the configuration matches.
 	 */
-	IndicatorSignalType getType();
+	IndicatorSignalId getType();
 }

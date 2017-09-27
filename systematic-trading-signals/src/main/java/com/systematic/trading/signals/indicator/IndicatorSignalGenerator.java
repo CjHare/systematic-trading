@@ -28,7 +28,7 @@ package com.systematic.trading.signals.indicator;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 
 /**
  * Responsible for generation of signals from analysis of the trading data.
@@ -58,5 +58,5 @@ public interface IndicatorSignalGenerator {
 	 * 
 	 * @return the type of indicator signals generated.
 	 */
-	IndicatorSignalType getSignalType();
+	IndicatorSignalId getSignalType();
 }

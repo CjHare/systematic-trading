@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
 
@@ -52,6 +52,6 @@ public interface SignalFilter {
 	 * @param the date of the latest trading price action in the data set being analysed.
 	 * @return the resulting signal(s) from applying the filters rules.
 	 */
-	SortedSet<BuySignal> apply( Map<IndicatorSignalType, List<IndicatorSignal>> signals, Comparator<BuySignal> ordering,
+	SortedSet<BuySignal> apply( Map<IndicatorSignalId, List<IndicatorSignal>> signals, Comparator<BuySignal> ordering,
 	        LocalDate latestTradingDate );
 }

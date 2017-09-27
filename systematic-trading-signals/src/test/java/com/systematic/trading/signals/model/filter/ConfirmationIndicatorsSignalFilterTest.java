@@ -23,16 +23,25 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
 
+/**
+ * @author CJ Hare
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class ConfirmationIndicatorsSignalFilterTest {
 
-	private final IndicatorSignalType anchorSignalType = IndicatorSignalType.RSI;
-	private final IndicatorSignalType confirmationSignalType = IndicatorSignalType.MACD;
-	private final IndicatorSignalType wrongConfirmationSignalType = IndicatorSignalType.SMA;
+	@Mock
+	private IndicatorSignalId anchorSignalType;
+
+	@Mock
+	private IndicatorSignalId confirmationSignalType;
+
+	@Mock
+	private IndicatorSignalId wrongConfirmationSignalType;
+
 	private final int daysUntilStartOfConfirmationRange = 3;
 	private final int confirmationDayRange = 3;
 	private final LocalDate latestTradingDate = LocalDate.now();
@@ -40,7 +49,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 	@Mock
 	private Comparator<BuySignal> ordering;
 
-	private Map<IndicatorSignalType, List<IndicatorSignal>> signals;
+	private Map<IndicatorSignalId, List<IndicatorSignal>> signals;
 	private ConfirmationIndicatorsSignalFilter filter;
 
 	@Before
@@ -250,7 +259,8 @@ public class ConfirmationIndicatorsSignalFilterTest {
 			filter.apply(signals, ordering, latestTradingDate);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("Expecting a non-null entries for types RSI and MACD", e.getMessage());
+			assertEquals("Expecting a non-null entries for types anchorSignalType and confirmationSignalType",
+			        e.getMessage());
 		}
 
 		verifyZeroInteractions(ordering);
@@ -264,7 +274,8 @@ public class ConfirmationIndicatorsSignalFilterTest {
 			filter.apply(signals, ordering, latestTradingDate);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals("Expecting a non-null entries for types RSI and MACD", e.getMessage());
+			assertEquals("Expecting a non-null entries for types anchorSignalType and confirmationSignalType",
+			        e.getMessage());
 		}
 
 		verifyZeroInteractions(ordering);

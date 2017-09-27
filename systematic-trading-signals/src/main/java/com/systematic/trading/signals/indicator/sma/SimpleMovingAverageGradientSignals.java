@@ -30,7 +30,7 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
@@ -54,13 +54,17 @@ public class SimpleMovingAverageGradientSignals extends IndicatorSignalsBase<Sim
 	/** Responsible for calculating the simple moving average. */
 	private final SimpleMovingAverage sma;
 
-	public SimpleMovingAverageGradientSignals( final int lookback, final int daysOfGradient,
-	        final SimpleMovingAverage sma, final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators,
-	        final SignalRangeFilter filter ) {
+	/** Identifier for the configuration of signal calculated. */
+	private final IndicatorSignalId id;
+
+	public SimpleMovingAverageGradientSignals( final IndicatorSignalId id, final int lookback,
+	        final int daysOfGradient, final SimpleMovingAverage sma,
+	        final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators, final SignalRangeFilter filter ) {
 		super(signalCalculators, filter);
 		this.daysOfGradient = daysOfGradient;
 		this.lookback = lookback;
 		this.sma = sma;
+		this.id = id;
 
 		//TODO validate there's at least one signal calculator 
 	}
@@ -71,8 +75,8 @@ public class SimpleMovingAverageGradientSignals extends IndicatorSignalsBase<Sim
 	}
 
 	@Override
-	public IndicatorSignalType getSignalType() {
-		return IndicatorSignalType.SMA;
+	public IndicatorSignalId getSignalType() {
+		return id;
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
 
@@ -44,13 +44,13 @@ import com.systematic.trading.signals.model.BuySignal;
 public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 
 	/** The signals we will be looking for on each application. */
-	private IndicatorSignalType[] indicators;
+	private IndicatorSignalId[] indicators;
 
 	/**
 	 * @param indicators all the indicators expected in an application, those all required on the
 	 *            same date to pass the filtering.
 	 */
-	public IndicatorsOnSameDaySignalFilter( final IndicatorSignalType... indicators ) {
+	public IndicatorsOnSameDaySignalFilter( final IndicatorSignalId... indicators ) {
 
 		// There'll be NullPointers unless we have an array of IndicatorSignalType
 		if (indicators == null || indicators.length == 0) {
@@ -61,7 +61,7 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	}
 
 	@Override
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
+	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
 	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
 		validateInput(signals);
 
@@ -103,9 +103,9 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 		return false;
 	}
 
-	private void validateInput( final Map<IndicatorSignalType, List<IndicatorSignal>> signals ) {
+	private void validateInput( final Map<IndicatorSignalId, List<IndicatorSignal>> signals ) {
 
-		for (final IndicatorSignalType indicator : indicators) {
+		for (final IndicatorSignalId indicator : indicators) {
 			if (signals.get(indicator) == null) {
 				throw new IllegalArgumentException(String.format("Expecting a non-null %s list", indicator));
 			}

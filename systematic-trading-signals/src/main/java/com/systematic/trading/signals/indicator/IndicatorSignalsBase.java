@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.model.DatedSignal;
@@ -86,5 +86,5 @@ public abstract class IndicatorSignalsBase<T> {
 
 	protected abstract T indicatorCalculation( TradingDayPrices[] data );
 
-	protected abstract IndicatorSignalType getSignalType();
+	protected abstract IndicatorSignalId getSignalType();
 }

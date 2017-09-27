@@ -30,7 +30,7 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
@@ -52,6 +52,9 @@ public class RelativeStrengthIndexSignals extends IndicatorSignalsBase<RelativeS
 	/** Calculates the RSI values from time series data. */
 	private final RelativeStrengthIndex rsi;
 
+	/** Identifier for the configuration of signal calculated. */
+	private final IndicatorSignalId id;
+
 	/** Required number of data points required for RSI calculation. */
 	private final int minimumNumberOfPrices;
 
@@ -59,12 +62,13 @@ public class RelativeStrengthIndexSignals extends IndicatorSignalsBase<RelativeS
 	 * @param lookback the number of data points to use in calculations.
 	 * @param daysOfRsiValues the number of RSI values desired.
 	 */
-	public RelativeStrengthIndexSignals( final int lookback, final RelativeStrengthIndex rsi,
-	        final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators,
+	public RelativeStrengthIndexSignals( final IndicatorSignalId id, final int lookback,
+	        final RelativeStrengthIndex rsi, final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators,
 	        final SignalRangeFilter filter ) {
 		super(signalCalculators, filter);
 		this.minimumNumberOfPrices = lookback + MINIMUM_DAYS_OF_RSI_VALUES;
 		this.rsi = rsi;
+		this.id = id;
 
 		//TODO validate there's at least one signal calculator 
 	}
@@ -75,8 +79,8 @@ public class RelativeStrengthIndexSignals extends IndicatorSignalsBase<RelativeS
 	}
 
 	@Override
-	public IndicatorSignalType getSignalType() {
-		return IndicatorSignalType.RSI;
+	public IndicatorSignalId getSignalType() {
+		return id;
 	}
 
 	@Override

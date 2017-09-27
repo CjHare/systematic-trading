@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.signals;
 
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 
 /**
  * Configuration for the SMA signal calculator.
@@ -40,11 +40,13 @@ public enum SmaUptrendConfiguration implements SignalConfiguration {
 	private final String description;
 	private final int lookback;
 	private final int daysOfGradient;
+	private final IndicatorSignalId type;
 
 	SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
 		this.daysOfGradient = daysOfGradient;
 		this.description = description;
 		this.lookback = lookback;
+		this.type = new IndicatorSignalId(description);
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public enum SmaUptrendConfiguration implements SignalConfiguration {
 	}
 
 	@Override
-	public IndicatorSignalType getType() {
-		return IndicatorSignalType.SMA;
+	public IndicatorSignalId getType() {
+		return type;
 	}
 }

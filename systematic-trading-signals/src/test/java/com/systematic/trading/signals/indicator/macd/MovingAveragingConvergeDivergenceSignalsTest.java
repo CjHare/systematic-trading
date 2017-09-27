@@ -24,7 +24,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.SignalCalculator;
@@ -49,6 +49,9 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 
 	@Mock
 	private MovingAverageConvergenceDivergenceLines lines;
+
+	@Mock
+	private IndicatorSignalId macdId;
 
 	private List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators;
 
@@ -76,7 +79,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	public void getSignalType() {
 		final MovingAveragingConvergenceDivergenceSignals macdSignals = setUpMacdSignals();
 
-		assertEquals(IndicatorSignalType.MACD, macdSignals.getSignalType());
+		assertEquals(macdId, macdSignals.getSignalType());
 	}
 
 	@Test
@@ -195,7 +198,8 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	}
 
 	private MovingAveragingConvergenceDivergenceSignals setUpMacdSignals() {
-		return new MovingAveragingConvergenceDivergenceSignals(macd, REQUIRED_TRADING_DAYS, signalCalculators, filter);
+		return new MovingAveragingConvergenceDivergenceSignals(macdId, macd, REQUIRED_TRADING_DAYS, signalCalculators,
+		        filter);
 	}
 
 	private void removeSignalCalculators() {

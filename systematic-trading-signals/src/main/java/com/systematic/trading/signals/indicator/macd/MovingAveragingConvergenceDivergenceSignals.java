@@ -30,7 +30,7 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
@@ -47,16 +47,20 @@ public class MovingAveragingConvergenceDivergenceSignals
 	/** Calculates the MACD lines to use in signal analysis. */
 	private final MovingAverageConvergenceDivergence macd;
 
+	/** Identifier for the configuration of signal calculated. */
+	private final IndicatorSignalId id;
+
 	/** Minimum number of trading days required for MACD signal generation. */
 	private final int requiredNumberOfTradingDays;
 
-	public MovingAveragingConvergenceDivergenceSignals( final MovingAverageConvergenceDivergence macd,
-	        final int requiredNumberOfTradingDays,
+	public MovingAveragingConvergenceDivergenceSignals( final IndicatorSignalId id,
+	        final MovingAverageConvergenceDivergence macd, final int requiredNumberOfTradingDays,
 	        final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators,
 	        final SignalRangeFilter filter ) {
 		super(signalCalculators, filter);
 		this.macd = macd;
 		this.requiredNumberOfTradingDays = requiredNumberOfTradingDays;
+		this.id = id;
 
 		//TODO validate there's at least one signal calculator 
 	}
@@ -67,8 +71,8 @@ public class MovingAveragingConvergenceDivergenceSignals
 	}
 
 	@Override
-	public IndicatorSignalType getSignalType() {
-		return IndicatorSignalType.MACD;
+	public IndicatorSignalId getSignalType() {
+		return id;
 	}
 
 	@Override

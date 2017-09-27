@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
 
@@ -47,7 +47,7 @@ public class AnyIndicatorIsBuySignalFilter implements SignalFilter {
 	/**
 	 * Just pass through the indicators given as signals
 	 */
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
+	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
 	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
 
 		final SortedSet<BuySignal> passedSignals = new TreeSet<>(ordering);

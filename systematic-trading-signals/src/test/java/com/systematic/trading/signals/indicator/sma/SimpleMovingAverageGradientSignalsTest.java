@@ -53,7 +53,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.SignalCalculator;
@@ -95,6 +95,9 @@ public class SimpleMovingAverageGradientSignalsTest {
 	@Mock
 	private SimpleMovingAverageLine line;
 
+	@Mock
+	private IndicatorSignalId smaId;
+
 	@Before
 	public void setUp() {
 		signalCalculators = new ArrayList<>();
@@ -110,7 +113,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	public void getSignalType() {
 		SimpleMovingAverageGradientSignals smaSignal = setUpSmaSignals();
 
-		assertEquals(IndicatorSignalType.SMA, smaSignal.getSignalType());
+		assertEquals(smaId, smaSignal.getSignalType());
 	}
 
 	@Test
@@ -213,7 +216,8 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	private SimpleMovingAverageGradientSignals setUpSmaSignals() {
-		return new SimpleMovingAverageGradientSignals(LOOKBACK, DAYS_OF_GRADIENT, sma, signalCalculators, filter);
+		return new SimpleMovingAverageGradientSignals(smaId, LOOKBACK, DAYS_OF_GRADIENT, sma, signalCalculators,
+		        filter);
 	}
 
 	private void verifyRsiCaclculation() {

@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
 
@@ -61,7 +61,7 @@ public class RollingTimePeriodSignalFilterDecorator implements SignalFilter {
 	}
 
 	@Override
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalType, List<IndicatorSignal>> signals,
+	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
 	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
 
 		final SortedSet<BuySignal> signalSet = filter.apply(signals, ordering, latestTradingDate);

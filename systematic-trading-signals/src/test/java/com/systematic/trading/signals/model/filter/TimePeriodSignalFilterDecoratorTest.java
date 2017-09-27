@@ -33,9 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -46,8 +44,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
@@ -66,6 +63,9 @@ public class TimePeriodSignalFilterDecoratorTest {
 	@Mock
 	private SignalFilter filter;
 
+	@Mock
+	private Map<IndicatorSignalId, List<IndicatorSignal>> signals;
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void lowerRangeAccepted() {
@@ -78,8 +78,6 @@ public class TimePeriodSignalFilterDecoratorTest {
 
 		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
 		        endDate);
-
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals(signalDate);
 
 		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
 
@@ -103,8 +101,6 @@ public class TimePeriodSignalFilterDecoratorTest {
 		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
 		        endDate);
 
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals(signalDate);
-
 		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
 
 		assertNotNull(filteredSignals);
@@ -124,8 +120,6 @@ public class TimePeriodSignalFilterDecoratorTest {
 
 		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
 		        endDate);
-
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals(signalDate);
 
 		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
 
@@ -149,8 +143,6 @@ public class TimePeriodSignalFilterDecoratorTest {
 		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
 		        endDate);
 
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = createTriggerSignals(signalDate);
-
 		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
 
 		assertNotNull(filteredSignals);
@@ -162,20 +154,6 @@ public class TimePeriodSignalFilterDecoratorTest {
 		final SortedSet<BuySignal> signals = new TreeSet<BuySignal>(ORDER_BY_DATE);
 
 		signals.add(new BuySignal(signalDate));
-
-		return signals;
-	}
-
-	private Map<IndicatorSignalType, List<IndicatorSignal>> createTriggerSignals( final LocalDate date ) {
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
-
-		final List<IndicatorSignal> rsiSignals = new ArrayList<IndicatorSignal>();
-		rsiSignals.add(new IndicatorSignal(date, IndicatorSignalType.RSI, SignalType.BULLISH));
-		signals.put(IndicatorSignalType.RSI, rsiSignals);
-
-		final List<IndicatorSignal> macdSignals = new ArrayList<IndicatorSignal>();
-		macdSignals.add(new IndicatorSignal(date, IndicatorSignalType.MACD, SignalType.BULLISH));
-		signals.put(IndicatorSignalType.MACD, macdSignals);
 
 		return signals;
 	}

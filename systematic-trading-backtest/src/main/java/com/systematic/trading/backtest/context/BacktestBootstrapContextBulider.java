@@ -46,7 +46,7 @@ import com.systematic.trading.backtest.configuration.signals.IndicatorSignalGene
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.filter.TradingDaySignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
@@ -177,7 +177,7 @@ public class BacktestBootstrapContextBulider {
 
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final SignalConfiguration[] indicators = getSameDaySignals(entry);
-		final IndicatorSignalType[] indicatorTypes = new IndicatorSignalType[indicators.length];
+		final IndicatorSignalId[] indicatorTypes = new IndicatorSignalId[indicators.length];
 		for (int i = 0; i < indicators.length; i++) {
 			indicatorTypes[i] = indicators[i].getType();
 		}

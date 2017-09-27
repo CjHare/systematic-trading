@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.signals;
 
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 
 /**
  * Configuration for the MACD signal calculator.
@@ -42,6 +42,7 @@ public enum MacdConfiguration implements SignalConfiguration {
 	private final int fastTimePeriods;
 	private final int slowTimePeriods;
 	private final int signalTimePeriods;
+	private final IndicatorSignalId type;
 
 	MacdConfiguration( final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
 	        final String description ) {
@@ -49,6 +50,7 @@ public enum MacdConfiguration implements SignalConfiguration {
 		this.fastTimePeriods = fastTimePeriods;
 		this.slowTimePeriods = slowTimePeriods;
 		this.signalTimePeriods = signalTimePeriods;
+		this.type = new IndicatorSignalId(description);
 	}
 
 	@Override
@@ -69,7 +71,7 @@ public enum MacdConfiguration implements SignalConfiguration {
 	}
 
 	@Override
-	public IndicatorSignalType getType() {
-		return IndicatorSignalType.MACD;
+	public IndicatorSignalId getType() {
+		return type;
 	}
 }

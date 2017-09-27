@@ -27,12 +27,13 @@ package com.systematic.trading.signals.model.event;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
 
 import org.junit.Test;
 
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 
 /**
  * Verify the NotEnoughDataPointsEvent.
@@ -40,9 +41,10 @@ import com.systematic.trading.signal.IndicatorSignalType;
  * @author CJ Hare
  */
 public class TooManyDataPointsEventTest {
+
 	@Test
 	public void getSignalType() {
-		final IndicatorSignalType type = IndicatorSignalType.RSI;
+		final IndicatorSignalId type = mock(IndicatorSignalId.class);
 		final LocalDate date = LocalDate.now();
 
 		final TooManyDataPointsEvent event = new TooManyDataPointsEvent(type, date);
@@ -53,7 +55,7 @@ public class TooManyDataPointsEventTest {
 
 	@Test
 	public void getDate() {
-		final IndicatorSignalType type = IndicatorSignalType.RSI;
+		final IndicatorSignalId type = mock(IndicatorSignalId.class);
 		final LocalDate date = LocalDate.now();
 
 		final TooManyDataPointsEvent event = new TooManyDataPointsEvent(type, date);

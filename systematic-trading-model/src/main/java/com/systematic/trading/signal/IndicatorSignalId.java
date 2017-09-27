@@ -25,9 +25,40 @@
  */
 package com.systematic.trading.signal;
 
-public enum IndicatorSignalType {
-	MACD,
-	RSI,
-	SMA,
-	STOCHASTIC;
+/**
+ * Unique description of the indicator signal.
+ * 
+ * @author CJ Hare
+ */
+public class IndicatorSignalId {
+
+	/** Prime that gets used during hash code creation. */
+	private static final int PRIME_NUMBER = 31;
+
+	/** Identifier for the indicator signal. */
+	private final String name;
+
+	public IndicatorSignalId( final String name ) {
+		this.name = name;
+
+		//TODO validate name != null or empty string
+		
+		//TODO implement a static set flyweight style pattern, enforce uniqueness on getUniqueValueOf()
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = PRIME_NUMBER * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals( final Object o ) {
+		return o instanceof IndicatorSignalId && name.equals(((IndicatorSignalId) o).getName());
+	}
 }

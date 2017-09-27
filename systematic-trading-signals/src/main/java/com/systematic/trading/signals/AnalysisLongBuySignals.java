@@ -29,12 +29,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
@@ -103,7 +103,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		Arrays.sort(data, TRADING_DAY_ORDER_BY_DATE);
 
 		// Generate the indicator signals
-		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = getSignals(data);
+		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = getSignals(data);
 
 		final LocalDate latestTradingDate = data[data.length - 1].getDate();
 		final List<BuySignal> signals = new ArrayList<>();
@@ -116,14 +116,13 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		return signals;
 	}
 
-	private Map<IndicatorSignalType, List<IndicatorSignal>> getSignals( final TradingDayPrices[] data ) {
+	private Map<IndicatorSignalId, List<IndicatorSignal>> getSignals( final TradingDayPrices[] data ) {
 
-		final Map<IndicatorSignalType, List<IndicatorSignal>> indicatorSignals = new EnumMap<>(
-		        IndicatorSignalType.class);
+		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = new HashMap<>();
 
 		for (final IndicatorSignalGenerator generator : generators) {
 			final List<IndicatorSignal> signals = calculateSignals(data, generator);
-			final IndicatorSignalType type = generator.getSignalType();
+			final IndicatorSignalId type = generator.getSignalType();
 			indicatorSignals.put(type, signals);
 		}
 

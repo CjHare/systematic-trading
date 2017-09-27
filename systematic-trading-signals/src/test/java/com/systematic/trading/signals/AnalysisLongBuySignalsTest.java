@@ -13,19 +13,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.filter.AnyIndicatorIsBuySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AnalysisLongBuySignalsTest {
 
 	private static final int ADJUSTMENT = 1;
+
+	@Mock
+	private IndicatorSignalId macdId;
+
+	@Mock
+	private IndicatorSignalId rsiId;
+
+	@Mock
+	private IndicatorSignalId smaId;
 
 	@Test(expected = IllegalArgumentException.class)
 	public void maximumNumberOfTradingDaysRequiredNullSignals() {
@@ -88,12 +101,12 @@ public class AnalysisLongBuySignalsTest {
 	public void analyzeZeroSignals() {
 
 		final IndicatorSignalGenerator generatorA = mock(IndicatorSignalGenerator.class);
-		when(generatorA.getSignalType()).thenReturn(IndicatorSignalType.RSI);
+		when(generatorA.getSignalType()).thenReturn(rsiId);
 		final List<IndicatorSignal> signalsGeneratorA = new ArrayList<>();
 		when(generatorA.calculateSignals(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorA);
 
 		final IndicatorSignalGenerator generatorB = mock(IndicatorSignalGenerator.class);
-		when(generatorB.getSignalType()).thenReturn(IndicatorSignalType.MACD);
+		when(generatorB.getSignalType()).thenReturn(macdId);
 		final List<IndicatorSignal> signalsGeneratorB = new ArrayList<>();
 		when(generatorA.calculateSignals(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorB);
 
@@ -120,21 +133,20 @@ public class AnalysisLongBuySignalsTest {
 	public void analyze() {
 
 		final IndicatorSignalGenerator generatorA = mock(IndicatorSignalGenerator.class);
-		when(generatorA.getSignalType()).thenReturn(IndicatorSignalType.RSI);
+		when(generatorA.getSignalType()).thenReturn(rsiId);
 		final List<IndicatorSignal> signalsGeneratorA = new ArrayList<>();
-		final IndicatorSignal firstSignal = new IndicatorSignal(LocalDate.now().minus(2, ChronoUnit.DAYS),
-		        IndicatorSignalType.RSI, SignalType.BULLISH);
+		final IndicatorSignal firstSignal = new IndicatorSignal(LocalDate.now().minus(2, ChronoUnit.DAYS), rsiId,
+		        SignalType.BULLISH);
 		signalsGeneratorA.add(firstSignal);
 		when(generatorA.calculateSignals(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorA);
 
 		final IndicatorSignalGenerator generatorB = mock(IndicatorSignalGenerator.class);
-		when(generatorB.getSignalType()).thenReturn(IndicatorSignalType.MACD);
+		when(generatorB.getSignalType()).thenReturn(macdId);
 		final List<IndicatorSignal> signalsGeneratorB = new ArrayList<>();
-		final IndicatorSignal secondSignal = new IndicatorSignal(LocalDate.now().minus(1, ChronoUnit.DAYS),
-		        IndicatorSignalType.MACD, SignalType.BULLISH);
-		signalsGeneratorB.add(secondSignal);
-		final IndicatorSignal thirdSignal = new IndicatorSignal(LocalDate.now(), IndicatorSignalType.SMA,
+		final IndicatorSignal secondSignal = new IndicatorSignal(LocalDate.now().minus(1, ChronoUnit.DAYS), macdId,
 		        SignalType.BULLISH);
+		signalsGeneratorB.add(secondSignal);
+		final IndicatorSignal thirdSignal = new IndicatorSignal(LocalDate.now(), smaId, SignalType.BULLISH);
 		signalsGeneratorB.add(thirdSignal);
 		when(generatorB.calculateSignals(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorB);
 

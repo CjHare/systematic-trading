@@ -27,13 +27,14 @@ package com.systematic.trading.signals.model.event;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
 
 import org.junit.Test;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 
 /**
@@ -46,7 +47,7 @@ public class IndicatorSignalEventTest {
 	@Test
 	public void getSignalType() {
 		final LocalDate date = LocalDate.now();
-		final IndicatorSignalType type = IndicatorSignalType.RSI;
+		final IndicatorSignalId type = mock(IndicatorSignalId.class);
 		final SignalType direction = SignalType.BULLISH;
 
 		final IndicatorSignal signal = new IndicatorSignal(date, type, direction);
@@ -60,7 +61,7 @@ public class IndicatorSignalEventTest {
 	@Test
 	public void getDate() {
 		final LocalDate date = LocalDate.now();
-		final IndicatorSignalType type = IndicatorSignalType.RSI;
+		final IndicatorSignalId type = mock(IndicatorSignalId.class);
 		final SignalType direction = SignalType.BULLISH;
 		final IndicatorSignal signal = new IndicatorSignal(date, type, direction);
 
@@ -73,9 +74,9 @@ public class IndicatorSignalEventTest {
 	@Test
 	public void getDirectionType() {
 		final LocalDate date = LocalDate.now();
-		final IndicatorSignalType signal = IndicatorSignalType.RSI;
+		final IndicatorSignalId type = mock(IndicatorSignalId.class);
 		final SignalType direction = SignalType.BULLISH;
-		final IndicatorSignal indicatorSignal = new IndicatorSignal(date, signal, direction);
+		final IndicatorSignal indicatorSignal = new IndicatorSignal(date, type, direction);
 
 		final IndicatorSignalEvent event = new IndicatorSignalEvent(indicatorSignal);
 

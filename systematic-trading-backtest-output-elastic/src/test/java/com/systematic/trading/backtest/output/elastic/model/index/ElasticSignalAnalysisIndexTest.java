@@ -41,7 +41,7 @@ import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 
 /**
@@ -175,7 +175,7 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	private SignalAnalysisEvent getEvent() {
 		final SignalAnalysisEvent event = mock(SignalAnalysisEvent.class);
-		final IndicatorSignalType type = IndicatorSignalType.STOCHASTIC;
+		final IndicatorSignalId type = mock(IndicatorSignalId.class);
 		final SignalType direction = SignalType.BULLISH;
 		final LocalDate signalDate = LocalDate.now();
 

@@ -36,9 +36,12 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalType;
+import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
@@ -48,31 +51,40 @@ import com.systematic.trading.signals.model.BuySignalDateComparator;
  * 
  * @author CJ Hare
  */
+@RunWith(MockitoJUnitRunner.class)
 public class IndicatorOnSameDaySignalFilterTest {
+
+	@Mock
+	private IndicatorSignalId macdId;
+
+	@Mock
+	private IndicatorSignalId rsiId;
+
+	@Mock
+	private IndicatorSignalId smaId;
 
 	private final BuySignalDateComparator ordering = new BuySignalDateComparator();
 	private final LocalDate latestTradingDate = null;
 
 	@Test
 	public void rsiMacdSmaSameDay() {
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
+		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, SignalType.BULLISH));
+		macd.add(new IndicatorSignal(today, macdId, SignalType.BULLISH));
 
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, SignalType.BULLISH));
+		rsi.add(new IndicatorSignal(today, rsiId, SignalType.BULLISH));
 
 		final List<IndicatorSignal> sma = new ArrayList<IndicatorSignal>();
-		sma.add(new IndicatorSignal(today, IndicatorSignalType.SMA, SignalType.BULLISH));
+		sma.add(new IndicatorSignal(today, smaId, SignalType.BULLISH));
 
-		signals.put(IndicatorSignalType.MACD, macd);
-		signals.put(IndicatorSignalType.RSI, rsi);
-		signals.put(IndicatorSignalType.SMA, sma);
+		signals.put(macdId, macd);
+		signals.put(rsiId, rsi);
+		signals.put(smaId, sma);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
-		        IndicatorSignalType.RSI, IndicatorSignalType.SMA);
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId, smaId);
 
 		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
 
@@ -86,40 +98,38 @@ public class IndicatorOnSameDaySignalFilterTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void twoOutOfThree() {
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
+		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, SignalType.BULLISH));
+		macd.add(new IndicatorSignal(today, macdId, SignalType.BULLISH));
 
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, SignalType.BULLISH));
+		rsi.add(new IndicatorSignal(today, rsiId, SignalType.BULLISH));
 
-		signals.put(IndicatorSignalType.MACD, macd);
-		signals.put(IndicatorSignalType.RSI, rsi);
+		signals.put(macdId, macd);
+		signals.put(rsiId, rsi);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
-		        IndicatorSignalType.RSI, IndicatorSignalType.SMA);
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId, smaId);
 
 		filter.apply(signals, ordering, latestTradingDate);
 	}
 
 	@Test
 	public void rsiMacdSameDay() {
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
+		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add(new IndicatorSignal(today, IndicatorSignalType.MACD, SignalType.BULLISH));
+		macd.add(new IndicatorSignal(today, macdId, SignalType.BULLISH));
 
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, SignalType.BULLISH));
+		rsi.add(new IndicatorSignal(today, rsiId, SignalType.BULLISH));
 
-		signals.put(IndicatorSignalType.MACD, macd);
-		signals.put(IndicatorSignalType.RSI, rsi);
+		signals.put(macdId, macd);
+		signals.put(rsiId, rsi);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
-		        IndicatorSignalType.RSI);
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
 
 		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
 
@@ -133,18 +143,17 @@ public class IndicatorOnSameDaySignalFilterTest {
 
 	@Test
 	public void rsiOnly() {
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
+		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, IndicatorSignalType.RSI, SignalType.BULLISH));
+		rsi.add(new IndicatorSignal(today, rsiId, SignalType.BULLISH));
 
-		signals.put(IndicatorSignalType.MACD, macd);
-		signals.put(IndicatorSignalType.RSI, rsi);
+		signals.put(macdId, macd);
+		signals.put(rsiId, rsi);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
-		        IndicatorSignalType.RSI);
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
 
 		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
 
@@ -154,18 +163,17 @@ public class IndicatorOnSameDaySignalFilterTest {
 
 	@Test
 	public void macdOnly() {
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
+		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
 		final LocalDate today = LocalDate.now();
 
 		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
 		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, IndicatorSignalType.MACD, SignalType.BULLISH));
+		rsi.add(new IndicatorSignal(today, macdId, SignalType.BULLISH));
 
-		signals.put(IndicatorSignalType.MACD, macd);
-		signals.put(IndicatorSignalType.RSI, rsi);
+		signals.put(macdId, macd);
+		signals.put(rsiId, rsi);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
-		        IndicatorSignalType.RSI);
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
 
 		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
 
@@ -175,12 +183,11 @@ public class IndicatorOnSameDaySignalFilterTest {
 
 	@Test
 	public void noSignals() {
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
-		signals.put(IndicatorSignalType.MACD, new ArrayList<IndicatorSignal>());
-		signals.put(IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>());
+		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
+		signals.put(macdId, new ArrayList<IndicatorSignal>());
+		signals.put(rsiId, new ArrayList<IndicatorSignal>());
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
-		        IndicatorSignalType.RSI);
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
 
 		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
 
@@ -190,22 +197,20 @@ public class IndicatorOnSameDaySignalFilterTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void noSignalsNullMacdList() {
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
-		signals.put(IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>());
+		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
+		signals.put(rsiId, new ArrayList<IndicatorSignal>());
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
-		        IndicatorSignalType.RSI);
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
 
 		filter.apply(signals, ordering, latestTradingDate);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void noSignalsNullRsiList() {
-		final Map<IndicatorSignalType, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalType, List<IndicatorSignal>>();
-		signals.put(IndicatorSignalType.RSI, new ArrayList<IndicatorSignal>());
+		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
+		signals.put(rsiId, new ArrayList<IndicatorSignal>());
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(IndicatorSignalType.MACD,
-		        IndicatorSignalType.RSI);
+		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
 
 		filter.apply(signals, ordering, latestTradingDate);
 	}
