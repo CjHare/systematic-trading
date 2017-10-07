@@ -75,9 +75,9 @@ public class DateTriggeredEntryLogicTest {
 	private static final Period ORDER_EVERY_OTHER_DAY = Period.ofDays(2);
 	private static final Period ORDER_ONCE_A_WEEK = Period.ofDays(7);
 	private static final LocalDate YESTERDAY = LocalDate.now().minus(Period.ofDays(1));
-	private static final LocalDate LAST_MONTH = LocalDate.now().minus(Period.ofMonths(1));
 	private static final LocalDate TODAY = LocalDate.now();
 	private static final LocalDate TOMORROW = LocalDate.now().plus(Period.ofDays(1));
+	private static final LocalDate TEN_DAYS_AGO = LocalDate.now().minus(Period.ofDays(5));
 
 	@Mock
 	private TradingDayPrices data;
@@ -175,7 +175,7 @@ public class DateTriggeredEntryLogicTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void updateMultipleIntervals() {
-		setUpEntryLogic(LAST_MONTH, ORDER_EVERY_OTHER_DAY);
+		setUpEntryLogic(TEN_DAYS_AGO, ORDER_EVERY_OTHER_DAY);
 		setUpData(20, TODAY);
 		setUpFeeCalculation(5);
 		setUpCashAccount(100);
@@ -183,8 +183,6 @@ public class DateTriggeredEntryLogicTest {
 		update();
 
 		verifyOrder();
-		verifyCashAccountBalanceCheck();
-		verifyFee(calculation(100, TODAY));
 
 		// Change the trading day to tomorrow - should not have an order
 		setUpData(18, TOMORROW);
@@ -192,9 +190,10 @@ public class DateTriggeredEntryLogicTest {
 		update();
 
 		verifyNoOrder();
+
+		// Verify the only events are from the first order
 		verifyCashAccountBalanceCheck();
 		verifyFee(calculation(100, TODAY));
-
 	}
 
 	@SuppressWarnings("unchecked")
