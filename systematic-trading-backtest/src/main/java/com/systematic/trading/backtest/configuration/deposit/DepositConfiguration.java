@@ -37,7 +37,8 @@ public enum DepositConfiguration {
 
 	WEEKLY_150(BigDecimal.valueOf(150), Period.ofWeeks(1)),
 	WEEKLY_200(BigDecimal.valueOf(200), Period.ofWeeks(1)),
-	WEEKLY_250(BigDecimal.valueOf(250), Period.ofWeeks(1));
+	WEEKLY_250(BigDecimal.valueOf(250), Period.ofWeeks(1)),
+	WEEKLY_2000(BigDecimal.valueOf(2000), Period.ofWeeks(1));
 
 	private final BigDecimal amount;
 	private final transient Period frequency;

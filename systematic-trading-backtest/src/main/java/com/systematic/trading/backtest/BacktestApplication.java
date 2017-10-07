@@ -131,7 +131,7 @@ public class BacktestApplication {
 
 		try {
 			//TODO convert into input arguments
-			final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
+			final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_2000;
 
 			final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
 			        depositAmount);
