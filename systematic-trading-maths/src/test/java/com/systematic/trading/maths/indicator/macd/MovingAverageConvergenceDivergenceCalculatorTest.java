@@ -138,6 +138,21 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verfiyEmaCalls(dataSet, macdValues);
 	}
 
+	@Test
+	public void macdSameLargerFastSlowEma() {
+		final TradingDayPrices[] dataSet = createPrices(5);
+		final SortedMap<LocalDate, BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
+		final SortedMap<LocalDate, BigDecimal> macdValues = asBigDecimal(-0.1, 0.8, -0.3, 0.6, 0.75);
+		setUpFastEma(1, 3, 3, 5, 6.25, 7);
+		setUpSlowEma(NO_SLOW_EMA_OFFSET, 1.1, 2.2, 3.3, 4.4, 5.5);
+		setUpSignalEma(signalLine);
+
+		final MovingAverageConvergenceDivergenceLines lines = calculator.macd(dataSet);
+
+		verifyMacdLines(lines, macdValues, signalLine);
+		verfiyEmaCalls(dataSet, macdValues);
+	}
+
 	private void verifyMacdLines( final MovingAverageConvergenceDivergenceLines lines,
 	        final SortedMap<LocalDate, BigDecimal> expectedMacd,
 	        final SortedMap<LocalDate, BigDecimal> expectedSignalLine ) {
