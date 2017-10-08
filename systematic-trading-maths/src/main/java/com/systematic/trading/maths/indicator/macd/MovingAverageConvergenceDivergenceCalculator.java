@@ -27,14 +27,14 @@ package com.systematic.trading.maths.indicator.macd;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
 
 /**
  * Moving Average Convergence Divergence (MACD) line calculation.
@@ -70,33 +70,16 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, 1);
 
-		final List<BigDecimal> slowEmaValues = slowEma.ema(data);
-		final List<BigDecimal> fastEmaValues = fastEma.ema(data);
+		final ExponentialMovingAverageLine slowEmaValues = slowEma.ema(data);
+		final ExponentialMovingAverageLine fastEmaValues = fastEma.ema(data);
 
-		// We're only interested in shared indexes, both right most aligned with data[]
-		final int slowEmaOffset = Math.max(0, slowEmaValues.size() - fastEmaValues.size());
-		final int fastEmaOffset = Math.max(0, fastEmaValues.size() - slowEmaValues.size());
-		final int emaEndIndex = Math.min(slowEmaValues.size(), fastEmaValues.size());
-		final List<BigDecimal> macdValues = new NonNullableArrayList<>(emaEndIndex);
 		final SortedMap<LocalDate, BigDecimal> macd = new TreeMap<>();
-		final int macdValuesOffset = data.length - emaEndIndex;
+		final SortedMap<LocalDate, BigDecimal> slow = slowEmaValues.getEma();
 
-		// MACD is the fast - slow EMAs
-		for (int i = 0; i < emaEndIndex; i++) {
-			final BigDecimal value = fastEmaValues.get(i + fastEmaOffset)
-			        .subtract(slowEmaValues.get(i + slowEmaOffset));
-			macdValues.add(value);
-			macd.put(data[i + macdValuesOffset].getDate(), value);
+		for (final Map.Entry<LocalDate, BigDecimal> fastEntry : fastEmaValues.getEma().entrySet()) {
+			macd.put(fastEntry.getKey(), fastEntry.getValue().subtract(slow.get(fastEntry.getKey())));
 		}
 
-		final List<BigDecimal> signaLineEma = signalEma.ema(macdValues);
-		final SortedMap<LocalDate, BigDecimal> signalLine = new TreeMap<>();
-		final int signalLineOffset = data.length - signaLineEma.size();
-
-		for (int i = signalLineOffset; i < data.length; i++) {
-			signalLine.put(data[i].getDate(), signaLineEma.get(i - signalLineOffset));
-		}
-
-		return new MovingAverageConvergenceDivergenceLines(macd, signalLine);
+		return new MovingAverageConvergenceDivergenceLines(macd, signalEma.ema(macd).getEma());
 	}
 }

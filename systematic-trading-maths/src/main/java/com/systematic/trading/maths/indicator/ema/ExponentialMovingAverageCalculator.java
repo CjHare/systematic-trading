@@ -27,9 +27,11 @@ package com.systematic.trading.maths.indicator.ema;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 
@@ -60,9 +62,6 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
-	/** Provides generic access to different array types. */
-	private final Data wrapper;
-
 	/**
 	 * @param lookback the number of days to use when calculating the EMA.
 	 * @param validator validates and parses input.
@@ -73,7 +72,6 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		this.smoothingConstant = calculateSmoothingConstant(lookback);
 		this.validator = validator;
 		this.lookback = lookback;
-		this.wrapper = new Data();
 
 		//TODO validate lookback > 0
 	}
@@ -84,7 +82,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	@Override
-	public List<BigDecimal> ema( final TradingDayPrices[] data ) {
+	public ExponentialMovingAverageLine ema( final TradingDayPrices[] data ) {
 		//TODO data != null
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, lookback);
@@ -93,77 +91,99 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		final int startSmaIndex = 0;
 		final int endEmaIndex = data.length - 1;
 
-		wrapper.set(data);
-
-		return ema(wrapper, startSmaIndex, endEmaIndex);
-	}
-
-	private BigDecimal calculateSmoothingConstant( final int lookback ) {
-		return BigDecimal.valueOf(2d / (lookback + 1));
+		return calculateEma(data, startSmaIndex, endEmaIndex);
 	}
 
 	@Override
-	public List<BigDecimal> ema( final List<BigDecimal> data ) {
+	public ExponentialMovingAverageLine ema( final SortedMap<LocalDate, BigDecimal> data ) {
 
-		validator.verifyZeroNullEntries(data);
-		validator.verifyEnoughValues(data, lookback);
+		//TODO equivalent of		validator.verifyZeroNullEntries(data);
+		//TODO equivalent of		validator.verifyEnoughValues(data, lookback);
 
-		wrapper.set(data);
-
-		return ema(wrapper, 0, data.size() - 1);
+		return calculateEma(data);
 	}
 
-	private List<BigDecimal> ema( final Data data, final int startSmaIndex, final int endEmaIndex ) {
+	private ExponentialMovingAverageLine calculateEma( final SortedMap<LocalDate, BigDecimal> data ) {
+		final SortedMap<LocalDate, BigDecimal> ema = new TreeMap<>();
+
+		int smaDataPoints = 0;
+		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
+		BigDecimal yesterday = BigDecimal.ZERO;
+		BigDecimal today;
+
+		for (final Map.Entry<LocalDate, BigDecimal> entry : data.entrySet()) {
+
+			if (isSmaCalculation(smaDataPoints)) {
+				simpleMovingAverage = simpleMovingAverage.add(entry.getValue(), MATH_CONTEXT);
+				smaDataPoints++;
+
+				if (isSmaCalculationComplete(smaDataPoints)) {
+					simpleMovingAverage = simpleMovingAverage.divide(BigDecimal.valueOf((long) smaDataPoints),
+					        MATH_CONTEXT);
+
+					ema.put(entry.getKey(), simpleMovingAverage);
+					today = simpleMovingAverage;
+				}
+
+			} else {
+				today = entry.getValue();
+
+				/* EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) */
+				ema.put(entry.getKey(), (today.subtract(yesterday, MATH_CONTEXT))
+				        .multiply(smoothingConstant, MATH_CONTEXT).add(yesterday, MATH_CONTEXT));
+
+				yesterday = today;
+			}
+		}
+
+		return new ExponentialMovingAverageLine(ema);
+	}
+
+	private boolean isSmaCalculation( final int smaDataPoints ) {
+		return smaDataPoints < lookback;
+	}
+
+	private boolean isSmaCalculationComplete( final int smaDataPoints ) {
+		return smaDataPoints == lookback;
+	}
+
+	private ExponentialMovingAverageLine calculateEma( final TradingDayPrices[] data, final int startSmaIndex,
+	        final int endEmaIndex ) {
+		final SortedMap<LocalDate, BigDecimal> ema = new TreeMap<>();
 
 		/* SMA for the initial time periods */
 		final int endSmaIndex = startSmaIndex + lookback;
 		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
 
 		for (int i = startSmaIndex; i < endSmaIndex; i++) {
-			simpleMovingAverage = simpleMovingAverage.add(data.getPrice(i), MATH_CONTEXT);
+			simpleMovingAverage = simpleMovingAverage.add(data[i].getClosingPrice().getPrice(), MATH_CONTEXT);
 		}
 
 		simpleMovingAverage = simpleMovingAverage.divide(BigDecimal.valueOf((long) endSmaIndex - startSmaIndex),
 		        MATH_CONTEXT);
+
+		// First value is the moving average for yesterday
+		ema.put(data[endSmaIndex - 1].getDate(), simpleMovingAverage);
 
 		final int startEmaIndex = endSmaIndex;
 		BigDecimal yesterday = simpleMovingAverage;
 		BigDecimal today;
 
 		// One SMA value and the <= in loop
-		final List<BigDecimal> emaValues = new NonNullableArrayList<>(2 + endEmaIndex - startEmaIndex);
-
-		emaValues.add(yesterday);
-
 		for (int i = startEmaIndex; i <= endEmaIndex; i++) {
-			today = data.getPrice(i);
+			today = data[i].getClosingPrice().getPrice();
 
 			/* EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) */
-			emaValues.add((today.subtract(yesterday, MATH_CONTEXT)).multiply(smoothingConstant, MATH_CONTEXT)
-			        .add(yesterday, MATH_CONTEXT));
+			ema.put(data[i].getDate(), (today.subtract(yesterday, MATH_CONTEXT))
+			        .multiply(smoothingConstant, MATH_CONTEXT).add(yesterday, MATH_CONTEXT));
 
 			yesterday = today;
 		}
 
-		return emaValues;
+		return new ExponentialMovingAverageLine(ema);
 	}
 
-	class Data {
-		private List<BigDecimal> dataDecimal;
-		private TradingDayPrices[] dataPrices;
-
-		public void set( final List<BigDecimal> data ) {
-			this.dataDecimal = data;
-			this.dataPrices = null;
-		}
-
-		public void set( final TradingDayPrices[] data ) {
-			this.dataDecimal = null;
-			this.dataPrices = data;
-		}
-
-		public BigDecimal getPrice( final int index ) {
-			return dataDecimal == null ? dataPrices[index].getClosingPrice().getPrice() : dataDecimal.get(index);
-		}
+	private BigDecimal calculateSmoothingConstant( final int lookback ) {
+		return BigDecimal.valueOf(2d / (lookback + 1));
 	}
 }

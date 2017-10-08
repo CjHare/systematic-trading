@@ -25,12 +25,11 @@
  */
 package com.systematic.trading.maths.indicator.macd;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -54,7 +53,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
-import com.systematic.trading.maths.matcher.IsBigDecimalList;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
+import com.systematic.trading.maths.matcher.IsSortedMap;
 import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
@@ -64,6 +64,9 @@ import com.systematic.trading.maths.util.TradingDayPricesBuilder;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class MovingAverageConvergenceDivergenceCalculatorTest {
+
+	private static final int SLOW_EMA_OFFSET = 2;
+	private static final int NO_SLOW_EMA_OFFSET = 0;
 
 	@Mock
 	private ExponentialMovingAverage fastEma;
@@ -108,56 +111,31 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	@Test
 	public void macd() {
 		final TradingDayPrices[] dataSet = createPrices(5);
-		final List<BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
-		final List<BigDecimal> macdValues = asBigDecimal(-2.3, -1.4, -2.5, -1.0, 0.25);
+		final SortedMap<LocalDate, BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
+		final SortedMap<LocalDate, BigDecimal> macdValues = asBigDecimal(-2.3, -1.4, -2.5, -1.0, 0.25);
 		setUpFastEma(1, 3, 3, 5, 6.25);
-		setUpSlowEma(1.1, 2.2, 3.3, 4.4, 5.5, 6, 6);
+		setUpSlowEma(SLOW_EMA_OFFSET, 1.1, 2.2, 3.3, 4.4, 5.5, 6, 6);
 		setUpSignalEma(signalLine);
 
 		final MovingAverageConvergenceDivergenceLines lines = calculator.macd(dataSet);
 
-		verifyMacdLines(lines, asSortedMap(macdValues), asSortedMap(signalLine));
+		verifyMacdLines(lines, macdValues, signalLine);
 		verfiyEmaCalls(dataSet, macdValues);
 	}
 
 	@Test
 	public void macdSameSizeFastSlowEma() {
 		final TradingDayPrices[] dataSet = createPrices(5);
-		final List<BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
-		final List<BigDecimal> macdValues = asBigDecimal(-0.1, 0.8, -0.3, 0.6, 0.75);
+		final SortedMap<LocalDate, BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
+		final SortedMap<LocalDate, BigDecimal> macdValues = asBigDecimal(-0.1, 0.8, -0.3, 0.6, 0.75);
 		setUpFastEma(1, 3, 3, 5, 6.25);
-		setUpSlowEma(1.1, 2.2, 3.3, 4.4, 5.5);
+		setUpSlowEma(NO_SLOW_EMA_OFFSET, 1.1, 2.2, 3.3, 4.4, 5.5);
 		setUpSignalEma(signalLine);
 
 		final MovingAverageConvergenceDivergenceLines lines = calculator.macd(dataSet);
 
-		verifyMacdLines(lines, asSortedMap(macdValues), asSortedMap(signalLine));
+		verifyMacdLines(lines, macdValues, signalLine);
 		verfiyEmaCalls(dataSet, macdValues);
-	}
-
-	@Test
-	public void macdLargerFastThenSlowEma() {
-		final TradingDayPrices[] dataSet = createPrices(5);
-		final List<BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
-		final List<BigDecimal> macdValues = asBigDecimal(1.9, 2.8, 2.95, 2.6, 2.5);
-		setUpFastEma(1, 3, 3, 5, 6.25, 7, 8);
-		setUpSlowEma(1.1, 2.2, 3.3, 4.4, 5.5);
-		setUpSignalEma(signalLine);
-
-		final MovingAverageConvergenceDivergenceLines lines = calculator.macd(dataSet);
-
-		verifyMacdLines(lines, asSortedMap(macdValues), asSortedMap(signalLine));
-		verfiyEmaCalls(dataSet, macdValues);
-	}
-
-	private SortedMap<LocalDate, BigDecimal> asSortedMap( final List<BigDecimal> expectedValues ) {
-		final SortedMap<LocalDate, BigDecimal> map = new TreeMap<>();
-
-		for (int i = 0; i < expectedValues.size(); i++) {
-			map.put(LocalDate.ofEpochDay(i), expectedValues.get(i));
-		}
-
-		return map;
 	}
 
 	private void verifyMacdLines( final MovingAverageConvergenceDivergenceLines lines,
@@ -181,27 +159,30 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		}
 	}
 
-	private void verfiyEmaCalls( final TradingDayPrices[] dataSet, final List<BigDecimal> macdValues ) {
+	private void verfiyEmaCalls( final TradingDayPrices[] dataSet, final SortedMap<LocalDate, BigDecimal> macdValues ) {
 		verify(fastEma).ema(dataSet);
 		verifyNoMoreInteractions(fastEma);
 
 		verify(slowEma).ema(dataSet);
 		verifyNoMoreInteractions(slowEma);
 
-		verify(signalEma).ema(isBigDecimalList(macdValues));
+		verify(signalEma).ema(isSortedMap(macdValues));
 		verifyNoMoreInteractions(signalEma);
 	}
 
-	private void setUpSignalEma( final List<BigDecimal> signalLine ) {
-		when(signalEma.ema(anyListOf(BigDecimal.class))).thenReturn(signalLine);
+	@SuppressWarnings("unchecked")
+	private void setUpSignalEma( final SortedMap<LocalDate, BigDecimal> signalLine ) {
+		when(signalEma.ema(any(SortedMap.class))).thenReturn(new ExponentialMovingAverageLine(signalLine));
 	}
 
-	private void setUpSlowEma( final double... values ) {
-		when(slowEma.ema(any(TradingDayPrices[].class))).thenReturn(asList(values));
+	private void setUpSlowEma( final int offset, final double... values ) {
+		when(slowEma.ema(any(TradingDayPrices[].class)))
+		        .thenReturn(new ExponentialMovingAverageLine(asBigDecimalDateOffset(offset, values)));
 	}
 
 	private void setUpFastEma( final double... values ) {
-		when(fastEma.ema(any(TradingDayPrices[].class))).thenReturn(asList(values));
+		when(fastEma.ema(any(TradingDayPrices[].class)))
+		        .thenReturn(new ExponentialMovingAverageLine(asBigDecimal(values)));
 	}
 
 	/**
@@ -217,24 +198,18 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		return list;
 	}
 
-	public List<BigDecimal> asBigDecimal( final double... values ) {
-		final List<BigDecimal> list = new ArrayList<>(values.length);
-
-		for (int i = 0; i < values.length; i++) {
-			list.add(BigDecimal.valueOf(values[i]));
-		}
-
-		return list;
+	public SortedMap<LocalDate, BigDecimal> asBigDecimal( final double... values ) {
+		return asBigDecimalDateOffset(0, values);
 	}
 
-	private List<BigDecimal> asList( final double... values ) {
-		final List<BigDecimal> list = new ArrayList<>();
+	public SortedMap<LocalDate, BigDecimal> asBigDecimalDateOffset( final int dateOffset, final double... values ) {
+		final SortedMap<LocalDate, BigDecimal> converted = new TreeMap<>();
 
-		for (final double value : values) {
-			list.add(BigDecimal.valueOf(value));
+		for (int i = 0; i < values.length; i++) {
+			converted.put(LocalDate.now().plusDays(i - dateOffset), BigDecimal.valueOf(values[i]));
 		}
 
-		return list;
+		return converted;
 	}
 
 	private TradingDayPrices[] createPrices( final int size ) {
@@ -256,7 +231,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 	}
 
-	private List<BigDecimal> isBigDecimalList( final List<BigDecimal> values ) {
-		return argThat(new IsBigDecimalList(values));
+	private SortedMap<LocalDate, BigDecimal> isSortedMap( final SortedMap<LocalDate, BigDecimal> values ) {
+		return argThat(new IsSortedMap(values));
 	}
 }

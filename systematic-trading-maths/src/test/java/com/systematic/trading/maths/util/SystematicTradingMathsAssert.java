@@ -35,6 +35,7 @@ import static org.junit.Assert.assertNotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -48,12 +49,14 @@ public class SystematicTradingMathsAssert {
 
 	private static final int TWO_DECIMAL_PLACES = 2;
 
-	public static void assertValue( final double expected, final List<BigDecimal> actual ) {
+	public static void assertValue( final double expected, final Collection<BigDecimal> actual ) {
 		assertNotNull("Need an actual/results array", actual);
 		assertEquals("Actual length > != 1", 1, actual.size());
 
-		assertEquals(String.format("%s != %s", expected, actual.get(0)), 0,
-		        BigDecimal.valueOf(expected).compareTo(actual.get(0)));
+		final BigDecimal firstEntry = actual.iterator().next();
+
+		assertEquals(String.format("%s != %s", expected, firstEntry), 0,
+		        BigDecimal.valueOf(expected).compareTo(firstEntry));
 	}
 
 	public static void assertValues( final double[] expected, final List<BigDecimal> actual ) {
@@ -71,6 +74,17 @@ public class SystematicTradingMathsAssert {
 		for (final Map.Entry<LocalDate, BigDecimal> entry : actual.entrySet()) {
 			assertBigDecimalEquals(expected[i], entry.getValue(), RoundingMode.HALF_EVEN);
 			i++;
+		}
+	}
+
+	public static void assertValuesTwoDecimalPlaces( final double[] expected,
+	        final Map<LocalDate, BigDecimal> actual ) {
+		assertArraySizeEqual(expected, actual);
+		int index = 0;
+
+		for (final Map.Entry<LocalDate, BigDecimal> entry : actual.entrySet()) {
+			assertBigDecimalEquals(expected[index], entry.getValue(), RoundingMode.HALF_EVEN);
+			index++;
 		}
 	}
 
@@ -102,7 +116,7 @@ public class SystematicTradingMathsAssert {
 		        BigDecimal.valueOf(expected).compareTo(actual.setScale(TWO_DECIMAL_PLACES, mode)));
 	}
 
-	private static void assertArraySizeEqual( final double[] expected, final List<?> actual ) {
+	private static void assertArraySizeEqual( final double[] expected, final Collection<?> actual ) {
 		assertNotNull("Need an expected array", expected);
 		assertNotNull("Need an actual/results array", actual);
 		assertEquals("Actual length != Expected length", expected.length, actual.size());
