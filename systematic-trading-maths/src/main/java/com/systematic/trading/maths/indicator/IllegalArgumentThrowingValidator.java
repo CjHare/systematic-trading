@@ -37,6 +37,8 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	private static final String MESSAGE_NULL_INPUT = "Unexpected null input has been given";
 	private static final String MESSAGE_NULL_VALUE = "Unexpected null value contained in given input: %s";
 
+	//TODO separate validation for null input
+	
 	@Override
 	public <T> void verifyZeroNullEntries( final Collection<T> values ) {
 		verifyNotNullInput(values);
