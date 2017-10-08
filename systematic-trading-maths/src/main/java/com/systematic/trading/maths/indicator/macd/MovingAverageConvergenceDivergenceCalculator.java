@@ -75,13 +75,14 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 
 		final SortedMap<LocalDate, BigDecimal> macd = new TreeMap<>();
 		final SortedMap<LocalDate, BigDecimal> slow = slowEmaValues.getEma();
+		final SortedMap<LocalDate, BigDecimal> fast = fastEmaValues.getEma();
 		LocalDate today;
 
-		for (final Map.Entry<LocalDate, BigDecimal> fastEntry : fastEmaValues.getEma().entrySet()) {
-			today = fastEntry.getKey();
+		for (final Map.Entry<LocalDate, BigDecimal> slowEntry : slow.entrySet()) {
+			today = slowEntry.getKey();
 
-			if (slow.containsKey(today)) {
-				macd.put(today, fastEntry.getValue().subtract(slow.get(today)));
+			if (fast.containsKey(today)) {
+				macd.put(today, fast.get(today).subtract(slowEntry.getValue()));
 			}
 		}
 
