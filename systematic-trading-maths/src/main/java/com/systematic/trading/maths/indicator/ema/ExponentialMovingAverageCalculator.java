@@ -88,10 +88,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		validator.verifyEnoughValues(data, lookback);
 
 		// With zero null entries the beginning is zero, then end last index
-		final int startSmaIndex = 0;
-		final int endEmaIndex = data.length - 1;
-
-		return calculateEma(data, startSmaIndex, endEmaIndex);
+		return calculateEma(data, 0, data.length - 1);
 	}
 
 	@Override
@@ -106,45 +103,31 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	private ExponentialMovingAverageLine calculateEma( final SortedMap<LocalDate, BigDecimal> data ) {
 		final SortedMap<LocalDate, BigDecimal> ema = new TreeMap<>();
 
-		int smaDataPoints = 0;
-		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
+		int smaDataPointCount = 0;
+		BigDecimal smaSum = BigDecimal.ZERO;
 		BigDecimal yesterday = BigDecimal.ZERO;
 		BigDecimal today;
 
 		for (final Map.Entry<LocalDate, BigDecimal> entry : data.entrySet()) {
 
-			if (isSmaCalculation(smaDataPoints)) {
-				simpleMovingAverage = simpleMovingAverage.add(entry.getValue(), MATH_CONTEXT);
-				smaDataPoints++;
+			if (isSmaCalculation(smaDataPointCount)) {
+				smaSum = smaSum.add(entry.getValue(), MATH_CONTEXT);
+				smaDataPointCount++;
 
-				if (isSmaCalculationComplete(smaDataPoints)) {
-					simpleMovingAverage = simpleMovingAverage.divide(BigDecimal.valueOf((long) smaDataPoints),
-					        MATH_CONTEXT);
-
-					ema.put(entry.getKey(), simpleMovingAverage);
-					today = simpleMovingAverage;
+				if (isSmaCalculationComplete(smaDataPointCount)) {
+					today = getSma(smaSum);
+					ema.put(entry.getKey(), today);
+					yesterday = today;
 				}
 
 			} else {
 				today = entry.getValue();
-
-				/* EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) */
-				ema.put(entry.getKey(), (today.subtract(yesterday, MATH_CONTEXT))
-				        .multiply(smoothingConstant, MATH_CONTEXT).add(yesterday, MATH_CONTEXT));
-
+				ema.put(entry.getKey(), getEma(yesterday, today));
 				yesterday = today;
 			}
 		}
 
 		return new ExponentialMovingAverageLine(ema);
-	}
-
-	private boolean isSmaCalculation( final int smaDataPoints ) {
-		return smaDataPoints < lookback;
-	}
-
-	private boolean isSmaCalculationComplete( final int smaDataPoints ) {
-		return smaDataPoints == lookback;
 	}
 
 	private ExponentialMovingAverageLine calculateEma( final TradingDayPrices[] data, final int startSmaIndex,
@@ -153,37 +136,56 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 
 		/* SMA for the initial time periods */
 		final int endSmaIndex = startSmaIndex + lookback;
-		BigDecimal simpleMovingAverage = BigDecimal.ZERO;
+		BigDecimal smaSum = BigDecimal.ZERO;
 
 		for (int i = startSmaIndex; i < endSmaIndex; i++) {
-			simpleMovingAverage = simpleMovingAverage.add(data[i].getClosingPrice().getPrice(), MATH_CONTEXT);
+			smaSum = smaSum.add(data[i].getClosingPrice().getPrice(), MATH_CONTEXT);
 		}
 
-		simpleMovingAverage = simpleMovingAverage.divide(BigDecimal.valueOf((long) endSmaIndex - startSmaIndex),
-		        MATH_CONTEXT);
+		smaSum = getSma(smaSum);
 
 		// First value is the moving average for yesterday
-		ema.put(data[endSmaIndex - 1].getDate(), simpleMovingAverage);
+		ema.put(data[endSmaIndex - 1].getDate(), smaSum);
 
 		final int startEmaIndex = endSmaIndex;
-		BigDecimal yesterday = simpleMovingAverage;
+		BigDecimal yesterday = smaSum;
 		BigDecimal today;
 
 		// One SMA value and the <= in loop
 		for (int i = startEmaIndex; i <= endEmaIndex; i++) {
 			today = data[i].getClosingPrice().getPrice();
-
-			/* EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) */
-			ema.put(data[i].getDate(), (today.subtract(yesterday, MATH_CONTEXT))
-			        .multiply(smoothingConstant, MATH_CONTEXT).add(yesterday, MATH_CONTEXT));
-
+			ema.put(data[i].getDate(), getEma(yesterday, today));
 			yesterday = today;
 		}
 
 		return new ExponentialMovingAverageLine(ema);
 	}
 
+	/**
+	 * EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) 
+	 */
+	private BigDecimal getEma( final BigDecimal yesterday, final BigDecimal today ) {
+		return today.subtract(yesterday, MATH_CONTEXT).multiply(smoothingConstant, MATH_CONTEXT).add(yesterday,
+		        MATH_CONTEXT);
+
+	}
+
+	private BigDecimal getSma( final BigDecimal sum ) {
+		return sum.divide(BigDecimal.valueOf(lookback), MATH_CONTEXT);
+	}
+
+	/**
+	 * 2 / numberOfValues + 1
+	 */
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {
 		return BigDecimal.valueOf(2d / (lookback + 1));
+	}
+
+	private boolean isSmaCalculation( final int smaDataPoints ) {
+		return smaDataPoints < lookback;
+	}
+
+	private boolean isSmaCalculationComplete( final int smaDataPoints ) {
+		return smaDataPoints == lookback;
 	}
 }

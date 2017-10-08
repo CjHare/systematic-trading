@@ -158,27 +158,6 @@ public class ExponentialMovingAverageCalculatorTest {
 	public void emaTwoPointsDecimal() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 2;
-		final SortedMap<LocalDate, BigDecimal> data = createDecimalPrices(numberDataPoints);
-
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator);
-
-		final ExponentialMovingAverageLine ema = calculator.ema(data);
-
-		assertNotNull(ema);
-		assertNotNull(ema.getEma());
-		assertEquals(3, ema.getEma().size());
-		assertValues(new double[] { 0.5, 1.33, 2.67 }, ema.getEma());
-
-		//TODO validation
-		//		verify(validator).verifyEnoughValues(data, lookback);
-		//		verify(validator).verifyZeroNullEntries(data);
-	}
-
-	@Test
-	public void emaThreePointsDecimal() {
-		final int lookback = 2;
-		final int numberDataPoints = lookback + 2;
 		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(numberDataPoints);
 
 		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
@@ -189,7 +168,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertNotNull(ema);
 		assertNotNull(ema.getEma());
 		assertEquals(3, ema.getEma().size());
-		assertValuesTwoDecimalPlaces(new double[] { 0.5, 1.33, 2.67 }, ema.getEma());
+		assertValues(new double[] { 0.5, 1.5, 2.67 }, ema.getEma());
 
 		//TODO validation
 		//		verify(validator).verifyEnoughValues(data, lookback);
@@ -247,16 +226,6 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	private SortedMap<LocalDate, BigDecimal> createIncreasingDecimalPrices( final int count ) {
-		final SortedMap<LocalDate, BigDecimal> prices = new TreeMap<>();
-
-		for (int i = 0; i < count; i++) {
-			prices.put(LocalDate.now().plusDays(i), BigDecimal.valueOf(i));
-		}
-
-		return prices;
-	}
-
-	private SortedMap<LocalDate, BigDecimal> createDecimalPrices( final int count ) {
 		final SortedMap<LocalDate, BigDecimal> prices = new TreeMap<>();
 
 		for (int i = 0; i < count; i++) {
