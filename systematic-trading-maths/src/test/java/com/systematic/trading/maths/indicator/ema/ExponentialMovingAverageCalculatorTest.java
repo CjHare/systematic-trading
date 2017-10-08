@@ -25,9 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.ema;
 
-import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValue;
 import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
-import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValuesTwoDecimalPlaces;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -61,94 +59,51 @@ public class ExponentialMovingAverageCalculatorTest {
 	@Mock
 	private Validator validator;
 
+	private ExponentialMovingAverageCalculator calculator;
+
 	@Test
 	public void emaOnePoints() {
 		final int lookback = 2;
 		final TradingDayPrices[] data = createPrices(lookback);
-
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator);
+		setUpCalculator(lookback);
 
 		final ExponentialMovingAverageLine ema = calculator.ema(data);
 
-		assertNotNull(ema);
-		assertNotNull(ema.getEma());
-		assertEquals(1, ema.getEma().size());
-		assertValue(1, ema.getEma().values());
-
-		verify(validator).verifyEnoughValues(data, lookback);
-		verify(validator).verifyZeroNullEntries(data);
+		verifyEma(ema, 1);
+		verifyValidation(data, lookback);
 	}
 
 	@Test
 	public void emaTwoPoints() {
 		final int lookback = 2;
-		final int numberDataPoints = lookback + 1;
-		final TradingDayPrices[] data = createPrices(numberDataPoints);
-
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator);
+		final TradingDayPrices[] data = createPrices(3);
+		setUpCalculator(lookback);
 
 		final ExponentialMovingAverageLine ema = calculator.ema(data);
 
-		assertNotNull(ema);
-		assertNotNull(ema.getEma());
-		assertEquals(2, ema.getEma().size());
-		assertValues(new double[] { 1, 1 }, ema.getEma());
-
-		verify(validator).verifyEnoughValues(data, lookback);
-		verify(validator).verifyZeroNullEntries(data);
+		verifyEma(ema, 1, 1);
+		verifyValidation(data, lookback);
 	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void emaFirstPointNull() {
-		final int lookback = 3;
-		final int numberDataPoints = lookback + 2;
-		final TradingDayPrices[] data = createPrices(numberDataPoints);
-		data[0] = null;
-
-		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
-		        anyInt());
-
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator);
-
-		calculator.ema(data);
-	}
-
-	//TODO refactor this test - contextual methods!
 
 	@Test
 	public void emaThreePoints() {
 		final int lookback = 2;
-		final int numberDataPoints = lookback + 2;
-		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
-
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator);
+		final TradingDayPrices[] data = createIncreasingPrices(4);
+		setUpCalculator(lookback);
 
 		final ExponentialMovingAverageLine ema = calculator.ema(data);
 
-		assertNotNull(ema);
-		assertNotNull(ema.getEma());
-		assertEquals(3, ema.getEma().size());
-		assertValuesTwoDecimalPlaces(new double[] { 1.5, 2.5, 3.67 }, ema.getEma());
-
-		verify(validator).verifyEnoughValues(data, lookback);
-		verify(validator).verifyZeroNullEntries(data);
+		verifyEma(ema, 1.5, 2.5, 3.67);
+		verifyValidation(data, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaTwoPointsLastNull() {
 		final int lookback = 2;
-		final int numberDataPoints = lookback + 2;
-		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
+		final TradingDayPrices[] data = createIncreasingPrices(4);
 		data[data.length - 1] = null;
-
-		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
-
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator);
+		setUpValidationErrorZeroEntries();
+		setUpCalculator(lookback);
 
 		calculator.ema(data);
 	}
@@ -156,34 +111,21 @@ public class ExponentialMovingAverageCalculatorTest {
 	@Test
 	public void emaTwoPointsDecimal() {
 		final int lookback = 2;
-		final int numberDataPoints = lookback + 2;
-		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(numberDataPoints);
-
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator);
+		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(4);
+		setUpCalculator(lookback);
 
 		final ExponentialMovingAverageLine ema = calculator.ema(data);
 
-		assertNotNull(ema);
-		assertNotNull(ema.getEma());
-		assertEquals(3, ema.getEma().size());
-		assertValues(new double[] { 0.5, 1.5, 2.67 }, ema.getEma());
-
-		verify(validator).verifyEnoughValues(data.values(), lookback);
-		verify(validator).verifyZeroNullEntries(data.values());
+		verifyEma(ema, 0.5, 1.5, 2.67);
+		verifyValidation(data, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughDataPointsDecimal() {
 		final int lookback = 2;
-		final int numberDataPoints = lookback - 1;
-		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(numberDataPoints);
-
-		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(anyListOf(BigDecimal.class),
-		        anyInt());
-
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator);
+		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(1);
+		setUpValidationErrorEnougValues();
+		setUpCalculator(lookback);
 
 		calculator.ema(data);
 	}
@@ -191,13 +133,41 @@ public class ExponentialMovingAverageCalculatorTest {
 	@Test
 	public void getMinimumNumberOfPrices() {
 		final int lookback = 2;
-
-		final ExponentialMovingAverageCalculator calculator = new ExponentialMovingAverageCalculator(lookback,
-		        validator);
+		setUpCalculator(lookback);
 
 		final int requiredDays = calculator.getMinimumNumberOfPrices();
 
 		assertEquals(lookback, requiredDays);
+	}
+
+	private void setUpValidationErrorEnougValues() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(anyListOf(BigDecimal.class),
+		        anyInt());
+	}
+
+	private void setUpValidationErrorZeroEntries() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
+	}
+
+	private void verifyEma( final ExponentialMovingAverageLine actual, final double... expected ) {
+		assertNotNull(actual);
+		assertNotNull(actual.getEma());
+		assertEquals(expected.length, actual.getEma().size());
+		assertValues(expected, actual.getEma());
+	}
+
+	private void setUpCalculator( final int lookback ) {
+		calculator = new ExponentialMovingAverageCalculator(lookback, validator);
+	}
+
+	private void verifyValidation( final SortedMap<LocalDate, BigDecimal> data, final int lookback ) {
+		verify(validator).verifyEnoughValues(data.values(), lookback);
+		verify(validator).verifyZeroNullEntries(data.values());
+	}
+
+	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
+		verify(validator).verifyEnoughValues(data, lookback);
+		verify(validator).verifyZeroNullEntries(data);
 	}
 
 	private TradingDayPrices[] createPrices( final int count ) {
