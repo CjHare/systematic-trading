@@ -166,10 +166,9 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 				break;
 
 				case 0: // When equal there's no movement, both are zero
+				default:
 					currentGain = BigDecimal.ZERO;
 					currentLoss = BigDecimal.ZERO;
-				break;
-				default:
 				break;
 			}
 
