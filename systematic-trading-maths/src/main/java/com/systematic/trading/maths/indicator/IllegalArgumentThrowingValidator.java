@@ -72,10 +72,6 @@ public class IllegalArgumentThrowingValidator implements Validator {
 		final int numberOfItems = getNumberOfItems(firstNonNullItem, lastNonNullItem);
 
 		validateNumberOfItems(numberOfItems, requiredNumberOfPrices);
-
-		final int numberOfConsecutiveItems = getNumberOfNonNullItems(data, firstNonNullItem, lastNonNullItem);
-
-		validateEnoughConsecutiveItems(numberOfConsecutiveItems, requiredNumberOfPrices);
 	}
 
 	private <T> int getLastNonNullIndex( final T[] data ) {
@@ -87,14 +83,6 @@ public class IllegalArgumentThrowingValidator implements Validator {
 		}
 
 		return lastNonNullItem;
-	}
-
-	private void validateEnoughConsecutiveItems( final int numberOfConsecutiveItems, final int minimumNumberOfPrices ) {
-		if (numberOfConsecutiveItems < minimumNumberOfPrices) {
-			throw new IllegalArgumentException(
-			        String.format("At least %s consecutive non null data points are needed, only %s given",
-			                minimumNumberOfPrices, numberOfConsecutiveItems));
-		}
 	}
 
 	private void validateNumberOfItems( final int numberOfItems, final int minimumNumberOfPrices ) {
@@ -109,20 +97,6 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	private int getNumberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {
 		// Number of items, accounting for zero indexed array
 		return lastNonNullItem - firstNonNullItem + 1;
-	}
-
-	private <T> int getNumberOfNonNullItems( final T[] data, final int firstNonNullItem, final int lastNonNullItem ) {
-
-		// Are the items consecutively populated (as expected)
-		int numberOfConsecutiveItems = firstNonNullItem;
-		while (numberOfConsecutiveItems < lastNonNullItem && !isNullEntry(data, numberOfConsecutiveItems)) {
-			numberOfConsecutiveItems++;
-		}
-
-		// Account for zero index of array
-		numberOfConsecutiveItems++;
-
-		return numberOfConsecutiveItems;
 	}
 
 	private <T> int getNumberOfNonNullItems( final Collection<T> data ) {

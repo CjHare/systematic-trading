@@ -158,11 +158,20 @@ public class IllegalArgumentThrowingValidatorTest {
 	}
 
 	@Test
+	public void verifyZeroNullEntriesEmpty() {
+		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+
+		final List<String> data = new ArrayList<String>();
+
+		validator.verifyZeroNullEntries(data);
+	}
+
+	@Test
 	public void verifyZeroNullEntries() {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
-		final String[] data = new String[1];
-		data[0] = "one";
+		final List<String> data = new ArrayList<String>();
+		data.add("one");
 
 		validator.verifyZeroNullEntries(data);
 	}
@@ -199,6 +208,15 @@ public class IllegalArgumentThrowingValidatorTest {
 		data.add("one");
 		data.add(null);
 		data.add("two");
+
+		validator.verifyZeroNullEntries(data);
+	}
+
+	@Test
+	public void verifyZeroNullEntriesArrayEmpty() {
+		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+
+		final String[] data = new String[0];
 
 		validator.verifyZeroNullEntries(data);
 	}
