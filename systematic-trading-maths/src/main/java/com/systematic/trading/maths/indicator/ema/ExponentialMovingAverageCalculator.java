@@ -93,9 +93,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 
 	@Override
 	public ExponentialMovingAverageLine ema( final SortedMap<LocalDate, BigDecimal> data ) {
-
-		//TODO equivalent of		validator.verifyZeroNullEntries(data);
-		//TODO equivalent of		validator.verifyEnoughValues(data, lookback);
+		//TODO data != null
+		validator.verifyZeroNullEntries(data.values());
+		validator.verifyEnoughValues(data.values(), lookback);
 
 		return calculateEma(data);
 	}

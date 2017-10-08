@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.maths.indicator;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Validates the input given throwing an IllegalArgumentException when expectations are not met.
@@ -36,7 +36,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	//TODO cater for null list - maybe this method becomes redundant after maths rewrite?
 	@Override
-	public <T> void verifyZeroNullEntries( final List<T> values ) {
+	public <T> void verifyZeroNullEntries( final Collection<T> values ) {
 		for (final T value : values) {
 			if (value == null) {
 				throw new IllegalArgumentException(String.format("Unexpected null value found in list: %s", values));
@@ -55,22 +55,8 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	}
 
 	@Override
-	public <T> void verifyEnoughValues( final List<T> data, final int requiredNumberOfPrices ) {
-
-		// Skip any null entries
-		int firstNonNullItem = 0;
-		while (isNullEntryWithinArray(data, firstNonNullItem)) {
-			firstNonNullItem++;
-		}
-
-		final int lastNonNullItem = getLastNonNullIndex(data);
-		final int numberOfItems = getNumberOfItems(firstNonNullItem, lastNonNullItem);
-
-		validateNumberOfItems(numberOfItems, requiredNumberOfPrices);
-
-		final int numberOfConsecutiveItems = getNumberOfConsectiveItems(data, firstNonNullItem, lastNonNullItem);
-
-		validateEnoughConsecutiveItems(numberOfConsecutiveItems, requiredNumberOfPrices);
+	public <T> void verifyEnoughValues( final Collection<T> data, final int requiredNumberOfPrices ) {
+		validateNumberOfItems(getNumberOfNonNullItems(data), requiredNumberOfPrices);
 	}
 
 	@Override
@@ -87,7 +73,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 		validateNumberOfItems(numberOfItems, requiredNumberOfPrices);
 
-		final int numberOfConsecutiveItems = getNumberOfConsectiveItems(data, firstNonNullItem, lastNonNullItem);
+		final int numberOfConsecutiveItems = getNumberOfNonNullItems(data, firstNonNullItem, lastNonNullItem);
 
 		validateEnoughConsecutiveItems(numberOfConsecutiveItems, requiredNumberOfPrices);
 	}
@@ -95,17 +81,6 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	private <T> int getLastNonNullIndex( final T[] data ) {
 		// Find last non-null index
 		int lastNonNullItem = data.length - 1;
-
-		while (isNullEntryWithinArray(data, lastNonNullItem)) {
-			lastNonNullItem--;
-		}
-
-		return lastNonNullItem;
-	}
-
-	private <T> int getLastNonNullIndex( final List<T> data ) {
-		// Find last non-null index
-		int lastNonNullItem = data.size() - 1;
 
 		while (isNullEntryWithinArray(data, lastNonNullItem)) {
 			lastNonNullItem--;
@@ -136,8 +111,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 		return lastNonNullItem - firstNonNullItem + 1;
 	}
 
-	private <T> int getNumberOfConsectiveItems( final T[] data, final int firstNonNullItem,
-	        final int lastNonNullItem ) {
+	private <T> int getNumberOfNonNullItems( final T[] data, final int firstNonNullItem, final int lastNonNullItem ) {
 
 		// Are the items consecutively populated (as expected)
 		int numberOfConsecutiveItems = firstNonNullItem;
@@ -151,23 +125,18 @@ public class IllegalArgumentThrowingValidator implements Validator {
 		return numberOfConsecutiveItems;
 	}
 
-	private <T> int getNumberOfConsectiveItems( final List<T> data, final int firstNonNullItem,
-	        final int lastNonNullItem ) {
+	private <T> int getNumberOfNonNullItems( final Collection<T> data ) {
 
 		// Are the items consecutively populated (as expected)
-		int numberOfConsecutiveItems = firstNonNullItem;
-		while (numberOfConsecutiveItems < lastNonNullItem && !isNullEntry(data, numberOfConsecutiveItems)) {
-			numberOfConsecutiveItems++;
+		int numberOfConsecutiveItems = 0;
+
+		for (final T item : data) {
+			if (item != null) {
+				numberOfConsecutiveItems++;
+			}
 		}
 
-		// Account for zero index of array
-		numberOfConsecutiveItems++;
-
 		return numberOfConsecutiveItems;
-	}
-
-	private <T> boolean isNullEntryWithinArray( final List<T> data, final int index ) {
-		return isWithinArray(data.size(), index) && isNullEntry(data, index);
 	}
 
 	private <T> boolean isNullEntryWithinArray( final T[] data, final int index ) {
@@ -176,10 +145,6 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	private <T> boolean isNullEntry( final T[] data, final int index ) {
 		return data[index] == null;
-	}
-
-	private <T> boolean isNullEntry( final List<T> data, final int index ) {
-		return data.get(index) == null;
 	}
 
 	private boolean isWithinArray( final int size, final int index ) {

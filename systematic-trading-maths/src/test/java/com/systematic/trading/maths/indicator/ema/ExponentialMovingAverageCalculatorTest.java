@@ -41,7 +41,6 @@ import java.time.LocalDate;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -170,12 +169,10 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertEquals(3, ema.getEma().size());
 		assertValues(new double[] { 0.5, 1.5, 2.67 }, ema.getEma());
 
-		//TODO validation
-		//		verify(validator).verifyEnoughValues(data, lookback);
-		//		verify(validator).verifyZeroNullEntries(data);
+		verify(validator).verifyEnoughValues(data.values(), lookback);
+		verify(validator).verifyZeroNullEntries(data.values());
 	}
 
-	@Ignore
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughDataPointsDecimal() {
 		final int lookback = 2;

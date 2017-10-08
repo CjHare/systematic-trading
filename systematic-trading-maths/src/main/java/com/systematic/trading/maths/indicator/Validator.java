@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.maths.indicator;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Validation of arrays an list contents.
@@ -39,7 +39,7 @@ public interface Validator {
 	 * 
 	 * @param values list of values to parse for the existence of <code>null</code>.
 	 */
-	<T> void verifyZeroNullEntries( List<T> values );
+	<T> void verifyZeroNullEntries( Collection<T> values );
 
 	/**
 	 * Verifies there are no <code>null</code> entries in the array.
@@ -56,7 +56,7 @@ public interface Validator {
 	 *            desired size.
 	 * @param numberOfValues minimum number of values expected.
 	 */
-	<T> void verifyEnoughValues( List<T> values, int numberOfValues );
+	<T> void verifyEnoughValues( Collection<T> values, int numberOfValues );
 
 	/**
 	 * Verifies that there are the expected number of non <code>null</code> sequential entries in
