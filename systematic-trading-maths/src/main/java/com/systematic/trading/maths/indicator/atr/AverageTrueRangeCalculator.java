@@ -68,14 +68,23 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 		this.validator = validator;
 	}
 
+	/**
+	 * Difference between the lowest prices.
+	 */
 	private BigDecimal trueRangeMethodOne( final TradingDayPrices today ) {
 		return today.getHighestPrice().subtract(today.getLowestPrice(), MATH_CONTEXT).abs();
 	}
 
+	/**
+	 * Difference between the highest prices.
+	 */
 	private BigDecimal trueRangeMethodTwo( final TradingDayPrices today, final TradingDayPrices yesterday ) {
 		return today.getHighestPrice().subtract(yesterday.getClosingPrice(), MATH_CONTEXT).abs();
 	}
 
+	/**
+	 * Difference between today's low and yesterdays close price.
+	 */
 	private BigDecimal trueRangeMethodThree( final TradingDayPrices today, final TradingDayPrices yesterday ) {
 		return today.getLowestPrice().subtract(yesterday.getClosingPrice(), MATH_CONTEXT).abs();
 	}
@@ -84,19 +93,8 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	 * @return highest value of the three true range methods.
 	 */
 	private BigDecimal trueRange( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		final BigDecimal one = trueRangeMethodOne(today);
-		final BigDecimal two = trueRangeMethodTwo(today, yesterday);
-		final BigDecimal three = trueRangeMethodThree(today, yesterday);
-
-		if (one.compareTo(two) >= 0 && one.compareTo(three) >= 0) {
-			return one;
-		}
-
-		if (two.compareTo(three) >= 0) {
-			return two;
-		}
-
-		return three;
+		return trueRangeMethodOne(today).max(trueRangeMethodTwo(today, yesterday))
+		        .max(trueRangeMethodThree(today, yesterday));
 	}
 
 	private BigDecimal average( final BigDecimal currentTrueRange, final BigDecimal priorAverageTrueRange ) {
