@@ -57,6 +57,7 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 	private static final String COLUMN_SEPARATOR = ",";
 
+	private final CompoundAnnualGrowthRate compoundAnnualGrowthRate = new CompoundAnnualGrowthRate();
 	private final BacktestSimulationDates dates;
 	private final EventStatistics statistics;
 	private final BacktestBatchId batchId;
@@ -112,7 +113,7 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 		final Period duration = Period.between(dates.getStartDate(), dates.getEndDate());
 		final BigDecimal deposited = statistics.getCashEventStatistics().getAmountDeposited();
 		final BigDecimal netWorth = event.getNetWorth();
-		final BigDecimal cagr = CompoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears());
+		final BigDecimal cagr = compoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears());
 
 		return String.format("CAGR: %s", FOUR_DECIMAL_PLACES.format(cagr));
 	}

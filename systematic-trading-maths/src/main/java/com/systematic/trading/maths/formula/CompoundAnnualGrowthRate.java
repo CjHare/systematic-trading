@@ -45,9 +45,6 @@ public class CompoundAnnualGrowthRate {
 
 	private static final BigDecimal ONE_HHUNDRED = BigDecimal.valueOf(100);
 
-	private CompoundAnnualGrowthRate() {
-	}
-
 	/**
 	 * The Compound Annual Growth Rate (CAGR) is the mean annual growth rate of an investment over a
 	 * specified period of time longer than one year.
@@ -61,7 +58,7 @@ public class CompoundAnnualGrowthRate {
 	 * @param years number of years between the beginning value and finish value.
 	 * @return the compound annual growth rate, as a signed percentage.
 	 */
-	public static BigDecimal calculate( final BigDecimal startValue, final BigDecimal finishValue, final int years ) {
+	public BigDecimal calculate( final BigDecimal startValue, final BigDecimal finishValue, final int years ) {
 
 		final double change = finishValue.divide(startValue, MATH_CONTEXT).doubleValue();
 		final double power = BigDecimal.ONE.divide(BigDecimal.valueOf(years), MATH_CONTEXT).doubleValue();
