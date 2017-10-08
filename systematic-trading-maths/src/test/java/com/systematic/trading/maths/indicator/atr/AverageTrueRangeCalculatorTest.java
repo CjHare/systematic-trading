@@ -32,8 +32,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDate;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,53 +54,40 @@ public class AverageTrueRangeCalculatorTest {
 	@Mock
 	private Validator validator;
 
+	/** The instance being tested. */
+	private AverageTrueRangeCalculator calculator;
+
 	@Test
 	public void atrFlat() {
 		final int lookback = 2;
-		final int numberDataPoints = lookback + 1;
+		final TradingDayPrices[] data = createPrices(3);
+		setUpCalculator(lookback);
 
-		final TradingDayPrices[] data = createPrices(numberDataPoints);
+		final AverageTrueRangeLine atr = calculator.atr(data);
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator);
-
-		final List<BigDecimal> atr = calculator.atr(data);
-
-		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, lookback);
-
-		assertNotNull(atr);
-		assertEquals(numberDataPoints, atr.size());
-		assertValues(new double[] { 2, 2, 2 }, atr);
+		verifyValidation(data, lookback);
+		verifyAtr(atr, 2, 2, 2);
 	}
 
 	@Test
 	public void atrIncreasing() {
 		final int lookback = 4;
-		final int numberDataPoints = lookback + 1;
-		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
+		final TradingDayPrices[] data = createIncreasingPrices(5);
+		setUpCalculator(lookback);
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator);
+		final AverageTrueRangeLine atr = calculator.atr(data);
 
-		final List<BigDecimal> atr = calculator.atr(data);
-
-		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, lookback);
-
-		assertNotNull(atr);
-		assertEquals(numberDataPoints, atr.size());
-		assertValues(new double[] { 5, 6.25, 8.4375, 11.32812, 14.74609 }, atr);
+		verifyValidation(data, lookback);
+		verifyAtr(atr, 5, 6.25, 8.44, 11.33, 14.75);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void atrInitialNullEntry() {
 		final int lookback = 2;
-		final int numberDataPoints = 4;
-		final TradingDayPrices[] data = createPrices(numberDataPoints);
+		final TradingDayPrices[] data = createPrices(4);
 		data[0] = null;
-
-		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
-
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator);
+		setUpValidationErrorNoNullEntries();
+		setUpCalculator(lookback);
 
 		calculator.atr(data);
 	}
@@ -109,13 +95,10 @@ public class AverageTrueRangeCalculatorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void atrLastNullEntry() {
 		final int lookback = 2;
-		final int numberDataPoints = 4;
-		final TradingDayPrices[] data = createPrices(numberDataPoints);
+		final TradingDayPrices[] data = createPrices(4);
 		data[data.length - 1] = null;
-
-		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
-
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator);
+		setUpValidationErrorNoNullEntries();
+		setUpCalculator(lookback);
 
 		calculator.atr(data);
 	}
@@ -123,27 +106,41 @@ public class AverageTrueRangeCalculatorTest {
 	@Test
 	public void atrThreeRangeTypes() {
 		final int lookback = 4;
-		final int numberDataPoints = lookback + 1;
-		final TradingDayPrices[] data = createThreeTypesOfVolatility(numberDataPoints);
+		final TradingDayPrices[] data = createThreeTypesOfVolatility(5);
+		setUpCalculator(lookback);
 
-		final AverageTrueRangeCalculator calculator = new AverageTrueRangeCalculator(lookback, validator);
+		final AverageTrueRangeLine atr = calculator.atr(data);
 
-		final List<BigDecimal> atr = calculator.atr(data);
+		verifyValidation(data, lookback);
+		verifyAtr(atr, 5, 5, 5, 8.75, 9.06);
+	}
 
+	private void setUpValidationErrorNoNullEntries() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
+	}
+
+	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, lookback);
+	}
 
+	private void verifyAtr( final AverageTrueRangeLine atr, final double... expected ) {
 		assertNotNull(atr);
-		assertEquals(numberDataPoints, atr.size());
-		assertValues(new double[] { 5, 5, 5, 8.75, 9.0625 }, atr);
+		assertNotNull(atr.getAtr());
+		assertEquals(expected.length, atr.getAtr().size());
+		assertValues(expected, atr.getAtr());
+	}
+
+	private void setUpCalculator( final int lookback ) {
+		calculator = new AverageTrueRangeCalculator(lookback, validator);
 	}
 
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(1).withLowestPrice(0).withHighestPrice(2)
-			        .withClosingPrice(1).build();
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i)).withOpeningPrice(1)
+			        .withLowestPrice(0).withHighestPrice(2).withClosingPrice(1).build();
 		}
 
 		return prices;
@@ -153,8 +150,9 @@ public class AverageTrueRangeCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(count).withLowestPrice(0)
-			        .withHighestPrice(count + i * 5).withClosingPrice(1).build();
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i))
+			        .withOpeningPrice(count).withLowestPrice(0).withHighestPrice(count + i * 5).withClosingPrice(1)
+			        .build();
 		}
 
 		return prices;
@@ -165,17 +163,18 @@ public class AverageTrueRangeCalculatorTest {
 
 		// Biggest swing is between today's high & low
 		for (int i = 0; i < count - 2; i++) {
-			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(count).withLowestPrice(0).withHighestPrice(count)
-			        .withClosingPrice(count).build();
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i))
+			        .withOpeningPrice(count).withLowestPrice(0).withHighestPrice(count).withClosingPrice(count).build();
 		}
 
 		// Biggest swing is between the highest of today and yesterday's close
-		prices[count - 2] = new TradingDayPricesBuilder().withOpeningPrice(count).withLowestPrice(count)
-		        .withHighestPrice(5 * count).withClosingPrice(2 * count).build();
+		prices[count - 2] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(count - 2))
+		        .withOpeningPrice(count).withLowestPrice(count).withHighestPrice(5 * count).withClosingPrice(2 * count)
+		        .build();
 
 		// Biggest swing is between the low of today and yesterday's close
-		prices[count - 1] = new TradingDayPricesBuilder().withOpeningPrice(count).withLowestPrice(0)
-		        .withHighestPrice(count).withClosingPrice(count).build();
+		prices[count - 1] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(count - 1))
+		        .withOpeningPrice(count).withLowestPrice(0).withHighestPrice(count).withClosingPrice(count).build();
 
 		return prices;
 	}

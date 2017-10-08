@@ -27,9 +27,10 @@ package com.systematic.trading.maths.indicator.atr;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 
@@ -82,7 +83,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	/**
 	 * @return highest value of the three true range methods.
 	 */
-	private BigDecimal getTrueRange( final TradingDayPrices today, final TradingDayPrices yesterday ) {
+	private BigDecimal trueRange( final TradingDayPrices today, final TradingDayPrices yesterday ) {
 		final BigDecimal one = trueRangeMethodOne(today);
 		final BigDecimal two = trueRangeMethodTwo(today, yesterday);
 		final BigDecimal three = trueRangeMethodThree(today, yesterday);
@@ -106,24 +107,27 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	}
 
 	@Override
-	public List<BigDecimal> atr( final TradingDayPrices[] data ) {
+	public AverageTrueRangeLine atr( final TradingDayPrices[] data ) {
 		//TODO data != null
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
-		final List<BigDecimal> atrValues = new NonNullableArrayList<>(data.length);
+		final SortedMap<LocalDate, BigDecimal> averageTrueRanges = new TreeMap<>();
 
 		// For the first value just use the TR
-		atrValues.add(trueRangeMethodOne(data[0]));
+		final BigDecimal firstTrueRange = trueRangeMethodOne(data[0]);
+		averageTrueRanges.put(data[0].getDate(), firstTrueRange);
 
 		// Starting ATR is just the first value
-		BigDecimal priorAtr = atrValues.get(0);
+		BigDecimal priorAtr = firstTrueRange;
+		BigDecimal atr;
 
-		for (int i = 0 + 1; i < data.length; i++) {
-			atrValues.add(average(getTrueRange(data[i], data[i - 1]), priorAtr));
-			priorAtr = atrValues.get(atrValues.size() - 1);
+		for (int i = 1; i < data.length; i++) {
+			atr = average(trueRange(data[i], data[i - 1]), priorAtr);
+			averageTrueRanges.put(data[i].getDate(), atr);
+			priorAtr = atr;
 		}
 
-		return atrValues;
+		return new AverageTrueRangeLine(averageTrueRanges);
 	}
 }

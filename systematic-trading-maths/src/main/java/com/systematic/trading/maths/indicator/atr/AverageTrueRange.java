@@ -25,9 +25,6 @@
  */
 package com.systematic.trading.maths.indicator.atr;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
@@ -65,5 +62,5 @@ public interface AverageTrueRange {
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return average true range values.
 	 */
-	List<BigDecimal> atr( TradingDayPrices[] data );
+	AverageTrueRangeLine atr( TradingDayPrices[] data );
 }
