@@ -35,6 +35,13 @@ import java.util.Collection;
 public interface Validator {
 
 	/**
+	 * Verifies the instance refers to an actual object, not the null reference.
+	 * 
+	 * @param instnace what is being verified as not null.
+	 */
+	void verifyNotNull( Object instance );
+
+	/**
 	 * Verifies there are no <code>null</code> entries in the list.
 	 * 
 	 * @param values list of values to parse for the existence of <code>null</code>.

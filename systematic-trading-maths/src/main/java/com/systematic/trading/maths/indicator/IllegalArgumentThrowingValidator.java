@@ -37,12 +37,15 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	private static final String MESSAGE_NULL_INPUT = "Unexpected null input has been given";
 	private static final String MESSAGE_NULL_VALUE = "Unexpected null value contained in given input: %s";
 
-	//TODO separate validation for null input
-	
+	@Override
+	public void verifyNotNull( Object instance ) {
+		if (instance == null) {
+			throw new IllegalArgumentException(MESSAGE_NULL_INPUT);
+		}
+	}
+
 	@Override
 	public <T> void verifyZeroNullEntries( final Collection<T> values ) {
-		verifyNotNullInput(values);
-
 		for (final T value : values) {
 			verifyNotNullValue(value, values);
 		}
@@ -50,8 +53,6 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	@Override
 	public <T> void verifyZeroNullEntries( final T[] values ) {
-		verifyNotNullInput(values);
-
 		for (final T value : values) {
 			verifyNotNullValue(value, values);
 		}
@@ -80,12 +81,6 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	private void verifyNotNullValue( final Object maybe, final Object values ) {
 		if (maybe == null) {
 			throw new IllegalArgumentException(String.format(MESSAGE_NULL_VALUE, values));
-		}
-	}
-
-	private void verifyNotNullInput( final Object maybe ) {
-		if (maybe == null) {
-			throw new IllegalArgumentException(MESSAGE_NULL_INPUT);
 		}
 	}
 

@@ -166,15 +166,6 @@ public class IllegalArgumentThrowingValidatorTest {
 		validator.verifyZeroNullEntries(data);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void verifyZeroNullEntriesNullInput() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
-
-		final List<String> data = null;
-
-		validator.verifyZeroNullEntries(data);
-	}
-
 	@Test
 	public void verifyZeroNullEntries() {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
@@ -198,18 +189,6 @@ public class IllegalArgumentThrowingValidatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void verifyZeroNullEntriesEndingNull() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
-
-		final List<String> data = new ArrayList<String>();
-		data.add("one");
-		data.add("two");
-		data.add(null);
-
-		validator.verifyZeroNullEntries(data);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesMidNull() {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
@@ -226,15 +205,6 @@ public class IllegalArgumentThrowingValidatorTest {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
 		final String[] data = new String[0];
-
-		validator.verifyZeroNullEntries(data);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void verifyZeroNullEntriesArrayNullInput() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
-
-		final String[] data = null;
 
 		validator.verifyZeroNullEntries(data);
 	}
@@ -285,4 +255,18 @@ public class IllegalArgumentThrowingValidatorTest {
 		validator.verifyZeroNullEntries(data);
 	}
 
+	public void verifyNotNull() {
+		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+
+		final String[] data = new String[0];
+
+		validator.verifyNotNull(data);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void verifyNotNullWhenNull() {
+		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+
+		validator.verifyNotNull(null);
+	}
 }
