@@ -28,6 +28,7 @@ package com.systematic.trading.maths.indicator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -37,237 +38,204 @@ import org.junit.Test;
  */
 public class IllegalArgumentThrowingValidatorTest {
 
+	/** Validator instance being tested.*/
+	private IllegalArgumentThrowingValidator validator;
+
+	@Before
+	public void setUp() {
+		validator = new IllegalArgumentThrowingValidator();
+	}
+
 	@Test
 	public void verifyEnoughValues() {
-		final int requiredNumberOfPrices = 2;
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final List<String> data = createList("one", "two");
 
-		final List<String> data = new ArrayList<String>();
-		data.add("one");
-		data.add("two");
-
-		validator.verifyEnoughValues(data, requiredNumberOfPrices);
+		verifyEnoughValues(data, 2);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyNotEnoughValues() {
-		final int requiredNumberOfPrices = 2;
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final List<String> data = createList("one");
 
-		final List<String> data = new ArrayList<String>();
-		data.add("one");
-
-		validator.verifyEnoughValues(data, requiredNumberOfPrices);
+		verifyEnoughValues(data, 2);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyEnoughValuesAllNull() {
-		final int requiredNumberOfPrices = 2;
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final List<String> data = createList(null, null);
 
-		final List<String> data = new ArrayList<String>();
-		data.add(null);
-		data.add(null);
-
-		validator.verifyEnoughValues(data, requiredNumberOfPrices);
+		verifyEnoughValues(data, 2);
 	}
 
 	@Test
 	public void verifyEnoughValuesIgnoringStartingNull() {
-		final int requiredNumberOfPrices = 2;
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final List<String> data = createList(null, "one", "two");
 
-		final List<String> data = new ArrayList<String>();
-		data.add(null);
-		data.add("one");
-		data.add("two");
-
-		validator.verifyEnoughValues(data, requiredNumberOfPrices);
+		verifyEnoughValues(data, 2);
 	}
 
 	@Test
 	public void verifyEnoughValuesIgnoringLastNull() {
-		final int requiredNumberOfPrices = 2;
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final List<String> data = createList("one", "two", null);
 
-		final List<String> data = new ArrayList<String>();
-		data.add("one");
-		data.add("two");
-		data.add(null);
+		verifyEnoughValues(data, 2);
+	}
 
-		validator.verifyEnoughValues(data, requiredNumberOfPrices);
+	@Test
+	public void verifyEnoughValuesThreeValues() {
+		final List<String> data = createList("one", "two", "three");
+
+		verifyEnoughValues(data, 3);
 	}
 
 	@Test
 	public void verifyEnoughValuesArray() {
-		final int requiredNumberOfPrices = 2;
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final String[] data = createArray("one", "two");
 
-		final String[] data = new String[2];
-		data[0] = "one";
-		data[1] = "two";
-
-		validator.verifyEnoughValues(data, requiredNumberOfPrices);
+		verifyEnoughValues(data, 2);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyNotEnoughValuesArray() {
-		final int requiredNumberOfPrices = 2;
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final String[] data = createArray("one");
 
-		final String[] data = new String[1];
-		data[0] = "one";
-
-		validator.verifyEnoughValues(data, requiredNumberOfPrices);
+		verifyEnoughValues(data, 2);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyEnoughValuesArrayAllNull() {
-		final int requiredNumberOfPrices = 2;
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
-
 		final String[] data = new String[2];
 
-		validator.verifyEnoughValues(data, requiredNumberOfPrices);
+		verifyEnoughValues(data, 2);
 	}
 
 	@Test
 	public void verifyEnoughValuesArrayIgnoringStartingNull() {
-		final int requiredNumberOfPrices = 2;
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final String[] data = createArray(null, "one", "two");
 
-		final String[] data = new String[3];
-		data[0] = null;
-		data[1] = "one";
-		data[2] = "two";
-
-		validator.verifyEnoughValues(data, requiredNumberOfPrices);
+		verifyEnoughValues(data, 2);
 	}
 
 	@Test
 	public void verifyEnoughValuesArrayIgnoringLastNull() {
-		final int requiredNumberOfPrices = 2;
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final String[] data = createArray("one", "two", null);
 
-		final String[] data = new String[3];
-		data[0] = "one";
-		data[1] = "two";
-		data[2] = null;
+		verifyEnoughValues(data, 2);
+	}
 
-		validator.verifyEnoughValues(data, requiredNumberOfPrices);
+	@Test
+	public void verifyEnoughValuesArrayThreeValues() {
+		final String[] data = createArray("one", "two", "three");
+
+		verifyEnoughValues(data, 3);
 	}
 
 	@Test
 	public void verifyZeroNullEntriesEmpty() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
-
 		final List<String> data = new ArrayList<String>();
 
-		validator.verifyZeroNullEntries(data);
+		verifyZeroNullEntries(data);
 	}
 
 	@Test
 	public void verifyZeroNullEntries() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final List<String> data = createList("one");
 
-		final List<String> data = new ArrayList<String>();
-		data.add("one");
-
-		validator.verifyZeroNullEntries(data);
+		verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesStartingNull() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final List<String> data = createList(null, "one", "two");
 
-		final List<String> data = new ArrayList<String>();
-		data.add(null);
-		data.add("one");
-		data.add("two");
-
-		validator.verifyZeroNullEntries(data);
+		verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesMidNull() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final List<String> data = createList("one", null, "two");
 
-		final List<String> data = new ArrayList<String>();
-		data.add("one");
-		data.add(null);
-		data.add("two");
-
-		validator.verifyZeroNullEntries(data);
+		verifyZeroNullEntries(data);
 	}
 
 	@Test
 	public void verifyZeroNullEntriesArrayEmpty() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
-
 		final String[] data = new String[0];
 
-		validator.verifyZeroNullEntries(data);
+		verifyZeroNullEntries(data);
 	}
 
 	@Test
 	public void verifyZeroNullEntriesArray() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final String[] data = createArray("one");
 
-		final String[] data = new String[1];
-		data[0] = "one";
-
-		validator.verifyZeroNullEntries(data);
+		verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesSArraytartingNull() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final String[] data = createArray(null, "one", "two");
 
-		final String[] data = new String[3];
-		data[0] = null;
-		data[1] = "one";
-		data[2] = "two";
-
-		validator.verifyZeroNullEntries(data);
+		verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesArrayEndingNull() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final String[] data = createArray("one", "two", null);
 
-		final String[] data = new String[3];
-		data[0] = "one";
-		data[1] = "two";
-		data[2] = null;
-
-		validator.verifyZeroNullEntries(data);
+		verifyZeroNullEntries(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesArrayMidNull() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		final String[] data = createArray("one", null, "two");
 
-		final String[] data = new String[3];
-		data[0] = "one";
-		data[1] = null;
-		data[2] = "two";
-
-		validator.verifyZeroNullEntries(data);
+		verifyZeroNullEntries(data);
 	}
 
 	@Test
 	public void verifyNotNull() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
-
 		final String[] data = new String[0];
 
-		validator.verifyNotNull(data);
+		verifyNotNull(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyNotNullWhenNull() {
-		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
+		verifyNotNull(null);
+	}
 
-		validator.verifyNotNull(null);
+	private void verifyNotNull( final Object instance ) {
+		validator.verifyNotNull(instance);
+	}
+
+	private void verifyZeroNullEntries( final String[] data ) {
+		validator.verifyZeroNullEntries(data);
+	}
+
+	private void verifyZeroNullEntries( final List<String> data ) {
+		validator.verifyZeroNullEntries(data);
+	}
+
+	private void verifyEnoughValues( final String[] data, final int expectedNumberOfValues ) {
+		validator.verifyEnoughValues(data, expectedNumberOfValues);
+	}
+
+	private void verifyEnoughValues( final List<String> data, final int expectedNumberOfValues ) {
+		validator.verifyEnoughValues(data, expectedNumberOfValues);
+	}
+
+	private List<String> createList( final String... values ) {
+		final List<String> data = new ArrayList<String>();
+
+		for (final String value : values) {
+			data.add(value);
+		}
+
+		return data;
+	}
+
+	private String[] createArray( final String... values ) {
+		return values;
 	}
 }

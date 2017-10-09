@@ -54,7 +54,7 @@ public class AverageTrueRangeCalculatorTest {
 	@Mock
 	private Validator validator;
 
-	/** The instance being tested. */
+	/** The calculator instance being tested. */
 	private AverageTrueRangeCalculator calculator;
 
 	@Test
@@ -63,7 +63,7 @@ public class AverageTrueRangeCalculatorTest {
 		final TradingDayPrices[] data = createPrices(3);
 		setUpCalculator(lookback);
 
-		final AverageTrueRangeLine atr = calculator.atr(data);
+		final AverageTrueRangeLine atr = atr(data);
 
 		verifyValidation(data, lookback);
 		verifyAtr(atr, 2, 2, 2);
@@ -75,7 +75,7 @@ public class AverageTrueRangeCalculatorTest {
 		final TradingDayPrices[] data = createIncreasingPrices(5);
 		setUpCalculator(lookback);
 
-		final AverageTrueRangeLine atr = calculator.atr(data);
+		final AverageTrueRangeLine atr = atr(data);
 
 		verifyValidation(data, lookback);
 		verifyAtr(atr, 5, 6.25, 8.44, 11.33, 14.75);
@@ -89,7 +89,7 @@ public class AverageTrueRangeCalculatorTest {
 		setUpValidationErrorNoNullEntries();
 		setUpCalculator(lookback);
 
-		calculator.atr(data);
+		atr(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -100,7 +100,7 @@ public class AverageTrueRangeCalculatorTest {
 		setUpValidationErrorNoNullEntries();
 		setUpCalculator(lookback);
 
-		calculator.atr(data);
+		atr(data);
 	}
 
 	@Test
@@ -120,7 +120,11 @@ public class AverageTrueRangeCalculatorTest {
 		setUpValidationErrorNullInput();
 		setUpCalculator(1);
 
-		calculator.atr(null);
+		atr(null);
+	}
+
+	private AverageTrueRangeLine atr( final TradingDayPrices[] data ) {
+		return calculator.atr(data);
 	}
 
 	private void setUpValidationErrorNoNullEntries() {

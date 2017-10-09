@@ -80,6 +80,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	@Mock
 	private Validator validator;
 
+	/** Calculator instance being tested. */
 	private MovingAverageConvergenceDivergenceCalculator calculator;
 
 	@Before
@@ -91,21 +92,21 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	public void nullDataSet() {
 		setUpEngoughValuesValidationException();
 
-		calculator.macd(null);
+		macd(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emptyDataSet() {
 		setUpNoNUllEntriesValidationException();
 
-		calculator.macd(new TradingDayPrices[0]);
+		macd(new TradingDayPrices[0]);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void singleNullEntryDataSet() {
 		setUpEngoughValuesValidationException();
 
-		calculator.macd(new TradingDayPrices[1]);
+		macd(new TradingDayPrices[1]);
 	}
 
 	@Test
@@ -117,7 +118,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		setUpSlowEma(SLOW_EMA_OFFSET, 1.1, 2.2, 3.3, 4.4, 5.5, 6, 6);
 		setUpSignalEma(signalLine);
 
-		final MovingAverageConvergenceDivergenceLines lines = calculator.macd(dataSet);
+		final MovingAverageConvergenceDivergenceLines lines = macd(dataSet);
 
 		verifyMacdLines(lines, macdValues, signalLine);
 		verfiyEmaCalls(dataSet, macdValues);
@@ -132,7 +133,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		setUpSlowEma(NO_SLOW_EMA_OFFSET, 1.1, 2.2, 3.3, 4.4, 5.5);
 		setUpSignalEma(signalLine);
 
-		final MovingAverageConvergenceDivergenceLines lines = calculator.macd(dataSet);
+		final MovingAverageConvergenceDivergenceLines lines = macd(dataSet);
 
 		verifyMacdLines(lines, macdValues, signalLine);
 		verfiyEmaCalls(dataSet, macdValues);
@@ -147,7 +148,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		setUpSlowEma(NO_SLOW_EMA_OFFSET, 1.1, 2.2, 3.3, 4.4, 5.5);
 		setUpSignalEma(signalLine);
 
-		final MovingAverageConvergenceDivergenceLines lines = calculator.macd(dataSet);
+		final MovingAverageConvergenceDivergenceLines lines = macd(dataSet);
 
 		verifyMacdLines(lines, macdValues, signalLine);
 		verfiyEmaCalls(dataSet, macdValues);
@@ -157,7 +158,11 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	public void macdNullInput() {
 		setUpValidationErrorNullInput();
 
-		calculator.macd(null);
+		macd(null);
+	}
+
+	private MovingAverageConvergenceDivergenceLines macd( final TradingDayPrices[] dataSet ) {
+		return calculator.macd(dataSet);
 	}
 
 	private void setUpValidationErrorNullInput() {

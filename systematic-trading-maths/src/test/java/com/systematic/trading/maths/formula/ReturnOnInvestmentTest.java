@@ -43,6 +43,7 @@ import org.junit.Test;
  */
 public class ReturnOnInvestmentTest {
 
+	/** Instance being tested. */
 	private ReturnOnInvestment roi;
 
 	@Before
@@ -68,19 +69,20 @@ public class ReturnOnInvestmentTest {
 	public void add() {
 		final double value = 1.234567;
 
-		roi.add(BigDecimal.valueOf(value));
+		addRoi(value);
 
 		assertBigDecimalEquals(value, roi.get());
 	}
 
 	@Test
 	public void addTwoValues() {
-		final double firstValue = 1.234567;
-		final double secondValue = 34.234567;
-
-		roi.add(BigDecimal.valueOf(firstValue));
-		roi.add(BigDecimal.valueOf(secondValue));
+		addRoi(1.234567);
+		addRoi(34.234567);
 
 		assertBigDecimalEquals(35.46913, roi.get());
+	}
+
+	private void addRoi( final double value ) {
+		roi.add(BigDecimal.valueOf(value));
 	}
 }

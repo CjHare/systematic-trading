@@ -59,6 +59,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	@Mock
 	private Validator validator;
 
+	/** Calculator instance being tested. */
 	private ExponentialMovingAverageCalculator calculator;
 
 	@Test
@@ -67,7 +68,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createPrices(lookback);
 		setUpCalculator(lookback);
 
-		final ExponentialMovingAverageLine ema = calculator.ema(data);
+		final ExponentialMovingAverageLine ema = ema(data);
 
 		verifyEma(ema, 1);
 		verifyValidation(data, lookback);
@@ -91,7 +92,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createIncreasingPrices(4);
 		setUpCalculator(lookback);
 
-		final ExponentialMovingAverageLine ema = calculator.ema(data);
+		final ExponentialMovingAverageLine ema = ema(data);
 
 		verifyEma(ema, 1.5, 2.5, 3.67);
 		verifyValidation(data, lookback);
@@ -99,13 +100,12 @@ public class ExponentialMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaTwoPointsLastNull() {
-		final int lookback = 2;
 		final TradingDayPrices[] data = createIncreasingPrices(4);
 		data[data.length - 1] = null;
 		setUpValidationErrorZeroEntries();
-		setUpCalculator(lookback);
+		setUpCalculator(2);
 
-		calculator.ema(data);
+		ema(data);
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(4);
 		setUpCalculator(lookback);
 
-		final ExponentialMovingAverageLine ema = calculator.ema(data);
+		final ExponentialMovingAverageLine ema = ema(data);
 
 		verifyEma(ema, 0.5, 1.5, 2.67);
 		verifyValidation(data, lookback);
@@ -122,12 +122,11 @@ public class ExponentialMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughDataPointsDecimal() {
-		final int lookback = 2;
 		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(1);
 		setUpValidationErrorEnoughValues();
-		setUpCalculator(lookback);
+		setUpCalculator(2);
 
-		calculator.ema(data);
+		ema(data);
 	}
 
 	@Test
@@ -146,7 +145,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		setUpCalculator(1);
 		final TradingDayPrices[] input = null;
 
-		calculator.ema(input);
+		ema(input);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -155,7 +154,15 @@ public class ExponentialMovingAverageCalculatorTest {
 		setUpCalculator(1);
 		final SortedMap<LocalDate, BigDecimal> input = null;
 
-		calculator.ema(input);
+		ema(input);
+	}
+
+	private ExponentialMovingAverageLine ema( final TradingDayPrices[] data ) {
+		return calculator.ema(data);
+	}
+
+	private ExponentialMovingAverageLine ema( final SortedMap<LocalDate, BigDecimal> data ) {
+		return calculator.ema(data);
 	}
 
 	private void setUpValidationErrorNullInput() {

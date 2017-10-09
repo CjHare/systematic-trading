@@ -43,6 +43,7 @@ import org.junit.Test;
  */
 public class NetwothTest {
 
+	/** Instance being tested, */
 	private Networth networth;
 
 	@Before
@@ -57,7 +58,7 @@ public class NetwothTest {
 
 	@Test
 	public void reset() {
-		networth.add(BigDecimal.ONE);
+		addValue(1);
 
 		networth.reset();
 
@@ -68,36 +69,30 @@ public class NetwothTest {
 	public void add() {
 		final double value = 1.234567;
 
-		networth.add(BigDecimal.valueOf(value));
+		addValue(value);
 
 		assertBigDecimalEquals(value, networth.get());
 	}
 
 	@Test
 	public void addEquity() {
-		final double value = 1.234567;
-		final double price = 9876.21;
-
-		networth.addEquity(BigDecimal.valueOf(value), BigDecimal.valueOf(price));
+		addEquity(1.234567, 9876.21);
 
 		assertBigDecimalEquals(12192.84, networth.get());
 	}
 
 	@Test
 	public void addTwoValues() {
-		final double firstValue = 1.234567;
-		final double secondValue = 34.234567;
-
-		networth.add(BigDecimal.valueOf(firstValue));
-		networth.add(BigDecimal.valueOf(secondValue));
+		addValue(1.234567);
+		addValue(34.234567);
 
 		assertBigDecimalEquals(35.46913, networth.get());
 	}
 
 	@Test
 	public void percetageChangeNone() {
-		final Networth endNetworth = new Networth();
-		final Networth adjustment = new Networth();
+		final Networth endNetworth = setUpNetworth(0);
+		final Networth adjustment = setUpNetworth(0);
 
 		final BigDecimal change = networth.percentageChange(endNetworth, adjustment);
 
@@ -106,10 +101,8 @@ public class NetwothTest {
 
 	@Test
 	public void percetageChangeNoneWithAdjustment() {
-		final Networth endNetworth = new Networth();
-		final Networth adjustment = new Networth();
-		endNetworth.add(BigDecimal.ONE);
-		adjustment.add(BigDecimal.ONE);
+		final Networth endNetworth = setUpNetworth(1);
+		final Networth adjustment = setUpNetworth(1);
 
 		final BigDecimal change = networth.percentageChange(endNetworth, adjustment);
 
@@ -118,14 +111,26 @@ public class NetwothTest {
 
 	@Test
 	public void percetageChange() {
-		final Networth endNetworth = new Networth();
-		final Networth adjustment = new Networth();
-		endNetworth.add(BigDecimal.valueOf(3.1234567));
-		adjustment.add(BigDecimal.ONE);
-		networth.add(BigDecimal.ONE);
+		final Networth endNetworth = setUpNetworth(3.1234567);
+		final Networth adjustment = setUpNetworth(1);
+		addValue(1);
 
 		final BigDecimal change = networth.percentageChange(endNetworth, adjustment);
 
 		assertBigDecimalEquals(112.3457, change);
+	}
+
+	private Networth setUpNetworth( final double networth ) {
+		final Networth worth = new Networth();
+		worth.add(BigDecimal.valueOf(networth));
+		return worth;
+	}
+
+	private void addValue( final double value ) {
+		networth.add(BigDecimal.valueOf(value));
+	}
+
+	private void addEquity( final double quantity, final double price ) {
+		networth.addEquity(BigDecimal.valueOf(quantity), BigDecimal.valueOf(price));
 	}
 }
