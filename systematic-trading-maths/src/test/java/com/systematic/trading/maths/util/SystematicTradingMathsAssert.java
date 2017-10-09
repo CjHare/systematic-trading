@@ -35,8 +35,6 @@ import static org.junit.Assert.assertNotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -49,24 +47,6 @@ public class SystematicTradingMathsAssert {
 
 	private static final int TWO_DECIMAL_PLACES = 2;
 
-	public static void assertValue( final double expected, final Collection<BigDecimal> actual ) {
-		assertNotNull("Need an actual/results array", actual);
-		assertEquals("Actual length > != 1", 1, actual.size());
-
-		final BigDecimal firstEntry = actual.iterator().next();
-
-		assertEquals(String.format("%s != %s", expected, firstEntry), 0,
-		        BigDecimal.valueOf(expected).compareTo(firstEntry));
-	}
-
-	public static void assertValues( final double[] expected, final List<BigDecimal> actual ) {
-		assertArraySizeEqual(expected, actual);
-
-		for (int i = 0; i < expected.length; i++) {
-			assertBigDecimalEquals(expected, actual, i);
-		}
-	}
-
 	public static void assertValues( final double[] expected, final SortedMap<LocalDate, BigDecimal> actual ) {
 		assertArraySizeEqual(expected, actual);
 
@@ -78,7 +58,7 @@ public class SystematicTradingMathsAssert {
 	}
 
 	public static void assertValuesTwoDecimalPlaces( final double[] expected,
-	        final Map<LocalDate, BigDecimal> actual ) {
+	        final SortedMap<LocalDate, BigDecimal> actual ) {
 		assertArraySizeEqual(expected, actual);
 		int index = 0;
 
@@ -88,38 +68,14 @@ public class SystematicTradingMathsAssert {
 		}
 	}
 
-	public static void assertValuesTwoDecimalPlaces( final double[] expected, final List<BigDecimal> actual ) {
-		assertArraySizeEqual(expected, actual);
-
-		for (int i = 0; i < expected.length; i++) {
-			assertBigDecimalEquals(expected, actual, i, RoundingMode.HALF_EVEN);
-		}
-	}
-
 	public static void assertBigDecimalEquals( final double expected, BigDecimal actual ) {
 		assertEquals(String.format("%s != %s", expected, actual), 0, BigDecimal.valueOf(expected).compareTo(actual));
-	}
-
-	private static void assertBigDecimalEquals( final double[] expected, final List<BigDecimal> actual, final int i ) {
-		assertEquals(String.format("%s != %s", expected[i], actual.get(i)), 0,
-		        BigDecimal.valueOf(expected[i]).compareTo(actual.get(i)));
-	}
-
-	private static void assertBigDecimalEquals( final double[] expected, final List<BigDecimal> actual, final int i,
-	        final RoundingMode mode ) {
-		assertBigDecimalEquals(expected[i], actual.get(i), mode);
 	}
 
 	private static void assertBigDecimalEquals( final double expected, final BigDecimal actual,
 	        final RoundingMode mode ) {
 		assertEquals(String.format("%s != %s", expected, actual), 0,
 		        BigDecimal.valueOf(expected).compareTo(actual.setScale(TWO_DECIMAL_PLACES, mode)));
-	}
-
-	private static void assertArraySizeEqual( final double[] expected, final Collection<?> actual ) {
-		assertNotNull("Need an expected array", expected);
-		assertNotNull("Need an actual/results array", actual);
-		assertEquals("Actual length != Expected length", expected.length, actual.size());
 	}
 
 	private static void assertArraySizeEqual( final double[] expected, final Map<?, ?> actual ) {
