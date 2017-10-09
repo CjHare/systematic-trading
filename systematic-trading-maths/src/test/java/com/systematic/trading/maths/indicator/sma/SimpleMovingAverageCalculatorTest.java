@@ -54,98 +54,109 @@ public class SimpleMovingAverageCalculatorTest {
 	@Mock
 	private Validator validator;
 
+	/** Calculator instance being tested. */
+	private SimpleMovingAverageCalculator calculator;
+
+	private void setUpCalculator( final int lookback, final int daysOfSmaValues ) {
+		calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues, validator);
+	}
+
 	@Test
 	public void smaTwoPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 3;
-		final TradingDayPrices[] data = createPrices(numberDataPoints);
 		final int daysOfSmaValues = numberDataPoints - lookback;
+		final TradingDayPrices[] data = createPrices(numberDataPoints);
+		setUpCalculator(lookback, daysOfSmaValues);
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
-		        validator);
+		final SimpleMovingAverageLine sma = sma(data);
 
-		final SimpleMovingAverageLine sma = calculator.sma(data);
-
-		assertNotNull(sma);
-		assertValues(new double[] { 1, 1, 1, 1 }, sma.getSma());
-
-		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, numberDataPoints);
+		verifySma(sma);
+		verifyValidation(data, numberDataPoints);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void nullFirstDataPoint() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
+		final int daysOfSmaValues = numberDataPoints - lookback - 1;
 		final TradingDayPrices[] data = createPrices(numberDataPoints);
 		data[0] = null;
-		final int daysOfSmaValues = numberDataPoints - lookback - 1;
+		setUpValidationErrorZeroNullEntries();
+		setUpCalculator(lookback, daysOfSmaValues);
 
-		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
-
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
-		        validator);
-
-		calculator.sma(data);
+		sma(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void nullLastDataPoint() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
+		final int daysOfSmaValues = numberDataPoints - lookback - 2;
 		final TradingDayPrices[] data = createPrices(numberDataPoints);
 		data[lookback + 2] = null;
-		final int daysOfSmaValues = numberDataPoints - lookback - 2;
+		setUpValidationErrorZeroNullEntries();
+		setUpCalculator(lookback, daysOfSmaValues);
 
-		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
-
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
-		        validator);
-
-		calculator.sma(data);
+		sma(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughDataPoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
-		final TradingDayPrices[] data = createPrices(numberDataPoints);
 		final int daysOfSmaValues = numberDataPoints - lookback + 1;
+		final TradingDayPrices[] data = createPrices(numberDataPoints);
+		setUValidationErrorNotEnoughValues();
+		setUpCalculator(lookback, daysOfSmaValues);
 
-		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
-		        anyInt());
-
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
-		        validator);
-
-		calculator.sma(data);
+		sma(data);
 	}
 
 	@Test
 	public void smaThreePoints() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
-		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
 		final int daysOfSmaValues = numberDataPoints - lookback;
+		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
+		setUpCalculator(lookback, daysOfSmaValues);
 
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues,
-		        validator);
+		final SimpleMovingAverageLine sma = sma(data);
 
-		final SimpleMovingAverageLine sma = calculator.sma(data);
-
-		assertNotNull(sma);
-		assertValues(new double[] { 1.5, 2.5, 3.5, 4.5, 5.5 }, sma.getSma());
-
-		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, numberDataPoints);
+		verifySma(sma);
+		verifyValidation(data, numberDataPoints);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNullInput() {
 		setUpValidationErrorNullInput();
-		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(1, 1, validator);
+		setUpCalculator(1, 1);
 
-		calculator.sma(null);
+		sma(null);
+	}
+
+	private void verifySma( final SimpleMovingAverageLine sma ) {
+		assertNotNull(sma);
+		assertNotNull(sma.getSma());
+		assertValues(new double[] { 1, 1, 1, 1 }, sma.getSma());
+	}
+
+	private void verifyValidation( final TradingDayPrices[] data, final int numberDataPoints ) {
+		verify(validator).verifyZeroNullEntries(data);
+		verify(validator).verifyEnoughValues(data, numberDataPoints);
+	}
+
+	private void setUpValidationErrorZeroNullEntries() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
+	}
+
+	private void setUValidationErrorNotEnoughValues() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
+		        anyInt());
+	}
+
+	private SimpleMovingAverageLine sma( final TradingDayPrices[] data ) {
+		return calculator.sma(data);
 	}
 
 	private void setUpValidationErrorNullInput() {
