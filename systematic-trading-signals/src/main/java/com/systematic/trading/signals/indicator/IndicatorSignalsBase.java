@@ -45,7 +45,7 @@ import com.systematic.trading.signals.model.DatedSignal;
  * 
  * @author CJ Hare
  */
-public abstract class IndicatorSignalsBase<T> {
+public abstract class IndicatorSignalsBase<T> implements IndicatorSignalGenerator {
 
 	/** Provides date range filtering. */
 	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
@@ -56,10 +56,32 @@ public abstract class IndicatorSignalsBase<T> {
 	/** Calculators that will be used to generate signals. */
 	private final List<SignalCalculator<T>> signalCalculators;
 
-	public IndicatorSignalsBase( final List<SignalCalculator<T>> signalCalculators,
-	        final SignalRangeFilter signalRangeFilter ) {
+	/** Identifier for the configuration of signal calculated. */
+	private final IndicatorSignalId id;
+
+	/** Minimum number of trading days required for MACD signal generation. */
+	private final int requiredNumberOfTradingDays;
+
+	public IndicatorSignalsBase( final IndicatorSignalId id, final int requiredNumberOfTradingDays,
+	        final List<SignalCalculator<T>> signalCalculators, final SignalRangeFilter signalRangeFilter ) {
 		this.signalCalculators = signalCalculators;
 		this.signalRangeFilter = signalRangeFilter;
+		this.requiredNumberOfTradingDays = requiredNumberOfTradingDays;
+		this.id = id;
+		
+
+		//TODO validate there's at least one signal calculator 
+
+	}
+
+	@Override
+	public int getRequiredNumberOfTradingDays() {
+		return requiredNumberOfTradingDays;
+	}
+
+	@Override
+	public IndicatorSignalId getSignalType() {
+		return id;
 	}
 
 	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
@@ -85,6 +107,4 @@ public abstract class IndicatorSignalsBase<T> {
 	}
 
 	protected abstract T indicatorCalculation( TradingDayPrices[] data );
-
-	protected abstract IndicatorSignalId getSignalType();
 }

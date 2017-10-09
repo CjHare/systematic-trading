@@ -32,7 +32,6 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 
@@ -42,37 +41,17 @@ import com.systematic.trading.signals.indicator.SignalCalculator;
  * @author CJ Hare
  */
 public class MovingAveragingConvergenceDivergenceSignals
-        extends IndicatorSignalsBase<MovingAverageConvergenceDivergenceLines> implements IndicatorSignalGenerator {
+        extends IndicatorSignalsBase<MovingAverageConvergenceDivergenceLines> {
 
 	/** Calculates the MACD lines to use in signal analysis. */
 	private final MovingAverageConvergenceDivergence macd;
-
-	/** Identifier for the configuration of signal calculated. */
-	private final IndicatorSignalId id;
-
-	/** Minimum number of trading days required for MACD signal generation. */
-	private final int requiredNumberOfTradingDays;
 
 	public MovingAveragingConvergenceDivergenceSignals( final IndicatorSignalId id,
 	        final MovingAverageConvergenceDivergence macd, final int requiredNumberOfTradingDays,
 	        final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators,
 	        final SignalRangeFilter filter ) {
-		super(signalCalculators, filter);
+		super(id, requiredNumberOfTradingDays, signalCalculators, filter);
 		this.macd = macd;
-		this.requiredNumberOfTradingDays = requiredNumberOfTradingDays;
-		this.id = id;
-
-		//TODO validate there's at least one signal calculator 
-	}
-
-	@Override
-	public int getRequiredNumberOfTradingDays() {
-		return requiredNumberOfTradingDays;
-	}
-
-	@Override
-	public IndicatorSignalId getSignalType() {
-		return id;
 	}
 
 	@Override

@@ -45,38 +45,14 @@ import com.systematic.trading.signals.indicator.SignalCalculator;
 public class SimpleMovingAverageGradientSignals extends IndicatorSignalsBase<SimpleMovingAverageLine>
         implements IndicatorSignalGenerator {
 
-	/** Number of days to average the value on. */
-	private final int lookback;
-
-	/** The number of days the SMA gradient covers. */
-	private final int daysOfGradient;
-
 	/** Responsible for calculating the simple moving average. */
 	private final SimpleMovingAverage sma;
 
-	/** Identifier for the configuration of signal calculated. */
-	private final IndicatorSignalId id;
-
-	public SimpleMovingAverageGradientSignals( final IndicatorSignalId id, final int lookback,
-	        final int daysOfGradient, final SimpleMovingAverage sma,
-	        final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators, final SignalRangeFilter filter ) {
-		super(signalCalculators, filter);
-		this.daysOfGradient = daysOfGradient;
-		this.lookback = lookback;
+	public SimpleMovingAverageGradientSignals( final IndicatorSignalId id, final int lookback, final int daysOfGradient,
+	        final SimpleMovingAverage sma, final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators,
+	        final SignalRangeFilter filter ) {
+		super(id, lookback + daysOfGradient, signalCalculators, filter);
 		this.sma = sma;
-		this.id = id;
-
-		//TODO validate there's at least one signal calculator 
-	}
-
-	@Override
-	public int getRequiredNumberOfTradingDays() {
-		return lookback + daysOfGradient;
-	}
-
-	@Override
-	public IndicatorSignalId getSignalType() {
-		return id;
 	}
 
 	@Override

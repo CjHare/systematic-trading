@@ -32,7 +32,6 @@ import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
 import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 
@@ -43,20 +42,13 @@ import com.systematic.trading.signals.indicator.SignalCalculator;
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexSignals extends IndicatorSignalsBase<RelativeStrengthIndexLine>
-        implements IndicatorSignalGenerator {
+public class RelativeStrengthIndexSignals extends IndicatorSignalsBase<RelativeStrengthIndexLine> {
 
 	/** The least number of data points that enables RSI signal generation. */
 	private static final int MINIMUM_DAYS_OF_RSI_VALUES = 2;
 
 	/** Calculates the RSI values from time series data. */
 	private final RelativeStrengthIndex rsi;
-
-	/** Identifier for the configuration of signal calculated. */
-	private final IndicatorSignalId id;
-
-	/** Required number of data points required for RSI calculation. */
-	private final int minimumNumberOfPrices;
 
 	/**
 	 * @param lookback the number of data points to use in calculations.
@@ -65,22 +57,8 @@ public class RelativeStrengthIndexSignals extends IndicatorSignalsBase<RelativeS
 	public RelativeStrengthIndexSignals( final IndicatorSignalId id, final int lookback,
 	        final RelativeStrengthIndex rsi, final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators,
 	        final SignalRangeFilter filter ) {
-		super(signalCalculators, filter);
-		this.minimumNumberOfPrices = lookback + MINIMUM_DAYS_OF_RSI_VALUES;
+		super(id, lookback + MINIMUM_DAYS_OF_RSI_VALUES, signalCalculators, filter);
 		this.rsi = rsi;
-		this.id = id;
-
-		//TODO validate there's at least one signal calculator 
-	}
-
-	@Override
-	public int getRequiredNumberOfTradingDays() {
-		return minimumNumberOfPrices;
-	}
-
-	@Override
-	public IndicatorSignalId getSignalType() {
-		return id;
 	}
 
 	@Override
