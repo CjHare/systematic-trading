@@ -27,9 +27,10 @@ package com.systematic.trading.maths.indicator.rs;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import com.systematic.trading.collection.NonNullableArrayList;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.maths.indicator.Validator;
@@ -59,6 +60,12 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
+	/** Look back as a BigDecimal. */
+	private final BigDecimal history;
+
+	/** Look back minus one as a BigDecimal. */
+	private final BigDecimal archive;
+
 	/**
 	 * @param lookback the number of days to use when calculating the RS.
 	 * @param validator validates and parses input.
@@ -67,35 +74,31 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 	public RelativeStrengthCalculator( final int lookback, final Validator validator ) {
 		this.validator = validator;
 		this.lookback = lookback;
+		this.archive = BigDecimal.valueOf(lookback - 1L);
+		this.history = BigDecimal.valueOf(lookback);
 	}
 
 	@Override
-	public List<RelativeStrengthDataPoint> rs( final TradingDayPrices[] data ) {
+	public RelativeStrengthLine rs( final TradingDayPrices[] data ) {
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, lookback);
 
-		final int startWindupIndex = 0;
-		final int endWindupIndex = startWindupIndex + lookback;
-
-		final UpwardsToDownwardsMovement initialLookback = calculateWindup(data, startWindupIndex, endWindupIndex);
-
-		return calculateRelativeStrengthValues(data, initialLookback, endWindupIndex);
+		return rs(data, windup(data));
 	}
 
 	/**
 	 * For the first zero - time period entries calculate the SMA based on up to down movement to use as the first RS value.
 	 */
-	private UpwardsToDownwardsMovement calculateWindup( final TradingDayPrices[] data, final int startWindupIndex,
-	        final int endWindupIndex ) {
-
-		ClosingPrice closeToday;
-		ClosingPrice closeYesterday = data[startWindupIndex].getClosingPrice();
+	private UpwardsToDownwardsMovement windup( final TradingDayPrices[] data ) {
 
 		// Calculate the starting values via SMA
 		final UpwardsToDownwardsMovement initialLookback = new UpwardsToDownwardsMovement(MATH_CONTEXT);
 
-		for (int i = startWindupIndex; i < endWindupIndex; i++) {
+		ClosingPrice closeYesterday = data[0].getClosingPrice();
+		ClosingPrice closeToday;
+
+		for (int i = 1; i < lookback; i++) {
 			closeToday = data[i].getClosingPrice();
 
 			switch (closeToday.compareTo(closeYesterday)) {
@@ -120,8 +123,8 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 		}
 
 		// Dividing by the number of time periods for a SMA
-		initialLookback.divideUpwards(BigDecimal.valueOf(lookback));
-		initialLookback.divideDownwards(BigDecimal.valueOf(lookback));
+		initialLookback.divideUpwards(history);
+		initialLookback.divideDownwards(history);
 
 		return initialLookback;
 	}
@@ -132,23 +135,18 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 	 * 	Average Gain = [(previous Average Gain) x archive + current Gain] / lookback.
 	 * 	Average Loss = [(previous Average Loss) x archive + current Loss] / lookback.
 	 */
-	private List<RelativeStrengthDataPoint> calculateRelativeStrengthValues( final TradingDayPrices[] data,
-	        final UpwardsToDownwardsMovement initialLookback, final int endWindupIndex ) {
-
-		final BigDecimal archive = BigDecimal.valueOf(lookback - 1L);
-		final BigDecimal history = BigDecimal.valueOf(lookback);
+	private RelativeStrengthLine rs( final TradingDayPrices[] data, final UpwardsToDownwardsMovement initialLookback ) {
 		BigDecimal upward = initialLookback.getUpward();
 		BigDecimal downward = initialLookback.getDownward();
-		BigDecimal currentGain = BigDecimal.ZERO;
-		BigDecimal currentLoss = BigDecimal.ZERO;
+		BigDecimal currentGain;
+		BigDecimal currentLoss;
 		BigDecimal relativeStrength;
 		ClosingPrice closeToday;
 		ClosingPrice closeYesterday;
 
-		final List<RelativeStrengthDataPoint> relativeStrengthValues = new NonNullableArrayList<>(
-		        data.length - endWindupIndex);
+		final SortedMap<LocalDate, BigDecimal> rsLine = new TreeMap<>();
 
-		for (int i = endWindupIndex; i < data.length; i++) {
+		for (int i = lookback; i < data.length; i++) {
 
 			closeToday = data[i].getClosingPrice();
 			closeYesterday = data[i - 1].getClosingPrice();
@@ -176,7 +174,6 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 			 * Wilder originally formulated the calculation of the moving average as: newval = (prevval * (period - 1) + newdata) / period. 
 			 * This is fully equivalent to the exponential smoothing of a n-period smoothed moving average (SMMA). 
 			 */
-
 			upward = upward.multiply(archive, MATH_CONTEXT).add(currentGain, MATH_CONTEXT).divide(history,
 			        MATH_CONTEXT);
 			downward = downward.multiply(archive, MATH_CONTEXT).add(currentLoss, MATH_CONTEXT).divide(history,
@@ -189,10 +186,10 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 				relativeStrength = upward.divide(downward, MATH_CONTEXT);
 			}
 
-			relativeStrengthValues.add(new RelativeStrengthDataPoint(data[i].getDate(), relativeStrength));
+			rsLine.put(data[i].getDate(), relativeStrength);
 		}
 
-		return relativeStrengthValues;
+		return new RelativeStrengthLine(rsLine);
 	}
 
 	private boolean isZeroOrBelow( final BigDecimal value ) {

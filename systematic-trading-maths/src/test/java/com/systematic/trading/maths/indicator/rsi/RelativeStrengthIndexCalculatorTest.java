@@ -36,8 +36,8 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ import org.mockito.stubbing.OngoingStubbing;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.rs.RelativeStrength;
-import com.systematic.trading.maths.indicator.rs.RelativeStrengthDataPoint;
+import com.systematic.trading.maths.indicator.rs.RelativeStrengthLine;
 
 /**
  * Verifies the behaviour of RelativeStrengthIndexCalculator.
@@ -69,7 +69,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 	@Test
 	public void rsi() {
-		final List<RelativeStrengthDataPoint> rsData = createIncreasingRelativeStrengthValues(5);
+		final RelativeStrengthLine rsData = createIncreasingRelativeStrengthValues(5);
 		setUpCalculator(rsData);
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
 
@@ -81,7 +81,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 	@Test
 	public void rsiExample() {
-		final List<RelativeStrengthDataPoint> rsData = createExampleRelativeStrengthValues();
+		final RelativeStrengthLine rsData = createExampleRelativeStrengthValues();
 		setUpCalculator(rsData);
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
 
@@ -117,11 +117,11 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	@SafeVarargs
-	private final void setUpCalculator( final List<RelativeStrengthDataPoint>... rsData ) {
+	private final void setUpCalculator( final RelativeStrengthLine... rsData ) {
 		if (rsData.length > 0) {
-			OngoingStubbing<List<RelativeStrengthDataPoint>> rsResponses = when(
+			OngoingStubbing<RelativeStrengthLine> rsResponses = when(
 			        relativeStrength.rs(any(TradingDayPrices[].class)));
-			for (final List<RelativeStrengthDataPoint> rs : rsData) {
+			for (final RelativeStrengthLine rs : rsData) {
 				rsResponses = rsResponses.thenReturn(rs);
 			}
 		}
@@ -152,30 +152,29 @@ public class RelativeStrengthIndexCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
-	private List<RelativeStrengthDataPoint> createIncreasingRelativeStrengthValues( final int count ) {
-		final List<RelativeStrengthDataPoint> data = new ArrayList<>(count);
+	private RelativeStrengthLine createIncreasingRelativeStrengthValues( final int count ) {
+		final SortedMap<LocalDate, BigDecimal> rs = new TreeMap<>();
 
 		for (int i = 0; i < count; i++) {
-			data.add(new RelativeStrengthDataPoint(LocalDate.now().plus(i, ChronoUnit.DAYS),
-			        BigDecimal.valueOf(i + 2.05)));
+			rs.put(LocalDate.now().plus(i, ChronoUnit.DAYS), BigDecimal.valueOf(i + 2.05));
 		}
 
-		return data;
+		return new RelativeStrengthLine(rs);
 	}
 
 	/**
 	 * Values taken from example on chart school site
 	 */
-	private List<RelativeStrengthDataPoint> createExampleRelativeStrengthValues() {
+	private RelativeStrengthLine createExampleRelativeStrengthValues() {
 		final double[] exampleData = { 2.3936, 1.9690, 1.9895, 2.2686, 1.9722, 1.3795, 1.6976, 1.7216, 1.2758, 1.6580,
 		        1.2079, 1.0171, 0.6664, 0.7082, 0.7203, 0.8336, 0.5950, 0.4943, 0.6070 };
-		final List<RelativeStrengthDataPoint> data = new ArrayList<>(exampleData.length);
+
+		final SortedMap<LocalDate, BigDecimal> rs = new TreeMap<>();
 
 		for (int i = 0; i < exampleData.length; i++) {
-			data.add(new RelativeStrengthDataPoint(LocalDate.now().plus(i, ChronoUnit.DAYS),
-			        BigDecimal.valueOf(exampleData[i])));
+			rs.put(LocalDate.now().plus(i, ChronoUnit.DAYS), BigDecimal.valueOf(exampleData[i]));
 		}
 
-		return data;
+		return new RelativeStrengthLine(rs);
 	}
 }

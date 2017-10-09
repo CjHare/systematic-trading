@@ -33,8 +33,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,8 +42,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
-import com.systematic.trading.maths.indicator.rs.RelativeStrengthCalculator;
-import com.systematic.trading.maths.indicator.rs.RelativeStrengthDataPoint;
 import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
@@ -58,195 +55,164 @@ public class RelativeStrengthCalculatorTest {
 	@Mock
 	private Validator validator;
 
+	/** Calculator instance being tested. */
+	private RelativeStrengthCalculator calculator;
+
 	@Test
 	public void rsiExample() {
-		final TradingDayPrices[] data = createExamplePrices();
 		final int lookback = 14;
-		final int daysOfRsiValues = data.length - lookback;
+		final TradingDayPrices[] data = createExamplePrices();
+		setUpCalculator(lookback);
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
+		final RelativeStrengthLine rs = rs(data);
 
-		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
-
-		assertNotNull(rsi);
-		assertEquals(daysOfRsiValues, rsi.size());
-		assertValuesTwoDecimalPlaces(new double[] { 2.39, 1.94, 1.96, 2.26, 1.95, 1.34, 1.67, 1.70, 1.25, 1.64, 1.18,
-		        0.99, 0.65, 0.69, 0.7, 0.82, 0.58, 0.48, 0.6 },
-		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
+		verifyRs(rs, 2.39, 1.94, 1.96, 2.26, 1.95, 1.34, 1.67, 1.70, 1.25, 1.64, 1.18, 0.99, 0.65, 0.69, 0.7, 0.82,
+		        0.58, 0.48, 0.6);
+		verifyValidation(data, lookback);
 	}
 
 	@Test
 	public void rsiFlat() {
-		final int dataSize = 8;
-		final TradingDayPrices[] data = createPrices(dataSize);
 		final int lookback = 4;
-		final int daysOfRsiValues = dataSize - lookback;
+		final TradingDayPrices[] data = createPrices(8);
+		setUpCalculator(lookback);
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
+		final RelativeStrengthLine rs = rs(data);
 
-		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
-
-		assertNotNull(rsi);
-		assertEquals(daysOfRsiValues, rsi.size());
-		assertValuesTwoDecimalPlaces(new double[] { 0, 0, 0, 0 },
-		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
+		verifyRs(rs, 0, 0, 0, 0);
+		verifyValidation(data, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void startingWithNullDataPoint() {
-		final int dataSize = 8;
-		final TradingDayPrices[] data = createPrices(dataSize);
+		final TradingDayPrices[] data = createPrices(8);
 		data[0] = null;
+		setUpValidationErrorNullEntries();
+		setUpCalculator(4);
 
-		final int lookback = 4;
-
-		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
-
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
-
-		calculator.rs(data);
+		rs(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void endingWithNullDataPoint() {
-		final int dataSize = 8;
-		final TradingDayPrices[] data = createPrices(dataSize);
+		final TradingDayPrices[] data = createPrices(8);
 		data[data.length - 1] = null;
+		setUpValidationErrorNullEntries();
+		setUpCalculator(4);
 
-		final int lookback = 4;
-
-		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
-
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
-
-		calculator.rs(data);
+		rs(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughDataPoints() {
-		final int dataSize = 8;
-		final int lookback = 4;
-		final TradingDayPrices[] data = createPrices(dataSize);
+		final TradingDayPrices[] data = createPrices(8);
+		setUpValidationErrorEnoughValues();
+		setUpCalculator(4);
 
-		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
-		        anyInt());
-
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
-
-		calculator.rs(data);
+		rs(data);
 	}
 
 	@Test
 	public void rsiIncreasing() {
-		final int dataSize = 8;
-		final TradingDayPrices[] data = createIncreasingPrices(dataSize);
-
 		final int lookback = 4;
-		final int daysOfRsiValues = dataSize - lookback;
+		final TradingDayPrices[] data = createIncreasingPrices(8);
+		setUpCalculator(lookback);
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
+		final RelativeStrengthLine rs = rs(data);
 
-		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
-
-		assertNotNull(rsi);
-		assertEquals(daysOfRsiValues, rsi.size());
-		assertValuesTwoDecimalPlaces(new double[] { 0.81, 0.86, 0.89, 0.92 },
-		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
-
-		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, dataSize - lookback);
+		verifyRs(rs, 0.81, 0.86, 0.89, 0.92);
+		verifyValidation(data, lookback);
 	}
 
 	@Test
 	public void rsiDecreasing() {
-		final int dataSize = 8;
-		final TradingDayPrices[] data = createDecreasingPrices(dataSize);
-
 		final int lookback = 4;
-		final int daysOfRsiValues = dataSize - lookback;
+		final TradingDayPrices[] data = createDecreasingPrices(8);
+		setUpCalculator(lookback);
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
+		final RelativeStrengthLine rs = rs(data);
 
-		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
-
-		assertNotNull(rsi);
-		assertEquals(daysOfRsiValues, rsi.size());
-		assertValuesTwoDecimalPlaces(new double[] { 0, 0, 0, 0 },
-		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
-
-		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, dataSize - lookback);
+		verifyRs(rs, 0, 0, 0, 0);
+		verifyValidation(data, lookback);
 	}
 
 	@Test
 	public void rsiIncreasingThenDecreasing() {
 		final int dataSize = 8;
-
-		final TradingDayPrices[] dataIncreasing = createIncreasingPrices(dataSize);
-		final TradingDayPrices[] dataDecreasing = createDecreasingPrices(dataSize);
-
-		final TradingDayPrices[] data = new TradingDayPrices[dataSize * 2];
-		for (int i = 0; i < dataIncreasing.length; i++) {
-			data[i] = dataIncreasing[i];
-		}
-		for (int i = 0; i < dataDecreasing.length; i++) {
-			data[dataSize + i] = dataDecreasing[i];
-		}
-
 		final int lookback = 4;
+		setUpCalculator(lookback);
+		final TradingDayPrices[] dataIncreasing = createIncreasingPrices(dataSize);
+		final TradingDayPrices[] dataDecreasing = createDecreasingPrices(dataSize, dataSize);
+		final TradingDayPrices[] data = merge(dataIncreasing, dataDecreasing);
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
+		final RelativeStrengthLine rs = rs(data);
 
-		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
-
-		assertNotNull(rsi);
-		assertEquals(2 * dataSize - lookback, rsi.size());
-		assertValuesTwoDecimalPlaces(
-		        new double[] { 0.81, 0.86, 0.89, 0.92, 2.94, 8.82, 3.78, 2.15, 1.36, 0.91, 0.64, 0.45 },
-		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
-
-		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, dataSize - lookback);
+		verifyRs(rs, 0.81, 0.86, 0.89, 0.92, 2.94, 8.82, 3.78, 2.15, 1.36, 0.91, 0.64, 0.45);
+		verifyValidation(data, lookback);
 	}
 
 	@Test
 	public void rsiDecreasingThenIncreasing() {
 		final int dataSize = 8;
-
-		final TradingDayPrices[] dataIncreasing = createIncreasingPrices(dataSize);
-		final TradingDayPrices[] dataDecreasing = createDecreasingPrices(dataSize);
-
-		final TradingDayPrices[] data = new TradingDayPrices[dataSize * 2];
-		for (int i = 0; i < dataDecreasing.length; i++) {
-			data[i] = dataDecreasing[i];
-		}
-		for (int i = 0; i < dataIncreasing.length; i++) {
-			data[dataSize + i] = dataIncreasing[i];
-		}
-
 		final int lookback = 4;
+		final TradingDayPrices[] dataDecreasing = createDecreasingPrices(dataSize);
+		final TradingDayPrices[] dataIncreasing = createIncreasingPrices(dataSize, dataSize);
+		final TradingDayPrices[] data = merge(dataDecreasing, dataIncreasing);
+		setUpCalculator(lookback);
 
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(lookback, validator);
+		final RelativeStrengthLine rs = rs(data);
 
-		final List<RelativeStrengthDataPoint> rsi = calculator.rs(data);
-
-		assertNotNull(rsi);
-		assertEquals(2 * dataSize - lookback, rsi.size());
-		assertValuesTwoDecimalPlaces(
-		        new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.11, 0.26, 0.47, 0.73, 1.09, 1.57, 2.21 },
-		        rsi.stream().map(p -> p.getValue()).collect(Collectors.toList()));
-
-		verify(validator).verifyZeroNullEntries(data);
-		verify(validator).verifyEnoughValues(data, dataSize - lookback);
+		verifyRs(rs, 0.00, 0.00, 0.00, 0.00, 0.00, 0.11, 0.26, 0.47, 0.73, 1.09, 1.57, 2.21);
+		verifyValidation(data, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void macdNullInput() {
 		setUpValidationErrorNullInput();
-
-		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(1, validator);
+		setUpCalculator(1);
 
 		calculator.rs(null);
+	}
+
+	private TradingDayPrices[] merge( final TradingDayPrices[] left, final TradingDayPrices[] right ) {
+		final TradingDayPrices[] data = new TradingDayPrices[left.length + right.length];
+		for (int i = 0; i < left.length; i++) {
+			data[i] = left[i];
+		}
+		for (int i = 0; i < right.length; i++) {
+			data[left.length + i] = right[i];
+		}
+
+		return data;
+	}
+
+	private RelativeStrengthLine rs( final TradingDayPrices[] data ) {
+		return calculator.rs(data);
+	}
+
+	private void setUpValidationErrorEnoughValues() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
+		        anyInt());
+	}
+
+	private void setUpValidationErrorNullEntries() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
+	}
+
+	private void setUpCalculator( final int lookback ) {
+		calculator = new RelativeStrengthCalculator(lookback, validator);
+	}
+
+	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
+		verify(validator).verifyZeroNullEntries(data);
+		verify(validator).verifyEnoughValues(data, lookback);
+	}
+
+	private void verifyRs( final RelativeStrengthLine rsi, final double... expected ) {
+		assertNotNull(rsi);
+		assertNotNull(rsi.getRs());
+		assertEquals(expected.length, rsi.getRs().size());
+		assertValuesTwoDecimalPlaces(expected, rsi.getRs());
 	}
 
 	private void setUpValidationErrorNullInput() {
@@ -257,32 +223,41 @@ public class RelativeStrengthCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(1).withLowestPrice(0).withHighestPrice(2)
-			        .withClosingPrice(1).build();
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i)).withOpeningPrice(1)
+			        .withLowestPrice(0).withHighestPrice(2).withClosingPrice(1).build();
 		}
 
 		return prices;
 	}
 
 	private TradingDayPrices[] createIncreasingPrices( final int count ) {
+		return createIncreasingPrices(count, 0);
+	}
+
+	private TradingDayPrices[] createIncreasingPrices( final int count, final int dateOffset ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(i + 1).withLowestPrice(i).withHighestPrice(i + 2)
-			        .withClosingPrice(i + 1).build();
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i + dateOffset))
+			        .withOpeningPrice(i + 1).withLowestPrice(i).withHighestPrice(i + 2).withClosingPrice(i + 1).build();
 		}
 
 		return prices;
 	}
 
 	private TradingDayPrices[] createDecreasingPrices( final int count ) {
+		return createDecreasingPrices(count, 0);
+	}
+
+	private TradingDayPrices[] createDecreasingPrices( final int count, final int dateOffset ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		final int base = count * 2;
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(base - i + 1).withLowestPrice(base + i)
-			        .withHighestPrice(base + i + 2).withClosingPrice(base - i + 1).build();
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i + dateOffset))
+			        .withOpeningPrice(base - i + 1).withLowestPrice(base + i).withHighestPrice(base + i + 2)
+			        .withClosingPrice(base - i + 1).build();
 		}
 
 		return prices;
@@ -299,8 +274,8 @@ public class RelativeStrengthCalculatorTest {
 		final TradingDayPrices[] prices = new TradingDayPrices[exampleCloseValues.length];
 
 		for (int i = 0; i < prices.length; i++) {
-			prices[i] = new TradingDayPricesBuilder().withOpeningPrice(0).withLowestPrice(0).withHighestPrice(0)
-			        .withClosingPrice(exampleCloseValues[i]).build();
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i)).withOpeningPrice(0)
+			        .withLowestPrice(0).withHighestPrice(0).withClosingPrice(exampleCloseValues[i]).build();
 		}
 
 		return prices;

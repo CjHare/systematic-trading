@@ -25,8 +25,6 @@
  */
 package com.systematic.trading.maths.indicator.rs;
 
-import java.util.List;
-
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
@@ -44,5 +42,5 @@ public interface RelativeStrength {
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return relative strength index values.
 	 */
-	public List<RelativeStrengthDataPoint> rs( TradingDayPrices[] data );
+	public RelativeStrengthLine rs( TradingDayPrices[] data );
 }
