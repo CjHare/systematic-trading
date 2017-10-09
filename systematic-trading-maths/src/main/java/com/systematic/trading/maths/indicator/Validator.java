@@ -35,7 +35,7 @@ import java.util.Collection;
 public interface Validator {
 
 	/**
-	 * Verify the value is greater then expected.
+	 * Verify the value meets the minimum expected.
 	 * 
 	 * @param minimum actual  must be larger then this value.
 	 * @param actual value being evaluated.

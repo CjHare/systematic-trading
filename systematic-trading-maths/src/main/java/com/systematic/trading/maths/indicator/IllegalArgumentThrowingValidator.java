@@ -40,7 +40,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	@Override
 	public void verifyGreaterThan( final int minimum, final int actual ) {
-		if (actual <= minimum) {
+		if (actual < minimum) {
 			throw new IllegalArgumentException(String.format(MESSAGE_GREATER_THEN, minimum, actual));
 		}
 	}

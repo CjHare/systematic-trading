@@ -51,7 +51,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		verifyGreaterThan(1, 2);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void verifyGreaterThanEquals() {
 		verifyGreaterThan(5, 5);
 	}
