@@ -35,6 +35,14 @@ import java.util.Collection;
 public interface Validator {
 
 	/**
+	 * Verify the value is greater then expected.
+	 * 
+	 * @param expected value expected.
+	 * @param actual value being evaluated.
+	 */
+	void verifyGreaterThen( int expected, int actual );
+
+	/**
 	 * Verifies the instance refers to an actual object, not the null reference.
 	 * 
 	 * @param instnace what is being verified as not null.

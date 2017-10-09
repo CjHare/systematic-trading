@@ -36,6 +36,14 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	private static final String MESSAGE_NULL_INPUT = "Unexpected null input has been given";
 	private static final String MESSAGE_NULL_VALUE = "Unexpected null value contained in given input: %s";
+	private static final String MESSAGE_GREATER_THEN = "Expected value: %s, actual value: %s";
+
+	@Override
+	public void verifyGreaterThen( final int expected, final int actual ) {
+		if (actual <= expected) {
+			throw new IllegalArgumentException(String.format(MESSAGE_GREATER_THEN, expected, actual));
+		}
+	}
 
 	@Override
 	public void verifyNotNull( Object instance ) {

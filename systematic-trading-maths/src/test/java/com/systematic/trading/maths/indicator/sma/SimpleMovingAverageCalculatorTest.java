@@ -72,7 +72,7 @@ public class SimpleMovingAverageCalculatorTest {
 		final SimpleMovingAverageLine sma = sma(data);
 
 		verifySma(sma, new double[] { 1, 1, 1, 1 });
-		verifyValidation(data, numberDataPoints);
+		verifyValidation(data, numberDataPoints, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -124,7 +124,7 @@ public class SimpleMovingAverageCalculatorTest {
 		final SimpleMovingAverageLine sma = sma(data);
 
 		verifySma(sma, new double[] { 1.5, 2.5, 3.5, 4.5, 5.5 });
-		verifyValidation(data, numberDataPoints);
+		verifyValidation(data, numberDataPoints, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -141,7 +141,8 @@ public class SimpleMovingAverageCalculatorTest {
 		assertValues(expected, sma.getSma());
 	}
 
-	private void verifyValidation( final TradingDayPrices[] data, final int numberDataPoints ) {
+	private void verifyValidation( final TradingDayPrices[] data, final int numberDataPoints, final int lookback ) {
+		verify(validator).verifyGreaterThen(1, lookback);
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, numberDataPoints);

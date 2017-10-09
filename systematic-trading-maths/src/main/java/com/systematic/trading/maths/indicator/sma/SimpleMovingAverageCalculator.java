@@ -67,6 +67,8 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 		this.daysOfSmaValues = daysOfSmaValues;
 		this.validator = validator;
 		this.lookback = lookback;
+
+		validator.verifyGreaterThen(1, lookback);
 	}
 
 	@Override

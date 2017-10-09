@@ -65,8 +65,8 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyValidation(data, lookback);
 		verifyAtr(atr, 2, 2, 2);
+		verifyValidation(data, lookback);
 	}
 
 	@Test
@@ -77,8 +77,8 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyValidation(data, lookback);
 		verifyAtr(atr, 5, 6.25, 8.44, 11.33, 14.75);
+		verifyValidation(data, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -111,8 +111,8 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = calculator.atr(data);
 
-		verifyValidation(data, lookback);
 		verifyAtr(atr, 5, 6.25, 8.44, 12.33, 18);
+		verifyValidation(data, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -137,6 +137,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
+		verify(validator).verifyGreaterThen(1, lookback);
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, lookback);

@@ -190,12 +190,14 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	private void verifyValidation( final SortedMap<LocalDate, BigDecimal> data, final int lookback ) {
+		verify(validator).verifyGreaterThen(1, lookback);
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyEnoughValues(data.values(), lookback);
 		verify(validator).verifyZeroNullEntries(data.values());
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
+		verify(validator).verifyGreaterThen(1, lookback);
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyEnoughValues(data, lookback);
 		verify(validator).verifyZeroNullEntries(data);
