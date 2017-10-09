@@ -142,6 +142,7 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int numberDataPoints ) {
+		verify(validator).verifyNotNull(data);
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, numberDataPoints);
 	}

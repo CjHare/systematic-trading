@@ -137,6 +137,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
+		verify(validator).verifyNotNull(data);
 		verify(validator).verifyZeroNullEntries(data);
 		verify(validator).verifyEnoughValues(data, lookback);
 	}

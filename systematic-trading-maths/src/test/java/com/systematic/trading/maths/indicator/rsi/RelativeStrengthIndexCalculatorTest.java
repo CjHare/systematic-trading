@@ -71,25 +71,27 @@ public class RelativeStrengthIndexCalculatorTest {
 	public void rsi() {
 		final RelativeStrengthLine rsData = createIncreasingRelativeStrengthValues(5);
 		setUpCalculator(rsData);
-		final TradingDayPrices[] prices = new TradingDayPrices[] {};
+		final TradingDayPrices[] data = new TradingDayPrices[] {};
 
-		final RelativeStrengthIndexLine rsi = rsi(prices);
+		final RelativeStrengthIndexLine rsi = rsi(data);
 
 		verifyRsi(rsi, 67.21, 75.31, 80.20, 83.47, 85.82);
-		verifyRs(prices);
+		verifyRs(data);
+		verifyValidation(data);
 	}
 
 	@Test
 	public void rsiExample() {
 		final RelativeStrengthLine rsData = createExampleRelativeStrengthValues();
 		setUpCalculator(rsData);
-		final TradingDayPrices[] prices = new TradingDayPrices[] {};
+		final TradingDayPrices[] data = new TradingDayPrices[] {};
 
-		final RelativeStrengthIndexLine rsi = rsi(prices);
+		final RelativeStrengthIndexLine rsi = rsi(data);
 
 		verifyRsi(rsi, 70.53, 66.32, 66.55, 69.41, 66.35, 57.97, 62.93, 63.26, 56.06, 62.38, 54.71, 50.42, 39.99, 41.46,
 		        41.87, 45.46, 37.30, 33.08, 37.77);
-		verifyRs(prices);
+		verifyRs(data);
+		verifyValidation(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -127,6 +129,12 @@ public class RelativeStrengthIndexCalculatorTest {
 		}
 
 		calculator = new RelativeStrengthIndexCalculator(relativeStrength, validator);
+	}
+
+	private void verifyValidation( final TradingDayPrices[] data ) {
+		verify(validator).verifyNotNull(data);
+		verify(validator).verifyEnoughValues(data, 1);
+		verify(validator).verifyZeroNullEntries(data);
 	}
 
 	private void verifyRsi( final RelativeStrengthIndexLine rsi, final double... expected ) {

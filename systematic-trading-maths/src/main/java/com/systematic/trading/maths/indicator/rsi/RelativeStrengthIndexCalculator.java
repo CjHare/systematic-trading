@@ -68,6 +68,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	public RelativeStrengthIndexLine rsi( final TradingDayPrices[] data ) {
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
+		validator.verifyEnoughValues(data, 1);
 
 		final RelativeStrengthLine rsLine = rs.rs(data);
 		final SortedMap<LocalDate, BigDecimal> rsi = new TreeMap<>();

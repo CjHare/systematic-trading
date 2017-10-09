@@ -111,47 +111,50 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Test
 	public void macd() {
-		final TradingDayPrices[] dataSet = createPrices(5);
+		final TradingDayPrices[] data = createPrices(5);
 		final SortedMap<LocalDate, BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
 		final SortedMap<LocalDate, BigDecimal> macdValues = asBigDecimal(-2.3, -1.4, -2.5, -1.0, 0.25);
 		setUpFastEma(1, 3, 3, 5, 6.25);
 		setUpSlowEma(SLOW_EMA_OFFSET, 1.1, 2.2, 3.3, 4.4, 5.5, 6, 6);
 		setUpSignalEma(signalLine);
 
-		final MovingAverageConvergenceDivergenceLines lines = macd(dataSet);
+		final MovingAverageConvergenceDivergenceLines lines = macd(data);
 
 		verifyMacdLines(lines, macdValues, signalLine);
-		verfiyEmaCalls(dataSet, macdValues);
+		verfiyEmaCalls(data, macdValues);
+		verifyValidation(data);
 	}
 
 	@Test
 	public void macdSameSizeFastSlowEma() {
-		final TradingDayPrices[] dataSet = createPrices(5);
+		final TradingDayPrices[] data = createPrices(5);
 		final SortedMap<LocalDate, BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
 		final SortedMap<LocalDate, BigDecimal> macdValues = asBigDecimal(-0.1, 0.8, -0.3, 0.6, 0.75);
 		setUpFastEma(1, 3, 3, 5, 6.25);
 		setUpSlowEma(NO_SLOW_EMA_OFFSET, 1.1, 2.2, 3.3, 4.4, 5.5);
 		setUpSignalEma(signalLine);
 
-		final MovingAverageConvergenceDivergenceLines lines = macd(dataSet);
+		final MovingAverageConvergenceDivergenceLines lines = macd(data);
 
 		verifyMacdLines(lines, macdValues, signalLine);
-		verfiyEmaCalls(dataSet, macdValues);
+		verfiyEmaCalls(data, macdValues);
+		verifyValidation(data);
 	}
 
 	@Test
 	public void macdSameLargerFastSlowEma() {
-		final TradingDayPrices[] dataSet = createPrices(5);
+		final TradingDayPrices[] data = createPrices(5);
 		final SortedMap<LocalDate, BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
 		final SortedMap<LocalDate, BigDecimal> macdValues = asBigDecimal(-0.1, 0.8, -0.3, 0.6, 0.75);
 		setUpFastEma(1, 3, 3, 5, 6.25, 7);
 		setUpSlowEma(NO_SLOW_EMA_OFFSET, 1.1, 2.2, 3.3, 4.4, 5.5);
 		setUpSignalEma(signalLine);
 
-		final MovingAverageConvergenceDivergenceLines lines = macd(dataSet);
+		final MovingAverageConvergenceDivergenceLines lines = macd(data);
 
 		verifyMacdLines(lines, macdValues, signalLine);
-		verfiyEmaCalls(dataSet, macdValues);
+		verfiyEmaCalls(data, macdValues);
+		verifyValidation(data);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -159,6 +162,12 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		setUpValidationErrorNullInput();
 
 		macd(null);
+	}
+
+	private void verifyValidation( final TradingDayPrices[] data ) {
+		verify(validator).verifyNotNull(data);
+		verify(validator).verifyEnoughValues(data, 1);
+		verify(validator).verifyZeroNullEntries(data);
 	}
 
 	private MovingAverageConvergenceDivergenceLines macd( final TradingDayPrices[] dataSet ) {
