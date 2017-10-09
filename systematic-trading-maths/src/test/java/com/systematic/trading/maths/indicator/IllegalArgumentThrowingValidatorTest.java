@@ -255,6 +255,7 @@ public class IllegalArgumentThrowingValidatorTest {
 		validator.verifyZeroNullEntries(data);
 	}
 
+	@Test
 	public void verifyNotNull() {
 		final IllegalArgumentThrowingValidator validator = new IllegalArgumentThrowingValidator();
 
