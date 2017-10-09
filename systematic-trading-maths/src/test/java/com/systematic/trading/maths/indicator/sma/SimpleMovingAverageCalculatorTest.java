@@ -71,7 +71,7 @@ public class SimpleMovingAverageCalculatorTest {
 
 		final SimpleMovingAverageLine sma = sma(data);
 
-		verifySma(sma);
+		verifySma(sma, new double[] { 1, 1, 1, 1 });
 		verifyValidation(data, numberDataPoints);
 	}
 
@@ -123,7 +123,7 @@ public class SimpleMovingAverageCalculatorTest {
 
 		final SimpleMovingAverageLine sma = sma(data);
 
-		verifySma(sma);
+		verifySma(sma, new double[] { 1.5, 2.5, 3.5, 4.5, 5.5 });
 		verifyValidation(data, numberDataPoints);
 	}
 
@@ -135,10 +135,10 @@ public class SimpleMovingAverageCalculatorTest {
 		sma(null);
 	}
 
-	private void verifySma( final SimpleMovingAverageLine sma ) {
+	private void verifySma( final SimpleMovingAverageLine sma, final double... expected ) {
 		assertNotNull(sma);
 		assertNotNull(sma.getSma());
-		assertValues(new double[] { 1, 1, 1, 1 }, sma.getSma());
+		assertValues(expected, sma.getSma());
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int numberDataPoints ) {
