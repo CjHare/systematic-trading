@@ -45,10 +45,11 @@ public class Networth {
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
-	private BigDecimal networth = BigDecimal.ZERO;
+	/** Running total of net worth. */
+	private BigDecimal totalNetworth = BigDecimal.ZERO;
 
 	public void add( final BigDecimal value ) {
-		networth = networth.add(value, MATH_CONTEXT);
+		totalNetworth = totalNetworth.add(value, MATH_CONTEXT);
 	}
 
 	/**
@@ -62,11 +63,11 @@ public class Networth {
 	}
 
 	public void reset() {
-		networth = BigDecimal.ZERO;
+		totalNetworth = BigDecimal.ZERO;
 	}
 
 	public BigDecimal get() {
-		return networth;
+		return totalNetworth;
 	}
 
 	/**
@@ -79,13 +80,13 @@ public class Networth {
 	public BigDecimal percentageChange( final Networth endNetworth, final Networth adjustment ) {
 
 		// Difference / previous worth
-		final BigDecimal absoluteChange = endNetworth.get().subtract(networth, MATH_CONTEXT).subtract(adjustment.get(),
-		        MATH_CONTEXT);
+		final BigDecimal absoluteChange = endNetworth.get().subtract(totalNetworth, MATH_CONTEXT)
+		        .subtract(adjustment.get(), MATH_CONTEXT);
 
 		if (BigDecimal.ZERO.compareTo(absoluteChange) == 0) {
 			return BigDecimal.ZERO;
 		}
 
-		return absoluteChange.divide(networth, MATH_CONTEXT).multiply(ONE_HUNDRED, MATH_CONTEXT);
+		return absoluteChange.divide(totalNetworth, MATH_CONTEXT).multiply(ONE_HUNDRED, MATH_CONTEXT);
 	}
 }
