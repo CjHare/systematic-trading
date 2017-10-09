@@ -67,7 +67,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 		this.lookbackDivider = BigDecimal.valueOf(lookback);
 		this.validator = validator;
 		
-		validator.verifyGreaterThen(1, lookback);
+		validator.verifyGreaterThan(1, lookback);
 	}
 
 	/**

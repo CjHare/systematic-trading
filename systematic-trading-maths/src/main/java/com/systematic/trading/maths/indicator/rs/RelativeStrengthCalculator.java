@@ -77,7 +77,7 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 		this.archive = BigDecimal.valueOf(lookback - 1L);
 		this.history = BigDecimal.valueOf(lookback);
 
-		validator.verifyGreaterThen(1, lookback);
+		validator.verifyGreaterThan(1, lookback);
 	}
 
 	@Override

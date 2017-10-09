@@ -37,10 +37,10 @@ public interface Validator {
 	/**
 	 * Verify the value is greater then expected.
 	 * 
-	 * @param expected value expected.
+	 * @param minimum actual  must be larger then this value.
 	 * @param actual value being evaluated.
 	 */
-	void verifyGreaterThen( int expected, int actual );
+	void verifyGreaterThan( int minimum, int actual );
 
 	/**
 	 * Verifies the instance refers to an actual object, not the null reference.

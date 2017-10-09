@@ -47,6 +47,21 @@ public class IllegalArgumentThrowingValidatorTest {
 	}
 
 	@Test
+	public void verifyGreaterThan() {
+		verifyGreaterThan(1, 2);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void verifyGreaterThanEquals() {
+		verifyGreaterThan(5, 5);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void verifyGreaterThanSmaller() {
+		verifyGreaterThan(10, 9);
+	}
+
+	@Test
 	public void verifyEnoughValues() {
 		final List<String> data = createList("one", "two");
 
@@ -223,6 +238,10 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	private void verifyEnoughValues( final List<String> data, final int expectedNumberOfValues ) {
 		validator.verifyEnoughValues(data, expectedNumberOfValues);
+	}
+
+	private void verifyGreaterThan( final int minimum, final int actual ) {
+		validator.verifyGreaterThan(minimum, actual);
 	}
 
 	private List<String> createList( final String... values ) {
