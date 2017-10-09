@@ -140,6 +140,18 @@ public class SimpleMovingAverageCalculatorTest {
 		verify(validator).verifyEnoughValues(data, numberDataPoints);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void emaNullInput() {
+		setUpValidationErrorNullInput();
+		final SimpleMovingAverageCalculator calculator = new SimpleMovingAverageCalculator(1, 1, validator);
+
+		calculator.sma(null);
+	}
+
+	private void setUpValidationErrorNullInput() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
+	}
+
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 

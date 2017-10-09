@@ -67,7 +67,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	@Override
 	public RelativeStrengthIndexLine rsi( final TradingDayPrices[] data ) {
 		final List<RelativeStrengthDataPoint> relativeStrengthValues = rs.rs(data);
-		//TODO data != null
+		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 
 		final SortedMap<LocalDate, BigDecimal> rsi = new TreeMap<>();

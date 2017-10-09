@@ -124,7 +124,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	public void notEnoughDataPointsDecimal() {
 		final int lookback = 2;
 		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(1);
-		setUpValidationErrorEnougValues();
+		setUpValidationErrorEnoughValues();
 		setUpCalculator(lookback);
 
 		calculator.ema(data);
@@ -140,7 +140,29 @@ public class ExponentialMovingAverageCalculatorTest {
 		assertEquals(lookback, requiredDays);
 	}
 
-	private void setUpValidationErrorEnougValues() {
+	@Test(expected = IllegalArgumentException.class)
+	public void emaNullInputArray() {
+		setUpValidationErrorNullInput();
+		setUpCalculator(1);
+		final TradingDayPrices[] input = null;
+
+		calculator.ema(input);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void emaNullInput() {
+		setUpValidationErrorNullInput();
+		setUpCalculator(1);
+		final SortedMap<LocalDate, BigDecimal> input = null;
+
+		calculator.ema(input);
+	}
+
+	private void setUpValidationErrorNullInput() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
+	}
+
+	private void setUpValidationErrorEnoughValues() {
 		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(anyListOf(BigDecimal.class),
 		        anyInt());
 	}

@@ -66,7 +66,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 
 	@Override
 	public MovingAverageConvergenceDivergenceLines macd( final TradingDayPrices[] data ) {
-		//TODO data != null
+		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, 1);
 

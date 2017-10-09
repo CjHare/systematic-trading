@@ -71,7 +71,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 
 	@Override
 	public SimpleMovingAverageLine sma( final TradingDayPrices[] data ) {
-		//TODO data != null
+		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 

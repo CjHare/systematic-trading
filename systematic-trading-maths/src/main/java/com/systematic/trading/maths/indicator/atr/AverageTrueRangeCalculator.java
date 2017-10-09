@@ -106,7 +106,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 
 	@Override
 	public AverageTrueRangeLine atr( final TradingDayPrices[] data ) {
-		//TODO data != null
+		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 

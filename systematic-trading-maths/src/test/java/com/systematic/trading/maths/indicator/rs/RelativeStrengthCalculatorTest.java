@@ -240,6 +240,19 @@ public class RelativeStrengthCalculatorTest {
 		verify(validator).verifyEnoughValues(data, dataSize - lookback);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void macdNullInput() {
+		setUpValidationErrorNullInput();
+
+		final RelativeStrengthCalculator calculator = new RelativeStrengthCalculator(1, validator);
+
+		calculator.rs(null);
+	}
+
+	private void setUpValidationErrorNullInput() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
+	}
+
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 

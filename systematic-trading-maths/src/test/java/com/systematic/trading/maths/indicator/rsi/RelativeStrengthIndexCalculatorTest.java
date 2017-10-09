@@ -121,6 +121,19 @@ public class RelativeStrengthIndexCalculatorTest {
 		verify(relativeStrength).rs(prices);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void emaNullInput() {
+		setUpValidationErrorNullInput();
+		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
+		        validator);
+
+		calculator.rsi(null);
+	}
+
+	private void setUpValidationErrorNullInput() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
+	}
+
 	private void assertValueEquals( final double expected, final int index, final RelativeStrengthIndexLine actual ) {
 		assertEquals(BigDecimal.valueOf(expected).setScale(2, RoundingMode.HALF_EVEN),
 		        actual.getRsi().get(getDate(index)).setScale(2, RoundingMode.HALF_EVEN));

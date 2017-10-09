@@ -71,7 +71,7 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 
 	@Override
 	public List<RelativeStrengthDataPoint> rs( final TradingDayPrices[] data ) {
-
+		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, lookback);
 
@@ -176,8 +176,9 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 			 * Wilder originally formulated the calculation of the moving average as: newval = (prevval * (period - 1) + newdata) / period. 
 			 * This is fully equivalent to the exponential smoothing of a n-period smoothed moving average (SMMA). 
 			 */
-			
-			upward = upward.multiply(archive, MATH_CONTEXT).add(currentGain, MATH_CONTEXT).divide(history, MATH_CONTEXT);
+
+			upward = upward.multiply(archive, MATH_CONTEXT).add(currentGain, MATH_CONTEXT).divide(history,
+			        MATH_CONTEXT);
 			downward = downward.multiply(archive, MATH_CONTEXT).add(currentLoss, MATH_CONTEXT).divide(history,
 			        MATH_CONTEXT);
 

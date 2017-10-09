@@ -115,8 +115,21 @@ public class AverageTrueRangeCalculatorTest {
 		verifyAtr(atr, 5, 6.25, 8.44, 12.33, 18);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void atrNullInput() {
+		setUpValidationErrorNullInput();
+		setUpCalculator(1);
+
+		calculator.atr(null);
+	}
+
 	private void setUpValidationErrorNoNullEntries() {
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
+	}
+
+	private void setUpValidationErrorNullInput() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
+
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {

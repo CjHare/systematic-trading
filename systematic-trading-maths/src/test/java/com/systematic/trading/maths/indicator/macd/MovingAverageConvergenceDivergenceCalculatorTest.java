@@ -153,6 +153,17 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verfiyEmaCalls(dataSet, macdValues);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void macdNullInput() {
+		setUpValidationErrorNullInput();
+
+		calculator.macd(null);
+	}
+
+	private void setUpValidationErrorNullInput() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
+	}
+
 	private void verifyMacdLines( final MovingAverageConvergenceDivergenceLines lines,
 	        final SortedMap<LocalDate, BigDecimal> expectedMacd,
 	        final SortedMap<LocalDate, BigDecimal> expectedSignalLine ) {
