@@ -112,7 +112,7 @@ public class AverageTrueRangeCalculatorTest {
 		final AverageTrueRangeLine atr = calculator.atr(data);
 
 		verifyValidation(data, lookback);
-		verifyAtr(atr, 5, 5, 5, 8.75, 9.06);
+		verifyAtr(atr, 5, 6.25, 8.44, 12.33, 18);
 	}
 
 	private void setUpValidationErrorNoNullEntries() {
@@ -159,13 +159,12 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	private TradingDayPrices[] createThreeTypesOfVolatility( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
+		final TradingDayPrices[] prices = createIncreasingPrices(count);
 
 		// Biggest swing is between today's high & low
-		for (int i = 0; i < count - 2; i++) {
-			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i))
-			        .withOpeningPrice(count).withLowestPrice(0).withHighestPrice(count).withClosingPrice(count).build();
-		}
+		prices[count - 2] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(count - 3))
+		        .withOpeningPrice(count).withLowestPrice(-5 * count).withHighestPrice(5 * count)
+		        .withClosingPrice(count - 2).build();
 
 		// Biggest swing is between the highest of today and yesterday's close
 		prices[count - 2] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(count - 2))
@@ -174,7 +173,8 @@ public class AverageTrueRangeCalculatorTest {
 
 		// Biggest swing is between the low of today and yesterday's close
 		prices[count - 1] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(count - 1))
-		        .withOpeningPrice(count).withLowestPrice(0).withHighestPrice(count).withClosingPrice(count).build();
+		        .withOpeningPrice(count).withLowestPrice(-5 * count).withHighestPrice(count).withClosingPrice(count)
+		        .build();
 
 		return prices;
 	}

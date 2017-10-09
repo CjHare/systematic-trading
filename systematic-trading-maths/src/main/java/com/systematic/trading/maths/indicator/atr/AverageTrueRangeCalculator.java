@@ -69,21 +69,21 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	}
 
 	/**
-	 * Difference between the lowest prices.
+	 * Difference between the high and low prices.
 	 */
 	private BigDecimal trueRangeMethodOne( final TradingDayPrices today ) {
 		return today.getHighestPrice().subtract(today.getLowestPrice(), MATH_CONTEXT).abs();
 	}
 
 	/**
-	 * Difference between the highest prices.
+	 * Difference between the today's high price and yesterday's close price.
 	 */
 	private BigDecimal trueRangeMethodTwo( final TradingDayPrices today, final TradingDayPrices yesterday ) {
 		return today.getHighestPrice().subtract(yesterday.getClosingPrice(), MATH_CONTEXT).abs();
 	}
 
 	/**
-	 * Difference between today's low and yesterdays close price.
+	 * Difference between today's low price and yesterdays close price.
 	 */
 	private BigDecimal trueRangeMethodThree( final TradingDayPrices today, final TradingDayPrices yesterday ) {
 		return today.getLowestPrice().subtract(yesterday.getClosingPrice(), MATH_CONTEXT).abs();
