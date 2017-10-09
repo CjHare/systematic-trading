@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.rsi;
 
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -33,7 +34,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -43,6 +43,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.OngoingStubbing;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
@@ -63,104 +64,92 @@ public class RelativeStrengthIndexCalculatorTest {
 	@Mock
 	private RelativeStrength relativeStrength;
 
+	/** Calculator instance being tested. */
+	private RelativeStrengthIndexCalculator calculator;
+
 	@Test
 	public void rsi() {
-		final int relativeStrengthCount = 5;
-		final List<RelativeStrengthDataPoint> rsData = createIncreasingRelativeStrengthValues(relativeStrengthCount);
-		when(relativeStrength.rs(any(TradingDayPrices[].class))).thenReturn(rsData);
-
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
-		        validator);
-
+		final List<RelativeStrengthDataPoint> rsData = createIncreasingRelativeStrengthValues(5);
+		setUpCalculator(rsData);
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
-		final RelativeStrengthIndexLine rsi = calculator.rsi(prices);
 
-		assertNotNull(rsi);
-		assertEquals(relativeStrengthCount, rsi.getRsi().size());
-		assertValueEquals(67.21, 0, rsi);
-		assertValueEquals(75.31, 1, rsi);
-		assertValueEquals(80.20, 2, rsi);
-		assertValueEquals(83.47, 3, rsi);
+		final RelativeStrengthIndexLine rsi = rsi(prices);
 
-		verify(relativeStrength).rs(prices);
+		verifyRsi(rsi, 67.21, 75.31, 80.20, 83.47, 85.82);
+		verifyRs(prices);
 	}
 
 	@Test
 	public void rsiExample() {
 		final List<RelativeStrengthDataPoint> rsData = createExampleRelativeStrengthValues();
-		when(relativeStrength.rs(any(TradingDayPrices[].class))).thenReturn(rsData);
-
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
-		        validator);
-
+		setUpCalculator(rsData);
 		final TradingDayPrices[] prices = new TradingDayPrices[] {};
-		final RelativeStrengthIndexLine rsi = calculator.rsi(prices);
 
-		assertNotNull(rsi);
-		assertEquals(19, rsi.getRsi().size());
-		assertValueEquals(70.53, 0, rsi);
-		assertValueEquals(66.32, 1, rsi);
-		assertValueEquals(66.55, 2, rsi);
-		assertValueEquals(69.41, 3, rsi);
-		assertValueEquals(66.35, 4, rsi);
-		assertValueEquals(57.97, 5, rsi);
-		assertValueEquals(62.93, 6, rsi);
-		assertValueEquals(63.26, 7, rsi);
-		assertValueEquals(56.06, 8, rsi);
-		assertValueEquals(62.38, 9, rsi);
-		assertValueEquals(54.71, 10, rsi);
-		assertValueEquals(50.42, 11, rsi);
-		assertValueEquals(39.99, 12, rsi);
-		assertValueEquals(41.46, 13, rsi);
-		assertValueEquals(41.87, 14, rsi);
-		assertValueEquals(45.46, 15, rsi);
-		assertValueEquals(37.30, 16, rsi);
-		assertValueEquals(33.08, 17, rsi);
-		assertValueEquals(37.77, 18, rsi);
+		final RelativeStrengthIndexLine rsi = rsi(prices);
 
-		verify(relativeStrength).rs(prices);
+		verifyRsi(rsi, 70.53, 66.32, 66.55, 69.41, 66.35, 57.97, 62.93, 63.26, 56.06, 62.38, 54.71, 50.42, 39.99, 41.46,
+		        41.87, 45.46, 37.30, 33.08, 37.77);
+		verifyRs(prices);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNullInput() {
 		setUpValidationErrorNullInput();
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
-		        validator);
+		setUpCalculator();
 
-		calculator.rsi(null);
-	}
-
-	private void setUpValidationErrorNullInput() {
-		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
-	}
-
-	private void assertValueEquals( final double expected, final int index, final RelativeStrengthIndexLine actual ) {
-		assertEquals(BigDecimal.valueOf(expected).setScale(2, RoundingMode.HALF_EVEN),
-		        actual.getRsi().get(getDate(index)).setScale(2, RoundingMode.HALF_EVEN));
-	}
-
-	private LocalDate getDate( final int index ) {
-		return LocalDate.now().plus(index, ChronoUnit.DAYS);
+		rsi(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void startingWithNullDataPoint() {
-		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
+		setUpValidationErrorNoNullEntries();
+		setUpCalculator();
 
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
-		        validator);
-
-		calculator.rsi(new TradingDayPrices[] {});
+		rsi(new TradingDayPrices[] {});
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void endingWithNullDataPoint() {
+		setUpValidationErrorNoNullEntries();
+		setUpCalculator();
+
+		rsi(new TradingDayPrices[] {});
+	}
+
+	@SafeVarargs
+	private final void setUpCalculator( final List<RelativeStrengthDataPoint>... rsData ) {
+		if (rsData.length > 0) {
+			OngoingStubbing<List<RelativeStrengthDataPoint>> rsResponses = when(
+			        relativeStrength.rs(any(TradingDayPrices[].class)));
+			for (final List<RelativeStrengthDataPoint> rs : rsData) {
+				rsResponses = rsResponses.thenReturn(rs);
+			}
+		}
+
+		calculator = new RelativeStrengthIndexCalculator(relativeStrength, validator);
+	}
+
+	private void verifyRsi( final RelativeStrengthIndexLine rsi, final double... expected ) {
+		assertNotNull(rsi);
+		assertNotNull(rsi.getRsi());
+		assertEquals(expected.length, rsi.getRsi().size());
+		assertValues(expected, rsi.getRsi());
+	}
+
+	private void verifyRs( final TradingDayPrices[] prices ) {
+		verify(relativeStrength).rs(prices);
+	}
+
+	private void setUpValidationErrorNoNullEntries() {
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
+	}
 
-		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(relativeStrength,
-		        validator);
+	private RelativeStrengthIndexLine rsi( final TradingDayPrices[] prices ) {
+		return calculator.rsi(prices);
+	}
 
-		calculator.rsi(new TradingDayPrices[] {});
+	private void setUpValidationErrorNullInput() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
 	private List<RelativeStrengthDataPoint> createIncreasingRelativeStrengthValues( final int count ) {
