@@ -40,6 +40,7 @@ import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 /**
  * Generic calculation of signal functionality.
@@ -55,7 +56,7 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 	private final SignalRangeFilter signalRangeFilter;
 
 	/** Calculators that will be used to generate signals. */
-	private final List<SignalCalculator<T>> signalCalculators;
+	private final List<SignalGenerator<T>> signalCalculators;
 
 	/** Converts price data into indicator signals. */
 	private final U indicator;
@@ -67,7 +68,7 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 	private final int requiredNumberOfTradingDays;
 
 	public GenericIndicatorSignals( final IndicatorSignalId id, final U indicator, final int requiredNumberOfTradingDays,
-	        final List<SignalCalculator<T>> signalCalculators, final SignalRangeFilter signalRangeFilter ) {
+	        final List<SignalGenerator<T>> signalCalculators, final SignalRangeFilter signalRangeFilter ) {
 		this.signalCalculators = signalCalculators;
 		this.signalRangeFilter = signalRangeFilter;
 		this.requiredNumberOfTradingDays = requiredNumberOfTradingDays;
@@ -100,8 +101,8 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 
 		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
 
-		for (final SignalCalculator<T> calculator : signalCalculators) {
-			final List<DatedSignal> signals = calculator.calculateSignals(indicatorOutput, signalRange);
+		for (final SignalGenerator<T> calculator : signalCalculators) {
+			final List<DatedSignal> signals = calculator.calculate(indicatorOutput, signalRange);
 
 			for (final DatedSignal signal : signals) {
 				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalType(), calculator.getType()));

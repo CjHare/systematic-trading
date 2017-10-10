@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 /**
  * There were too many data points to perform the desired analysis.

@@ -45,9 +45,9 @@ import com.systematic.trading.signals.model.DatedSignal;
  * 
  * @author CJ Hare
  */
-public abstract class RelativeStrengthIndexSignalCalculator {
+public abstract class RelativeStrengthIndexSignalGenerator {
 
-	public List<DatedSignal> calculateSignals( final RelativeStrengthIndexLine rsiLine,
+	public List<DatedSignal> calculate( final RelativeStrengthIndexLine rsiLine,
 	        final Predicate<LocalDate> signalRange ) {
 
 		final List<DatedSignal> signals = new ArrayList<>();

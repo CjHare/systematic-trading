@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator.macd;
+package com.systematic.trading.signals.indicator.rsi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -51,117 +51,143 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
-import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
- * Verifying the MovingAverageConvergenceDivergenceUptrendSignalCalculator.
+ * Verify the behaviour of the RelativeStrengthIndexBearishSignalGenerator.
  * 
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MovingAverageConvergenceDivergenceUptrendSignalCalculatorTest {
+public class RelativeStrengthIndexBearishSignalGeneratorTest {
 
-	@Mock
-	private MovingAverageConvergenceDivergenceLines lines;
+	private static final double OVER_BROUGHT = 0.7;
 
 	@Mock
 	private Predicate<LocalDate> signalRange;
 
-	private SignalCalculator<MovingAverageConvergenceDivergenceLines> signalCalculator;
-	private SortedMap<LocalDate, BigDecimal> macd;
+	@Mock
+	private RelativeStrengthIndexLine rsi;
+
+	private RelativeStrengthIndexBearishSignalGenerator calculator;
 
 	@Before
 	public void setUp() {
-		signalCalculator = new MovingAverageConvergenceDivergenceUptrendSignalCalculator();
-
-		macd = new TreeMap<>();
-
-		when(lines.getMacd()).thenReturn(macd);
-
+		setUpCalculator();
 		setUpDateRange(true);
 	}
 
 	@Test
-	public void getTYpe() {
-		assertEquals(SignalType.BULLISH, signalCalculator.getType());
+	public void getType() {
+		assertEquals(SignalType.BEARISH, calculator.getType());
 	}
 
 	@Test
-	public void aboveOrigin() {
-		final int numberSignalLinesDates = 4;
-		setUpMacd(1, 1.1, 1.2, 1.3);
+	public void neverOversold() {
+		setUpRsi(0.5, 0.6, 0.6, 0.5);
 
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
-
-		verifySignals(4, signals);
-		verfiyDatedSignal(0, signals.get(0));
-		verfiyDatedSignal(1, signals.get(1));
-		verfiyDatedSignal(2, signals.get(2));
-		verfiyDatedSignal(3, signals.get(3));
-		verifySignalRangeTests(numberSignalLinesDates);
-	}
-
-	@Test
-	public void aboveOriginOutsideDateRange() {
-		setUpDateRange(false);
-		final int numberSignalLinesDates = 3;
-		setUpMacd(1, 1.1, 1.2);
-
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+		final List<DatedSignal> signals = rsi();
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(numberSignalLinesDates);
+		verifySignalRangeTests(4);
 	}
 
 	@Test
-	public void crossingOrigin() {
-		final int numberSignalLinesDates = 4;
-		setUpMacd(-1, -0.5, 0.25, 1.3);
+	public void alwaysOversold() {
+		setUpRsi(0.7, 0.8, 0.9, 0.75);
 
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+		final List<DatedSignal> signals = rsi();
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void outsideDateRange() {
+		setUpRsi(0.5, 0.7, 0.8, 0.75);
+		setUpDateRange(false);
+
+		final List<DatedSignal> signals = rsi();
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void oversoldCrossover() {
+		setUpRsi(1, 0.69, 0.8, 0.7);
+
+		final List<DatedSignal> signals = rsi();
+
+		verifySignals(1, signals);
+		verfiyDatedSignal(1, signals.get(0));
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	/**
+	 * No signal unless the RSI line crosses below the over sold threshold.
+	 */
+	public void touchOversold() {
+		setUpRsi(1, 0.7, 0.8, 0.75);
+
+		final List<DatedSignal> signals = rsi();
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void twiceCrossoverOversold() {
+		setUpRsi(1, 0.4, 0.9, 0.6);
+
+		final List<DatedSignal> signals = rsi();
+
+		verifySignals(2, signals);
+		verfiyDatedSignal(1, signals.get(0));
+		verfiyDatedSignal(3, signals.get(1));
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void onOversold() {
+		setUpRsi(0.7, 0.7, 0.7, 0.7, 0.7);
+
+		final List<DatedSignal> signals = rsi();
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(5);
+	}
+
+	@Test
+	public void onOversoldThenCrossover() {
+		setUpRsi(0.7, 0.7, 0.5, 0.8, 0.45);
+
+		final List<DatedSignal> signals = rsi();
 
 		verifySignals(2, signals);
 		verfiyDatedSignal(2, signals.get(0));
-		verfiyDatedSignal(3, signals.get(1));
-		verifySignalRangeTests(numberSignalLinesDates);
+		verfiyDatedSignal(4, signals.get(1));
+		verifySignalRangeTests(5);
 	}
 
-	@Test
-	public void fallingThenBoucingFromOrigin() {
-		final int numberSignalLinesDates = 4;
-		setUpMacd(1, 0, 0, 1.3);
-
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
-
-		verifySignals(2, signals);
-		verfiyDatedSignal(0, signals.get(0));
-		verfiyDatedSignal(3, signals.get(1));
-		verifySignalRangeTests(numberSignalLinesDates);
+	private List<DatedSignal> rsi() {
+		return calculator.calculate(rsi, signalRange);
 	}
 
-	@Test
-	public void belowOrigin() {
-		final int numberSignalLinesDates = 4;
-		setUpMacd(-1, -0.6, -0.10, -1.3);
+	private void setUpRsi( final double... values ) {
+		SortedMap<LocalDate, BigDecimal> line = new TreeMap<>();
 
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
-
-		verifySignals(0, signals);
-		verifySignalRangeTests(numberSignalLinesDates);
-	}
-
-	private void verifySignalRangeTests( final int size ) {
-
-		final InOrder order = inOrder(lines, signalRange);
-
-		// Starting index @ 1, because there cannot be a signal on the first day :. excluded
-		for (int i = 0; i < size; i++) {
-			order.verify(signalRange).test(LocalDate.ofEpochDay(i));
+		for (int i = 0; i < values.length; i++) {
+			line.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
 		}
 
-		verifyNoMoreInteractions(signalRange);
+		when(rsi.getRsi()).thenReturn(line);
+	}
+
+	private void setUpCalculator() {
+		calculator = new RelativeStrengthIndexBearishSignalGenerator(BigDecimal.valueOf(OVER_BROUGHT));
 	}
 
 	private void verifySignals( final int expectedSize, final List<DatedSignal> signals ) {
@@ -169,14 +195,20 @@ public class MovingAverageConvergenceDivergenceUptrendSignalCalculatorTest {
 		assertEquals(expectedSize, signals.size());
 	}
 
-	private void setUpMacd( final double... values ) {
-		for (int i = 0; i < values.length; i++)
-			macd.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
-	}
-
 	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {
 		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.getDate());
-		assertEquals(SignalType.BULLISH, signal.getType());
+		assertEquals(SignalType.BEARISH, signal.getType());
+	}
+
+	private void verifySignalRangeTests( final int size ) {
+		final InOrder order = inOrder(signalRange);
+
+		// Starting index @ 1, because there cannot be a signal on the first day :. excluded
+		for (int i = 1; i < size; i++) {
+			order.verify(signalRange).test(LocalDate.ofEpochDay(i));
+		}
+
+		verifyNoMoreInteractions(signalRange);
 	}
 
 	private void setUpDateRange( final boolean insideRange ) {

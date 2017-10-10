@@ -39,7 +39,7 @@ import java.util.function.Predicate;
 
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
-import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.signals.indicator.SignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
@@ -47,8 +47,8 @@ import com.systematic.trading.signals.model.DatedSignal;
  * 
  * @author CJ Hare
  */
-public class MovingAverageConvergenceDivergenceBullishSignalCalculator
-        implements SignalCalculator<MovingAverageConvergenceDivergenceLines> {
+public class MovingAverageConvergenceDivergenceBullishSignalGenerator
+        implements SignalGenerator<MovingAverageConvergenceDivergenceLines> {
 
 	@Override
 	public SignalType getType() {
@@ -56,7 +56,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalCalculator
 	}
 
 	@Override
-	public List<DatedSignal> calculateSignals( final MovingAverageConvergenceDivergenceLines lines,
+	public List<DatedSignal> calculate( final MovingAverageConvergenceDivergenceLines lines,
 	        Predicate<LocalDate> signalRange ) {
 
 		final SortedMap<LocalDate, BigDecimal> macd = lines.getMacd();

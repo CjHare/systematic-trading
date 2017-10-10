@@ -42,9 +42,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalId;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 /**
  * IndicatorsOnSameDaySignalFilter Test

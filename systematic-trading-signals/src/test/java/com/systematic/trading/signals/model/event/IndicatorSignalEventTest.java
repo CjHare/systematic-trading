@@ -35,7 +35,7 @@ import org.junit.Test;
 
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalId;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 /**
  * Verifies the IndicatorSignalEvent.

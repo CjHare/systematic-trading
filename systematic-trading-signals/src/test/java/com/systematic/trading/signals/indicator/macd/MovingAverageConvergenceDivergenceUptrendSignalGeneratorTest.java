@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator.sma;
+package com.systematic.trading.signals.indicator.macd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -51,35 +51,34 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
-import com.systematic.trading.signals.indicator.SignalCalculator;
-import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageBullishGradientSignalCalculator;
+import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
+import com.systematic.trading.signals.indicator.SignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
- * Verify the behaviour of the SimpleMovingAverageBullishGradientSignalCalculator.
+ * Verifying the MovingAverageConvergenceDivergenceUptrendSignalGenerator.
  * 
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class SimpleMovingAverageBullishGradientSignalCalculatorTest {
+public class MovingAverageConvergenceDivergenceUptrendSignalGeneratorTest {
 
 	@Mock
-	private SimpleMovingAverageLine lines;
+	private MovingAverageConvergenceDivergenceLines lines;
 
 	@Mock
 	private Predicate<LocalDate> signalRange;
 
-	private SignalCalculator<SimpleMovingAverageLine> signalCalculator;
+	private SignalGenerator<MovingAverageConvergenceDivergenceLines> signalCalculator;
 	private SortedMap<LocalDate, BigDecimal> macd;
 
 	@Before
 	public void setUp() {
-		signalCalculator = new SimpleMovingAverageBullishGradientSignalCalculator();
+		signalCalculator = new MovingAverageConvergenceDivergenceUptrendSignalGenerator();
 
 		macd = new TreeMap<>();
 
-		when(lines.getSma()).thenReturn(macd);
+		when(lines.getMacd()).thenReturn(macd);
 
 		setUpDateRange(true);
 	}
@@ -90,101 +89,75 @@ public class SimpleMovingAverageBullishGradientSignalCalculatorTest {
 	}
 
 	@Test
-	public void outOfDateRange() {
+	public void aboveOrigin() {
+		final int numberSignalLinesDates = 4;
+		setUpMacd(1, 1.1, 1.2, 1.3);
+
+		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+
+		verifySignals(4, signals);
+		verfiyDatedSignal(0, signals.get(0));
+		verfiyDatedSignal(1, signals.get(1));
+		verfiyDatedSignal(2, signals.get(2));
+		verfiyDatedSignal(3, signals.get(3));
+		verifySignalRangeTests(numberSignalLinesDates);
+	}
+
+	@Test
+	public void aboveOriginOutsideDateRange() {
 		setUpDateRange(false);
-		setUpSma(1, 1.1, 1.2);
+		final int numberSignalLinesDates = 3;
+		setUpMacd(1, 1.1, 1.2);
 
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
-
-		verifySignals(0, signals);
-		verifySignalRangeTests(3);
-	}
-
-	@Test
-	public void tooFewValues() {
-		setUpSma(0.5);
-
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(0);
+		verifySignalRangeTests(numberSignalLinesDates);
 	}
 
 	@Test
-	public void noValues() {
+	public void crossingOrigin() {
+		final int numberSignalLinesDates = 4;
+		setUpMacd(-1, -0.5, 0.25, 1.3);
 
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
+		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+
+		verifySignals(2, signals);
+		verfiyDatedSignal(2, signals.get(0));
+		verfiyDatedSignal(3, signals.get(1));
+		verifySignalRangeTests(numberSignalLinesDates);
+	}
+
+	@Test
+	public void fallingThenBoucingFromOrigin() {
+		final int numberSignalLinesDates = 4;
+		setUpMacd(1, 0, 0, 1.3);
+
+		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+
+		verifySignals(2, signals);
+		verfiyDatedSignal(0, signals.get(0));
+		verfiyDatedSignal(3, signals.get(1));
+		verifySignalRangeTests(numberSignalLinesDates);
+	}
+
+	@Test
+	public void belowOrigin() {
+		final int numberSignalLinesDates = 4;
+		setUpMacd(-1, -0.6, -0.10, -1.3);
+
+		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
 
 		verifySignals(0, signals);
-		verifySignalRangeTests(0);
-	}
-
-	@Test
-	public void flatline() {
-		setUpSma(0.5, 0.5, 0.5, 0.5);
-
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
-
-		verifySignals(0, signals);
-		verifySignalRangeTests(4);
-	}
-
-	@Test
-	public void downardGradient() {
-		setUpSma(0.5, 0.4, 0.3, 0.2);
-
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
-
-		verifySignals(0, signals);
-		verifySignalRangeTests(4);
-	}
-
-	@Test
-	public void upwardGradient() {
-		setUpSma(0.5, 0.6, 0.7, 0.8);
-
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
-
-		verifySignals(3, signals);
-		verfiyDatedSignal(1, signals.get(0));
-		verfiyDatedSignal(2, signals.get(1));
-		verfiyDatedSignal(3, signals.get(2));
-		verifySignalRangeTests(4);
-	}
-
-	@Test
-	public void upwardGradientThenFlat() {
-		setUpSma(0.5, 0.6, 0.6);
-
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
-
-		verifySignals(1, signals);
-		verfiyDatedSignal(1, signals.get(0));
-		verifySignalRangeTests(3);
-	}
-
-	@Test
-	public void downwardThenUpwardGradientThenFlat() {
-		setUpSma(0.55, 0.5, 0.4, 0.4, 0.5);
-
-		final List<DatedSignal> signals = signalCalculator.calculateSignals(lines, signalRange);
-
-		verifySignals(1, signals);
-		verfiyDatedSignal(4, signals.get(0));
-		verifySignalRangeTests(5);
+		verifySignalRangeTests(numberSignalLinesDates);
 	}
 
 	private void verifySignalRangeTests( final int size ) {
 
-		if (size == 0) {
-			verifyNoMoreInteractions(signalRange);
-			return;
-		}
-
 		final InOrder order = inOrder(lines, signalRange);
 
 		// Starting index @ 1, because there cannot be a signal on the first day :. excluded
-		for (int i = 1; i < size; i++) {
+		for (int i = 0; i < size; i++) {
 			order.verify(signalRange).test(LocalDate.ofEpochDay(i));
 		}
 
@@ -196,7 +169,7 @@ public class SimpleMovingAverageBullishGradientSignalCalculatorTest {
 		assertEquals(expectedSize, signals.size());
 	}
 
-	private void setUpSma( final double... values ) {
+	private void setUpMacd( final double... values ) {
 		for (int i = 0; i < values.length; i++)
 			macd.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
 	}

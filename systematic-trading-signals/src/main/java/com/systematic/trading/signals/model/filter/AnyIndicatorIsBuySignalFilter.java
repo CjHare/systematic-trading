@@ -33,8 +33,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.systematic.trading.signal.IndicatorSignalId;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.model.BuySignal;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 /**
  * Simply passes through every indicator signal as a buy signal.

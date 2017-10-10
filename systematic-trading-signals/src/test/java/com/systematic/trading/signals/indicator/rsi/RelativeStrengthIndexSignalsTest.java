@@ -52,10 +52,10 @@ import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculato
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.GenericIndicatorSignals;
-import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.signals.indicator.SignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 /**
  * Verify the behaviour of the RelativeStrengthIndexSignals.
@@ -77,12 +77,12 @@ public class RelativeStrengthIndexSignalsTest {
 	private RelativeStrengthIndexCalculator rsi;
 
 	@Mock
-	private SignalCalculator<RelativeStrengthIndexLine> firstCalculator;
+	private SignalGenerator<RelativeStrengthIndexLine> firstCalculator;
 
 	@Mock
-	private SignalCalculator<RelativeStrengthIndexLine> secondCalculator;
+	private SignalGenerator<RelativeStrengthIndexLine> secondCalculator;
 
-	private List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators;
+	private List<SignalGenerator<RelativeStrengthIndexLine>> signalCalculators;
 
 	private TradingDayPrices[] data;
 
@@ -195,14 +195,14 @@ public class RelativeStrengthIndexSignalsTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void setUpCalculator( SignalCalculator<RelativeStrengthIndexLine> calculator,
+	private void setUpCalculator( SignalGenerator<RelativeStrengthIndexLine> calculator,
 	        final DatedSignal... signals ) {
 		final List<DatedSignal> datedSignals = new ArrayList<>();
 		for (final DatedSignal signal : signals) {
 			datedSignals.add(signal);
 		}
 
-		when(calculator.calculateSignals(any(RelativeStrengthIndexLine.class), any(Predicate.class)))
+		when(calculator.calculate(any(RelativeStrengthIndexLine.class), any(Predicate.class)))
 		        .thenReturn(datedSignals);
 	}
 
@@ -246,9 +246,9 @@ public class RelativeStrengthIndexSignalsTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void verifyCalculatorSignals( final SignalCalculator<RelativeStrengthIndexLine> calculator,
+	private void verifyCalculatorSignals( final SignalGenerator<RelativeStrengthIndexLine> calculator,
 	        final int typeCount ) {
-		verify(calculator).calculateSignals(eq(line), any(Predicate.class));
+		verify(calculator).calculate(eq(line), any(Predicate.class));
 		verify(calculator, times(typeCount)).getType();
 		verifyNoMoreInteractions(calculator);
 	}

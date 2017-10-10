@@ -29,6 +29,7 @@ import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 /**
  * Responsible for generation of signals from analysis of the trading data.

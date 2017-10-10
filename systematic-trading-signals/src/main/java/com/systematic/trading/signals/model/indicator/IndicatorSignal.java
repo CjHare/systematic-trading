@@ -23,13 +23,16 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator;
+package com.systematic.trading.signals.model.indicator;
 
 import java.time.LocalDate;
 
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalId;
 
+/**
+ * Denotes the occurrence and details of a indicator signal event.
+ */
 public class IndicatorSignal {
 	private final LocalDate date;
 	private final IndicatorSignalId signal;

@@ -55,10 +55,10 @@ import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.GenericIndicatorSignals;
-import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.signals.indicator.SignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 /**
  * Verify the SimpleMovingAverageGradientSignals interacts correctly with it's aggregated components.
@@ -86,12 +86,12 @@ public class SimpleMovingAverageGradientSignalsTest {
 	private SimpleMovingAverage sma;
 
 	@Mock
-	private SignalCalculator<SimpleMovingAverageLine> firstCalculator;
+	private SignalGenerator<SimpleMovingAverageLine> firstCalculator;
 
 	@Mock
-	private SignalCalculator<SimpleMovingAverageLine> secondCalculator;
+	private SignalGenerator<SimpleMovingAverageLine> secondCalculator;
 
-	private List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators;
+	private List<SignalGenerator<SimpleMovingAverageLine>> signalCalculators;
 
 	private TradingDayPrices[] data;
 
@@ -206,13 +206,13 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void setUpCalculator( SignalCalculator<SimpleMovingAverageLine> calculator, final DatedSignal... signals ) {
+	private void setUpCalculator( SignalGenerator<SimpleMovingAverageLine> calculator, final DatedSignal... signals ) {
 		final List<DatedSignal> datedSignals = new ArrayList<>();
 		for (final DatedSignal signal : signals) {
 			datedSignals.add(signal);
 		}
 
-		when(calculator.calculateSignals(any(SimpleMovingAverageLine.class), any(Predicate.class)))
+		when(calculator.calculate(any(SimpleMovingAverageLine.class), any(Predicate.class)))
 		        .thenReturn(datedSignals);
 	}
 
@@ -256,9 +256,9 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void verifyCalculatorSignals( final SignalCalculator<SimpleMovingAverageLine> calculator,
+	private void verifyCalculatorSignals( final SignalGenerator<SimpleMovingAverageLine> calculator,
 	        final int typeCount ) {
-		verify(calculator).calculateSignals(eq(line), any(Predicate.class));
+		verify(calculator).calculate(eq(line), any(Predicate.class));
 		verify(calculator, times(typeCount)).getType();
 		verifyNoMoreInteractions(calculator);
 	}

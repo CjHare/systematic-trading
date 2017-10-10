@@ -37,13 +37,13 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 import com.systematic.trading.signals.model.event.IndicatorSignalEvent;
 import com.systematic.trading.signals.model.filter.SignalFilter;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 public class AnalysisLongBuySignals implements AnalysisBuySignals {
 

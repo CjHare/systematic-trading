@@ -26,10 +26,10 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignal;
 import com.systematic.trading.signals.indicator.GenericIndicatorSignals;
-import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.signals.indicator.SignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MovingAveragingConvergeDivergenceSignalsTest {
@@ -39,10 +39,10 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	private static final int REQUIRED_TRADING_DAYS = 34;
 
 	@Mock
-	private SignalCalculator<MovingAverageConvergenceDivergenceLines> firstCalculator;
+	private SignalGenerator<MovingAverageConvergenceDivergenceLines> firstCalculator;
 
 	@Mock
-	private SignalCalculator<MovingAverageConvergenceDivergenceLines> secondCalculator;
+	private SignalGenerator<MovingAverageConvergenceDivergenceLines> secondCalculator;
 
 	@Mock
 	private SignalRangeFilter filter;
@@ -56,7 +56,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	@Mock
 	private IndicatorSignalId macdId;
 
-	private List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators;
+	private List<SignalGenerator<MovingAverageConvergenceDivergenceLines>> signalCalculators;
 
 	private TradingDayPrices[] data;
 
@@ -155,14 +155,14 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void setUpCalculator( SignalCalculator<MovingAverageConvergenceDivergenceLines> calculator,
+	private void setUpCalculator( SignalGenerator<MovingAverageConvergenceDivergenceLines> calculator,
 	        final DatedSignal... signals ) {
 		final List<DatedSignal> datedSignals = new ArrayList<>();
 		for (final DatedSignal signal : signals) {
 			datedSignals.add(signal);
 		}
 
-		when(calculator.calculateSignals(any(MovingAverageConvergenceDivergenceLines.class), any(Predicate.class)))
+		when(calculator.calculate(any(MovingAverageConvergenceDivergenceLines.class), any(Predicate.class)))
 		        .thenReturn(datedSignals);
 	}
 
@@ -197,9 +197,9 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void verifyCalculatorSignals( SignalCalculator<MovingAverageConvergenceDivergenceLines> calculator,
+	private void verifyCalculatorSignals( SignalGenerator<MovingAverageConvergenceDivergenceLines> calculator,
 	        final int typeCount ) {
-		verify(calculator).calculateSignals(eq(lines), any(Predicate.class));
+		verify(calculator).calculate(eq(lines), any(Predicate.class));
 		verify(calculator, times(typeCount)).getType();
 		verifyNoMoreInteractions(calculator);
 	}

@@ -27,43 +27,59 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator.rsi;
+package com.systematic.trading.signals.indicator.ema;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.function.Predicate;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
-import com.systematic.trading.signals.indicator.SignalCalculator;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
+import com.systematic.trading.signals.indicator.SignalGenerator;
+import com.systematic.trading.signals.model.DatedSignal;
 
 /**
- * Given RSI line points calculates when the following bearish events occurred:
- * <ul>
- * <li>Overbrought; RSI moved from being on or above the over brought line to below, 
- * 					signaling a change the direction of momentum.</li>
- * </ul>
+ * Bullish signal calculation based on the gradient of a SMA.
+ * <p/>
+ * Gradient of the SMA is evaluated, when it's positive it's considered bullish, otherwise it's not.
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexBearishSignalCalculator extends RelativeStrengthIndexSignalCalculator
-        implements SignalCalculator<RelativeStrengthIndexLine> {
-
-	/** Threshold for when the RSI is considered as over brought.*/
-	private final BigDecimal overbrought;
-
-	public RelativeStrengthIndexBearishSignalCalculator( final BigDecimal overbrought ) {
-		this.overbrought = overbrought;
-	}
+public class ExponentialMovingAverageBullishGradientSignalGenerator
+        implements SignalGenerator<ExponentialMovingAverageLine> {
 
 	@Override
 	public SignalType getType() {
-		return SignalType.BEARISH;
+		return SignalType.BULLISH;
 	}
 
 	@Override
-	/**
-	 * Has the RSI moved from above or on the over sold line to below it?
-	 */
-	protected boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today ) {
-		return today.compareTo(overbrought) < 0 && yesterday.compareTo(overbrought) >= 0;
+	public List<DatedSignal> calculate( final ExponentialMovingAverageLine indicatorOutput,
+	        final Predicate<LocalDate> signalRange ) {
+
+		final SortedMap<LocalDate, BigDecimal> sma = indicatorOutput.getEma();
+		final List<DatedSignal> signals = new ArrayList<>();
+		Map.Entry<LocalDate, BigDecimal> previousEntry = null;
+
+		for (final Map.Entry<LocalDate, BigDecimal> entry : sma.entrySet()) {
+			final LocalDate today = entry.getKey();
+
+			if (previousEntry != null && signalRange.test(today) && isPositiveGradient(entry, previousEntry)) {
+				signals.add(new DatedSignal(today, getType()));
+			}
+
+			previousEntry = entry;
+		}
+
+		return signals;
+	}
+
+	private boolean isPositiveGradient( final Map.Entry<LocalDate, BigDecimal> entry,
+	        final Map.Entry<LocalDate, BigDecimal> previousEtnry ) {
+		return entry.getValue().subtract(previousEtnry.getValue()).compareTo(BigDecimal.ZERO) > 0;
 	}
 }
