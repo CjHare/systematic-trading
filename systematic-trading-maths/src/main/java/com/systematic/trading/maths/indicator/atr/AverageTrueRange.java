@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.atr;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.indicator.Indicator;
 
 /**
  * Developed by J. Welles Wilder, the Average True Range (ATR) is an indicator that measures
@@ -54,13 +54,5 @@ import com.systematic.trading.data.TradingDayPrices;
  * @author CJ Hare
  */
 @FunctionalInterface
-public interface AverageTrueRange {
-
-	/**
-	 * Calculates the average true range values.
-	 * 
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @return average true range values.
-	 */
-	AverageTrueRangeLine atr( TradingDayPrices[] data );
+public interface AverageTrueRange extends Indicator<AverageTrueRangeLine> {
 }

@@ -122,7 +122,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	private final void setUpCalculator( final RelativeStrengthLine... rsData ) {
 		if (rsData.length > 0) {
 			OngoingStubbing<RelativeStrengthLine> rsResponses = when(
-			        relativeStrength.rs(any(TradingDayPrices[].class)));
+			        relativeStrength.calculate(any(TradingDayPrices[].class)));
 			for (final RelativeStrengthLine rs : rsData) {
 				rsResponses = rsResponses.thenReturn(rs);
 			}
@@ -145,7 +145,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	private void verifyRs( final TradingDayPrices[] prices ) {
-		verify(relativeStrength).rs(prices);
+		verify(relativeStrength).calculate(prices);
 	}
 
 	private void setUpValidationErrorNoNullEntries() {
@@ -153,7 +153,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	private RelativeStrengthIndexLine rsi( final TradingDayPrices[] prices ) {
-		return calculator.rsi(prices);
+		return calculator.calculate(prices);
 	}
 
 	private void setUpValidationErrorNullInput() {

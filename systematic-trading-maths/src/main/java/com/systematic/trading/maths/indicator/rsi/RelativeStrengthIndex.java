@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.rsi;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.indicator.Indicator;
 
 /**
  * Relative Strength Index - RSI
@@ -44,11 +44,5 @@ import com.systematic.trading.data.TradingDayPrices;
  * @author CJ Hare
  */
 @FunctionalInterface
-public interface RelativeStrengthIndex {
-
-	/**
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @return relative strength index values.
-	 */
-	public RelativeStrengthIndexLine rsi( TradingDayPrices[] data );
+public interface RelativeStrengthIndex extends Indicator<RelativeStrengthIndexLine> {
 }

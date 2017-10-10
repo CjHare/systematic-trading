@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.indicator.Indicator;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
@@ -45,7 +46,7 @@ import com.systematic.trading.signals.model.DatedSignal;
  * 
  * @author CJ Hare
  */
-public abstract class IndicatorSignalsBase<T> implements IndicatorSignalGenerator {
+public class IndicatorSignalsBase<T, U extends Indicator<T>> implements IndicatorSignalGenerator {
 
 	/** Provides date range filtering. */
 	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
@@ -56,19 +57,22 @@ public abstract class IndicatorSignalsBase<T> implements IndicatorSignalGenerato
 	/** Calculators that will be used to generate signals. */
 	private final List<SignalCalculator<T>> signalCalculators;
 
+	/** Converts price data into indicator signals. */
+	private final U indicator;
+
 	/** Identifier for the configuration of signal calculated. */
 	private final IndicatorSignalId id;
 
 	/** Minimum number of trading days required for MACD signal generation. */
 	private final int requiredNumberOfTradingDays;
 
-	public IndicatorSignalsBase( final IndicatorSignalId id, final int requiredNumberOfTradingDays,
+	public IndicatorSignalsBase( final IndicatorSignalId id, final U indicator, final int requiredNumberOfTradingDays,
 	        final List<SignalCalculator<T>> signalCalculators, final SignalRangeFilter signalRangeFilter ) {
 		this.signalCalculators = signalCalculators;
 		this.signalRangeFilter = signalRangeFilter;
 		this.requiredNumberOfTradingDays = requiredNumberOfTradingDays;
+		this.indicator = indicator;
 		this.id = id;
-		
 
 		//TODO validate there's at least one signal calculator 
 
@@ -91,7 +95,7 @@ public abstract class IndicatorSignalsBase<T> implements IndicatorSignalGenerato
 		final Predicate<LocalDate> signalRange = candidate -> dateRangeFilter.isWithinSignalRange(
 		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
 
-		final T indicatorOutput = indicatorCalculation(data);
+		final T indicatorOutput = indicator.calculate(data);
 
 		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
 
@@ -105,6 +109,4 @@ public abstract class IndicatorSignalsBase<T> implements IndicatorSignalGenerato
 
 		return indicatorSignals;
 	}
-
-	protected abstract T indicatorCalculation( TradingDayPrices[] data );
 }

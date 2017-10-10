@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.SortedMap;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.indicator.Indicator;
 
 /**
  * Exponential Moving Average (EMA), a moving average with greater weighting given to recent data
@@ -37,7 +37,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public interface ExponentialMovingAverage {
+public interface ExponentialMovingAverage extends Indicator<ExponentialMovingAverageLine> {
 
 	/**
 	 * Calculates the exponential moving average.
@@ -45,15 +45,7 @@ public interface ExponentialMovingAverage {
 	 * @param data ordered chronologically, from oldest to youngest (most recent first).
 	 * @return exponential moving average values.
 	 */
-	ExponentialMovingAverageLine ema( TradingDayPrices[] data );
-
-	/**
-	 * Calculates the exponential moving average.
-	 * 
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @return exponential moving average values.
-	 */
-	ExponentialMovingAverageLine ema( SortedMap<LocalDate, BigDecimal> data );
+	ExponentialMovingAverageLine calculate( SortedMap<LocalDate, BigDecimal> data );
 
 	/**
 	 * Minimum number of prices required for calculating the EMA.

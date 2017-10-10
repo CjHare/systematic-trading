@@ -80,7 +80,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		final TradingDayPrices[] data = createPrices(3);
 		setUpCalculator(lookback);
 
-		final ExponentialMovingAverageLine ema = calculator.ema(data);
+		final ExponentialMovingAverageLine ema = ema(data);
 
 		verifyEma(ema, 1, 1);
 		verifyValidation(data, lookback);
@@ -158,11 +158,11 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	private ExponentialMovingAverageLine ema( final TradingDayPrices[] data ) {
-		return calculator.ema(data);
+		return calculator.calculate(data);
 	}
 
 	private ExponentialMovingAverageLine ema( final SortedMap<LocalDate, BigDecimal> data ) {
-		return calculator.ema(data);
+		return calculator.calculate(data);
 	}
 
 	private void setUpValidationErrorNullInput() {

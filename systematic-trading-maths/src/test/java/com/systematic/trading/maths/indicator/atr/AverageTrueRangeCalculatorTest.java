@@ -109,7 +109,7 @@ public class AverageTrueRangeCalculatorTest {
 		final TradingDayPrices[] data = createThreeTypesOfVolatility(5);
 		setUpCalculator(lookback);
 
-		final AverageTrueRangeLine atr = calculator.atr(data);
+		final AverageTrueRangeLine atr = atr(data);
 
 		verifyAtr(atr, 5, 6.25, 8.44, 12.33, 18);
 		verifyValidation(data, lookback);
@@ -124,7 +124,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	private AverageTrueRangeLine atr( final TradingDayPrices[] data ) {
-		return calculator.atr(data);
+		return calculator.calculate(data);
 	}
 
 	private void setUpValidationErrorNoNullEntries() {

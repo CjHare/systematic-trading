@@ -27,6 +27,7 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.model.DatedSignal;
 
@@ -57,37 +58,38 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 
 	private TradingDayPrices[] data;
 
+	/** Indicator instance being tested. */
+	private IndicatorSignalsBase<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergence> indicator;
+
 	@Before
 	public void setUp() {
-		when(macd.macd(any(TradingDayPrices[].class))).thenReturn(lines);
+		when(macd.calculate(any(TradingDayPrices[].class))).thenReturn(lines);
 
 		signalCalculators = new ArrayList<>();
 		signalCalculators.add(firstCalculator);
 		signalCalculators.add(secondCalculator);
 
 		data = new TradingDayPrices[0];
+
+		setUpMacdSignals();
 	}
 
 	@Test
 	public void getRequiredNumberOfTradingDays() {
-		final MovingAveragingConvergenceDivergenceSignals macdSignals = setUpMacdSignals();
-
-		assertEquals(REQUIRED_TRADING_DAYS, macdSignals.getRequiredNumberOfTradingDays());
+		assertEquals(REQUIRED_TRADING_DAYS, indicator.getRequiredNumberOfTradingDays());
 	}
 
 	@Test
 	public void getSignalType() {
-		final MovingAveragingConvergenceDivergenceSignals macdSignals = setUpMacdSignals();
-
-		assertEquals(macdId, macdSignals.getSignalType());
+		assertEquals(macdId, indicator.getSignalType());
 	}
 
 	@Test
 	public void noSignalCalculators() {
 		removeSignalCalculators();
-		final MovingAveragingConvergenceDivergenceSignals macdSignals = setUpMacdSignals();
+		setUpMacdSignals();
 
-		final List<IndicatorSignal> signals = macdSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = macd();
 
 		verifySignals(signals);
 		verifyMacdCaclculation();
@@ -95,9 +97,8 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 
 	@Test
 	public void twoSignalCalculatorsNoSignals() {
-		final MovingAveragingConvergenceDivergenceSignals macdSignals = setUpMacdSignals();
 
-		final List<IndicatorSignal> signals = macdSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = macd();
 
 		verifySignals(signals);
 		verifyMacdCaclculation();
@@ -110,9 +111,9 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
 		setUpCalculator(firstCalculator, firstSignal, secondSignal);
-		final MovingAveragingConvergenceDivergenceSignals macdSignals = setUpMacdSignals();
+		setUpMacdSignals();
 
-		final List<IndicatorSignal> signals = macdSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = macd();
 
 		verifySignals(signals, firstSignal, secondSignal);
 		verifyMacdCaclculation();
@@ -125,9 +126,9 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
 		setUpCalculator(secondCalculator, firstSignal, secondSignal);
-		final MovingAveragingConvergenceDivergenceSignals macdSignals = setUpMacdSignals();
+		setUpMacdSignals();
 
-		final List<IndicatorSignal> signals = macdSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = macd();
 
 		verifySignals(signals, firstSignal, secondSignal);
 		verifyMacdCaclculation();
@@ -141,9 +142,9 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
 		setUpCalculator(firstCalculator, secondSignal);
 		setUpCalculator(secondCalculator, firstSignal);
-		final MovingAveragingConvergenceDivergenceSignals macdSignals = setUpMacdSignals();
+		setUpMacdSignals();
 
-		final List<IndicatorSignal> signals = macdSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = macd();
 
 		verifySignals(signals, secondSignal, firstSignal);
 		verifyMacdCaclculation();
@@ -163,6 +164,10 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		        .thenReturn(datedSignals);
 	}
 
+	private List<IndicatorSignal> macd() {
+		return indicator.calculateSignals(data);
+	}
+
 	private void verifySignals( final List<IndicatorSignal> indicatorSignals, final DatedSignal... datedSignals ) {
 		assertNotNull(indicatorSignals);
 
@@ -177,7 +182,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	}
 
 	private void verifyMacdCaclculation() {
-		verify(macd).macd(data);
+		verify(macd).calculate(data);
 		verifyNoMoreInteractions(macd);
 	}
 
@@ -197,9 +202,9 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 		verifyNoMoreInteractions(calculator);
 	}
 
-	private MovingAveragingConvergenceDivergenceSignals setUpMacdSignals() {
-		return new MovingAveragingConvergenceDivergenceSignals(macdId, macd, REQUIRED_TRADING_DAYS, signalCalculators,
-		        filter);
+	private void setUpMacdSignals() {
+		indicator = new IndicatorSignalsBase<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergence>(
+		        macdId, macd, REQUIRED_TRADING_DAYS, signalCalculators, filter);
 	}
 
 	private void removeSignalCalculators() {

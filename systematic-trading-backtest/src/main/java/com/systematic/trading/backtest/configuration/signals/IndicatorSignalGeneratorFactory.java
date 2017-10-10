@@ -35,6 +35,7 @@ import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDiver
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.maths.indicator.rs.RelativeStrengthCalculator;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
@@ -43,15 +44,13 @@ import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceBullishSignalCalculator;
 import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceUptrendSignalCalculator;
-import com.systematic.trading.signals.indicator.macd.MovingAveragingConvergenceDivergenceSignals;
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBearishSignalCalculator;
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBullishSignalCalculator;
-import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexSignals;
 import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageBullishGradientSignalCalculator;
-import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageGradientSignals;
 
 /**
  * A singleton factory for creating signal instances.
@@ -130,8 +129,8 @@ public class IndicatorSignalGeneratorFactory {
 		final MovingAverageConvergenceDivergence macd = new MovingAverageConvergenceDivergenceCalculator(fastEma,
 		        slowEma, signalEma, new IllegalArgumentThrowingValidator());
 
-		return new MovingAveragingConvergenceDivergenceSignals(id, macd, requiredNumberOfTradingDays, signalCalculators,
-		        filter);
+		return new IndicatorSignalsBase<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergence>(id,
+		        macd, requiredNumberOfTradingDays, signalCalculators, filter);
 	}
 
 	private IndicatorSignalGenerator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter ) {
@@ -144,8 +143,8 @@ public class IndicatorSignalGeneratorFactory {
 		        new RelativeStrengthCalculator(rsiConfiguration.getLookback(), new IllegalArgumentThrowingValidator()),
 		        new IllegalArgumentThrowingValidator());
 
-		return new RelativeStrengthIndexSignals(rsiConfiguration.getType(),
-		        rsiConfiguration.getLookback() + MINIMUM_DAYS_OF_RSI_VALUES, rsi, signalCalculators, filter);
+		return new IndicatorSignalsBase<RelativeStrengthIndexLine, RelativeStrengthIndex>(rsiConfiguration.getType(),
+		        rsi, rsiConfiguration.getLookback() + MINIMUM_DAYS_OF_RSI_VALUES, signalCalculators, filter);
 	}
 
 	private IndicatorSignalGenerator create( final SmaUptrendConfiguration sma, final SignalRangeFilter filter ) {
@@ -156,7 +155,7 @@ public class IndicatorSignalGeneratorFactory {
 		final SimpleMovingAverage calculator = new SimpleMovingAverageCalculator(sma.getLookback(),
 		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
-		return new SimpleMovingAverageGradientSignals(sma.getType(), sma.getLookback() + sma.getDaysOfGradient(),
-		        calculator, signalCalculators, filter);
+		return new IndicatorSignalsBase<SimpleMovingAverageLine, SimpleMovingAverage>(sma.getType(), calculator,
+		        sma.getLookback() + sma.getDaysOfGradient(), signalCalculators, filter);
 	}
 }

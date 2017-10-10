@@ -52,7 +52,9 @@ public interface IndicatorSignalGenerator {
 	 *         <code>null</code>.
 	 */
 	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data );
-
+//TODO rename to calculate
+	//TODO return a sortedMap?
+	
 	/**
 	 * The type of signals that are generated.
 	 * 

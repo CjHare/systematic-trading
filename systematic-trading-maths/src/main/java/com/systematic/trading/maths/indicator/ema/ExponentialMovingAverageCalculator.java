@@ -82,7 +82,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	@Override
-	public ExponentialMovingAverageLine ema( final TradingDayPrices[] data ) {
+	public ExponentialMovingAverageLine calculate( final TradingDayPrices[] data ) {
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, lookback);
@@ -92,7 +92,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	@Override
-	public ExponentialMovingAverageLine ema( final SortedMap<LocalDate, BigDecimal> data ) {
+	public ExponentialMovingAverageLine calculate( final SortedMap<LocalDate, BigDecimal> data ) {
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data.values());
 		validator.verifyEnoughValues(data.values(), lookback);

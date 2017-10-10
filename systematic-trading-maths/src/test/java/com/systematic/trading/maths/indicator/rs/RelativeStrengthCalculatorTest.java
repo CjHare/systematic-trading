@@ -171,7 +171,7 @@ public class RelativeStrengthCalculatorTest {
 		setUpValidationErrorNullInput();
 		setUpCalculator(1);
 
-		calculator.rs(null);
+		rs(null);
 	}
 
 	private TradingDayPrices[] merge( final TradingDayPrices[] left, final TradingDayPrices[] right ) {
@@ -187,7 +187,7 @@ public class RelativeStrengthCalculatorTest {
 	}
 
 	private RelativeStrengthLine rs( final TradingDayPrices[] data ) {
-		return calculator.rs(data);
+		return calculator.calculate(data);
 	}
 
 	private void setUpValidationErrorEnoughValues() {

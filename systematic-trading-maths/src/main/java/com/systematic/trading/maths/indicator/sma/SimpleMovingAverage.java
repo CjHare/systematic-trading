@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.sma;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.indicator.Indicator;
 
 /**
  * The mean for a consecutive set of numbers.
@@ -33,11 +33,5 @@ import com.systematic.trading.data.TradingDayPrices;
  * @author CJ Hare
  */
 @FunctionalInterface
-public interface SimpleMovingAverage {
-
-	/**
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
-	 * @return simple moving average values.
-	 */
-	public SimpleMovingAverageLine sma( TradingDayPrices[] data );
+public interface SimpleMovingAverage extends Indicator<SimpleMovingAverageLine> {
 }

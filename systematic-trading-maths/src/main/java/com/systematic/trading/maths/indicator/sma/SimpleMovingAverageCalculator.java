@@ -72,7 +72,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	}
 
 	@Override
-	public SimpleMovingAverageLine sma( final TradingDayPrices[] data ) {
+	public SimpleMovingAverageLine calculate( final TradingDayPrices[] data ) {
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);

@@ -56,6 +56,7 @@ import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.model.DatedSignal;
 
@@ -98,6 +99,9 @@ public class SimpleMovingAverageGradientSignalsTest {
 	@Mock
 	private IndicatorSignalId smaId;
 
+	/** Indicator instance being tested. */
+	private IndicatorSignalsBase<SimpleMovingAverageLine, SimpleMovingAverage> indicator;
+
 	@Before
 	public void setUp() {
 		signalCalculators = new ArrayList<>();
@@ -106,28 +110,24 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 		data = new TradingDayPrices[0];
 
-		when(sma.sma(any(TradingDayPrices[].class))).thenReturn(line);
+		when(sma.calculate(any(TradingDayPrices[].class))).thenReturn(line);
+		setUpSmaSignals();
 	}
 
 	@Test
 	public void getSignalType() {
-		SimpleMovingAverageGradientSignals smaSignal = setUpSmaSignals();
-
-		assertEquals(smaId, smaSignal.getSignalType());
+		assertEquals(smaId, indicator.getSignalType());
 	}
 
 	@Test
 	public void getRequiredNumberOfTradingDays() {
-		SimpleMovingAverageGradientSignals smaSignal = setUpSmaSignals();
-
-		assertEquals(REQUIRED_TRADING_DAYS, smaSignal.getRequiredNumberOfTradingDays());
+		assertEquals(REQUIRED_TRADING_DAYS, indicator.getRequiredNumberOfTradingDays());
 	}
 
 	@Test
 	public void noSignals() {
-		final SimpleMovingAverageGradientSignals smaSignal = setUpSmaSignals();
 
-		final List<IndicatorSignal> signals = smaSignal.calculateSignals(data);
+		final List<IndicatorSignal> signals = sma();
 
 		verifySignals(signals);
 		verifyRsiCaclculation();
@@ -141,9 +141,9 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
 		setUpCalculator(firstCalculator, secondSignal);
 		setUpCalculator(secondCalculator, firstSignal);
-		final SimpleMovingAverageGradientSignals smaSignal = setUpSmaSignals();
+		setUpSmaSignals();
 
-		final List<IndicatorSignal> signals = smaSignal.calculateSignals(data);
+		final List<IndicatorSignal> signals = sma();
 
 		verifySignals(signals, secondSignal, firstSignal);
 		verifyRsiCaclculation();
@@ -156,9 +156,9 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
 		setUpCalculator(firstCalculator, firstSignal, secondSignal);
-		final SimpleMovingAverageGradientSignals smaSignal = setUpSmaSignals();
+		setUpSmaSignals();
 
-		final List<IndicatorSignal> signals = smaSignal.calculateSignals(data);
+		final List<IndicatorSignal> signals = sma();
 
 		verifySignals(signals, firstSignal, secondSignal);
 		verifyRsiCaclculation();
@@ -169,9 +169,9 @@ public class SimpleMovingAverageGradientSignalsTest {
 	@Test
 	public void noSignalCalculators() {
 		removeSignalCalculators();
-		final SimpleMovingAverageGradientSignals smaSignal = setUpSmaSignals();
+		setUpSmaSignals();
 
-		final List<IndicatorSignal> signals = smaSignal.calculateSignals(data);
+		final List<IndicatorSignal> signals = sma();
 
 		verifySignals(signals);
 		verifyRsiCaclculation();
@@ -182,9 +182,9 @@ public class SimpleMovingAverageGradientSignalsTest {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
 		setUpCalculator(secondCalculator, firstSignal, secondSignal);
-		final SimpleMovingAverageGradientSignals smaSignal = setUpSmaSignals();
+		setUpSmaSignals();
 
-		final List<IndicatorSignal> signals = smaSignal.calculateSignals(data);
+		final List<IndicatorSignal> signals = sma();
 
 		verifySignals(signals, firstSignal, secondSignal);
 		verifyRsiCaclculation();
@@ -194,9 +194,8 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 	@Test
 	public void twoSignalCalculatorsNoSignals() {
-		final SimpleMovingAverageGradientSignals smaSignal = setUpSmaSignals();
 
-		final List<IndicatorSignal> signals = smaSignal.calculateSignals(data);
+		final List<IndicatorSignal> signals = sma();
 
 		verifySignals(signals);
 		verifyRsiCaclculation();
@@ -215,13 +214,17 @@ public class SimpleMovingAverageGradientSignalsTest {
 		        .thenReturn(datedSignals);
 	}
 
-	private SimpleMovingAverageGradientSignals setUpSmaSignals() {
-		return new SimpleMovingAverageGradientSignals(smaId, LOOKBACK + DAYS_OF_GRADIENT, sma, signalCalculators,
-		        filter);
+	private List<IndicatorSignal> sma() {
+		return indicator.calculateSignals(data);
+	}
+
+	private void setUpSmaSignals() {
+		indicator = new IndicatorSignalsBase<SimpleMovingAverageLine, SimpleMovingAverage>(smaId, sma,
+		        LOOKBACK + DAYS_OF_GRADIENT, signalCalculators, filter);
 	}
 
 	private void verifyRsiCaclculation() {
-		verify(sma).sma(data);
+		verify(sma).calculate(data);
 		verifyNoMoreInteractions(sma);
 	}
 

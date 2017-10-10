@@ -66,7 +66,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 		this.priorMultiplier = BigDecimal.valueOf(lookback - 1L);
 		this.lookbackDivider = BigDecimal.valueOf(lookback);
 		this.validator = validator;
-		
+
 		validator.verifyGreaterThan(1, lookback);
 	}
 
@@ -107,7 +107,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	}
 
 	@Override
-	public AverageTrueRangeLine atr( final TradingDayPrices[] data ) {
+	public AverageTrueRangeLine calculate( final TradingDayPrices[] data ) {
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);

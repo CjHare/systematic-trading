@@ -158,7 +158,7 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	private SimpleMovingAverageLine sma( final TradingDayPrices[] data ) {
-		return calculator.sma(data);
+		return calculator.calculate(data);
 	}
 
 	private void setUpValidationErrorNullInput() {

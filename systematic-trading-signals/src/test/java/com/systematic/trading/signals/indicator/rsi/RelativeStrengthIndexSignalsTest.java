@@ -47,11 +47,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
+import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.model.DatedSignal;
 
@@ -88,6 +90,9 @@ public class RelativeStrengthIndexSignalsTest {
 	@Mock
 	private IndicatorSignalId rsiId;
 
+	/** Indicator instance being tested. */
+	private IndicatorSignalsBase<RelativeStrengthIndexLine, RelativeStrengthIndex> indicator;
+
 	@Before
 	public void setUp() {
 		signalCalculators = new ArrayList<>();
@@ -96,28 +101,23 @@ public class RelativeStrengthIndexSignalsTest {
 
 		data = new TradingDayPrices[0];
 
-		when(rsi.rsi(any(TradingDayPrices[].class))).thenReturn(line);
+		when(rsi.calculate(any(TradingDayPrices[].class))).thenReturn(line);
+		setUpRsiSignals();
 	}
 
 	@Test
 	public void getSignalType() {
-		RelativeStrengthIndexSignals rsiSignals = setUpRsiSignals();
-
-		assertEquals(rsiId, rsiSignals.getSignalType());
+		assertEquals(rsiId, indicator.getSignalType());
 	}
 
 	@Test
 	public void getRequiredNumberOfTradingDays() {
-		RelativeStrengthIndexSignals rsiSignals = setUpRsiSignals();
-
-		assertEquals(LOOKBACK, rsiSignals.getRequiredNumberOfTradingDays());
+		assertEquals(LOOKBACK, indicator.getRequiredNumberOfTradingDays());
 	}
 
 	@Test
 	public void noSignals() {
-		final RelativeStrengthIndexSignals rsiSignals = setUpRsiSignals();
-
-		final List<IndicatorSignal> signals = rsiSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = rsi();
 
 		verifySignals(signals);
 		verifyRsiCaclculation();
@@ -131,9 +131,9 @@ public class RelativeStrengthIndexSignalsTest {
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
 		setUpCalculator(firstCalculator, secondSignal);
 		setUpCalculator(secondCalculator, firstSignal);
-		final RelativeStrengthIndexSignals rsiSignals = setUpRsiSignals();
+		setUpRsiSignals();
 
-		final List<IndicatorSignal> signals = rsiSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = rsi();
 
 		verifySignals(signals, secondSignal, firstSignal);
 		verifyRsiCaclculation();
@@ -146,9 +146,9 @@ public class RelativeStrengthIndexSignalsTest {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
 		setUpCalculator(firstCalculator, firstSignal, secondSignal);
-		final RelativeStrengthIndexSignals rsiSignals = setUpRsiSignals();
+		setUpRsiSignals();
 
-		final List<IndicatorSignal> signals = rsiSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = rsi();
 
 		verifySignals(signals, firstSignal, secondSignal);
 		verifyRsiCaclculation();
@@ -159,9 +159,9 @@ public class RelativeStrengthIndexSignalsTest {
 	@Test
 	public void noSignalCalculators() {
 		removeSignalCalculators();
-		final RelativeStrengthIndexSignals rsiSignals = setUpRsiSignals();
+		setUpRsiSignals();
 
-		final List<IndicatorSignal> signals = rsiSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = rsi();
 
 		verifySignals(signals);
 		verifyRsiCaclculation();
@@ -172,9 +172,9 @@ public class RelativeStrengthIndexSignalsTest {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
 		setUpCalculator(secondCalculator, firstSignal, secondSignal);
-		final RelativeStrengthIndexSignals rsiSignals = setUpRsiSignals();
+		setUpRsiSignals();
 
-		final List<IndicatorSignal> signals = rsiSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = rsi();
 
 		verifySignals(signals, firstSignal, secondSignal);
 		verifyRsiCaclculation();
@@ -184,9 +184,7 @@ public class RelativeStrengthIndexSignalsTest {
 
 	@Test
 	public void twoSignalCalculatorsNoSignals() {
-		final RelativeStrengthIndexSignals rsiSignals = setUpRsiSignals();
-
-		final List<IndicatorSignal> signals = rsiSignals.calculateSignals(data);
+		final List<IndicatorSignal> signals = rsi();
 
 		verifySignals(signals);
 		verifyRsiCaclculation();
@@ -206,12 +204,17 @@ public class RelativeStrengthIndexSignalsTest {
 		        .thenReturn(datedSignals);
 	}
 
-	private RelativeStrengthIndexSignals setUpRsiSignals() {
-		return new RelativeStrengthIndexSignals(rsiId, LOOKBACK, rsi, signalCalculators, filter);
+	private List<IndicatorSignal> rsi() {
+		return indicator.calculateSignals(data);
+	}
+
+	private void setUpRsiSignals() {
+		indicator = new IndicatorSignalsBase<RelativeStrengthIndexLine, RelativeStrengthIndex>(rsiId, rsi, LOOKBACK,
+		        signalCalculators, filter);
 	}
 
 	private void verifyRsiCaclculation() {
-		verify(rsi).rsi(data);
+		verify(rsi).calculate(data);
 		verifyNoMoreInteractions(rsi);
 	}
 

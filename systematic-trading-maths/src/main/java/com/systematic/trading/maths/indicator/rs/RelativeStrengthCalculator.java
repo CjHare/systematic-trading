@@ -81,7 +81,7 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 	}
 
 	@Override
-	public RelativeStrengthLine rs( final TradingDayPrices[] data ) {
+	public RelativeStrengthLine calculate( final TradingDayPrices[] data ) {
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, lookback);

@@ -171,7 +171,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	private MovingAverageConvergenceDivergenceLines macd( final TradingDayPrices[] dataSet ) {
-		return calculator.macd(dataSet);
+		return calculator.calculate(dataSet);
 	}
 
 	private void setUpValidationErrorNullInput() {
@@ -200,28 +200,28 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	private void verfiyEmaCalls( final TradingDayPrices[] dataSet, final SortedMap<LocalDate, BigDecimal> macdValues ) {
-		verify(fastEma).ema(dataSet);
+		verify(fastEma).calculate(dataSet);
 		verifyNoMoreInteractions(fastEma);
 
-		verify(slowEma).ema(dataSet);
+		verify(slowEma).calculate(dataSet);
 		verifyNoMoreInteractions(slowEma);
 
-		verify(signalEma).ema(isSortedMap(macdValues));
+		verify(signalEma).calculate(isSortedMap(macdValues));
 		verifyNoMoreInteractions(signalEma);
 	}
 
 	@SuppressWarnings("unchecked")
 	private void setUpSignalEma( final SortedMap<LocalDate, BigDecimal> signalLine ) {
-		when(signalEma.ema(any(SortedMap.class))).thenReturn(new ExponentialMovingAverageLine(signalLine));
+		when(signalEma.calculate(any(SortedMap.class))).thenReturn(new ExponentialMovingAverageLine(signalLine));
 	}
 
 	private void setUpSlowEma( final int offset, final double... values ) {
-		when(slowEma.ema(any(TradingDayPrices[].class)))
+		when(slowEma.calculate(any(TradingDayPrices[].class)))
 		        .thenReturn(new ExponentialMovingAverageLine(asBigDecimalDateOffset(offset, values)));
 	}
 
 	private void setUpFastEma( final double... values ) {
-		when(fastEma.ema(any(TradingDayPrices[].class)))
+		when(fastEma.calculate(any(TradingDayPrices[].class)))
 		        .thenReturn(new ExponentialMovingAverageLine(asBigDecimal(values)));
 	}
 

@@ -65,13 +65,13 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	}
 
 	@Override
-	public MovingAverageConvergenceDivergenceLines macd( final TradingDayPrices[] data ) {
+	public MovingAverageConvergenceDivergenceLines calculate( final TradingDayPrices[] data ) {
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, 1);
 
-		final ExponentialMovingAverageLine slowEmaValues = slowEma.ema(data);
-		final ExponentialMovingAverageLine fastEmaValues = fastEma.ema(data);
+		final ExponentialMovingAverageLine slowEmaValues = slowEma.calculate(data);
+		final ExponentialMovingAverageLine fastEmaValues = fastEma.calculate(data);
 
 		final SortedMap<LocalDate, BigDecimal> macd = new TreeMap<>();
 		final SortedMap<LocalDate, BigDecimal> slow = slowEmaValues.getEma();
@@ -86,6 +86,6 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 			}
 		}
 
-		return new MovingAverageConvergenceDivergenceLines(macd, signalEma.ema(macd).getEma());
+		return new MovingAverageConvergenceDivergenceLines(macd, signalEma.calculate(macd).getEma());
 	}
 }
