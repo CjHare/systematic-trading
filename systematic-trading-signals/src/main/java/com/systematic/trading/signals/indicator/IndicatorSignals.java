@@ -35,7 +35,7 @@ import com.systematic.trading.signal.IndicatorSignalId;
  * 
  * @author CJ Hare
  */
-public interface IndicatorSignalGenerator {
+public interface IndicatorSignals {
 
 	/**
 	 * The maximum number of trading days data used by the signal analysers.
@@ -51,8 +51,7 @@ public interface IndicatorSignalGenerator {
 	 * @return signals generated from the given trading data, empty list means zero, never
 	 *         <code>null</code>.
 	 */
-	List<IndicatorSignal> calculateSignals( TradingDayPrices[] data );
-//TODO rename to calculate
+	List<IndicatorSignal> calculate( TradingDayPrices[] data );
 	//TODO return a sortedMap?
 	
 	/**

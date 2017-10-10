@@ -43,8 +43,8 @@ import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
+import com.systematic.trading.signals.indicator.IndicatorSignals;
+import com.systematic.trading.signals.indicator.GenericIndicatorSignals;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceBullishSignalCalculator;
 import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceUptrendSignalCalculator;
@@ -74,7 +74,7 @@ public class IndicatorSignalGeneratorFactory {
 	/**
 	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
 	 */
-	public IndicatorSignalGenerator create( final SignalConfiguration signal, final SignalRangeFilter filter ) {
+	public IndicatorSignals create( final SignalConfiguration signal, final SignalRangeFilter filter ) {
 
 		if (signal instanceof MacdConfiguration) {
 			return create((MacdConfiguration) signal, filter);
@@ -92,7 +92,7 @@ public class IndicatorSignalGeneratorFactory {
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
-	private IndicatorSignalGenerator create( final MacdUptrendConfiguration macdConfiguration,
+	private IndicatorSignals create( final MacdUptrendConfiguration macdConfiguration,
 	        final SignalRangeFilter filter ) {
 		final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new MovingAverageConvergenceDivergenceUptrendSignalCalculator());
@@ -101,7 +101,7 @@ public class IndicatorSignalGeneratorFactory {
 		        new IndicatorSignalId(macdConfiguration.getDescription()), filter, signalCalculators);
 	}
 
-	private IndicatorSignalGenerator create( final MacdConfiguration macdConfiguration,
+	private IndicatorSignals create( final MacdConfiguration macdConfiguration,
 	        final SignalRangeFilter filter ) {
 
 		final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators = new ArrayList<>();
@@ -112,7 +112,7 @@ public class IndicatorSignalGeneratorFactory {
 		        macdConfiguration.getSignalTimePeriods(), macdConfiguration.getType(), filter, signalCalculators);
 	}
 
-	private IndicatorSignalGenerator create( final int fastTimePeriods, final int slowTimePeriod,
+	private IndicatorSignals create( final int fastTimePeriods, final int slowTimePeriod,
 	        final int signalTimePeriods, final IndicatorSignalId id, final SignalRangeFilter filter,
 	        final List<SignalCalculator<MovingAverageConvergenceDivergenceLines>> signalCalculators ) {
 
@@ -129,11 +129,11 @@ public class IndicatorSignalGeneratorFactory {
 		final MovingAverageConvergenceDivergence macd = new MovingAverageConvergenceDivergenceCalculator(fastEma,
 		        slowEma, signalEma, new IllegalArgumentThrowingValidator());
 
-		return new IndicatorSignalsBase<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergence>(id,
+		return new GenericIndicatorSignals<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergence>(id,
 		        macd, requiredNumberOfTradingDays, signalCalculators, filter);
 	}
 
-	private IndicatorSignalGenerator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter ) {
+	private IndicatorSignals create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter ) {
 
 		final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new RelativeStrengthIndexBullishSignalCalculator(rsiConfiguration.getOversold()));
@@ -143,11 +143,11 @@ public class IndicatorSignalGeneratorFactory {
 		        new RelativeStrengthCalculator(rsiConfiguration.getLookback(), new IllegalArgumentThrowingValidator()),
 		        new IllegalArgumentThrowingValidator());
 
-		return new IndicatorSignalsBase<RelativeStrengthIndexLine, RelativeStrengthIndex>(rsiConfiguration.getType(),
+		return new GenericIndicatorSignals<RelativeStrengthIndexLine, RelativeStrengthIndex>(rsiConfiguration.getType(),
 		        rsi, rsiConfiguration.getLookback() + MINIMUM_DAYS_OF_RSI_VALUES, signalCalculators, filter);
 	}
 
-	private IndicatorSignalGenerator create( final SmaUptrendConfiguration sma, final SignalRangeFilter filter ) {
+	private IndicatorSignals create( final SmaUptrendConfiguration sma, final SignalRangeFilter filter ) {
 
 		final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new SimpleMovingAverageBullishGradientSignalCalculator());
@@ -155,7 +155,7 @@ public class IndicatorSignalGeneratorFactory {
 		final SimpleMovingAverage calculator = new SimpleMovingAverageCalculator(sma.getLookback(),
 		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
-		return new IndicatorSignalsBase<SimpleMovingAverageLine, SimpleMovingAverage>(sma.getType(), calculator,
+		return new GenericIndicatorSignals<SimpleMovingAverageLine, SimpleMovingAverage>(sma.getType(), calculator,
 		        sma.getLookback() + sma.getDaysOfGradient(), signalCalculators, filter);
 	}
 }

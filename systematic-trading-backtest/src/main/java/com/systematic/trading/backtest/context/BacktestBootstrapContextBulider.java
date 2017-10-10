@@ -49,7 +49,7 @@ import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.filter.TradingDaySignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.model.filter.ConfirmationIndicatorsSignalFilter;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
@@ -163,7 +163,7 @@ public class BacktestBootstrapContextBulider {
 
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
 
-		final IndicatorSignalGenerator[] indicatorGenerators = {
+		final IndicatorSignals[] indicatorGenerators = {
 		        IndicatorSignalGeneratorFactory.getInstance().create(anchor, signalRangeFilter),
 		        IndicatorSignalGeneratorFactory.getInstance().create(confirmation, signalRangeFilter) };
 
@@ -183,7 +183,7 @@ public class BacktestBootstrapContextBulider {
 		}
 
 		final SignalFilter filter = new IndicatorsOnSameDaySignalFilter(indicatorTypes);
-		final IndicatorSignalGenerator[] indicatorGenerators = new IndicatorSignalGenerator[indicators.length];
+		final IndicatorSignals[] indicatorGenerators = new IndicatorSignals[indicators.length];
 
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
 
@@ -223,7 +223,7 @@ public class BacktestBootstrapContextBulider {
 	private BacktestBootstrapContext getIndicatorConfiguration( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
 	        final EquityManagementFeeCalculator feeCalculator, final SignalFilter filter,
-	        final IndicatorSignalGenerator... indicators ) {
+	        final IndicatorSignals... indicators ) {
 
 		final LocalDate startDate = simulationDates.getStartDate();
 		final BoundedTradeValue tradeValue = new BoundedTradeValue(

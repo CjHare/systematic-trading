@@ -46,7 +46,7 @@ import com.systematic.trading.signals.model.DatedSignal;
  * 
  * @author CJ Hare
  */
-public class IndicatorSignalsBase<T, U extends Indicator<T>> implements IndicatorSignalGenerator {
+public class GenericIndicatorSignals<T, U extends Indicator<T>> implements IndicatorSignals {
 
 	/** Provides date range filtering. */
 	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
@@ -66,7 +66,7 @@ public class IndicatorSignalsBase<T, U extends Indicator<T>> implements Indicato
 	/** Minimum number of trading days required for MACD signal generation. */
 	private final int requiredNumberOfTradingDays;
 
-	public IndicatorSignalsBase( final IndicatorSignalId id, final U indicator, final int requiredNumberOfTradingDays,
+	public GenericIndicatorSignals( final IndicatorSignalId id, final U indicator, final int requiredNumberOfTradingDays,
 	        final List<SignalCalculator<T>> signalCalculators, final SignalRangeFilter signalRangeFilter ) {
 		this.signalCalculators = signalCalculators;
 		this.signalRangeFilter = signalRangeFilter;
@@ -88,7 +88,8 @@ public class IndicatorSignalsBase<T, U extends Indicator<T>> implements Indicato
 		return id;
 	}
 
-	public List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data ) {
+	@Override
+	public List<IndicatorSignal> calculate( final TradingDayPrices[] data ) {
 
 		//TODO validate the number of data items meets the minimum
 

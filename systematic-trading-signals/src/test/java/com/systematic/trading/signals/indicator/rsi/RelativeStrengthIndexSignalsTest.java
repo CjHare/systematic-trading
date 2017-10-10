@@ -53,7 +53,7 @@ import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.indicator.IndicatorSignalsBase;
+import com.systematic.trading.signals.indicator.GenericIndicatorSignals;
 import com.systematic.trading.signals.indicator.SignalCalculator;
 import com.systematic.trading.signals.model.DatedSignal;
 
@@ -93,7 +93,7 @@ public class RelativeStrengthIndexSignalsTest {
 	private IndicatorSignalId rsiId;
 
 	/** Indicator instance being tested. */
-	private IndicatorSignalsBase<RelativeStrengthIndexLine, RelativeStrengthIndex> indicator;
+	private GenericIndicatorSignals<RelativeStrengthIndexLine, RelativeStrengthIndex> indicator;
 
 	@Before
 	public void setUp() {
@@ -207,11 +207,11 @@ public class RelativeStrengthIndexSignalsTest {
 	}
 
 	private List<IndicatorSignal> rsi() {
-		return indicator.calculateSignals(data);
+		return indicator.calculate(data);
 	}
 
 	private void setUpRsiSignals() {
-		indicator = new IndicatorSignalsBase<RelativeStrengthIndexLine, RelativeStrengthIndex>(rsiId, rsi, LOOKBACK,
+		indicator = new GenericIndicatorSignals<RelativeStrengthIndexLine, RelativeStrengthIndex>(rsiId, rsi, LOOKBACK,
 		        signalCalculators, filter);
 	}
 

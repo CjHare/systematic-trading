@@ -38,7 +38,7 @@ import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signals.indicator.IndicatorSignal;
-import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
@@ -66,9 +66,9 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	private final List<SignalAnalysisListener> listeners = new ArrayList<>();
 
 	private final List<SignalFilter> filters;
-	private final List<IndicatorSignalGenerator> generators;
+	private final List<IndicatorSignals> generators;
 
-	public AnalysisLongBuySignals( final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters ) {
+	public AnalysisLongBuySignals( final List<IndicatorSignals> generators, final List<SignalFilter> filters ) {
 		validateInput(generators, filters);
 
 		this.generators = generators;
@@ -76,7 +76,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		this.requiredNumberOfTradingDays = getRequiredNumberOfTradingDays(generators);
 	}
 
-	private void validateInput( final List<IndicatorSignalGenerator> generators, final List<SignalFilter> filters ) {
+	private void validateInput( final List<IndicatorSignals> generators, final List<SignalFilter> filters ) {
 		if (generators == null) {
 			throw new IllegalArgumentException("Expecting a non-null list of generators");
 		}
@@ -85,10 +85,10 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		}
 	}
 
-	private int getRequiredNumberOfTradingDays( final List<IndicatorSignalGenerator> requiredGenerators ) {
+	private int getRequiredNumberOfTradingDays( final List<IndicatorSignals> requiredGenerators ) {
 
 		final List<Integer> requiredTradingDays = new ArrayList<>();
-		for (final IndicatorSignalGenerator generator : requiredGenerators) {
+		for (final IndicatorSignals generator : requiredGenerators) {
 			requiredTradingDays.add(generator.getRequiredNumberOfTradingDays());
 		}
 
@@ -120,7 +120,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = new HashMap<>();
 
-		for (final IndicatorSignalGenerator generator : generators) {
+		for (final IndicatorSignals generator : generators) {
 			final List<IndicatorSignal> signals = calculateSignals(data, generator);
 			final IndicatorSignalId type = generator.getSignalType();
 			indicatorSignals.put(type, signals);
@@ -130,12 +130,12 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	}
 
 	private List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data,
-	        final IndicatorSignalGenerator generator ) {
+	        final IndicatorSignals generator ) {
 
 		final List<IndicatorSignal> signals;
 
 		if (generator.getRequiredNumberOfTradingDays() < data.length) {
-			signals = generator.calculateSignals(data);
+			signals = generator.calculate(data);
 			notifyIndicatorEvent(signals);
 			return signals;
 		}

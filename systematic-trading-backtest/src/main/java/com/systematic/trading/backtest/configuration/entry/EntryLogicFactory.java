@@ -36,7 +36,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.AnalysisLongBuySignals;
-import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
+import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.model.filter.RollingTimePeriodSignalFilterDecorator;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
@@ -76,7 +76,7 @@ public class EntryLogicFactory {
 
 	public EntryLogic create( final EquityIdentity equity, final TradeValueLogic tradeValue,
 	        final BacktestSimulationDates simulationDates, final SignalFilter filter,
-	        final IndicatorSignalGenerator[] entrySignals ) {
+	        final IndicatorSignals[] entrySignals ) {
 		final LocalDate simulationStartDate = simulationDates.getStartDate();
 		final LocalDate simulationEndDate = simulationDates.getEndDate();
 
