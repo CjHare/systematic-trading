@@ -68,6 +68,8 @@ import com.systematic.trading.signals.model.DatedSignal;
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleMovingAverageGradientSignalsTest {
 
+	//TODO generic test behaviour - refactor
+	
 	/** Number of days needed to correctly calculate the first RSI value.*/
 	private static final int LOOKBACK = 26;
 

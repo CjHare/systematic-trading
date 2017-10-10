@@ -34,6 +34,8 @@ import com.systematic.trading.signals.model.DatedSignal;
 @RunWith(MockitoJUnitRunner.class)
 public class MovingAveragingConvergeDivergenceSignalsTest {
 
+	//TODO generic test behaviour - refactor
+	
 	private static final int REQUIRED_TRADING_DAYS = 34;
 
 	@Mock
