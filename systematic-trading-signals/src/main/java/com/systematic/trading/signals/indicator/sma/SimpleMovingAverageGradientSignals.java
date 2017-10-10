@@ -48,10 +48,10 @@ public class SimpleMovingAverageGradientSignals extends IndicatorSignalsBase<Sim
 	/** Responsible for calculating the simple moving average. */
 	private final SimpleMovingAverage sma;
 
-	public SimpleMovingAverageGradientSignals( final IndicatorSignalId id, final int lookback, final int daysOfGradient,
+	public SimpleMovingAverageGradientSignals( final IndicatorSignalId id, final int requiredNumberOfTradingDays,
 	        final SimpleMovingAverage sma, final List<SignalCalculator<SimpleMovingAverageLine>> signalCalculators,
 	        final SignalRangeFilter filter ) {
-		super(id, lookback + daysOfGradient, signalCalculators, filter);
+		super(id, requiredNumberOfTradingDays, signalCalculators, filter);
 		this.sma = sma;
 	}
 

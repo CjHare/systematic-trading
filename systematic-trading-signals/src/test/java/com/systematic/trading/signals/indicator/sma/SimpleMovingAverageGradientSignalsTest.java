@@ -216,7 +216,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	private SimpleMovingAverageGradientSignals setUpSmaSignals() {
-		return new SimpleMovingAverageGradientSignals(smaId, LOOKBACK, DAYS_OF_GRADIENT, sma, signalCalculators,
+		return new SimpleMovingAverageGradientSignals(smaId, LOOKBACK + DAYS_OF_GRADIENT, sma, signalCalculators,
 		        filter);
 	}
 

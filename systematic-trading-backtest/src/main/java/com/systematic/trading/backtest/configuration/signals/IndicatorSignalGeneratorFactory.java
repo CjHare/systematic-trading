@@ -60,6 +60,9 @@ import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageGradientS
  */
 public class IndicatorSignalGeneratorFactory {
 
+	/** The least number of data points that enables RSI signal generation. */
+	private static final int MINIMUM_DAYS_OF_RSI_VALUES = 2;
+
 	public static final IndicatorSignalGeneratorFactory INSTANCE = new IndicatorSignalGeneratorFactory();
 
 	private IndicatorSignalGeneratorFactory() {
@@ -141,8 +144,8 @@ public class IndicatorSignalGeneratorFactory {
 		        new RelativeStrengthCalculator(rsiConfiguration.getLookback(), new IllegalArgumentThrowingValidator()),
 		        new IllegalArgumentThrowingValidator());
 
-		return new RelativeStrengthIndexSignals(rsiConfiguration.getType(), rsiConfiguration.getLookback(), rsi,
-		        signalCalculators, filter);
+		return new RelativeStrengthIndexSignals(rsiConfiguration.getType(),
+		        rsiConfiguration.getLookback() + MINIMUM_DAYS_OF_RSI_VALUES, rsi, signalCalculators, filter);
 	}
 
 	private IndicatorSignalGenerator create( final SmaUptrendConfiguration sma, final SignalRangeFilter filter ) {
@@ -153,7 +156,7 @@ public class IndicatorSignalGeneratorFactory {
 		final SimpleMovingAverage calculator = new SimpleMovingAverageCalculator(sma.getLookback(),
 		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
-		return new SimpleMovingAverageGradientSignals(sma.getType(), sma.getLookback(), sma.getDaysOfGradient(),
+		return new SimpleMovingAverageGradientSignals(sma.getType(), sma.getLookback() + sma.getDaysOfGradient(),
 		        calculator, signalCalculators, filter);
 	}
 }

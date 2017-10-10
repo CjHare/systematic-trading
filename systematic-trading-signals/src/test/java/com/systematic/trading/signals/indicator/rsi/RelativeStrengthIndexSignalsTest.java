@@ -66,9 +66,6 @@ public class RelativeStrengthIndexSignalsTest {
 	/** Number of days needed to correctly calculate the first RSI value.*/
 	private static final int LOOKBACK = 26;
 
-	/** Minimum number of useful days for RSI evaluation, */
-	private static final int REQUIRED_TRADING_DAYS = 2 + LOOKBACK;
-
 	@Mock
 	private SignalRangeFilter filter;
 
@@ -113,7 +110,7 @@ public class RelativeStrengthIndexSignalsTest {
 	public void getRequiredNumberOfTradingDays() {
 		RelativeStrengthIndexSignals rsiSignals = setUpRsiSignals();
 
-		assertEquals(REQUIRED_TRADING_DAYS, rsiSignals.getRequiredNumberOfTradingDays());
+		assertEquals(LOOKBACK, rsiSignals.getRequiredNumberOfTradingDays());
 	}
 
 	@Test

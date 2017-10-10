@@ -44,9 +44,6 @@ import com.systematic.trading.signals.indicator.SignalCalculator;
  */
 public class RelativeStrengthIndexSignals extends IndicatorSignalsBase<RelativeStrengthIndexLine> {
 
-	/** The least number of data points that enables RSI signal generation. */
-	private static final int MINIMUM_DAYS_OF_RSI_VALUES = 2;
-
 	/** Calculates the RSI values from time series data. */
 	private final RelativeStrengthIndex rsi;
 
@@ -54,10 +51,10 @@ public class RelativeStrengthIndexSignals extends IndicatorSignalsBase<RelativeS
 	 * @param lookback the number of data points to use in calculations.
 	 * @param daysOfRsiValues the number of RSI values desired.
 	 */
-	public RelativeStrengthIndexSignals( final IndicatorSignalId id, final int lookback,
+	public RelativeStrengthIndexSignals( final IndicatorSignalId id, final int requiredNumberOfTradingDays,
 	        final RelativeStrengthIndex rsi, final List<SignalCalculator<RelativeStrengthIndexLine>> signalCalculators,
 	        final SignalRangeFilter filter ) {
-		super(id, lookback + MINIMUM_DAYS_OF_RSI_VALUES, signalCalculators, filter);
+		super(id, requiredNumberOfTradingDays, signalCalculators, filter);
 		this.rsi = rsi;
 	}
 
