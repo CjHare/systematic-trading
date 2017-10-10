@@ -56,7 +56,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 	}
 
 	@Override
-	public List<DatedSignal> calculate( final MovingAverageConvergenceDivergenceLines lines,
+	public List<DatedSignal> generate( final MovingAverageConvergenceDivergenceLines lines,
 	        Predicate<LocalDate> signalRange ) {
 
 		final SortedMap<LocalDate, BigDecimal> macd = lines.getMacd();

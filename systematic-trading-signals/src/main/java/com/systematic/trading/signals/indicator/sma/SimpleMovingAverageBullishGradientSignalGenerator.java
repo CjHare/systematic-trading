@@ -57,7 +57,7 @@ public class SimpleMovingAverageBullishGradientSignalGenerator implements Signal
 	}
 
 	@Override
-	public List<DatedSignal> calculate( final SimpleMovingAverageLine indicatorOutput,
+	public List<DatedSignal> generate( final SimpleMovingAverageLine indicatorOutput,
 	        final Predicate<LocalDate> signalRange ) {
 
 		final SortedMap<LocalDate, BigDecimal> sma = indicatorOutput.getSma();

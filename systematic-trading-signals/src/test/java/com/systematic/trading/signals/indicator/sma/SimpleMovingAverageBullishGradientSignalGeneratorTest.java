@@ -70,23 +70,23 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	@Mock
 	private Predicate<LocalDate> signalRange;
 
-	private SignalGenerator<SimpleMovingAverageLine> signalCalculator;
-	private SortedMap<LocalDate, BigDecimal> macd;
+	private SignalGenerator<SimpleMovingAverageLine> signalGenerators;
+	private SortedMap<LocalDate, BigDecimal> sma;
 
 	@Before
 	public void setUp() {
-		signalCalculator = new SimpleMovingAverageBullishGradientSignalGenerator();
+		signalGenerators = new SimpleMovingAverageBullishGradientSignalGenerator();
 
-		macd = new TreeMap<>();
+		sma = new TreeMap<>();
 
-		when(lines.getSma()).thenReturn(macd);
+		when(lines.getSma()).thenReturn(sma);
 
 		setUpDateRange(true);
 	}
 
 	@Test
 	public void getTYpe() {
-		assertEquals(SignalType.BULLISH, signalCalculator.getType());
+		assertEquals(SignalType.BULLISH, signalGenerators.getType());
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 		setUpDateRange(false);
 		setUpSma(1, 1.1, 1.2);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(3);
@@ -104,7 +104,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void tooFewValues() {
 		setUpSma(0.5);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(0);
@@ -113,7 +113,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	@Test
 	public void noValues() {
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(0);
@@ -123,7 +123,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void flatline() {
 		setUpSma(0.5, 0.5, 0.5, 0.5);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(4);
@@ -133,7 +133,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void downardGradient() {
 		setUpSma(0.5, 0.4, 0.3, 0.2);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(4);
@@ -143,7 +143,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void upwardGradient() {
 		setUpSma(0.5, 0.6, 0.7, 0.8);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
 
 		verifySignals(3, signals);
 		verfiyDatedSignal(1, signals.get(0));
@@ -156,7 +156,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void upwardGradientThenFlat() {
 		setUpSma(0.5, 0.6, 0.6);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
 
 		verifySignals(1, signals);
 		verfiyDatedSignal(1, signals.get(0));
@@ -167,7 +167,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void downwardThenUpwardGradientThenFlat() {
 		setUpSma(0.55, 0.5, 0.4, 0.4, 0.5);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
 
 		verifySignals(1, signals);
 		verfiyDatedSignal(4, signals.get(0));
@@ -198,7 +198,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 
 	private void setUpSma( final double... values ) {
 		for (int i = 0; i < values.length; i++)
-			macd.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
+			sma.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
 	}
 
 	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {

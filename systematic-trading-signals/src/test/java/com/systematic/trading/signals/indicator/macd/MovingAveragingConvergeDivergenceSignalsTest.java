@@ -39,10 +39,10 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	private static final int REQUIRED_TRADING_DAYS = 34;
 
 	@Mock
-	private SignalGenerator<MovingAverageConvergenceDivergenceLines> firstCalculator;
+	private SignalGenerator<MovingAverageConvergenceDivergenceLines> firstGenerator;
 
 	@Mock
-	private SignalGenerator<MovingAverageConvergenceDivergenceLines> secondCalculator;
+	private SignalGenerator<MovingAverageConvergenceDivergenceLines> secondGenerator;
 
 	@Mock
 	private SignalRangeFilter filter;
@@ -56,7 +56,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	@Mock
 	private IndicatorSignalId macdId;
 
-	private List<SignalGenerator<MovingAverageConvergenceDivergenceLines>> signalCalculators;
+	private List<SignalGenerator<MovingAverageConvergenceDivergenceLines>> signalGenerators;
 
 	private TradingDayPrices[] data;
 
@@ -67,9 +67,9 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	public void setUp() {
 		when(macd.calculate(any(TradingDayPrices[].class))).thenReturn(lines);
 
-		signalCalculators = new ArrayList<>();
-		signalCalculators.add(firstCalculator);
-		signalCalculators.add(secondCalculator);
+		signalGenerators = new ArrayList<>();
+		signalGenerators.add(firstGenerator);
+		signalGenerators.add(secondGenerator);
 
 		data = new TradingDayPrices[0];
 
@@ -112,7 +112,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	public void firstSignalCalculatorTwoSignals() {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
-		setUpCalculator(firstCalculator, firstSignal, secondSignal);
+		setUpCalculator(firstGenerator, firstSignal, secondSignal);
 		setUpMacdSignals();
 
 		final List<IndicatorSignal> signals = macd();
@@ -127,7 +127,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	public void secondSignalCalculatorTwoSignals() {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
-		setUpCalculator(secondCalculator, firstSignal, secondSignal);
+		setUpCalculator(secondGenerator, firstSignal, secondSignal);
 		setUpMacdSignals();
 
 		final List<IndicatorSignal> signals = macd();
@@ -142,8 +142,8 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	public void eachSignalCalculatorOneSignal() {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
-		setUpCalculator(firstCalculator, secondSignal);
-		setUpCalculator(secondCalculator, firstSignal);
+		setUpCalculator(firstGenerator, secondSignal);
+		setUpCalculator(secondGenerator, firstSignal);
 		setUpMacdSignals();
 
 		final List<IndicatorSignal> signals = macd();
@@ -162,7 +162,7 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 			datedSignals.add(signal);
 		}
 
-		when(calculator.calculate(any(MovingAverageConvergenceDivergenceLines.class), any(Predicate.class)))
+		when(calculator.generate(any(MovingAverageConvergenceDivergenceLines.class), any(Predicate.class)))
 		        .thenReturn(datedSignals);
 	}
 
@@ -189,27 +189,27 @@ public class MovingAveragingConvergeDivergenceSignalsTest {
 	}
 
 	private void verifyFirstCalculatorSignals( final int... typeCount ) {
-		verifyCalculatorSignals(firstCalculator, typeCount.length == 0 ? 0 : typeCount[0]);
+		verifyCalculatorSignals(firstGenerator, typeCount.length == 0 ? 0 : typeCount[0]);
 	}
 
 	private void verifySecondCalculatorSignals( final int... typeCount ) {
-		verifyCalculatorSignals(secondCalculator, typeCount.length == 0 ? 0 : typeCount[0]);
+		verifyCalculatorSignals(secondGenerator, typeCount.length == 0 ? 0 : typeCount[0]);
 	}
 
 	@SuppressWarnings("unchecked")
 	private void verifyCalculatorSignals( SignalGenerator<MovingAverageConvergenceDivergenceLines> calculator,
 	        final int typeCount ) {
-		verify(calculator).calculate(eq(lines), any(Predicate.class));
+		verify(calculator).generate(eq(lines), any(Predicate.class));
 		verify(calculator, times(typeCount)).getType();
 		verifyNoMoreInteractions(calculator);
 	}
 
 	private void setUpMacdSignals() {
 		indicator = new GenericIndicatorSignals<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergence>(
-		        macdId, macd, REQUIRED_TRADING_DAYS, signalCalculators, filter);
+		        macdId, macd, REQUIRED_TRADING_DAYS, signalGenerators, filter);
 	}
 
 	private void removeSignalCalculators() {
-		signalCalculators.clear();
+		signalGenerators.clear();
 	}
 }

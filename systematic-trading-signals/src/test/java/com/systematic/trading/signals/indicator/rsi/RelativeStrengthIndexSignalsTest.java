@@ -77,12 +77,12 @@ public class RelativeStrengthIndexSignalsTest {
 	private RelativeStrengthIndexCalculator rsi;
 
 	@Mock
-	private SignalGenerator<RelativeStrengthIndexLine> firstCalculator;
+	private SignalGenerator<RelativeStrengthIndexLine> firstGenerator;
 
 	@Mock
-	private SignalGenerator<RelativeStrengthIndexLine> secondCalculator;
+	private SignalGenerator<RelativeStrengthIndexLine> secondGenerator;
 
-	private List<SignalGenerator<RelativeStrengthIndexLine>> signalCalculators;
+	private List<SignalGenerator<RelativeStrengthIndexLine>> signalGenerators;
 
 	private TradingDayPrices[] data;
 
@@ -97,9 +97,9 @@ public class RelativeStrengthIndexSignalsTest {
 
 	@Before
 	public void setUp() {
-		signalCalculators = new ArrayList<>();
-		signalCalculators.add(firstCalculator);
-		signalCalculators.add(secondCalculator);
+		signalGenerators = new ArrayList<>();
+		signalGenerators.add(firstGenerator);
+		signalGenerators.add(secondGenerator);
 
 		data = new TradingDayPrices[0];
 
@@ -131,8 +131,8 @@ public class RelativeStrengthIndexSignalsTest {
 	public void eachSignalCalculatorOneSignal() {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
-		setUpCalculator(firstCalculator, secondSignal);
-		setUpCalculator(secondCalculator, firstSignal);
+		setUpCalculator(firstGenerator, secondSignal);
+		setUpCalculator(secondGenerator, firstSignal);
 		setUpRsiSignals();
 
 		final List<IndicatorSignal> signals = rsi();
@@ -147,7 +147,7 @@ public class RelativeStrengthIndexSignalsTest {
 	public void firstSignalCalculatorTwoSignals() {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
-		setUpCalculator(firstCalculator, firstSignal, secondSignal);
+		setUpCalculator(firstGenerator, firstSignal, secondSignal);
 		setUpRsiSignals();
 
 		final List<IndicatorSignal> signals = rsi();
@@ -173,7 +173,7 @@ public class RelativeStrengthIndexSignalsTest {
 	public void secondSignalCalculatorTwoSignals() {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
-		setUpCalculator(secondCalculator, firstSignal, secondSignal);
+		setUpCalculator(secondGenerator, firstSignal, secondSignal);
 		setUpRsiSignals();
 
 		final List<IndicatorSignal> signals = rsi();
@@ -202,7 +202,7 @@ public class RelativeStrengthIndexSignalsTest {
 			datedSignals.add(signal);
 		}
 
-		when(calculator.calculate(any(RelativeStrengthIndexLine.class), any(Predicate.class)))
+		when(calculator.generate(any(RelativeStrengthIndexLine.class), any(Predicate.class)))
 		        .thenReturn(datedSignals);
 	}
 
@@ -212,7 +212,7 @@ public class RelativeStrengthIndexSignalsTest {
 
 	private void setUpRsiSignals() {
 		indicator = new GenericIndicatorSignals<RelativeStrengthIndexLine, RelativeStrengthIndex>(rsiId, rsi, LOOKBACK,
-		        signalCalculators, filter);
+		        signalGenerators, filter);
 	}
 
 	private void verifyRsiCaclculation() {
@@ -234,21 +234,21 @@ public class RelativeStrengthIndexSignalsTest {
 	}
 
 	private void verifyFirstCalculatorSignals( final int... typeCount ) {
-		verifyCalculatorSignals(firstCalculator, typeCount.length == 0 ? 0 : typeCount[0]);
+		verifyCalculatorSignals(firstGenerator, typeCount.length == 0 ? 0 : typeCount[0]);
 	}
 
 	private void verifySecondCalculatorSignals( final int... typeCount ) {
-		verifyCalculatorSignals(secondCalculator, typeCount.length == 0 ? 0 : typeCount[0]);
+		verifyCalculatorSignals(secondGenerator, typeCount.length == 0 ? 0 : typeCount[0]);
 	}
 
 	private void removeSignalCalculators() {
-		signalCalculators.clear();
+		signalGenerators.clear();
 	}
 
 	@SuppressWarnings("unchecked")
 	private void verifyCalculatorSignals( final SignalGenerator<RelativeStrengthIndexLine> calculator,
 	        final int typeCount ) {
-		verify(calculator).calculate(eq(line), any(Predicate.class));
+		verify(calculator).generate(eq(line), any(Predicate.class));
 		verify(calculator, times(typeCount)).getType();
 		verifyNoMoreInteractions(calculator);
 	}

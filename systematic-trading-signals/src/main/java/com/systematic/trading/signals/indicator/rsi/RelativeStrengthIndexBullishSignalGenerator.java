@@ -32,8 +32,6 @@ package com.systematic.trading.signals.indicator.rsi;
 import java.math.BigDecimal;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
-import com.systematic.trading.signals.indicator.SignalGenerator;
 
 /**
  * Given RSI line points calculates when the following bullish events occurred:
@@ -44,13 +42,12 @@ import com.systematic.trading.signals.indicator.SignalGenerator;
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexBullishSignalCalculator extends RelativeStrengthIndexSignalGenerator
-        implements SignalGenerator<RelativeStrengthIndexLine> {
+public class RelativeStrengthIndexBullishSignalGenerator extends RelativeStrengthIndexSignalGenerator {
 
 	/** Threshold for when the RSI is considered as over sold.*/
 	private final BigDecimal oversold;
 
-	public RelativeStrengthIndexBullishSignalCalculator( final BigDecimal oversold ) {
+	public RelativeStrengthIndexBullishSignalGenerator( final BigDecimal oversold ) {
 		this.oversold = oversold;
 	}
 

@@ -70,7 +70,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	@Mock
 	private RelativeStrengthIndexLine rsi;
 
-	private RelativeStrengthIndexBearishSignalGenerator calculator;
+	private RelativeStrengthIndexBearishSignalGenerator bearishRsi;
 
 	@Before
 	public void setUp() {
@@ -80,7 +80,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 
 	@Test
 	public void getType() {
-		assertEquals(SignalType.BEARISH, calculator.getType());
+		assertEquals(SignalType.BEARISH, bearishRsi.getType());
 	}
 
 	@Test
@@ -173,7 +173,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	}
 
 	private List<DatedSignal> rsi() {
-		return calculator.calculate(rsi, signalRange);
+		return bearishRsi.generate(rsi, signalRange);
 	}
 
 	private void setUpRsi( final double... values ) {
@@ -187,7 +187,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	}
 
 	private void setUpCalculator() {
-		calculator = new RelativeStrengthIndexBearishSignalGenerator(BigDecimal.valueOf(OVER_BROUGHT));
+		bearishRsi = new RelativeStrengthIndexBearishSignalGenerator(BigDecimal.valueOf(OVER_BROUGHT));
 	}
 
 	private void verifySignals( final int expectedSize, final List<DatedSignal> signals ) {

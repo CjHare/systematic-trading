@@ -70,7 +70,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 	@Mock
 	private RelativeStrengthIndexLine rsi;
 
-	private RelativeStrengthIndexBullishSignalCalculator calculator;
+	private RelativeStrengthIndexBullishSignalGenerator bullishRsi;
 
 	@Before
 	public void setUp() {
@@ -80,7 +80,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 
 	@Test
 	public void getType() {
-		assertEquals(SignalType.BULLISH, calculator.getType());
+		assertEquals(SignalType.BULLISH, bullishRsi.getType());
 	}
 
 	@Test
@@ -167,7 +167,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 	}
 
 	private List<DatedSignal> rsi() {
-		return calculator.calculate(rsi, signalRange);
+		return bullishRsi.generate(rsi, signalRange);
 	}
 
 	private void setUpRsi( final double... values ) {
@@ -181,7 +181,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 	}
 
 	private void setUpCalculator() {
-		calculator = new RelativeStrengthIndexBullishSignalCalculator(BigDecimal.valueOf(OVER_SOLD));
+		bullishRsi = new RelativeStrengthIndexBullishSignalGenerator(BigDecimal.valueOf(OVER_SOLD));
 	}
 
 	private void verifySignals( final int expectedSize, final List<DatedSignal> signals ) {

@@ -86,12 +86,12 @@ public class SimpleMovingAverageGradientSignalsTest {
 	private SimpleMovingAverage sma;
 
 	@Mock
-	private SignalGenerator<SimpleMovingAverageLine> firstCalculator;
+	private SignalGenerator<SimpleMovingAverageLine> firstGenerator;
 
 	@Mock
-	private SignalGenerator<SimpleMovingAverageLine> secondCalculator;
+	private SignalGenerator<SimpleMovingAverageLine> secondGenerator;
 
-	private List<SignalGenerator<SimpleMovingAverageLine>> signalCalculators;
+	private List<SignalGenerator<SimpleMovingAverageLine>> signalGenerators;
 
 	private TradingDayPrices[] data;
 
@@ -106,9 +106,9 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 	@Before
 	public void setUp() {
-		signalCalculators = new ArrayList<>();
-		signalCalculators.add(firstCalculator);
-		signalCalculators.add(secondCalculator);
+		signalGenerators = new ArrayList<>();
+		signalGenerators.add(firstGenerator);
+		signalGenerators.add(secondGenerator);
 
 		data = new TradingDayPrices[0];
 
@@ -141,8 +141,8 @@ public class SimpleMovingAverageGradientSignalsTest {
 	public void eachSignalCalculatorOneSignal() {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
-		setUpCalculator(firstCalculator, secondSignal);
-		setUpCalculator(secondCalculator, firstSignal);
+		setUpCalculator(firstGenerator, secondSignal);
+		setUpCalculator(secondGenerator, firstSignal);
 		setUpSmaSignals();
 
 		final List<IndicatorSignal> signals = sma();
@@ -157,7 +157,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	public void firstSignalCalculatorTwoSignals() {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
-		setUpCalculator(firstCalculator, firstSignal, secondSignal);
+		setUpCalculator(firstGenerator, firstSignal, secondSignal);
 		setUpSmaSignals();
 
 		final List<IndicatorSignal> signals = sma();
@@ -183,7 +183,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 	public void secondSignalCalculatorTwoSignals() {
 		final DatedSignal firstSignal = new DatedSignal(LocalDate.ofEpochDay(1), SignalType.BULLISH);
 		final DatedSignal secondSignal = new DatedSignal(LocalDate.ofEpochDay(5), SignalType.BULLISH);
-		setUpCalculator(secondCalculator, firstSignal, secondSignal);
+		setUpCalculator(secondGenerator, firstSignal, secondSignal);
 		setUpSmaSignals();
 
 		final List<IndicatorSignal> signals = sma();
@@ -212,7 +212,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 			datedSignals.add(signal);
 		}
 
-		when(calculator.calculate(any(SimpleMovingAverageLine.class), any(Predicate.class)))
+		when(calculator.generate(any(SimpleMovingAverageLine.class), any(Predicate.class)))
 		        .thenReturn(datedSignals);
 	}
 
@@ -222,7 +222,7 @@ public class SimpleMovingAverageGradientSignalsTest {
 
 	private void setUpSmaSignals() {
 		indicator = new GenericIndicatorSignals<SimpleMovingAverageLine, SimpleMovingAverage>(smaId, sma,
-		        LOOKBACK + DAYS_OF_GRADIENT, signalCalculators, filter);
+		        LOOKBACK + DAYS_OF_GRADIENT, signalGenerators, filter);
 	}
 
 	private void verifyRsiCaclculation() {
@@ -244,21 +244,21 @@ public class SimpleMovingAverageGradientSignalsTest {
 	}
 
 	private void verifyFirstCalculatorSignals( final int... typeCount ) {
-		verifyCalculatorSignals(firstCalculator, typeCount.length == 0 ? 0 : typeCount[0]);
+		verifyCalculatorSignals(firstGenerator, typeCount.length == 0 ? 0 : typeCount[0]);
 	}
 
 	private void verifySecondCalculatorSignals( final int... typeCount ) {
-		verifyCalculatorSignals(secondCalculator, typeCount.length == 0 ? 0 : typeCount[0]);
+		verifyCalculatorSignals(secondGenerator, typeCount.length == 0 ? 0 : typeCount[0]);
 	}
 
 	private void removeSignalCalculators() {
-		signalCalculators.clear();
+		signalGenerators.clear();
 	}
 
 	@SuppressWarnings("unchecked")
 	private void verifyCalculatorSignals( final SignalGenerator<SimpleMovingAverageLine> calculator,
 	        final int typeCount ) {
-		verify(calculator).calculate(eq(line), any(Predicate.class));
+		verify(calculator).generate(eq(line), any(Predicate.class));
 		verify(calculator, times(typeCount)).getType();
 		verifyNoMoreInteractions(calculator);
 	}

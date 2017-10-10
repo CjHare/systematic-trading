@@ -36,8 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
+import com.systematic.trading.signals.indicator.SignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
@@ -45,9 +45,9 @@ import com.systematic.trading.signals.model.DatedSignal;
  * 
  * @author CJ Hare
  */
-public abstract class RelativeStrengthIndexSignalGenerator {
+public abstract class RelativeStrengthIndexSignalGenerator implements SignalGenerator<RelativeStrengthIndexLine> {
 
-	public List<DatedSignal> calculate( final RelativeStrengthIndexLine rsiLine,
+	public List<DatedSignal> generate( final RelativeStrengthIndexLine rsiLine,
 	        final Predicate<LocalDate> signalRange ) {
 
 		final List<DatedSignal> signals = new ArrayList<>();
@@ -67,6 +67,4 @@ public abstract class RelativeStrengthIndexSignalGenerator {
 	}
 
 	protected abstract boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today );
-
-	protected abstract SignalType getType();
 }

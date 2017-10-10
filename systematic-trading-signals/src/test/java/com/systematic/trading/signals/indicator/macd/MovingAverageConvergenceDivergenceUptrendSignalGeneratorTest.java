@@ -69,12 +69,12 @@ public class MovingAverageConvergenceDivergenceUptrendSignalGeneratorTest {
 	@Mock
 	private Predicate<LocalDate> signalRange;
 
-	private SignalGenerator<MovingAverageConvergenceDivergenceLines> signalCalculator;
+	private SignalGenerator<MovingAverageConvergenceDivergenceLines> signalGenerator;
 	private SortedMap<LocalDate, BigDecimal> macd;
 
 	@Before
 	public void setUp() {
-		signalCalculator = new MovingAverageConvergenceDivergenceUptrendSignalGenerator();
+		signalGenerator = new MovingAverageConvergenceDivergenceUptrendSignalGenerator();
 
 		macd = new TreeMap<>();
 
@@ -85,7 +85,7 @@ public class MovingAverageConvergenceDivergenceUptrendSignalGeneratorTest {
 
 	@Test
 	public void getTYpe() {
-		assertEquals(SignalType.BULLISH, signalCalculator.getType());
+		assertEquals(SignalType.BULLISH, signalGenerator.getType());
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class MovingAverageConvergenceDivergenceUptrendSignalGeneratorTest {
 		final int numberSignalLinesDates = 4;
 		setUpMacd(1, 1.1, 1.2, 1.3);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerator.generate(lines, signalRange);
 
 		verifySignals(4, signals);
 		verfiyDatedSignal(0, signals.get(0));
@@ -109,7 +109,7 @@ public class MovingAverageConvergenceDivergenceUptrendSignalGeneratorTest {
 		final int numberSignalLinesDates = 3;
 		setUpMacd(1, 1.1, 1.2);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerator.generate(lines, signalRange);
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(numberSignalLinesDates);
@@ -120,7 +120,7 @@ public class MovingAverageConvergenceDivergenceUptrendSignalGeneratorTest {
 		final int numberSignalLinesDates = 4;
 		setUpMacd(-1, -0.5, 0.25, 1.3);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerator.generate(lines, signalRange);
 
 		verifySignals(2, signals);
 		verfiyDatedSignal(2, signals.get(0));
@@ -133,7 +133,7 @@ public class MovingAverageConvergenceDivergenceUptrendSignalGeneratorTest {
 		final int numberSignalLinesDates = 4;
 		setUpMacd(1, 0, 0, 1.3);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerator.generate(lines, signalRange);
 
 		verifySignals(2, signals);
 		verfiyDatedSignal(0, signals.get(0));
@@ -146,7 +146,7 @@ public class MovingAverageConvergenceDivergenceUptrendSignalGeneratorTest {
 		final int numberSignalLinesDates = 4;
 		setUpMacd(-1, -0.6, -0.10, -1.3);
 
-		final List<DatedSignal> signals = signalCalculator.calculate(lines, signalRange);
+		final List<DatedSignal> signals = signalGenerator.generate(lines, signalRange);
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(numberSignalLinesDates);

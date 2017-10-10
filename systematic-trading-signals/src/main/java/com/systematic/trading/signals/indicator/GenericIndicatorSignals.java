@@ -102,7 +102,7 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
 
 		for (final SignalGenerator<T> calculator : signalCalculators) {
-			final List<DatedSignal> signals = calculator.calculate(indicatorOutput, signalRange);
+			final List<DatedSignal> signals = calculator.generate(indicatorOutput, signalRange);
 
 			for (final DatedSignal signal : signals) {
 				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalType(), calculator.getType()));
