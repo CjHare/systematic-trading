@@ -117,12 +117,12 @@ public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
 	@Test
 	public void noSignals() {
 
-		final List<IndicatorSignal> signals = sma();
+		final List<IndicatorSignal> signals = calculate();
 
 		verifySignals(signals);
-		verifyRsiCaclculation();
-		verifyFirstCalculatorSignals();
-		verifySecondCalculatorSignals();
+		verifyCaclculation();
+		verifyFirstGeneratorSignals();
+		verifySecondGeneratorSignals();
 	}
 
 	@Test
@@ -133,12 +133,12 @@ public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
 		setUpCalculator(secondGenerator, firstSignal);
 		setUpIndicatorSignals();
 
-		final List<IndicatorSignal> signals = sma();
+		final List<IndicatorSignal> signals = calculate();
 
 		verifySignals(signals, secondSignal, firstSignal);
-		verifyRsiCaclculation();
-		verifyFirstCalculatorSignals(1);
-		verifySecondCalculatorSignals(1);
+		verifyCaclculation();
+		verifyFirstGeneratorSignals(1);
+		verifySecondGeneratorSignals(1);
 	}
 
 	@Test
@@ -148,23 +148,23 @@ public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
 		setUpCalculator(firstGenerator, firstSignal, secondSignal);
 		setUpIndicatorSignals();
 
-		final List<IndicatorSignal> signals = sma();
+		final List<IndicatorSignal> signals = calculate();
 
 		verifySignals(signals, firstSignal, secondSignal);
-		verifyRsiCaclculation();
-		verifyFirstCalculatorSignals(2);
-		verifySecondCalculatorSignals();
+		verifyCaclculation();
+		verifyFirstGeneratorSignals(2);
+		verifySecondGeneratorSignals();
 	}
 
 	@Test
 	public void noSignalCalculators() {
-		removeSignalCalculators();
+		removeSignalGenerators();
 		setUpIndicatorSignals();
 
-		final List<IndicatorSignal> signals = sma();
+		final List<IndicatorSignal> signals = calculate();
 
 		verifySignals(signals);
-		verifyRsiCaclculation();
+		verifyCaclculation();
 	}
 
 	@Test
@@ -174,23 +174,23 @@ public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
 		setUpCalculator(secondGenerator, firstSignal, secondSignal);
 		setUpIndicatorSignals();
 
-		final List<IndicatorSignal> signals = sma();
+		final List<IndicatorSignal> signals = calculate();
 
 		verifySignals(signals, firstSignal, secondSignal);
-		verifyRsiCaclculation();
-		verifyFirstCalculatorSignals();
-		verifySecondCalculatorSignals(2);
+		verifyCaclculation();
+		verifyFirstGeneratorSignals();
+		verifySecondGeneratorSignals(2);
 	}
 
 	@Test
 	public void twoSignalCalculatorsNoSignals() {
 
-		final List<IndicatorSignal> signals = sma();
+		final List<IndicatorSignal> signals = calculate();
 
 		verifySignals(signals);
-		verifyRsiCaclculation();
-		verifyFirstCalculatorSignals();
-		verifySecondCalculatorSignals();
+		verifyCaclculation();
+		verifyFirstGeneratorSignals();
+		verifySecondGeneratorSignals();
 	}
 
 	protected abstract int requiredNumberOfTradingDays();
@@ -205,7 +205,7 @@ public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
 		when(calculator.generate((T) any(line.getClass()), any(Predicate.class))).thenReturn(datedSignals);
 	}
 
-	private List<IndicatorSignal> sma() {
+	private List<IndicatorSignal> calculate() {
 		return indicatorSignals.calculate(data);
 	}
 
@@ -214,7 +214,7 @@ public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
 		        signalGenerators, filter);
 	}
 
-	private void verifyRsiCaclculation() {
+	private void verifyCaclculation() {
 		verify(indicator).calculate(data);
 		verifyNoMoreInteractions(indicator);
 	}
@@ -232,15 +232,15 @@ public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
 		}
 	}
 
-	private void verifyFirstCalculatorSignals( final int... typeCount ) {
+	private void verifyFirstGeneratorSignals( final int... typeCount ) {
 		verifyCalculatorSignals(firstGenerator, typeCount.length == 0 ? 0 : typeCount[0]);
 	}
 
-	private void verifySecondCalculatorSignals( final int... typeCount ) {
+	private void verifySecondGeneratorSignals( final int... typeCount ) {
 		verifyCalculatorSignals(secondGenerator, typeCount.length == 0 ? 0 : typeCount[0]);
 	}
 
-	private void removeSignalCalculators() {
+	private void removeSignalGenerators() {
 		signalGenerators.clear();
 	}
 

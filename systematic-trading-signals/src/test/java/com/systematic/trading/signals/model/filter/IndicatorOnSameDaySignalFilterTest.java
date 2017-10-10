@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -54,6 +55,10 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 @RunWith(MockitoJUnitRunner.class)
 public class IndicatorOnSameDaySignalFilterTest {
 
+	private static final BuySignalDateComparator ORDERING = new BuySignalDateComparator();
+	private static final LocalDate LAST_TRADING_DATE = null;
+	private static final LocalDate TODAY = LocalDate.now();
+
 	@Mock
 	private IndicatorSignalId macdId;
 
@@ -63,156 +68,123 @@ public class IndicatorOnSameDaySignalFilterTest {
 	@Mock
 	private IndicatorSignalId smaId;
 
-	private final BuySignalDateComparator ordering = new BuySignalDateComparator();
-	private final LocalDate latestTradingDate = null;
+	/** List of generated signals. */
+	private Map<IndicatorSignalId, List<IndicatorSignal>> signals;
+
+	/** Filter instance being tested. */
+	private IndicatorsOnSameDaySignalFilter filter;
+
+	@Before
+	public void setUp() {
+		signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
+	}
 
 	@Test
 	public void rsiMacdSmaSameDay() {
-		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
-		final LocalDate today = LocalDate.now();
+		setUpSignals(macdId, rsiId, smaId);
+		setUpFilter(macdId, rsiId, smaId);
 
-		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add(new IndicatorSignal(today, macdId, SignalType.BULLISH));
+		final SortedSet<BuySignal> results = applyFilter();
 
-		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, rsiId, SignalType.BULLISH));
-
-		final List<IndicatorSignal> sma = new ArrayList<IndicatorSignal>();
-		sma.add(new IndicatorSignal(today, smaId, SignalType.BULLISH));
-
-		signals.put(macdId, macd);
-		signals.put(rsiId, rsi);
-		signals.put(smaId, sma);
-
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId, smaId);
-
-		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull("Expecting a non-null result set", results);
-		assertEquals("Expecting a single filtered signal", 1, results.size());
-
-		final BuySignal result = results.first();
-		assertNotNull("Expecting a non-null indicator", result);
-		assertEquals(today, result.getDate());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void twoOutOfThree() {
-		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
-		final LocalDate today = LocalDate.now();
-
-		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add(new IndicatorSignal(today, macdId, SignalType.BULLISH));
-
-		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, rsiId, SignalType.BULLISH));
-
-		signals.put(macdId, macd);
-		signals.put(rsiId, rsi);
-
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId, smaId);
-
-		filter.apply(signals, ordering, latestTradingDate);
+		verifyFilteredSignals(1, results);
 	}
 
 	@Test
 	public void rsiMacdSameDay() {
-		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
-		final LocalDate today = LocalDate.now();
+		setUpSignals(macdId, rsiId);
+		setUpFilter(macdId, rsiId);
 
-		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		macd.add(new IndicatorSignal(today, macdId, SignalType.BULLISH));
+		final SortedSet<BuySignal> results = applyFilter();
 
-		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, rsiId, SignalType.BULLISH));
-
-		signals.put(macdId, macd);
-		signals.put(rsiId, rsi);
-
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
-
-		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull("Expecting a non-null result set", results);
-		assertEquals("Expecting a single filtered signal", 1, results.size());
-
-		final BuySignal result = results.first();
-		assertNotNull("Expecting a non-null indicator", result);
-		assertEquals(today, result.getDate());
+		verifyFilteredSignals(1, results);
 	}
 
 	@Test
 	public void rsiOnly() {
-		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
-		final LocalDate today = LocalDate.now();
+		setUpSignals(rsiId);
+		setUpNoSignals(macdId);
+		setUpFilter(macdId, rsiId);
 
-		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, rsiId, SignalType.BULLISH));
+		final SortedSet<BuySignal> results = applyFilter();
 
-		signals.put(macdId, macd);
-		signals.put(rsiId, rsi);
-
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
-
-		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull("Expecting a non-null result set", results);
-		assertEquals("Expecting no filtered signal", 0, results.size());
+		verifyFilteredSignals(0, results);
 	}
 
 	@Test
 	public void macdOnly() {
-		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
-		final LocalDate today = LocalDate.now();
+		setUpSignals(macdId);
+		setUpNoSignals(rsiId);
+		setUpFilter(macdId, rsiId);
 
-		final List<IndicatorSignal> macd = new ArrayList<IndicatorSignal>();
-		final List<IndicatorSignal> rsi = new ArrayList<IndicatorSignal>();
-		rsi.add(new IndicatorSignal(today, macdId, SignalType.BULLISH));
+		final SortedSet<BuySignal> results = applyFilter();
 
-		signals.put(macdId, macd);
-		signals.put(rsiId, rsi);
-
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
-
-		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull("Expecting a non-null result set", results);
-		assertEquals("Expecting no filtered signal", 0, results.size());
+		verifyFilteredSignals(0, results);
 	}
 
 	@Test
 	public void noSignals() {
-		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
-		signals.put(macdId, new ArrayList<IndicatorSignal>());
-		signals.put(rsiId, new ArrayList<IndicatorSignal>());
+		setUpNoSignals(macdId, rsiId);
+		setUpFilter(macdId, rsiId);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
+		final SortedSet<BuySignal> results = applyFilter();
 
-		final SortedSet<BuySignal> results = filter.apply(signals, ordering, latestTradingDate);
+		verifyFilteredSignals(0, results);
+	}
 
-		assertNotNull("Expecting a non-null result set", results);
-		assertEquals("Expecting no filtered signals", 0, results.size());
+	@Test(expected = IllegalArgumentException.class)
+	public void twoOutOfThree() {
+		setUpSignals(macdId, rsiId);
+		setUpFilter(macdId, rsiId, smaId);
+
+		applyFilter();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void noSignalsNullMacdList() {
-		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
-		signals.put(rsiId, new ArrayList<IndicatorSignal>());
+		setUpNoSignals(macdId);
+		setUpFilter(macdId, rsiId);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
-
-		filter.apply(signals, ordering, latestTradingDate);
+		applyFilter();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void noSignalsNullRsiList() {
-		final Map<IndicatorSignalId, List<IndicatorSignal>> signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
-		signals.put(rsiId, new ArrayList<IndicatorSignal>());
+		setUpNoSignals(rsiId);
+		setUpFilter(macdId, rsiId);
 
-		final IndicatorsOnSameDaySignalFilter filter = new IndicatorsOnSameDaySignalFilter(macdId, rsiId);
-
-		filter.apply(signals, ordering, latestTradingDate);
+		applyFilter();
 	}
 
+	private void verifyFilteredSignals( final int expected, final SortedSet<BuySignal> results ) {
+		assertNotNull("Expecting a non-null result set", results);
+		assertEquals("Expecting no filtered signals", expected, results.size());
+
+		if (expected > 0) {
+			final BuySignal result = results.first();
+			assertNotNull("Expecting a non-null indicator", result);
+			assertEquals(TODAY, result.getDate());
+		}
+	}
+
+	private SortedSet<BuySignal> applyFilter() {
+		return filter.apply(signals, ORDERING, LAST_TRADING_DATE);
+	}
+
+	private void setUpFilter( final IndicatorSignalId... ids ) {
+		filter = new IndicatorsOnSameDaySignalFilter(ids);
+	}
+
+	private void setUpNoSignals( final IndicatorSignalId... ids ) {
+		for (final IndicatorSignalId id : ids) {
+			signals.put(id, new ArrayList<IndicatorSignal>());
+		}
+	}
+
+	private void setUpSignals( final IndicatorSignalId... ids ) {
+		for (final IndicatorSignalId id : ids) {
+			final List<IndicatorSignal> signal = new ArrayList<IndicatorSignal>();
+			signal.add(new IndicatorSignal(TODAY, id, SignalType.BULLISH));
+			signals.put(id, signal);
+		}
+	}
 }

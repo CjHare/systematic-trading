@@ -44,6 +44,7 @@ import org.junit.Test;
  */
 public class InclusiveDatelRangeFilterTest {
 
+	/** Filter instance being tested. */
 	private InclusiveDatelRangeFilter filter;
 
 	@Before
@@ -57,7 +58,7 @@ public class InclusiveDatelRangeFilterTest {
 		final LocalDate latestInclusiveDate = LocalDate.ofEpochDay(100);
 		final LocalDate candidate = LocalDate.ofEpochDay(5);
 
-		final boolean result = filter.isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);
+		final boolean result = isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);
 
 		assertFalse("Date was a day too early, should have failed", result);
 	}
@@ -68,7 +69,7 @@ public class InclusiveDatelRangeFilterTest {
 		final LocalDate latestInclusiveDate = LocalDate.ofEpochDay(100);
 		final LocalDate candidate = LocalDate.ofEpochDay(101);
 
-		final boolean result = filter.isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);
+		final boolean result = isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);
 
 		assertFalse("Date was a day too late, should have failed", result);
 	}
@@ -79,7 +80,7 @@ public class InclusiveDatelRangeFilterTest {
 		final LocalDate latestInclusiveDate = LocalDate.ofEpochDay(100);
 		final LocalDate candidate = earliestInclusiveDate;
 
-		final boolean result = filter.isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);
+		final boolean result = isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);
 
 		assertTrue("Date was the earliest acceptable, should have passed", result);
 	}
@@ -90,9 +91,13 @@ public class InclusiveDatelRangeFilterTest {
 		final LocalDate latestInclusiveDate = LocalDate.ofEpochDay(100);
 		final LocalDate candidate = latestInclusiveDate;
 
-		final boolean result = filter.isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);
+		final boolean result = isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);
 
 		assertTrue("Date was the latest acceptable, should have passed", result);
 	}
 
+	private boolean isWithinSignalRange( final LocalDate earliestInclusiveDate, final LocalDate latestInclusiveDate,
+	        final LocalDate candidate ) {
+		return filter.isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);
+	}
 }

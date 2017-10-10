@@ -66,88 +66,81 @@ public class TimePeriodSignalFilterDecoratorTest {
 	@Mock
 	private Map<IndicatorSignalId, List<IndicatorSignal>> signals;
 
-	@SuppressWarnings("unchecked")
+	/** Filtered signals expected from the decorator. */
+	private SortedSet<BuySignal> expectedSignals;
+
+	/** Decorator instance being tested. */
+	private TimePeriodSignalFilterDecorator decorator;
+
 	@Test
 	public void lowerRangeAccepted() {
 		final LocalDate startDate = LocalDate.of(2010, 1, 1);
 		final LocalDate endDate = LocalDate.of(2015, 1, 1);
 		final LocalDate signalDate = LocalDate.of(2010, 1, 1);
+		setUpFilter(signalDate);
+		setUpDecorator(startDate, endDate);
 
-		final SortedSet<BuySignal> expectedSignals = createOutputSignals(signalDate);
-		when(filter.apply(anyMap(), any(Comparator.class), any(LocalDate.class))).thenReturn(expectedSignals);
+		final SortedSet<BuySignal> filteredSignals = applyFilter(signalDate);
 
-		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
-		        endDate);
-
-		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
-
-		assertNotNull(filteredSignals);
-		assertEquals(false, filteredSignals.isEmpty());
-		assertEquals(1, filteredSignals.size());
-		assertEquals(expectedSignals, filteredSignals);
-		verify(filter).apply(signals, ORDER_BY_DATE, signalDate);
+		verifyFilteredSignals(1, filteredSignals, signalDate);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void lowerRangeRejected() {
 		final LocalDate startDate = LocalDate.of(2010, 1, 2);
 		final LocalDate endDate = LocalDate.of(2015, 1, 1);
 		final LocalDate signalDate = LocalDate.of(2010, 1, 1);
+		setUpFilter(signalDate);
+		setUpDecorator(startDate, endDate);
 
-		final SortedSet<BuySignal> expectedSignals = createOutputSignals(signalDate);
-		when(filter.apply(anyMap(), any(Comparator.class), any(LocalDate.class))).thenReturn(expectedSignals);
+		final SortedSet<BuySignal> filteredSignals = applyFilter(signalDate);
 
-		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
-		        endDate);
-
-		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
-
-		assertNotNull(filteredSignals);
-		assertEquals(true, filteredSignals.isEmpty());
-		verify(filter).apply(signals, ORDER_BY_DATE, signalDate);
+		verifyFilteredSignals(0, filteredSignals, signalDate);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void upperRangeAccepted() {
 		final LocalDate startDate = LocalDate.of(2010, 1, 1);
 		final LocalDate endDate = LocalDate.of(2015, 1, 2);
 		final LocalDate signalDate = LocalDate.of(2015, 1, 1);
+		setUpFilter(signalDate);
+		setUpDecorator(startDate, endDate);
 
-		final SortedSet<BuySignal> expectedSignals = createOutputSignals(signalDate);
-		when(filter.apply(anyMap(), any(Comparator.class), any(LocalDate.class))).thenReturn(expectedSignals);
+		final SortedSet<BuySignal> filteredSignals = applyFilter(signalDate);
 
-		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
-		        endDate);
-
-		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
-
-		assertNotNull(filteredSignals);
-		assertEquals(false, filteredSignals.isEmpty());
-		assertEquals(1, filteredSignals.size());
-		assertEquals(expectedSignals, filteredSignals);
-		verify(filter).apply(signals, ORDER_BY_DATE, signalDate);
+		verifyFilteredSignals(1, filteredSignals, signalDate);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void upperRangeRejected() {
 		final LocalDate startDate = LocalDate.of(2010, 1, 1);
 		final LocalDate endDate = LocalDate.of(2015, 1, 1);
 		final LocalDate signalDate = LocalDate.of(2015, 1, 2);
+		setUpFilter(signalDate);
+		setUpDecorator(startDate, endDate);
 
-		final SortedSet<BuySignal> expectedSignals = createOutputSignals(signalDate);
+		final SortedSet<BuySignal> filteredSignals = applyFilter(signalDate);
+
+		verifyFilteredSignals(0, filteredSignals, signalDate);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setUpFilter( final LocalDate signalDate ) {
+		expectedSignals = createOutputSignals(signalDate);
 		when(filter.apply(anyMap(), any(Comparator.class), any(LocalDate.class))).thenReturn(expectedSignals);
+	}
 
-		final TimePeriodSignalFilterDecorator decorator = new TimePeriodSignalFilterDecorator(filter, startDate,
-		        endDate);
-
-		final SortedSet<BuySignal> filteredSignals = decorator.apply(signals, ORDER_BY_DATE, signalDate);
-
+	private void verifyFilteredSignals( final int expected, final SortedSet<BuySignal> filteredSignals,
+	        final LocalDate signalDate ) {
 		assertNotNull(filteredSignals);
-		assertEquals(true, filteredSignals.isEmpty());
+		assertEquals(expected == 0, filteredSignals.isEmpty());
+		assertEquals(expected, filteredSignals.size());
+		assertEquals(expectedSignals, filteredSignals);
 		verify(filter).apply(signals, ORDER_BY_DATE, signalDate);
+	}
+
+	private SortedSet<BuySignal> applyFilter( final LocalDate signalDate ) {
+		return decorator.apply(signals, ORDER_BY_DATE, signalDate);
 	}
 
 	private SortedSet<BuySignal> createOutputSignals( final LocalDate signalDate ) {
@@ -156,5 +149,9 @@ public class TimePeriodSignalFilterDecoratorTest {
 		signals.add(new BuySignal(signalDate));
 
 		return signals;
+	}
+
+	private void setUpDecorator( final LocalDate startDate, final LocalDate endDate ) {
+		decorator = new TimePeriodSignalFilterDecorator(filter, startDate, endDate);
 	}
 }

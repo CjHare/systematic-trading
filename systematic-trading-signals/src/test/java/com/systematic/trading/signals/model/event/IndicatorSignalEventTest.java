@@ -27,11 +27,14 @@ package com.systematic.trading.signals.model.event;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalId;
@@ -42,17 +45,24 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
  * 
  * @author CJ Hare
  */
+@RunWith(MockitoJUnitRunner.class)
 public class IndicatorSignalEventTest {
+
+	@Mock
+	private IndicatorSignalId type;
+
+	/** Signal instance being tested.*/
+	private IndicatorSignal signal;
+
+	@Before
+	public void setUp() {
+		signal = new IndicatorSignal(LocalDate.now(), type, SignalType.BULLISH);
+	}
 
 	@Test
 	public void getSignalType() {
-		final LocalDate date = LocalDate.now();
-		final IndicatorSignalId type = mock(IndicatorSignalId.class);
-		final SignalType direction = SignalType.BULLISH;
 
-		final IndicatorSignal signal = new IndicatorSignal(date, type, direction);
-
-		final IndicatorSignalEvent event = new IndicatorSignalEvent(signal);
+		final IndicatorSignalEvent event = event();
 
 		assertNotNull(event);
 		assertEquals(type, event.getSignalType());
@@ -60,27 +70,39 @@ public class IndicatorSignalEventTest {
 
 	@Test
 	public void getDate() {
-		final LocalDate date = LocalDate.now();
-		final IndicatorSignalId type = mock(IndicatorSignalId.class);
-		final SignalType direction = SignalType.BULLISH;
-		final IndicatorSignal signal = new IndicatorSignal(date, type, direction);
+		setUpIndicatorSignal(SignalType.BULLISH);
 
-		final IndicatorSignalEvent event = new IndicatorSignalEvent(signal);
+		final IndicatorSignalEvent event = event();
 
 		assertNotNull(event);
-		assertEquals(date, event.getSignalDate());
+		assertEquals(LocalDate.now(), event.getSignalDate());
 	}
 
 	@Test
-	public void getDirectionType() {
-		final LocalDate date = LocalDate.now();
-		final IndicatorSignalId type = mock(IndicatorSignalId.class);
-		final SignalType direction = SignalType.BULLISH;
-		final IndicatorSignal indicatorSignal = new IndicatorSignal(date, type, direction);
+	public void getDirectionTypeBullish() {
+		setUpIndicatorSignal(SignalType.BULLISH);
 
-		final IndicatorSignalEvent event = new IndicatorSignalEvent(indicatorSignal);
+		final IndicatorSignalEvent event = event();
 
 		assertNotNull(event);
-		assertEquals(direction, event.getDirectionType());
+		assertEquals(SignalType.BULLISH, event.getDirectionType());
+	}
+
+	@Test
+	public void getDirectionTypeBearish() {
+		setUpIndicatorSignal(SignalType.BEARISH);
+
+		final IndicatorSignalEvent event = event();
+
+		assertNotNull(event);
+		assertEquals(SignalType.BEARISH, event.getDirectionType());
+	}
+
+	private IndicatorSignalEvent event() {
+		return new IndicatorSignalEvent(signal);
+	}
+
+	private void setUpIndicatorSignal( final SignalType direction ) {
+		signal = new IndicatorSignal(LocalDate.now(), type, direction);
 	}
 }

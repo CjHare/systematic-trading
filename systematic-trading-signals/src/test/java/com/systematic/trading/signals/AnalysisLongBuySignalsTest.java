@@ -12,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -40,6 +41,26 @@ public class AnalysisLongBuySignalsTest {
 	@Mock
 	private IndicatorSignalId smaId;
 
+	@Mock
+	private IndicatorSignals generatorA;
+
+	@Mock
+	private IndicatorSignals generatorB;
+
+	/** Trading price data. */
+	private TradingDayPrices[] data;
+
+	/** */
+	private List<IndicatorSignals> generators;
+
+	/** Signals analysis being tested. */
+	private AnalysisBuySignals analysis;
+
+	@Before
+	public void setUp() {
+		generators = new ArrayList<>();
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void maximumNumberOfTradingDaysRequiredNullSignals() {
 		new AnalysisLongBuySignals(new ArrayList<>(), null);
@@ -59,119 +80,99 @@ public class AnalysisLongBuySignalsTest {
 
 	@Test
 	public void maximumNumberOfTradingDaysRequiredSingleGenerator() {
-		final int tradingDaysForGenerator = 10;
-		final IndicatorSignals generator = mock(IndicatorSignals.class);
-		when(generator.getRequiredNumberOfTradingDays()).thenReturn(tradingDaysForGenerator);
-		final List<IndicatorSignals> generators = new ArrayList<>();
-		generators.add(generator);
+		setUpGeneratorTradingDays(generatorA, 10);
+		setUpAnalysis();
 
-		final AnalysisBuySignals analysis = new AnalysisLongBuySignals(generators, new ArrayList<>());
-
-		assertEquals(tradingDaysForGenerator + ADJUSTMENT, analysis.getMaximumNumberOfTradingDaysRequired());
-		verify(generator).getRequiredNumberOfTradingDays();
+		assertEquals(10 + ADJUSTMENT, analysis.getMaximumNumberOfTradingDaysRequired());
+		verify(generatorA).getRequiredNumberOfTradingDays();
 	}
 
 	@Test
 	public void maximumNumberOfTradingDaysRequiredMultipleGenerators() {
-		final int tradingDaysForGeneratorA = 5;
-		final int tradingDaysForGeneratorB = 15;
-		final int tradingDaysForGeneratorC = 52;
-		final int tradingDaysForGenerators = tradingDaysForGeneratorC;
-		final IndicatorSignals generatorA = mock(IndicatorSignals.class);
-		final IndicatorSignals generatorB = mock(IndicatorSignals.class);
-		final IndicatorSignals generatorC = mock(IndicatorSignals.class);
-		when(generatorA.getRequiredNumberOfTradingDays()).thenReturn(tradingDaysForGeneratorA);
-		when(generatorB.getRequiredNumberOfTradingDays()).thenReturn(tradingDaysForGeneratorB);
-		when(generatorC.getRequiredNumberOfTradingDays()).thenReturn(tradingDaysForGeneratorC);
+		setUpGeneratorTradingDays(generatorA, 5);
+		setUpGeneratorTradingDays(generatorB, 15);
+		setUpAnalysis();
 
-		final List<IndicatorSignals> generators = new ArrayList<>();
-		generators.add(generatorA);
-		generators.add(generatorB);
-		generators.add(generatorC);
-
-		final AnalysisBuySignals analysis = new AnalysisLongBuySignals(generators, new ArrayList<>());
-
-		assertEquals(tradingDaysForGenerators + ADJUSTMENT, analysis.getMaximumNumberOfTradingDaysRequired());
+		assertEquals(15 + ADJUSTMENT, analysis.getMaximumNumberOfTradingDaysRequired());
 		verify(generatorA).getRequiredNumberOfTradingDays();
 		verify(generatorB).getRequiredNumberOfTradingDays();
-		verify(generatorC).getRequiredNumberOfTradingDays();
 	}
 
 	@Test
 	public void analyzeZeroSignals() {
+		setUpGenerator(generatorA, rsiId);
+		setUpGenerator(generatorB, macdId);
+		setUpAnalysis();
 
-		final IndicatorSignals generatorA = mock(IndicatorSignals.class);
-		when(generatorA.getSignalType()).thenReturn(rsiId);
-		final List<IndicatorSignal> signalsGeneratorA = new ArrayList<>();
-		when(generatorA.calculate(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorA);
+		final List<BuySignal> signals = performAnalysis();
 
-		final IndicatorSignals generatorB = mock(IndicatorSignals.class);
-		when(generatorB.getSignalType()).thenReturn(macdId);
-		final List<IndicatorSignal> signalsGeneratorB = new ArrayList<>();
-		when(generatorA.calculate(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorB);
-
-		final List<IndicatorSignals> generators = new ArrayList<>();
-		generators.add(generatorA);
-		generators.add(generatorB);
-
-		final AnalysisBuySignals analysis = new AnalysisLongBuySignals(generators, new ArrayList<>());
-
-		final TradingDayPrices[] data = new TradingDayPrices[1];
-		data[0] = mock(TradingDayPrices.class);
-
-		final List<BuySignal> signals = analysis.analyse(data);
-
-		assertNotNull(signals);
-		assertEquals(true, signals.isEmpty());
-		verify(generatorA).calculate(data);
-		verify(generatorA).getSignalType();
-		verify(generatorB).calculate(data);
-		verify(generatorB).getSignalType();
+		verifyFilteredSignals(signals);
+		verifyGenerator(generatorA);
+		verifyGenerator(generatorB);
 	}
 
 	@Test
 	public void analyze() {
+		setUpGenerator(generatorA, rsiId, LocalDate.now().minus(2, ChronoUnit.DAYS));
+		setUpGenerator(generatorB, macdId, LocalDate.now().minus(1, ChronoUnit.DAYS), LocalDate.now());
 
-		final IndicatorSignals generatorA = mock(IndicatorSignals.class);
-		when(generatorA.getSignalType()).thenReturn(rsiId);
-		final List<IndicatorSignal> signalsGeneratorA = new ArrayList<>();
-		final IndicatorSignal firstSignal = new IndicatorSignal(LocalDate.now().minus(2, ChronoUnit.DAYS), rsiId,
-		        SignalType.BULLISH);
-		signalsGeneratorA.add(firstSignal);
-		when(generatorA.calculate(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorA);
+		setUpAnalysisWithFilter();
 
-		final IndicatorSignals generatorB = mock(IndicatorSignals.class);
-		when(generatorB.getSignalType()).thenReturn(macdId);
-		final List<IndicatorSignal> signalsGeneratorB = new ArrayList<>();
-		final IndicatorSignal secondSignal = new IndicatorSignal(LocalDate.now().minus(1, ChronoUnit.DAYS), macdId,
-		        SignalType.BULLISH);
-		signalsGeneratorB.add(secondSignal);
-		final IndicatorSignal thirdSignal = new IndicatorSignal(LocalDate.now(), smaId, SignalType.BULLISH);
-		signalsGeneratorB.add(thirdSignal);
-		when(generatorB.calculate(any(TradingDayPrices[].class))).thenReturn(signalsGeneratorB);
+		final List<BuySignal> signals = performAnalysis();
 
-		final List<IndicatorSignals> generators = new ArrayList<>();
-		generators.add(generatorA);
-		generators.add(generatorB);
+		verifyFilteredSignals(signals, LocalDate.now().minus(2, ChronoUnit.DAYS),
+		        LocalDate.now().minus(1, ChronoUnit.DAYS), LocalDate.now());
+		verifyGenerator(generatorA);
+		verifyGenerator(generatorB);
+	}
 
+	private void verifyFilteredSignals( final List<BuySignal> signals, final LocalDate... signalDates ) {
+		assertNotNull(signals);
+		assertEquals(signalDates.length, signals.size());
+
+		int index = 0;
+		for (final LocalDate signalDate : signalDates) {
+			assertEquals(signalDate, signals.get(index).getDate());
+			index++;
+		}
+	}
+
+	private void verifyGenerator( final IndicatorSignals generator ) {
+		verify(generator).calculate(data);
+		verify(generator).getSignalType();
+	}
+
+	private void setUpGenerator( final IndicatorSignals generator, final IndicatorSignalId id,
+	        final LocalDate... signalDates ) {
+		when(generator.getSignalType()).thenReturn(id);
+		final List<IndicatorSignal> signalsGenerator = new ArrayList<>();
+
+		for (final LocalDate singalDate : signalDates) {
+			signalsGenerator.add(new IndicatorSignal(singalDate, id, SignalType.BULLISH));
+		}
+
+		when(generator.calculate(any(TradingDayPrices[].class))).thenReturn(signalsGenerator);
+		generators.add(generator);
+	}
+
+	private void setUpGeneratorTradingDays( final IndicatorSignals generator, final int tradingDaysForGenerator ) {
+		when(generator.getRequiredNumberOfTradingDays()).thenReturn(tradingDaysForGenerator);
+		generators.add(generator);
+	}
+
+	private List<BuySignal> performAnalysis() {
+		data = new TradingDayPrices[1];
+		data[0] = mock(TradingDayPrices.class);
+		return analysis.analyse(data);
+	}
+
+	private void setUpAnalysis() {
+		analysis = new AnalysisLongBuySignals(generators, new ArrayList<>());
+	}
+
+	private void setUpAnalysisWithFilter() {
 		final List<SignalFilter> filters = new ArrayList<>();
 		filters.add(new AnyIndicatorIsBuySignalFilter());
-
-		final AnalysisBuySignals analysis = new AnalysisLongBuySignals(generators, filters);
-
-		final TradingDayPrices[] data = new TradingDayPrices[1];
-		data[0] = mock(TradingDayPrices.class);
-
-		final List<BuySignal> signals = analysis.analyse(data);
-
-		assertNotNull(signals);
-		assertEquals(3, signals.size());
-		assertEquals(LocalDate.now().minus(2, ChronoUnit.DAYS), signals.get(0).getDate());
-		assertEquals(LocalDate.now().minus(1, ChronoUnit.DAYS), signals.get(1).getDate());
-		assertEquals(LocalDate.now(), signals.get(2).getDate());
-		verify(generatorA).calculate(data);
-		verify(generatorA).getSignalType();
-		verify(generatorB).calculate(data);
-		verify(generatorB).getSignalType();
+		analysis = new AnalysisLongBuySignals(generators, filters);
 	}
 }

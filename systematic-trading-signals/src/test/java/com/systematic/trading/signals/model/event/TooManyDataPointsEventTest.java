@@ -27,11 +27,14 @@ package com.systematic.trading.signals.model.event;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.signal.IndicatorSignalId;
 
@@ -40,27 +43,29 @@ import com.systematic.trading.signal.IndicatorSignalId;
  * 
  * @author CJ Hare
  */
+@RunWith(MockitoJUnitRunner.class)
 public class TooManyDataPointsEventTest {
+
+	@Mock
+	private IndicatorSignalId type;
+
+	/** Event instance being tested. */
+	private TooManyDataPointsEvent event;
+
+	@Before
+	public void setUp() {
+		event = new TooManyDataPointsEvent(type, LocalDate.now());
+	}
 
 	@Test
 	public void getSignalType() {
-		final IndicatorSignalId type = mock(IndicatorSignalId.class);
-		final LocalDate date = LocalDate.now();
-
-		final TooManyDataPointsEvent event = new TooManyDataPointsEvent(type, date);
-
 		assertNotNull(event);
 		assertEquals(type, event.getSignalType());
 	}
 
 	@Test
 	public void getDate() {
-		final IndicatorSignalId type = mock(IndicatorSignalId.class);
-		final LocalDate date = LocalDate.now();
-
-		final TooManyDataPointsEvent event = new TooManyDataPointsEvent(type, date);
-
 		assertNotNull(event);
-		assertEquals(date, event.getSignalDate());
+		assertEquals(LocalDate.now(), event.getSignalDate());
 	}
 }

@@ -53,7 +53,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signals.indicator.SignalGenerator;
-import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageBullishGradientSignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
@@ -70,15 +69,18 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	@Mock
 	private Predicate<LocalDate> signalRange;
 
-	private SignalGenerator<SimpleMovingAverageLine> signalGenerators;
+	/** Result set for the sma line. */
 	private SortedMap<LocalDate, BigDecimal> sma;
+
+	/** Generator instance being tested. */
+	private SignalGenerator<SimpleMovingAverageLine> signalGenerators;
 
 	@Before
 	public void setUp() {
 		signalGenerators = new SimpleMovingAverageBullishGradientSignalGenerator();
 
+		// Default results of no results
 		sma = new TreeMap<>();
-
 		when(lines.getSma()).thenReturn(sma);
 
 		setUpDateRange(true);
@@ -94,7 +96,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 		setUpDateRange(false);
 		setUpSma(1, 1.1, 1.2);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(3);
@@ -104,7 +106,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void tooFewValues() {
 		setUpSma(0.5);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(0);
@@ -113,7 +115,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	@Test
 	public void noValues() {
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(0);
@@ -123,7 +125,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void flatline() {
 		setUpSma(0.5, 0.5, 0.5, 0.5);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(4);
@@ -133,7 +135,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void downardGradient() {
 		setUpSma(0.5, 0.4, 0.3, 0.2);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(4);
@@ -143,7 +145,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void upwardGradient() {
 		setUpSma(0.5, 0.6, 0.7, 0.8);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(3, signals);
 		verfiyDatedSignal(1, signals.get(0));
@@ -156,7 +158,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void upwardGradientThenFlat() {
 		setUpSma(0.5, 0.6, 0.6);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(1, signals);
 		verfiyDatedSignal(1, signals.get(0));
@@ -167,15 +169,18 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	public void downwardThenUpwardGradientThenFlat() {
 		setUpSma(0.55, 0.5, 0.4, 0.4, 0.5);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(1, signals);
 		verfiyDatedSignal(4, signals.get(0));
 		verifySignalRangeTests(5);
 	}
 
-	private void verifySignalRangeTests( final int size ) {
+	private List<DatedSignal> generate() {
+		return signalGenerators.generate(lines, signalRange);
+	}
 
+	private void verifySignalRangeTests( final int size ) {
 		if (size == 0) {
 			verifyNoMoreInteractions(signalRange);
 			return;

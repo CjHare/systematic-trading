@@ -62,6 +62,7 @@ import com.systematic.trading.signals.model.DatedSignal;
 @RunWith(MockitoJUnitRunner.class)
 public class RelativeStrengthIndexBearishSignalGeneratorTest {
 
+	/** Standard over brought of 70.*/
 	private static final double OVER_BROUGHT = 0.7;
 
 	@Mock
@@ -70,6 +71,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	@Mock
 	private RelativeStrengthIndexLine rsi;
 
+	/** Generator instance being tested. */
 	private RelativeStrengthIndexBearishSignalGenerator bearishRsi;
 
 	@Before
@@ -87,7 +89,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	public void neverOversold() {
 		setUpRsi(0.5, 0.6, 0.6, 0.5);
 
-		final List<DatedSignal> signals = rsi();
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(4);
@@ -97,7 +99,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	public void alwaysOversold() {
 		setUpRsi(0.7, 0.8, 0.9, 0.75);
 
-		final List<DatedSignal> signals = rsi();
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(4);
@@ -108,7 +110,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 		setUpRsi(0.5, 0.7, 0.8, 0.75);
 		setUpDateRange(false);
 
-		final List<DatedSignal> signals = rsi();
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(4);
@@ -118,7 +120,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	public void oversoldCrossover() {
 		setUpRsi(1, 0.69, 0.8, 0.7);
 
-		final List<DatedSignal> signals = rsi();
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(1, signals);
 		verfiyDatedSignal(1, signals.get(0));
@@ -132,7 +134,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	public void touchOversold() {
 		setUpRsi(1, 0.7, 0.8, 0.75);
 
-		final List<DatedSignal> signals = rsi();
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(4);
@@ -142,7 +144,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	public void twiceCrossoverOversold() {
 		setUpRsi(1, 0.4, 0.9, 0.6);
 
-		final List<DatedSignal> signals = rsi();
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(2, signals);
 		verfiyDatedSignal(1, signals.get(0));
@@ -154,7 +156,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	public void onOversold() {
 		setUpRsi(0.7, 0.7, 0.7, 0.7, 0.7);
 
-		final List<DatedSignal> signals = rsi();
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(5);
@@ -164,7 +166,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	public void onOversoldThenCrossover() {
 		setUpRsi(0.7, 0.7, 0.5, 0.8, 0.45);
 
-		final List<DatedSignal> signals = rsi();
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(2, signals);
 		verfiyDatedSignal(2, signals.get(0));
@@ -172,7 +174,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 		verifySignalRangeTests(5);
 	}
 
-	private List<DatedSignal> rsi() {
+	private List<DatedSignal> generate() {
 		return bearishRsi.generate(rsi, signalRange);
 	}
 

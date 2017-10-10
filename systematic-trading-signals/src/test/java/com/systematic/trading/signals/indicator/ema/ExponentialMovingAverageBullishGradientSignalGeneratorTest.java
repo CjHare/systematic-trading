@@ -62,22 +62,26 @@ import com.systematic.trading.signals.model.DatedSignal;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
+
 	@Mock
-	private ExponentialMovingAverageLine lines;
+	private ExponentialMovingAverageLine line;
 
 	@Mock
 	private Predicate<LocalDate> signalRange;
 
-	private SignalGenerator<ExponentialMovingAverageLine> signalGenerators;
+	/** Data returned from the line. */
 	private SortedMap<LocalDate, BigDecimal> ema;
+
+	/** Signal generator instance being tested. */
+	private SignalGenerator<ExponentialMovingAverageLine> signalGenerators;
 
 	@Before
 	public void setUp() {
 		signalGenerators = new ExponentialMovingAverageBullishGradientSignalGenerator();
 
+		// Default data set of no results
 		ema = new TreeMap<>();
-
-		when(lines.getEma()).thenReturn(ema);
+		when(line.getEma()).thenReturn(ema);
 
 		setUpDateRange(true);
 	}
@@ -92,7 +96,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 		setUpDateRange(false);
 		setUpSma(1, 1.1, 1.2);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(3);
@@ -102,7 +106,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 	public void tooFewValues() {
 		setUpSma(0.5);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(0);
@@ -111,7 +115,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 	@Test
 	public void noValues() {
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(0);
@@ -121,7 +125,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 	public void flatline() {
 		setUpSma(0.5, 0.5, 0.5, 0.5);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(4);
@@ -131,7 +135,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 	public void downardGradient() {
 		setUpSma(0.5, 0.4, 0.3, 0.2);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(0, signals);
 		verifySignalRangeTests(4);
@@ -141,7 +145,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 	public void upwardGradient() {
 		setUpSma(0.5, 0.6, 0.7, 0.8);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(3, signals);
 		verfiyDatedSignal(1, signals.get(0));
@@ -154,7 +158,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 	public void upwardGradientThenFlat() {
 		setUpSma(0.5, 0.6, 0.6);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(1, signals);
 		verfiyDatedSignal(1, signals.get(0));
@@ -165,11 +169,15 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 	public void downwardThenUpwardGradientThenFlat() {
 		setUpSma(0.55, 0.5, 0.4, 0.4, 0.5);
 
-		final List<DatedSignal> signals = signalGenerators.generate(lines, signalRange);
+		final List<DatedSignal> signals = generate();
 
 		verifySignals(1, signals);
 		verfiyDatedSignal(4, signals.get(0));
 		verifySignalRangeTests(5);
+	}
+
+	private List<DatedSignal> generate() {
+		return signalGenerators.generate(line, signalRange);
 	}
 
 	private void verifySignalRangeTests( final int size ) {
@@ -179,7 +187,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 			return;
 		}
 
-		final InOrder order = inOrder(lines, signalRange);
+		final InOrder order = inOrder(line, signalRange);
 
 		// Starting index @ 1, because there cannot be a signal on the first day :. excluded
 		for (int i = 1; i < size; i++) {

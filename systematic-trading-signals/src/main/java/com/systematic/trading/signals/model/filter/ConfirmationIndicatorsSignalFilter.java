@@ -68,7 +68,7 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 	public ConfirmationIndicatorsSignalFilter( final IndicatorSignalId anchor, final IndicatorSignalId confirmation,
 	        final int delayUntilConfirmationRange, final int confirmationDayRange ) {
 		validate(anchor, "Expecting an anchor IndicatorSignalType");
-		validate(confirmation, "Expecting an anchor IndicatorSignalType");
+		validate(confirmation, "Expecting an confirmation IndicatorSignalType");
 		validate(confirmationDayRange, "Expecting zero or a positive number of days for the confirmation signal range");
 		validate(delayUntilConfirmationRange, "Expecting zero or positive number for the days");
 

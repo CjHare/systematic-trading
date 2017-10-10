@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.time.LocalDate;
@@ -33,6 +35,10 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 @RunWith(MockitoJUnitRunner.class)
 public class ConfirmationIndicatorsSignalFilterTest {
 
+	private static final int DAYS_UNTIL_CONFIRMATION_START = 3;
+	private static final int CONFIRMATION_DAY_RANGE = 3;
+	private static final LocalDate LATEST_TRADING_DATE = LocalDate.now();
+
 	@Mock
 	private IndicatorSignalId anchorSignalType;
 
@@ -42,14 +48,13 @@ public class ConfirmationIndicatorsSignalFilterTest {
 	@Mock
 	private IndicatorSignalId wrongConfirmationSignalType;
 
-	private final int daysUntilStartOfConfirmationRange = 3;
-	private final int confirmationDayRange = 3;
-	private final LocalDate latestTradingDate = LocalDate.now();
-
 	@Mock
 	private Comparator<BuySignal> ordering;
 
+	/** Result signals. */
 	private Map<IndicatorSignalId, List<IndicatorSignal>> signals;
+
+	/** Filter instance being tested. */
 	private ConfirmationIndicatorsSignalFilter filter;
 
 	@Before
@@ -59,7 +64,191 @@ public class ConfirmationIndicatorsSignalFilterTest {
 		signals.put(confirmationSignalType, new ArrayList<>());
 
 		filter = new ConfirmationIndicatorsSignalFilter(anchorSignalType, confirmationSignalType,
-		        daysUntilStartOfConfirmationRange, confirmationDayRange);
+		        DAYS_UNTIL_CONFIRMATION_START, CONFIRMATION_DAY_RANGE);
+	}
+
+	@Test
+	public void noAnchorSignal() {
+
+		final SortedSet<BuySignal> buySignals = applyFilter();
+
+		verifyNoSignals(buySignals);
+	}
+
+	@Test
+	public void noAConfirmationSignal() {
+		setUpAnchorSignal();
+
+		final SortedSet<BuySignal> buySignals = applyFilter();
+
+		verifyNoSignals(buySignals);
+	}
+
+	@Test
+	public void wrongAConfirmationSignalWithinnRange() {
+		setUpAnchorSignal();
+		setUpWrongConfirmationSignal();
+
+		final SortedSet<BuySignal> buySignals = applyFilter();
+
+		verifyNoSignals(buySignals);
+	}
+
+	@Test
+	public void confirmationSignalOnFirstDayOfRangeNoDelay() {
+		setUpAnchorSignal();
+		setUpConfirmationSignal(0);
+		setUpFilterImmediateStart();
+
+		final SortedSet<BuySignal> buySignals = applyFilter();
+
+		verifySignals(1, buySignals);
+	}
+
+	@Test
+	public void confirmationSignalOnLastDayOfRangeNoDelay() {
+		setUpAnchorSignal();
+		setUpConfirmationSignal(CONFIRMATION_DAY_RANGE);
+		setUpFilterImmediateStart();
+
+		final SortedSet<BuySignal> buySignals = applyFilter();
+
+		verifySignals(1, buySignals);
+	}
+
+	@Test
+	public void confirmationSignalOnFirstDayOfRangeTwoDayDelay() {
+		setUpAnchorSignal();
+		setUpConfirmationSignal(DAYS_UNTIL_CONFIRMATION_START);
+
+		final SortedSet<BuySignal> buySignals = applyFilter();
+
+		verifySignals(1, buySignals);
+	}
+
+	@Test
+	public void confirmationSignalOnLastDayOfRangeTwoDayDelay() {
+		setUpAnchorSignal();
+		setUpConfirmationSignal(DAYS_UNTIL_CONFIRMATION_START + CONFIRMATION_DAY_RANGE);
+
+		final SortedSet<BuySignal> buySignals = applyFilter();
+
+		verifySignals(1, buySignals);
+	}
+
+	@Test
+	public void confirmationSignalTooSoon() {
+		setUpAnchorSignal();
+		setUpConfirmationSignal(DAYS_UNTIL_CONFIRMATION_START - 1);
+
+		final SortedSet<BuySignal> buySignals = applyFilter();
+
+		verifyNoSignals(buySignals);
+	}
+
+	@Test
+	public void confirmationSignalTooLate() {
+		setUpAnchorSignal();
+		setUpConfirmationSignal(DAYS_UNTIL_CONFIRMATION_START + CONFIRMATION_DAY_RANGE + 1);
+
+		final SortedSet<BuySignal> buySignals = applyFilter();
+
+		verifyNoSignals(buySignals);
+	}
+
+	@Test
+	public void missingAnchorSignalType() {
+		createFilterExpectingException("Expecting an anchor IndicatorSignalType", null, confirmationSignalType,
+		        DAYS_UNTIL_CONFIRMATION_START, CONFIRMATION_DAY_RANGE);
+	}
+
+	@Test
+	public void missingConfirmationSignalType() {
+		createFilterExpectingException("Expecting an confirmation IndicatorSignalType", anchorSignalType, null,
+		        DAYS_UNTIL_CONFIRMATION_START, CONFIRMATION_DAY_RANGE);
+	}
+
+	@Test
+	public void invalidStartDelay() {
+		createFilterExpectingException("Expecting zero or positive number for the days", anchorSignalType,
+		        confirmationSignalType, -1, CONFIRMATION_DAY_RANGE);
+	}
+
+	@Test
+	public void invalidConfirmationRange() {
+		createFilterExpectingException("Expecting zero or a positive number of days for the confirmation signal range",
+		        anchorSignalType, confirmationSignalType, DAYS_UNTIL_CONFIRMATION_START, -1);
+	}
+
+	@Test
+	public void missingAnchorSignalsOnApply() {
+		clearSignal(anchorSignalType);
+
+		applyExpectingException();
+	}
+
+	@Test
+	public void missingConfirmationSignalsOnApply() {
+		clearSignal(confirmationSignalType);
+
+		applyExpectingException();
+	}
+
+	private void setUpConfirmationSignal( final int daysFromNow ) {
+		setUpConfirmationSignal(new IndicatorSignal(LocalDate.now().plus(daysFromNow, ChronoUnit.DAYS),
+		        confirmationSignalType, SignalType.BULLISH));
+	}
+
+	private void setUpFilterImmediateStart() {
+		filter = new ConfirmationIndicatorsSignalFilter(anchorSignalType, confirmationSignalType, 0,
+		        CONFIRMATION_DAY_RANGE);
+	}
+
+	private void createFilterExpectingException( final String expectedMessage, final IndicatorSignalId anchor,
+	        final IndicatorSignalId confirmation, final int delayUntilConfirmationRange,
+	        final int confirmationDayRange ) {
+		try {
+			new ConfirmationIndicatorsSignalFilter(anchor, confirmation, delayUntilConfirmationRange,
+			        confirmationDayRange);
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals(expectedMessage, e.getMessage());
+		}
+
+		verifyZeroInteractions(ordering);
+	}
+
+	private void clearSignal( IndicatorSignalId id ) {
+		signals.put(id, null);
+	}
+
+	private void applyExpectingException() {
+		try {
+			applyFilter();
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("Expecting a non-null entries for types anchorSignalType and confirmationSignalType",
+			        e.getMessage());
+		}
+
+		verifyZeroInteractions(ordering);
+	}
+
+	private SortedSet<BuySignal> applyFilter() {
+		return filter.apply(signals, ordering, LATEST_TRADING_DATE);
+	}
+
+	private void verifySignals( final int expected, final SortedSet<BuySignal> filteredSignals ) {
+		assertNotNull(filteredSignals);
+		assertEquals(expected, filteredSignals.size());
+		verify(ordering, times(expected)).compare(any(BuySignal.class), any(BuySignal.class));
+		verifyNoMoreInteractions(ordering);
+	}
+
+	private void verifyNoSignals( final SortedSet<BuySignal> filteredSignals ) {
+		assertNotNull(filteredSignals);
+		assertEquals(0, filteredSignals.size());
+		verifyZeroInteractions(ordering);
 	}
 
 	private void setUpAnchorSignal() {
@@ -79,205 +268,5 @@ public class ConfirmationIndicatorsSignalFilterTest {
 		wrongConfirmationSignals
 		        .add(new IndicatorSignal(LocalDate.now(), wrongConfirmationSignalType, SignalType.BULLISH));
 		signals.put(wrongConfirmationSignalType, wrongConfirmationSignals);
-	}
-
-	@Test
-	public void missingAnchorSignalType() {
-		try {
-			new ConfirmationIndicatorsSignalFilter(null, confirmationSignalType, daysUntilStartOfConfirmationRange,
-			        confirmationDayRange);
-			fail("Expecting exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals("Expecting an anchor IndicatorSignalType", e.getMessage());
-		}
-
-		verifyZeroInteractions(ordering);
-	}
-
-	@Test
-	public void missingConfirmationSignalType() {
-		try {
-			new ConfirmationIndicatorsSignalFilter(anchorSignalType, null, daysUntilStartOfConfirmationRange,
-			        confirmationDayRange);
-			fail("Expecting exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals("Expecting an anchor IndicatorSignalType", e.getMessage());
-		}
-
-		verifyZeroInteractions(ordering);
-	}
-
-	@Test
-	public void invalidStartDelay() {
-		try {
-			new ConfirmationIndicatorsSignalFilter(anchorSignalType, confirmationSignalType, -1, confirmationDayRange);
-			fail("Expecting exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals("Expecting zero or positive number for the days", e.getMessage());
-		}
-
-		verifyZeroInteractions(ordering);
-	}
-
-	@Test
-	public void invalidConfirmationRange() {
-		try {
-			new ConfirmationIndicatorsSignalFilter(anchorSignalType, confirmationSignalType,
-			        daysUntilStartOfConfirmationRange, -1);
-			fail("Expecting exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals("Expecting zero or a positive number of days for the confirmation signal range",
-			        e.getMessage());
-		}
-
-		verifyZeroInteractions(ordering);
-	}
-
-	@Test
-	public void noAnchorSignal() {
-		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull(buySignals);
-		assertEquals(0, buySignals.size());
-		verifyZeroInteractions(ordering);
-	}
-
-	@Test
-	public void noAConfirmationSignal() {
-		setUpAnchorSignal();
-
-		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull(buySignals);
-		assertEquals(0, buySignals.size());
-		verifyZeroInteractions(ordering);
-	}
-
-	@Test
-	public void wrongAConfirmationSignalWithinnRange() {
-		setUpAnchorSignal();
-		setUpWrongConfirmationSignal();
-
-		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull(buySignals);
-		assertEquals(0, buySignals.size());
-		verifyZeroInteractions(ordering);
-	}
-
-	@Test
-	public void confirmationSignalOnFirstDayOfRangeNoDelay() {
-		setUpAnchorSignal();
-		setUpConfirmationSignal(new IndicatorSignal(LocalDate.now().plus(0, ChronoUnit.DAYS), confirmationSignalType,
-		        SignalType.BULLISH));
-		filter = new ConfirmationIndicatorsSignalFilter(anchorSignalType, confirmationSignalType, 0,
-		        confirmationDayRange);
-
-		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull(buySignals);
-		assertEquals(1, buySignals.size());
-		verify(ordering).compare(any(BuySignal.class), any(BuySignal.class));
-	}
-
-	@Test
-	public void confirmationSignalOnLastDayOfRangeNoDelay() {
-		setUpAnchorSignal();
-		setUpConfirmationSignal(new IndicatorSignal(LocalDate.now().plus(confirmationDayRange, ChronoUnit.DAYS),
-		        confirmationSignalType, SignalType.BULLISH));
-		filter = new ConfirmationIndicatorsSignalFilter(anchorSignalType, confirmationSignalType, 0,
-		        confirmationDayRange);
-
-		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull(buySignals);
-		assertEquals(1, buySignals.size());
-		verify(ordering).compare(any(BuySignal.class), any(BuySignal.class));
-	}
-
-	@Test
-	public void confirmationSignalOnFirstDayOfRangeTwoDayDelay() {
-		setUpAnchorSignal();
-		setUpConfirmationSignal(
-		        new IndicatorSignal(LocalDate.now().plus(daysUntilStartOfConfirmationRange, ChronoUnit.DAYS),
-		                confirmationSignalType, SignalType.BULLISH));
-
-		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull(buySignals);
-		assertEquals(1, buySignals.size());
-		verify(ordering).compare(any(BuySignal.class), any(BuySignal.class));
-	}
-
-	@Test
-	public void confirmationSignalOnLastDayOfRangeTwoDayDelay() {
-		setUpAnchorSignal();
-		setUpConfirmationSignal(
-		        new IndicatorSignal(LocalDate.now().plus(daysUntilStartOfConfirmationRange, ChronoUnit.DAYS)
-		                .plus(confirmationDayRange, ChronoUnit.DAYS), confirmationSignalType, SignalType.BULLISH));
-
-		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull(buySignals);
-		assertEquals(1, buySignals.size());
-		verify(ordering).compare(any(BuySignal.class), any(BuySignal.class));
-	}
-
-	@Test
-	public void confirmationSignalTooSoon() {
-		setUpAnchorSignal();
-		setUpConfirmationSignal(
-		        new IndicatorSignal(LocalDate.now().plus(daysUntilStartOfConfirmationRange - 1, ChronoUnit.DAYS),
-		                confirmationSignalType, SignalType.BULLISH));
-
-		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull(buySignals);
-		assertEquals(0, buySignals.size());
-		verifyZeroInteractions(ordering);
-	}
-
-	@Test
-	public void confirmationSignalTooLate() {
-		setUpAnchorSignal();
-		setUpConfirmationSignal(new IndicatorSignal(
-		        LocalDate.now().plus(daysUntilStartOfConfirmationRange + confirmationDayRange + 1, ChronoUnit.DAYS),
-		        confirmationSignalType, SignalType.BULLISH));
-
-		final SortedSet<BuySignal> buySignals = filter.apply(signals, ordering, latestTradingDate);
-
-		assertNotNull(buySignals);
-		assertEquals(0, buySignals.size());
-		verifyZeroInteractions(ordering);
-	}
-
-	@Test
-	public void missingAnchorSignalsOnApply() {
-		signals.put(anchorSignalType, null);
-
-		try {
-			filter.apply(signals, ordering, latestTradingDate);
-			fail("Expecting exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals("Expecting a non-null entries for types anchorSignalType and confirmationSignalType",
-			        e.getMessage());
-		}
-
-		verifyZeroInteractions(ordering);
-	}
-
-	@Test
-	public void missingConfirmationSignalsOnApply() {
-		signals.put(confirmationSignalType, null);
-
-		try {
-			filter.apply(signals, ordering, latestTradingDate);
-			fail("Expecting exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals("Expecting a non-null entries for types anchorSignalType and confirmationSignalType",
-			        e.getMessage());
-		}
-
-		verifyZeroInteractions(ordering);
 	}
 }
