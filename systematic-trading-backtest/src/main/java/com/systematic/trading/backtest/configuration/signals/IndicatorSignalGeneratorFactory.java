@@ -31,6 +31,7 @@ import java.util.List;
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
@@ -43,9 +44,10 @@ import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.indicator.GenericIndicatorSignals;
+import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.indicator.SignalGenerator;
+import com.systematic.trading.signals.indicator.ema.ExponentialMovingAverageBullishGradientSignalGenerator;
 import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceBullishSignalGenerator;
 import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceUptrendSignalGenerator;
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBearishSignalGenerator;
@@ -71,6 +73,7 @@ public class IndicatorSignalGeneratorFactory {
 		return INSTANCE;
 	}
 
+	//TODO is this method really needed? polymorphism?
 	/**
 	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
 	 */
@@ -88,6 +91,9 @@ public class IndicatorSignalGeneratorFactory {
 		if (signal instanceof SmaUptrendConfiguration) {
 			return create((SmaUptrendConfiguration) signal, filter);
 		}
+		if (signal instanceof EmaUptrendConfiguration) {
+			return create((EmaUptrendConfiguration) signal, filter);
+		}
 
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
@@ -101,8 +107,7 @@ public class IndicatorSignalGeneratorFactory {
 		        new IndicatorSignalId(macdConfiguration.getDescription()), filter, signalCalculators);
 	}
 
-	private IndicatorSignals create( final MacdConfiguration macdConfiguration,
-	        final SignalRangeFilter filter ) {
+	private IndicatorSignals create( final MacdConfiguration macdConfiguration, final SignalRangeFilter filter ) {
 
 		final List<SignalGenerator<MovingAverageConvergenceDivergenceLines>> signalCalculators = new ArrayList<>();
 		//TODO generate the down (bearish) signals too
@@ -112,8 +117,8 @@ public class IndicatorSignalGeneratorFactory {
 		        macdConfiguration.getSignalTimePeriods(), macdConfiguration.getType(), filter, signalCalculators);
 	}
 
-	private IndicatorSignals create( final int fastTimePeriods, final int slowTimePeriod,
-	        final int signalTimePeriods, final IndicatorSignalId id, final SignalRangeFilter filter,
+	private IndicatorSignals create( final int fastTimePeriods, final int slowTimePeriod, final int signalTimePeriods,
+	        final IndicatorSignalId id, final SignalRangeFilter filter,
 	        final List<SignalGenerator<MovingAverageConvergenceDivergenceLines>> signalCalculators ) {
 
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(fastTimePeriods,
@@ -129,8 +134,8 @@ public class IndicatorSignalGeneratorFactory {
 		final MovingAverageConvergenceDivergence macd = new MovingAverageConvergenceDivergenceCalculator(fastEma,
 		        slowEma, signalEma, new IllegalArgumentThrowingValidator());
 
-		return new GenericIndicatorSignals<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergence>(id,
-		        macd, requiredNumberOfTradingDays, signalCalculators, filter);
+		return new GenericIndicatorSignals<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergence>(
+		        id, macd, requiredNumberOfTradingDays, signalCalculators, filter);
 	}
 
 	private IndicatorSignals create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter ) {
@@ -157,5 +162,17 @@ public class IndicatorSignalGeneratorFactory {
 
 		return new GenericIndicatorSignals<SimpleMovingAverageLine, SimpleMovingAverage>(sma.getType(), calculator,
 		        sma.getLookback() + sma.getDaysOfGradient(), signalCalculators, filter);
+	}
+
+	private IndicatorSignals create( final EmaUptrendConfiguration ema, final SignalRangeFilter filter ) {
+
+		final List<SignalGenerator<ExponentialMovingAverageLine>> signalCalculators = new ArrayList<>();
+		signalCalculators.add(new ExponentialMovingAverageBullishGradientSignalGenerator());
+
+		final ExponentialMovingAverage calculator = new ExponentialMovingAverageCalculator(ema.getLookback(),
+		        new IllegalArgumentThrowingValidator());
+
+		return new GenericIndicatorSignals<ExponentialMovingAverageLine, ExponentialMovingAverage>(ema.getType(),
+		        calculator, ema.getLookback(), signalCalculators, filter);
 	}
 }

@@ -42,6 +42,7 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.signals.EmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaUptrendConfiguration;
@@ -177,6 +178,11 @@ public class BacktestApplication {
 		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
 			if (smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient() > windUp) {
 				windUp = smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient();
+			}
+		}
+		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
+			if (emaConfiguration.getLookback() > windUp) {
+				windUp = emaConfiguration.getLookback();
 			}
 		}
 
