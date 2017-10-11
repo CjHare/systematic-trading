@@ -133,10 +133,10 @@ public class DescriptionGenerator {
 	private String entryPeriodic( final EntryLogicConfiguration entry ) {
 		switch (entry.getPeriodic()) {
 			case WEEKLY:
-				return "Weekly";
+				return "Buy_Weekly";
 
 			case MONTHLY:
-				return "Monthly";
+				return "Buy_Monthly";
 
 			default:
 				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", entry.getPeriodic()));
