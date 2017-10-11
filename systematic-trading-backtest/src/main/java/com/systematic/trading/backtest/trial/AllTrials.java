@@ -43,7 +43,6 @@ import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfig
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.EmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
-import com.systematic.trading.backtest.configuration.signals.MacdUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
@@ -96,8 +95,6 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 			        getAllSameDaySmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 			configurations
 			        .addAll(getAllSmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-			configurations.addAll(
-			        getAllMacdUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 		}
 
 		return configurations;
@@ -250,23 +247,6 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 			        new EntryLogicConfiguration(
 			                new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, emaConfiguration),
-			                maximumTrade, minimumTrade)));
-		}
-
-		return configurations;
-	}
-
-	private List<BacktestBootstrapConfiguration> getAllMacdUptrends( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
-	        final MaximumTrade maximumTrade ) {
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        MacdUptrendConfiguration.values().length);
-
-		for (final MacdUptrendConfiguration macdConfiguration : MacdUptrendConfiguration.values()) {
-			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-			        new EntryLogicConfiguration(
-			                new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL, macdConfiguration),
 			                maximumTrade, minimumTrade)));
 		}
 

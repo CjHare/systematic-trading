@@ -49,7 +49,6 @@ import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.indicator.SignalGenerator;
 import com.systematic.trading.signals.indicator.ema.ExponentialMovingAverageBullishGradientSignalGenerator;
 import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceBullishSignalGenerator;
-import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceUptrendSignalGenerator;
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBearishSignalGenerator;
 import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBullishSignalGenerator;
 import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageBullishGradientSignalGenerator;
@@ -82,9 +81,6 @@ public class IndicatorSignalGeneratorFactory {
 		if (signal instanceof MacdConfiguration) {
 			return create((MacdConfiguration) signal, filter);
 		}
-		if (signal instanceof MacdUptrendConfiguration) {
-			return create((MacdUptrendConfiguration) signal, filter);
-		}
 		if (signal instanceof RsiConfiguration) {
 			return create((RsiConfiguration) signal, filter);
 		}
@@ -96,15 +92,6 @@ public class IndicatorSignalGeneratorFactory {
 		}
 
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
-	}
-
-	private IndicatorSignals create( final MacdUptrendConfiguration macdConfiguration,
-	        final SignalRangeFilter filter ) {
-		final List<SignalGenerator<MovingAverageConvergenceDivergenceLines>> signalCalculators = new ArrayList<>();
-		signalCalculators.add(new MovingAverageConvergenceDivergenceUptrendSignalGenerator());
-
-		return create(macdConfiguration.getFastTimePeriods(), macdConfiguration.getSlowTimePeriods(), 1,
-		        new IndicatorSignalId(macdConfiguration.getDescription()), filter, signalCalculators);
 	}
 
 	private IndicatorSignals create( final MacdConfiguration macdConfiguration, final SignalRangeFilter filter ) {
