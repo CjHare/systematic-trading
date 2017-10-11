@@ -51,7 +51,7 @@ import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguratio
 import com.systematic.trading.backtest.trial.configuration.TrialConfigurationBuilder;
 
 /**
- * Executes over 1200 configurations, scatter gun approach.
+ * Executes all trials, allowing different configuration for the trade sizes.
  * 
  * @author CJ Hare
  */

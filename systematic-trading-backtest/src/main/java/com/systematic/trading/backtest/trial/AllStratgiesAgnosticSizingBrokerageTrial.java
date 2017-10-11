@@ -56,13 +56,13 @@ import com.systematic.trading.backtest.trade.MinimumTrade;
  * 
  * @author CJ Hare
  */
-public class AllStratgiesAgnosticSizingBrokeragetTrial extends AllTrials implements BacktestConfiguration {
+public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implements BacktestConfiguration {
 
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new AllStratgiesAgnosticSizingBrokeragetTrial(),
+		new BacktestApplication().runBacktest(new AllStratgiesAgnosticSizingBrokerageTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
@@ -75,7 +75,7 @@ public class AllStratgiesAgnosticSizingBrokeragetTrial extends AllTrials impleme
 		return tradeSizes;
 	}
 
-	public AllStratgiesAgnosticSizingBrokeragetTrial() {
+	public AllStratgiesAgnosticSizingBrokerageTrial() {
 		super(BrokerageFeesConfiguration.VANGUARD_RETAIL, getPositionSizing());
 	}
 }
