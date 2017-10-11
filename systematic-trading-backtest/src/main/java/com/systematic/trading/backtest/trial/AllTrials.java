@@ -81,20 +81,22 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 
 			// Signal based buying
 			configurations.addAll(
-			        getAllMacdConfirmedByRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-			configurations.addAll(
-			        getAllSameDayMacdRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			        getMacdConfirmedByRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 			configurations
-			        .addAll(getAllEmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-			configurations.addAll(getAllMacd(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-			configurations.addAll(
-			        getAllSameDayMacdSmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-			configurations.addAll(
-			        getAllSameDayMacdSma(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-			configurations.addAll(
-			        getAllSameDaySmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			        .addAll(getSameDayMacdRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 			configurations
-			        .addAll(getAllSmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			        .addAll(getEmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(getMacd(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(
+			        getSameDayMacdSmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(
+			        getSameDayMacdEmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations
+			        .addAll(getSameDayMacdSma(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations
+			        .addAll(getSameDaySmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations
+			        .addAll(getSmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 		}
 
 		return configurations;
@@ -107,7 +109,7 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		        .withDeposit(deposit).withBrokerage(brokerage).withEntry(entryLogic).build();
 	}
 
-	private List<BacktestBootstrapConfiguration> getAllMacdConfirmedByRsi( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getMacdConfirmedByRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
@@ -128,7 +130,7 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getAllSameDayMacdRsi( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getSameDayMacdRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
@@ -146,7 +148,7 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getAllMacd( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getMacd( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
@@ -161,7 +163,7 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getAllSameDayMacdSmaRsi( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getSameDayMacdSmaRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
@@ -183,7 +185,29 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getAllSameDayMacdSma( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getSameDayMacdEmaRsi( final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length
+		        * SmaUptrendConfiguration.values().length * RsiConfiguration.values().length);
+
+		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
+			for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
+				for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+					configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+					        new EntryLogicConfiguration(
+					                new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
+					                        macdConfiguration, emaConfiguration, rsiConfiguration),
+					                maximumTrade, minimumTrade)));
+				}
+			}
+		}
+
+		return configurations;
+	}
+
+	private List<BacktestBootstrapConfiguration> getSameDayMacdSma( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
@@ -201,7 +225,7 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getAllSameDaySmaRsi( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getSameDaySmaRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
@@ -219,7 +243,7 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getAllSmaUptrends( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getSmaUptrends( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
@@ -236,7 +260,7 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getAllEmaUptrends( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getEmaUptrends( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
