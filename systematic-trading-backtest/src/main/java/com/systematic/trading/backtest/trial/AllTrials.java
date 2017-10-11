@@ -87,6 +87,8 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 			configurations
 			        .addAll(getEmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 			configurations.addAll(getMacd(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+			configurations
+			        .addAll(getSameDayEmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 			configurations.addAll(
 			        getSameDayMacdSmaRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 			configurations.addAll(
@@ -233,6 +235,24 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		        SmaUptrendConfiguration.values().length * RsiConfiguration.values().length);
 
 		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
+			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+				        new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
+				                smaConfiguration, rsiConfiguration), maximumTrade, minimumTrade)));
+			}
+		}
+
+		return configurations;
+	}
+
+	private List<BacktestBootstrapConfiguration> getSameDayEmaRsi( final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
+		        SmaUptrendConfiguration.values().length * RsiConfiguration.values().length);
+
+		for (final EmaUptrendConfiguration smaConfiguration : EmaUptrendConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 				        new EntryLogicConfiguration(new SameDayFilterConfiguration(SameDayFilterConfiguration.Type.ALL,
