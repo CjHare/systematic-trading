@@ -31,8 +31,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.collection.LimitedSizeQueue;
-
 /**
  * Tests the limited size implementation of LinkedList
  * 
@@ -40,6 +38,7 @@ import com.systematic.trading.collection.LimitedSizeQueue;
  */
 public class LimitedSizeQueueTest {
 
+	/** List instance being tesed. */
 	private LimitedSizeQueue<String> list;
 
 	@Before

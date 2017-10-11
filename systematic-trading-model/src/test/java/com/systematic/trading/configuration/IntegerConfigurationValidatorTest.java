@@ -46,6 +46,7 @@ public class IntegerConfigurationValidatorTest {
 	private static final int MAX = Integer.MAX_VALUE - 1;
 	private static final int MIN = Integer.MIN_VALUE + 1;
 
+	/** Validator instance being tested. */
 	private IntegerConfigurationValidator validator;
 
 	@Test

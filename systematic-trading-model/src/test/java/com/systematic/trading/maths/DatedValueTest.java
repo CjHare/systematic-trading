@@ -5,67 +5,64 @@ import static org.junit.Assert.assertEquals;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.junit.Before;
 import org.junit.Test;
-
-import com.systematic.trading.maths.DatedValue;
 
 public class DatedValueTest {
 
-	private final LocalDate validDate = LocalDate.now();
-	private final BigDecimal validValue = BigDecimal.ZERO;
+	private static final LocalDate DATE = LocalDate.now();
+	private static final BigDecimal VALUE = BigDecimal.ZERO;
+
+	/** MOdel object being tested. */
+	private DatedValue datedValue;
+
+	@Before
+	public void setUp() {
+		datedValue = new DatedValue(DATE, VALUE);
+	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void constructorDateNull() {
-		new DatedValue(null, validValue);
+		new DatedValue(null, VALUE);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void constructorValueNull() {
-		new DatedValue(validDate, null);
+		new DatedValue(DATE, null);
 	}
 
 	@Test
 	public void getDate() {
-		final DatedValue dv = new DatedValue(validDate, validValue);
-
-		assertEquals(validDate, dv.getDate());
+		assertEquals(DATE, datedValue.getDate());
 	}
 
 	@Test
 	public void getValue() {
-		final DatedValue dv = new DatedValue(validDate, validValue);
-
-		assertEquals(validValue, dv.getValue());
+		assertEquals(VALUE, datedValue.getValue());
 	}
 
 	@Test
 	public void getClosingPrice() {
-		final DatedValue dv = new DatedValue(validDate, validValue);
-
-		assertEquals(validValue, dv.getClosingPrice().getPrice());
+		assertEquals(VALUE, datedValue.getClosingPrice().getPrice());
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void getLowestPrice() {
-		final DatedValue date = new DatedValue(validDate, validValue);
-		date.getLowestPrice();
+		datedValue.getLowestPrice();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void getHighestPrice() {
-		final DatedValue date = new DatedValue(validDate, validValue);
-		date.getHighestPrice();
+		datedValue.getHighestPrice();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void getOpeningPrice() {
-		final DatedValue date = new DatedValue(validDate, validValue);
-		date.getOpeningPrice();
+		datedValue.getOpeningPrice();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void getTickerSymbol() {
-		final DatedValue date = new DatedValue(validDate, validValue);
-		date.getTickerSymbol();
+		datedValue.getTickerSymbol();
 	}
 }
