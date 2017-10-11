@@ -58,7 +58,7 @@ import com.systematic.trading.backtest.trial.configuration.TrialConfigurationBui
  * 
  * @author CJ Hare
  */
-public abstract class EmaUptrendVsSmaUptrendTrial extends BaseTrialConfiguration implements BacktestConfiguration {
+public class EmaUptrendVsSmaUptrendTrial extends BaseTrialConfiguration implements BacktestConfiguration {
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
