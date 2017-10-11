@@ -66,6 +66,7 @@ public class ElasticBrokerageIndex extends ElasticCommonIndex {
 		        getPair(ElasticFieldName.STARTING_EQUITY_BALANCE, ElasticFieldType.FLOAT),
 		        getPair(ElasticFieldName.END_EQUITY_BALANCE, ElasticFieldType.FLOAT),
 		        getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE),
+		        getPair(ElasticFieldName.EQUITY_VALUE, ElasticFieldType.FLOAT),
 		        getPair(ElasticFieldName.TRANSACTION_FEE, ElasticFieldType.FLOAT)));
 	}
 }

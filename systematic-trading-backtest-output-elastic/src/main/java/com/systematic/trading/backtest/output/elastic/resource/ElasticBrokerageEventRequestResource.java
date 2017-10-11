@@ -40,6 +40,7 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 public class ElasticBrokerageEventRequestResource extends TransactionDateEventResource {
 
 	private final float equityAmount;
+	private final float equityValue;
 	private final float startingEquityBalance;
 	private final float endEquityBalance;
 	private final float transactionFee;
@@ -47,9 +48,15 @@ public class ElasticBrokerageEventRequestResource extends TransactionDateEventRe
 	public ElasticBrokerageEventRequestResource( final BrokerageEvent event ) {
 		super(event.getType().getName(), event.getTransactionDate());
 		this.equityAmount = event.getEquityAmount().floatValue();
+		this.equityValue = event.getEquityValue().floatValue();
 		this.startingEquityBalance = event.getStartingEquityBalance().floatValue();
 		this.endEquityBalance = event.getEndEquityBalance().floatValue();
 		this.transactionFee = event.getTransactionFee().floatValue();
+	}
+
+	@JsonProperty(ElasticTypeName.EQUITY_VALUE)
+	public float getEquityValue() {
+		return equityValue;
 	}
 
 	@JsonProperty(ElasticTypeName.EQUITY_AMOUNT)

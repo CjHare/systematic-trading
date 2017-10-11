@@ -53,7 +53,7 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent.Brokerag
 public class ElasticBrokerageIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"transaction_fee\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"}}}";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"equity_value\":{\"type\":\"float\"},\"transaction_fee\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"}}}";
 	private static final String JSON_POST_INDEX_TYPE = "{\"action\":\"index\",\"type\":\"MissingIndexBatchForTesting\"},{\"event\":\"Buy\",\"transaction_date\":{\"year\":1992,\"month\":\"APRIL\",\"chronology\":{\"id\":\"ISO\",\"calendarType\":\"iso8601\"},\"dayOfMonth\":30,\"dayOfWeek\":\"THURSDAY\",\"dayOfYear\":121,\"era\":\"CE\",\"monthValue\":4,\"leapYear\":true},\"equity_amount\":12.34,\"starting_equity_balance\":512.46,\"end_equity_balance\":500.12,\"transaction_fee\":606.98}";
 
 	@Test

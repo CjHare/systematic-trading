@@ -88,6 +88,13 @@ public interface BrokerageEvent extends Event {
 	LocalDate getTransactionDate();
 
 	/**
+	 * Value of the equities purchased (excluding brokerage fee)
+	 * 
+	 * @return value of the equities being purchased.
+	 */
+	BigDecimal getEquityValue();
+
+	/**
 	 * The number of equities involved in the brokerage transaction.
 	 * 
 	 * @return number of equities being brokered.

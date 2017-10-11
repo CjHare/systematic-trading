@@ -39,6 +39,7 @@ public enum ElasticFieldName {
 	EQUITY_BALANCE(ElasticTypeName.EQUITY_BALANCE),
 	EQUITY_BALANCE_VALUE(ElasticTypeName.EQUITY_BALANCE_VALUE),
 	EQUITY_AMOUNT(ElasticTypeName.EQUITY_AMOUNT),
+	EQUITY_VALUE(ElasticTypeName.EQUITY_VALUE),
 	EVENT(ElasticTypeName.EVENT),
 	EVENT_DATE(ElasticTypeName.EVENT_DATE),
 	FUNDS_AFTER(ElasticTypeName.FUNDS_AFTER),

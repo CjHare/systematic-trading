@@ -42,6 +42,7 @@ public final class ElasticTypeName {
 	public static final String EQUITY_BALANCE = "equity_balance";
 	public static final String EQUITY_BALANCE_VALUE = "equity_balance_value";
 	public static final String EQUITY_AMOUNT = "equity_amount";
+	public static final String EQUITY_VALUE = "equity_value";
 	public static final String EVENT = "event";
 	public static final String EVENT_DATE = "event_date";
 	public static final String EXCLUSIVE_END_DATE = "exclusive_end_date";
