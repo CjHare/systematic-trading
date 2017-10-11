@@ -63,7 +63,7 @@ public abstract class EmaUptrendVsSmaUptrendTrial extends BaseTrialConfiguration
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new MacdSignalBuyHoldTrial(),
+		new BacktestApplication().runBacktest(new EmaUptrendVsSmaUptrendTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
