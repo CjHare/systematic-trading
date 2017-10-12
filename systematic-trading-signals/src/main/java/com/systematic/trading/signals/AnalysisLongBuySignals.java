@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.IndicatorSignalId;
@@ -132,30 +131,26 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = new HashMap<>();
 
 		for (final IndicatorSignals generator : generators) {
-			final Optional<List<IndicatorSignal>> signals = calculateSignals(data, generator);
-
-			if (signals.isPresent()) {
-				final IndicatorSignalId type = generator.getSignalType();
-				indicatorSignals.put(type, signals.get());
-			}
+			final List<IndicatorSignal> signals = calculateSignals(data, generator);
+			final IndicatorSignalId type = generator.getSignalType();
+			indicatorSignals.put(type, signals);
 		}
 
 		return indicatorSignals;
 	}
 
-	private Optional<List<IndicatorSignal>> calculateSignals( final TradingDayPrices[] data,
-	        final IndicatorSignals generator ) {
+	private List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data, final IndicatorSignals generator ) {
 
 		final List<IndicatorSignal> signals;
 
 		if (generator.getRequiredNumberOfTradingDays() < data.length) {
 			signals = generator.calculate(data);
 			notifyIndicatorEvent(signals);
-			return Optional.of(signals);
+			return signals;
 		}
 
 		// Only here on error :. no signals
-		return Optional.empty();
+		return new ArrayList<>();
 	}
 
 	@Override
