@@ -42,7 +42,7 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
  * 
  * @author CJ Hare
  */
-public class TestIndicatorBuySignalFilter implements SignalFilter {
+public class AllIndicatorsBuySignalFilter implements SignalFilter {
 
 	@Override
 	/**

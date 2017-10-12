@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.IndicatorSignalId;
@@ -70,18 +71,24 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 	public AnalysisLongBuySignals( final List<IndicatorSignals> generators, final List<SignalFilter> filters ) {
 		validateInput(generators, filters);
-
 		this.generators = generators;
 		this.filters = filters;
 		this.requiredNumberOfTradingDays = getRequiredNumberOfTradingDays(generators);
 	}
 
+	//TODO validator
 	private void validateInput( final List<IndicatorSignals> generators, final List<SignalFilter> filters ) {
 		if (generators == null) {
 			throw new IllegalArgumentException("Expecting a non-null list of generators");
 		}
+		if (generators.size() == 0) {
+			throw new IllegalArgumentException("Expecting a non-empty list of generators");
+		}
 		if (filters == null) {
 			throw new IllegalArgumentException("Expecting a non-null list of filters");
+		}
+		if (filters.size() == 0) {
+			throw new IllegalArgumentException("Expecting a non-empty list of filters");
 		}
 	}
 
@@ -96,6 +103,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		        : Collections.max(requiredTradingDays) + CONVERT_BASE_ZERO_TO_BASE_ONE;
 	}
 
+	//TODO the given data should already be sorted, change to a sorted map, keyed by LocalDate
 	@Override
 	public List<BuySignal> analyse( final TradingDayPrices[] data ) {
 
@@ -105,7 +113,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		// Generate the indicator signals
 		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = getSignals(data);
 
-		final LocalDate latestTradingDate = data[data.length - 1].getDate();
+		final LocalDate latestTradingDate = getLatestTradingDate(data);
 		final List<BuySignal> signals = new ArrayList<>();
 
 		// Apply the rule filters
@@ -116,20 +124,26 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		return signals;
 	}
 
-	private Map<IndicatorSignalId, List<IndicatorSignal>> getSignals( final TradingDayPrices[] data ) {
+	private LocalDate getLatestTradingDate( final TradingDayPrices[] data ) {
+		return data.length > 1 ? data[data.length - 1].getDate() : LocalDate.now();
+	}
 
+	private Map<IndicatorSignalId, List<IndicatorSignal>> getSignals( final TradingDayPrices[] data ) {
 		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = new HashMap<>();
 
 		for (final IndicatorSignals generator : generators) {
-			final List<IndicatorSignal> signals = calculateSignals(data, generator);
-			final IndicatorSignalId type = generator.getSignalType();
-			indicatorSignals.put(type, signals);
+			final Optional<List<IndicatorSignal>> signals = calculateSignals(data, generator);
+
+			if (signals.isPresent()) {
+				final IndicatorSignalId type = generator.getSignalType();
+				indicatorSignals.put(type, signals.get());
+			}
 		}
 
 		return indicatorSignals;
 	}
 
-	private List<IndicatorSignal> calculateSignals( final TradingDayPrices[] data,
+	private Optional<List<IndicatorSignal>> calculateSignals( final TradingDayPrices[] data,
 	        final IndicatorSignals generator ) {
 
 		final List<IndicatorSignal> signals;
@@ -137,11 +151,11 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		if (generator.getRequiredNumberOfTradingDays() < data.length) {
 			signals = generator.calculate(data);
 			notifyIndicatorEvent(signals);
-			return signals;
+			return Optional.of(signals);
 		}
 
 		// Only here on error :. no signals
-		return new ArrayList<>();
+		return Optional.empty();
 	}
 
 	@Override

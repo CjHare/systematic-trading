@@ -21,7 +21,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalId;
-import com.systematic.trading.signals.filter.TestIndicatorBuySignalFilter;
+import com.systematic.trading.signals.filter.AllIndicatorsBuySignalFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.filter.SignalFilter;
@@ -51,6 +51,9 @@ public class AnalysisLongBuySignalsTest {
 	private TradingDayPrices[] data;
 
 	/** */
+	private List<SignalFilter> filters;
+
+	/** *List of a single default generator. */
 	private List<IndicatorSignals> generators;
 
 	/** Signals analysis being tested. */
@@ -59,11 +62,20 @@ public class AnalysisLongBuySignalsTest {
 	@Before
 	public void setUp() {
 		generators = new ArrayList<>();
+		filters = new ArrayList<>();
+		filters.add(new AllIndicatorsBuySignalFilter());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void maximumNumberOfTradingDaysRequiredNullSignals() {
-		new AnalysisLongBuySignals(new ArrayList<>(), null);
+		setUpGeneratorTradingDays(generatorA, 1);
+		new AnalysisLongBuySignals(generators, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void maximumNumberOfTradingDaysRequiredEmptySignals() {
+		setUpGeneratorTradingDays(generatorA, 1);
+		new AnalysisLongBuySignals(generators, new ArrayList<>());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -71,11 +83,17 @@ public class AnalysisLongBuySignalsTest {
 		new AnalysisLongBuySignals(null, new ArrayList<>());
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void maximumNumberOfTradingDaysRequiredEmptyGenerators() {
+		new AnalysisLongBuySignals(new ArrayList<>(), filters);
+	}
+
 	@Test
 	public void maximumNumberOfTradingDaysRequiredEmptyInput() {
-		final AnalysisBuySignals analysis = new AnalysisLongBuySignals(new ArrayList<>(), new ArrayList<>());
+		setUpGeneratorTradingDays(generatorA, 1);
+		setUpAnalysis();
 
-		assertEquals(0, analysis.getMaximumNumberOfTradingDaysRequired());
+		assertEquals(2, analysis.getMaximumNumberOfTradingDaysRequired());
 	}
 
 	@Test
@@ -115,7 +133,7 @@ public class AnalysisLongBuySignalsTest {
 	public void analyze() {
 		setUpGenerator(generatorA, rsiId, LocalDate.now().minus(2, ChronoUnit.DAYS));
 		setUpGenerator(generatorB, macdId, LocalDate.now().minus(1, ChronoUnit.DAYS), LocalDate.now());
-		setUpAnalysisWithFilter();
+		setUpAnalysis();
 
 		final List<BuySignal> signals = performAnalysis();
 
@@ -166,12 +184,6 @@ public class AnalysisLongBuySignalsTest {
 	}
 
 	private void setUpAnalysis() {
-		analysis = new AnalysisLongBuySignals(generators, new ArrayList<>());
-	}
-
-	private void setUpAnalysisWithFilter() {
-		final List<SignalFilter> filters = new ArrayList<>();
-		filters.add(new TestIndicatorBuySignalFilter());
 		analysis = new AnalysisLongBuySignals(generators, filters);
 	}
 }
