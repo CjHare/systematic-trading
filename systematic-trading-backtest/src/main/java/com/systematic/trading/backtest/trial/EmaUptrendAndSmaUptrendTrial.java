@@ -36,7 +36,7 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.filter.AnyIndicatorFilterConfiguration;
+import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.EmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaUptrendConfiguration;
@@ -110,7 +110,7 @@ public class EmaUptrendAndSmaUptrendTrial extends BaseTrialConfiguration impleme
 			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 				        new EntryLogicConfiguration(
-				                new AnyIndicatorFilterConfiguration(emaConfiguration, smaConfiguration), maximumTrade,
+				                new AnyOfIndicatorFilterConfiguration(emaConfiguration, smaConfiguration), maximumTrade,
 				                minimumTrade)));
 			}
 		}

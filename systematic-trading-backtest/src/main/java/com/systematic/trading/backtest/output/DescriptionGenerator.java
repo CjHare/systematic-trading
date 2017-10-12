@@ -37,7 +37,7 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.filter.AnyIndicatorFilterConfiguration;
+import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
@@ -189,7 +189,7 @@ public class DescriptionGenerator {
 	}
 
 	private String entryLogicAnyySignal( final EntryLogicConfiguration entry ) {
-		final Optional<AnyIndicatorFilterConfiguration> anySignalFilter = entry.getAnySignal();
+		final Optional<AnyOfIndicatorFilterConfiguration> anySignalFilter = entry.getAnyOfSignal();
 
 		if (anySignalFilter.isPresent()) {
 			final StringJoiner out = new StringJoiner(SEPARATOR);

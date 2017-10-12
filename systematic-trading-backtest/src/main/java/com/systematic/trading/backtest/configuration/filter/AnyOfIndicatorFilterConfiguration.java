@@ -32,11 +32,11 @@ import com.systematic.trading.backtest.configuration.signals.SignalConfiguration
  * 
  * @author CJ Hare
  */
-public class AnyIndicatorFilterConfiguration {
+public class AnyOfIndicatorFilterConfiguration {
 
 	private final SignalConfiguration[] signals;
 
-	public AnyIndicatorFilterConfiguration( final SignalConfiguration... signals ) {
+	public AnyOfIndicatorFilterConfiguration( final SignalConfiguration... signals ) {
 		this.signals = signals;
 	}
 

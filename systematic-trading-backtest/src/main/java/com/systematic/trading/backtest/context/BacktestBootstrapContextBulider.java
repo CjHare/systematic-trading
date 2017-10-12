@@ -40,6 +40,7 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicFactory;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityManagementFeeConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
+import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.IndicatorSignalGeneratorFactory;
@@ -205,7 +206,7 @@ public class BacktestBootstrapContextBulider {
 	        final BrokerageFeesConfiguration brokerageType, final EntryLogicConfiguration entry ) {
 
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
-		final SignalConfiguration[] indicators = getSameDaySignals(entry);
+		final SignalConfiguration[] indicators = getAnyOfSignals(entry);
 		final IndicatorSignalId[] indicatorTypes = new IndicatorSignalId[indicators.length];
 		for (int i = 0; i < indicators.length; i++) {
 			indicatorTypes[i] = indicators[i].getType();
@@ -223,6 +224,11 @@ public class BacktestBootstrapContextBulider {
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
 		        indicatorGenerators);
+	}
+
+	private SignalConfiguration[] getAnyOfSignals( final EntryLogicConfiguration entry ) {
+		final Optional<AnyOfIndicatorFilterConfiguration> signals = entry.getAnyOfSignal();
+		return signals.isPresent() ? signals.get().getSignals() : new SignalConfiguration[0];
 	}
 
 	private SignalConfiguration[] getSameDaySignals( final EntryLogicConfiguration entry ) {
