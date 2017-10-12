@@ -67,29 +67,34 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 
 		final SortedSet<BuySignal> passedSignals = new TreeSet<>(ordering);
 
+		// Loop through the set of signals from the first indicator
 		final List<IndicatorSignal> firstIndicatorSignals = signals.get(indicators[0]);
-
 		for (final IndicatorSignal firstIndicatorSignal : firstIndicatorSignals) {
 			final LocalDate date = firstIndicatorSignal.getDate();
 
-			// Discover how many of the indicator signals also match on that date
-			int matches = 1;
-			for (int i = 1; i < indicators.length; i++) {
-				if (hasSignalOnSameDay(date, signals.get(indicators[i]))) {
-					matches++;
-				} else {
-					// We need a match across all indicators, missed one :. don't continue
-					break;
-				}
-			}
-
-			// Buy when all have a signal on the same date
-			if (matches == indicators.length) {
+			if (hasEverySignalsOnSameDay(date, signals)) {
 				passedSignals.add(new BuySignal(date));
 			}
 		}
 
 		return passedSignals;
+	}
+
+	private boolean hasEverySignalsOnSameDay( final LocalDate date,
+	        final Map<IndicatorSignalId, List<IndicatorSignal>> signals ) {
+		
+		// Discover how many of the indicator signals also match on that date
+		int matches = 1;
+		for (int i = 1; i < indicators.length; i++) {
+			if (hasSignalOnSameDay(date, signals.get(indicators[i]))) {
+				matches++;
+			} else {
+				// We need a match across all indicators, missed one :. don't continue
+				break;
+			}
+		}
+
+		return matches == indicators.length;
 	}
 
 	private boolean hasSignalOnSameDay( final LocalDate date, final List<IndicatorSignal> signals ) {
@@ -103,6 +108,7 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 		return false;
 	}
 
+	//TODO move into a validator
 	private void validateInput( final Map<IndicatorSignalId, List<IndicatorSignal>> signals ) {
 
 		for (final IndicatorSignalId indicator : indicators) {
