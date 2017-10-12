@@ -50,6 +50,7 @@ import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.filter.TradingDaySignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignals;
+import com.systematic.trading.signals.model.filter.AnyIndicatorBuySignalFilter;
 import com.systematic.trading.signals.model.filter.ConfirmationIndicatorsSignalFilter;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
@@ -121,6 +122,10 @@ public class BacktestBootstrapContextBulider {
 				return indicatorsOnSameDay(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
 				        entryLogic);
 
+			case ANY_SIGNAL:
+				return anyIndicators(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
+				        entryLogic);
+
 			default:
 				throw new IllegalArgumentException(
 				        String.format("Unexpected entry logic type: %s", entryLogic.getType()));
@@ -183,6 +188,30 @@ public class BacktestBootstrapContextBulider {
 		}
 
 		final SignalFilter filter = new IndicatorsOnSameDaySignalFilter(indicatorTypes);
+		final IndicatorSignals[] indicatorGenerators = new IndicatorSignals[indicators.length];
+
+		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
+
+		for (int i = 0; i < indicatorGenerators.length; i++) {
+			indicatorGenerators[i] = IndicatorSignalGeneratorFactory.getInstance().create(indicators[i],
+			        signalRangeFilter);
+		}
+
+		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
+		        indicatorGenerators);
+	}
+
+	private BacktestBootstrapContext anyIndicators( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
+	        final BrokerageFeesConfiguration brokerageType, final EntryLogicConfiguration entry ) {
+
+		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
+		final SignalConfiguration[] indicators = getSameDaySignals(entry);
+		final IndicatorSignalId[] indicatorTypes = new IndicatorSignalId[indicators.length];
+		for (int i = 0; i < indicators.length; i++) {
+			indicatorTypes[i] = indicators[i].getType();
+		}
+
+		final SignalFilter filter = new AnyIndicatorBuySignalFilter(indicatorTypes);
 		final IndicatorSignals[] indicatorGenerators = new IndicatorSignals[indicators.length];
 
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);

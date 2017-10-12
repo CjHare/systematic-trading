@@ -37,6 +37,7 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.filter.AnyIndicatorFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
@@ -100,6 +101,9 @@ public class DescriptionGenerator {
 			break;
 			case SAME_DAY_SIGNALS:
 				out.add(entryLogicSameDaySignals(entry));
+			break;
+			case ANY_SIGNAL:
+				out.add(entryLogicAnyySignal(entry));
 			break;
 			default:
 				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
@@ -173,6 +177,25 @@ public class DescriptionGenerator {
 			final SignalConfiguration[] signals = sameDayFilter.get().getSignals();
 			if (signals.length != 1) {
 				out.add("SameDay");
+			}
+
+			for (final SignalConfiguration signal : signals) {
+				out.add(signal.getDescription());
+			}
+			return out.toString();
+		}
+
+		return NO_DESCRIPTION;
+	}
+
+	private String entryLogicAnyySignal( final EntryLogicConfiguration entry ) {
+		final Optional<AnyIndicatorFilterConfiguration> anySignalFilter = entry.getAnySignal();
+
+		if (anySignalFilter.isPresent()) {
+			final StringJoiner out = new StringJoiner(SEPARATOR);
+			final SignalConfiguration[] signals = anySignalFilter.get().getSignals();
+			if (signals.length != 1) {
+				out.add("AnyOf");
 			}
 
 			for (final SignalConfiguration signal : signals) {

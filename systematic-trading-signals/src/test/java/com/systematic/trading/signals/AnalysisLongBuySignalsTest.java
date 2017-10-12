@@ -21,9 +21,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signals.filter.TestIndicatorBuySignalFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.filter.AnyIndicatorIsBuySignalFilter;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
@@ -115,7 +115,6 @@ public class AnalysisLongBuySignalsTest {
 	public void analyze() {
 		setUpGenerator(generatorA, rsiId, LocalDate.now().minus(2, ChronoUnit.DAYS));
 		setUpGenerator(generatorB, macdId, LocalDate.now().minus(1, ChronoUnit.DAYS), LocalDate.now());
-
 		setUpAnalysisWithFilter();
 
 		final List<BuySignal> signals = performAnalysis();
@@ -172,7 +171,7 @@ public class AnalysisLongBuySignalsTest {
 
 	private void setUpAnalysisWithFilter() {
 		final List<SignalFilter> filters = new ArrayList<>();
-		filters.add(new AnyIndicatorIsBuySignalFilter());
+		filters.add(new TestIndicatorBuySignalFilter());
 		analysis = new AnalysisLongBuySignals(generators, filters);
 	}
 }

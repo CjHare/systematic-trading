@@ -23,41 +23,24 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.model.filter;
+package com.systematic.trading.backtest.configuration.filter;
 
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import com.systematic.trading.signal.IndicatorSignalId;
-import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.indicator.IndicatorSignal;
+import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 
 /**
- * Simply passes through every indicator signal as a buy signal.
+ * Filter to exclude event not within the set of acceptable signals.
  * 
  * @author CJ Hare
  */
-public class AnyIndicatorIsBuySignalFilter implements SignalFilter {
+public class AnyIndicatorFilterConfiguration {
 
-	@Override
-	/**
-	 * Just pass through the indicators given as signals
-	 */
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
-	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+	private final SignalConfiguration[] signals;
 
-		final SortedSet<BuySignal> passedSignals = new TreeSet<>(ordering);
+	public AnyIndicatorFilterConfiguration( final SignalConfiguration... signals ) {
+		this.signals = signals;
+	}
 
-		for (final List<IndicatorSignal> values : signals.values()) {
-			for (final IndicatorSignal signal : values) {
-				passedSignals.add(new BuySignal(signal.getDate()));
-			}
-		}
-
-		return passedSignals;
+	public SignalConfiguration[] getSignals() {
+		return signals;
 	}
 }

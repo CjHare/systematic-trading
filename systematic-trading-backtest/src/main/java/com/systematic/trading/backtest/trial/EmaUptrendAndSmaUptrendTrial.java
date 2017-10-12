@@ -36,8 +36,8 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.filter.AnyIndicatorFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.EmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
@@ -52,7 +52,6 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
 import com.systematic.trading.backtest.trial.configuration.TrialConfigurationBuilder;
-import com.systematic.trading.signals.model.filter.AnyIndicatorIsBuySignalFilter;
 
 /**
  * Executes all the combinations of SMA and EMA uptrrends. When there is either an SMA or EMA signal it's a buy signal.
@@ -109,8 +108,10 @@ public class EmaUptrendAndSmaUptrendTrial extends BaseTrialConfiguration impleme
 
 		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
 			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
-//				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-//				        new EntryLogicConfiguration(new AnyIndicatorIsBuySignalFilter(), maximumTrade, minimumTrade)));
+				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+				        new EntryLogicConfiguration(
+				                new AnyIndicatorFilterConfiguration(emaConfiguration, smaConfiguration), maximumTrade,
+				                minimumTrade)));
 			}
 		}
 
