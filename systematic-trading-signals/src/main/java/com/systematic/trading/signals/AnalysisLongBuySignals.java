@@ -46,9 +46,6 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
-	/** When there are no signals generators, no input is needed.*/
-	private static final int NO_DAYS_REQUIRED = 0;
-
 	/** Used for converting from base zero to base one counting systems. */
 	private static final int CONVERT_BASE_ZERO_TO_BASE_ONE = 1;
 
@@ -69,6 +66,11 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		this.generators = generators;
 		this.filters = filters;
 		this.requiredNumberOfTradingDays = getRequiredNumberOfTradingDays(generators);
+
+		if (requiredNumberOfTradingDays < 1) {
+			throw new IllegalArgumentException(String
+			        .format("Expecting at least one trading day required from generators %s", generators.toString()));
+		}
 	}
 
 	//TODO validator
@@ -94,21 +96,26 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 			requiredTradingDays.add(generator.getRequiredNumberOfTradingDays());
 		}
 
-		return requiredTradingDays.isEmpty() ? NO_DAYS_REQUIRED
-		        : Collections.max(requiredTradingDays) + CONVERT_BASE_ZERO_TO_BASE_ONE;
+		return Collections.max(requiredTradingDays) + CONVERT_BASE_ZERO_TO_BASE_ONE;
 	}
 
 	//TODO the given data should already be sorted, change to a sorted map, keyed by LocalDate
 	@Override
 	public List<BuySignal> analyse( final TradingDayPrices[] data ) {
 
+		//TODO avoid this sort by using a SortedMap, data should already be sorted so it's only linear time complexity
 		// Correct the ordering from earliest to latest
 		Arrays.sort(data, TRADING_DAY_ORDER_BY_DATE);
 
 		// Generate the indicator signals
-		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = getSignals(data);
-
+		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = calculateSignals(data);
 		final LocalDate latestTradingDate = getLatestTradingDate(data);
+
+		return filterSignals(indicatorSignals, latestTradingDate);
+	}
+
+	private List<BuySignal> filterSignals( final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals,
+	        final LocalDate latestTradingDate ) {
 		final List<BuySignal> signals = new ArrayList<>();
 
 		// Apply the rule filters
@@ -120,10 +127,10 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	}
 
 	private LocalDate getLatestTradingDate( final TradingDayPrices[] data ) {
-		return data.length > 1 ? data[data.length - 1].getDate() : LocalDate.now();
+		return data[data.length - 1].getDate();
 	}
 
-	private Map<IndicatorSignalId, List<IndicatorSignal>> getSignals( final TradingDayPrices[] data ) {
+	private Map<IndicatorSignalId, List<IndicatorSignal>> calculateSignals( final TradingDayPrices[] data ) {
 		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = new HashMap<>();
 
 		for (final IndicatorSignals generator : generators) {
