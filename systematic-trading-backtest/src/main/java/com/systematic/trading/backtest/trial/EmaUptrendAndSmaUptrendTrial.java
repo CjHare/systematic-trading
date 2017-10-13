@@ -38,7 +38,6 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicConfigurati
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.EmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
