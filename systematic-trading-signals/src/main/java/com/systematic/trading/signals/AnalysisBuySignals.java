@@ -66,5 +66,5 @@ public interface AnalysisBuySignals {
 	 * 
 	 * @return all the filters used during analysis.
 	 */
-	List<SignalFilter> getFilters();
+	SignalFilter[] getFilters();
 }

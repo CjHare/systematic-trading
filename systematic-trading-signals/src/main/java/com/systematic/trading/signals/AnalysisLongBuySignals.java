@@ -61,10 +61,10 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	/** Listeners interested in signal analysis events. */
 	private final List<SignalAnalysisListener> listeners = new ArrayList<>();
 
-	private final List<SignalFilter> filters;
-	private final List<IndicatorSignals> generators;
+	private final SignalFilter[] filters;
+	private final IndicatorSignals[] generators;
 
-	public AnalysisLongBuySignals( final List<IndicatorSignals> generators, final List<SignalFilter> filters ) {
+	public AnalysisLongBuySignals( final IndicatorSignals[] generators, final SignalFilter[] filters ) {
 		validateInput(generators, filters);
 		this.generators = generators;
 		this.filters = filters;
@@ -72,22 +72,22 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	}
 
 	//TODO validator
-	private void validateInput( final List<IndicatorSignals> generators, final List<SignalFilter> filters ) {
+	private void validateInput( final IndicatorSignals[] generators, final SignalFilter[] filters ) {
 		if (generators == null) {
 			throw new IllegalArgumentException("Expecting a non-null list of generators");
 		}
-		if (generators.size() == 0) {
+		if (generators.length == 0) {
 			throw new IllegalArgumentException("Expecting a non-empty list of generators");
 		}
 		if (filters == null) {
 			throw new IllegalArgumentException("Expecting a non-null list of filters");
 		}
-		if (filters.size() == 0) {
+		if (filters.length == 0) {
 			throw new IllegalArgumentException("Expecting a non-empty list of filters");
 		}
 	}
 
-	private int getRequiredNumberOfTradingDays( final List<IndicatorSignals> requiredGenerators ) {
+	private int getRequiredNumberOfTradingDays( final IndicatorSignals[] requiredGenerators ) {
 
 		final List<Integer> requiredTradingDays = new ArrayList<>();
 		for (final IndicatorSignals generator : requiredGenerators) {
@@ -174,7 +174,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	}
 
 	@Override
-	public List<SignalFilter> getFilters() {
+	public SignalFilter[] getFilters() {
 		return filters;
 	}
 }

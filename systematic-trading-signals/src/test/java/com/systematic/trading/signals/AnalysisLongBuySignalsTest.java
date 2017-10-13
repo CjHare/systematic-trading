@@ -52,7 +52,7 @@ public class AnalysisLongBuySignalsTest {
 	private TradingDayPrices[] data;
 
 	/** */
-	private List<SignalFilter> filters;
+	private SignalFilter[] filters;
 
 	/** *List of a single default generator. */
 	private List<IndicatorSignals> generators;
@@ -63,30 +63,29 @@ public class AnalysisLongBuySignalsTest {
 	@Before
 	public void setUp() {
 		generators = new ArrayList<>();
-		filters = new ArrayList<>();
-		filters.add(new AllIndicatorsBuySignalFilter(new BuySignalDateComparator()));
+		filters = new SignalFilter[] { new AllIndicatorsBuySignalFilter(new BuySignalDateComparator()) };
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void maximumNumberOfTradingDaysRequiredNullSignals() {
 		setUpGeneratorTradingDays(generatorA, 1);
-		new AnalysisLongBuySignals(generators, null);
+		new AnalysisLongBuySignals(generators.toArray(new IndicatorSignals[0]), null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void maximumNumberOfTradingDaysRequiredEmptySignals() {
 		setUpGeneratorTradingDays(generatorA, 1);
-		new AnalysisLongBuySignals(generators, new ArrayList<>());
+		new AnalysisLongBuySignals(generators.toArray(new IndicatorSignals[0]), new SignalFilter[0]);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void maximumNumberOfTradingDaysRequiredNullGenerators() {
-		new AnalysisLongBuySignals(null, new ArrayList<>());
+		new AnalysisLongBuySignals(null, filters);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void maximumNumberOfTradingDaysRequiredEmptyGenerators() {
-		new AnalysisLongBuySignals(new ArrayList<>(), filters);
+		new AnalysisLongBuySignals(new IndicatorSignals[0], filters);
 	}
 
 	@Test
@@ -185,6 +184,6 @@ public class AnalysisLongBuySignalsTest {
 	}
 
 	private void setUpAnalysis() {
-		analysis = new AnalysisLongBuySignals(generators, filters);
+		analysis = new AnalysisLongBuySignals(generators.toArray(new IndicatorSignals[0]), filters);
 	}
 }

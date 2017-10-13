@@ -27,9 +27,6 @@ package com.systematic.trading.backtest.configuration.entry;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -80,13 +77,13 @@ public class EntryLogicFactory {
 		final LocalDate simulationStartDate = simulationDates.getStartDate();
 		final LocalDate simulationEndDate = simulationDates.getEndDate();
 
-		final List<SignalFilter> filters = new ArrayList<>();
+		final SignalFilter[] filters = new SignalFilter[1];
 		final SignalFilter decoratedFilter = new TimePeriodSignalFilterDecorator(
 		        new RollingTimePeriodSignalFilterDecorator(filter, Period.ofDays(DAYS_ACCEPTING_SIGNALS)),
 		        simulationStartDate, simulationEndDate);
-		filters.add(decoratedFilter);
+		filters[0] = decoratedFilter;
 
-		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals(Arrays.asList(entrySignals), filters);
+		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals(entrySignals, filters);
 		return new SignalTriggeredEntryLogic(equity.getType(), equity.getScale(), tradeValue, buyLongAnalysis);
 	}
 }
