@@ -108,24 +108,13 @@ public class EmaUptrendAndSmaUptrendTrial extends BaseTrialConfiguration impleme
 		        EmaUptrendConfiguration.values().length * SmaUptrendConfiguration.values().length);
 
 		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
-			//			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
-			//				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-			//				        new EntryLogicConfiguration(
-			//				                new AnyOfIndicatorFilterConfiguration(emaConfiguration, smaConfiguration), maximumTrade,
-			//				                minimumTrade)));
+			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
+				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+				        new EntryLogicConfiguration(
+				                new AnyOfIndicatorFilterConfiguration(emaConfiguration, smaConfiguration), maximumTrade,
+				                minimumTrade)));
+			}
 
-			configurations
-			        .add(getConfiguration(equity, simulationDates, deposit, brokerage, new EntryLogicConfiguration(
-			                new SameDayFilterConfiguration(emaConfiguration), maximumTrade, minimumTrade)));
-
-			//			}
-
-		}
-
-		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
-			configurations
-			        .add(getConfiguration(equity, simulationDates, deposit, brokerage, new EntryLogicConfiguration(
-			                new SameDayFilterConfiguration(smaConfiguration), maximumTrade, minimumTrade)));
 		}
 
 		return configurations;
