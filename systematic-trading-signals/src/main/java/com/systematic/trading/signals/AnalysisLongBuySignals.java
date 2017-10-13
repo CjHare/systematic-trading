@@ -149,6 +149,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 			return signals;
 		}
 
+		//TODO reqwrite to use optional, need to update the filters to accept no entry
 		// Only here on error :. no signals
 		return new ArrayList<>();
 	}
