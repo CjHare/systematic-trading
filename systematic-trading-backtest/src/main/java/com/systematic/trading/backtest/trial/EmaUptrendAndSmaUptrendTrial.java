@@ -104,7 +104,7 @@ public class EmaUptrendAndSmaUptrendTrial extends BaseTrialConfiguration impleme
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaUptrendConfiguration.values().length);
+				EmaUptrendConfiguration.values().length * SmaUptrendConfiguration.values().length);
 
 		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
 			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
