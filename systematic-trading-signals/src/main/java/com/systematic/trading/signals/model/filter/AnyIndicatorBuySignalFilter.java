@@ -45,19 +45,27 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
  */
 public class AnyIndicatorBuySignalFilter implements SignalFilter {
 
-	/** When there is at least one of these signals on a date, it's a buy. */
-	private IndicatorSignalId[] indicators;
+	/** Ordering of the generated signals. */
+	private final Comparator<BuySignal> signalOrdering;
 
-	public AnyIndicatorBuySignalFilter( final IndicatorSignalId... indicators ) {
+	/** When there is at least one of these signals on a date, it's a buy. */
+	private final IndicatorSignalId[] indicators;
+
+	public AnyIndicatorBuySignalFilter( final Comparator<BuySignal> signalOrdering,
+	        final IndicatorSignalId... indicators ) {
+		
+		//TODO use validator
+		
+		this.signalOrdering = signalOrdering;
 		this.indicators = indicators;
 	}
 
 	@Override
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
-	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+	        final LocalDate latestTradingDate ) {
 		final Set<LocalDate> signalDates = getSignalDates(signals);
 
-		final SortedSet<BuySignal> passedSignals = new TreeSet<>(ordering);
+		final SortedSet<BuySignal> passedSignals = new TreeSet<>(signalOrdering);
 		for (final LocalDate signalDate : signalDates) {
 			passedSignals.add(new BuySignal(signalDate));
 		}

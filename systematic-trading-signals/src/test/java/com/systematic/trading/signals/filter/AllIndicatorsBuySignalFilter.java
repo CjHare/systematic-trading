@@ -44,12 +44,18 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
  */
 public class AllIndicatorsBuySignalFilter implements SignalFilter {
 
+	private final Comparator<BuySignal> ordering;
+
+	public AllIndicatorsBuySignalFilter( final Comparator<BuySignal> ordering ) {
+		this.ordering = ordering;
+	}
+
 	@Override
 	/**
 	 * Just pass through the indicators given as signals
 	 */
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
-	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+	        final LocalDate latestTradingDate ) {
 
 		final SortedSet<BuySignal> passedSignals = new TreeSet<>(ordering);
 

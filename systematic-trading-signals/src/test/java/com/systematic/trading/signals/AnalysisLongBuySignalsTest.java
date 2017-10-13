@@ -24,6 +24,7 @@ import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.AllIndicatorsBuySignalFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
+import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
@@ -63,7 +64,7 @@ public class AnalysisLongBuySignalsTest {
 	public void setUp() {
 		generators = new ArrayList<>();
 		filters = new ArrayList<>();
-		filters.add(new AllIndicatorsBuySignalFilter());
+		filters.add(new AllIndicatorsBuySignalFilter(new BuySignalDateComparator()));
 	}
 
 	@Test(expected = IllegalArgumentException.class)

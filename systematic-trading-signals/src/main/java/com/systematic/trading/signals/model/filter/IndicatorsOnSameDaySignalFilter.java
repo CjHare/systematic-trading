@@ -43,6 +43,9 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
  */
 public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 
+	/** Ordering of the generated signals. */
+	private final Comparator<BuySignal> signalOrdering;
+
 	/** The signals we will be looking for on each application. */
 	private IndicatorSignalId[] indicators;
 
@@ -50,22 +53,28 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	 * @param indicators all the indicators expected in an application, those all required on the
 	 *            same date to pass the filtering.
 	 */
-	public IndicatorsOnSameDaySignalFilter( final IndicatorSignalId... indicators ) {
+	public IndicatorsOnSameDaySignalFilter( final Comparator<BuySignal> signalOrdering,
+	        final IndicatorSignalId... indicators ) {
+		
+		//TODO use validator
+		validate(indicators, "Expecting at least one IndicatorSignalType");
+		validate(signalOrdering, "Expecting a non-null singal comparator");
 
 		// There'll be NullPointers unless we have an array of IndicatorSignalType
-		if (indicators == null || indicators.length == 0) {
+		if (indicators.length == 0) {
 			throw new IllegalArgumentException("Expecting at least one IndicatorSignalType");
 		}
 
 		this.indicators = indicators;
+		this.signalOrdering = signalOrdering;
 	}
 
 	@Override
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
-	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+	        final LocalDate latestTradingDate ) {
 		validateInput(signals);
 
-		final SortedSet<BuySignal> passedSignals = new TreeSet<>(ordering);
+		final SortedSet<BuySignal> passedSignals = new TreeSet<>(signalOrdering);
 
 		// Loop through the set of signals from the first indicator
 		final List<IndicatorSignal> firstIndicatorSignals = signals.get(indicators[0]);
@@ -82,7 +91,7 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 
 	private boolean hasEverySignalsOnSameDay( final LocalDate date,
 	        final Map<IndicatorSignalId, List<IndicatorSignal>> signals ) {
-		
+
 		// Discover how many of the indicator signals also match on that date
 		int matches = 1;
 		for (int i = 1; i < indicators.length; i++) {
@@ -115,6 +124,12 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 			if (signals.get(indicator) == null) {
 				throw new IllegalArgumentException(String.format("Expecting a non-null %s list", indicator));
 			}
+		}
+	}
+
+	private void validate( final Object toValidate, final String message ) {
+		if (toValidate == null) {
+			throw new IllegalArgumentException(message);
 		}
 	}
 }

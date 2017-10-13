@@ -30,6 +30,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 /**
@@ -55,7 +55,6 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 @RunWith(MockitoJUnitRunner.class)
 public class IndicatorOnSameDaySignalFilterTest {
 
-	private static final BuySignalDateComparator ORDERING = new BuySignalDateComparator();
 	private static final LocalDate LAST_TRADING_DATE = null;
 	private static final LocalDate TODAY = LocalDate.now();
 
@@ -67,6 +66,9 @@ public class IndicatorOnSameDaySignalFilterTest {
 
 	@Mock
 	private IndicatorSignalId smaId;
+
+	@Mock
+	private Comparator<BuySignal> ordering;
 
 	/** List of generated signals. */
 	private Map<IndicatorSignalId, List<IndicatorSignal>> signals;
@@ -167,11 +169,11 @@ public class IndicatorOnSameDaySignalFilterTest {
 	}
 
 	private SortedSet<BuySignal> applyFilter() {
-		return filter.apply(signals, ORDERING, LAST_TRADING_DATE);
+		return filter.apply(signals, LAST_TRADING_DATE);
 	}
 
 	private void setUpFilter( final IndicatorSignalId... ids ) {
-		filter = new IndicatorsOnSameDaySignalFilter(ids);
+		filter = new IndicatorsOnSameDaySignalFilter(ordering, ids);
 	}
 
 	private void setUpNoSignals( final IndicatorSignalId... ids ) {

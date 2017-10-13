@@ -59,31 +59,39 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 	/** The number of days after the anchor signal to begin range of acceptable days for the confirmation signal.*/
 	private final int delayUntilConfirmationRange;
 
+	/** Ordering of the generated signals. */
+	private final Comparator<BuySignal> signalOrdering;
+
 	/**
 	 * @param anchor first signal that precedes the follower.
 	 * @param follower after the anchor where a signal if generated only when within the inclusive days.
 	 * @param delayUntilConfirmationRange number of days after the anchor signal to begin the acceptable range of days for the confirmation signal. 
 	 * @param confirmationDayRange inclusive number of days from the start of the range the confirmation signal must be within.
 	 */
-	public ConfirmationIndicatorsSignalFilter( final IndicatorSignalId anchor, final IndicatorSignalId confirmation,
-	        final int delayUntilConfirmationRange, final int confirmationDayRange ) {
+	public ConfirmationIndicatorsSignalFilter( final Comparator<BuySignal> signalOrdering,
+	        final IndicatorSignalId anchor, final IndicatorSignalId confirmation, final int delayUntilConfirmationRange,
+	        final int confirmationDayRange ) {
 		validate(anchor, "Expecting an anchor IndicatorSignalType");
 		validate(confirmation, "Expecting an confirmation IndicatorSignalType");
+		validate(signalOrdering, "Expecting a signal comparator");
 		validate(confirmationDayRange, "Expecting zero or a positive number of days for the confirmation signal range");
 		validate(delayUntilConfirmationRange, "Expecting zero or positive number for the days");
-
+		
+		//TODO use validator
+		
 		this.anchor = anchor;
 		this.confirmation = confirmation;
+		this.signalOrdering = signalOrdering;
 		this.delayUntilConfirmationRange = delayUntilConfirmationRange;
 		this.confirmationDayRange = confirmationDayRange;
 	}
 
 	@Override
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
-	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+	        final LocalDate latestTradingDate ) {
 		validateInput(signals);
 
-		final SortedSet<BuySignal> passedSignals = new TreeSet<>(ordering);
+		final SortedSet<BuySignal> passedSignals = new TreeSet<>(signalOrdering);
 		final List<IndicatorSignal> anchorSignals = signals.get(anchor);
 		final List<IndicatorSignal> confirmationSignals = signals.get(confirmation);
 

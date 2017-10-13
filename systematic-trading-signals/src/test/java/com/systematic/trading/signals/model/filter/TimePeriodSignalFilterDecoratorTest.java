@@ -33,7 +33,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -56,9 +55,6 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TimePeriodSignalFilterDecoratorTest {
-
-	/** Default ordering of signals. */
-	private static final BuySignalDateComparator ORDER_BY_DATE = new BuySignalDateComparator();
 
 	@Mock
 	private SignalFilter filter;
@@ -127,7 +123,7 @@ public class TimePeriodSignalFilterDecoratorTest {
 	@SuppressWarnings("unchecked")
 	private void setUpFilter( final LocalDate signalDate ) {
 		expectedSignals = createOutputSignals(signalDate);
-		when(filter.apply(anyMap(), any(Comparator.class), any(LocalDate.class))).thenReturn(expectedSignals);
+		when(filter.apply(anyMap(), any(LocalDate.class))).thenReturn(expectedSignals);
 	}
 
 	private void verifyFilteredSignals( final int expected, final SortedSet<BuySignal> filteredSignals,
@@ -136,15 +132,15 @@ public class TimePeriodSignalFilterDecoratorTest {
 		assertEquals(expected == 0, filteredSignals.isEmpty());
 		assertEquals(expected, filteredSignals.size());
 		assertEquals(expectedSignals, filteredSignals);
-		verify(filter).apply(signals, ORDER_BY_DATE, signalDate);
+		verify(filter).apply(signals, signalDate);
 	}
 
 	private SortedSet<BuySignal> applyFilter( final LocalDate signalDate ) {
-		return decorator.apply(signals, ORDER_BY_DATE, signalDate);
+		return decorator.apply(signals, signalDate);
 	}
 
 	private SortedSet<BuySignal> createOutputSignals( final LocalDate signalDate ) {
-		final SortedSet<BuySignal> signals = new TreeSet<BuySignal>(ORDER_BY_DATE);
+		final SortedSet<BuySignal> signals = new TreeSet<BuySignal>(new BuySignalDateComparator());
 
 		signals.add(new BuySignal(signalDate));
 

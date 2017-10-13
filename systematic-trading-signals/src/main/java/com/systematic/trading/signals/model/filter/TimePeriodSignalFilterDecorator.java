@@ -26,7 +26,6 @@
 package com.systematic.trading.signals.model.filter;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -65,9 +64,9 @@ public class TimePeriodSignalFilterDecorator implements SignalFilter {
 
 	@Override
 	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
-	        final Comparator<BuySignal> ordering, final LocalDate latestTradingDate ) {
+	        final LocalDate latestTradingDate ) {
 
-		final SortedSet<BuySignal> signalSet = filter.apply(signals, ordering, latestTradingDate);
+		final SortedSet<BuySignal> signalSet = filter.apply(signals, latestTradingDate);
 
 		final Set<BuySignal> toRemove = new HashSet<>();
 

@@ -39,7 +39,6 @@ import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 import com.systematic.trading.signals.model.event.IndicatorSignalEvent;
 import com.systematic.trading.signals.model.filter.SignalFilter;
@@ -52,9 +51,6 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 	/** Used for converting from base zero to base one counting systems. */
 	private static final int CONVERT_BASE_ZERO_TO_BASE_ONE = 1;
-
-	/** Default ordering of signals. */
-	private static final BuySignalDateComparator BUY_SIGNAL_ORDER_BY_DATE = new BuySignalDateComparator();
 
 	/** Default ordering of prices. */
 	private static final TradingDayPricesDateOrder TRADING_DAY_ORDER_BY_DATE = new TradingDayPricesDateOrder();
@@ -117,7 +113,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 		// Apply the rule filters
 		for (final SignalFilter filter : filters) {
-			signals.addAll(filter.apply(indicatorSignals, BUY_SIGNAL_ORDER_BY_DATE, latestTradingDate));
+			signals.addAll(filter.apply(indicatorSignals, latestTradingDate));
 		}
 
 		return signals;

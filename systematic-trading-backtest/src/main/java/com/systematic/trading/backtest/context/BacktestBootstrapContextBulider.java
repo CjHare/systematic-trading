@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.context;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Comparator;
 import java.util.Optional;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
@@ -51,6 +52,8 @@ import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.filter.TradingDaySignalRangeFilter;
 import com.systematic.trading.signals.indicator.IndicatorSignals;
+import com.systematic.trading.signals.model.BuySignal;
+import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.filter.AnyIndicatorBuySignalFilter;
 import com.systematic.trading.signals.model.filter.ConfirmationIndicatorsSignalFilter;
 import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
@@ -77,6 +80,9 @@ import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculato
 public class BacktestBootstrapContextBulider {
 
 	//TODO convert into an actual builder pattern
+
+	/** The ordering to apply to signal dates. */
+	private static final Comparator<BuySignal> BUY_SIGNAL_ORDER_BY_DATE = new BuySignalDateComparator();
 
 	/** How long one year is as a period of time/ */
 	private static final Period ONE_YEAR = Period.ofYears(1);
@@ -163,8 +169,8 @@ public class BacktestBootstrapContextBulider {
 		final SignalConfiguration anchor = confirmationSignal.get().getAnchor();
 		final SignalConfiguration confirmation = confirmationSignal.get().getConfirmation();
 
-		final SignalFilter filter = new ConfirmationIndicatorsSignalFilter(anchor.getType(), confirmation.getType(),
-		        confirmationSignal.get().getType().getDelayUntilConfirmationRange(),
+		final SignalFilter filter = new ConfirmationIndicatorsSignalFilter(BUY_SIGNAL_ORDER_BY_DATE, anchor.getType(),
+		        confirmation.getType(), confirmationSignal.get().getType().getDelayUntilConfirmationRange(),
 		        confirmationSignal.get().getType().getConfirmationDayRange());
 
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
@@ -188,7 +194,7 @@ public class BacktestBootstrapContextBulider {
 			indicatorTypes[i] = indicators[i].getType();
 		}
 
-		final SignalFilter filter = new IndicatorsOnSameDaySignalFilter(indicatorTypes);
+		final SignalFilter filter = new IndicatorsOnSameDaySignalFilter(BUY_SIGNAL_ORDER_BY_DATE, indicatorTypes);
 		final IndicatorSignals[] indicatorGenerators = new IndicatorSignals[indicators.length];
 
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
@@ -212,7 +218,7 @@ public class BacktestBootstrapContextBulider {
 			indicatorTypes[i] = indicators[i].getType();
 		}
 
-		final SignalFilter filter = new AnyIndicatorBuySignalFilter(indicatorTypes);
+		final SignalFilter filter = new AnyIndicatorBuySignalFilter(BUY_SIGNAL_ORDER_BY_DATE, indicatorTypes);
 		final IndicatorSignals[] indicatorGenerators = new IndicatorSignals[indicators.length];
 
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);

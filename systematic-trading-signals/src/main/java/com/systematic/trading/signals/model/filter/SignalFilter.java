@@ -26,7 +26,6 @@
 package com.systematic.trading.signals.model.filter;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -48,10 +47,8 @@ public interface SignalFilter {
 	 * Apply the rule of the filter to the set of signals.
 	 * 
 	 * @param signals set of signals to apply the filter rules onto.
-	 * @param ordering the sorting to apply when creating the sorted set.
 	 * @param the date of the latest trading price action in the data set being analysed.
 	 * @return the resulting signal(s) from applying the filters rules.
 	 */
-	SortedSet<BuySignal> apply( Map<IndicatorSignalId, List<IndicatorSignal>> signals, Comparator<BuySignal> ordering,
-	        LocalDate latestTradingDate );
+	SortedSet<BuySignal> apply( Map<IndicatorSignalId, List<IndicatorSignal>> signals, LocalDate latestTradingDate );
 }

@@ -63,7 +63,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 		signals.put(anchorSignalType, new ArrayList<>());
 		signals.put(confirmationSignalType, new ArrayList<>());
 
-		filter = new ConfirmationIndicatorsSignalFilter(anchorSignalType, confirmationSignalType,
+		filter = new ConfirmationIndicatorsSignalFilter(ordering, anchorSignalType, confirmationSignalType,
 		        DAYS_UNTIL_CONFIRMATION_START, CONFIRMATION_DAY_RANGE);
 	}
 
@@ -200,7 +200,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 	}
 
 	private void setUpFilterImmediateStart() {
-		filter = new ConfirmationIndicatorsSignalFilter(anchorSignalType, confirmationSignalType, 0,
+		filter = new ConfirmationIndicatorsSignalFilter(ordering, anchorSignalType, confirmationSignalType, 0,
 		        CONFIRMATION_DAY_RANGE);
 	}
 
@@ -208,7 +208,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 	        final IndicatorSignalId confirmation, final int delayUntilConfirmationRange,
 	        final int confirmationDayRange ) {
 		try {
-			new ConfirmationIndicatorsSignalFilter(anchor, confirmation, delayUntilConfirmationRange,
+			new ConfirmationIndicatorsSignalFilter(ordering, anchor, confirmation, delayUntilConfirmationRange,
 			        confirmationDayRange);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
@@ -235,7 +235,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 	}
 
 	private SortedSet<BuySignal> applyFilter() {
-		return filter.apply(signals, ordering, LATEST_TRADING_DATE);
+		return filter.apply(signals, LATEST_TRADING_DATE);
 	}
 
 	private void verifySignals( final int expected, final SortedSet<BuySignal> filteredSignals ) {

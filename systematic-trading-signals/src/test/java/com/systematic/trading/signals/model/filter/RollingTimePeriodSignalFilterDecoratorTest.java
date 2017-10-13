@@ -34,7 +34,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -57,9 +56,6 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class RollingTimePeriodSignalFilterDecoratorTest {
-
-	/** Default ordering of signals. */
-	private static final BuySignalDateComparator ORDER_BY_DATE = new BuySignalDateComparator();
 
 	private static final LocalDate LATEST_TRADING_DATE = LocalDate.of(2015, 10, 16);
 
@@ -119,7 +115,7 @@ public class RollingTimePeriodSignalFilterDecoratorTest {
 	private void setUpFilter( final int daysAfter ) {
 		final LocalDate signalDate = LATEST_TRADING_DATE.minus(Period.ofDays(daysAfter));
 		expectedSignals = createOutputSignals(signalDate);
-		when(filter.apply(anyMap(), any(Comparator.class), any(LocalDate.class))).thenReturn(expectedSignals);
+		when(filter.apply(anyMap(), any(LocalDate.class))).thenReturn(expectedSignals);
 	}
 
 	private void verifyFilteredSignals( final int expected, final SortedSet<BuySignal> filteredSignals ) {
@@ -127,15 +123,15 @@ public class RollingTimePeriodSignalFilterDecoratorTest {
 		assertEquals(expected == 0, filteredSignals.isEmpty());
 		assertEquals(expected, filteredSignals.size());
 		assertEquals(expectedSignals, filteredSignals);
-		verify(filter).apply(signals, ORDER_BY_DATE, LATEST_TRADING_DATE);
+		verify(filter).apply(signals, LATEST_TRADING_DATE);
 	}
 
 	private SortedSet<BuySignal> applyFilter() {
-		return decorator.apply(signals, ORDER_BY_DATE, LATEST_TRADING_DATE);
+		return decorator.apply(signals, LATEST_TRADING_DATE);
 	}
 
 	private SortedSet<BuySignal> createOutputSignals( final LocalDate signalDate ) {
-		final SortedSet<BuySignal> signals = new TreeSet<BuySignal>(ORDER_BY_DATE);
+		final SortedSet<BuySignal> signals = new TreeSet<BuySignal>(new BuySignalDateComparator());
 		signals.add(new BuySignal(signalDate));
 		return signals;
 	}
