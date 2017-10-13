@@ -83,8 +83,7 @@ public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements Ba
 		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
 		final MacdConfiguration macdConfiguration = MacdConfiguration.MEDIUM;
 
-		final SameDayFilterConfiguration filterConfiguration = new SameDayFilterConfiguration(
-		        SameDayFilterConfiguration.Type.ALL, macdConfiguration);
+		final SameDayFilterConfiguration filterConfiguration = new SameDayFilterConfiguration(macdConfiguration);
 
 		final EntryLogicConfiguration entry = new EntryLogicConfiguration(filterConfiguration, maximumTrade,
 		        minimumTrade);
