@@ -89,6 +89,12 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	public void tooFewDaysOfSmaValues() {
+		setUpValidationErrorTooFewsDaysOfSmaValues();
+		setUpCalculator(6, 1);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
 	public void nullLastDataPoint() {
 		final int lookback = 2;
 		final int numberDataPoints = lookback + 4;
@@ -155,6 +161,10 @@ public class SimpleMovingAverageCalculatorTest {
 	private void setUValidationErrorNotEnoughValues() {
 		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
 		        anyInt());
+	}
+
+	private void setUpValidationErrorTooFewsDaysOfSmaValues() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyGreaterThan(anyInt(), anyInt());
 	}
 
 	private SimpleMovingAverageLine sma( final TradingDayPrices[] data ) {

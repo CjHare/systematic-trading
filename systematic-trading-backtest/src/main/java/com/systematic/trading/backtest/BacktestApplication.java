@@ -181,8 +181,8 @@ public class BacktestApplication {
 			}
 		}
 		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
-			if (emaConfiguration.getLookback() > windUp) {
-				windUp = emaConfiguration.getLookback();
+			if (emaConfiguration.getLookback() + emaConfiguration.getDaysOfGradient() > windUp) {
+				windUp = emaConfiguration.getLookback() + emaConfiguration.getDaysOfGradient();
 			}
 		}
 

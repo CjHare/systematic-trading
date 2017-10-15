@@ -58,7 +58,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 
 	/**
 	 * @param lookback the number of days to use when calculating the SMA.
-	 * @param daysOfSmaValues the number of trading days to calculate the RSI value.
+	 * @param daysOfSmaValues the number of trading days to have a SMA values for, with lookback being the number of trading days averaged..
 	 * @param validator validates and parses input.
 	 * @param store source for the storage array.
 	 */
@@ -69,6 +69,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 		this.lookback = lookback;
 
 		validator.verifyGreaterThan(1, lookback);
+		validator.verifyGreaterThan(2, daysOfSmaValues);
 	}
 
 	@Override
