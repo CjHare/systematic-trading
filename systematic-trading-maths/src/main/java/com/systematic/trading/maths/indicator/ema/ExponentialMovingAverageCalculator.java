@@ -45,9 +45,11 @@ import com.systematic.trading.maths.indicator.Validator;
  * <p/>
  * Greater accuracy is achieved with more data points, with the days of gradient being larger, the EMA becomes more accurate.
  * However with more data, more computation is required, meaning a balance between volume of data and accuracy is needed.
- * 
- * Calculates the EMA by first calculating the starting value using a SMA, then applies each value with the smoothing constant to produce the EMA. 
- * This does mean those dates used as part of the SMA will not have corresponding EMA values.
+ * <p/>
+ * This implementation calculates the EMA by first calculating the starting value using a SMA, 
+ * then applies each value with the smoothing constant to produce the EMA. 
+ * This does mean those dates used as part of the SMA will not have corresponding EMA values, 
+ * with those in the first period of the lookback being considered as inaccurate, not appropriate for use in signal generation.
  * 
  * @author CJ Hare
  */
@@ -76,16 +78,13 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	 */
 	public ExponentialMovingAverageCalculator( final int lookback, final int daysOfEmaValues,
 	        final Validator validator ) {
-		// Look back provides one of the days of EMA values
-		this.smoothingConstant = calculateSmoothingConstant(lookback);
-		this.validator = validator;
-		this.lookback = lookback;
-
 		validator.verifyGreaterThan(1, lookback);
 		validator.verifyGreaterThan(1, daysOfEmaValues);
 
-		//TODO add days of values
 		this.minimumNumberOfPrices = 2 * lookback + daysOfEmaValues;
+		this.smoothingConstant = calculateSmoothingConstant(lookback);
+		this.validator = validator;
+		this.lookback = lookback;
 	}
 
 	@Override
@@ -117,8 +116,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 
 		int smaDataPointCount = 0;
 		BigDecimal smaSum = BigDecimal.ZERO;
-		BigDecimal yesterday = BigDecimal.ZERO;
-		BigDecimal today;
+		BigDecimal emaValue = BigDecimal.ZERO;
 
 		for (final Map.Entry<LocalDate, BigDecimal> entry : data.entrySet()) {
 
@@ -127,15 +125,13 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 				smaDataPointCount++;
 
 				if (isSmaCalculationComplete(smaDataPointCount)) {
-					today = getSma(smaSum);
-					ema.put(entry.getKey(), today);
-					yesterday = today;
+					emaValue = getSma(smaSum);
+					ema.put(entry.getKey(), emaValue);
 				}
 
 			} else {
-				today = entry.getValue();
-				ema.put(entry.getKey(), getEma(yesterday, today));
-				yesterday = today;
+				emaValue = getEma(emaValue, entry.getValue());
+				ema.put(entry.getKey(), emaValue);
 			}
 		}
 
@@ -160,14 +156,12 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		ema.put(data[endSmaIndex - 1].getDate(), smaSum);
 
 		final int startEmaIndex = endSmaIndex;
-		BigDecimal yesterday = smaSum;
-		BigDecimal today;
+		BigDecimal emaValue = smaSum;
 
 		// One SMA value and the <= in loop
 		for (int i = startEmaIndex; i <= endEmaIndex; i++) {
-			today = data[i].getClosingPrice().getPrice();
-			ema.put(data[i].getDate(), getEma(yesterday, today));
-			yesterday = today;
+			emaValue = getEma(emaValue, data[i].getClosingPrice().getPrice());
+			ema.put(data[i].getDate(), emaValue);
 		}
 
 		return new ExponentialMovingAverageLine(ema);
@@ -176,9 +170,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/**
 	 * EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) 
 	 */
-	private BigDecimal getEma( final BigDecimal yesterday, final BigDecimal today ) {
-		return today.subtract(yesterday, MATH_CONTEXT).multiply(smoothingConstant, MATH_CONTEXT).add(yesterday,
-		        MATH_CONTEXT);
+	private BigDecimal getEma( final BigDecimal yesterdayEma, final BigDecimal todayClose ) {
+		return todayClose.subtract(yesterdayEma, MATH_CONTEXT).multiply(smoothingConstant, MATH_CONTEXT)
+		        .add(yesterdayEma, MATH_CONTEXT);
 
 	}
 
