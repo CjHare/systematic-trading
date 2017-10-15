@@ -67,8 +67,9 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 	/** Minimum number of trading days required for MACD signal generation. */
 	private final int requiredNumberOfTradingDays;
 
-	public GenericIndicatorSignals( final IndicatorSignalId id, final U indicator, final int requiredNumberOfTradingDays,
-	        final List<SignalGenerator<T>> signalCalculators, final SignalRangeFilter signalRangeFilter ) {
+	public GenericIndicatorSignals( final IndicatorSignalId id, final U indicator,
+	        final int requiredNumberOfTradingDays, final List<SignalGenerator<T>> signalCalculators,
+	        final SignalRangeFilter signalRangeFilter ) {
 		this.signalCalculators = signalCalculators;
 		this.signalRangeFilter = signalRangeFilter;
 		this.requiredNumberOfTradingDays = requiredNumberOfTradingDays;
@@ -77,6 +78,7 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 
 		//TODO validate there's at least one signal calculator 
 
+		//TODO validate all the signalCalculators have the same ID
 	}
 
 	@Override
@@ -94,21 +96,23 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 
 		//TODO validate the number of data items meets the minimum
 
-		final Predicate<LocalDate> signalRange = candidate -> dateRangeFilter.isWithinSignalRange(
-		        signalRangeFilter.getEarliestSignalDate(data), signalRangeFilter.getLatestSignalDate(data), candidate);
-
+		final Predicate<LocalDate> signalRange = createSignalDateRange(data);
 		final T indicatorOutput = indicator.calculate(data);
-
 		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
 
-		for (final SignalGenerator<T> calculator : signalCalculators) {
-			final List<DatedSignal> signals = calculator.generate(indicatorOutput, signalRange);
+		for (final SignalGenerator<T> generator : signalCalculators) {
+			final List<DatedSignal> signals = generator.generate(indicatorOutput, signalRange);
 
 			for (final DatedSignal signal : signals) {
-				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalType(), calculator.getType()));
+				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalType(), generator.getType()));
 			}
 		}
 
 		return indicatorSignals;
+	}
+
+	private Predicate<LocalDate> createSignalDateRange( final TradingDayPrices[] data ) {
+		return candidateDate -> dateRangeFilter.isWithinSignalRange(signalRangeFilter.getEarliestSignalDate(data),
+		        signalRangeFilter.getLatestSignalDate(data), candidateDate);
 	}
 }

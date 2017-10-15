@@ -27,7 +27,6 @@ package com.systematic.trading.signals;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +38,6 @@ import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signals.indicator.IndicatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.TradingDayPricesDateOrder;
 import com.systematic.trading.signals.model.event.IndicatorSignalEvent;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
@@ -49,8 +47,9 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	/** Used for converting from base zero to base one counting systems. */
 	private static final int CONVERT_BASE_ZERO_TO_BASE_ONE = 1;
 
+	//TODO the order for a sorted set or map of TradingDayPrices
 	/** Default ordering of prices. */
-	private static final TradingDayPricesDateOrder TRADING_DAY_ORDER_BY_DATE = new TradingDayPricesDateOrder();
+	//private static final TradingDayPricesDateOrder TRADING_DAY_ORDER_BY_DATE = new TradingDayPricesDateOrder();
 
 	/** Most number of trading day data used by the signal generators. */
 	private final int requiredNumberOfTradingDays;
@@ -99,13 +98,9 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		return Collections.max(requiredTradingDays) + CONVERT_BASE_ZERO_TO_BASE_ONE;
 	}
 
-	//TODO the given data should already be sorted, change to a sorted map, keyed by LocalDate
+	//TODO the given data should already be sorted, change to a sorted map or set, keyed by LocalDate
 	@Override
 	public List<BuySignal> analyse( final TradingDayPrices[] data ) {
-
-		//TODO avoid this sort by using a SortedMap, data should already be sorted so it's only linear time complexity
-		// Correct the ordering from earliest to latest
-		Arrays.sort(data, TRADING_DAY_ORDER_BY_DATE);
 
 		// Generate the indicator signals
 		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = calculateSignals(data);

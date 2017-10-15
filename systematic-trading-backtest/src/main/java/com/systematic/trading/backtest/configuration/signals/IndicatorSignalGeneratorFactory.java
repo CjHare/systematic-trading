@@ -160,6 +160,6 @@ public class IndicatorSignalGeneratorFactory {
 		        new IllegalArgumentThrowingValidator());
 
 		return new GenericIndicatorSignals<ExponentialMovingAverageLine, ExponentialMovingAverage>(ema.getType(),
-		        calculator, ema.getLookback(), signalCalculators, filter);
+		        calculator, ema.getLookback() + ema.getDaysOfGradient(), signalCalculators, filter);
 	}
 }

@@ -35,7 +35,7 @@ import com.systematic.trading.data.TradingDayPrices;
  * @author CJ Hare
  */
 public class TradingDayPricesDateOrder implements Comparator<TradingDayPrices> {
-
+	//TOD maybe delete and replace with anonymous, or implement UT over this class
 	@Override
 	public int compare( final TradingDayPrices a, final TradingDayPrices b ) {
 		return a.getDate().compareTo(b.getDate());
