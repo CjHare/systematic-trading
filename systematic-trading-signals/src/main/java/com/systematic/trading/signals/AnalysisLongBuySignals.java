@@ -99,6 +99,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	}
 
 	//TODO the given data should already be sorted, change to a sorted map or set, keyed by LocalDate
+	//TODO return type should be a sorted set, earliest to latest
 	@Override
 	public List<BuySignal> analyse( final TradingDayPrices[] data ) {
 
