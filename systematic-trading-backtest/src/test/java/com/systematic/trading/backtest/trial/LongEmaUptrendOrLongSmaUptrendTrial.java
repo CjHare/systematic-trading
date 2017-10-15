@@ -83,6 +83,10 @@ public class LongEmaUptrendOrLongSmaUptrendTrial extends BaseTrialConfiguration 
 		        new AnyOfIndicatorFilterConfiguration(EmaUptrendConfiguration.LONG, SmaUptrendConfiguration.LONG),
 		        maximumTrade, minimumTrade)));
 
+		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, new EntryLogicConfiguration(
+		        new AnyOfIndicatorFilterConfiguration(SmaUptrendConfiguration.LONG, EmaUptrendConfiguration.MEDIUM),
+		        maximumTrade, minimumTrade)));
+
 		return configurations;
 
 	}
