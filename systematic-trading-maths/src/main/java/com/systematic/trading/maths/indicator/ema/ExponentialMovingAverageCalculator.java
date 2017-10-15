@@ -43,8 +43,11 @@ import com.systematic.trading.maths.indicator.Validator;
  * weighting factors which decrease exponentially. The weighting for each older datum decreases
  * exponentially, never reaching zero.
  * <p/>
- * Accuracy is only achieved after the spin up interval, in this implementation taken to be a round
- * of the look back.
+ * Greater accuracy is achieved with more data points, with the days of gradient being larger, the EMA becomes more accurate.
+ * However with more data, more computation is required, meaning a balance between volume of data and accuracy is needed.
+ * 
+ * Calculates the EMA by first calculating the starting value using a SMA, then applies each value with the smoothing constant to produce the EMA. 
+ * This does mean those dates used as part of the SMA will not have corresponding EMA values.
  * 
  * @author CJ Hare
  */
@@ -55,6 +58,9 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 
 	/** Constant used for smoothing the moving average. */
 	private final BigDecimal smoothingConstant;
+
+	/** Number of prices needed for the wind up and days for EMA values to produce. */
+	private final int minimumNumberOfPrices;
 
 	/** The number of previous data points used in EMA calculation. */
 	private final int lookback;
@@ -74,11 +80,14 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		this.lookback = lookback;
 
 		validator.verifyGreaterThan(1, lookback);
+
+		//TODO add days of values
+		this.minimumNumberOfPrices = 2 * lookback;
 	}
 
 	@Override
 	public int getMinimumNumberOfPrices() {
-		return lookback;
+		return minimumNumberOfPrices;
 	}
 
 	@Override

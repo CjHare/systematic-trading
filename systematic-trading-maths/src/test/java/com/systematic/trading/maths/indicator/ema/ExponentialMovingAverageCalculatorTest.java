@@ -131,12 +131,11 @@ public class ExponentialMovingAverageCalculatorTest {
 
 	@Test
 	public void getMinimumNumberOfPrices() {
-		final int lookback = 2;
-		setUpCalculator(lookback);
+		setUpCalculator(4);
 
 		final int requiredDays = calculator.getMinimumNumberOfPrices();
 
-		assertEquals(lookback, requiredDays);
+		assertEquals(8, requiredDays);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
