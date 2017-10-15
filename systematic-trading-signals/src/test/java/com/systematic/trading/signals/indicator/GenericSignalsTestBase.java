@@ -105,7 +105,7 @@ public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
 
 	@Test
 	public void getSignalType() {
-		assertEquals(indicatorId, indicatorSignals.getSignalType());
+		assertEquals(indicatorId, indicatorSignals.getSignalId());
 	}
 
 	@Ignore

@@ -56,7 +56,7 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 	private final SignalRangeFilter signalRangeFilter;
 
 	/** Calculators that will be used to generate signals. */
-	private final List<SignalGenerator<T>> signalCalculators;
+	private final List<SignalGenerator<T>> signalGenerators;
 
 	/** Converts price data into indicator signals. */
 	private final U indicator;
@@ -68,9 +68,9 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 	private final int requiredNumberOfTradingDays;
 
 	public GenericIndicatorSignals( final IndicatorSignalId id, final U indicator,
-	        final int requiredNumberOfTradingDays, final List<SignalGenerator<T>> signalCalculators,
+	        final int requiredNumberOfTradingDays, final List<SignalGenerator<T>> signalGenerators,
 	        final SignalRangeFilter signalRangeFilter ) {
-		this.signalCalculators = signalCalculators;
+		this.signalGenerators = signalGenerators;
 		this.signalRangeFilter = signalRangeFilter;
 		this.requiredNumberOfTradingDays = requiredNumberOfTradingDays;
 		this.indicator = indicator;
@@ -87,7 +87,7 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 	}
 
 	@Override
-	public IndicatorSignalId getSignalType() {
+	public IndicatorSignalId getSignalId() {
 		return id;
 	}
 
@@ -96,15 +96,15 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 
 		//TODO validate the number of data items meets the minimum
 
-		final Predicate<LocalDate> signalRange = createSignalDateRange(data);
+		final Predicate<LocalDate> signalDateRange = createSignalDateRange(data);
 		final T indicatorOutput = indicator.calculate(data);
 		final List<IndicatorSignal> indicatorSignals = new ArrayList<>();
 
-		for (final SignalGenerator<T> generator : signalCalculators) {
-			final List<DatedSignal> signals = generator.generate(indicatorOutput, signalRange);
+		for (final SignalGenerator<T> generator : signalGenerators) {
+			final List<DatedSignal> signals = generator.generate(indicatorOutput, signalDateRange);
 
 			for (final DatedSignal signal : signals) {
-				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalType(), generator.getType()));
+				indicatorSignals.add(new IndicatorSignal(signal.getDate(), getSignalId(), generator.getType()));
 			}
 		}
 

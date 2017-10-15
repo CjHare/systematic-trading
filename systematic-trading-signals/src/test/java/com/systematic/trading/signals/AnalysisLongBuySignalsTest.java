@@ -156,12 +156,12 @@ public class AnalysisLongBuySignalsTest {
 
 	private void verifyGenerator( final IndicatorSignals generator ) {
 		verify(generator).calculate(data);
-		verify(generator).getSignalType();
+		verify(generator).getSignalId();
 	}
 
 	private void setUpGenerator( final IndicatorSignals generator, final IndicatorSignalId id,
 	        final LocalDate... signalDates ) {
-		when(generator.getSignalType()).thenReturn(id);
+		when(generator.getSignalId()).thenReturn(id);
 		final List<IndicatorSignal> signalsGenerator = new ArrayList<>();
 
 		for (final LocalDate singalDate : signalDates) {

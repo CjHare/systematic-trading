@@ -131,7 +131,7 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 
 		for (final IndicatorSignals generator : generators) {
 			final List<IndicatorSignal> signals = calculateSignals(data, generator);
-			final IndicatorSignalId type = generator.getSignalType();
+			final IndicatorSignalId type = generator.getSignalId();
 			indicatorSignals.put(type, signals);
 		}
 

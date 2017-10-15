@@ -58,7 +58,7 @@ public interface IndicatorSignals {
 	/**
 	 * The type of signals that are generated.
 	 * 
-	 * @return the type of indicator signals generated.
+	 * @return the unique name of indicator signals generated.
 	 */
-	IndicatorSignalId getSignalType();
+	IndicatorSignalId getSignalId();
 }
