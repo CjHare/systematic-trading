@@ -37,6 +37,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
+import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.configuration.signals.EmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.signals.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
@@ -53,16 +54,16 @@ import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguratio
 import com.systematic.trading.backtest.trial.configuration.TrialConfigurationBuilder;
 
 /**
- * Executes all the SMA and EMA uptrrends for comparison.
+ * Executes all the combinations of SMA and EMA uptrrends. When there is either an SMA or EMA signal it's a buy signal.
  * 
  * @author CJ Hare
  */
-public class LongEmaUptrendOrLongSmaUptrendTrial extends BaseTrialConfiguration implements BacktestConfiguration {
+public class EmaUptrendOrSmaUptrendTrial extends BaseTrialConfiguration implements BacktestConfiguration {
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new LongEmaUptrendOrLongSmaUptrendTrial(),
+		new BacktestApplication().runBacktest(new EmaUptrendOrSmaUptrendTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
@@ -76,16 +77,16 @@ public class LongEmaUptrendOrLongSmaUptrendTrial extends BaseTrialConfiguration 
 
 		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.VANGUARD_RETAIL;
 
+		// Date based buying
+		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicFilterConfiguration.WEEKLY));
+		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicFilterConfiguration.MONTHLY));
+
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, new EntryLogicConfiguration(
-		        new AnyOfIndicatorFilterConfiguration(EmaUptrendConfiguration.LONG, SmaUptrendConfiguration.LONG),
-		        maximumTrade, minimumTrade)));
-
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, new EntryLogicConfiguration(
-		        new AnyOfIndicatorFilterConfiguration(SmaUptrendConfiguration.LONG, EmaUptrendConfiguration.MEDIUM),
-		        maximumTrade, minimumTrade)));
+		// Signal based buying
+		configurations
+		        .addAll(getSmaOrEmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 
@@ -96,5 +97,25 @@ public class LongEmaUptrendOrLongSmaUptrendTrial extends BaseTrialConfiguration 
 	        final BrokerageFeesConfiguration brokerage, final EntryLogicConfiguration entryLogic ) {
 		return new TrialConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
 		        .withDeposit(deposit).withBrokerage(brokerage).withEntry(entryLogic).build();
+	}
+
+	private List<BacktestBootstrapConfiguration> getSmaOrEmaUptrends( final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
+		        EmaUptrendConfiguration.values().length * SmaUptrendConfiguration.values().length);
+
+		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
+			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
+				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+				        new EntryLogicConfiguration(
+				                new AnyOfIndicatorFilterConfiguration(emaConfiguration, smaConfiguration), maximumTrade,
+				                minimumTrade)));
+			}
+
+		}
+
+		return configurations;
 	}
 }
