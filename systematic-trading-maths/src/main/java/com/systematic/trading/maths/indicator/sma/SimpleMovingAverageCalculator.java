@@ -63,13 +63,18 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
 	 * @param store source for the storage array.
 	 */
 	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues, final Validator validator ) {
+		validator.verifyGreaterThan(1, lookback);
+		validator.verifyGreaterThan(1, daysOfSmaValues);
+
 		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
 		this.daysOfSmaValues = daysOfSmaValues;
 		this.validator = validator;
 		this.lookback = lookback;
+	}
 
-		validator.verifyGreaterThan(1, lookback);
-		validator.verifyGreaterThan(2, daysOfSmaValues);
+	@Override
+	public int getMinimumNumberOfPrices() {
+		return minimumNumberOfPrices;
 	}
 
 	@Override

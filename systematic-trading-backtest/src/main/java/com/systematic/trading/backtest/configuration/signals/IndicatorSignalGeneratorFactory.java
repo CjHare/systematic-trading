@@ -108,12 +108,15 @@ public class IndicatorSignalGeneratorFactory {
 	        final IndicatorSignalId id, final SignalRangeFilter filter,
 	        final List<SignalGenerator<MovingAverageConvergenceDivergenceLines>> signalCalculators ) {
 
+		//TODO decide this in some fashion based on the configuration
+		final int minimumNumberOfEmaValues = 5;
+
 		final ExponentialMovingAverage fastEma = new ExponentialMovingAverageCalculator(fastTimePeriods,
-		        new IllegalArgumentThrowingValidator());
+		        minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
 		final ExponentialMovingAverage slowEma = new ExponentialMovingAverageCalculator(slowTimePeriod,
-		        new IllegalArgumentThrowingValidator());
+		        minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
 		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(signalTimePeriods,
-		        new IllegalArgumentThrowingValidator());
+		        minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
 
 		final int requiredNumberOfTradingDays = fastEma.getMinimumNumberOfPrices() + slowEma.getMinimumNumberOfPrices()
 		        + signalEma.getMinimumNumberOfPrices();
@@ -148,7 +151,7 @@ public class IndicatorSignalGeneratorFactory {
 		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
 		return new GenericIndicatorSignals<SimpleMovingAverageLine, SimpleMovingAverage>(sma.getType(), calculator,
-		        sma.getLookback() + sma.getDaysOfGradient(), signalCalculators, filter);
+		        calculator.getMinimumNumberOfPrices(), signalCalculators, filter);
 	}
 
 	private IndicatorSignals create( final EmaUptrendConfiguration ema, final SignalRangeFilter filter ) {
@@ -157,9 +160,9 @@ public class IndicatorSignalGeneratorFactory {
 		signalCalculators.add(new ExponentialMovingAverageBullishGradientSignalGenerator());
 
 		final ExponentialMovingAverage calculator = new ExponentialMovingAverageCalculator(ema.getLookback(),
-		        new IllegalArgumentThrowingValidator());
+		        ema.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
 		return new GenericIndicatorSignals<ExponentialMovingAverageLine, ExponentialMovingAverage>(ema.getType(),
-		        calculator, ema.getLookback() + ema.getDaysOfGradient(), signalCalculators, filter);
+		        calculator, calculator.getMinimumNumberOfPrices(), signalCalculators, filter);
 	}
 }

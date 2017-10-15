@@ -135,7 +135,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		final int requiredDays = calculator.getMinimumNumberOfPrices();
 
-		assertEquals(8, requiredDays);
+		assertEquals(9, requiredDays);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -185,7 +185,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	private void setUpCalculator( final int lookback ) {
-		calculator = new ExponentialMovingAverageCalculator(lookback, validator);
+		calculator = new ExponentialMovingAverageCalculator(lookback, 1, validator);
 	}
 
 	private void verifyValidation( final SortedMap<LocalDate, BigDecimal> data, final int lookback ) {

@@ -26,6 +26,7 @@
 package com.systematic.trading.maths.indicator.sma;
 
 import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -59,6 +60,15 @@ public class SimpleMovingAverageCalculatorTest {
 
 	private void setUpCalculator( final int lookback, final int daysOfSmaValues ) {
 		calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues, validator);
+	}
+
+	@Test
+	public void requiredNumberOfTradingDays() {
+		setUpCalculator(11, 6);
+
+		final int required = calculator.getMinimumNumberOfPrices();
+
+		assertEquals(17, required);
 	}
 
 	@Test

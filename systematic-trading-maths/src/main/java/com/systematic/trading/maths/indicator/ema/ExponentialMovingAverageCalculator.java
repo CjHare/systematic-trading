@@ -70,19 +70,22 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 
 	/**
 	 * @param lookback the number of days to use when calculating the EMA.
+	 * @param daysOfEmaValues the minimum number of EMA values to produce.
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public ExponentialMovingAverageCalculator( final int lookback, final Validator validator ) {
+	public ExponentialMovingAverageCalculator( final int lookback, final int daysOfEmaValues,
+	        final Validator validator ) {
 		// Look back provides one of the days of EMA values
 		this.smoothingConstant = calculateSmoothingConstant(lookback);
 		this.validator = validator;
 		this.lookback = lookback;
 
 		validator.verifyGreaterThan(1, lookback);
+		validator.verifyGreaterThan(1, daysOfEmaValues);
 
 		//TODO add days of values
-		this.minimumNumberOfPrices = 2 * lookback;
+		this.minimumNumberOfPrices = 2 * lookback + daysOfEmaValues;
 	}
 
 	@Override
