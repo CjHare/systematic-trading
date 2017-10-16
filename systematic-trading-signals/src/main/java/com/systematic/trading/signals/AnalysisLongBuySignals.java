@@ -27,6 +27,7 @@ package com.systematic.trading.signals;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -67,8 +68,8 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		this.requiredNumberOfTradingDays = getRequiredNumberOfTradingDays(generators);
 
 		if (requiredNumberOfTradingDays < 1) {
-			throw new IllegalArgumentException(String
-			        .format("Expecting at least one trading day required from generators %s", generators.toString()));
+			throw new IllegalArgumentException(String.format(
+			        "Expecting at least one trading day required from generators %s", Arrays.toString(generators)));
 		}
 	}
 
