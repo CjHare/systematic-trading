@@ -53,7 +53,7 @@ public class NetwothTest {
 
 	@Test
 	public void get() {
-		assertBigDecimalEquals(0, networth.get());
+		assertBigDecimalEquals(0, getNetworth());
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class NetwothTest {
 
 		networth.reset();
 
-		assertBigDecimalEquals(0, networth.get());
+		assertBigDecimalEquals(0, getNetworth());
 	}
 
 	@Test
@@ -71,14 +71,14 @@ public class NetwothTest {
 
 		addValue(value);
 
-		assertBigDecimalEquals(value, networth.get());
+		assertBigDecimalEquals(value, getNetworth());
 	}
 
 	@Test
 	public void addEquity() {
 		addEquity(1.234567, 9876.21);
 
-		assertBigDecimalEquals(12192.84, networth.get());
+		assertBigDecimalEquals(12192.84, getNetworth());
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class NetwothTest {
 		addValue(1.234567);
 		addValue(34.234567);
 
-		assertBigDecimalEquals(35.46913, networth.get());
+		assertBigDecimalEquals(35.46913, getNetworth());
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class NetwothTest {
 		final Networth endNetworth = setUpNetworth(0);
 		final Networth adjustment = setUpNetworth(0);
 
-		final BigDecimal change = networth.percentageChange(endNetworth, adjustment);
+		final BigDecimal change = percentageChange(endNetworth, adjustment);
 
 		assertBigDecimalEquals(0, change);
 	}
@@ -104,7 +104,7 @@ public class NetwothTest {
 		final Networth endNetworth = setUpNetworth(1);
 		final Networth adjustment = setUpNetworth(1);
 
-		final BigDecimal change = networth.percentageChange(endNetworth, adjustment);
+		final BigDecimal change = percentageChange(endNetworth, adjustment);
 
 		assertBigDecimalEquals(0, change);
 	}
@@ -115,9 +115,17 @@ public class NetwothTest {
 		final Networth adjustment = setUpNetworth(1);
 		addValue(1);
 
-		final BigDecimal change = networth.percentageChange(endNetworth, adjustment);
+		final BigDecimal change = percentageChange(endNetworth, adjustment);
 
 		assertBigDecimalEquals(112.3457, change);
+	}
+
+	private BigDecimal getNetworth() {
+		return networth.get();
+	}
+
+	private BigDecimal percentageChange( final Networth endNetworth, final Networth adjustment ) {
+		return networth.percentageChange(endNetworth, adjustment);
 	}
 
 	private Networth setUpNetworth( final double networth ) {

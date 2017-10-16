@@ -25,10 +25,11 @@
  */
 package com.systematic.trading.maths.formula;
 
-import static org.junit.Assert.assertEquals;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertBigDecimalEquals;
 
 import java.math.BigDecimal;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -38,11 +39,36 @@ import org.junit.Test;
  */
 public class CompoundAnnualGrowthRateTest {
 
-	@Test
-	public void powerHalf() {
-		// Calculating "1.21".pow("0.5") to return "1.1".
-		final BigDecimal cagr = new CompoundAnnualGrowthRate().calculate(BigDecimal.ONE, BigDecimal.valueOf(1.21), 2);
+	/** CAGR calculator being tested. */
+	private CompoundAnnualGrowthRate calculator;
 
-		assertEquals(10.0, cagr.doubleValue(), 0.0001);
+	@Before
+	public void setUp() {
+		calculator = new CompoundAnnualGrowthRate();
+	}
+
+	@Test
+	public void cagrTenPercent() {
+		final BigDecimal startValue = BigDecimal.ONE;
+		final BigDecimal endValue = BigDecimal.valueOf(1.21);
+		final int years = 2;
+
+		final BigDecimal cagr = calculate(startValue, endValue, years);
+
+		assertBigDecimalEquals(10.0, cagr);
+	}
+
+	public void cagrOnePercent() {
+		final BigDecimal startValue = BigDecimal.ONE;
+		final BigDecimal endValue = BigDecimal.valueOf(1.01);
+		final int years = 1;
+
+		final BigDecimal cagr = calculate(startValue, endValue, years);
+
+		assertBigDecimalEquals(1.0, cagr);
+	}
+
+	private BigDecimal calculate( final BigDecimal startValue, final BigDecimal finishValue, final int years ) {
+		return calculator.calculate(startValue, finishValue, years);
 	}
 }

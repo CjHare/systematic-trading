@@ -84,8 +84,7 @@ public class IndicatorSignalEventTest {
 
 		final IndicatorSignalEvent event = event();
 
-		assertNotNull(event);
-		assertEquals(SignalType.BULLISH, event.getDirectionType());
+		verifyDirectionType(SignalType.BULLISH, event);
 	}
 
 	@Test
@@ -94,8 +93,12 @@ public class IndicatorSignalEventTest {
 
 		final IndicatorSignalEvent event = event();
 
+		verifyDirectionType(SignalType.BEARISH, event);
+	}
+
+	private void verifyDirectionType( final SignalType expected, final IndicatorSignalEvent event ) {
 		assertNotNull(event);
-		assertEquals(SignalType.BEARISH, event.getDirectionType());
+		assertEquals(expected, event.getDirectionType());
 	}
 
 	private IndicatorSignalEvent event() {

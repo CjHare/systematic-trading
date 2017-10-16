@@ -38,7 +38,7 @@ import org.junit.Test;
  */
 public class LimitedSizeQueueTest {
 
-	/** List instance being tesed. */
+	/** List instance being tested. */
 	private LimitedSizeQueue<String> list;
 
 	@Before

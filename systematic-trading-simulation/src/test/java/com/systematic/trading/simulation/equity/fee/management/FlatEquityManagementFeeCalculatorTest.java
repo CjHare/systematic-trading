@@ -28,6 +28,7 @@ package com.systematic.trading.simulation.equity.fee.management;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Period;
 
 import org.junit.Test;
@@ -41,39 +42,79 @@ import com.systematic.trading.data.price.ClosingPrice;
  */
 public class FlatEquityManagementFeeCalculatorTest {
 
+	private static final Period ELEVEN_MONTHS = Period.ofMonths(11);
+	private static final Period ONE_YEAR = Period.ofYears(1);
+	private static final Period FIVE_YEARS = Period.ofYears(5);
+
+	/** Management fee being tested. */
+	private FlatEquityManagementFeeCalculator fee;
+
 	@Test
-	public void flatFeeOnlyOneShare() {
-		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1));
+	public void oneShareUnderOneYear() {
+		setUpManagementFee(0.1);
 
-		final BigDecimal numberOfEquities = BigDecimal.valueOf(1);
-		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
+		final BigDecimal result = calculateFee(1, 100, ELEVEN_MONTHS);
 
-		final BigDecimal result = fee.calculateFee(numberOfEquities, singleEquityValue, Period.ofYears(1));
-
-		assertEquals(.1, result.doubleValue(), 0.005);
+		verifyFee(0, result);
 	}
 
 	@Test
-	public void flatFeeOnlyManyShare() {
-		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1));
+	public void oneShareOneYear() {
+		setUpManagementFee(0.1);
 
-		final BigDecimal numberOfEquities = BigDecimal.valueOf(45.75);
-		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
+		final BigDecimal result = calculateFee(1, 100, ONE_YEAR);
 
-		final BigDecimal result = fee.calculateFee(numberOfEquities, singleEquityValue, Period.ofYears(1));
-
-		assertEquals(4.575, result.doubleValue(), 0.005);
+		verifyFee(10, result);
 	}
 
 	@Test
-	public void flatFeeOnlyManyShareManyYears() {
-		final FlatEquityManagementFeeCalculator fee = new FlatEquityManagementFeeCalculator(new BigDecimal(0.1));
+	public void oneLowerValueShareOneYear() {
+		setUpManagementFee(0.1);
 
-		final BigDecimal numberOfEquities = BigDecimal.valueOf(45.75);
-		final ClosingPrice singleEquityValue = ClosingPrice.valueOf(BigDecimal.valueOf(100));
+		final BigDecimal result = calculateFee(1, 50, ONE_YEAR);
 
-		final BigDecimal result = fee.calculateFee(numberOfEquities, singleEquityValue, Period.ofYears(3));
+		verifyFee(5, result);
+	}
 
-		assertEquals(13.725, result.doubleValue(), 0.005);
+	@Test
+	public void oneShareOneYearHigherFee() {
+		setUpManagementFee(0.2);
+
+		final BigDecimal result = calculateFee(1, 100, ONE_YEAR);
+
+		verifyFee(20, result);
+	}
+
+	@Test
+	public void manySharesOneYear() {
+		setUpManagementFee(0.1);
+
+		final BigDecimal result = calculateFee(45.75, 100, ONE_YEAR);
+
+		verifyFee(457.5, result);
+	}
+
+	@Test
+	public void manyShareManyYears() {
+		setUpManagementFee(0.1);
+
+		final BigDecimal result = calculateFee(45.75, 100, FIVE_YEARS);
+
+		verifyFee(2287.5, result);
+	}
+
+	private BigDecimal calculateFee( final double numberOfEquities, final double singleEquityValue,
+	        final Period durationToCalculate ) {
+		return fee.calculateFee(BigDecimal.valueOf(numberOfEquities),
+		        ClosingPrice.valueOf(BigDecimal.valueOf(singleEquityValue)), durationToCalculate);
+	}
+
+	private void setUpManagementFee( final double annualPercentageFee ) {
+		fee = new FlatEquityManagementFeeCalculator(new BigDecimal(annualPercentageFee));
+	}
+
+	private void verifyFee( final double expected, final BigDecimal actual ) {
+		assertEquals(String.format("%s != %s", expected, actual), 0,
+		        BigDecimal.valueOf(expected).compareTo(actual.setScale(3, RoundingMode.HALF_EVEN)));
 	}
 }

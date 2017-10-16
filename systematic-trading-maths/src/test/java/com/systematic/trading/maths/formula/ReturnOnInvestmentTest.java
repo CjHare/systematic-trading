@@ -53,16 +53,16 @@ public class ReturnOnInvestmentTest {
 
 	@Test
 	public void get() {
-		assertBigDecimalEquals(0, roi.get());
+		verifyRoi(0);
 	}
 
 	@Test
 	public void reset() {
-		roi.add(BigDecimal.ONE);
+		addRoi(1);
 
 		roi.reset();
 
-		assertBigDecimalEquals(0, roi.get());
+		verifyRoi(0);
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class ReturnOnInvestmentTest {
 
 		addRoi(value);
 
-		assertBigDecimalEquals(value, roi.get());
+		verifyRoi(value);
 	}
 
 	@Test
@@ -79,7 +79,11 @@ public class ReturnOnInvestmentTest {
 		addRoi(1.234567);
 		addRoi(34.234567);
 
-		assertBigDecimalEquals(35.46913, roi.get());
+		verifyRoi(35.46913);
+	}
+
+	private void verifyRoi( final double expected ) {
+		assertBigDecimalEquals(expected, roi.get());
 	}
 
 	private void addRoi( final double value ) {

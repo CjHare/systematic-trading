@@ -62,7 +62,6 @@ import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.management.FlatEquityManagementFeeCalculator;
-import com.systematic.trading.simulation.equity.fee.management.LadderedEquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.management.PeriodicEquityManagementFeeStructure;
 import com.systematic.trading.simulation.equity.fee.management.ZeroEquityManagementFeeCalculator;
 import com.systematic.trading.simulation.logic.EntryLogic;
@@ -285,10 +284,6 @@ public class BacktestBootstrapContextBulider {
 
 	private EquityManagementFeeCalculator createFeeCalculator( final EquityManagementFeeConfiguration managementFee ) {
 		switch (managementFee) {
-			case VANGUARD_MSCI_INT_RETAIL:
-				return new LadderedEquityManagementFeeCalculator(managementFee.getFeeRange(),
-				        managementFee.getPercentageFee());
-
 			case VGS:
 				return new FlatEquityManagementFeeCalculator(managementFee.getPercentageFee()[0]);
 

@@ -42,10 +42,11 @@ public class FlatEquityManagementFeeCalculator implements EquityManagementFeeCal
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
-	private final BigDecimal percentageFee;
+	/** Annual fee, taken as a percentage of the equities under management (held). */
+	private final BigDecimal annualPercentageFee;
 
-	public FlatEquityManagementFeeCalculator( final BigDecimal percentageFee ) {
-		this.percentageFee = percentageFee;
+	public FlatEquityManagementFeeCalculator( final BigDecimal annualPercentageFee ) {
+		this.annualPercentageFee = annualPercentageFee;
 	}
 
 	@Override
@@ -53,9 +54,9 @@ public class FlatEquityManagementFeeCalculator implements EquityManagementFeeCal
 	        final Period durationToCalculate ) {
 
 		if (durationToCalculate.getYears() > 0) {
-			final BigDecimal fee = percentageFee.multiply(BigDecimal.valueOf(durationToCalculate.getYears()),
+			final BigDecimal fee = annualPercentageFee.multiply(BigDecimal.valueOf(durationToCalculate.getYears()),
 			        MATH_CONTEXT);
-			return numberOfEquities.multiply(fee, MATH_CONTEXT);
+			return numberOfEquities.multiply(singleEquityValue.getPrice(), MATH_CONTEXT).multiply(fee, MATH_CONTEXT);
 		}
 
 		return BigDecimal.ZERO;
