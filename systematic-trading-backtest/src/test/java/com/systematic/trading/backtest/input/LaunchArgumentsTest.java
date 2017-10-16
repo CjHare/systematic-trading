@@ -86,6 +86,9 @@ public class LaunchArgumentsTest {
 	@Mock
 	private LaunchArgument<TickerSymbol> tickerSymbolArgument;
 
+	/** Launch argument parser instance being tested. */
+	private LaunchArguments parser;
+
 	@Test
 	public void outputType() {
 		final String outputType = "elastic_search";
@@ -93,10 +96,9 @@ public class LaunchArgumentsTest {
 		setUpArgumentMap(outputType);
 		setUpOutputArgument(OutputType.ELASTIC_SEARCH);
 
-		final LaunchArguments parser = new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument,
-		        endDateArgument, tickerSymbolArgument, directoryArgument, launchArguments);
+		createLaunchArguments(launchArguments);
 
-		verifyOutputType(OutputType.ELASTIC_SEARCH, parser);
+		verifyOutputType(OutputType.ELASTIC_SEARCH);
 		verifyArgumentsParsed(launchArguments);
 		verifyOutputTypeArgument(outputType);
 	}
@@ -109,10 +111,9 @@ public class LaunchArgumentsTest {
 		setUpArgumentMap(outputType, outputDirectory);
 		setUpDirectoryArgument(outputDirectory);
 
-		final LaunchArguments parser = new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument,
-		        endDateArgument, tickerSymbolArgument, directoryArgument, launchArguments);
+		createLaunchArguments(launchArguments);
 
-		verifyOutputDirectory(outputDirectory, parser);
+		verifyOutputDirectory(outputDirectory);
 		verifyArgumentsParsed(launchArguments);
 		verifyOutputDirectoryArgument(outputType, outputDirectory);
 	}
@@ -124,88 +125,76 @@ public class LaunchArgumentsTest {
 		setUpOutputArgumentException();
 		setUpArgumentMap(outputType);
 
-		try {
-			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        tickerSymbolArgument, directoryArgument, launchArguments);
-			fail("expecting an exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals(OUTPUT_EXCEPTION_MESSAGE, e.getMessage());
-			verifyOutputTypeArgument(outputType);
-		}
-	}
+		createLaunchArgumentsExpectingException(OUTPUT_EXCEPTION_MESSAGE, launchArguments);
 
-	@Test
-	public void getFileOutputDirectoryException() {
-		final String[] launchArguments = { "-output", "unmatched output type" };
-		setUpDirectoryArgumentException();
-
-		try {
-			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        tickerSymbolArgument, directoryArgument, launchArguments)
-			                .getOutputDirectory(DepositConfiguration.WEEKLY_150);
-			fail("expecting an exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals(DIRCTORY_EXCEPTION_MESSAGE, e.getMessage());
-		}
+		verifyOutputTypeArgument(outputType);
 	}
 
 	@Test
 	public void argumentParserException() {
 		setUpArgumentParserException();
 
-		try {
-			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        tickerSymbolArgument, directoryArgument);
-			fail("expecting an exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals(ARGUMENT_PARSER_EXCEPTION_MESSAGE, e.getMessage());
-		}
+		createLaunchArgumentsExpectingException(ARGUMENT_PARSER_EXCEPTION_MESSAGE);
 	}
 
 	@Test
 	public void startDateArgumentException() {
 		setUpStartDateArgumentxception();
 
-		try {
-			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        tickerSymbolArgument, directoryArgument);
-			fail("expecting an exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals(START_DATE_ARGUMENT_EXCEPTION_MESSAGE, e.getMessage());
-		}
+		createLaunchArgumentsExpectingException(START_DATE_ARGUMENT_EXCEPTION_MESSAGE);
 	}
 
 	@Test
 	public void endDateArgumentException() {
 		setUpEndDateArgumentxception();
 
-		try {
-			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        tickerSymbolArgument, directoryArgument);
-			fail("expecting an exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals(END_DATE_ARGUMENT_EXCEPTION_MESSAGE, e.getMessage());
-		}
+		createLaunchArgumentsExpectingException(END_DATE_ARGUMENT_EXCEPTION_MESSAGE);
 	}
 
 	@Test
 	public void tickerSymbolArgumentException() {
 		setUpTickerSymbolArgumentxception();
 
+		createLaunchArgumentsExpectingException(TICKER_SYMBOL_ARGUMENT_EXCEPTION_MESSAGE);
+	}
+
+	@Test
+	public void getFileOutputDirectoryException() {
+		final String[] launchArguments = { "-output", "unmatched output type" };
+		setUpDirectoryArgumentException();
+		createLaunchArguments(launchArguments);
+
+		getOutputDirectoryExpectingException(DIRCTORY_EXCEPTION_MESSAGE);
+	}
+
+	private void getOutputDirectoryExpectingException( final String expectedMessage ) {
 		try {
-			new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-			        tickerSymbolArgument, directoryArgument);
+			parser.getOutputDirectory(DepositConfiguration.WEEKLY_150);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals(TICKER_SYMBOL_ARGUMENT_EXCEPTION_MESSAGE, e.getMessage());
+			assertEquals(expectedMessage, e.getMessage());
 		}
 	}
 
-	private void verifyOutputType( final OutputType expected, final LaunchArguments parser ) {
+	private void createLaunchArgumentsExpectingException( final String expectedMessage, final String... args ) {
+		try {
+			createLaunchArguments(args);
+			fail("expecting an exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals(expectedMessage, e.getMessage());
+		}
+	}
+
+	private void createLaunchArguments( final String... args ) {
+		parser = new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
+		        tickerSymbolArgument, directoryArgument, args);
+	}
+
+	private void verifyOutputType( final OutputType expected ) {
 		assertEquals(expected, parser.getOutputType());
 	}
 
-	private void verifyOutputDirectory( final String baseDirectory, final LaunchArguments parser ) {
+	private void verifyOutputDirectory( final String baseDirectory ) {
 		assertEquals(String.format("%s/WEEKLY_150/", baseDirectory),
 		        parser.getOutputDirectory(DepositConfiguration.WEEKLY_150));
 	}

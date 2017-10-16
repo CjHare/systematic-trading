@@ -79,7 +79,7 @@ public class TickerSymbolLaunchArgumentTest {
 		final String expectedSymbol = "AAPL";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
-		final TickerSymbol symbol = argument.get(launchArguments);
+		final TickerSymbol symbol = getTickerSymbol(launchArguments);
 
 		verifSymbol(expectedSymbol, symbol);
 	}
@@ -88,26 +88,32 @@ public class TickerSymbolLaunchArgumentTest {
 	public void missingSymbolValue() {
 		setUpValidatorException();
 
-		try {
-			argument.get(setUpArguments(""));
-			fail("Expecting exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			veriyValidationExceptionOnValidate("");
-		}
+		getTickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
+
+		veriyValidationExceptionOnValidate("");
 	}
 
 	@Test
 	public void missingSymbol() {
 		setUpValidatorException();
 
+		getTickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
+
+		veriyValidationExceptionOnValidate(null);
+	}
+
+	private void getTickerSymbolExpectingException( final String expectedMessage,
+	        final Map<ArgumentKey, String> launchArguments ) {
 		try {
-			argument.get(new HashMap<ArgumentKey, String>());
+			getTickerSymbol(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			veriyValidationExceptionOnValidate(null);
+			assertEquals(expectedMessage, e.getMessage());
 		}
+	}
+
+	private TickerSymbol getTickerSymbol( final Map<ArgumentKey, String> launchArguments ) {
+		return argument.get(launchArguments);
 	}
 
 	private void setUpValidatorException() {

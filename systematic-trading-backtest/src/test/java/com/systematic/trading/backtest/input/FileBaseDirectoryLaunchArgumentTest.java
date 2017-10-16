@@ -66,6 +66,7 @@ public class FileBaseDirectoryLaunchArgumentTest {
 	@Mock
 	private LaunchArgumentValidator validator;
 
+	/** Argument parser instance being tested. */
 	private FileBaseDirectoryLaunchArgument launchArgument;
 
 	@Before
@@ -78,7 +79,7 @@ public class FileBaseDirectoryLaunchArgumentTest {
 		setUpValidatorException();
 
 		try {
-			launchArgument.get(setUpArguments(null));
+			getOutputDirectory(null);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());

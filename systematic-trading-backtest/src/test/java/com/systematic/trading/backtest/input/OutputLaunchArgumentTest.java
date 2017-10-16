@@ -66,6 +66,7 @@ public class OutputLaunchArgumentTest {
 	@Mock
 	private LaunchArgumentValidator validator;
 
+	/** Argument parser instance being tested. */
 	private OutputLaunchArgument argument;
 
 	@Before
@@ -78,7 +79,7 @@ public class OutputLaunchArgumentTest {
 		final String outputType = "no_display";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
-		final OutputType output = argument.get(launchArguments);
+		final OutputType output = getOutput(launchArguments);
 
 		verifyRetrievedType(OutputType.NO_DISPLAY, output);
 		veriyValidation(OutputType.NO_DISPLAY, outputType);
@@ -89,7 +90,7 @@ public class OutputLaunchArgumentTest {
 		final String outputType = "file_minimum";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
-		final OutputType output = argument.get(launchArguments);
+		final OutputType output = getOutput(launchArguments);
 
 		verifyRetrievedType(OutputType.FILE_MINIMUM, output);
 		veriyValidation(OutputType.FILE_MINIMUM, outputType);
@@ -100,7 +101,7 @@ public class OutputLaunchArgumentTest {
 		final String outputType = "file_complete";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
-		final OutputType output = argument.get(launchArguments);
+		final OutputType output = getOutput(launchArguments);
 
 		verifyRetrievedType(OutputType.FILE_COMPLETE, output);
 		veriyValidation(OutputType.FILE_COMPLETE, outputType);
@@ -111,7 +112,7 @@ public class OutputLaunchArgumentTest {
 		final String outputType = "elastic_search";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
-		final OutputType output = argument.get(launchArguments);
+		final OutputType output = getOutput(launchArguments);
 
 		verifyRetrievedType(OutputType.ELASTIC_SEARCH, output);
 		veriyValidation(OutputType.ELASTIC_SEARCH, outputType);
@@ -120,32 +121,40 @@ public class OutputLaunchArgumentTest {
 	@Test
 	public void unknownOutputType() {
 		setUpValidatorException();
+		final Map<ArgumentKey, String> launchArguments = setUpArguments("unknown");
 
-		try {
-			argument.get(setUpArguments("unknown"));
-			fail("Expecting exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			veriyValidation(null, "unknown");
-		}
+		getOutputExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
+
+		veriyValidation(null, "unknown");
 	}
 
 	@Test
 	public void nullOutputType() {
 		setUpValidatorException();
+		final Map<ArgumentKey, String> launchArguments = setUpArguments(null);
+
+		getOutputExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
+
+		veriyValidation(null, null);
+	}
+
+	private void getOutputExpectingException( final String expectedMessage,
+	        final Map<ArgumentKey, String> launchArguments ) {
 
 		try {
-			argument.get(setUpArguments(null));
+			getOutput(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			veriyValidation(null, null);
+			assertEquals(expectedMessage, e.getMessage());
 		}
+	}
+
+	private OutputType getOutput( final Map<ArgumentKey, String> launchArguments ) {
+		return argument.get(launchArguments);
 	}
 
 	private void verifyRetrievedType( final OutputType expected, final OutputType actual ) {
 		assertEquals(expected, actual);
-
 	}
 
 	private void veriyValidation( final OutputType outputType, final String launchArgument ) {

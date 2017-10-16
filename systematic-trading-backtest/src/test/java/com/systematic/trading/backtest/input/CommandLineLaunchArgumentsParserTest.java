@@ -50,7 +50,7 @@ public class CommandLineLaunchArgumentsParserTest {
 	public void outputType() {
 		final String[] launchArguments = { "-output", "elastic_search" };
 
-		final Map<ArgumentKey, String> results = new CommandLineLaunchArgumentsParser().parse(launchArguments);
+		final Map<ArgumentKey, String> results = parse(launchArguments);
 
 		verifyOutputType("elastic_search", results);
 	}
@@ -59,7 +59,7 @@ public class CommandLineLaunchArgumentsParserTest {
 	public void tooManyArguments() {
 		final String[] launchArguments = { "-output", "no_display", "another_argument" };
 
-		final Map<ArgumentKey, String> results = new CommandLineLaunchArgumentsParser().parse(launchArguments);
+		final Map<ArgumentKey, String> results = parse(launchArguments);
 
 		verifyOutputType("no_display", results);
 	}
@@ -74,6 +74,10 @@ public class CommandLineLaunchArgumentsParserTest {
 		} catch (final IllegalArgumentException e) {
 			assertEquals("Missing value for argument key -output", e.getMessage());
 		}
+	}
+
+	private Map<ArgumentKey, String> parse( final String[] launchArguments ) {
+		return new CommandLineLaunchArgumentsParser().parse(launchArguments);
 	}
 
 	private void verifyOutputType( final String expectedOutputType, final Map<ArgumentKey, String> results ) {

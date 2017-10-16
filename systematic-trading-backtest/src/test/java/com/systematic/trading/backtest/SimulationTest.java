@@ -25,8 +25,6 @@
  */
 package com.systematic.trading.backtest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -83,24 +81,11 @@ public class SimulationTest {
 		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
 		final TickerSymbolTradingData tradingData = new BacktestTickerSymbolTradingData(equity, unorderedPoints);
 
-		new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
+		createSimulation(tradingData);
 	}
 
-	@Test
-	public void createWithException() {
-		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
-		unorderedPoints[1] = unorderedPoints[0];
-
-		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
-
-		try {
-			final TickerSymbolTradingData tradingData = new BacktestTickerSymbolTradingData(equity, unorderedPoints);
-			new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
-
-			fail("Expecting exception for duplicate data point date");
-		} catch (final IllegalArgumentException e) {
-			assertEquals("Duplicate trading dates provided", e.getMessage());
-		}
+	private void createSimulation( final TickerSymbolTradingData tradingData ) {
+		new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
 	}
 
 	private TradingDayPrices[] createUnorderedDataPoints() {

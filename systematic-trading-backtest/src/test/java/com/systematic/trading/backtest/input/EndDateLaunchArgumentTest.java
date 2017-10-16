@@ -69,6 +69,7 @@ public class EndDateLaunchArgumentTest {
 	@Mock
 	private LaunchArgumentValidator validator;
 
+	/** Argument parser instance being tested. */
 	private EndDateLaunchArgument argument;
 
 	@Before
@@ -77,22 +78,22 @@ public class EndDateLaunchArgumentTest {
 	}
 
 	@Test
-	public void validStartDate() {
+	public void validEndDate() {
 		final String expectedStartDate = "2017-06-06";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
-		final BacktestEndDate startDate = argument.get(launchArguments);
+		final BacktestEndDate startDate = getEndDate(launchArguments);
 
 		verifStartyDate(expectedStartDate, startDate);
 	}
 
 	@Test
-	public void invaliStartDatedFormat() {
+	public void invaliEndDatedFormat() {
 		setUpValidatorFormatException();
 		final String expectedStartDate = "06-06-2017";
 
 		try {
-			argument.get(setUpArguments(expectedStartDate));
+			getEndDate(setUpArguments(expectedStartDate));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_FORMAT_EXCEPTION_MESSAGE, e.getMessage());
@@ -101,11 +102,11 @@ public class EndDateLaunchArgumentTest {
 	}
 
 	@Test
-	public void missingStartDateValue() {
+	public void missingEndDateValue() {
 		setUpValidatorException();
 
 		try {
-			argument.get(setUpArguments(""));
+			getEndDate(setUpArguments(""));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
@@ -114,16 +115,20 @@ public class EndDateLaunchArgumentTest {
 	}
 
 	@Test
-	public void missingStartDate() {
+	public void missingEndDate() {
 		setUpValidatorException();
 
 		try {
-			argument.get(new HashMap<ArgumentKey, String>());
+			getEndDate(new HashMap<ArgumentKey, String>());
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
 			veriyValidationExceptionOnValidate(null);
 		}
+	}
+
+	private BacktestEndDate getEndDate( final Map<ArgumentKey, String> arguments ) {
+		return argument.get(arguments);
 	}
 
 	private void setUpValidatorException() {

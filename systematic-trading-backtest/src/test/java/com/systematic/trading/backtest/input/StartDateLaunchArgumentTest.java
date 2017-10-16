@@ -81,7 +81,7 @@ public class StartDateLaunchArgumentTest {
 		final String expectedStartDate = "2017-06-06";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
-		final BacktestStartDate startDate = argument.get(launchArguments);
+		final BacktestStartDate startDate = getStartDate(launchArguments);
 
 		verifStartyDate(expectedStartDate, startDate);
 	}
@@ -90,40 +90,45 @@ public class StartDateLaunchArgumentTest {
 	public void invaliStartDatedFormat() {
 		setUpValidatorFormatException();
 		final String expectedStartDate = "06-06-2017";
+		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
-		try {
-			argument.get(setUpArguments(expectedStartDate));
-			fail("Expecting exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals(VALIDATOR_FORMAT_EXCEPTION_MESSAGE, e.getMessage());
-			veriyValidation(expectedStartDate);
-		}
+		getStartDateExpectingException(VALIDATOR_FORMAT_EXCEPTION_MESSAGE, launchArguments);
+
+		veriyValidation(expectedStartDate);
 	}
 
 	@Test
 	public void missingStartDateValue() {
 		setUpValidatorException();
+		final Map<ArgumentKey, String> launchArguments = setUpArguments("");
 
-		try {
-			argument.get(setUpArguments(""));
-			fail("Expecting exception");
-		} catch (final IllegalArgumentException e) {
-			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			veriyValidationExceptionOnValidate("");
-		}
+		getStartDateExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
+
+		veriyValidationExceptionOnValidate("");
 	}
 
 	@Test
 	public void missingStartDate() {
 		setUpValidatorException();
+		final Map<ArgumentKey, String> launchArguments = new HashMap<>();
 
+		getStartDateExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
+
+		veriyValidationExceptionOnValidate(null);
+	}
+
+	private void getStartDateExpectingException( final String expectedMessage,
+	        final Map<ArgumentKey, String> launchArguments ) {
 		try {
-			argument.get(new HashMap<ArgumentKey, String>());
+			getStartDate(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
-			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			veriyValidationExceptionOnValidate(null);
+			assertEquals(expectedMessage, e.getMessage());
 		}
+	}
+
+	private BacktestStartDate getStartDate( final Map<ArgumentKey, String> launchArguments ) {
+		return argument.get(launchArguments);
 	}
 
 	private void setUpValidatorException() {
