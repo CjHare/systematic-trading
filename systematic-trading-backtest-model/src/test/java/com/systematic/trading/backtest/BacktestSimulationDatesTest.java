@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.backtest;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -41,33 +43,58 @@ import org.junit.Test;
  */
 public class BacktestSimulationDatesTest {
 
+	/** The back test simulation dates instance being tested. */
+	private BacktestSimulationDates dates;
+
 	@Test
 	public void endDateAfterStartDate() throws InvalidSimulationDatesException {
-
 		final LocalDate startDate = LocalDate.of(2001, 6, 16);
 		final LocalDate endDate = LocalDate.of(2001, 6, 17);
 		final Period warmUp = Period.ofWeeks(5);
 
-		new BacktestSimulationDates(startDate, endDate, warmUp);
+		createSimulationDates(startDate, endDate, warmUp);
+
+		verifySimulationStartDate(startDate);
+		verifySimulationEndDate(endDate);
+		verifySimulationWarmUp(warmUp);
 	}
 
 	@Test
 	public void endDateEqualsStartDate() throws InvalidSimulationDatesException {
-
 		final LocalDate startDate = LocalDate.of(2001, 6, 16);
 		final LocalDate endDate = LocalDate.of(2001, 6, 16);
 		final Period warmUp = Period.ofWeeks(5);
 
-		new BacktestSimulationDates(startDate, endDate, warmUp);
+		createSimulationDates(startDate, endDate, warmUp);
+
+		verifySimulationStartDate(startDate);
+		verifySimulationEndDate(endDate);
+		verifySimulationWarmUp(warmUp);
 	}
 
 	@Test(expected = InvalidSimulationDatesException.class)
 	public void endDateBeforeStartDate() throws InvalidSimulationDatesException {
-
 		final LocalDate startDate = LocalDate.of(2001, 6, 16);
 		final LocalDate endDate = LocalDate.of(2001, 6, 11);
 		final Period warmUp = Period.ofWeeks(5);
 
-		new BacktestSimulationDates(startDate, endDate, warmUp);
+		createSimulationDates(startDate, endDate, warmUp);
+	}
+
+	private void createSimulationDates( final LocalDate startDate, final LocalDate endDate, final Period warmUp )
+	        throws InvalidSimulationDatesException {
+		dates = new BacktestSimulationDates(startDate, endDate, warmUp);
+	}
+
+	private void verifySimulationStartDate( final LocalDate expected ) {
+		assertEquals(expected, dates.getStartDate());
+	}
+
+	private void verifySimulationEndDate( final LocalDate expected ) {
+		assertEquals(expected, dates.getEndDate());
+	}
+
+	private void verifySimulationWarmUp( final Period expected ) {
+		assertEquals(expected, dates.getWarmUp());
 	}
 }

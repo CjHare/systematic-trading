@@ -32,7 +32,6 @@ package com.systematic.trading.data.history.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -41,6 +40,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -85,17 +85,16 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void nullRequests() {
-		final List<HistoryRetrievalRequest> merged = merger.merge(null, null);
+		final List<HistoryRetrievalRequest> merged = merge(null, null);
 
 		assertNull(merged);
 	}
 
 	@Test
 	public void noRequestsNoMaximum() {
-		final List<HistoryRetrievalRequest> merged = merger.merge(new ArrayList<HistoryRetrievalRequest>(), null);
+		final List<HistoryRetrievalRequest> merged = merge(new ArrayList<HistoryRetrievalRequest>(), null);
 
-		assertNotNull(merged);
-		assertTrue("Expecting an empty list", merged.isEmpty());
+		verifyRetrievalRequests(Collections.emptyList(), merged);
 	}
 
 	@Test
@@ -104,7 +103,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 5, 31)));
 		setUpBuilder(toMerge);
 
-		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, null);
+		final List<HistoryRetrievalRequest> merged = merge(toMerge, null);
 
 		verifyRetrievalRequests(toMerge, merged);
 	}
@@ -115,17 +114,16 @@ public class HistoryRetrievalRequestMergerImplTest {
 		        create(LocalDate.of(2010, 8, 1), LocalDate.of(2010, 9, 1)));
 		setUpBuilder(toMerge);
 
-		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, null);
+		final List<HistoryRetrievalRequest> merged = merge(toMerge, null);
 
 		verifyRetrievalRequests(toMerge, merged);
 	}
 
 	@Test
 	public void noRequests() {
-		final List<HistoryRetrievalRequest> merged = merger.merge(new ArrayList<HistoryRetrievalRequest>(), MAXIMUM);
+		final List<HistoryRetrievalRequest> merged = merge(new ArrayList<HistoryRetrievalRequest>());
 
-		assertNotNull(merged);
-		assertTrue("Expecting an empty list", merged.isEmpty());
+		verifyRetrievalRequests(Collections.emptyList(), merged);
 	}
 
 	@Test
@@ -134,7 +132,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 5, 31)));
 		setUpBuilder(toMerge);
 
-		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, MAXIMUM);
+		final List<HistoryRetrievalRequest> merged = merge(toMerge);
 
 		verifyRetrievalRequests(toMerge, merged);
 	}
@@ -145,7 +143,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 		        create(LocalDate.of(2010, 8, 1), LocalDate.of(2010, 9, 1)));
 		setUpBuilder(toMerge);
 
-		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, MAXIMUM);
+		final List<HistoryRetrievalRequest> merged = merge(toMerge);
 
 		verifyRetrievalRequests(toMerge, merged);
 	}
@@ -158,7 +156,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 7, 1)));
 		setUpBuilder(expected);
 
-		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, MAXIMUM);
+		final List<HistoryRetrievalRequest> merged = merge(toMerge);
 
 		verifyRetrievalRequests(expected, merged);
 	}
@@ -174,7 +172,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 		        create(LocalDate.of(2010, 9, 1), LocalDate.of(2010, 12, 1)));
 		setUpBuilder(expected);
 
-		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, MAXIMUM);
+		final List<HistoryRetrievalRequest> merged = merge(toMerge);
 
 		verifyRetrievalRequests(expected, merged);
 	}
@@ -184,7 +182,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 		final List<HistoryRetrievalRequest> toMerge = asList(
 		        create(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 1)));
 
-		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, MAXIMUM);
+		final List<HistoryRetrievalRequest> merged = merge(toMerge);
 
 		verifyRetrievalRequests(toMerge, merged);
 	}
@@ -205,7 +203,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 		        create(LocalDate.of(2010, 9, 1), LocalDate.of(2010, 11, 1)));
 		setUpBuilder(expected);
 
-		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, MAXIMUM);
+		final List<HistoryRetrievalRequest> merged = merge(toMerge);
 
 		verifyRetrievalRequests(expected, merged);
 	}
@@ -220,7 +218,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 7, 1)));
 		setUpBuilder(expected);
 
-		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, MAXIMUM);
+		final List<HistoryRetrievalRequest> merged = merge(toMerge);
 
 		verifyRetrievalRequests(expected, merged);
 	}
@@ -236,9 +234,20 @@ public class HistoryRetrievalRequestMergerImplTest {
 		        create(LocalDate.of(2010, 9, 1), LocalDate.of(2010, 10, 1)));
 		setUpBuilder(expected);
 
-		final List<HistoryRetrievalRequest> merged = merger.merge(toMerge, MAXIMUM);
+		final List<HistoryRetrievalRequest> merged = merge(toMerge);
 
 		verifyRetrievalRequests(expected, merged);
+	}
+
+	private List<HistoryRetrievalRequest> merge( List<HistoryRetrievalRequest> requests, final Period maximum ) {
+		return merger.merge(requests, maximum);
+	}
+
+	/**
+	 * Default to MAXIMUM.
+	 */
+	private List<HistoryRetrievalRequest> merge( List<HistoryRetrievalRequest> requests ) {
+		return merger.merge(requests, MAXIMUM);
 	}
 
 	private void setUpBuilder( final List<HistoryRetrievalRequest> requests ) {

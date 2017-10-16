@@ -81,14 +81,18 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void retrievedNull() {
-		recorder.retrieved(null);
+		final List<HistoryRetrievalRequest> fulfilled = null;
+
+		retrieved(fulfilled);
 
 		verifyNoMonthsRetrieved();
 	}
 
 	@Test
 	public void retrievedNothing() {
-		recorder.retrieved(new ArrayList<HistoryRetrievalRequest>());
+		final List<HistoryRetrievalRequest> fulfilled = new ArrayList<HistoryRetrievalRequest>();
+
+		retrieved(fulfilled);
 
 		verifyNoMonthsRetrieved();
 	}
@@ -99,7 +103,7 @@ public class RetrievedYearMonthRecorderTest {
 		final LocalDate end = LocalDate.of(2010, 5, 31);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
 
-		recorder.retrieved(fulfilled);
+		retrieved(fulfilled);
 
 		verifyMonths(YearMonth.of(2010, 5));
 	}
@@ -110,7 +114,7 @@ public class RetrievedYearMonthRecorderTest {
 		final LocalDate end = LocalDate.of(2010, 6, 20);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
 
-		recorder.retrieved(fulfilled);
+		retrieved(fulfilled);
 
 		verifyMonths(YearMonth.of(2010, 5));
 	}
@@ -121,7 +125,7 @@ public class RetrievedYearMonthRecorderTest {
 		final LocalDate end = LocalDate.of(2010, 5, 31);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
 
-		recorder.retrieved(fulfilled);
+		retrieved(fulfilled);
 
 		verifyMonths(YearMonth.of(2010, 5));
 	}
@@ -132,7 +136,7 @@ public class RetrievedYearMonthRecorderTest {
 		final LocalDate end = LocalDate.of(2010, 6, 19);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
 
-		recorder.retrieved(fulfilled);
+		retrieved(fulfilled);
 
 		verifyMonths(YearMonth.of(2010, 5));
 	}
@@ -143,7 +147,7 @@ public class RetrievedYearMonthRecorderTest {
 		final LocalDate end = LocalDate.of(2010, 6, 30);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
 
-		recorder.retrieved(fulfilled);
+		retrieved(fulfilled);
 
 		verifyMonths(YearMonth.of(2010, 5), YearMonth.of(2010, 6));
 	}
@@ -154,7 +158,7 @@ public class RetrievedYearMonthRecorderTest {
 		final LocalDate end = LocalDate.of(2011, 6, 30);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
 
-		recorder.retrieved(fulfilled);
+		retrieved(fulfilled);
 
 		verifyMonths(YearMonth.of(2010, 5), YearMonth.of(2010, 6), YearMonth.of(2010, 7), YearMonth.of(2010, 8),
 		        YearMonth.of(2010, 9), YearMonth.of(2010, 10), YearMonth.of(2010, 11), YearMonth.of(2010, 12),
@@ -168,7 +172,7 @@ public class RetrievedYearMonthRecorderTest {
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 5, 31)),
 		        create(LocalDate.of(2010, 5, 31), LocalDate.of(2010, 6, 30)));
 
-		recorder.retrieved(fulfilled);
+		retrieved(fulfilled);
 
 		verifyMonths(YearMonth.of(2010, 5), YearMonth.of(2010, 6));
 	}
@@ -179,9 +183,13 @@ public class RetrievedYearMonthRecorderTest {
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 6, 15)),
 		        create(LocalDate.of(2010, 6, 15), LocalDate.of(2010, 7, 31)));
 
-		recorder.retrieved(fulfilled);
+		retrieved(fulfilled);
 
 		verifyMonths(YearMonth.of(2010, 5), YearMonth.of(2010, 6), YearMonth.of(2010, 7));
+	}
+
+	private void retrieved( final List<HistoryRetrievalRequest> fulfilled ) {
+		recorder.retrieved(fulfilled);
 	}
 
 	private void verifyMonths( final YearMonth... month ) {

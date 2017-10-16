@@ -85,7 +85,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Test
 	public void filterNull() {
-		final List<HistoryRetrievalRequest> filtered = filter.filter(null);
+		final List<HistoryRetrievalRequest> filtered = filter(null);
 
 		verifyNoRequests(filtered);
 		verfiyNoLoclaHistoryRequest(filtered);
@@ -93,7 +93,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Test
 	public void filterNone() {
-		final List<HistoryRetrievalRequest> filtered = filter.filter(new ArrayList<>());
+		final List<HistoryRetrievalRequest> filtered = filter(new ArrayList<>());
 
 		verifyNoRequests(filtered);
 		verfiyNoLoclaHistoryRequest(filtered);
@@ -104,7 +104,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 5, 31)));
 
-		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+		final List<HistoryRetrievalRequest> filtered = filter(unfilteredRequests);
 
 		verifyRetrievalRequests(unfilteredRequests, filtered);
 		verifyLocalHistoryRequest(2010, 2010);
@@ -118,7 +118,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		        create(LocalDate.of(startYear, 5, 1), LocalDate.of(endYear, 5, 31)));
 		setUpLocalHistory(YearMonth.of(startYear, 5));
 
-		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+		final List<HistoryRetrievalRequest> filtered = filter(unfilteredRequests);
 
 		verifyNoRequests(filtered);
 		verifyLocalHistoryRequest(startYear, endYear);
@@ -132,7 +132,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		        create(LocalDate.of(startYear, 5, 1), LocalDate.of(endYear, 7, 1)));
 		setUpLocalHistory(YearMonth.of(startYear, 5), YearMonth.of(startYear, 6));
 
-		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+		final List<HistoryRetrievalRequest> filtered = filter(unfilteredRequests);
 
 		verifyNoRequests(filtered);
 		verifyLocalHistoryRequest(startYear, endYear);
@@ -146,7 +146,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		        create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 12, 31)));
 		setUpLocalHistory(YearMonth.of(startYear, 7), YearMonth.of(startYear, 8), YearMonth.of(startYear, 10));
 
-		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+		final List<HistoryRetrievalRequest> filtered = filter(unfilteredRequests);
 
 		verifyRetrievalRequests(unfilteredRequests, filtered);
 		verifyLocalHistoryRequest(startYear, endYear);
@@ -165,7 +165,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		        create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1)));
 		setUpLocalHistory(YearMonth.of(startYear, 7), YearMonth.of(startYear, 8), YearMonth.of(startYear, 10));
 
-		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+		final List<HistoryRetrievalRequest> filtered = filter(unfilteredRequests);
 
 		verifyRetrievalRequests(asList(create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 7, 1)),
 		        create(LocalDate.of(startYear, 9, 1), LocalDate.of(endYear, 10, 1)),
@@ -186,12 +186,16 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		        create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1)));
 		setUpLocalHistory(YearMonth.of(startYear, 7), YearMonth.of(startYear, 8), YearMonth.of(startYear, 10));
 
-		final List<HistoryRetrievalRequest> filtered = filter.filter(unfilteredRequests);
+		final List<HistoryRetrievalRequest> filtered = filter(unfilteredRequests);
 
 		verifyRetrievalRequests(asList(create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 7, 1)),
 		        create(LocalDate.of(startYear, 9, 1), LocalDate.of(endYear, 10, 1)),
 		        create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1))), filtered);
 		verifyLocalHistoryRequest(startYear, endYear);
+	}
+
+	private List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> unfilteredRequests ) {
+		return filter.filter(unfilteredRequests);
 	}
 
 	private void setUpLocalHistory( final YearMonth... ym ) {

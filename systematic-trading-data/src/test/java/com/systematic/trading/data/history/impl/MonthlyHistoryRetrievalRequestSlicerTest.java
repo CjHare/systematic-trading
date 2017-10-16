@@ -40,7 +40,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.data.history.impl.MonthlyHistoryRetrievalRequestSlicer;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.util.TickerSymbolGenerator;
 
@@ -68,7 +67,7 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 		final LocalDate inclusiveStartDate = LocalDate.of(2011, 5, 1);
 		final LocalDate exclusiveEndDate = LocalDate.of(2011, 5, 18);
 
-		final List<HistoryRetrievalRequest> requests = slicer.slice(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final List<HistoryRetrievalRequest> requests = slice(inclusiveStartDate, exclusiveEndDate);
 
 		assertHistoryRetrievalRequest(requests, expectedDates(inclusiveStartDate, exclusiveEndDate));
 	}
@@ -78,7 +77,7 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 		final LocalDate inclusiveStartDate = LocalDate.of(2011, 5, 1);
 		final LocalDate exclusiveEndDate = LocalDate.of(2011, 6, 1);
 
-		final List<HistoryRetrievalRequest> requests = slicer.slice(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final List<HistoryRetrievalRequest> requests = slice(inclusiveStartDate, exclusiveEndDate);
 
 		assertHistoryRetrievalRequest(requests, expectedDates(inclusiveStartDate, exclusiveEndDate));
 	}
@@ -88,7 +87,7 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 		final LocalDate inclusiveStartDate = LocalDate.of(2011, 4, 14);
 		final LocalDate exclusiveEndDate = LocalDate.of(2011, 6, 1);
 
-		final List<HistoryRetrievalRequest> requests = slicer.slice(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final List<HistoryRetrievalRequest> requests = slice(inclusiveStartDate, exclusiveEndDate);
 
 		assertHistoryRetrievalRequest(requests, expectedDates(inclusiveStartDate, LocalDate.of(2011, 5, 1)),
 		        expectedDates(LocalDate.of(2011, 5, 1), exclusiveEndDate));
@@ -99,13 +98,18 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 		final LocalDate inclusiveStartDate = LocalDate.of(2011, 4, 14);
 		final LocalDate exclusiveEndDate = LocalDate.of(2011, 8, 19);
 
-		final List<HistoryRetrievalRequest> requests = slicer.slice(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final List<HistoryRetrievalRequest> requests = slice(inclusiveStartDate, exclusiveEndDate);
 
 		assertHistoryRetrievalRequest(requests, expectedDates(inclusiveStartDate, LocalDate.of(2011, 5, 1)),
 		        expectedDates(LocalDate.of(2011, 5, 1), LocalDate.of(2011, 6, 1)),
 		        expectedDates(LocalDate.of(2011, 6, 1), LocalDate.of(2011, 7, 1)),
 		        expectedDates(LocalDate.of(2011, 7, 1), LocalDate.of(2011, 8, 1)),
 		        expectedDates(LocalDate.of(2011, 8, 1), exclusiveEndDate));
+	}
+
+	private List<HistoryRetrievalRequest> slice( final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) {
+		return slicer.slice(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
 	private Pair<LocalDate, LocalDate> expectedDates( final LocalDate inclusiveStartDate,
