@@ -32,10 +32,9 @@ package com.systematic.trading.backtest.output.elastic.model;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -48,28 +47,37 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class ElasticIndexMappingTest {
 
-	private final ObjectMapper mapper = new ObjectMapper();
+	/** Mapper instance being tested. */
+	private ObjectMapper mapper;
+
+	@Before
+	public void setUp() {
+		mapper = new ObjectMapper();
+	}
 
 	@Test
 	public void jsonSingleField() throws JsonProcessingException {
-
 		final ElasticIndexMapping index = new ElasticIndexMapping(
 		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT));
-		final String json = mapper.writeValueAsString(index);
+
+		final String json = write(index);
 
 		assertEquals("{\"properties\":{\"event\":{\"type\":\"text\"}}}", json);
 	}
 
 	@Test
 	public void jsonMultipleFields() throws JsonProcessingException {
-
-		final List<Pair<ElasticFieldName, ElasticFieldType>> fields = Arrays.asList(
+		final ElasticIndexMapping index = new ElasticIndexMapping(Arrays.asList(
 		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
-		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT));
+		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.AMOUNT,
+		                ElasticFieldType.FLOAT)));
 
-		final ElasticIndexMapping index = new ElasticIndexMapping(fields);
-		final String json = mapper.writeValueAsString(index);
+		final String json = write(index);
 
 		assertEquals("{\"properties\":{\"amount\":{\"type\":\"float\"},\"event\":{\"type\":\"text\"}}}", json);
+	}
+
+	private String write( final ElasticIndexMapping index ) throws JsonProcessingException {
+		return mapper.writeValueAsString(index);
 	}
 }

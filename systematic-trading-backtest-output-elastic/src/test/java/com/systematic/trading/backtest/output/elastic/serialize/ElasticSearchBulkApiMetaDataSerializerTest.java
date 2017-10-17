@@ -68,6 +68,7 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 	@Mock
 	private SerializerProvider provider;
 
+	/** Serializer instance being tested. */
 	private ElasticSearchBulkApiMetaDataSerializer serializer;
 
 	@Before
@@ -77,7 +78,8 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 
 	@Test
 	public void serializeNullArray() throws IOException {
-		serializer.serialize(null, gen, provider);
+
+		serialize(null);
 
 		verifyNoJson();
 	}
@@ -86,7 +88,7 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 	public void serializeAction() throws IOException {
 		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action");
 
-		serializer.serialize(value, gen, provider);
+		serialize(value);
 
 		verifyJson("action");
 	}
@@ -96,7 +98,7 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action", "index",
 		        null, null);
 
-		serializer.serialize(value, gen, provider);
+		serialize(value);
 
 		verifyJson("action", "index");
 	}
@@ -106,7 +108,7 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action", "index",
 		        "type", null);
 
-		serializer.serialize(value, gen, provider);
+		serialize(value);
 
 		verifyJson("action", "index", "type");
 	}
@@ -116,9 +118,13 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action", "index",
 		        "type", "Id");
 
-		serializer.serialize(value, gen, provider);
+		serialize(value);
 
 		verifyJson("action", "index", "type", "Id");
+	}
+
+	private void serialize( final ElasticBulkApiMetaDataRequestResource value ) throws IOException {
+		serializer.serialize(value, gen, provider);
 	}
 
 	private void verifyNoJson() {
@@ -159,5 +165,4 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 		order.verify(gen, times(2)).writeEndObject();
 		verifyNoMoreInteractions(gen);
 	}
-
 }

@@ -64,6 +64,7 @@ public class NdjsonListSerializerTest {
 	@Mock
 	private SerializerProvider provider;
 
+	/** Serializer instance being tested. */
 	private NdjsonListSerializer serializer;
 
 	@Before
@@ -73,40 +74,50 @@ public class NdjsonListSerializerTest {
 
 	@Test
 	public void serializeNullArray() throws IOException {
-		serializer.serialize(null, gen, provider);
+		serialize(null);
 
 		verifyNoJson();
 	}
 
 	@Test
 	public void serializeEmptyArray() throws IOException {
-		final List<?> values = new ArrayList<>();
+		final List<String> values = setUpValues();
 
-		serializer.serialize(values, gen, provider);
+		serialize(values);
 
 		verifyNoJson();
 	}
 
 	@Test
 	public void serializeSingleEntry() throws IOException {
-		final List<String> values = new ArrayList<>();
-		values.add("the_only_value");
+		final List<String> values = setUpValues("the_only_value");
 
-		serializer.serialize(values, gen, provider);
+		serialize(values);
 
 		verifyJson("the_only_value");
 	}
 
 	@Test
 	public void serializeMultipleEntries() throws IOException {
-		final List<String> values = new ArrayList<>();
-		values.add("first_value");
-		values.add("second_value");
-		values.add("third_value");
+		final List<String> values = setUpValues("first_value", "second_value", "third_value");
 
-		serializer.serialize(values, gen, provider);
+		serialize(values);
 
 		verifyJson("first_value", "second_value", "third_value");
+	}
+
+	private List<String> setUpValues( final String... values ) {
+		final List<String> setUp = new ArrayList<>();
+
+		for (final String value : values) {
+			setUp.add(value);
+		}
+
+		return setUp;
+	}
+
+	private void serialize( final List<?> values ) throws IOException {
+		serializer.serialize(values, gen, provider);
 	}
 
 	private void verifyJson( final String... expexted ) throws IOException {
