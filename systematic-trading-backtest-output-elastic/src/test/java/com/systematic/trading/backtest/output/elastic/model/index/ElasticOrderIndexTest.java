@@ -25,24 +25,10 @@
  */
 package com.systematic.trading.backtest.output.elastic.model.index;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.BacktestBatchId;
-import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.simulation.order.event.OrderEvent;
-import com.systematic.trading.simulation.order.event.OrderEvent.EquityOrderType;
 
 /**
  * Purpose being to Verify the JSON messages to Elastic Search.
@@ -54,101 +40,6 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"total_cost\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"}}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"ENTRY\",\"total_cost\":12.34,\"transaction_date\":{";
-
-	@Test
-	public void initMissingIndex() {
-		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
-
-		index.init(id);
-
-		verifyMissingIndexCalls(batchId);
-	}
-
-	@Test
-	public void initPresentIndexMissingMapping() {
-		setUpPresentIndex();
-
-		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
-
-		index.init(id);
-
-		verifyMissingMappingCalls(batchId);
-	}
-
-	@Test
-	public void initPresentIndexPresentMapping() {
-		setUpPresentIndex();
-		setUpPresentMapping();
-
-		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
-
-		try {
-			index.init(id);
-			fail("Expecting an Elastic Exception");
-		} catch (final ElasticException e) {
-			assertEquals(
-			        String.format("Existing mapping (and potentially already existing results) found for: %s", batchId),
-			        e.getMessage());
-		}
-
-		verifyPresentMappingCalls(batchId);
-	}
-
-	//TODO rewrite the DAO to accept model objects and perform the entity operation, then rewrite these test - no more comparing strings!
-	@Ignore
-	@Test
-	public void event() {
-		setUpPresentIndex();
-
-		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
-		final OrderEvent event = getEvent();
-
-		index.init(id);
-		index.event(id, event);
-
-		verifyEventCalls(batchId, event.getTransactionDate());
-	}
-
-	@Test
-	public void disableRefreshInterval() {
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
-
-		index.setRefreshInterval(false);
-
-		verfiyRefreshInterval(false);
-	}
-
-	@Test
-	public void enableRefreshInterval() {
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
-
-		index.setRefreshInterval(true);
-
-		verfiyRefreshInterval(true);
-	}
-
-	@Test
-	public void ensureIndexExists() {
-		final ElasticOrderIndex index = new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
-
-		index.ensureIndexExists();
-
-		verifyPutIndexCall();
-	}
-
-	@Override
-	protected String getPostIndex() {
-		return JSON_POST_INDEX_TYPE;
-	}
 
 	@Override
 	protected String getJsonPutIndex() {
@@ -165,16 +56,8 @@ public class ElasticOrderIndexTest extends ElasticIndexTestBase {
 		return ElasticIndexName.ORDER;
 	}
 
-	private OrderEvent getEvent() {
-		final OrderEvent event = mock(OrderEvent.class);
-		final BigDecimal totalCost = BigDecimal.valueOf(12.34);
-		final LocalDate transactionDate = LocalDate.now();
-		final EquityOrderType eventType = EquityOrderType.ENTRY;
-
-		when(event.getTotalCost()).thenReturn(totalCost);
-		when(event.getTransactionDate()).thenReturn(transactionDate);
-		when(event.getType()).thenReturn(eventType);
-
-		return event;
+	@Override
+	protected ElasticCommonIndex createIndex() {
+		return new ElasticOrderIndex(getDao(), getPool(), getElasticConfig());
 	}
 }

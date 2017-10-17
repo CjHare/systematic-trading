@@ -25,24 +25,10 @@
  */
 package com.systematic.trading.backtest.output.elastic.model.index;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.BacktestBatchId;
-import com.systematic.trading.backtest.output.elastic.exception.ElasticException;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEvent.NetWorthEventType;
 
 /**
  * Purpose being to Verify the JSON messages to Elastic Search.
@@ -54,101 +40,6 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"equity_balance_value\":{\"type\":\"float\"},\"event_date\":{\"type\":\"date\"},\"networth\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"},\"cash_balance\":{\"type\":\"float\"},\"equity_balance\":{\"type\":\"float\"}}";
-	private static final String JSON_POST_INDEX_TYPE = "{\"event\":\"Completed\",\"cash_balance\":500.12,\"equity_balance\":12.34,\"equity_balance_value\":512.46,\"networth\":606.98,\"event_date\":{";
-
-	@Test
-	public void initMissingIndex() {
-		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getElasticConfig());
-
-		index.init(id);
-
-		verifyMissingIndexCalls(batchId);
-	}
-
-	@Test
-	public void initPresentIndexMissingMapping() {
-		setUpPresentIndex();
-
-		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getElasticConfig());
-
-		index.init(id);
-
-		verifyMissingMappingCalls(batchId);
-	}
-
-	@Test
-	public void initPresentIndexPresentMapping() {
-		setUpPresentIndex();
-		setUpPresentMapping();
-
-		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getElasticConfig());
-
-		try {
-			index.init(id);
-			fail("Expecting an Elastic Exception");
-		} catch (final ElasticException e) {
-			assertEquals(
-			        String.format("Existing mapping (and potentially already existing results) found for: %s", batchId),
-			        e.getMessage());
-		}
-
-		verifyPresentMappingCalls(batchId);
-	}
-
-	//TODO rewrite the DAO to accept model objects and perform the entity operation, then rewrite these test - no more comparing strings!
-	@Ignore
-	@Test
-	public void event() {
-		setUpPresentIndex();
-
-		final String batchId = "MissingIndexBatchForTesting";
-		final BacktestBatchId id = getBatchId(batchId);
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getElasticConfig());
-		final NetWorthEvent event = getEvent();
-
-		index.init(id);
-		index.event(id, event);
-
-		verifyEventCalls(batchId, event.getEventDate());
-	}
-
-	@Test
-	public void disableRefreshInterval() {
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getElasticConfig());
-
-		index.setRefreshInterval(false);
-
-		verfiyRefreshInterval(false);
-	}
-
-	@Test
-	public void enableRefreshInterval() {
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getElasticConfig());
-
-		index.setRefreshInterval(true);
-
-		verfiyRefreshInterval(true);
-	}
-
-	@Test
-	public void ensureIndexExists() {
-		final ElasticNetworthIndex index = new ElasticNetworthIndex(getDao(), getPool(), getElasticConfig());
-
-		index.ensureIndexExists();
-
-		verifyPutIndexCall();
-	}
-
-	@Override
-	protected String getPostIndex() {
-		return JSON_POST_INDEX_TYPE;
-	}
 
 	@Override
 	protected String getJsonPutIndex() {
@@ -165,22 +56,8 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 		return ElasticIndexName.NETWORTH;
 	}
 
-	private NetWorthEvent getEvent() {
-		final NetWorthEvent event = mock(NetWorthEvent.class);
-		final BigDecimal equityBalance = BigDecimal.valueOf(12.34);
-		final BigDecimal equityBalanceValue = BigDecimal.valueOf(512.46);
-		final BigDecimal cashBalance = BigDecimal.valueOf(500.12);
-		final BigDecimal networth = BigDecimal.valueOf(606.98);
-		final LocalDate eventDate = LocalDate.now();
-		final NetWorthEventType eventType = NetWorthEventType.COMPLETED;
-
-		when(event.getEquityBalance()).thenReturn(equityBalance);
-		when(event.getEquityBalanceValue()).thenReturn(equityBalanceValue);
-		when(event.getCashBalance()).thenReturn(cashBalance);
-		when(event.getEventDate()).thenReturn(eventDate);
-		when(event.getNetWorth()).thenReturn(networth);
-		when(event.getType()).thenReturn(eventType);
-
-		return event;
+	@Override
+	protected ElasticCommonIndex createIndex() {
+		return new ElasticNetworthIndex(getDao(), getPool(), getElasticConfig());
 	}
 }
