@@ -37,6 +37,15 @@ import com.systematic.trading.maths.indicator.Validator;
 /**
  * Standard ATR implementation.
  * 
+ * Calculation applied to a lookback of 14
+ * 
+ * Current ATR = [(Prior ATR x 13) + Current TR] / 14
+ *  - Multiply the previous 14-day ATR by 13.
+ *  - Add the most recent day's TR value.
+ *  - Divide the total by 14
+ * 
+ * For the period of the lookback there are not ATR, with the first value being the average of the lookback TR values.
+ * 
  * @author CJ Hare
  */
 public class AverageTrueRangeCalculator implements AverageTrueRange {
@@ -51,7 +60,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	private final BigDecimal lookbackDivider;
 
 	/** Required number of data points required for ATR calculation. */
-	private final int minimumNumberOfPrices;
+	private final int lookback;
 
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
@@ -62,12 +71,50 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	 * @param validator validates and parses input.
 	 */
 	public AverageTrueRangeCalculator( final int lookback, final Validator validator ) {
-		this.minimumNumberOfPrices = lookback;
+		this.lookback = lookback;
 		this.priorMultiplier = BigDecimal.valueOf(lookback - 1L);
 		this.lookbackDivider = BigDecimal.valueOf(lookback);
 		this.validator = validator;
 
 		validator.verifyGreaterThan(1, lookback);
+	}
+
+	@Override
+	public AverageTrueRangeLine calculate( final TradingDayPrices[] data ) {
+		validator.verifyNotNull(data);
+		validator.verifyZeroNullEntries(data);
+		validator.verifyEnoughValues(data, lookback);
+
+		final SortedMap<LocalDate, BigDecimal> averageTrueRanges = new TreeMap<>();
+
+		// For the first value just use the TR
+		final BigDecimal firstTrueRange = calculateFirstAtr(data);
+		averageTrueRanges.put(data[lookback - 1].getDate(), firstTrueRange);
+
+		// Starting ATR is just the first value
+		BigDecimal priorAtr = firstTrueRange;
+		BigDecimal atr;
+
+		for (int i = lookback; i < data.length; i++) {
+			atr = average(trueRange(data[i], data[i - 1]), priorAtr);
+			averageTrueRanges.put(data[i].getDate(), atr);
+			priorAtr = atr;
+		}
+
+		return new AverageTrueRangeLine(averageTrueRanges);
+	}
+
+	/**
+	 * First ATR is the average of the TR for the first lookback period.
+	 */
+	private BigDecimal calculateFirstAtr( final TradingDayPrices[] data ) {
+		BigDecimal totalTrueRange = trueRangeMethodOne(data[0]);
+
+		for (int i = 1; i < lookback; i++) {
+			totalTrueRange = totalTrueRange.add(trueRange(data[i], data[i - 1]));
+		}
+
+		return totalTrueRange.divide(lookbackDivider, MATH_CONTEXT);
 	}
 
 	/**
@@ -104,30 +151,5 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 		 * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14 */
 		return priorAverageTrueRange.multiply(priorMultiplier).add(currentTrueRange).divide(lookbackDivider,
 		        MATH_CONTEXT);
-	}
-
-	@Override
-	public AverageTrueRangeLine calculate( final TradingDayPrices[] data ) {
-		validator.verifyNotNull(data);
-		validator.verifyZeroNullEntries(data);
-		validator.verifyEnoughValues(data, minimumNumberOfPrices);
-
-		final SortedMap<LocalDate, BigDecimal> averageTrueRanges = new TreeMap<>();
-
-		// For the first value just use the TR
-		final BigDecimal firstTrueRange = trueRangeMethodOne(data[0]);
-		averageTrueRanges.put(data[0].getDate(), firstTrueRange);
-
-		// Starting ATR is just the first value
-		BigDecimal priorAtr = firstTrueRange;
-		BigDecimal atr;
-
-		for (int i = 1; i < data.length; i++) {
-			atr = average(trueRange(data[i], data[i - 1]), priorAtr);
-			averageTrueRanges.put(data[i].getDate(), atr);
-			priorAtr = atr;
-		}
-
-		return new AverageTrueRangeLine(averageTrueRanges);
 	}
 }
