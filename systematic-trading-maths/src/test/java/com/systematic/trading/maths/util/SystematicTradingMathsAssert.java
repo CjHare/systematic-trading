@@ -46,14 +46,16 @@ import java.util.SortedMap;
 public class SystematicTradingMathsAssert {
 
 	private static final int TWO_DECIMAL_PLACES = 2;
+	private static final RoundingMode MODE = RoundingMode.HALF_EVEN;
 
-	public static void assertValues( final double[] expected, final SortedMap<LocalDate, BigDecimal> actual ) {
-		assertArraySizeEqual(expected, actual);
+	public static void assertValues( final SortedMap<LocalDate, BigDecimal> expected,
+	        final SortedMap<LocalDate, BigDecimal> actual ) {
+		assertEquals(expected.size(), actual.size());
 
-		int i = 0;
-		for (final Map.Entry<LocalDate, BigDecimal> entry : actual.entrySet()) {
-			assertBigDecimalEquals(expected[i], entry.getValue(), RoundingMode.HALF_EVEN);
-			i++;
+		for (final Map.Entry<LocalDate, BigDecimal> entry : expected.entrySet()) {
+			final LocalDate expectedDate = entry.getKey();
+			assertNotNull(String.format("Missing expected entry: %s", expectedDate), actual.get(expectedDate));
+			assertBigDecimalEquals(entry.getValue(), actual.get(expectedDate));
 		}
 	}
 
@@ -66,6 +68,11 @@ public class SystematicTradingMathsAssert {
 			assertBigDecimalEquals(expected[index], entry.getValue(), RoundingMode.HALF_EVEN);
 			index++;
 		}
+	}
+
+	public static void assertBigDecimalEquals( final BigDecimal expected, BigDecimal actual ) {
+		assertEquals(String.format("%s != %s", expected, actual), 0,
+		        expected.setScale(TWO_DECIMAL_PLACES, MODE).compareTo(actual.setScale(TWO_DECIMAL_PLACES, MODE)));
 	}
 
 	public static void assertBigDecimalEquals( final double expected, BigDecimal actual ) {

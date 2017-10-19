@@ -32,8 +32,13 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -65,7 +70,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr, 2, 2);
+		verifyAtr(atr, line(point(LocalDate.of(2015, 7, 16), 2), point(LocalDate.of(2015, 7, 17), 2)));
 		verifyValidation(data, lookback);
 	}
 
@@ -77,7 +82,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr, 12.5, 15.62);
+		verifyAtr(atr, line(point(LocalDate.of(2015, 6, 14), 12.5), point(LocalDate.of(2015, 6, 15), 15.62)));
 		verifyValidation(data, lookback);
 	}
 
@@ -111,7 +116,7 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr, 13.5, 18.88);
+		verifyAtr(atr, line(point(LocalDate.of(2015, 3, 15), 13.5), point(LocalDate.of(2015, 3, 16), 18.88)));
 		verifyValidation(data, lookback);
 	}
 
@@ -134,9 +139,32 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr, 0.55, 0.59, 0.59, 0.57, 0.61, 0.62, 0.64, 0.67, 0.69, 0.77, 0.78, 1.21, 1.30, 1.38, 1.37, 1.34,
-		        1.32);
+		verifyAtr(atr,
+		        line(point(LocalDate.of(2010, 4, 21), 0.55), point(LocalDate.of(2010, 4, 22), 0.59),
+		                point(LocalDate.of(2010, 4, 23), 0.59), point(LocalDate.of(2010, 4, 26), 0.57),
+		                point(LocalDate.of(2010, 4, 27), 0.61), point(LocalDate.of(2010, 4, 28), 0.62),
+		                point(LocalDate.of(2010, 4, 29), 0.64), point(LocalDate.of(2010, 4, 30), 0.67),
+		                point(LocalDate.of(2010, 5, 3), 0.69), point(LocalDate.of(2010, 5, 4), 0.77),
+		                point(LocalDate.of(2010, 5, 5), 0.78), point(LocalDate.of(2010, 5, 6), 1.21),
+		                point(LocalDate.of(2010, 5, 7), 1.30), point(LocalDate.of(2010, 5, 10), 1.38),
+		                point(LocalDate.of(2010, 5, 11), 1.37), point(LocalDate.of(2010, 5, 12), 1.34),
+		                point(LocalDate.of(2010, 5, 13), 1.32)));
 		verifyValidation(data, lookback);
+	}
+
+	private Pair<LocalDate, BigDecimal> point( final LocalDate key, final double value ) {
+		return new ImmutablePair<LocalDate, BigDecimal>(key, BigDecimal.valueOf(value));
+	}
+
+	@SafeVarargs
+	private final SortedMap<LocalDate, BigDecimal> line( final Pair<LocalDate, BigDecimal>... pairs ) {
+		final SortedMap<LocalDate, BigDecimal> values = new TreeMap<>();
+
+		for (final Pair<LocalDate, BigDecimal> pair : pairs) {
+			values.put(pair.getKey(), pair.getValue());
+		}
+
+		return values;
 	}
 
 	private AverageTrueRangeLine atr( final TradingDayPrices[] data ) {
@@ -158,10 +186,10 @@ public class AverageTrueRangeCalculatorTest {
 		verify(validator).verifyEnoughValues(data, lookback);
 	}
 
-	private void verifyAtr( final AverageTrueRangeLine atr, final double... expected ) {
+	private void verifyAtr( final AverageTrueRangeLine atr, final SortedMap<LocalDate, BigDecimal> expected ) {
 		assertNotNull(atr);
 		assertNotNull(atr.getAtr());
-		assertEquals(expected.length, atr.getAtr().size());
+		assertEquals(expected.size(), atr.getAtr().size());
 		assertValues(expected, atr.getAtr());
 	}
 
@@ -169,22 +197,28 @@ public class AverageTrueRangeCalculatorTest {
 		calculator = new AverageTrueRangeCalculator(lookback, validator);
 	}
 
+	/**
+	 * LocalDate.of(2015, 7, 15)
+	 */
 	private TradingDayPrices[] createPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i)).withOpeningPrice(1)
-			        .withLowestPrice(0).withHighestPrice(2).withClosingPrice(1).build();
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.of(2015, 7, 15).plusDays(i))
+			        .withOpeningPrice(1).withLowestPrice(0).withHighestPrice(2).withClosingPrice(1).build();
 		}
 
 		return prices;
 	}
 
+	/**
+	 * LocalDate.of(2015, 6, 11)
+	 */
 	private TradingDayPrices[] createIncreasingPrices( final int count ) {
 		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i))
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.of(2015, 6, 11).plusDays(i))
 			        .withOpeningPrice(count).withLowestPrice(0).withHighestPrice(count + i * 5).withClosingPrice(1)
 			        .build();
 		}
@@ -192,21 +226,24 @@ public class AverageTrueRangeCalculatorTest {
 		return prices;
 	}
 
+	/**
+	 * LocalDate.of(2015, 3, 12)
+	 */
 	private TradingDayPrices[] createThreeTypesOfVolatility( final int count ) {
 		final TradingDayPrices[] prices = createIncreasingPrices(count);
 
 		// Biggest swing is between today's high & low
-		prices[count - 2] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(count - 3))
+		prices[count - 2] = new TradingDayPricesBuilder().withTradingDate(LocalDate.of(2015, 3, 12).plusDays(count - 3))
 		        .withOpeningPrice(count).withLowestPrice(-5 * count).withHighestPrice(5 * count)
 		        .withClosingPrice(count - 2).build();
 
 		// Biggest swing is between the highest of today and yesterday's close
-		prices[count - 2] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(count - 2))
+		prices[count - 2] = new TradingDayPricesBuilder().withTradingDate(LocalDate.of(2015, 3, 12).plusDays(count - 2))
 		        .withOpeningPrice(count).withLowestPrice(count).withHighestPrice(5 * count).withClosingPrice(2 * count)
 		        .build();
 
 		// Biggest swing is between the low of today and yesterday's close
-		prices[count - 1] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(count - 1))
+		prices[count - 1] = new TradingDayPricesBuilder().withTradingDate(LocalDate.of(2015, 3, 12).plusDays(count - 1))
 		        .withOpeningPrice(count).withLowestPrice(-5 * count).withHighestPrice(count).withClosingPrice(count)
 		        .build();
 
