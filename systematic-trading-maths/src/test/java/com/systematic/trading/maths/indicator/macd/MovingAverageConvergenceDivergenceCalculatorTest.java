@@ -94,7 +94,9 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	public void minimumNumberOfPrices() {
 		setUpMinimumNumberOfPrices(16);
 
-		assertEquals(16, calculator.getMinimumNumberOfPrices());
+		final int minimumNuumberOfPrices = calculator.getMinimumNumberOfPrices();
+
+		assertEquals(16, minimumNuumberOfPrices);
 		verifyMinimumNumberOfPricesInteractions();
 	}
 
