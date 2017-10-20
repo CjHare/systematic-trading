@@ -57,7 +57,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	private Validator validator;
 
 	/** Calculator instance being tested. */
-	private ExponentialMovingAverageCalculator calculator;
+	private ExponentialMovingAverage calculator;
 
 	@Test
 	public void emaTwoPointsDecimal() {

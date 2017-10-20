@@ -35,7 +35,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
-import com.systematic.trading.maths.indicator.ema.OtherExponentialMovingAverage;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 
 /**
  * Moving Average Convergence Divergence (MACD) line calculation.
@@ -51,13 +51,13 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	private final ExponentialMovingAverageIndicator fastEma;
 
 	/** Exponential moving average of the values from slowEma - fastEma. */
-	private final OtherExponentialMovingAverage signalEma;
+	private final ExponentialMovingAverage signalEma;
 
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
 	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverageIndicator fastEma,
-	        final ExponentialMovingAverageIndicator slowEma, final OtherExponentialMovingAverage signalEma,
+	        final ExponentialMovingAverageIndicator slowEma, final ExponentialMovingAverage signalEma,
 	        final Validator validator ) {
 		this.validator = validator;
 		this.signalEma = signalEma;

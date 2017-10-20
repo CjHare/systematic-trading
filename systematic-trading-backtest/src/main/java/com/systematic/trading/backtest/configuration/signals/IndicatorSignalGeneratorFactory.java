@@ -33,7 +33,7 @@ import com.systematic.trading.maths.indicator.ema.ClosingPriceExponentialMovingA
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
-import com.systematic.trading.maths.indicator.ema.OtherExponentialMovingAverage;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceIndicator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
@@ -117,7 +117,7 @@ public class IndicatorSignalGeneratorFactory {
 		        minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
 		final ExponentialMovingAverageIndicator slowEma = new ClosingPriceExponentialMovingAverageCalculator(slowTimePeriod,
 		        minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
-		final OtherExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(signalTimePeriods,
+		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(signalTimePeriods,
 		        new IllegalArgumentThrowingValidator());
 
 		final MovingAverageConvergenceDivergenceIndicator macd = new MovingAverageConvergenceDivergenceCalculator(fastEma,

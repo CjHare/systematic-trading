@@ -35,7 +35,7 @@ import java.util.SortedMap;
  * 
  * @author CJ Hare
  */
-public interface OtherExponentialMovingAverage {
+public interface ExponentialMovingAverage {
 
 	/**
 	 * Calculates the exponential moving average.

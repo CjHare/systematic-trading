@@ -52,7 +52,7 @@ import com.systematic.trading.maths.indicator.Validator;
  * 
  * @author CJ Hare
  */
-public class ExponentialMovingAverageCalculator implements OtherExponentialMovingAverage {
+public class ExponentialMovingAverageCalculator implements ExponentialMovingAverage {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;

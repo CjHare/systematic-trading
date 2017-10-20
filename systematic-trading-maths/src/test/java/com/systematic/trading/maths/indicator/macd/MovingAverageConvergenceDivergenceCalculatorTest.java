@@ -55,7 +55,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
-import com.systematic.trading.maths.indicator.ema.OtherExponentialMovingAverage;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.matcher.IsSortedMap;
 import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
@@ -77,7 +77,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	private ExponentialMovingAverageIndicator slowEma;
 
 	@Mock
-	private OtherExponentialMovingAverage signalEma;
+	private ExponentialMovingAverage signalEma;
 
 	@Mock
 	private Validator validator;
