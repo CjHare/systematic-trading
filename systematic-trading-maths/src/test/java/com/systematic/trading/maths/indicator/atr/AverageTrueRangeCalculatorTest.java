@@ -26,6 +26,8 @@
 package com.systematic.trading.maths.indicator.atr;
 
 import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.line;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.point;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -35,10 +37,7 @@ import static org.mockito.Mockito.verify;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -155,20 +154,6 @@ public class AverageTrueRangeCalculatorTest {
 		verifyValidation(data, lookback);
 	}
 
-	private Pair<LocalDate, BigDecimal> point( final LocalDate key, final double value ) {
-		return new ImmutablePair<LocalDate, BigDecimal>(key, BigDecimal.valueOf(value));
-	}
-
-	@SafeVarargs
-	private final SortedMap<LocalDate, BigDecimal> line( final Pair<LocalDate, BigDecimal>... pairs ) {
-		final SortedMap<LocalDate, BigDecimal> values = new TreeMap<>();
-
-		for (final Pair<LocalDate, BigDecimal> pair : pairs) {
-			values.put(pair.getKey(), pair.getValue());
-		}
-
-		return values;
-	}
 
 	private AverageTrueRangeLine atr( final TradingDayPrices[] data ) {
 		return calculator.calculate(data);

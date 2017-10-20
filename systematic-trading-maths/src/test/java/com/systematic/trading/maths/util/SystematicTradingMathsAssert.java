@@ -37,6 +37,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Utility Assert operations.
@@ -47,6 +51,21 @@ public class SystematicTradingMathsAssert {
 
 	private static final int TWO_DECIMAL_PLACES = 2;
 	private static final RoundingMode MODE = RoundingMode.HALF_EVEN;
+
+	public static Pair<LocalDate, BigDecimal> point( final LocalDate key, final double value ) {
+		return new ImmutablePair<LocalDate, BigDecimal>(key, BigDecimal.valueOf(value));
+	}
+
+	@SafeVarargs
+	public static final SortedMap<LocalDate, BigDecimal> line( final Pair<LocalDate, BigDecimal>... pairs ) {
+		final SortedMap<LocalDate, BigDecimal> values = new TreeMap<>();
+
+		for (final Pair<LocalDate, BigDecimal> pair : pairs) {
+			values.put(pair.getKey(), pair.getValue());
+		}
+
+		return values;
+	}
 
 	public static void assertValues( final SortedMap<LocalDate, BigDecimal> expected,
 	        final SortedMap<LocalDate, BigDecimal> actual ) {
