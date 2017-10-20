@@ -25,11 +25,14 @@
  */
 package com.systematic.trading.maths.indicator.ema;
 
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.line;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.point;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -59,51 +62,88 @@ public class ExponentialMovingAverageCalculatorTest {
 	/** Calculator instance being tested. */
 	private ExponentialMovingAverage calculator;
 
-	@Test
-	public void emaTwoPointsDecimal() {
-		final int lookback = 2;
-		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(4);
-		setUpCalculator(lookback);
-
-		final ExponentialMovingAverageLine ema = ema(data);
-
-		verifyEma(ema, 0.5, 1.5, 2.5);
-		verifyValidation(data, lookback);
-	}
-
 	@Test(expected = IllegalArgumentException.class)
-	public void notEnoughDataPointsDecimal() {
-		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(1);
-		setUpValidationErrorEnoughValues();
-		setUpCalculator(2);
-
-		ema(data);
+	public void invalidLookback() {
+		setUpValidationErrorGreaterThan();
+		setUpCalculator(0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNullInput() {
 		setUpValidationErrorNullInput();
 		setUpCalculator(1);
-		final SortedMap<LocalDate, BigDecimal> input = null;
 
-		ema(input);
+		ema(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void emaNullEntries() {
+		setUpValidationErrorNullEntries();
+		setUpCalculator(2);
+		final SortedMap<LocalDate, BigDecimal> data = new TreeMap<LocalDate, BigDecimal>();
+		data.put(LocalDate.now(), null);
+
+		ema(data);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void emaNotEnoughValues() {
+		setUpValidationErrorNullInput();
+		setUpCalculator(1);
+
+		ema(new TreeMap<LocalDate, BigDecimal>());
 	}
 
 	@Test
-	/**
-	 * Ten day EMA, with Intel price data from 24-Mar-10 to 5-May-10
-	 */
 	public void emaIntelExample() {
 		final int lookback = 10;
-		final SortedMap<LocalDate, BigDecimal> data = createDecimalPrices(22.27, 22.19, 22.08, 22.17, 22.18, 22.13,
-		        22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82,
-		        23.87, 23.65, 23.19, 23.10, 23.33, 22.68, 23.10, 22.40, 22.17);
+		final SortedMap<LocalDate, BigDecimal> data = createIntelExamplePrices();
 		setUpCalculator(lookback);
 
 		final ExponentialMovingAverageLine ema = ema(data);
 
-		verifyEma(ema, 22.22, 22.21, 22.24, 22.27, 22.33, 22.52, 22.80, 22.97, 23.13, 23.28, 23.34, 23.43, 23.51, 23.53,
-		        23.47, 23.40, 23.39, 23.26, 23.23, 23.08, 22.92);
+		verifyEma(ema,
+		        line(point(LocalDate.of(2010, 4, 7), 22.22), point(LocalDate.of(2010, 4, 8), 22.21),
+		                point(LocalDate.of(2010, 4, 9), 22.24), point(LocalDate.of(2010, 4, 12), 22.27),
+		                point(LocalDate.of(2010, 4, 13), 22.33), point(LocalDate.of(2010, 4, 14), 22.52),
+		                point(LocalDate.of(2010, 4, 15), 22.80), point(LocalDate.of(2010, 4, 16), 22.97),
+		                point(LocalDate.of(2010, 4, 19), 23.13), point(LocalDate.of(2010, 4, 20), 23.28),
+		                point(LocalDate.of(2010, 4, 21), 23.34), point(LocalDate.of(2010, 4, 22), 23.43),
+		                point(LocalDate.of(2010, 4, 23), 23.51), point(LocalDate.of(2010, 4, 26), 23.53),
+		                point(LocalDate.of(2010, 4, 27), 23.47), point(LocalDate.of(2010, 4, 28), 23.40),
+		                point(LocalDate.of(2010, 4, 29), 23.39), point(LocalDate.of(2010, 4, 30), 23.26),
+		                point(LocalDate.of(2010, 5, 3), 23.23), point(LocalDate.of(2010, 5, 4), 23.08),
+		                point(LocalDate.of(2010, 5, 5), 22.92)));
+		verifyValidation(data, lookback);
+	}
+
+	@Test
+	public void emaIncreasing() {
+		final int lookback = 5;
+		final SortedMap<LocalDate, BigDecimal> data = createIncreasingPrices();
+		setUpCalculator(lookback);
+
+		final ExponentialMovingAverageLine ema = ema(data);
+
+		verifyEma(ema,
+		        line(point(LocalDate.of(2017, 9, 15), 2), point(LocalDate.of(2017, 9, 18), 3),
+		                point(LocalDate.of(2017, 9, 19), 4), point(LocalDate.of(2017, 9, 20), 5),
+		                point(LocalDate.of(2017, 9, 21), 6), point(LocalDate.of(2017, 9, 22), 7)));
+		verifyValidation(data, lookback);
+	}
+
+	@Test
+	public void emaFlat() {
+		final int lookback = 4;
+		final SortedMap<LocalDate, BigDecimal> data = createFlatPrices();
+		setUpCalculator(lookback);
+
+		final ExponentialMovingAverageLine ema = ema(data);
+
+		verifyEma(ema,
+		        line(point(LocalDate.of(2017, 10, 12), 4.5), point(LocalDate.of(2017, 10, 13), 4.5),
+		                point(LocalDate.of(2017, 10, 16), 4.5), point(LocalDate.of(2017, 10, 17), 4.5),
+		                point(LocalDate.of(2017, 10, 18), 4.5)));
 		verifyValidation(data, lookback);
 	}
 
@@ -111,22 +151,17 @@ public class ExponentialMovingAverageCalculatorTest {
 		return calculator.calculate(data);
 	}
 
+	private void setUpValidationErrorGreaterThan() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyGreaterThan(anyInt(), anyInt());
+	}
+
 	private void setUpValidationErrorNullInput() {
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
-	private void setUpValidationErrorEnoughValues() {
-		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(anyListOf(BigDecimal.class),
-		        anyInt());
-	}
-
-	private void verifyEma( final ExponentialMovingAverageLine actual, final double... expected ) {
-		assertNotNull(actual);
-		assertNotNull(actual.getEma());
-		assertEquals(expected.length, actual.getEma().size());
-
-		//TODO code
-		//		assertValues(expected, actual.getEma());
+	@SuppressWarnings("unchecked")
+	private void setUpValidationErrorNullEntries() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(anyCollection());
 	}
 
 	private void setUpCalculator( final int lookback ) {
@@ -140,23 +175,68 @@ public class ExponentialMovingAverageCalculatorTest {
 		verify(validator).verifyZeroNullEntries(data.values());
 	}
 
-	private SortedMap<LocalDate, BigDecimal> createIncreasingDecimalPrices( final int count ) {
-		final SortedMap<LocalDate, BigDecimal> prices = new TreeMap<>();
+	private void verifyEma( final ExponentialMovingAverageLine actual,
+	        final SortedMap<LocalDate, BigDecimal> expected ) {
+		assertNotNull(actual);
+		assertNotNull(actual.getEma());
+		assertEquals(expected.size(), actual.getEma().size());
+		assertValues(expected, actual.getEma());
 
-		for (int i = 0; i < count; i++) {
-			prices.put(LocalDate.now().plusDays(i), BigDecimal.valueOf(i));
-		}
-
-		return prices;
 	}
 
-	private SortedMap<LocalDate, BigDecimal> createDecimalPrices( final double... values ) {
-		final SortedMap<LocalDate, BigDecimal> prices = new TreeMap<>();
+	/**
+	 * Flat prices starting from LocalDate.of(2017, 10, 9).
+	 */
+	private SortedMap<LocalDate, BigDecimal> createFlatPrices() {
+		final LocalDate[] dates = { LocalDate.of(2017, 10, 9), LocalDate.of(2017, 10, 10), LocalDate.of(2017, 10, 11),
+		        LocalDate.of(2017, 10, 12), LocalDate.of(2017, 10, 13), LocalDate.of(2017, 10, 16),
+		        LocalDate.of(2017, 10, 17), LocalDate.of(2017, 10, 18) };
+		final double[] close = { 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5 };
 
-		for (int i = 0; i < values.length; i++) {
-			prices.put(LocalDate.now().plusDays(i), BigDecimal.valueOf(values[i]));
+		return createPrices(dates, close);
+	}
+
+	/**
+	 * Increasing prices starting from LocalDate.of(2017, 9, 11).
+	 */
+	private SortedMap<LocalDate, BigDecimal> createIncreasingPrices() {
+		final LocalDate[] dates = { LocalDate.of(2017, 9, 11), LocalDate.of(2017, 9, 12), LocalDate.of(2017, 9, 13),
+		        LocalDate.of(2017, 9, 14), LocalDate.of(2017, 9, 15), LocalDate.of(2017, 9, 18),
+		        LocalDate.of(2017, 9, 19), LocalDate.of(2017, 9, 20), LocalDate.of(2017, 9, 21),
+		        LocalDate.of(2017, 9, 22) };
+		final double[] close = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+		return createPrices(dates, close);
+	}
+
+	/**
+	 * Thirty days of price data for Intel starting from LocalDate.of(2010, 3, 24).
+	 */
+	private SortedMap<LocalDate, BigDecimal> createIntelExamplePrices() {
+		final LocalDate[] dates = { LocalDate.of(2010, 3, 24), LocalDate.of(2010, 3, 25), LocalDate.of(2010, 3, 26),
+		        LocalDate.of(2010, 3, 29), LocalDate.of(2010, 3, 30), LocalDate.of(2010, 3, 31),
+		        LocalDate.of(2010, 4, 1), LocalDate.of(2010, 4, 5), LocalDate.of(2010, 4, 6), LocalDate.of(2010, 4, 7),
+		        LocalDate.of(2010, 4, 8), LocalDate.of(2010, 4, 9), LocalDate.of(2010, 4, 12),
+		        LocalDate.of(2010, 4, 13), LocalDate.of(2010, 4, 14), LocalDate.of(2010, 4, 15),
+		        LocalDate.of(2010, 4, 16), LocalDate.of(2010, 4, 19), LocalDate.of(2010, 4, 20),
+		        LocalDate.of(2010, 4, 21), LocalDate.of(2010, 4, 22), LocalDate.of(2010, 4, 23),
+		        LocalDate.of(2010, 4, 26), LocalDate.of(2010, 4, 27), LocalDate.of(2010, 4, 28),
+		        LocalDate.of(2010, 4, 29), LocalDate.of(2010, 4, 30), LocalDate.of(2010, 5, 3),
+		        LocalDate.of(2010, 5, 4), LocalDate.of(2010, 5, 5) };
+		final double[] close = { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39,
+		        22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65, 23.19, 23.10, 23.33, 22.68,
+		        23.10, 22.40, 22.17 };
+
+		return createPrices(dates, close);
+	}
+
+	private final SortedMap<LocalDate, BigDecimal> createPrices( final LocalDate[] dates, final double[] close ) {
+		final SortedMap<LocalDate, BigDecimal> data = new TreeMap<LocalDate, BigDecimal>();
+
+		for (int i = 0; i < dates.length; i++) {
+			data.put(dates[i], BigDecimal.valueOf(close[i]));
 		}
 
-		return prices;
+		return data;
 	}
 }

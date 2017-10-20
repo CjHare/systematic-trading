@@ -146,7 +146,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 		final ExponentialMovingAverageLine ema = ema(data);
 
 		verifyEma(ema,
-		        line(point(LocalDate.of(2017, 10, 12), 4.5), point(LocalDate.of(2017, 5, 13), 4.5),
+		        line(point(LocalDate.of(2017, 10, 12), 4.5), point(LocalDate.of(2017, 10, 13), 4.5),
 		                point(LocalDate.of(2017, 10, 16), 4.5), point(LocalDate.of(2017, 10, 17), 4.5),
 		                point(LocalDate.of(2017, 10, 18), 4.5)));
 		verifyValidation(data, lookback);
@@ -206,7 +206,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	 */
 	private TradingDayPrices[] createFlatPrices() {
 		final LocalDate[] dates = { LocalDate.of(2017, 10, 9), LocalDate.of(2017, 10, 10), LocalDate.of(2017, 10, 11),
-		        LocalDate.of(2017, 10, 12), LocalDate.of(2017, 5, 13), LocalDate.of(2017, 10, 16),
+		        LocalDate.of(2017, 10, 12), LocalDate.of(2017, 10, 13), LocalDate.of(2017, 10, 16),
 		        LocalDate.of(2017, 10, 17), LocalDate.of(2017, 10, 18) };
 		final double[] close = { 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5 };
 
