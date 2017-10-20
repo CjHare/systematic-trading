@@ -63,10 +63,11 @@ public class AverageTrueRangeCalculatorTest {
 
 	@Test
 	public void minimumNumberOfPrices() {
-		final int lookback = 2;
-		setUpCalculator(lookback);
+		setUpCalculator(2);
 
-		assertEquals(3, calculator.getMinimumNumberOfPrices());
+		final int requiredDays = calculator.getMinimumNumberOfPrices();
+
+		assertEquals(3, requiredDays);
 	}
 
 	@Test
