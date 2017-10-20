@@ -65,31 +65,33 @@ public class AverageTrueRangeCalculatorTest {
 	@Test
 	public void atrFlat() {
 		final int lookback = 2;
-		final TradingDayPrices[] data = createPrices(3);
+		final TradingDayPrices[] data = createPrices();
 		setUpCalculator(lookback);
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr, line(point(LocalDate.of(2015, 7, 16), 2), point(LocalDate.of(2015, 7, 17), 2)));
+		verifyAtr(atr, line(point(LocalDate.of(2015, 7, 16), 2), point(LocalDate.of(2015, 7, 17), 2),
+		        point(LocalDate.of(2015, 7, 20), 2), point(LocalDate.of(2015, 7, 21), 2)));
 		verifyValidation(data, lookback);
 	}
 
 	@Test
 	public void atrIncreasing() {
 		final int lookback = 4;
-		final TradingDayPrices[] data = createIncreasingPrices(5);
+		final TradingDayPrices[] data = createIncreasingPrices();
 		setUpCalculator(lookback);
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr, line(point(LocalDate.of(2015, 6, 14), 12.5), point(LocalDate.of(2015, 6, 15), 15.62)));
+		verifyAtr(atr, line(point(LocalDate.of(2016, 11, 17), 9), point(LocalDate.of(2016, 11, 18), 12.75),
+		        point(LocalDate.of(2016, 11, 21), 17.06)));
 		verifyValidation(data, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void atrInitialNullEntry() {
 		final int lookback = 2;
-		final TradingDayPrices[] data = createPrices(4);
+		final TradingDayPrices[] data = createPrices();
 		data[0] = null;
 		setUpValidationErrorNoNullEntries();
 		setUpCalculator(lookback);
@@ -100,7 +102,7 @@ public class AverageTrueRangeCalculatorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void atrLastNullEntry() {
 		final int lookback = 2;
-		final TradingDayPrices[] data = createPrices(4);
+		final TradingDayPrices[] data = createPrices();
 		data[data.length - 1] = null;
 		setUpValidationErrorNoNullEntries();
 		setUpCalculator(lookback);
@@ -111,12 +113,13 @@ public class AverageTrueRangeCalculatorTest {
 	@Test
 	public void atrThreeRangeTypes() {
 		final int lookback = 4;
-		final TradingDayPrices[] data = createThreeTypesOfVolatility(5);
+		final TradingDayPrices[] data = createThreeTypesOfVolatility();
 		setUpCalculator(lookback);
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr, line(point(LocalDate.of(2015, 3, 15), 13.5), point(LocalDate.of(2015, 3, 16), 18.88)));
+		verifyAtr(atr, line(point(LocalDate.of(2017, 7, 13), 0), point(LocalDate.of(2017, 7, 14), 16.78),
+		        point(LocalDate.of(2017, 7, 17), 20.34), point(LocalDate.of(2017, 7, 18), 15.87)));
 		verifyValidation(data, lookback);
 	}
 
@@ -198,63 +201,58 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	/**
-	 * LocalDate.of(2015, 7, 15)
+	 * Prices starting on LocalDate.of(2015, 7, 15).
+	 * 
+	 * ATR should always be two, as there are not changes in the price or ranges between days.
 	 */
-	private TradingDayPrices[] createPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
+	private TradingDayPrices[] createPrices() {
+		final LocalDate[] dates = { LocalDate.of(2015, 7, 15), LocalDate.of(2015, 7, 16), LocalDate.of(2015, 7, 17),
+		        LocalDate.of(2015, 7, 20), LocalDate.of(2015, 7, 21) };
+		final double[] high = { 2, 2, 2, 2, 2 };
+		final double[] low = { 0, 0, 0, 0, 0 };
+		final double[] close = { 1, 1, 1, 1, 1 };
 
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.of(2015, 7, 15).plusDays(i))
-			        .withOpeningPrice(1).withLowestPrice(0).withHighestPrice(2).withClosingPrice(1).build();
-		}
-
-		return prices;
+		return createPrices(dates, high, low, close);
 	}
 
 	/**
-	 * LocalDate.of(2015, 6, 11)
+	 * Prices starting on LocalDate.of(2016, 11, 14).
+	 * 
+	 * The closing price has linear increases, with the daily high increase being quadratic.
 	 */
-	private TradingDayPrices[] createIncreasingPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
+	private TradingDayPrices[] createIncreasingPrices() {
+		final LocalDate[] dates = { LocalDate.of(2016, 11, 14), LocalDate.of(2016, 11, 15), LocalDate.of(2016, 11, 16),
+		        LocalDate.of(2016, 11, 17), LocalDate.of(2016, 11, 18), LocalDate.of(2016, 11, 21) };
+		final double[] high = { 0, 6, 12, 18, 24, 30 };
+		final double[] low = { 0, 0, 0, 0, 0, 0, 0 };
+		final double[] close = { 0, 1, 2, 3, 4, 5, 6 };
 
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.of(2015, 6, 11).plusDays(i))
-			        .withOpeningPrice(count).withLowestPrice(0).withHighestPrice(count + i * 5).withClosingPrice(1)
-			        .build();
-		}
-
-		return prices;
+		return createPrices(dates, high, low, close);
 	}
 
 	/**
-	 * LocalDate.of(2015, 3, 12)
+	 * Prices starting on LocalDate.of(2017, 7, 10).
+	 * 
+	 * Three cases for ATR:
+	 *  - Biggest swing is between today's high & low
+	 *	- Biggest swing is between the highest of today and yesterday's close
+	 *	- Biggest swing is between the low of today and yesterday's close
 	 */
-	private TradingDayPrices[] createThreeTypesOfVolatility( final int count ) {
-		final TradingDayPrices[] prices = createIncreasingPrices(count);
+	private TradingDayPrices[] createThreeTypesOfVolatility() {
+		final LocalDate[] dates = { LocalDate.of(2017, 7, 10), LocalDate.of(2017, 7, 11), LocalDate.of(2017, 7, 12),
+		        LocalDate.of(2017, 7, 13), LocalDate.of(2017, 7, 14), LocalDate.of(2017, 7, 17),
+		        LocalDate.of(2017, 7, 18) };
+		final double[] high = { 2.5, 2.5, 2.5, 2.5, 67.25, 33.5, 2.5 };
+		final double[] low = { 2.5, 2.5, 2.5, 2.5, 0.13, 2.5, 0.01 };
+		final double[] close = { 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5 };
 
-		// Biggest swing is between today's high & low
-		prices[count - 2] = new TradingDayPricesBuilder().withTradingDate(LocalDate.of(2015, 3, 12).plusDays(count - 3))
-		        .withOpeningPrice(count).withLowestPrice(-5 * count).withHighestPrice(5 * count)
-		        .withClosingPrice(count - 2).build();
-
-		// Biggest swing is between the highest of today and yesterday's close
-		prices[count - 2] = new TradingDayPricesBuilder().withTradingDate(LocalDate.of(2015, 3, 12).plusDays(count - 2))
-		        .withOpeningPrice(count).withLowestPrice(count).withHighestPrice(5 * count).withClosingPrice(2 * count)
-		        .build();
-
-		// Biggest swing is between the low of today and yesterday's close
-		prices[count - 1] = new TradingDayPricesBuilder().withTradingDate(LocalDate.of(2015, 3, 12).plusDays(count - 1))
-		        .withOpeningPrice(count).withLowestPrice(-5 * count).withHighestPrice(count).withClosingPrice(count)
-		        .build();
-
-		return prices;
+		return createPrices(dates, high, low, close);
 	}
 
 	/** 
 	 * QQQQ (Powershares QQQ Trust), from 1 April 2010 - 13 May 2010
 	 */
 	private TradingDayPrices[] createExampleAverageTrueRange() {
-		final TradingDayPrices[] data = new TradingDayPrices[30];
 		final LocalDate[] dates = { LocalDate.of(2010, 4, 1), LocalDate.of(2010, 4, 5), LocalDate.of(2010, 4, 6),
 		        LocalDate.of(2010, 4, 7), LocalDate.of(2010, 4, 8), LocalDate.of(2010, 4, 9), LocalDate.of(2010, 4, 12),
 		        LocalDate.of(2010, 4, 13), LocalDate.of(2010, 4, 14), LocalDate.of(2010, 4, 15),
@@ -274,6 +272,13 @@ public class AverageTrueRangeCalculatorTest {
 		final double[] close = { 48.16, 48.61, 48.75, 48.63, 48.74, 49.03, 49.07, 49.32, 49.91, 50.13, 49.53, 49.50,
 		        49.75, 50.03, 50.31, 50.52, 50.41, 49.43, 49.37, 50.23, 49.24, 49.93, 48.43, 48.18, 46.57, 45.41, 47.77,
 		        47.72, 48.62, 47.85 };
+
+		return createPrices(dates, high, low, close);
+	}
+
+	private TradingDayPrices[] createPrices( final LocalDate[] dates, final double[] high, final double[] low,
+	        final double[] close ) {
+		final TradingDayPrices[] data = new TradingDayPrices[dates.length];
 
 		// Open values are not used in ATR calculations
 		for (int i = 0; i < data.length; i++) {
