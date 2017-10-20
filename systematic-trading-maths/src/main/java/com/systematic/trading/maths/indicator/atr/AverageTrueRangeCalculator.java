@@ -62,6 +62,9 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	/** Required number of data points required for ATR calculation. */
 	private final int lookback;
 
+	/** The least number of prices to calculate the ATR on. */
+	private final int minimumNumberOfPrices;
+
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
@@ -71,12 +74,18 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 	 * @param validator validates and parses input.
 	 */
 	public AverageTrueRangeCalculator( final int lookback, final Validator validator ) {
+		validator.verifyGreaterThan(1, lookback);
+
 		this.lookback = lookback;
+		this.validator = validator;
 		this.priorMultiplier = BigDecimal.valueOf(lookback - 1L);
 		this.lookbackDivider = BigDecimal.valueOf(lookback);
-		this.validator = validator;
+		this.minimumNumberOfPrices = lookback + 1;
+	}
 
-		validator.verifyGreaterThan(1, lookback);
+	@Override
+	public int getMinimumNumberOfPrices() {
+		return minimumNumberOfPrices;
 	}
 
 	@Override
@@ -152,4 +161,5 @@ public class AverageTrueRangeCalculator implements AverageTrueRange {
 		return priorAverageTrueRange.multiply(priorMultiplier).add(currentTrueRange).divide(lookbackDivider,
 		        MATH_CONTEXT);
 	}
+
 }

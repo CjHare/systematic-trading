@@ -53,6 +53,5 @@ import com.systematic.trading.maths.indicator.Indicator;
  * 
  * @author CJ Hare
  */
-@FunctionalInterface
 public interface AverageTrueRange extends Indicator<AverageTrueRangeLine> {
 }

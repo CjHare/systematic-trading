@@ -62,6 +62,14 @@ public class AverageTrueRangeCalculatorTest {
 	private AverageTrueRangeCalculator calculator;
 
 	@Test
+	public void minimumNumberOfPrices() {
+		final int lookback = 2;
+		setUpCalculator(lookback);
+
+		assertEquals(3, calculator.getMinimumNumberOfPrices());
+	}
+
+	@Test
 	public void atrFlat() {
 		final int lookback = 2;
 		final TradingDayPrices[] data = createPrices();
@@ -153,7 +161,6 @@ public class AverageTrueRangeCalculatorTest {
 		                point(LocalDate.of(2010, 5, 13), 1.32)));
 		verifyValidation(data, lookback);
 	}
-
 
 	private AverageTrueRangeLine atr( final TradingDayPrices[] data ) {
 		return calculator.calculate(data);

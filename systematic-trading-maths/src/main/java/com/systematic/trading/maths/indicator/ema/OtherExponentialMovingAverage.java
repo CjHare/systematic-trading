@@ -23,17 +23,25 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator.rs;
+package com.systematic.trading.maths.indicator.ema;
 
-import com.systematic.trading.maths.indicator.Indicator;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.SortedMap;
 
 /**
- * Relative Strength - RS
- * 
- * A technical momentum indicator that compares the magnitude of recent gains to recent losses in an
- * attempt to determine over bought and over sold conditions of an asset.
+ * Exponential Moving Average (EMA), a moving average with greater weighting given to recent data
+ * points.
  * 
  * @author CJ Hare
  */
-public interface RelativeStrength extends Indicator<RelativeStrengthLine> {
+public interface OtherExponentialMovingAverage {
+
+	/**
+	 * Calculates the exponential moving average.
+	 * 
+	 * @param data ordered chronologically, from oldest to youngest (most recent first).
+	 * @return exponential moving average values.
+	 */
+	ExponentialMovingAverageLine calculate( SortedMap<LocalDate, BigDecimal> data );
 }

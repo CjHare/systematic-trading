@@ -33,11 +33,4 @@ import com.systematic.trading.maths.indicator.Indicator;
  * @author CJ Hare
  */
 public interface SimpleMovingAverage extends Indicator<SimpleMovingAverageLine> {
-
-	/**
-	 * Minimum number of prices required for calculating the SMA.
-	 * 
-	 * @return the number of trading days data needed for the SMA.
-	 */
-	int getMinimumNumberOfPrices();
 }

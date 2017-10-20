@@ -50,6 +50,9 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	/** Constant for the value of 100. */
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
+	/** The least number of prices to calculate the ATR on. */
+	private static final int MINIMUM_NUMBER_OF_PRICES = 1;
+
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
@@ -62,6 +65,12 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	public RelativeStrengthIndexCalculator( final RelativeStrength rs, final Validator validator ) {
 		this.validator = validator;
 		this.rs = rs;
+	}
+
+	//TODO UT
+	@Override
+	public int getMinimumNumberOfPrices() {
+		return MINIMUM_NUMBER_OF_PRICES;
 	}
 
 	@Override

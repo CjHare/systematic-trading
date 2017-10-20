@@ -28,22 +28,19 @@ package com.systematic.trading.maths.indicator.ema;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
  * Test the ExponentialMovingAverageCalculator.
@@ -51,40 +48,74 @@ import com.systematic.trading.maths.indicator.Validator;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ExponentialMovingAverageCalculatorTest {
+public class ClosingPriceExponentialMovingAverageCalculatorTest {
 
 	@Mock
 	private Validator validator;
 
 	/** Calculator instance being tested. */
-	private ExponentialMovingAverageCalculator calculator;
+	private ExponentialMovingAverage calculator;
 
 	@Test
-	public void emaTwoPointsDecimal() {
+	public void emaOnePoints() {
 		final int lookback = 2;
-		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(4);
+		final TradingDayPrices[] data = createPrices(lookback);
 		setUpCalculator(lookback);
 
 		final ExponentialMovingAverageLine ema = ema(data);
 
-		verifyEma(ema, 0.5, 1.5, 2.5);
+		verifyEma(ema, 1);
+		verifyValidation(data, lookback);
+	}
+
+	@Test
+	public void emaTwoPoints() {
+		final int lookback = 2;
+		final TradingDayPrices[] data = createPrices(3);
+		setUpCalculator(lookback);
+
+		final ExponentialMovingAverageLine ema = ema(data);
+
+		verifyEma(ema, 1, 1);
+		verifyValidation(data, lookback);
+	}
+
+	@Test
+	public void emaThreePoints() {
+		final int lookback = 2;
+		final TradingDayPrices[] data = createIncreasingPrices(4);
+		setUpCalculator(lookback);
+
+		final ExponentialMovingAverageLine ema = ema(data);
+
+		verifyEma(ema, 1.5, 2.5, 3.5);
 		verifyValidation(data, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void notEnoughDataPointsDecimal() {
-		final SortedMap<LocalDate, BigDecimal> data = createIncreasingDecimalPrices(1);
-		setUpValidationErrorEnoughValues();
+	public void emaTwoPointsLastNull() {
+		final TradingDayPrices[] data = createIncreasingPrices(4);
+		data[data.length - 1] = null;
+		setUpValidationErrorZeroEntries();
 		setUpCalculator(2);
 
 		ema(data);
 	}
 
+	@Test
+	public void getMinimumNumberOfPrices() {
+		setUpCalculator(4);
+
+		final int requiredDays = calculator.getMinimumNumberOfPrices();
+
+		assertEquals(9, requiredDays);
+	}
+
 	@Test(expected = IllegalArgumentException.class)
-	public void emaNullInput() {
+	public void emaNullInputArray() {
 		setUpValidationErrorNullInput();
 		setUpCalculator(1);
-		final SortedMap<LocalDate, BigDecimal> input = null;
+		final TradingDayPrices[] input = null;
 
 		ema(input);
 	}
@@ -93,11 +124,11 @@ public class ExponentialMovingAverageCalculatorTest {
 	/**
 	 * Ten day EMA, with Intel price data from 24-Mar-10 to 5-May-10
 	 */
-	public void emaIntelExample() {
+	public void emaArrayIntelExample() {
 		final int lookback = 10;
-		final SortedMap<LocalDate, BigDecimal> data = createDecimalPrices(22.27, 22.19, 22.08, 22.17, 22.18, 22.13,
-		        22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82,
-		        23.87, 23.65, 23.19, 23.10, 23.33, 22.68, 23.10, 22.40, 22.17);
+		final TradingDayPrices[] data = createPrices(22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24,
+		        22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65, 23.19,
+		        23.10, 23.33, 22.68, 23.10, 22.40, 22.17);
 		setUpCalculator(lookback);
 
 		final ExponentialMovingAverageLine ema = ema(data);
@@ -107,7 +138,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		verifyValidation(data, lookback);
 	}
 
-	private ExponentialMovingAverageLine ema( final SortedMap<LocalDate, BigDecimal> data ) {
+	private ExponentialMovingAverageLine ema( final TradingDayPrices[] data ) {
 		return calculator.calculate(data);
 	}
 
@@ -115,9 +146,8 @@ public class ExponentialMovingAverageCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
-	private void setUpValidationErrorEnoughValues() {
-		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(anyListOf(BigDecimal.class),
-		        anyInt());
+	private void setUpValidationErrorZeroEntries() {
+		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 	}
 
 	private void verifyEma( final ExponentialMovingAverageLine actual, final double... expected ) {
@@ -130,31 +160,44 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	private void setUpCalculator( final int lookback ) {
-		calculator = new ExponentialMovingAverageCalculator(lookback, validator);
+		calculator = new ClosingPriceExponentialMovingAverageCalculator(lookback, 1, validator);
 	}
 
-	private void verifyValidation( final SortedMap<LocalDate, BigDecimal> data, final int lookback ) {
+	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
 		verify(validator).verifyGreaterThan(1, lookback);
 		verify(validator).verifyNotNull(data);
-		verify(validator).verifyEnoughValues(data.values(), lookback);
-		verify(validator).verifyZeroNullEntries(data.values());
+		verify(validator).verifyEnoughValues(data, lookback);
+		verify(validator).verifyZeroNullEntries(data);
 	}
 
-	private SortedMap<LocalDate, BigDecimal> createIncreasingDecimalPrices( final int count ) {
-		final SortedMap<LocalDate, BigDecimal> prices = new TreeMap<>();
+	private TradingDayPrices[] createPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
 		for (int i = 0; i < count; i++) {
-			prices.put(LocalDate.now().plusDays(i), BigDecimal.valueOf(i));
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i)).withOpeningPrice(1)
+			        .withLowestPrice(0).withHighestPrice(2).withClosingPrice(1).build();
 		}
 
 		return prices;
 	}
 
-	private SortedMap<LocalDate, BigDecimal> createDecimalPrices( final double... values ) {
-		final SortedMap<LocalDate, BigDecimal> prices = new TreeMap<>();
+	private TradingDayPrices[] createPrices( final double... values ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[values.length];
 
 		for (int i = 0; i < values.length; i++) {
-			prices.put(LocalDate.now().plusDays(i), BigDecimal.valueOf(values[i]));
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i)).withOpeningPrice(1)
+			        .withLowestPrice(0).withHighestPrice(2).withClosingPrice(values[i]).build();
+		}
+
+		return prices;
+	}
+
+	private TradingDayPrices[] createIncreasingPrices( final int count ) {
+		final TradingDayPrices[] prices = new TradingDayPrices[count];
+
+		for (int i = 0; i < count; i++) {
+			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i))
+			        .withOpeningPrice(i + 1).withLowestPrice(1).withHighestPrice(i + 2).withClosingPrice(i + 1).build();
 		}
 
 		return prices;

@@ -34,6 +34,7 @@ import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -54,6 +55,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
+import com.systematic.trading.maths.indicator.ema.OtherExponentialMovingAverage;
 import com.systematic.trading.maths.matcher.IsSortedMap;
 import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
@@ -75,7 +77,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	private ExponentialMovingAverage slowEma;
 
 	@Mock
-	private ExponentialMovingAverage signalEma;
+	private OtherExponentialMovingAverage signalEma;
 
 	@Mock
 	private Validator validator;
@@ -86,6 +88,14 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	@Before
 	public void setUp() {
 		calculator = new MovingAverageConvergenceDivergenceCalculator(fastEma, slowEma, signalEma, validator);
+	}
+
+	@Test
+	public void minimumNumberOfPrices() {
+		setUpMinimumNumberOfPrices(16);
+
+		assertEquals(16, calculator.getMinimumNumberOfPrices());
+		verifyMinimumNumberOfPricesInteractions();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -162,6 +172,17 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		setUpValidationErrorNullInput();
 
 		macd(null);
+	}
+
+	private void verifyMinimumNumberOfPricesInteractions() {
+		verify(slowEma).getMinimumNumberOfPrices();
+		verifyNoMoreInteractions(slowEma);
+		verifyZeroInteractions(fastEma);
+		verifyZeroInteractions(signalEma);
+	}
+
+	private void setUpMinimumNumberOfPrices( final int minimium ) {
+		when(slowEma.getMinimumNumberOfPrices()).thenReturn(minimium);
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data ) {

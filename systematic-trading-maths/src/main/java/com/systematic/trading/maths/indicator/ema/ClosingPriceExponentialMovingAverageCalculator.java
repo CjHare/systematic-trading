@@ -28,37 +28,40 @@ package com.systematic.trading.maths.indicator.ema;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 
 /**
  * Exponential Moving Average (EMA) implementation without restriction on maximum number of trading
  * days to analyse.
- * <p/>
+ * 
  * An exponential moving average (EMA) is a type of infinite impulse response filter that applies
  * weighting factors which decrease exponentially. The weighting for each older datum decreases
  * exponentially, never reaching zero.
- * <p/>
+ * 
  * Greater accuracy is achieved with more data points, with the days of gradient being larger, the EMA becomes more accurate.
  * However with more data, more computation is required, meaning a balance between volume of data and accuracy is needed.
- * <p/>
- * This implementation calculates the EMA by first calculating the starting value using a SMA, 
+ * 
+ * This implementation calculates the EMA from the closing price, by first calculating the starting value using a SMA, 
  * then applies each value with the smoothing constant to produce the EMA. 
  * This does mean those dates used as part of the SMA will not have corresponding EMA values, 
  * with those in the first period of the lookback being considered as inaccurate, not appropriate for use in signal generation.
  * 
  * @author CJ Hare
  */
-public class ExponentialMovingAverageCalculator implements OtherExponentialMovingAverage {
+public class ClosingPriceExponentialMovingAverageCalculator implements ExponentialMovingAverage {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	/** Constant used for smoothing the moving average. */
 	private final BigDecimal smoothingConstant;
+
+	/** Number of prices needed for the wind up and days for EMA values to produce. */
+	private final int minimumNumberOfPrices;
 
 	/** The number of previous data points used in EMA calculation. */
 	private final int lookback;
@@ -68,48 +71,60 @@ public class ExponentialMovingAverageCalculator implements OtherExponentialMovin
 
 	/**
 	 * @param lookback the number of days to use when calculating the EMA.
+	 * @param daysOfEmaValues the minimum number of EMA values to produce.
 	 * @param validator validates and parses input.
 	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public ExponentialMovingAverageCalculator( final int lookback, final Validator validator ) {
+	public ClosingPriceExponentialMovingAverageCalculator( final int lookback, final int daysOfEmaValues,
+	        final Validator validator ) {
 		validator.verifyGreaterThan(1, lookback);
+		validator.verifyGreaterThan(1, daysOfEmaValues);
 
+		this.minimumNumberOfPrices = 2 * lookback + daysOfEmaValues;
 		this.smoothingConstant = calculateSmoothingConstant(lookback);
 		this.validator = validator;
 		this.lookback = lookback;
 	}
 
 	@Override
-	public ExponentialMovingAverageLine calculate( final SortedMap<LocalDate, BigDecimal> data ) {
-		validator.verifyNotNull(data);
-		validator.verifyZeroNullEntries(data.values());
-		validator.verifyEnoughValues(data.values(), lookback);
-
-		return calculateEma(data);
+	public int getMinimumNumberOfPrices() {
+		return minimumNumberOfPrices;
 	}
 
-	private ExponentialMovingAverageLine calculateEma( final SortedMap<LocalDate, BigDecimal> data ) {
+	@Override
+	public ExponentialMovingAverageLine calculate( final TradingDayPrices[] data ) {
+		validator.verifyNotNull(data);
+		validator.verifyZeroNullEntries(data);
+		validator.verifyEnoughValues(data, lookback);
+
+		// With zero null entries the beginning is zero, then end last index
+		return calculateEma(data, 0, data.length - 1);
+	}
+
+	private ExponentialMovingAverageLine calculateEma( final TradingDayPrices[] data, final int startSmaIndex,
+	        final int endEmaIndex ) {
 		final SortedMap<LocalDate, BigDecimal> ema = new TreeMap<>();
 
-		int smaDataPointCount = 0;
+		/* SMA for the initial time periods */
+		final int endSmaIndex = startSmaIndex + lookback;
 		BigDecimal smaSum = BigDecimal.ZERO;
-		BigDecimal emaValue = BigDecimal.ZERO;
 
-		for (final Map.Entry<LocalDate, BigDecimal> entry : data.entrySet()) {
+		for (int i = startSmaIndex; i < endSmaIndex; i++) {
+			smaSum = smaSum.add(data[i].getClosingPrice().getPrice(), MATH_CONTEXT);
+		}
 
-			if (isSmaCalculation(smaDataPointCount)) {
-				smaSum = smaSum.add(entry.getValue(), MATH_CONTEXT);
-				smaDataPointCount++;
+		smaSum = getSma(smaSum);
 
-				if (isSmaCalculationComplete(smaDataPointCount)) {
-					emaValue = getSma(smaSum);
-					ema.put(entry.getKey(), emaValue);
-				}
+		// First value is the moving average for yesterday
+		ema.put(data[endSmaIndex - 1].getDate(), smaSum);
 
-			} else {
-				emaValue = getEma(emaValue, entry.getValue());
-				ema.put(entry.getKey(), emaValue);
-			}
+		final int startEmaIndex = endSmaIndex;
+		BigDecimal emaValue = smaSum;
+
+		// One SMA value and the <= in loop
+		for (int i = startEmaIndex; i <= endEmaIndex; i++) {
+			emaValue = getEma(emaValue, data[i].getClosingPrice().getPrice());
+			ema.put(data[i].getDate(), emaValue);
 		}
 
 		return new ExponentialMovingAverageLine(ema);
@@ -133,13 +148,5 @@ public class ExponentialMovingAverageCalculator implements OtherExponentialMovin
 	 */
 	private BigDecimal calculateSmoothingConstant( final int lookback ) {
 		return BigDecimal.valueOf(2d / (lookback + 1));
-	}
-
-	private boolean isSmaCalculation( final int smaDataPoints ) {
-		return smaDataPoints < lookback;
-	}
-
-	private boolean isSmaCalculationComplete( final int smaDataPoints ) {
-		return smaDataPoints == lookback;
 	}
 }

@@ -59,6 +59,13 @@ public class RelativeStrengthCalculatorTest {
 	private RelativeStrengthCalculator calculator;
 
 	@Test
+	public void minimumNumberOfPrices() {
+		setUpCalculator(14);
+
+		assertEquals(1, calculator.getMinimumNumberOfPrices());
+	}
+
+	@Test
 	public void rsiExample() {
 		final int lookback = 14;
 		final TradingDayPrices[] data = createExamplePrices();

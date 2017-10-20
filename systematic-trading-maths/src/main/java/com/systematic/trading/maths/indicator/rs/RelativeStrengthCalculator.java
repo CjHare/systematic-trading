@@ -54,6 +54,9 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
+	/** The least number of prices to calculate the ATR on. */
+	private static final int MINIMUM_NUMBER_OF_PRICES = 1;
+
 	/** The number of trading days to look back for calculation. */
 	private final int lookback;
 
@@ -78,6 +81,11 @@ public class RelativeStrengthCalculator implements RelativeStrength {
 		this.history = BigDecimal.valueOf(lookback);
 
 		validator.verifyGreaterThan(1, lookback);
+	}
+
+	@Override
+	public int getMinimumNumberOfPrices() {
+		return MINIMUM_NUMBER_OF_PRICES;
 	}
 
 	@Override

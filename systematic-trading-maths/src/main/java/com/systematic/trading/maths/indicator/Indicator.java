@@ -36,7 +36,6 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-@FunctionalInterface
 public interface Indicator<T> {
 
 	/**
@@ -46,4 +45,11 @@ public interface Indicator<T> {
 	 * @return the line(s) calculated.
 	 */
 	T calculate( TradingDayPrices[] data );
+
+	/**
+	 * Minimum number of prices required for calculating the SMA.
+	 * 
+	 * @return the number of trading days data needed for the SMA.
+	 */
+	int getMinimumNumberOfPrices();
 }
