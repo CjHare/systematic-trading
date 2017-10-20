@@ -33,7 +33,7 @@ import java.util.TreeMap;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
-import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
 import com.systematic.trading.maths.indicator.ema.OtherExponentialMovingAverage;
 
@@ -42,13 +42,13 @@ import com.systematic.trading.maths.indicator.ema.OtherExponentialMovingAverage;
  * 
  * @author CJ Hare
  */
-public class MovingAverageConvergenceDivergenceCalculator implements MovingAverageConvergenceDivergence {
+public class MovingAverageConvergenceDivergenceCalculator implements MovingAverageConvergenceDivergenceIndicator {
 
 	/** Larger of the exponential moving average values. */
-	private final ExponentialMovingAverage slowEma;
+	private final ExponentialMovingAverageIndicator slowEma;
 
 	/** Shorter of the exponential moving average values. */
-	private final ExponentialMovingAverage fastEma;
+	private final ExponentialMovingAverageIndicator fastEma;
 
 	/** Exponential moving average of the values from slowEma - fastEma. */
 	private final OtherExponentialMovingAverage signalEma;
@@ -56,8 +56,8 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
-	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverage fastEma,
-	        final ExponentialMovingAverage slowEma, final OtherExponentialMovingAverage signalEma,
+	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverageIndicator fastEma,
+	        final ExponentialMovingAverageIndicator slowEma, final OtherExponentialMovingAverage signalEma,
 	        final Validator validator ) {
 		this.validator = validator;
 		this.signalEma = signalEma;

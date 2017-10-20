@@ -30,18 +30,18 @@ import java.util.List;
 
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.ema.ClosingPriceExponentialMovingAverageCalculator;
-import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
 import com.systematic.trading.maths.indicator.ema.OtherExponentialMovingAverage;
-import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
+import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceIndicator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.maths.indicator.rs.RelativeStrengthCalculator;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexIndicator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
-import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalId;
@@ -113,17 +113,17 @@ public class IndicatorSignalGeneratorFactory {
 		//TODO decide this in some fashion based on the configuration
 		final int minimumNumberOfEmaValues = 5;
 
-		final ExponentialMovingAverage fastEma = new ClosingPriceExponentialMovingAverageCalculator(fastTimePeriods,
+		final ExponentialMovingAverageIndicator fastEma = new ClosingPriceExponentialMovingAverageCalculator(fastTimePeriods,
 		        minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
-		final ExponentialMovingAverage slowEma = new ClosingPriceExponentialMovingAverageCalculator(slowTimePeriod,
+		final ExponentialMovingAverageIndicator slowEma = new ClosingPriceExponentialMovingAverageCalculator(slowTimePeriod,
 		        minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
 		final OtherExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(signalTimePeriods,
 		        new IllegalArgumentThrowingValidator());
 
-		final MovingAverageConvergenceDivergence macd = new MovingAverageConvergenceDivergenceCalculator(fastEma,
+		final MovingAverageConvergenceDivergenceIndicator macd = new MovingAverageConvergenceDivergenceCalculator(fastEma,
 		        slowEma, signalEma, new IllegalArgumentThrowingValidator());
 
-		return new GenericIndicatorSignals<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergence>(
+		return new GenericIndicatorSignals<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergenceIndicator>(
 		        id, macd, macd.getMinimumNumberOfPrices(), signalCalculators, filter);
 	}
 
@@ -137,7 +137,7 @@ public class IndicatorSignalGeneratorFactory {
 		        new RelativeStrengthCalculator(rsiConfiguration.getLookback(), new IllegalArgumentThrowingValidator()),
 		        new IllegalArgumentThrowingValidator());
 
-		return new GenericIndicatorSignals<RelativeStrengthIndexLine, RelativeStrengthIndex>(rsiConfiguration.getType(),
+		return new GenericIndicatorSignals<RelativeStrengthIndexLine, RelativeStrengthIndexIndicator>(rsiConfiguration.getType(),
 		        rsi, rsiConfiguration.getLookback() + MINIMUM_DAYS_OF_RSI_VALUES, signalCalculators, filter);
 	}
 
@@ -146,10 +146,10 @@ public class IndicatorSignalGeneratorFactory {
 		final List<SignalGenerator<SimpleMovingAverageLine>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new SimpleMovingAverageBullishGradientSignalGenerator());
 
-		final SimpleMovingAverage calculator = new SimpleMovingAverageCalculator(sma.getLookback(),
+		final SimpleMovingAverageIndicator calculator = new SimpleMovingAverageCalculator(sma.getLookback(),
 		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
-		return new GenericIndicatorSignals<SimpleMovingAverageLine, SimpleMovingAverage>(sma.getType(), calculator,
+		return new GenericIndicatorSignals<SimpleMovingAverageLine, SimpleMovingAverageIndicator>(sma.getType(), calculator,
 		        calculator.getMinimumNumberOfPrices(), signalCalculators, filter);
 	}
 
@@ -158,10 +158,10 @@ public class IndicatorSignalGeneratorFactory {
 		final List<SignalGenerator<ExponentialMovingAverageLine>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new ExponentialMovingAverageBullishGradientSignalGenerator());
 
-		final ExponentialMovingAverage calculator = new ClosingPriceExponentialMovingAverageCalculator(
+		final ExponentialMovingAverageIndicator calculator = new ClosingPriceExponentialMovingAverageCalculator(
 		        ema.getLookback(), ema.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
-		return new GenericIndicatorSignals<ExponentialMovingAverageLine, ExponentialMovingAverage>(ema.getType(),
+		return new GenericIndicatorSignals<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator>(ema.getType(),
 		        calculator, calculator.getMinimumNumberOfPrices(), signalCalculators, filter);
 	}
 }

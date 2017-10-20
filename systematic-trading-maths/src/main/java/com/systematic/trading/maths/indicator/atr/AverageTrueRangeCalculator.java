@@ -37,7 +37,7 @@ import com.systematic.trading.maths.indicator.Validator;
 /**
  * Standard ATR implementation.
  * 
- * Calculation applied to a lookback of 14
+ * Example calculation applied to a lookback of 14
  * 
  * Current ATR = [(Prior ATR x 13) + Current TR] / 14
  *  - Multiply the previous 14-day ATR by 13.
@@ -48,7 +48,7 @@ import com.systematic.trading.maths.indicator.Validator;
  * 
  * @author CJ Hare
  */
-public class AverageTrueRangeCalculator implements AverageTrueRange {
+public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;

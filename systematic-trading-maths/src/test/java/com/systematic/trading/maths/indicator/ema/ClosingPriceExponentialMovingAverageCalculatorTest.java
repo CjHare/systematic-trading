@@ -54,7 +54,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	private Validator validator;
 
 	/** Calculator instance being tested. */
-	private ExponentialMovingAverage calculator;
+	private ExponentialMovingAverageIndicator calculator;
 
 	@Test
 	public void emaOnePoints() {

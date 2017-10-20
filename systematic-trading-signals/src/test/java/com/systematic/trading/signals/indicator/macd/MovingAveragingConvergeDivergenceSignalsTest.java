@@ -1,6 +1,6 @@
 package com.systematic.trading.signals.indicator.macd;
 
-import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergence;
+import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceIndicator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
 import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
 
@@ -10,7 +10,7 @@ import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
  * @author CJ Hare
  */
 public class MovingAveragingConvergeDivergenceSignalsTest
-        extends GenericSignalsTestBase<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergence> {
+        extends GenericSignalsTestBase<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergenceIndicator> {
 
 	private static final int REQUIRED_TRADING_DAYS = 34;
 

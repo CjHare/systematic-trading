@@ -23,34 +23,17 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator.macd;
+package com.systematic.trading.maths.indicator.rs;
 
 import com.systematic.trading.maths.indicator.Indicator;
 
 /**
- * Moving average convergence divergence (MACD) is a trend-following momentum indicator showing the
- * relationship between two moving averages of prices.
- * <p/>
- * Typically the MACD is calculated by subtracting the 26-day exponential moving average (EMA) from
- * the 12-day EMA. A nine-day EMA of the MACD, called the "signal line", is then plotted on top of
- * the MACD, functioning as a trigger for buy and sell signals.
- * <p/>
- * There are three common methods used to interpret the MACD:
- * <ul>
- * <li>Crossovers - As shown in the chart above, when the MACD falls below the signal line, it is a
- * bearish signal, which indicates that it may be time to sell. Conversely, when the MACD rises
- * above the signal line, the indicator gives a bullish signal, which suggests that the price of the
- * asset is likely to experience upward momentum. Many traders wait for a confirmed cross above the
- * signal line before entering into a position to avoid getting getting "faked out" or entering into
- * a position too early, as shown by the first arrow.</li>
- * <li>Divergence - When the security price diverges from the MACD. It signals the end of the
- * current trend.</li>
- * <li>Dramatic rise - When the MACD rises dramatically - that is, the shorter moving average pulls
- * away from the longer-term moving average - it is a signal that the security is overbought and
- * will soon return to normal levels.</li>
- * </ul>
+ * Relative Strength - RS
+ * 
+ * A technical momentum indicator that compares the magnitude of recent gains to recent losses in an
+ * attempt to determine over bought and over sold conditions of an asset.
  * 
  * @author CJ Hare
  */
-public interface MovingAverageConvergenceDivergence extends Indicator<MovingAverageConvergenceDivergenceLines> {
+public interface RelativeStrengthIndicator extends Indicator<RelativeStrengthLine> {
 }

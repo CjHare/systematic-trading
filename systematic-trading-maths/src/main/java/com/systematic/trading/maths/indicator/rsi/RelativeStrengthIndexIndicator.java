@@ -43,5 +43,5 @@ import com.systematic.trading.maths.indicator.Indicator;
  * 
  * @author CJ Hare
  */
-public interface RelativeStrengthIndex extends Indicator<RelativeStrengthIndexLine> {
+public interface RelativeStrengthIndexIndicator extends Indicator<RelativeStrengthIndexLine> {
 }

@@ -35,16 +35,6 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 
 /**
- * Exponential Moving Average (EMA) implementation without restriction on maximum number of trading
- * days to analyse.
- * 
- * An exponential moving average (EMA) is a type of infinite impulse response filter that applies
- * weighting factors which decrease exponentially. The weighting for each older datum decreases
- * exponentially, never reaching zero.
- * 
- * Greater accuracy is achieved with more data points, with the days of gradient being larger, the EMA becomes more accurate.
- * However with more data, more computation is required, meaning a balance between volume of data and accuracy is needed.
- * 
  * This implementation calculates the EMA from the closing price, by first calculating the starting value using a SMA, 
  * then applies each value with the smoothing constant to produce the EMA. 
  * This does mean those dates used as part of the SMA will not have corresponding EMA values, 
@@ -52,7 +42,7 @@ import com.systematic.trading.maths.indicator.Validator;
  * 
  * @author CJ Hare
  */
-public class ClosingPriceExponentialMovingAverageCalculator implements ExponentialMovingAverage {
+public class ClosingPriceExponentialMovingAverageCalculator implements ExponentialMovingAverageIndicator {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;

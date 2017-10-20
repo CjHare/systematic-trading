@@ -23,17 +23,32 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator.rs;
+package com.systematic.trading.maths.indicator.macd;
 
 import com.systematic.trading.maths.indicator.Indicator;
 
 /**
- * Relative Strength - RS
+ * Moving average convergence divergence (MACD) is a trend-following momentum indicator showing the
+ * relationship between two moving averages of prices.
  * 
- * A technical momentum indicator that compares the magnitude of recent gains to recent losses in an
- * attempt to determine over bought and over sold conditions of an asset.
+ * Typically the MACD is calculated by subtracting the 26-day exponential moving average (EMA) from
+ * the 12-day EMA. A nine-day EMA of the MACD, called the "signal line", is then plotted on top of
+ * the MACD, functioning as a trigger for buy and sell signals.
+ * 
+ * There are three common methods used to interpret the MACD:
+ * <ul>
+ * 	<li>Crossovers - when the MACD falls below the signal line, it is a bearish signal, indicating that it may be time to sell. 
+ * 		Conversely, when the MACD rises above the signal line, the indicator gives a bullish signal, suggesting upward momentum will be experienced. 
+ * </li>
+ * 	<li>Divergence - when the security price diverges from the MACD. It signals the end of the current trend.
+ * </li>
+ * 	<li>Dramatic rise - when the MACD rises dramatically; the shorter moving average pulls away from the longer-term moving average, 
+ * 		it's a signal that the security is overbought and will soon return to normal levels.
+ * </li>
+ * </ul>
  * 
  * @author CJ Hare
  */
-public interface RelativeStrength extends Indicator<RelativeStrengthLine> {
+public interface MovingAverageConvergenceDivergenceIndicator
+        extends Indicator<MovingAverageConvergenceDivergenceLines> {
 }

@@ -34,7 +34,7 @@ import java.util.TreeMap;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
-import com.systematic.trading.maths.indicator.rs.RelativeStrength;
+import com.systematic.trading.maths.indicator.rs.RelativeStrengthIndicator;
 import com.systematic.trading.maths.indicator.rs.RelativeStrengthLine;
 
 /**
@@ -42,7 +42,7 @@ import com.systematic.trading.maths.indicator.rs.RelativeStrengthLine;
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
+public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexIndicator {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
@@ -57,12 +57,12 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndex {
 	private final Validator validator;
 
 	/** Creates the relative strength values to convert into RSI values. */
-	private final RelativeStrength rs;
+	private final RelativeStrengthIndicator rs;
 
 	/**
 	 * @param validator validates and parses input.
 	 */
-	public RelativeStrengthIndexCalculator( final RelativeStrength rs, final Validator validator ) {
+	public RelativeStrengthIndexCalculator( final RelativeStrengthIndicator rs, final Validator validator ) {
 		this.validator = validator;
 		this.rs = rs;
 	}

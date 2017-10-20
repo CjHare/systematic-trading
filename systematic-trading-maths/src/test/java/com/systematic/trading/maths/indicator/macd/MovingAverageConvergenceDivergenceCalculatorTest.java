@@ -53,7 +53,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
-import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
 import com.systematic.trading.maths.indicator.ema.OtherExponentialMovingAverage;
 import com.systematic.trading.maths.matcher.IsSortedMap;
@@ -71,10 +71,10 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	private static final int NO_SLOW_EMA_OFFSET = 0;
 
 	@Mock
-	private ExponentialMovingAverage fastEma;
+	private ExponentialMovingAverageIndicator fastEma;
 
 	@Mock
-	private ExponentialMovingAverage slowEma;
+	private ExponentialMovingAverageIndicator slowEma;
 
 	@Mock
 	private OtherExponentialMovingAverage signalEma;

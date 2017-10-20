@@ -39,7 +39,7 @@ import com.systematic.trading.maths.indicator.Validator;
  * 
  * @author CJ Hare
  */
-public class SimpleMovingAverageCalculator implements SimpleMovingAverage {
+public class SimpleMovingAverageCalculator implements SimpleMovingAverageIndicator {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;

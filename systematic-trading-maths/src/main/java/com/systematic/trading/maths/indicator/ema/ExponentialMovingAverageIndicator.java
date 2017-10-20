@@ -23,14 +23,22 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths.indicator.sma;
+package com.systematic.trading.maths.indicator.ema;
 
 import com.systematic.trading.maths.indicator.Indicator;
 
 /**
- * The mean for a consecutive set of numbers.
+ * Exponential Moving Average (EMA), a moving average with greater weighting given to recent data
+ * points.
+ * 
+ * An exponential moving average (EMA) is a type of infinite impulse response filter that applies
+ * weighting factors which decrease exponentially. The weighting for each older datum decreases
+ * exponentially, never reaching zero.
+ * 
+ * Greater accuracy is achieved with more data points, with the days of gradient being larger, the EMA becomes more accurate.
+ * However with more data, more computation is required, meaning a balance between volume of data and accuracy is needed.
  * 
  * @author CJ Hare
  */
-public interface SimpleMovingAverage extends Indicator<SimpleMovingAverageLine> {
+public interface ExponentialMovingAverageIndicator extends Indicator<ExponentialMovingAverageLine> {
 }

@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.signals.indicator.rsi;
 
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndex;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexIndicator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
 
@@ -35,7 +35,7 @@ import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
  * @author CJ Hare
  */
 public class RelativeStrengthIndexSignalsTest
-        extends GenericSignalsTestBase<RelativeStrengthIndexLine, RelativeStrengthIndex> {
+        extends GenericSignalsTestBase<RelativeStrengthIndexLine, RelativeStrengthIndexIndicator> {
 
 	/** Number of days needed to correctly calculate the first RSI value.*/
 	private static final int LOOKBACK = 26;

@@ -46,7 +46,7 @@ import org.mockito.stubbing.OngoingStubbing;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
-import com.systematic.trading.maths.indicator.rs.RelativeStrength;
+import com.systematic.trading.maths.indicator.rs.RelativeStrengthIndicator;
 import com.systematic.trading.maths.indicator.rs.RelativeStrengthLine;
 
 /**
@@ -61,7 +61,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	private Validator validator;
 
 	@Mock
-	private RelativeStrength relativeStrength;
+	private RelativeStrengthIndicator relativeStrength;
 
 	/** Calculator instance being tested. */
 	private RelativeStrengthIndexCalculator calculator;

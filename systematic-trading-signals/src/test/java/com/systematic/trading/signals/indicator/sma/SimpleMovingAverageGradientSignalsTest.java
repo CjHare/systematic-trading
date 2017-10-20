@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.signals.indicator.sma;
 
-import com.systematic.trading.maths.indicator.sma.SimpleMovingAverage;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
 
@@ -39,7 +39,7 @@ import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
  * @author CJ Hare
  */
 public class SimpleMovingAverageGradientSignalsTest
-        extends GenericSignalsTestBase<SimpleMovingAverageLine, SimpleMovingAverage> {
+        extends GenericSignalsTestBase<SimpleMovingAverageLine, SimpleMovingAverageIndicator> {
 
 	/** Number of days needed to correctly calculate the first RSI value.*/
 	private static final int LOOKBACK = 26;

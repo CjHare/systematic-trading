@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.signals.indicator.ema;
 
-import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
 import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
 
@@ -39,7 +39,7 @@ import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
  * @author CJ Hare
  */
 public class ExponentialMovingAverageGradientSignalsTest
-        extends GenericSignalsTestBase<ExponentialMovingAverageLine, ExponentialMovingAverage> {
+        extends GenericSignalsTestBase<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator> {
 
 	/** Number of days needed to correctly calculate the first RSI value.*/
 	private static final int LOOKBACK = 35;
