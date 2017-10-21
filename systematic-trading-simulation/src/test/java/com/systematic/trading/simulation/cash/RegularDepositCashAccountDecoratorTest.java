@@ -128,8 +128,8 @@ public class RegularDepositCashAccountDecoratorTest {
 
 	private void verifyBalance( final double expectedBalance ) {
 		final BigDecimal actualBalance = regularDeposits.getBalance();
-		assertEquals(String.format("Expected %s != %s", expectedBalance, actualBalance),
-		        BigDecimal.valueOf(345).compareTo(actualBalance), 0);
+		assertEquals(String.format("Expected %s != %s", expectedBalance, actualBalance), 0,
+		        BigDecimal.valueOf(345).compareTo(actualBalance));
 		verify(account).getBalance();
 		verifyNoMoreInteractions(account);
 	}

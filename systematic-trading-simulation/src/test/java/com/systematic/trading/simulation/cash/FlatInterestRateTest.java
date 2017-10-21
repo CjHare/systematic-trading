@@ -96,7 +96,7 @@ public class FlatInterestRateTest {
 	}
 
 	private void verifyInterest( final double expected, final BigDecimal interest ) {
-		assertEquals(String.format("Expected %s != %s", expected, interest),
-		        BigDecimal.valueOf(expected).compareTo(interest), 0);
+		assertEquals(String.format("Expected %s != %s", expected, interest), 0,
+		        BigDecimal.valueOf(expected).compareTo(interest));
 	}
 }

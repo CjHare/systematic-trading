@@ -44,7 +44,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.price.Price;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
-import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 import com.systematic.trading.simulation.order.EquityOrderVolume;
@@ -167,13 +166,13 @@ public class SingleEquityClassBrokerTest {
 	}
 
 	private void verifyCost( final double expected, final BigDecimal cost ) {
-		assertEquals(String.format("Expected %s != Cost %s", expected, cost),
-		        BigDecimal.valueOf(expected).compareTo(cost), 0);
+		assertEquals(String.format("Expected %s != Cost %s", expected, cost), 0,
+		        BigDecimal.valueOf(expected).compareTo(cost));
 	}
 
 	private void verifyEquityBalance( final double expected ) {
-		assertEquals(String.format("Expected %s != Equity Balance %s", expected, broker.getEquityBalance()),
-		        BigDecimal.valueOf(expected).compareTo(broker.getEquityBalance()), 0);
+		assertEquals(String.format("Expected %s != Equity Balance %s", expected, broker.getEquityBalance()), 0,
+		        BigDecimal.valueOf(expected).compareTo(broker.getEquityBalance()));
 	}
 
 	private void setUpBrokerageFee( final double transactionCost ) {

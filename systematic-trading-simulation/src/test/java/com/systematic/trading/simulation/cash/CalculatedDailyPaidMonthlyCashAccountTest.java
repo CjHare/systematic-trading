@@ -207,8 +207,8 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		account = new CalculatedDailyPaidMonthlyCashAccount(rate, BigDecimal.valueOf(openingFunds), ACCOUNT_OPEN_DATE,
 		        MathContext.DECIMAL64);
 
-		assertEquals(String.format("Starting balance incorrect %s != %s", account.getBalance(), openingFunds),
-		        BigDecimal.valueOf(openingFunds).compareTo(account.getBalance()), 0);
+		assertEquals(String.format("Starting balance incorrect %s != %s", account.getBalance(), openingFunds), 0,
+		        BigDecimal.valueOf(openingFunds).compareTo(account.getBalance()));
 	}
 
 	private void setUpInterestCalculation( final double... payments ) {
@@ -228,8 +228,8 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 	}
 
 	private void verifyBalance( final double expectedBalance ) {
-		assertEquals(String.format("Balance expected %s != %s", expectedBalance, account.getBalance()),
-		        BigDecimal.valueOf(expectedBalance).compareTo(account.getBalance()), 0);
+		assertEquals(String.format("Balance expected %s != %s", expectedBalance, account.getBalance()), 0,
+		        BigDecimal.valueOf(expectedBalance).compareTo(account.getBalance()));
 	}
 
 	private void deposit( final double amount ) {
