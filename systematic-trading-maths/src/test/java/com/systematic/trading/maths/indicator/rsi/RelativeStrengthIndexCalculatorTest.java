@@ -25,6 +25,9 @@
  */
 package com.systematic.trading.maths.indicator.rsi;
 
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.line;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.point;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -34,7 +37,6 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -64,27 +66,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	private RelativeStrengthIndicator relativeStrength;
 
 	/** Calculator instance being tested. */
-	private RelativeStrengthIndexCalculator calculator;
-
-	@Test
-	public void minimumNumberOfPrices() {
-		setUpCalculator();
-
-		assertEquals(1, calculator.getMinimumNumberOfPrices());
-	}
-
-	@Test
-	public void rsi() {
-		final RelativeStrengthLine rsData = createIncreasingRelativeStrengthValues(5);
-		setUpCalculator(rsData);
-		final TradingDayPrices[] data = new TradingDayPrices[] {};
-
-		final RelativeStrengthIndexLine rsi = rsi(data);
-
-		verifyRsi(rsi, 67.21, 75.31, 80.20, 83.47, 85.82);
-		verifyRs(data);
-		verifyValidation(data);
-	}
+	private RelativeStrengthIndexIndicator calculator;
 
 	@Test
 	public void rsiExample() {
@@ -94,8 +76,18 @@ public class RelativeStrengthIndexCalculatorTest {
 
 		final RelativeStrengthIndexLine rsi = rsi(data);
 
-		verifyRsi(rsi, 70.53, 66.32, 66.55, 69.41, 66.35, 57.97, 62.93, 63.26, 56.06, 62.38, 54.71, 50.42, 39.99, 41.46,
-		        41.87, 45.46, 37.30, 33.08, 37.77);
+		verifyRsi(rsi,
+		        line(point(LocalDate.of(2010, 1, 5), 70.53), point(LocalDate.of(2010, 1, 6), 66.32),
+		                point(LocalDate.of(2010, 1, 7), 66.55), point(LocalDate.of(2010, 1, 8), 69.41),
+		                point(LocalDate.of(2010, 1, 11), 66.35), point(LocalDate.of(2010, 1, 12), 57.97),
+		                point(LocalDate.of(2010, 1, 13), 62.93), point(LocalDate.of(2010, 1, 14), 63.26),
+		                point(LocalDate.of(2010, 1, 15), 56.06), point(LocalDate.of(2010, 1, 19), 62.38),
+		                point(LocalDate.of(2010, 1, 20), 54.71), point(LocalDate.of(2010, 1, 21), 50.42),
+		                point(LocalDate.of(2010, 1, 22), 39.99), point(LocalDate.of(2010, 1, 25), 41.46),
+		                point(LocalDate.of(2010, 1, 26), 41.87), point(LocalDate.of(2010, 1, 27), 45.46),
+		                point(LocalDate.of(2010, 1, 28), 37.30), point(LocalDate.of(2010, 1, 29), 33.08),
+		                point(LocalDate.of(2010, 2, 1), 37.77)));
+
 		verifyRs(data);
 		verifyValidation(data);
 	}
@@ -113,7 +105,7 @@ public class RelativeStrengthIndexCalculatorTest {
 		setUpValidationErrorNoNullEntries();
 		setUpCalculator();
 
-		rsi(new TradingDayPrices[] {});
+		rsi(new TradingDayPrices[1]);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -122,6 +114,15 @@ public class RelativeStrengthIndexCalculatorTest {
 		setUpCalculator();
 
 		rsi(new TradingDayPrices[] {});
+	}
+
+	@Test
+	public void minimumNumberOfPrices() {
+		setUpCalculator();
+
+		final int minimumNumberOfPrices = calculator.getMinimumNumberOfPrices();
+
+		assertEquals(1, minimumNumberOfPrices);
 	}
 
 	@SafeVarargs
@@ -143,11 +144,11 @@ public class RelativeStrengthIndexCalculatorTest {
 		verify(validator).verifyZeroNullEntries(data);
 	}
 
-	private void verifyRsi( final RelativeStrengthIndexLine rsi, final double... expected ) {
+	private void verifyRsi( final RelativeStrengthIndexLine rsi, final SortedMap<LocalDate, BigDecimal> expected ) {
 		assertNotNull(rsi);
 		assertNotNull(rsi.getRsi());
-		assertEquals(expected.length, rsi.getRsi().size());
-		//TODO fix UT - assertValues(expected, rsi.getRsi());
+		assertEquals(expected.size(), rsi.getRsi().size());
+		assertValues(expected, rsi.getRsi());
 	}
 
 	private void verifyRs( final TradingDayPrices[] prices ) {
@@ -166,29 +167,31 @@ public class RelativeStrengthIndexCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
-	private RelativeStrengthLine createIncreasingRelativeStrengthValues( final int count ) {
-		final SortedMap<LocalDate, BigDecimal> rs = new TreeMap<>();
-
-		for (int i = 0; i < count; i++) {
-			rs.put(LocalDate.now().plus(i, ChronoUnit.DAYS), BigDecimal.valueOf(i + 2.05));
-		}
-
-		return new RelativeStrengthLine(rs);
-	}
-
 	/**
 	 * Values taken from example on chart school site
 	 */
 	private RelativeStrengthLine createExampleRelativeStrengthValues() {
-		final double[] exampleData = { 2.3936, 1.9690, 1.9895, 2.2686, 1.9722, 1.3795, 1.6976, 1.7216, 1.2758, 1.6580,
+		final LocalDate[] dates = { LocalDate.of(2010, 1, 5), LocalDate.of(2010, 1, 6), LocalDate.of(2010, 1, 7),
+		        LocalDate.of(2010, 1, 8), LocalDate.of(2010, 1, 11), LocalDate.of(2010, 1, 12),
+		        LocalDate.of(2010, 1, 13), LocalDate.of(2010, 1, 14), LocalDate.of(2010, 1, 15),
+		        LocalDate.of(2010, 1, 19), LocalDate.of(2010, 1, 20), LocalDate.of(2010, 1, 21),
+		        LocalDate.of(2010, 1, 22), LocalDate.of(2010, 1, 25), LocalDate.of(2010, 1, 26),
+		        LocalDate.of(2010, 1, 27), LocalDate.of(2010, 1, 28), LocalDate.of(2010, 1, 29),
+		        LocalDate.of(2010, 2, 1) };
+		final double[] values = { 2.3936, 1.9690, 1.9895, 2.2686, 1.9722, 1.3795, 1.6976, 1.7216, 1.2758, 1.6580,
 		        1.2079, 1.0171, 0.6664, 0.7082, 0.7203, 0.8336, 0.5950, 0.4943, 0.6070 };
 
+		return new RelativeStrengthLine(createRelativeStrengthValues(dates, values));
+	}
+
+	private final SortedMap<LocalDate, BigDecimal> createRelativeStrengthValues( final LocalDate[] dates,
+	        final double[] value ) {
 		final SortedMap<LocalDate, BigDecimal> rs = new TreeMap<>();
 
-		for (int i = 0; i < exampleData.length; i++) {
-			rs.put(LocalDate.now().plus(i, ChronoUnit.DAYS), BigDecimal.valueOf(exampleData[i]));
+		for (int i = 0; i < dates.length; i++) {
+			rs.put(dates[i], BigDecimal.valueOf(value[i]));
 		}
 
-		return new RelativeStrengthLine(rs);
+		return rs;
 	}
 }

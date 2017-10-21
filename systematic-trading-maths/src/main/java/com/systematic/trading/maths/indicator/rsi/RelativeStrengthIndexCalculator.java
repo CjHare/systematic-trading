@@ -67,7 +67,6 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 		this.rs = rs;
 	}
 
-	//TODO UT
 	@Override
 	public int getMinimumNumberOfPrices() {
 		return MINIMUM_NUMBER_OF_PRICES;

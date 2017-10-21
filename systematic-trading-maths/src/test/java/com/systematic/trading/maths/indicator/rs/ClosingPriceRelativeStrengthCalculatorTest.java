@@ -230,7 +230,6 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 		        LocalDate.of(2017, 10, 10), LocalDate.of(2017, 10, 11), LocalDate.of(2017, 10, 12),
 		        LocalDate.of(2017, 10, 13), LocalDate.of(2017, 10, 16), LocalDate.of(2017, 10, 17),
 		        LocalDate.of(2017, 10, 18), LocalDate.of(2017, 10, 19), LocalDate.of(2017, 10, 20) };
-
 		final double[] close = { 10, 10, 10, 10, 10, 10, 10, 11.5, 12, 14.75, 20, 20, 16.4, 14.9, 11.05 };
 
 		return createPrices(dates, close);
@@ -257,7 +256,6 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 		        LocalDate.of(2017, 9, 21), LocalDate.of(2017, 9, 22), LocalDate.of(2017, 9, 25),
 		        LocalDate.of(2017, 9, 26), LocalDate.of(2017, 9, 27), LocalDate.of(2017, 9, 28),
 		        LocalDate.of(2017, 9, 29) };
-
 		final double[] close = { 8, 8, 8, 8, 9, 10, 11, 12, 13, 14 };
 
 		return createPrices(dates, close);
@@ -271,7 +269,6 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 		        LocalDate.of(2017, 9, 21), LocalDate.of(2017, 9, 22), LocalDate.of(2017, 9, 25),
 		        LocalDate.of(2017, 9, 26), LocalDate.of(2017, 9, 27), LocalDate.of(2017, 9, 28),
 		        LocalDate.of(2017, 9, 29) };
-
 		final double[] close = { 8, 8, 8, 8, 7, 6, 5, 4, 3, 2 };
 
 		return createPrices(dates, close);
@@ -303,7 +300,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	private TradingDayPrices[] createPrices( final LocalDate[] dates, final double[] close ) {
 		final TradingDayPrices[] data = new TradingDayPrices[dates.length];
 
-		// Open values are not used in ATR calculations
+		// Only close values are used in RS calculations
 		for (int i = 0; i < data.length; i++) {
 			data[i] = new TradingDayPricesBuilder().withTradingDate(dates[i]).withClosingPrice(close[i]).build();
 		}
