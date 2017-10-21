@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -108,7 +107,6 @@ public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
 		assertEquals(indicatorId, indicatorSignals.getSignalId());
 	}
 
-	@Ignore
 	@Test
 	public void getRequiredNumberOfTradingDays() {
 		assertEquals(requiredNumberOfTradingDays(), indicatorSignals.getRequiredNumberOfTradingDays());
