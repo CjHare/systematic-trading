@@ -69,6 +69,9 @@ public class RelativeStrengthIndexCalculatorTest {
 	private RelativeStrengthIndexIndicator calculator;
 
 	@Test
+	/*
+	 * Powershares QQQ Trust prices from 14 Dec 2009 to 1 Feb 2010.
+	 */
 	public void rsiExample() {
 		final RelativeStrengthLine rsData = createExampleRelativeStrengthValues();
 		setUpCalculator(rsData);
@@ -167,9 +170,6 @@ public class RelativeStrengthIndexCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
-	/**
-	 * Values taken from example on chart school site
-	 */
 	private RelativeStrengthLine createExampleRelativeStrengthValues() {
 		final LocalDate[] dates = { LocalDate.of(2010, 1, 5), LocalDate.of(2010, 1, 6), LocalDate.of(2010, 1, 7),
 		        LocalDate.of(2010, 1, 8), LocalDate.of(2010, 1, 11), LocalDate.of(2010, 1, 12),

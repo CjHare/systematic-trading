@@ -109,7 +109,7 @@ public class ExponentialMovingAverageCalculatorTest {
 		                point(LocalDate.of(2010, 4, 15), 22.80), point(LocalDate.of(2010, 4, 16), 22.97),
 		                point(LocalDate.of(2010, 4, 19), 23.13), point(LocalDate.of(2010, 4, 20), 23.28),
 		                point(LocalDate.of(2010, 4, 21), 23.34), point(LocalDate.of(2010, 4, 22), 23.43),
-		                point(LocalDate.of(2010, 4, 23), 23.51), point(LocalDate.of(2010, 4, 26), 23.53),
+		                point(LocalDate.of(2010, 4, 23), 23.51), point(LocalDate.of(2010, 4, 26), 23.54),
 		                point(LocalDate.of(2010, 4, 27), 23.47), point(LocalDate.of(2010, 4, 28), 23.40),
 		                point(LocalDate.of(2010, 4, 29), 23.39), point(LocalDate.of(2010, 4, 30), 23.26),
 		                point(LocalDate.of(2010, 5, 3), 23.23), point(LocalDate.of(2010, 5, 4), 23.08),
@@ -223,9 +223,9 @@ public class ExponentialMovingAverageCalculatorTest {
 		        LocalDate.of(2010, 4, 26), LocalDate.of(2010, 4, 27), LocalDate.of(2010, 4, 28),
 		        LocalDate.of(2010, 4, 29), LocalDate.of(2010, 4, 30), LocalDate.of(2010, 5, 3),
 		        LocalDate.of(2010, 5, 4), LocalDate.of(2010, 5, 5) };
-		final double[] close = { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39,
-		        22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65, 23.19, 23.10, 23.33, 22.68,
-		        23.10, 22.40, 22.17 };
+		final double[] close = { 22.2734, 22.194, 22.0847, 22.1741, 22.184, 22.1344, 22.2337, 22.4323, 22.2436, 22.2933,
+		        22.1542, 22.3926, 22.3816, 22.6109, 23.3558, 24.0519, 23.753, 23.8324, 23.9516, 23.6338, 23.8225,
+		        23.8722, 23.6537, 23.187, 23.0976, 23.326, 22.6805, 23.0976, 22.4025, 22.1725 };
 
 		return createPrices(dates, close);
 	}
