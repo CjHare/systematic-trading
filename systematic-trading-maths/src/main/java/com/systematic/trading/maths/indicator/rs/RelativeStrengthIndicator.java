@@ -33,6 +33,8 @@ import com.systematic.trading.maths.indicator.Indicator;
  * A technical momentum indicator that compares the magnitude of recent gains to recent losses in an
  * attempt to determine over bought and over sold conditions of an asset.
  * 
+ * RS = Average of x days' up closes / Average of x days' down closes.
+ * 
  * @author CJ Hare
  */
 public interface RelativeStrengthIndicator extends Indicator<RelativeStrengthLine> {

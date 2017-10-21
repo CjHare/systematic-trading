@@ -36,16 +36,10 @@ import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.maths.indicator.Validator;
 
 /**
- * Relative Strength  - RS
+ * This implementation uses the EMA style smoothing in the calculation of the relative strength (J. Welles Wilder approach), 
+ * rather then Culter's SMA approach.
  * 
- * A technical momentum indicator that compares the magnitude of recent gains to recent losses in an
- * attempt to determine over bought and over sold conditions of an asset.
- * 
- * RS = Average of x days' up closes / Average of x days' down closes.
- * 
- * Uses the EMA in calculation of the relative strength (J. Welles Wilder approach), not Culter's SMA approach.
- * 
- * Until there has been an upwards movements in the data set, RS value will be zero.
+ * Until there has been at least one upwards movements in the data, RS value will be zero.
  * 
  * @author CJ Hare
  */
@@ -53,6 +47,15 @@ public class RelativeStrengthCalculator implements RelativeStrengthIndicator {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
+
+	/** Comparator result for today > yesterday closing price. */
+	private static final int PRICE_TODAY_IS_HIGHER = 1;
+
+	/** Comparator result for today < yesterday closing price. */
+	private static final int PRICE_YESTERDAY_WAS_HIGHER = -1;
+
+	/** Comparator result for today == yesterday closing price. */
+	private static final int NO_PRICE_MOVEMENT = 0;
 
 	/** The least number of prices to calculate the ATR on. */
 	private static final int MINIMUM_NUMBER_OF_PRICES = 1;
@@ -75,10 +78,10 @@ public class RelativeStrengthCalculator implements RelativeStrengthIndicator {
 	 * @param MATH_CONTEXT the scale, precision and rounding to apply to mathematical operations.
 	 */
 	public RelativeStrengthCalculator( final int lookback, final Validator validator ) {
-		this.validator = validator;
 		this.lookback = lookback;
-		this.archive = BigDecimal.valueOf(lookback - 1L);
+		this.validator = validator;
 		this.history = BigDecimal.valueOf(lookback);
+		this.archive = BigDecimal.valueOf(lookback - 1L);
 
 		validator.verifyGreaterThan(1, lookback);
 	}
@@ -100,10 +103,10 @@ public class RelativeStrengthCalculator implements RelativeStrengthIndicator {
 	/**
 	 * For the first zero - time period entries calculate the SMA based on up to down movement to use as the first RS value.
 	 */
-	private UpwardsToDownwardsMovement windup( final TradingDayPrices[] data ) {
+	private AverageGainToLoss windup( final TradingDayPrices[] data ) {
 
 		// Calculate the starting values via SMA
-		final UpwardsToDownwardsMovement initialLookback = new UpwardsToDownwardsMovement(MATH_CONTEXT);
+		final AverageGainToLoss initialLookback = new AverageGainToLoss(history, MATH_CONTEXT);
 
 		ClosingPrice closeYesterday = data[0].getClosingPrice();
 		ClosingPrice closeToday;
@@ -113,28 +116,21 @@ public class RelativeStrengthCalculator implements RelativeStrengthIndicator {
 
 			switch (closeToday.compareTo(closeYesterday)) {
 
-				// Today's price is higher then yesterdays
-				case 1:
-					initialLookback.addUpwards(closeToday.subtract(closeYesterday, MATH_CONTEXT));
+				case PRICE_TODAY_IS_HIGHER:
+					initialLookback.addGain(closeToday.subtract(closeYesterday, MATH_CONTEXT));
 				break;
 
-				// Today's price is lower then yesterdays
-				case -1:
-					initialLookback.addDownwards(closeYesterday.subtract(closeToday, MATH_CONTEXT));
+				case PRICE_YESTERDAY_WAS_HIGHER:
+					initialLookback.addLoss(closeYesterday.subtract(closeToday, MATH_CONTEXT));
 				break;
 
-				// When equal there's no movement, both are zero
-				case 0:
+				case NO_PRICE_MOVEMENT:
 				default:
 				break;
 			}
 
 			closeYesterday = closeToday;
 		}
-
-		// Dividing by the number of time periods for a SMA
-		initialLookback.divideUpwards(history);
-		initialLookback.divideDownwards(history);
 
 		return initialLookback;
 	}
@@ -145,9 +141,9 @@ public class RelativeStrengthCalculator implements RelativeStrengthIndicator {
 	 * 	Average Gain = [(previous Average Gain) x archive + current Gain] / lookback.
 	 * 	Average Loss = [(previous Average Loss) x archive + current Loss] / lookback.
 	 */
-	private RelativeStrengthLine rs( final TradingDayPrices[] data, final UpwardsToDownwardsMovement initialLookback ) {
-		BigDecimal upward = initialLookback.getUpward();
-		BigDecimal downward = initialLookback.getDownward();
+	private RelativeStrengthLine rs( final TradingDayPrices[] data, final AverageGainToLoss initialLookback ) {
+		BigDecimal averageGain = initialLookback.getAverageGain();
+		BigDecimal averageLoss = initialLookback.getAverageLoss();
 		BigDecimal currentGain;
 		BigDecimal currentLoss;
 		BigDecimal relativeStrength;
@@ -163,17 +159,17 @@ public class RelativeStrengthCalculator implements RelativeStrengthIndicator {
 
 			switch (closeToday.compareTo(closeYesterday)) {
 
-				case 1: // Today's price is higher then yesterdays
+				case PRICE_TODAY_IS_HIGHER:
 					currentGain = closeToday.subtract(closeYesterday, MATH_CONTEXT);
 					currentLoss = BigDecimal.ZERO;
 				break;
 
-				case -1: // Today's price is lower then yesterdays
+				case PRICE_YESTERDAY_WAS_HIGHER:
 					currentGain = BigDecimal.ZERO;
 					currentLoss = closeYesterday.subtract(closeToday, MATH_CONTEXT);
 				break;
 
-				case 0: // When equal there's no movement, both are zero
+				case NO_PRICE_MOVEMENT:
 				default:
 					currentGain = BigDecimal.ZERO;
 					currentLoss = BigDecimal.ZERO;
@@ -184,22 +180,28 @@ public class RelativeStrengthCalculator implements RelativeStrengthIndicator {
 			 * Wilder originally formulated the calculation of the moving average as: newval = (prevval * (period - 1) + newdata) / period. 
 			 * This is fully equivalent to the exponential smoothing of a n-period smoothed moving average (SMMA). 
 			 */
-			upward = upward.multiply(archive, MATH_CONTEXT).add(currentGain, MATH_CONTEXT).divide(history,
-			        MATH_CONTEXT);
-			downward = downward.multiply(archive, MATH_CONTEXT).add(currentLoss, MATH_CONTEXT).divide(history,
-			        MATH_CONTEXT);
+			averageGain = smooth(currentGain, averageGain);
+			averageLoss = smooth(currentLoss, averageLoss);
 
-			if (isZeroOrBelow(downward)) {
+			if (isZeroOrBelow(averageLoss)) {
 				// There's no downward, then avoid dividing by zero
-				relativeStrength = upward;
+				relativeStrength = averageGain;
 			} else {
-				relativeStrength = upward.divide(downward, MATH_CONTEXT);
+				relativeStrength = averageGain.divide(averageLoss, MATH_CONTEXT);
 			}
 
 			rsLine.put(data[i].getDate(), relativeStrength);
 		}
 
 		return new RelativeStrengthLine(rsLine);
+	}
+
+	/**
+	 * Apply the RS smoothing technique to include another value to the average.
+	 */
+	private BigDecimal smooth( final BigDecimal currentValue, final BigDecimal averageValue ) {
+		return averageValue.multiply(archive, MATH_CONTEXT).add(currentValue, MATH_CONTEXT).divide(history,
+		        MATH_CONTEXT);
 	}
 
 	private boolean isZeroOrBelow( final BigDecimal value ) {
