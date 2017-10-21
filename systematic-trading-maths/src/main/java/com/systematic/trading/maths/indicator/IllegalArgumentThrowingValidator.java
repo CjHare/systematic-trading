@@ -46,7 +46,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	}
 
 	@Override
-	public void verifyNotNull( Object instance ) {
+	public void verifyNotNull( final Object instance ) {
 		if (instance == null) {
 			throw new IllegalArgumentException(MESSAGE_NULL_INPUT);
 		}
