@@ -51,7 +51,6 @@ import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
-import com.systematic.trading.backtest.trial.configuration.TrialConfigurationBuilder;
 
 /**
  * Executes all the combinations of SMA and EMA uptrrends. When there is either an SMA or EMA signal it's a buy signal.
@@ -90,13 +89,6 @@ public class EmaUptrendOrSmaUptrendTrial extends BaseTrialConfiguration implemen
 
 		return configurations;
 
-	}
-
-	private BacktestBootstrapConfiguration getConfiguration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final EntryLogicConfiguration entryLogic ) {
-		return new TrialConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
-		        .withDeposit(deposit).withBrokerage(brokerage).withEntry(entryLogic).build();
 	}
 
 	private List<BacktestBootstrapConfiguration> getSmaOrEmaUptrends( final EquityConfiguration equity,

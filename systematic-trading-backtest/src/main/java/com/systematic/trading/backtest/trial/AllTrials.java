@@ -49,7 +49,6 @@ import com.systematic.trading.backtest.configuration.signals.SmaUptrendConfigura
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
-import com.systematic.trading.backtest.trial.configuration.TrialConfigurationBuilder;
 
 /**
  * Executes all trials, allowing different configuration for the trade sizes.
@@ -105,13 +104,6 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		}
 
 		return configurations;
-	}
-
-	private BacktestBootstrapConfiguration getConfiguration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final EntryLogicConfiguration entryLogic ) {
-		return new TrialConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
-		        .withDeposit(deposit).withBrokerage(brokerage).withEntry(entryLogic).build();
 	}
 
 	private List<BacktestBootstrapConfiguration> getMacdConfirmedByRsi( final EquityConfiguration equity,
@@ -257,38 +249,6 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 				        new EntryLogicConfiguration(new SameDayFilterConfiguration(smaConfiguration, rsiConfiguration),
 				                maximumTrade, minimumTrade)));
 			}
-		}
-
-		return configurations;
-	}
-
-	private List<BacktestBootstrapConfiguration> getSmaUptrends( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
-	        final MaximumTrade maximumTrade ) {
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        SmaUptrendConfiguration.values().length);
-
-		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
-			configurations
-			        .add(getConfiguration(equity, simulationDates, deposit, brokerage, new EntryLogicConfiguration(
-			                new SameDayFilterConfiguration(smaConfiguration), maximumTrade, minimumTrade)));
-		}
-
-		return configurations;
-	}
-
-	private List<BacktestBootstrapConfiguration> getEmaUptrends( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
-	        final MaximumTrade maximumTrade ) {
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        EmaUptrendConfiguration.values().length);
-
-		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
-			configurations
-			        .add(getConfiguration(equity, simulationDates, deposit, brokerage, new EntryLogicConfiguration(
-			                new SameDayFilterConfiguration(emaConfiguration), maximumTrade, minimumTrade)));
 		}
 
 		return configurations;
