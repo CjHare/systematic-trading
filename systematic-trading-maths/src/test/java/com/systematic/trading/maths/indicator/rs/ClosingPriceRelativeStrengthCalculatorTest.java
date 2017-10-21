@@ -26,7 +26,6 @@
 package com.systematic.trading.maths.indicator.rs;
 
 import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
-import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValuesTwoDecimalPlaces;
 import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.line;
 import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.point;
 import static org.junit.Assert.assertEquals;
@@ -55,81 +54,79 @@ import com.systematic.trading.maths.util.TradingDayPricesBuilder;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class RelativeStrengthCalculatorTest {
+public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	@Mock
 	private Validator validator;
 
 	/** Calculator instance being tested. */
-	private RelativeStrengthCalculator calculator;
+	private ClosingPriceRelativeStrengthCalculator calculator;
 
 	@Test
-	public void rsiFlat() {
+	public void rsIncreasing() {
 		final int lookback = 4;
-		final TradingDayPrices[] data = createPrices(8);
+		final TradingDayPrices[] data = createIncreasingPrices();
 		setUpCalculator(lookback);
 
 		final RelativeStrengthLine rs = rs(data);
 
-		//TODO		verifyRs(rs, 0, 0, 0, 0);
+		verifyRs(rs,
+		        line(point(LocalDate.of(2017, 9, 22), 0.25), point(LocalDate.of(2017, 9, 25), 0.44),
+		                point(LocalDate.of(2017, 9, 26), 0.58), point(LocalDate.of(2017, 9, 27), 0.68),
+		                point(LocalDate.of(2017, 9, 28), 0.76), point(LocalDate.of(2017, 9, 29), 0.82)));
 		verifyValidation(data, lookback);
 	}
 
 	@Test
-	public void rsiIncreasing() {
+	/**
+	 * We only get an RS value AFTER there is at least one gain.
+	 */
+	public void rsDecreasing() {
 		final int lookback = 4;
-		final TradingDayPrices[] data = createIncreasingPrices(8);
+		final TradingDayPrices[] data = createDecreasingPrices();
 		setUpCalculator(lookback);
 
 		final RelativeStrengthLine rs = rs(data);
 
-		//TODO		verifyRs(rs, 0.81, 0.86, 0.89, 0.92);
+		verifyRs(rs,
+		        line(point(LocalDate.of(2017, 9, 22), 0), point(LocalDate.of(2017, 9, 25), 0),
+		                point(LocalDate.of(2017, 9, 26), 0), point(LocalDate.of(2017, 9, 27), 0),
+		                point(LocalDate.of(2017, 9, 28), 0), point(LocalDate.of(2017, 9, 29), 0)));
 		verifyValidation(data, lookback);
 	}
 
 	@Test
-	public void rsiDecreasing() {
-		final int lookback = 4;
-		final TradingDayPrices[] data = createDecreasingPrices(8);
+	public void rsFlat() {
+		final int lookback = 5;
+		final TradingDayPrices[] data = createFlatPrices();
 		setUpCalculator(lookback);
 
 		final RelativeStrengthLine rs = rs(data);
 
-		//TODO		verifyRs(rs, 0, 0, 0, 0);
+		verifyRs(rs,
+		        line(point(LocalDate.of(2017, 7, 17), 0), point(LocalDate.of(2017, 7, 18), 0),
+		                point(LocalDate.of(2017, 7, 19), 0), point(LocalDate.of(2017, 7, 20), 0),
+		                point(LocalDate.of(2017, 7, 21), 0)));
 		verifyValidation(data, lookback);
 	}
 
 	@Test
-	public void rsiIncreasingThenDecreasing() {
-		final int dataSize = 8;
-		final int lookback = 4;
+	public void rsIncreasingThenDecreasing() {
+		final int lookback = 6;
 		setUpCalculator(lookback);
-		final TradingDayPrices[] dataIncreasing = createIncreasingPrices(dataSize);
-		final TradingDayPrices[] dataDecreasing = createDecreasingPrices(dataSize, dataSize);
-		final TradingDayPrices[] data = merge(dataIncreasing, dataDecreasing);
+		final TradingDayPrices[] data = createIncreasingThenDecreasingPrices();
 
 		final RelativeStrengthLine rs = rs(data);
 
-		//TODO		verifyRs(rs, 0.81, 0.86, 0.89, 0.92, 2.94, 8.82, 3.78, 2.15, 1.36, 0.91, 0.64, 0.45);
+		verifyRs(rs,
+		        line(point(LocalDate.of(2017, 10, 10), 0), point(LocalDate.of(2017, 10, 11), 0.25),
+		                point(LocalDate.of(2017, 10, 12), 0.29), point(LocalDate.of(2017, 10, 13), 0.70),
+		                point(LocalDate.of(2017, 10, 16), 1.46), point(LocalDate.of(2017, 10, 17), 1.22),
+		                point(LocalDate.of(2017, 10, 18), 1.69), point(LocalDate.of(2017, 10, 19), 1.13),
+		                point(LocalDate.of(2017, 10, 20), 0.56)));
+
 		verifyValidation(data, lookback);
 	}
-
-	@Test
-	public void rsiDecreasingThenIncreasing() {
-		final int dataSize = 8;
-		final int lookback = 4;
-		final TradingDayPrices[] dataDecreasing = createDecreasingPrices(dataSize);
-		final TradingDayPrices[] dataIncreasing = createIncreasingPrices(dataSize, dataSize);
-		final TradingDayPrices[] data = merge(dataDecreasing, dataIncreasing);
-		setUpCalculator(lookback);
-
-		final RelativeStrengthLine rs = rs(data);
-
-		//TODO		verifyRs(rs, 0.00, 0.00, 0.00, 0.00, 0.00, 0.11, 0.26, 0.47, 0.73, 1.09, 1.57, 2.21);
-		verifyValidation(data, lookback);
-	}
-
-	//TODO marker
 
 	@Test
 	/*
@@ -189,20 +186,6 @@ public class RelativeStrengthCalculatorTest {
 		assertEquals(1, minimumNumberOfPrices);
 	}
 
-	//TODO marker
-
-	private TradingDayPrices[] merge( final TradingDayPrices[] left, final TradingDayPrices[] right ) {
-		final TradingDayPrices[] data = new TradingDayPrices[left.length + right.length];
-		for (int i = 0; i < left.length; i++) {
-			data[i] = left[i];
-		}
-		for (int i = 0; i < right.length; i++) {
-			data[left.length + i] = right[i];
-		}
-
-		return data;
-	}
-
 	private RelativeStrengthLine rs( final TradingDayPrices[] data ) {
 		return calculator.calculate(data);
 	}
@@ -217,7 +200,7 @@ public class RelativeStrengthCalculatorTest {
 	}
 
 	private void setUpCalculator( final int lookback ) {
-		calculator = new RelativeStrengthCalculator(lookback, validator);
+		calculator = new ClosingPriceRelativeStrengthCalculator(lookback, validator);
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
@@ -238,48 +221,60 @@ public class RelativeStrengthCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
-	private TradingDayPrices[] createPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
+	/**
+	 * Fifteen days of prices, with the price increase then decreasing after the seventh day, starting at LocalDate.of(2017, 10, 2)
+	 */
+	private TradingDayPrices[] createIncreasingThenDecreasingPrices() {
+		final LocalDate[] dates = { LocalDate.of(2017, 10, 2), LocalDate.of(2017, 10, 3), LocalDate.of(2017, 10, 4),
+		        LocalDate.of(2017, 10, 5), LocalDate.of(2017, 10, 6), LocalDate.of(2017, 10, 9),
+		        LocalDate.of(2017, 10, 10), LocalDate.of(2017, 10, 11), LocalDate.of(2017, 10, 12),
+		        LocalDate.of(2017, 10, 13), LocalDate.of(2017, 10, 16), LocalDate.of(2017, 10, 17),
+		        LocalDate.of(2017, 10, 18), LocalDate.of(2017, 10, 19), LocalDate.of(2017, 10, 20) };
 
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i)).withOpeningPrice(1)
-			        .withLowestPrice(0).withHighestPrice(2).withClosingPrice(1).build();
-		}
+		final double[] close = { 10, 10, 10, 10, 10, 10, 10, 11.5, 12, 14.75, 20, 20, 16.4, 14.9, 11.05 };
 
-		return prices;
+		return createPrices(dates, close);
 	}
 
-	private TradingDayPrices[] createIncreasingPrices( final int count ) {
-		return createIncreasingPrices(count, 0);
+	/**
+	 * Ten days of prices containing no change in the price, starting at LocalDate.of(2017, 7, 10)
+	 */
+	private TradingDayPrices[] createFlatPrices() {
+		final LocalDate[] dates = { LocalDate.of(2017, 7, 10), LocalDate.of(2017, 7, 11), LocalDate.of(2017, 7, 12),
+		        LocalDate.of(2017, 7, 13), LocalDate.of(2017, 7, 14), LocalDate.of(2017, 7, 17),
+		        LocalDate.of(2017, 7, 18), LocalDate.of(2017, 7, 19), LocalDate.of(2017, 7, 20),
+		        LocalDate.of(2017, 7, 21) };
+		final double[] close = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
+
+		return createPrices(dates, close);
 	}
 
-	private TradingDayPrices[] createIncreasingPrices( final int count, final int dateOffset ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
+	/** 
+	 * Ten closing prices that start increasing after the forth entry, starting at LocalDate.of(2017, 9, 18).
+	 */
+	private TradingDayPrices[] createIncreasingPrices() {
+		final LocalDate[] dates = { LocalDate.of(2017, 9, 18), LocalDate.of(2017, 9, 19), LocalDate.of(2017, 9, 20),
+		        LocalDate.of(2017, 9, 21), LocalDate.of(2017, 9, 22), LocalDate.of(2017, 9, 25),
+		        LocalDate.of(2017, 9, 26), LocalDate.of(2017, 9, 27), LocalDate.of(2017, 9, 28),
+		        LocalDate.of(2017, 9, 29) };
 
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i + dateOffset))
-			        .withOpeningPrice(i + 1).withLowestPrice(i).withHighestPrice(i + 2).withClosingPrice(i + 1).build();
-		}
+		final double[] close = { 8, 8, 8, 8, 9, 10, 11, 12, 13, 14 };
 
-		return prices;
+		return createPrices(dates, close);
 	}
 
-	private TradingDayPrices[] createDecreasingPrices( final int count ) {
-		return createDecreasingPrices(count, 0);
-	}
+	/** 
+	 * Ten closing prices that start decreasing after the forth entry, starting at LocalDate.of(2017, 9, 18).
+	 */
+	private TradingDayPrices[] createDecreasingPrices() {
+		final LocalDate[] dates = { LocalDate.of(2017, 9, 18), LocalDate.of(2017, 9, 19), LocalDate.of(2017, 9, 20),
+		        LocalDate.of(2017, 9, 21), LocalDate.of(2017, 9, 22), LocalDate.of(2017, 9, 25),
+		        LocalDate.of(2017, 9, 26), LocalDate.of(2017, 9, 27), LocalDate.of(2017, 9, 28),
+		        LocalDate.of(2017, 9, 29) };
 
-	private TradingDayPrices[] createDecreasingPrices( final int count, final int dateOffset ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
+		final double[] close = { 8, 8, 8, 8, 7, 6, 5, 4, 3, 2 };
 
-		final int base = count * 2;
-
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.now().plusDays(i + dateOffset))
-			        .withOpeningPrice(base - i + 1).withLowestPrice(base + i).withHighestPrice(base + i + 2)
-			        .withClosingPrice(base - i + 1).build();
-		}
-
-		return prices;
+		return createPrices(dates, close);
 	}
 
 	/**

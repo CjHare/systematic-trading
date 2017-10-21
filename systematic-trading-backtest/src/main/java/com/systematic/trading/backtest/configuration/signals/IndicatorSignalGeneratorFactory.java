@@ -37,7 +37,7 @@ import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceIndicator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceCalculator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
-import com.systematic.trading.maths.indicator.rs.RelativeStrengthCalculator;
+import com.systematic.trading.maths.indicator.rs.ClosingPriceRelativeStrengthCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexIndicator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
@@ -134,7 +134,7 @@ public class IndicatorSignalGeneratorFactory {
 		signalCalculators.add(new RelativeStrengthIndexBearishSignalGenerator(rsiConfiguration.getOverbought()));
 
 		final RelativeStrengthIndexCalculator rsi = new RelativeStrengthIndexCalculator(
-		        new RelativeStrengthCalculator(rsiConfiguration.getLookback(), new IllegalArgumentThrowingValidator()),
+		        new ClosingPriceRelativeStrengthCalculator(rsiConfiguration.getLookback(), new IllegalArgumentThrowingValidator()),
 		        new IllegalArgumentThrowingValidator());
 
 		return new GenericIndicatorSignals<RelativeStrengthIndexLine, RelativeStrengthIndexIndicator>(rsiConfiguration.getType(),

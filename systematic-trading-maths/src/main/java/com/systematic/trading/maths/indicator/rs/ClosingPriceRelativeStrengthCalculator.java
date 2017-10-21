@@ -36,14 +36,15 @@ import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.maths.indicator.Validator;
 
 /**
- * This implementation uses the EMA style smoothing in the calculation of the relative strength (J. Welles Wilder approach), 
+ * This implementation uses only the closing price data, 
+ * applying the EMA style smoothing in the calculation of the relative strength (J. Welles Wilder approach),
  * rather then Culter's SMA approach.
  * 
  * Until there has been at least one upwards movements in the data, RS value will be zero.
  * 
  * @author CJ Hare
  */
-public class RelativeStrengthCalculator implements RelativeStrengthIndicator {
+public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthIndicator {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
@@ -77,7 +78,7 @@ public class RelativeStrengthCalculator implements RelativeStrengthIndicator {
 	 * @param validator validates and parses input.
 	 * @param MATH_CONTEXT the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public RelativeStrengthCalculator( final int lookback, final Validator validator ) {
+	public ClosingPriceRelativeStrengthCalculator( final int lookback, final Validator validator ) {
 		this.lookback = lookback;
 		this.validator = validator;
 		this.history = BigDecimal.valueOf(lookback);
