@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.signals;
 
+import com.systematic.trading.backtest.configuration.signals.impl.SignalConfigurationImpl;
 import com.systematic.trading.signal.IndicatorSignalId;
 
 /**
@@ -40,21 +41,24 @@ public enum EmaUptrendConfiguration implements SignalConfiguration {
 	MEDIUM(50, 5, "EMA-Uptrend-Medium"),
 	LONG(100, 5, "EMA-Uptrend-Long");
 
-	private final String description;
 	private final int lookback;
 	private final int daysOfGradient;
-	private final IndicatorSignalId type;
+	private final SignalConfiguration signal;
 
 	EmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
+		this.signal = new SignalConfigurationImpl(new IndicatorSignalId(description), description);
 		this.daysOfGradient = daysOfGradient;
-		this.description = description;
 		this.lookback = lookback;
-		this.type = new IndicatorSignalId(description);
 	}
 
 	@Override
 	public String getDescription() {
-		return description;
+		return signal.getDescription();
+	}
+
+	@Override
+	public IndicatorSignalId getType() {
+		return signal.getType();
 	}
 
 	public int getLookback() {
@@ -63,10 +67,5 @@ public enum EmaUptrendConfiguration implements SignalConfiguration {
 
 	public int getDaysOfGradient() {
 		return daysOfGradient;
-	}
-
-	@Override
-	public IndicatorSignalId getType() {
-		return type;
 	}
 }

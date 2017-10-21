@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.configuration.signals;
 
 import java.math.BigDecimal;
 
+import com.systematic.trading.backtest.configuration.signals.impl.SignalConfigurationImpl;
 import com.systematic.trading.signal.IndicatorSignalId;
 
 /**
@@ -40,24 +41,17 @@ public enum RsiConfiguration implements SignalConfiguration {
 	MEDIUM(14, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Medium"),
 	LONG(21, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Long");
 
-	private final String description;
 	private final int lookback;
 	private final BigDecimal oversold;
 	private final BigDecimal overbought;
-	private final IndicatorSignalId type;
+	private final SignalConfiguration signal;
 
-	RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
+	private RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
 	        final String description ) {
-		this.description = description;
+		this.signal = new SignalConfigurationImpl(new IndicatorSignalId(description), description);
 		this.lookback = lookback;
 		this.oversold = oversold;
 		this.overbought = overbought;
-		this.type = new IndicatorSignalId(description);
-	}
-
-	@Override
-	public String getDescription() {
-		return description;
 	}
 
 	public int getLookback() {
@@ -73,7 +67,12 @@ public enum RsiConfiguration implements SignalConfiguration {
 	}
 
 	@Override
+	public String getDescription() {
+		return signal.getDescription();
+	}
+
+	@Override
 	public IndicatorSignalId getType() {
-		return type;
+		return signal.getType();
 	}
 }
