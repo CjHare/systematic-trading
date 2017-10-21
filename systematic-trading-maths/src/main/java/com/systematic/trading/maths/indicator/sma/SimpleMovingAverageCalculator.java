@@ -53,9 +53,6 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverageIndicat
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
-	/** Number of days to calculate the SMA value on. */
-	private final int daysOfSmaValues;
-
 	/**
 	 * @param lookback the number of days to use when calculating the SMA.
 	 * @param daysOfSmaValues the number of trading days to have a SMA values for, with lookback being the number of trading days averaged..
@@ -67,7 +64,6 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverageIndicat
 		validator.verifyGreaterThan(1, daysOfSmaValues);
 
 		this.minimumNumberOfPrices = lookback + daysOfSmaValues;
-		this.daysOfSmaValues = daysOfSmaValues;
 		this.validator = validator;
 		this.lookback = lookback;
 	}
@@ -84,11 +80,9 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverageIndicat
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
 
 		final SortedMap<LocalDate, BigDecimal> sma = new TreeMap<>();
-		final int endSmaIndex = data.length - 1;
-		final int startSmaIndex = endSmaIndex - daysOfSmaValues;
 
 		// Start at the end and work towards the origin
-		for (int i = startSmaIndex; i <= endSmaIndex; i++) {
+		for (int i = lookback - 1; i < data.length; i++) {
 			sma.put(data[i].getDate(), simpleAverage(i, data));
 		}
 

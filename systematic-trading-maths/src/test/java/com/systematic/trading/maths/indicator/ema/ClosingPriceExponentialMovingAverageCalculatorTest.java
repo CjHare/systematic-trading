@@ -102,7 +102,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	@Test
 	public void emaIntelExample() {
 		final int lookback = 10;
-		final TradingDayPrices[] data = createIntelExamplePrices();
+		final TradingDayPrices[] data = createExamplePrices();
 		setUpCalculator(lookback);
 
 		final ExponentialMovingAverageLine ema = ema(data);
@@ -229,7 +229,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	/**
 	 * Thirty days of price data for Intel starting from LocalDate.of(2010, 3, 24).
 	 */
-	private TradingDayPrices[] createIntelExamplePrices() {
+	private TradingDayPrices[] createExamplePrices() {
 		final LocalDate[] dates = { LocalDate.of(2010, 3, 24), LocalDate.of(2010, 3, 25), LocalDate.of(2010, 3, 26),
 		        LocalDate.of(2010, 3, 29), LocalDate.of(2010, 3, 30), LocalDate.of(2010, 3, 31),
 		        LocalDate.of(2010, 4, 1), LocalDate.of(2010, 4, 5), LocalDate.of(2010, 4, 6), LocalDate.of(2010, 4, 7),

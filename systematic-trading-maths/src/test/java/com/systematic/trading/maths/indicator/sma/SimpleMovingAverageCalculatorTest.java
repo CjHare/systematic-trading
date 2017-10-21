@@ -25,6 +25,9 @@
  */
 package com.systematic.trading.maths.indicator.sma;
 
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.assertValues;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.line;
+import static com.systematic.trading.maths.util.SystematicTradingMathsAssert.point;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -60,44 +63,42 @@ public class SimpleMovingAverageCalculatorTest {
 	private SimpleMovingAverageCalculator calculator;
 
 	@Test
-	public void smaTwoPoints() {
-		final int lookback = 2;
-		final int numberDataPoints = lookback + 3;
-		final int daysOfSmaValues = numberDataPoints - lookback;
-		final TradingDayPrices[] data = createPrices(numberDataPoints);
-		setUpCalculator(lookback, daysOfSmaValues);
+	public void smaIncreasingValues() {
+		final int lookback = 3;
+		final TradingDayPrices[] data = createIncreasingPrices();
+		setUpCalculator(lookback, 6);
 
 		final SimpleMovingAverageLine sma = sma(data);
 
-		verifySma(sma, new double[] { 1, 1, 1, 1 });
-		verifyValidation(data, numberDataPoints, lookback);
+		verifySma(sma,
+		        line(point(LocalDate.of(2017, 10, 4), 2.0), point(LocalDate.of(2017, 10, 5), 3.0),
+		                point(LocalDate.of(2017, 10, 6), 4.0), point(LocalDate.of(2017, 10, 9), 5.0),
+		                point(LocalDate.of(2017, 10, 10), 6.0), point(LocalDate.of(2017, 10, 11), 7.0),
+		                point(LocalDate.of(2017, 10, 12), 8.0), point(LocalDate.of(2017, 10, 13), 9.0)));
+		verifyValidation(data, 9, lookback);
 	}
 
 	@Test
-	public void smaThreePoints() {
-		final int lookback = 2;
-		final int numberDataPoints = lookback + 4;
-		final int daysOfSmaValues = numberDataPoints - lookback;
-		final TradingDayPrices[] data = createIncreasingPrices(numberDataPoints);
-		setUpCalculator(lookback, daysOfSmaValues);
+	public void smaIntelExample() {
+		final int lookback = 10;
+		final TradingDayPrices[] data = createIntelExamplePrices();
+		setUpCalculator(lookback, 4);
 
 		final SimpleMovingAverageLine sma = sma(data);
 
-		verifySma(sma, new double[] { 1.5, 2.5, 3.5, 4.5, 5.5 });
-		verifyValidation(data, numberDataPoints, lookback);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void nullFirstDataPoint() {
-		final int lookback = 2;
-		final int numberDataPoints = lookback + 4;
-		final int daysOfSmaValues = numberDataPoints - lookback - 1;
-		final TradingDayPrices[] data = createPrices(numberDataPoints);
-		data[0] = null;
-		setUpValidationErrorZeroNullEntries();
-		setUpCalculator(lookback, daysOfSmaValues);
-
-		sma(data);
+		verifySma(sma,
+		        line(point(LocalDate.of(2010, 4, 7), 22.22), point(LocalDate.of(2010, 4, 8), 22.21),
+		                point(LocalDate.of(2010, 4, 9), 22.23), point(LocalDate.of(2010, 4, 12), 22.26),
+		                point(LocalDate.of(2010, 4, 13), 22.31), point(LocalDate.of(2010, 4, 14), 22.42),
+		                point(LocalDate.of(2010, 4, 15), 22.61), point(LocalDate.of(2010, 4, 16), 22.77),
+		                point(LocalDate.of(2010, 4, 19), 22.91), point(LocalDate.of(2010, 4, 20), 23.08),
+		                point(LocalDate.of(2010, 4, 21), 23.21), point(LocalDate.of(2010, 4, 22), 23.38),
+		                point(LocalDate.of(2010, 4, 23), 23.53), point(LocalDate.of(2010, 4, 26), 23.65),
+		                point(LocalDate.of(2010, 4, 27), 23.71), point(LocalDate.of(2010, 4, 28), 23.69),
+		                point(LocalDate.of(2010, 4, 29), 23.61), point(LocalDate.of(2010, 4, 30), 23.51),
+		                point(LocalDate.of(2010, 5, 3), 23.43), point(LocalDate.of(2010, 5, 4), 23.28),
+		                point(LocalDate.of(2010, 5, 5), 23.13)));
+		verifyValidation(data, 14, lookback);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -107,22 +108,19 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void nullLastDataPoint() {
-		final TradingDayPrices[] data = createPrices(6);
-		data[4] = null;
+	public void nulEntries() {
 		setUpValidationErrorZeroNullEntries();
 		setUpCalculator(2, 5);
 
-		sma(data);
+		sma(new TradingDayPrices[1]);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughDataPoints() {
-		final TradingDayPrices[] data = createPrices(6);
 		setUValidationErrorNotEnoughValues();
 		setUpCalculator(2, 5);
 
-		sma(data);
+		sma(new TradingDayPrices[0]);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -146,10 +144,11 @@ public class SimpleMovingAverageCalculatorTest {
 		calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues, validator);
 	}
 
-	private void verifySma( final SimpleMovingAverageLine sma, final double... expected ) {
+	private void verifySma( final SimpleMovingAverageLine sma, final SortedMap<LocalDate, BigDecimal> expected ) {
 		assertNotNull(sma);
 		assertNotNull(sma.getSma());
-		//TODO fix UT - assertValues(expected, sma.getSma());
+		assertEquals(expected.size(), sma.getSma().size());
+		assertValues(expected, sma.getSma());
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int numberDataPoints, final int lookback ) {
@@ -183,8 +182,7 @@ public class SimpleMovingAverageCalculatorTest {
 	/**
 	 * Thirty days of price data for Intel starting from LocalDate.of(2010, 3, 24).
 	 */
-	/*
-	private SortedMap<LocalDate, BigDecimal> createIntelExamplePrices() {
+	private TradingDayPrices[] createIntelExamplePrices() {
 		final LocalDate[] dates = { LocalDate.of(2010, 3, 24), LocalDate.of(2010, 3, 25), LocalDate.of(2010, 3, 26),
 		        LocalDate.of(2010, 3, 29), LocalDate.of(2010, 3, 30), LocalDate.of(2010, 3, 31),
 		        LocalDate.of(2010, 4, 1), LocalDate.of(2010, 4, 5), LocalDate.of(2010, 4, 6), LocalDate.of(2010, 4, 7),
@@ -201,26 +199,28 @@ public class SimpleMovingAverageCalculatorTest {
 
 		return createPrices(dates, close);
 	}
-	*/
-	private TradingDayPrices[] createPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
 
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.ofEpochDay(i)).withOpeningPrice(1)
-			        .withLowestPrice(0).withHighestPrice(2).withClosingPrice(1).build();
-		}
+	/**
+	 * Ten days of price data for prices starting from LocalDate.of(2017, 10, 2).
+	 */
+	private TradingDayPrices[] createIncreasingPrices() {
+		final LocalDate[] dates = { LocalDate.of(2017, 10, 2), LocalDate.of(2017, 10, 3), LocalDate.of(2017, 10, 4),
+		        LocalDate.of(2017, 10, 5), LocalDate.of(2017, 10, 6), LocalDate.of(2017, 10, 9),
+		        LocalDate.of(2017, 10, 10), LocalDate.of(2017, 10, 11), LocalDate.of(2017, 10, 12),
+		        LocalDate.of(2017, 10, 13) };
+		final double[] close = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-		return prices;
+		return createPrices(dates, close);
 	}
 
-	private TradingDayPrices[] createIncreasingPrices( final int count ) {
-		final TradingDayPrices[] prices = new TradingDayPrices[count];
+	private TradingDayPrices[] createPrices( final LocalDate[] dates, final double[] close ) {
+		final TradingDayPrices[] data = new TradingDayPrices[dates.length];
 
-		for (int i = 0; i < count; i++) {
-			prices[i] = new TradingDayPricesBuilder().withTradingDate(LocalDate.ofEpochDay(i)).withOpeningPrice(i + 1)
-			        .withLowestPrice(1).withHighestPrice(i + 2).withClosingPrice(i + 1).build();
+		// Only the close price is used in the EMA calculation
+		for (int i = 0; i < data.length; i++) {
+			data[i] = new TradingDayPricesBuilder().withTradingDate(dates[i]).withClosingPrice(close[i]).build();
 		}
 
-		return prices;
+		return data;
 	}
 }
