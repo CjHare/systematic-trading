@@ -84,6 +84,5 @@ public class EmaUptrendVsSmaUptrendTrial extends BaseTrialConfiguration implemen
 		configurations.addAll(getSmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
-
 	}
 }
