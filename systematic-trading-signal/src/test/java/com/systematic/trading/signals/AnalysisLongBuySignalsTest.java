@@ -22,7 +22,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.AllIndicatorsBuySignalFilter;
-import com.systematic.trading.signals.indicator.IndicatorSignals;
+import com.systematic.trading.signals.generator.IndicatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.filter.SignalFilter;

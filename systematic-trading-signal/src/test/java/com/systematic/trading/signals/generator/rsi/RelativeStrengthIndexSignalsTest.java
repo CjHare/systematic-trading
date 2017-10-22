@@ -23,11 +23,11 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator.rsi;
+package com.systematic.trading.signals.generator.rsi;
 
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexIndicator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
-import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
+import com.systematic.trading.signals.generator.GenericSignalsTestBase;
 
 /**
  * Verify the behaviour of the RelativeStrengthIndexSignals.

@@ -27,44 +27,31 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator.rsi;
+package com.systematic.trading.signals.generator.ema;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
-import com.systematic.trading.signals.indicator.SignalGenerator;
-import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
+import com.systematic.trading.signals.generator.GenericSignalsTestBase;
 
 /**
- * Generic RSI signal calculation.
+ * Verify the SimpleMovingAverageGradientSignals interacts correctly with it's aggregated components.
  * 
  * @author CJ Hare
  */
-public abstract class RelativeStrengthIndexSignalGenerator implements SignalGenerator<RelativeStrengthIndexLine> {
+public class ExponentialMovingAverageGradientSignalsTest
+        extends GenericSignalsTestBase<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator> {
 
-	public List<DatedSignal> generate( final RelativeStrengthIndexLine rsiLine,
-	        final Predicate<LocalDate> signalRange ) {
+	/** Number of days needed to correctly calculate the first RSI value.*/
+	private static final int LOOKBACK = 35;
 
-		final List<DatedSignal> signals = new ArrayList<>();
-		Map.Entry<LocalDate, BigDecimal> yesterday = null;
+	/** Number of days needed to correctly calculate the first RSI value.*/
+	private static final int DAYS_OF_GRADIENT = 4;
 
-		for (Map.Entry<LocalDate, BigDecimal> today : rsiLine.getRsi().entrySet()) {
+	/** Minimum number of useful days for RSI evaluation, */
+	private static final int REQUIRED_TRADING_DAYS = DAYS_OF_GRADIENT + LOOKBACK;
 
-			if (yesterday != null && signalRange.test(today.getKey())
-			        && hasMomentumDirectionChanged(yesterday.getValue(), today.getValue())) {
-				signals.add(new DatedSignal(today.getKey(), getType()));
-			}
-
-			yesterday = today;
-		}
-
-		return signals;
+	@Override
+	protected int requiredNumberOfTradingDays() {
+		return REQUIRED_TRADING_DAYS;
 	}
-
-	protected abstract boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today );
 }

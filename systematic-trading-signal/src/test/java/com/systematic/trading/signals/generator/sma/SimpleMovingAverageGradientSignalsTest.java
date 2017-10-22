@@ -27,25 +27,25 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator.ema;
+package com.systematic.trading.signals.generator.sma;
 
-import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
-import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
-import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageIndicator;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
+import com.systematic.trading.signals.generator.GenericSignalsTestBase;
 
 /**
  * Verify the SimpleMovingAverageGradientSignals interacts correctly with it's aggregated components.
  * 
  * @author CJ Hare
  */
-public class ExponentialMovingAverageGradientSignalsTest
-        extends GenericSignalsTestBase<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator> {
+public class SimpleMovingAverageGradientSignalsTest
+        extends GenericSignalsTestBase<SimpleMovingAverageLine, SimpleMovingAverageIndicator> {
 
 	/** Number of days needed to correctly calculate the first RSI value.*/
-	private static final int LOOKBACK = 35;
+	private static final int LOOKBACK = 26;
 
 	/** Number of days needed to correctly calculate the first RSI value.*/
-	private static final int DAYS_OF_GRADIENT = 4;
+	private static final int DAYS_OF_GRADIENT = 5;
 
 	/** Minimum number of useful days for RSI evaluation, */
 	private static final int REQUIRED_TRADING_DAYS = DAYS_OF_GRADIENT + LOOKBACK;

@@ -1,8 +1,8 @@
-package com.systematic.trading.signals.indicator.macd;
+package com.systematic.trading.signals.generator.macd;
 
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceIndicator;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
-import com.systematic.trading.signals.indicator.GenericSignalsTestBase;
+import com.systematic.trading.signals.generator.GenericSignalsTestBase;
 
 /**
  * Verify the behaviour of the Moving Average Convergence Divergence.

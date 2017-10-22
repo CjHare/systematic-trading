@@ -46,14 +46,14 @@ import com.systematic.trading.maths.indicator.sma.ClosingPriceSimpleMovingAverag
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.indicator.GenericIndicatorSignals;
-import com.systematic.trading.signals.indicator.IndicatorSignals;
-import com.systematic.trading.signals.indicator.SignalGenerator;
-import com.systematic.trading.signals.indicator.ema.ExponentialMovingAverageBullishGradientSignalGenerator;
-import com.systematic.trading.signals.indicator.macd.MovingAverageConvergenceDivergenceBullishSignalGenerator;
-import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBearishSignalGenerator;
-import com.systematic.trading.signals.indicator.rsi.RelativeStrengthIndexBullishSignalGenerator;
-import com.systematic.trading.signals.indicator.sma.SimpleMovingAverageBullishGradientSignalGenerator;
+import com.systematic.trading.signals.generator.GenericIndicatorSignals;
+import com.systematic.trading.signals.generator.IndicatorSignals;
+import com.systematic.trading.signals.generator.SignalGenerator;
+import com.systematic.trading.signals.generator.ema.ExponentialMovingAverageBullishGradientSignalGenerator;
+import com.systematic.trading.signals.generator.macd.MovingAverageConvergenceDivergenceBullishSignalGenerator;
+import com.systematic.trading.signals.generator.rsi.RelativeStrengthIndexBearishSignalGenerator;
+import com.systematic.trading.signals.generator.rsi.RelativeStrengthIndexBullishSignalGenerator;
+import com.systematic.trading.signals.generator.sma.SimpleMovingAverageBullishGradientSignalGenerator;
 
 /**
  * A singleton factory for creating signal instances.

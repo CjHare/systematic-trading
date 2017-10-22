@@ -27,58 +27,44 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator.sma;
+package com.systematic.trading.signals.generator.rsi;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.function.Predicate;
 
-import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
-import com.systematic.trading.signals.indicator.SignalGenerator;
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
+import com.systematic.trading.signals.generator.SignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
- * Bullish signal calculation based on the gradient of a SMA.
- * <p/>
- * Gradient of the SMA is evaluated, when it's positive it's considered bullish, otherwise it's not.
+ * Generic RSI signal calculation.
  * 
  * @author CJ Hare
  */
-public class SimpleMovingAverageBullishGradientSignalGenerator implements SignalGenerator<SimpleMovingAverageLine> {
+public abstract class RelativeStrengthIndexSignalGenerator implements SignalGenerator<RelativeStrengthIndexLine> {
 
-	@Override
-	public SignalType getType() {
-		return SignalType.BULLISH;
-	}
-
-	@Override
-	public List<DatedSignal> generate( final SimpleMovingAverageLine indicatorOutput,
+	public List<DatedSignal> generate( final RelativeStrengthIndexLine rsiLine,
 	        final Predicate<LocalDate> signalRange ) {
 
-		final SortedMap<LocalDate, BigDecimal> sma = indicatorOutput.getSma();
 		final List<DatedSignal> signals = new ArrayList<>();
-		Map.Entry<LocalDate, BigDecimal> previousEntry = null;
+		Map.Entry<LocalDate, BigDecimal> yesterday = null;
 
-		for (final Map.Entry<LocalDate, BigDecimal> entry : sma.entrySet()) {
-			final LocalDate today = entry.getKey();
+		for (Map.Entry<LocalDate, BigDecimal> today : rsiLine.getRsi().entrySet()) {
 
-			if (previousEntry != null && signalRange.test(today) && isPositiveGradient(entry, previousEntry)) {
-				signals.add(new DatedSignal(today, getType()));
+			if (yesterday != null && signalRange.test(today.getKey())
+			        && hasMomentumDirectionChanged(yesterday.getValue(), today.getValue())) {
+				signals.add(new DatedSignal(today.getKey(), getType()));
 			}
 
-			previousEntry = entry;
+			yesterday = today;
 		}
 
 		return signals;
 	}
 
-	private boolean isPositiveGradient( final Map.Entry<LocalDate, BigDecimal> entry,
-	        final Map.Entry<LocalDate, BigDecimal> previousEtnry ) {
-		return entry.getValue().subtract(previousEtnry.getValue()).compareTo(BigDecimal.ZERO) > 0;
-	}
+	protected abstract boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today );
 }

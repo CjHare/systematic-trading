@@ -37,7 +37,7 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
-import com.systematic.trading.signals.indicator.IndicatorSignals;
+import com.systematic.trading.signals.generator.IndicatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.event.IndicatorSignalEvent;
 import com.systematic.trading.signals.model.filter.SignalFilter;

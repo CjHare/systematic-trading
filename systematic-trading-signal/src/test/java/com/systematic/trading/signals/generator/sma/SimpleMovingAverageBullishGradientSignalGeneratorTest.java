@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator.rsi;
+package com.systematic.trading.signals.generator.sma;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -51,62 +51,80 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
+import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
+import com.systematic.trading.signals.generator.SignalGenerator;
+import com.systematic.trading.signals.generator.sma.SimpleMovingAverageBullishGradientSignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**
- * Verify the behaviour of the RelativeStrengthIndexBearishSignalGenerator.
+ * Verify the behaviour of the SimpleMovingAverageBullishGradientSignalGenerator.
  * 
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class RelativeStrengthIndexBullishSignalGeneratorTest {
+public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 
-	/** Standard over sold level of 30. */
-	private static final double OVER_SOLD = 0.3;
+	@Mock
+	private SimpleMovingAverageLine lines;
 
 	@Mock
 	private Predicate<LocalDate> signalRange;
 
-	@Mock
-	private RelativeStrengthIndexLine rsi;
+	/** Result set for the sma line. */
+	private SortedMap<LocalDate, BigDecimal> sma;
 
 	/** Generator instance being tested. */
-	private RelativeStrengthIndexBullishSignalGenerator bullishRsi;
+	private SignalGenerator<SimpleMovingAverageLine> signalGenerators;
 
 	@Before
 	public void setUp() {
-		setUpCalculator();
+		signalGenerators = new SimpleMovingAverageBullishGradientSignalGenerator();
+
+		// Default results of no results
+		sma = new TreeMap<>();
+		when(lines.getSma()).thenReturn(sma);
+
 		setUpDateRange(true);
 	}
 
 	@Test
-	public void getType() {
-		assertEquals(SignalType.BULLISH, bullishRsi.getType());
+	public void getTYpe() {
+		assertEquals(SignalType.BULLISH, signalGenerators.getType());
 	}
 
 	@Test
-	public void neverUndersold() {
-		setUpRsi(0.5, 0.4, 0.6, 0.5);
-		final List<DatedSignal> signals = generate();
-
-		verifySignals(0, signals);
-		verifySignalRangeTests(4);
-	}
-
-	@Test
-	public void alwaysUndersold() {
-		setUpRsi(0.1, 0.2, 0.25, 0.1);
-		final List<DatedSignal> signals = generate();
-
-		verifySignals(0, signals);
-		verifySignalRangeTests(4);
-	}
-
-	@Test
-	public void outsideDateRange() {
-		setUpRsi(0.5, 0.2, 0.1, 0.15);
+	public void outOfDateRange() {
 		setUpDateRange(false);
+		setUpSma(1, 1.1, 1.2);
+
+		final List<DatedSignal> signals = generate();
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(3);
+	}
+
+	@Test
+	public void tooFewValues() {
+		setUpSma(0.5);
+
+		final List<DatedSignal> signals = generate();
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(0);
+	}
+
+	@Test
+	public void noValues() {
+
+		final List<DatedSignal> signals = generate();
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(0);
+	}
+
+	@Test
+	public void flatline() {
+		setUpSma(0.5, 0.5, 0.5, 0.5);
 
 		final List<DatedSignal> signals = generate();
 
@@ -115,51 +133,42 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 	}
 
 	@Test
-	public void undersoldCrossover() {
-		setUpRsi(0.5, 0.4, 0.29, 0.5);
+	public void downardGradient() {
+		setUpSma(0.5, 0.4, 0.3, 0.2);
+
+		final List<DatedSignal> signals = generate();
+
+		verifySignals(0, signals);
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void upwardGradient() {
+		setUpSma(0.5, 0.6, 0.7, 0.8);
+
+		final List<DatedSignal> signals = generate();
+
+		verifySignals(3, signals);
+		verfiyDatedSignal(1, signals.get(0));
+		verfiyDatedSignal(2, signals.get(1));
+		verfiyDatedSignal(3, signals.get(2));
+		verifySignalRangeTests(4);
+	}
+
+	@Test
+	public void upwardGradientThenFlat() {
+		setUpSma(0.5, 0.6, 0.6);
 
 		final List<DatedSignal> signals = generate();
 
 		verifySignals(1, signals);
-		verfiyDatedSignal(3, signals.get(0));
-		verifySignalRangeTests(4);
+		verfiyDatedSignal(1, signals.get(0));
+		verifySignalRangeTests(3);
 	}
 
 	@Test
-	public void signalOnUndersold() {
-		setUpRsi(0.3, 0.3, 0.3, 0.3);
-
-		final List<DatedSignal> signals = generate();
-
-		verifySignals(0, signals);
-		verifySignalRangeTests(4);
-	}
-
-	@Test
-	public void touchUndersold() {
-		setUpRsi(0.1, 0.3, 0.2, 0.15);
-
-		final List<DatedSignal> signals = generate();
-
-		verifySignals(0, signals);
-		verifySignalRangeTests(4);
-	}
-
-	@Test
-	public void twiceUndersold() {
-		setUpRsi(0.9, 0.2, 0.5, 0.3, 0.4, 0.3);
-
-		final List<DatedSignal> signals = generate();
-
-		verifySignals(2, signals);
-		verfiyDatedSignal(2, signals.get(0));
-		verfiyDatedSignal(4, signals.get(1));
-		verifySignalRangeTests(6);
-	}
-
-	@Test
-	public void fallBelowThenOnUndersoldCrossover() {
-		setUpRsi(0.4, 0.3, 0.3, 0.2, 0.5);
+	public void downwardThenUpwardGradientThenFlat() {
+		setUpSma(0.55, 0.5, 0.4, 0.4, 0.5);
 
 		final List<DatedSignal> signals = generate();
 
@@ -169,35 +178,16 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 	}
 
 	private List<DatedSignal> generate() {
-		return bullishRsi.generate(rsi, signalRange);
-	}
-
-	private void setUpRsi( final double... values ) {
-		SortedMap<LocalDate, BigDecimal> line = new TreeMap<>();
-
-		for (int i = 0; i < values.length; i++) {
-			line.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
-		}
-
-		when(rsi.getRsi()).thenReturn(line);
-	}
-
-	private void setUpCalculator() {
-		bullishRsi = new RelativeStrengthIndexBullishSignalGenerator(BigDecimal.valueOf(OVER_SOLD));
-	}
-
-	private void verifySignals( final int expectedSize, final List<DatedSignal> signals ) {
-		assertNotNull(signals);
-		assertEquals(expectedSize, signals.size());
-	}
-
-	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {
-		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.getDate());
-		assertEquals(SignalType.BULLISH, signal.getType());
+		return signalGenerators.generate(lines, signalRange);
 	}
 
 	private void verifySignalRangeTests( final int size ) {
-		final InOrder order = inOrder(signalRange);
+		if (size == 0) {
+			verifyNoMoreInteractions(signalRange);
+			return;
+		}
+
+		final InOrder order = inOrder(lines, signalRange);
 
 		// Starting index @ 1, because there cannot be a signal on the first day :. excluded
 		for (int i = 1; i < size; i++) {
@@ -205,6 +195,21 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 		}
 
 		verifyNoMoreInteractions(signalRange);
+	}
+
+	private void verifySignals( final int expectedSize, final List<DatedSignal> signals ) {
+		assertNotNull(signals);
+		assertEquals(expectedSize, signals.size());
+	}
+
+	private void setUpSma( final double... values ) {
+		for (int i = 0; i < values.length; i++)
+			sma.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
+	}
+
+	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {
+		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.getDate());
+		assertEquals(SignalType.BULLISH, signal.getType());
 	}
 
 	private void setUpDateRange( final boolean insideRange ) {

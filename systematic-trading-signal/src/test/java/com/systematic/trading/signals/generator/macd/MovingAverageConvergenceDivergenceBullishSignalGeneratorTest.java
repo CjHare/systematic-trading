@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.indicator.macd;
+package com.systematic.trading.signals.generator.macd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -52,7 +52,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.macd.MovingAverageConvergenceDivergenceLines;
-import com.systematic.trading.signals.indicator.SignalGenerator;
+import com.systematic.trading.signals.generator.SignalGenerator;
+import com.systematic.trading.signals.generator.macd.MovingAverageConvergenceDivergenceBullishSignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
 
 /**

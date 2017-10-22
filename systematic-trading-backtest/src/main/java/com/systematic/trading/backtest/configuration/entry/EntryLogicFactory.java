@@ -33,7 +33,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.AnalysisLongBuySignals;
-import com.systematic.trading.signals.indicator.IndicatorSignals;
+import com.systematic.trading.signals.generator.IndicatorSignals;
 import com.systematic.trading.signals.model.filter.RollingTimePeriodSignalFilterDecorator;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
