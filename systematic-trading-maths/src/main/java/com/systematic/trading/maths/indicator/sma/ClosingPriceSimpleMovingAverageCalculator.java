@@ -39,7 +39,7 @@ import com.systematic.trading.maths.indicator.Validator;
  * 
  * @author CJ Hare
  */
-public class SimpleMovingAverageCalculator implements SimpleMovingAverageIndicator {
+public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAverageIndicator {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
@@ -59,7 +59,7 @@ public class SimpleMovingAverageCalculator implements SimpleMovingAverageIndicat
 	 * @param validator validates and parses input.
 	 * @param store source for the storage array.
 	 */
-	public SimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues, final Validator validator ) {
+	public ClosingPriceSimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues, final Validator validator ) {
 		validator.verifyGreaterThan(1, lookback);
 		validator.verifyGreaterThan(1, daysOfSmaValues);
 

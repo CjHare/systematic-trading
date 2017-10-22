@@ -42,7 +42,7 @@ import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexIndicator
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexCalculator;
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageIndicator;
-import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageCalculator;
+import com.systematic.trading.maths.indicator.sma.ClosingPriceSimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
 import com.systematic.trading.signal.IndicatorSignalId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
@@ -146,7 +146,7 @@ public class IndicatorSignalGeneratorFactory {
 		final List<SignalGenerator<SimpleMovingAverageLine>> signalCalculators = new ArrayList<>();
 		signalCalculators.add(new SimpleMovingAverageBullishGradientSignalGenerator());
 
-		final SimpleMovingAverageIndicator calculator = new SimpleMovingAverageCalculator(sma.getLookback(),
+		final SimpleMovingAverageIndicator calculator = new ClosingPriceSimpleMovingAverageCalculator(sma.getLookback(),
 		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
 		return new GenericIndicatorSignals<SimpleMovingAverageLine, SimpleMovingAverageIndicator>(sma.getType(), calculator,

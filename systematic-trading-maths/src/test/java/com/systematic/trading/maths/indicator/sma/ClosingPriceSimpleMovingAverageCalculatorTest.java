@@ -49,18 +49,18 @@ import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
- * Verifying the behaviour for a SimpleMovingAverageCalculator.
+ * Verifying the behaviour for a SimpleMovingAverageCalculator implementation that uses the closing price.
  * 
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class SimpleMovingAverageCalculatorTest {
+public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 	@Mock
 	private Validator validator;
 
 	/** Calculator instance being tested. */
-	private SimpleMovingAverageCalculator calculator;
+	private ClosingPriceSimpleMovingAverageCalculator calculator;
 
 	@Test
 	public void smaIncreasingValues() {
@@ -141,7 +141,7 @@ public class SimpleMovingAverageCalculatorTest {
 	}
 
 	private void setUpCalculator( final int lookback, final int daysOfSmaValues ) {
-		calculator = new SimpleMovingAverageCalculator(lookback, daysOfSmaValues, validator);
+		calculator = new ClosingPriceSimpleMovingAverageCalculator(lookback, daysOfSmaValues, validator);
 	}
 
 	private void verifySma( final SimpleMovingAverageLine sma, final SortedMap<LocalDate, BigDecimal> expected ) {
