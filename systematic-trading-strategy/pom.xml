@@ -9,19 +9,15 @@
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>systematic-trading-simulation</artifactId>
+	<artifactId>systematic-trading-strategy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-strategy</artifactId>
-			<version>${systematic.trading.strategy.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data</artifactId>
-			<version>${systematic.trading.data.version}</version>
+			<artifactId>systematic-trading-signal</artifactId>
+			<version>${systematic.trading.signal.version}</version>
 		</dependency>
 	</dependencies>
+
 </project>
