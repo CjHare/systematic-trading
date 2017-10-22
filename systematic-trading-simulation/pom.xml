@@ -15,8 +15,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-signals</artifactId>
-			<version>${systematic.trading.signals.version}</version>
+			<artifactId>systematic-trading-signal</artifactId>
+			<version>${systematic.trading.signal.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>

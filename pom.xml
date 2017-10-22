@@ -25,7 +25,7 @@
 		<module>systematic-trading-data-api-yahoo</module>
 		<module>systematic-trading-data-api-quandl</module>
 		<module>systematic-trading-maths</module>
-		<module>systematic-trading-signals</module>
+		<module>systematic-trading-signal</module>
 		<module>systematic-trading-simulation</module>
 	</modules>
 
