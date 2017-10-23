@@ -23,24 +23,14 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDate;
-import java.time.Month;
+package com.systematic.trading.simulation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
-import com.systematic.trading.simulation.Simulation;
 import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
@@ -54,11 +44,6 @@ import com.systematic.trading.simulation.logic.ExitLogic;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SimulationTest {
-
-	private static LocalDate[] UNORDERED_DATE = { LocalDate.of(2000, Month.APRIL, 1),
-	        LocalDate.of(2000, Month.APRIL, 9), LocalDate.of(2000, Month.APRIL, 2), LocalDate.of(2000, Month.APRIL, 3),
-	        LocalDate.of(2000, Month.APRIL, 4), LocalDate.of(2000, Month.APRIL, 8), LocalDate.of(2000, Month.APRIL, 6),
-	        LocalDate.of(2000, Month.APRIL, 7), LocalDate.of(2000, Month.APRIL, 5) };
 
 	@Mock
 	private Brokerage broker;
@@ -75,33 +60,18 @@ public class SimulationTest {
 	@Mock
 	private ReturnOnInvestmentListener roiCalculator;
 
+	@Mock
+	private TickerSymbolTradingData tradingData;
+
 	@Test
 	public void create() {
-		final EquityIdentity equity = new EquityIdentity("A", EquityClass.STOCK, 4);
-		final TradingDayPrices[] unorderedPoints = createUnorderedDataPoints();
-		final TickerSymbolTradingData tradingData = new BacktestTickerSymbolTradingData(equity, unorderedPoints);
 
 		createSimulation(tradingData);
 	}
 
+	//TODO add more UT
+
 	private void createSimulation( final TickerSymbolTradingData tradingData ) {
 		new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
-	}
-
-	private TradingDayPrices[] createUnorderedDataPoints() {
-		final TradingDayPrices[] unordered = new TradingDayPrices[UNORDERED_DATE.length];
-
-		for (int i = 0; i < unordered.length; i++) {
-			unordered[i] = createTradingDayPrices(UNORDERED_DATE[i]);
-		}
-
-		return unordered;
-	}
-
-	private TradingDayPrices createTradingDayPrices( final LocalDate date ) {
-		TradingDayPrices price = mock(TradingDayPrices.class);
-		when(price.getDate()).thenReturn(date);
-		when(price.toString()).thenReturn(date.toString());
-		return price;
 	}
 }
