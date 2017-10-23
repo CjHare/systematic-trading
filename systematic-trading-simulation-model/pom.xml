@@ -15,13 +15,9 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-strategy</artifactId>
-			<version>${systematic.trading.strategy.version}</version>
+			<artifactId>systematic-trading-model</artifactId>
+			<version>${systematic.trading.model.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data</artifactId>
-			<version>${systematic.trading.data.version}</version>
-		</dependency>
+
 	</dependencies>
 </project>

@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.logic;
+package com.systematic.trading.strategy.entry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -58,10 +58,9 @@ import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.matcher.BigDecimalMatcher;
-import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.strategy.matcher.BigDecimalMatcher;
 
 /**
  * Entry logic triggered by date.
@@ -91,13 +90,9 @@ public class DateTriggeredEntryLogicTest {
 	/** Entry logic instance created in the setUpEntryLogic.*/
 	private DateTriggeredEntryLogic logic;
 
-	/* The most recent update response.*/
-	private EquityOrder order;
-
 	@Before
 	public void setUp() {
 		logic = null;
-		order = null;
 	}
 
 	@Test
@@ -105,9 +100,9 @@ public class DateTriggeredEntryLogicTest {
 		setUpEntryLogic(TODAY, ORDER_ONCE_A_WEEK);
 		setUpData(20, YESTERDAY);
 
-		update();
+		final EquityOrder order = update();
 
-		verifyNoOrder();
+		verifyNoOrder(order);
 		verifyNoCashAccountActions();
 		verifyNoFeeCalculations();
 	}
@@ -120,9 +115,9 @@ public class DateTriggeredEntryLogicTest {
 		setUpFeeCalculation(5);
 		setUpCashAccount(100);
 
-		update();
+		final EquityOrder order = update();
 
-		verifyOrder();
+		verifyOrder(order);
 		verifyCashAccountBalanceCheck();
 		verifyFee(calculation(100, TODAY));
 	}
@@ -138,9 +133,9 @@ public class DateTriggeredEntryLogicTest {
 		setUpFeeCalculation(5);
 		setUpCashAccount(4);
 
-		update();
+		final EquityOrder order = update();
 
-		verifyNoOrder();
+		verifyNoOrder(order);
 		verifyCashAccountBalanceCheck();
 		verifyFee(calculation(4, TODAY));
 	}
@@ -150,9 +145,9 @@ public class DateTriggeredEntryLogicTest {
 		setUpEntryLogic(TODAY, ORDER_EVERY_OTHER_DAY);
 		setUpData(1, YESTERDAY);
 
-		update();
+		final EquityOrder order = update();
 
-		verifyNoOrder();
+		verifyNoOrder(order);
 		verifyNoCashAccountActions();
 		verifyNoFeeCalculations();
 	}
@@ -165,9 +160,9 @@ public class DateTriggeredEntryLogicTest {
 		setUpFeeCalculation(5);
 		setUpCashAccount(100);
 
-		update();
+		final EquityOrder order = update();
 
-		verifyOrder();
+		verifyOrder(order);
 		verifyCashAccountBalanceCheck();
 		verifyFee(calculation(100, TODAY));
 	}
@@ -180,16 +175,16 @@ public class DateTriggeredEntryLogicTest {
 		setUpFeeCalculation(5);
 		setUpCashAccount(100);
 
-		update();
+		final EquityOrder firstOrder = update();
 
-		verifyOrder();
+		verifyOrder(firstOrder);
 
 		// Change the trading day to tomorrow - should not have an order
 		setUpData(18, TOMORROW);
 
-		update();
+		final EquityOrder secondOrder = update();
 
-		verifyNoOrder();
+		verifyNoOrder(secondOrder);
 
 		// Verify the only events are from the first order
 		verifyCashAccountBalanceCheck();
@@ -207,16 +202,16 @@ public class DateTriggeredEntryLogicTest {
 		setUpFeeCalculation(5);
 		setUpCashAccount(100);
 
-		update();
+		final EquityOrder firstOrder = update();
 
-		verifyOrder();
+		verifyOrder(firstOrder);
 
 		// Change the trading day to tomorrow - should not have an order
 		setUpData(18, TOMORROW);
 
-		update();
+		final EquityOrder secondOrder = update();
 
-		verifyNoOrder();
+		verifyNoOrder(secondOrder);
 		verifyCashAccountBalanceCheck();
 		verifyFee(calculation(100, TODAY));
 	}
@@ -236,7 +231,6 @@ public class DateTriggeredEntryLogicTest {
 
 		logic.addListener(mock(SignalAnalysisListener.class));
 
-		verifyNoOrder();
 		verifyNoCashAccountActions();
 		verifyNoFeeCalculations();
 	}
@@ -276,17 +270,17 @@ public class DateTriggeredEntryLogicTest {
 		when(data.getClosingPrice()).thenReturn(ClosingPrice.valueOf(BigDecimal.valueOf(closingPrice)));
 	}
 
-	private void verifyOrder() {
+	private void verifyOrder( final EquityOrder order ) {
 		assertNotNull(order);
 		assertTrue(order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder);
 	}
 
-	private void verifyNoOrder() {
+	private void verifyNoOrder( final EquityOrder order ) {
 		assertNull(order);
 	}
 
-	private void update() {
-		order = logic.update(fees, cashAccount, data);
+	private EquityOrder update() {
+		return logic.update(fees, cashAccount, data);
 	}
 
 	private void setUpEntryLogic( final LocalDate firstOrder, final Period interval ) {

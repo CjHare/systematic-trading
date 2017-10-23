@@ -13,10 +13,16 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+	
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-backtest-model</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-data-model</artifactId>
+			<version>${systematic.trading.data.version}</version>
 		</dependency>
 
 		<dependency>

@@ -13,10 +13,33 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+	
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-maths</artifactId>
+			<version>${systematic.trading.maths.version}</version>
+		</dependency>
+	
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-simulation-model</artifactId>
 			<version>${systematic.trading.simulation.model.version}</version>
+		</dependency>	
+
+		<!-- Logging framework -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${apache.log4j.version}</version>
 		</dependency>
+
+		<!-- Only for testing -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${apache.commons.lang.version}</version>
+			<scope>test</scope>
+		</dependency>
+				
 	</dependencies>
 </project>

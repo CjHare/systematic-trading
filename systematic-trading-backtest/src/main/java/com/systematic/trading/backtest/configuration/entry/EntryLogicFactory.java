@@ -37,10 +37,10 @@ import com.systematic.trading.signals.generator.IndicatorSignals;
 import com.systematic.trading.signals.model.filter.RollingTimePeriodSignalFilterDecorator;
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
-import com.systematic.trading.simulation.logic.DateTriggeredEntryLogic;
 import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.SignalTriggeredEntryLogic;
 import com.systematic.trading.simulation.logic.trade.TradeValueLogic;
+import com.systematic.trading.strategy.entry.DateTriggeredEntryLogic;
+import com.systematic.trading.strategy.entry.SignalTriggeredEntryLogic;
 
 /**
  * Creates the instances of Entry Logic.

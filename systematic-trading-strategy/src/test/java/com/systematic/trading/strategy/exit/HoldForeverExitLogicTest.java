@@ -23,22 +23,60 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.logic;
+package com.systematic.trading.strategy.exit;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verifyZeroInteractions;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.order.EquityOrder;
+import com.systematic.trading.strategy.ext.HoldForeverExitLogic;
 
 /**
- * One half of the buy and hold forever strategy.
+ * Testing the hold forever exit logic.
  * 
  * @author CJ Hare
  */
-public class HoldForeverExitLogic implements ExitLogic {
+@RunWith(MockitoJUnitRunner.class)
+public class HoldForeverExitLogicTest {
 
-	@Override
-	public EquityOrder update( final BrokerageTransaction broker, final TradingDayPrices data ) {
-		// There's never an order to place :. return null
-		return null;
+	@Mock
+	private BrokerageTransaction broker;
+
+	@Mock
+	private TradingDayPrices data;
+
+	/** Entry logic instance created in the setUpEntryLogic.*/
+	private HoldForeverExitLogic logic;
+
+	/* The most recent update response.*/
+	private EquityOrder order;
+
+	@Before
+	public void setUp() {
+		logic = new HoldForeverExitLogic();
+	}
+
+	@Test
+	public void update() {
+		updateLogic();
+
+		verifyNoOrder();
+	}
+
+	private void verifyNoOrder() {
+		assertEquals(null, order);
+		verifyZeroInteractions(broker);
+	}
+
+	private void updateLogic() {
+		order = logic.update(broker, data);
 	}
 }

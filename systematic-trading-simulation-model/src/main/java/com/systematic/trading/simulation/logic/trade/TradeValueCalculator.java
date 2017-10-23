@@ -34,6 +34,8 @@ import java.math.BigDecimal;
  */
 public interface TradeValueCalculator {
 
+	//TODO rename as TradeValue after everything builds again
+	
 	/**
 	 * ABSOLUTE is taken as the actual spend in currency.
 	 * RELATIVE is to the total of funds available.

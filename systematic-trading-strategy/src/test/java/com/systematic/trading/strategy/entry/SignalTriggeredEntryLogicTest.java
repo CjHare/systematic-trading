@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.logic;
+package com.systematic.trading.strategy.entry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -56,13 +56,10 @@ import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueCalculator;
-import com.systematic.trading.simulation.logic.trade.BoundedTradeValue;
-import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculator;
-import com.systematic.trading.simulation.matcher.BigDecimalMatcher;
-import com.systematic.trading.simulation.order.BuyTotalCostTomorrowAtOpeningPriceOrder;
+import com.systematic.trading.simulation.logic.trade.TradeValueLogic;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.strategy.matcher.BigDecimalMatcher;
 
 /**
  * Testing the signal generator.
@@ -86,21 +83,18 @@ public class SignalTriggeredEntryLogicTest {
 	@Mock
 	private AnalysisBuySignals buyLongAnalysis;
 
+	@Mock
+	private TradeValueLogic tradeValue;
+
 	/** Entry logic instance being tested.*/
 	private SignalTriggeredEntryLogic logic;
-
-	/** The last order returned from the update.*/
-	private EquityOrder order;
 
 	@Before
 	public void setUp() {
 		// Store the previous ten signals
 		when(buyLongAnalysis.getMaximumNumberOfTradingDaysRequired()).thenReturn(10);
 
-		logic = new SignalTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE,
-		        new BoundedTradeValue(new AbsoluteTradeValueCalculator(BigDecimal.ONE),
-		                new RelativeTradeValueCalculator(BigDecimal.ONE)),
-		        buyLongAnalysis);
+		logic = new SignalTriggeredEntryLogic(EquityClass.STOCK, EQUITY_SCALE, tradeValue, buyLongAnalysis);
 	}
 
 	@Test
@@ -115,12 +109,14 @@ public class SignalTriggeredEntryLogicTest {
 
 	@Test
 	public void updateNoOrder() {
-		update();
 
-		verifyNoOrder();
+		final EquityOrder order = update();
+
+		verifyNoOrder(order);
 		verifyBuyAnalysis(1);
 		verifyNoFeeCalcilations();
 		verifyNoCashAccountInterfactions();
+		verifyNoTradeValueCalculation();
 	}
 
 	@Test
@@ -130,11 +126,12 @@ public class SignalTriggeredEntryLogicTest {
 		setUpTradingData(101);
 		setUpCashBalance(1);
 
-		update();
+		final EquityOrder order = update();
 
-		verifyNoOrder();
+		verifyNoOrder(order);
 		verifyBuyAnalysis(1);
 		verifyCashAccountGetBalance();
+		verifyTradeValueCalculation();
 		feeCalculation(1);
 	}
 
@@ -145,11 +142,12 @@ public class SignalTriggeredEntryLogicTest {
 		setUpTradingData(101);
 		setUpCashBalance(50);
 
-		update();
+		final EquityOrder order = update();
 
-		verifyOrder();
+		verifyOrder(order);
 		verifyBuyAnalysis(1);
 		verifyCashAccountGetBalance();
+		verifyTradeValueCalculation();
 		feeCalculation(50, 50);
 	}
 
@@ -160,15 +158,16 @@ public class SignalTriggeredEntryLogicTest {
 		setUpTradingData(101);
 		setUpCashBalance(50);
 
-		update();
+		final EquityOrder firstOrder = update();
 
-		verifyOrder();
+		verifyOrder(firstOrder);
 
-		update();
+		final EquityOrder secondOrder = update();
 
-		verifyNoOrder();
+		verifyNoOrder(secondOrder);
 		verifyBuyAnalysis(2);
 		verifyCashAccountGetBalance();
+		verifyTradeValueCalculation();
 		feeCalculation(50, 50);
 	}
 
@@ -179,6 +178,15 @@ public class SignalTriggeredEntryLogicTest {
 		}
 
 		verifyNoMoreInteractions(fees);
+	}
+
+	private void verifyNoTradeValueCalculation() {
+		verifyZeroInteractions(tradeValue);
+	}
+
+	private void verifyTradeValueCalculation() {
+		verify(tradeValue).calculate(any(BigDecimal.class));
+		verifyNoMoreInteractions(tradeValue);
 	}
 
 	private void verifyCashAccountGetBalance() {
@@ -201,16 +209,16 @@ public class SignalTriggeredEntryLogicTest {
 		when(buyLongAnalysis.analyse(any(TradingDayPrices[].class))).thenReturn(expected);
 	}
 
-	private void update() {
-		order = logic.update(fees, cashAccount, data);
+	private EquityOrder update() {
+		return logic.update(fees, cashAccount, data);
 	}
 
-	private void verifyNoOrder() {
+	private void verifyNoOrder( final EquityOrder order ) {
 		assertNull(order);
 	}
 
-	private void verifyOrder() {
-		assertNotNull(order);
+	private void verifyOrder( final EquityOrder order ) {
+		assertNotNull("Expecting an order to be placed", order);
 		assertEquals(true, order instanceof BuyTotalCostTomorrowAtOpeningPriceOrder);
 	}
 
@@ -221,6 +229,10 @@ public class SignalTriggeredEntryLogicTest {
 
 	private void setUpCashBalance( final double balance ) {
 		when(cashAccount.getBalance()).thenReturn(BigDecimal.valueOf(balance));
+
+		// Trade the full amount of the cash balance
+		when(tradeValue.calculate(any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(balance));
+
 	}
 
 	private void verifyBuyAnalysis( final int expectedAnalysisCount ) {

@@ -13,18 +13,26 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-backtest-model</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-data-model</artifactId>
+			<version>${systematic.trading.data.version}</version>
+		</dependency>
 
+		<!-- JAX-WS library -->
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>${jersey.client.version}</version>
 		</dependency>
 		
+		<!-- JSON libraries -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
@@ -46,10 +54,12 @@
 			<version>${jackson.version}</version>
 		</dependency>
 		
+		<!-- Just for testing -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>${apache.commons.lang.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>

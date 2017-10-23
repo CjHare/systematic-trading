@@ -18,6 +18,21 @@
 			<artifactId>systematic-trading-signal</artifactId>
 			<version>${systematic.trading.signal.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-simulation-model</artifactId>
+			<version>${systematic.trading.simulation.model.version}</version>
+		</dependency>
+		
+		<!-- Only for testing -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${apache.commons.lang.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 
 </project>

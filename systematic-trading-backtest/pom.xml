@@ -13,11 +13,18 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+	
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-backtest-model</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-simulation-model</artifactId>
+			<version>${systematic.trading.simulation.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-backtest-output-elastic</artifactId>
