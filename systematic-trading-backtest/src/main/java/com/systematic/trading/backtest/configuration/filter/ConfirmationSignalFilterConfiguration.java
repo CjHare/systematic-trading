@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.filter;
 
-import com.systematic.trading.strategy.definition.indicator.SignalConfiguration;
+import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 
 /**
  * Inclusive range of days relative to a signal date that a confirmation signal is required. 
@@ -56,22 +56,22 @@ public class ConfirmationSignalFilterConfiguration {
 		}
 	}
 
-	private final SignalConfiguration anchor;
-	private final SignalConfiguration confirmation;
+	private final IndicatorConfiguration anchor;
+	private final IndicatorConfiguration confirmation;
 	private final Type type;
 
-	public ConfirmationSignalFilterConfiguration( final Type type, final SignalConfiguration anchor,
-	        SignalConfiguration confirmation ) {
+	public ConfirmationSignalFilterConfiguration( final Type type, final IndicatorConfiguration anchor,
+	        IndicatorConfiguration confirmation ) {
 		this.type = type;
 		this.anchor = anchor;
 		this.confirmation = confirmation;
 	}
 
-	public SignalConfiguration getAnchor() {
+	public IndicatorConfiguration getAnchor() {
 		return anchor;
 	}
 
-	public SignalConfiguration getConfirmation() {
+	public IndicatorConfiguration getConfirmation() {
 		return confirmation;
 	}
 

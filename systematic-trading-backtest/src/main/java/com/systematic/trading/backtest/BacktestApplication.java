@@ -68,10 +68,10 @@ import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
-import com.systematic.trading.strategy.definition.indicator.EmaUptrendConfiguration;
-import com.systematic.trading.strategy.definition.indicator.MacdConfiguration;
-import com.systematic.trading.strategy.definition.indicator.RsiConfiguration;
-import com.systematic.trading.strategy.definition.indicator.SmaUptrendConfiguration;
+import com.systematic.trading.strategy.indicator.EmaUptrendConfiguration;
+import com.systematic.trading.strategy.indicator.MacdConfiguration;
+import com.systematic.trading.strategy.indicator.RsiConfiguration;
+import com.systematic.trading.strategy.indicator.SmaUptrendConfiguration;
 
 /**
  * Performs the initial configuration common between all back tests, including hardware configuration.

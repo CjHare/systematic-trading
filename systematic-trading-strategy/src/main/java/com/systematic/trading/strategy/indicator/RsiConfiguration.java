@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition.indicator;
+package com.systematic.trading.strategy.indicator;
 
 import java.math.BigDecimal;
 
@@ -34,7 +34,7 @@ import com.systematic.trading.signal.IndicatorId;
  * 
  * @author CJ Hare
  */
-public enum RsiConfiguration implements SignalConfiguration {
+public enum RsiConfiguration implements IndicatorConfiguration {
 
 	SHORT(7, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Short"),
 	MEDIUM(14, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Medium"),
@@ -43,7 +43,7 @@ public enum RsiConfiguration implements SignalConfiguration {
 	private final int lookback;
 	private final BigDecimal oversold;
 	private final BigDecimal overbought;
-	private final SignalConfiguration signal;
+	private final IndicatorConfiguration signal;
 
 	private RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
 	        final String description ) {

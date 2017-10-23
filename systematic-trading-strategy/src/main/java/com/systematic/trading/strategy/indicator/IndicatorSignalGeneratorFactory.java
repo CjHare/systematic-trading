@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition.indicator;
+package com.systematic.trading.strategy.indicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +78,7 @@ public class IndicatorSignalGeneratorFactory {
 	/**
 	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
 	 */
-	public IndicatorSignals create( final SignalConfiguration signal, final SignalRangeFilter filter ) {
+	public IndicatorSignals create( final IndicatorConfiguration signal, final SignalRangeFilter filter ) {
 
 		if (signal instanceof MacdConfiguration) {
 			return create((MacdConfiguration) signal, filter);

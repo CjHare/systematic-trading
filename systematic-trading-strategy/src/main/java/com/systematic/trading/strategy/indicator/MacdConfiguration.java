@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition.indicator;
+package com.systematic.trading.strategy.indicator;
 
 import com.systematic.trading.signal.IndicatorId;
 
@@ -32,7 +32,7 @@ import com.systematic.trading.signal.IndicatorId;
  * 
  * @author CJ Hare
  */
-public enum MacdConfiguration implements SignalConfiguration {
+public enum MacdConfiguration implements IndicatorConfiguration {
 
 	SHORT(6, 13, 5, "MACD-Short"),
 	MEDIUM(12, 26, 9, "MACD-Medium"),

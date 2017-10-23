@@ -44,10 +44,10 @@ import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfigu
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
-import com.systematic.trading.strategy.definition.indicator.EmaUptrendConfiguration;
-import com.systematic.trading.strategy.definition.indicator.MacdConfiguration;
-import com.systematic.trading.strategy.definition.indicator.RsiConfiguration;
-import com.systematic.trading.strategy.definition.indicator.SmaUptrendConfiguration;
+import com.systematic.trading.strategy.indicator.EmaUptrendConfiguration;
+import com.systematic.trading.strategy.indicator.MacdConfiguration;
+import com.systematic.trading.strategy.indicator.RsiConfiguration;
+import com.systematic.trading.strategy.indicator.SmaUptrendConfiguration;
 
 /**
  * Executes all trials, allowing different configuration for the trade sizes.

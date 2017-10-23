@@ -27,14 +27,14 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition.indicator;
+package com.systematic.trading.strategy.indicator;
 
 import com.systematic.trading.signal.IndicatorId;
 
 /**
  * @author CJ Hare
  */
-public class SignalConfigurationImpl implements SignalConfiguration {
+public class SignalConfigurationImpl implements IndicatorConfiguration {
 
 	private final String description;
 	private final IndicatorId type;

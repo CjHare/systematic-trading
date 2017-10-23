@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.filter;
 
-import com.systematic.trading.strategy.definition.indicator.SignalConfiguration;
+import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 
 /**
  * Filter to exclude event not within the set of acceptable signals.
@@ -34,13 +34,13 @@ import com.systematic.trading.strategy.definition.indicator.SignalConfiguration;
  */
 public class AnyOfIndicatorFilterConfiguration {
 
-	private final SignalConfiguration[] signals;
+	private final IndicatorConfiguration[] signals;
 
-	public AnyOfIndicatorFilterConfiguration( final SignalConfiguration... signals ) {
+	public AnyOfIndicatorFilterConfiguration( final IndicatorConfiguration... signals ) {
 		this.signals = signals;
 	}
 
-	public SignalConfiguration[] getSignals() {
+	public IndicatorConfiguration[] getSignals() {
 		return signals;
 	}
 }

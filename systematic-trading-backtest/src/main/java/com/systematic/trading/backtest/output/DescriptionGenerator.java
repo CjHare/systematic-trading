@@ -42,7 +42,7 @@ import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFi
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.strategy.definition.indicator.SignalConfiguration;
+import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 
 /**
  * Textually meaningful description of the configuration appropriate for display.
@@ -174,12 +174,12 @@ public class DescriptionGenerator {
 
 		if (sameDayFilter.isPresent()) {
 			final StringJoiner out = new StringJoiner(SEPARATOR);
-			final SignalConfiguration[] signals = sameDayFilter.get().getSignals();
+			final IndicatorConfiguration[] signals = sameDayFilter.get().getSignals();
 			if (signals.length != 1) {
 				out.add("SameDay");
 			}
 
-			for (final SignalConfiguration signal : signals) {
+			for (final IndicatorConfiguration signal : signals) {
 				out.add(signal.getDescription());
 			}
 			return out.toString();
@@ -193,12 +193,12 @@ public class DescriptionGenerator {
 
 		if (anySignalFilter.isPresent()) {
 			final StringJoiner out = new StringJoiner(SEPARATOR);
-			final SignalConfiguration[] signals = anySignalFilter.get().getSignals();
+			final IndicatorConfiguration[] signals = anySignalFilter.get().getSignals();
 			if (signals.length != 1) {
 				out.add("AnyOf");
 			}
 
-			for (final SignalConfiguration signal : signals) {
+			for (final IndicatorConfiguration signal : signals) {
 				out.add(signal.getDescription());
 			}
 			return out.toString();

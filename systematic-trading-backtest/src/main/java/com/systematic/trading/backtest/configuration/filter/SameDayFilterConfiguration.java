@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.filter;
 
-import com.systematic.trading.strategy.definition.indicator.SignalConfiguration;
+import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 
 /**
  * Filter to exclude any set of events that are not all on the same day.
@@ -34,13 +34,13 @@ import com.systematic.trading.strategy.definition.indicator.SignalConfiguration;
  */
 public class SameDayFilterConfiguration {
 
-	private final SignalConfiguration[] signals;
+	private final IndicatorConfiguration[] signals;
 
-	public SameDayFilterConfiguration( final SignalConfiguration... signals ) {
+	public SameDayFilterConfiguration( final IndicatorConfiguration... signals ) {
 		this.signals = signals;
 	}
 
-	public SignalConfiguration[] getSignals() {
+	public IndicatorConfiguration[] getSignals() {
 		return signals;
 	}
 }

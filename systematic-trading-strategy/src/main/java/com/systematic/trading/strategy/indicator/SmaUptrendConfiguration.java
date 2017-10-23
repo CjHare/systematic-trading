@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition.indicator;
+package com.systematic.trading.strategy.indicator;
 
 import com.systematic.trading.signal.IndicatorId;
 
@@ -34,7 +34,7 @@ import com.systematic.trading.signal.IndicatorId;
  * 
  * @author CJ Hare
  */
-public enum SmaUptrendConfiguration implements SignalConfiguration {
+public enum SmaUptrendConfiguration implements IndicatorConfiguration {
     //TODO days of gradient should be decided when creating the instance, calculated based on the other indicators, minimum being two
 	SHORT(20, 5, "SMA-Uptrend-Short"),
 	MEDIUM(50, 5, "SMA-Uptrend-Medium"),
@@ -42,7 +42,7 @@ public enum SmaUptrendConfiguration implements SignalConfiguration {
 
 	private final int lookback;
 	private final int daysOfGradient;
-	private final SignalConfiguration signal;
+	private final IndicatorConfiguration signal;
 
 	SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
 		this.signal = new SignalConfigurationImpl(new IndicatorId(description), description);

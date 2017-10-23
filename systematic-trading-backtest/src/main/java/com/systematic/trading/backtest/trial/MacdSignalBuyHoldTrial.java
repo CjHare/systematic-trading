@@ -50,7 +50,7 @@ import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
-import com.systematic.trading.strategy.definition.indicator.MacdConfiguration;
+import com.systematic.trading.strategy.indicator.MacdConfiguration;
 
 /**
  * MACD crossover signals @ 150 weekly deposit back test.
