@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signals.generator.IndicatorSignals;
@@ -105,13 +105,13 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 	public List<BuySignal> analyse( final TradingDayPrices[] data ) {
 
 		// Generate the indicator signals
-		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = calculateSignals(data);
+		final Map<IndicatorId, List<IndicatorSignal>> indicatorSignals = calculateSignals(data);
 		final LocalDate latestTradingDate = getLatestTradingDate(data);
 
 		return filterSignals(indicatorSignals, latestTradingDate);
 	}
 
-	private List<BuySignal> filterSignals( final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals,
+	private List<BuySignal> filterSignals( final Map<IndicatorId, List<IndicatorSignal>> indicatorSignals,
 	        final LocalDate latestTradingDate ) {
 		final List<BuySignal> signals = new ArrayList<>();
 
@@ -127,12 +127,12 @@ public class AnalysisLongBuySignals implements AnalysisBuySignals {
 		return data[data.length - 1].getDate();
 	}
 
-	private Map<IndicatorSignalId, List<IndicatorSignal>> calculateSignals( final TradingDayPrices[] data ) {
-		final Map<IndicatorSignalId, List<IndicatorSignal>> indicatorSignals = new HashMap<>();
+	private Map<IndicatorId, List<IndicatorSignal>> calculateSignals( final TradingDayPrices[] data ) {
+		final Map<IndicatorId, List<IndicatorSignal>> indicatorSignals = new HashMap<>();
 
 		for (final IndicatorSignals generator : generators) {
 			final List<IndicatorSignal> signals = calculateSignals(data, generator);
-			final IndicatorSignalId type = generator.getSignalId();
+			final IndicatorId type = generator.getSignalId();
 			indicatorSignals.put(type, signals);
 		}
 

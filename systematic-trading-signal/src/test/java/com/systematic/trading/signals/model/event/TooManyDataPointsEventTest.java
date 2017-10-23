@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 
 /**
  * Verify the NotEnoughDataPointsEvent.
@@ -47,7 +47,7 @@ import com.systematic.trading.signal.IndicatorSignalId;
 public class TooManyDataPointsEventTest {
 
 	@Mock
-	private IndicatorSignalId type;
+	private IndicatorId type;
 
 	/** Event instance being tested. */
 	private TooManyDataPointsEvent event;

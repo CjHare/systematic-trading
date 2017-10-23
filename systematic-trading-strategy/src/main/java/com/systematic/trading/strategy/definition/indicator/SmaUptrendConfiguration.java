@@ -23,30 +23,29 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.signals;
+package com.systematic.trading.strategy.definition.indicator;
 
-import com.systematic.trading.backtest.configuration.signals.impl.SignalConfigurationImpl;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 
 /**
  * Configuration for the SMA signal calculator.
  * 
  * Five days of gradient is chosen to support being used with the 1-4 days confirmation.
- *  
+ * 
  * @author CJ Hare
  */
-public enum EmaUptrendConfiguration implements SignalConfiguration {
+public enum SmaUptrendConfiguration implements SignalConfiguration {
     //TODO days of gradient should be decided when creating the instance, calculated based on the other indicators, minimum being two
-	SHORT(20, 5, "EMA-Uptrend-Short"),
-	MEDIUM(50, 5, "EMA-Uptrend-Medium"),
-	LONG(100, 5, "EMA-Uptrend-Long");
+	SHORT(20, 5, "SMA-Uptrend-Short"),
+	MEDIUM(50, 5, "SMA-Uptrend-Medium"),
+	LONG(100, 5, "SMA-Uptrend-Long");
 
 	private final int lookback;
 	private final int daysOfGradient;
 	private final SignalConfiguration signal;
 
-	EmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
-		this.signal = new SignalConfigurationImpl(new IndicatorSignalId(description), description);
+	SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
+		this.signal = new SignalConfigurationImpl(new IndicatorId(description), description);
 		this.daysOfGradient = daysOfGradient;
 		this.lookback = lookback;
 	}
@@ -57,8 +56,8 @@ public enum EmaUptrendConfiguration implements SignalConfiguration {
 	}
 
 	@Override
-	public IndicatorSignalId getType() {
-		return signal.getType();
+	public IndicatorId getId() {
+		return signal.getId();
 	}
 
 	public int getLookback() {
@@ -68,4 +67,5 @@ public enum EmaUptrendConfiguration implements SignalConfiguration {
 	public int getDaysOfGradient() {
 		return daysOfGradient;
 	}
+
 }

@@ -41,10 +41,10 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
-import com.systematic.trading.backtest.configuration.signals.EmaUptrendConfiguration;
-import com.systematic.trading.backtest.configuration.signals.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.strategy.definition.indicator.EmaUptrendConfiguration;
+import com.systematic.trading.strategy.definition.indicator.SmaUptrendConfiguration;
 
 /**
  * Contains generic configuration details, enabling lightweight concrete trials.

@@ -23,28 +23,42 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.signals;
-
-import com.systematic.trading.signal.IndicatorSignalId;
+package com.systematic.trading.signal;
 
 /**
- * Generic details about configurations.
+ * A unique textual description of the indicator signal.
  * 
  * @author CJ Hare
  */
-public interface SignalConfiguration {
+public class IndicatorId {
 
-	/**
-	 * Textual description of the configuration.
-	 * 
-	 * @return meaningful description used for display purposes.
-	 */
-	String getDescription();
+	/** Prime that gets used during hash code creation. */
+	private static final int PRIME_NUMBER = 31;
 
-	/**
-	 * Retrieves the signal type.
-	 * 
-	 * @return the type of signal the configuration matches.
-	 */
-	IndicatorSignalId getType();
+	/** Identifier for the indicator signal. */
+	private final String name;
+
+	public IndicatorId( final String name ) {
+		this.name = name;
+
+		//TODO validate name != null or empty string
+		
+		//TODO implement a static set flyweight style pattern, enforce uniqueness on create()
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = PRIME_NUMBER * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals( final Object o ) {
+		return o instanceof IndicatorId && name.equals(((IndicatorId) o).getName());
+	}
 }

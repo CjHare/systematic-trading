@@ -28,17 +28,17 @@ package com.systematic.trading.signals.model.indicator;
 import java.time.LocalDate;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 
 /**
  * Denotes the occurrence and details of a indicator signal event.
  */
 public class IndicatorSignal {
 	private final LocalDate date;
-	private final IndicatorSignalId signal;
+	private final IndicatorId signal;
 	private final SignalType direction;
 
-	public IndicatorSignal( final LocalDate date, final IndicatorSignalId signal, final SignalType direction ) {
+	public IndicatorSignal( final LocalDate date, final IndicatorId signal, final SignalType direction ) {
 		this.date = date;
 		this.signal = signal;
 		this.direction = direction;
@@ -48,7 +48,7 @@ public class IndicatorSignal {
 		return date;
 	}
 
-	public IndicatorSignalId getSignal() {
+	public IndicatorId getSignal() {
 		return signal;
 	}
 

@@ -23,42 +23,55 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signal;
+package com.systematic.trading.strategy.definition.indicator;
+
+import java.math.BigDecimal;
+
+import com.systematic.trading.signal.IndicatorId;
 
 /**
- * A unique textual description of the indicator signal.
+ * Configuration for the MACD signal calculator.
  * 
  * @author CJ Hare
  */
-public class IndicatorSignalId {
+public enum RsiConfiguration implements SignalConfiguration {
 
-	/** Prime that gets used during hash code creation. */
-	private static final int PRIME_NUMBER = 31;
+	SHORT(7, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Short"),
+	MEDIUM(14, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Medium"),
+	LONG(21, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Long");
 
-	/** Identifier for the indicator signal. */
-	private final String name;
+	private final int lookback;
+	private final BigDecimal oversold;
+	private final BigDecimal overbought;
+	private final SignalConfiguration signal;
 
-	public IndicatorSignalId( final String name ) {
-		this.name = name;
-
-		//TODO validate name != null or empty string
-		
-		//TODO implement a static set flyweight style pattern, enforce uniqueness on create()
+	private RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
+	        final String description ) {
+		this.signal = new SignalConfigurationImpl(new IndicatorId(description), description);
+		this.lookback = lookback;
+		this.oversold = oversold;
+		this.overbought = overbought;
 	}
 
-	public String getName() {
-		return name;
+	public int getLookback() {
+		return lookback;
+	}
+
+	public BigDecimal getOversold() {
+		return oversold;
+	}
+
+	public BigDecimal getOverbought() {
+		return overbought;
 	}
 
 	@Override
-	public int hashCode() {
-		int result = 1;
-		result = PRIME_NUMBER * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+	public String getDescription() {
+		return signal.getDescription();
 	}
 
 	@Override
-	public boolean equals( final Object o ) {
-		return o instanceof IndicatorSignalId && name.equals(((IndicatorSignalId) o).getName());
+	public IndicatorId getId() {
+		return signal.getId();
 	}
 }

@@ -36,7 +36,7 @@ import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Indicator;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.model.DatedSignal;
@@ -62,12 +62,12 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 	private final U indicator;
 
 	/** Identifier for the configuration of signal calculated. */
-	private final IndicatorSignalId id;
+	private final IndicatorId id;
 
 	/** Minimum number of trading days required for MACD signal generation. */
 	private final int requiredNumberOfTradingDays;
 
-	public GenericIndicatorSignals( final IndicatorSignalId id, final U indicator,
+	public GenericIndicatorSignals( final IndicatorId id, final U indicator,
 	        final int requiredNumberOfTradingDays, final List<SignalGenerator<T>> signalGenerators,
 	        final SignalRangeFilter signalRangeFilter ) {
 		this.signalGenerators = signalGenerators;
@@ -87,7 +87,7 @@ public class GenericIndicatorSignals<T, U extends Indicator<T>> implements Indic
 	}
 
 	@Override
-	public IndicatorSignalId getSignalId() {
+	public IndicatorId getSignalId() {
 		return id;
 	}
 

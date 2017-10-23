@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
@@ -48,10 +48,10 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 
 	/** Signal that is used as the first, start of the acceptable date range.*/
-	private final IndicatorSignalId anchor;
+	private final IndicatorId anchor;
 
 	/** Signal that is expected to occur after, follow the anchor signal.*/
-	private final IndicatorSignalId confirmation;
+	private final IndicatorId confirmation;
 
 	/** Inclusive maximum number of days after the anchor the confirmation of the follower must occur.*/
 	private final int confirmationDayRange;
@@ -69,7 +69,7 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 	 * @param confirmationDayRange inclusive number of days from the start of the range the confirmation signal must be within.
 	 */
 	public ConfirmationIndicatorsSignalFilter( final Comparator<BuySignal> signalOrdering,
-	        final IndicatorSignalId anchor, final IndicatorSignalId confirmation, final int delayUntilConfirmationRange,
+	        final IndicatorId anchor, final IndicatorId confirmation, final int delayUntilConfirmationRange,
 	        final int confirmationDayRange ) {
 		validate(anchor, "Expecting an anchor IndicatorSignalType");
 		validate(confirmation, "Expecting an confirmation IndicatorSignalType");
@@ -87,7 +87,7 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 	}
 
 	@Override
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
+	public SortedSet<BuySignal> apply( final Map<IndicatorId, List<IndicatorSignal>> signals,
 	        final LocalDate latestTradingDate ) {
 		validateInput(signals);
 
@@ -130,7 +130,7 @@ public class ConfirmationIndicatorsSignalFilter implements SignalFilter {
 		return first.isEqual(second) || first.isBefore(second);
 	}
 
-	private void validateInput( final Map<IndicatorSignalId, List<IndicatorSignal>> signals ) {
+	private void validateInput( final Map<IndicatorId, List<IndicatorSignal>> signals ) {
 		if (signals.get(anchor) == null || signals.get(confirmation) == null) {
 			throw new IllegalArgumentException(
 			        String.format("Expecting a non-null entries for types %s and %s", anchor, confirmation));

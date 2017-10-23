@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
@@ -63,7 +63,7 @@ public class TimePeriodSignalFilterDecorator implements SignalFilter {
 	}
 
 	@Override
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
+	public SortedSet<BuySignal> apply( final Map<IndicatorId, List<IndicatorSignal>> signals,
 	        final LocalDate latestTradingDate ) {
 
 		final SortedSet<BuySignal> signalSet = filter.apply(signals, latestTradingDate);

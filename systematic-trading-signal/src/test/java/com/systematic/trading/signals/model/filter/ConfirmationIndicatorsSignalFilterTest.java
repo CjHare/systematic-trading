@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
@@ -40,19 +40,19 @@ public class ConfirmationIndicatorsSignalFilterTest {
 	private static final LocalDate LATEST_TRADING_DATE = LocalDate.now();
 
 	@Mock
-	private IndicatorSignalId anchorSignalType;
+	private IndicatorId anchorSignalType;
 
 	@Mock
-	private IndicatorSignalId confirmationSignalType;
+	private IndicatorId confirmationSignalType;
 
 	@Mock
-	private IndicatorSignalId wrongConfirmationSignalType;
+	private IndicatorId wrongConfirmationSignalType;
 
 	@Mock
 	private Comparator<BuySignal> ordering;
 
 	/** Result signals. */
-	private Map<IndicatorSignalId, List<IndicatorSignal>> signals;
+	private Map<IndicatorId, List<IndicatorSignal>> signals;
 
 	/** Filter instance being tested. */
 	private ConfirmationIndicatorsSignalFilter filter;
@@ -204,8 +204,8 @@ public class ConfirmationIndicatorsSignalFilterTest {
 		        CONFIRMATION_DAY_RANGE);
 	}
 
-	private void createFilterExpectingException( final String expectedMessage, final IndicatorSignalId anchor,
-	        final IndicatorSignalId confirmation, final int delayUntilConfirmationRange,
+	private void createFilterExpectingException( final String expectedMessage, final IndicatorId anchor,
+	        final IndicatorId confirmation, final int delayUntilConfirmationRange,
 	        final int confirmationDayRange ) {
 		try {
 			new ConfirmationIndicatorsSignalFilter(ordering, anchor, confirmation, delayUntilConfirmationRange,
@@ -218,7 +218,7 @@ public class ConfirmationIndicatorsSignalFilterTest {
 		verifyZeroInteractions(ordering);
 	}
 
-	private void clearSignal( IndicatorSignalId id ) {
+	private void clearSignal( IndicatorId id ) {
 		signals.put(id, null);
 	}
 

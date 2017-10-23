@@ -28,7 +28,7 @@ package com.systematic.trading.signals.model.event;
 import java.time.LocalDate;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 
 /**
@@ -38,16 +38,16 @@ import com.systematic.trading.signal.event.SignalAnalysisEvent;
  */
 public class NotEnoughDataPointsEvent implements SignalAnalysisEvent {
 
-	private final IndicatorSignalId type;
+	private final IndicatorId type;
 	private final LocalDate date;
 
-	public NotEnoughDataPointsEvent( final IndicatorSignalId type, final LocalDate date ) {
+	public NotEnoughDataPointsEvent( final IndicatorId type, final LocalDate date ) {
 		this.type = type;
 		this.date = date;
 	}
 
 	@Override
-	public IndicatorSignalId getSignalType() {
+	public IndicatorId getSignalType() {
 		return type;
 	}
 

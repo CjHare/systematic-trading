@@ -43,7 +43,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.BuySignalDateComparator;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
@@ -60,7 +60,7 @@ public class TimePeriodSignalFilterDecoratorTest {
 	private SignalFilter filter;
 
 	@Mock
-	private Map<IndicatorSignalId, List<IndicatorSignal>> signals;
+	private Map<IndicatorId, List<IndicatorSignal>> signals;
 
 	/** Filtered signals expected from the decorator. */
 	private SortedSet<BuySignal> expectedSignals;

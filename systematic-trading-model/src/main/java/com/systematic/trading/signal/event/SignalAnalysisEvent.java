@@ -28,7 +28,7 @@ package com.systematic.trading.signal.event;
 import java.time.LocalDate;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 
 /**
  * An interesting event that occurs when analyzing data to generate signals.
@@ -42,7 +42,7 @@ public interface SignalAnalysisEvent {
 	 * 
 	 * @return the type of indicator signals generated.
 	 */
-	IndicatorSignalId getSignalType();
+	IndicatorId getSignalType();
 
 	/**
 	 * Date of the signal event occurrence.

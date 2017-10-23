@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
@@ -47,14 +47,14 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	private final Comparator<BuySignal> signalOrdering;
 
 	/** The signals we will be looking for on each application. */
-	private IndicatorSignalId[] indicators;
+	private IndicatorId[] indicators;
 
 	/**
 	 * @param indicators all the indicators expected in an application, those all required on the
 	 *            same date to pass the filtering.
 	 */
 	public IndicatorsOnSameDaySignalFilter( final Comparator<BuySignal> signalOrdering,
-	        final IndicatorSignalId... indicators ) {
+	        final IndicatorId... indicators ) {
 		
 		//TODO use validator
 		validate(indicators, "Expecting at least one IndicatorSignalType");
@@ -70,7 +70,7 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	}
 
 	@Override
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
+	public SortedSet<BuySignal> apply( final Map<IndicatorId, List<IndicatorSignal>> signals,
 	        final LocalDate latestTradingDate ) {
 		validateInput(signals);
 
@@ -90,7 +90,7 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	}
 
 	private boolean hasEverySignalsOnSameDay( final LocalDate date,
-	        final Map<IndicatorSignalId, List<IndicatorSignal>> signals ) {
+	        final Map<IndicatorId, List<IndicatorSignal>> signals ) {
 
 		// Discover how many of the indicator signals also match on that date
 		int matches = 1;
@@ -118,9 +118,9 @@ public class IndicatorsOnSameDaySignalFilter implements SignalFilter {
 	}
 
 	//TODO move into a validator
-	private void validateInput( final Map<IndicatorSignalId, List<IndicatorSignal>> signals ) {
+	private void validateInput( final Map<IndicatorId, List<IndicatorSignal>> signals ) {
 
-		for (final IndicatorSignalId indicator : indicators) {
+		for (final IndicatorId indicator : indicators) {
 			if (signals.get(indicator) == null) {
 				throw new IllegalArgumentException(String.format("Expecting a non-null %s list", indicator));
 			}

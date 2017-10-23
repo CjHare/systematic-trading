@@ -44,11 +44,9 @@ import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfigu
 import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
-import com.systematic.trading.backtest.configuration.signals.IndicatorSignalGeneratorFactory;
-import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.filter.TradingDaySignalRangeFilter;
 import com.systematic.trading.signals.generator.IndicatorSignals;
@@ -70,6 +68,8 @@ import com.systematic.trading.simulation.logic.HoldForeverExitLogic;
 import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueCalculator;
 import com.systematic.trading.simulation.logic.trade.BoundedTradeValue;
 import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculator;
+import com.systematic.trading.strategy.definition.indicator.IndicatorSignalGeneratorFactory;
+import com.systematic.trading.strategy.definition.indicator.SignalConfiguration;
 
 /**
  * Creates the Bootstrap configurations for back testing.
@@ -168,8 +168,8 @@ public class BacktestBootstrapContextBulider {
 		final SignalConfiguration anchor = confirmationSignal.get().getAnchor();
 		final SignalConfiguration confirmation = confirmationSignal.get().getConfirmation();
 
-		final SignalFilter filter = new ConfirmationIndicatorsSignalFilter(BUY_SIGNAL_ORDER_BY_DATE, anchor.getType(),
-		        confirmation.getType(), confirmationSignal.get().getType().getDelayUntilConfirmationRange(),
+		final SignalFilter filter = new ConfirmationIndicatorsSignalFilter(BUY_SIGNAL_ORDER_BY_DATE, anchor.getId(),
+		        confirmation.getId(), confirmationSignal.get().getType().getDelayUntilConfirmationRange(),
 		        confirmationSignal.get().getType().getConfirmationDayRange());
 
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
@@ -188,9 +188,9 @@ public class BacktestBootstrapContextBulider {
 
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final SignalConfiguration[] indicators = getSameDaySignals(entry);
-		final IndicatorSignalId[] indicatorTypes = new IndicatorSignalId[indicators.length];
+		final IndicatorId[] indicatorTypes = new IndicatorId[indicators.length];
 		for (int i = 0; i < indicators.length; i++) {
-			indicatorTypes[i] = indicators[i].getType();
+			indicatorTypes[i] = indicators[i].getId();
 		}
 
 		final SignalFilter filter = new IndicatorsOnSameDaySignalFilter(BUY_SIGNAL_ORDER_BY_DATE, indicatorTypes);
@@ -212,9 +212,9 @@ public class BacktestBootstrapContextBulider {
 
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final SignalConfiguration[] indicators = getAnyOfSignals(entry);
-		final IndicatorSignalId[] indicatorTypes = new IndicatorSignalId[indicators.length];
+		final IndicatorId[] indicatorTypes = new IndicatorId[indicators.length];
 		for (int i = 0; i < indicators.length; i++) {
-			indicatorTypes[i] = indicators[i].getType();
+			indicatorTypes[i] = indicators[i].getId();
 		}
 
 		final SignalFilter filter = new AnyIndicatorBuySignalFilter(BUY_SIGNAL_ORDER_BY_DATE, indicatorTypes);

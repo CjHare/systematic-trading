@@ -20,7 +20,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.filter.AllIndicatorsBuySignalFilter;
 import com.systematic.trading.signals.generator.IndicatorSignals;
 import com.systematic.trading.signals.model.BuySignal;
@@ -34,13 +34,13 @@ public class AnalysisLongBuySignalsTest {
 	private static final int ADJUSTMENT = 1;
 
 	@Mock
-	private IndicatorSignalId macdId;
+	private IndicatorId macdId;
 
 	@Mock
-	private IndicatorSignalId rsiId;
+	private IndicatorId rsiId;
 
 	@Mock
-	private IndicatorSignalId smaId;
+	private IndicatorId smaId;
 
 	@Mock
 	private IndicatorSignals generatorA;
@@ -159,7 +159,7 @@ public class AnalysisLongBuySignalsTest {
 		verify(generator).getSignalId();
 	}
 
-	private void setUpGenerator( final IndicatorSignals generator, final IndicatorSignalId id,
+	private void setUpGenerator( final IndicatorSignals generator, final IndicatorId id,
 	        final LocalDate... signalDates ) {
 		when(generator.getSignalId()).thenReturn(id);
 		final List<IndicatorSignal> signalsGenerator = new ArrayList<>();

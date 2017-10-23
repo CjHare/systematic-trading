@@ -52,7 +52,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.Indicator;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.generator.GenericIndicatorSignals;
 import com.systematic.trading.signals.generator.SignalGenerator;
@@ -83,7 +83,7 @@ public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
 	private T line;
 
 	@Mock
-	private IndicatorSignalId indicatorId;
+	private IndicatorId indicatorId;
 
 	private List<SignalGenerator<T>> signalGenerators;
 

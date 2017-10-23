@@ -23,55 +23,48 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.signals;
+package com.systematic.trading.strategy.definition.indicator;
 
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 
 /**
- * Configuration for the MACD signal calculator.
+ * Configuration for the SMA signal calculator.
  * 
+ * Five days of gradient is chosen to support being used with the 1-4 days confirmation.
+ *  
  * @author CJ Hare
  */
-public enum MacdConfiguration implements SignalConfiguration {
+public enum EmaUptrendConfiguration implements SignalConfiguration {
+    //TODO days of gradient should be decided when creating the instance, calculated based on the other indicators, minimum being two
+	SHORT(20, 5, "EMA-Uptrend-Short"),
+	MEDIUM(50, 5, "EMA-Uptrend-Medium"),
+	LONG(100, 5, "EMA-Uptrend-Long");
 
-	SHORT(6, 13, 5, "MACD-Short"),
-	MEDIUM(12, 26, 9, "MACD-Medium"),
-	LONG(24, 52, 18, "MACD-Long");
+	private final int lookback;
+	private final int daysOfGradient;
+	private final SignalConfiguration signal;
 
-	private final String description;
-	private final int fastTimePeriods;
-	private final int slowTimePeriods;
-	private final int signalTimePeriods;
-	private final IndicatorSignalId type;
-
-	MacdConfiguration( final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
-	        final String description ) {
-		this.description = description;
-		this.fastTimePeriods = fastTimePeriods;
-		this.slowTimePeriods = slowTimePeriods;
-		this.signalTimePeriods = signalTimePeriods;
-		this.type = new IndicatorSignalId(description);
+	EmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
+		this.signal = new SignalConfigurationImpl(new IndicatorId(description), description);
+		this.daysOfGradient = daysOfGradient;
+		this.lookback = lookback;
 	}
 
 	@Override
 	public String getDescription() {
-		return description;
-	}
-
-	public int getFastTimePeriods() {
-		return fastTimePeriods;
-	}
-
-	public int getSlowTimePeriods() {
-		return slowTimePeriods;
-	}
-
-	public int getSignalTimePeriods() {
-		return signalTimePeriods;
+		return signal.getDescription();
 	}
 
 	@Override
-	public IndicatorSignalId getType() {
-		return type;
+	public IndicatorId getId() {
+		return signal.getId();
+	}
+
+	public int getLookback() {
+		return lookback;
+	}
+
+	public int getDaysOfGradient() {
+		return daysOfGradient;
 	}
 }

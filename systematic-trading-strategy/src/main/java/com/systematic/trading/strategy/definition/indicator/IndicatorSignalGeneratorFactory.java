@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.signals;
+package com.systematic.trading.strategy.definition.indicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.sma.ClosingPriceSimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.generator.GenericIndicatorSignals;
 import com.systematic.trading.signals.generator.IndicatorSignals;
@@ -103,11 +103,11 @@ public class IndicatorSignalGeneratorFactory {
 		signalCalculators.add(new MovingAverageConvergenceDivergenceBullishSignalGenerator());
 
 		return create(macdConfiguration.getFastTimePeriods(), macdConfiguration.getSlowTimePeriods(),
-		        macdConfiguration.getSignalTimePeriods(), macdConfiguration.getType(), filter, signalCalculators);
+		        macdConfiguration.getSignalTimePeriods(), macdConfiguration.getId(), filter, signalCalculators);
 	}
 
 	private IndicatorSignals create( final int fastTimePeriods, final int slowTimePeriod, final int signalTimePeriods,
-	        final IndicatorSignalId id, final SignalRangeFilter filter,
+	        final IndicatorId id, final SignalRangeFilter filter,
 	        final List<SignalGenerator<MovingAverageConvergenceDivergenceLines>> signalCalculators ) {
 
 		//TODO decide this in some fashion based on the configuration
@@ -137,7 +137,7 @@ public class IndicatorSignalGeneratorFactory {
 		        new ClosingPriceRelativeStrengthCalculator(rsiConfiguration.getLookback(), new IllegalArgumentThrowingValidator()),
 		        new IllegalArgumentThrowingValidator());
 
-		return new GenericIndicatorSignals<RelativeStrengthIndexLine, RelativeStrengthIndexIndicator>(rsiConfiguration.getType(),
+		return new GenericIndicatorSignals<RelativeStrengthIndexLine, RelativeStrengthIndexIndicator>(rsiConfiguration.getId(),
 		        rsi, rsiConfiguration.getLookback() + MINIMUM_DAYS_OF_RSI_VALUES, signalCalculators, filter);
 	}
 
@@ -149,7 +149,7 @@ public class IndicatorSignalGeneratorFactory {
 		final SimpleMovingAverageIndicator calculator = new ClosingPriceSimpleMovingAverageCalculator(sma.getLookback(),
 		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
-		return new GenericIndicatorSignals<SimpleMovingAverageLine, SimpleMovingAverageIndicator>(sma.getType(), calculator,
+		return new GenericIndicatorSignals<SimpleMovingAverageLine, SimpleMovingAverageIndicator>(sma.getId(), calculator,
 		        calculator.getMinimumNumberOfPrices(), signalCalculators, filter);
 	}
 
@@ -161,7 +161,7 @@ public class IndicatorSignalGeneratorFactory {
 		final ExponentialMovingAverageIndicator calculator = new ClosingPriceExponentialMovingAverageCalculator(
 		        ema.getLookback(), ema.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
-		return new GenericIndicatorSignals<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator>(ema.getType(),
+		return new GenericIndicatorSignals<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator>(ema.getId(),
 		        calculator, calculator.getMinimumNumberOfPrices(), signalCalculators, filter);
 	}
 }

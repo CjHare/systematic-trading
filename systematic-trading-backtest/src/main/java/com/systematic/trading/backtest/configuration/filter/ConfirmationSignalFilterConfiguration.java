@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.filter;
 
-import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
+import com.systematic.trading.strategy.definition.indicator.SignalConfiguration;
 
 /**
  * Inclusive range of days relative to a signal date that a confirmation signal is required. 

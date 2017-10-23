@@ -43,7 +43,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
@@ -59,26 +59,26 @@ public class IndicatorOnSameDaySignalFilterTest {
 	private static final LocalDate TODAY = LocalDate.now();
 
 	@Mock
-	private IndicatorSignalId macdId;
+	private IndicatorId macdId;
 
 	@Mock
-	private IndicatorSignalId rsiId;
+	private IndicatorId rsiId;
 
 	@Mock
-	private IndicatorSignalId smaId;
+	private IndicatorId smaId;
 
 	@Mock
 	private Comparator<BuySignal> ordering;
 
 	/** List of generated signals. */
-	private Map<IndicatorSignalId, List<IndicatorSignal>> signals;
+	private Map<IndicatorId, List<IndicatorSignal>> signals;
 
 	/** Filter instance being tested. */
 	private IndicatorsOnSameDaySignalFilter filter;
 
 	@Before
 	public void setUp() {
-		signals = new HashMap<IndicatorSignalId, List<IndicatorSignal>>();
+		signals = new HashMap<IndicatorId, List<IndicatorSignal>>();
 	}
 
 	@Test
@@ -172,18 +172,18 @@ public class IndicatorOnSameDaySignalFilterTest {
 		return filter.apply(signals, LAST_TRADING_DATE);
 	}
 
-	private void setUpFilter( final IndicatorSignalId... ids ) {
+	private void setUpFilter( final IndicatorId... ids ) {
 		filter = new IndicatorsOnSameDaySignalFilter(ordering, ids);
 	}
 
-	private void setUpNoSignals( final IndicatorSignalId... ids ) {
-		for (final IndicatorSignalId id : ids) {
+	private void setUpNoSignals( final IndicatorId... ids ) {
+		for (final IndicatorId id : ids) {
 			signals.put(id, new ArrayList<IndicatorSignal>());
 		}
 	}
 
-	private void setUpSignals( final IndicatorSignalId... ids ) {
-		for (final IndicatorSignalId id : ids) {
+	private void setUpSignals( final IndicatorId... ids ) {
+		for (final IndicatorId id : ids) {
 			final List<IndicatorSignal> signal = new ArrayList<IndicatorSignal>();
 			signal.add(new IndicatorSignal(TODAY, id, SignalType.BULLISH));
 			signals.put(id, signal);

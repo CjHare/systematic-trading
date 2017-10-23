@@ -42,10 +42,6 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.signals.EmaUptrendConfiguration;
-import com.systematic.trading.backtest.configuration.signals.MacdConfiguration;
-import com.systematic.trading.backtest.configuration.signals.RsiConfiguration;
-import com.systematic.trading.backtest.configuration.signals.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
@@ -72,6 +68,10 @@ import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.strategy.definition.indicator.EmaUptrendConfiguration;
+import com.systematic.trading.strategy.definition.indicator.MacdConfiguration;
+import com.systematic.trading.strategy.definition.indicator.RsiConfiguration;
+import com.systematic.trading.strategy.definition.indicator.SmaUptrendConfiguration;
 
 /**
  * Performs the initial configuration common between all back tests, including hardware configuration.

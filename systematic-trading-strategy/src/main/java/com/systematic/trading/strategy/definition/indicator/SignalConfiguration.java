@@ -23,56 +23,28 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.signals;
+package com.systematic.trading.strategy.definition.indicator;
 
-import java.math.BigDecimal;
-
-import com.systematic.trading.backtest.configuration.signals.impl.SignalConfigurationImpl;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 
 /**
- * Configuration for the MACD signal calculator.
+ * Generic details about configurations.
  * 
  * @author CJ Hare
  */
-public enum RsiConfiguration implements SignalConfiguration {
+public interface SignalConfiguration {
 
-	SHORT(7, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Short"),
-	MEDIUM(14, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Medium"),
-	LONG(21, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Long");
+	/**
+	 * Textual description of the configuration.
+	 * 
+	 * @return meaningful description used for display purposes.
+	 */
+	String getDescription();
 
-	private final int lookback;
-	private final BigDecimal oversold;
-	private final BigDecimal overbought;
-	private final SignalConfiguration signal;
-
-	private RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
-	        final String description ) {
-		this.signal = new SignalConfigurationImpl(new IndicatorSignalId(description), description);
-		this.lookback = lookback;
-		this.oversold = oversold;
-		this.overbought = overbought;
-	}
-
-	public int getLookback() {
-		return lookback;
-	}
-
-	public BigDecimal getOversold() {
-		return oversold;
-	}
-
-	public BigDecimal getOverbought() {
-		return overbought;
-	}
-
-	@Override
-	public String getDescription() {
-		return signal.getDescription();
-	}
-
-	@Override
-	public IndicatorSignalId getType() {
-		return signal.getType();
-	}
+	/**
+	 * Retrieves the signal type.
+	 * 
+	 * @return the type of signal the configuration matches.
+	 */
+	IndicatorId getId();
 }

@@ -34,7 +34,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
@@ -49,10 +49,10 @@ public class AnyIndicatorBuySignalFilter implements SignalFilter {
 	private final Comparator<BuySignal> signalOrdering;
 
 	/** When there is at least one of these signals on a date, it's a buy. */
-	private final IndicatorSignalId[] indicators;
+	private final IndicatorId[] indicators;
 
 	public AnyIndicatorBuySignalFilter( final Comparator<BuySignal> signalOrdering,
-	        final IndicatorSignalId... indicators ) {
+	        final IndicatorId... indicators ) {
 		
 		//TODO use validator
 		
@@ -61,7 +61,7 @@ public class AnyIndicatorBuySignalFilter implements SignalFilter {
 	}
 
 	@Override
-	public SortedSet<BuySignal> apply( final Map<IndicatorSignalId, List<IndicatorSignal>> signals,
+	public SortedSet<BuySignal> apply( final Map<IndicatorId, List<IndicatorSignal>> signals,
 	        final LocalDate latestTradingDate ) {
 		final Set<LocalDate> signalDates = getSignalDates(signals);
 
@@ -73,10 +73,10 @@ public class AnyIndicatorBuySignalFilter implements SignalFilter {
 		return passedSignals;
 	}
 
-	private Set<LocalDate> getSignalDates( final Map<IndicatorSignalId, List<IndicatorSignal>> signals ) {
+	private Set<LocalDate> getSignalDates( final Map<IndicatorId, List<IndicatorSignal>> signals ) {
 		final Set<LocalDate> signalDates = new HashSet<>();
 
-		for (final IndicatorSignalId indicator : indicators) {
+		for (final IndicatorId indicator : indicators) {
 			for (final IndicatorSignal signal : signals.get(indicator)) {
 				signalDates.add(signal.getDate());
 			}

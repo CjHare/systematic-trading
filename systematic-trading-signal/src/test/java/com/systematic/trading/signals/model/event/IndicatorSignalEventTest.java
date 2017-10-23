@@ -37,7 +37,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 
 /**
@@ -49,7 +49,7 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 public class IndicatorSignalEventTest {
 
 	@Mock
-	private IndicatorSignalId type;
+	private IndicatorId type;
 
 	/** Signal instance being tested.*/
 	private IndicatorSignal signal;

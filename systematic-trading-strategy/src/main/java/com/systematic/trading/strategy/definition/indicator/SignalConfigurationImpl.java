@@ -27,10 +27,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.signals.impl;
+package com.systematic.trading.strategy.definition.indicator;
 
-import com.systematic.trading.backtest.configuration.signals.SignalConfiguration;
-import com.systematic.trading.signal.IndicatorSignalId;
+import com.systematic.trading.signal.IndicatorId;
 
 /**
  * @author CJ Hare
@@ -38,9 +37,9 @@ import com.systematic.trading.signal.IndicatorSignalId;
 public class SignalConfigurationImpl implements SignalConfiguration {
 
 	private final String description;
-	private final IndicatorSignalId type;
+	private final IndicatorId type;
 
-	public SignalConfigurationImpl( final IndicatorSignalId type, final String description ) {
+	public SignalConfigurationImpl( final IndicatorId type, final String description ) {
 		this.type = type;
 		this.description = description;
 	}
@@ -51,7 +50,7 @@ public class SignalConfigurationImpl implements SignalConfiguration {
 	}
 
 	@Override
-	public IndicatorSignalId getType() {
+	public IndicatorId getId() {
 		return type;
 	}
 }
