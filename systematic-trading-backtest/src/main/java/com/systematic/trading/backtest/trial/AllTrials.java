@@ -39,9 +39,6 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
@@ -50,6 +47,9 @@ import com.systematic.trading.backtest.trial.configuration.EmaUptrendConfigurati
 import com.systematic.trading.backtest.trial.configuration.MacdConfiguration;
 import com.systematic.trading.backtest.trial.configuration.RsiConfiguration;
 import com.systematic.trading.backtest.trial.configuration.SmaUptrendConfiguration;
+import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
+import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
+import com.systematic.trading.strategy.periodic.PeriodicFilterConfiguration;
 
 /**
  * Executes all trials, allowing different configuration for the trade sizes.

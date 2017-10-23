@@ -23,26 +23,24 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.filter;
+package com.systematic.trading.strategy.operator;
 
-import java.time.Period;
+import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 
 /**
- * Relative time based filter to attach to events, can be used for triggering when the event occurs.
+ * Filter to exclude event not within the set of acceptable signals.
  * 
  * @author CJ Hare
  */
-public enum PeriodicFilterConfiguration {
-	WEEKLY(Period.ofWeeks(1)),
-	MONTHLY(Period.ofMonths(1));
+public class AnyOfIndicatorFilterConfiguration {
 
-	private final transient Period frequency;
+	private final IndicatorConfiguration[] signals;
 
-	PeriodicFilterConfiguration( final Period frequency ) {
-		this.frequency = frequency;
+	public AnyOfIndicatorFilterConfiguration( final IndicatorConfiguration... signals ) {
+		this.signals = signals;
 	}
 
-	public Period getFrequency() {
-		return frequency;
+	public IndicatorConfiguration[] getSignals() {
+		return signals;
 	}
 }

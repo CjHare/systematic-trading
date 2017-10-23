@@ -39,7 +39,6 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
@@ -53,6 +52,7 @@ import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
 import com.systematic.trading.backtest.trial.configuration.ConfigurationTranslator;
 import com.systematic.trading.backtest.trial.configuration.MacdConfiguration;
+import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
 
 /**
  * MACD crossover signals @ 150 weekly deposit back test.

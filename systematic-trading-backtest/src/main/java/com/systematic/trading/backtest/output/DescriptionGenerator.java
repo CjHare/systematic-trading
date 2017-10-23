@@ -37,12 +37,12 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
+import com.systematic.trading.strategy.operator.AnyOfIndicatorFilterConfiguration;
+import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
 
 /**
  * Textually meaningful description of the configuration appropriate for display.

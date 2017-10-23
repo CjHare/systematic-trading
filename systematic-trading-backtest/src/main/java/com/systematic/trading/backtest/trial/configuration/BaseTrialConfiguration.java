@@ -38,11 +38,11 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.strategy.operator.AnyOfIndicatorFilterConfiguration;
+import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
+import com.systematic.trading.strategy.periodic.PeriodicFilterConfiguration;
 
 /**
  * Contains generic configuration details, enabling lightweight concrete trials.

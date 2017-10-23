@@ -2,12 +2,12 @@ package com.systematic.trading.backtest.configuration.entry;
 
 import java.util.Optional;
 
-import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
+import com.systematic.trading.strategy.operator.AnyOfIndicatorFilterConfiguration;
+import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
+import com.systematic.trading.strategy.periodic.PeriodicFilterConfiguration;
 
 public class EntryLogicConfiguration {
 

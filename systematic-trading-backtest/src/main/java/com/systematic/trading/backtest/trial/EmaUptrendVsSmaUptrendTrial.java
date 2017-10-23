@@ -36,7 +36,6 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
@@ -50,6 +49,7 @@ import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
 import com.systematic.trading.backtest.trial.configuration.EmaUptrendConfiguration;
 import com.systematic.trading.backtest.trial.configuration.SmaUptrendConfiguration;
+import com.systematic.trading.strategy.periodic.PeriodicFilterConfiguration;
 
 /**
  * Executes all the SMA and EMA uptrrends for comparison.

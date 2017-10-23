@@ -35,7 +35,27 @@
 			<artifactId>systematic-trading-backtest-output-file</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
+		
+		<!-- Container dependencies (for instancing concrete instances)-->
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-data</artifactId>
+			<version>${systematic.trading.data.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-strategy</artifactId>
+			<version>${systematic.trading.strategy.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${apache.commons.lang.version}</version>
+		</dependency>
+		
 	</dependencies>
+
 
 	<build>
 		<plugins>

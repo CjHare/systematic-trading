@@ -23,20 +23,20 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.filter;
+package com.systematic.trading.strategy.operator;
 
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 
 /**
- * Filter to exclude event not within the set of acceptable signals.
+ * Filter to exclude any set of events that are not all on the same day.
  * 
  * @author CJ Hare
  */
-public class AnyOfIndicatorFilterConfiguration {
+public class SameDayFilterConfiguration {
 
 	private final IndicatorConfiguration[] signals;
 
-	public AnyOfIndicatorFilterConfiguration( final IndicatorConfiguration... signals ) {
+	public SameDayFilterConfiguration( final IndicatorConfiguration... signals ) {
 		this.signals = signals;
 	}
 

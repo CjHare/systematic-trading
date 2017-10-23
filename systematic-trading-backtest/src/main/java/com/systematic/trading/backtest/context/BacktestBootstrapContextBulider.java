@@ -41,9 +41,6 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicFactory;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityManagementFeeConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
-import com.systematic.trading.backtest.configuration.filter.AnyOfIndicatorFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.ConfirmationSignalFilterConfiguration;
-import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.signal.IndicatorId;
@@ -67,9 +64,12 @@ import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueCalculator;
 import com.systematic.trading.simulation.logic.trade.BoundedTradeValue;
 import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculator;
+import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.strategy.ext.HoldForeverExitLogic;
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.IndicatorSignalGeneratorFactory;
+import com.systematic.trading.strategy.operator.AnyOfIndicatorFilterConfiguration;
+import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
 
 /**
  * Creates the Bootstrap configurations for back testing.
