@@ -29,6 +29,7 @@
  */
 package com.systematic.trading.backtest.trial;
 
+import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -77,5 +78,11 @@ public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implemen
 
 	public AllStratgiesAgnosticSizingBrokerageTrial() {
 		super(BrokerageFeesConfiguration.VANGUARD_RETAIL, getPositionSizing());
+	}
+
+	@Override
+	public Period getWarmUpPeriod() {
+		// TODO Auto-generated method stub
+		return Period.ofDays(1);
 	}
 }

@@ -27,30 +27,45 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.indicator;
+package com.systematic.trading.backtest.trial.configuration;
 
-import com.systematic.trading.signal.IndicatorId;
+import java.math.BigDecimal;
 
 /**
  * @author CJ Hare
  */
-public class SignalConfigurationImpl implements IndicatorConfiguration {
+public enum RsiConfiguration {
 
+	SHORT(7, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Short"),
+	MEDIUM(14, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Medium"),
+	LONG(21, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Long");
+
+	private final int lookback;
+	private final BigDecimal oversold;
+	private final BigDecimal overbought;
 	private final String description;
-	private final IndicatorId type;
 
-	public SignalConfigurationImpl( final IndicatorId type, final String description ) {
-		this.type = type;
+	RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
+	        final String description ) {
+		this.lookback = lookback;
+		this.oversold = oversold;
+		this.overbought = overbought;
 		this.description = description;
 	}
 
-	@Override
-	public String getDescription() {
-		return description;
+	public int getLookback() {
+		return lookback;
 	}
 
-	@Override
-	public IndicatorId getId() {
-		return type;
+	public BigDecimal getOversold() {
+		return oversold;
+	}
+
+	public BigDecimal getOverbought() {
+		return overbought;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }

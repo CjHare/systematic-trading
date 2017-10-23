@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest.trial;
 
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,5 +85,11 @@ public class EmaUptrendVsSmaUptrendTrial extends BaseTrialConfiguration implemen
 		configurations.addAll(getSmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
+	}
+
+	@Override
+	public Period getWarmUpPeriod() {
+		// TODO Auto-generated method stub
+		return Period.ofDays(1);
 	}
 }

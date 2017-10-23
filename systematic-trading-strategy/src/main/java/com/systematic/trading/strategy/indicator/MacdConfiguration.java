@@ -32,30 +32,18 @@ import com.systematic.trading.signal.IndicatorId;
  * 
  * @author CJ Hare
  */
-public enum MacdConfiguration implements IndicatorConfiguration {
+public class MacdConfiguration extends IndicatorConfigurationBase {
 
-	SHORT(6, 13, 5, "MACD-Short"),
-	MEDIUM(12, 26, 9, "MACD-Medium"),
-	LONG(24, 52, 18, "MACD-Long");
-
-	private final String description;
 	private final int fastTimePeriods;
 	private final int slowTimePeriods;
 	private final int signalTimePeriods;
-	private final IndicatorId type;
 
-	MacdConfiguration( final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
+	public MacdConfiguration( final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
 	        final String description ) {
-		this.description = description;
+		super(new IndicatorId(description), description);
 		this.fastTimePeriods = fastTimePeriods;
 		this.slowTimePeriods = slowTimePeriods;
 		this.signalTimePeriods = signalTimePeriods;
-		this.type = new IndicatorId(description);
-	}
-
-	@Override
-	public String getDescription() {
-		return description;
 	}
 
 	public int getFastTimePeriods() {
@@ -68,10 +56,5 @@ public enum MacdConfiguration implements IndicatorConfiguration {
 
 	public int getSignalTimePeriods() {
 		return signalTimePeriods;
-	}
-
-	@Override
-	public IndicatorId getId() {
-		return type;
 	}
 }

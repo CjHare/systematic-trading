@@ -34,30 +34,15 @@ import com.systematic.trading.signal.IndicatorId;
  * 
  * @author CJ Hare
  */
-public enum SmaUptrendConfiguration implements IndicatorConfiguration {
-    //TODO days of gradient should be decided when creating the instance, calculated based on the other indicators, minimum being two
-	SHORT(20, 5, "SMA-Uptrend-Short"),
-	MEDIUM(50, 5, "SMA-Uptrend-Medium"),
-	LONG(100, 5, "SMA-Uptrend-Long");
+public class SmaUptrendConfiguration extends IndicatorConfigurationBase {
 
 	private final int lookback;
 	private final int daysOfGradient;
-	private final IndicatorConfiguration signal;
 
-	SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
-		this.signal = new SignalConfigurationImpl(new IndicatorId(description), description);
+	public SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
+		super(new IndicatorId(description), description);
 		this.daysOfGradient = daysOfGradient;
 		this.lookback = lookback;
-	}
-
-	@Override
-	public String getDescription() {
-		return signal.getDescription();
-	}
-
-	@Override
-	public IndicatorId getId() {
-		return signal.getId();
 	}
 
 	public int getLookback() {
@@ -67,5 +52,4 @@ public enum SmaUptrendConfiguration implements IndicatorConfiguration {
 	public int getDaysOfGradient() {
 		return daysOfGradient;
 	}
-
 }

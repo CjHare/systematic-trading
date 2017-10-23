@@ -29,6 +29,7 @@
  */
 package com.systematic.trading.backtest.trial;
 
+import java.time.Period;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -99,5 +100,11 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 		configurations.add(getBaseline(equity, simulationDates, deposit));
 
 		return configurations;
+	}
+
+	@Override
+	public Period getWarmUpPeriod() {
+		// TODO Auto-generated method stub
+		return Period.ofDays(1);
 	}
 }

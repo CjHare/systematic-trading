@@ -43,8 +43,6 @@ import com.systematic.trading.backtest.configuration.filter.PeriodicFilterConfig
 import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.strategy.indicator.EmaUptrendConfiguration;
-import com.systematic.trading.strategy.indicator.SmaUptrendConfiguration;
 
 /**
  * Contains generic configuration details, enabling lightweight concrete trials.
@@ -128,5 +126,4 @@ public abstract class BaseTrialConfiguration {
 
 		return configurations;
 	}
-
 }

@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest.trial;
 
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,5 +93,11 @@ public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements Ba
 		        ExitLogicConfiguration.HOLD_FOREVER));
 
 		return configurations;
+	}
+
+	@Override
+	public Period getWarmUpPeriod() {
+		// TODO Auto-generated method stub
+		return Period.ofDays(1);
 	}
 }

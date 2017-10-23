@@ -68,10 +68,6 @@ import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
-import com.systematic.trading.strategy.indicator.EmaUptrendConfiguration;
-import com.systematic.trading.strategy.indicator.MacdConfiguration;
-import com.systematic.trading.strategy.indicator.RsiConfiguration;
-import com.systematic.trading.strategy.indicator.SmaUptrendConfiguration;
 
 /**
  * Performs the initial configuration common between all back tests, including hardware configuration.
@@ -108,8 +104,11 @@ public class BacktestApplication {
 		final EquityConfiguration equity = new EquityConfiguration(parserdArguments.getTickerSymbol().getSymbol(),
 		        EquityClass.STOCK);
 
+		//TODO convert into input arguments
+		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
+
 		// Move the date to included the necessary wind up time for the signals to behave correctly
-		final Period warmUpPeriod = getWarmUpPeriod();
+		final Period warmUpPeriod = configuration.getWarmUpPeriod();
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
 		        simulationEndDate, warmUpPeriod);
 
@@ -131,9 +130,6 @@ public class BacktestApplication {
 		timer.start();
 
 		try {
-			//TODO convert into input arguments
-			final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
-
 			final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
 			        depositAmount);
 			clearOutputDirectory(depositAmount, parserdArguments);
@@ -161,32 +157,6 @@ public class BacktestApplication {
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
-	}
-
-	private Period getWarmUpPeriod() {
-		int windUp = 0;
-
-		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-			if (macdConfiguration.getSlowTimePeriods() > windUp)
-				windUp = macdConfiguration.getSlowTimePeriods();
-		}
-		for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-			if (rsiConfiguration.getLookback() > windUp) {
-				windUp = rsiConfiguration.getLookback();
-			}
-		}
-		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
-			if (smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient() > windUp) {
-				windUp = smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient();
-			}
-		}
-		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
-			if (emaConfiguration.getLookback() + emaConfiguration.getDaysOfGradient() > windUp) {
-				windUp = emaConfiguration.getLookback() + emaConfiguration.getDaysOfGradient();
-			}
-		}
-
-		return Period.ofDays(windUp);
 	}
 
 	private BacktestOutputPreparation getOutput( final LaunchArguments arguments ) {

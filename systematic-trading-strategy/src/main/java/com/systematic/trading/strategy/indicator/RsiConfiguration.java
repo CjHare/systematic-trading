@@ -34,20 +34,15 @@ import com.systematic.trading.signal.IndicatorId;
  * 
  * @author CJ Hare
  */
-public enum RsiConfiguration implements IndicatorConfiguration {
-
-	SHORT(7, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Short"),
-	MEDIUM(14, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Medium"),
-	LONG(21, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Long");
+public class RsiConfiguration extends IndicatorConfigurationBase {
 
 	private final int lookback;
 	private final BigDecimal oversold;
 	private final BigDecimal overbought;
-	private final IndicatorConfiguration signal;
 
-	private RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
+	public RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
 	        final String description ) {
-		this.signal = new SignalConfigurationImpl(new IndicatorId(description), description);
+		super(new IndicatorId(description), description);
 		this.lookback = lookback;
 		this.oversold = oversold;
 		this.overbought = overbought;
@@ -63,15 +58,5 @@ public enum RsiConfiguration implements IndicatorConfiguration {
 
 	public BigDecimal getOverbought() {
 		return overbought;
-	}
-
-	@Override
-	public String getDescription() {
-		return signal.getDescription();
-	}
-
-	@Override
-	public IndicatorId getId() {
-		return signal.getId();
 	}
 }
