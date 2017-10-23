@@ -49,11 +49,12 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;
 import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.order.EquityOrder;
-import com.systematic.trading.simulation.order.exception.OrderException;
 
 /**
  * Tests the Cash Account component of the simulation class.
@@ -97,7 +98,7 @@ public class SimulationEntryLogicTest {
 	}
 
 	@Test
-	public void processOrder() throws OrderException {
+	public void processOrder() throws InsufficientEquitiesException, InsufficientFundsException {
 		setUpEntryOrder();
 
 		simulationTick();
@@ -111,7 +112,7 @@ public class SimulationEntryLogicTest {
 		verify(entry).update(eq(broker), eq(funds), argumentMatches(earliestDate));
 	}
 
-	private void verifEntryyOrderPlaced() throws OrderException {
+	private void verifEntryyOrderPlaced() throws InsufficientEquitiesException, InsufficientFundsException {
 		final LocalDate secondEarliestDate = LocalDate.of(2000, Month.APRIL, 2);
 		verify(order).areExecutionConditionsMet(argumentMatches(secondEarliestDate));
 		verify(order).isValid(argumentMatches(secondEarliestDate));

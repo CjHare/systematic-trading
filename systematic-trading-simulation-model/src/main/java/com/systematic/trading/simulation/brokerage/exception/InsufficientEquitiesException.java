@@ -23,18 +23,18 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.order.exception;
+package com.systematic.trading.simulation.brokerage.exception;
 
 /**
- * When there is not enough money available.
+ * Executing an order and there are not enough equities held.
  * 
  * @author CJ Hare
  */
-public class InsufficientFundsException extends OrderException {
+public class InsufficientEquitiesException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public InsufficientFundsException( final String message ) {
-		super(message);
+	public InsufficientEquitiesException() {
+		super("Unsupported number of equities");
 	}
 }

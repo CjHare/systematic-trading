@@ -48,10 +48,11 @@ import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
+import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 import com.systematic.trading.simulation.matcher.EquityOrderVolumeMatcher;
 import com.systematic.trading.simulation.matcher.PriceMatcher;
-import com.systematic.trading.simulation.order.exception.OrderException;
 
 /**
  * Buy tomorrow at the opening price.
@@ -85,7 +86,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	}
 
 	@Test
-	public void execute() throws OrderException {
+	public void execute() throws InsufficientEquitiesException, InsufficientFundsException {
 		setUpTradingPrices(5);
 		setUpFeeCalculation(3);
 
@@ -108,7 +109,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 		assertEquals(true, areConditionMet);
 	}
 
-	private void executeOrder() throws OrderException {
+	private void executeOrder() throws InsufficientEquitiesException, InsufficientFundsException {
 		order.execute(fees, broker, cashAccount, todaysTrading);
 	}
 

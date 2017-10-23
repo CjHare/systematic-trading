@@ -29,8 +29,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.data.price.Price;
+import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
 import com.systematic.trading.simulation.order.EquityOrderVolume;
-import com.systematic.trading.simulation.order.exception.InsufficientEquitiesException;
 
 /**
  * The broker performs the trading on a customers behalf, charging for privilege.

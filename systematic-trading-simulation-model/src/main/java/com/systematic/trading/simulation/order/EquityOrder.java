@@ -28,9 +28,10 @@ package com.systematic.trading.simulation.order;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
+import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 import com.systematic.trading.simulation.order.event.OrderEvent;
-import com.systematic.trading.simulation.order.exception.OrderException;
 
 /**
  * The trading order that can be executed by a specific brokerage.
@@ -66,7 +67,7 @@ public interface EquityOrder {
 	 * @throws OrderException when the order fails.
 	 */
 	void execute( BrokerageTransactionFee fees, BrokerageTransaction broker, CashAccount cashAccount,
-	        TradingDayPrices todaysTrading ) throws OrderException;
+	        TradingDayPrices todaysTrading ) throws InsufficientEquitiesException, InsufficientFundsException;
 
 	/**
 	 * The type, or details of event that the equity order should be recorded as.

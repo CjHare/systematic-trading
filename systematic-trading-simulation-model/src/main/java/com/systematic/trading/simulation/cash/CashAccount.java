@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.simulation.cash.event.CashEventListener;
-import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 
 /**
  * Cash flow and interest management.

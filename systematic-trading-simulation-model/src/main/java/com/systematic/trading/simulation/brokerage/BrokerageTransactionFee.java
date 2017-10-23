@@ -23,18 +23,29 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.order.exception;
+package com.systematic.trading.simulation.brokerage;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.model.EquityClass;
 
 /**
- * Base exception for orders.
+ * Brokerage fees applied to all an equity transaction.
  * 
  * @author CJ Hare
  */
-public abstract class OrderException extends Exception {
+@FunctionalInterface
+public interface BrokerageTransactionFee {
 
-	private static final long serialVersionUID = 1L;
-
-	public OrderException( final String message ) {
-		super(message);
-	}
+	/**
+	 * Calculates the brokerage fee based on the given details.
+	 * 
+	 * @param tradeValue sum of the equities being purchased.
+	 * @param type different classes may attract alternative pricing structures.
+	 * @param tradeDate the date for the intended transaction.
+	 * @return transaction (brokerage) cost.
+	 * @throws UnsupportedEquityClass encountered when the broker does not support the equity type.
+	 */
+	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, LocalDate tradeDate );
 }

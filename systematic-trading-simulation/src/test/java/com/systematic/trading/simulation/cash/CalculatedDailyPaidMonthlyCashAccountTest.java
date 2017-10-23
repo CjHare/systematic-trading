@@ -47,8 +47,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.OngoingStubbing;
 
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 import com.systematic.trading.simulation.matcher.BigDecimalMatcher;
-import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
 
 /**
  * Testing the calculate daily paid monthly cash account.

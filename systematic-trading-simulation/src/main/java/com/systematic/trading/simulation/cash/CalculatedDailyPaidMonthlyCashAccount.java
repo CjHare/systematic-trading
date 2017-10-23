@@ -35,8 +35,8 @@ import java.util.List;
 import com.systematic.trading.simulation.cash.event.CashAccountEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
-import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
 
 /**
  * Flat interest rates calculated daily, paid monthly.

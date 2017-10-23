@@ -33,11 +33,12 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
+import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent.EquityOrderType;
 import com.systematic.trading.simulation.order.event.PlaceOrderTotalCostEvent;
-import com.systematic.trading.simulation.order.exception.OrderException;
 
 /**
  * Placing an order to purchase an equity.
@@ -88,7 +89,8 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	@Override
 	public void execute( final BrokerageTransactionFee fees, final BrokerageTransaction broker,
-	        final CashAccount cashAccount, final TradingDayPrices todaysTrade ) throws OrderException {
+	        final CashAccount cashAccount, final TradingDayPrices todaysTrade )
+	        throws InsufficientEquitiesException, InsufficientFundsException {
 
 		final BigDecimal maximumTransactionCost = fees.calculateFee(targetTotalCost, type, todaysTrade.getDate());
 		final BigDecimal openingPrice = todaysTrade.getOpeningPrice().getPrice();

@@ -45,8 +45,8 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 import com.systematic.trading.simulation.matcher.BigDecimalMatcher;
-import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
 
 /**
  * Ensures the decorator does act in accordance to expectations.

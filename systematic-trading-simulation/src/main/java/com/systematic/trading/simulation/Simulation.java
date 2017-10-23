@@ -39,7 +39,9 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.order.EquityOrder;
@@ -47,8 +49,6 @@ import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsActio
 import com.systematic.trading.simulation.order.event.EquityOrderDeletedDueToInsufficentFundsEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
-import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
-import com.systematic.trading.simulation.order.exception.OrderException;
 
 /**
  * The application of the chosen trading logic over a given set of data is performed in the
@@ -259,7 +259,7 @@ public class Simulation {
 					        "Unsupported insufficient funds action: %s for order: %s using entry logic: %s", action,
 					        order, entry), e);
 			}
-		} catch (final OrderException e) {
+		} catch (final InsufficientEquitiesException e) {
 			LOG.error(e);
 			throw new IllegalArgumentException("Unhandled Order exception", e);
 		}

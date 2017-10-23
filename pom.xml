@@ -26,8 +26,9 @@
 		<module>systematic-trading-data-api-quandl</module>
 		<module>systematic-trading-maths</module>
 		<module>systematic-trading-signal</module>
-		<module>systematic-trading-strategy</module>
 		<module>systematic-trading-simulation</module>
+		<module>systematic-trading-simulation-model</module>
+		<module>systematic-trading-strategy</module>
 	</modules>
 
 	<build>

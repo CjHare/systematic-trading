@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.simulation.cash.event.CashEventListener;
-import com.systematic.trading.simulation.order.exception.InsufficientFundsException;
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 
 /**
  * Adds frequent deposits to an underlying Cash Account.
