@@ -51,6 +51,8 @@ import com.systematic.trading.backtest.trade.MinimumTrade;
  */
 public abstract class BaseTrialConfiguration {
 
+	private final ConfigurationTranslator converter = new ConfigurationTranslator();
+
 	protected BacktestBootstrapConfiguration getBaseline( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
 		return new TrialConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
@@ -83,9 +85,10 @@ public abstract class BaseTrialConfiguration {
 		        SmaUptrendConfiguration.values().length);
 
 		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
-			configurations
-			        .add(getConfiguration(equity, simulationDates, deposit, brokerage, new EntryLogicConfiguration(
-			                new SameDayFilterConfiguration(smaConfiguration), maximumTrade, minimumTrade)));
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			        new EntryLogicConfiguration(
+			                new SameDayFilterConfiguration(converter.translate(smaConfiguration)),
+			                maximumTrade, minimumTrade)));
 		}
 
 		return configurations;
@@ -99,9 +102,10 @@ public abstract class BaseTrialConfiguration {
 		        EmaUptrendConfiguration.values().length);
 
 		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
-			configurations
-			        .add(getConfiguration(equity, simulationDates, deposit, brokerage, new EntryLogicConfiguration(
-			                new SameDayFilterConfiguration(emaConfiguration), maximumTrade, minimumTrade)));
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			        new EntryLogicConfiguration(
+			                new SameDayFilterConfiguration(converter.translate(emaConfiguration)),
+			                maximumTrade, minimumTrade)));
 		}
 
 		return configurations;
@@ -118,10 +122,11 @@ public abstract class BaseTrialConfiguration {
 			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 				        new EntryLogicConfiguration(
-				                new AnyOfIndicatorFilterConfiguration(emaConfiguration, smaConfiguration), maximumTrade,
-				                minimumTrade)));
+				                new AnyOfIndicatorFilterConfiguration(
+				                        converter.translate(emaConfiguration),
+				                        converter.translate(smaConfiguration)),
+				                maximumTrade, minimumTrade)));
 			}
-
 		}
 
 		return configurations;

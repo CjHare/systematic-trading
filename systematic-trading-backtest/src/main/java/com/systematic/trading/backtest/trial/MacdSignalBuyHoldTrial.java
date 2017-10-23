@@ -51,7 +51,8 @@ import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
-import com.systematic.trading.strategy.indicator.MacdConfiguration;
+import com.systematic.trading.backtest.trial.configuration.ConfigurationTranslator;
+import com.systematic.trading.backtest.trial.configuration.MacdConfiguration;
 
 /**
  * MACD crossover signals @ 150 weekly deposit back test.
@@ -59,6 +60,8 @@ import com.systematic.trading.strategy.indicator.MacdConfiguration;
  * @author CJ Hare
  */
 public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements BacktestConfiguration {
+
+	private final ConfigurationTranslator converter = new ConfigurationTranslator();
 
 	public static void main( final String... args ) throws Exception {
 
@@ -84,7 +87,8 @@ public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements Ba
 		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
 		final MacdConfiguration macdConfiguration = MacdConfiguration.MEDIUM;
 
-		final SameDayFilterConfiguration filterConfiguration = new SameDayFilterConfiguration(macdConfiguration);
+		final SameDayFilterConfiguration filterConfiguration = new SameDayFilterConfiguration(
+		        converter.translate(macdConfiguration));
 
 		final EntryLogicConfiguration entry = new EntryLogicConfiguration(filterConfiguration, maximumTrade,
 		        minimumTrade);

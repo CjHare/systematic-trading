@@ -44,6 +44,7 @@ import com.systematic.trading.backtest.configuration.filter.SameDayFilterConfigu
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
+import com.systematic.trading.backtest.trial.configuration.ConfigurationTranslator;
 import com.systematic.trading.backtest.trial.configuration.EmaUptrendConfiguration;
 import com.systematic.trading.backtest.trial.configuration.MacdConfiguration;
 import com.systematic.trading.backtest.trial.configuration.RsiConfiguration;
@@ -55,6 +56,8 @@ import com.systematic.trading.backtest.trial.configuration.SmaUptrendConfigurati
  * @author CJ Hare
  */
 public abstract class AllTrials extends BaseTrialConfiguration implements BacktestConfiguration {
+
+	private final ConfigurationTranslator converter = new ConfigurationTranslator();
 
 	private final BrokerageFeesConfiguration brokerage;
 	private final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes;
@@ -117,8 +120,11 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 				for (final ConfirmationSignalFilterConfiguration.Type filterConfiguration : ConfirmationSignalFilterConfiguration.Type
 				        .values()) {
 					configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-					        new EntryLogicConfiguration(new ConfirmationSignalFilterConfiguration(filterConfiguration,
-					                macdConfiguration, rsiConfiguration), maximumTrade, minimumTrade)));
+					        new EntryLogicConfiguration(
+					                new ConfirmationSignalFilterConfiguration(filterConfiguration,
+					                        converter.translate(macdConfiguration),
+					                        converter.translate(rsiConfiguration)),
+					                maximumTrade, minimumTrade)));
 				}
 			}
 		}
@@ -136,7 +142,9 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-				        new EntryLogicConfiguration(new SameDayFilterConfiguration(macdConfiguration, rsiConfiguration),
+				        new EntryLogicConfiguration(
+				                new SameDayFilterConfiguration(converter.translate(macdConfiguration),
+				                        converter.translate(rsiConfiguration)),
 				                maximumTrade, minimumTrade)));
 			}
 		}
@@ -152,7 +160,9 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-			        new EntryLogicConfiguration(new SameDayFilterConfiguration(macdConfiguration, macdConfiguration),
+			        new EntryLogicConfiguration(
+			                new SameDayFilterConfiguration(converter.translate(macdConfiguration),
+			                        converter.translate(macdConfiguration)),
 			                maximumTrade, minimumTrade)));
 		}
 
@@ -170,8 +180,12 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
 				for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 					configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-					        new EntryLogicConfiguration(new SameDayFilterConfiguration(macdConfiguration,
-					                smaConfiguration, rsiConfiguration), maximumTrade, minimumTrade)));
+					        new EntryLogicConfiguration(
+					                new SameDayFilterConfiguration(
+					                        converter.translate(macdConfiguration),
+					                        converter.translate(smaConfiguration),
+					                        converter.translate(rsiConfiguration)),
+					                maximumTrade, minimumTrade)));
 				}
 			}
 		}
@@ -190,8 +204,12 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 			for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
 				for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 					configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-					        new EntryLogicConfiguration(new SameDayFilterConfiguration(macdConfiguration,
-					                emaConfiguration, rsiConfiguration), maximumTrade, minimumTrade)));
+					        new EntryLogicConfiguration(
+					                new SameDayFilterConfiguration(
+					                        converter.translate(macdConfiguration),
+					                        converter.translate(emaConfiguration),
+					                        converter.translate(rsiConfiguration)),
+					                maximumTrade, minimumTrade)));
 				}
 			}
 		}
@@ -209,7 +227,9 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
 			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-				        new EntryLogicConfiguration(new SameDayFilterConfiguration(macdConfiguration, smaConfiguration),
+				        new EntryLogicConfiguration(
+				                new SameDayFilterConfiguration(converter.translate(macdConfiguration),
+				                        converter.translate(smaConfiguration)),
 				                maximumTrade, minimumTrade)));
 			}
 		}
@@ -227,7 +247,9 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-				        new EntryLogicConfiguration(new SameDayFilterConfiguration(smaConfiguration, rsiConfiguration),
+				        new EntryLogicConfiguration(
+				                new SameDayFilterConfiguration(converter.translate(smaConfiguration),
+				                        converter.translate(rsiConfiguration)),
 				                maximumTrade, minimumTrade)));
 			}
 		}
@@ -245,7 +267,9 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		for (final EmaUptrendConfiguration smaConfiguration : EmaUptrendConfiguration.values()) {
 			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
 				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-				        new EntryLogicConfiguration(new SameDayFilterConfiguration(smaConfiguration, rsiConfiguration),
+				        new EntryLogicConfiguration(
+				                new SameDayFilterConfiguration(converter.translate(smaConfiguration),
+				                        converter.translate(rsiConfiguration)),
 				                maximumTrade, minimumTrade)));
 			}
 		}
