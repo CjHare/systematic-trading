@@ -30,13 +30,10 @@
 package com.systematic.trading.strategy.definition;
 
 /**
- * Regular expression defining construction a trading strategy.
- * 
- * Strategy := (Entry) (Exit)
+ * Indication that something will never occur.
  * 
  * @author CJ Hare
  */
-public interface TradingStrategy {
-	
-	//TODO add entry and exit logic
+public interface Never {
+
 }

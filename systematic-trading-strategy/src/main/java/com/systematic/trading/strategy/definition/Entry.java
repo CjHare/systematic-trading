@@ -30,13 +30,15 @@
 package com.systematic.trading.strategy.definition;
 
 /**
- * Regular expression defining construction a trading strategy.
+ * Strategy for deciding when to open / enter a position.
  * 
- * Strategy := (Entry) (Exit)
+ * Entry := (Entry)     (Operator) 		(Entry)
+ * 			(indicator) (Confirmation)  (Indicator)
+ * 			(indicator)
+ * 			(Periodic)
  * 
  * @author CJ Hare
  */
-public interface TradingStrategy {
-	
-	//TODO add entry and exit logic
+public interface Entry {
+
 }

@@ -30,13 +30,10 @@
 package com.systematic.trading.strategy.definition;
 
 /**
- * Regular expression defining construction a trading strategy.
- * 
- * Strategy := (Entry) (Exit)
+ * Time based signal generation.
  * 
  * @author CJ Hare
  */
-public interface TradingStrategy {
-	
-	//TODO add entry and exit logic
+public interface Periodic {
+
 }
