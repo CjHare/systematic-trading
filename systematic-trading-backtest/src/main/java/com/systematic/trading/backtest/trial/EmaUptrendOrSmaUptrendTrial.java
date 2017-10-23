@@ -48,6 +48,8 @@ import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
+import com.systematic.trading.backtest.trial.configuration.EmaUptrendConfiguration;
+import com.systematic.trading.backtest.trial.configuration.SmaUptrendConfiguration;
 
 /**
  * Executes all the combinations of SMA and EMA uptrrends. When there is either an SMA or EMA signal it's a buy signal.
@@ -89,7 +91,8 @@ public class EmaUptrendOrSmaUptrendTrial extends BaseTrialConfiguration implemen
 
 	@Override
 	public Period getWarmUpPeriod() {
-		// TODO Auto-generated method stub
-		return Period.ofDays(1);
+		return Period.ofDays(
+		        Math.max(EmaUptrendConfiguration.LONG.getLookback() + EmaUptrendConfiguration.LONG.getDaysOfGradient(),
+		                SmaUptrendConfiguration.LONG.getLookback() + SmaUptrendConfiguration.LONG.getDaysOfGradient()));
 	}
 }

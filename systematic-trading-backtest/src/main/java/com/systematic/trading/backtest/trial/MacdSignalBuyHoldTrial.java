@@ -61,6 +61,8 @@ import com.systematic.trading.backtest.trial.configuration.MacdConfiguration;
  */
 public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements BacktestConfiguration {
 
+	private static final MacdConfiguration MACD_CONFIGURATION = MacdConfiguration.MEDIUM;
+
 	private final ConfigurationTranslator converter = new ConfigurationTranslator();
 
 	public static void main( final String... args ) throws Exception {
@@ -85,10 +87,9 @@ public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements Ba
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
-		final MacdConfiguration macdConfiguration = MacdConfiguration.MEDIUM;
 
 		final SameDayFilterConfiguration filterConfiguration = new SameDayFilterConfiguration(
-		        converter.translate(macdConfiguration));
+		        converter.translate(MACD_CONFIGURATION));
 
 		final EntryLogicConfiguration entry = new EntryLogicConfiguration(filterConfiguration, maximumTrade,
 		        minimumTrade);
@@ -101,7 +102,6 @@ public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements Ba
 
 	@Override
 	public Period getWarmUpPeriod() {
-		// TODO Auto-generated method stub
-		return Period.ofDays(1);
+		return Period.ofDays(MACD_CONFIGURATION.getSlowTimePeriods());
 	}
 }
