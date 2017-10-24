@@ -280,7 +280,7 @@ public class DateTriggeredEntryLogicTest {
 	}
 
 	private EquityOrder update() {
-		return logic.update(fees, cashAccount, data);
+		return logic.entryTick(fees, cashAccount, data);
 	}
 
 	private void setUpEntryLogic( final LocalDate firstOrder, final Period interval ) {

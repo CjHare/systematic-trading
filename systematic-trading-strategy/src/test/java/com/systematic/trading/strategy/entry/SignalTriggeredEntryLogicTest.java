@@ -210,7 +210,7 @@ public class SignalTriggeredEntryLogicTest {
 	}
 
 	private EquityOrder update() {
-		return logic.update(fees, cashAccount, data);
+		return logic.entryTick(fees, cashAccount, data);
 	}
 
 	private void verifyNoOrder( final EquityOrder order ) {

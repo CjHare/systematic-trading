@@ -76,6 +76,6 @@ public class HoldForeverExitLogicTest {
 	}
 
 	private void updateLogic() {
-		order = logic.update(broker, data);
+		order = logic.exitTick(broker, data);
 	}
 }

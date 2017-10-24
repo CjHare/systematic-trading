@@ -109,7 +109,7 @@ public class SimulationEntryLogicTest {
 
 	private void verifyEntryLogic() {
 		final LocalDate earliestDate = LocalDate.of(2000, Month.APRIL, 1);
-		verify(entry).update(eq(broker), eq(funds), argumentMatches(earliestDate));
+		verify(entry).entryTick(eq(broker), eq(funds), argumentMatches(earliestDate));
 	}
 
 	private void verifEntryyOrderPlaced() throws InsufficientEquitiesException, InsufficientFundsException {
@@ -126,7 +126,7 @@ public class SimulationEntryLogicTest {
 	private void setUpEntryOrder() {
 		when(order.areExecutionConditionsMet(any(TradingDayPrices.class))).thenReturn(true);
 		when(order.isValid(any(TradingDayPrices.class))).thenReturn(true);
-		when(entry.update(any(Brokerage.class), any(CashAccount.class), any(TradingDayPrices.class))).thenReturn(order);
+		when(entry.entryTick(any(Brokerage.class), any(CashAccount.class), any(TradingDayPrices.class))).thenReturn(order);
 	}
 
 	private TradingDayPrices createTradingDayPrices( final LocalDate date ) {

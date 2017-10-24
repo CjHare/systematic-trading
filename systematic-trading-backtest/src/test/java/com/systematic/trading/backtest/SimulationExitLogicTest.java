@@ -111,7 +111,7 @@ public class SimulationExitLogicTest {
 
 	private void verifyExitLogicTick() {
 		final LocalDate earliestDate = LocalDate.of(2000, Month.APRIL, 1);
-		verify(exit).update(eq(broker), argumentMatches(earliestDate));
+		verify(exit).exitTick(eq(broker), argumentMatches(earliestDate));
 	}
 
 	private void simulationTick() {
@@ -128,7 +128,7 @@ public class SimulationExitLogicTest {
 	private void setUpExitOrder() {
 		when(order.areExecutionConditionsMet(any(TradingDayPrices.class))).thenReturn(true);
 		when(order.isValid(any(TradingDayPrices.class))).thenReturn(true);
-		when(exit.update(any(Brokerage.class), any(TradingDayPrices.class))).thenReturn(order);
+		when(exit.exitTick(any(Brokerage.class), any(TradingDayPrices.class))).thenReturn(order);
 	}
 
 	private TradingDayPrices createTradingDayPrices( final LocalDate date ) {

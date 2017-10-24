@@ -38,7 +38,7 @@ import com.systematic.trading.simulation.order.EquityOrder;
 public class HoldForeverExitLogic implements ExitLogic {
 
 	@Override
-	public EquityOrder update( final BrokerageTransaction broker, final TradingDayPrices data ) {
+	public EquityOrder exitTick( final BrokerageTransaction broker, final TradingDayPrices data ) {
 		// There's never an order to place :. return null
 		return null;
 	}

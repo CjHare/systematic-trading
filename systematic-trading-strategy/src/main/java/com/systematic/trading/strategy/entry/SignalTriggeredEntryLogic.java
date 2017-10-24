@@ -92,7 +92,7 @@ public class SignalTriggeredEntryLogic implements EntryLogic {
 	}
 
 	@Override
-	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+	public EquityOrder entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
 	        final TradingDayPrices data ) {
 
 		// Add the day's data to the rolling queue

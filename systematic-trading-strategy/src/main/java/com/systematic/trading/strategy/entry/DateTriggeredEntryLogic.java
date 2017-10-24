@@ -79,7 +79,7 @@ public class DateTriggeredEntryLogic implements EntryLogic {
 	}
 
 	@Override
-	public EquityOrder update( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+	public EquityOrder entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
 	        final TradingDayPrices data ) {
 
 		final LocalDate tradingDate = data.getDate();

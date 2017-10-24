@@ -165,7 +165,7 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the exit logic.
 	 */
 	private List<EquityOrder> addExitOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
-		final EquityOrder order = exit.update(broker, data);
+		final EquityOrder order = exit.exitTick(broker, data);
 
 		if (order != null) {
 			notifyListeners(order.getOrderEvent());
@@ -183,7 +183,7 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the entry logic.
 	 */
 	private List<EquityOrder> addEntryOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
-		final EquityOrder order = entry.update(broker, funds, data);
+		final EquityOrder order = entry.entryTick(broker, funds, data);
 
 		if (order != null) {
 			notifyListeners(order.getOrderEvent());

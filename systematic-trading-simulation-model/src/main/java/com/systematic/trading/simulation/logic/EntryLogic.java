@@ -50,7 +50,7 @@ public interface EntryLogic {
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
 	 *         be placed.
 	 */
-	EquityOrder update( BrokerageTransactionFee fees, CashAccount cashAccount, TradingDayPrices data );
+	EquityOrder entryTick( BrokerageTransactionFee fees, CashAccount cashAccount, TradingDayPrices data );
 
 	/**
 	 * Action to take on the order when the triggering conditions are met, however there are
@@ -61,6 +61,7 @@ public interface EntryLogic {
 	 */
 	EquityOrderInsufficientFundsAction actionOnInsufficentFunds( EquityOrder order );
 
+	//TODO move this listener setup into the constructor of the indicator
 	/**
 	 * Adds an interested party to those notified for signal analysis events.
 	 * 
