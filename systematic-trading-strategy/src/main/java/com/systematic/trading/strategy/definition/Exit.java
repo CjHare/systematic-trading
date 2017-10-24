@@ -32,10 +32,7 @@ package com.systematic.trading.strategy.definition;
 /**
  * Strategy for deciding when to open / enter a position.
  * 
- * Exit :=  (Never)
- * 
  * @author CJ Hare
  */
 public interface Exit {
-
 }

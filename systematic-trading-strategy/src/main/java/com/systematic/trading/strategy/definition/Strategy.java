@@ -30,9 +30,7 @@
 package com.systematic.trading.strategy.definition;
 
 /**
- * Regular expression defining construction a trading strategy.
- * 
- * Strategy := (Entry) (Exit)
+ * A trading strategy that comprises of position sizing combined with entry and exit behaviour.
  * 
  * @author CJ Hare
  */

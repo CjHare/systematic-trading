@@ -27,12 +27,34 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy;
 
 /**
- * Time based signal generation.
+ * Factory methods for constructing a trading strategy.
+ * 
+ * Regular expression language definitions:
+ * 
+ * Strategy := (Entry) (Exit)
+ * 
+ * 	  Entry := 	(Entry)     (Operator) 		(Entry)
+ * 				(indicator) (Confirmation)  (Indicator)
+ * 				(indicator)
+ * 				(Periodic)
+ * 
+ * 		Exit := (Never)
+ * 
+ * Indicator := ATR
+ * 				EMA
+ * 				MACD
+ * 				SMA
+ * 				RSI
+ *   
+ * 	Operator := OR
+ * 				AND
+ * 				XOR
  * 
  * @author CJ Hare
  */
-public interface Periodic {
+public class TradingStrategyFactory {
+
 }

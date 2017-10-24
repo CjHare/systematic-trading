@@ -32,12 +32,8 @@ package com.systematic.trading.strategy.definition;
 /**
  * A logical operator that joins together the signals generated from two indicators.
  * 
- * 	Operator := OR
- * 				AND
- * 				XOR
  * 
  * @author CJ Hare
  */
 public interface Operator {
-
 }

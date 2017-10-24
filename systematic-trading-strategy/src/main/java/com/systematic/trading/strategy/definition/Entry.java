@@ -30,15 +30,9 @@
 package com.systematic.trading.strategy.definition;
 
 /**
- * Strategy for deciding when to open / enter a position.
- * 
- * Entry := (Entry)     (Operator) 		(Entry)
- * 			(indicator) (Confirmation)  (Indicator)
- * 			(indicator)
- * 			(Periodic)
+ * Approach for deciding when to open / enter a position.
  * 
  * @author CJ Hare
  */
 public interface Entry {
-
 }
