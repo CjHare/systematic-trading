@@ -38,7 +38,6 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.exit.ExitLogicConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
@@ -94,8 +93,7 @@ public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements Ba
 		final EntryLogicConfiguration entry = new EntryLogicConfiguration(filterConfiguration, maximumTrade,
 		        minimumTrade);
 		configurations.add(new BacktestBootstrapConfiguration(simulationDates, BrokerageFeesConfiguration.CMC_MARKETS,
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity,
-		        ExitLogicConfiguration.HOLD_FOREVER));
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity));
 
 		return configurations;
 	}

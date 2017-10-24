@@ -6,7 +6,6 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.exit.ExitLogicConfiguration;
 
 /**
  * The set of configurations for the back testing.
@@ -21,19 +20,17 @@ public class BacktestBootstrapConfiguration {
 	private final DepositConfiguration deposit;
 	private final EntryLogicConfiguration entry;
 	private final EquityConfiguration equity;
-	private final ExitLogicConfiguration exit;
 
 	public BacktestBootstrapConfiguration( final BacktestSimulationDates backtestDates,
 	        final BrokerageFeesConfiguration brokerageFees, final CashAccountConfiguration cashAccount,
-	        final DepositConfiguration deposit, final EntryLogicConfiguration entry, final EquityConfiguration equity,
-	        final ExitLogicConfiguration exit ) {
+	        final DepositConfiguration deposit, final EntryLogicConfiguration entry,
+	        final EquityConfiguration equity ) {
 		this.backtestDates = backtestDates;
 		this.brokerageFees = brokerageFees;
 		this.cashAccount = cashAccount;
 		this.deposit = deposit;
 		this.entry = entry;
 		this.equity = equity;
-		this.exit = exit;
 	}
 
 	public BacktestSimulationDates getBacktestDates() {
@@ -58,9 +55,5 @@ public class BacktestBootstrapConfiguration {
 
 	public EquityConfiguration getEquity() {
 		return equity;
-	}
-
-	public ExitLogicConfiguration getExitLogic() {
-		return exit;
 	}
 }

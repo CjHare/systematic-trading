@@ -36,7 +36,6 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.exit.ExitLogicConfiguration;
 
 /**
  * Provides construction of configuration.
@@ -78,7 +77,6 @@ public class TrialConfigurationBuilder {
 
 	public BacktestBootstrapConfiguration build() {
 		return new BacktestBootstrapConfiguration(simulationDates, brokerage,
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entryLogic, equity,
-		        ExitLogicConfiguration.HOLD_FOREVER);
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entryLogic, equity);
 	}
 }
