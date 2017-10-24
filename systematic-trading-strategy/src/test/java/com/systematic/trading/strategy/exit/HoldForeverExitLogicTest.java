@@ -37,7 +37,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.order.EquityOrder;
-import com.systematic.trading.strategy.ext.HoldForeverExitLogic;
 
 /**
  * Testing the hold forever exit logic.

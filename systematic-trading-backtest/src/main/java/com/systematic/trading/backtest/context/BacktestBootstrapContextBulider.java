@@ -65,7 +65,7 @@ import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueCalculato
 import com.systematic.trading.simulation.logic.trade.BoundedTradeValue;
 import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculator;
 import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
-import com.systematic.trading.strategy.ext.HoldForeverExitLogic;
+import com.systematic.trading.strategy.exit.HoldForeverExitLogic;
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.IndicatorSignalGeneratorFactory;
 import com.systematic.trading.strategy.operator.AnyOfIndicatorFilterConfiguration;
