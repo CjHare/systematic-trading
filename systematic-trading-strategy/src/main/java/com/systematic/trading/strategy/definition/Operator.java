@@ -36,4 +36,9 @@ package com.systematic.trading.strategy.definition;
  * @author CJ Hare
  */
 public interface Operator {
+
+	enum Selection {
+		AND,
+		OR
+	}
 }

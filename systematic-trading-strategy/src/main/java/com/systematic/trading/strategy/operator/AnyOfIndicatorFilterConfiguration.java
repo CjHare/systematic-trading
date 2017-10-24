@@ -28,7 +28,7 @@ package com.systematic.trading.strategy.operator;
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 
 /**
- * Filter to exclude event not within the set of acceptable signals.
+ * Excludes any signal event not within the set of acceptable signals.
  * 
  * @author CJ Hare
  */

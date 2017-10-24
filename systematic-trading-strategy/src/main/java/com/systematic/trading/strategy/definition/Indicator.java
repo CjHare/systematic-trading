@@ -41,5 +41,4 @@ package com.systematic.trading.strategy.definition;
  * @author CJ Hare
  */
 public interface Indicator {
-
 }

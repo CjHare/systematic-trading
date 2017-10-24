@@ -29,6 +29,16 @@
  */
 package com.systematic.trading.strategy;
 
+import com.systematic.trading.strategy.definition.Confirmation;
+import com.systematic.trading.strategy.definition.Entry;
+import com.systematic.trading.strategy.definition.Exit;
+import com.systematic.trading.strategy.definition.Indicator;
+import com.systematic.trading.strategy.definition.Never;
+import com.systematic.trading.strategy.definition.Operator;
+import com.systematic.trading.strategy.definition.Periodic;
+import com.systematic.trading.strategy.definition.Strategy;
+import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
+
 /**
  * Factory methods for constructing a trading strategy.
  * 
@@ -51,10 +61,24 @@ package com.systematic.trading.strategy;
  *   
  * 	Operator := OR
  * 				AND
- * 				XOR
  * 
  * @author CJ Hare
  */
-public class TradingStrategyFactory {
+public interface TradingStrategy {
 
+	Strategy strategy( Entry entry, Exit exit );
+
+	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
+
+	Entry entry( Indicator leftIndicator, Confirmation confirmBy, Indicator righIndicator );
+
+	Entry entry( Indicator indicator );
+
+	Entry entry( Periodic periodic );
+
+	Exit exit( Never never );
+
+	Indicator indicator( IndicatorConfiguration indicator );
+
+	Operator operator( Operator.Selection operator );
 }
