@@ -5,8 +5,8 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
-import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.exit.ExitLogicConfiguration;
 
 /**
  * The set of configurations for the back testing.

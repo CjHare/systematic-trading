@@ -37,8 +37,8 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
-import com.systematic.trading.backtest.configuration.entry.ExitLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.exit.ExitLogicConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
