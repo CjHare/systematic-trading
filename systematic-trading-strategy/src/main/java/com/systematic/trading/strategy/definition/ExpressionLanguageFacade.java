@@ -27,58 +27,62 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy;
+package com.systematic.trading.strategy.definition;
 
-import com.systematic.trading.strategy.definition.Confirmation;
-import com.systematic.trading.strategy.definition.Entry;
-import com.systematic.trading.strategy.definition.Exit;
-import com.systematic.trading.strategy.definition.Indicator;
-import com.systematic.trading.strategy.definition.Never;
-import com.systematic.trading.strategy.definition.Operator;
-import com.systematic.trading.strategy.definition.Periodic;
-import com.systematic.trading.strategy.definition.Strategy;
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 
 /**
- * Factory methods for constructing a trading strategy.
- * 
- * Regular expression language definitions:
- * 
- * Strategy := (Entry) (Exit)
- * 
- * 	  Entry := 	(Entry)     (Operator) 		(Entry)
- * 				(indicator) (Confirmation)  (Indicator)
- * 				(indicator)
- * 				(Periodic)
- * 
- * 		Exit := (Never)
- * 
- * Indicator := ATR
- * 				EMA
- * 				MACD
- * 				SMA
- * 				RSI
- *   
- * 	Operator := OR
- * 				AND
+ * Implementation of a TradingStrategyExpressionLanguage using a facade to aggregate specialist factories.
  * 
  * @author CJ Hare
  */
-public interface TradingStrategy {
+public class ExpressionLanguageFacade implements ExpressionLanguage {
 
-	Strategy strategy( Entry entry, Exit exit );
+	@Override
+	public Strategy strategy( final Entry entry, final Exit exit ) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
+	@Override
+	public Entry entry( final Entry leftEntry, final Operator op, final Entry righEntry ) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	Entry entry( Indicator leftIndicator, Confirmation confirmBy, Indicator righIndicator );
+	@Override
+	public Entry entry( final Indicator leftIndicator, final Confirmation confirmBy, final Indicator righIndicator ) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	Entry entry( Indicator indicator );
+	@Override
+	public Entry entry( final Indicator indicator ) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	Entry entry( Periodic periodic );
+	@Override
+	public Entry entry( final Periodic periodic ) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	Exit exit( Never never );
+	@Override
+	public Exit exit( final Never never ) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	Indicator indicator( IndicatorConfiguration indicator );
+	@Override
+	public Indicator indicator( final IndicatorConfiguration indicator ) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	Operator operator( Operator.Selection operator );
+	@Override
+	public Operator operator( final Operator.Selection operator ) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
