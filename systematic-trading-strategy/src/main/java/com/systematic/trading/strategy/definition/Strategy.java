@@ -36,7 +36,5 @@ package com.systematic.trading.strategy.definition;
  * 
  * @author CJ Hare
  */
-public interface TradingStrategy {
-	
-	//TODO add entry and exit logic
+public interface Strategy {
 }
