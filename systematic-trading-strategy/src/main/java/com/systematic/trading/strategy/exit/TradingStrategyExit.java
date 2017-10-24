@@ -29,8 +29,10 @@
  */
 package com.systematic.trading.strategy.exit;
 
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
+import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.strategy.definition.Exit;
-import com.systematic.trading.strategy.definition.Never;
 
 /**
  * Trading strategy exit behaviour.
@@ -39,9 +41,9 @@ import com.systematic.trading.strategy.definition.Never;
  */
 public class TradingStrategyExit implements Exit {
 
-	private final Never never;
-
-	public TradingStrategyExit( final Never never ) {
-		this.never = never;
+	@Override
+	public EquityOrder exitTick( final BrokerageTransaction broker, final TradingDayPrices data ) {
+		// There's never an order to place :. return null
+		return null;
 	}
 }

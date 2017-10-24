@@ -29,10 +29,14 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import com.systematic.trading.simulation.logic.ExitLogic;
+
 /**
  * Strategy for deciding when to open / enter a position.
  * 
  * @author CJ Hare
  */
-public interface Exit {
+public interface Exit extends ExitLogic {
+
+	//TODO move ExitLogic methods into Exit, remove ExitLogic
 }

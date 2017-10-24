@@ -73,8 +73,8 @@ public class ExpressionLanguageFactory implements ExpressionLanguage {
 	}
 
 	@Override
-	public Exit exit( final Never never ) {
-		return new TradingStrategyExit(never);
+	public Exit exit() {
+		return new TradingStrategyExit();
 	}
 
 	@Override

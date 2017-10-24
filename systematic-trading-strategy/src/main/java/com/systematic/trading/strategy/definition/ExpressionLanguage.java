@@ -66,7 +66,7 @@ public interface ExpressionLanguage {
 
 	Entry entry( Periodic periodic );
 
-	Exit exit( Never never );
+	Exit exit();
 
 	Indicator indicator( IndicatorConfiguration indicator );
 
