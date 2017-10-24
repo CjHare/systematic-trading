@@ -29,6 +29,7 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import com.systematic.trading.strategy.entry.EntryFactory;
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 
 /**
@@ -36,7 +37,9 @@ import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
  * 
  * @author CJ Hare
  */
-public class ExpressionLanguageFacade implements ExpressionLanguage {
+public class ExpressionLanguageFactory implements ExpressionLanguage {
+
+	private final EntryFactory entryFactory = new EntryFactory();
 
 	@Override
 	public Strategy strategy( final Entry entry, final Exit exit ) {
@@ -46,26 +49,22 @@ public class ExpressionLanguageFacade implements ExpressionLanguage {
 
 	@Override
 	public Entry entry( final Entry leftEntry, final Operator op, final Entry righEntry ) {
-		// TODO Auto-generated method stub
-		return null;
+		return entryFactory.entry(leftEntry, op, righEntry);
 	}
 
 	@Override
 	public Entry entry( final Indicator leftIndicator, final Confirmation confirmBy, final Indicator righIndicator ) {
-		// TODO Auto-generated method stub
-		return null;
+		return entryFactory.entry(leftIndicator, confirmBy, righIndicator);
 	}
 
 	@Override
 	public Entry entry( final Indicator indicator ) {
-		// TODO Auto-generated method stub
-		return null;
+		return entryFactory.entry(indicator);
 	}
 
 	@Override
 	public Entry entry( final Periodic periodic ) {
-		// TODO Auto-generated method stub
-		return null;
+		return entryFactory.entry(periodic);
 	}
 
 	@Override
