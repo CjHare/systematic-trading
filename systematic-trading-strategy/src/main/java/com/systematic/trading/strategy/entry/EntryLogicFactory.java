@@ -23,13 +23,11 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.entry;
+package com.systematic.trading.strategy.entry;
 
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.AnalysisLongBuySignals;
@@ -39,48 +37,30 @@ import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.trade.TradeValueLogic;
-import com.systematic.trading.strategy.entry.DateTriggeredEntryLogic;
-import com.systematic.trading.strategy.entry.SignalTriggeredEntryLogic;
 
 /**
- * Creates the instances of Entry Logic.
+ * Factory methods for creating instances of Entry Logic.
  * 
  * @author CJ Hare
  */
 public class EntryLogicFactory {
 
+	//TODO should be retrieved from the largest confirmed range, or one
 	/* Number of days of signals to use when triggering signals.*/
 	private static final int DAYS_ACCEPTING_SIGNALS = 5;
-
-	private static final EntryLogicFactory INSTANCE = new EntryLogicFactory();
-
-	private EntryLogicFactory() {
-	}
-
-	public static final EntryLogicFactory getInstance() {
-		return INSTANCE;
-	}
-
-	public EntryLogic create( final EquityIdentity equity, final LocalDate startDate,
-	        final DepositConfiguration deposit ) {
-		final Period frequency = deposit.getFrequency();
-		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency);
-	}
 
 	public EntryLogic create( final EquityIdentity equity, final LocalDate startDate, final Period frequency ) {
 		return new DateTriggeredEntryLogic(equity.getType(), equity.getScale(), startDate, frequency);
 	}
 
 	public EntryLogic create( final EquityIdentity equity, final TradeValueLogic tradeValue,
-	        final BacktestSimulationDates simulationDates, final SignalFilter filter,
+	        final LocalDate startDateInclusive, final LocalDate endDateInclusive, final SignalFilter filter,
 	        final IndicatorSignals[] entrySignals ) {
-		final LocalDate simulationStartDate = simulationDates.getStartDate();
-		final LocalDate simulationEndDate = simulationDates.getEndDate();
 
 		final SignalFilter[] filters = new SignalFilter[1];
 		final SignalFilter decoratedFilter = new TimePeriodSignalFilterDecorator(
 		        new RollingTimePeriodSignalFilterDecorator(filter, Period.ofDays(DAYS_ACCEPTING_SIGNALS)),
-		        simulationStartDate, simulationEndDate);
+		        startDateInclusive, endDateInclusive);
 		filters[0] = decoratedFilter;
 
 		final AnalysisBuySignals buyLongAnalysis = new AnalysisLongBuySignals(entrySignals, filters);

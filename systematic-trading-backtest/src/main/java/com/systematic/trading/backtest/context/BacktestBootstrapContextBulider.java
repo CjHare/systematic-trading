@@ -37,7 +37,6 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
-import com.systematic.trading.backtest.configuration.entry.EntryLogicFactory;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityManagementFeeConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
@@ -65,6 +64,7 @@ import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueCalculato
 import com.systematic.trading.simulation.logic.trade.BoundedTradeValue;
 import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculator;
 import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
+import com.systematic.trading.strategy.entry.EntryLogicFactory;
 import com.systematic.trading.strategy.exit.HoldForeverExitLogic;
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.IndicatorSignalGeneratorFactory;
@@ -148,7 +148,7 @@ public class BacktestBootstrapContextBulider {
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 		final Brokerage brokerage = BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
 		        startDate);
-		final EntryLogic entry = EntryLogicFactory.getInstance().create(equity.getEquityIdentity(), startDate,
+		final EntryLogic entry = new EntryLogicFactory().create(equity.getEquityIdentity(), startDate,
 		        purchaseFrequency);
 
 		return new BacktestBootstrapContext(entry, getExitLogic(), brokerage, cashAccount, simulationDates);
@@ -270,8 +270,8 @@ public class BacktestBootstrapContextBulider {
 		        new AbsoluteTradeValueCalculator(minimumTrade.getValue()),
 		        new RelativeTradeValueCalculator(maximumTrade.getValue()));
 
-		final EntryLogic entry = EntryLogicFactory.getInstance().create(equity.getEquityIdentity(), tradeValue,
-		        simulationDates, filter, indicators);
+		final EntryLogic entry = new EntryLogicFactory().create(equity.getEquityIdentity(), tradeValue,
+		        simulationDates.getStartDate(), simulationDates.getEndDate(), filter, indicators);
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
 		        equity.getEquityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
