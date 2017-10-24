@@ -29,8 +29,16 @@
  */
 package com.systematic.trading.strategy.definition;
 
-import com.systematic.trading.strategy.entry.EntryFactory;
+import com.systematic.trading.strategy.TradingStrategy;
+import com.systematic.trading.strategy.entry.TradingStrategyConfirmationEntry;
+import com.systematic.trading.strategy.entry.TradingStrategyEntry;
+import com.systematic.trading.strategy.entry.TradingStrategyIndicatorEntry;
+import com.systematic.trading.strategy.entry.TradingStrategyPeriodicEntry;
+import com.systematic.trading.strategy.exit.TradingStrategyExit;
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
+import com.systematic.trading.strategy.indicator.TradingStrategyIndicator;
+import com.systematic.trading.strategy.operator.TradingStrategyAndOperator;
+import com.systematic.trading.strategy.operator.TradingStrategyOrOperator;
 
 /**
  * Implementation of a TradingStrategyExpressionLanguage using a facade to aggregate specialist factories.
@@ -39,49 +47,51 @@ import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
  */
 public class ExpressionLanguageFactory implements ExpressionLanguage {
 
-	private final EntryFactory entryFactory = new EntryFactory();
-
 	@Override
 	public Strategy strategy( final Entry entry, final Exit exit ) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TradingStrategy(entry, exit);
 	}
 
 	@Override
-	public Entry entry( final Entry leftEntry, final Operator op, final Entry righEntry ) {
-		return entryFactory.entry(leftEntry, op, righEntry);
+	public Entry entry( final Entry leftEntry, final Operator operator, final Entry righEntry ) {
+		return new TradingStrategyEntry(leftEntry, operator, righEntry);
 	}
 
 	@Override
-	public Entry entry( final Indicator leftIndicator, final Confirmation confirmBy, final Indicator righIndicator ) {
-		return entryFactory.entry(leftIndicator, confirmBy, righIndicator);
+	public Entry entry( final Indicator anchor, final Confirmation confirmBy, final Indicator confirmation ) {
+		return new TradingStrategyConfirmationEntry(anchor, confirmBy, confirmation);
 	}
 
 	@Override
 	public Entry entry( final Indicator indicator ) {
-		return entryFactory.entry(indicator);
+		return new TradingStrategyIndicatorEntry(indicator);
 	}
 
 	@Override
 	public Entry entry( final Periodic periodic ) {
-		return entryFactory.entry(periodic);
+		return new TradingStrategyPeriodicEntry(periodic);
 	}
 
 	@Override
 	public Exit exit( final Never never ) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TradingStrategyExit(never);
 	}
 
 	@Override
 	public Indicator indicator( final IndicatorConfiguration indicator ) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TradingStrategyIndicator(indicator);
 	}
 
 	@Override
 	public Operator operator( final Operator.Selection operator ) {
-		// TODO Auto-generated method stub
-		return null;
+
+		switch (operator) {
+			case OR:
+				return new TradingStrategyOrOperator();
+
+			default:
+			case AND:
+				return new TradingStrategyAndOperator();
+		}
 	}
 }

@@ -27,38 +27,24 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.entry;
+package com.systematic.trading.strategy;
 
-import com.systematic.trading.strategy.definition.Confirmation;
 import com.systematic.trading.strategy.definition.Entry;
-import com.systematic.trading.strategy.definition.Indicator;
-import com.systematic.trading.strategy.definition.Operator;
-import com.systematic.trading.strategy.definition.Periodic;
+import com.systematic.trading.strategy.definition.Exit;
+import com.systematic.trading.strategy.definition.Strategy;
 
 /**
- * Factory methods for creating Entry instances.
+ * A trading strategy.
  * 
  * @author CJ Hare
  */
-public class EntryFactory {
+public class TradingStrategy implements Strategy {
 
-	public Entry entry( final Entry leftEntry, final Operator op, final Entry righEntry ) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	private final Entry entry;
+	private final Exit exit;
 
-	public Entry entry( final Indicator leftIndicator, final Confirmation confirmBy, final Indicator righIndicator ) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Entry entry( final Indicator indicator ) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Entry entry( final Periodic periodic ) {
-		// TODO Auto-generated method stub
-		return null;
+	public TradingStrategy( final Entry entry, final Exit exit ) {
+		this.entry = entry;
+		this.exit = exit;
 	}
 }
