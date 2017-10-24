@@ -29,12 +29,6 @@
  */
 package com.systematic.trading.strategy.entry;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signal.event.SignalAnalysisListener;
-import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
-import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.order.EquityOrder;
-import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.Indicator;
 
@@ -50,23 +44,5 @@ public class TradingStrategyIndicatorEntry implements Entry {
 
 	public TradingStrategyIndicatorEntry( final Indicator indicator ) {
 		this.indicator = indicator;
-	}
-
-	@Override
-	public EquityOrder entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
-	        final TradingDayPrices data ) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public EquityOrderInsufficientFundsAction actionOnInsufficentFunds( final EquityOrder order ) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void addListener( final SignalAnalysisListener listener ) {
-		// TODO Auto-generated method stub		
 	}
 }

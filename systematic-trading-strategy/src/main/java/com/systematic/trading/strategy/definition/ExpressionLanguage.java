@@ -34,7 +34,7 @@ import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 /**
  * Regular expression language definitions:
  * 
- * Strategy := (Entry) (Exit)
+ * Strategy := (Entry) (EntryPositionSizing) (Exit) (ExitPositionSizing)
  * 
  * 	  Entry := 	(Entry)     (Operator) 		(Entry)
  * 				(indicator) (Confirmation)  (Indicator)
@@ -52,9 +52,16 @@ import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
  * 	Operator := OR
  * 				AND
  * 
+ * 
+ * Position sizing determines the value of the order to place.
+ * 
+ * (Never) is syntactic sugar, as it provide no function it is absent from implementation
+ * 
  * @author CJ Hare
  */
 public interface ExpressionLanguage {
+
+	//TODO position sizing
 
 	Strategy strategy( Entry entry, Exit exit );
 

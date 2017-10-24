@@ -29,14 +29,12 @@
  */
 package com.systematic.trading.strategy.definition;
 
-import com.systematic.trading.simulation.logic.EntryLogic;
-
 /**
  * Approach for deciding when to open / enter a position.
  * 
  * @author CJ Hare
  */
-public interface Entry extends EntryLogic {
+public interface Entry {
 
 	//TODO move EntryLogic methods into Entry, remove EntryLogic
 }
