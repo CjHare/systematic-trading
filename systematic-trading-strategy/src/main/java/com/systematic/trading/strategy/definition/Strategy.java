@@ -29,10 +29,13 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import com.systematic.trading.simulation.logic.EntryLogic;
+import com.systematic.trading.simulation.logic.ExitLogic;
+
 /**
  * A trading strategy that comprises of position sizing combined with entry and exit behaviour.
  * 
  * @author CJ Hare
  */
-public interface Strategy {
+public interface Strategy extends EntryLogic, ExitLogic {
 }

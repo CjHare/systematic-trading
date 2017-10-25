@@ -29,6 +29,13 @@
  */
 package com.systematic.trading.strategy;
 
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signal.event.SignalAnalysisListener;
+import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.order.EquityOrder;
+import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.EntrySize;
 import com.systematic.trading.strategy.definition.Exit;
@@ -42,9 +49,16 @@ import com.systematic.trading.strategy.definition.Strategy;
  */
 public class TradingStrategy implements Strategy {
 
+	/** Decides for when an entry trade occurs. */
 	private final Entry entry;
+
+	/** Decides when an exit trade occurs. */
 	private final Exit exit;
+
+	/** Decides the size of the entry trade. */
 	private final EntrySize entryPositionSizing;
+
+	/** Decides the size of the exit trade. */
 	private final ExitSize exitPositionSizing;
 
 	public TradingStrategy( final Entry entry, final EntrySize entryPositionSizing, final Exit exit,
@@ -53,5 +67,36 @@ public class TradingStrategy implements Strategy {
 		this.exit = exit;
 		this.entryPositionSizing = entryPositionSizing;
 		this.exitPositionSizing = exitPositionSizing;
+	}
+
+	@Override
+	public EquityOrder entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+	        final TradingDayPrices data ) {
+
+		//TODO entry 
+
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EquityOrderInsufficientFundsAction actionOnInsufficentFunds( final EquityOrder order ) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EquityOrder exitTick( final BrokerageTransaction broker, final TradingDayPrices data ) {
+
+		//TODO exit
+
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addListener( final SignalAnalysisListener listener ) {
+
+		//TODO move the listener into the indicator, as they are the ones that fire events
 	}
 }
