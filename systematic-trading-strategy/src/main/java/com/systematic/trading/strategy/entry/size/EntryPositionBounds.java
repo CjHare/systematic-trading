@@ -32,11 +32,11 @@ package com.systematic.trading.strategy.entry.size;
 import java.math.BigDecimal;
 
 /**
- * A boundary / limit applicable to an entry position that is based on the available capital.
+ * A boundary / limit applicable to an entry position.
  * 
  * @author CJ Hare
  */
-public interface CapitalEntryPositionBounds {
+public interface EntryPositionBounds {
 
 	/**
 	 * Retrieves the amount to spend on equities.

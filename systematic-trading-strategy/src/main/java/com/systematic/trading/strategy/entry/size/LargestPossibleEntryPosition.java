@@ -46,17 +46,17 @@ import com.systematic.trading.strategy.definition.EntrySize;
 public class LargestPossibleEntryPosition implements EntrySize {
 
 	/** The lower cap on the opening position size . */
-	private final CapitalEntryPositionBounds minimum;
+	private final EntryPositionBounds minimum;
 
 	/** The upper cap on the opening position size . */
-	private final CapitalEntryPositionBounds maximum;
+	private final EntryPositionBounds maximum;
 
 	/**
 	 * @param minimum lower cap on the opening position size.
 	 * @param maximum upper cap on the opening position size.
 	 */
-	public LargestPossibleEntryPosition( final CapitalEntryPositionBounds minimum,
-	        final CapitalEntryPositionBounds maximum ) {
+	public LargestPossibleEntryPosition( final EntryPositionBounds minimum,
+	        final EntryPositionBounds maximum ) {
 		this.minimum = minimum;
 		this.maximum = maximum;
 	}

@@ -58,10 +58,10 @@ import com.systematic.trading.strategy.matcher.BigDecimalMatcher;
 public class LargestPossibleEntryPositionTest {
 
 	@Mock
-	private CapitalEntryPositionBounds minimum;
+	private EntryPositionBounds minimum;
 
 	@Mock
-	private CapitalEntryPositionBounds maximum;
+	private EntryPositionBounds maximum;
 
 	@Mock
 	private CashAccount cashAccount;
