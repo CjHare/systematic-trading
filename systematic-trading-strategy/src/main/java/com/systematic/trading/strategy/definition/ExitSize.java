@@ -27,31 +27,13 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy;
-
-import com.systematic.trading.strategy.definition.Entry;
-import com.systematic.trading.strategy.definition.EntrySize;
-import com.systematic.trading.strategy.definition.Exit;
-import com.systematic.trading.strategy.definition.ExitSize;
-import com.systematic.trading.strategy.definition.Strategy;
+package com.systematic.trading.strategy.definition;
 
 /**
- * A trading strategy.
+ * Determines the size of the exit trade to make.
  * 
  * @author CJ Hare
  */
-public class TradingStrategy implements Strategy {
+public interface ExitSize {
 
-	private final Entry entry;
-	private final Exit exit;
-	private final EntrySize entryPositionSizing;
-	private final ExitSize exitPositionSizing;
-
-	public TradingStrategy( final Entry entry, final EntrySize entryPositionSizing, final Exit exit,
-	        final ExitSize exitPositionSizing ) {
-		this.entry = entry;
-		this.exit = exit;
-		this.entryPositionSizing = entryPositionSizing;
-		this.exitPositionSizing = exitPositionSizing;
-	}
 }

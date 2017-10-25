@@ -34,7 +34,7 @@ import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 /**
  * Regular expression language definitions:
  * 
- * Strategy := (Entry) (EntryPositionSizing) (Exit) (ExitPositionSizing)
+ * Strategy := (Entry) (EntrySize) (Exit) (ExitSize)
  * 
  * 	  Entry := 	(Entry)     (Operator) 		(Entry)
  * 				(indicator) (Confirmation)  (Indicator)
@@ -61,9 +61,7 @@ import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
  */
 public interface ExpressionLanguage {
 
-	//TODO position sizing
-
-	Strategy strategy( Entry entry, Exit exit );
+	Strategy strategy( Entry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing );
 
 	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
 

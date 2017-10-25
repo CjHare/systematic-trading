@@ -48,8 +48,9 @@ import com.systematic.trading.strategy.operator.TradingStrategyOrOperator;
 public class ExpressionLanguageFactory implements ExpressionLanguage {
 
 	@Override
-	public Strategy strategy( final Entry entry, final Exit exit ) {
-		return new TradingStrategy(entry, exit);
+	public Strategy strategy( final Entry entry, final EntrySize entryPositionSizing, final Exit exit,
+	        final ExitSize exitPositionSizing ) {
+		return new TradingStrategy(entry, entryPositionSizing, exit, exitPositionSizing);
 	}
 
 	@Override
