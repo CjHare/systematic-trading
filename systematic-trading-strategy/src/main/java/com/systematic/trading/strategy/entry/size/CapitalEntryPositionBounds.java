@@ -27,24 +27,22 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy.entry.size;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.simulation.cash.CashAccount;
-
 /**
- * Determines the size of the entry trade to perform.
+ * A boundary / limit applicable to an entry position that is based on the available capital.
  * 
  * @author CJ Hare
  */
-public interface EntrySize {
+public interface CapitalEntryPositionBounds {
 
 	/**
 	 * Retrieves the amount to spend on equities.
 	 * 
-	 * @param cashAccount currently available capital.
-	 * @return capital amount to spend, never <code>null</code>
+	 * @param funds the liquid cash position.
+	 * @return amount of capital to spend, never <code>null</code>
 	 */
-	BigDecimal entryPositionSize( final CashAccount cashAccount );
+	BigDecimal bounds( BigDecimal funds );
 }
