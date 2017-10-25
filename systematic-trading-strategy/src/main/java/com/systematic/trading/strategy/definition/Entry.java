@@ -29,6 +29,12 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.order.EquityOrder;
+import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
+
 /**
  * Approach for deciding when to open / enter a position.
  * 
@@ -36,5 +42,23 @@ package com.systematic.trading.strategy.definition;
  */
 public interface Entry {
 
-	//TODO move EntryLogic methods into Entry, remove EntryLogic
+	/**
+	 * Updates the trading logic with a subsequent trading point.
+	 * 
+	 * @param fees the brokerage to execute the order with, and whose fees are to be included in the
+	 *            transaction.
+	 * @param cashAccount currently available funds.
+	 * @param data next day of trading to add, also applying logic for trade signals.
+	 * @return whether an entry order should be placed.
+	 */
+	boolean entryTick( BrokerageTransactionFee fees, CashAccount cashAccount, TradingDayPrices data );
+
+	/**
+	 * Action to take on the order when the triggering conditions are met, however there are
+	 * insufficient available funds.
+	 * 
+	 * @param order that cannot be executed, due to lack of funds.
+	 * @return action to take in this situation.
+	 */
+	EquityOrderInsufficientFundsAction actionOnInsufficentFunds( EquityOrder order );
 }

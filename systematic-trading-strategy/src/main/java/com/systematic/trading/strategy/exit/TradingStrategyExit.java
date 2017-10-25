@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.strategy.exit;
 
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.strategy.definition.Exit;
 
 /**
@@ -38,4 +40,10 @@ import com.systematic.trading.strategy.definition.Exit;
  */
 public class TradingStrategyExit implements Exit {
 
+	@Override
+	public boolean exitTick( final BrokerageTransaction broker, final TradingDayPrices data ) {
+
+		// There's never an order to place
+		return false;
+	}
 }

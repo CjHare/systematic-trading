@@ -29,6 +29,7 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 
 /**
@@ -60,7 +61,8 @@ import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
  */
 public interface ExpressionLanguage {
 
-	Strategy strategy( Entry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing );
+	Strategy strategy( Entry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing,
+	        EquityClass type, int scale );
 
 	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
 

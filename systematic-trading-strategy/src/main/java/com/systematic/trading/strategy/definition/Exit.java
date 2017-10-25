@@ -29,6 +29,9 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
+
 /**
  * Strategy for deciding when to open / enter a position.
  * 
@@ -36,5 +39,12 @@ package com.systematic.trading.strategy.definition;
  */
 public interface Exit {
 
-	//TODO move ExitLogic methods into Exit, remove ExitLogic
+	/**
+	 * Updates the trading logic with a subsequent trading point and open positions.
+	 * 
+	 * @param broker the positions currently open.
+	 * @param data next day of trading to add, also applying logic for trade signals.
+	 * @return whether an exit order should be placed.
+	 */
+	boolean exitTick( BrokerageTransaction broker, TradingDayPrices data );
 }

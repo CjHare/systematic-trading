@@ -29,6 +29,11 @@
  */
 package com.systematic.trading.strategy.entry;
 
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.order.EquityOrder;
+import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.Operator;
 
@@ -47,5 +52,18 @@ public class TradingStrategyEntry implements Entry {
 		this.leftEntry = leftEntry;
 		this.righEntry = righEntry;
 		this.operator = operator;
+	}
+
+	@Override
+	public boolean entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+	        final TradingDayPrices data ) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public EquityOrderInsufficientFundsAction actionOnInsufficentFunds( final EquityOrder order ) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
