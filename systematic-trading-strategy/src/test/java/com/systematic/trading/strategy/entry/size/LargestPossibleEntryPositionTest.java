@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.strategy.entry.size;
 
-import static org.junit.Assert.assertEquals;
+import static com.systematic.trading.strategy.util.SystematicTradingStrategyAssert.assertBigDecimalEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -210,10 +210,5 @@ public class LargestPossibleEntryPositionTest {
 
 	private void setUpMaximumBounds( final double amount ) {
 		when(maximum.bounds(any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(amount));
-	}
-
-	//TODO into a utility method
-	public static void assertBigDecimalEquals( final double expected, BigDecimal actual ) {
-		assertEquals(String.format("%s != %s", expected, actual), 0, BigDecimal.valueOf(expected).compareTo(actual));
 	}
 }
