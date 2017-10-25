@@ -27,52 +27,15 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy.exit.size;
 
-import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
+import com.systematic.trading.strategy.definition.ExitSize;
 
 /**
- * Regular expression language definitions:
- * 
- * Strategy := (Entry) (EntrySize) (Exit) (ExitSize)
- * 
- * 	  Entry := 	(Entry)     (Operator) 		(Entry)
- * 				(indicator) (Confirmation)  (Indicator)
- * 				(indicator)
- * 				(Periodic)
- * 
- * 		Exit := (Never)
- * 
- * Indicator := ATR
- * 				EMA
- * 				MACD
- * 				SMA
- * 				RSI
- *   
- * 	Operator := OR
- * 				AND
- * 
- * Position sizing determines the value of the order to place.
- * 
- * (Never) is syntactic sugar, as it provide no function it is absent from implementation
+ * When you never want to exit a position.
  * 
  * @author CJ Hare
  */
-public interface ExpressionLanguage {
+public class NeverExitPosition implements ExitSize {
 
-	Strategy strategy( Entry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing );
-
-	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
-
-	Entry entry( Indicator leftIndicator, Confirmation confirmBy, Indicator righIndicator );
-
-	Entry entry( Indicator indicator );
-
-	Entry entry( Periodic periodic );
-
-	Exit exit();
-
-	Indicator indicator( IndicatorConfiguration indicator );
-
-	Operator operator( Operator.Selection operator );
 }
