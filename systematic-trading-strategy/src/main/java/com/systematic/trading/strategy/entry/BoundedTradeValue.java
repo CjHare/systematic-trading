@@ -63,14 +63,4 @@ public class BoundedTradeValue implements TradeValueLogic {
 
 		return tradeValue;
 	}
-
-	@Override
-	public TradeValueCalculator getMinimumValue() {
-		return minimum;
-	}
-
-	@Override
-	public TradeValueCalculator getMaximumValue() {
-		return maximum;
-	}
 }
