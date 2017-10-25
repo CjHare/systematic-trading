@@ -23,36 +23,40 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.logic.trade;
+package com.systematic.trading.strategy.entry;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 /**
- * Configuration for trade value that uses an absolute value.
+ * Configuration for trade value that uses a relative value, percentage of the funds.
  * 
  * @author CJ Hare
  */
-public class AbsoluteTradeValueCalculator implements TradeValueCalculator {
+public class RelativeTradeValueCalculator implements TradeValueCalculator {
 
-	/** The only value to ever use. */
-	private final BigDecimal value;
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
-	public AbsoluteTradeValueCalculator( final BigDecimal value ) {
-		this.value = value;
+	/** Value between zero and one, the percentage of the funds to use in a trade. */
+	private final BigDecimal percentage;
+
+	public RelativeTradeValueCalculator( final BigDecimal percentage ) {
+		this.percentage = percentage;
 	}
 
 	@Override
 	public BigDecimal getValue() {
-		return value;
+		return percentage;
 	}
 
 	@Override
 	public Type getType() {
-		return Type.ABSOLUTE;
+		return Type.RELATIVE;
 	}
 
 	@Override
 	public BigDecimal getTradeValue( final BigDecimal funds ) {
-		return value;
+		return funds.multiply(percentage, MATH_CONTEXT);
 	}
 }

@@ -23,54 +23,36 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.logic.trade;
+package com.systematic.trading.strategy.entry;
 
 import java.math.BigDecimal;
 
 /**
- * Trade value with minimum and maximum thresholds.
+ * Configuration for trade value that uses an absolute value.
  * 
  * @author CJ Hare
  */
-public class BoundedTradeValue implements TradeValueLogic {
+public class AbsoluteTradeValueCalculator implements TradeValueCalculator {
 
-	/** Smallest value to trade. */
-	private final TradeValueCalculator minimum;
+	/** The only value to ever use. */
+	private final BigDecimal value;
 
-	/** Smallest value to trade. */
-	private final TradeValueCalculator maximum;
-
-	public BoundedTradeValue( final TradeValueCalculator minimum, final TradeValueCalculator maximum ) {
-		this.minimum = minimum;
-		this.maximum = maximum;
+	public AbsoluteTradeValueCalculator( final BigDecimal value ) {
+		this.value = value;
 	}
 
 	@Override
-	public BigDecimal calculate( final BigDecimal funds ) {
-
-		BigDecimal tradeValue = minimum.getTradeValue(funds);
-
-		// If above the minimum there's a chance to use the percentage
-		if (tradeValue.compareTo(funds) < 0) {
-
-			final BigDecimal maximumTradeValue = maximum.getTradeValue(funds);
-
-			// Only when the maximum is above the threshold, use it
-			if (maximumTradeValue.compareTo(tradeValue) > 0) {
-				tradeValue = maximumTradeValue;
-			}
-		}
-
-		return tradeValue;
+	public BigDecimal getValue() {
+		return value;
 	}
 
 	@Override
-	public TradeValueCalculator getMinimumValue() {
-		return minimum;
+	public Type getType() {
+		return Type.ABSOLUTE;
 	}
 
 	@Override
-	public TradeValueCalculator getMaximumValue() {
-		return maximum;
+	public BigDecimal getTradeValue( final BigDecimal funds ) {
+		return value;
 	}
 }

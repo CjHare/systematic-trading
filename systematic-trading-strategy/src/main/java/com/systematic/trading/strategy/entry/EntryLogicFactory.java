@@ -36,7 +36,6 @@ import com.systematic.trading.signals.model.filter.RollingTimePeriodSignalFilter
 import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.signals.model.filter.TimePeriodSignalFilterDecorator;
 import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.trade.TradeValueLogic;
 
 /**
  * Factory methods for creating instances of Entry Logic.

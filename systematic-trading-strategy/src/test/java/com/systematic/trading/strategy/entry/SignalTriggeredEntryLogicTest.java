@@ -56,7 +56,6 @@ import com.systematic.trading.signals.AnalysisBuySignals;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.logic.trade.TradeValueLogic;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.strategy.matcher.BigDecimalMatcher;

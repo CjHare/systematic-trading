@@ -23,36 +23,47 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.logic.trade;
+package com.systematic.trading.strategy.entry;
 
 import java.math.BigDecimal;
 
 /**
- * Amounts for trade value minimum and maximum threshold.
+ * Details of a specific trading behaviour and how it's calculated.
  * 
  * @author CJ Hare
  */
-public interface TradeValueLogic {
+public interface TradeValueCalculator {
+
+	//TODO rename as TradeValue after everything builds again
+	
+	/**
+	 * ABSOLUTE is taken as the actual spend in currency.
+	 * RELATIVE is to the total of funds available.
+	 */
+	enum Type {
+		ABSOLUTE,
+		RELATIVE;
+	}
 
 	/**
-	 * Retrieves the amount to spend on equities.
+	 * Configuration value used in calculating a trade amount.
 	 * 
-	 * @param funds the total amount in the trading account.
-	 * @return minimum value, never <code>null</code>
+	 * @return value whose application is defined by the type.
 	 */
-	BigDecimal calculate( BigDecimal funds );
+	BigDecimal getValue();
 
 	/**
-	 * Calculator used for determining the minimum trade value.
+	 * Defines the behaviour applied with the value to calculate the trade amount.
 	 * 
-	 * @return how the lowest value for trade entry is calculated.
+	 * @return how the value is used in the calculating the amount of equities to trade.
 	 */
-	TradeValueCalculator getMinimumValue();
+	Type getType();
 
 	/**
-	 * Calculator used for determining the maximum trade value.
+	 * Calculates the appropriate trade value for the given funds.
 	 * 
-	 * @return how the highest value for trade entry is calculated.
+	 * @param funds total trading funds.
+	 * @return how much to spend on this trade.
 	 */
-	TradeValueCalculator getMaximumValue();
+	BigDecimal getTradeValue( BigDecimal funds );
 }

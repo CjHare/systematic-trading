@@ -60,11 +60,11 @@ import com.systematic.trading.simulation.equity.fee.management.PeriodicEquityMan
 import com.systematic.trading.simulation.equity.fee.management.ZeroEquityManagementFeeCalculator;
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
-import com.systematic.trading.simulation.logic.trade.AbsoluteTradeValueCalculator;
-import com.systematic.trading.simulation.logic.trade.BoundedTradeValue;
-import com.systematic.trading.simulation.logic.trade.RelativeTradeValueCalculator;
 import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
+import com.systematic.trading.strategy.entry.AbsoluteTradeValueCalculator;
+import com.systematic.trading.strategy.entry.BoundedTradeValue;
 import com.systematic.trading.strategy.entry.EntryLogicFactory;
+import com.systematic.trading.strategy.entry.RelativeTradeValueCalculator;
 import com.systematic.trading.strategy.exit.HoldForeverExitLogic;
 import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.IndicatorSignalGeneratorFactory;

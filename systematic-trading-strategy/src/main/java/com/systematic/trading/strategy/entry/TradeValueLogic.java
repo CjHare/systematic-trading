@@ -23,40 +23,36 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.logic.trade;
+package com.systematic.trading.strategy.entry;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 /**
- * Configuration for trade value that uses a relative value, percentage of the funds.
+ * Amounts for trade value minimum and maximum threshold.
  * 
  * @author CJ Hare
  */
-public class RelativeTradeValueCalculator implements TradeValueCalculator {
+public interface TradeValueLogic {
 
-	/** Scale, precision and rounding to apply to mathematical operations. */
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
+	/**
+	 * Retrieves the amount to spend on equities.
+	 * 
+	 * @param funds the total amount in the trading account.
+	 * @return minimum value, never <code>null</code>
+	 */
+	BigDecimal calculate( BigDecimal funds );
 
-	/** Value between zero and one, the percentage of the funds to use in a trade. */
-	private final BigDecimal percentage;
+	/**
+	 * Calculator used for determining the minimum trade value.
+	 * 
+	 * @return how the lowest value for trade entry is calculated.
+	 */
+	TradeValueCalculator getMinimumValue();
 
-	public RelativeTradeValueCalculator( final BigDecimal percentage ) {
-		this.percentage = percentage;
-	}
-
-	@Override
-	public BigDecimal getValue() {
-		return percentage;
-	}
-
-	@Override
-	public Type getType() {
-		return Type.RELATIVE;
-	}
-
-	@Override
-	public BigDecimal getTradeValue( final BigDecimal funds ) {
-		return funds.multiply(percentage, MATH_CONTEXT);
-	}
+	/**
+	 * Calculator used for determining the maximum trade value.
+	 * 
+	 * @return how the highest value for trade entry is calculated.
+	 */
+	TradeValueCalculator getMaximumValue();
 }

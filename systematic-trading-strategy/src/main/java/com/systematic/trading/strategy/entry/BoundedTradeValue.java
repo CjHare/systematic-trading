@@ -23,47 +23,54 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.logic.trade;
+package com.systematic.trading.strategy.entry;
 
 import java.math.BigDecimal;
 
 /**
- * Details of a specific trading behaviour and how it's calculated.
+ * Trade value with minimum and maximum thresholds.
  * 
  * @author CJ Hare
  */
-public interface TradeValueCalculator {
+public class BoundedTradeValue implements TradeValueLogic {
 
-	//TODO rename as TradeValue after everything builds again
-	
-	/**
-	 * ABSOLUTE is taken as the actual spend in currency.
-	 * RELATIVE is to the total of funds available.
-	 */
-	enum Type {
-		ABSOLUTE,
-		RELATIVE;
+	/** Smallest value to trade. */
+	private final TradeValueCalculator minimum;
+
+	/** Smallest value to trade. */
+	private final TradeValueCalculator maximum;
+
+	public BoundedTradeValue( final TradeValueCalculator minimum, final TradeValueCalculator maximum ) {
+		this.minimum = minimum;
+		this.maximum = maximum;
 	}
 
-	/**
-	 * Configuration value used in calculating a trade amount.
-	 * 
-	 * @return value whose application is defined by the type.
-	 */
-	BigDecimal getValue();
+	@Override
+	public BigDecimal calculate( final BigDecimal funds ) {
 
-	/**
-	 * Defines the behaviour applied with the value to calculate the trade amount.
-	 * 
-	 * @return how the value is used in the calculating the amount of equities to trade.
-	 */
-	Type getType();
+		BigDecimal tradeValue = minimum.getTradeValue(funds);
 
-	/**
-	 * Calculates the appropriate trade value for the given funds.
-	 * 
-	 * @param funds total trading funds.
-	 * @return how much to spend on this trade.
-	 */
-	BigDecimal getTradeValue( BigDecimal funds );
+		// If above the minimum there's a chance to use the percentage
+		if (tradeValue.compareTo(funds) < 0) {
+
+			final BigDecimal maximumTradeValue = maximum.getTradeValue(funds);
+
+			// Only when the maximum is above the threshold, use it
+			if (maximumTradeValue.compareTo(tradeValue) > 0) {
+				tradeValue = maximumTradeValue;
+			}
+		}
+
+		return tradeValue;
+	}
+
+	@Override
+	public TradeValueCalculator getMinimumValue() {
+		return minimum;
+	}
+
+	@Override
+	public TradeValueCalculator getMaximumValue() {
+		return maximum;
+	}
 }
