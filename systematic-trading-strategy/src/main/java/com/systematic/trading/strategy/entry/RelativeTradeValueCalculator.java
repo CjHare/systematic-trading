@@ -46,16 +46,6 @@ public class RelativeTradeValueCalculator implements TradeValueCalculator {
 	}
 
 	@Override
-	public BigDecimal getValue() {
-		return percentage;
-	}
-
-	@Override
-	public Type getType() {
-		return Type.RELATIVE;
-	}
-
-	@Override
 	public BigDecimal getTradeValue( final BigDecimal funds ) {
 		return funds.multiply(percentage, MATH_CONTEXT);
 	}

@@ -42,16 +42,6 @@ public class AbsoluteTradeValueCalculator implements TradeValueCalculator {
 	}
 
 	@Override
-	public BigDecimal getValue() {
-		return value;
-	}
-
-	@Override
-	public Type getType() {
-		return Type.ABSOLUTE;
-	}
-
-	@Override
 	public BigDecimal getTradeValue( final BigDecimal funds ) {
 		return value;
 	}
