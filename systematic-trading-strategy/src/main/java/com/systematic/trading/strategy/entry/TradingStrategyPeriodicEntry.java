@@ -29,10 +29,7 @@
  */
 package com.systematic.trading.strategy.entry;
 
-import java.util.List;
-
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signals.model.DatedSignal;
 import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.Periodic;
 
@@ -50,8 +47,14 @@ public class TradingStrategyPeriodicEntry implements Entry {
 	}
 
 	@Override
-	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+	public boolean analyse( final TradingDayPrices[] data ) {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
+	}
+
+	@Override
+	public int getMaximumNumberOfTradingDaysRequired() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

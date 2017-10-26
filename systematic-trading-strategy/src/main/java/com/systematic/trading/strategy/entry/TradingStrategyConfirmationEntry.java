@@ -56,8 +56,14 @@ public class TradingStrategyConfirmationEntry implements Entry {
 	}
 
 	@Override
-	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+	public boolean analyse( final TradingDayPrices[] data ) {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
+	}
+
+	@Override
+	public int getMaximumNumberOfTradingDaysRequired() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

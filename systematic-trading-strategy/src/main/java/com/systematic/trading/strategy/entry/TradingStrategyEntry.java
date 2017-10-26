@@ -29,7 +29,11 @@
  */
 package com.systematic.trading.strategy.entry;
 
+import java.util.List;
+
+import com.systematic.trading.collection.LimitedSizeQueue;
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.model.DatedSignal;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.strategy.definition.Entry;
@@ -45,14 +49,25 @@ public class TradingStrategyEntry implements StrategyEntry {
 	/** Entry that performs the signal generation. */
 	private final Entry entry;
 
+	/** The trading data as it rolled through the set. */
+	private final LimitedSizeQueue<TradingDayPrices> tradingData;
+
 	public TradingStrategyEntry( final Entry entry ) {
 		this.entry = entry;
+
+		this.tradingData = new LimitedSizeQueue<>(TradingDayPrices.class,
+		        entry.getMaximumNumberOfTradingDaysRequired());
 	}
 
 	@Override
 	public boolean entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
 	        final TradingDayPrices data ) {
-		// TODO Auto-generated method stub
-		return false;
+
+		// Add the day's data to the rolling queue
+		tradingData.add(data);
+
+		//TODO change to avoid converting to a list
+		// Create signals from the available trading data
+		return entry.analyse(tradingData.toArray());
 	}
 }

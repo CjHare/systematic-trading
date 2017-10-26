@@ -47,7 +47,7 @@ public interface StrategyEntry {
 	 *            transaction.
 	 * @param cashAccount currently available funds.
 	 * @param data next day of trading to add, also applying logic for trade signals.
-	 * @return whether an entry order should be placed.
+	 * @return whether an entry order should be placed on the next trading day.
 	 */
 	boolean entryTick( BrokerageTransactionFee fees, CashAccount cashAccount, TradingDayPrices data );
 }
