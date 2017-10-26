@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.strategy.operator;
 
-import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * Excludes any signal event not within the set of acceptable signals.

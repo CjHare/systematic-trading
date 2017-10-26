@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.strategy.confirmation;
 
-import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * Inclusive range of days relative to a signal date that a confirmation signal is required. 

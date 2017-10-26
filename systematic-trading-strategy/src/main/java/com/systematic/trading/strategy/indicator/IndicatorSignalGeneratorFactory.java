@@ -54,6 +54,11 @@ import com.systematic.trading.signals.generator.macd.MovingAverageConvergenceDiv
 import com.systematic.trading.signals.generator.rsi.RelativeStrengthIndexBearishSignalGenerator;
 import com.systematic.trading.signals.generator.rsi.RelativeStrengthIndexBullishSignalGenerator;
 import com.systematic.trading.signals.generator.sma.SimpleMovingAverageBullishGradientSignalGenerator;
+import com.systematic.trading.strategy.indicator.configuration.EmaUptrendConfiguration;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
+import com.systematic.trading.strategy.indicator.configuration.MacdConfiguration;
+import com.systematic.trading.strategy.indicator.configuration.RsiConfiguration;
+import com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration;
 
 /**
  * A singleton factory for creating signal instances.

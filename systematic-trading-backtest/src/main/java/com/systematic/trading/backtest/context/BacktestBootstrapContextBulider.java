@@ -66,8 +66,8 @@ import com.systematic.trading.strategy.entry.BoundedTradeValue;
 import com.systematic.trading.strategy.entry.EntryLogicFactory;
 import com.systematic.trading.strategy.entry.RelativeTradeValueCalculator;
 import com.systematic.trading.strategy.exit.HoldForeverExitLogic;
-import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.IndicatorSignalGeneratorFactory;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 import com.systematic.trading.strategy.operator.AnyOfIndicatorFilterConfiguration;
 import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
 

@@ -30,7 +30,7 @@
 package com.systematic.trading.strategy.definition;
 
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * Regular expression language definitions:

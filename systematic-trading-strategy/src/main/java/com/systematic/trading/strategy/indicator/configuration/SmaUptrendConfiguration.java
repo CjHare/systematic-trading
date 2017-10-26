@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.indicator;
+package com.systematic.trading.strategy.indicator.configuration;
 
 import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.strategy.indicator.filter.IndicatorSignalFilter;
@@ -32,15 +32,15 @@ import com.systematic.trading.strategy.indicator.filter.IndicatorSignalFilter;
  * Configuration for the SMA signal calculator.
  * 
  * Five days of gradient is chosen to support being used with the 1-4 days confirmation.
- *  
+ * 
  * @author CJ Hare
  */
-public class EmaUptrendConfiguration extends IndicatorConfigurationBase {
+public class SmaUptrendConfiguration extends IndicatorConfigurationBase {
 
 	private final int lookback;
 	private final int daysOfGradient;
 
-	public EmaUptrendConfiguration( final int lookback, final int daysOfGradient, final IndicatorSignalFilter filter,
+	public SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final IndicatorSignalFilter filter,
 	        final String description ) {
 		super(new IndicatorId(description), filter, description);
 		this.daysOfGradient = daysOfGradient;

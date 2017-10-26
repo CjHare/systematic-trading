@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.strategy.operator;
 
-import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * Filter to exclude any set of events that are not all on the same day.

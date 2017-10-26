@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.trial.configuration;
 
-import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * Converts the backtest configuration into the strategy package instance equivalent.
@@ -39,23 +39,23 @@ import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 public class ConfigurationTranslator {
 
 	public IndicatorConfiguration translate( final MacdConfiguration macdConfiguration ) {
-		return new com.systematic.trading.strategy.indicator.MacdConfiguration(macdConfiguration.getFastTimePeriods(),
+		return new com.systematic.trading.strategy.indicator.configuration.MacdConfiguration(macdConfiguration.getFastTimePeriods(),
 		        macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
 		        macdConfiguration.getDescription());
 	}
 
 	public IndicatorConfiguration translate( final RsiConfiguration rsiConfiguration ) {
-		return new com.systematic.trading.strategy.indicator.RsiConfiguration(rsiConfiguration.getLookback(),
+		return new com.systematic.trading.strategy.indicator.configuration.RsiConfiguration(rsiConfiguration.getLookback(),
 		        rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), rsiConfiguration.getDescription());
 	}
 
 	public IndicatorConfiguration translate( final SmaUptrendConfiguration smaConfiguration ) {
-		return new com.systematic.trading.strategy.indicator.SmaUptrendConfiguration(smaConfiguration.getLookback(),
+		return new com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration(smaConfiguration.getLookback(),
 		        smaConfiguration.getDaysOfGradient(), smaConfiguration.getDescription());
 	}
 
 	public IndicatorConfiguration translate( final EmaUptrendConfiguration emaConfiguration ) {
-		return new com.systematic.trading.strategy.indicator.EmaUptrendConfiguration(emaConfiguration.getLookback(),
+		return new com.systematic.trading.strategy.indicator.configuration.EmaUptrendConfiguration(emaConfiguration.getLookback(),
 		        emaConfiguration.getDaysOfGradient(), emaConfiguration.getDescription());
 	}
 }

@@ -23,9 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.indicator;
-
-import java.math.BigDecimal;
+package com.systematic.trading.strategy.indicator.configuration;
 
 import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.strategy.indicator.filter.IndicatorSignalFilter;
@@ -35,29 +33,29 @@ import com.systematic.trading.strategy.indicator.filter.IndicatorSignalFilter;
  * 
  * @author CJ Hare
  */
-public class RsiConfiguration extends IndicatorConfigurationBase {
+public class MacdConfiguration extends IndicatorConfigurationBase {
 
-	private final int lookback;
-	private final BigDecimal oversold;
-	private final BigDecimal overbought;
+	private final int fastTimePeriods;
+	private final int slowTimePeriods;
+	private final int signalTimePeriods;
 
-	public RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
+	public MacdConfiguration( final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
 	        final IndicatorSignalFilter filter, final String description ) {
 		super(new IndicatorId(description), filter, description);
-		this.lookback = lookback;
-		this.oversold = oversold;
-		this.overbought = overbought;
+		this.fastTimePeriods = fastTimePeriods;
+		this.slowTimePeriods = slowTimePeriods;
+		this.signalTimePeriods = signalTimePeriods;
 	}
 
-	public int getLookback() {
-		return lookback;
+	public int getFastTimePeriods() {
+		return fastTimePeriods;
 	}
 
-	public BigDecimal getOversold() {
-		return oversold;
+	public int getSlowTimePeriods() {
+		return slowTimePeriods;
 	}
 
-	public BigDecimal getOverbought() {
-		return overbought;
+	public int getSignalTimePeriods() {
+		return signalTimePeriods;
 	}
 }

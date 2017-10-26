@@ -34,6 +34,7 @@ import java.util.List;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.strategy.definition.Indicator;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * Trading strategy indicator that generates signals.

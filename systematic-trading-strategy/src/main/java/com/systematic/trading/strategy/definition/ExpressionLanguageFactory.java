@@ -36,8 +36,8 @@ import com.systematic.trading.strategy.entry.TradingStrategyEntry;
 import com.systematic.trading.strategy.entry.TradingStrategyIndicatorEntry;
 import com.systematic.trading.strategy.entry.TradingStrategyPeriodicEntry;
 import com.systematic.trading.strategy.exit.TradingStrategyExit;
-import com.systematic.trading.strategy.indicator.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.TradingStrategyIndicator;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 import com.systematic.trading.strategy.operator.TradingStrategyAndOperator;
 import com.systematic.trading.strategy.operator.TradingStrategyOrOperator;
 
