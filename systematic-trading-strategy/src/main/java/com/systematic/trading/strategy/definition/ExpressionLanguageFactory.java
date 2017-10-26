@@ -32,7 +32,7 @@ package com.systematic.trading.strategy.definition;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.strategy.TradingStrategy;
 import com.systematic.trading.strategy.entry.TradingStrategyConfirmationEntry;
-import com.systematic.trading.strategy.entry.TradingStrategyEntry;
+import com.systematic.trading.strategy.entry.TradingStrategyOperatorEntry;
 import com.systematic.trading.strategy.entry.TradingStrategyIndicatorEntry;
 import com.systematic.trading.strategy.entry.TradingStrategyPeriodicEntry;
 import com.systematic.trading.strategy.exit.TradingStrategyExit;
@@ -54,7 +54,7 @@ public class ExpressionLanguageFactory implements ExpressionLanguage {
 
 	@Override
 	public Entry entry( final Entry leftEntry, final Operator operator, final Entry righEntry ) {
-		return new TradingStrategyEntry(leftEntry, operator, righEntry);
+		return new TradingStrategyOperatorEntry(leftEntry, operator, righEntry);
 	}
 
 	@Override

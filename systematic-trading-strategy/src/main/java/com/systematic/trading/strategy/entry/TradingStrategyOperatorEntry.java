@@ -42,13 +42,13 @@ import com.systematic.trading.strategy.definition.Operator;
  * 
  * @author CJ Hare
  */
-public class TradingStrategyEntry implements Entry {
+public class TradingStrategyOperatorEntry implements Entry {
 
 	private final Entry leftEntry;
 	private final Operator operator;
 	private final Entry righEntry;
 
-	public TradingStrategyEntry( final Entry leftEntry, final Operator operator, final Entry righEntry ) {
+	public TradingStrategyOperatorEntry( final Entry leftEntry, final Operator operator, final Entry righEntry ) {
 		this.leftEntry = leftEntry;
 		this.righEntry = righEntry;
 		this.operator = operator;
