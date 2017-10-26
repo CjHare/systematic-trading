@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import com.systematic.trading.signals.model.DatedSignal;
+
 /**
  * Whether after a generated signal there is also a confirming signal occurring within a selected time frame.
  * 
@@ -38,4 +40,19 @@ package com.systematic.trading.strategy.definition;
  */
 public interface Confirmation {
 
+	/**
+	 * Whether the anchor is confirmed.
+	 * 
+	 * @param anchor expected earliest signal of the two.
+	 * @param confirmation expected later signal of the two.
+	 * @return <code>true</code> when the anchor is confirmed by the conformation sgnal.
+	 */
+	boolean isConfirmedBy( DatedSignal anchor, DatedSignal confirmation );
+
+	/**
+	 * The number of trading days data required for entry calculation.
+	 * 
+	 * @return number of data to provide for the analysis.
+	 */
+	int getNumberOfTradingDaysRequired();
 }

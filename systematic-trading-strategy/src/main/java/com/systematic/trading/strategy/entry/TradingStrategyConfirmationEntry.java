@@ -29,7 +29,9 @@
  */
 package com.systematic.trading.strategy.entry;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signals.model.DatedSignal;
@@ -44,26 +46,57 @@ import com.systematic.trading.strategy.definition.Indicator;
  */
 public class TradingStrategyConfirmationEntry implements Entry {
 
-	private final Indicator anchor;
-	private final Confirmation confirmBy;
-	private final Indicator confirmation;
+	private final Indicator anchorIndicator;
+	private final Confirmation confirmation;
+	private final Indicator confirmationIndicator;
 
-	public TradingStrategyConfirmationEntry( final Indicator anchor, final Confirmation confirmBy,
-	        final Indicator confirmation ) {
-		this.anchor = anchor;
-		this.confirmBy = confirmBy;
+	public TradingStrategyConfirmationEntry( final Indicator anchorIndicator, final Confirmation confirmation,
+	        final Indicator confirmationIndicator ) {
+		this.anchorIndicator = anchorIndicator;
 		this.confirmation = confirmation;
+		this.confirmationIndicator = confirmationIndicator;
 	}
 
 	@Override
-	public boolean analyse( final TradingDayPrices[] data ) {
-		// TODO Auto-generated method stub
-		return false;
+	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+
+		final List<DatedSignal> anchorSignals = anchorIndicator.analyse(data);
+		final List<DatedSignal> signals = new ArrayList<>(anchorSignals.size());
+
+		if (!anchorSignals.isEmpty()) {
+			final List<DatedSignal> confirmationSignals = confirmationIndicator.analyse(data);
+
+			for (final DatedSignal anchorSignal : anchorSignals) {
+				final Optional<DatedSignal> confirmation = getLatestConformationSignal(anchorSignal,
+				        confirmationSignals);
+
+				if (confirmation.isPresent()) {
+					signals.add(confirmation.get());
+				}
+			}
+		}
+
+		return signals;
+	}
+
+	private Optional<DatedSignal> getLatestConformationSignal( final DatedSignal anchorSignal,
+	        final List<DatedSignal> confirmationSignals ) {
+
+		DatedSignal match = null;
+
+		for (final DatedSignal confirmationSignal : confirmationSignals) {
+
+			if (confirmation.isConfirmedBy(anchorSignal, confirmationSignal)) {
+				match = confirmationSignal;
+			}
+		}
+
+		return match == null ? Optional.empty() : Optional.of(match);
 	}
 
 	@Override
 	public int getNumberOfTradingDaysRequired() {
-		// TODO Auto-generated method stub
-		return 0;
+		return Math.max(anchorIndicator.getNumberOfTradingDaysRequired(), confirmationIndicator.getNumberOfTradingDaysRequired())
+		        + confirmation.getNumberOfTradingDaysRequired();
 	}
 }
