@@ -29,6 +29,10 @@
  */
 package com.systematic.trading.strategy.indicator;
 
+import java.util.List;
+
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.strategy.definition.Indicator;
 
 /**
@@ -42,5 +46,12 @@ public class TradingStrategyIndicator implements Indicator {
 
 	public TradingStrategyIndicator( final IndicatorConfiguration indicator ) {
 		this.indicator = indicator;
+	}
+
+	@Override
+	public List<BuySignal> analyse( final TradingDayPrices[] data ) {
+		
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

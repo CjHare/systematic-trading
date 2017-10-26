@@ -29,6 +29,11 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import java.util.List;
+
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.model.BuySignal;
+
 /**
  * An indicator interprets price data and potentially generates date based signals.
  * 
@@ -41,4 +46,12 @@ package com.systematic.trading.strategy.definition;
  * @author CJ Hare
  */
 public interface Indicator {
+
+	/**
+	 * Given a set of trading data, performs appropriate analysis to generate signals.
+	 * 
+	 * @param data trading day data.
+	 * @return any signals generated over the given data.
+	 */
+	List<BuySignal> analyse( TradingDayPrices[] data );
 }
