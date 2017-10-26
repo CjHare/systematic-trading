@@ -69,10 +69,10 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 
 	@Override
 	public List<DatedSignal> analyse( TradingDayPrices[] data ) {
-		return generator.generate(calculator.calculate(data), createSignalDateRange(data));
+		return generator.generate(calculator.calculate(data), signalDateRange(data));
 	}
 
-	private Predicate<LocalDate> createSignalDateRange( final TradingDayPrices[] data ) {
+	private Predicate<LocalDate> signalDateRange( final TradingDayPrices[] data ) {
 		return candidateDate -> dateRangeFilter.isWithinSignalRange(signalRangeFilter.getEarliestSignalDate(data),
 		        signalRangeFilter.getLatestSignalDate(data), candidateDate);
 	}
