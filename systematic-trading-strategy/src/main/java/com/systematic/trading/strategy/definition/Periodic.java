@@ -29,10 +29,23 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import java.util.List;
+
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.model.DatedSignal;
+
 /**
  * Time based signal generation.
  * 
  * @author CJ Hare
  */
 public interface Periodic {
+
+	/**
+	 * Given a set of trading data, performs appropriate analysis to generate signals.
+	 * 
+	 * @param data trading day data.
+	 * @return any signals generated over the given data.
+	 */
+	List<DatedSignal> analyse( TradingDayPrices[] data );
 }
