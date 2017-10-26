@@ -51,7 +51,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.maths.indicator.Indicator;
+import com.systematic.trading.maths.indicator.SignalCalculator;
 import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.generator.GenericIndicatorSignals;
@@ -65,7 +65,7 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public abstract class GenericSignalsTestBase<T, U extends Indicator<T>> {
+public abstract class GenericSignalsTestBase<T, U extends SignalCalculator<T>> {
 
 	@Mock
 	private SignalRangeFilter filter;

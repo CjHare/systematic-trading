@@ -45,7 +45,7 @@ import com.systematic.trading.strategy.definition.Indicator;
  * 
  * @author CJ Hare
  */
-public class TradingStrategyIndicator<T, U extends com.systematic.trading.maths.indicator.Indicator<T>>
+public class TradingStrategyIndicator<T, U extends com.systematic.trading.maths.indicator.SignalCalculator<T>>
         implements Indicator {
 
 	/** Provides date range filtering. */

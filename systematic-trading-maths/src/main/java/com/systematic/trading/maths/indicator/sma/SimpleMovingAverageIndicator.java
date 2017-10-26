@@ -25,12 +25,12 @@
  */
 package com.systematic.trading.maths.indicator.sma;
 
-import com.systematic.trading.maths.indicator.Indicator;
+import com.systematic.trading.maths.indicator.SignalCalculator;
 
 /**
  * The mean for a consecutive set of numbers.
  * 
  * @author CJ Hare
  */
-public interface SimpleMovingAverageIndicator extends Indicator<SimpleMovingAverageLine> {
+public interface SimpleMovingAverageIndicator extends SignalCalculator<SimpleMovingAverageLine> {
 }

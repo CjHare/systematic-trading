@@ -32,11 +32,11 @@ package com.systematic.trading.maths.indicator;
 import com.systematic.trading.data.TradingDayPrices;
 
 /**
- * An indicator, o signal type interprets price data in a specific way.
+ * An indicator that interprets price data in a specific way.
  * 
  * @author CJ Hare
  */
-public interface Indicator<T> {
+public interface SignalCalculator<T> {
 
 	/**
 	 * Calculates the indicator signals from the price data.

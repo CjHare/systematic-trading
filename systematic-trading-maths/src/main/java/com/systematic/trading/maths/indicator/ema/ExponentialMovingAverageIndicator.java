@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.ema;
 
-import com.systematic.trading.maths.indicator.Indicator;
+import com.systematic.trading.maths.indicator.SignalCalculator;
 
 /**
  * Exponential Moving Average (EMA), a moving average with greater weighting given to recent data
@@ -40,5 +40,5 @@ import com.systematic.trading.maths.indicator.Indicator;
  * 
  * @author CJ Hare
  */
-public interface ExponentialMovingAverageIndicator extends Indicator<ExponentialMovingAverageLine> {
+public interface ExponentialMovingAverageIndicator extends SignalCalculator<ExponentialMovingAverageLine> {
 }

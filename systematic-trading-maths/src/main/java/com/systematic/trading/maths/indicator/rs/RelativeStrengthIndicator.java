@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.rs;
 
-import com.systematic.trading.maths.indicator.Indicator;
+import com.systematic.trading.maths.indicator.SignalCalculator;
 
 /**
  * Relative Strength - RS
@@ -37,5 +37,5 @@ import com.systematic.trading.maths.indicator.Indicator;
  * 
  * @author CJ Hare
  */
-public interface RelativeStrengthIndicator extends Indicator<RelativeStrengthLine> {
+public interface RelativeStrengthIndicator extends SignalCalculator<RelativeStrengthLine> {
 }

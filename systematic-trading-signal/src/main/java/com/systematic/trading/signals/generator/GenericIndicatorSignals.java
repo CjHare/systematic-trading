@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.maths.indicator.Indicator;
+import com.systematic.trading.maths.indicator.SignalCalculator;
 import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
@@ -47,7 +47,7 @@ import com.systematic.trading.signals.model.indicator.IndicatorSignal;
  * 
  * @author CJ Hare
  */
-public class GenericIndicatorSignals<T, U extends Indicator<T>> implements IndicatorSignals {
+public class GenericIndicatorSignals<T, U extends SignalCalculator<T>> implements IndicatorSignals {
 
 	/** Provides date range filtering. */
 	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();

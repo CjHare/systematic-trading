@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.maths.indicator.macd;
 
-import com.systematic.trading.maths.indicator.Indicator;
+import com.systematic.trading.maths.indicator.SignalCalculator;
 
 /**
  * Moving average convergence divergence (MACD) is a trend-following momentum indicator showing the
@@ -50,5 +50,5 @@ import com.systematic.trading.maths.indicator.Indicator;
  * @author CJ Hare
  */
 public interface MovingAverageConvergenceDivergenceIndicator
-        extends Indicator<MovingAverageConvergenceDivergenceLines> {
+        extends SignalCalculator<MovingAverageConvergenceDivergenceLines> {
 }
