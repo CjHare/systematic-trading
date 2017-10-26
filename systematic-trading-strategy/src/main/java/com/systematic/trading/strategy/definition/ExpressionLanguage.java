@@ -35,9 +35,6 @@ import com.systematic.trading.model.EquityClass;
  * Regular expression language definitions:
  * 
  * Strategy := (StrategyEntry) (EntrySize) (Exit) (ExitSize)
- * 
- * Strategy := (Entry)
- *    Entry 
  *    
  * 	  Entry := 	(Entry)     (Operator) 		(Entry)
  * 				(indicator) (Confirmation)  (Indicator)
@@ -57,18 +54,14 @@ import com.systematic.trading.model.EquityClass;
  * 
  * Position sizing determines the value of the order to place.
  * 
- * StrategyEntry provides an opportunity for optimization for the entry instances.
- * 
  * (Never) is syntactic sugar, as it provide no function it is absent from implementation.
  * 
  * @author CJ Hare
  */
 public interface ExpressionLanguage {
 
-	Strategy strategy( StrategyEntry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing,
+	Strategy strategy( Entry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing,
 	        EquityClass type, int scale );
-
-	StrategyEntry strategyEntry( Entry entry );
 
 	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
 

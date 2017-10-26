@@ -32,20 +32,23 @@ package com.systematic.trading.strategy;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.util.List;
 
+import com.systematic.trading.collection.LimitedSizeQueue;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
+import com.systematic.trading.signals.model.DatedSignal;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.EntrySize;
 import com.systematic.trading.strategy.definition.Exit;
 import com.systematic.trading.strategy.definition.ExitSize;
 import com.systematic.trading.strategy.definition.Strategy;
-import com.systematic.trading.strategy.definition.StrategyEntry;
 import com.systematic.trading.strategy.entry.BuyTotalCostTomorrowAtOpeningPriceOrder;
 
 /**
@@ -66,7 +69,7 @@ public class TradingStrategy implements Strategy {
 	private final int scale;
 
 	/** Decides for when an entry trade occurs. */
-	private final StrategyEntry entry;
+	private final Entry entry;
 
 	/** Decides when an exit trade occurs. */
 	private final Exit exit;
@@ -77,7 +80,10 @@ public class TradingStrategy implements Strategy {
 	/** Decides the size of the exit trade. */
 	private final ExitSize exitPositionSizing;
 
-	public TradingStrategy( final StrategyEntry entry, final EntrySize entryPositionSizing, final Exit exit,
+	/** The trading data as it rolled through the set. */
+	private final LimitedSizeQueue<TradingDayPrices> tradingData;
+
+	public TradingStrategy( final Entry entry, final EntrySize entryPositionSizing, final Exit exit,
 	        final ExitSize exitPositionSizing, final EquityClass type, final int scale ) {
 		this.entry = entry;
 		this.exit = exit;
@@ -85,13 +91,22 @@ public class TradingStrategy implements Strategy {
 		this.exitPositionSizing = exitPositionSizing;
 		this.type = type;
 		this.scale = scale;
+
+		this.tradingData = new LimitedSizeQueue<>(TradingDayPrices.class, entry.getNumberOfTradingDaysRequired());
 	}
 
 	@Override
 	public EquityOrder entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
 	        final TradingDayPrices data ) {
 
-		if (entry.entryTick(fees, cashAccount, data)) {
+		// Add the day's data to the rolling queue
+		tradingData.add(data);
+
+		//TODO change to avoid converting to a list
+		// Create signals from the available trading data
+		final List<DatedSignal> signals = entry.analyse(tradingData.toArray());
+
+		if (hasDatedSignal(signals, data)) {
 
 			//TODO do some better encapsulation / refactor
 			final BigDecimal amount = entryPositionSizing.entryPositionSize(cashAccount);
@@ -106,8 +121,19 @@ public class TradingStrategy implements Strategy {
 			}
 		}
 
+		//TODO use optional instead of null
 		// No order to place
 		return null;
+	}
+
+	private boolean hasDatedSignal( final List<DatedSignal> signals, final TradingDayPrices data ) {
+		for (final DatedSignal signal : signals) {
+			if (signal.getDate().equals(data.getDate())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	//TODO this behaviour configurable or fix as delete in the simulation?
