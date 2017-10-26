@@ -54,4 +54,11 @@ public interface Indicator {
 	 * @return any signals generated over the given data.
 	 */
 	List<DatedSignal> analyse( TradingDayPrices[] data );
+
+	/**
+	 * The number of trading days data required for entry calculation.
+	 * 
+	 * @return number of data to provide for the analysis.
+	 */
+	int getNumberOfTradingDaysRequired();
 }

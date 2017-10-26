@@ -76,4 +76,9 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 		return candidateDate -> dateRangeFilter.isWithinSignalRange(signalRangeFilter.getEarliestSignalDate(data),
 		        signalRangeFilter.getLatestSignalDate(data), candidateDate);
 	}
+
+	@Override
+	public int getNumberOfTradingDaysRequired() {
+		return calculator.getMinimumNumberOfPrices();
+	}
 }

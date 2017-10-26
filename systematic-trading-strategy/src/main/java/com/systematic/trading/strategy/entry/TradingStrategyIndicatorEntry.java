@@ -29,7 +29,10 @@
  */
 package com.systematic.trading.strategy.entry;
 
+import java.util.List;
+
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.model.DatedSignal;
 import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.Indicator;
 
@@ -48,14 +51,12 @@ public class TradingStrategyIndicatorEntry implements Entry {
 	}
 
 	@Override
-	public boolean analyse( final TradingDayPrices[] data ) {
-		// TODO Auto-generated method stub
-		return false;
+	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+		return indicator.analyse(data);
 	}
 
 	@Override
 	public int getNumberOfTradingDaysRequired() {
-		// TODO Auto-generated method stub
-		return 0;
+		return indicator.getNumberOfTradingDaysRequired();
 	}
 }
