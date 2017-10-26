@@ -30,32 +30,50 @@
 package com.systematic.trading.strategy.indicator;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.function.Predicate;
 
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
+import com.systematic.trading.signals.filter.SignalRangeFilter;
+import com.systematic.trading.signals.generator.SignalGenerator;
+import com.systematic.trading.signals.model.DatedSignal;
 import com.systematic.trading.strategy.definition.Indicator;
-import com.systematic.trading.strategy.indicator.filter.IndicatorSignalFilter;
 
 /**
  * Trading strategy indicator that generates signals.
  * 
  * @author CJ Hare
  */
-public abstract class TradingStrategyIndicator implements Indicator {
+public class TradingStrategyIndicator<T, U extends com.systematic.trading.maths.indicator.Indicator<T>>
+        implements Indicator {
 
-	/** Exculsion filter for indicator signals. */
-	private final IndicatorSignalFilter filter;
+	/** Provides date range filtering. */
+	private final InclusiveDatelRangeFilter dateRangeFilter = new InclusiveDatelRangeFilter();
 
-	public TradingStrategyIndicator( final IndicatorSignalFilter filter ) {
-		this.filter = filter;
+	/** Range of signal dates of interest. */
+	private final SignalRangeFilter signalRangeFilter;
+
+	/** Generators that will be used to generate signals. */
+	private final SignalGenerator<T> generator;
+
+	/** Converts price data into indicator signals. */
+	private final U calculator;
+
+	public TradingStrategyIndicator( final U indicator, final SignalGenerator<T> generator,
+	        final SignalRangeFilter signalRangeFilter ) {
+		this.calculator = indicator;
+		this.generator = generator;
+		this.signalRangeFilter = signalRangeFilter;
 	}
 
-	/**
-	 * Applies the exclusion filter to test the validity of a signal date.
-	 * 
-	 * @param latestTradingDate date of the latest trading price action from which the signal was generated.
-	 * @param signalDate date of the signal being evaluated.
-	 * @return <code>true</code> the date is valid for a signal, <code>false</code> otherwise.
-	 */
-	protected boolean isValidSignal( LocalDate latestTradingDate, LocalDate signalDate ) {
-		return filter.apply(latestTradingDate, signalDate);
+	@Override
+	public List<DatedSignal> analyse( TradingDayPrices[] data ) {
+		return generator.generate(calculator.calculate(data), createSignalDateRange(data));
+	}
+
+	private Predicate<LocalDate> createSignalDateRange( final TradingDayPrices[] data ) {
+		return candidateDate -> dateRangeFilter.isWithinSignalRange(signalRangeFilter.getEarliestSignalDate(data),
+		        signalRangeFilter.getLatestSignalDate(data), candidateDate);
 	}
 }
