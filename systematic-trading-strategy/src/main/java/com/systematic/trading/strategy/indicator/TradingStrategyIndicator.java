@@ -35,10 +35,15 @@ import java.util.function.Predicate;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.SignalCalculator;
+import com.systematic.trading.signal.IndicatorId;
+import com.systematic.trading.signal.event.SignalAnalysisEvent;
+import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.generator.SignalGenerator;
 import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signals.model.event.IndicatorSignalEvent;
+import com.systematic.trading.signals.model.indicator.IndicatorSignal;
 import com.systematic.trading.strategy.definition.Indicator;
 
 /**
@@ -60,16 +65,26 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 	/** Converts price data into indicator signals. */
 	private final U calculator;
 
-	public TradingStrategyIndicator( final U indicator, final SignalGenerator<T> generator,
-	        final SignalRangeFilter signalRangeFilter ) {
+	/** Identifier for the configuration of signal calculated. */
+	private final IndicatorId id;
+
+	/** Listners interested in when indicator signals are generated. */
+	private final SignalAnalysisListener[] listeners;
+
+	public TradingStrategyIndicator( final IndicatorId id, final U indicator, final SignalGenerator<T> generator,
+	        final SignalRangeFilter signalRangeFilter, final SignalAnalysisListener... listeners ) {
+		this.signalRangeFilter = signalRangeFilter;
 		this.calculator = indicator;
 		this.generator = generator;
-		this.signalRangeFilter = signalRangeFilter;
+		this.listeners = listeners;
+		this.id = id;
 	}
 
 	@Override
 	public List<DatedSignal> analyse( TradingDayPrices[] data ) {
-		return generator.generate(calculator.calculate(data), signalDateRange(data));
+		final List<DatedSignal> signals = generator.generate(calculator.calculate(data), signalDateRange(data));
+		notifyListners(signals);
+		return signals;
 	}
 
 	private Predicate<LocalDate> signalDateRange( final TradingDayPrices[] data ) {
@@ -80,5 +95,19 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 	@Override
 	public int getNumberOfTradingDaysRequired() {
 		return calculator.getMinimumNumberOfPrices();
+	}
+
+	private void notifyListners( final List<DatedSignal> signals ) {
+
+		// Create the event only when there are listeners
+		if (listeners.length != 0) {
+			for (final DatedSignal signal : signals) {
+				final SignalAnalysisEvent event = new IndicatorSignalEvent(
+				        new IndicatorSignal(signal.getDate(), id, generator.getType()));
+				for (final SignalAnalysisListener listener : listeners) {
+					listener.event(event);
+				}
+			}
+		}
 	}
 }
