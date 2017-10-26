@@ -56,7 +56,7 @@ public class TradingStrategyEntry implements StrategyEntry {
 		this.entry = entry;
 
 		this.tradingData = new LimitedSizeQueue<>(TradingDayPrices.class,
-		        entry.getMaximumNumberOfTradingDaysRequired());
+		        entry.getNumberOfTradingDaysRequired());
 	}
 
 	@Override

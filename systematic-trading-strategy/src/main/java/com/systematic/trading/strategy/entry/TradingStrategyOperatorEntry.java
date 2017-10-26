@@ -29,7 +29,10 @@
  */
 package com.systematic.trading.strategy.entry;
 
+import java.util.List;
+
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.model.DatedSignal;
 import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.Operator;
 
@@ -51,14 +54,12 @@ public class TradingStrategyOperatorEntry implements Entry {
 	}
 
 	@Override
-	public boolean analyse( final TradingDayPrices[] data ) {
-		// TODO Auto-generated method stub
-		return false;
+	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+		return operator.conjoin(leftEntry.analyse(data), righEntry.analyse(data));
 	}
 
 	@Override
-	public int getMaximumNumberOfTradingDaysRequired() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getNumberOfTradingDaysRequired() {
+		return Math.max(leftEntry.getNumberOfTradingDaysRequired(), righEntry.getNumberOfTradingDaysRequired());
 	}
 }

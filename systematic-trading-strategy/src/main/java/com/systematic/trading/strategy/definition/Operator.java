@@ -29,6 +29,10 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import java.util.List;
+
+import com.systematic.trading.signals.model.DatedSignal;
+
 /**
  * A logical operator that joins together the signals generated from two indicators.
  * 
@@ -41,4 +45,13 @@ public interface Operator {
 		AND,
 		OR
 	}
+
+	/**
+	 * Perform the logical conjunction between the two data sets.
+	 * 
+	 * @param left first data set, not <code>null</code>.
+	 * @param right second data set, not <code>null</code>.
+	 * @return the conjoined data sets, never <code>null</code>.
+	 */
+	List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right );
 }

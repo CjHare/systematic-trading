@@ -29,6 +29,10 @@
  */
 package com.systematic.trading.strategy.operator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.systematic.trading.signals.model.DatedSignal;
 import com.systematic.trading.strategy.definition.Operator;
 
 /**
@@ -38,4 +42,30 @@ import com.systematic.trading.strategy.definition.Operator;
  */
 public class TradingStrategyAndOperator implements Operator {
 
+	@Override
+	public List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right ) {
+
+		final List<DatedSignal> both = new ArrayList<>(Math.max(left.size(), right.size()));
+
+		for (final DatedSignal conteder : right) {
+
+			if (contains(left, conteder)) {
+				both.add(conteder);
+			}
+		}
+
+		return left;
+	}
+
+	//TODO natrual ordering to DatedSignal & replace with set operation
+	private boolean contains( final List<DatedSignal> left, final DatedSignal contender ) {
+
+		for (final DatedSignal ds : left) {
+			if (ds.getDate().equals(contender.getDate()) && ds.getType() == contender.getType()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

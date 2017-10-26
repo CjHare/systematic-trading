@@ -29,7 +29,10 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import java.util.List;
+
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.signals.model.DatedSignal;
 
 /**
  * Approach for deciding when to open / enter a position.
@@ -44,12 +47,12 @@ public interface Entry {
 	 * @param data trading day data.
 	 * @return whether an entry order should be placed on the next trading day.
 	 */
-	boolean analyse( TradingDayPrices[] data );
+	List<DatedSignal> analyse( TradingDayPrices[] data );
 
 	/**
-	 * The maximum number of trading days data required for entry calculation.
+	 * The number of trading days data required for entry calculation.
 	 * 
-	 * @return maximum number of data to provide for the analysis.
+	 * @return number of data to provide for the analysis.
 	 */
-	int getMaximumNumberOfTradingDaysRequired();
+	int getNumberOfTradingDaysRequired();
 }

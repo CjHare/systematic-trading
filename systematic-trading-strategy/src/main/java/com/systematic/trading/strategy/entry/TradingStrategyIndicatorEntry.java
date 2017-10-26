@@ -54,7 +54,7 @@ public class TradingStrategyIndicatorEntry implements Entry {
 	}
 
 	@Override
-	public int getMaximumNumberOfTradingDaysRequired() {
+	public int getNumberOfTradingDaysRequired() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
