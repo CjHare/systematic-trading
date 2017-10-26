@@ -29,56 +29,25 @@
  */
 package com.systematic.trading.strategy.definition;
 
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
+import com.systematic.trading.simulation.cash.CashAccount;
 
 /**
- * Regular expression language definitions:
- * 
- * Strategy := (StrategyEntry) (EntrySize) (Exit) (ExitSize)
- * 
- * Strategy := (Entry)
- *    Entry 
- *    
- * 	  Entry := 	(Entry)     (Operator) 		(Entry)
- * 				(indicator) (Confirmation)  (Indicator)
- * 				(indicator)
- * 				(Periodic)
- * 
- * 		Exit := (Never)
- * 
- * Indicator := ATR
- * 				EMA
- * 				MACD
- * 				SMA
- * 				RSI
- *   
- * 	Operator := OR
- * 				AND
- * 
- * Position sizing determines the value of the order to place.
- * 
- * StrategyEntry provides an opportunity for optimization for the entry instances.
- * 
- * (Never) is syntactic sugar, as it provide no function it is absent from implementation.
+ * Approach for deciding when to open / enter a position.
  * 
  * @author CJ Hare
  */
-public interface ExpressionLanguage {
+public interface StrategyEntry {
 
-	Strategy strategy( StrategyEntry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing,
-	        EquityClass type, int scale );
-
-	StrategyEntry strategyEntry( Entry entry );
-
-	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
-
-	Entry entry( Indicator leftIndicator, Confirmation confirmBy, Indicator righIndicator );
-
-	Entry entry( Indicator indicator );
-
-	Entry entry( Periodic periodic );
-
-	Exit exit();
-
-	Operator operator( Operator.Selection operator );
+	/**
+	 * Updates the trading logic with a subsequent trading point.
+	 * 
+	 * @param fees the brokerage to execute the order with, and whose fees are to be included in the
+	 *            transaction.
+	 * @param cashAccount currently available funds.
+	 * @param data next day of trading to add, also applying logic for trade signals.
+	 * @return whether an entry order should be placed.
+	 */
+	boolean entryTick( BrokerageTransactionFee fees, CashAccount cashAccount, TradingDayPrices data );
 }

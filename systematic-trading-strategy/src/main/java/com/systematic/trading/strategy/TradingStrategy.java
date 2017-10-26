@@ -41,11 +41,11 @@ import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
-import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.EntrySize;
 import com.systematic.trading.strategy.definition.Exit;
 import com.systematic.trading.strategy.definition.ExitSize;
 import com.systematic.trading.strategy.definition.Strategy;
+import com.systematic.trading.strategy.definition.StrategyEntry;
 import com.systematic.trading.strategy.entry.BuyTotalCostTomorrowAtOpeningPriceOrder;
 
 /**
@@ -66,7 +66,7 @@ public class TradingStrategy implements Strategy {
 	private final int scale;
 
 	/** Decides for when an entry trade occurs. */
-	private final Entry entry;
+	private final StrategyEntry entry;
 
 	/** Decides when an exit trade occurs. */
 	private final Exit exit;
@@ -77,7 +77,7 @@ public class TradingStrategy implements Strategy {
 	/** Decides the size of the exit trade. */
 	private final ExitSize exitPositionSizing;
 
-	public TradingStrategy( final Entry entry, final EntrySize entryPositionSizing, final Exit exit,
+	public TradingStrategy( final StrategyEntry entry, final EntrySize entryPositionSizing, final Exit exit,
 	        final ExitSize exitPositionSizing, final EquityClass type, final int scale ) {
 		this.entry = entry;
 		this.exit = exit;
@@ -110,9 +110,10 @@ public class TradingStrategy implements Strategy {
 		return null;
 	}
 
+	//TODO this behaviour configurable or fix as delete in the simulation?
 	@Override
 	public EquityOrderInsufficientFundsAction actionOnInsufficentFunds( final EquityOrder order ) {
-		return entry.actionOnInsufficentFunds(order);
+		return EquityOrderInsufficientFundsAction.DELETE;
 	}
 
 	@Override

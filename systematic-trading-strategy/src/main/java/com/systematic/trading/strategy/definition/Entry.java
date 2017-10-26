@@ -29,11 +29,10 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import java.util.List;
+
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
-import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.order.EquityOrder;
-import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.signals.model.DatedSignal;
 
 /**
  * Approach for deciding when to open / enter a position.
@@ -43,22 +42,10 @@ import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsActio
 public interface Entry {
 
 	/**
-	 * Updates the trading logic with a subsequent trading point.
+	 * Given a set of trading data, performs appropriate analysis to generate signals.
 	 * 
-	 * @param fees the brokerage to execute the order with, and whose fees are to be included in the
-	 *            transaction.
-	 * @param cashAccount currently available funds.
-	 * @param data next day of trading to add, also applying logic for trade signals.
-	 * @return whether an entry order should be placed.
+	 * @param data trading day data.
+	 * @return any signals generated over the given data.
 	 */
-	boolean entryTick( BrokerageTransactionFee fees, CashAccount cashAccount, TradingDayPrices data );
-
-	/**
-	 * Action to take on the order when the triggering conditions are met, however there are
-	 * insufficient available funds.
-	 * 
-	 * @param order that cannot be executed, due to lack of funds.
-	 * @return action to take in this situation.
-	 */
-	EquityOrderInsufficientFundsAction actionOnInsufficentFunds( EquityOrder order );
+	List<DatedSignal> analyse( TradingDayPrices[] data );
 }

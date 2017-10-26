@@ -29,11 +29,10 @@
  */
 package com.systematic.trading.strategy.entry;
 
+import java.util.List;
+
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
-import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.order.EquityOrder;
-import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
+import com.systematic.trading.signals.model.DatedSignal;
 import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.Periodic;
 
@@ -51,14 +50,7 @@ public class TradingStrategyPeriodicEntry implements Entry {
 	}
 
 	@Override
-	public boolean entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
-	        final TradingDayPrices data ) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public EquityOrderInsufficientFundsAction actionOnInsufficentFunds( final EquityOrder order ) {
+	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -27,58 +27,32 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy.entry;
 
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.strategy.definition.Entry;
+import com.systematic.trading.strategy.definition.StrategyEntry;
 
 /**
- * Regular expression language definitions:
- * 
- * Strategy := (StrategyEntry) (EntrySize) (Exit) (ExitSize)
- * 
- * Strategy := (Entry)
- *    Entry 
- *    
- * 	  Entry := 	(Entry)     (Operator) 		(Entry)
- * 				(indicator) (Confirmation)  (Indicator)
- * 				(indicator)
- * 				(Periodic)
- * 
- * 		Exit := (Never)
- * 
- * Indicator := ATR
- * 				EMA
- * 				MACD
- * 				SMA
- * 				RSI
- *   
- * 	Operator := OR
- * 				AND
- * 
- * Position sizing determines the value of the order to place.
- * 
- * StrategyEntry provides an opportunity for optimization for the entry instances.
- * 
- * (Never) is syntactic sugar, as it provide no function it is absent from implementation.
+ * Trading Strategy entry based a single indicator.
  * 
  * @author CJ Hare
  */
-public interface ExpressionLanguage {
+public class TradingStrategyEntry implements StrategyEntry {
 
-	Strategy strategy( StrategyEntry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing,
-	        EquityClass type, int scale );
+	/** Entry that performs the signal generation. */
+	private final Entry entry;
 
-	StrategyEntry strategyEntry( Entry entry );
+	public TradingStrategyEntry( final Entry entry ) {
+		this.entry = entry;
+	}
 
-	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
-
-	Entry entry( Indicator leftIndicator, Confirmation confirmBy, Indicator righIndicator );
-
-	Entry entry( Indicator indicator );
-
-	Entry entry( Periodic periodic );
-
-	Exit exit();
-
-	Operator operator( Operator.Selection operator );
+	@Override
+	public boolean entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+	        final TradingDayPrices data ) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
