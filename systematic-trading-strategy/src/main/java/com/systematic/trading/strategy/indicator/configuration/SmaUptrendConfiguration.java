@@ -26,7 +26,6 @@
 package com.systematic.trading.strategy.indicator.configuration;
 
 import com.systematic.trading.signal.IndicatorId;
-import com.systematic.trading.strategy.indicator.filter.IndicatorSignalFilter;
 
 /**
  * Configuration for the SMA signal calculator.
@@ -40,9 +39,8 @@ public class SmaUptrendConfiguration extends IndicatorConfigurationBase {
 	private final int lookback;
 	private final int daysOfGradient;
 
-	public SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final IndicatorSignalFilter filter,
-	        final String description ) {
-		super(new IndicatorId(description), filter, description);
+	public SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
+		super(new IndicatorId(description), description);
 		this.daysOfGradient = daysOfGradient;
 		this.lookback = lookback;
 	}

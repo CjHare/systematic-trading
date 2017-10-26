@@ -26,7 +26,6 @@
 package com.systematic.trading.strategy.indicator.configuration;
 
 import com.systematic.trading.signal.IndicatorId;
-import com.systematic.trading.strategy.indicator.filter.IndicatorSignalFilter;
 
 /**
  * Configuration for the MACD signal calculator.
@@ -40,8 +39,8 @@ public class MacdConfiguration extends IndicatorConfigurationBase {
 	private final int signalTimePeriods;
 
 	public MacdConfiguration( final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
-	        final IndicatorSignalFilter filter, final String description ) {
-		super(new IndicatorId(description), filter, description);
+	        final String description ) {
+		super(new IndicatorId(description), description);
 		this.fastTimePeriods = fastTimePeriods;
 		this.slowTimePeriods = slowTimePeriods;
 		this.signalTimePeriods = signalTimePeriods;

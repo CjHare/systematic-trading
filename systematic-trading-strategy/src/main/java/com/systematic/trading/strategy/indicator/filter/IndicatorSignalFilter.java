@@ -41,7 +41,7 @@ import java.time.LocalDate;
 public interface IndicatorSignalFilter {
 
 	/**
-	 * Applies the rules of the filter..
+	 * Applies the rules of the filter.
 	 * 
 	 * @param latestTradingDate date of the latest trading price action from which the signal was generated.
 	 * @param signalDate date of the signal being evaluated.

@@ -30,7 +30,6 @@
 package com.systematic.trading.strategy.definition;
 
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * Regular expression language definitions:
@@ -73,8 +72,6 @@ public interface ExpressionLanguage {
 	Entry entry( Periodic periodic );
 
 	Exit exit();
-
-	Indicator indicator( IndicatorConfiguration indicator );
 
 	Operator operator( Operator.Selection operator );
 }

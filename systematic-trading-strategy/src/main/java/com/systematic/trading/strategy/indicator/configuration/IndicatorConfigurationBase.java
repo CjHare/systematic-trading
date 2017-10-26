@@ -30,7 +30,6 @@
 package com.systematic.trading.strategy.indicator.configuration;
 
 import com.systematic.trading.signal.IndicatorId;
-import com.systematic.trading.strategy.indicator.filter.IndicatorSignalFilter;
 
 /**
  * Common behaviour supported by all the indicator configurations.
@@ -45,14 +44,9 @@ public abstract class IndicatorConfigurationBase implements IndicatorConfigurati
 	/** identifier for the type or class of indicator. */
 	private final IndicatorId type;
 
-	/** Exculsion filter for indicator signals. */
-	private final IndicatorSignalFilter filter;
-
-	public IndicatorConfigurationBase( final IndicatorId type, final IndicatorSignalFilter filter,
-	        final String description ) {
+	public IndicatorConfigurationBase( final IndicatorId type, final String description ) {
 		this.type = type;
 		this.description = description;
-		this.filter = filter;
 	}
 
 	@Override
@@ -63,10 +57,5 @@ public abstract class IndicatorConfigurationBase implements IndicatorConfigurati
 	@Override
 	public IndicatorId getId() {
 		return type;
-	}
-
-	@Override
-	public IndicatorSignalFilter getFilter() {
-		return filter;
 	}
 }

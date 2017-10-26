@@ -29,30 +29,33 @@
  */
 package com.systematic.trading.strategy.indicator;
 
-import java.util.List;
+import java.time.LocalDate;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signals.model.BuySignal;
 import com.systematic.trading.strategy.definition.Indicator;
-import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
+import com.systematic.trading.strategy.indicator.filter.IndicatorSignalFilter;
 
 /**
  * Trading strategy indicator that generates signals.
  * 
  * @author CJ Hare
  */
-public class TradingStrategyIndicator implements Indicator {
+public abstract class TradingStrategyIndicator implements Indicator {
 
-	private final IndicatorConfiguration indicator;
+	/** Exculsion filter for indicator signals. */
+	private final IndicatorSignalFilter filter;
 
-	public TradingStrategyIndicator( final IndicatorConfiguration indicator ) {
-		this.indicator = indicator;
+	public TradingStrategyIndicator( final IndicatorSignalFilter filter ) {
+		this.filter = filter;
 	}
 
-	@Override
-	public List<BuySignal> analyse( final TradingDayPrices[] data ) {
-		
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Applies the exclusion filter to test the validity of a signal date.
+	 * 
+	 * @param latestTradingDate date of the latest trading price action from which the signal was generated.
+	 * @param signalDate date of the signal being evaluated.
+	 * @return <code>true</code> the date is valid for a signal, <code>false</code> otherwise.
+	 */
+	protected boolean isValidSignal( LocalDate latestTradingDate, LocalDate signalDate ) {
+		return filter.apply(latestTradingDate, signalDate);
 	}
 }
