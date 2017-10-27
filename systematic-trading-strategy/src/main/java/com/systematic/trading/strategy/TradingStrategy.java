@@ -149,6 +149,7 @@ public class TradingStrategy implements Strategy {
 			throw new UnsupportedOperationException("Implement sell order logic");
 		}
 
+		//TODO use optional instead of null
 		// No order to place
 		return null;
 	}
