@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.trial;
 
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,10 +95,5 @@ public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements Ba
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entry, equity));
 
 		return configurations;
-	}
-
-	@Override
-	public Period getWarmUpPeriod() {
-		return Period.ofDays(MACD_CONFIGURATION.getSlowTimePeriods());
 	}
 }

@@ -27,7 +27,6 @@ package com.systematic.trading.backtest.context;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Comparator;
 import java.util.Optional;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
@@ -42,34 +41,37 @@ import com.systematic.trading.backtest.configuration.equity.EquityManagementFeeC
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.signal.IndicatorId;
+import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
 import com.systematic.trading.signals.filter.TradingDaySignalRangeFilter;
-import com.systematic.trading.signals.generator.IndicatorSignals;
-import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.BuySignalDateComparator;
-import com.systematic.trading.signals.model.filter.AnyIndicatorBuySignalFilter;
-import com.systematic.trading.signals.model.filter.ConfirmationIndicatorsSignalFilter;
-import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
-import com.systematic.trading.signals.model.filter.SignalFilter;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.management.FlatEquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.management.PeriodicEquityManagementFeeStructure;
 import com.systematic.trading.simulation.equity.fee.management.ZeroEquityManagementFeeCalculator;
-import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
-import com.systematic.trading.strategy.entry.AbsoluteTradeValueCalculator;
-import com.systematic.trading.strategy.entry.BoundedTradeValue;
-import com.systematic.trading.strategy.entry.EntryLogicFactory;
-import com.systematic.trading.strategy.entry.RelativeTradeValueCalculator;
-import com.systematic.trading.strategy.exit.HoldForeverExitLogic;
-import com.systematic.trading.strategy.indicator.IndicatorSignalGeneratorFactory;
+import com.systematic.trading.strategy.confirmation.TradingStrategyConfirmedBy;
+import com.systematic.trading.strategy.definition.Entry;
+import com.systematic.trading.strategy.definition.EntrySize;
+import com.systematic.trading.strategy.definition.Exit;
+import com.systematic.trading.strategy.definition.ExitSize;
+import com.systematic.trading.strategy.definition.ExpressionLanguageFactory;
+import com.systematic.trading.strategy.definition.Indicator;
+import com.systematic.trading.strategy.definition.Strategy;
+import com.systematic.trading.strategy.entry.size.AbsoluteEntryPositionBounds;
+import com.systematic.trading.strategy.entry.size.LargestPossibleEntryPosition;
+import com.systematic.trading.strategy.entry.size.RelativeEntryPositionBounds;
+import com.systematic.trading.strategy.exit.size.NeverExitPosition;
+import com.systematic.trading.strategy.indicator.IndicatorGeneratorFactory;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 import com.systematic.trading.strategy.operator.AnyOfIndicatorFilterConfiguration;
 import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
+import com.systematic.trading.strategy.operator.TradingStrategyAndOperator;
+import com.systematic.trading.strategy.operator.TradingStrategyOrOperator;
+import com.systematic.trading.strategy.periodic.TradingStrategyPeriodic;
 
 /**
  * Creates the Bootstrap configurations for back testing.
@@ -80,11 +82,11 @@ public class BacktestBootstrapContextBulider {
 
 	//TODO convert into an actual builder pattern
 
-	/** The ordering to apply to signal dates. */
-	private static final Comparator<BuySignal> BUY_SIGNAL_ORDER_BY_DATE = new BuySignalDateComparator();
-
 	/** How long one year is as a period of time/ */
 	private static final Period ONE_YEAR = Period.ofYears(1);
+
+	/** Decimal places for the equity. */
+	private static final int EQUITY_SCALE = 4;
 
 	/** Single equity to create the configuration on. */
 	private EquityConfiguration equity;
@@ -112,6 +114,9 @@ public class BacktestBootstrapContextBulider {
 		this.entryLogic = configuration.getEntryLogic();
 		return this;
 	}
+
+	//TODO get this from somewhere!!!!
+	// final SignalAnalysisListener... listeners 
 
 	public BacktestBootstrapContext build() {
 
@@ -148,15 +153,27 @@ public class BacktestBootstrapContextBulider {
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 		final Brokerage brokerage = BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
 		        startDate);
-		final EntryLogic entry = new EntryLogicFactory().create(equity.getEquityIdentity(), startDate,
-		        purchaseFrequency);
 
-		return new BacktestBootstrapContext(entry, getExitLogic(), brokerage, cashAccount, simulationDates);
+		final ExpressionLanguageFactory factory = new ExpressionLanguageFactory();
+		final Exit exitStrategy = factory.exit();
+		final ExitSize exitPositionSizing = new NeverExitPosition();
+
+		final Entry entryStrategy = factory
+		        .entry(new TradingStrategyPeriodic(startDate, purchaseFrequency, SignalType.BULLISH));
+
+		final EntrySize entryPositionSizing = new LargestPossibleEntryPosition(
+		        new AbsoluteEntryPositionBounds(MinimumTrade.ZERO.getValue()),
+		        new RelativeEntryPositionBounds(MaximumTrade.ALL.getValue()));
+
+		final Strategy tradingStrategy = factory.strategy(entryStrategy, entryPositionSizing, exitStrategy,
+		        exitPositionSizing, EquityClass.STOCK, EQUITY_SCALE);
+
+		return new BacktestBootstrapContext(tradingStrategy, brokerage, cashAccount, simulationDates);
 	}
 
 	private BacktestBootstrapContext confirmationSignal( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
-	        final EntryLogicConfiguration entry ) {
+	        final EntryLogicConfiguration entry, final SignalAnalysisListener... listeners ) {
 
 		final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal = entry.getConfirmationSignal();
 
@@ -167,68 +184,62 @@ public class BacktestBootstrapContextBulider {
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final IndicatorConfiguration anchor = confirmationSignal.get().getAnchor();
 		final IndicatorConfiguration confirmation = confirmationSignal.get().getConfirmation();
-
-		final SignalFilter filter = new ConfirmationIndicatorsSignalFilter(BUY_SIGNAL_ORDER_BY_DATE, anchor.getId(),
-		        confirmation.getId(), confirmationSignal.get().getType().getDelayUntilConfirmationRange(),
-		        confirmationSignal.get().getType().getConfirmationDayRange());
-
+		final ConfirmationSignalFilterConfiguration.Type confirmBy = confirmationSignal.get().getType();
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
 
-		final IndicatorSignals[] indicatorGenerators = {
-		        IndicatorSignalGeneratorFactory.getInstance().create(anchor, signalRangeFilter),
-		        IndicatorSignalGeneratorFactory.getInstance().create(confirmation, signalRangeFilter) };
+		final ExpressionLanguageFactory entryFactory = new ExpressionLanguageFactory();
+		final IndicatorGeneratorFactory indicatorFactory = new IndicatorGeneratorFactory();
+		final Indicator anchorIndicator = indicatorFactory.create(anchor, signalRangeFilter, listeners);
+		final Indicator confirmationIndicator = indicatorFactory.create(confirmation, signalRangeFilter, listeners);
 
-		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
-		        indicatorGenerators);
+		final Entry entryStrategy = entryFactory.entry(anchorIndicator,
+		        new TradingStrategyConfirmedBy(confirmBy.getDelayUntilConfirmationRange(),
+		                confirmBy.getConfirmationDayRange()),
+		        confirmationIndicator);
+
+		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, entryStrategy);
 	}
 
+	//TODO rename - something todo with same day and AND
 	private BacktestBootstrapContext indicatorsOnSameDay( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
-	        final EntryLogicConfiguration entry ) {
+	        final EntryLogicConfiguration entry, final SignalAnalysisListener... listeners ) {
 
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final IndicatorConfiguration[] indicators = getSameDaySignals(entry);
-		final IndicatorId[] indicatorTypes = new IndicatorId[indicators.length];
-		for (int i = 0; i < indicators.length; i++) {
-			indicatorTypes[i] = indicators[i].getId();
-		}
-
-		final SignalFilter filter = new IndicatorsOnSameDaySignalFilter(BUY_SIGNAL_ORDER_BY_DATE, indicatorTypes);
-		final IndicatorSignals[] indicatorGenerators = new IndicatorSignals[indicators.length];
-
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
+		final ExpressionLanguageFactory entryFactory = new ExpressionLanguageFactory();
+		final IndicatorGeneratorFactory indicatorFactory = new IndicatorGeneratorFactory();
 
-		for (int i = 0; i < indicatorGenerators.length; i++) {
-			indicatorGenerators[i] = IndicatorSignalGeneratorFactory.getInstance().create(indicators[i],
-			        signalRangeFilter);
+		Entry entryStrategy = entryFactory.entry(indicatorFactory.create(indicators[0], signalRangeFilter, listeners));
+
+		for (int i = 1; i < indicators.length; i++) {
+			entryStrategy = entryFactory.entry(entryStrategy, new TradingStrategyAndOperator(),
+			        entryFactory.entry(indicatorFactory.create(indicators[i], signalRangeFilter, listeners)));
 		}
 
-		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
-		        indicatorGenerators);
+		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, entryStrategy);
 	}
 
+	//TODO rename - something todo with same day and OR
 	private BacktestBootstrapContext anyIndicators( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
-	        final BrokerageFeesConfiguration brokerageType, final EntryLogicConfiguration entry ) {
+	        final BrokerageFeesConfiguration brokerageType, final EntryLogicConfiguration entry,
+	        final SignalAnalysisListener... listeners ) {
 
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final IndicatorConfiguration[] indicators = getAnyOfSignals(entry);
-		final IndicatorId[] indicatorTypes = new IndicatorId[indicators.length];
-		for (int i = 0; i < indicators.length; i++) {
-			indicatorTypes[i] = indicators[i].getId();
-		}
-
-		final SignalFilter filter = new AnyIndicatorBuySignalFilter(BUY_SIGNAL_ORDER_BY_DATE, indicatorTypes);
-		final IndicatorSignals[] indicatorGenerators = new IndicatorSignals[indicators.length];
-
 		final SignalRangeFilter signalRangeFilter = getSignalRangeFilter(entry);
+		final ExpressionLanguageFactory entryFactory = new ExpressionLanguageFactory();
+		final IndicatorGeneratorFactory indicatorFactory = new IndicatorGeneratorFactory();
 
-		for (int i = 0; i < indicatorGenerators.length; i++) {
-			indicatorGenerators[i] = IndicatorSignalGeneratorFactory.getInstance().create(indicators[i],
-			        signalRangeFilter);
+		Entry entryStrategy = entryFactory.entry(indicatorFactory.create(indicators[0], signalRangeFilter, listeners));
+
+		for (int i = 1; i < indicators.length; i++) {
+			entryStrategy = entryFactory.entry(entryStrategy, new TradingStrategyOrOperator(),
+			        entryFactory.entry(indicatorFactory.create(indicators[i], signalRangeFilter, listeners)));
 		}
 
-		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, filter,
-		        indicatorGenerators);
+		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, entryStrategy);
 	}
 
 	private IndicatorConfiguration[] getAnyOfSignals( final EntryLogicConfiguration entry ) {
@@ -256,22 +267,22 @@ public class BacktestBootstrapContextBulider {
 		return LocalDate.of(date.getYear(), 1, 1);
 	}
 
-	private ExitLogic getExitLogic() {
-		return new HoldForeverExitLogic();
-	}
-
 	private BacktestBootstrapContext getIndicatorConfiguration( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
-	        final EquityManagementFeeCalculator feeCalculator, final SignalFilter filter,
-	        final IndicatorSignals... indicators ) {
+	        final EquityManagementFeeCalculator feeCalculator, final Entry entryStrategy ) {
 
 		final LocalDate startDate = simulationDates.getStartDate();
-		final BoundedTradeValue tradeValue = new BoundedTradeValue(
-		        new AbsoluteTradeValueCalculator(minimumTrade.getValue()),
-		        new RelativeTradeValueCalculator(maximumTrade.getValue()));
+		final ExpressionLanguageFactory factory = new ExpressionLanguageFactory();
+		final Exit exitStrategy = factory.exit();
+		final ExitSize exitPositionSizing = new NeverExitPosition();
 
-		final EntryLogic entry = new EntryLogicFactory().create(equity.getEquityIdentity(), tradeValue,
-		        simulationDates.getStartDate(), simulationDates.getEndDate(), filter, indicators);
+		final EntrySize entryPositionSizing = new LargestPossibleEntryPosition(
+		        new AbsoluteEntryPositionBounds(minimumTrade.getValue()),
+		        new RelativeEntryPositionBounds(maximumTrade.getValue()));
+
+		final Strategy tradingStrategy = factory.strategy(entryStrategy, entryPositionSizing, exitStrategy,
+		        exitPositionSizing, EquityClass.STOCK, EQUITY_SCALE);
+
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
 		        equity.getEquityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
@@ -279,7 +290,7 @@ public class BacktestBootstrapContextBulider {
 		        startDate);
 		final CashAccount cashAccount = CashAccountFactory.getInstance().create(startDate, deposit);
 
-		return new BacktestBootstrapContext(entry, getExitLogic(), cmcMarkets, cashAccount, simulationDates);
+		return new BacktestBootstrapContext(tradingStrategy, cmcMarkets, cashAccount, simulationDates);
 	}
 
 	private EquityManagementFeeCalculator createFeeCalculator( final EquityManagementFeeConfiguration managementFee ) {

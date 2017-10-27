@@ -32,7 +32,6 @@ package com.systematic.trading.backtest;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
-import java.time.Period;
 
 import org.junit.Test;
 
@@ -50,40 +49,35 @@ public class BacktestSimulationDatesTest {
 	public void endDateAfterStartDate() throws InvalidSimulationDatesException {
 		final LocalDate startDate = LocalDate.of(2001, 6, 16);
 		final LocalDate endDate = LocalDate.of(2001, 6, 17);
-		final Period warmUp = Period.ofWeeks(5);
 
-		createSimulationDates(startDate, endDate, warmUp);
+		createSimulationDates(startDate, endDate);
 
 		verifySimulationStartDate(startDate);
 		verifySimulationEndDate(endDate);
-		verifySimulationWarmUp(warmUp);
 	}
 
 	@Test
 	public void endDateEqualsStartDate() throws InvalidSimulationDatesException {
 		final LocalDate startDate = LocalDate.of(2001, 6, 16);
 		final LocalDate endDate = LocalDate.of(2001, 6, 16);
-		final Period warmUp = Period.ofWeeks(5);
 
-		createSimulationDates(startDate, endDate, warmUp);
+		createSimulationDates(startDate, endDate);
 
 		verifySimulationStartDate(startDate);
 		verifySimulationEndDate(endDate);
-		verifySimulationWarmUp(warmUp);
 	}
 
 	@Test(expected = InvalidSimulationDatesException.class)
 	public void endDateBeforeStartDate() throws InvalidSimulationDatesException {
 		final LocalDate startDate = LocalDate.of(2001, 6, 16);
 		final LocalDate endDate = LocalDate.of(2001, 6, 11);
-		final Period warmUp = Period.ofWeeks(5);
 
-		createSimulationDates(startDate, endDate, warmUp);
+		createSimulationDates(startDate, endDate);
 	}
 
-	private void createSimulationDates( final LocalDate startDate, final LocalDate endDate, final Period warmUp )
+	private void createSimulationDates( final LocalDate startDate, final LocalDate endDate )
 	        throws InvalidSimulationDatesException {
-		dates = new BacktestSimulationDates(startDate, endDate, warmUp);
+		dates = new BacktestSimulationDates(startDate, endDate);
 	}
 
 	private void verifySimulationStartDate( final LocalDate expected ) {
@@ -92,9 +86,5 @@ public class BacktestSimulationDatesTest {
 
 	private void verifySimulationEndDate( final LocalDate expected ) {
 		assertEquals(expected, dates.getEndDate());
-	}
-
-	private void verifySimulationWarmUp( final Period expected ) {
-		assertEquals(expected, dates.getWarmUp());
 	}
 }

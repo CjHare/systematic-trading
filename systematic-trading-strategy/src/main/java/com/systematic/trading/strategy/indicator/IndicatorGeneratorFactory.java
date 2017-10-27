@@ -54,6 +54,7 @@ import com.systematic.trading.signals.generator.rsi.RelativeStrengthIndexBullish
 import com.systematic.trading.signals.generator.sma.SimpleMovingAverageBullishGradientSignalGenerator;
 import com.systematic.trading.strategy.definition.Indicator;
 import com.systematic.trading.strategy.indicator.configuration.EmaUptrendConfiguration;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.MacdConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.RsiConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration;
@@ -66,6 +67,28 @@ import com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfigu
 public class IndicatorGeneratorFactory {
 
 	//TODO rename methods - here the generators are instanced
+
+	/**
+	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
+	 */
+	public Indicator create( final IndicatorConfiguration signal, final SignalRangeFilter filter,
+	        final SignalAnalysisListener... listeners ) {
+
+		if (signal instanceof MacdConfiguration) {
+			return create((MacdConfiguration) signal, filter, listeners);
+		}
+		if (signal instanceof RsiConfiguration) {
+			return create((RsiConfiguration) signal, filter, listeners);
+		}
+		if (signal instanceof SmaUptrendConfiguration) {
+			return create((SmaUptrendConfiguration) signal, filter, listeners);
+		}
+		if (signal instanceof EmaUptrendConfiguration) {
+			return create((EmaUptrendConfiguration) signal, filter, listeners);
+		}
+
+		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
+	}
 
 	public Indicator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter,
 	        final SignalAnalysisListener... listeners ) {

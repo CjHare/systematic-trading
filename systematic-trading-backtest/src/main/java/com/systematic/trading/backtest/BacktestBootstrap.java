@@ -87,25 +87,26 @@ public class BacktestBootstrap {
 		// Cumulative recording of investment progression
 		final CulmativeReturnOnInvestment roi = new CulmativeReturnOnInvestment();
 
-		final PeriodicCulmativeReturnOnInvestment dailyRoi = new PeriodicCulmativeReturnOnInvestment(
-		        earliestDate, Period.ofDays(1));
+		final PeriodicCulmativeReturnOnInvestment dailyRoi = new PeriodicCulmativeReturnOnInvestment(earliestDate,
+		        Period.ofDays(1));
 		roi.addListener(dailyRoi);
 
-		final PeriodicCulmativeReturnOnInvestment monthlyRoi = new PeriodicCulmativeReturnOnInvestment(
-		        earliestDate, Period.ofMonths(1));
+		final PeriodicCulmativeReturnOnInvestment monthlyRoi = new PeriodicCulmativeReturnOnInvestment(earliestDate,
+		        Period.ofMonths(1));
 		roi.addListener(monthlyRoi);
 
-		final PeriodicCulmativeReturnOnInvestment yearlyRoi = new PeriodicCulmativeReturnOnInvestment(
-		        earliestDate, Period.ofYears(1));
+		final PeriodicCulmativeReturnOnInvestment yearlyRoi = new PeriodicCulmativeReturnOnInvestment(earliestDate,
+		        Period.ofYears(1));
 		roi.addListener(yearlyRoi);
 
 		final CulmativeTotalReturnOnInvestment cumulativeRoi = new CulmativeTotalReturnOnInvestment();
 		roi.addListener(cumulativeRoi);
 
-		final EntryLogic entry = context.getEntryLogic();
-		entry.addListener(output);
+		//TODO output need to get into the indicators
+		//		final EntryLogic entry = context.getEntryLogic();
+		// entry.addListener(output);
 
-		final ExitLogic exit = context.getExitLogic();
+		//	final ExitLogic exit = context.getExitLogic();
 
 		final Brokerage broker = context.getBroker();
 
@@ -113,7 +114,8 @@ public class BacktestBootstrap {
 		cashAccount.addListener(roi);
 
 		// Engine dealing with the event flow
-		final Simulation simulation = new Simulation(tradingData, broker, cashAccount, roi, entry, exit);
+		final Simulation simulation = new Simulation(tradingData, broker, cashAccount, roi,
+		        context.getTradingStrategy(), context.getTradingStrategy());
 
 		// Statistics recorder for the various cash account, brokerage and order events
 		final EventStatistics eventStatistics = new CumulativeEventStatistics();

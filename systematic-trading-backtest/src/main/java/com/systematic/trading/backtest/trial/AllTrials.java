@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.trial;
 
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -266,40 +265,5 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		}
 
 		return configurations;
-	}
-
-	@Override
-	public Period getWarmUpPeriod() {
-		int warmUp = 0;
-
-		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
-			final int contender = emaConfiguration.getLookback() + emaConfiguration.getDaysOfGradient();
-			if (warmUp < contender) {
-				warmUp = contender;
-			}
-		}
-
-		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
-			final int contender = smaConfiguration.getLookback() + smaConfiguration.getDaysOfGradient();
-			if (warmUp < contender) {
-				warmUp = contender;
-			}
-		}
-
-		for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-			final int contender = rsiConfiguration.getLookback();
-			if (warmUp < contender) {
-				warmUp = contender;
-			}
-		}
-
-		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-			final int contender = macdConfiguration.getSlowTimePeriods();
-			if (warmUp < contender) {
-				warmUp = contender;
-			}
-		}
-
-		return Period.ofDays(warmUp);
 	}
 }

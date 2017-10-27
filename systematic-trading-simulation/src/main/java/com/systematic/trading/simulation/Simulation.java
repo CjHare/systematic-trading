@@ -90,6 +90,7 @@ public class Simulation {
 	/** Trading data to use for the simulation. */
 	private final TickerSymbolTradingData tradingData;
 
+	//TODO use a TradingStrategy instead of entry / exit logic
 	public Simulation( final TickerSymbolTradingData tradingData, final Brokerage broker, final CashAccount funds,
 	        final ReturnOnInvestmentListener roi, final EntryLogic entry, final ExitLogic exit ) {
 

@@ -83,7 +83,7 @@ public class IndicatorSignalGeneratorFactory {
 	/**
 	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
 	 */
-	public IndicatorSignals create( final IndicatorConfiguration signal, final SignalRangeFilter filter ) {
+/*	public IndicatorSignals create( final IndicatorConfiguration signal, final SignalRangeFilter filter ) {
 
 		if (signal instanceof MacdConfiguration) {
 			return create((MacdConfiguration) signal, filter);
@@ -99,7 +99,7 @@ public class IndicatorSignalGeneratorFactory {
 		}
 
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
-	}
+	}*/
 
 	private IndicatorSignals create( final MacdConfiguration macdConfiguration, final SignalRangeFilter filter ) {
 

@@ -32,7 +32,10 @@ package com.systematic.trading.strategy;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
 
 import com.systematic.trading.collection.LimitedSizeQueue;
 import com.systematic.trading.data.TradingDayPrices;
@@ -57,6 +60,9 @@ import com.systematic.trading.strategy.entry.BuyTotalCostTomorrowAtOpeningPriceO
  * @author CJ Hare
  */
 public class TradingStrategy implements Strategy {
+
+	/** Warm up period is in trading days, not normals days. */
+	private static final double CONVERT_TO_TRADING_DAYS = 7 / 4.5;
 
 	//TODO should remove this MC or encapsulate
 	/** Scale, precision and rounding to apply to mathematical operations. */
@@ -102,38 +108,35 @@ public class TradingStrategy implements Strategy {
 		// Add the day's data to the rolling queue
 		tradingData.add(data);
 
-		//TODO change to avoid converting to a list
-		// Create signals from the available trading data
-		final List<DatedSignal> signals = entry.analyse(tradingData.toArray());
+		if (tradingData.size() == entry.getNumberOfTradingDaysRequired() - 1) {
+			LogManager.getLogger(TradingStrategy.class).info(data.getDate());
+		}
 
-		if (hasDatedSignal(signals, data)) {
+		if (tradingData.size() == entry.getNumberOfTradingDaysRequired()) {
 
-			//TODO do some better encapsulation / refactor
-			final BigDecimal amount = entryPositionSizing.entryPositionSize(cashAccount);
-			final LocalDate tradingDate = data.getDate();
-			final BigDecimal maximumTransactionCost = fees.calculateFee(amount, type, tradingDate);
-			final BigDecimal closingPrice = data.getClosingPrice().getPrice();
-			final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, MATH_CONTEXT)
-			        .divide(closingPrice, MATH_CONTEXT).setScale(scale, BigDecimal.ROUND_DOWN);
+			//TODO change to avoid converting to a list
+			// Create signals from the available trading data
+			final List<DatedSignal> signals = entry.analyse(tradingData.toArray());
 
-			if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
-				return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, MATH_CONTEXT);
+			if (hasDatedSignal(signals, data)) {
+
+				//TODO do some better encapsulation / refactor
+				final BigDecimal amount = entryPositionSizing.entryPositionSize(cashAccount);
+				final LocalDate tradingDate = data.getDate();
+				final BigDecimal maximumTransactionCost = fees.calculateFee(amount, type, tradingDate);
+				final BigDecimal closingPrice = data.getClosingPrice().getPrice();
+				final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, MATH_CONTEXT)
+				        .divide(closingPrice, MATH_CONTEXT).setScale(scale, BigDecimal.ROUND_DOWN);
+
+				if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
+					return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, MATH_CONTEXT);
+				}
 			}
 		}
 
 		//TODO use optional instead of null
 		// No order to place
 		return null;
-	}
-
-	private boolean hasDatedSignal( final List<DatedSignal> signals, final TradingDayPrices data ) {
-		for (final DatedSignal signal : signals) {
-			if (signal.getDate().equals(data.getDate())) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	//TODO this behaviour configurable or fix as delete in the simulation?
@@ -158,5 +161,20 @@ public class TradingStrategy implements Strategy {
 	public void addListener( final SignalAnalysisListener listener ) {
 
 		//TODO move the listener into the indicator, as they are the ones that fire events
+	}
+
+	@Override
+	public Period getWarmUpPeriod() {
+		return Period.ofDays((int) Math.ceil(entry.getNumberOfTradingDaysRequired() * CONVERT_TO_TRADING_DAYS));
+	}
+
+	private boolean hasDatedSignal( final List<DatedSignal> signals, final TradingDayPrices data ) {
+		for (final DatedSignal signal : signals) {
+			if (signal.getDate().equals(data.getDate())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

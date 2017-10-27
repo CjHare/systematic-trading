@@ -108,14 +108,9 @@ public class BacktestApplication {
 		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
-		final Period warmUpPeriod = configuration.getWarmUpPeriod();
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
-		        simulationEndDate, warmUpPeriod);
-
-		recordSimulationDates(warmUpPeriod, simulationDates);
-
-		// Retrieve the set of trading data
-		final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityIdentity(), simulationDates);
+		        simulationEndDate);
+		recordSimulationDates(simulationDates);
 
 		// Multi-threading support for output classes
 		final ExecutorService outputpool = getOutputPool(parserdArguments);
@@ -133,7 +128,8 @@ public class BacktestApplication {
 			final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
 			        depositAmount);
 			clearOutputDirectory(depositAmount, parserdArguments);
-			runBacktest(depositAmount, parserdArguments, configurations, tradingData, outputpool);
+
+			runBacktests(equity, depositAmount, parserdArguments, configurations, outputpool);
 
 		} finally {
 			HibernateUtil.getSessionFactory().close();
@@ -223,13 +219,17 @@ public class BacktestApplication {
 		}
 	}
 
-	private void runBacktest( final DepositConfiguration depositAmount, final LaunchArguments arguments,
-	        final List<BacktestBootstrapConfiguration> configurations, final TickerSymbolTradingData tradingData,
-	        final ExecutorService outputPool ) throws BacktestInitialisationException {
+	private void runBacktests( final EquityConfiguration equity, final DepositConfiguration depositAmount,
+	        final LaunchArguments arguments, final List<BacktestBootstrapConfiguration> configurations,
+	        final ExecutorService outputPool ) throws ServiceException {
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final BacktestOutput output = getOutput(depositAmount, arguments, configuration, outputPool);
 			final BacktestBootstrapContext context = createContext(configuration);
+			final Period warmUp = context.getTradingStrategy().getWarmUpPeriod();
+			recordWarmUpPeriod(warmUp);
+			final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityIdentity(),
+			        configuration.getBacktestDates(), warmUp);
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
 			LOG.info("Backtesting beginning for: {}", () -> description.getDescription(configuration, depositAmount));
@@ -274,9 +274,9 @@ public class BacktestApplication {
 	}
 
 	private TickerSymbolTradingData getTradingData( final EquityIdentity equity,
-	        final BacktestSimulationDates simulationDate ) throws ServiceException {
+	        final BacktestSimulationDates simulationDate, final Period warmUp ) throws ServiceException {
 
-		final LocalDate startDate = simulationDate.getStartDate().minus(simulationDate.getWarmUp());
+		final LocalDate startDate = simulationDate.getStartDate().minus(warmUp);
 		final LocalDate endDate = simulationDate.getEndDate();
 
 		if (startDate.getDayOfMonth() != 1) {
@@ -313,11 +313,14 @@ public class BacktestApplication {
 		return String.format("%s%s", baseOutputDirectory, description.getDescription(configuration));
 	}
 
-	private void recordSimulationDates( final Period warmUpPeriod, final BacktestSimulationDates simulationDates ) {
-		LOG.info("{}", () -> String.format("Simulation Warm Up Period of Days: %s, Months: %s, Years: %s",
-		        warmUpPeriod.getDays(), warmUpPeriod.getMonths(), warmUpPeriod.getYears()));
+	private void recordSimulationDates( final BacktestSimulationDates simulationDates ) {
 		LOG.info("Simulation Start Date: {}", simulationDates.getStartDate());
 		LOG.info("Simulation End Date: {}", simulationDates.getEndDate());
+	}
+
+	private void recordWarmUpPeriod( final Period warmUpPeriod ) {
+		LOG.info("{}", () -> String.format("Simulation Warm Up Period of Days: %s, Months: %s, Years: %s",
+		        warmUpPeriod.getDays(), warmUpPeriod.getMonths(), warmUpPeriod.getYears()));
 	}
 
 	private String unsupportedMessage( final OutputType type ) {

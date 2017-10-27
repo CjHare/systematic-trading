@@ -59,8 +59,8 @@ public class EntryLogicConfiguration {
 		this.minimumTrade = minimumTrade;
 	}
 
-	public EntryLogicConfiguration( final AnyOfIndicatorFilterConfiguration anyOfSignals, final MaximumTrade maximumTrade,
-	        final MinimumTrade minimumTrade ) {
+	public EntryLogicConfiguration( final AnyOfIndicatorFilterConfiguration anyOfSignals,
+	        final MaximumTrade maximumTrade, final MinimumTrade minimumTrade ) {
 		this.type = Type.ANY_SIGNAL;
 		this.periodic = null;
 		this.confirmationSignal = Optional.empty();

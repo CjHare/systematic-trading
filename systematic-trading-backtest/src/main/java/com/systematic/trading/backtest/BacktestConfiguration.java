@@ -1,6 +1,5 @@
 package com.systematic.trading.backtest;
 
-import java.time.Period;
 import java.util.List;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
@@ -16,9 +15,4 @@ public interface BacktestConfiguration {
 
 	List<BacktestBootstrapConfiguration> get( EquityConfiguration equity, BacktestSimulationDates simulationDates,
 	        DepositConfiguration deposit );
-
-	/**
-	 * Largest perio warm up required by any the strategies.
-	 */
-	Period getWarmUpPeriod();
 }

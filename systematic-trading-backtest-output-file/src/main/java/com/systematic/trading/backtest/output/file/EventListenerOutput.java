@@ -81,9 +81,6 @@ public class EventListenerOutput implements CashEventListener, OrderEventListene
 		output.append(String.format("Simulation dates for %s from %s to %s%n",
 		        tradingData.getEquityIdentity().getTickerSymbol(), dates.getStartDate(), dates.getEndDate()));
 
-		output.append(String.format("Simulation warm up period for %s of %s%n",
-		        tradingData.getEquityIdentity().getTickerSymbol(), dates.getWarmUp()));
-
 		final long daysBetween = ChronoUnit.DAYS.between(tradingData.getEarliestDate(), tradingData.getLatestDate());
 		final double percentageTradingDays = ((double) tradingData.getNumberOfTradingDays() / daysBetween) * 100;
 

@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.strategy.definition;
 
+import java.time.Period;
+
 import com.systematic.trading.simulation.logic.EntryLogic;
 import com.systematic.trading.simulation.logic.ExitLogic;
 
@@ -38,4 +40,11 @@ import com.systematic.trading.simulation.logic.ExitLogic;
  * @author CJ Hare
  */
 public interface Strategy extends EntryLogic, ExitLogic {
+
+	/**
+	 * The period of time required to warm up, or initialise the indicators.
+	 * 
+	 * @return time period required before the start of the analysis is to begin.
+	 */
+	Period getWarmUpPeriod();
 }

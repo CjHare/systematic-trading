@@ -28,8 +28,7 @@ package com.systematic.trading.backtest.context;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.ExitLogic;
+import com.systematic.trading.strategy.definition.Strategy;
 
 /**
  * Context that a back testing will occurs within. 
@@ -44,11 +43,8 @@ public class BacktestBootstrapContext {
 	/** Cash account to use during the simulation. */
 	private final CashAccount cashAccount;
 
-	/** Decision maker for when to enter a trade. */
-	private final EntryLogic entryLogic;
-
-	/** Decision maker for when to exit a trade. */
-	private final ExitLogic exitLogic;
+	/** Decision maker for when to enter and exit trades. */
+	private final Strategy tradingStrategy;
 
 	/** Details of the simulation dates. */
 	private final BacktestSimulationDates simulationDates;
@@ -57,22 +53,21 @@ public class BacktestBootstrapContext {
 	 * @param startDate inclusive beginning date for the back testing.
 	 * @param endDate inclusive end date for back testing.
 	 */
-	public BacktestBootstrapContext( final EntryLogic entryLogic, final ExitLogic exitLogic, final Brokerage brokerage,
+	public BacktestBootstrapContext( final Strategy tradingStrategy, final Brokerage brokerage,
 	        final CashAccount cashAccount, final BacktestSimulationDates simulationDates ) {
 		this.cashAccount = cashAccount;
-		this.entryLogic = entryLogic;
-		this.exitLogic = exitLogic;
+		this.tradingStrategy = tradingStrategy;
 		this.brokerage = brokerage;
 		this.simulationDates = simulationDates;
 	}
 
 	/**
-	 * Exit logic used to generate sell orders.
+	 * Trading strategy that contains the entry and exit trading behaviour.
 	 * 
-	 * @return input to the simulation that provides sell orders.
+	 * @return trading strategy, never <code>null</code>.
 	 */
-	public ExitLogic getExitLogic() {
-		return exitLogic;
+	public Strategy getTradingStrategy() {
+		return tradingStrategy;
 	}
 
 	/**
@@ -91,15 +86,6 @@ public class BacktestBootstrapContext {
 	 */
 	public CashAccount getCashAccount() {
 		return cashAccount;
-	}
-
-	/**
-	 * Entry logic used to generate buy orders.
-	 * 
-	 * @return input to the simulation that provides buy orders.
-	 */
-	public EntryLogic getEntryLogic() {
-		return entryLogic;
 	}
 
 	/**
