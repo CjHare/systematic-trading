@@ -71,10 +71,10 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 	/** Listners interested in when indicator signals are generated. */
 	private final SignalAnalysisListener[] listeners;
 
-	public TradingStrategyIndicator( final IndicatorId id, final U indicator, final SignalGenerator<T> generator,
+	public TradingStrategyIndicator( final IndicatorId id, final U calculator, final SignalGenerator<T> generator,
 	        final SignalRangeFilter signalRangeFilter, final SignalAnalysisListener... listeners ) {
 		this.signalRangeFilter = signalRangeFilter;
-		this.calculator = indicator;
+		this.calculator = calculator;
 		this.generator = generator;
 		this.listeners = listeners;
 		this.id = id;

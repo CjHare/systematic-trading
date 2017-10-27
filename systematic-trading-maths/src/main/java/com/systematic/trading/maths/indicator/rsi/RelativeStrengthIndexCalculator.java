@@ -50,8 +50,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 	/** Constant for the value of 100. */
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
-	/** The least number of prices to calculate the ATR on. */
-	private static final int MINIMUM_NUMBER_OF_PRICES = 1;
+	/** The least number of prices to calculate the RSI on. */
+	private static final int MINIMUM_NUMBER_OF_PRICES = 2;
 
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
