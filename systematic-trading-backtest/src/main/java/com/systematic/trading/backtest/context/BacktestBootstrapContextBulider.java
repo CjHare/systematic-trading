@@ -122,9 +122,7 @@ public class BacktestBootstrapContextBulider {
 		return this;
 	}
 
-	//TODO get this from somewhere!!!!
-	// final SignalAnalysisListener... listeners 
-
+	//TODO why not use the fields?
 	public BacktestBootstrapContext build() {
 
 		switch (entryLogic.getType()) {
@@ -262,14 +260,16 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private SignalRangeFilter getSignalRangeFilter( final EntryLogicConfiguration entry ) {
+		final LocalDate earliestSignal = simulationDates.getStartDate();
 		final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal = entry.getConfirmationSignal();
 
 		if (confirmationSignal.isPresent()) {
-			return new TradingDaySignalRangeFilter(confirmationSignal.get().getType().getDelayUntilConfirmationRange()
-			        + confirmationSignal.get().getType().getConfirmationDayRange());
+			return new TradingDaySignalRangeFilter(earliestSignal,
+			        confirmationSignal.get().getType().getDelayUntilConfirmationRange()
+			                + confirmationSignal.get().getType().getConfirmationDayRange());
 		}
 
-		return new TradingDaySignalRangeFilter(0);
+		return new TradingDaySignalRangeFilter(earliestSignal, 0);
 	}
 
 	private LocalDate getFirstDayOfYear( final LocalDate date ) {

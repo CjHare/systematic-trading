@@ -122,8 +122,34 @@ public class TradingDaySignalRangeFilterTest {
 		verifySignalDate(range, latest);
 	}
 
+	@Test
+	public void earliestSignalBeforAllowedeEarliest() {
+		final int range = 5;
+		final TradingDayPrices[] data = createTradingDays(range);
+		setUpFilter(2, range);
+
+		final LocalDate earliest = earliestDate(data);
+
+		verifySignalDate(2, earliest);
+	}
+
+	@Test
+	public void leatestSignalBeforAllowedeEarliest() {
+		final int range = 5;
+		final TradingDayPrices[] data = createTradingDays(range);
+		setUpFilter(6, range);
+
+		final LocalDate earliest = latestDate(data);
+
+		verifySignalDate(6, earliest);
+	}
+
+	private void setUpFilter( final int daysSinceEpoch, final int range ) {
+		filter = new TradingDaySignalRangeFilter(LocalDate.ofEpochDay(daysSinceEpoch), range);
+	}
+
 	private void setUpFilter( final int range ) {
-		filter = new TradingDaySignalRangeFilter(range);
+		filter = new TradingDaySignalRangeFilter(LocalDate.ofEpochDay(0), range);
 	}
 
 	private LocalDate earliestDate( final TradingDayPrices[] data ) {

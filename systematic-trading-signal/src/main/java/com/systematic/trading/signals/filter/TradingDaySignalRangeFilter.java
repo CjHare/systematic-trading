@@ -46,18 +46,26 @@ public class TradingDaySignalRangeFilter implements SignalRangeFilter {
 	/** Number of trading days before the latest (current) trading date to generate signals on. */
 	private final int previousTradingDaySignalRange;
 
-	public TradingDaySignalRangeFilter( final int previousTradingDaySignalRange ) {
+	/** The earliest date a signal is allowed. */
+	private final LocalDate signalsBegin;
+
+	public TradingDaySignalRangeFilter( final LocalDate signalsBegin, final int previousTradingDaySignalRange ) {
 		this.previousTradingDaySignalRange = previousTradingDaySignalRange;
+		this.signalsBegin = signalsBegin;
 	}
 
 	@Override
 	public LocalDate getEarliestSignalDate( final TradingDayPrices[] data ) {
-		return data[getEarliestAboveZeroIndex(data)].getDate();
+		return afterSignalsBegin(data[getEarliestAboveZeroIndex(data)].getDate());
 	}
 
 	@Override
 	public LocalDate getLatestSignalDate( final TradingDayPrices[] data ) {
-		return data[getLatestAboveZeroIndex(data)].getDate();
+		return afterSignalsBegin(data[getLatestAboveZeroIndex(data)].getDate());
+	}
+
+	private LocalDate afterSignalsBegin( final LocalDate contender ) {
+		return contender.isAfter(signalsBegin) ? contender : signalsBegin;
 	}
 
 	private int getLatestAboveZeroIndex( final TradingDayPrices[] data ) {
