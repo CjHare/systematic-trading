@@ -38,20 +38,11 @@ import com.systematic.trading.signal.IndicatorId;
  */
 public abstract class IndicatorConfigurationBase implements IndicatorConfiguration {
 
-	/** Description of the configuration, appropriate for display / output. */
-	private final String description;
-
 	/** identifier for the type or class of indicator. */
 	private final IndicatorId type;
 
-	public IndicatorConfigurationBase( final IndicatorId type, final String description ) {
+	public IndicatorConfigurationBase( final IndicatorId type ) {
 		this.type = type;
-		this.description = description;
-	}
-
-	@Override
-	public String getDescription() {
-		return description;
 	}
 
 	@Override

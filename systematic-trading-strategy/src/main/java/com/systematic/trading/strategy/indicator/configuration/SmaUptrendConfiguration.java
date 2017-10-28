@@ -39,8 +39,8 @@ public class SmaUptrendConfiguration extends IndicatorConfigurationBase {
 	private final int lookback;
 	private final int daysOfGradient;
 
-	public SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
-		super(new IndicatorId(description), description);
+	public SmaUptrendConfiguration( final IndicatorId id, final int lookback, final int daysOfGradient ) {
+		super(id);
 		this.daysOfGradient = daysOfGradient;
 		this.lookback = lookback;
 	}

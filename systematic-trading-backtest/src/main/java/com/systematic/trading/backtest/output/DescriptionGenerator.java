@@ -168,7 +168,7 @@ public class DescriptionGenerator {
 		}
 	}
 
-	public String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
+	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
 		final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal = entry.getConfirmationSignal();
 
 		if (confirmationSignal.isPresent()) {
@@ -176,9 +176,9 @@ public class DescriptionGenerator {
 			final int delay = confirmation.getType().getDelayUntilConfirmationRange();
 			final int range = confirmation.getType().getConfirmationDayRange();
 			final StringJoiner out = new StringJoiner(SEPARATOR);
-			out.add(confirmation.getAnchor().getDescription());
+//			out.add(confirmation.getAnchor().getDescription());
 			out.add("confirmedBy");
-			out.add(confirmation.getConfirmation().getDescription());
+//			out.add(confirmation.getConfirmation().getDescription());
 			out.add("in");
 			out.add(String.valueOf(delay));
 			out.add("to");
@@ -201,7 +201,7 @@ public class DescriptionGenerator {
 			}
 
 			for (final IndicatorConfiguration signal : signals) {
-				out.add(signal.getDescription());
+	//			out.add(signal.getDescription());
 			}
 			return out.toString();
 		}
@@ -220,7 +220,7 @@ public class DescriptionGenerator {
 			}
 
 			for (final IndicatorConfiguration signal : signals) {
-				out.add(signal.getDescription());
+	//			out.add(signal.getDescription());
 			}
 			return out.toString();
 		}

@@ -35,13 +35,6 @@ import com.systematic.trading.signal.IndicatorId;
 public interface IndicatorConfiguration {
 
 	/**
-	 * Textual description of the configuration.
-	 * 
-	 * @return meaningful description used for display purposes.
-	 */
-	String getDescription();
-
-	/**
 	 * Retrieves the signal type.
 	 * 
 	 * @return the type of signal the configuration matches.
