@@ -37,6 +37,8 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.IndicatorConfigurationTranslator;
+import com.systematic.trading.backtest.configuration.strategy.indicator.MacdConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
@@ -48,8 +50,6 @@ import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
-import com.systematic.trading.backtest.trial.configuration.ConfigurationTranslator;
-import com.systematic.trading.backtest.trial.configuration.MacdConfiguration;
 import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
 
 /**
@@ -61,7 +61,7 @@ public class MacdSignalBuyHoldTrial extends BaseTrialConfiguration implements Ba
 
 	private static final MacdConfiguration MACD_CONFIGURATION = MacdConfiguration.MEDIUM;
 
-	private final ConfigurationTranslator converter = new ConfigurationTranslator();
+	private final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 
 	public static void main( final String... args ) throws Exception {
 

@@ -27,36 +27,43 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial.configuration;
+package com.systematic.trading.backtest.configuration.strategy.indicator;
 
 /**
  * @author CJ Hare
  */
-public enum SmaUptrendConfiguration {
+public enum MacdConfiguration {
 
-	SHORT(20, 5, "SMA-Uptrend-Short"),
-	MEDIUM(50, 5, "SMA-Uptrend-Medium"),
-	LONG(100, 5, "SMA-Uptrend-Long");
+	SHORT(6, 13, 5, "MACD-Short"),
+	MEDIUM(12, 26, 9, "MACD-Medium"),
+	LONG(24, 52, 18, "MACD-Long");
 
-	private final int lookback;
-	private final int daysOfGradient;
 	private final String description;
+	private final int fastTimePeriods;
+	private final int slowTimePeriods;
+	private final int signalTimePeriods;
 
-	SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
-		this.daysOfGradient = daysOfGradient;
-		this.lookback = lookback;
+	MacdConfiguration( final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
+	        final String description ) {
 		this.description = description;
-	}
-
-	public int getLookback() {
-		return lookback;
-	}
-
-	public int getDaysOfGradient() {
-		return daysOfGradient;
+		this.fastTimePeriods = fastTimePeriods;
+		this.slowTimePeriods = slowTimePeriods;
+		this.signalTimePeriods = signalTimePeriods;
 	}
 
 	public String getDescription() {
 		return description;
+	}
+
+	public int getFastTimePeriods() {
+		return fastTimePeriods;
+	}
+
+	public int getSlowTimePeriods() {
+		return slowTimePeriods;
+	}
+
+	public int getSignalTimePeriods() {
+		return signalTimePeriods;
 	}
 }

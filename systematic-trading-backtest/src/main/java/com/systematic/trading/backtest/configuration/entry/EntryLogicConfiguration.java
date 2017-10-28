@@ -2,7 +2,7 @@ package com.systematic.trading.backtest.configuration.entry;
 
 import java.util.Optional;
 
-import com.systematic.trading.backtest.configuration.periodic.PeriodicFilterConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;

@@ -38,15 +38,15 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.periodic.PeriodicFilterConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.EmaUptrendConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.IndicatorConfigurationTranslator;
+import com.systematic.trading.backtest.configuration.strategy.indicator.MacdConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.RsiConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptrendConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
-import com.systematic.trading.backtest.trial.configuration.ConfigurationTranslator;
-import com.systematic.trading.backtest.trial.configuration.EmaUptrendConfiguration;
-import com.systematic.trading.backtest.trial.configuration.MacdConfiguration;
-import com.systematic.trading.backtest.trial.configuration.RsiConfiguration;
-import com.systematic.trading.backtest.trial.configuration.SmaUptrendConfiguration;
 import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
 
@@ -57,7 +57,7 @@ import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
  */
 public abstract class AllTrials extends BaseTrialConfiguration implements BacktestConfiguration {
 
-	private final ConfigurationTranslator converter = new ConfigurationTranslator();
+	private final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 
 	private final BrokerageFeesConfiguration brokerage;
 	private final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes;

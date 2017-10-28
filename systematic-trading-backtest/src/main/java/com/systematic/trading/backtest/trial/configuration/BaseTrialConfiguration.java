@@ -38,7 +38,10 @@ import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConf
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.periodic.PeriodicFilterConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.EmaUptrendConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.IndicatorConfigurationTranslator;
+import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptrendConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicFilterConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.strategy.operator.AnyOfIndicatorFilterConfiguration;
@@ -51,7 +54,7 @@ import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
  */
 public abstract class BaseTrialConfiguration {
 
-	private final ConfigurationTranslator converter = new ConfigurationTranslator();
+	private final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 
 	protected BacktestBootstrapConfiguration getBaseline( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {

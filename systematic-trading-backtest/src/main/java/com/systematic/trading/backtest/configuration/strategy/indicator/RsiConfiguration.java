@@ -27,35 +27,45 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial.configuration;
+package com.systematic.trading.backtest.configuration.strategy.indicator;
 
-import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
+import java.math.BigDecimal;
 
 /**
- * Converts the backtest configuration into the strategy package instance equivalent.
- * 
  * @author CJ Hare
  */
-public class ConfigurationTranslator {
+public enum RsiConfiguration {
 
-	public IndicatorConfiguration translate( final MacdConfiguration macdConfiguration ) {
-		return new com.systematic.trading.strategy.indicator.configuration.MacdConfiguration(macdConfiguration.getFastTimePeriods(),
-		        macdConfiguration.getSlowTimePeriods(), macdConfiguration.getSignalTimePeriods(),
-		        macdConfiguration.getDescription());
+	SHORT(7, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Short"),
+	MEDIUM(14, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Medium"),
+	LONG(21, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Long");
+
+	private final int lookback;
+	private final BigDecimal oversold;
+	private final BigDecimal overbought;
+	private final String description;
+
+	RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
+	        final String description ) {
+		this.lookback = lookback;
+		this.oversold = oversold;
+		this.overbought = overbought;
+		this.description = description;
 	}
 
-	public IndicatorConfiguration translate( final RsiConfiguration rsiConfiguration ) {
-		return new com.systematic.trading.strategy.indicator.configuration.RsiConfiguration(rsiConfiguration.getLookback(),
-		        rsiConfiguration.getOverbought(), rsiConfiguration.getOversold(), rsiConfiguration.getDescription());
+	public int getLookback() {
+		return lookback;
 	}
 
-	public IndicatorConfiguration translate( final SmaUptrendConfiguration smaConfiguration ) {
-		return new com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration(smaConfiguration.getLookback(),
-		        smaConfiguration.getDaysOfGradient(), smaConfiguration.getDescription());
+	public BigDecimal getOversold() {
+		return oversold;
 	}
 
-	public IndicatorConfiguration translate( final EmaUptrendConfiguration emaConfiguration ) {
-		return new com.systematic.trading.strategy.indicator.configuration.EmaUptrendConfiguration(emaConfiguration.getLookback(),
-		        emaConfiguration.getDaysOfGradient(), emaConfiguration.getDescription());
+	public BigDecimal getOverbought() {
+		return overbought;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }
