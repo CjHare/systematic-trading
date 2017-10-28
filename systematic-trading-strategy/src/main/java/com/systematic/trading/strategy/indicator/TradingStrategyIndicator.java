@@ -68,15 +68,15 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 	/** Identifier for the configuration of signal calculated. */
 	private final IndicatorId id;
 
-	/** Listners interested in when indicator signals are generated. */
-	private final SignalAnalysisListener[] listeners;
+	/** Listner interested in when indicator signals are generated. */
+	private final SignalAnalysisListener signalListner;
 
 	public TradingStrategyIndicator( final IndicatorId id, final U calculator, final SignalGenerator<T> generator,
-	        final SignalRangeFilter signalRangeFilter, final SignalAnalysisListener... listeners ) {
+	        final SignalRangeFilter signalRangeFilter, final SignalAnalysisListener signalListner ) {
 		this.signalRangeFilter = signalRangeFilter;
 		this.calculator = calculator;
 		this.generator = generator;
-		this.listeners = listeners;
+		this.signalListner = signalListner;
 		this.id = id;
 	}
 
@@ -100,14 +100,10 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 	private void notifyListners( final List<DatedSignal> signals ) {
 
 		// Create the event only when there are listeners
-		if (listeners.length != 0) {
-			for (final DatedSignal signal : signals) {
-				final SignalAnalysisEvent event = new IndicatorSignalEvent(
-				        new IndicatorSignal(signal.getDate(), id, generator.getType()));
-				for (final SignalAnalysisListener listener : listeners) {
-					listener.event(event);
-				}
-			}
+		for (final DatedSignal signal : signals) {
+			final SignalAnalysisEvent event = new IndicatorSignalEvent(
+			        new IndicatorSignal(signal.getDate(), id, generator.getType()));
+			signalListner.event(event);
 		}
 	}
 }

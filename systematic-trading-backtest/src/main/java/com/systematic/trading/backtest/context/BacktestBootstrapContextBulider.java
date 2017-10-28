@@ -104,7 +104,7 @@ public class BacktestBootstrapContextBulider {
 
 	private BrokerageFeesConfiguration brokerageType;
 
-	private SignalAnalysisListener[] signalAnalysisListeners;
+	private SignalAnalysisListener signalAnalysisListener;
 
 	public BacktestBootstrapContextBulider withConfiguration( final BacktestBootstrapConfiguration configuration ) {
 		this.simulationDates = configuration.getBacktestDates();
@@ -117,8 +117,8 @@ public class BacktestBootstrapContextBulider {
 		return this;
 	}
 
-	public BacktestBootstrapContextBulider withSignalAnalysisListeners( final SignalAnalysisListener... listeners ) {
-		this.signalAnalysisListeners = listeners;
+	public BacktestBootstrapContextBulider withSignalAnalysisListeners( final SignalAnalysisListener listener ) {
+		this.signalAnalysisListener = listener;
 		return this;
 	}
 
@@ -196,9 +196,9 @@ public class BacktestBootstrapContextBulider {
 
 		final ExpressionLanguageFactory entryFactory = new ExpressionLanguageFactory();
 		final IndicatorGeneratorFactory indicatorFactory = new IndicatorGeneratorFactory();
-		final Indicator anchorIndicator = indicatorFactory.create(anchor, signalRangeFilter, signalAnalysisListeners);
+		final Indicator anchorIndicator = indicatorFactory.create(anchor, signalRangeFilter, signalAnalysisListener);
 		final Indicator confirmationIndicator = indicatorFactory.create(confirmation, signalRangeFilter,
-		        signalAnalysisListeners);
+		        signalAnalysisListener);
 
 		final Entry entryStrategy = entryFactory.entry(anchorIndicator,
 		        new TradingStrategyConfirmedBy(confirmBy.getDelayUntilConfirmationRange(),
@@ -220,11 +220,11 @@ public class BacktestBootstrapContextBulider {
 		final IndicatorGeneratorFactory indicatorFactory = new IndicatorGeneratorFactory();
 
 		Entry entryStrategy = entryFactory
-		        .entry(indicatorFactory.create(indicators[0], signalRangeFilter, signalAnalysisListeners));
+		        .entry(indicatorFactory.create(indicators[0], signalRangeFilter, signalAnalysisListener));
 
 		for (int i = 1; i < indicators.length; i++) {
 			entryStrategy = entryFactory.entry(entryStrategy, new TradingStrategyAndOperator(), entryFactory
-			        .entry(indicatorFactory.create(indicators[i], signalRangeFilter, signalAnalysisListeners)));
+			        .entry(indicatorFactory.create(indicators[i], signalRangeFilter, signalAnalysisListener)));
 		}
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, entryStrategy);
@@ -241,11 +241,11 @@ public class BacktestBootstrapContextBulider {
 		final IndicatorGeneratorFactory indicatorFactory = new IndicatorGeneratorFactory();
 
 		Entry entryStrategy = entryFactory
-		        .entry(indicatorFactory.create(indicators[0], signalRangeFilter, signalAnalysisListeners));
+		        .entry(indicatorFactory.create(indicators[0], signalRangeFilter, signalAnalysisListener));
 
 		for (int i = 1; i < indicators.length; i++) {
 			entryStrategy = entryFactory.entry(entryStrategy, new TradingStrategyOrOperator(), entryFactory
-			        .entry(indicatorFactory.create(indicators[i], signalRangeFilter, signalAnalysisListeners)));
+			        .entry(indicatorFactory.create(indicators[i], signalRangeFilter, signalAnalysisListener)));
 		}
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, entryStrategy);

@@ -72,26 +72,26 @@ public class IndicatorGeneratorFactory {
 	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
 	 */
 	public Indicator create( final IndicatorConfiguration signal, final SignalRangeFilter filter,
-	        final SignalAnalysisListener... listeners ) {
+	        final SignalAnalysisListener signalListener ) {
 
 		if (signal instanceof MacdConfiguration) {
-			return create((MacdConfiguration) signal, filter, listeners);
+			return create((MacdConfiguration) signal, filter, signalListener);
 		}
 		if (signal instanceof RsiConfiguration) {
-			return create((RsiConfiguration) signal, filter, listeners);
+			return create((RsiConfiguration) signal, filter, signalListener);
 		}
 		if (signal instanceof SmaUptrendConfiguration) {
-			return create((SmaUptrendConfiguration) signal, filter, listeners);
+			return create((SmaUptrendConfiguration) signal, filter, signalListener);
 		}
 		if (signal instanceof EmaUptrendConfiguration) {
-			return create((EmaUptrendConfiguration) signal, filter, listeners);
+			return create((EmaUptrendConfiguration) signal, filter, signalListener);
 		}
 
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
 	public Indicator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter,
-	        final SignalAnalysisListener... listeners ) {
+	        final SignalAnalysisListener signalListener ) {
 
 		final SignalGenerator<RelativeStrengthIndexLine> generator = new RelativeStrengthIndexBullishSignalGenerator(
 		        rsiConfiguration.getOversold());
@@ -102,11 +102,11 @@ public class IndicatorGeneratorFactory {
 		        new IllegalArgumentThrowingValidator());
 
 		return new TradingStrategyIndicator<RelativeStrengthIndexLine, RelativeStrengthIndexIndicator>(
-		        rsiConfiguration.getId(), calculator, generator, filter, listeners);
+		        rsiConfiguration.getId(), calculator, generator, filter, signalListener);
 	}
 
 	public Indicator create( final SmaUptrendConfiguration sma, final SignalRangeFilter filter,
-	        final SignalAnalysisListener... listeners ) {
+	        final SignalAnalysisListener signalListener ) {
 
 		final SignalGenerator<SimpleMovingAverageLine> generator = new SimpleMovingAverageBullishGradientSignalGenerator();
 
@@ -114,11 +114,11 @@ public class IndicatorGeneratorFactory {
 		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
 		return new TradingStrategyIndicator<SimpleMovingAverageLine, SimpleMovingAverageIndicator>(sma.getId(),
-		        calculator, generator, filter, listeners);
+		        calculator, generator, filter, signalListener);
 	}
 
 	public Indicator create( final EmaUptrendConfiguration ema, final SignalRangeFilter filter,
-	        final SignalAnalysisListener... listeners ) {
+	        final SignalAnalysisListener signalListener ) {
 
 		final SignalGenerator<ExponentialMovingAverageLine> generator = new ExponentialMovingAverageBullishGradientSignalGenerator();
 
@@ -126,11 +126,11 @@ public class IndicatorGeneratorFactory {
 		        ema.getLookback(), ema.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
 		return new TradingStrategyIndicator<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator>(
-		        ema.getId(), calculator, generator, filter, listeners);
+		        ema.getId(), calculator, generator, filter, signalListener);
 	}
 
 	public Indicator create( final MacdConfiguration macdConfiguration, final SignalRangeFilter filter,
-	        final SignalAnalysisListener... listeners ) {
+	        final SignalAnalysisListener signalListener ) {
 
 		final SignalGenerator<MovingAverageConvergenceDivergenceLines> generator = new MovingAverageConvergenceDivergenceBullishSignalGenerator();
 
@@ -150,6 +150,6 @@ public class IndicatorGeneratorFactory {
 		        fastEma, slowEma, signalEma, new IllegalArgumentThrowingValidator());
 
 		return new TradingStrategyIndicator<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergenceIndicator>(
-		        macdConfiguration.getId(), macd, generator, filter, listeners);
+		        macdConfiguration.getId(), macd, generator, filter, signalListener);
 	}
 }

@@ -226,7 +226,7 @@ public class BacktestApplication {
 
 		for (final BacktestBootstrapConfiguration configuration : configurations) {
 			final BacktestOutput output = getOutput(depositAmount, arguments, configuration, outputPool);
-			final BacktestBootstrapContext context = createContext(configuration);
+			final BacktestBootstrapContext context = createContext(configuration, output);
 			final Period warmUp = context.getTradingStrategy().getWarmUpPeriod();
 			recordWarmUpPeriod(warmUp);
 			final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityIdentity(),
@@ -270,8 +270,10 @@ public class BacktestApplication {
 		        || arguments.getOutputType() == OutputType.FILE_MINIMUM;
 	}
 
-	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration, final SignalAnalysisListener... listeners ) {
-		return new BacktestBootstrapContextBulider().withConfiguration(configuration).withSignalAnalysisListeners(listeners).build();
+	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration,
+	        final SignalAnalysisListener listener ) {
+		return new BacktestBootstrapContextBulider().withConfiguration(configuration)
+		        .withSignalAnalysisListeners(listener).build();
 	}
 
 	private TickerSymbolTradingData getTradingData( final EquityIdentity equity,
