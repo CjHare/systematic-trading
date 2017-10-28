@@ -82,6 +82,6 @@ public class TradingStrategyConfirmedBy implements Confirmation {
 	}
 
 	private LocalDate latestConfirmationDate( final DatedSignal anchor ) {
-		return anchor.getDate().plusDays(delayUntilConfirmationRange + confirmationDayRange);
+		return anchor.getDate().plusDays((long) delayUntilConfirmationRange + confirmationDayRange);
 	}
 }
