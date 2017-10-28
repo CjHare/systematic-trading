@@ -38,37 +38,41 @@ import com.systematic.trading.data.TradingDayPrices;
  * 
  * @author CJ Hare
  */
-public class TradingDaySignalRangeFilter implements SignalRangeFilter {
+public class SimulationDatesRangeFilterDecorator implements SignalRangeFilter {
 
-	/** Offset applied to the size of array, when converting to index to reference entries. */
-	private static final int ZERO_BASED_INDEX_OFFSET = 1;
+	/** The earliest date a signal is allowed. */
+	private final LocalDate simulationStartDate;
 
-	/** Number of trading days before the latest (current) trading date to generate signals on. */
-	private final int previousTradingDaySignalRange;
+	/** The earliest date a signal is allowed. */
+	private final LocalDate simulationEndDate;
 
-	public TradingDaySignalRangeFilter( final int previousTradingDaySignalRange ) {
-		this.previousTradingDaySignalRange = previousTradingDaySignalRange;
+	/**	The filter being decorated. */
+	private final SignalRangeFilter filter;
+
+	public SimulationDatesRangeFilterDecorator( final LocalDate simulationStartDate, final LocalDate simulationEndDate,
+	        final SignalRangeFilter filter ) {
+		this.simulationEndDate = simulationEndDate;
+		this.simulationStartDate = simulationStartDate;
+		this.filter = filter;
 	}
 
 	@Override
 	public LocalDate getEarliestSignalDate( final TradingDayPrices[] data ) {
-		return data[getEarliestAboveZeroIndex(data)].getDate();
+		final LocalDate earliestDate = filter.getEarliestSignalDate(data);
+		return isAfterStartDate(earliestDate) ? earliestDate : simulationStartDate;
 	}
 
 	@Override
 	public LocalDate getLatestSignalDate( final TradingDayPrices[] data ) {
-		return data[getLatestAboveZeroIndex(data)].getDate();
+		final LocalDate latestDate = filter.getLatestSignalDate(data);
+		return isBeforeEndDate(latestDate) ? latestDate : simulationEndDate;
 	}
 
-	private int getLatestAboveZeroIndex( final TradingDayPrices[] data ) {
-		return getAboveZeroIndex(data.length);
+	private boolean isAfterStartDate( final LocalDate contender ) {
+		return simulationStartDate.isBefore(contender);
 	}
 
-	private int getEarliestAboveZeroIndex( final TradingDayPrices[] data ) {
-		return getAboveZeroIndex(data.length - previousTradingDaySignalRange);
-	}
-
-	private int getAboveZeroIndex( final int value ) {
-		return Math.max(0, value - ZERO_BASED_INDEX_OFFSET);
+	private boolean isBeforeEndDate( final LocalDate contender ) {
+		return simulationEndDate.isAfter(contender);
 	}
 }

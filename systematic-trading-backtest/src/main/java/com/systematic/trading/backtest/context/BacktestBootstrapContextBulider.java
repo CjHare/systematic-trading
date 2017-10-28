@@ -45,6 +45,7 @@ import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signals.filter.SignalRangeFilter;
+import com.systematic.trading.signals.filter.SimulationDatesRangeFilterDecorator;
 import com.systematic.trading.signals.filter.TradingDaySignalRangeFilter;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
@@ -261,15 +262,18 @@ public class BacktestBootstrapContextBulider {
 
 	private SignalRangeFilter getSignalRangeFilter( final EntryLogicConfiguration entry ) {
 		final LocalDate earliestSignal = simulationDates.getStartDate();
+		final LocalDate latestSignal = simulationDates.getEndDate();
+
 		final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal = entry.getConfirmationSignal();
 
 		if (confirmationSignal.isPresent()) {
-			return new TradingDaySignalRangeFilter(earliestSignal,
-			        confirmationSignal.get().getType().getDelayUntilConfirmationRange()
-			                + confirmationSignal.get().getType().getConfirmationDayRange());
+			return new SimulationDatesRangeFilterDecorator(earliestSignal, latestSignal,
+			        new TradingDaySignalRangeFilter(confirmationSignal.get().getType().getDelayUntilConfirmationRange()
+			                + confirmationSignal.get().getType().getConfirmationDayRange()));
 		}
 
-		return new TradingDaySignalRangeFilter(earliestSignal, 0);
+		return new SimulationDatesRangeFilterDecorator(earliestSignal, latestSignal,
+		        new TradingDaySignalRangeFilter(0));
 	}
 
 	private LocalDate getFirstDayOfYear( final LocalDate date ) {
