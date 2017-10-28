@@ -35,8 +35,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-
 import com.systematic.trading.collection.LimitedSizeQueue;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
@@ -107,10 +105,6 @@ public class TradingStrategy implements Strategy {
 
 		// Add the day's data to the rolling queue
 		tradingData.add(data);
-
-		if (tradingData.size() == entry.getNumberOfTradingDaysRequired() - 1) {
-			LogManager.getLogger(TradingStrategy.class).info(data.getDate());
-		}
 
 		if (tradingData.size() == entry.getNumberOfTradingDaysRequired()) {
 
