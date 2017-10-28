@@ -68,7 +68,7 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 	/** Identifier for the configuration of signal calculated. */
 	private final IndicatorId id;
 
-	/** Listner interested in when indicator signals are generated. */
+	/** Listener interested in when indicator signals are generated. */
 	private final SignalAnalysisListener signalListner;
 
 	public TradingStrategyIndicator( final IndicatorId id, final U calculator, final SignalGenerator<T> generator,
