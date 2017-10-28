@@ -38,6 +38,10 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
@@ -68,12 +72,25 @@ public class DescriptionGenerator {
 
 	private static final String EXIT_LOGIC = "HoldForever";
 
+	public String getDescription( final EntryConfiguration entry, final EntrySizeConfiguration entryPositionSizing,
+	        final ExitConfiguration exit, final ExitSizeConfiguration exitPositionSizing ) {
+		return String.format("%s%s%s%s%s%s%s", entry.getDescription(), SEPARATOR, entryPositionSizing.getDescription(),
+		        SEPARATOR, exit.getDescription(), SEPARATOR, exitPositionSizing.getDescription());
+	}
+
+	public String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add(minimumTradeValue(minimumTrade));
+		out.add(maximumTradeValue(maximumTrade));
+		return out.toString();
+	}
+
 	public String getDescription( final BacktestBootstrapConfiguration configuration ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(equity(configuration.getEquity()));
 		out.add(brokerage(configuration.getBrokerageFees()));
 		out.add(cashAccount(configuration.getCashAccount()));
-//		out.add(getEntryLogic(configuration.getEntryLogic()));
+		out.add(configuration.getStrategy().getDescription());
 		out.add(EXIT_LOGIC);
 		return out.toString();
 	}
@@ -85,35 +102,35 @@ public class DescriptionGenerator {
 		out.add(brokerage(configuration.getBrokerageFees()));
 		out.add(deposit(depositAmount));
 		out.add(cashAccount(configuration.getCashAccount()));
-//		out.add(getEntryLogic(configuration.getEntryLogic()));
+		out.add(configuration.getStrategy().getDescription());
 		out.add(EXIT_LOGIC);
 		return out.toString();
 	}
 
 	public String getEntryLogic( final StrategyConfiguration entry ) {
-//		final StringJoiner out = new StringJoiner(SEPARATOR);
-//
-//		switch (entry.getType()) {
-//			case CONFIRMATION_SIGNAL:
-//				out.add(entryLogicConfirmationSignal(entry));
-//			break;
-//			case PERIODIC:
-//				out.add(entryPeriodic(entry));
-//			break;
-//			case SAME_DAY_SIGNALS:
-//				out.add(entryLogicSameDaySignals(entry));
-//			break;
-//			case ANY_SIGNAL:
-//				out.add(entryLogicAnyySignal(entry));
-//			break;
-//			default:
-//				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
-//		}
-//
-//		out.add(minimumTradeValue(entry.getMinimumTrade()));
-//		out.add(maximumTradeValue(entry.getMaximumTrade()));
-//		return out.toString();
-		
+		//		final StringJoiner out = new StringJoiner(SEPARATOR);
+		//
+		//		switch (entry.getType()) {
+		//			case CONFIRMATION_SIGNAL:
+		//				out.add(entryLogicConfirmationSignal(entry));
+		//			break;
+		//			case PERIODIC:
+		//				out.add(entryPeriodic(entry));
+		//			break;
+		//			case SAME_DAY_SIGNALS:
+		//				out.add(entryLogicSameDaySignals(entry));
+		//			break;
+		//			case ANY_SIGNAL:
+		//				out.add(entryLogicAnyySignal(entry));
+		//			break;
+		//			default:
+		//				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
+		//		}
+		//
+		//		out.add(minimumTradeValue(entry.getMinimumTrade()));
+		//		out.add(maximumTradeValue(entry.getMaximumTrade()));
+		//		return out.toString();
+
 		//TODO fix
 		return "";
 	}

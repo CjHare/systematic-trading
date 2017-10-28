@@ -33,13 +33,15 @@ import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfigu
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
+import com.systematic.trading.backtest.output.DescriptionGenerator;
+import com.systematic.trading.strategy.Describable;
 
 /**
  * Strategy configuration.
  * 
  * @author CJ Hare
  */
-public class StrategyConfiguration {
+public class StrategyConfiguration implements Describable {
 
 	private final EntryConfiguration entry;
 	private final EntrySizeConfiguration entryPositionSizing;
@@ -68,5 +70,10 @@ public class StrategyConfiguration {
 
 	public ExitSizeConfiguration getExitPositionSizing() {
 		return exitPositionSizing;
+	}
+
+	@Override
+	public String getDescription() {
+		return new DescriptionGenerator().getDescription(entry, entryPositionSizing, exit, exitPositionSizing);
 	}
 }

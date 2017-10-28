@@ -29,13 +29,15 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.entry.size;
 
+import com.systematic.trading.backtest.output.DescriptionGenerator;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.strategy.Describable;
 
 /**
  * @author CJ Hare
  */
-public class EntrySizeConfiguration {
+public class EntrySizeConfiguration implements Describable {
 
 	private final MinimumTrade minimumTrade;
 	private final MaximumTrade maximumTrade;
@@ -51,5 +53,10 @@ public class EntrySizeConfiguration {
 
 	public MaximumTrade getMaximumTrade() {
 		return maximumTrade;
+	}
+
+	@Override
+	public String getDescription() {
+		return new DescriptionGenerator().getDescription(minimumTrade, maximumTrade);
 	}
 }

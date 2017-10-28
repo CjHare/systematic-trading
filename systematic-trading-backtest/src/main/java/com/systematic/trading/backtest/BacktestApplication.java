@@ -307,11 +307,9 @@ public class BacktestApplication {
 	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
 
-		throw new UnsupportedOperationException("fix me");
-		//TODO fix
-//		return new BacktestBatchId(description.getDescription(configuration, depositAmount),
-//		        description.getEntryLogic(configuration.getEntryLogic()),
-//		        configuration.getEntryLogic().getMinimumTrade(), configuration.getEntryLogic().getMaximumTrade());
+		return new BacktestBatchId(configuration.getStrategy().getDescription(),
+		        configuration.getStrategy().getEntryPositionSizing().getMinimumTrade(),
+		        configuration.getStrategy().getEntryPositionSizing().getMaximumTrade());
 	}
 
 	private String getOutputDirectory( final String baseOutputDirectory,

@@ -29,9 +29,16 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.entry;
 
+import com.systematic.trading.strategy.Describable;
+
 /**
  * @author CJ Hare
  */
-public class EntryConfiguration {
+public class EntryConfiguration implements Describable {
 
+	@Override
+	public String getDescription() {
+		//TODO implement when entry is defined
+		return "";
+	}
 }

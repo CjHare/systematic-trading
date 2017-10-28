@@ -38,24 +38,13 @@ public class BacktestBatchId {
 	/** Unique identifier. */
 	private final String name;
 
-	//TODO these three are needed by the file output - maybe split into another object?
-	private final String entryLogic;
 	private final MaximumTrade maximumTrade;
 	private final MinimumTrade minimumTrade;
 
-	public BacktestBatchId( final String name, final String entryLogic, final MinimumTrade minimumTrade,
-	        final MaximumTrade maximumTrade ) {
+	public BacktestBatchId( final String name, final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
 		this.name = name;
-		this.entryLogic = entryLogic;
 		this.minimumTrade = minimumTrade;
 		this.maximumTrade = maximumTrade;
-	}
-
-	/**
-	 * @return description of the entry logic used by this run of the simulation.
-	 */
-	public String getEntryLogic() {
-		return entryLogic;
 	}
 
 	public MaximumTrade getMaximumTrade() {

@@ -29,9 +29,15 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.exit;
 
+import com.systematic.trading.strategy.Describable;
+
 /**
  * @author CJ Hare
  */
-public class ExitConfiguration {
+public class ExitConfiguration implements Describable {
 
+	@Override
+	public String getDescription() {
+		return "HoldForever";
+	}
 }

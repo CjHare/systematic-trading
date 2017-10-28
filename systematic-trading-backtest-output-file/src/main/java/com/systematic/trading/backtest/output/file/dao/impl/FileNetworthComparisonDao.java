@@ -155,7 +155,7 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
 		out.add(minimumTradeValue());
 		out.add(maximumTradeValue());
-		out.add(batchId.getEntryLogic());
+		out.add(batchId.getName());
 		out.add(entryOrdersPlaced());
 		out.add(entryOrdersExecuted());
 		out.add(entryOrdersDeleted());
