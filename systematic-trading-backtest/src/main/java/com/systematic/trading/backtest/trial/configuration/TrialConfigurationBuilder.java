@@ -34,8 +34,8 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
-import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 
 /**
  * Provides construction of configuration.
@@ -48,7 +48,7 @@ public class TrialConfigurationBuilder {
 	private BacktestSimulationDates simulationDates;
 	private DepositConfiguration deposit;
 	private BrokerageFeesConfiguration brokerage;
-	private EntryLogicConfiguration entryLogic;
+	private StrategyConfiguration strategy;
 
 	public TrialConfigurationBuilder withEquity( final EquityConfiguration equity ) {
 		this.equity = equity;
@@ -70,13 +70,13 @@ public class TrialConfigurationBuilder {
 		return this;
 	}
 
-	public TrialConfigurationBuilder withEntry( final EntryLogicConfiguration entryLogic ) {
-		this.entryLogic = entryLogic;
+	public TrialConfigurationBuilder withStrategy( final StrategyConfiguration strategy ) {
+		this.strategy = strategy;
 		return this;
 	}
 
 	public BacktestBootstrapConfiguration build() {
 		return new BacktestBootstrapConfiguration(simulationDates, brokerage,
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, entryLogic, equity);
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, strategy, equity);
 	}
 }

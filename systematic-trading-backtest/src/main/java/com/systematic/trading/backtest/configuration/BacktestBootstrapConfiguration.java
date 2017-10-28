@@ -4,8 +4,8 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
-import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 
 /**
  * The set of configurations for the back testing.
@@ -18,18 +18,17 @@ public class BacktestBootstrapConfiguration {
 	private final BrokerageFeesConfiguration brokerageFees;
 	private final CashAccountConfiguration cashAccount;
 	private final DepositConfiguration deposit;
-	private final EntryLogicConfiguration entry;
+	private final StrategyConfiguration strategy;
 	private final EquityConfiguration equity;
 
 	public BacktestBootstrapConfiguration( final BacktestSimulationDates backtestDates,
 	        final BrokerageFeesConfiguration brokerageFees, final CashAccountConfiguration cashAccount,
-	        final DepositConfiguration deposit, final EntryLogicConfiguration entry,
-	        final EquityConfiguration equity ) {
+	        final DepositConfiguration deposit, StrategyConfiguration strategy, final EquityConfiguration equity ) {
 		this.backtestDates = backtestDates;
 		this.brokerageFees = brokerageFees;
 		this.cashAccount = cashAccount;
 		this.deposit = deposit;
-		this.entry = entry;
+		this.strategy = strategy;
 		this.equity = equity;
 	}
 
@@ -49,8 +48,8 @@ public class BacktestBootstrapConfiguration {
 		return deposit;
 	}
 
-	public EntryLogicConfiguration getEntryLogic() {
-		return entry;
+	public StrategyConfiguration getStrategy() {
+		return strategy;
 	}
 
 	public EquityConfiguration getEquity() {

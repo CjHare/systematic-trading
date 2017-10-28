@@ -2,7 +2,7 @@ package com.systematic.trading.backtest.configuration.entry;
 
 import java.util.Optional;
 
-import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicFilterConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
@@ -19,14 +19,14 @@ public class EntryLogicConfiguration {
 	}
 
 	private final Type type;
-	private final PeriodicFilterConfiguration periodic;
+	private final PeriodicConfiguration periodic;
 	private final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal;
 	private final Optional<SameDayFilterConfiguration> sameDaySignals;
 	private final Optional<AnyOfIndicatorFilterConfiguration> anyOfSignal;
 	private final MaximumTrade maximumTrade;
 	private final MinimumTrade minimumTrade;
 
-	public EntryLogicConfiguration( final PeriodicFilterConfiguration periodic, final MaximumTrade maximumTrade,
+	public EntryLogicConfiguration( final PeriodicConfiguration periodic, final MaximumTrade maximumTrade,
 	        final MinimumTrade minimumTrade ) {
 		this.type = Type.PERIODIC;
 		this.periodic = periodic;
@@ -74,7 +74,7 @@ public class EntryLogicConfiguration {
 		return type;
 	}
 
-	public PeriodicFilterConfiguration getPeriodic() {
+	public PeriodicConfiguration getPeriodic() {
 		return periodic;
 	}
 

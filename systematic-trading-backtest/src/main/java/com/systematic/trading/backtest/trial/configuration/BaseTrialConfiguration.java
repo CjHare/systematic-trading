@@ -36,16 +36,20 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
-import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
+import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.indicator.EmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.indicator.IndicatorConfigurationTranslator;
 import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptrendConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicFilterConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.strategy.operator.AnyOfIndicatorFilterConfiguration;
-import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
 
 /**
  * Contains generic configuration details, enabling lightweight concrete trials.
@@ -58,40 +62,58 @@ public abstract class BaseTrialConfiguration {
 
 	protected BacktestBootstrapConfiguration getBaseline( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
-		return new TrialConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
-		        .withDeposit(deposit).withBrokerage(BrokerageFeesConfiguration.VANGUARD_RETAIL)
-		        .withEntry(new EntryLogicConfiguration(PeriodicFilterConfiguration.WEEKLY, MaximumTrade.ALL,
-		                MinimumTrade.ZERO))
-		        .build();
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+
+		final EntryConfiguration entry = factory.entry(PeriodicConfiguration.WEEKLY);
+		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(MinimumTrade.ZERO,
+		        MaximumTrade.ALL);
+		final ExitConfiguration exit = factory.exit();
+		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
+		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
+
+		return getConfiguration(equity, simulationDates, deposit, BrokerageFeesConfiguration.VANGUARD_RETAIL, strategy);
 	}
 
 	protected BacktestBootstrapConfiguration getPeriod( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final PeriodicFilterConfiguration frequency ) {
-		return new TrialConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
-		        .withDeposit(deposit).withBrokerage(brokerage)
-		        .withEntry(new EntryLogicConfiguration(frequency, MaximumTrade.ALL, MinimumTrade.ZERO)).build();
+	        final BrokerageFeesConfiguration brokerage, final PeriodicConfiguration frequency ) {
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+
+		final EntryConfiguration entry = factory.entry(frequency);
+		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(MinimumTrade.ZERO,
+		        MaximumTrade.ALL);
+		final ExitConfiguration exit = factory.exit();
+		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
+		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
+
+		return getConfiguration(equity, simulationDates, deposit, brokerage, strategy);
 	}
 
 	protected BacktestBootstrapConfiguration getConfiguration( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final EntryLogicConfiguration entryLogic ) {
+	        final BrokerageFeesConfiguration brokerage, final StrategyConfiguration strategy ) {
 		return new TrialConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
-		        .withDeposit(deposit).withBrokerage(brokerage).withEntry(entryLogic).build();
+		        .withDeposit(deposit).withBrokerage(brokerage).withStrategy(strategy).build();
 	}
 
 	protected List<BacktestBootstrapConfiguration> getSmaUptrends( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
 		        SmaUptrendConfiguration.values().length);
 
 		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
-			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-			        new EntryLogicConfiguration(
-			                new SameDayFilterConfiguration(converter.translate(smaConfiguration)),
-			                maximumTrade, minimumTrade)));
+
+			final EntryConfiguration entry = factory.entry(converter.translate(smaConfiguration));
+			final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
+			final ExitConfiguration exit = factory.exit();
+			final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
+			final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
+			        exitPositionSizing);
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, strategy));
+
 		}
 
 		return configurations;
@@ -101,14 +123,19 @@ public abstract class BaseTrialConfiguration {
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
 		        EmaUptrendConfiguration.values().length);
 
 		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
-			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-			        new EntryLogicConfiguration(
-			                new SameDayFilterConfiguration(converter.translate(emaConfiguration)),
-			                maximumTrade, minimumTrade)));
+
+			final EntryConfiguration entry = factory.entry(converter.translate(emaConfiguration));
+			final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
+			final ExitConfiguration exit = factory.exit();
+			final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
+			final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
+			        exitPositionSizing);
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, strategy));
 		}
 
 		return configurations;
@@ -118,17 +145,22 @@ public abstract class BaseTrialConfiguration {
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
 		        EmaUptrendConfiguration.values().length * SmaUptrendConfiguration.values().length);
 
 		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
 			for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
-				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-				        new EntryLogicConfiguration(
-				                new AnyOfIndicatorFilterConfiguration(
-				                        converter.translate(emaConfiguration),
-				                        converter.translate(smaConfiguration)),
-				                maximumTrade, minimumTrade)));
+
+				final EntryConfiguration entry = factory.entry(factory.entry(converter.translate(emaConfiguration)),
+				        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(smaConfiguration)));
+				final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade,
+				        maximumTrade);
+				final ExitConfiguration exit = factory.exit();
+				final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
+				final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
+				        exitPositionSizing);
+				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, strategy));
 			}
 		}
 

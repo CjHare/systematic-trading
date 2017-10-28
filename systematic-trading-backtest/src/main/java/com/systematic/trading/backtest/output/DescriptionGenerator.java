@@ -37,6 +37,7 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
@@ -72,7 +73,7 @@ public class DescriptionGenerator {
 		out.add(equity(configuration.getEquity()));
 		out.add(brokerage(configuration.getBrokerageFees()));
 		out.add(cashAccount(configuration.getCashAccount()));
-		out.add(getEntryLogic(configuration.getEntryLogic()));
+//		out.add(getEntryLogic(configuration.getEntryLogic()));
 		out.add(EXIT_LOGIC);
 		return out.toString();
 	}
@@ -84,34 +85,37 @@ public class DescriptionGenerator {
 		out.add(brokerage(configuration.getBrokerageFees()));
 		out.add(deposit(depositAmount));
 		out.add(cashAccount(configuration.getCashAccount()));
-		out.add(getEntryLogic(configuration.getEntryLogic()));
+//		out.add(getEntryLogic(configuration.getEntryLogic()));
 		out.add(EXIT_LOGIC);
 		return out.toString();
 	}
 
-	public String getEntryLogic( final EntryLogicConfiguration entry ) {
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-
-		switch (entry.getType()) {
-			case CONFIRMATION_SIGNAL:
-				out.add(entryLogicConfirmationSignal(entry));
-			break;
-			case PERIODIC:
-				out.add(entryPeriodic(entry));
-			break;
-			case SAME_DAY_SIGNALS:
-				out.add(entryLogicSameDaySignals(entry));
-			break;
-			case ANY_SIGNAL:
-				out.add(entryLogicAnyySignal(entry));
-			break;
-			default:
-				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
-		}
-
-		out.add(minimumTradeValue(entry.getMinimumTrade()));
-		out.add(maximumTradeValue(entry.getMaximumTrade()));
-		return out.toString();
+	public String getEntryLogic( final StrategyConfiguration entry ) {
+//		final StringJoiner out = new StringJoiner(SEPARATOR);
+//
+//		switch (entry.getType()) {
+//			case CONFIRMATION_SIGNAL:
+//				out.add(entryLogicConfirmationSignal(entry));
+//			break;
+//			case PERIODIC:
+//				out.add(entryPeriodic(entry));
+//			break;
+//			case SAME_DAY_SIGNALS:
+//				out.add(entryLogicSameDaySignals(entry));
+//			break;
+//			case ANY_SIGNAL:
+//				out.add(entryLogicAnyySignal(entry));
+//			break;
+//			default:
+//				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
+//		}
+//
+//		out.add(minimumTradeValue(entry.getMinimumTrade()));
+//		out.add(maximumTradeValue(entry.getMaximumTrade()));
+//		return out.toString();
+		
+		//TODO fix
+		return "";
 	}
 
 	private String deposit( final DepositConfiguration depositAmount ) {

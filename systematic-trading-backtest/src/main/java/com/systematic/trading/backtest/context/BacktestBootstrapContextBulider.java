@@ -39,6 +39,7 @@ import com.systematic.trading.backtest.configuration.entry.EntryLogicConfigurati
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityManagementFeeConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.maths.SignalType;
@@ -101,7 +102,7 @@ public class BacktestBootstrapContextBulider {
 	/** The intended dates for the simulation. */
 	private BacktestSimulationDates simulationDates;
 
-	private EntryLogicConfiguration entryLogic;
+	private StrategyConfiguration strategy;
 
 	private BrokerageFeesConfiguration brokerageType;
 
@@ -114,7 +115,7 @@ public class BacktestBootstrapContextBulider {
 		this.deposit = configuration.getDeposit();
 		this.equity = configuration.getEquity();
 		this.brokerageType = configuration.getBrokerageFees();
-		this.entryLogic = configuration.getEntryLogic();
+		this.strategy = configuration.getStrategy();
 		return this;
 	}
 
@@ -126,27 +127,32 @@ public class BacktestBootstrapContextBulider {
 	//TODO why not use the fields?
 	public BacktestBootstrapContext build() {
 
-		switch (entryLogic.getType()) {
-			case PERIODIC:
-				final Period purchaseFrequency = entryLogic.getPeriodic().getFrequency();
-				return periodic(brokerageType, purchaseFrequency);
-
-			case CONFIRMATION_SIGNAL:
-				return confirmationSignal(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
-				        entryLogic);
-
-			case SAME_DAY_SIGNALS:
-				return indicatorsOnSameDay(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
-				        entryLogic);
-
-			case ANY_SIGNAL:
-				return anyIndicators(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
-				        entryLogic);
-
-			default:
-				throw new IllegalArgumentException(
-				        String.format("Unexpected entry logic type: %s", entryLogic.getType()));
-		}
+		//TODO translation between instance types
+		
+//		switch (entryLogic.getType()) {
+//			case PERIODIC:
+//				final Period purchaseFrequency = entryLogic.getPeriodic().getFrequency();
+//				return periodic(brokerageType, purchaseFrequency);
+//
+//			case CONFIRMATION_SIGNAL:
+//				return confirmationSignal(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
+//				        entryLogic);
+//
+//			case SAME_DAY_SIGNALS:
+//				return indicatorsOnSameDay(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
+//				        entryLogic);
+//
+//			case ANY_SIGNAL:
+//				return anyIndicators(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
+//				        entryLogic);
+//
+//			default:
+//				throw new IllegalArgumentException(
+//				        String.format("Unexpected entry logic type: %s", entryLogic.getType()));
+//		}
+		
+		//TODO implement
+		return null;
 	}
 
 	private BacktestBootstrapContext periodic( final BrokerageFeesConfiguration brokerageType,
