@@ -68,6 +68,7 @@ import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.signal.event.SignalAnalysisListener;
 
 /**
  * Performs the initial configuration common between all back tests, including hardware configuration.
@@ -269,8 +270,8 @@ public class BacktestApplication {
 		        || arguments.getOutputType() == OutputType.FILE_MINIMUM;
 	}
 
-	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration ) {
-		return new BacktestBootstrapContextBulider().withConfiguration(configuration).build();
+	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration, final SignalAnalysisListener... listeners ) {
+		return new BacktestBootstrapContextBulider().withConfiguration(configuration).withSignalAnalysisListeners(listeners).build();
 	}
 
 	private TickerSymbolTradingData getTradingData( final EquityIdentity equity,

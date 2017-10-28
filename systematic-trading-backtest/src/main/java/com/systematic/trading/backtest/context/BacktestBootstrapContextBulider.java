@@ -104,6 +104,8 @@ public class BacktestBootstrapContextBulider {
 
 	private BrokerageFeesConfiguration brokerageType;
 
+	private SignalAnalysisListener[] signalAnalysisListeners;
+
 	public BacktestBootstrapContextBulider withConfiguration( final BacktestBootstrapConfiguration configuration ) {
 		this.simulationDates = configuration.getBacktestDates();
 		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getStartDate());
@@ -112,6 +114,11 @@ public class BacktestBootstrapContextBulider {
 		this.equity = configuration.getEquity();
 		this.brokerageType = configuration.getBrokerageFees();
 		this.entryLogic = configuration.getEntryLogic();
+		return this;
+	}
+
+	public BacktestBootstrapContextBulider withSignalAnalysisListeners( final SignalAnalysisListener... listeners ) {
+		this.signalAnalysisListeners = listeners;
 		return this;
 	}
 
@@ -173,7 +180,7 @@ public class BacktestBootstrapContextBulider {
 
 	private BacktestBootstrapContext confirmationSignal( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
-	        final EntryLogicConfiguration entry, final SignalAnalysisListener... listeners ) {
+	        final EntryLogicConfiguration entry ) {
 
 		final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal = entry.getConfirmationSignal();
 
@@ -189,8 +196,9 @@ public class BacktestBootstrapContextBulider {
 
 		final ExpressionLanguageFactory entryFactory = new ExpressionLanguageFactory();
 		final IndicatorGeneratorFactory indicatorFactory = new IndicatorGeneratorFactory();
-		final Indicator anchorIndicator = indicatorFactory.create(anchor, signalRangeFilter, listeners);
-		final Indicator confirmationIndicator = indicatorFactory.create(confirmation, signalRangeFilter, listeners);
+		final Indicator anchorIndicator = indicatorFactory.create(anchor, signalRangeFilter, signalAnalysisListeners);
+		final Indicator confirmationIndicator = indicatorFactory.create(confirmation, signalRangeFilter,
+		        signalAnalysisListeners);
 
 		final Entry entryStrategy = entryFactory.entry(anchorIndicator,
 		        new TradingStrategyConfirmedBy(confirmBy.getDelayUntilConfirmationRange(),
@@ -203,7 +211,7 @@ public class BacktestBootstrapContextBulider {
 	//TODO rename - something todo with same day and AND
 	private BacktestBootstrapContext indicatorsOnSameDay( final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade, final BrokerageFeesConfiguration brokerageType,
-	        final EntryLogicConfiguration entry, final SignalAnalysisListener... listeners ) {
+	        final EntryLogicConfiguration entry ) {
 
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final IndicatorConfiguration[] indicators = getSameDaySignals(entry);
@@ -211,11 +219,12 @@ public class BacktestBootstrapContextBulider {
 		final ExpressionLanguageFactory entryFactory = new ExpressionLanguageFactory();
 		final IndicatorGeneratorFactory indicatorFactory = new IndicatorGeneratorFactory();
 
-		Entry entryStrategy = entryFactory.entry(indicatorFactory.create(indicators[0], signalRangeFilter, listeners));
+		Entry entryStrategy = entryFactory
+		        .entry(indicatorFactory.create(indicators[0], signalRangeFilter, signalAnalysisListeners));
 
 		for (int i = 1; i < indicators.length; i++) {
-			entryStrategy = entryFactory.entry(entryStrategy, new TradingStrategyAndOperator(),
-			        entryFactory.entry(indicatorFactory.create(indicators[i], signalRangeFilter, listeners)));
+			entryStrategy = entryFactory.entry(entryStrategy, new TradingStrategyAndOperator(), entryFactory
+			        .entry(indicatorFactory.create(indicators[i], signalRangeFilter, signalAnalysisListeners)));
 		}
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, entryStrategy);
@@ -223,8 +232,7 @@ public class BacktestBootstrapContextBulider {
 
 	//TODO rename - something todo with same day and OR
 	private BacktestBootstrapContext anyIndicators( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade,
-	        final BrokerageFeesConfiguration brokerageType, final EntryLogicConfiguration entry,
-	        final SignalAnalysisListener... listeners ) {
+	        final BrokerageFeesConfiguration brokerageType, final EntryLogicConfiguration entry ) {
 
 		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
 		final IndicatorConfiguration[] indicators = getAnyOfSignals(entry);
@@ -232,11 +240,12 @@ public class BacktestBootstrapContextBulider {
 		final ExpressionLanguageFactory entryFactory = new ExpressionLanguageFactory();
 		final IndicatorGeneratorFactory indicatorFactory = new IndicatorGeneratorFactory();
 
-		Entry entryStrategy = entryFactory.entry(indicatorFactory.create(indicators[0], signalRangeFilter, listeners));
+		Entry entryStrategy = entryFactory
+		        .entry(indicatorFactory.create(indicators[0], signalRangeFilter, signalAnalysisListeners));
 
 		for (int i = 1; i < indicators.length; i++) {
-			entryStrategy = entryFactory.entry(entryStrategy, new TradingStrategyOrOperator(),
-			        entryFactory.entry(indicatorFactory.create(indicators[i], signalRangeFilter, listeners)));
+			entryStrategy = entryFactory.entry(entryStrategy, new TradingStrategyOrOperator(), entryFactory
+			        .entry(indicatorFactory.create(indicators[i], signalRangeFilter, signalAnalysisListeners)));
 		}
 
 		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, entryStrategy);
