@@ -31,6 +31,7 @@ package com.systematic.trading.backtest.configuration.strategy;
 
 import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmationConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.PeriodicEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
@@ -46,7 +47,7 @@ import com.systematic.trading.strategy.indicator.configuration.IndicatorConfigur
 public class StrategyConfigurationFactory {
 
 	//TODO provide factory methods for the sizing too
-	
+
 	public StrategyConfiguration strategy( final EntryConfiguration entry,
 	        final EntrySizeConfiguration entryPositionSizing, final ExitConfiguration exit,
 	        final ExitSizeConfiguration exitPositionSizing ) {
@@ -70,9 +71,8 @@ public class StrategyConfigurationFactory {
 		return null;
 	}
 
-	public EntryConfiguration entry( final PeriodicConfiguration periodic ) {
-		// TODO Auto-generated method stub
-		return null;
+	public EntryConfiguration entry( final PeriodicConfiguration frequency ) {
+		return new PeriodicEntryConfiguration(frequency);
 	}
 
 	public ExitConfiguration exit() {

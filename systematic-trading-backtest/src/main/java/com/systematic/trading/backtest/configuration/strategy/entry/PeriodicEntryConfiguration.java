@@ -29,10 +29,26 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.entry;
 
-import com.systematic.trading.strategy.Describable;
+import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
+import com.systematic.trading.backtest.output.DescriptionGenerator;
 
 /**
  * @author CJ Hare
  */
-public interface EntryConfiguration extends Describable {
+public class PeriodicEntryConfiguration implements EntryConfiguration {
+
+	private final PeriodicConfiguration frequency;
+
+	public PeriodicEntryConfiguration( final PeriodicConfiguration frequency ) {
+		this.frequency = frequency;
+	}
+
+	public PeriodicConfiguration getFrequency() {
+		return frequency;
+	}
+
+	@Override
+	public String getDescription() {
+		return new DescriptionGenerator().periodicEntry(frequency);
+	}
 }

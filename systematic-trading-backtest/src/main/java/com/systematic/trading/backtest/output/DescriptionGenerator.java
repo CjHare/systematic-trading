@@ -37,11 +37,11 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
@@ -107,34 +107,6 @@ public class DescriptionGenerator {
 		return out.toString();
 	}
 
-	public String getEntryLogic( final StrategyConfiguration entry ) {
-		//		final StringJoiner out = new StringJoiner(SEPARATOR);
-		//
-		//		switch (entry.getType()) {
-		//			case CONFIRMATION_SIGNAL:
-		//				out.add(entryLogicConfirmationSignal(entry));
-		//			break;
-		//			case PERIODIC:
-		//				out.add(entryPeriodic(entry));
-		//			break;
-		//			case SAME_DAY_SIGNALS:
-		//				out.add(entryLogicSameDaySignals(entry));
-		//			break;
-		//			case ANY_SIGNAL:
-		//				out.add(entryLogicAnyySignal(entry));
-		//			break;
-		//			default:
-		//				throw new IllegalArgumentException(String.format("Unacceptable entry logic type: %s", entry.getType()));
-		//		}
-		//
-		//		out.add(minimumTradeValue(entry.getMinimumTrade()));
-		//		out.add(maximumTradeValue(entry.getMaximumTrade()));
-		//		return out.toString();
-
-		//TODO fix
-		return "";
-	}
-
 	private String deposit( final DepositConfiguration depositAmount ) {
 		return String.format("Deposit_%s_%s", depositAmount.getAmount(), getNiceDisplay(depositAmount.getFrequency()));
 	}
@@ -155,8 +127,8 @@ public class DescriptionGenerator {
 		return time.toString();
 	}
 
-	private String entryPeriodic( final EntryLogicConfiguration entry ) {
-		switch (entry.getPeriodic()) {
+	public String periodicEntry( final PeriodicConfiguration frequency ) {
+		switch (frequency) {
 			case WEEKLY:
 				return "Buy_Weekly";
 
@@ -164,7 +136,7 @@ public class DescriptionGenerator {
 				return "Buy_Monthly";
 
 			default:
-				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", entry.getPeriodic()));
+				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", frequency));
 		}
 	}
 
@@ -176,9 +148,9 @@ public class DescriptionGenerator {
 			final int delay = confirmation.getType().getDelayUntilConfirmationRange();
 			final int range = confirmation.getType().getConfirmationDayRange();
 			final StringJoiner out = new StringJoiner(SEPARATOR);
-//			out.add(confirmation.getAnchor().getDescription());
+			//			out.add(confirmation.getAnchor().getDescription());
 			out.add("confirmedBy");
-//			out.add(confirmation.getConfirmation().getDescription());
+			//			out.add(confirmation.getConfirmation().getDescription());
 			out.add("in");
 			out.add(String.valueOf(delay));
 			out.add("to");
@@ -201,7 +173,7 @@ public class DescriptionGenerator {
 			}
 
 			for (final IndicatorConfiguration signal : signals) {
-	//			out.add(signal.getDescription());
+				//			out.add(signal.getDescription());
 			}
 			return out.toString();
 		}
@@ -220,7 +192,7 @@ public class DescriptionGenerator {
 			}
 
 			for (final IndicatorConfiguration signal : signals) {
-	//			out.add(signal.getDescription());
+				//			out.add(signal.getDescription());
 			}
 			return out.toString();
 		}
