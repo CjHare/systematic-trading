@@ -51,4 +51,9 @@ public class IndicatorEntryConfiguration implements EntryConfiguration {
 	public String getDescription() {
 		return new DescriptionGenerator().indicator(indicator);
 	}
+
+	@Override
+	public boolean hasSubEntry() {
+		return false;
+	}
 }

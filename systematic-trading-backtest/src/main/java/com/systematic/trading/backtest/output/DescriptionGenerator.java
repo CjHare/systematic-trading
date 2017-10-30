@@ -139,15 +139,23 @@ public class DescriptionGenerator {
 	        final EntryConfiguration righEntry ) {
 
 		final StringBuilder out = new StringBuilder();
-		out.append(OPERATOR_PREFIX);
+		if (leftEntry.hasSubEntry()) {
+			out.append(OPERATOR_PREFIX);
+		}
 		out.append(leftEntry.getDescription());
-		out.append(OPERATOR_SUFFIX);
+		if (leftEntry.hasSubEntry()) {
+			out.append(OPERATOR_SUFFIX);
+		}
 		out.append(SEPARATOR);
 		out.append(op.name());
 		out.append(SEPARATOR);
-		out.append(OPERATOR_PREFIX);
+		if (righEntry.hasSubEntry()) {
+			out.append(OPERATOR_PREFIX);
+		}
 		out.append(righEntry.getDescription());
-		out.append(OPERATOR_SUFFIX);
+		if (righEntry.hasSubEntry()) {
+			out.append(OPERATOR_SUFFIX);
+		}
 
 		return out.toString();
 	}

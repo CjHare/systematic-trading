@@ -51,4 +51,9 @@ public class PeriodicEntryConfiguration implements EntryConfiguration {
 	public String getDescription() {
 		return new DescriptionGenerator().periodicEntry(frequency);
 	}
+
+	@Override
+	public boolean hasSubEntry() {
+		return false;
+	}
 }

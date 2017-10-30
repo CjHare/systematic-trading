@@ -35,4 +35,11 @@ import com.systematic.trading.backtest.configuration.strategy.Describable;
  * @author CJ Hare
  */
 public interface EntryConfiguration extends Describable {
+
+	/**
+	 * Whether there are any child entry configurations. 
+	 * 
+	 * @return <code>true</code> when there is another child entry, <code?false</code> otherwise.
+	 */
+	boolean hasSubEntry();
 }

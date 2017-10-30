@@ -64,4 +64,9 @@ public class OperatorEntryConfiguration implements EntryConfiguration {
 	public String getDescription() {
 		return new DescriptionGenerator().entry(leftEntry, op, righEntry);
 	}
+
+	@Override
+	public boolean hasSubEntry() {
+		return true;
+	}
 }
