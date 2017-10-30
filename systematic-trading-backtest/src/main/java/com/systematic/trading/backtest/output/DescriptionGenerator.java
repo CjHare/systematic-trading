@@ -37,6 +37,7 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmationConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
@@ -183,6 +184,24 @@ public class DescriptionGenerator {
 
 	public String indicator( final IndicatorConfiguration indicator ) {
 		return indicator.getId().getName();
+	}
+
+	public String entry( final EntryConfiguration anchor, final ConfirmationConfiguration.Type confirmBy,
+	        final EntryConfiguration confirmation ) {
+
+		final int delay = confirmBy.getDelayUntilConfirmationRange();
+		final int range = confirmBy.getConfirmationDayRange();
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add(anchor.getDescription());
+		out.add("confirmedBy");
+		out.add(confirmation.getDescription());
+		out.add("in");
+		out.add(String.valueOf(delay));
+		out.add("to");
+		out.add(String.valueOf(delay + range));
+		out.add("days");
+		return out.toString();
+
 	}
 
 	private String entryLogicAnyySignal( final EntryLogicConfiguration entry ) {
