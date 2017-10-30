@@ -27,45 +27,48 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.operator;
+package com.systematic.trading.signal.range;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
-import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Operator;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
- * Trading strategy logical AND operator is used to combine exits and entries.
+ * A filter that is used to exclude the range of trading days when a signal can be generated.
  * 
  * @author CJ Hare
  */
-public class TradingStrategyAndOperator implements Operator {
+public class TradingDaySignalRangeFilter implements SignalRangeFilter {
 
-	@Override
-	public List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right ) {
+	/** Offset applied to the size of array, when converting to index to reference entries. */
+	private static final int ZERO_BASED_INDEX_OFFSET = 1;
 
-		final List<DatedSignal> both = new ArrayList<>(Math.max(left.size(), right.size()));
+	/** Number of trading days before the latest (current) trading date to generate signals on. */
+	private final int previousTradingDaySignalRange;
 
-		for (final DatedSignal conteder : right) {
-
-			if (contains(left, conteder)) {
-				both.add(conteder);
-			}
-		}
-
-		return left;
+	public TradingDaySignalRangeFilter( final int previousTradingDaySignalRange ) {
+		this.previousTradingDaySignalRange = previousTradingDaySignalRange;
 	}
 
-	//TODO natrual ordering to DatedSignal & replace with set operation
-	private boolean contains( final List<DatedSignal> left, final DatedSignal contender ) {
+	@Override
+	public LocalDate getEarliestSignalDate( final TradingDayPrices[] data ) {
+		return data[getEarliestAboveZeroIndex(data)].getDate();
+	}
 
-		for (final DatedSignal ds : left) {
-			if (ds.getDate().equals(contender.getDate()) && ds.getType() == contender.getType()) {
-				return true;
-			}
-		}
+	@Override
+	public LocalDate getLatestSignalDate( final TradingDayPrices[] data ) {
+		return data[getLatestAboveZeroIndex(data)].getDate();
+	}
 
-		return false;
+	private int getLatestAboveZeroIndex( final TradingDayPrices[] data ) {
+		return getAboveZeroIndex(data.length);
+	}
+
+	private int getEarliestAboveZeroIndex( final TradingDayPrices[] data ) {
+		return getAboveZeroIndex(data.length - previousTradingDaySignalRange);
+	}
+
+	private int getAboveZeroIndex( final int value ) {
+		return Math.max(0, value - ZERO_BASED_INDEX_OFFSET);
 	}
 }

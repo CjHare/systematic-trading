@@ -27,45 +27,36 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.operator;
+package com.systematic.trading.signal.range;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Operator;
+import java.time.LocalDate;
 
 /**
- * Trading strategy logical AND operator is used to combine exits and entries.
+ * Filter used for determining whether a candidate date is within a date given range.
  * 
  * @author CJ Hare
  */
-public class TradingStrategyAndOperator implements Operator {
+public class InclusiveDatelRangeFilter {
 
-	@Override
-	public List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right ) {
-
-		final List<DatedSignal> both = new ArrayList<>(Math.max(left.size(), right.size()));
-
-		for (final DatedSignal conteder : right) {
-
-			if (contains(left, conteder)) {
-				both.add(conteder);
-			}
-		}
-
-		return left;
+	/**
+	 * Determines whether the candidate date falls within the given date range.
+	 * 
+	 * @param earliestInclusiveDate inclusive date for the earliest signal, not <code>null</code>.
+	 * @param latestInclusiveDate inclusive date for the latest signal, not <code>null</code>.
+	 * @param candidate date being evaluated, not <code>null</code>.
+	 * @return <code>true</code> when date with within the range, <code>false</code> otherwise.
+	 */
+	public boolean isWithinSignalRange( final LocalDate earliestInclusiveDate, final LocalDate latestInclusiveDate,
+	        final LocalDate candidate ) {
+		return isWithinEarliestSignalRange(earliestInclusiveDate, candidate)
+		        && isWithinLatestSignalRange(latestInclusiveDate, candidate);
 	}
 
-	//TODO natrual ordering to DatedSignal & replace with set operation
-	private boolean contains( final List<DatedSignal> left, final DatedSignal contender ) {
+	private boolean isWithinEarliestSignalRange( final LocalDate earliestInclusiveDate, final LocalDate candidate ) {
+		return !candidate.isBefore(earliestInclusiveDate);
+	}
 
-		for (final DatedSignal ds : left) {
-			if (ds.getDate().equals(contender.getDate()) && ds.getType() == contender.getType()) {
-				return true;
-			}
-		}
-
-		return false;
+	private boolean isWithinLatestSignalRange( final LocalDate latestInclusiveDate, final LocalDate candidate ) {
+		return !candidate.isAfter(latestInclusiveDate);
 	}
 }

@@ -38,13 +38,13 @@ import com.systematic.trading.maths.indicator.SignalCalculator;
 import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
-import com.systematic.trading.signals.filter.InclusiveDatelRangeFilter;
-import com.systematic.trading.signals.filter.SignalRangeFilter;
-import com.systematic.trading.signals.generator.SignalGenerator;
-import com.systematic.trading.signals.model.DatedSignal;
-import com.systematic.trading.signals.model.event.IndicatorSignalEvent;
-import com.systematic.trading.signals.model.indicator.IndicatorSignal;
+import com.systematic.trading.signal.generator.SignalGenerator;
+import com.systematic.trading.signal.model.DatedSignal;
+import com.systematic.trading.signal.range.InclusiveDatelRangeFilter;
+import com.systematic.trading.signal.range.SignalRangeFilter;
 import com.systematic.trading.strategy.definition.Indicator;
+import com.systematic.trading.strategy.indicator.event.IndicatorSignal;
+import com.systematic.trading.strategy.indicator.event.IndicatorSignalEvent;
 
 /**
  * Trading strategy indicator that generates signals.

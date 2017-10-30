@@ -27,45 +27,59 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.operator;
+package com.systematic.trading.signal.generator.ema;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.function.Predicate;
 
+import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
+import com.systematic.trading.signal.generator.SignalGenerator;
 import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Operator;
 
 /**
- * Trading strategy logical AND operator is used to combine exits and entries.
+ * Bullish signal calculation based on the gradient of a SMA.
+ * <p/>
+ * Gradient of the SMA is evaluated, when it's positive it's considered bullish, otherwise it's not.
  * 
  * @author CJ Hare
  */
-public class TradingStrategyAndOperator implements Operator {
+public class ExponentialMovingAverageBullishGradientSignalGenerator
+        implements SignalGenerator<ExponentialMovingAverageLine> {
 
 	@Override
-	public List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right ) {
-
-		final List<DatedSignal> both = new ArrayList<>(Math.max(left.size(), right.size()));
-
-		for (final DatedSignal conteder : right) {
-
-			if (contains(left, conteder)) {
-				both.add(conteder);
-			}
-		}
-
-		return left;
+	public SignalType getType() {
+		return SignalType.BULLISH;
 	}
 
-	//TODO natrual ordering to DatedSignal & replace with set operation
-	private boolean contains( final List<DatedSignal> left, final DatedSignal contender ) {
+	@Override
+	public List<DatedSignal> generate( final ExponentialMovingAverageLine indicatorOutput,
+	        final Predicate<LocalDate> signalRange ) {
 
-		for (final DatedSignal ds : left) {
-			if (ds.getDate().equals(contender.getDate()) && ds.getType() == contender.getType()) {
-				return true;
+		final SortedMap<LocalDate, BigDecimal> ema = indicatorOutput.getEma();
+		final List<DatedSignal> signals = new ArrayList<>();
+		Map.Entry<LocalDate, BigDecimal> previousEntry = null;
+
+		for (final Map.Entry<LocalDate, BigDecimal> entry : ema.entrySet()) {
+			final LocalDate today = entry.getKey();
+
+			if (previousEntry != null && signalRange.test(today) && isPositiveGradient(entry, previousEntry)) {
+				signals.add(new DatedSignal(today, getType()));
 			}
+
+			previousEntry = entry;
 		}
 
-		return false;
+		return signals;
+	}
+
+	private boolean isPositiveGradient( final Map.Entry<LocalDate, BigDecimal> entry,
+	        final Map.Entry<LocalDate, BigDecimal> previousEtnry ) {
+		return entry.getValue().subtract(previousEtnry.getValue()).compareTo(BigDecimal.ZERO) > 0;
 	}
 }

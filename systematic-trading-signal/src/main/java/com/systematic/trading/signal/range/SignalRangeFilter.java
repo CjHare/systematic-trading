@@ -27,45 +27,34 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.operator;
+package com.systematic.trading.signal.range;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
-import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Operator;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
- * Trading strategy logical AND operator is used to combine exits and entries.
+ * A filter that is used to exclude the range of trading days when a signal can be generated.
  * 
  * @author CJ Hare
  */
-public class TradingStrategyAndOperator implements Operator {
+public interface SignalRangeFilter {
 
-	@Override
-	public List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right ) {
+	/**
+	 * Calculates the earliest date on which signals may be generated.
+	 * 
+	 * @param data ordered (date ascending) trading days to apply the filter (last value is the current trading day).
+	 * 				Must contain at least one entry.
+	 * @return inclusive date for when the first signal may be generated.
+	 */
+	public LocalDate getEarliestSignalDate( final TradingDayPrices[] data );
 
-		final List<DatedSignal> both = new ArrayList<>(Math.max(left.size(), right.size()));
-
-		for (final DatedSignal conteder : right) {
-
-			if (contains(left, conteder)) {
-				both.add(conteder);
-			}
-		}
-
-		return left;
-	}
-
-	//TODO natrual ordering to DatedSignal & replace with set operation
-	private boolean contains( final List<DatedSignal> left, final DatedSignal contender ) {
-
-		for (final DatedSignal ds : left) {
-			if (ds.getDate().equals(contender.getDate()) && ds.getType() == contender.getType()) {
-				return true;
-			}
-		}
-
-		return false;
-	}
+	/**
+	 * Calculates the latest date on which signals may be generated.
+	 * 
+	 * @param data ordered (date ascending) trading days to apply the filter (last value is the current trading day).
+	 * 				Must contain at least one entry.
+	 * @return inclusive date for when the last signal may be generated.
+	 */
+	public LocalDate getLatestSignalDate( final TradingDayPrices[] data );
 }

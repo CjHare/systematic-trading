@@ -31,7 +31,7 @@ package com.systematic.trading.strategy.definition;
 
 import java.util.List;
 
-import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signal.model.DatedSignal;
 
 /**
  * A logical operator that joins together the signals generated from two indicators.

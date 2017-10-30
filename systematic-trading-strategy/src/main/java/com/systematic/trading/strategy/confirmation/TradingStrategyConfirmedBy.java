@@ -31,7 +31,7 @@ package com.systematic.trading.strategy.confirmation;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.strategy.definition.Confirmation;
 
 /**

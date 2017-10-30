@@ -39,7 +39,7 @@ import com.systematic.trading.collection.LimitedSizeQueue;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
-import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;

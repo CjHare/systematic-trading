@@ -27,45 +27,44 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.operator;
+package com.systematic.trading.signal.generator.rsi;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
+import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
+import com.systematic.trading.signal.generator.SignalGenerator;
 import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Operator;
 
 /**
- * Trading strategy logical AND operator is used to combine exits and entries.
+ * Generic RSI signal calculation.
  * 
  * @author CJ Hare
  */
-public class TradingStrategyAndOperator implements Operator {
+public abstract class RelativeStrengthIndexSignalGenerator implements SignalGenerator<RelativeStrengthIndexLine> {
 
-	@Override
-	public List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right ) {
+	public List<DatedSignal> generate( final RelativeStrengthIndexLine rsiLine,
+	        final Predicate<LocalDate> signalRange ) {
 
-		final List<DatedSignal> both = new ArrayList<>(Math.max(left.size(), right.size()));
+		final List<DatedSignal> signals = new ArrayList<>();
+		Map.Entry<LocalDate, BigDecimal> yesterday = null;
 
-		for (final DatedSignal conteder : right) {
+		for (Map.Entry<LocalDate, BigDecimal> today : rsiLine.getRsi().entrySet()) {
 
-			if (contains(left, conteder)) {
-				both.add(conteder);
+			if (yesterday != null && signalRange.test(today.getKey())
+			        && hasMomentumDirectionChanged(yesterday.getValue(), today.getValue())) {
+				signals.add(new DatedSignal(today.getKey(), getType()));
 			}
+
+			yesterday = today;
 		}
 
-		return left;
+		return signals;
 	}
 
-	//TODO natrual ordering to DatedSignal & replace with set operation
-	private boolean contains( final List<DatedSignal> left, final DatedSignal contender ) {
-
-		for (final DatedSignal ds : left) {
-			if (ds.getDate().equals(contender.getDate()) && ds.getType() == contender.getType()) {
-				return true;
-			}
-		}
-
-		return false;
-	}
+	protected abstract boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today );
 }

@@ -32,7 +32,7 @@ package com.systematic.trading.strategy.entry;
 import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.Periodic;
 

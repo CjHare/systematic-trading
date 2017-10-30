@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.strategy.definition;
 
-import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signal.model.DatedSignal;
 
 /**
  * Whether after a generated signal there is also a confirming signal occurring within a selected time frame.

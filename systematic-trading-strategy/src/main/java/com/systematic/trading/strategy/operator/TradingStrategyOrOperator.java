@@ -32,7 +32,7 @@ package com.systematic.trading.strategy.operator;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.signals.model.DatedSignal;
+import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.strategy.definition.Operator;
 
 /**

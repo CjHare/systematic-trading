@@ -27,45 +27,52 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.operator;
+package com.systematic.trading.signal.range;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
-import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Operator;
+import com.systematic.trading.data.TradingDayPrices;
 
 /**
- * Trading strategy logical AND operator is used to combine exits and entries.
+ * A filter that is used to exclude the range of trading days when a signal can be generated.
  * 
  * @author CJ Hare
  */
-public class TradingStrategyAndOperator implements Operator {
+public class SimulationDatesRangeFilterDecorator implements SignalRangeFilter {
 
-	@Override
-	public List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right ) {
+	/** The earliest date a signal is allowed. */
+	private final LocalDate simulationStartDate;
 
-		final List<DatedSignal> both = new ArrayList<>(Math.max(left.size(), right.size()));
+	/** The earliest date a signal is allowed. */
+	private final LocalDate simulationEndDate;
 
-		for (final DatedSignal conteder : right) {
+	/**	The filter being decorated. */
+	private final SignalRangeFilter filter;
 
-			if (contains(left, conteder)) {
-				both.add(conteder);
-			}
-		}
-
-		return left;
+	public SimulationDatesRangeFilterDecorator( final LocalDate simulationStartDate, final LocalDate simulationEndDate,
+	        final SignalRangeFilter filter ) {
+		this.simulationEndDate = simulationEndDate;
+		this.simulationStartDate = simulationStartDate;
+		this.filter = filter;
 	}
 
-	//TODO natrual ordering to DatedSignal & replace with set operation
-	private boolean contains( final List<DatedSignal> left, final DatedSignal contender ) {
+	@Override
+	public LocalDate getEarliestSignalDate( final TradingDayPrices[] data ) {
+		final LocalDate earliestDate = filter.getEarliestSignalDate(data);
+		return isAfterStartDate(earliestDate) ? earliestDate : simulationStartDate;
+	}
 
-		for (final DatedSignal ds : left) {
-			if (ds.getDate().equals(contender.getDate()) && ds.getType() == contender.getType()) {
-				return true;
-			}
-		}
+	@Override
+	public LocalDate getLatestSignalDate( final TradingDayPrices[] data ) {
+		final LocalDate latestDate = filter.getLatestSignalDate(data);
+		return isBeforeEndDate(latestDate) ? latestDate : simulationEndDate;
+	}
 
-		return false;
+	private boolean isAfterStartDate( final LocalDate contender ) {
+		return simulationStartDate.isBefore(contender);
+	}
+
+	private boolean isBeforeEndDate( final LocalDate contender ) {
+		return simulationEndDate.isAfter(contender);
 	}
 }

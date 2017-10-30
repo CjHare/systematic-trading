@@ -27,45 +27,40 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.operator;
+package com.systematic.trading.signal.generator.rsi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 
-import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Operator;
+import com.systematic.trading.maths.SignalType;
 
 /**
- * Trading strategy logical AND operator is used to combine exits and entries.
+ * Given RSI line points calculates when the following bearish events occurred:
+ * <ul>
+ * <li>Overbrought; RSI moved from being on or above the over brought line to below, 
+ * 					signaling a change the direction of momentum.</li>
+ * </ul>
  * 
  * @author CJ Hare
  */
-public class TradingStrategyAndOperator implements Operator {
+public class RelativeStrengthIndexBearishSignalGenerator extends RelativeStrengthIndexSignalGenerator {
 
-	@Override
-	public List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right ) {
+	/** Threshold for when the RSI is considered as over brought.*/
+	private final BigDecimal overbrought;
 
-		final List<DatedSignal> both = new ArrayList<>(Math.max(left.size(), right.size()));
-
-		for (final DatedSignal conteder : right) {
-
-			if (contains(left, conteder)) {
-				both.add(conteder);
-			}
-		}
-
-		return left;
+	public RelativeStrengthIndexBearishSignalGenerator( final BigDecimal overbrought ) {
+		this.overbrought = overbrought;
 	}
 
-	//TODO natrual ordering to DatedSignal & replace with set operation
-	private boolean contains( final List<DatedSignal> left, final DatedSignal contender ) {
+	@Override
+	public SignalType getType() {
+		return SignalType.BEARISH;
+	}
 
-		for (final DatedSignal ds : left) {
-			if (ds.getDate().equals(contender.getDate()) && ds.getType() == contender.getType()) {
-				return true;
-			}
-		}
-
-		return false;
+	@Override
+	/**
+	 * Has the RSI moved from above or on the over sold line to below it?
+	 */
+	protected boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today ) {
+		return today.compareTo(overbrought) < 0 && yesterday.compareTo(overbrought) >= 0;
 	}
 }
