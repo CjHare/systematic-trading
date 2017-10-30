@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.entry;
 
-import com.systematic.trading.strategy.Describable;
+import com.systematic.trading.backtest.configuration.strategy.Describable;
 
 /**
  * @author CJ Hare

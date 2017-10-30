@@ -65,7 +65,7 @@ public interface ExpressionLanguage {
 
 	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
 
-	Entry entry( Indicator leftIndicator, Confirmation confirmBy, Indicator righIndicator );
+	Entry entry( Indicator anchor, Confirmation confirmBy, Indicator confirmation );
 
 	Entry entry( Indicator indicator );
 

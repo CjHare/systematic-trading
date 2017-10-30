@@ -34,7 +34,6 @@ import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySi
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
 import com.systematic.trading.backtest.output.DescriptionGenerator;
-import com.systematic.trading.strategy.Describable;
 
 /**
  * Strategy configuration.

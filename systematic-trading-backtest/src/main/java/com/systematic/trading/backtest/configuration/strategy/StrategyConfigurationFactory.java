@@ -30,6 +30,7 @@
 package com.systematic.trading.backtest.configuration.strategy;
 
 import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmationConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.ConfirmedByEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.IndicatorEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.PeriodicEntryConfiguration;
@@ -61,10 +62,9 @@ public class StrategyConfigurationFactory {
 		return null;
 	}
 
-	public EntryConfiguration entry( final EntryConfiguration leftEntry, final ConfirmationConfiguration.Type confirmBy,
-	        final EntryConfiguration righEntry ) {
-		// TODO Auto-generated method stub
-		return null;
+	public EntryConfiguration entry( final EntryConfiguration anchor, final ConfirmationConfiguration.Type confirmBy,
+	        final EntryConfiguration confirmation ) {
+		return new ConfirmedByEntryConfiguration(anchor, confirmBy, confirmation);
 	}
 
 	public EntryConfiguration entry( final IndicatorConfiguration indicator ) {
