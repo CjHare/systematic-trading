@@ -58,7 +58,7 @@ public class ExpressionLanguageFactory implements ExpressionLanguage {
 	}
 
 	@Override
-	public Entry entry( final Indicator anchor, final Confirmation confirmBy, final Indicator confirmation ) {
+	public Entry entry( final Entry anchor, final Confirmation confirmBy, final Entry confirmation ) {
 		return new TradingStrategyConfirmationEntry(anchor, confirmBy, confirmation);
 	}
 

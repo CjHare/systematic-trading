@@ -37,7 +37,6 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signals.model.DatedSignal;
 import com.systematic.trading.strategy.definition.Confirmation;
 import com.systematic.trading.strategy.definition.Entry;
-import com.systematic.trading.strategy.definition.Indicator;
 
 /**
  * Trading strategy entry that uses two indicators, the first an anchor, the second as confirmation.
@@ -46,12 +45,12 @@ import com.systematic.trading.strategy.definition.Indicator;
  */
 public class TradingStrategyConfirmationEntry implements Entry {
 
-	private final Indicator anchorIndicator;
+	private final Entry anchorIndicator;
 	private final Confirmation confirmation;
-	private final Indicator confirmationIndicator;
+	private final Entry confirmationIndicator;
 
-	public TradingStrategyConfirmationEntry( final Indicator anchorIndicator, final Confirmation confirmation,
-	        final Indicator confirmationIndicator ) {
+	public TradingStrategyConfirmationEntry( final Entry anchorIndicator, final Confirmation confirmation,
+	        final Entry confirmationIndicator ) {
 		this.anchorIndicator = anchorIndicator;
 		this.confirmation = confirmation;
 		this.confirmationIndicator = confirmationIndicator;

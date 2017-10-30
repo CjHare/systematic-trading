@@ -66,9 +66,9 @@ import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.EntrySize;
 import com.systematic.trading.strategy.definition.Exit;
 import com.systematic.trading.strategy.definition.ExitSize;
-import com.systematic.trading.strategy.definition.ExpressionLanguage;
 import com.systematic.trading.strategy.definition.ExpressionLanguageFactory;
 import com.systematic.trading.strategy.definition.Indicator;
+import com.systematic.trading.strategy.definition.Operator;
 import com.systematic.trading.strategy.definition.Strategy;
 import com.systematic.trading.strategy.entry.size.AbsoluteEntryPositionBounds;
 import com.systematic.trading.strategy.entry.size.EntryPositionBounds;
@@ -142,51 +142,132 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private Entry createEntry() {
-		final ExpressionLanguage factory = new ExpressionLanguageFactory();
-
 		final EntryConfiguration entryConfig = strategy.getEntry();
 
+		return createEntry(entryConfig,
+		        createSignalRangeFilter(startConfirmationRange(entryConfig) + endConfirmationRange(entryConfig)));
+	}
+
+	/**
+	 * @param signalRange widest signal range, eventually will be overridden by a confirmation.
+	 */
+	private Entry createEntry( final EntryConfiguration entryConfig, final SignalRangeFilter signalRange ) {
+
 		if (entryConfig instanceof PeriodicEntryConfiguration) {
-			return factory.entry(new TradingStrategyPeriodic(simulationDates.getStartDate(),
-			        ((PeriodicEntryConfiguration) entryConfig).getFrequency().getFrequency(), SignalType.BULLISH));
+			return createEntry((PeriodicEntryConfiguration) entryConfig);
 		}
 
 		if (entryConfig instanceof IndicatorEntryConfiguration) {
-			return factory.entry(
-			        new IndicatorGeneratorFactory().create(((IndicatorEntryConfiguration) entryConfig).getIndicator(),
-			                createSignalRangeFilter(), signalAnalysisListener));
+			return createEntry((IndicatorEntryConfiguration) entryConfig, signalRange);
 		}
 
 		if (entryConfig instanceof ConfirmedByEntryConfiguration) {
+			return createEntry((ConfirmedByEntryConfiguration) entryConfig, signalRange);
+		}
+
+		if (entryConfig instanceof OperatorEntryConfiguration) {
+			return createEntry((OperatorEntryConfiguration) entryConfig, signalRange);
+		}
+
+		throw new IllegalArgumentException(String.format("Entry configuration not supported: %s", entryConfig));
+	}
+
+	private Entry createEntry( final OperatorEntryConfiguration operatorConfig, final SignalRangeFilter signalRange ) {
+		final Operator operator;
+
+		switch (operatorConfig.getOp()) {
+			case AND:
+				operator = new TradingStrategyAndOperator();
+			break;
+			default:
+			case OR:
+				operator = new TradingStrategyOrOperator();
+			break;
+		}
+
+		return new ExpressionLanguageFactory().entry(createEntry(operatorConfig.getLeftEntry(), signalRange), operator,
+		        createEntry(operatorConfig.getRighEntry(), signalRange));
+	}
+
+	private Entry createEntry( final ConfirmedByEntryConfiguration confirmedByConfig,
+	        final SignalRangeFilter signalRange ) {
+
+		//TODO specific signals
+
+		final ConfirmationConfiguration.Type by = confirmedByConfig.getConfirmBy();
+
+		return new ExpressionLanguageFactory().entry(createEntry(confirmedByConfig.getAnchor(), signalRange),
+		        new TradingStrategyConfirmedBy(by.getConfirmationDayRange(), by.getDelayUntilConfirmationRange()),
+		        createEntry(confirmedByConfig.getConfirmation(), signalRange));
+	}
+
+	private Entry createEntry( final IndicatorEntryConfiguration indicatorConfig,
+	        final SignalRangeFilter signalRange ) {
+		return new ExpressionLanguageFactory().entry(new IndicatorGeneratorFactory()
+		        .create(indicatorConfig.getIndicator(), signalRange, signalAnalysisListener));
+	}
+
+	private Entry createEntry( final PeriodicEntryConfiguration periodicConfig ) {
+		return new ExpressionLanguageFactory().entry(new TradingStrategyPeriodic(simulationDates.getStartDate(),
+		        (periodicConfig).getFrequency().getFrequency(), SignalType.BULLISH));
+	}
+
+	/**
+	 * Widest value for the confirmationDayRange, accounting for the latest delay until confirmation range begins. 
+	 */
+	private int endConfirmationRange( final EntryConfiguration entryConfig ) {
+
+		if (entryConfig instanceof ConfirmedByEntryConfiguration) {
 			final ConfirmedByEntryConfiguration confirmedByConfig = (ConfirmedByEntryConfiguration) entryConfig;
+			final int configEnd = confirmedByConfig.getConfirmBy().getConfirmationDayRange()
+			        + confirmedByConfig.getConfirmBy().getDelayUntilConfirmationRange();
 
-			//TODO eh?
-
+			return Math.max(configEnd, Math.max(endConfirmationRange(confirmedByConfig.getAnchor()),
+			        endConfirmationRange(confirmedByConfig.getConfirmation())));
 		}
 
 		if (entryConfig instanceof OperatorEntryConfiguration) {
 			final OperatorEntryConfiguration operatorConfig = (OperatorEntryConfiguration) entryConfig;
-
-			//TODO eh?
-
+			return Math.max(endConfirmationRange(operatorConfig.getLeftEntry()),
+			        endConfirmationRange(operatorConfig.getRighEntry()));
 		}
 
-		//TODO use the default filter unless on is specifically defined, where it is then used for all signals below
-		
-		//TODO recurse to the create the signal range filter first, with the confirm by
-		
-		throw new IllegalArgumentException(String.format("Entry configuration not supported: %s", entryConfig));
+		// No range, i.e. only the current trading date
+		return 0;
+	}
+
+	private int startConfirmationRange( final EntryConfiguration entryConfig ) {
+
+		if (entryConfig instanceof ConfirmedByEntryConfiguration) {
+			final ConfirmedByEntryConfiguration confirmedByConfig = (ConfirmedByEntryConfiguration) entryConfig;
+
+			return Math.min(confirmedByConfig.getConfirmBy().getDelayUntilConfirmationRange(),
+			        Math.min(startConfirmationRange(confirmedByConfig.getAnchor()),
+			                startConfirmationRange(confirmedByConfig.getConfirmation())));
+		}
+
+		if (entryConfig instanceof OperatorEntryConfiguration) {
+			final OperatorEntryConfiguration operatorConfig = (OperatorEntryConfiguration) entryConfig;
+			return Math.min(startConfirmationRange(operatorConfig.getLeftEntry()),
+			        startConfirmationRange(operatorConfig.getRighEntry()));
+		}
+
+		// No range, i.e. only the current trading date
+		return 0;
 	}
 
 	private SignalRangeFilter createSignalRangeFilter() {
+		return createSignalRangeFilter(0);
+	}
+
+	private SignalRangeFilter createSignalRangeFilter( final int previousTradingDaySignalRange ) {
 		return new SimulationDatesRangeFilterDecorator(simulationDates.getStartDate(), simulationDates.getEndDate(),
-		        new TradingDaySignalRangeFilter(0));
+		        new TradingDaySignalRangeFilter(previousTradingDaySignalRange));
 	}
 
 	private SignalRangeFilter createSignalRangeFilter( final ConfirmedByEntryConfiguration entryConfig ) {
 		final ConfirmationConfiguration.Type by = entryConfig.getConfirmBy();
-		return new SimulationDatesRangeFilterDecorator(simulationDates.getStartDate(), simulationDates.getEndDate(),
-		        new TradingDaySignalRangeFilter(by.getDelayUntilConfirmationRange() + by.getConfirmationDayRange()));
+		return createSignalRangeFilter(by.getDelayUntilConfirmationRange() + by.getConfirmationDayRange());
 
 	}
 
@@ -270,13 +351,13 @@ public class BacktestBootstrapContextBulider {
 		final Indicator anchorIndicator = indicatorFactory.create(anchor, signalRangeFilter, signalAnalysisListener);
 		final Indicator confirmationIndicator = indicatorFactory.create(confirmation, signalRangeFilter,
 		        signalAnalysisListener);
+		//
+		//		final Entry entryStrategy = entryFactory.entry(anchorIndicator,
+		//		        new TradingStrategyConfirmedBy(confirmBy.getDelayUntilConfirmationRange(),
+		//		                confirmBy.getConfirmationDayRange()),
+		//		        confirmationIndicator);
 
-		final Entry entryStrategy = entryFactory.entry(anchorIndicator,
-		        new TradingStrategyConfirmedBy(confirmBy.getDelayUntilConfirmationRange(),
-		                confirmBy.getConfirmationDayRange()),
-		        confirmationIndicator);
-
-		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, entryStrategy);
+		return getIndicatorConfiguration(minimumTrade, maximumTrade, brokerageType, feeCalculator, null);
 	}
 
 	//TODO rename - something todo with same day and AND
