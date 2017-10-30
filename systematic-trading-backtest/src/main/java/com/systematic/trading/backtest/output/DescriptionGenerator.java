@@ -28,14 +28,12 @@ package com.systematic.trading.backtest.output;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.Period;
-import java.util.Optional;
 import java.util.StringJoiner;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
-import com.systematic.trading.backtest.configuration.entry.EntryLogicConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmationConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
@@ -46,10 +44,7 @@ import com.systematic.trading.backtest.configuration.strategy.operator.OperatorC
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.strategy.confirmation.ConfirmationSignalFilterConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
-import com.systematic.trading.strategy.operator.AnyOfIndicatorFilterConfiguration;
-import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
 
 /**
  * Textually meaningful description of the configuration appropriate for display.
@@ -59,20 +54,14 @@ import com.systematic.trading.strategy.operator.SameDayFilterConfiguration;
 public class DescriptionGenerator {
 	// TODO interface - one for file, another for console, another for elastic?
 
-	//TODO add the dates for the test too
-
-	//TODO deposit amounts / frequency for elastic
-
-	/** When there's nothing more to say. */
-	private static final String NO_DESCRIPTION = "";
+	//TODO add the dates for the test too?
 
 	private static final String SEPARATOR = "_";
-
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
-
 	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
-
 	private static final String EXIT_LOGIC = "HoldForever";
+	private static final String OPERATOR_PREFIX = "(";
+	private static final String OPERATOR_SUFFIX = ")";
 
 	public String getDescription( final EntryConfiguration entry, final EntrySizeConfiguration entryPositionSizing,
 	        final ExitConfiguration exit, final ExitSizeConfiguration exitPositionSizing ) {
@@ -142,47 +131,6 @@ public class DescriptionGenerator {
 		}
 	}
 
-	private String entryLogicConfirmationSignal( final EntryLogicConfiguration entry ) {
-		final Optional<ConfirmationSignalFilterConfiguration> confirmationSignal = entry.getConfirmationSignal();
-
-		if (confirmationSignal.isPresent()) {
-			final ConfirmationSignalFilterConfiguration confirmation = confirmationSignal.get();
-			final int delay = confirmation.getType().getDelayUntilConfirmationRange();
-			final int range = confirmation.getType().getConfirmationDayRange();
-			final StringJoiner out = new StringJoiner(SEPARATOR);
-			//			out.add(confirmation.getAnchor().getDescription());
-			out.add("confirmedBy");
-			//			out.add(confirmation.getConfirmation().getDescription());
-			out.add("in");
-			out.add(String.valueOf(delay));
-			out.add("to");
-			out.add(String.valueOf(delay + range));
-			out.add("days");
-			return out.toString();
-		}
-
-		return NO_DESCRIPTION;
-	}
-
-	private String entryLogicSameDaySignals( final EntryLogicConfiguration entry ) {
-		final Optional<SameDayFilterConfiguration> sameDayFilter = entry.getSameDaySignals();
-
-		if (sameDayFilter.isPresent()) {
-			final StringJoiner out = new StringJoiner(SEPARATOR);
-			final IndicatorConfiguration[] signals = sameDayFilter.get().getSignals();
-			if (signals.length != 1) {
-				out.add("SameDay");
-			}
-
-			for (final IndicatorConfiguration signal : signals) {
-				//			out.add(signal.getDescription());
-			}
-			return out.toString();
-		}
-
-		return NO_DESCRIPTION;
-	}
-
 	public String indicator( final IndicatorConfiguration indicator ) {
 		return indicator.getId().getName();
 	}
@@ -191,13 +139,13 @@ public class DescriptionGenerator {
 	        final EntryConfiguration righEntry ) {
 
 		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add("(");
+		out.add(OPERATOR_PREFIX);
 		out.add(leftEntry.getDescription());
-		out.add(")");
+		out.add(OPERATOR_SUFFIX);
 		out.add(op.name());
-		out.add("(");
+		out.add(OPERATOR_PREFIX);
 		out.add(righEntry.getDescription());
-		out.add(")");
+		out.add(OPERATOR_SUFFIX);
 
 		return out.toString();
 	}
@@ -218,25 +166,6 @@ public class DescriptionGenerator {
 		out.add("days");
 		return out.toString();
 
-	}
-
-	private String entryLogicAnyySignal( final EntryLogicConfiguration entry ) {
-		final Optional<AnyOfIndicatorFilterConfiguration> anySignalFilter = entry.getAnyOfSignal();
-
-		if (anySignalFilter.isPresent()) {
-			final StringJoiner out = new StringJoiner(SEPARATOR);
-			final IndicatorConfiguration[] signals = anySignalFilter.get().getSignals();
-			if (signals.length != 1) {
-				out.add("AnyOf");
-			}
-
-			for (final IndicatorConfiguration signal : signals) {
-				//			out.add(signal.getDescription());
-			}
-			return out.toString();
-		}
-
-		return NO_DESCRIPTION;
 	}
 
 	private String equity( final EquityConfiguration equity ) {
