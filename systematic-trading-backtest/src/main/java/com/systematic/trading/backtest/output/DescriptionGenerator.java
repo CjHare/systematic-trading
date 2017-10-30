@@ -42,6 +42,7 @@ import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfigu
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
@@ -184,6 +185,21 @@ public class DescriptionGenerator {
 
 	public String indicator( final IndicatorConfiguration indicator ) {
 		return indicator.getId().getName();
+	}
+
+	public String entry( final EntryConfiguration leftEntry, final OperatorConfiguration.Selection op,
+	        final EntryConfiguration righEntry ) {
+
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add("(");
+		out.add(leftEntry.getDescription());
+		out.add(")");
+		out.add(op.name());
+		out.add("(");
+		out.add(righEntry.getDescription());
+		out.add(")");
+
+		return out.toString();
 	}
 
 	public String entry( final EntryConfiguration anchor, final ConfirmationConfiguration.Type confirmBy,

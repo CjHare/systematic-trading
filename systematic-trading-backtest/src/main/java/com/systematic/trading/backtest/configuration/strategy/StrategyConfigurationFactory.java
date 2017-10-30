@@ -33,6 +33,7 @@ import com.systematic.trading.backtest.configuration.strategy.confirmation.Confi
 import com.systematic.trading.backtest.configuration.strategy.entry.ConfirmedByEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.IndicatorEntryConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.OperatorEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.PeriodicEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
@@ -58,8 +59,7 @@ public class StrategyConfigurationFactory {
 
 	public EntryConfiguration entry( final EntryConfiguration leftEntry, final OperatorConfiguration.Selection op,
 	        final EntryConfiguration righEntry ) {
-		// TODO Auto-generated method stub
-		return null;
+		return new OperatorEntryConfiguration(leftEntry, op, righEntry);
 	}
 
 	public EntryConfiguration entry( final EntryConfiguration anchor, final ConfirmationConfiguration.Type confirmBy,
