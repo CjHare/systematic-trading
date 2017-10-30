@@ -181,6 +181,10 @@ public class DescriptionGenerator {
 		return NO_DESCRIPTION;
 	}
 
+	public String indicator( final IndicatorConfiguration indicator ) {
+		return indicator.getId().getName();
+	}
+
 	private String entryLogicAnyySignal( final EntryLogicConfiguration entry ) {
 		final Optional<AnyOfIndicatorFilterConfiguration> anySignalFilter = entry.getAnyOfSignal();
 

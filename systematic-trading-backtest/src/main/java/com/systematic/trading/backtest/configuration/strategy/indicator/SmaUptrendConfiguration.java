@@ -29,10 +29,13 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.indicator;
 
+import com.systematic.trading.signal.IndicatorId;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
+
 /**
  * @author CJ Hare
  */
-public enum SmaUptrendConfiguration {
+public enum SmaUptrendConfiguration implements IndicatorConfiguration {
 
 	SHORT(20, 5, "SMA-Uptrend-Short"),
 	MEDIUM(50, 5, "SMA-Uptrend-Medium"),
@@ -58,5 +61,10 @@ public enum SmaUptrendConfiguration {
 
 	public String getDescription() {
 		return description;
+	}
+
+	@Override
+	public IndicatorId getId() {
+		return new IndicatorId(description);
 	}
 }

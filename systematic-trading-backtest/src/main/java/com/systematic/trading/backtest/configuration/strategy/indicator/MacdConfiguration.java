@@ -29,10 +29,13 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.indicator;
 
+import com.systematic.trading.signal.IndicatorId;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
+
 /**
  * @author CJ Hare
  */
-public enum MacdConfiguration {
+public enum MacdConfiguration implements IndicatorConfiguration {
 
 	SHORT(6, 13, 5, "MACD-Short"),
 	MEDIUM(12, 26, 9, "MACD-Medium"),
@@ -65,5 +68,10 @@ public enum MacdConfiguration {
 
 	public int getSignalTimePeriods() {
 		return signalTimePeriods;
+	}
+
+	@Override
+	public IndicatorId getId() {
+		return new IndicatorId(description);
 	}
 }

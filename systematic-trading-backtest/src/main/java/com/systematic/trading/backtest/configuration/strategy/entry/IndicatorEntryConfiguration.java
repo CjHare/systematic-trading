@@ -27,45 +27,24 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.strategy.indicator;
+package com.systematic.trading.backtest.configuration.strategy.entry;
 
-import com.systematic.trading.signal.IndicatorId;
+import com.systematic.trading.backtest.output.DescriptionGenerator;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * @author CJ Hare
  */
-public enum EmaUptrendConfiguration implements IndicatorConfiguration {
+public class IndicatorEntryConfiguration implements EntryConfiguration {
 
-	SHORT(20, 5, "EMA-Uptrend-Short"),
-	MEDIUM(50, 5, "EMA-Uptrend-Medium"),
-	LONG(100, 5, "EMA-Uptrend-Long");
+	private final IndicatorConfiguration indicator;
 
-	private final int lookback;
-	private final int daysOfGradient;
-	private final String description;
-
-	EmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
-		this.daysOfGradient = daysOfGradient;
-		this.lookback = lookback;
-		this.description = description;
-
-	}
-
-	public int getLookback() {
-		return lookback;
-	}
-
-	public int getDaysOfGradient() {
-		return daysOfGradient;
-	}
-
-	public String getDescription() {
-		return description;
+	public IndicatorEntryConfiguration( final IndicatorConfiguration indicator ) {
+		this.indicator = indicator;
 	}
 
 	@Override
-	public IndicatorId getId() {
-		return new IndicatorId(description);
+	public String getDescription() {
+		return new DescriptionGenerator().indicator(indicator);
 	}
 }
