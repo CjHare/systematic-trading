@@ -66,8 +66,6 @@ import com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfigu
  */
 public class IndicatorGeneratorFactory {
 
-	//TODO rename methods - here the generators are instanced
-
 	/**
 	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
 	 */
@@ -134,7 +132,7 @@ public class IndicatorGeneratorFactory {
 
 		final SignalGenerator<MovingAverageConvergenceDivergenceLines> generator = new MovingAverageConvergenceDivergenceBullishSignalGenerator();
 
-		//TODO decide this in some fashion based on the configuration
+		//TODO decide this in some fashion based on the configuration provided
 		final int minimumNumberOfEmaValues = 5;
 
 		final ExponentialMovingAverageIndicator fastEma = new ClosingPriceExponentialMovingAverageCalculator(
