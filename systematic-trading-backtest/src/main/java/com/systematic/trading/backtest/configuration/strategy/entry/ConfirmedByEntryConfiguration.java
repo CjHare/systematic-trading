@@ -48,6 +48,18 @@ public class ConfirmedByEntryConfiguration implements EntryConfiguration {
 		this.confirmation = confirmation;
 	}
 
+	public EntryConfiguration getAnchor() {
+		return anchor;
+	}
+
+	public ConfirmationConfiguration.Type getConfirmBy() {
+		return confirmBy;
+	}
+
+	public EntryConfiguration getConfirmation() {
+		return confirmation;
+	}
+
 	@Override
 	public String getDescription() {
 		return new DescriptionGenerator().entry(anchor, confirmBy, confirmation);

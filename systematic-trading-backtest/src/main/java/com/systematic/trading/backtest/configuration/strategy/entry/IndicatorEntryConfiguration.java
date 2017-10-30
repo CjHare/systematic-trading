@@ -43,6 +43,10 @@ public class IndicatorEntryConfiguration implements EntryConfiguration {
 		this.indicator = indicator;
 	}
 
+	public IndicatorConfiguration getIndicator() {
+		return indicator;
+	}
+
 	@Override
 	public String getDescription() {
 		return new DescriptionGenerator().indicator(indicator);

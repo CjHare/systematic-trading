@@ -40,6 +40,12 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityManagementFeeConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmationConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.ConfirmedByEntryConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.IndicatorEntryConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.OperatorEntryConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.PeriodicEntryConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.maths.SignalType;
@@ -60,10 +66,12 @@ import com.systematic.trading.strategy.definition.Entry;
 import com.systematic.trading.strategy.definition.EntrySize;
 import com.systematic.trading.strategy.definition.Exit;
 import com.systematic.trading.strategy.definition.ExitSize;
+import com.systematic.trading.strategy.definition.ExpressionLanguage;
 import com.systematic.trading.strategy.definition.ExpressionLanguageFactory;
 import com.systematic.trading.strategy.definition.Indicator;
 import com.systematic.trading.strategy.definition.Strategy;
 import com.systematic.trading.strategy.entry.size.AbsoluteEntryPositionBounds;
+import com.systematic.trading.strategy.entry.size.EntryPositionBounds;
 import com.systematic.trading.strategy.entry.size.LargestPossibleEntryPosition;
 import com.systematic.trading.strategy.entry.size.RelativeEntryPositionBounds;
 import com.systematic.trading.strategy.exit.size.NeverExitPosition;
@@ -124,35 +132,93 @@ public class BacktestBootstrapContextBulider {
 		return this;
 	}
 
-	//TODO why not use the fields?
 	public BacktestBootstrapContext build() {
+		return new BacktestBootstrapContext(createStrategy(), createBrokerage(), createCashAccount(), simulationDates);
+	}
 
-		//TODO translation between instance types
+	private Strategy createStrategy() {
+		return new ExpressionLanguageFactory().strategy(createEntry(), createEntryPositionSize(), createExit(),
+		        createExitPositionSize(), EquityClass.STOCK, EQUITY_SCALE);
+	}
+
+	private Entry createEntry() {
+		final ExpressionLanguage factory = new ExpressionLanguageFactory();
+
+		final EntryConfiguration entryConfig = strategy.getEntry();
+
+		if (entryConfig instanceof PeriodicEntryConfiguration) {
+			return factory.entry(new TradingStrategyPeriodic(simulationDates.getStartDate(),
+			        ((PeriodicEntryConfiguration) entryConfig).getFrequency().getFrequency(), SignalType.BULLISH));
+		}
+
+		if (entryConfig instanceof IndicatorEntryConfiguration) {
+			return factory.entry(
+			        new IndicatorGeneratorFactory().create(((IndicatorEntryConfiguration) entryConfig).getIndicator(),
+			                createSignalRangeFilter(), signalAnalysisListener));
+		}
+
+		if (entryConfig instanceof ConfirmedByEntryConfiguration) {
+			final ConfirmedByEntryConfiguration confirmedByConfig = (ConfirmedByEntryConfiguration) entryConfig;
+
+			//TODO eh?
+
+		}
+
+		if (entryConfig instanceof OperatorEntryConfiguration) {
+			final OperatorEntryConfiguration operatorConfig = (OperatorEntryConfiguration) entryConfig;
+
+			//TODO eh?
+
+		}
+
+		//TODO use the default filter unless on is specifically defined, where it is then used for all signals below
 		
-//		switch (entryLogic.getType()) {
-//			case PERIODIC:
-//				final Period purchaseFrequency = entryLogic.getPeriodic().getFrequency();
-//				return periodic(brokerageType, purchaseFrequency);
-//
-//			case CONFIRMATION_SIGNAL:
-//				return confirmationSignal(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
-//				        entryLogic);
-//
-//			case SAME_DAY_SIGNALS:
-//				return indicatorsOnSameDay(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
-//				        entryLogic);
-//
-//			case ANY_SIGNAL:
-//				return anyIndicators(entryLogic.getMinimumTrade(), entryLogic.getMaximumTrade(), brokerageType,
-//				        entryLogic);
-//
-//			default:
-//				throw new IllegalArgumentException(
-//				        String.format("Unexpected entry logic type: %s", entryLogic.getType()));
-//		}
+		//TODO recurse to the create the signal range filter first, with the confirm by
 		
-		//TODO implement
-		return null;
+		throw new IllegalArgumentException(String.format("Entry configuration not supported: %s", entryConfig));
+	}
+
+	private SignalRangeFilter createSignalRangeFilter() {
+		return new SimulationDatesRangeFilterDecorator(simulationDates.getStartDate(), simulationDates.getEndDate(),
+		        new TradingDaySignalRangeFilter(0));
+	}
+
+	private SignalRangeFilter createSignalRangeFilter( final ConfirmedByEntryConfiguration entryConfig ) {
+		final ConfirmationConfiguration.Type by = entryConfig.getConfirmBy();
+		return new SimulationDatesRangeFilterDecorator(simulationDates.getStartDate(), simulationDates.getEndDate(),
+		        new TradingDaySignalRangeFilter(by.getDelayUntilConfirmationRange() + by.getConfirmationDayRange()));
+
+	}
+
+	private Exit createExit() {
+		return new ExpressionLanguageFactory().exit();
+	}
+
+	private ExitSize createExitPositionSize() {
+		return new NeverExitPosition();
+	}
+
+	private EntrySize createEntryPositionSize() {
+		final EntryPositionBounds minimum = new AbsoluteEntryPositionBounds(
+		        strategy.getEntryPositionSizing().getMinimumTrade().getValue());
+		final EntryPositionBounds maximum = new RelativeEntryPositionBounds(
+		        strategy.getEntryPositionSizing().getMaximumTrade().getValue());
+
+		return new LargestPossibleEntryPosition(minimum, maximum);
+	}
+
+	private CashAccount createCashAccount() {
+		return CashAccountFactory.getInstance().create(simulationDates.getStartDate(), deposit);
+	}
+
+	private Brokerage createBrokerage() {
+		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
+		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
+		        equity.getEquityIdentity(),
+		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
+
+		return BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
+		        simulationDates.getStartDate());
 	}
 
 	private BacktestBootstrapContext periodic( final BrokerageFeesConfiguration brokerageType,
