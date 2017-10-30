@@ -138,14 +138,16 @@ public class DescriptionGenerator {
 	public String entry( final EntryConfiguration leftEntry, final OperatorConfiguration.Selection op,
 	        final EntryConfiguration righEntry ) {
 
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(OPERATOR_PREFIX);
-		out.add(leftEntry.getDescription());
-		out.add(OPERATOR_SUFFIX);
-		out.add(op.name());
-		out.add(OPERATOR_PREFIX);
-		out.add(righEntry.getDescription());
-		out.add(OPERATOR_SUFFIX);
+		final StringBuilder out = new StringBuilder();
+		out.append(OPERATOR_PREFIX);
+		out.append(leftEntry.getDescription());
+		out.append(OPERATOR_SUFFIX);
+		out.append(SEPARATOR);
+		out.append(op.name());
+		out.append(SEPARATOR);
+		out.append(OPERATOR_PREFIX);
+		out.append(righEntry.getDescription());
+		out.append(OPERATOR_SUFFIX);
 
 		return out.toString();
 	}
