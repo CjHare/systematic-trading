@@ -28,7 +28,7 @@ package com.systematic.trading.backtest.context;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.strategy.definition.Strategy;
+import com.systematic.trading.strategy.Strategy;
 
 /**
  * Context that a back testing will occurs within. 

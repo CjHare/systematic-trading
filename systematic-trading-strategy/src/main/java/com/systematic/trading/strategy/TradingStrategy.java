@@ -45,12 +45,11 @@ import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
-import com.systematic.trading.strategy.definition.Entry;
-import com.systematic.trading.strategy.definition.EntrySize;
-import com.systematic.trading.strategy.definition.Exit;
-import com.systematic.trading.strategy.definition.ExitSize;
-import com.systematic.trading.strategy.definition.Strategy;
 import com.systematic.trading.strategy.entry.BuyTotalCostTomorrowAtOpeningPriceOrder;
+import com.systematic.trading.strategy.entry.Entry;
+import com.systematic.trading.strategy.entry.size.EntrySize;
+import com.systematic.trading.strategy.exit.Exit;
+import com.systematic.trading.strategy.exit.size.ExitSize;
 
 /**
  * A trading strategy.

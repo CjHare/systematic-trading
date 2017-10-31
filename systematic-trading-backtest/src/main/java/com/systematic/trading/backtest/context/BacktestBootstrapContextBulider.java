@@ -56,20 +56,20 @@ import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculato
 import com.systematic.trading.simulation.equity.fee.management.FlatEquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.management.PeriodicEquityManagementFeeStructure;
 import com.systematic.trading.simulation.equity.fee.management.ZeroEquityManagementFeeCalculator;
+import com.systematic.trading.strategy.Strategy;
+import com.systematic.trading.strategy.TradingStrategyFactory;
 import com.systematic.trading.strategy.confirmation.TradingStrategyConfirmedBy;
-import com.systematic.trading.strategy.definition.Entry;
-import com.systematic.trading.strategy.definition.EntrySize;
-import com.systematic.trading.strategy.definition.Exit;
-import com.systematic.trading.strategy.definition.ExitSize;
-import com.systematic.trading.strategy.definition.ExpressionLanguageFactory;
-import com.systematic.trading.strategy.definition.Operator;
-import com.systematic.trading.strategy.definition.Strategy;
+import com.systematic.trading.strategy.entry.Entry;
 import com.systematic.trading.strategy.entry.size.AbsoluteEntryPositionBounds;
 import com.systematic.trading.strategy.entry.size.EntryPositionBounds;
+import com.systematic.trading.strategy.entry.size.EntrySize;
 import com.systematic.trading.strategy.entry.size.LargestPossibleEntryPosition;
 import com.systematic.trading.strategy.entry.size.RelativeEntryPositionBounds;
+import com.systematic.trading.strategy.exit.Exit;
+import com.systematic.trading.strategy.exit.size.ExitSize;
 import com.systematic.trading.strategy.exit.size.NeverExitPosition;
 import com.systematic.trading.strategy.indicator.IndicatorGeneratorFactory;
+import com.systematic.trading.strategy.operator.Operator;
 import com.systematic.trading.strategy.operator.TradingStrategyAndOperator;
 import com.systematic.trading.strategy.operator.TradingStrategyOrOperator;
 import com.systematic.trading.strategy.periodic.TradingStrategyPeriodic;
@@ -126,7 +126,7 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private Strategy createStrategy() {
-		return new ExpressionLanguageFactory().strategy(createEntry(), createEntryPositionSize(), createExit(),
+		return new TradingStrategyFactory().strategy(createEntry(), createEntryPositionSize(), createExit(),
 		        createExitPositionSize(), EquityClass.STOCK, EQUITY_SCALE);
 	}
 
@@ -174,7 +174,7 @@ public class BacktestBootstrapContextBulider {
 			break;
 		}
 
-		return new ExpressionLanguageFactory().entry(createEntry(operatorConfig.getLeftEntry(), signalRange), operator,
+		return new TradingStrategyFactory().entry(createEntry(operatorConfig.getLeftEntry(), signalRange), operator,
 		        createEntry(operatorConfig.getRighEntry(), signalRange));
 	}
 
@@ -182,19 +182,19 @@ public class BacktestBootstrapContextBulider {
 	        final SignalRangeFilter signalRange ) {
 		final ConfirmationConfiguration.Type by = confirmedByConfig.getConfirmBy();
 
-		return new ExpressionLanguageFactory().entry(createEntry(confirmedByConfig.getAnchor(), signalRange),
+		return new TradingStrategyFactory().entry(createEntry(confirmedByConfig.getAnchor(), signalRange),
 		        new TradingStrategyConfirmedBy(by.getConfirmationDayRange(), by.getDelayUntilConfirmationRange()),
 		        createEntry(confirmedByConfig.getConfirmation(), signalRange));
 	}
 
 	private Entry createEntry( final IndicatorEntryConfiguration indicatorConfig,
 	        final SignalRangeFilter signalRange ) {
-		return new ExpressionLanguageFactory().entry(new IndicatorGeneratorFactory()
+		return new TradingStrategyFactory().entry(new IndicatorGeneratorFactory()
 		        .create(indicatorConfig.getIndicator(), signalRange, signalAnalysisListener));
 	}
 
 	private Entry createEntry( final PeriodicEntryConfiguration periodicConfig ) {
-		return new ExpressionLanguageFactory().entry(new TradingStrategyPeriodic(simulationDates.getStartDate(),
+		return new TradingStrategyFactory().entry(new TradingStrategyPeriodic(simulationDates.getStartDate(),
 		        (periodicConfig).getFrequency().getFrequency(), SignalType.BULLISH));
 	}
 
@@ -248,7 +248,7 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private Exit createExit() {
-		return new ExpressionLanguageFactory().exit();
+		return new TradingStrategyFactory().exit();
 	}
 
 	private ExitSize createExitPositionSize() {

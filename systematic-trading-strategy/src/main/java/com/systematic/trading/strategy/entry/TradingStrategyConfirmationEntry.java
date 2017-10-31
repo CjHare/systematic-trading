@@ -35,8 +35,7 @@ import java.util.Optional;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Confirmation;
-import com.systematic.trading.strategy.definition.Entry;
+import com.systematic.trading.strategy.confirmation.Confirmation;
 
 /**
  * Trading strategy entry that uses two indicators, the first an anchor, the second as confirmation.

@@ -31,7 +31,6 @@ package com.systematic.trading.strategy.exit;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
-import com.systematic.trading.strategy.definition.Exit;
 
 /**
  * Trading strategy exit behaviour.

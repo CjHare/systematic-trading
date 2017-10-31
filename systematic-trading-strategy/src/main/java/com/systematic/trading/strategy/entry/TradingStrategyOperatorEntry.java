@@ -33,8 +33,7 @@ import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Entry;
-import com.systematic.trading.strategy.definition.Operator;
+import com.systematic.trading.strategy.operator.Operator;
 
 /**
  * Trading strategy entry that combines together two entries using an operator.

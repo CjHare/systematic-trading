@@ -27,32 +27,59 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy;
 
-import java.util.List;
-
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signal.model.DatedSignal;
+import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.strategy.confirmation.Confirmation;
+import com.systematic.trading.strategy.entry.Entry;
+import com.systematic.trading.strategy.entry.size.EntrySize;
+import com.systematic.trading.strategy.exit.Exit;
+import com.systematic.trading.strategy.exit.size.ExitSize;
+import com.systematic.trading.strategy.indicator.Indicator;
+import com.systematic.trading.strategy.operator.Operator;
+import com.systematic.trading.strategy.periodic.Periodic;
 
 /**
- * Approach for deciding when to open / enter a position.
+ * Abstract Factory, providing these regular expression features:
+ * 
+ * Strategy := (StrategyEntry) (EntrySize) (Exit) (ExitSize)
+ *    
+ * 	  Entry := 	(Entry)     (Operator) 		(Entry)
+ * 				(indicator) (Confirmation)  (Indicator)
+ * 				(indicator)
+ * 				(Periodic)
+ * 
+ * 		Exit := (Never)
+ * 
+ * Indicator := ATR
+ * 				EMA
+ * 				MACD
+ * 				SMA
+ * 				RSI
+ *   
+ * 	Operator := OR
+ * 				AND
+ * 
+ * Position sizing determines the value of the order to place.
+ * 
+ * (Never) is syntactic sugar, as it provide no function it is absent from implementation.
  * 
  * @author CJ Hare
  */
-public interface Entry {
+public interface StrategyFactory {
 
-	/**
-	 * Given a set of trading data, performs appropriate analysis to generate signals.
-	 * 
-	 * @param data trading day data.
-	 * @return whether an entry order should be placed on the next trading day.
-	 */
-	List<DatedSignal> analyse( TradingDayPrices[] data );
+	Strategy strategy( Entry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing,
+	        EquityClass type, int scale );
 
-	/**
-	 * The number of trading days data required for entry calculation.
-	 * 
-	 * @return number of data to provide for the analysis.
-	 */
-	int getNumberOfTradingDaysRequired();
+	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
+
+	Entry entry( Entry anchor, Confirmation confirmBy, Entry confirmation );
+
+	Entry entry( Indicator indicator );
+
+	Entry entry( Periodic periodic );
+
+	Exit exit();
+
+	Operator operator( Operator.Selection operator );
 }

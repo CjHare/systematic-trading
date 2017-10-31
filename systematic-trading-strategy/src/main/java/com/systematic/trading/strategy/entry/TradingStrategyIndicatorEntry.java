@@ -33,8 +33,7 @@ import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Entry;
-import com.systematic.trading.strategy.definition.Indicator;
+import com.systematic.trading.strategy.indicator.Indicator;
 
 /**
  * Trading Strategy entry based a single indicator.

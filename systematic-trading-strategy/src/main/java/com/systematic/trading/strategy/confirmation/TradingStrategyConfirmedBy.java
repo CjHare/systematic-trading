@@ -32,7 +32,6 @@ package com.systematic.trading.strategy.confirmation;
 import java.time.LocalDate;
 
 import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Confirmation;
 
 /**
  * Anchor signal is confirmed by another signal, with a certain number of days.

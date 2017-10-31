@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.definition.Operator;
 
 /**
  * Trading strategy logical AND operator is used to combine exits and entries.

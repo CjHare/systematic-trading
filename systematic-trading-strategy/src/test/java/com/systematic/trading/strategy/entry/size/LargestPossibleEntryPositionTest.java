@@ -46,7 +46,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.strategy.definition.EntrySize;
 import com.systematic.trading.strategy.matcher.BigDecimalMatcher;
 
 /**

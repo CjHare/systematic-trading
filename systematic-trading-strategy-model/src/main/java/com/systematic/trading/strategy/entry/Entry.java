@@ -27,31 +27,32 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy.entry;
 
 import java.util.List;
 
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;
 
 /**
- * A logical operator that joins together the signals generated from two indicators.
- * 
+ * Approach for deciding when to open / enter a position.
  * 
  * @author CJ Hare
  */
-public interface Operator {
-
-	enum Selection {
-		AND,
-		OR
-	}
+public interface Entry {
 
 	/**
-	 * Perform the logical conjunction between the two data sets.
+	 * Given a set of trading data, performs appropriate analysis to generate signals.
 	 * 
-	 * @param left first data set, not <code>null</code>.
-	 * @param right second data set, not <code>null</code>.
-	 * @return the conjoined data sets, never <code>null</code>.
+	 * @param data trading day data.
+	 * @return whether an entry order should be placed on the next trading day.
 	 */
-	List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right );
+	List<DatedSignal> analyse( TradingDayPrices[] data );
+
+	/**
+	 * The number of trading days data required for entry calculation.
+	 * 
+	 * @return number of data to provide for the analysis.
+	 */
+	int getNumberOfTradingDaysRequired();
 }

@@ -27,25 +27,13 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
-
-import java.util.List;
-
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signal.model.DatedSignal;
+package com.systematic.trading.strategy.exit.size;
 
 /**
- * Time based signal generation.
+ * Determines the size of the exit trade to make.
  * 
  * @author CJ Hare
  */
-public interface Periodic {
+public interface ExitSize {
 
-	/**
-	 * Given a set of trading data, performs appropriate analysis to generate signals.
-	 * 
-	 * @param data trading day data.
-	 * @return any signals generated over the given data.
-	 */
-	List<DatedSignal> analyse( TradingDayPrices[] data );
 }

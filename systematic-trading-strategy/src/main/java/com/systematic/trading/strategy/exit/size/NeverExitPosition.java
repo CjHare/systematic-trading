@@ -29,8 +29,6 @@
  */
 package com.systematic.trading.strategy.exit.size;
 
-import com.systematic.trading.strategy.definition.ExitSize;
-
 /**
  * When you never want to exit a position.
  * 

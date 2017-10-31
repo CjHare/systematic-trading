@@ -52,7 +52,6 @@ import com.systematic.trading.signal.generator.macd.MovingAverageConvergenceDive
 import com.systematic.trading.signal.generator.rsi.RelativeStrengthIndexBullishSignalGenerator;
 import com.systematic.trading.signal.generator.sma.SimpleMovingAverageBullishGradientSignalGenerator;
 import com.systematic.trading.signal.range.SignalRangeFilter;
-import com.systematic.trading.strategy.definition.Indicator;
 import com.systematic.trading.strategy.indicator.configuration.EmaUptrendConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.MacdConfiguration;

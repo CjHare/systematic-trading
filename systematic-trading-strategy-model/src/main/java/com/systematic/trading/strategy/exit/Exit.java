@@ -27,38 +27,24 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
-
-import java.util.List;
+package com.systematic.trading.strategy.exit;
 
 import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.signal.model.DatedSignal;
+import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 
 /**
- * An indicator interprets price data and potentially generates date based signals.
- * 
- * Indicator := ATR
- * 				EMA
- * 				MACD
- * 				SMA
- * 				RSI
+ * Strategy for deciding when to open / enter a position.
  * 
  * @author CJ Hare
  */
-public interface Indicator {
+public interface Exit {
 
 	/**
-	 * Given a set of trading data, performs appropriate analysis to generate signals.
+	 * Updates the trading logic with a subsequent trading point and open positions.
 	 * 
-	 * @param data trading day data.
-	 * @return any signals generated over the given data.
+	 * @param broker the positions currently open.
+	 * @param data next day of trading to add, also applying logic for trade signals.
+	 * @return whether an exit order should be placed.
 	 */
-	List<DatedSignal> analyse( TradingDayPrices[] data );
-
-	/**
-	 * The number of trading days data required for entry calculation.
-	 * 
-	 * @return number of data to provide for the analysis.
-	 */
-	int getNumberOfTradingDaysRequired();
+	boolean exitTick( BrokerageTransaction broker, TradingDayPrices data );
 }

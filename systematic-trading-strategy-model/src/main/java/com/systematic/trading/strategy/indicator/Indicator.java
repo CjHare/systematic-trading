@@ -27,27 +27,33 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy.indicator;
 
+import java.util.List;
+
+import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;
 
 /**
- * Whether after a generated signal there is also a confirming signal occurring within a selected time frame.
+ * An indicator interprets price data and potentially generates date based signals.
  * 
- *	Confirmation :=  within x to y days inclusive
+ * Indicator := ATR
+ * 				EMA
+ * 				MACD
+ * 				SMA
+ * 				RSI
  * 
  * @author CJ Hare
  */
-public interface Confirmation {
+public interface Indicator {
 
 	/**
-	 * Whether the anchor is confirmed.
+	 * Given a set of trading data, performs appropriate analysis to generate signals.
 	 * 
-	 * @param anchor expected earliest signal of the two.
-	 * @param confirmation expected later signal of the two.
-	 * @return <code>true</code> when the anchor is confirmed by the conformation sgnal.
+	 * @param data trading day data.
+	 * @return any signals generated over the given data.
 	 */
-	boolean isConfirmedBy( DatedSignal anchor, DatedSignal confirmation );
+	List<DatedSignal> analyse( TradingDayPrices[] data );
 
 	/**
 	 * The number of trading days data required for entry calculation.

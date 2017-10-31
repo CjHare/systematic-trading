@@ -27,51 +27,24 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy;
 
-import com.systematic.trading.model.EquityClass;
+import java.time.Period;
+
+import com.systematic.trading.simulation.logic.EntryLogic;
+import com.systematic.trading.simulation.logic.ExitLogic;
 
 /**
- * Regular expression language definitions:
- * 
- * Strategy := (StrategyEntry) (EntrySize) (Exit) (ExitSize)
- *    
- * 	  Entry := 	(Entry)     (Operator) 		(Entry)
- * 				(indicator) (Confirmation)  (Indicator)
- * 				(indicator)
- * 				(Periodic)
- * 
- * 		Exit := (Never)
- * 
- * Indicator := ATR
- * 				EMA
- * 				MACD
- * 				SMA
- * 				RSI
- *   
- * 	Operator := OR
- * 				AND
- * 
- * Position sizing determines the value of the order to place.
- * 
- * (Never) is syntactic sugar, as it provide no function it is absent from implementation.
+ * A trading strategy that comprises of position sizing combined with entry and exit behaviour.
  * 
  * @author CJ Hare
  */
-public interface ExpressionLanguage {
+public interface Strategy extends EntryLogic, ExitLogic {
 
-	Strategy strategy( Entry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing,
-	        EquityClass type, int scale );
-
-	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
-
-	Entry entry( Entry anchor, Confirmation confirmBy, Entry confirmation );
-
-	Entry entry( Indicator indicator );
-
-	Entry entry( Periodic periodic );
-
-	Exit exit();
-
-	Operator operator( Operator.Selection operator );
+	/**
+	 * The period of time required to warm up, or initialise the indicators.
+	 * 
+	 * @return time period required before the start of the analysis is to begin.
+	 */
+	Period getWarmUpPeriod();
 }

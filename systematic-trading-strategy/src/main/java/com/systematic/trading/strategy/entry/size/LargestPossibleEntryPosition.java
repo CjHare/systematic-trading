@@ -33,7 +33,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.strategy.definition.EntrySize;
 
 /**
  * The largest possible entry size that is limited by a maximum and minimum bounds.

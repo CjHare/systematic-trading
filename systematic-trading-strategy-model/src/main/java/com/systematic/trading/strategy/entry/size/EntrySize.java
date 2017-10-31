@@ -27,24 +27,24 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy.entry.size;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
+import java.math.BigDecimal;
+
+import com.systematic.trading.simulation.cash.CashAccount;
 
 /**
- * Strategy for deciding when to open / enter a position.
+ * Determines the size of the entry trade to perform.
  * 
  * @author CJ Hare
  */
-public interface Exit {
+public interface EntrySize {
 
 	/**
-	 * Updates the trading logic with a subsequent trading point and open positions.
+	 * Retrieves the amount to spend on equities.
 	 * 
-	 * @param broker the positions currently open.
-	 * @param data next day of trading to add, also applying logic for trade signals.
-	 * @return whether an exit order should be placed.
+	 * @param cashAccount currently available capital.
+	 * @return capital amount to spend, never <code>null</code>
 	 */
-	boolean exitTick( BrokerageTransaction broker, TradingDayPrices data );
+	BigDecimal entryPositionSize( final CashAccount cashAccount );
 }

@@ -27,24 +27,32 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy.confirmation;
 
-import java.math.BigDecimal;
-
-import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.signal.model.DatedSignal;
 
 /**
- * Determines the size of the entry trade to perform.
+ * Whether after a generated signal there is also a confirming signal occurring within a selected time frame.
+ * 
+ *	Confirmation :=  within x to y days inclusive
  * 
  * @author CJ Hare
  */
-public interface EntrySize {
+public interface Confirmation {
 
 	/**
-	 * Retrieves the amount to spend on equities.
+	 * Whether the anchor is confirmed.
 	 * 
-	 * @param cashAccount currently available capital.
-	 * @return capital amount to spend, never <code>null</code>
+	 * @param anchor expected earliest signal of the two.
+	 * @param confirmation expected later signal of the two.
+	 * @return <code>true</code> when the anchor is confirmed by the conformation sgnal.
 	 */
-	BigDecimal entryPositionSize( final CashAccount cashAccount );
+	boolean isConfirmedBy( DatedSignal anchor, DatedSignal confirmation );
+
+	/**
+	 * The number of trading days data required for entry calculation.
+	 * 
+	 * @return number of data to provide for the analysis.
+	 */
+	int getNumberOfTradingDaysRequired();
 }

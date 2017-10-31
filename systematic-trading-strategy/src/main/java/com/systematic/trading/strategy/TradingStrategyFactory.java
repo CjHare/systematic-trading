@@ -27,24 +27,33 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy;
 
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.strategy.TradingStrategy;
+import com.systematic.trading.strategy.Strategy;
+import com.systematic.trading.strategy.StrategyFactory;
+import com.systematic.trading.strategy.confirmation.Confirmation;
+import com.systematic.trading.strategy.entry.Entry;
 import com.systematic.trading.strategy.entry.TradingStrategyConfirmationEntry;
 import com.systematic.trading.strategy.entry.TradingStrategyIndicatorEntry;
 import com.systematic.trading.strategy.entry.TradingStrategyOperatorEntry;
 import com.systematic.trading.strategy.entry.TradingStrategyPeriodicEntry;
+import com.systematic.trading.strategy.entry.size.EntrySize;
+import com.systematic.trading.strategy.exit.Exit;
 import com.systematic.trading.strategy.exit.TradingStrategyExit;
+import com.systematic.trading.strategy.exit.size.ExitSize;
+import com.systematic.trading.strategy.indicator.Indicator;
+import com.systematic.trading.strategy.operator.Operator;
 import com.systematic.trading.strategy.operator.TradingStrategyAndOperator;
 import com.systematic.trading.strategy.operator.TradingStrategyOrOperator;
+import com.systematic.trading.strategy.periodic.Periodic;
 
 /**
  * Implementation of a TradingStrategyExpressionLanguage using a facade to aggregate specialist factories.
  * 
  * @author CJ Hare
  */
-public class ExpressionLanguageFactory implements ExpressionLanguage {
+public class TradingStrategyFactory implements StrategyFactory {
 
 	@Override
 	public Strategy strategy( final Entry entry, final EntrySize entryPositionSizing, final Exit exit,

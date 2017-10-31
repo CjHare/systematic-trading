@@ -27,24 +27,31 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.definition;
+package com.systematic.trading.strategy.operator;
 
-import java.time.Period;
+import java.util.List;
 
-import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.ExitLogic;
+import com.systematic.trading.signal.model.DatedSignal;
 
 /**
- * A trading strategy that comprises of position sizing combined with entry and exit behaviour.
+ * A logical operator that joins together the signals generated from two indicators.
+ * 
  * 
  * @author CJ Hare
  */
-public interface Strategy extends EntryLogic, ExitLogic {
+public interface Operator {
+
+	enum Selection {
+		AND,
+		OR
+	}
 
 	/**
-	 * The period of time required to warm up, or initialise the indicators.
+	 * Perform the logical conjunction between the two data sets.
 	 * 
-	 * @return time period required before the start of the analysis is to begin.
+	 * @param left first data set, not <code>null</code>.
+	 * @param right second data set, not <code>null</code>.
+	 * @return the conjoined data sets, never <code>null</code>.
 	 */
-	Period getWarmUpPeriod();
+	List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right );
 }
