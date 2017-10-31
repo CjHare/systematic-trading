@@ -42,13 +42,12 @@ import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
-import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.order.EquityOrder;
 import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 import com.systematic.trading.simulation.order.event.EquityOrderDeletedDueToInsufficentFundsEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
+import com.systematic.trading.strategy.Strategy;
 
 /**
  * The application of the chosen trading logic over a given set of data is performed in the
@@ -63,11 +62,8 @@ public class Simulation {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(Simulation.class);
 
-	/** Makes the decision on whether entry action is required. */
-	private final EntryLogic entry;
-
-	/** Decision maker on trade exit behaviour. */
-	private final ExitLogic exit;
+	/** Makes the decision on whether entry and exit actions. */
+	private final Strategy strategy;
 
 	/** The manager dealing with cash and it's accounting. */
 	private final CashAccount funds;
@@ -90,12 +86,9 @@ public class Simulation {
 	/** Trading data to use for the simulation. */
 	private final TickerSymbolTradingData tradingData;
 
-	//TODO use a TradingStrategy instead of entry / exit logic
 	public Simulation( final TickerSymbolTradingData tradingData, final Brokerage broker, final CashAccount funds,
-	        final ReturnOnInvestmentListener roi, final EntryLogic entry, final ExitLogic exit ) {
-
-		this.entry = entry;
-		this.exit = exit;
+	        final ReturnOnInvestmentListener roi, final Strategy strategy ) {
+		this.strategy = strategy;
 		this.funds = funds;
 		this.broker = broker;
 		this.roi = roi;
@@ -166,7 +159,7 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the exit logic.
 	 */
 	private List<EquityOrder> addExitOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
-		final EquityOrder order = exit.exitTick(broker, data);
+		final EquityOrder order = strategy.exitTick(broker, data);
 
 		if (order != null) {
 			notifyListeners(order.getOrderEvent());
@@ -184,7 +177,7 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the entry logic.
 	 */
 	private List<EquityOrder> addEntryOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
-		final EquityOrder order = entry.entryTick(broker, funds, data);
+		final EquityOrder order = strategy.entryTick(broker, funds, data);
 
 		if (order != null) {
 			notifyListeners(order.getOrderEvent());
@@ -247,7 +240,7 @@ public class Simulation {
 
 		} catch (final InsufficientFundsException e) {
 
-			final EquityOrderInsufficientFundsAction action = entry.actionOnInsufficentFunds(order);
+			final EquityOrderInsufficientFundsAction action = strategy.actionOnInsufficentFunds(order);
 
 			switch (action) {
 				case DELETE:
@@ -257,8 +250,8 @@ public class Simulation {
 				case RESUMIT:
 				default:
 					throw new IllegalArgumentException(String.format(
-					        "Unsupported insufficient funds action: %s for order: %s using entry logic: %s", action,
-					        order, entry), e);
+					        "Unsupported insufficient funds action: %s for order: %s using strategy: %s", action,
+					        order, strategy), e);
 			}
 		} catch (final InsufficientEquitiesException e) {
 			LOG.error(e);

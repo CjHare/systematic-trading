@@ -34,8 +34,7 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
-import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.ExitLogic;
+import com.systematic.trading.strategy.Strategy;
 
 /**
  * Testing the basic functionality of the simulation.
@@ -52,10 +51,7 @@ public class SimulationTest {
 	private CashAccount funds;
 
 	@Mock
-	private EntryLogic entry;
-
-	@Mock
-	private ExitLogic exit;
+	private Strategy strategy;
 
 	@Mock
 	private ReturnOnInvestmentListener roiCalculator;
@@ -72,6 +68,6 @@ public class SimulationTest {
 	//TODO add more UT
 
 	private void createSimulation( final TickerSymbolTradingData tradingData ) {
-		new Simulation(tradingData, broker, funds, roiCalculator, entry, exit);
+		new Simulation(tradingData, broker, funds, roiCalculator, strategy);
 	}
 }

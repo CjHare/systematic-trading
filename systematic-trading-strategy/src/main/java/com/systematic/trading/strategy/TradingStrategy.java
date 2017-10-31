@@ -38,7 +38,6 @@ import java.util.List;
 import com.systematic.trading.collection.LimitedSizeQueue;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
@@ -148,12 +147,6 @@ public class TradingStrategy implements Strategy {
 		//TODO use optional instead of null
 		// No order to place
 		return null;
-	}
-
-	@Override
-	public void addListener( final SignalAnalysisListener listener ) {
-
-		//TODO move the listener into the indicator, as they are the ones that fire events
 	}
 
 	@Override

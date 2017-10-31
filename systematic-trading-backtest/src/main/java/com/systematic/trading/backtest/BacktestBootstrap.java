@@ -44,8 +44,6 @@ import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.equity.event.EquityEventListener;
-import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.ExitLogic;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
@@ -115,7 +113,7 @@ public class BacktestBootstrap {
 
 		// Engine dealing with the event flow
 		final Simulation simulation = new Simulation(tradingData, broker, cashAccount, roi,
-		        context.getTradingStrategy(), context.getTradingStrategy());
+		        context.getTradingStrategy());
 
 		// Statistics recorder for the various cash account, brokerage and order events
 		final EventStatistics eventStatistics = new CumulativeEventStatistics();

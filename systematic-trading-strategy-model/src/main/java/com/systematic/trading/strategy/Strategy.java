@@ -31,15 +31,19 @@ package com.systematic.trading.strategy;
 
 import java.time.Period;
 
-import com.systematic.trading.simulation.logic.EntryLogic;
-import com.systematic.trading.simulation.logic.ExitLogic;
+import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
+import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
+import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.order.EquityOrder;
+import com.systematic.trading.simulation.order.EquityOrderInsufficientFundsAction;
 
 /**
  * A trading strategy that comprises of position sizing combined with entry and exit behaviour.
  * 
  * @author CJ Hare
  */
-public interface Strategy extends EntryLogic, ExitLogic {
+public interface Strategy {
 
 	/**
 	 * The period of time required to warm up, or initialise the indicators.
@@ -47,4 +51,35 @@ public interface Strategy extends EntryLogic, ExitLogic {
 	 * @return time period required before the start of the analysis is to begin.
 	 */
 	Period getWarmUpPeriod();
+
+	/**
+	 * Updates the trading logic with a subsequent trading point.
+	 * 
+	 * @param fees the brokerage to execute the order with, and whose fees are to be included in the
+	 *            transaction.
+	 * @param cashAccount currently available funds.
+	 * @param data next day of trading to add, also applying logic for trade signals.
+	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
+	 *         be placed.
+	 */
+	EquityOrder entryTick( BrokerageTransactionFee fees, CashAccount cashAccount, TradingDayPrices data );
+
+	/**
+	 * Action to take on the order when the triggering conditions are met, however there are
+	 * insufficient available funds.
+	 * 
+	 * @param order that cannot be executed, due to lack of funds.
+	 * @return action to take in this situation.
+	 */
+	EquityOrderInsufficientFundsAction actionOnInsufficentFunds( EquityOrder order );
+
+	/**
+	 * Updates the trading logic with a subsequent trading point and open positions.
+	 * 
+	 * @param broker the positions currently open.
+	 * @param data next day of trading to add, also applying logic for trade signals.
+	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
+	 *         be placed.
+	 */
+	EquityOrder exitTick( BrokerageTransaction broker, TradingDayPrices data );
 }
