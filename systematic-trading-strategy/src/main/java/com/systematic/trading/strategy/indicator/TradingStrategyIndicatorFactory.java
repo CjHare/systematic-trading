@@ -63,7 +63,7 @@ import com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfigu
  * 
  * @author CJ Hare
  */
-public class IndicatorGeneratorFactory {
+public class TradingStrategyIndicatorFactory {
 
 	/**
 	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.

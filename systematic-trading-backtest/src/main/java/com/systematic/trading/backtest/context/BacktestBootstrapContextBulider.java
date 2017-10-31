@@ -68,7 +68,7 @@ import com.systematic.trading.strategy.entry.size.RelativeEntryPositionBounds;
 import com.systematic.trading.strategy.exit.Exit;
 import com.systematic.trading.strategy.exit.size.ExitSize;
 import com.systematic.trading.strategy.exit.size.NeverExitPosition;
-import com.systematic.trading.strategy.indicator.IndicatorGeneratorFactory;
+import com.systematic.trading.strategy.indicator.TradingStrategyIndicatorFactory;
 import com.systematic.trading.strategy.operator.Operator;
 import com.systematic.trading.strategy.operator.TradingStrategyAndOperator;
 import com.systematic.trading.strategy.operator.TradingStrategyOrOperator;
@@ -189,7 +189,7 @@ public class BacktestBootstrapContextBulider {
 
 	private Entry createEntry( final IndicatorEntryConfiguration indicatorConfig,
 	        final SignalRangeFilter signalRange ) {
-		return new TradingStrategyFactory().entry(new IndicatorGeneratorFactory()
+		return new TradingStrategyFactory().entry(new TradingStrategyIndicatorFactory()
 		        .create(indicatorConfig.getIndicator(), signalRange, signalAnalysisListener));
 	}
 
