@@ -93,8 +93,8 @@ public class TradingStrategyFactory implements StrategyFactory {
 			case OR:
 				return new TradingStrategyOrOperator();
 
-			default:
 			case AND:
+			default:
 				return new TradingStrategyAndOperator();
 		}
 	}
