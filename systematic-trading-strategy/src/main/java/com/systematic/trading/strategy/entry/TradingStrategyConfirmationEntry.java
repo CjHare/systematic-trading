@@ -65,11 +65,11 @@ public class TradingStrategyConfirmationEntry implements Entry {
 			final List<DatedSignal> confirmationSignals = confirmationIndicator.analyse(data);
 
 			for (final DatedSignal anchorSignal : anchorSignals) {
-				final Optional<DatedSignal> confirmation = getLatestConformationSignal(anchorSignal,
+				final Optional<DatedSignal> latestConfirmation = getLatestConformationSignal(anchorSignal,
 				        confirmationSignals);
 
-				if (confirmation.isPresent()) {
-					signals.add(confirmation.get());
+				if (latestConfirmation.isPresent()) {
+					signals.add(latestConfirmation.get());
 				}
 			}
 		}
@@ -94,7 +94,7 @@ public class TradingStrategyConfirmationEntry implements Entry {
 
 	@Override
 	public int getNumberOfTradingDaysRequired() {
-		return Math.max(anchorIndicator.getNumberOfTradingDaysRequired(), confirmationIndicator.getNumberOfTradingDaysRequired())
-		        + confirmation.getNumberOfTradingDaysRequired();
+		return Math.max(anchorIndicator.getNumberOfTradingDaysRequired(),
+		        confirmationIndicator.getNumberOfTradingDaysRequired()) + confirmation.getNumberOfTradingDaysRequired();
 	}
 }
