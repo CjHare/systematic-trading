@@ -29,6 +29,7 @@
 		<module>systematic-trading-simulation</module>
 		<module>systematic-trading-simulation-model</module>
 		<module>systematic-trading-strategy</module>
+		<module>systematic-trading-strategy-model</module>
 	</modules>
 
 	<build>
