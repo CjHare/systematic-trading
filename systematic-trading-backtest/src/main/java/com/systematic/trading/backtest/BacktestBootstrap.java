@@ -100,12 +100,6 @@ public class BacktestBootstrap {
 		final CulmativeTotalReturnOnInvestment cumulativeRoi = new CulmativeTotalReturnOnInvestment();
 		roi.addListener(cumulativeRoi);
 
-		//TODO output need to get into the indicators
-		//		final EntryLogic entry = context.getEntryLogic();
-		// entry.addListener(output);
-
-		//	final ExitLogic exit = context.getExitLogic();
-
 		final Brokerage broker = context.getBroker();
 
 		final CashAccount cashAccount = context.getCashAccount();
