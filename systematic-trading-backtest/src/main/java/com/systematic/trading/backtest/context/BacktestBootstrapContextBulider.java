@@ -168,8 +168,8 @@ public class BacktestBootstrapContextBulider {
 			case AND:
 				operator = new TradingStrategyAndOperator();
 			break;
-			default:
 			case OR:
+			default:
 				operator = new TradingStrategyOrOperator();
 			break;
 		}
