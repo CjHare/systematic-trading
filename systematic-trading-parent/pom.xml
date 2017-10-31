@@ -41,6 +41,7 @@
 		<systematic.trading.simulation.version>0.0.1-SNAPSHOT</systematic.trading.simulation.version>
 		<systematic.trading.simulation.model.version>0.0.1-SNAPSHOT</systematic.trading.simulation.model.version>
 		<systematic.trading.strategy.version>0.0.1-SNAPSHOT</systematic.trading.strategy.version>
+		<systematic.trading.strategy.model.version>0.0.1-SNAPSHOT</systematic.trading.strategy.model.version>
 
 	</properties>
 
