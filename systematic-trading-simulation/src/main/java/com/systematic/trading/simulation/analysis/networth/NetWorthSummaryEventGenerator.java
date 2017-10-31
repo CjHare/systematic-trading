@@ -32,7 +32,9 @@ import java.util.List;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.simulation.SimulationStateListener;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEvent.NetWorthEventType;
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent.NetWorthEventType;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;
 

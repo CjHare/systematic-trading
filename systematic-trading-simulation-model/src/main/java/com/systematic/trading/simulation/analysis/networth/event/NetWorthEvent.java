@@ -23,46 +23,72 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.analysis.statistics;
+package com.systematic.trading.simulation.analysis.networth.event;
 
-import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
-import com.systematic.trading.simulation.cash.event.CashEventListener;
-import com.systematic.trading.simulation.equity.event.EquityEventListener;
-import com.systematic.trading.simulation.order.event.OrderEventListener;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
- * Records the data produced during process, making the statistics easily accessible.
+ * Data pertaining to the net worth.
  * 
  * @author CJ Hare
  */
-public interface EventStatistics
-        extends CashEventListener, BrokerageEventListener, OrderEventListener, EquityEventListener {
+public interface NetWorthEvent {
+
+	public enum NetWorthEventType {
+		COMPLETED("Completed");
+
+		private final String name;
+
+		NetWorthEventType( final String name ) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+	}
 
 	/**
-	 * Retrieves the recorded order event statistics.
+	 * Retrieve the brokerage's balance of equities.
 	 * 
-	 * @return order events recorded to date.
+	 * @return number of equities held.
 	 */
-	OrderEventStatistics getOrderEventStatistics();
+	BigDecimal getEquityBalance();
 
 	/**
-	 * Retrieves the recorded brokerage event statistics.
+	 * Retrieve the value of the balance of equities.
 	 * 
-	 * @return brokerage events recorded to date.
+	 * @return how much the equities held are worth.
 	 */
-	BrokerageEventStatistics getBrokerageEventStatistics();
+	BigDecimal getEquityBalanceValue();
 
 	/**
-	 * Retrieves the recorded cash event statistics.
+	 * Balance held in the cash account.
 	 * 
-	 * @return cash events recorded to date.
+	 * @return funds not invested in equities.
 	 */
-	CashEventStatistics getCashEventStatistics();
+	BigDecimal getCashBalance();
 
 	/**
-	 * Retrieves the recorded equity event statistics.
+	 * Retrieve the total net worth.
 	 * 
-	 * @return equity events recorded to date.
+	 * @return sum of the cash balance(s) and equities value, exclusive of any transaction fee, or
+	 *         capital gains tax for liquidation.
 	 */
-	EquityEventStatistics getEquityEventStatistics();
+	BigDecimal getNetWorth();
+
+	/**
+	 * Date when the event occurred
+	 * 
+	 * @return the date when the event occurred.
+	 */
+	LocalDate getEventDate();
+
+	/**
+	 * Trigger for the Net worth event.
+	 * 
+	 * @return type of Net worth event.
+	 */
+	NetWorthEventType getType();
 }

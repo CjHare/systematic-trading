@@ -27,6 +27,7 @@ package com.systematic.trading.simulation.analysis.statistics;
 
 import java.math.BigDecimal;
 
+import com.systematic.trading.simulation.analysis.statistics.event.EquityEventStatistics;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 
 /**

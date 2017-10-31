@@ -28,6 +28,8 @@ package com.systematic.trading.simulation.analysis.networth;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
+
 /**
  * Data pertaining to the net worth.
  * 

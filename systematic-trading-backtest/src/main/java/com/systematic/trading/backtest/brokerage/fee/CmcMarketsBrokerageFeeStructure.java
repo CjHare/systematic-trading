@@ -25,12 +25,12 @@
  */
 package com.systematic.trading.backtest.brokerage.fee;
 
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.ELEVEN;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.NINE_NINTY;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.SEVENTY_FIVE_BASIS_POINTS;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.applyLargest;
+import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
+import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.ELEVEN;
+import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.NINE_NINTY;
+import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.SEVENTY_FIVE_BASIS_POINTS;
+import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.TEN_BASIS_POINTS;
+import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.applyLargest;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

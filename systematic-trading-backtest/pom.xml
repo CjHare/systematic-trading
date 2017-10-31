@@ -19,11 +19,6 @@
 			<artifactId>systematic-trading-backtest-model</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-simulation-model</artifactId>
-			<version>${systematic.trading.simulation.version}</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
@@ -46,6 +41,11 @@
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-strategy</artifactId>
 			<version>${systematic.trading.strategy.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-simulation</artifactId>
+			<version>${systematic.trading.simulation.version}</version>
 		</dependency>
 		
 		<dependency>

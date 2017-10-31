@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.brokerage.fee;
 
-import static com.systematic.trading.simulation.brokerage.BrokerageFeeUtil.TEN_BASIS_POINTS;
+import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.TEN_BASIS_POINTS;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

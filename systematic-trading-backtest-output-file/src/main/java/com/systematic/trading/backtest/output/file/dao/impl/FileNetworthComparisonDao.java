@@ -37,7 +37,7 @@ import com.systematic.trading.backtest.output.file.dao.NetworthComparisonDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.maths.formula.CompoundAnnualGrowthRate;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 
 /**
@@ -53,8 +53,6 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
 	private static final DecimalFormat FOUR_DECIMAL_PLACES = new DecimalFormat(".0000");
-	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
-	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 	private static final String COLUMN_SEPARATOR = ",";
 
 	private final CompoundAnnualGrowthRate compoundAnnualGrowthRate = new CompoundAnnualGrowthRate();
@@ -153,27 +151,11 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private String entryLogic() {
 		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
-		out.add(minimumTradeValue());
-		out.add(maximumTradeValue());
 		out.add(batchId.getName());
 		out.add(entryOrdersPlaced());
 		out.add(entryOrdersExecuted());
 		out.add(entryOrdersDeleted());
 		return out.toString();
-	}
-
-	private String maximumTradeValue() {
-		return String.format("Maximum Trade: %s%s Maximum Trade Type: Absolute",
-		        convertToPercetage(batchId.getMaximumTrade().getValue()), COLUMN_SEPARATOR);
-	}
-
-	private String convertToPercetage( final BigDecimal toPercentage ) {
-		return String.format("%s", NO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
-	}
-
-	private String minimumTradeValue() {
-		return String.format("Minimum Trade: %s%s Minimum Trade Type: Percent",
-		        NO_DECIMAL_PLACES.format(batchId.getMinimumTrade().getValue()), COLUMN_SEPARATOR);
 	}
 
 	private String entryOrdersDeleted() {

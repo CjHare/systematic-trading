@@ -53,8 +53,8 @@ import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
-import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestment;
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;
+import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
@@ -97,7 +97,7 @@ public class CompleteFileOutputService extends FileOutput implements BacktestOut
 
 	@Override
 	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-	        final EventStatistics eventStatistics, final CulmativeTotalReturnOnInvestment cumulativeRoi,
+	        final EventStatistics eventStatistics, final CumulativeReturnOnInvestment cumulativeRoi,
 	        final TradingDayPrices lastTradingDay ) {
 
 		final FileMultithreading returnOnInvestmentFile = getFileDisplay("/return-on-investment.txt");

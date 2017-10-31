@@ -23,23 +23,60 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.analysis.networth;
+package com.systematic.trading.simulation.analysis.statistics.event;
 
-import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Map;
+
+import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 
 /**
- * Interested in net worth summary events
+ * Statistics over the occurring brokerage events.
  * 
  * @author CJ Hare
  */
-@FunctionalInterface
-public interface NetWorthEventListener {
+public interface BrokerageEventStatistics {
 
 	/**
-	 * Notification of a net worth event.
+	 * Brokerage event has occurred and merits recording.
 	 * 
-	 * @param event details of the current state of the net worth.
-	 * @param state simulation state for the context of the net worth.
+	 * @param event brokerage related event warranting attention of the statistics.
 	 */
-	void event( NetWorthEvent event, SimulationState state );
+	void event( BrokerageEvent event );
+
+	/**
+	 * The amount to date paid in brokerage fees.
+	 * 
+	 * @return sum of the brokerage fees for the purchases and sales performed.
+	 */
+	BigDecimal getBrokerageFees();
+
+	/**
+	 * Number of purchase transactions performed.
+	 * 
+	 * @return number of brokerage purchase actions carried out.
+	 */
+	BigInteger getBuyEventCount();
+
+	/**
+	 * Number of sale transactions performed.
+	 * 
+	 * @return number of brokerage sale actions carried out.
+	 */
+	BigInteger getSellEventCount();
+
+	/**
+	 * Total of the buy events that occurred.
+	 * 
+	 * @return the number equities brought and their frequency.
+	 */
+	Map<BigDecimal, BigInteger> getBuyEvents();
+
+	/**
+	 * Total of the sell events that occurred.
+	 * 
+	 * @return the number equities sold and their frequency.
+	 */
+	Map<BigDecimal, BigInteger> getSellEvents();
 }

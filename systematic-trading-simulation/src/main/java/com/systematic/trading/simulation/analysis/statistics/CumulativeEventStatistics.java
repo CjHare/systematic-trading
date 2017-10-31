@@ -25,6 +25,10 @@
  */
 package com.systematic.trading.simulation.analysis.statistics;
 
+import com.systematic.trading.simulation.analysis.statistics.event.BrokerageEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.event.CashEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.event.EquityEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.event.OrderEventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;

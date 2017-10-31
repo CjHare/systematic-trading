@@ -31,7 +31,7 @@ import java.text.DecimalFormat;
 import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;
 
 /**

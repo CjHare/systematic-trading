@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.output.file.dao;
 
-import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;
 
 /**
  * Output of the net worth at any point during of the simulation, including after the completion.

@@ -306,9 +306,7 @@ public class BacktestApplication {
 
 	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
-		return new BacktestBatchId(new DescriptionGenerator().getDescription(configuration, depositAmount),
-		        configuration.getStrategy().getEntryPositionSizing().getMinimumTrade(),
-		        configuration.getStrategy().getEntryPositionSizing().getMaximumTrade());
+		return new BacktestBatchId(new DescriptionGenerator().getDescription(configuration, depositAmount));
 	}
 
 	private String getOutputDirectory( final String baseOutputDirectory,

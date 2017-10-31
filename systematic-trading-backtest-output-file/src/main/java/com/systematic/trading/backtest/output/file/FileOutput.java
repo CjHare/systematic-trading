@@ -34,8 +34,8 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
 import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEvent;
-import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;
 
 /**
  * Template providing state management for the various file display implementations.

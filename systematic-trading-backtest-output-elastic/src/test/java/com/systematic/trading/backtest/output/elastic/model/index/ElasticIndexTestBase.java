@@ -169,7 +169,7 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	private BacktestBatchId getBatchId( final String id ) {
-		return new BacktestBatchId(id, null, null);
+		return new BacktestBatchId(id);
 	}
 
 	private void verifyGetIndex() {

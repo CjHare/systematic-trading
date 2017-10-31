@@ -23,60 +23,49 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.analysis.statistics;
+package com.systematic.trading.simulation.analysis.statistics.event;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Map;
-
-import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
+import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Statistics over the occurring brokerage events.
+ * Statistics over the occurring order events.
  * 
  * @author CJ Hare
  */
-public interface BrokerageEventStatistics {
+public interface OrderEventStatistics {
 
 	/**
-	 * Brokerage event has occurred and merits recording.
+	 * Order event has occurred and merits recording.
 	 * 
-	 * @param event brokerage related event warranting attention of the statistics.
+	 * @param event order related event warranting attention of the statistics.
 	 */
-	void event( BrokerageEvent event );
+	void event( OrderEvent event );
 
 	/**
-	 * The amount to date paid in brokerage fees.
+	 * Number of entry events recorded.
 	 * 
-	 * @return sum of the brokerage fees for the purchases and sales performed.
+	 * @return number of entry events events recorded.
 	 */
-	BigDecimal getBrokerageFees();
+	int getEntryEventCount();
 
 	/**
-	 * Number of purchase transactions performed.
+	 * Number of delete entry events recorded.
 	 * 
-	 * @return number of brokerage purchase actions carried out.
+	 * @return number of delete entry events events recorded.
 	 */
-	BigInteger getBuyEventCount();
+	int getDeleteEntryEventCount();
 
 	/**
-	 * Number of sale transactions performed.
+	 * Number of exit events recorded.
 	 * 
-	 * @return number of brokerage sale actions carried out.
+	 * @return number of exit events events recorded.
 	 */
-	BigInteger getSellEventCount();
+	int getExitEventCount();
 
 	/**
-	 * Total of the buy events that occurred.
+	 * Number of delete exit events recorded.
 	 * 
-	 * @return the number equities brought and their frequency.
+	 * @return number of delete exit events events recorded.
 	 */
-	Map<BigDecimal, BigInteger> getBuyEvents();
-
-	/**
-	 * Total of the sell events that occurred.
-	 * 
-	 * @return the number equities sold and their frequency.
-	 */
-	Map<BigDecimal, BigInteger> getSellEvents();
+	int getDeleteExitEventCount();
 }

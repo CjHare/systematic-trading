@@ -30,6 +30,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.systematic.trading.simulation.analysis.statistics.event.BrokerageEventStatistics;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 
 /**

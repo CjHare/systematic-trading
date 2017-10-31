@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.output.file.dao;
 
-import com.systematic.trading.simulation.analysis.networth.NetWorthEventListener;
+import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;
 
 /**
  * Output for comparison of network events.

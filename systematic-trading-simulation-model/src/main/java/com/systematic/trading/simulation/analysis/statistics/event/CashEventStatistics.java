@@ -23,43 +23,65 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage;
+package com.systematic.trading.simulation.analysis.statistics.event;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
+
+import com.systematic.trading.simulation.cash.event.CashEvent;
 
 /**
- * Utility class for operations and constants related to fees.
+ * Statistics over the occurring cash events.
  * 
  * @author CJ Hare
  */
-public class BrokerageFeeUtil {
-
-	public static final BigDecimal NINE_NINTY = BigDecimal.valueOf(9.9);
-	public static final BigDecimal TEN = BigDecimal.valueOf(10);
-	public static final BigDecimal ELEVEN = BigDecimal.valueOf(11);
-	public static final BigDecimal THIRTEEN = BigDecimal.valueOf(13);
-	public static final BigDecimal FIFTEEN = BigDecimal.valueOf(15);
-
-	public static final BigDecimal TEN_BASIS_POINTS = BigDecimal.valueOf(.001);
-	public static final BigDecimal EIGHT_BASIS_POINTS = BigDecimal.valueOf(.0008);
-	public static final BigDecimal SEVENTY_FIVE_BASIS_POINTS = BigDecimal.valueOf(.00075);
-
-	private BrokerageFeeUtil() {
-	}
+public interface CashEventStatistics {
 
 	/**
-	 * Calculates and return the larger value from the absolute and percentage.
+	 * Cash event that merits the attention of the statistical recording.
 	 * 
-	 * @param tradeValue sum of the equity trade whose brokerage is being calculated.
-	 * @param absoluteFee absolute amount for brokerage.
-	 * @param percentage relative amount based of the tradeValue.
-	 * @param context math context defining the scale and precision to apply to operations.
-	 * @return the larger between the absolute and relative given the specific trade value.
+	 * @param event details of the cash event to record.
 	 */
-	public static BigDecimal applyLargest( final BigDecimal tradeValue, final BigDecimal absoluteFee,
-	        final BigDecimal percentage, final MathContext mathContext ) {
-		final BigDecimal relativeFee = tradeValue.multiply(percentage, mathContext);
-		return absoluteFee.compareTo(relativeFee) > 0 ? absoluteFee : relativeFee;
-	}
+	void event( CashEvent event );
+
+	/**
+	 * Retrieves the sum of the deposit events.
+	 * 
+	 * @return total of the deposit events currently received.
+	 */
+	BigDecimal getAmountDeposited();
+
+	/**
+	 * Retrieves the sum of the interest events.
+	 * 
+	 * @return total of the interest events currently received.
+	 */
+	BigDecimal getInterestEarned();
+
+	/**
+	 * Number of credit transactions recorded.
+	 * 
+	 * @return number of cash credit actions carried out.
+	 */
+	int getCreditEventCount();
+
+	/**
+	 * Number of debit transactions recorded.
+	 * 
+	 * @return number of cash bedbit actions carried out.
+	 */
+	int getDebitEventCount();
+
+	/**
+	 * Number of deposit transactions recorded.
+	 * 
+	 * @return number of cash desposit actions carried out.
+	 */
+	int getDepositEventCount();
+
+	/**
+	 * Number of interest transactions recorded.
+	 * 
+	 * @return number of interest credit actions carried out.
+	 */
+	int getInterestEventCount();
 }

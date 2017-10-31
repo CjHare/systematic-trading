@@ -33,11 +33,11 @@ import java.util.Map;
 import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.backtest.output.file.util.HistogramOutput;
-import com.systematic.trading.simulation.analysis.statistics.BrokerageEventStatistics;
-import com.systematic.trading.simulation.analysis.statistics.CashEventStatistics;
-import com.systematic.trading.simulation.analysis.statistics.EquityEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
-import com.systematic.trading.simulation.analysis.statistics.OrderEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.event.BrokerageEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.event.CashEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.event.EquityEventStatistics;
+import com.systematic.trading.simulation.analysis.statistics.event.OrderEventStatistics;
 
 /**
  * Displays the summary of the events that occurred during processing.

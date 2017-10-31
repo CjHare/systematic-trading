@@ -25,9 +25,6 @@
  */
 package com.systematic.trading.backtest;
 
-import com.systematic.trading.backtest.trade.MaximumTrade;
-import com.systematic.trading.backtest.trade.MinimumTrade;
-
 /**
  * ID that groups back testing events..
  * 
@@ -38,21 +35,8 @@ public class BacktestBatchId {
 	/** Unique identifier. */
 	private final String name;
 
-	private final MaximumTrade maximumTrade;
-	private final MinimumTrade minimumTrade;
-
-	public BacktestBatchId( final String name, final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	public BacktestBatchId( final String name ) {
 		this.name = name;
-		this.minimumTrade = minimumTrade;
-		this.maximumTrade = maximumTrade;
-	}
-
-	public MaximumTrade getMaximumTrade() {
-		return maximumTrade;
-	}
-
-	public MinimumTrade getMinimumTrade() {
-		return minimumTrade;
 	}
 
 	public String getName() {

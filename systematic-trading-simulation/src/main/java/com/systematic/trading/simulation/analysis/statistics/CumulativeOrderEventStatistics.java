@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.simulation.analysis.statistics;
 
+import com.systematic.trading.simulation.analysis.statistics.event.OrderEventStatistics;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**

@@ -23,49 +23,23 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.analysis.statistics;
+package com.systematic.trading.simulation.analysis.networth.event;
 
-import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 
 /**
- * Statistics over the occurring order events.
+ * Interested in net worth summary events
  * 
  * @author CJ Hare
  */
-public interface OrderEventStatistics {
+@FunctionalInterface
+public interface NetWorthEventListener {
 
 	/**
-	 * Order event has occurred and merits recording.
+	 * Notification of a net worth event.
 	 * 
-	 * @param event order related event warranting attention of the statistics.
+	 * @param event details of the current state of the net worth.
+	 * @param state simulation state for the context of the net worth.
 	 */
-	void event( OrderEvent event );
-
-	/**
-	 * Number of entry events recorded.
-	 * 
-	 * @return number of entry events events recorded.
-	 */
-	int getEntryEventCount();
-
-	/**
-	 * Number of delete entry events recorded.
-	 * 
-	 * @return number of delete entry events events recorded.
-	 */
-	int getDeleteEntryEventCount();
-
-	/**
-	 * Number of exit events recorded.
-	 * 
-	 * @return number of exit events events recorded.
-	 */
-	int getExitEventCount();
-
-	/**
-	 * Number of delete exit events recorded.
-	 * 
-	 * @return number of delete exit events events recorded.
-	 */
-	int getDeleteExitEventCount();
+	void event( NetWorthEvent event, SimulationState state );
 }
