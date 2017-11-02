@@ -125,11 +125,11 @@ public class BacktestApplication {
 		final StopWatch timer = new StopWatch();
 		timer.start();
 
-		try {
-			final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
-			        depositAmount);
-			clearOutputDirectory(depositAmount, parserdArguments);
+		final List<BacktestBootstrapConfiguration> configurations = configuration.get(equity, simulationDates,
+		        depositAmount);
 
+		try {
+			clearOutputDirectory(depositAmount, parserdArguments);
 			runBacktests(equity, depositAmount, parserdArguments, configurations, outputpool);
 
 		} finally {
@@ -141,8 +141,8 @@ public class BacktestApplication {
 
 		outputPreparation.tearDown();
 
-		LOG.info(
-		        () -> String.format("Finished outputting results, time taken: %s", Duration.ofMillis(timer.getTime())));
+		LOG.info(() -> String.format("Finished outputting %s results, time taken: %s", configurations.size(),
+		        Duration.ofMillis(timer.getTime())));
 	}
 
 	private void closePool( final ExecutorService pool ) {
