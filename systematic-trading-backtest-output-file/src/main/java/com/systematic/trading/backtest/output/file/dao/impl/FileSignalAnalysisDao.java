@@ -47,6 +47,7 @@ public class FileSignalAnalysisDao implements SignalAnalysisDao {
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
-		file.write(String.format("Signal event: %s on date: %s%n", event.getSignalType(), event.getSignalDate()));
+		file.write(String.format("Signal event: %s on date: %s%n", event.getSignalType().getName(),
+		        event.getSignalDate()));
 	}
 }
