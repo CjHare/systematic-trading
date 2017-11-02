@@ -53,7 +53,7 @@ public class TradingStrategyAndOperator implements Operator {
 			}
 		}
 
-		return left;
+		return both;
 	}
 
 	//TODO natrual ordering to DatedSignal & replace with set operation
