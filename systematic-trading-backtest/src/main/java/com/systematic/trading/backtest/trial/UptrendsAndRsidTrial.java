@@ -80,8 +80,8 @@ public class UptrendsAndRsidTrial extends BaseTrialConfiguration implements Back
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations
-		        .addAll(getSmaOrEmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		configurations.addAll(
+		        getSmaEmaUptrendsAndRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}
