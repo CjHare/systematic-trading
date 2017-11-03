@@ -125,7 +125,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 		final int minimumNumberOfPrices = calculator.getMinimumNumberOfPrices();
 
-		assertEquals(2, minimumNumberOfPrices);
+		assertEquals(0, minimumNumberOfPrices);
 	}
 
 	@SafeVarargs
@@ -143,7 +143,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 	private void verifyValidation( final TradingDayPrices[] data ) {
 		verify(validator).verifyNotNull(data);
-		verify(validator).verifyEnoughValues(data, 1);
+		verify(validator).verifyEnoughValues(data, 0);
 		verify(validator).verifyZeroNullEntries(data);
 	}
 

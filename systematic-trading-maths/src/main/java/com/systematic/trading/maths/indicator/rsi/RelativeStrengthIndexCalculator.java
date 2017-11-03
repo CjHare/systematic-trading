@@ -50,9 +50,6 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 	/** Constant for the value of 100. */
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
-	/** The least number of prices to calculate the RSI on. */
-	private static final int MINIMUM_NUMBER_OF_PRICES = 2;
-
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
@@ -69,14 +66,14 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 
 	@Override
 	public int getMinimumNumberOfPrices() {
-		return MINIMUM_NUMBER_OF_PRICES;
+		return rs.getMinimumNumberOfPrices();
 	}
 
 	@Override
 	public RelativeStrengthIndexLine calculate( final TradingDayPrices[] data ) {
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
-		validator.verifyEnoughValues(data, 1);
+		validator.verifyEnoughValues(data, rs.getMinimumNumberOfPrices());
 
 		final RelativeStrengthLine rsLine = rs.calculate(data);
 		final SortedMap<LocalDate, BigDecimal> rsi = new TreeMap<>();
