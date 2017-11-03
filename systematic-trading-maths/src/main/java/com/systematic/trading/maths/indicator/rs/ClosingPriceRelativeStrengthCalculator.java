@@ -58,9 +58,6 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	/** Comparator result for today == yesterday closing price. */
 	private static final int NO_PRICE_MOVEMENT = 0;
 
-	/** The least number of prices to calculate the ATR on. */
-	private static final int MINIMUM_NUMBER_OF_PRICES = 1;
-
 	/** The number of trading days to look back for calculation. */
 	private final int lookback;
 
@@ -89,7 +86,7 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 
 	@Override
 	public int getMinimumNumberOfPrices() {
-		return MINIMUM_NUMBER_OF_PRICES;
+		return lookback;
 	}
 
 	@Override

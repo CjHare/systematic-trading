@@ -183,7 +183,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 		final int minimumNumberOfPrices = calculator.getMinimumNumberOfPrices();
 
-		assertEquals(1, minimumNumberOfPrices);
+		assertEquals(14, minimumNumberOfPrices);
 	}
 
 	private RelativeStrengthLine rs( final TradingDayPrices[] data ) {
