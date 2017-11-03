@@ -50,6 +50,9 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 	/** Constant for the value of 100. */
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
+	/** Number of prices required to evaluate the RSI movement. */
+	private static final int MINIMUM_NUMBER_OF_PRICES = 2;
+
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
@@ -66,7 +69,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 
 	@Override
 	public int getMinimumNumberOfPrices() {
-		return rs.getMinimumNumberOfPrices();
+		return MINIMUM_NUMBER_OF_PRICES + rs.getMinimumNumberOfPrices();
 	}
 
 	@Override
