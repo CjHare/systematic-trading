@@ -171,27 +171,6 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getMacd( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
-	        final MaximumTrade maximumTrade ) {
-		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length);
-
-		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-
-			final EntryConfiguration entry = factory.entry(converter.translate(macdConfiguration));
-			final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
-			final ExitConfiguration exit = factory.exit();
-			final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
-			final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
-			        exitPositionSizing);
-			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, strategy));
-		}
-
-		return configurations;
-	}
-
 	private List<BacktestBootstrapConfiguration> getSameDayMacdSmaRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
