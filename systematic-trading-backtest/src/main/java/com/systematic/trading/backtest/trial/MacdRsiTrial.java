@@ -53,12 +53,12 @@ import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguratio
  * 
  * @author CJ Hare
  */
-public class MacdRsidTrial extends BaseTrialConfiguration implements BacktestConfiguration {
+public class MacdRsiTrial extends BaseTrialConfiguration implements BacktestConfiguration {
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new MacdRsidTrial(),
+		new BacktestApplication().runBacktest(new MacdRsiTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
@@ -83,7 +83,7 @@ public class MacdRsidTrial extends BaseTrialConfiguration implements BacktestCon
 		configurations.addAll(
 				getMacd(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 		configurations.addAll(
-				getRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+				getMacdConfirmedByRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}

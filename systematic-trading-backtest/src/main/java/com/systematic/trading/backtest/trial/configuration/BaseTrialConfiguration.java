@@ -63,7 +63,7 @@ public abstract class BaseTrialConfiguration {
 	private final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 
 
-	protected List<BacktestBootstrapConfiguration> getRsi( final EquityConfiguration equity,
+	protected List<BacktestBootstrapConfiguration> getMacdConfirmedByRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
