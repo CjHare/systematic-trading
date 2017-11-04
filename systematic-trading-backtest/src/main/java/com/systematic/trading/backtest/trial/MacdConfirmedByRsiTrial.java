@@ -37,7 +37,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
-import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmationConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
@@ -109,7 +109,7 @@ public class MacdConfirmedByRsiTrial extends BaseTrialConfiguration implements B
 		final EntryConfiguration rsientry = factory.entry(factory.entry(converter.translate(RsiConfiguration.MEDIUM)),
 		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(RsiConfiguration.MEDIUM)));
 
-		for (final ConfirmationConfiguration confirmConfiguration : ConfirmationConfiguration.values()) {
+		for (final ConfirmaByConfiguration confirmConfiguration : ConfirmaByConfiguration.values()) {
 
 			final EntryConfiguration entry = factory.entry(longMacdEntry, confirmConfiguration, rsientry);
 			final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);

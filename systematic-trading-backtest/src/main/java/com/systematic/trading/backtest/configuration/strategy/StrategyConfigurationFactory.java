@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.configuration.strategy;
 
-import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmationConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.ConfirmedByEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.IndicatorEntryConfiguration;
@@ -62,7 +62,7 @@ public class StrategyConfigurationFactory {
 		return new OperatorEntryConfiguration(leftEntry, op, righEntry);
 	}
 
-	public EntryConfiguration entry( final EntryConfiguration anchor, final ConfirmationConfiguration confirmBy,
+	public EntryConfiguration entry( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
 		return new ConfirmedByEntryConfiguration(anchor, confirmBy, confirmation);
 	}

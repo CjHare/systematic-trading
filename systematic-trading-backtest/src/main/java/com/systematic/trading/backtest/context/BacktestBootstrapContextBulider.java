@@ -38,7 +38,7 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityManagementFeeConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmationConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.ConfirmedByEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.IndicatorEntryConfiguration;
@@ -180,7 +180,7 @@ public class BacktestBootstrapContextBulider {
 
 	private Entry createEntry( final ConfirmedByEntryConfiguration confirmedByConfig,
 	        final SignalRangeFilter signalRange ) {
-		final ConfirmationConfiguration by = confirmedByConfig.getConfirmBy();
+		final ConfirmaByConfiguration by = confirmedByConfig.getConfirmBy();
 
 		return new TradingStrategyFactory().entry(createEntry(confirmedByConfig.getAnchor(), signalRange),
 		        new TradingStrategyConfirmedBy(by.getConfirmationDayRange(), by.getDelayUntilConfirmationRange()),

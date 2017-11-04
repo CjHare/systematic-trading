@@ -32,7 +32,7 @@ package com.systematic.trading.backtest.configuration.strategy.confirmation;
 /**
  * @author CJ Hare
  */
-public enum ConfirmationConfiguration {
+public enum ConfirmaByConfiguration {
 
 	NO_DELAY_RANGE_THREE_DAYS(0, 3),
 	DELAY_ONE_DAY_RANGE_THREE_DAYS(1, 3),
@@ -41,7 +41,7 @@ public enum ConfirmationConfiguration {
 	private final int confirmationDayRange;
 	private final int delayUntilConfirmationRange;
 
-	ConfirmationConfiguration( final int delayUntilConfirmationRange, final int confirmationDayRange ) {
+	ConfirmaByConfiguration( final int delayUntilConfirmationRange, final int confirmationDayRange ) {
 		this.confirmationDayRange = confirmationDayRange;
 		this.delayUntilConfirmationRange = delayUntilConfirmationRange;
 	}

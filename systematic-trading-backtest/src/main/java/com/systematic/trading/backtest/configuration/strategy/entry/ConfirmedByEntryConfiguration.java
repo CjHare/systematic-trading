@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.entry;
 
-import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmationConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
 import com.systematic.trading.backtest.output.DescriptionGenerator;
 
 /**
@@ -38,10 +38,10 @@ import com.systematic.trading.backtest.output.DescriptionGenerator;
 public class ConfirmedByEntryConfiguration implements EntryConfiguration {
 
 	private final EntryConfiguration anchor;
-	private final ConfirmationConfiguration confirmBy;
+	private final ConfirmaByConfiguration confirmBy;
 	private final EntryConfiguration confirmation;
 
-	public ConfirmedByEntryConfiguration( final EntryConfiguration anchor, final ConfirmationConfiguration confirmBy,
+	public ConfirmedByEntryConfiguration( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
 		this.anchor = anchor;
 		this.confirmBy = confirmBy;
@@ -52,7 +52,7 @@ public class ConfirmedByEntryConfiguration implements EntryConfiguration {
 		return anchor;
 	}
 
-	public ConfirmationConfiguration getConfirmBy() {
+	public ConfirmaByConfiguration getConfirmBy() {
 		return confirmBy;
 	}
 
