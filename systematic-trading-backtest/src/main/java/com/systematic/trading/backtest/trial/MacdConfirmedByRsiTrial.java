@@ -107,7 +107,7 @@ public class MacdConfirmedByRsiTrial extends BaseTrialConfiguration implements B
 
 		final EntryConfiguration longMacdEntry = factory.entry(converter.translate(MacdConfiguration.LONG));
 		final EntryConfiguration rsientry = factory.entry(factory.entry(converter.translate(RsiConfiguration.MEDIUM)),
-		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(RsiConfiguration.MEDIUM)));
+		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(RsiConfiguration.LONG)));
 
 		for (final ConfirmaByConfiguration confirmConfiguration : ConfirmaByConfiguration.values()) {
 
