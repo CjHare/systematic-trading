@@ -160,7 +160,7 @@ public class DescriptionGenerator {
 		return out.toString();
 	}
 
-	public String entry( final EntryConfiguration anchor, final ConfirmationConfiguration.Type confirmBy,
+	public String entry( final EntryConfiguration anchor, final ConfirmationConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
 
 		final int delay = confirmBy.getDelayUntilConfirmationRange();

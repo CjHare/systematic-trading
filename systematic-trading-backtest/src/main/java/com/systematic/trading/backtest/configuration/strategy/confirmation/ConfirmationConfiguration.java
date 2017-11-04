@@ -32,27 +32,25 @@ package com.systematic.trading.backtest.configuration.strategy.confirmation;
 /**
  * @author CJ Hare
  */
-public class ConfirmationConfiguration {
+public enum ConfirmationConfiguration {
 
-	public enum Type {
-		NO_DELAY_RANGE_THREE_DAYS(0, 3),
-		DELAY_ONE_DAY_RANGE_THREE_DAYS(1, 3),
-		DELAY_ONE_DAY_RANGE_FOUR_DAYS(1, 4);
+	NO_DELAY_RANGE_THREE_DAYS(0, 3),
+	DELAY_ONE_DAY_RANGE_THREE_DAYS(1, 3),
+	DELAY_ONE_DAY_RANGE_FOUR_DAYS(1, 4);
 
-		private final int confirmationDayRange;
-		private final int delayUntilConfirmationRange;
+	private final int confirmationDayRange;
+	private final int delayUntilConfirmationRange;
 
-		Type( final int delayUntilConfirmationRange, final int confirmationDayRange ) {
-			this.confirmationDayRange = confirmationDayRange;
-			this.delayUntilConfirmationRange = delayUntilConfirmationRange;
-		}
+	ConfirmationConfiguration( final int delayUntilConfirmationRange, final int confirmationDayRange ) {
+		this.confirmationDayRange = confirmationDayRange;
+		this.delayUntilConfirmationRange = delayUntilConfirmationRange;
+	}
 
-		public int getConfirmationDayRange() {
-			return confirmationDayRange;
-		}
+	public int getConfirmationDayRange() {
+		return confirmationDayRange;
+	}
 
-		public int getDelayUntilConfirmationRange() {
-			return delayUntilConfirmationRange;
-		}
+	public int getDelayUntilConfirmationRange() {
+		return delayUntilConfirmationRange;
 	}
 }

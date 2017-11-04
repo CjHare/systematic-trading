@@ -180,7 +180,7 @@ public class BacktestBootstrapContextBulider {
 
 	private Entry createEntry( final ConfirmedByEntryConfiguration confirmedByConfig,
 	        final SignalRangeFilter signalRange ) {
-		final ConfirmationConfiguration.Type by = confirmedByConfig.getConfirmBy();
+		final ConfirmationConfiguration by = confirmedByConfig.getConfirmBy();
 
 		return new TradingStrategyFactory().entry(createEntry(confirmedByConfig.getAnchor(), signalRange),
 		        new TradingStrategyConfirmedBy(by.getConfirmationDayRange(), by.getDelayUntilConfirmationRange()),

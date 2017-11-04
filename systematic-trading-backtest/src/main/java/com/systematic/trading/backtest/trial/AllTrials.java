@@ -39,7 +39,6 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
-import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmationConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
@@ -109,37 +108,6 @@ public abstract class AllTrials extends BaseTrialConfiguration implements Backte
 			        .addAll(getSmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 			configurations.addAll(
 			        getSmaOrEmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-		}
-
-		return configurations;
-	}
-
-	private List<BacktestBootstrapConfiguration> getMacdConfirmedByRsi( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
-	        final MaximumTrade maximumTrade ) {
-		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        MacdConfiguration.values().length * RsiConfiguration.values().length);
-
-		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
-			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
-				for (final ConfirmationConfiguration.Type filterConfiguration : ConfirmationConfiguration.Type
-				        .values()) {
-
-					final EntryConfiguration entry = factory.entry(
-					        factory.entry(converter.translate(macdConfiguration)), filterConfiguration,
-					        factory.entry(converter.translate(rsiConfiguration)));
-
-					final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade,
-					        maximumTrade);
-					final ExitConfiguration exit = factory.exit();
-					final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
-					final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
-					        exitPositionSizing);
-					configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, strategy));
-				}
-			}
 		}
 
 		return configurations;

@@ -62,7 +62,7 @@ public class StrategyConfigurationFactory {
 		return new OperatorEntryConfiguration(leftEntry, op, righEntry);
 	}
 
-	public EntryConfiguration entry( final EntryConfiguration anchor, final ConfirmationConfiguration.Type confirmBy,
+	public EntryConfiguration entry( final EntryConfiguration anchor, final ConfirmationConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
 		return new ConfirmedByEntryConfiguration(anchor, confirmBy, confirmation);
 	}

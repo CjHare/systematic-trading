@@ -91,12 +91,13 @@ public class MacdConfirmedByRsiTrial extends BaseTrialConfiguration implements B
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(getMacdConfirmedByRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		configurations.addAll(
+		        getLongMacdConfirmedByRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}
 
-	protected List<BacktestBootstrapConfiguration> getMacdConfirmedByRsi( final EquityConfiguration equity,
+	protected List<BacktestBootstrapConfiguration> getLongMacdConfirmedByRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
@@ -108,7 +109,7 @@ public class MacdConfirmedByRsiTrial extends BaseTrialConfiguration implements B
 		final EntryConfiguration rsientry = factory.entry(factory.entry(converter.translate(RsiConfiguration.MEDIUM)),
 		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(RsiConfiguration.MEDIUM)));
 
-		for (final ConfirmationConfiguration.Type confirmConfiguration : ConfirmationConfiguration.Type.values()) {
+		for (final ConfirmationConfiguration confirmConfiguration : ConfirmationConfiguration.values()) {
 
 			final EntryConfiguration entry = factory.entry(longMacdEntry, confirmConfiguration, rsientry);
 			final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
