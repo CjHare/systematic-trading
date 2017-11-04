@@ -139,21 +139,24 @@ public class DescriptionGenerator {
 	        final EntryConfiguration righEntry ) {
 
 		final StringBuilder out = new StringBuilder();
-		if (leftEntry.hasSubEntry()) {
-			out.append(OPERATOR_PREFIX);
-		}
-		out.append(leftEntry.getDescription());
-		if (leftEntry.hasSubEntry()) {
-			out.append(OPERATOR_SUFFIX);
-		}
+
+		out.append(entryDisplay(leftEntry));
 		out.append(SEPARATOR);
 		out.append(op.name());
 		out.append(SEPARATOR);
-		if (righEntry.hasSubEntry()) {
+		out.append(entryDisplay(righEntry));
+
+		return out.toString();
+	}
+
+	private String entryDisplay( final EntryConfiguration entry ) {
+
+		final StringBuilder out = new StringBuilder();
+		if (entry.hasSubEntry()) {
 			out.append(OPERATOR_PREFIX);
 		}
-		out.append(righEntry.getDescription());
-		if (righEntry.hasSubEntry()) {
+		out.append(entry.getDescription());
+		if (entry.hasSubEntry()) {
 			out.append(OPERATOR_SUFFIX);
 		}
 
@@ -166,9 +169,9 @@ public class DescriptionGenerator {
 		final int delay = confirmBy.getDelayUntilConfirmationRange();
 		final int range = confirmBy.getConfirmationDayRange();
 		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(anchor.getDescription());
+		out.add(entryDisplay(anchor));
 		out.add("confirmedBy");
-		out.add(confirmation.getDescription());
+		out.add(entryDisplay(confirmation));
 		out.add("in");
 		out.add(String.valueOf(delay));
 		out.add("to");
