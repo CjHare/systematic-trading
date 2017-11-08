@@ -84,8 +84,10 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
+		configurations.add(
+		        getPeriod(equity, simulationDates, deposit, new VanguardBrokerageFees(), PeriodicConfiguration.WEEKLY));
 		configurations.add(getPeriod(equity, simulationDates, deposit, new VanguardBrokerageFees(),
-		        PeriodicConfiguration.WEEKLY));
+		        PeriodicConfiguration.MONTHLY));
 
 		//		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
