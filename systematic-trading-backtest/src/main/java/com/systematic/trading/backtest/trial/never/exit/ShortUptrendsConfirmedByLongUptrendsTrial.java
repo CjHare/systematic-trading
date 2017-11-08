@@ -31,7 +31,7 @@ import java.util.List;
 import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
+import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -90,11 +90,9 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		//		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
-		//TODO create SelfWealth brokerage fees
-
 		// Signal based buying
 		for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-			configurations.addAll(getCombinedUptrends(equity, simulationDates, deposit, new CmcMarketsBrokerageFees(),
+			configurations.addAll(getCombinedUptrends(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
 			        minimumTrade, maximumTrade));
 		}
 
