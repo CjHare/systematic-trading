@@ -23,28 +23,41 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.configuration.brokerage;
+package com.systematic.trading.backtest.brokerage.fee;
 
-import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFeeStructure;
-import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFeeStructure;
+import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.TEN_BASIS_POINTS;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+
+import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
+import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
- * Fee structures available for use in configuration.
+ * Fees for the online broker Bell Direct.
  * 
  * @author CJ Hare
  */
-public enum BrokerageFeesConfiguration {
+public class VanguardRetailBrokerageFees implements BrokerageTransactionFeeStructure {
 
-	CMC_MARKETS(CmcMarketsBrokerageFeeStructure.class),
-	VANGUARD_RETAIL(VanguardRetailBrokerageFeeStructure.class);
+	/** Scale, precision and rounding to apply to mathematical operations. */
+	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
-	private final Class<?> type;
+	@Override
+	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
 
-	BrokerageFeesConfiguration( final Class<?> type ) {
-		this.type = type;
-	}
+		final BigDecimal brokerage;
 
-	public Class<?> getType() {
-		return type;
+		switch (type) {
+			case BOND:
+			case STOCK:
+				brokerage = tradeValue.multiply(TEN_BASIS_POINTS, MATH_CONTEXT);
+			break;
+			default:
+				throw new UnsupportedEquityClass(type);
+		}
+
+		return brokerage;
 	}
 }

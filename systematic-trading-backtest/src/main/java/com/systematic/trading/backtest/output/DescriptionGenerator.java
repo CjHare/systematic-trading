@@ -30,8 +30,8 @@ import java.text.DecimalFormat;
 import java.time.Period;
 import java.util.StringJoiner;
 
+import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -44,6 +44,7 @@ import com.systematic.trading.backtest.configuration.strategy.operator.OperatorC
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
@@ -195,17 +196,17 @@ public class DescriptionGenerator {
 		return "NoInterest";
 	}
 
-	private String brokerage( final BrokerageFeesConfiguration brokerage ) {
-		switch (brokerage) {
-			case CMC_MARKETS:
-				return "CmC";
+	private String brokerage( final BrokerageTransactionFeeStructure brokerage ) {
 
-			case VANGUARD_RETAIL:
-				return "Vanguard";
-
-			default:
-				throw new IllegalArgumentException(String.format("Unexpected brokerage fee %s", brokerage));
+		if (brokerage instanceof CmcMarketsBrokerageFees) {
+			return "CmcMarkets";
 		}
+
+		if (brokerage instanceof CmcMarketsBrokerageFees) {
+			return "VanguardRetail";
+		}
+
+		return brokerage.toString();
 	}
 
 	private String minimumTradeValue( final MinimumTrade trade ) {

@@ -32,7 +32,7 @@ import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFeeStructure;
+import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
@@ -48,11 +48,11 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  */
 public class CmcMarketsFeeStructureTest {
 
-	private CmcMarketsBrokerageFeeStructure feeStructure;
+	private CmcMarketsBrokerageFees feeStructure;
 
 	@Before
 	public void setUp() {
-		feeStructure = new CmcMarketsBrokerageFeeStructure();
+		feeStructure = new CmcMarketsBrokerageFees();
 	}
 
 	@Test

@@ -31,8 +31,8 @@ import java.util.List;
 import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
+import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
@@ -58,6 +58,7 @@ import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.BaseTrial;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
 /**
  * Long MACD confirmed by Medium or Long RSI
@@ -81,7 +82,7 @@ public class MacdConfirmedByRsiTrial extends BaseTrial implements BacktestConfig
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
-		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.VANGUARD_RETAIL;
+		final BrokerageTransactionFeeStructure brokerage = new VanguardRetailBrokerageFees();
 
 		// Date based buying
 		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicConfiguration.WEEKLY));
@@ -99,7 +100,7 @@ public class MacdConfirmedByRsiTrial extends BaseTrial implements BacktestConfig
 
 	protected List<BacktestBootstrapConfiguration> getLongMacdConfirmedByRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();

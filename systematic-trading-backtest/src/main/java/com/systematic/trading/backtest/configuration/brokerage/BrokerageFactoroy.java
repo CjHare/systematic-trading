@@ -25,12 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.brokerage;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
 import com.systematic.trading.model.EquityIdentity;
@@ -40,47 +35,18 @@ import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeSt
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 
 /**
- * Creates the brokerage instances for use in simulation.
+ * Factory method for creating the brokerage instances.
  * 
  * @author CJ Hare
  */
 public class BrokerageFactoroy {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(BrokerageFactoroy.class);
-
-	private static final BrokerageFactoroy INSTANCE = new BrokerageFactoroy();
-
-	private BrokerageFactoroy() {
-	}
-
-	public static BrokerageFactoroy getInstance() {
-		return INSTANCE;
-	}
-
-	/**
-	 * Create an instance of the fee structure.
-	 */
-	private BrokerageTransactionFeeStructure createFeeStructure( final BrokerageFeesConfiguration fee ) {
-
-		try {
-			Constructor<?> cons = fee.getType().getConstructor();
-			return (BrokerageTransactionFeeStructure) cons.newInstance();
-		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-		        | IllegalArgumentException | InvocationTargetException e) {
-			LOG.error(e);
-		}
-
-		throw new IllegalArgumentException(String.format("Could not create the desired fee structure: %s", fee));
-	}
-
-	public Brokerage create( final EquityWithFeeConfiguration equity, final BrokerageFeesConfiguration fees,
+	public Brokerage create( final EquityWithFeeConfiguration equity, final BrokerageTransactionFeeStructure fees,
 	        final LocalDate startDate ) {
 
-		final BrokerageTransactionFeeStructure tradingFeeStructure = createFeeStructure(fees);
 		final EquityManagementFeeStructure equityManagementFee = equity.getManagementFee();
 		final EquityIdentity equityId = equity.getIdentity();
 
-		return new SingleEquityClassBroker(fees.name(), tradingFeeStructure, equityManagementFee, equityId, startDate);
+		return new SingleEquityClassBroker(fees.toString(), fees, equityManagementFee, equityId, startDate);
 	}
 }

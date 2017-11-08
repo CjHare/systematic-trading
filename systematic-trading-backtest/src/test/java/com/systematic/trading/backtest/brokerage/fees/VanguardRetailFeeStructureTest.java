@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFeeStructure;
+import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFees;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
@@ -44,11 +44,11 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  */
 public class VanguardRetailFeeStructureTest {
 
-	private VanguardRetailBrokerageFeeStructure feeStructure;
+	private VanguardRetailBrokerageFees feeStructure;
 
 	@Before
 	public void setUp() {
-		feeStructure = new VanguardRetailBrokerageFeeStructure();
+		feeStructure = new VanguardRetailBrokerageFees();
 	}
 
 	@Test

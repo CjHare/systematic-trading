@@ -34,7 +34,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
@@ -52,6 +51,7 @@ import com.systematic.trading.backtest.configuration.strategy.operator.OperatorC
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
 /**
  * Executes all trials, allowing different configuration for the trade sizes.
@@ -63,10 +63,10 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 	//TODO move this into the factory, possible rename indicatorConfiguration too
 	private final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 
-	private final BrokerageFeesConfiguration brokerage;
+	private final BrokerageTransactionFeeStructure brokerage;
 	private final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes;
 
-	public AllTrials( final BrokerageFeesConfiguration brokerage,
+	public AllTrials( final BrokerageTransactionFeeStructure brokerage,
 	        final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes ) {
 		this.brokerage = brokerage;
 		this.tradeSizes = tradeSizes;
@@ -114,7 +114,7 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 
 	private List<BacktestBootstrapConfiguration> getSameDayMacdRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
@@ -140,7 +140,7 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 
 	private List<BacktestBootstrapConfiguration> getSameDayMacdSmaRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length
@@ -172,7 +172,7 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 
 	private List<BacktestBootstrapConfiguration> getSameDayMacdEmaRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length
@@ -204,7 +204,7 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 
 	private List<BacktestBootstrapConfiguration> getSameDayMacdSma( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
@@ -230,7 +230,7 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 
 	private List<BacktestBootstrapConfiguration> getSameDaySmaRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
@@ -256,7 +256,7 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 
 	private List<BacktestBootstrapConfiguration> getSameDayEmaRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(

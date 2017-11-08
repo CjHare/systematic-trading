@@ -39,8 +39,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
+import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
@@ -88,7 +88,7 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 	}
 
 	public AllStrategiesTrial() {
-		super(BrokerageFeesConfiguration.CMC_MARKETS, getPositionSizing());
+		super(new CmcMarketsBrokerageFees(), getPositionSizing());
 	}
 
 	@Override

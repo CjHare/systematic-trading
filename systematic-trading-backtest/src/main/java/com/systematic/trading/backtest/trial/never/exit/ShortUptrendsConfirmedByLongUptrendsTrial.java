@@ -31,8 +31,9 @@ import java.util.List;
 import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
+import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
+import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
@@ -58,6 +59,7 @@ import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.BaseTrial;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
 /**
  * SelfWealth brokerage for the short confirmed by long up trend, compared with the baseline.
@@ -82,7 +84,7 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(getPeriod(equity, simulationDates, deposit, BrokerageFeesConfiguration.VANGUARD_RETAIL,
+		configurations.add(getPeriod(equity, simulationDates, deposit, new VanguardRetailBrokerageFees(),
 		        PeriodicConfiguration.WEEKLY));
 
 		//		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
@@ -92,8 +94,8 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 
 		// Signal based buying
 		for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-			configurations.addAll(getCombinedUptrends(equity, simulationDates, deposit,
-			        BrokerageFeesConfiguration.CMC_MARKETS, minimumTrade, maximumTrade));
+			configurations.addAll(getCombinedUptrends(equity, simulationDates, deposit, new CmcMarketsBrokerageFees(),
+			        minimumTrade, maximumTrade));
 		}
 
 		return configurations;
@@ -101,7 +103,7 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 
 	private List<BacktestBootstrapConfiguration> getCombinedUptrends( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length);

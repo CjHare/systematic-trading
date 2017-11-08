@@ -31,11 +31,11 @@ package com.systematic.trading.backtest.trial;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
 /**
  * Provides construction of configuration.
@@ -47,7 +47,7 @@ public class BacktestBootstrapConfigurationBuilder {
 	private EquityConfiguration equity;
 	private BacktestSimulationDates simulationDates;
 	private DepositConfiguration deposit;
-	private BrokerageFeesConfiguration brokerage;
+	private BrokerageTransactionFeeStructure brokerage;
 	private StrategyConfiguration strategy;
 
 	public BacktestBootstrapConfigurationBuilder withEquity( final EquityConfiguration equity ) {
@@ -65,7 +65,7 @@ public class BacktestBootstrapConfigurationBuilder {
 		return this;
 	}
 
-	public BacktestBootstrapConfigurationBuilder withBrokerage( final BrokerageFeesConfiguration brokerage ) {
+	public BacktestBootstrapConfigurationBuilder withBrokerage( final BrokerageTransactionFeeStructure brokerage ) {
 		this.brokerage = brokerage;
 		return this;
 	}

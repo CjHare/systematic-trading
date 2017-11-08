@@ -44,7 +44,7 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * 
  * @author CJ Hare
  */
-public class CmcMarketsBrokerageFeeStructure implements BrokerageTransactionFeeStructure {
+public class CmcMarketsBrokerageFees implements BrokerageTransactionFeeStructure {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;

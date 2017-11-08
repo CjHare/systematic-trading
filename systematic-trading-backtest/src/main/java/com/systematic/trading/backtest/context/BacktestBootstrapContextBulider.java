@@ -31,7 +31,6 @@ import java.time.Period;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFactoroy;
-import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -51,6 +50,7 @@ import com.systematic.trading.signal.range.SignalRangeFilter;
 import com.systematic.trading.signal.range.SimulationDatesRangeFilterDecorator;
 import com.systematic.trading.signal.range.TradingDaySignalRangeFilter;
 import com.systematic.trading.simulation.brokerage.Brokerage;
+import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.management.FlatEquityManagementFeeCalculator;
@@ -101,7 +101,7 @@ public class BacktestBootstrapContextBulider {
 
 	private StrategyConfiguration strategy;
 
-	private BrokerageFeesConfiguration brokerageType;
+	private BrokerageTransactionFeeStructure brokerageType;
 
 	private SignalAnalysisListener signalAnalysisListener;
 
@@ -274,8 +274,7 @@ public class BacktestBootstrapContextBulider {
 		        equity.getEquityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 
-		return BrokerageFactoroy.getInstance().create(equityConfiguration, brokerageType,
-		        simulationDates.getStartDate());
+		return new BrokerageFactoroy().create(equityConfiguration, brokerageType, simulationDates.getStartDate());
 	}
 
 	private LocalDate getFirstDayOfYear( final LocalDate date ) {
