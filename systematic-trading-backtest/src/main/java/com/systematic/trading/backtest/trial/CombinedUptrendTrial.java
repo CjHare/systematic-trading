@@ -121,7 +121,7 @@ public class CombinedUptrendTrial extends BaseTrialConfiguration implements Back
 
 		// (LongSMA OR LongEMA) ConfirmedBy (MediumSMA OR MediumEMA)
 		final EntryConfiguration mediumConfirmedEntry = factory.entry(getLongSmaOrEma(),
-		        ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_FOUR_DAYS, getShortSmaOrEma());
+		        ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_FOUR_DAYS, getMediumSmaOrEma());
 		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 		        factory.strategy(mediumConfirmedEntry, entryPositionSizing, exit, exitPositionSizing)));
 
