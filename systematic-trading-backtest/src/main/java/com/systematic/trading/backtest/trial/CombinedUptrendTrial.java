@@ -62,6 +62,8 @@ import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguratio
 /**
  * Combines EMA and SMA up trends, combining both the longs with the mediums and longs and short up trends.
  * 
+ * As the short and medium up trends fire events earlier then the long, the long get used as the confirm signal.
+ * 
  * @author CJ Hare
  */
 public class CombinedUptrendTrial extends BaseTrialConfiguration implements BacktestConfiguration {
@@ -121,15 +123,15 @@ public class CombinedUptrendTrial extends BaseTrialConfiguration implements Back
 
 		for (final ConfirmaByConfiguration by : ConfirmaByConfiguration.values()) {
 
-			// (LongSMA OR LongEMA) ConfirmedBy (MediumSMA OR MediumEMA)
-			final EntryConfiguration mediumConfirmedEntry = factory.entry(getLongSmaOrEma(), by, getMediumSmaOrEma());
+			// (MediumSMA OR MediumEMA) ConfirmedBy (LongSMA OR LongEMA)
+			final EntryConfiguration mediumConfirmedEntry = factory.entry(getMediumSmaOrEma(), by, getLongSmaOrEma());
 			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 			        factory.strategy(mediumConfirmedEntry, entryPositionSizing, exit, exitPositionSizing)));
 
-			// (LongSMA OR LongEMA) ConfirmedBy (ShortSMA OR ShortEMA)
-			final EntryConfiguration shortonfirmedEntry = factory.entry(getLongSmaOrEma(), by, getShortSmaOrEma());
+			// (ShortSMA OR ShortEMA) ConfirmedBy (LongSMA OR LongEMA) 
 			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-			        factory.strategy(shortonfirmedEntry, entryPositionSizing, exit, exitPositionSizing)));
+			        factory.strategy(factory.entry(getShortSmaOrEma(), by, getLongSmaOrEma()), entryPositionSizing,
+			                exit, exitPositionSizing)));
 		}
 
 		return configurations;
