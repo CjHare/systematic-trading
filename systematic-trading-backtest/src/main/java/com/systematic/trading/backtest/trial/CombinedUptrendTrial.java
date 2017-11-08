@@ -138,8 +138,8 @@ public class CombinedUptrendTrial extends BaseTrialConfiguration implements Back
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 
-		return factory.entry(factory.entry(converter.translate(EmaUptrendConfiguration.MEDIUM)),
-		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.MEDIUM)));
+		return factory.entry(factory.entry(converter.translate(EmaUptrendConfiguration.SHORT)),
+		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.SHORT)));
 	}
 
 	private EntryConfiguration getMediumSmaOrEma() {
