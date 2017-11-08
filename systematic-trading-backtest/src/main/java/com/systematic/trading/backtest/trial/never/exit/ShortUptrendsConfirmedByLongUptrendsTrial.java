@@ -89,7 +89,6 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		configurations.add(getPeriod(equity, simulationDates, deposit, new VanguardBrokerageFees(),
 		        PeriodicConfiguration.MONTHLY));
 
-		//		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
