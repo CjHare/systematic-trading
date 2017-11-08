@@ -35,11 +35,11 @@ import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeSt
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
- * Fees for the online broker Bell Direct.
+ * Spread for the online Vanguard retail managed fund.
  * 
  * @author CJ Hare
  */
-public class VanguardRetailBrokerageFees implements BrokerageTransactionFeeStructure {
+public class VanguardBrokerageFees implements BrokerageTransactionFeeStructure {
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;

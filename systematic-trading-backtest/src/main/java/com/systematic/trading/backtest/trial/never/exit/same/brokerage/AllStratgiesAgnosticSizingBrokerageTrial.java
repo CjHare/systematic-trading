@@ -37,7 +37,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
-import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFees;
+import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
@@ -77,6 +77,6 @@ public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implemen
 	}
 
 	public AllStratgiesAgnosticSizingBrokerageTrial() {
-		super(new VanguardRetailBrokerageFees(), getPositionSizing());
+		super(new VanguardBrokerageFees(), getPositionSizing());
 	}
 }

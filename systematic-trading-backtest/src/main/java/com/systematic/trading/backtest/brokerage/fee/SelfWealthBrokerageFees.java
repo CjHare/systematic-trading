@@ -34,7 +34,7 @@ import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeSt
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
- * Fees for the online broker Bell Direct.
+ * Fees for the SelfWealth online broker.
  * 
  * @author CJ Hare
  */

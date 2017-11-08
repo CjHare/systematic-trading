@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFees;
+import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -116,7 +116,7 @@ public abstract class BaseTrial {
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 
-		return getConfiguration(equity, simulationDates, deposit, new VanguardRetailBrokerageFees(), strategy);
+		return getConfiguration(equity, simulationDates, deposit, new VanguardBrokerageFees(), strategy);
 	}
 
 	protected BacktestBootstrapConfiguration getPeriod( final EquityConfiguration equity,

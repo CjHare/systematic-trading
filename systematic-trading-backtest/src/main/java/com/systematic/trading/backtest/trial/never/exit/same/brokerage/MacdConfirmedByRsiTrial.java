@@ -31,7 +31,7 @@ import java.util.List;
 import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFees;
+import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -82,7 +82,7 @@ public class MacdConfirmedByRsiTrial extends BaseTrial implements BacktestConfig
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
-		final BrokerageTransactionFeeStructure brokerage = new VanguardRetailBrokerageFees();
+		final BrokerageTransactionFeeStructure brokerage = new VanguardBrokerageFees();
 
 		// Date based buying
 		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicConfiguration.WEEKLY));

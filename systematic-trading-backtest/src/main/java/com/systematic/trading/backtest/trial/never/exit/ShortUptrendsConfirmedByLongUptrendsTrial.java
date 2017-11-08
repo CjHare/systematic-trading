@@ -32,7 +32,7 @@ import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
-import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFees;
+import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -84,7 +84,7 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(getPeriod(equity, simulationDates, deposit, new VanguardRetailBrokerageFees(),
+		configurations.add(getPeriod(equity, simulationDates, deposit, new VanguardBrokerageFees(),
 		        PeriodicConfiguration.WEEKLY));
 
 		//		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;

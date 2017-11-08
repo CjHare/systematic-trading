@@ -32,7 +32,7 @@ import java.util.StringJoiner;
 
 import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
-import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFees;
+import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -203,11 +203,9 @@ public class DescriptionGenerator {
 		if (brokerage instanceof CmcMarketsBrokerageFees) {
 			return "CmcMarkets";
 		}
-
-		if (brokerage instanceof VanguardRetailBrokerageFees) {
-			return "VanguardRetail";
+		if (brokerage instanceof VanguardBrokerageFees) {
+			return "Vanguard";
 		}
-
 		if (brokerage instanceof SelfWealthBrokerageFees) {
 			return "SelfWealth";
 		}
