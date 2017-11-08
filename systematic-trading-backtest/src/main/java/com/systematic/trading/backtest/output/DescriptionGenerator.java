@@ -31,6 +31,8 @@ import java.time.Period;
 import java.util.StringJoiner;
 
 import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
+import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
+import com.systematic.trading.backtest.brokerage.fee.VanguardRetailBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -202,11 +204,15 @@ public class DescriptionGenerator {
 			return "CmcMarkets";
 		}
 
-		if (brokerage instanceof CmcMarketsBrokerageFees) {
+		if (brokerage instanceof VanguardRetailBrokerageFees) {
 			return "VanguardRetail";
 		}
 
-		return brokerage.toString();
+		if (brokerage instanceof SelfWealthBrokerageFees) {
+			return "SelfWealth";
+		}
+
+		throw new IllegalArgumentException(String.format("Unexpected brokerage: %s", brokerage));
 	}
 
 	private String minimumTradeValue( final MinimumTrade trade ) {
