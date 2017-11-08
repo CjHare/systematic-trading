@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.brokerage.fee;
 
-import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.TEN_BASIS_POINTS;
+import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.EIGHT_BASIS_POINTS;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -52,7 +52,7 @@ public class VanguardRetailBrokerageFees implements BrokerageTransactionFeeStruc
 		switch (type) {
 			case BOND:
 			case STOCK:
-				brokerage = tradeValue.multiply(TEN_BASIS_POINTS, MATH_CONTEXT);
+				brokerage = tradeValue.multiply(EIGHT_BASIS_POINTS, MATH_CONTEXT);
 			break;
 			default:
 				throw new UnsupportedEquityClass(type);
