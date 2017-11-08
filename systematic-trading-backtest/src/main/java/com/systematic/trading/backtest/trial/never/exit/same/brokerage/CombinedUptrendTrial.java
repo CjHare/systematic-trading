@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial;
+package com.systematic.trading.backtest.trial.never.exit.same.brokerage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +35,15 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFeesConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
 import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.EmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.indicator.IndicatorConfigurationTranslator;
-import com.systematic.trading.backtest.configuration.strategy.indicator.MacdConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.indicator.RsiConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
@@ -57,19 +56,21 @@ import com.systematic.trading.backtest.input.StartDateLaunchArgument;
 import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
+import com.systematic.trading.backtest.trial.BaseTrial;
 
 /**
- * Long MACD confirmed by Medium or Long RSI
+ * Combines EMA and SMA up trends, combining both the longs with the mediums and longs and short up trends.
+ * 
+ * As the short and medium up trends fire events earlier then the long, the long get used as the confirm signal.
  * 
  * @author CJ Hare
  */
-public class MacdConfirmedByRsiTrial extends BaseTrialConfiguration implements BacktestConfiguration {
+public class CombinedUptrendTrial extends BaseTrial implements BacktestConfiguration {
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new MacdConfirmedByRsiTrial(),
+		new BacktestApplication().runBacktest(new CombinedUptrendTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
@@ -85,41 +86,78 @@ public class MacdConfirmedByRsiTrial extends BaseTrialConfiguration implements B
 
 		// Date based buying
 		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicConfiguration.WEEKLY));
-		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicConfiguration.MONTHLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(
-		        getLongMacdConfirmedByRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		configurations
+		        .addAll(getCombinedUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}
 
-	protected List<BacktestBootstrapConfiguration> getLongMacdConfirmedByRsi( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> getCombinedUptrends( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
-		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length);
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
+		        2 + ConfirmaByConfiguration.values().length);
 
-		final EntryConfiguration longMacdEntry = factory.entry(converter.translate(MacdConfiguration.LONG));
-		final EntryConfiguration rsientry = factory.entry(factory.entry(converter.translate(RsiConfiguration.MEDIUM)),
-		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(RsiConfiguration.LONG)));
+		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
+		final ExitConfiguration exit = factory.exit();
+		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 
-		for (final ConfirmaByConfiguration confirmConfiguration : ConfirmaByConfiguration.values()) {
+		// (LongSMA OR LongEMA) AND (MediumSMA OR MediumEMA)
+		final EntryConfiguration mediumLongEntry = factory.entry(getLongSmaOrEma(), OperatorConfiguration.Selection.AND,
+		        getMediumSmaOrEma());
+		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		        factory.strategy(mediumLongEntry, entryPositionSizing, exit, exitPositionSizing)));
 
-			final EntryConfiguration entry = factory.entry(longMacdEntry, confirmConfiguration, rsientry);
-			final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
-			final ExitConfiguration exit = factory.exit();
-			final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
-			final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
-			        exitPositionSizing);
-			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, strategy));
+		// (LongSMA OR LongEMA) AND (ShortSMA OR ShortEMA)
+		final EntryConfiguration shortLongEntry = factory.entry(getLongSmaOrEma(), OperatorConfiguration.Selection.AND,
+		        getShortSmaOrEma());
+		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		        factory.strategy(shortLongEntry, entryPositionSizing, exit, exitPositionSizing)));
+
+		for (final ConfirmaByConfiguration by : ConfirmaByConfiguration.values()) {
+
+			// (MediumSMA OR MediumEMA) ConfirmedBy (LongSMA OR LongEMA)
+			final EntryConfiguration mediumConfirmedEntry = factory.entry(getMediumSmaOrEma(), by, getLongSmaOrEma());
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			        factory.strategy(mediumConfirmedEntry, entryPositionSizing, exit, exitPositionSizing)));
+
+			// (ShortSMA OR ShortEMA) ConfirmedBy (LongSMA OR LongEMA) 
+			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			        factory.strategy(factory.entry(getShortSmaOrEma(), by, getLongSmaOrEma()), entryPositionSizing,
+			                exit, exitPositionSizing)));
 		}
 
 		return configurations;
+	}
+
+	private EntryConfiguration getShortSmaOrEma() {
+		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+
+		return factory.entry(factory.entry(converter.translate(EmaUptrendConfiguration.SHORT)),
+		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.SHORT)));
+	}
+
+	private EntryConfiguration getMediumSmaOrEma() {
+		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+
+		return factory.entry(factory.entry(converter.translate(EmaUptrendConfiguration.MEDIUM)),
+		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.MEDIUM)));
+	}
+
+	private EntryConfiguration getLongSmaOrEma() {
+		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+
+		return factory.entry(factory.entry(converter.translate(EmaUptrendConfiguration.LONG)),
+		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.LONG)));
 	}
 }

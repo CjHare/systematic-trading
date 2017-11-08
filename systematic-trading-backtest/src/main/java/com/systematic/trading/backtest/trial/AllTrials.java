@@ -52,14 +52,13 @@ import com.systematic.trading.backtest.configuration.strategy.operator.OperatorC
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
 
 /**
  * Executes all trials, allowing different configuration for the trade sizes.
  * 
  * @author CJ Hare
  */
-public abstract class AllTrials extends BaseTrialConfiguration implements BacktestConfiguration {
+public abstract class AllTrials extends BaseTrial implements BacktestConfiguration {
 
 	//TODO move this into the factory, possible rename indicatorConfiguration too
 	private final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();

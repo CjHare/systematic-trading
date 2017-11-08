@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial.configuration;
+package com.systematic.trading.backtest.trial;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ import com.systematic.trading.backtest.trade.MinimumTrade;
  * 
  * @author CJ Hare
  */
-public abstract class BaseTrialConfiguration {
+public abstract class BaseTrial {
 
 	private final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 
@@ -137,7 +137,7 @@ public abstract class BaseTrialConfiguration {
 	protected BacktestBootstrapConfiguration getConfiguration( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
 	        final BrokerageFeesConfiguration brokerage, final StrategyConfiguration strategy ) {
-		return new TrialConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
+		return new BacktestBootstrapConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
 		        .withDeposit(deposit).withBrokerage(brokerage).withStrategy(strategy).build();
 	}
 

@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial;
+package com.systematic.trading.backtest.trial.never.exit.same.brokerage;
 
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +53,7 @@ import com.systematic.trading.backtest.input.StartDateLaunchArgument;
 import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.backtest.trial.AllTrials;
 
 /**
  * All strategies, all sizing combinations with actual brokerage.

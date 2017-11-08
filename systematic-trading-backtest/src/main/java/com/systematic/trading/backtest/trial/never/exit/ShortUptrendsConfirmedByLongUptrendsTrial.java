@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial;
+package com.systematic.trading.backtest.trial.never.exit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,21 +57,19 @@ import com.systematic.trading.backtest.input.StartDateLaunchArgument;
 import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
+import com.systematic.trading.backtest.trial.BaseTrial;
 
 /**
- * Combines EMA and SMA up trends, combining both the longs with the mediums and longs and short up trends.
- * 
- * As the short and medium up trends fire events earlier then the long, the long get used as the confirm signal.
+ * SelfWealth brokerage for the short confirmed by long up trend, compared with the baseline.
  * 
  * @author CJ Hare
  */
-public class CombinedUptrendTrial extends BaseTrialConfiguration implements BacktestConfiguration {
+public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial implements BacktestConfiguration {
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new CombinedUptrendTrial(),
+		new BacktestApplication().runBacktest(new ShortUptrendsConfirmedByLongUptrendsTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
@@ -83,17 +81,20 @@ public class CombinedUptrendTrial extends BaseTrialConfiguration implements Back
 	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
-		final BrokerageFeesConfiguration brokerage = BrokerageFeesConfiguration.VANGUARD_RETAIL;
-
 		// Date based buying
-		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicConfiguration.WEEKLY));
+		configurations.add(getPeriod(equity, simulationDates, deposit, BrokerageFeesConfiguration.VANGUARD_RETAIL,
+		        PeriodicConfiguration.WEEKLY));
 
-		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
+		//		final MinimumTrade minimumTrade = MinimumTrade.FIVE_HUNDRED;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
+		//TODO create SelfWealth brokerage fees
+
 		// Signal based buying
-		configurations
-		        .addAll(getCombinedUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
+			configurations.addAll(getCombinedUptrends(equity, simulationDates, deposit,
+			        BrokerageFeesConfiguration.CMC_MARKETS, minimumTrade, maximumTrade));
+		}
 
 		return configurations;
 	}
@@ -104,35 +105,14 @@ public class CombinedUptrendTrial extends BaseTrialConfiguration implements Back
 	        final MaximumTrade maximumTrade ) {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length);
-
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 
-		// (LongSMA OR LongEMA) AND (MediumSMA OR MediumEMA)
-		final EntryConfiguration mediumLongEntry = factory.entry(getLongSmaOrEma(), OperatorConfiguration.Selection.AND,
-		        getMediumSmaOrEma());
 		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-		        factory.strategy(mediumLongEntry, entryPositionSizing, exit, exitPositionSizing)));
-
-		// (LongSMA OR LongEMA) AND (ShortSMA OR ShortEMA)
-		final EntryConfiguration shortLongEntry = factory.entry(getLongSmaOrEma(), OperatorConfiguration.Selection.AND,
-		        getShortSmaOrEma());
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-		        factory.strategy(shortLongEntry, entryPositionSizing, exit, exitPositionSizing)));
-
-		for (final ConfirmaByConfiguration by : ConfirmaByConfiguration.values()) {
-
-			// (MediumSMA OR MediumEMA) ConfirmedBy (LongSMA OR LongEMA)
-			final EntryConfiguration mediumConfirmedEntry = factory.entry(getMediumSmaOrEma(), by, getLongSmaOrEma());
-			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-			        factory.strategy(mediumConfirmedEntry, entryPositionSizing, exit, exitPositionSizing)));
-
-			// (ShortSMA OR ShortEMA) ConfirmedBy (LongSMA OR LongEMA) 
-			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-			        factory.strategy(factory.entry(getShortSmaOrEma(), by, getLongSmaOrEma()), entryPositionSizing,
-			                exit, exitPositionSizing)));
-		}
+		        factory.strategy(factory.entry(getShortSmaOrEma(),
+		                ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_THREE_DAYS, getLongSmaOrEma()), entryPositionSizing,
+		                exit, exitPositionSizing)));
 
 		return configurations;
 	}
@@ -143,14 +123,6 @@ public class CombinedUptrendTrial extends BaseTrialConfiguration implements Back
 
 		return factory.entry(factory.entry(converter.translate(EmaUptrendConfiguration.SHORT)),
 		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.SHORT)));
-	}
-
-	private EntryConfiguration getMediumSmaOrEma() {
-		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
-		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
-
-		return factory.entry(factory.entry(converter.translate(EmaUptrendConfiguration.MEDIUM)),
-		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.MEDIUM)));
 	}
 
 	private EntryConfiguration getLongSmaOrEma() {

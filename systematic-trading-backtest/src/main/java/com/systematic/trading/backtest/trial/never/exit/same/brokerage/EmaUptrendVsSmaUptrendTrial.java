@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial;
+package com.systematic.trading.backtest.trial.never.exit.same.brokerage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,19 +46,19 @@ import com.systematic.trading.backtest.input.StartDateLaunchArgument;
 import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
+import com.systematic.trading.backtest.trial.BaseTrial;
 
 /**
- * Each of the MACD and RSI indicators.
+ * Executes all the SMA and EMA uptrrends for comparison.
  * 
  * @author CJ Hare
  */
-public class MacdRsiTrial extends BaseTrialConfiguration implements BacktestConfiguration {
+public class EmaUptrendVsSmaUptrendTrial extends BaseTrial implements BacktestConfiguration {
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new MacdRsiTrial(),
+		new BacktestApplication().runBacktest(new EmaUptrendVsSmaUptrendTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
@@ -80,10 +80,8 @@ public class MacdRsiTrial extends BaseTrialConfiguration implements BacktestConf
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(
-				getMacd(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
-		configurations.addAll(
-				getMacdConfirmedByRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		configurations.addAll(getEmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		configurations.addAll(getSmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}

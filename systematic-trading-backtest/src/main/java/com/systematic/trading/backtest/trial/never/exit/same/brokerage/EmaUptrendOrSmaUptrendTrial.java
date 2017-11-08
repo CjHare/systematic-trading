@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial;
+package com.systematic.trading.backtest.trial.never.exit.same.brokerage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,19 +46,19 @@ import com.systematic.trading.backtest.input.StartDateLaunchArgument;
 import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.backtest.trial.configuration.BaseTrialConfiguration;
+import com.systematic.trading.backtest.trial.BaseTrial;
 
 /**
- * (SmaUptrend OR EmaUptrend) AND Rsi Trials.
+ * Executes all the combinations of SMA and EMA uptrrends. When there is either an SMA or EMA signal it's a buy signal.
  * 
  * @author CJ Hare
  */
-public class UptrendsAndRsidTrial extends BaseTrialConfiguration implements BacktestConfiguration {
+public class EmaUptrendOrSmaUptrendTrial extends BaseTrial implements BacktestConfiguration {
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new UptrendsAndRsidTrial(),
+		new BacktestApplication().runBacktest(new EmaUptrendOrSmaUptrendTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
@@ -80,8 +80,8 @@ public class UptrendsAndRsidTrial extends BaseTrialConfiguration implements Back
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(
-		        getSmaEmaUptrendsAndRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		configurations
+		        .addAll(getSmaOrEmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}

@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial.configuration;
+package com.systematic.trading.backtest.trial;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
@@ -42,7 +42,7 @@ import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurat
  * 
  * @author CJ Hare
  */
-public class TrialConfigurationBuilder {
+public class BacktestBootstrapConfigurationBuilder {
 
 	private EquityConfiguration equity;
 	private BacktestSimulationDates simulationDates;
@@ -50,27 +50,27 @@ public class TrialConfigurationBuilder {
 	private BrokerageFeesConfiguration brokerage;
 	private StrategyConfiguration strategy;
 
-	public TrialConfigurationBuilder withEquity( final EquityConfiguration equity ) {
+	public BacktestBootstrapConfigurationBuilder withEquity( final EquityConfiguration equity ) {
 		this.equity = equity;
 		return this;
 	}
 
-	public TrialConfigurationBuilder withSimulationDates( final BacktestSimulationDates simulationDates ) {
+	public BacktestBootstrapConfigurationBuilder withSimulationDates( final BacktestSimulationDates simulationDates ) {
 		this.simulationDates = simulationDates;
 		return this;
 	}
 
-	public TrialConfigurationBuilder withDeposit( final DepositConfiguration deposit ) {
+	public BacktestBootstrapConfigurationBuilder withDeposit( final DepositConfiguration deposit ) {
 		this.deposit = deposit;
 		return this;
 	}
 
-	public TrialConfigurationBuilder withBrokerage( final BrokerageFeesConfiguration brokerage ) {
+	public BacktestBootstrapConfigurationBuilder withBrokerage( final BrokerageFeesConfiguration brokerage ) {
 		this.brokerage = brokerage;
 		return this;
 	}
 
-	public TrialConfigurationBuilder withStrategy( final StrategyConfiguration strategy ) {
+	public BacktestBootstrapConfigurationBuilder withStrategy( final StrategyConfiguration strategy ) {
 		this.strategy = strategy;
 		return this;
 	}
