@@ -42,7 +42,7 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * 
  * @author CJ Hare
  */
-public class VanguardRetailFeeStructureTest {
+public class VanguardFeeStructureTest {
 
 	private VanguardBrokerageFees feeStructure;
 
@@ -55,14 +55,14 @@ public class VanguardRetailFeeStructureTest {
 	public void trade() {
 		final BigDecimal fee = calculateFee(1234.5, 1);
 
-		verifyFee(1.2345, fee);
+		verifyFee(0.9876, fee);
 	}
 
 	@Test
 	public void tradeRandomNumberOfPreviousTrades() {
 		final BigDecimal fee = calculateFee(12345.67, ThreadLocalRandom.current().nextInt(20000));
 
-		verifyFee(12.34567, fee);
+		verifyFee(9.876536, fee);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
