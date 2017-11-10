@@ -66,12 +66,12 @@ import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeSt
  * 
  * @author CJ Hare
  */
-public class CombinedUptrendTrial extends BaseTrial implements BacktestConfiguration {
+public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements BacktestConfiguration {
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new CombinedUptrendTrial(),
+		new BacktestApplication().runBacktest(new UptrendsConfirmedByUptrendsTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
