@@ -39,6 +39,7 @@ import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityDataset;
 import com.systematic.trading.backtest.configuration.equity.TickerSymbol;
+import com.systematic.trading.data.DataServiceType;
 
 /**
  * An aggregation facade for parsing the arguments given on launch, their validation and type conversion.
@@ -48,6 +49,7 @@ import com.systematic.trading.backtest.configuration.equity.TickerSymbol;
 public class LaunchArguments {
 
 	enum ArgumentKey {
+		DATA_SERVICE_TYPE("-data_service_type"),
 		END_DATE("-end_date"),
 		EQUITY_DATASET("-equity_dataset"),
 		OUTPUT_TYPE("-output"),
@@ -99,18 +101,23 @@ public class LaunchArguments {
 	/**	Optional argument, data set to retrieve the ticker symbol from. */
 	private final EquityDataset equityDataset;
 
+	/**	Optional argument, which data source type to use when retrieving data. */
+	private final DataServiceType dataService;
+
 	public LaunchArguments( final LaunchArgumentsParser argumentParser, final LaunchArgument<OutputType> outputArgument,
+	        final LaunchArgument<DataServiceType> dataServiceArgument,
 	        final LaunchArgument<BacktestStartDate> startDateArgument,
-	        final LaunchArgument<BacktestEndDate> endDateArgument, final LaunchArgument<EquityDataset> equityDataset,
-	        final LaunchArgument<TickerSymbol> tickerSymbol,
+	        final LaunchArgument<BacktestEndDate> endDateArgument, final LaunchArgument<EquityDataset> equityDatasetArgument,
+	        final LaunchArgument<TickerSymbol> tickerSymbolArgument,
 	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument, final String... args ) {
 		this.arguments = argumentParser.parse(args);
 		this.outputType = outputArgument.get(arguments);
 		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
 		this.startDate = startDateArgument.get(arguments);
 		this.endDate = endDateArgument.get(arguments);
-		this.equityDataset = equityDataset.get(arguments);
-		this.tickerSymbol = tickerSymbol.get(arguments);
+		this.equityDataset = equityDatasetArgument.get(arguments);
+		this.tickerSymbol = tickerSymbolArgument.get(arguments);
+		this.dataService = dataServiceArgument.get(arguments);
 	}
 
 	public String getOutputDirectory( final DepositConfiguration depositAmount ) {
@@ -135,5 +142,9 @@ public class LaunchArguments {
 
 	public EquityDataset getEquityDataset() {
 		return equityDataset;
+	}
+
+	public DataServiceType getDataService() {
+		return dataService;
 	}
 }

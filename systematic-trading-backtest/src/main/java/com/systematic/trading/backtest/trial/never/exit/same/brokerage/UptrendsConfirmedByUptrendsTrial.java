@@ -72,11 +72,13 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new UptrendsConfirmedByUptrendsTrial(),
-		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
-		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
-		                new EquityDatasetLaunchArgument(), new TickerSymbolLaunchArgument(validator),
-		                new FileBaseDirectoryLaunchArgument(validator), args));
+		final LaunchArguments launchArgs = new LaunchArguments(new CommandLineLaunchArgumentsParser(),
+		        new OutputLaunchArgument(validator), null, new StartDateLaunchArgument(validator),
+		        new EndDateLaunchArgument(validator), new EquityDatasetLaunchArgument(),
+		        new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator), args);
+
+		new BacktestApplication(launchArgs.getDataService()).runBacktest(new UptrendsConfirmedByUptrendsTrial(),
+		        launchArgs);
 	}
 
 	@Override

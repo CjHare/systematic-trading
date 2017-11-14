@@ -53,6 +53,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.equity.EquityDataset;
 import com.systematic.trading.backtest.configuration.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
+import com.systematic.trading.data.DataServiceType;
 
 /**
  * Test for the BacktestLaunchArgumentParser.
@@ -74,6 +75,9 @@ public class LaunchArgumentsTest {
 
 	@Mock
 	private LaunchArgument<OutputType> outputTypeArgument;
+
+	@Mock
+	private LaunchArgument<DataServiceType> dataServiceArgument;
 
 	@Mock
 	private LaunchArgument<FileBaseOutputDirectory> directoryArgument;
@@ -190,8 +194,8 @@ public class LaunchArgumentsTest {
 	}
 
 	private void createLaunchArguments( final String... args ) {
-		parser = new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-		        equityDatasetArgument, tickerSymbolArgument, directoryArgument, args);
+		parser = new LaunchArguments(argumentParser, outputTypeArgument, dataServiceArgument, startDateArgument,
+		        endDateArgument, equityDatasetArgument, tickerSymbolArgument, directoryArgument, args);
 	}
 
 	private void verifyOutputType( final OutputType expected ) {

@@ -69,11 +69,12 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		new BacktestApplication().runBacktest(new AllStrategiesTrial(),
-		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
-		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
-		                new EquityDatasetLaunchArgument(), new TickerSymbolLaunchArgument(validator),
-		                new FileBaseDirectoryLaunchArgument(validator), args));
+		final LaunchArguments launchArgs = new LaunchArguments(new CommandLineLaunchArgumentsParser(),
+		        new OutputLaunchArgument(validator), null, new StartDateLaunchArgument(validator),
+		        new EndDateLaunchArgument(validator), new EquityDatasetLaunchArgument(),
+		        new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator), args);
+
+		new BacktestApplication(launchArgs.getDataService()).runBacktest(new AllStrategiesTrial(), launchArgs);
 	}
 
 	private static Set<Pair<MinimumTrade, MaximumTrade>> getPositionSizing() {

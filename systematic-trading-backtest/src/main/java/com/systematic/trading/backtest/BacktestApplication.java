@@ -57,6 +57,7 @@ import com.systematic.trading.backtest.output.file.CompleteFileOutputService;
 import com.systematic.trading.backtest.output.file.MinimalFileOutputService;
 import com.systematic.trading.backtest.output.file.dao.impl.FileValidatedBackestOutputFileConfigurationDao;
 import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
+import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
@@ -85,10 +86,10 @@ public class BacktestApplication {
 
 	private final DataServiceUpdater updateService;
 
-	public BacktestApplication() throws ServiceException {
+	public BacktestApplication( final DataServiceType serviceType ) throws ServiceException {
 
 		try {
-			this.updateService = new DataServiceUpdaterImpl();
+			this.updateService = new DataServiceUpdaterImpl(serviceType);
 		} catch (ServiceException e) {
 			throw new BacktestInitialisationException(e);
 		}

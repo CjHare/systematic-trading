@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,8 +62,10 @@ import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.builder.impl.HibernateHistoryRetrievalRequestBuilder;
 import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
+import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlTablesApiDao;
+import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlTimeSeriessApiDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
@@ -80,11 +83,12 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private final UnnecessaryHistoryRequestFilter unecessaryRequestFilter;
 	private final HistoryRetrievalRequestMerger historyRetrievalRequestMerger;
 
-	public DataServiceUpdaterImpl() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+	public DataServiceUpdaterImpl( final DataServiceType serviceType )
+	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 		final RetrievedMonthTradingPricesDao retrievedHistoryDao = new HibernateRetrievedMonthTradingPricesDao();
-
 		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().get();
-		this.api = new QuandlAPI(new HttpQuandlTablesApiDao(configuration), configuration, new QuandlResponseFormat());
+
+		this.api = new QuandlAPI(createDao(serviceType, configuration), configuration, new QuandlResponseFormat());
 		this.retrievedHistoryRecorder = new RetrievedYearMonthRecorder(retrievedHistoryDao);
 		this.pendingRetrievalRequestDao = new HibernatePendingRetrievalRequestDao();
 		this.tradingDayPricesDao = new HibernateTradingDayPricesDao();
@@ -110,6 +114,27 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			ensureAllRetrievalRequestsProcessed(tickerSymbol);
 			retrievedHistoryRecorder.retrieved(outstandingRequests);
 		}
+	}
+
+	private QuandlApiDao createDao( final DataServiceType type, final EquityApiConfiguration configuration ) {
+
+		if (isTimeSeriesDataService(type)) {
+			return new HttpQuandlTimeSeriessApiDao(configuration);
+		}
+
+		if (isTablesDataService(type)) {
+			return new HttpQuandlTablesApiDao(configuration);
+		}
+
+		throw new IllegalArgumentException(String.format("Data service type not catered for: %s", type.getType()));
+	}
+
+	private boolean isTimeSeriesDataService( final DataServiceType type ) {
+		return StringUtils.equals("time-series", type.getType());
+	}
+
+	private boolean isTablesDataService( final DataServiceType type ) {
+		return StringUtils.equals("tables", type.getType());
 	}
 
 	private void ensureAllRetrievalRequestsProcessed( final String tickerSymbol ) throws CannotRetrieveDataException {
