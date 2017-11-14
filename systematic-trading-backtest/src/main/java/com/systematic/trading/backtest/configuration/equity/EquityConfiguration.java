@@ -37,12 +37,13 @@ public class EquityConfiguration {
 
 	private static final int SCALE = 4;
 
-	private final String equityDataset;
-	private final String tickerSymbol;
+	private final EquityDataset equityDataset;
+	private final TickerSymbol tickerSymbol;
 	private final EquityClass equityType;
 	private final EquityManagementFeeConfiguration managementFee;
 
-	public EquityConfiguration( final String dataset, final String tickerSymbol, final EquityClass equityType ) {
+	public EquityConfiguration( final EquityDataset dataset, final TickerSymbol tickerSymbol,
+	        final EquityClass equityType ) {
 		this.equityDataset = dataset;
 		this.tickerSymbol = tickerSymbol;
 		this.equityType = equityType;
@@ -50,7 +51,7 @@ public class EquityConfiguration {
 	}
 
 	public EquityIdentity getEquityIdentity() {
-		return new EquityIdentity(tickerSymbol, equityType, SCALE);
+		return new EquityIdentity(tickerSymbol.getSymbol(), equityType, SCALE);
 	}
 
 	public EquityManagementFeeConfiguration getManagementFee() {
@@ -58,6 +59,6 @@ public class EquityConfiguration {
 	}
 
 	public String getEquityDataset() {
-		return equityDataset;
+		return equityDataset == null ? null : equityDataset.getDataset();
 	}
 }

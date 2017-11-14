@@ -102,8 +102,8 @@ public class BacktestApplication {
 		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
 
 		// Currently only for the single equity
-		final EquityConfiguration equity = new EquityConfiguration(parserdArguments.getEquityDataset().getDataset(),
-		        parserdArguments.getTickerSymbol().getSymbol(), EquityClass.STOCK);
+		final EquityConfiguration equity = new EquityConfiguration(parserdArguments.getEquityDataset(),
+		        parserdArguments.getTickerSymbol(), EquityClass.STOCK);
 
 		//TODO convert into input arguments
 		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
