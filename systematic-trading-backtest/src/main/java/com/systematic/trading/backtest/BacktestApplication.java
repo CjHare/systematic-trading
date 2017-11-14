@@ -102,10 +102,10 @@ public class BacktestApplication {
 		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
 
 		//TODO get this from the input
-		final String dataset = "";
+		final String equityDataset = "";
 
 		// Currently only for the single equity
-		final EquityConfiguration equity = new EquityConfiguration(dataset,
+		final EquityConfiguration equity = new EquityConfiguration(equityDataset,
 		        parserdArguments.getTickerSymbol().getSymbol(), EquityClass.STOCK);
 
 		//TODO convert into input arguments
@@ -232,7 +232,7 @@ public class BacktestApplication {
 			final BacktestBootstrapContext context = createContext(configuration, output);
 			final Period warmUp = context.getTradingStrategy().getWarmUpPeriod();
 			recordWarmUpPeriod(warmUp);
-			final TickerSymbolTradingData tradingData = getTradingData(equity.getDataset(), equity.getEquityIdentity(),
+			final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityDataset(), equity.getEquityIdentity(),
 			        configuration.getBacktestDates(), warmUp);
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
@@ -279,7 +279,7 @@ public class BacktestApplication {
 		        .withSignalAnalysisListeners(listener).build();
 	}
 
-	private TickerSymbolTradingData getTradingData( final String dataset, final EquityIdentity equity,
+	private TickerSymbolTradingData getTradingData( final String equityDataset, final EquityIdentity equity,
 	        final BacktestSimulationDates simulationDate, final Period warmUp ) throws ServiceException {
 
 		final LocalDate startDate = simulationDate.getStartDate().minus(warmUp);
@@ -299,7 +299,7 @@ public class BacktestApplication {
 		final LocalDate retrievalStartDate = startDate.withDayOfMonth(1);
 
 		// Retrieve and cache data range from remote data source		
-		updateService.get(dataset, equity.getTickerSymbol(), retrievalStartDate, endDate);
+		updateService.get(equityDataset, equity.getTickerSymbol(), retrievalStartDate, endDate);
 
 		// Retrieve from local cache the desired data range
 		final TradingDayPrices[] data = new HibernateDataService().get(equity.getTickerSymbol(), startDate, endDate);

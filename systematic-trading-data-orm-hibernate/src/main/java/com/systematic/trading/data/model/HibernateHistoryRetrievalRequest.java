@@ -50,7 +50,7 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 
 	@Id
 	@Column(name = "dataset", nullable = false)
-	private String dataset;
+	private String equityDataset;
 
 	@Id
 	@Column(name = "ticker_symbol", nullable = false)
@@ -68,9 +68,9 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 		// Default constructor used by Hiberante
 	}
 
-	public HibernateHistoryRetrievalRequest( final String dataset, final String tickerSymbol,
+	public HibernateHistoryRetrievalRequest( final String equityDataset, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
-		this.dataset = dataset;
+		this.equityDataset = equityDataset;
 		this.tickerSymbol = tickerSymbol;
 		this.inclusiveStartDate = Date.valueOf(inclusiveStartDate);
 		this.exclusiveEndDate = Date.valueOf(exclusiveEndDate);
@@ -104,11 +104,11 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 	}
 
 	@Override
-	public String getDataset() {
-		return dataset;
+	public String getEquityDataset() {
+		return equityDataset;
 	}
 
-	public void setDataset( final String dataset ) {
-		this.dataset = dataset;
+	public void setEquityDataset( final String equityDataset ) {
+		this.equityDataset = equityDataset;
 	}
 }

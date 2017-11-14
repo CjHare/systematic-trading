@@ -47,7 +47,7 @@ public interface QuandlApiDao {
 	/**
 	 * Retrieve historical equity price data from Quandl.
 	 * 
-	 * @param datasetId identifier for the dataset to retrieve the ticker symbol from.
+	 * @param equityDataset identifier for the dataset to retrieve the ticker symbol from.
 	 * @param tickerSymbol identifier of the equity to retrieve.
 	 * @param inclusiveStartDate the first day of the historical data to retrieve.
 	 * @param exclusiveEndDate the last day of the historical data to retrieve.
@@ -55,6 +55,6 @@ public interface QuandlApiDao {
 	 * @return retrieved Quandl data structure.
 	 * @throws CannotRetrieveDataException problem encountered during connecting to the Quandl API.
 	 */
-	QuandlResponseResource get( String datasetId, String tickerSymbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate,
+	QuandlResponseResource get( String equityDataset, String tickerSymbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate,
 	        BlockingEventCount throttler ) throws CannotRetrieveDataException;
 }

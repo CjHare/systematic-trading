@@ -37,13 +37,13 @@ public class EquityConfiguration {
 
 	private static final int SCALE = 4;
 
-	private final String dataset;
+	private final String equityDataset;
 	private final String tickerSymbol;
 	private final EquityClass equityType;
 	private final EquityManagementFeeConfiguration managementFee;
 
 	public EquityConfiguration( final String dataset, final String tickerSymbol, final EquityClass equityType ) {
-		this.dataset = dataset;
+		this.equityDataset = dataset;
 		this.tickerSymbol = tickerSymbol;
 		this.equityType = equityType;
 		this.managementFee = EquityManagementFeeConfiguration.NONE;
@@ -57,7 +57,7 @@ public class EquityConfiguration {
 		return managementFee;
 	}
 
-	public String getDataset() {
-		return dataset;
+	public String getEquityDataset() {
+		return equityDataset;
 	}
 }

@@ -40,13 +40,12 @@ public interface DataServiceUpdater {
 	/**
 	 * Obtains the latest trading data for the equity.
 	 * 
-	 * @param dataset identifier for the dataset to retrieve the ticker symbol from.
+	 * @param equityDataset identifier for the dataset to retrieve the ticker symbol from.
 	 * @param tickerSymbol identifier for the equity to retrieve the data on, ensures at least the
 	 *            last two month is available locally.
 	 * @param startDate the inclusive start date, of the required data set.
 	 * @param endDate the inclusive end date, of the required data set.
 	 * @throws ServiceException problem has been encountered during the data retrieval.
 	 */
-	void get( String dataset, String tickerSymbol, LocalDate startDate, LocalDate endDate ) throws ServiceException;
-
+	void get( String equityDataset, String tickerSymbol, LocalDate startDate, LocalDate endDate ) throws ServiceException;
 }

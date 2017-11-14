@@ -61,7 +61,7 @@ public class HistoryRetrievalRequestUtil {
 	        final LocalDate end ) {
 		return new HistoryRetrievalRequest() {
 			@Override
-			public String getDataset() {
+			public String getEquityDataset() {
 				return datasetId;
 			}
 

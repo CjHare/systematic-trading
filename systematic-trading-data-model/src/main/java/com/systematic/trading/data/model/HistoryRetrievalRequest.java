@@ -35,7 +35,7 @@ import java.sql.Date;
  */
 public interface HistoryRetrievalRequest {
 
-	String getDataset();
+	String getEquityDataset();
 
 	String getTickerSymbol();
 
