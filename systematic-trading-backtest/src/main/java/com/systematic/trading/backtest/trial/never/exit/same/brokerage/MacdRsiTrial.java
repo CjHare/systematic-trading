@@ -37,6 +37,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.backtest.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
@@ -61,9 +62,10 @@ public class MacdRsiTrial extends BaseTrial implements BacktestConfiguration {
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
 		final LaunchArguments launchArgs = new LaunchArguments(new CommandLineLaunchArgumentsParser(),
-		        new OutputLaunchArgument(validator), null, new StartDateLaunchArgument(validator),
-		        new EndDateLaunchArgument(validator), new EquityDatasetLaunchArgument(),
-		        new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator), args);
+		        new OutputLaunchArgument(validator), new DataServiceTypeLaunchArgument(),
+		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
+		        new EquityDatasetLaunchArgument(), new TickerSymbolLaunchArgument(validator),
+		        new FileBaseDirectoryLaunchArgument(validator), args);
 
 		new BacktestApplication(launchArgs.getDataService()).runBacktest(new MacdRsiTrial(), launchArgs);
 	}

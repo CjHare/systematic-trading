@@ -44,6 +44,7 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.backtest.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
@@ -70,9 +71,10 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
 		final LaunchArguments launchArgs = new LaunchArguments(new CommandLineLaunchArgumentsParser(),
-		        new OutputLaunchArgument(validator), null, new StartDateLaunchArgument(validator),
-		        new EndDateLaunchArgument(validator), new EquityDatasetLaunchArgument(),
-		        new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator), args);
+		        new OutputLaunchArgument(validator), new DataServiceTypeLaunchArgument(),
+		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
+		        new EquityDatasetLaunchArgument(), new TickerSymbolLaunchArgument(validator),
+		        new FileBaseDirectoryLaunchArgument(validator), args);
 
 		new BacktestApplication(launchArgs.getDataService()).runBacktest(new AllStrategiesTrial(), launchArgs);
 	}

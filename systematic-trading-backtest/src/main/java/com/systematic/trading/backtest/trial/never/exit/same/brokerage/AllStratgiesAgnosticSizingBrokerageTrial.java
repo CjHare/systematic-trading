@@ -39,6 +39,7 @@ import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.backtest.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
 import com.systematic.trading.backtest.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
@@ -65,9 +66,10 @@ public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implemen
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
 		final LaunchArguments launchArgs = new LaunchArguments(new CommandLineLaunchArgumentsParser(),
-		        new OutputLaunchArgument(validator), null, new StartDateLaunchArgument(validator),
-		        new EndDateLaunchArgument(validator), new EquityDatasetLaunchArgument(),
-		        new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator), args);
+		        new OutputLaunchArgument(validator), new DataServiceTypeLaunchArgument(),
+		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
+		        new EquityDatasetLaunchArgument(), new TickerSymbolLaunchArgument(validator),
+		        new FileBaseDirectoryLaunchArgument(validator), args);
 
 		new BacktestApplication(launchArgs.getDataService()).runBacktest(new AllStratgiesAgnosticSizingBrokerageTrial(),
 		        launchArgs);
