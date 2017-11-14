@@ -50,6 +50,7 @@ import com.systematic.trading.backtest.configuration.BacktestStartDate;
 import com.systematic.trading.backtest.configuration.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.equity.EquityDataset;
 import com.systematic.trading.backtest.configuration.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
 
@@ -82,6 +83,9 @@ public class LaunchArgumentsTest {
 
 	@Mock
 	private LaunchArgument<BacktestEndDate> endDateArgument;
+
+	@Mock
+	private LaunchArgument<EquityDataset> equityDatasetArgument;
 
 	@Mock
 	private LaunchArgument<TickerSymbol> tickerSymbolArgument;
@@ -187,7 +191,7 @@ public class LaunchArgumentsTest {
 
 	private void createLaunchArguments( final String... args ) {
 		parser = new LaunchArguments(argumentParser, outputTypeArgument, startDateArgument, endDateArgument,
-		        tickerSymbolArgument, directoryArgument, args);
+		        equityDatasetArgument, tickerSymbolArgument, directoryArgument, args);
 	}
 
 	private void verifyOutputType( final OutputType expected ) {

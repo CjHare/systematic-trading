@@ -101,11 +101,8 @@ public class BacktestApplication {
 		final LocalDate simulationStartDate = parserdArguments.getStartDate().getDate();
 		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
 
-		//TODO get this from the input
-		final String equityDataset = "";
-
 		// Currently only for the single equity
-		final EquityConfiguration equity = new EquityConfiguration(equityDataset,
+		final EquityConfiguration equity = new EquityConfiguration(parserdArguments.getEquityDataset().getDataset(),
 		        parserdArguments.getTickerSymbol().getSymbol(), EquityClass.STOCK);
 
 		//TODO convert into input arguments
@@ -232,8 +229,8 @@ public class BacktestApplication {
 			final BacktestBootstrapContext context = createContext(configuration, output);
 			final Period warmUp = context.getTradingStrategy().getWarmUpPeriod();
 			recordWarmUpPeriod(warmUp);
-			final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityDataset(), equity.getEquityIdentity(),
-			        configuration.getBacktestDates(), warmUp);
+			final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityDataset(),
+			        equity.getEquityIdentity(), configuration.getBacktestDates(), warmUp);
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
 			LOG.info("Backtesting beginning for: {}", () -> description.getDescription(configuration, depositAmount));

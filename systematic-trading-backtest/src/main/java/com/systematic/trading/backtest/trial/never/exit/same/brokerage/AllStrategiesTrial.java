@@ -45,6 +45,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
+import com.systematic.trading.backtest.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
 import com.systematic.trading.backtest.input.LaunchArgumentValidator;
 import com.systematic.trading.backtest.input.LaunchArguments;
@@ -71,8 +72,8 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 		new BacktestApplication().runBacktest(new AllStrategiesTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
-		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
-		                args));
+		                new EquityDatasetLaunchArgument(), new TickerSymbolLaunchArgument(validator),
+		                new FileBaseDirectoryLaunchArgument(validator), args));
 	}
 
 	private static Set<Pair<MinimumTrade, MaximumTrade>> getPositionSizing() {

@@ -38,6 +38,7 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
+import com.systematic.trading.backtest.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
 import com.systematic.trading.backtest.input.LaunchArgumentValidator;
 import com.systematic.trading.backtest.input.LaunchArguments;
@@ -62,8 +63,8 @@ public class EmaUptrendVsSmaUptrendTrial extends BaseTrial implements BacktestCo
 		new BacktestApplication().runBacktest(new EmaUptrendVsSmaUptrendTrial(),
 		        new LaunchArguments(new CommandLineLaunchArgumentsParser(), new OutputLaunchArgument(validator),
 		                new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
-		                new TickerSymbolLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator),
-		                args));
+		                new EquityDatasetLaunchArgument(), new TickerSymbolLaunchArgument(validator),
+		                new FileBaseDirectoryLaunchArgument(validator), args));
 	}
 
 	@Override

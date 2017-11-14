@@ -37,6 +37,7 @@ import com.systematic.trading.backtest.configuration.BacktestStartDate;
 import com.systematic.trading.backtest.configuration.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.equity.EquityDataset;
 import com.systematic.trading.backtest.configuration.equity.TickerSymbol;
 
 /**
@@ -48,6 +49,7 @@ public class LaunchArguments {
 
 	enum ArgumentKey {
 		END_DATE("-end_date"),
+		EQUITY_DATASET("-equity_dataset"),
 		OUTPUT_TYPE("-output"),
 		FILE_BASE_DIRECTORY("-output_file_base_directory"),
 		START_DATE("-start_date"),
@@ -94,15 +96,20 @@ public class LaunchArguments {
 	/** Ticker Symbol to perform the back testing on.*/
 	private final TickerSymbol tickerSymbol;
 
+	/**	Optional argument, data set to retrieve the ticker symbol from. */
+	private final EquityDataset equityDataset;
+
 	public LaunchArguments( final LaunchArgumentsParser argumentParser, final LaunchArgument<OutputType> outputArgument,
 	        final LaunchArgument<BacktestStartDate> startDateArgument,
-	        final LaunchArgument<BacktestEndDate> endDateArgument, final LaunchArgument<TickerSymbol> tickerSymbol,
+	        final LaunchArgument<BacktestEndDate> endDateArgument, final LaunchArgument<EquityDataset> equityDataset,
+	        final LaunchArgument<TickerSymbol> tickerSymbol,
 	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument, final String... args ) {
 		this.arguments = argumentParser.parse(args);
 		this.outputType = outputArgument.get(arguments);
 		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
 		this.startDate = startDateArgument.get(arguments);
 		this.endDate = endDateArgument.get(arguments);
+		this.equityDataset = equityDataset.get(arguments);
 		this.tickerSymbol = tickerSymbol.get(arguments);
 	}
 
@@ -124,5 +131,9 @@ public class LaunchArguments {
 
 	public TickerSymbol getTickerSymbol() {
 		return tickerSymbol;
+	}
+
+	public EquityDataset getEquityDataset() {
+		return equityDataset;
 	}
 }
