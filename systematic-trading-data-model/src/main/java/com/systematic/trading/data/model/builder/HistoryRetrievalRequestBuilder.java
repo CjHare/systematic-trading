@@ -49,6 +49,8 @@ public interface HistoryRetrievalRequestBuilder {
 
 	HistoryRetrievalRequestBuilder withExclusiveEndDate( LocalDate exclusiveEndDate );
 
+	HistoryRetrievalRequestBuilder withDataset( String dataset );
+
 	HistoryRetrievalRequestBuilder withTickerSymbol( String tickerSymbol );
 
 	HistoryRetrievalRequest build();

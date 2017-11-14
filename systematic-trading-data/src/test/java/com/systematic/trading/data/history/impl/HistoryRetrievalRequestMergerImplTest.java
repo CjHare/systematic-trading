@@ -54,7 +54,7 @@ import com.systematic.trading.data.history.HistoryRetrievalRequestMerger;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.builder.HistoryRetrievalRequestBuilder;
 import com.systematic.trading.data.util.HistoryRetrievalRequestUtil;
-import com.systematic.trading.data.util.TickerSymbolGenerator;
+import com.systematic.trading.data.util.RandomStringGenerator;
 
 /**
  * HistoryRetrievalRequestMergerImpl behaviour verification.
@@ -77,10 +77,14 @@ public class HistoryRetrievalRequestMergerImplTest {
 	/** Random string re-generated every run.*/
 	private String tickerSymbol;
 
+	/** Random string re-generated every run.*/
+	private String dataset;
+
 	@Before
 	public void setUp() {
 		merger = new HistoryRetrievalRequestMergerImpl(requestBuilder);
-		tickerSymbol = TickerSymbolGenerator.generate();
+		tickerSymbol = RandomStringGenerator.generate();
+		dataset = RandomStringGenerator.generate();
 	}
 
 	@Test
@@ -277,6 +281,6 @@ public class HistoryRetrievalRequestMergerImplTest {
 	}
 
 	private HistoryRetrievalRequest create( final LocalDate start, final LocalDate end ) {
-		return historyRetrievalRequestUtil.create(tickerSymbol, start, end);
+		return historyRetrievalRequestUtil.create(dataset, tickerSymbol, start, end);
 	}
 }

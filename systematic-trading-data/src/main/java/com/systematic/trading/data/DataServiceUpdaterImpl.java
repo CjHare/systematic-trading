@@ -62,7 +62,7 @@ import com.systematic.trading.data.model.builder.impl.HibernateHistoryRetrievalR
 import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
-import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlApiDao;
+import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlTablesApiDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
@@ -84,7 +84,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final RetrievedMonthTradingPricesDao retrievedHistoryDao = new HibernateRetrievedMonthTradingPricesDao();
 
 		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().get();
-		this.api = new QuandlAPI(new HttpQuandlApiDao(configuration), configuration, new QuandlResponseFormat());
+		this.api = new QuandlAPI(new HttpQuandlTablesApiDao(configuration), configuration, new QuandlResponseFormat());
 		this.retrievedHistoryRecorder = new RetrievedYearMonthRecorder(retrievedHistoryDao);
 		this.pendingRetrievalRequestDao = new HibernatePendingRetrievalRequestDao();
 		this.tradingDayPricesDao = new HibernateTradingDayPricesDao();
@@ -95,13 +95,13 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	}
 
 	@Override
-	public void get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate )
-	        throws CannotRetrieveDataException {
+	public void get( final String dataset, final String tickerSymbol, final LocalDate startDate,
+	        final LocalDate endDate ) throws CannotRetrieveDataException {
 
 		// Ensure there's a table for the data
 		tradingDayPricesDao.createTableIfAbsent(tickerSymbol);
 
-		lodgeOnlyNeededHistoryRetrievalRequests(tickerSymbol, startDate, endDate);
+		lodgeOnlyNeededHistoryRetrievalRequests(dataset, tickerSymbol, startDate, endDate);
 
 		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 
@@ -131,6 +131,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		for (final HistoryRetrievalRequest request : requests) {
 
+			final String dataset = request.getDataset();
 			final String tickerSymbol = request.getTickerSymbol();
 			final LocalDate inclusiveStartDate = request.getInclusiveStartDate().toLocalDate();
 			final LocalDate exclusiveEndDate = request.getExclusiveEndDate().toLocalDate();
@@ -138,7 +139,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			pool.execute(() -> {
 				try {
 					// Pull the data from the Stock API
-					TradingDayPrices[] tradingData = api.getStockData(tickerSymbol, inclusiveStartDate,
+					TradingDayPrices[] tradingData = api.getStockData(dataset, tickerSymbol, inclusiveStartDate,
 					        exclusiveEndDate, activeConnectionCount);
 
 					if (tradingData.length == 0) {
@@ -191,9 +192,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		return throttlerCleanUp;
 	}
 
-	private void lodgeOnlyNeededHistoryRetrievalRequests( final String tickerSymbol, final LocalDate startDate,
-	        final LocalDate endDate ) {
-		lodge(merge(filter(slice(tickerSymbol, startDate, endDate))));
+	private void lodgeOnlyNeededHistoryRetrievalRequests( final String dataset, final String tickerSymbol,
+	        final LocalDate startDate, final LocalDate endDate ) {
+		lodge(merge(filter(slice(dataset, tickerSymbol, startDate, endDate))));
 	}
 
 	private void lodge( final List<HistoryRetrievalRequest> requests ) {
@@ -204,9 +205,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		return pendingRetrievalRequestDao.get(tickerSymbol);
 	}
 
-	private List<HistoryRetrievalRequest> slice( final String tickerSymbol, final LocalDate startDate,
-	        final LocalDate endDate ) {
-		return historyRetrievalRequestSlicer.slice(tickerSymbol, startDate, endDate);
+	private List<HistoryRetrievalRequest> slice( final String dataset, final String tickerSymbol,
+	        final LocalDate startDate, final LocalDate endDate ) {
+		return historyRetrievalRequestSlicer.slice(dataset, tickerSymbol, startDate, endDate);
 	}
 
 	private List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> requests ) {

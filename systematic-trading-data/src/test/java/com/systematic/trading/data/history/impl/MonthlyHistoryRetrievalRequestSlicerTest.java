@@ -41,7 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
-import com.systematic.trading.data.util.TickerSymbolGenerator;
+import com.systematic.trading.data.util.RandomStringGenerator;
 
 /**
  * Monthly slicing UT.
@@ -56,10 +56,14 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 	/** Random string re-generated every run.*/
 	private String tickerSymbol;
 
+	/** Random string re-generated every run.*/
+	private String dataset;
+
 	@Before
 	public void setUp() {
 		slicer = new MonthlyHistoryRetrievalRequestSlicer();
-		tickerSymbol = TickerSymbolGenerator.generate();
+		tickerSymbol = RandomStringGenerator.generate();
+		dataset = RandomStringGenerator.generate();
 	}
 
 	@Test
@@ -109,7 +113,7 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 
 	private List<HistoryRetrievalRequest> slice( final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) {
-		return slicer.slice(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		return slicer.slice(dataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
 	private Pair<LocalDate, LocalDate> expectedDates( final LocalDate inclusiveStartDate,

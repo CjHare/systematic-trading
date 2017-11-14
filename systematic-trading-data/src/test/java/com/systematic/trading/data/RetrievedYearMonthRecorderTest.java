@@ -51,7 +51,7 @@ import com.systematic.trading.data.matcher.RetrievedMonthTradingPricesListMatche
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.util.HistoryRetrievalRequestUtil;
 import com.systematic.trading.data.util.RetrievedMonthTradingPricesUtil;
-import com.systematic.trading.data.util.TickerSymbolGenerator;
+import com.systematic.trading.data.util.RandomStringGenerator;
 
 /**
  * Does the RetrievedYearMonthRecorder record the year months correctly?
@@ -71,12 +71,16 @@ public class RetrievedYearMonthRecorderTest {
 	private RetrievedYearMonthRecorder recorder;
 
 	/** Random string re-generated every run.*/
+	private String datasetId;
+
+	/** Random string re-generated every run.*/
 	private String tickerSymbol;
 
 	@Before
 	public void setUp() {
 		recorder = new RetrievedYearMonthRecorder(retrievedMonthsDao);
-		tickerSymbol = TickerSymbolGenerator.generate();
+		tickerSymbol = RandomStringGenerator.generate();
+		datasetId = RandomStringGenerator.generate();
 	}
 
 	@Test
@@ -203,7 +207,7 @@ public class RetrievedYearMonthRecorderTest {
 	}
 
 	private HistoryRetrievalRequest create( final LocalDate start, final LocalDate end ) {
-		return historyRetrievalRequestUtil.create(tickerSymbol, start, end);
+		return historyRetrievalRequestUtil.create(datasetId, tickerSymbol, start, end);
 	}
 
 	private void verifyNoMonthsRetrieved() {

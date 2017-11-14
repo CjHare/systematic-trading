@@ -150,8 +150,9 @@ public class YahooStockApi implements EquityApi {
 	}
 
 	@Override
-	public TradingDayPrices[] getStockData( final String tickerSymbol, final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate, final BlockingEventCount throttler ) throws CannotRetrieveDataException {
+	public TradingDayPrices[] getStockData( final String dataset, final String tickerSymbol,
+	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate, final BlockingEventCount throttler )
+	        throws CannotRetrieveDataException {
 		final String uri = getJsonUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 		LOG.info("{}", () -> String.format("%s API call to: %s", tickerSymbol, uri));
 

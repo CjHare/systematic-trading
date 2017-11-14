@@ -35,6 +35,8 @@ import java.sql.Date;
  */
 public interface HistoryRetrievalRequest {
 
+	String getDataset();
+
 	String getTickerSymbol();
 
 	Date getInclusiveStartDate();

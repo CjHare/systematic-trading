@@ -41,6 +41,6 @@ import com.systematic.trading.data.model.HistoryRetrievalRequest;
  */
 public interface HistoryRetrievalRequestSlicer {
 
-	List<HistoryRetrievalRequest> slice( String tickerSymbol, LocalDate startDateInclusive,
+	List<HistoryRetrievalRequest> slice( String dataset, String tickerSymbol, LocalDate startDateInclusive,
 	        LocalDate endDateExclusive );
 }

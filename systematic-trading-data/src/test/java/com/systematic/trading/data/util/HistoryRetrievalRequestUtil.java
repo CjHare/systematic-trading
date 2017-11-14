@@ -57,8 +57,14 @@ public class HistoryRetrievalRequestUtil {
 		return fulfilled;
 	}
 
-	public HistoryRetrievalRequest create( final String tickerSymbol, final LocalDate start, final LocalDate end ) {
+	public HistoryRetrievalRequest create( final String datasetId, final String tickerSymbol, final LocalDate start,
+	        final LocalDate end ) {
 		return new HistoryRetrievalRequest() {
+			@Override
+			public String getDataset() {
+				return datasetId;
+			}
+
 			@Override
 			public String getTickerSymbol() {
 				return tickerSymbol;

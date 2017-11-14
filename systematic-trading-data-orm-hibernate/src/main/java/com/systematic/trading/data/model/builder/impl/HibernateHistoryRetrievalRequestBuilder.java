@@ -45,6 +45,7 @@ public class HibernateHistoryRetrievalRequestBuilder implements HistoryRetrieval
 
 	private LocalDate inclusiveStartDate;
 	private LocalDate exclusiveEndDate;
+	private String dataset;
 	private String tickerSymbol;
 
 	@Override
@@ -67,7 +68,7 @@ public class HibernateHistoryRetrievalRequestBuilder implements HistoryRetrieval
 
 	@Override
 	public HistoryRetrievalRequest build() {
-		return new HibernateHistoryRetrievalRequest(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		return new HibernateHistoryRetrievalRequest(dataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
 	@Override
@@ -79,6 +80,12 @@ public class HibernateHistoryRetrievalRequestBuilder implements HistoryRetrieval
 	@Override
 	public HistoryRetrievalRequestBuilder withInclusiveStartDate( final LocalDate inclusiveStartDate ) {
 		this.inclusiveStartDate = inclusiveStartDate;
+		return this;
+	}
+
+	@Override
+	public HistoryRetrievalRequestBuilder withDataset( final String dataset ) {
+		this.dataset = dataset;
 		return this;
 	}
 }

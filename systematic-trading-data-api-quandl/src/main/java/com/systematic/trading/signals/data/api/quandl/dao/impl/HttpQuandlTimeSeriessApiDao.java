@@ -46,18 +46,23 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.data.api.quandl.WikisDatabase;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
 
 /**
- * HTTP connection to the Quandl API.
+ * HTTP connection to the Quandl time-series API.
+ * 
+ * The time-series API allows different parameters to the tables API.
  * 
  * @author CJ Hare
  */
-public class HttpQuandlApiDao implements QuandlApiDao {
+public class HttpQuandlTimeSeriessApiDao implements QuandlApiDao {
 
-	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyMMdd");
+	private static final String PATH = "api/v3/datasets/%s/%s.json";
+	private static final String START_DATE_KEY = "start_date";
+	private static final String END_DATE_KEY = "end_date";
+	private static final String API_KEY = "api_key";
+	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd");
 
 	private static final Logger LOG = LogManager.getLogger(QuandlApiDao.class);
 	private static final int HTTP_OK = 200;
@@ -74,7 +79,7 @@ public class HttpQuandlApiDao implements QuandlApiDao {
 	/** Staggered wait time between retry attempts.*/
 	private final int retryBackoffMs;
 
-	public HttpQuandlApiDao( final EquityApiConfiguration configuration ) {
+	public HttpQuandlTimeSeriessApiDao( final EquityApiConfiguration configuration ) {
 
 		// Registering the provider for POJO -> JSON
 		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
@@ -88,22 +93,21 @@ public class HttpQuandlApiDao implements QuandlApiDao {
 	}
 
 	@Override
-	public QuandlResponseResource get( final String tickerSymbol, final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate, final BlockingEventCount throttler ) throws CannotRetrieveDataException {
-		final WebTarget url = createUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+	public QuandlResponseResource get( final String timeSeriesDataset, final String tickerSymbol,
+	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate, final BlockingEventCount throttler )
+	        throws CannotRetrieveDataException {
+		final WebTarget url = createUrl(timeSeriesDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
 		final Response response = get(url, throttler);
 
 		return response.readEntity(QuandlResponseResource.class);
 	}
 
-	private WebTarget createUrl( final String tickerSymbol, final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) {
-		return root.path(WikisDatabase.PATH)
-		        .queryParam(WikisDatabase.COLUMN_NAMES_KEY, WikisDatabase.COLUMN_NAMES_VALUE)
-		        .queryParam(WikisDatabase.START_DATE_KEY, inclusiveStartDate.format(QUANDL_DATE_FORMAT))
-		        .queryParam(WikisDatabase.END_DATE_KEY, exclusiveEndDate.format(QUANDL_DATE_FORMAT))
-		        .queryParam(WikisDatabase.TICKER_SYMBOL_KEY, tickerSymbol).queryParam(WikisDatabase.API_KEY, apiKey);
+	private WebTarget createUrl( final String timeSeriesDataset, final String tickerSymbol,
+	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
+		return root.path(String.format(PATH, timeSeriesDataset, tickerSymbol))
+		        .queryParam(START_DATE_KEY, inclusiveStartDate.format(QUANDL_DATE_FORMAT))
+		        .queryParam(END_DATE_KEY, exclusiveEndDate.format(QUANDL_DATE_FORMAT)).queryParam(API_KEY, apiKey);
 	}
 
 	private Response get( final WebTarget url, final BlockingEventCount throttler ) throws CannotRetrieveDataException {

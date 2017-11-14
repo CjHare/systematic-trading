@@ -94,19 +94,20 @@ public class QuanalAPITest {
 	public void getStockDataEmptyPayload() throws CannotRetrieveDataException {
 		final TradingDayPrices[] expectedPrices = setUpQuandlResponse();
 
+		final String datasetId = randomDatasetId();
 		final String tickerSymbol = randomTickerSymbol();
 		final LocalDate inclusiveStartDate = randomStartDate();
 		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
 
-		final TradingDayPrices[] prices = callQuandl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final TradingDayPrices[] prices = callQuandl(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
 		verifyTradingDayPrices(expectedPrices, prices);
-		verifyQuandlCall(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		verifyQuandlCall(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
-	private TradingDayPrices[] callQuandl( final String tickerSymbol, final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
-		return new QuandlAPI(dao, configuration, dataFormat).getStockData(tickerSymbol, inclusiveStartDate,
+	private TradingDayPrices[] callQuandl( final String datasetId, final String tickerSymbol,
+	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+		return new QuandlAPI(dao, configuration, dataFormat).getStockData(datasetId, tickerSymbol, inclusiveStartDate,
 		        exclusiveEndDate, throttler);
 	}
 
@@ -119,9 +120,9 @@ public class QuanalAPITest {
 		}
 	}
 
-	private void verifyQuandlCall( final String tickerSymbol, final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
-		verify(dao).get(tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
+	private void verifyQuandlCall( final String datasetId, final String tickerSymbol,
+	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+		verify(dao).get(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
 		verifyNoMoreInteractions(dao);
 		verifyNoMoreInteractions(throttler);
 	}
@@ -130,8 +131,8 @@ public class QuanalAPITest {
 		final QuandlResponseResource response = new QuandlResponseResource();
 		final DatatableResource datatable = mock(DatatableResource.class);
 		response.setDatatable(datatable);
-		when(dao.get(anyString(), any(LocalDate.class), any(LocalDate.class), any(BlockingEventCount.class)))
-		        .thenReturn(response);
+		when(dao.get(anyString(), anyString(), any(LocalDate.class), any(LocalDate.class),
+		        any(BlockingEventCount.class))).thenReturn(response);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[2];
 		prices[0] = mock(TradingDayPrices.class);
@@ -161,6 +162,13 @@ public class QuanalAPITest {
 	 * Generates a 4 code point string, using only the letters a-z
 	 */
 	private String randomTickerSymbol() {
+		return new RandomStringGenerator.Builder().withinRange('a', 'z').build().generate(4);
+	}
+
+	/**
+	 * Generates a 4 code point string, using only the letters a-z
+	 */
+	private String randomDatasetId() {
 		return new RandomStringGenerator.Builder().withinRange('a', 'z').build().generate(4);
 	}
 

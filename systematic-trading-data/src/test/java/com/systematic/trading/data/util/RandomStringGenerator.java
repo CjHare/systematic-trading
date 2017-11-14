@@ -36,7 +36,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 
  * @author CJ Hare
  */
-public class TickerSymbolGenerator {
+public class RandomStringGenerator {
 
 	public static String generate() {
 		final int leftLimit = 97; // letter 'a'

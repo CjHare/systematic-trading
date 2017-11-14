@@ -54,8 +54,8 @@ import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.history.UnnecessaryHistoryRequestFilter;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.util.HistoryRetrievalRequestUtil;
+import com.systematic.trading.data.util.RandomStringGenerator;
 import com.systematic.trading.data.util.RetrievedMonthTradingPricesUtil;
-import com.systematic.trading.data.util.TickerSymbolGenerator;
 
 /**
  * Are unnecessary requests being identified correctly?
@@ -77,10 +77,14 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 	/** Random string re-generated every run.*/
 	private String tickerSymbol;
 
+	/** Random string re-generated every run.*/
+	private String dataset;
+
 	@Before
 	public void setUp() {
 		filter = new UnnecessaryHistoryRequestFilterImpl(retrievedHistoryDao);
-		tickerSymbol = TickerSymbolGenerator.generate();
+		tickerSymbol = RandomStringGenerator.generate();
+		dataset = RandomStringGenerator.generate();
 	}
 
 	@Test
@@ -222,7 +226,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 	}
 
 	private HistoryRetrievalRequest create( final LocalDate start, final LocalDate end ) {
-		return historyRetrievalRequestUtil.create(tickerSymbol, start, end);
+		return historyRetrievalRequestUtil.create(dataset, tickerSymbol, start, end);
 	}
 
 	private void verifyNoRequests( final List<HistoryRetrievalRequest> filtered ) {
