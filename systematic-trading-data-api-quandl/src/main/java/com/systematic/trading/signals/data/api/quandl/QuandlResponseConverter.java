@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.quandl.model;
+package com.systematic.trading.signals.data.api.quandl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -49,7 +49,7 @@ import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource
  * 
  * @author CJ Hare
  */
-public class QuandlResponseFormat {
+public class QuandlResponseConverter {
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private static final String NAME_DATE = "date";
 	private static final String NAME_OPEN_PRICE = "open";

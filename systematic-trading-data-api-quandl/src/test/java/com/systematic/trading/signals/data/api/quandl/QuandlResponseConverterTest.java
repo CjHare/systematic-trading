@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.quandl.model;
+package com.systematic.trading.signals.data.api.quandl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -42,6 +42,7 @@ import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
+import com.systematic.trading.signals.data.api.quandl.QuandlResponseConverter;
 import com.systematic.trading.signals.data.api.quandl.resource.ColumnResource;
 import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource;
 
@@ -50,14 +51,14 @@ import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource
  * 
  * @author CJ Hare
  */
-public class QuandlResponseFormatTest {
+public class QuandlResponseConverterTest {
 
 	@Test
 	public void convertEmptyPayload() throws CannotRetrieveDataException {
 		final String tickerSymbol = randomTickerSymbol();
 		final DatatableResource datatable = createEmptyDatatable();
 
-		final TradingDayPrices[] prices = new QuandlResponseFormat().convert(tickerSymbol, datatable);
+		final TradingDayPrices[] prices = new QuandlResponseConverter().convert(tickerSymbol, datatable);
 
 		verifyPrices(prices);
 	}
@@ -107,7 +108,7 @@ public class QuandlResponseFormatTest {
 		final String tickerSymbol = randomTickerSymbol();
 		final DatatableResource datatable = createDatatableWithOneTuple();
 
-		final TradingDayPrices[] prices = new QuandlResponseFormat().convert(tickerSymbol, datatable);
+		final TradingDayPrices[] prices = new QuandlResponseConverter().convert(tickerSymbol, datatable);
 
 		verifyPrices(prices, new double[] { 2.5, 1.75, 3.25, 2.8 });
 	}
@@ -117,7 +118,7 @@ public class QuandlResponseFormatTest {
 		final String tickerSymbol = randomTickerSymbol();
 		final DatatableResource datatable = createDatatableSuffledColumns();
 
-		final TradingDayPrices[] prices = new QuandlResponseFormat().convert(tickerSymbol, datatable);
+		final TradingDayPrices[] prices = new QuandlResponseConverter().convert(tickerSymbol, datatable);
 
 		verifyPrices(prices, new double[] { 3.25, 2.5, 2.8, 1.75 });
 	}
@@ -127,7 +128,7 @@ public class QuandlResponseFormatTest {
 		final String tickerSymbol = randomTickerSymbol();
 		final DatatableResource datatable = createDatatableWithTwoTuple();
 
-		final TradingDayPrices[] prices = new QuandlResponseFormat().convert(tickerSymbol, datatable);
+		final TradingDayPrices[] prices = new QuandlResponseConverter().convert(tickerSymbol, datatable);
 
 		verifyPrices(prices, new double[] { 2.8, 2.05, 3.99, 2.81, 2.5, 1.75, 3.25, 2.8 });
 	}
@@ -157,7 +158,7 @@ public class QuandlResponseFormatTest {
 	private void convertExpectingMissingColumn( final String name, final String tickerSymbol,
 	        final DatatableResource datatable ) {
 		try {
-			new QuandlResponseFormat().convert(tickerSymbol, datatable);
+			new QuandlResponseConverter().convert(tickerSymbol, datatable);
 			fail("Expecting exception");
 		} catch (final CannotRetrieveDataException e) {
 			verifyMissingColumnMessage(name, e);

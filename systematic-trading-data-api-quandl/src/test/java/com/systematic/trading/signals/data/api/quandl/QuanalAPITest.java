@@ -56,7 +56,6 @@ import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
-import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource;
 import com.systematic.trading.signals.data.api.quandl.resource.QuandlResponseResource;
 
@@ -75,7 +74,7 @@ public class QuanalAPITest {
 	private QuandlConfiguration configuration;
 
 	@Mock
-	private QuandlResponseFormat dataFormat;
+	private QuandlResponseConverter dataFormat;
 
 	@Mock
 	private BlockingEventCount throttler;

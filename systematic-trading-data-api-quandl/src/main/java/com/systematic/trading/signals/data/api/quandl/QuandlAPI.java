@@ -38,7 +38,6 @@ import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
-import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
 import com.systematic.trading.signals.data.api.quandl.resource.QuandlResponseResource;
 
 /**
@@ -50,7 +49,7 @@ public class QuandlAPI implements EquityApi {
 
 	private final QuandlApiDao dao;
 
-	private final QuandlResponseFormat dataFormat;
+	private final QuandlResponseConverter dataFormat;
 
 	private final Period maximumDurationPerConnection;
 	private final int maximumConcurrentConnections;
@@ -58,7 +57,7 @@ public class QuandlAPI implements EquityApi {
 	private final int maximumConnectionsPerSecond;
 
 	public QuandlAPI( final QuandlApiDao dao, final EquityApiConfiguration configuration,
-	        final QuandlResponseFormat dataFormat ) {
+	        final QuandlResponseConverter dataFormat ) {
 		this.dao = dao;
 		this.dataFormat = dataFormat;
 		this.maximumDurationPerConnection = Period.ofMonths(configuration.getMaximumMonthsPerConnection());
