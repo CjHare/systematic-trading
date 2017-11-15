@@ -41,6 +41,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.impl.TradingDayPricesImpl;
+import com.systematic.trading.signals.data.api.quandl.resource.ColumnResource;
+import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource;
 
 /**
  * How to make sense and extra data from the Quandl Resources.

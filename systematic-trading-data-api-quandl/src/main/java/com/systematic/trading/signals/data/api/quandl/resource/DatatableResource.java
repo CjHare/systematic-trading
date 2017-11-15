@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.quandl.model;
+package com.systematic.trading.signals.data.api.quandl.resource;
 
 import java.util.List;
 
@@ -35,20 +35,29 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * The row data, ordered according to the ColumnsResource.
+ * Resource for a Datatable object, the root return type from Quandl API.
  * 
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class RowResource {
+public class DatatableResource {
 
-	private List<Object> data;
+	private List<ColumnResource> columns;
+	private List<List<Object>> data;
 
-	public List<Object> getData() {
+	public List<ColumnResource> getColumns() {
+		return columns;
+	}
+
+	public void setColumns( final List<ColumnResource> columns ) {
+		this.columns = columns;
+	}
+
+	public List<List<Object>> getData() {
 		return data;
 	}
 
-	public void setData( final List<Object> data ) {
+	public void setData( final List<List<Object>> data ) {
 		this.data = data;
 	}
 }

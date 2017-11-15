@@ -39,7 +39,7 @@ import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseFormat;
-import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
+import com.systematic.trading.signals.data.api.quandl.resource.QuandlResponseResource;
 
 /**
  * Retrieval of equity data from the Quandl data service.

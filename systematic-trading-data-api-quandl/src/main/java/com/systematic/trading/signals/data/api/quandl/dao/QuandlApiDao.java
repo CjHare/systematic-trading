@@ -33,7 +33,7 @@ import java.time.LocalDate;
 
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
+import com.systematic.trading.signals.data.api.quandl.resource.QuandlResponseResource;
 
 /**
  * Data Access Object for retrieving data from the Quandl API.

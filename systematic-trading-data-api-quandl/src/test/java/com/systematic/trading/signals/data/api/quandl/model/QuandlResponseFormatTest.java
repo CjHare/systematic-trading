@@ -42,6 +42,8 @@ import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
+import com.systematic.trading.signals.data.api.quandl.resource.ColumnResource;
+import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource;
 
 /**
  * Various conditions for parsing the Datatable response object from Quandl.

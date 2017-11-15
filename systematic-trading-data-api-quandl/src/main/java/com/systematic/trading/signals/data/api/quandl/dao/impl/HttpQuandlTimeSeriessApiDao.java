@@ -47,7 +47,7 @@ import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
-import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
+import com.systematic.trading.signals.data.api.quandl.resource.QuandlResponseResource;
 
 /**
  * HTTP connection to the Quandl time-series API.
