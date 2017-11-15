@@ -260,6 +260,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 		when(requestBuilder.withExclusiveEndDate(any(LocalDate.class))).thenReturn(requestBuilder);
 		when(requestBuilder.withInclusiveStartDate(any(Date.class))).thenReturn(requestBuilder);
 		when(requestBuilder.withInclusiveStartDate(any(LocalDate.class))).thenReturn(requestBuilder);
+		when(requestBuilder.withDataset(anyString())).thenReturn(requestBuilder);
 
 		OngoingStubbing<HistoryRetrievalRequest> stubbing = when(requestBuilder.build());
 		for (final HistoryRetrievalRequest request : requests) {
