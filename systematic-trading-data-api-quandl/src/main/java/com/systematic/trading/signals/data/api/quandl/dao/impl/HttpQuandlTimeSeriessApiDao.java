@@ -68,7 +68,7 @@ public class HttpQuandlTimeSeriessApiDao implements QuandlApiDao {
 	private static final String END_DATE_KEY = "end_date";
 	private static final String API_KEY = "api_key";
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd");
-
+	private static final int EXCLUSIVE_OFFSET = 1;
 	private static final Logger LOG = LogManager.getLogger(QuandlApiDao.class);
 	private static final int HTTP_OK = 200;
 
@@ -118,7 +118,8 @@ public class HttpQuandlTimeSeriessApiDao implements QuandlApiDao {
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
 		return root.path(String.format(PATH, timeSeriesDataset, tickerSymbol))
 		        .queryParam(START_DATE_KEY, inclusiveStartDate.format(QUANDL_DATE_FORMAT))
-		        .queryParam(END_DATE_KEY, exclusiveEndDate.format(QUANDL_DATE_FORMAT)).queryParam(API_KEY, apiKey);
+		        .queryParam(END_DATE_KEY, exclusiveEndDate.minusDays(EXCLUSIVE_OFFSET).format(QUANDL_DATE_FORMAT))
+		        .queryParam(API_KEY, apiKey);
 	}
 
 	private Response get( final WebTarget url, final BlockingEventCount throttler ) throws CannotRetrieveDataException {
