@@ -39,8 +39,8 @@ import java.util.TreeMap;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.impl.TradingDayPricesImpl;
-import com.systematic.trading.signals.data.api.quandl.resource.ColumnResource;
-import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
 
 /**
  * How to make sense and extra data from the Quandl Resources.
@@ -57,12 +57,12 @@ public class QuandlResponseConverter {
 	/**
 	 * Verifies the expected data is present and converts into JSON data into the domain model.
 	 */
-	public TradingDayPrices[] convert( final String tickerSymbol, final DatatableResource datatable )
+	public TradingDayPrices[] convert( final String tickerSymbol, final QuandlResultSet resultSet )
 	        throws CannotRetrieveDataException {
 
 		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<>();
-		final List<ColumnResource> columns = datatable.getColumns();
-		final List<List<Object>> data = datatable.getData();
+		final List<QuandlColumnName> columns = resultSet.getColumns();
+		final List<List<Object>> data = resultSet.getData();
 		final ResponseColumns mapping = getColumnMapping(columns);
 		final int dateIndex = mapping.dateIndex(columns);
 		final int openPriceIndex = mapping.openPriceIndex(columns);
@@ -82,7 +82,7 @@ public class QuandlResponseConverter {
 		return prices.values().toArray(new TradingDayPrices[0]);
 	}
 
-	private ResponseColumns getColumnMapping( final List<ColumnResource> columns ) {
+	private ResponseColumns getColumnMapping( final List<QuandlColumnName> columns ) {
 
 		if (allColumns.canParse(columns)) {
 			return allColumns;

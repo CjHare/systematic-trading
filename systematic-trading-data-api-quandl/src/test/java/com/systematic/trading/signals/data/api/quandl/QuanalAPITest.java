@@ -57,8 +57,7 @@ import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;
 import com.systematic.trading.signals.data.api.quandl.converter.QuandlResponseConverter;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
-import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource;
-import com.systematic.trading.signals.data.api.quandl.resource.QuandlResponseResource;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
 
 /**
  * Quandl API.
@@ -128,16 +127,14 @@ public class QuanalAPITest {
 	}
 
 	private TradingDayPrices[] setUpQuandlResponse() throws CannotRetrieveDataException {
-		final QuandlResponseResource response = new QuandlResponseResource();
-		final DatatableResource datatable = mock(DatatableResource.class);
-		response.setDatatable(datatable);
+		final QuandlResultSet results = mock(QuandlResultSet.class);
 		when(dao.get(anyString(), anyString(), any(LocalDate.class), any(LocalDate.class),
-		        any(BlockingEventCount.class))).thenReturn(response);
+		        any(BlockingEventCount.class))).thenReturn(results);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[2];
 		prices[0] = mock(TradingDayPrices.class);
 		prices[1] = mock(TradingDayPrices.class);
-		when(dataFormat.convert(anyString(), eq(datatable))).thenReturn(prices);
+		when(dataFormat.convert(anyString(), eq(results))).thenReturn(prices);
 		return prices;
 	}
 

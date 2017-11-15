@@ -27,34 +27,28 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.quandl.dao;
+package com.systematic.trading.signals.data.api.quandl.resource;
 
-import java.time.LocalDate;
-
-import com.systematic.trading.data.collections.BlockingEventCount;
-import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * Data Access Object for retrieving data from the Quandl API.
- * 
- * DAO's responsibility is ensure the Quandl reply contains the expected JSON format, not the data integrity.
+ * Root response object for the Quandl object chain.
  * 
  * @author CJ Hare
  */
-public interface QuandlApiDao {
+@JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DatasetResponseResource {
 
-	/**
-	 * Retrieve historical equity price data from Quandl.
-	 * 
-	 * @param equityDataset identifier for the dataset to retrieve the ticker symbol from.
-	 * @param tickerSymbol identifier of the equity to retrieve.
-	 * @param inclusiveStartDate the first day of the historical data to retrieve.
-	 * @param exclusiveEndDate the last day of the historical data to retrieve.
-	 * @param throttler synchronization object to limit the connections to the Quandl API.
-	 * @return retrieved Quandl data structure.
-	 * @throws CannotRetrieveDataException problem encountered during connecting to the Quandl API.
-	 */
-	QuandlResultSet get( String equityDataset, String tickerSymbol, LocalDate inclusiveStartDate,
-	        LocalDate exclusiveEndDate, BlockingEventCount throttler ) throws CannotRetrieveDataException;
+	private DatasetResource dataset;
+
+	public DatasetResource getDataset() {
+		return dataset;
+	}
+
+	public void setDataset( final DatasetResource dataset ) {
+		this.dataset = dataset;
+	}
 }

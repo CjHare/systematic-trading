@@ -31,7 +31,9 @@ package com.systematic.trading.signals.data.api.quandl.dao.impl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -47,7 +49,10 @@ import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
-import com.systematic.trading.signals.data.api.quandl.resource.QuandlResponseResource;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
+import com.systematic.trading.signals.data.api.quandl.resource.DatasetResource;
+import com.systematic.trading.signals.data.api.quandl.resource.DatasetResponseResource;
 
 /**
  * HTTP connection to the Quandl time-series API.
@@ -93,14 +98,20 @@ public class HttpQuandlTimeSeriessApiDao implements QuandlApiDao {
 	}
 
 	@Override
-	public QuandlResponseResource get( final String timeSeriesDataset, final String tickerSymbol,
+	public QuandlResultSet get( final String timeSeriesDataset, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate, final BlockingEventCount throttler )
 	        throws CannotRetrieveDataException {
 		final WebTarget url = createUrl(timeSeriesDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
 		final Response response = get(url, throttler);
 
-		return response.readEntity(QuandlResponseResource.class);
+		final DatasetResource dataset = response.readEntity(DatasetResponseResource.class).getDataset();
+
+		return new QuandlResultSet(columns(dataset.getColumns()), dataset.getData());
+	}
+
+	private List<QuandlColumnName> columns( final List<String> names ) {
+		return names.stream().map(name -> new QuandlColumnName(name)).collect(Collectors.toList());
 	}
 
 	private WebTarget createUrl( final String timeSeriesDataset, final String tickerSymbol,

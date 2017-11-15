@@ -27,34 +27,22 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.quandl.dao;
-
-import java.time.LocalDate;
-
-import com.systematic.trading.data.collections.BlockingEventCount;
-import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
+package com.systematic.trading.signals.data.api.quandl.model;
 
 /**
- * Data Access Object for retrieving data from the Quandl API.
- * 
- * DAO's responsibility is ensure the Quandl reply contains the expected JSON format, not the data integrity.
+ * Column name in a Quandl result set.
  * 
  * @author CJ Hare
  */
-public interface QuandlApiDao {
+public class QuandlColumnName {
 
-	/**
-	 * Retrieve historical equity price data from Quandl.
-	 * 
-	 * @param equityDataset identifier for the dataset to retrieve the ticker symbol from.
-	 * @param tickerSymbol identifier of the equity to retrieve.
-	 * @param inclusiveStartDate the first day of the historical data to retrieve.
-	 * @param exclusiveEndDate the last day of the historical data to retrieve.
-	 * @param throttler synchronization object to limit the connections to the Quandl API.
-	 * @return retrieved Quandl data structure.
-	 * @throws CannotRetrieveDataException problem encountered during connecting to the Quandl API.
-	 */
-	QuandlResultSet get( String equityDataset, String tickerSymbol, LocalDate inclusiveStartDate,
-	        LocalDate exclusiveEndDate, BlockingEventCount throttler ) throws CannotRetrieveDataException;
+	private final String name;
+
+	public QuandlColumnName( final String name ) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
 }

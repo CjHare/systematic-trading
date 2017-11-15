@@ -29,26 +29,37 @@
  */
 package com.systematic.trading.signals.data.api.quandl.resource;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Root response object for the Quandl object chain.
+ * Resource for a Datatable object, the root return type from Quandl API.
  * 
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class QuandlResponseResource {
+public class DatasetResource {
 
-	private DatatableResource datatable;
+	private List<String> columns;
+	private List<List<Object>> data;
 
-	public DatatableResource getDatatable() {
-		return datatable;
+	public List<String> getColumns() {
+		return columns;
 	}
 
-	public void setDatatable( final DatatableResource datatable ) {
-		this.datatable = datatable;
+	@JsonSetter("column_names")
+	public void setColumns( final List<String> columns ) {
+		this.columns = columns;
+	}
+
+	public List<List<Object>> getData() {
+		return data;
+	}
+
+	public void setData( final List<List<Object>> data ) {
+		this.data = data;
 	}
 }

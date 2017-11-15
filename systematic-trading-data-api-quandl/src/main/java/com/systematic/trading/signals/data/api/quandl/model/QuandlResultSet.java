@@ -27,34 +27,34 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.quandl.dao;
+package com.systematic.trading.signals.data.api.quandl.model;
 
-import java.time.LocalDate;
-
-import com.systematic.trading.data.collections.BlockingEventCount;
-import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
+import java.util.List;
 
 /**
- * Data Access Object for retrieving data from the Quandl API.
+ * Domain model abstraction for the Quandl results.
  * 
- * DAO's responsibility is ensure the Quandl reply contains the expected JSON format, not the data integrity.
+ * Quandl results may come in a number of formats, requiring abstraction for common use.
  * 
  * @author CJ Hare
  */
-public interface QuandlApiDao {
+public class QuandlResultSet {
 
-	/**
-	 * Retrieve historical equity price data from Quandl.
-	 * 
-	 * @param equityDataset identifier for the dataset to retrieve the ticker symbol from.
-	 * @param tickerSymbol identifier of the equity to retrieve.
-	 * @param inclusiveStartDate the first day of the historical data to retrieve.
-	 * @param exclusiveEndDate the last day of the historical data to retrieve.
-	 * @param throttler synchronization object to limit the connections to the Quandl API.
-	 * @return retrieved Quandl data structure.
-	 * @throws CannotRetrieveDataException problem encountered during connecting to the Quandl API.
-	 */
-	QuandlResultSet get( String equityDataset, String tickerSymbol, LocalDate inclusiveStartDate,
-	        LocalDate exclusiveEndDate, BlockingEventCount throttler ) throws CannotRetrieveDataException;
+	/** Column names, ordering matching that of the data. */
+	private final List<QuandlColumnName> columns;
+
+	private final List<List<Object>> data;
+
+	public QuandlResultSet( final List<QuandlColumnName> columns, final List<List<Object>> data ) {
+		this.columns = columns;
+		this.data = data;
+	}
+
+	public List<QuandlColumnName> getColumns() {
+		return columns;
+	}
+
+	public List<List<Object>> getData() {
+		return data;
+	}
 }

@@ -32,7 +32,7 @@ package com.systematic.trading.signals.data.api.quandl.converter;
 import java.util.List;
 
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.data.api.quandl.resource.ColumnResource;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
 
 /**
  * Provides response resource column index abstraction.
@@ -47,7 +47,7 @@ public interface ResponseColumns {
 	 * @param columns the Quandl column names for the corresponding data.
 	 * @return <code>true</code> when the columns can be parsed, <code>false</code> otherwise.
 	 */
-	boolean canParse( List<ColumnResource> columns );
+	boolean canParse( List<QuandlColumnName> columns );
 
 	/**
 	 * Column index for the trading day 'date' value.
@@ -56,7 +56,7 @@ public interface ResponseColumns {
 	 * @return column index for the date.
 	 * @throws CannotRetrieveDataException date column is missing from the given columns.
 	 */
-	int dateIndex( List<ColumnResource> columns ) throws CannotRetrieveDataException;
+	int dateIndex( List<QuandlColumnName> columns ) throws CannotRetrieveDataException;
 
 	/**
 	 * Column index for the trading day 'open' price.
@@ -65,7 +65,7 @@ public interface ResponseColumns {
 	 * @return column index for the open price.
 	 * @throws CannotRetrieveDataException open price column is missing from the given columns.
 	 */
-	int openPriceIndex( List<ColumnResource> columns ) throws CannotRetrieveDataException;
+	int openPriceIndex( List<QuandlColumnName> columns ) throws CannotRetrieveDataException;
 
 	/**
 	 * Column index for the trading day 'high' price.
@@ -74,7 +74,7 @@ public interface ResponseColumns {
 	 * @return column index for the high price.
 	 * @throws CannotRetrieveDataException high price column is missing from the given columns.
 	 */
-	int highPriceIndex( List<ColumnResource> columns ) throws CannotRetrieveDataException;
+	int highPriceIndex( List<QuandlColumnName> columns ) throws CannotRetrieveDataException;
 
 	/**
 	 * Column index for the trading day 'low' price.
@@ -83,7 +83,7 @@ public interface ResponseColumns {
 	 * @return column index for the low price.
 	 * @throws CannotRetrieveDataException low price column is missing from the given columns.
 	 */
-	int lowPriceIndex( List<ColumnResource> columns ) throws CannotRetrieveDataException;
+	int lowPriceIndex( List<QuandlColumnName> columns ) throws CannotRetrieveDataException;
 
 	/**
 	 * Column index for the trading day 'close' price.
@@ -92,5 +92,5 @@ public interface ResponseColumns {
 	 * @return column index for the close price.
 	 * @throws CannotRetrieveDataException close price column is missing from the given columns.
 	 */
-	int closePriceIndex( List<ColumnResource> columns ) throws CannotRetrieveDataException;
+	int closePriceIndex( List<QuandlColumnName> columns ) throws CannotRetrieveDataException;
 }

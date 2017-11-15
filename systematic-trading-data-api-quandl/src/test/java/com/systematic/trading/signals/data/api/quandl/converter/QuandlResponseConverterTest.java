@@ -41,8 +41,8 @@ import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.data.api.quandl.resource.ColumnResource;
-import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
 
 /**
  * Various conditions for parsing the Datatable response object from Quandl.
@@ -54,7 +54,7 @@ public class QuandlResponseConverterTest {
 	@Test
 	public void convertEmptyPayload() throws CannotRetrieveDataException {
 		final String tickerSymbol = randomTickerSymbol();
-		final DatatableResource datatable = createEmptyDatatable();
+		final QuandlResultSet datatable = emptyResultSet();
 
 		final TradingDayPrices[] prices = new QuandlResponseConverter().convert(tickerSymbol, datatable);
 
@@ -64,7 +64,7 @@ public class QuandlResponseConverterTest {
 	@Test
 	public void convertOneTuple() throws CannotRetrieveDataException {
 		final String tickerSymbol = randomTickerSymbol();
-		final DatatableResource datatable = createDatatableWithOneTuple();
+		final QuandlResultSet datatable = resultSetWithOneTuple();
 
 		final TradingDayPrices[] prices = new QuandlResponseConverter().convert(tickerSymbol, datatable);
 
@@ -74,7 +74,7 @@ public class QuandlResponseConverterTest {
 	@Test
 	public void convertSuffledColumns() throws CannotRetrieveDataException {
 		final String tickerSymbol = randomTickerSymbol();
-		final DatatableResource datatable = createDatatableSuffledColumns();
+		final QuandlResultSet datatable = resultSetSuffledColumns();
 
 		final TradingDayPrices[] prices = new QuandlResponseConverter().convert(tickerSymbol, datatable);
 
@@ -84,33 +84,33 @@ public class QuandlResponseConverterTest {
 	@Test
 	public void convertTwoTuples() throws CannotRetrieveDataException {
 		final String tickerSymbol = randomTickerSymbol();
-		final DatatableResource datatable = createDatatableWithTwoTuple();
+		final QuandlResultSet datatable = resultSetWithTwoTuple();
 
 		final TradingDayPrices[] prices = new QuandlResponseConverter().convert(tickerSymbol, datatable);
 
 		verifyPrices(prices, new double[] { 2.8, 2.05, 3.99, 2.81, 2.5, 1.75, 3.25, 2.8 });
 	}
 
-	private DatatableResource createDatatableWithTwoTuple() throws CannotRetrieveDataException {
+	private QuandlResultSet resultSetWithTwoTuple() throws CannotRetrieveDataException {
 		final List<List<Object>> data = new ArrayList<>();
-		data.add(createTuple("2012-01-23", 2.8, 2.05, 3.99, 2.81));
-		data.add(createTuple("2012-01-24", 2.5, 1.75, 3.25, 2.8));
+		data.add(tuple("2012-01-23", 2.8, 2.05, 3.99, 2.81));
+		data.add(tuple("2012-01-24", 2.5, 1.75, 3.25, 2.8));
 
-		return createDatatable(getStandardColumns(), data);
+		return new QuandlResultSet(standardColumns(), data);
 	}
 
-	private DatatableResource createDatatableWithOneTuple() throws CannotRetrieveDataException {
+	private QuandlResultSet resultSetWithOneTuple() throws CannotRetrieveDataException {
 		final List<List<Object>> data = new ArrayList<>();
-		data.add(createTuple("2010-12-01", 2.5, 1.75, 3.25, 2.8));
+		data.add(tuple("2010-12-01", 2.5, 1.75, 3.25, 2.8));
 
-		return createDatatable(getStandardColumns(), data);
+		return new QuandlResultSet(standardColumns(), data);
 	}
 
-	private DatatableResource createDatatableSuffledColumns() throws CannotRetrieveDataException {
+	private QuandlResultSet resultSetSuffledColumns() throws CannotRetrieveDataException {
 		final List<List<Object>> data = new ArrayList<>();
-		data.add(createTuple("2010-12-01", 2.5, 1.75, 3.25, 2.8));
+		data.add(tuple("2010-12-01", 2.5, 1.75, 3.25, 2.8));
 
-		return createDatatable(getShuffledColumns(), data);
+		return new QuandlResultSet(shuffledColumns(), data);
 	}
 
 	private void verifyPrices( final TradingDayPrices[] prices, final double... expected ) {
@@ -131,7 +131,7 @@ public class QuandlResponseConverterTest {
 
 	}
 
-	private List<Object> createTuple( final String date, final double open, final double high, final double low,
+	private List<Object> tuple( final String date, final double open, final double high, final double low,
 	        final double close ) {
 		final List<Object> tuple = new ArrayList<>();
 		tuple.add(date);
@@ -142,42 +142,28 @@ public class QuandlResponseConverterTest {
 		return tuple;
 	}
 
-	private List<ColumnResource> getStandardColumns() {
-		final List<ColumnResource> columns = new ArrayList<>();
-		columns.add(createColumn("date"));
-		columns.add(createColumn("open"));
-		columns.add(createColumn("low"));
-		columns.add(createColumn("high"));
-		columns.add(createColumn("close"));
+	private List<QuandlColumnName> standardColumns() {
+		final List<QuandlColumnName> columns = new ArrayList<>();
+		columns.add(new QuandlColumnName("date"));
+		columns.add(new QuandlColumnName("open"));
+		columns.add(new QuandlColumnName("low"));
+		columns.add(new QuandlColumnName("high"));
+		columns.add(new QuandlColumnName("close"));
 		return columns;
 	}
 
-	private List<ColumnResource> getShuffledColumns() {
-		final List<ColumnResource> columns = new ArrayList<>();
-		columns.add(createColumn("date"));
-		columns.add(createColumn("low"));
-		columns.add(createColumn("close"));
-		columns.add(createColumn("open"));
-		columns.add(createColumn("high"));
+	private List<QuandlColumnName> shuffledColumns() {
+		final List<QuandlColumnName> columns = new ArrayList<>();
+		columns.add(new QuandlColumnName("date"));
+		columns.add(new QuandlColumnName("low"));
+		columns.add(new QuandlColumnName("close"));
+		columns.add(new QuandlColumnName("open"));
+		columns.add(new QuandlColumnName("high"));
 		return columns;
 	}
 
-	private ColumnResource createColumn( final String name ) {
-		final ColumnResource column = new ColumnResource();
-		column.setName(name);
-		return column;
-	}
-
-	private DatatableResource createEmptyDatatable() throws CannotRetrieveDataException {
-		return createDatatable(getStandardColumns(), new ArrayList<>());
-	}
-
-	private DatatableResource createDatatable( final List<ColumnResource> columns, final List<List<Object>> data )
-	        throws CannotRetrieveDataException {
-		final DatatableResource datatable = new DatatableResource();
-		datatable.setData(data);
-		datatable.setColumns(columns);
-		return datatable;
+	private QuandlResultSet emptyResultSet() throws CannotRetrieveDataException {
+		return new QuandlResultSet(standardColumns(), new ArrayList<>());
 	}
 
 	/**
