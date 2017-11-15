@@ -36,8 +36,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.impl.TradingDayPricesImpl;
@@ -51,11 +49,6 @@ import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource
  */
 public class QuandlResponseConverter {
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	private static final String NAME_DATE = "date";
-	private static final String NAME_OPEN_PRICE = "open";
-	private static final String NAME_HIGH_PRICE = "high";
-	private static final String NAME_LOW_PRICE = "low";
-	private static final String NAME_CLOSE_PRICE = "close";
 	private static final int TWO_DECIMAL_PLACES = 2;
 
 	/**
@@ -63,15 +56,16 @@ public class QuandlResponseConverter {
 	 */
 	public TradingDayPrices[] convert( final String tickerSymbol, final DatatableResource datatable )
 	        throws CannotRetrieveDataException {
+
 		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<>();
 		final List<ColumnResource> columns = datatable.getColumns();
 		final List<List<Object>> data = datatable.getData();
-
-		final int dateIndex = getIndexOf(columns, NAME_DATE);
-		final int openPriceIndex = getIndexOf(columns, NAME_OPEN_PRICE);
-		final int highPriceIndex = getIndexOf(columns, NAME_HIGH_PRICE);
-		final int lowPriceIndex = getIndexOf(columns, NAME_LOW_PRICE);
-		final int closePriceIndex = getIndexOf(columns, NAME_CLOSE_PRICE);
+		final ResponseColumns mapping = getColumnMapping();
+		final int dateIndex = mapping.dateIndex(columns);
+		final int openPriceIndex = mapping.openPriceIndex(columns);
+		final int highPriceIndex = mapping.highPriceIndex(columns);
+		final int lowPriceIndex = mapping.lowPriceIndex(columns);
+		final int closePriceIndex = mapping.closePriceIndex(columns);
 
 		for (final List<Object> tuple : data) {
 			final LocalDate tradingDate = getTradingDate(tuple.get(dateIndex));
@@ -83,7 +77,10 @@ public class QuandlResponseConverter {
 		}
 
 		return prices.values().toArray(new TradingDayPrices[0]);
+	}
 
+	private ResponseColumns getColumnMapping() {
+		return new AllResponseColumns();
 	}
 
 	private BigDecimal getgPrice( final Object price ) {
@@ -93,15 +90,4 @@ public class QuandlResponseConverter {
 	private LocalDate getTradingDate( final Object date ) {
 		return LocalDate.parse((String) date, QUANDL_DATE_FORMAT);
 	}
-
-	private int getIndexOf( final List<ColumnResource> columns, final String name ) throws CannotRetrieveDataException {
-		for (int i = 0; i < columns.size(); i++) {
-			if (StringUtils.equals(name, columns.get(i).getName())) {
-				return i;
-			}
-		}
-
-		throw new CannotRetrieveDataException(String.format("Missing expected column: %s", name));
-	}
-
 }

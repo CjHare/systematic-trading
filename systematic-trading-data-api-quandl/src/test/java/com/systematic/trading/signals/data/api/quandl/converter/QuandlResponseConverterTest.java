@@ -31,7 +31,6 @@ package com.systematic.trading.signals.data.api.quandl.converter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -42,7 +41,6 @@ import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.data.api.quandl.converter.QuandlResponseConverter;
 import com.systematic.trading.signals.data.api.quandl.resource.ColumnResource;
 import com.systematic.trading.signals.data.api.quandl.resource.DatatableResource;
 
@@ -61,46 +59,6 @@ public class QuandlResponseConverterTest {
 		final TradingDayPrices[] prices = new QuandlResponseConverter().convert(tickerSymbol, datatable);
 
 		verifyPrices(prices);
-	}
-
-	@Test
-	public void convertMissingDateColumn() throws CannotRetrieveDataException {
-		final String tickerSymbol = randomTickerSymbol();
-		final DatatableResource datatable = createDatatableMissingDateColumn();
-
-		convertExpectingMissingColumn("date", tickerSymbol, datatable);
-	}
-
-	@Test
-	public void convertMissingOpenColumn() throws CannotRetrieveDataException {
-		final String tickerSymbol = randomTickerSymbol();
-		final DatatableResource datatable = createDatatableMissingOpenColumn();
-
-		convertExpectingMissingColumn("open", tickerSymbol, datatable);
-	}
-
-	@Test
-	public void convertMissingLowColumn() throws CannotRetrieveDataException {
-		final String tickerSymbol = randomTickerSymbol();
-		final DatatableResource datatable = createDatatableMissingLowColumn();
-
-		convertExpectingMissingColumn("low", tickerSymbol, datatable);
-	}
-
-	@Test
-	public void convertMissingHighColumn() throws CannotRetrieveDataException {
-		final String tickerSymbol = randomTickerSymbol();
-		final DatatableResource datatable = createDatatableMissingHighColumn();
-
-		convertExpectingMissingColumn("high", tickerSymbol, datatable);
-	}
-
-	@Test
-	public void convertMissingCloseColumn() throws CannotRetrieveDataException {
-		final String tickerSymbol = randomTickerSymbol();
-		final DatatableResource datatable = createDatatableMissingCloseColumn();
-
-		convertExpectingMissingColumn("close", tickerSymbol, datatable);
 	}
 
 	@Test
@@ -155,20 +113,6 @@ public class QuandlResponseConverterTest {
 		return createDatatable(getShuffledColumns(), data);
 	}
 
-	private void convertExpectingMissingColumn( final String name, final String tickerSymbol,
-	        final DatatableResource datatable ) {
-		try {
-			new QuandlResponseConverter().convert(tickerSymbol, datatable);
-			fail("Expecting exception");
-		} catch (final CannotRetrieveDataException e) {
-			verifyMissingColumnMessage(name, e);
-		}
-	}
-
-	private void verifyMissingColumnMessage( final String name, final Exception e ) {
-		assertEquals(String.format("Missing expected column: %s", name), e.getMessage());
-	}
-
 	private void verifyPrices( final TradingDayPrices[] prices, final double... expected ) {
 		assertNotNull(prices);
 		assertEquals("Number of prices does not match expectations", expected.length / 4, prices.length);
@@ -216,56 +160,6 @@ public class QuandlResponseConverterTest {
 		columns.add(createColumn("open", "BigDecimal(34,12)"));
 		columns.add(createColumn("high", "BigDecimal(34,12)"));
 		return columns;
-	}
-
-	private DatatableResource createDatatableMissingDateColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = new ArrayList<>();
-		columns.add(createColumn("open", "BigDecimal(34,12)"));
-		columns.add(createColumn("low", "BigDecimal(34,12)"));
-		columns.add(createColumn("high", "BigDecimal(34,12)"));
-		columns.add(createColumn("close", "BigDecimal(34,12)"));
-
-		return createDatatable(columns, new ArrayList<>());
-	}
-
-	private DatatableResource createDatatableMissingOpenColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = new ArrayList<>();
-		columns.add(createColumn("date", "Date"));
-		columns.add(createColumn("low", "BigDecimal(34,12)"));
-		columns.add(createColumn("high", "BigDecimal(34,12)"));
-		columns.add(createColumn("close", "BigDecimal(34,12)"));
-
-		return createDatatable(columns, new ArrayList<>());
-	}
-
-	private DatatableResource createDatatableMissingLowColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = new ArrayList<>();
-		columns.add(createColumn("date", "Date"));
-		columns.add(createColumn("open", "BigDecimal(34,12)"));
-		columns.add(createColumn("high", "BigDecimal(34,12)"));
-		columns.add(createColumn("close", "BigDecimal(34,12)"));
-
-		return createDatatable(columns, new ArrayList<>());
-	}
-
-	private DatatableResource createDatatableMissingHighColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = new ArrayList<>();
-		columns.add(createColumn("date", "Date"));
-		columns.add(createColumn("open", "BigDecimal(34,12)"));
-		columns.add(createColumn("low", "BigDecimal(34,12)"));
-		columns.add(createColumn("close", "BigDecimal(34,12)"));
-
-		return createDatatable(columns, new ArrayList<>());
-	}
-
-	private DatatableResource createDatatableMissingCloseColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = new ArrayList<>();
-		columns.add(createColumn("date", "Date"));
-		columns.add(createColumn("open", "BigDecimal(34,12)"));
-		columns.add(createColumn("low", "BigDecimal(34,12)"));
-		columns.add(createColumn("high", "BigDecimal(34,12)"));
-
-		return createDatatable(columns, new ArrayList<>());
 	}
 
 	private ColumnResource createColumn( final String name, final String type ) {

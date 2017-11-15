@@ -39,6 +39,13 @@ public class ColumnResource {
 	private String name;
 	private String type;
 
+	public ColumnResource() {
+	}
+
+	public ColumnResource( final String name ) {
+		this.name = name;
+	}
+
 	public String getName() {
 		return name;
 	}
