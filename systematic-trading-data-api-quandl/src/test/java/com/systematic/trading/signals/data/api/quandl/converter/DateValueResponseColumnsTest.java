@@ -45,20 +45,17 @@ import com.systematic.trading.signals.data.api.quandl.resource.ColumnResource;
  * 
  * @author CJ Hare
  */
-public class AllResponseColumnsTest {
+public class DateValueResponseColumnsTest {
 
 	private static final String DATE_COLUMN_NAME = "date";
-	private static final String OPEN_PRICE_COLUMN_NAME = "open";
-	private static final String HIGH_PRICE_COLUMN_NAME = "high";
-	private static final String LOW_PRICE_COLUMN_NAME = "low";
-	private static final String CLOSE_PRICE_COLUMN_NAME = "close";
+	private static final String VALUE_COLUMN_NAME = "value";
 
 	/** Instance being tested. */
 	private ResponseColumns responseColumns;
 
 	@Before
 	public void setUp() {
-		responseColumns = new AllResponseColumns();
+		responseColumns = new DateValueResponseColumns();
 	}
 
 	@Test
@@ -89,35 +86,8 @@ public class AllResponseColumnsTest {
 	}
 
 	@Test
-	public void canParseMissingOpenPriceColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = createMissingOpenPriceColumn();
-
-		final boolean parsable = canParse(columns);
-
-		verfiyNotParsable(parsable);
-	}
-
-	@Test
-	public void canParseMissingClosePriceColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = createMissingClosePriceColumn();
-
-		final boolean parsable = canParse(columns);
-
-		verfiyNotParsable(parsable);
-	}
-
-	@Test
-	public void canParseMissingHighPriceColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = createMissingHighPriceColumn();
-
-		final boolean parsable = canParse(columns);
-
-		verfiyNotParsable(parsable);
-	}
-
-	@Test
-	public void canParseMissingLowPriceColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = createMissingLowPriceColumn();
+	public void canParseMissingValueColumn() throws CannotRetrieveDataException {
+		final List<ColumnResource> columns = createMissingValueColumn();
 
 		final boolean parsable = canParse(columns);
 
@@ -133,28 +103,28 @@ public class AllResponseColumnsTest {
 
 	@Test(expected = CannotRetrieveDataException.class)
 	public void missingOpenPriceColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = createMissingOpenPriceColumn();
+		final List<ColumnResource> columns = createMissingValueColumn();
 
 		openPriceIndex(columns);
 	}
 
 	@Test(expected = CannotRetrieveDataException.class)
 	public void missingClosePriceColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = createMissingClosePriceColumn();
+		final List<ColumnResource> columns = createMissingValueColumn();
 
 		closePriceIndex(columns);
 	}
 
 	@Test(expected = CannotRetrieveDataException.class)
 	public void missingHighPriceColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = createMissingHighPriceColumn();
+		final List<ColumnResource> columns = createMissingValueColumn();
 
 		highPriceIndex(columns);
 	}
 
 	@Test(expected = CannotRetrieveDataException.class)
 	public void missingLowPriceColumn() throws CannotRetrieveDataException {
-		final List<ColumnResource> columns = createMissingLowPriceColumn();
+		final List<ColumnResource> columns = createMissingValueColumn();
 
 		lowPriceIndex(columns);
 	}
@@ -183,7 +153,7 @@ public class AllResponseColumnsTest {
 
 		final int index = closePriceIndex(columns);
 
-		verifyIndex(4, index);
+		verifyIndex(1, index);
 	}
 
 	@Test
@@ -192,7 +162,7 @@ public class AllResponseColumnsTest {
 
 		final int index = highPriceIndex(columns);
 
-		verifyIndex(2, index);
+		verifyIndex(1, index);
 	}
 
 	@Test
@@ -201,7 +171,7 @@ public class AllResponseColumnsTest {
 
 		final int index = lowPriceIndex(columns);
 
-		verifyIndex(3, index);
+		verifyIndex(1, index);
 	}
 
 	private void verifyIndex( final int expected, final int actual ) {
@@ -245,30 +215,15 @@ public class AllResponseColumnsTest {
 	}
 
 	private List<ColumnResource> createAllColumns() {
-		return createColumns(DATE_COLUMN_NAME, OPEN_PRICE_COLUMN_NAME, HIGH_PRICE_COLUMN_NAME, LOW_PRICE_COLUMN_NAME,
-		        CLOSE_PRICE_COLUMN_NAME);
+		return createColumns(DATE_COLUMN_NAME, VALUE_COLUMN_NAME);
 	}
 
 	private List<ColumnResource> createMissingDateColumn() {
-		return createColumns(OPEN_PRICE_COLUMN_NAME, HIGH_PRICE_COLUMN_NAME, LOW_PRICE_COLUMN_NAME,
-		        CLOSE_PRICE_COLUMN_NAME);
+		return createColumns(VALUE_COLUMN_NAME);
 	}
 
-	private List<ColumnResource> createMissingOpenPriceColumn() {
-
-		return createColumns(DATE_COLUMN_NAME, HIGH_PRICE_COLUMN_NAME, LOW_PRICE_COLUMN_NAME, CLOSE_PRICE_COLUMN_NAME);
-	}
-
-	private List<ColumnResource> createMissingHighPriceColumn() {
-		return createColumns(DATE_COLUMN_NAME, OPEN_PRICE_COLUMN_NAME, LOW_PRICE_COLUMN_NAME, CLOSE_PRICE_COLUMN_NAME);
-	}
-
-	private List<ColumnResource> createMissingLowPriceColumn() {
-		return createColumns(DATE_COLUMN_NAME, OPEN_PRICE_COLUMN_NAME, HIGH_PRICE_COLUMN_NAME, CLOSE_PRICE_COLUMN_NAME);
-	}
-
-	private List<ColumnResource> createMissingClosePriceColumn() {
-		return createColumns(DATE_COLUMN_NAME, OPEN_PRICE_COLUMN_NAME, HIGH_PRICE_COLUMN_NAME, LOW_PRICE_COLUMN_NAME);
+	private List<ColumnResource> createMissingValueColumn() {
+		return createColumns(DATE_COLUMN_NAME);
 	}
 
 	private List<ColumnResource> createColumns( final String... names ) {

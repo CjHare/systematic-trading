@@ -37,24 +37,18 @@ import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.resource.ColumnResource;
 
 /**
- * Each of the columns expected columns are present.
+ * Only the date and the single columns are present.
  * 
  * @author CJ Hare
  */
-public class AllResponseColumns implements ResponseColumns {
+public class DateValueResponseColumns implements ResponseColumns {
 
 	private static final String DATE_COLUMN_NAME = "date";
-	private static final String OPEN_PRICE_COLUMN_NAME = "open";
-	private static final String HIGH_PRICE_COLUMN_NAME = "high";
-	private static final String LOW_PRICE_COLUMN_NAME = "low";
-	private static final String CLOSE_PRICE_COLUMN_NAME = "close";
+	private static final String VALUE_COLUMN_NAME = "value";
 
 	@Override
 	public boolean canParse( final List<ColumnResource> columns ) {
-		return containsColumnName(DATE_COLUMN_NAME, columns) && containsColumnName(OPEN_PRICE_COLUMN_NAME, columns)
-		        && containsColumnName(HIGH_PRICE_COLUMN_NAME, columns)
-		        && containsColumnName(LOW_PRICE_COLUMN_NAME, columns)
-		        && containsColumnName(CLOSE_PRICE_COLUMN_NAME, columns);
+		return containsColumnName(DATE_COLUMN_NAME, columns) && containsColumnName(VALUE_COLUMN_NAME, columns);
 	}
 
 	@Override
@@ -64,22 +58,22 @@ public class AllResponseColumns implements ResponseColumns {
 
 	@Override
 	public int openPriceIndex( final List<ColumnResource> columns ) throws CannotRetrieveDataException {
-		return getIndexOf(columns, OPEN_PRICE_COLUMN_NAME);
+		return getIndexOf(columns, VALUE_COLUMN_NAME);
 	}
 
 	@Override
 	public int highPriceIndex( final List<ColumnResource> columns ) throws CannotRetrieveDataException {
-		return getIndexOf(columns, HIGH_PRICE_COLUMN_NAME);
+		return getIndexOf(columns, VALUE_COLUMN_NAME);
 	}
 
 	@Override
 	public int lowPriceIndex( final List<ColumnResource> columns ) throws CannotRetrieveDataException {
-		return getIndexOf(columns, LOW_PRICE_COLUMN_NAME);
+		return getIndexOf(columns, VALUE_COLUMN_NAME);
 	}
 
 	@Override
 	public int closePriceIndex( final List<ColumnResource> columns ) throws CannotRetrieveDataException {
-		return getIndexOf(columns, CLOSE_PRICE_COLUMN_NAME);
+		return getIndexOf(columns, VALUE_COLUMN_NAME);
 	}
 
 	private int getIndexOf( final List<ColumnResource> columns, final String name ) throws CannotRetrieveDataException {

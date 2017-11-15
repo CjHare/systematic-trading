@@ -51,6 +51,9 @@ public class QuandlResponseConverter {
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private static final int TWO_DECIMAL_PLACES = 2;
 
+	private final AllResponseColumns allColumns = new AllResponseColumns();
+	private DateValueResponseColumns dateValueColumns = new DateValueResponseColumns();
+
 	/**
 	 * Verifies the expected data is present and converts into JSON data into the domain model.
 	 */
@@ -60,7 +63,7 @@ public class QuandlResponseConverter {
 		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<>();
 		final List<ColumnResource> columns = datatable.getColumns();
 		final List<List<Object>> data = datatable.getData();
-		final ResponseColumns mapping = getColumnMapping();
+		final ResponseColumns mapping = getColumnMapping(columns);
 		final int dateIndex = mapping.dateIndex(columns);
 		final int openPriceIndex = mapping.openPriceIndex(columns);
 		final int highPriceIndex = mapping.highPriceIndex(columns);
@@ -79,8 +82,13 @@ public class QuandlResponseConverter {
 		return prices.values().toArray(new TradingDayPrices[0]);
 	}
 
-	private ResponseColumns getColumnMapping() {
-		return new AllResponseColumns();
+	private ResponseColumns getColumnMapping( final List<ColumnResource> columns ) {
+
+		if (allColumns.canParse(columns)) {
+			return allColumns;
+		}
+
+		return dateValueColumns;
 	}
 
 	private BigDecimal getgPrice( final Object price ) {
