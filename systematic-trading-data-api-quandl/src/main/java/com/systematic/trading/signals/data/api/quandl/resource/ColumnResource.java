@@ -29,15 +29,17 @@
  */
 package com.systematic.trading.signals.data.api.quandl.resource;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
- * Column name and data type.
+ * Column resource contains at least the needed column name.
  * 
  * @author CJ Hare
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ColumnResource {
 
 	private String name;
-	private String type;
 
 	public ColumnResource() {
 	}
@@ -52,13 +54,5 @@ public class ColumnResource {
 
 	public void setName( final String name ) {
 		this.name = name;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType( final String type ) {
-		this.type = type;
 	}
 }

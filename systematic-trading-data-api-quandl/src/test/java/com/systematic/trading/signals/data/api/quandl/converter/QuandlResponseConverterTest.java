@@ -144,28 +144,27 @@ public class QuandlResponseConverterTest {
 
 	private List<ColumnResource> getStandardColumns() {
 		final List<ColumnResource> columns = new ArrayList<>();
-		columns.add(createColumn("date", "Date"));
-		columns.add(createColumn("open", "BigDecimal(34,12)"));
-		columns.add(createColumn("low", "BigDecimal(34,12)"));
-		columns.add(createColumn("high", "BigDecimal(34,12)"));
-		columns.add(createColumn("close", "BigDecimal(34,12)"));
+		columns.add(createColumn("date"));
+		columns.add(createColumn("open"));
+		columns.add(createColumn("low"));
+		columns.add(createColumn("high"));
+		columns.add(createColumn("close"));
 		return columns;
 	}
 
 	private List<ColumnResource> getShuffledColumns() {
 		final List<ColumnResource> columns = new ArrayList<>();
-		columns.add(createColumn("date", "Date"));
-		columns.add(createColumn("low", "BigDecimal(34,12)"));
-		columns.add(createColumn("close", "BigDecimal(34,12)"));
-		columns.add(createColumn("open", "BigDecimal(34,12)"));
-		columns.add(createColumn("high", "BigDecimal(34,12)"));
+		columns.add(createColumn("date"));
+		columns.add(createColumn("low"));
+		columns.add(createColumn("close"));
+		columns.add(createColumn("open"));
+		columns.add(createColumn("high"));
 		return columns;
 	}
 
-	private ColumnResource createColumn( final String name, final String type ) {
+	private ColumnResource createColumn( final String name ) {
 		final ColumnResource column = new ColumnResource();
 		column.setName(name);
-		column.setType(type);
 		return column;
 	}
 
