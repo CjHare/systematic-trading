@@ -64,7 +64,7 @@ public class UptrendsAndRsidTrial extends BaseTrial implements BacktestConfigura
 		final LaunchArguments launchArgs = new LaunchArguments(new CommandLineLaunchArgumentsParser(),
 		        new OutputLaunchArgument(validator), new DataServiceTypeLaunchArgument(),
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
-		        new EquityDatasetLaunchArgument(), new TickerSymbolLaunchArgument(validator),
+		        new EquityDatasetLaunchArgument(validator), new TickerSymbolLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), args);
 
 		new BacktestApplication(launchArgs.getDataService()).runBacktest(new UptrendsAndRsidTrial(), launchArgs);

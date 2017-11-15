@@ -41,10 +41,19 @@ import com.systematic.trading.backtest.input.LaunchArguments.ArgumentKey;
  */
 public class EquityDatasetLaunchArgument implements LaunchArgument<EquityDataset> {
 
+	/** Provides validation for the launch argument value.*/
+	private final LaunchArgumentValidator validator;
+
+	public EquityDatasetLaunchArgument( final LaunchArgumentValidator validator ) {
+		this.validator = validator;
+	}
+
 	@Override
 	public EquityDataset get( final Map<ArgumentKey, String> arguments ) {
 		final String dataset = arguments.get(ArgumentKey.EQUITY_DATASET);
 
-		return dataset == null ? null : new EquityDataset(dataset);
+		validator.validate(dataset, "%s argument is not present", ArgumentKey.EQUITY_DATASET.getKey());
+
+		return new EquityDataset(dataset);
 	}
 }
