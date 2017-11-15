@@ -31,6 +31,7 @@ package com.systematic.trading.signals.data.api.quandl.resource;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -41,6 +42,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DatasetResource {
 
 	private List<String> columns;
