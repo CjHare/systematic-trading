@@ -55,13 +55,13 @@ import com.systematic.trading.signals.data.api.quandl.resource.DatasetResource;
 import com.systematic.trading.signals.data.api.quandl.resource.DatasetResponseResource;
 
 /**
- * HTTP connection to the Quandl time-series API.
+ * HTTP connection to the Quandl time-series dataset API.
  * 
  * The time-series API allows different parameters to the tables API.
  * 
  * @author CJ Hare
  */
-public class HttpQuandlTimeSeriessApiDao implements QuandlApiDao {
+public class HttpQuandlDatasetApiDao implements QuandlApiDao {
 
 	private static final String PATH = "api/v3/datasets/%s/%s.json";
 	private static final String START_DATE_KEY = "start_date";
@@ -84,7 +84,7 @@ public class HttpQuandlTimeSeriessApiDao implements QuandlApiDao {
 	/** Staggered wait time between retry attempts.*/
 	private final int retryBackoffMs;
 
-	public HttpQuandlTimeSeriessApiDao( final EquityApiConfiguration configuration ) {
+	public HttpQuandlDatasetApiDao( final EquityApiConfiguration configuration ) {
 
 		// Registering the provider for POJO -> JSON
 		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);

@@ -65,8 +65,8 @@ import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.converter.QuandlResponseConverter;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
-import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlTablesApiDao;
-import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlTimeSeriessApiDao;
+import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlDatatableApiDao;
+import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlDatasetApiDao;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
@@ -119,11 +119,11 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private QuandlApiDao createDao( final DataServiceType type, final EquityApiConfiguration configuration ) {
 
 		if (isTimeSeriesDataService(type)) {
-			return new HttpQuandlTimeSeriessApiDao(configuration);
+			return new HttpQuandlDatasetApiDao(configuration);
 		}
 
 		if (isTablesDataService(type)) {
-			return new HttpQuandlTablesApiDao(configuration);
+			return new HttpQuandlDatatableApiDao(configuration);
 		}
 
 		throw new IllegalArgumentException(String.format("Data service type not catered for: %s", type.getType()));

@@ -62,7 +62,7 @@ import com.systematic.trading.signals.data.api.quandl.resource.DatatableResponse
  * 
  * @author CJ Hare
  */
-public class HttpQuandlTablesApiDao implements QuandlApiDao {
+public class HttpQuandlDatatableApiDao implements QuandlApiDao {
 
 	private static final String PATH = "api/v3/datatables/WIKI/PRICES.json";
 	private static final String COLUMN_NAMES_KEY = "qopts.columns";
@@ -88,7 +88,7 @@ public class HttpQuandlTablesApiDao implements QuandlApiDao {
 	/** Staggered wait time between retry attempts.*/
 	private final int retryBackoffMs;
 
-	public HttpQuandlTablesApiDao( final EquityApiConfiguration configuration ) {
+	public HttpQuandlDatatableApiDao( final EquityApiConfiguration configuration ) {
 
 		// Registering the provider for POJO -> JSON
 		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
