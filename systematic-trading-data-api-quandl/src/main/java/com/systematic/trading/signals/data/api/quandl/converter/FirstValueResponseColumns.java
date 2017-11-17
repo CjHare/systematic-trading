@@ -37,47 +37,64 @@ import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
 
 /**
- * Only the date and the single columns are present.
+ * Only the date and the first value column are used.
  * 
  * @author CJ Hare
  */
-public class DateValueResponseColumns implements ResponseColumns {
+public class FirstValueResponseColumns implements ResponseColumns {
 
+	private static int FIRST_INDEX = 1;
+	private static int SECOND_INDEX = 2;
 	private static final String DATE_COLUMN_NAME = "date";
-	private static final String VALUE_COLUMN_NAME = "value";
 
 	@Override
 	public boolean canParse( final List<QuandlColumnName> columns ) {
-		return containsColumnName(DATE_COLUMN_NAME, columns) && containsColumnName(VALUE_COLUMN_NAME, columns);
+		return containsColumnName(DATE_COLUMN_NAME, columns) && hasAtLeastOneValueColumn(columns);
 	}
 
 	@Override
 	public int dateIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return getIndexOf(columns, DATE_COLUMN_NAME);
+		return dateColumnIndex(columns);
 	}
 
 	@Override
 	public int openPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return getIndexOf(columns, VALUE_COLUMN_NAME);
+		return firstValueIndex(columns);
 	}
 
 	@Override
 	public int highPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return getIndexOf(columns, VALUE_COLUMN_NAME);
+		return firstValueIndex(columns);
 	}
 
 	@Override
 	public int lowPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return getIndexOf(columns, VALUE_COLUMN_NAME);
+		return firstValueIndex(columns);
 	}
 
 	@Override
 	public int closePriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return getIndexOf(columns, VALUE_COLUMN_NAME);
+		return firstValueIndex(columns);
 	}
 
-	private int getIndexOf( final List<QuandlColumnName> columns, final String name )
-	        throws CannotRetrieveDataException {
+	private int firstValueIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+		if (hasAtLeastOneValueColumn(columns)) {
+			return indexOf(columns, DATE_COLUMN_NAME) != FIRST_INDEX ? FIRST_INDEX : SECOND_INDEX;
+
+		}
+
+		throw new CannotRetrieveDataException(String.format("Missing any value column"));
+	}
+
+	private boolean hasAtLeastOneValueColumn( final List<QuandlColumnName> columns ) {
+		return columns.size() > 1;
+	}
+
+	private int dateColumnIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+		return indexOf(columns, DATE_COLUMN_NAME);
+	}
+
+	private int indexOf( final List<QuandlColumnName> columns, final String name ) throws CannotRetrieveDataException {
 
 		for (int i = 0; i < columns.size(); i++) {
 			if (columnNameEquals(name, columns.get(i))) {

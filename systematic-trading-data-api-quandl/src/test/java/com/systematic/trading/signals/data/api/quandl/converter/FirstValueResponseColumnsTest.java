@@ -41,21 +41,22 @@ import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
 
 /**
- * Verifies AllResponseColumns behaviour.
+ * Verifies response column behaviour for extracting a date with the first value only.
  * 
  * @author CJ Hare
  */
-public class DateValueResponseColumnsTest {
+public class FirstValueResponseColumnsTest {
 
 	private static final String DATE_COLUMN_NAME = "date";
-	private static final String VALUE_COLUMN_NAME = "value";
+	private static final String FIRST_VALUE_COLUMN_NAME = "first_value";
+	private static final String SECOND_VALUE_COLUMN_NAME = "second_value";
 
 	/** Instance being tested. */
 	private ResponseColumns responseColumns;
 
 	@Before
 	public void setUp() {
-		responseColumns = new DateValueResponseColumns();
+		responseColumns = new FirstValueResponseColumns();
 	}
 
 	@Test
@@ -215,11 +216,11 @@ public class DateValueResponseColumnsTest {
 	}
 
 	private List<QuandlColumnName> createAllColumns() {
-		return createColumns(DATE_COLUMN_NAME, VALUE_COLUMN_NAME);
+		return createColumns(DATE_COLUMN_NAME, FIRST_VALUE_COLUMN_NAME, SECOND_VALUE_COLUMN_NAME);
 	}
 
 	private List<QuandlColumnName> createMissingDateColumn() {
-		return createColumns(VALUE_COLUMN_NAME);
+		return createColumns(FIRST_VALUE_COLUMN_NAME, SECOND_VALUE_COLUMN_NAME);
 	}
 
 	private List<QuandlColumnName> createMissingValueColumn() {

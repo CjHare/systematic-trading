@@ -52,7 +52,7 @@ public class QuandlResponseConverter {
 	private static final int TWO_DECIMAL_PLACES = 2;
 
 	private final AllResponseColumns allColumns = new AllResponseColumns();
-	private DateValueResponseColumns dateValueColumns = new DateValueResponseColumns();
+	private FirstValueResponseColumns dateValueColumns = new FirstValueResponseColumns();
 
 	/**
 	 * Verifies the expected data is present and converts into JSON data into the domain model.
