@@ -62,7 +62,6 @@ public class DescriptionGenerator {
 	private static final String SEPARATOR = "_";
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
-	private static final String EXIT_LOGIC = "HoldForever";
 	private static final String OPERATOR_PREFIX = "(";
 	private static final String OPERATOR_SUFFIX = ")";
 
@@ -85,7 +84,6 @@ public class DescriptionGenerator {
 		out.add(brokerage(configuration.getBrokerageFees()));
 		out.add(cashAccount(configuration.getCashAccount()));
 		out.add(configuration.getStrategy().getDescription());
-		out.add(EXIT_LOGIC);
 		return out.toString();
 	}
 
@@ -97,7 +95,6 @@ public class DescriptionGenerator {
 		out.add(deposit(depositAmount));
 		out.add(cashAccount(configuration.getCashAccount()));
 		out.add(configuration.getStrategy().getDescription());
-		out.add(EXIT_LOGIC);
 		return out.toString();
 	}
 
@@ -124,10 +121,10 @@ public class DescriptionGenerator {
 	public String periodicEntry( final PeriodicConfiguration frequency ) {
 		switch (frequency) {
 			case WEEKLY:
-				return "Buy_Weekly";
+				return "Buy-Weekly";
 
 			case MONTHLY:
-				return "Buy_Monthly";
+				return "Buy-Monthly";
 
 			default:
 				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", frequency));
