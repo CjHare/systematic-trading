@@ -137,6 +137,19 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 		                                getShortEmaOrSmaConfirmedByEma()),
 		                        entryPositionSizing, exit, exitPositionSizing)));
 
+		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		        factory.strategy(getLongEma(), entryPositionSizing, exit, exitPositionSizing)));
+
+		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		        factory.strategy(getLongSma(), entryPositionSizing, exit, exitPositionSizing)));
+
+		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		        factory.strategy(getLongEmaOrSma(), entryPositionSizing, exit, exitPositionSizing)));
+
+		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, factory.strategy(
+		        factory.entry(getLongMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR, getLongEmaOrSma()),
+		        entryPositionSizing, exit, exitPositionSizing)));
+
 		return configurations;
 	}
 
@@ -222,5 +235,20 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 
 		return factory.entry(converter.translate(EmaUptrendConfiguration.LONG));
+	}
+
+	private EntryConfiguration getLongSma() {
+		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+
+		return factory.entry(converter.translate(SmaUptrendConfiguration.LONG));
+	}
+
+	private EntryConfiguration getLongEmaOrSma() {
+		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+
+		return factory.entry(factory.entry(converter.translate(SmaUptrendConfiguration.LONG)),
+		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(EmaUptrendConfiguration.LONG)));
 	}
 }
