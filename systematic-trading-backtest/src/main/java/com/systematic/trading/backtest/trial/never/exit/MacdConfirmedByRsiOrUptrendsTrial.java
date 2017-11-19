@@ -101,6 +101,17 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 		configurations.addAll(getMacdConfirmedByRsiOrUptrends(equity, simulationDates, deposit,
 		        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
 
+		configurations.addAll(
+		        getMacd(equity, simulationDates, deposit, new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
+
+		configurations.addAll(
+		        getRsi(equity, simulationDates, deposit, new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
+
+		configurations.addAll(getSmaEmaUptrendsAndRsi(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
+		        minimumTrade, maximumTrade));
+
+		//TODO short RSI confirmed by Medium MACD
+
 		return configurations;
 	}
 
@@ -117,13 +128,17 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 		        factory.strategy(getMediumMacdConfirmedByRsi(), entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-		        factory.strategy(factory.entry(getMediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR,
-		                getShortSmaConfirmedByEma()), entryPositionSizing, exit, exitPositionSizing)));
+		configurations
+		        .add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		                factory.strategy(factory.entry(getMediumMacdConfirmedByRsi(),
+		                        OperatorConfiguration.Selection.OR, getShortSmaConfirmedByEma()), entryPositionSizing,
+		                        exit, exitPositionSizing)));
 
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
-		        factory.strategy(factory.entry(getMediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR,
-		                getShortEmaConfirmedByEma()), entryPositionSizing, exit, exitPositionSizing)));
+		configurations
+		        .add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		                factory.strategy(factory.entry(getMediumMacdConfirmedByRsi(),
+		                        OperatorConfiguration.Selection.OR, getShortEmaConfirmedByEma()), entryPositionSizing,
+		                        exit, exitPositionSizing)));
 
 		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 		        factory.strategy(
@@ -146,9 +161,11 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
 		        factory.strategy(getLongEmaOrSma(), entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, factory.strategy(
-		        factory.entry(getMediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR, getLongEmaOrSma()),
-		        entryPositionSizing, exit, exitPositionSizing)));
+		configurations
+		        .add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		                factory.strategy(factory.entry(getMediumMacdConfirmedByRsi(),
+		                        OperatorConfiguration.Selection.OR, getLongEmaOrSma()), entryPositionSizing, exit,
+		                        exitPositionSizing)));
 
 		return configurations;
 	}
