@@ -263,4 +263,57 @@ public abstract class BaseTrial {
 
 		return configurations;
 	}
+
+	protected List<BacktestBootstrapConfiguration> getEmaUptrendsAndRsi( final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
+		        EmaUptrendConfiguration.values().length * SmaUptrendConfiguration.values().length);
+
+		for (final EmaUptrendConfiguration emaConfiguration : EmaUptrendConfiguration.values()) {
+			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+
+				final EntryConfiguration entry = factory.entry(factory.entry(converter.translate(emaConfiguration)),
+				        OperatorConfiguration.Selection.AND, factory.entry(converter.translate(rsiConfiguration)));
+				final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade,
+				        maximumTrade);
+				final ExitConfiguration exit = factory.exit();
+				final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
+				final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
+				        exitPositionSizing);
+				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, strategy));
+			}
+		}
+
+		return configurations;
+	}
+
+	protected List<BacktestBootstrapConfiguration> getSmaUptrendsAndRsi( final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
+		        EmaUptrendConfiguration.values().length * SmaUptrendConfiguration.values().length);
+
+		for (final SmaUptrendConfiguration smaConfiguration : SmaUptrendConfiguration.values()) {
+			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+
+				final EntryConfiguration entry = factory.entry(factory.entry(converter.translate(smaConfiguration)),
+				        OperatorConfiguration.Selection.AND, factory.entry(converter.translate(rsiConfiguration)));
+				final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade,
+				        maximumTrade);
+				final ExitConfiguration exit = factory.exit();
+				final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
+				final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
+				        exitPositionSizing);
+				configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, strategy));
+			}
+		}
+
+		return configurations;
+	}
+
 }

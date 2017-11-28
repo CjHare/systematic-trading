@@ -110,7 +110,11 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 		configurations.addAll(getSmaEmaUptrendsAndRsi(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
 		        minimumTrade, maximumTrade));
 
-		//TODO short RSI confirmed by Medium MACD
+		configurations.addAll(getEmaUptrendsAndRsi(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
+		        minimumTrade, maximumTrade));
+
+		configurations.addAll(getSmaUptrendsAndRsi(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
+		        minimumTrade, maximumTrade));
 
 		return configurations;
 	}
