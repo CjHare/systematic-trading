@@ -27,10 +27,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial.never.exit.same.brokerage;
+package com.systematic.trading.backtest.trial.never.exit;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -38,11 +37,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
-import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
-import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.backtest.input.EndDateLaunchArgument;
@@ -58,13 +53,13 @@ import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.AllTrials;
 
 /**
- * All strategies, all sizing combinations with actual brokerage.
+ * All strategies using the same Vanguard brokerage.
  * <p/>
  * Purpose being to remove the position sizing and brokerage variables when comparing. 
  * 
  * @author CJ Hare
  */
-public class AllStrategiesTrial extends AllTrials implements BacktestConfiguration {
+public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implements BacktestConfiguration {
 
 	public static void main( final String... args ) throws Exception {
 
@@ -76,33 +71,17 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 		        new EquityDatasetLaunchArgument(validator), new TickerSymbolLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), args);
 
-		new BacktestApplication(launchArgs.getDataService()).runBacktest(new AllStrategiesTrial(), launchArgs);
+		new BacktestApplication(launchArgs.getDataService()).runBacktest(new AllStratgiesAgnosticSizingBrokerageTrial(),
+		        launchArgs);
 	}
 
 	private static Set<Pair<MinimumTrade, MaximumTrade>> getPositionSizing() {
 		final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes = new HashSet<>();
-
-		for (final MinimumTrade minimum : MinimumTrade.values()) {
-			for (final MaximumTrade maximum : MaximumTrade.values()) {
-				tradeSizes.add(new ImmutablePair<MinimumTrade, MaximumTrade>(minimum, maximum));
-			}
-		}
-
+		tradeSizes.add(new ImmutablePair<MinimumTrade, MaximumTrade>(MinimumTrade.ZERO, MaximumTrade.ALL));
 		return tradeSizes;
 	}
 
-	public AllStrategiesTrial() {
-		super(new CmcMarketsBrokerageFees(), getPositionSizing());
-	}
-
-	@Override
-	public List<BacktestBootstrapConfiguration> get( EquityConfiguration equity,
-	        BacktestSimulationDates simulationDates, DepositConfiguration deposit ) {
-		List<BacktestBootstrapConfiguration> configurations = super.get(equity, simulationDates, deposit);
-
-		// Vanguard Retail - baseline
-		configurations.add(getBaseline(equity, simulationDates, deposit));
-
-		return configurations;
+	public AllStratgiesAgnosticSizingBrokerageTrial() {
+		super(new VanguardBrokerageFees(), getPositionSizing());
 	}
 }

@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.trial.never.exit.same.brokerage;
+package com.systematic.trading.backtest.trial.never.exit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +52,11 @@ import com.systematic.trading.backtest.trial.BaseTrial;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
 /**
- * Each of the MACD and RSI indicators.
+ * Executes all the combinations of SMA and EMA uptrrends. When there is either an SMA or EMA signal it's a buy signal.
  * 
  * @author CJ Hare
  */
-public class MacdRsiTrial extends BaseTrial implements BacktestConfiguration {
+public class EmaUptrendOrSmaUptrendTrial extends BaseTrial implements BacktestConfiguration {
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
@@ -67,7 +67,7 @@ public class MacdRsiTrial extends BaseTrial implements BacktestConfiguration {
 		        new EquityDatasetLaunchArgument(validator), new TickerSymbolLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), args);
 
-		new BacktestApplication(launchArgs.getDataService()).runBacktest(new MacdRsiTrial(), launchArgs);
+		new BacktestApplication(launchArgs.getDataService()).runBacktest(new EmaUptrendOrSmaUptrendTrial(), launchArgs);
 	}
 
 	@Override
@@ -85,9 +85,8 @@ public class MacdRsiTrial extends BaseTrial implements BacktestConfiguration {
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(getMacd(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 		configurations
-		        .addAll(getMacdConfirmedByRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		        .addAll(getSmaOrEmaUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}
