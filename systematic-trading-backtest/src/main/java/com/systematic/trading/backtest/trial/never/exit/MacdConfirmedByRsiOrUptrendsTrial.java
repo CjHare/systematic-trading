@@ -32,7 +32,6 @@ import com.systematic.trading.backtest.BacktestApplication;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
-import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -71,6 +70,7 @@ import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeSt
  * @author CJ Hare
  */
 public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements BacktestConfiguration {
+
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
@@ -91,8 +91,8 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(
-		        getPeriod(equity, simulationDates, deposit, new VanguardBrokerageFees(), PeriodicConfiguration.WEEKLY));
+		configurations.add(getPeriod(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
+		        PeriodicConfiguration.MONTHLY));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final MinimumTrade minimumTrade = MinimumTrade.ONE_THOUSAND;
