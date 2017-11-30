@@ -32,11 +32,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
-import com.systematic.trading.backtest.input.LaunchArguments;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.HibernateDataService;
@@ -64,9 +62,7 @@ public class Backtest {
 		this.updateService = updateService;
 	}
 
-	//TODO move deposit amount up
-	public void run( final EquityConfiguration equity, final DepositConfiguration depositAmount,
-	        final LaunchArguments arguments, final BacktestBootstrapConfiguration configuration,
+	public void run( final EquityConfiguration equity, final BacktestBootstrapConfiguration configuration,
 	        final BacktestOutput output ) throws ServiceException {
 
 		final BacktestBootstrapContext context = createContext(configuration, output);

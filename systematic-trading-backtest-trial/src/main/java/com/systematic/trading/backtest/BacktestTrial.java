@@ -135,7 +135,7 @@ public class BacktestTrial {
 				LOG.info("Backtesting beginning for: {}",
 				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, depositAmount));
 
-				new Backtest(updateService).run(equity, depositAmount, parserdArguments, backtestConfiguration, output);
+				new Backtest(updateService).run(equity, backtestConfiguration, output);
 
 				LOG.info("Backtesting complete for: {}",
 				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, depositAmount));
