@@ -35,8 +35,8 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.systematic.trading.backtest.Backtest;
 import com.systematic.trading.backtest.BacktestConfiguration;
+import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.backtest.input.DataServiceTypeLaunchArgument;
@@ -71,7 +71,7 @@ public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implemen
 		        new EquityDatasetLaunchArgument(validator), new TickerSymbolLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), args);
 
-		new Backtest(launchArgs.getDataService()).runBacktest(new AllStratgiesAgnosticSizingBrokerageTrial(),
+		new BacktestTrial(launchArgs.getDataService()).runBacktest(new AllStratgiesAgnosticSizingBrokerageTrial(),
 		        launchArgs);
 	}
 

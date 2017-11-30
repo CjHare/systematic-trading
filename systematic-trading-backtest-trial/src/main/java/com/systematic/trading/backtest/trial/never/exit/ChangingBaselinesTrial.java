@@ -28,9 +28,9 @@ package com.systematic.trading.backtest.trial.never.exit;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.backtest.Backtest;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
+import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
@@ -65,7 +65,7 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 		        new EquityDatasetLaunchArgument(validator), new TickerSymbolLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), args);
 
-		new Backtest(launchArgs.getDataService()).runBacktest(new ChangingBaselinesTrial(), launchArgs);
+		new BacktestTrial(launchArgs.getDataService()).runBacktest(new ChangingBaselinesTrial(), launchArgs);
 	}
 
 	@Override
@@ -76,13 +76,13 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 		// Date based buying
 		configurations.add(
 		        getPeriod(equity, simulationDates, deposit, new VanguardBrokerageFees(), PeriodicConfiguration.WEEKLY));
-		
+
 		configurations.add(getPeriod(equity, simulationDates, deposit, new VanguardBrokerageFees(),
 		        PeriodicConfiguration.MONTHLY));
 
 		configurations.add(getPeriod(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
 		        PeriodicConfiguration.WEEKLY));
-		
+
 		configurations.add(getPeriod(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
 		        PeriodicConfiguration.MONTHLY));
 
