@@ -57,8 +57,6 @@ import com.systematic.trading.strategy.indicator.configuration.IndicatorConfigur
 public class DescriptionGenerator {
 	// TODO interface - one for file, another for console, another for elastic?
 
-	//TODO add the dates for the test too?
-
 	private static final String SEPARATOR = "_";
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
@@ -107,14 +105,13 @@ public class DescriptionGenerator {
 	}
 
 	private String getNiceDisplay( final Period time ) {
+		
 		if (Period.ofDays(7).equals(time)) {
 			return "Weekly";
 		}
-
 		if (Period.ofMonths(1).equals(time)) {
 			return "Monthly";
 		}
-
 		if (Period.ofYears(1).equals(time)) {
 			return "Yearly";
 		}
@@ -143,13 +140,11 @@ public class DescriptionGenerator {
 	        final EntryConfiguration righEntry ) {
 
 		final StringBuilder out = new StringBuilder();
-
 		out.append(entryDisplay(leftEntry));
 		out.append(SEPARATOR);
 		out.append(op.name());
 		out.append(SEPARATOR);
 		out.append(entryDisplay(righEntry));
-
 		return out.toString();
 	}
 
@@ -169,7 +164,7 @@ public class DescriptionGenerator {
 
 	public String entry( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
-
+		
 		final int delay = confirmBy.getDelayUntilConfirmationRange();
 		final int range = confirmBy.getConfirmationDayRange();
 		final StringJoiner out = new StringJoiner(SEPARATOR);
@@ -182,7 +177,6 @@ public class DescriptionGenerator {
 		out.add(String.valueOf(delay + range));
 		out.add("days");
 		return out.toString();
-
 	}
 
 	private String equity( final EquityConfiguration equity ) {
