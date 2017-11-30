@@ -28,7 +28,7 @@ package com.systematic.trading.backtest.trial.never.exit;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.backtest.BacktestApplication;
+import com.systematic.trading.backtest.Backtest;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
@@ -78,7 +78,7 @@ public class MacdConfirmedByRsiTrial extends BaseTrial implements BacktestConfig
 		        new EquityDatasetLaunchArgument(validator), new TickerSymbolLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), args);
 
-		new BacktestApplication(launchArgs.getDataService()).runBacktest(new MacdConfirmedByRsiTrial(), launchArgs);
+		new Backtest(launchArgs.getDataService()).runBacktest(new MacdConfirmedByRsiTrial(), launchArgs);
 	}
 
 	@Override

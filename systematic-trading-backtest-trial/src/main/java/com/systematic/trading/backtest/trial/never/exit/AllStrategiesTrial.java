@@ -36,7 +36,7 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.systematic.trading.backtest.BacktestApplication;
+import com.systematic.trading.backtest.Backtest;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
@@ -76,7 +76,7 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 		        new EquityDatasetLaunchArgument(validator), new TickerSymbolLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), args);
 
-		new BacktestApplication(launchArgs.getDataService()).runBacktest(new AllStrategiesTrial(), launchArgs);
+		new Backtest(launchArgs.getDataService()).runBacktest(new AllStrategiesTrial(), launchArgs);
 	}
 
 	private static Set<Pair<MinimumTrade, MaximumTrade>> getPositionSizing() {

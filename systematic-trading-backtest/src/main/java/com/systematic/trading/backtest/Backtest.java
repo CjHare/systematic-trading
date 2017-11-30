@@ -73,21 +73,23 @@ import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
 
 /**
- * Performs the initial configuration common between all back tests, including hardware configuration.
+ * Connects together the various parts and performs the back testing.
  * 
  * @author CJ Hare
  */
-public class BacktestApplication {
+public class Backtest {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(BacktestApplication.class);
+	private static final Logger LOG = LogManager.getLogger(Backtest.class);
 
 	// TODO the description is specific to the type of output - file, console, elastic :. refactor - move into BacktestLaunchArgumentParser
 	private final DescriptionGenerator description = new StandardDescriptionGenerator();
 
 	private final DataServiceUpdater updateService;
 
-	public BacktestApplication( final DataServiceType serviceType ) throws ServiceException {
+	//TODO inject more things here from runBacktest - reusable for backtest & analysis
+	
+	public Backtest( final DataServiceType serviceType ) throws ServiceException {
 
 		try {
 			this.updateService = new DataServiceUpdaterImpl(serviceType);

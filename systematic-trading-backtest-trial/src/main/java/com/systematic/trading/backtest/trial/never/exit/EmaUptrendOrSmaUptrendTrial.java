@@ -28,7 +28,7 @@ package com.systematic.trading.backtest.trial.never.exit;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.backtest.BacktestApplication;
+import com.systematic.trading.backtest.Backtest;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
@@ -67,7 +67,7 @@ public class EmaUptrendOrSmaUptrendTrial extends BaseTrial implements BacktestCo
 		        new EquityDatasetLaunchArgument(validator), new TickerSymbolLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), args);
 
-		new BacktestApplication(launchArgs.getDataService()).runBacktest(new EmaUptrendOrSmaUptrendTrial(), launchArgs);
+		new Backtest(launchArgs.getDataService()).runBacktest(new EmaUptrendOrSmaUptrendTrial(), launchArgs);
 	}
 
 	@Override
