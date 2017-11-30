@@ -56,8 +56,6 @@ public class Backtest {
 
 	private final DataServiceUpdater updateService;
 
-	//TODO inject more things here from runBacktest - reusable for backtest & analysis
-
 	public Backtest( final DataServiceUpdater updateService ) throws ServiceException {
 		this.updateService = updateService;
 	}
