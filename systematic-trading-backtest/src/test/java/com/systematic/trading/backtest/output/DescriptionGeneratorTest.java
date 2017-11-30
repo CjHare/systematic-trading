@@ -45,14 +45,19 @@ import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurati
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
+import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * Verifying the DescriptionGenerator.
@@ -87,6 +92,16 @@ public class DescriptionGeneratorTest {
 	}
 
 	@Test
+	public void bootstrapConfigurationWithDeposit() {
+		final BacktestBootstrapConfiguration configuration = setUpBootstrapConfiguration();
+		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_150;
+
+		final String description = descriptions.getDescription(configuration, depositAmount);
+
+		assertEquals("ZXY_SelfWealth_Deposit_150_Weekly_InterestDaily_sTrategy-deScription", description);
+	}
+
+	@Test
 	public void strategy() {
 		final EntryConfiguration entry = setUpEntry("eNTry");
 		final EntrySizeConfiguration entryPositionSizing = setUpEntrySizing("EntrySizing");
@@ -96,6 +111,72 @@ public class DescriptionGeneratorTest {
 		final String description = descriptions.getDescription(entry, entryPositionSizing, exit, exitPositionSizing);
 
 		assertEquals("eNTry_EntrySizing_exIT_eXItSizing", description);
+	}
+
+	@Test
+	public void periodicEntry() {
+		final PeriodicConfiguration frequency = PeriodicConfiguration.MONTHLY;
+
+		final String description = descriptions.periodicEntry(frequency);
+
+		assertEquals("Buy-Monthly", description);
+	}
+
+	@Test
+	public void indicator() {
+		final IndicatorConfiguration indicator = setUpIndicator();
+
+		final String description = descriptions.indicator(indicator);
+
+		assertEquals("Indicator", description);
+	}
+
+	@Test
+	public void entryLogicalOr() {
+		final EntryConfiguration leftEntry = setUpEntry("LEFT-Entry");
+		final EntryConfiguration rightEntry = setUpEntry("RIGHT-Entry");
+
+		final String description = descriptions.entry(leftEntry, OperatorConfiguration.Selection.OR, rightEntry);
+
+		assertEquals("LEFT-Entry_OR_RIGHT-Entry", description);
+	}
+
+	@Test
+	public void entryLogicalOrLeftSubEntry() {
+		final EntryConfiguration leftEntry = setUpEntryWithSubEntry("LEFT-Entry");
+		final EntryConfiguration rightEntry = setUpEntryWithSubEntry("RIGHT-Entry");
+
+		final String description = descriptions.entry(leftEntry, OperatorConfiguration.Selection.OR, rightEntry);
+
+		assertEquals("(LEFT-Entry)_OR_(RIGHT-Entry)", description);
+	}
+
+	@Test
+	public void entryConfirmation() {
+		final EntryConfiguration anchor = setUpEntry("anCHor");
+		final EntryConfiguration confirmation = setUpEntry("CONfirmaTION");
+
+		final String description = descriptions.entry(anchor, ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_FOUR_DAYS,
+		        confirmation);
+
+		assertEquals("anCHor_confirmedBy_CONfirmaTION_in_1_to_5_days", description);
+	}
+
+	@Test
+	public void entryConfirmationSubEntries() {
+		final EntryConfiguration anchor = setUpEntryWithSubEntry("anCHor");
+		final EntryConfiguration confirmation = setUpEntryWithSubEntry("CONfirmaTION");
+
+		final String description = descriptions.entry(anchor, ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_FOUR_DAYS,
+		        confirmation);
+
+		assertEquals("(anCHor)_confirmedBy_(CONfirmaTION)_in_1_to_5_days", description);
+	}
+
+	private IndicatorConfiguration setUpIndicator() {
+		final IndicatorConfiguration indicator = mock(IndicatorConfiguration.class);
+		when(indicator.getId()).thenReturn(new IndicatorId("Indicator"));
+		return indicator;
 	}
 
 	private ExitSizeConfiguration setUpExitSizing( final String description ) {
@@ -113,6 +194,13 @@ public class DescriptionGeneratorTest {
 	private EntrySizeConfiguration setUpEntrySizing( final String description ) {
 		final EntrySizeConfiguration entry = mock(EntrySizeConfiguration.class);
 		when(entry.getDescription()).thenReturn(description);
+		return entry;
+	}
+
+	private EntryConfiguration setUpEntryWithSubEntry( final String description ) {
+		final EntryConfiguration entry = mock(EntryConfiguration.class);
+		when(entry.getDescription()).thenReturn(description);
+		when(entry.hasSubEntry()).thenReturn(true);
 		return entry;
 	}
 
