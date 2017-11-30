@@ -63,7 +63,7 @@ public class DescriptionGenerator {
 	private static final String OPERATOR_PREFIX = "(";
 	private static final String OPERATOR_SUFFIX = ")";
 
-	public String getDescription( final EntryConfiguration entry, final EntrySizeConfiguration entryPositionSizing,
+	public String strategy( final EntryConfiguration entry, final EntrySizeConfiguration entryPositionSizing,
 	        final ExitConfiguration exit, final ExitSizeConfiguration exitPositionSizing ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(entry.getDescription());
@@ -73,14 +73,14 @@ public class DescriptionGenerator {
 		return out.toString();
 	}
 
-	public String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	public String positionSize( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(minimumTradeValue(minimumTrade));
 		out.add(maximumTradeValue(maximumTrade));
 		return out.toString();
 	}
 
-	public String getDescription( final BacktestBootstrapConfiguration configuration ) {
+	public String bootstrapConfiguration( final BacktestBootstrapConfiguration configuration ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(equity(configuration.getEquity()));
 		out.add(brokerage(configuration.getBrokerageFees()));
@@ -89,7 +89,7 @@ public class DescriptionGenerator {
 		return out.toString();
 	}
 
-	public String getDescription( final BacktestBootstrapConfiguration configuration,
+	public String bootstrapConfigurationWithDeposit( final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(equity(configuration.getEquity()));
@@ -98,25 +98,6 @@ public class DescriptionGenerator {
 		out.add(cashAccount(configuration.getCashAccount()));
 		out.add(configuration.getStrategy().getDescription());
 		return out.toString();
-	}
-
-	private String deposit( final DepositConfiguration depositAmount ) {
-		return String.format("Deposit_%s_%s", depositAmount.getAmount(), getNiceDisplay(depositAmount.getFrequency()));
-	}
-
-	private String getNiceDisplay( final Period time ) {
-		
-		if (Period.ofDays(7).equals(time)) {
-			return "Weekly";
-		}
-		if (Period.ofMonths(1).equals(time)) {
-			return "Monthly";
-		}
-		if (Period.ofYears(1).equals(time)) {
-			return "Yearly";
-		}
-
-		return time.toString();
 	}
 
 	public String periodicEntry( final PeriodicConfiguration frequency ) {
@@ -148,23 +129,9 @@ public class DescriptionGenerator {
 		return out.toString();
 	}
 
-	private String entryDisplay( final EntryConfiguration entry ) {
-
-		final StringBuilder out = new StringBuilder();
-		if (entry.hasSubEntry()) {
-			out.append(OPERATOR_PREFIX);
-		}
-		out.append(entry.getDescription());
-		if (entry.hasSubEntry()) {
-			out.append(OPERATOR_SUFFIX);
-		}
-
-		return out.toString();
-	}
-
 	public String entry( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
-		
+
 		final int delay = confirmBy.getDelayUntilConfirmationRange();
 		final int range = confirmBy.getConfirmationDayRange();
 		final StringJoiner out = new StringJoiner(SEPARATOR);
@@ -176,6 +143,39 @@ public class DescriptionGenerator {
 		out.add("to");
 		out.add(String.valueOf(delay + range));
 		out.add("days");
+		return out.toString();
+	}
+
+	private String deposit( final DepositConfiguration depositAmount ) {
+		return String.format("Deposit_%s_%s", depositAmount.getAmount(), getNiceDisplay(depositAmount.getFrequency()));
+	}
+
+	private String getNiceDisplay( final Period time ) {
+
+		if (Period.ofDays(7).equals(time)) {
+			return "Weekly";
+		}
+		if (Period.ofMonths(1).equals(time)) {
+			return "Monthly";
+		}
+		if (Period.ofYears(1).equals(time)) {
+			return "Yearly";
+		}
+
+		return time.toString();
+	}
+
+	private String entryDisplay( final EntryConfiguration entry ) {
+
+		final StringBuilder out = new StringBuilder();
+		if (entry.hasSubEntry()) {
+			out.append(OPERATOR_PREFIX);
+		}
+		out.append(entry.getDescription());
+		if (entry.hasSubEntry()) {
+			out.append(OPERATOR_SUFFIX);
+		}
+
 		return out.toString();
 	}
 

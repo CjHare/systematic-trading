@@ -73,6 +73,6 @@ public class StrategyConfiguration implements Describable {
 
 	@Override
 	public String getDescription() {
-		return new DescriptionGenerator().getDescription(entry, entryPositionSizing, exit, exitPositionSizing);
+		return new DescriptionGenerator().strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 	}
 }

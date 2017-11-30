@@ -234,11 +234,11 @@ public class BacktestApplication {
 			        equity.getEquityIdentity(), configuration.getBacktestDates(), warmUp);
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
-			LOG.info("Backtesting beginning for: {}", () -> description.getDescription(configuration, depositAmount));
+			LOG.info("Backtesting beginning for: {}", () -> description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
 
 			bootstrap.run();
 
-			LOG.info("Backtesting complete for: {}", () -> description.getDescription(configuration, depositAmount));
+			LOG.info("Backtesting complete for: {}", () -> description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
 		}
 
 		LOG.info("All Simulations have been completed for deposit amount: {}", () -> depositAmount);
@@ -307,12 +307,12 @@ public class BacktestApplication {
 
 	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
-		return new BacktestBatchId(new DescriptionGenerator().getDescription(configuration, depositAmount));
+		return new BacktestBatchId(new DescriptionGenerator().bootstrapConfigurationWithDeposit(configuration, depositAmount));
 	}
 
 	private String getOutputDirectory( final String baseOutputDirectory,
 	        final BacktestBootstrapConfiguration configuration ) {
-		return String.format("%s%s", baseOutputDirectory, description.getDescription(configuration));
+		return String.format("%s%s", baseOutputDirectory, description.bootstrapConfiguration(configuration));
 	}
 
 	private void recordSimulationDates( final BacktestSimulationDates simulationDates ) {

@@ -77,7 +77,7 @@ public class DescriptionGeneratorTest {
 
 	@Test
 	public void minMaxs() {
-		final String description = descriptions.getDescription(MinimumTrade.FIVE_HUNDRED, MaximumTrade.HALF);
+		final String description = descriptions.positionSize(MinimumTrade.FIVE_HUNDRED, MaximumTrade.HALF);
 
 		assertEquals("Minimum_500_Maximum_50_percent", description);
 	}
@@ -86,7 +86,7 @@ public class DescriptionGeneratorTest {
 	public void bootstrapConfiguration() {
 		final BacktestBootstrapConfiguration configuration = setUpBootstrapConfiguration();
 
-		final String description = descriptions.getDescription(configuration);
+		final String description = descriptions.bootstrapConfiguration(configuration);
 
 		assertEquals("ZXY_SelfWealth_InterestDaily_sTrategy-deScription", description);
 	}
@@ -96,7 +96,7 @@ public class DescriptionGeneratorTest {
 		final BacktestBootstrapConfiguration configuration = setUpBootstrapConfiguration();
 		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_150;
 
-		final String description = descriptions.getDescription(configuration, depositAmount);
+		final String description = descriptions.bootstrapConfigurationWithDeposit(configuration, depositAmount);
 
 		assertEquals("ZXY_SelfWealth_Deposit_150_Weekly_InterestDaily_sTrategy-deScription", description);
 	}
@@ -108,7 +108,7 @@ public class DescriptionGeneratorTest {
 		final ExitConfiguration exit = setUpExit("exIT");
 		final ExitSizeConfiguration exitPositionSizing = setUpExitSizing("eXItSizing");
 
-		final String description = descriptions.getDescription(entry, entryPositionSizing, exit, exitPositionSizing);
+		final String description = descriptions.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 
 		assertEquals("eNTry_EntrySizing_exIT_eXItSizing", description);
 	}
