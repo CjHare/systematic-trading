@@ -67,8 +67,12 @@ public class DescriptionGenerator {
 
 	public String getDescription( final EntryConfiguration entry, final EntrySizeConfiguration entryPositionSizing,
 	        final ExitConfiguration exit, final ExitSizeConfiguration exitPositionSizing ) {
-		return String.format("%s%s%s%s%s%s%s", entry.getDescription(), SEPARATOR, entryPositionSizing.getDescription(),
-		        SEPARATOR, exit.getDescription(), SEPARATOR, exitPositionSizing.getDescription());
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add(entry.getDescription());
+		out.add(entryPositionSizing.getDescription());
+		out.add(exit.getDescription());
+		out.add(exitPositionSizing.getDescription());
+		return out.toString();
 	}
 
 	public String getDescription( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
