@@ -65,6 +65,7 @@ public class DescriptionGenerator {
 
 	public String strategy( final EntryConfiguration entry, final EntrySizeConfiguration entryPositionSizing,
 	        final ExitConfiguration exit, final ExitSizeConfiguration exitPositionSizing ) {
+
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(entry.getDescription());
 		out.add(entryPositionSizing.getDescription());
@@ -74,6 +75,7 @@ public class DescriptionGenerator {
 	}
 
 	public String positionSize( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(minimumTradeValue(minimumTrade));
 		out.add(maximumTradeValue(maximumTrade));
@@ -81,6 +83,7 @@ public class DescriptionGenerator {
 	}
 
 	public String bootstrapConfiguration( final BacktestBootstrapConfiguration configuration ) {
+
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(equity(configuration.getEquity()));
 		out.add(brokerage(configuration.getBrokerageFees()));
@@ -91,6 +94,7 @@ public class DescriptionGenerator {
 
 	public String bootstrapConfigurationWithDeposit( final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
+
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(equity(configuration.getEquity()));
 		out.add(brokerage(configuration.getBrokerageFees()));
