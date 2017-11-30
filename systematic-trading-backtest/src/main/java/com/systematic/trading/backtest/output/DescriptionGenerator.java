@@ -25,18 +25,8 @@
  */
 package com.systematic.trading.backtest.output;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.time.Period;
-import java.util.StringJoiner;
-
-import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
-import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
-import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
-import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
@@ -46,7 +36,6 @@ import com.systematic.trading.backtest.configuration.strategy.operator.OperatorC
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
@@ -54,182 +43,23 @@ import com.systematic.trading.strategy.indicator.configuration.IndicatorConfigur
  * 
  * @author CJ Hare
  */
-public class DescriptionGenerator {
-	// TODO interface - one for file, another for console, another for elastic?
+public interface DescriptionGenerator {
 
-	private static final String SEPARATOR = "_";
-	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
-	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
-	private static final String OPERATOR_PREFIX = "(";
-	private static final String OPERATOR_SUFFIX = ")";
+	String strategy( EntryConfiguration entry, EntrySizeConfiguration entryPositionSizing, ExitConfiguration exit,
+	        ExitSizeConfiguration exitPositionSizing );
 
-	public String strategy( final EntryConfiguration entry, final EntrySizeConfiguration entryPositionSizing,
-	        final ExitConfiguration exit, final ExitSizeConfiguration exitPositionSizing ) {
+	String positionSize( MinimumTrade minimumTrade, MaximumTrade maximumTrade );
 
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(entry.getDescription());
-		out.add(entryPositionSizing.getDescription());
-		out.add(exit.getDescription());
-		out.add(exitPositionSizing.getDescription());
-		return out.toString();
-	}
+	String bootstrapConfiguration( BacktestBootstrapConfiguration configuration );
 
-	public String positionSize( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	String bootstrapConfigurationWithDeposit( BacktestBootstrapConfiguration configuration,
+	        DepositConfiguration depositAmount );
 
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(minimumTradeValue(minimumTrade));
-		out.add(maximumTradeValue(maximumTrade));
-		return out.toString();
-	}
+	String periodicEntry( PeriodicConfiguration frequency );
 
-	public String bootstrapConfiguration( final BacktestBootstrapConfiguration configuration ) {
+	String indicator( IndicatorConfiguration indicator );
 
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(equity(configuration.getEquity()));
-		out.add(brokerage(configuration.getBrokerageFees()));
-		out.add(cashAccount(configuration.getCashAccount()));
-		out.add(configuration.getStrategy().getDescription());
-		return out.toString();
-	}
+	String entry( EntryConfiguration leftEntry, OperatorConfiguration.Selection op, EntryConfiguration righEntry );
 
-	public String bootstrapConfigurationWithDeposit( final BacktestBootstrapConfiguration configuration,
-	        final DepositConfiguration depositAmount ) {
-
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(equity(configuration.getEquity()));
-		out.add(brokerage(configuration.getBrokerageFees()));
-		out.add(deposit(depositAmount));
-		out.add(cashAccount(configuration.getCashAccount()));
-		out.add(configuration.getStrategy().getDescription());
-		return out.toString();
-	}
-
-	public String periodicEntry( final PeriodicConfiguration frequency ) {
-		switch (frequency) {
-			case WEEKLY:
-				return "Buy-Weekly";
-
-			case MONTHLY:
-				return "Buy-Monthly";
-
-			default:
-				throw new IllegalArgumentException(String.format("Unexpected perodic: %s", frequency));
-		}
-	}
-
-	public String indicator( final IndicatorConfiguration indicator ) {
-		return indicator.getId().getName();
-	}
-
-	public String entry( final EntryConfiguration leftEntry, final OperatorConfiguration.Selection op,
-	        final EntryConfiguration righEntry ) {
-
-		final StringBuilder out = new StringBuilder();
-		out.append(entryDisplay(leftEntry));
-		out.append(SEPARATOR);
-		out.append(op.name());
-		out.append(SEPARATOR);
-		out.append(entryDisplay(righEntry));
-		return out.toString();
-	}
-
-	public String entry( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
-	        final EntryConfiguration confirmation ) {
-
-		final int delay = confirmBy.getDelayUntilConfirmationRange();
-		final int range = confirmBy.getConfirmationDayRange();
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(entryDisplay(anchor));
-		out.add("confirmedBy");
-		out.add(entryDisplay(confirmation));
-		out.add("in");
-		out.add(String.valueOf(delay));
-		out.add("to");
-		out.add(String.valueOf(delay + range));
-		out.add("days");
-		return out.toString();
-	}
-
-	private String deposit( final DepositConfiguration depositAmount ) {
-
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add("Deposit");
-		out.add(String.valueOf(depositAmount.getAmount()));
-		out.add(getNiceDisplay(depositAmount.getFrequency()));
-		return out.toString();
-	}
-
-	private String getNiceDisplay( final Period time ) {
-
-		if (Period.ofDays(7).equals(time)) {
-			return "Weekly";
-		}
-		if (Period.ofMonths(1).equals(time)) {
-			return "Monthly";
-		}
-		if (Period.ofYears(1).equals(time)) {
-			return "Yearly";
-		}
-
-		return time.toString();
-	}
-
-	private String entryDisplay( final EntryConfiguration entry ) {
-
-		final StringBuilder out = new StringBuilder();
-		if (entry.hasSubEntry()) {
-			out.append(OPERATOR_PREFIX);
-		}
-		out.append(entry.getDescription());
-		if (entry.hasSubEntry()) {
-			out.append(OPERATOR_SUFFIX);
-		}
-
-		return out.toString();
-	}
-
-	private String equity( final EquityConfiguration equity ) {
-		return equity.getEquityIdentity().getTickerSymbol();
-	}
-
-	private String cashAccount( final CashAccountConfiguration cashAccount ) {
-
-		if (CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY == cashAccount) {
-			return "InterestDaily"; // Standard output needs no description
-
-		}
-
-		return "NoInterest";
-	}
-
-	private String brokerage( final BrokerageTransactionFeeStructure brokerage ) {
-
-		if (brokerage instanceof CmcMarketsBrokerageFees) {
-			return "CmcMarkets";
-		}
-		if (brokerage instanceof VanguardBrokerageFees) {
-			return "Vanguard";
-		}
-		if (brokerage instanceof SelfWealthBrokerageFees) {
-			return "SelfWealth";
-		}
-
-		throw new IllegalArgumentException(String.format("Unexpected brokerage: %s", brokerage));
-	}
-
-	private String minimumTradeValue( final MinimumTrade trade ) {
-		return String.format("Minimum%s%s", SEPARATOR, NO_DECIMAL_PLACES.format(trade.getValue()));
-	}
-
-	private String maximumTradeValue( final MaximumTrade trade ) {
-		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add("Maximum");
-		out.add(convertToPercetage(trade.getValue()));
-		out.add("percent");
-		return out.toString();
-	}
-
-	private String convertToPercetage( final BigDecimal toPercentage ) {
-		return String.format("%s", NO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
-	}
+	String entry( EntryConfiguration anchor, ConfirmaByConfiguration confirmBy, EntryConfiguration confirmation );
 }

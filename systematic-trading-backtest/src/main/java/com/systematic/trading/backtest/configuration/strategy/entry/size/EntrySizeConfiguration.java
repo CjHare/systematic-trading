@@ -56,7 +56,7 @@ public class EntrySizeConfiguration implements Describable {
 	}
 
 	@Override
-	public String getDescription() {
-		return new DescriptionGenerator().positionSize(minimumTrade, maximumTrade);
+	public String getDescription( final DescriptionGenerator description ) {
+		return description.positionSize(minimumTrade, maximumTrade);
 	}
 }

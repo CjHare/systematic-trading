@@ -50,6 +50,7 @@ import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.BacktestOutputPreparation;
 import com.systematic.trading.backtest.output.DescriptionGenerator;
 import com.systematic.trading.backtest.output.NoBacktestOutput;
+import com.systematic.trading.backtest.output.StandardDescriptionGenerator;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutputPreparation;
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfigurationSingleton;
@@ -82,7 +83,7 @@ public class BacktestApplication {
 	private static final Logger LOG = LogManager.getLogger(BacktestApplication.class);
 
 	// TODO the description is specific to the type of output - file, console, elastic :. refactor - move into BacktestLaunchArgumentParser
-	private final DescriptionGenerator description = new DescriptionGenerator();
+	private final DescriptionGenerator description = new StandardDescriptionGenerator();
 
 	private final DataServiceUpdater updateService;
 
@@ -234,11 +235,13 @@ public class BacktestApplication {
 			        equity.getEquityIdentity(), configuration.getBacktestDates(), warmUp);
 			final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
-			LOG.info("Backtesting beginning for: {}", () -> description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
+			LOG.info("Backtesting beginning for: {}",
+			        () -> description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
 
 			bootstrap.run();
 
-			LOG.info("Backtesting complete for: {}", () -> description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
+			LOG.info("Backtesting complete for: {}",
+			        () -> description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
 		}
 
 		LOG.info("All Simulations have been completed for deposit amount: {}", () -> depositAmount);
@@ -307,7 +310,7 @@ public class BacktestApplication {
 
 	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
-		return new BacktestBatchId(new DescriptionGenerator().bootstrapConfigurationWithDeposit(configuration, depositAmount));
+		return new BacktestBatchId(description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
 	}
 
 	private String getOutputDirectory( final String baseOutputDirectory,

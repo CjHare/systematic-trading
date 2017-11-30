@@ -48,8 +48,8 @@ public class PeriodicEntryConfiguration implements EntryConfiguration {
 	}
 
 	@Override
-	public String getDescription() {
-		return new DescriptionGenerator().periodicEntry(frequency);
+	public String getDescription( final DescriptionGenerator description ) {
+		return description.periodicEntry(frequency);
 	}
 
 	@Override

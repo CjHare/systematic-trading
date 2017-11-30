@@ -48,8 +48,8 @@ public class IndicatorEntryConfiguration implements EntryConfiguration {
 	}
 
 	@Override
-	public String getDescription() {
-		return new DescriptionGenerator().indicator(indicator);
+	public String getDescription( final DescriptionGenerator description ) {
+		return description.indicator(indicator);
 	}
 
 	@Override

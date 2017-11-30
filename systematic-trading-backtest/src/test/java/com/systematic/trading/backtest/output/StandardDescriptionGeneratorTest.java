@@ -30,6 +30,7 @@
 package com.systematic.trading.backtest.output;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -65,14 +66,14 @@ import com.systematic.trading.strategy.indicator.configuration.IndicatorConfigur
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class DescriptionGeneratorTest {
+public class StandardDescriptionGeneratorTest {
 
 	/** Description generator instance being tested. */
 	private DescriptionGenerator descriptions;
 
 	@Before
 	public void setUp() {
-		descriptions = new DescriptionGenerator();
+		descriptions = new StandardDescriptionGenerator();
 	}
 
 	@Test
@@ -130,7 +131,7 @@ public class DescriptionGeneratorTest {
 
 		assertEquals("Buy-Weekly", description);
 	}
-	
+
 	@Test
 	public void indicator() {
 		final IndicatorConfiguration indicator = setUpIndicator();
@@ -190,32 +191,32 @@ public class DescriptionGeneratorTest {
 
 	private ExitSizeConfiguration setUpExitSizing( final String description ) {
 		final ExitSizeConfiguration entry = mock(ExitSizeConfiguration.class);
-		when(entry.getDescription()).thenReturn(description);
+		when(entry.getDescription(any(DescriptionGenerator.class))).thenReturn(description);
 		return entry;
 	}
 
 	private ExitConfiguration setUpExit( final String description ) {
 		final ExitConfiguration exit = mock(ExitConfiguration.class);
-		when(exit.getDescription()).thenReturn(description);
+		when(exit.getDescription(any(DescriptionGenerator.class))).thenReturn(description);
 		return exit;
 	}
 
 	private EntrySizeConfiguration setUpEntrySizing( final String description ) {
 		final EntrySizeConfiguration entry = mock(EntrySizeConfiguration.class);
-		when(entry.getDescription()).thenReturn(description);
+		when(entry.getDescription(any(DescriptionGenerator.class))).thenReturn(description);
 		return entry;
 	}
 
 	private EntryConfiguration setUpEntryWithSubEntry( final String description ) {
 		final EntryConfiguration entry = mock(EntryConfiguration.class);
-		when(entry.getDescription()).thenReturn(description);
+		when(entry.getDescription(any(DescriptionGenerator.class))).thenReturn(description);
 		when(entry.hasSubEntry()).thenReturn(true);
 		return entry;
 	}
 
 	private EntryConfiguration setUpEntry( final String description ) {
 		final EntryConfiguration entry = mock(EntryConfiguration.class);
-		when(entry.getDescription()).thenReturn(description);
+		when(entry.getDescription(any(DescriptionGenerator.class))).thenReturn(description);
 		return entry;
 	}
 
@@ -225,7 +226,7 @@ public class DescriptionGeneratorTest {
 		final CashAccountConfiguration cashAccount = CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY;
 		final DepositConfiguration deposit = DepositConfiguration.WEEKLY_200;
 		final StrategyConfiguration strategy = mock(StrategyConfiguration.class);
-		when(strategy.getDescription()).thenReturn("sTrategy-deScription");
+		when(strategy.getDescription(any(DescriptionGenerator.class))).thenReturn("sTrategy-deScription");
 		final EquityConfiguration equity = mock(EquityConfiguration.class);
 		when(equity.getEquityIdentity()).thenReturn(new EquityIdentity("ZXY", null, 0));
 

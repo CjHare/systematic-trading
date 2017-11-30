@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.backtest.configuration.strategy;
 
+import com.systematic.trading.backtest.output.DescriptionGenerator;
+
 /**
  * When something may be described.
  * 
@@ -39,7 +41,8 @@ public interface Describable {
 	/**
 	 * A meaningful textual description.
 	 * 
+	 * @param description creates textual descriptions.
 	 * @return unique description, used for display purposes.
 	 */
-	String getDescription();
+	String getDescription( DescriptionGenerator description );
 }

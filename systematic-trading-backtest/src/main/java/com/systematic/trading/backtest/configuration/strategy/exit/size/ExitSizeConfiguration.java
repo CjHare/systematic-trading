@@ -30,6 +30,7 @@
 package com.systematic.trading.backtest.configuration.strategy.exit.size;
 
 import com.systematic.trading.backtest.configuration.strategy.Describable;
+import com.systematic.trading.backtest.output.DescriptionGenerator;
 
 /**
  * @author CJ Hare
@@ -37,7 +38,7 @@ import com.systematic.trading.backtest.configuration.strategy.Describable;
 public class ExitSizeConfiguration implements Describable {
 
 	@Override
-	public String getDescription() {
+	public String getDescription( final DescriptionGenerator description ) {
 		return "";
 	}
 }

@@ -61,8 +61,8 @@ public class ConfirmedByEntryConfiguration implements EntryConfiguration {
 	}
 
 	@Override
-	public String getDescription() {
-		return new DescriptionGenerator().entry(anchor, confirmBy, confirmation);
+	public String getDescription( final DescriptionGenerator description ) {
+		return description.entry(anchor, confirmBy, confirmation);
 	}
 
 	@Override
