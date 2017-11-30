@@ -114,7 +114,7 @@ public class DescriptionGeneratorTest {
 	}
 
 	@Test
-	public void periodicEntry() {
+	public void monthlyPeriodicEntry() {
 		final PeriodicConfiguration frequency = PeriodicConfiguration.MONTHLY;
 
 		final String description = descriptions.periodicEntry(frequency);
@@ -122,6 +122,15 @@ public class DescriptionGeneratorTest {
 		assertEquals("Buy-Monthly", description);
 	}
 
+	@Test
+	public void weeklyPeriodicEntry() {
+		final PeriodicConfiguration frequency = PeriodicConfiguration.WEEKLY;
+
+		final String description = descriptions.periodicEntry(frequency);
+
+		assertEquals("Buy-Weekly", description);
+	}
+	
 	@Test
 	public void indicator() {
 		final IndicatorConfiguration indicator = setUpIndicator();

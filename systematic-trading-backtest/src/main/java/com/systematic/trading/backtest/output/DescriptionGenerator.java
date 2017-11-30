@@ -147,7 +147,12 @@ public class DescriptionGenerator {
 	}
 
 	private String deposit( final DepositConfiguration depositAmount ) {
-		return String.format("Deposit_%s_%s", depositAmount.getAmount(), getNiceDisplay(depositAmount.getFrequency()));
+
+		final StringJoiner out = new StringJoiner(SEPARATOR);
+		out.add("Deposit");
+		out.add(String.valueOf(depositAmount.getAmount()));
+		out.add(getNiceDisplay(depositAmount.getFrequency()));
+		return out.toString();
 	}
 
 	private String getNiceDisplay( final Period time ) {
