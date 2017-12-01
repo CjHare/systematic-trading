@@ -36,8 +36,8 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.output.BacktestOutput;
+import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
-import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityIdentity;
@@ -54,10 +54,16 @@ public class Backtest {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(Backtest.class);
 
-	private final DataServiceUpdater updateService;
+	/** Ensures all the necessary trading data get retrieved into the local source. */
+	private final DataServiceUpdater dataServiceUpdater;
 
-	public Backtest( final DataServiceUpdater updateService ) throws ServiceException {
-		this.updateService = updateService;
+	/** Local source of the trading prices.*/
+	private final DataService dataService;
+
+	public Backtest( final DataService dataService, final DataServiceUpdater dataServiceUpdater )
+	        throws ServiceException {
+		this.dataService = dataService;
+		this.dataServiceUpdater = dataServiceUpdater;
 	}
 
 	public void run( final EquityConfiguration equity, final BacktestBootstrapConfiguration configuration,
@@ -99,12 +105,12 @@ public class Backtest {
 		final LocalDate retrievalStartDate = startDate.withDayOfMonth(1);
 
 		// Retrieve and cache data range from remote data source		
-		updateService.get(equityDataset, equity.getTickerSymbol(), retrievalStartDate, endDate);
+		dataServiceUpdater.get(equityDataset, equity.getTickerSymbol(), retrievalStartDate, endDate);
 
 		// Retrieve from local cache the desired data range
-		final TradingDayPrices[] data = new HibernateDataService().get(equity.getTickerSymbol(), startDate, endDate);
+		final TradingDayPrices[] prices = dataService.get(equity.getTickerSymbol(), startDate, endDate);
 
-		return new BacktestTickerSymbolTradingData(equity, data);
+		return new BacktestTickerSymbolTradingData(equity, prices);
 	}
 
 	private void recordWarmUpPeriod( final Period warmUpPeriod ) {

@@ -13,47 +13,43 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-simulation</artifactId>
+			<version>${systematic.trading.simulation.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-strategy</artifactId>
+			<version>${systematic.trading.strategy.version}</version>
+		</dependency>
+
+
 	
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-backtest-model</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-backtest-output-elastic</artifactId>
-			<version>${systematic.trading.backtest.version}</version>
-		</dependency>		
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-backtest-output-file</artifactId>
-			<version>${systematic.trading.backtest.version}</version>
-		</dependency>
-		
-		<!-- Container dependencies (for instancing concrete instances)-->
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data</artifactId>
-			<version>${systematic.trading.data.version}</version>
-		</dependency>		
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-strategy</artifactId>
+			<artifactId>systematic-trading-strategy-model</artifactId>
 			<version>${systematic.trading.strategy.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-simulation</artifactId>
-			<version>${systematic.trading.simulation.version}</version>
+			<artifactId>systematic-trading-model</artifactId>
+			<version>${systematic.trading.model.version}</version>
 		</dependency>
-		
+
+		<!-- Logging framework -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${apache.commons.lang.version}</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${apache.log4j.version}</version>
 		</dependency>
-		
+				
 	</dependencies>
 
 </project>

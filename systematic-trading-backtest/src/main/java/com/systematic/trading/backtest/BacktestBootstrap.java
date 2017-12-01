@@ -38,6 +38,7 @@ import com.systematic.trading.simulation.analysis.networth.NetWorthSummaryEventG
 import com.systematic.trading.simulation.analysis.roi.CulmativeReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.CulmativeTotalReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.PeriodicCulmativeReturnOnInvestment;
+import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentListener;
 import com.systematic.trading.simulation.analysis.statistics.CumulativeEventStatistics;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
 import com.systematic.trading.simulation.brokerage.Brokerage;
@@ -83,7 +84,7 @@ public class BacktestBootstrap {
 		// TODO run with a full output & check no deposits & signals
 
 		// Cumulative recording of investment progression
-		final CulmativeReturnOnInvestment roi = new CulmativeReturnOnInvestment();
+		final ReturnOnInvestmentListener roi = new CulmativeReturnOnInvestment();
 
 		final PeriodicCulmativeReturnOnInvestment dailyRoi = new PeriodicCulmativeReturnOnInvestment(earliestDate,
 		        Period.ofDays(1));

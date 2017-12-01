@@ -27,11 +27,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
+package com.systematic.trading.analysis;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,6 +42,10 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.backtest.Backtest;
+import com.systematic.trading.backtest.BacktestBatchId;
+import com.systematic.trading.backtest.BacktestConfiguration;
+import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -71,13 +76,14 @@ import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityClass;
 
 /**
- * Setup specific behaviour for the Trial of back tests.
+ * Performs a daily analysis to generate buy signals.
  * 
  * @author CJ Hare
  */
-public class BacktestTrial {
+public class BacktestAnalysis {
+
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(Backtest.class);
+	private static final Logger LOG = LogManager.getLogger(BacktestAnalysis.class);
 
 	// TODO the description is specific to the type of output - file, console, elastic :. refactor - move into BacktestLaunchArgumentParser
 	private final DescriptionGenerator description = new StandardDescriptionGenerator();
@@ -88,7 +94,7 @@ public class BacktestTrial {
 	/** Local source of the trading prices.*/
 	private final DataService dataService;
 
-	public BacktestTrial( final DataServiceType serviceType ) throws ServiceException {
+	public BacktestAnalysis( final DataServiceType serviceType ) throws ServiceException {
 
 		try {
 			this.dataServiceUpdater = new DataServiceUpdaterImpl(serviceType);
@@ -99,12 +105,11 @@ public class BacktestTrial {
 		this.dataService = new HibernateDataService();
 	}
 
-	public void runBacktest( final BacktestConfiguration configuration, final LaunchArguments parserdArguments )
-	        throws ServiceException {
+	//TODO problems!!!! BacktestConfiguration may need to be trial
+	public void runBacktest( final BacktestConfiguration configuration ) throws ServiceException {
 
-		// Date range is from the first of the starting month until now
-		final LocalDate simulationStartDate = parserdArguments.getStartDate().getDate();
-		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
+		final LocalDate endDate = LocalDate.now();
+		final LocalDate startDate = endDate.minus(HISTORY_REQUIRED, ChronoUnit.DAYS);
 
 		// Currently only for the single equity
 		final EquityConfiguration equity = new EquityConfiguration(parserdArguments.getEquityDataset(),
@@ -114,17 +119,15 @@ public class BacktestTrial {
 		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
-		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
-		        simulationEndDate);
-		recordSimulationDates(simulationDates);
+		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(startDate, endDate);
 
 		// Multi-threading support for output classes
-		final ExecutorService outputPool = getOutputPool(parserdArguments);
+		final ExecutorService outputPool = Executors.newFixedThreadPool(4);
 
 		// TODO run the test over the full period with exclusion on filters
 		// TODO no deposits until actual start date, rather then from the warm-up period
 
-		final BacktestOutputPreparation outputPreparation = getOutput(parserdArguments);
+		final BacktestOutputPreparation outputPreparation = getOutputPreparation();
 		outputPreparation.setUp();
 
 		final StopWatch timer = new StopWatch();
@@ -134,11 +137,8 @@ public class BacktestTrial {
 		        depositAmount);
 
 		try {
-			clearOutputDirectory(depositAmount, parserdArguments);
-
 			for (final BacktestBootstrapConfiguration backtestConfiguration : backtestConfigurations) {
-				final BacktestOutput output = getOutput(depositAmount, parserdArguments, backtestConfiguration,
-				        outputPool);
+				final BacktestOutput output = getOutput(depositAmount, backtestConfiguration, outputPool);
 
 				LOG.info("Backtesting beginning for: {}",
 				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, depositAmount));
@@ -161,6 +161,11 @@ public class BacktestTrial {
 		        Duration.ofMillis(timer.getTime())));
 	}
 
+	private BacktestOutputPreparation getOutputPreparation() {
+		return new BacktestOutputPreparation() {
+		};
+	}
+
 	private void closePool( final ExecutorService pool ) {
 		pool.shutdown();
 
@@ -172,113 +177,11 @@ public class BacktestTrial {
 		}
 	}
 
-	private BacktestOutput getOutput( final DepositConfiguration depositAmount, final LaunchArguments arguments,
+	private BacktestOutput getOutput( final DepositConfiguration depositAmount,
 	        final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
 	        throws BacktestInitialisationException {
 
-		final BacktestBatchId batchId = getBatchId(configuration, depositAmount);
-		final OutputType type = arguments.getOutputType();
-
-		try {
-			switch (type) {
-				case ELASTIC_SEARCH:
-					return new ElasticBacktestOutput(batchId, pool,
-					        BackestOutputElasticConfigurationSingleton.getConfiguration());
-				case FILE_COMPLETE:
-					return new CompleteFileOutputService(batchId,
-					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool);
-				case FILE_MINIMUM:
-					return new MinimalFileOutputService(batchId,
-					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool);
-				case NO_DISPLAY:
-					return new NoBacktestOutput();
-				default:
-					throw new IllegalArgumentException(unsupportedMessage(type));
-			}
-		} catch (final IOException e) {
-			throw new BacktestInitialisationException(e);
-		}
-	}
-
-	private String getOutputDirectory( final DepositConfiguration depositAmount, final LaunchArguments arguments ) {
-		return isFileBasedDisplay(arguments) ? arguments.getOutputDirectory(depositAmount) : "";
-	}
-
-	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration,
-	        final DepositConfiguration depositAmount ) {
-		return new BacktestBatchId(description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
-	}
-
-	private String getOutputDirectory( final String baseOutputDirectory,
-	        final BacktestBootstrapConfiguration configuration ) {
-		return String.format("%s%s", baseOutputDirectory, description.bootstrapConfiguration(configuration));
-	}
-
-	private BacktestOutputPreparation getOutput( final LaunchArguments arguments ) {
-		final OutputType type = arguments.getOutputType();
-
-		switch (type) {
-			case ELASTIC_SEARCH:
-				return new ElasticBacktestOutputPreparation(
-				        BackestOutputElasticConfigurationSingleton.getConfiguration());
-			case FILE_COMPLETE:
-			case FILE_MINIMUM:
-			case NO_DISPLAY:
-				return new BacktestOutputPreparation() {
-				};
-			default:
-				throw new IllegalArgumentException(unsupportedMessage(type));
-		}
-	}
-
-	private ExecutorService getOutputPool( final LaunchArguments arguments )
-	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
-		final OutputType type = arguments.getOutputType();
-
-		switch (type) {
-			case ELASTIC_SEARCH:
-				return Executors.newFixedThreadPool(
-				        BackestOutputElasticConfigurationSingleton.getConfiguration().getNumberOfConnections());
-			case FILE_COMPLETE:
-			case FILE_MINIMUM:
-				return Executors.newFixedThreadPool(
-				        new FileValidatedBackestOutputFileConfigurationDao().get().getNumberOfThreads());
-			case NO_DISPLAY:
-				return Executors.newSingleThreadScheduledExecutor();
-			default:
-				throw new IllegalArgumentException(unsupportedMessage(type));
-		}
-	}
-
-	private void clearOutputDirectory( final DepositConfiguration depositAmount, final LaunchArguments arguments )
-	        throws ServiceException {
-		//TODO delete must run BEFORE any of the tests! that'll ensure race conditions are avoided
-
-		//TODO this should happen only once & be moved into the file DAOs
-		//TODO currently deleting at the deposit level, move up? i.e. ..\results\WEEKLY_150\
-		// Arrange output to files, only once per a run
-
-		if (isFileBasedDisplay(arguments)) {
-			final String outputDirectory = arguments.getOutputDirectory(depositAmount);
-			try {
-				new ClearFileDestination(outputDirectory).clear();
-			} catch (final IOException e) {
-				throw new BacktestInitialisationException(e);
-			}
-		}
-	}
-
-	private boolean isFileBasedDisplay( final LaunchArguments arguments ) {
-		return arguments.getOutputType() == OutputType.FILE_COMPLETE
-		        || arguments.getOutputType() == OutputType.FILE_MINIMUM;
-	}
-
-	private void recordSimulationDates( final BacktestSimulationDates simulationDates ) {
-		LOG.info("Simulation Start Date: {}", simulationDates.getStartDate());
-		LOG.info("Simulation End Date: {}", simulationDates.getEndDate());
-	}
-
-	private String unsupportedMessage( final OutputType type ) {
-		return String.format("Output Type unsupported: %s", type);
+		//TODO console display
+		return null;
 	}
 }
