@@ -30,7 +30,7 @@
 package com.systematic.trading.backtest.configuration.strategy.exit;
 
 import com.systematic.trading.backtest.configuration.strategy.Describable;
-import com.systematic.trading.backtest.output.DescriptionGenerator;
+import com.systematic.trading.backtest.description.DescriptionGenerator;
 
 /**
  * @author CJ Hare

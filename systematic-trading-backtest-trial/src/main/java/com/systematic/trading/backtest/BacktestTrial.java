@@ -45,13 +45,13 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.description.DescriptionGenerator;
+import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.input.LaunchArguments;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.output.BacktestOutputPreparation;
-import com.systematic.trading.backtest.output.DescriptionGenerator;
 import com.systematic.trading.backtest.output.NoBacktestOutput;
-import com.systematic.trading.backtest.output.StandardDescriptionGenerator;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutputPreparation;
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfigurationSingleton;

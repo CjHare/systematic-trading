@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.configuration.strategy;
 
-import com.systematic.trading.backtest.output.DescriptionGenerator;
+import com.systematic.trading.backtest.description.DescriptionGenerator;
 
 /**
  * When something may be described.

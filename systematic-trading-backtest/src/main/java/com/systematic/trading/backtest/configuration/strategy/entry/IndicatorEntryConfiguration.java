@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.entry;
 
-import com.systematic.trading.backtest.output.DescriptionGenerator;
+import com.systematic.trading.backtest.description.DescriptionGenerator;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
