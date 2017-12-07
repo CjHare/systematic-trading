@@ -25,123 +25,122 @@
  */
 package com.systematic.trading.analysis;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.analysis.model.ProcessLongBuySignals;
-import com.systematic.trading.analysis.view.DisplayBuySignals;
+import com.systematic.trading.backtest.Backtest;
+import com.systematic.trading.backtest.BacktestSimulationDates;
+import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
+import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
+import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.configuration.equity.EquityDataset;
+import com.systematic.trading.backtest.configuration.equity.TickerSymbol;
+import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
+import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.EmaUptrendConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.IndicatorConfigurationTranslator;
+import com.systematic.trading.backtest.configuration.strategy.indicator.RsiConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptrendConfiguration;
+import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
+import com.systematic.trading.backtest.exception.BacktestInitialisationException;
+import com.systematic.trading.backtest.output.BacktestOutput;
+import com.systematic.trading.backtest.trade.MaximumTrade;
+import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.data.DataService;
+import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
-import com.systematic.trading.signals.indicator.IndicatorSignalGenerator;
-import com.systematic.trading.signals.indicator.MovingAveragingConvergeDivergenceSignals;
-import com.systematic.trading.signals.indicator.RelativeStrengthIndexSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals;
-import com.systematic.trading.signals.indicator.SimpleMovingAverageGradientSignals.GradientType;
-import com.systematic.trading.signals.model.BuySignal;
-import com.systematic.trading.signals.model.IndicatorSignalType;
-import com.systematic.trading.signals.model.filter.IndicatorsOnSameDaySignalFilter;
-import com.systematic.trading.signals.model.filter.RollingTimePeriodSignalFilterDecorator;
-import com.systematic.trading.signals.model.filter.SignalFilter;
+import com.systematic.trading.model.EquityClass;
 
 public class TodaysBuySignals {
 
-	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(TodaysBuySignals.class);
 
-	/** The oldest signal date (inclusive) from today to report, includes non-trading days. */
-	private static final int OLDEST_SIGNAL = 6;
+	/** Ensures all the necessary trading data get retrieved into the local source. */
+	private final DataServiceUpdater dataServiceUpdater;
 
-	/* Days data needed - 20 + 20 for the MACD part EMA(20), Weekend and bank holidays */
-	private static final int HISTORY_REQUIRED = 80 + 16 + 5;
+	/** Local source of the trading prices.*/
+	private final DataService dataService;
 
 	public static void main( final String... args ) throws ServiceException {
 
-		//TODO calculate the number of days from the indicators, their lookback, warm ups & days of interest
-		updateEquities();
+		final EquityConfiguration equity = new EquityConfiguration(new EquityDataset("WIKI"), new TickerSymbol("BRK_A"),
+		        EquityClass.STOCK);
 
-		final LocalDate endDate = LocalDate.now();
-		final LocalDate startDate = endDate.minus(HISTORY_REQUIRED, ChronoUnit.DAYS);
-		final MovingAveragingConvergeDivergenceSignals macd = new MovingAveragingConvergeDivergenceSignals(10, 20, 7,
-		        MATH_CONTEXT);
+		new TodaysBuySignals(new DataServiceType("tables")).run(equity);
 
-		final int smaLookback = 50;
-		final int daysOfSmaGradient = 7;
-		final SimpleMovingAverageGradientSignals sma = new SimpleMovingAverageGradientSignals(smaLookback,
-		        daysOfSmaGradient, GradientType.POSITIVE, MATH_CONTEXT);
-
-		final int lookback = 10;
-		final BigDecimal overbought = BigDecimal.valueOf(30);
-		final BigDecimal oversold = BigDecimal.valueOf(70);
-		final RelativeStrengthIndexSignals rsi = new RelativeStrengthIndexSignals(lookback, overbought, oversold,
-		        MATH_CONTEXT);
-
-		final List<IndicatorSignalGenerator> generators = new ArrayList<IndicatorSignalGenerator>();
-		generators.add(macd);
-		generators.add(sma);
-		generators.add(rsi);
-
-		final List<SignalFilter> filters = new ArrayList<SignalFilter>();
-		final SignalFilter filter = new RollingTimePeriodSignalFilterDecorator(new IndicatorsOnSameDaySignalFilter(
-		        IndicatorSignalType.MACD, IndicatorSignalType.SMA, IndicatorSignalType.RSI), Period.ofDays(5));
-		filters.add(filter);
-
-		final ProcessLongBuySignals buyLong = new ProcessLongBuySignals(generators, filters);
-
-		final Map<Equity, List<BuySignal>> buyLongSignals = new EnumMap<Equity, List<BuySignal>>(Equity.class);
-
-		for (final Equity equity : Equity.values()) {
-			final TradingDayPrices[] dataPoints = getDataPoints(equity, startDate, endDate);
-			final List<BuySignal> signals = buyLong.process(equity, dataPoints);
-			buyLongSignals.put(equity, signals);
-		}
-
-		displayBuySignals(buyLongSignals);
-
-		HibernateUtil.getSessionFactory().close();
 	}
 
-	private static void updateEquities() throws ServiceException {
-		final DataServiceUpdater updateService = DataServiceUpdaterImpl.getInstance();
-		final LocalDate endDate = LocalDate.now();
-		final LocalDate startDate = endDate.minus(HISTORY_REQUIRED, ChronoUnit.DAYS);
-
-		for (final Equity equity : Equity.values()) {
-			updateService.get(equity.getSymbol(), startDate, endDate);
+	public TodaysBuySignals( final DataServiceType serviceType ) throws BacktestInitialisationException {
+		try {
+			this.dataServiceUpdater = new DataServiceUpdaterImpl(serviceType);
+		} catch (ServiceException e) {
+			throw new BacktestInitialisationException(e);
 		}
+
+		this.dataService = new HibernateDataService();
 	}
 
-	private static void displayBuySignals( final Map<Equity, List<BuySignal>> buyLongSignals ) {
-		final DisplayBuySignals display = new DisplayBuySignals(OLDEST_SIGNAL);
+	private void run( final EquityConfiguration equity ) throws ServiceException {
 
-		for (final Equity equity : buyLongSignals.keySet()) {
-			final String symbol = equity.getSymbol();
-			display.displayBuySignals(symbol, buyLongSignals.get(equity));
+		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity);
+		final StopWatch timer = new StopWatch();
+		timer.start();
+
+		try {
+			new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration, output());
+
+		} finally {
+			HibernateUtil.getSessionFactory().close();
 		}
+
+		timer.stop();
+		LOG.info(() -> String.format("Finished, time taken: %s", Duration.ofMillis(timer.getTime())));
 	}
 
-	private static TradingDayPrices[] getDataPoints( final Equity equity, final LocalDate startDate,
-	        final LocalDate endDate ) {
-		final DataService service = HibernateDataService.getInstance();
-		final String tickerSymbol = equity.getSymbol();
-		final TradingDayPrices[] data = service.get(tickerSymbol, startDate, endDate);
+	private BacktestBootstrapConfiguration configuration( final EquityConfiguration equity ) {
+		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
+		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
-		LOG.info("{}", () -> String.format("%s data points returned: %s", tickerSymbol, data == null ? null : data.length));
+		final EmaUptrendConfiguration emaConfiguration = EmaUptrendConfiguration.LONG;
+		final SmaUptrendConfiguration smaConfiguration = SmaUptrendConfiguration.LONG;
+		final RsiConfiguration rsiConfiguration = RsiConfiguration.SHORT;
 
-		return data;
+		final EntryConfiguration entry = factory.entry(
+		        factory.entry(factory.entry(converter.translate(emaConfiguration)), OperatorConfiguration.Selection.OR,
+		                factory.entry(converter.translate(smaConfiguration))),
+		        OperatorConfiguration.Selection.AND, factory.entry(converter.translate(rsiConfiguration)));
+		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
+		final ExitConfiguration exit = factory.exit();
+		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
+		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
+
+		//TODO get the warm up period
+		final BacktestSimulationDates simulationDates = null;
+
+		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, DepositConfiguration.NONE, strategy, equity);
+	}
+
+	private BacktestOutput output() {
+
+		//TODO output
+
+		return null;
 	}
 }
