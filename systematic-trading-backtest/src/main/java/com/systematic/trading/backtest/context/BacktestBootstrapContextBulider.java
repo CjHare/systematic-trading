@@ -108,7 +108,6 @@ public class BacktestBootstrapContextBulider {
 	public BacktestBootstrapContextBulider withConfiguration( final BacktestBootstrapConfiguration configuration ) {
 		this.simulationDates = configuration.getBacktestDates();
 		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getStartDate());
-		this.simulationDates = configuration.getBacktestDates();
 		this.deposit = configuration.getDeposit();
 		this.equity = configuration.getEquity();
 		this.brokerageType = configuration.getBrokerageFees();
