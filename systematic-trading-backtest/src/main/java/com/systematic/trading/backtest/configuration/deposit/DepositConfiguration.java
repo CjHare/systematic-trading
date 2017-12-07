@@ -35,7 +35,7 @@ import java.time.Period;
  */
 public enum DepositConfiguration {
 
-	NONE(BigDecimal.valueOf(0), Period.ofYears(100)),
+	NONE(null, null),
 	WEEKLY_150(BigDecimal.valueOf(150), Period.ofWeeks(1)),
 	WEEKLY_200(BigDecimal.valueOf(200), Period.ofWeeks(1)),
 	WEEKLY_250(BigDecimal.valueOf(250), Period.ofWeeks(1)),

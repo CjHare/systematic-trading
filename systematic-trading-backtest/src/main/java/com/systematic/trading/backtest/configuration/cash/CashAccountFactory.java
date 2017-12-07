@@ -73,6 +73,11 @@ public class CashAccountFactory {
 		        .create(InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, MATH_CONTEXT);
 		final CashAccount underlyingAccount = create(CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
 		        annualInterestRate, BigDecimal.ZERO, startDate, MATH_CONTEXT);
+
+		if (deposit == DepositConfiguration.NONE) {
+			return underlyingAccount;
+		}
+
 		return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate, depositFrequency);
 	}
 

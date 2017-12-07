@@ -84,14 +84,6 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 		account.update(tradingDate);
 	}
 
-	private boolean isDepositTime( final LocalDate tradingDate ) {
-		return tradingDate.isAfter(lastDeposit.plus(interval));
-	}
-
-	private int getNumberOfDeposits( final LocalDate tradingDate ) {
-		return Period.between(lastDeposit, tradingDate).getDays() / interval.getDays();
-	}
-
 	@Override
 	public void debit( final BigDecimal debitAmount, final LocalDate transactionDate )
 	        throws InsufficientFundsException {
@@ -118,6 +110,14 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 		account.addListener(listener);
 	}
 
+	private boolean isDepositTime( final LocalDate tradingDate ) {
+		return tradingDate.isAfter(lastDeposit.plus(interval));
+	}
+
+	private int getNumberOfDeposits( final LocalDate tradingDate ) {
+		return Period.between(lastDeposit, tradingDate).getDays() / interval.getDays();
+	}
+
 	//TODO shift the interval and deposit amount into a tuple object
 	public BigDecimal getDepositAmount() {
 		return depositAmount;
@@ -126,5 +126,4 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 	public Period getInterval() {
 		return interval;
 	}
-
 }
