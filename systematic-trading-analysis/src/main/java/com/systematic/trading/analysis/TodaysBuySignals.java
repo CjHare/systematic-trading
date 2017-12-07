@@ -96,6 +96,7 @@ public class TodaysBuySignals {
 	}
 
 	public TodaysBuySignals( final DataServiceType serviceType ) throws BacktestInitialisationException {
+
 		try {
 			this.dataServiceUpdater = new DataServiceUpdaterImpl(serviceType);
 		} catch (ServiceException e) {
@@ -109,9 +110,9 @@ public class TodaysBuySignals {
 
 		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity);
 
-		//TODO get the warm up period - update the data source
-
 		//TODO descriptor for the strategy / backtest being tested
+
+		recordAnalysisPeriod(backtestConfiguration);
 
 		final StopWatch timer = new StopWatch();
 		timer.start();
@@ -125,6 +126,12 @@ public class TodaysBuySignals {
 
 		timer.stop();
 		LOG.info(() -> String.format("Finished, time taken: %s", Duration.ofMillis(timer.getTime())));
+	}
+
+	private void recordAnalysisPeriod( final BacktestBootstrapConfiguration backtestConfiguration ) {
+		final BacktestSimulationDates analysisPeriod = backtestConfiguration.getBacktestDates();
+		LOG.info("{}", () -> String.format("Analysis start: %s, end: %s", analysisPeriod.getStartDate(),
+		        analysisPeriod.getEndDate()));
 	}
 
 	private BacktestBootstrapConfiguration configuration( final EquityConfiguration equity )
