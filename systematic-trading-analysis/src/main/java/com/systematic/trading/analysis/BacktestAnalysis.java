@@ -37,6 +37,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.analysis.output.LogEntryOrderOutput;
 import com.systematic.trading.backtest.Backtest;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -52,7 +53,7 @@ import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 
 /**
- * Performs a daily analysis to generate buy signals.
+ * Performs a daily analysis to generate buy signals, a specialized version of a back test with today as the end date.
  * 
  * @author CJ Hare
  */
@@ -92,7 +93,7 @@ public class BacktestAnalysis {
 
 		try {
 			new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration,
-			        getOutput(backtestConfiguration, outputPool));
+			        output(backtestConfiguration, outputPool));
 
 		} finally {
 			HibernateUtil.getSessionFactory().close();
@@ -120,10 +121,8 @@ public class BacktestAnalysis {
 		}
 	}
 
-	private BacktestOutput getOutput( final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
+	private BacktestOutput output( final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
 	        throws BacktestInitialisationException {
-
-		//TODO console display
-		return null;
+		return new LogEntryOrderOutput();
 	}
 }
