@@ -26,13 +26,16 @@
 package com.systematic.trading.analysis;
 
 import java.time.Duration;
+import java.time.LocalDate;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.systematic.trading.analysis.output.LogEntryOrderOutput;
 import com.systematic.trading.backtest.Backtest;
 import com.systematic.trading.backtest.BacktestSimulationDates;
+import com.systematic.trading.backtest.InvalidSimulationDatesException;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
@@ -64,10 +67,18 @@ import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityClass;
 
+/**
+ * Performs a daily analysis to generate buy signals, a specialized version of a back test with today as the end date.
+ * 
+ * @author CJ Hare
+ */
 public class TodaysBuySignals {
 
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(TodaysBuySignals.class);
+
+	/** Days to look for the entry signals prior to today. */
+	private static final int LOOKBACK = 5;
 
 	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
@@ -97,6 +108,9 @@ public class TodaysBuySignals {
 	private void run( final EquityConfiguration equity ) throws ServiceException {
 
 		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity);
+
+		//TODO get the warm up period - update the data source
+
 		final StopWatch timer = new StopWatch();
 		timer.start();
 
@@ -111,7 +125,8 @@ public class TodaysBuySignals {
 		LOG.info(() -> String.format("Finished, time taken: %s", Duration.ofMillis(timer.getTime())));
 	}
 
-	private BacktestBootstrapConfiguration configuration( final EquityConfiguration equity ) {
+	private BacktestBootstrapConfiguration configuration( final EquityConfiguration equity )
+	        throws InvalidSimulationDatesException {
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
@@ -129,18 +144,14 @@ public class TodaysBuySignals {
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
-
-		//TODO get the warm up period
-		final BacktestSimulationDates simulationDates = null;
+		final LocalDate today = LocalDate.now();
+		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(today.minusDays(LOOKBACK), today);
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, DepositConfiguration.NONE, strategy, equity);
 	}
 
 	private BacktestOutput output() {
-
-		//TODO output
-
-		return null;
+		return new LogEntryOrderOutput();
 	}
 }
