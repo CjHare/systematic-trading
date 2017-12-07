@@ -54,6 +54,8 @@ import com.systematic.trading.backtest.configuration.strategy.indicator.Indicato
 import com.systematic.trading.backtest.configuration.strategy.indicator.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
+import com.systematic.trading.backtest.description.DescriptionGenerator;
+import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.trade.MaximumTrade;
@@ -68,14 +70,14 @@ import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityClass;
 
 /**
- * Performs a daily analysis to generate buy signals, a specialized version of a back test with today as the end date.
+ * An analysis to generate buy signals to execute on a daily basis, a specialized version of a back test with today as the end date.
  * 
  * @author CJ Hare
  */
-public class TodaysBuySignals {
+public class EntryOrderAnalysis {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(TodaysBuySignals.class);
+	private static final Logger LOG = LogManager.getLogger(EntryOrderAnalysis.class);
 
 	/** Days to look for the entry signals prior to today. */
 	private static final int LOOKBACK = 5;
@@ -86,16 +88,18 @@ public class TodaysBuySignals {
 	/** Local source of the trading prices.*/
 	private final DataService dataService;
 
+	private final DescriptionGenerator description;
+
 	public static void main( final String... args ) throws ServiceException {
 
 		final EquityConfiguration equity = new EquityConfiguration(new EquityDataset("WIKI"), new TickerSymbol("BRK_A"),
 		        EquityClass.STOCK);
 
-		new TodaysBuySignals(new DataServiceType("tables")).run(equity);
+		new EntryOrderAnalysis(new DataServiceType("tables")).run(equity);
 
 	}
 
-	public TodaysBuySignals( final DataServiceType serviceType ) throws BacktestInitialisationException {
+	public EntryOrderAnalysis( final DataServiceType serviceType ) throws BacktestInitialisationException {
 
 		try {
 			this.dataServiceUpdater = new DataServiceUpdaterImpl(serviceType);
@@ -104,15 +108,14 @@ public class TodaysBuySignals {
 		}
 
 		this.dataService = new HibernateDataService();
+		this.description = new StandardDescriptionGenerator();
 	}
 
 	private void run( final EquityConfiguration equity ) throws ServiceException {
 
 		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity);
-
-		//TODO descriptor for the strategy / backtest being tested
-
-		recordAnalysisPeriod(backtestConfiguration);
+		recordStrategy(backtestConfiguration.getStrategy());
+		recordAnalysisPeriod(backtestConfiguration.getBacktestDates());
 
 		final StopWatch timer = new StopWatch();
 		timer.start();
@@ -125,11 +128,18 @@ public class TodaysBuySignals {
 		}
 
 		timer.stop();
+		recordExecutionTime(timer);
+	}
+
+	private void recordStrategy( final StrategyConfiguration strategy ) {
+		LOG.info("{}", () -> String.format("Strategy: %s", strategy.getDescription(description)));
+	}
+
+	private void recordExecutionTime( final StopWatch timer ) {
 		LOG.info(() -> String.format("Finished, time taken: %s", Duration.ofMillis(timer.getTime())));
 	}
 
-	private void recordAnalysisPeriod( final BacktestBootstrapConfiguration backtestConfiguration ) {
-		final BacktestSimulationDates analysisPeriod = backtestConfiguration.getBacktestDates();
+	private void recordAnalysisPeriod( final BacktestSimulationDates analysisPeriod ) {
 		LOG.info("{}", () -> String.format("Analysis start: %s, end: %s", analysisPeriod.getStartDate(),
 		        analysisPeriod.getEndDate()));
 	}
