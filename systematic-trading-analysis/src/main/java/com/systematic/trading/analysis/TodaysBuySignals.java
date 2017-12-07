@@ -111,6 +111,8 @@ public class TodaysBuySignals {
 
 		//TODO get the warm up period - update the data source
 
+		//TODO descriptor for the strategy / backtest being tested
+
 		final StopWatch timer = new StopWatch();
 		timer.start();
 
@@ -127,15 +129,27 @@ public class TodaysBuySignals {
 
 	private BacktestBootstrapConfiguration configuration( final EquityConfiguration equity )
 	        throws InvalidSimulationDatesException {
+
+		final LocalDate today = LocalDate.now();
+		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(today.minusDays(LOOKBACK), today);
+
+		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, DepositConfiguration.NONE, strategy(), equity);
+	}
+
+	private BacktestOutput output() {
+		return new LogEntryOrderOutput();
+	}
+
+	private StrategyConfiguration strategy() {
+
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
-		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
-		final MaximumTrade maximumTrade = MaximumTrade.ALL;
-
 		final EmaUptrendConfiguration emaConfiguration = EmaUptrendConfiguration.LONG;
 		final SmaUptrendConfiguration smaConfiguration = SmaUptrendConfiguration.LONG;
 		final RsiConfiguration rsiConfiguration = RsiConfiguration.SHORT;
-
+		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
+		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final EntryConfiguration entry = factory.entry(
 		        factory.entry(factory.entry(converter.translate(emaConfiguration)), OperatorConfiguration.Selection.OR,
 		                factory.entry(converter.translate(smaConfiguration))),
@@ -143,15 +157,7 @@ public class TodaysBuySignals {
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
-		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
-		final LocalDate today = LocalDate.now();
-		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(today.minusDays(LOOKBACK), today);
 
-		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, DepositConfiguration.NONE, strategy, equity);
-	}
-
-	private BacktestOutput output() {
-		return new LogEntryOrderOutput();
+		return factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 	}
 }
