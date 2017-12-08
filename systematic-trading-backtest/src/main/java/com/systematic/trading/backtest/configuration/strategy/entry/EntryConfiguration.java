@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.entry;
 
+import java.time.temporal.TemporalAmount;
+
 import com.systematic.trading.backtest.configuration.strategy.Describable;
 
 /**
@@ -42,4 +44,12 @@ public interface EntryConfiguration extends Describable {
 	 * @return <code>true</code> when there is another child entry, <code?false</code> otherwise.
 	 */
 	boolean hasSubEntry();
+
+	/**
+	 * The range of price data input required by the entry.
+	 * 
+	 * @return temporal amount previous to the current price data point needed by the entry for analysis. 
+	 * When only the current price data is needed then a range of one is returned.
+	 */
+	TemporalAmount priceDataRange();
 }

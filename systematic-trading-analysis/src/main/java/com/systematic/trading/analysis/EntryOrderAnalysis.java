@@ -78,12 +78,8 @@ import com.systematic.trading.model.EquityClass;
  */
 public class EntryOrderAnalysis {
 
-	/** Classes logger. */
+	/** Classes' logger. */
 	private static final Logger LOG = LogManager.getLogger(EntryOrderAnalysis.class);
-
-	//TODO figure out the lookback based off strategy
-	/** Days to look for the entry signals prior to today. */
-	private static final int LOOKBACK = 1;
 
 	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
@@ -154,12 +150,13 @@ public class EntryOrderAnalysis {
 
 		final StrategyConfiguration strategy = strategy();
 
-
 		//TODO Expecting buy event on 2017-02-13
 		final LocalDate today = LocalDate.of(2017, Month.FEBRUARY, 14);
 
 		//		final LocalDate today = LocalDate.now();
-		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(today.minusDays(LOOKBACK), today);
+		
+		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(
+		        today.minus(strategy.getEntry().priceDataRange()), today);
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, openingFunds, DepositConfiguration.NONE,

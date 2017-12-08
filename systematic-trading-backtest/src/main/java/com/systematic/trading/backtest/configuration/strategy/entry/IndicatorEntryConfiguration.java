@@ -29,6 +29,9 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.entry;
 
+import java.time.Period;
+import java.time.temporal.TemporalAmount;
+
 import com.systematic.trading.backtest.description.DescriptionGenerator;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
@@ -55,5 +58,10 @@ public class IndicatorEntryConfiguration implements EntryConfiguration {
 	@Override
 	public boolean hasSubEntry() {
 		return false;
+	}
+
+	@Override
+	public TemporalAmount priceDataRange() {
+		return Period.ofDays(1);
 	}
 }
