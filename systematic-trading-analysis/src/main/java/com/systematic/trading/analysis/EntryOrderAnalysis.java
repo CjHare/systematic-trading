@@ -95,10 +95,12 @@ public class EntryOrderAnalysis {
 
 	public static void main( final String... args ) throws ServiceException {
 
+		//TODO these values should be input arguments
+		final BigDecimal openingFunds = BigDecimal.valueOf(10000);
 		final EquityConfiguration equity = new EquityConfiguration(new EquityDataset("WIKI"), new TickerSymbol("BRK_A"),
 		        EquityClass.STOCK);
 
-		new EntryOrderAnalysis(new DataServiceType("tables")).run(equity);
+		new EntryOrderAnalysis(new DataServiceType("tables")).run(equity, openingFunds);
 
 	}
 
@@ -114,9 +116,9 @@ public class EntryOrderAnalysis {
 		this.description = new StandardDescriptionGenerator();
 	}
 
-	private void run( final EquityConfiguration equity ) throws ServiceException {
+	private void run( final EquityConfiguration equity, final BigDecimal openingFunds ) throws ServiceException {
 
-		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity);
+		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity, openingFunds);
 		recordStrategy(backtestConfiguration.getStrategy());
 		recordAnalysisPeriod(backtestConfiguration.getBacktestDates());
 
@@ -147,22 +149,21 @@ public class EntryOrderAnalysis {
 		        analysisPeriod.getEndDate()));
 	}
 
-	private BacktestBootstrapConfiguration configuration( final EquityConfiguration equity )
-	        throws InvalidSimulationDatesException {
+	private BacktestBootstrapConfiguration configuration( final EquityConfiguration equity,
+	        final BigDecimal openingFunds ) throws InvalidSimulationDatesException {
 
-		//TODO starting cash balance
+		final StrategyConfiguration strategy = strategy();
+
 
 		//TODO Expecting buy event on 2017-02-13
 		final LocalDate today = LocalDate.of(2017, Month.FEBRUARY, 14);
-
-		final BigDecimal openingFunds = BigDecimal.valueOf(10000.88);
 
 		//		final LocalDate today = LocalDate.now();
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(today.minusDays(LOOKBACK), today);
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, openingFunds, DepositConfiguration.NONE,
-		        strategy(), equity);
+		        strategy, equity);
 	}
 
 	private BacktestEventListener output() {
