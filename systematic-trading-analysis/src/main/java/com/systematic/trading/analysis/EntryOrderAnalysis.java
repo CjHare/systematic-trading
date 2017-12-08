@@ -27,6 +27,7 @@ package com.systematic.trading.analysis;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Month;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
@@ -79,6 +80,7 @@ public class EntryOrderAnalysis {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(EntryOrderAnalysis.class);
 
+	//TODO figure out the lookback based off strategy
 	/** Days to look for the entry signals prior to today. */
 	private static final int LOOKBACK = 5;
 
@@ -147,7 +149,12 @@ public class EntryOrderAnalysis {
 	private BacktestBootstrapConfiguration configuration( final EquityConfiguration equity )
 	        throws InvalidSimulationDatesException {
 
-		final LocalDate today = LocalDate.now();
+		//TODO starting cash balance
+		
+		//TODO Expecting buy event
+		final LocalDate today = LocalDate.of(2017, Month.FEBRUARY, 14);
+		
+//		final LocalDate today = LocalDate.now();
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(today.minusDays(LOOKBACK), today);
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
