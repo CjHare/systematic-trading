@@ -28,7 +28,6 @@ package com.systematic.trading.analysis;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Month;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
@@ -149,12 +148,7 @@ public class EntryOrderAnalysis {
 	        final BigDecimal openingFunds ) throws InvalidSimulationDatesException {
 
 		final StrategyConfiguration strategy = strategy();
-
-		//TODO Expecting buy event on 2017-02-13
-		final LocalDate today = LocalDate.of(2017, Month.FEBRUARY, 14);
-
-		//		final LocalDate today = LocalDate.now();
-		
+		final LocalDate today = LocalDate.now();
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(
 		        today.minus(strategy.getEntry().priceDataRange()), today);
 
