@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.analysis;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Month;
@@ -150,15 +151,18 @@ public class EntryOrderAnalysis {
 	        throws InvalidSimulationDatesException {
 
 		//TODO starting cash balance
-		
+
 		//TODO Expecting buy event
 		final LocalDate today = LocalDate.of(2017, Month.FEBRUARY, 14);
-		
-//		final LocalDate today = LocalDate.now();
+
+		final BigDecimal openingFunds = BigDecimal.valueOf(10000);
+
+		//		final LocalDate today = LocalDate.now();
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(today.minusDays(LOOKBACK), today);
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, DepositConfiguration.NONE, strategy(), equity);
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, openingFunds, DepositConfiguration.NONE,
+		        strategy(), equity);
 	}
 
 	private BacktestOutput output() {

@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest.context;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -93,6 +94,9 @@ public class BacktestBootstrapContextBulider {
 	/** Weekly deposit amount into the cash account. */
 	private DepositConfiguration deposit;
 
+	/** Starting balance for the cash account. */
+	private BigDecimal openingFunds;
+
 	/** First date to apply the management fee on. */
 	private LocalDate managementFeeStartDate;
 
@@ -109,6 +113,7 @@ public class BacktestBootstrapContextBulider {
 		this.simulationDates = configuration.getBacktestDates();
 		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getStartDate());
 		this.deposit = configuration.getDeposit();
+		this.openingFunds = configuration.getOpeningFunds();
 		this.equity = configuration.getEquity();
 		this.brokerageType = configuration.getBrokerageFees();
 		this.strategy = configuration.getStrategy();
@@ -264,7 +269,7 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private CashAccount createCashAccount() {
-		return CashAccountFactory.getInstance().create(simulationDates.getStartDate(), deposit);
+		return CashAccountFactory.getInstance().create(simulationDates.getStartDate(), openingFunds, deposit);
 	}
 
 	private Brokerage createBrokerage() {

@@ -34,6 +34,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -230,6 +232,7 @@ public class StandardDescriptionGeneratorTest {
 		final EquityConfiguration equity = mock(EquityConfiguration.class);
 		when(equity.getEquityIdentity()).thenReturn(new EquityIdentity("ZXY", null, 0));
 
-		return new BacktestBootstrapConfiguration(backtestDates, brokerageFees, cashAccount, deposit, strategy, equity);
+		return new BacktestBootstrapConfiguration(backtestDates, brokerageFees, cashAccount, BigDecimal.ZERO, deposit,
+		        strategy, equity);
 	}
 }

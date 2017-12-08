@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.backtest.trial;
 
+import java.math.BigDecimal;
+
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
@@ -76,7 +78,8 @@ public class BacktestBootstrapConfigurationBuilder {
 	}
 
 	public BacktestBootstrapConfiguration build() {
+
 		return new BacktestBootstrapConfiguration(simulationDates, brokerage,
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, deposit, strategy, equity);
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, BigDecimal.ZERO, deposit, strategy, equity);
 	}
 }
