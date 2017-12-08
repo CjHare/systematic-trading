@@ -34,7 +34,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.analysis.output.LogEntryOrderOutput;
+import com.systematic.trading.analysis.event.LogEntryOrderEventListner;
 import com.systematic.trading.backtest.Backtest;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.InvalidSimulationDatesException;
@@ -166,7 +166,7 @@ public class EntryOrderAnalysis {
 	}
 
 	private BacktestEventListener output() {
-		return new LogEntryOrderOutput();
+		return new LogEntryOrderEventListner();
 	}
 
 	private StrategyConfiguration strategy() {

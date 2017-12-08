@@ -27,7 +27,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.analysis.output;
+package com.systematic.trading.analysis.event;
 
 import java.text.DecimalFormat;
 
@@ -44,14 +44,14 @@ import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * Console output for only the buy orders.
+ * Log output for only the buy orders i.e. 'when' and 'how much' to buy.
  * 
  * @author CJ Hare
  */
-public class LogEntryOrderOutput implements BacktestEventListener {
+public class LogEntryOrderEventListner implements BacktestEventListener {
 
 	/** Classes' logger. */
-	private static final Logger LOG = LogManager.getLogger(LogEntryOrderOutput.class);
+	private static final Logger LOG = LogManager.getLogger(LogEntryOrderEventListner.class);
 
 	/** Format for the oder amounts */
 	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
