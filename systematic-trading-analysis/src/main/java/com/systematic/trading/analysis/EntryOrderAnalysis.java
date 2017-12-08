@@ -83,7 +83,7 @@ public class EntryOrderAnalysis {
 
 	//TODO figure out the lookback based off strategy
 	/** Days to look for the entry signals prior to today. */
-	private static final int LOOKBACK = 5;
+	private static final int LOOKBACK = 1;
 
 	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
