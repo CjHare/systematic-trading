@@ -35,7 +35,7 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
-import com.systematic.trading.backtest.output.BacktestOutput;
+import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.TradingDayPrices;
@@ -67,7 +67,7 @@ public class Backtest {
 	}
 
 	public void run( final EquityConfiguration equity, final BacktestBootstrapConfiguration configuration,
-	        final BacktestOutput output ) throws ServiceException {
+	        final BacktestEventListener output ) throws ServiceException {
 
 		final BacktestBootstrapContext context = createContext(configuration, output);
 		final Period warmUp = context.getTradingStrategy().getWarmUpPeriod();

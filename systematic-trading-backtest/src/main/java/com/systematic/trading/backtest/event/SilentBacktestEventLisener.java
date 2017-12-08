@@ -23,8 +23,9 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output;
+package com.systematic.trading.backtest.event;
 
+import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
@@ -40,7 +41,7 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  * 
  * @author CJ Hare
  */
-public class NoBacktestOutput implements BacktestOutput {
+public class SilentBacktestEventLisener implements BacktestEventListener {
 
 	@Override
 	public void event( final CashEvent event ) {

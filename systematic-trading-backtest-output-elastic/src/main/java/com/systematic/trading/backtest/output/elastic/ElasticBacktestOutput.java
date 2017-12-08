@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.output.BacktestOutput;
+import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.dao.impl.HttpElasticDao;
@@ -57,7 +57,7 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  * 
  * @author CJ Hare
  */
-public class ElasticBacktestOutput implements BacktestOutput {
+public class ElasticBacktestOutput implements BacktestEventListener {
 
 	private final ElasticSignalAnalysisIndex signalAnalysisIndex;
 	private final ElasticCashIndex cashIndex;

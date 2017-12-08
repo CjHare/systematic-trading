@@ -34,7 +34,7 @@ import java.text.DecimalFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.output.BacktestOutput;
+import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
@@ -48,7 +48,7 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  * 
  * @author CJ Hare
  */
-public class LogEntryOrderOutput implements BacktestOutput {
+public class LogEntryOrderOutput implements BacktestEventListener {
 
 	/** Classes' logger. */
 	private static final Logger LOG = LogManager.getLogger(LogEntryOrderOutput.class);

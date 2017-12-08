@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.output.BacktestOutput;
+import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.output.file.dao.BrokerageEventDao;
 import com.systematic.trading.backtest.output.file.dao.CashEventDao;
 import com.systematic.trading.backtest.output.file.dao.EquityEventDao;
@@ -68,7 +68,7 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public class CompleteFileOutputService extends FileOutput implements BacktestOutput {
+public class CompleteFileOutputService extends FileOutput implements BacktestEventListener {
 
 	private final BacktestBatchId batchId;
 	private final ExecutorService pool;

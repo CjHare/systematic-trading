@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output;
+package com.systematic.trading.backtest.event;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.data.TradingDayPrices;
@@ -44,7 +44,7 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public interface BacktestOutput
+public interface BacktestEventListener
         extends CashEventListener, OrderEventListener, BrokerageEventListener, ReturnOnInvestmentEventListener,
         SimulationStateListener, NetWorthEventListener, SignalAnalysisListener, EquityEventListener {
 

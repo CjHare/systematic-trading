@@ -47,11 +47,11 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.description.DescriptionGenerator;
 import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
+import com.systematic.trading.backtest.event.BacktestEventListener;
+import com.systematic.trading.backtest.event.BacktestEventListenerPreparation;
+import com.systematic.trading.backtest.event.SilentBacktestEventLisener;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.input.LaunchArguments;
-import com.systematic.trading.backtest.output.BacktestOutput;
-import com.systematic.trading.backtest.output.BacktestOutputPreparation;
-import com.systematic.trading.backtest.output.NoBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutputPreparation;
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfigurationSingleton;
@@ -124,7 +124,7 @@ public class BacktestTrial {
 		// TODO run the test over the full period with exclusion on filters
 		// TODO no deposits until actual start date, rather then from the warm-up period
 
-		final BacktestOutputPreparation outputPreparation = getOutput(parserdArguments);
+		final BacktestEventListenerPreparation outputPreparation = getOutput(parserdArguments);
 		outputPreparation.setUp();
 
 		final StopWatch timer = new StopWatch();
@@ -137,7 +137,7 @@ public class BacktestTrial {
 			clearOutputDirectory(depositAmount, parserdArguments);
 
 			for (final BacktestBootstrapConfiguration backtestConfiguration : backtestConfigurations) {
-				final BacktestOutput output = getOutput(depositAmount, parserdArguments, backtestConfiguration,
+				final BacktestEventListener output = getOutput(depositAmount, parserdArguments, backtestConfiguration,
 				        outputPool);
 
 				LOG.info("Backtesting beginning for: {}",
@@ -172,7 +172,7 @@ public class BacktestTrial {
 		}
 	}
 
-	private BacktestOutput getOutput( final DepositConfiguration depositAmount, final LaunchArguments arguments,
+	private BacktestEventListener getOutput( final DepositConfiguration depositAmount, final LaunchArguments arguments,
 	        final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
 	        throws BacktestInitialisationException {
 
@@ -191,7 +191,7 @@ public class BacktestTrial {
 					return new MinimalFileOutputService(batchId,
 					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool);
 				case NO_DISPLAY:
-					return new NoBacktestOutput();
+					return new SilentBacktestEventLisener();
 				default:
 					throw new IllegalArgumentException(unsupportedMessage(type));
 			}
@@ -214,7 +214,7 @@ public class BacktestTrial {
 		return String.format("%s%s", baseOutputDirectory, description.bootstrapConfiguration(configuration));
 	}
 
-	private BacktestOutputPreparation getOutput( final LaunchArguments arguments ) {
+	private BacktestEventListenerPreparation getOutput( final LaunchArguments arguments ) {
 		final OutputType type = arguments.getOutputType();
 
 		switch (type) {
@@ -224,7 +224,7 @@ public class BacktestTrial {
 			case FILE_COMPLETE:
 			case FILE_MINIMUM:
 			case NO_DISPLAY:
-				return new BacktestOutputPreparation() {
+				return new BacktestEventListenerPreparation() {
 				};
 			default:
 				throw new IllegalArgumentException(unsupportedMessage(type));

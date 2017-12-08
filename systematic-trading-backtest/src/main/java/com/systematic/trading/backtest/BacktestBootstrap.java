@@ -29,7 +29,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
-import com.systematic.trading.backtest.output.BacktestOutput;
+import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.Simulation;
@@ -55,14 +55,14 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
 public class BacktestBootstrap {
 
 	/** Display information from the back testing. */
-	private final BacktestOutput output;
+	private final BacktestEventListener output;
 
 	private final BacktestBootstrapContext context;
 
 	/** Unmodifiable trading data for input to the back test. */
 	private final TickerSymbolTradingData tradingData;
 
-	public BacktestBootstrap( final BacktestBootstrapContext context, final BacktestOutput output,
+	public BacktestBootstrap( final BacktestBootstrapContext context, final BacktestEventListener output,
 	        final TickerSymbolTradingData tradingData ) {
 		this.context = context;
 		this.tradingData = tradingData;

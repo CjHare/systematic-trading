@@ -58,8 +58,8 @@ import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptre
 import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
 import com.systematic.trading.backtest.description.DescriptionGenerator;
 import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
+import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
-import com.systematic.trading.backtest.output.BacktestOutput;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.data.DataService;
@@ -165,7 +165,7 @@ public class EntryOrderAnalysis {
 		        strategy(), equity);
 	}
 
-	private BacktestOutput output() {
+	private BacktestEventListener output() {
 		return new LogEntryOrderOutput();
 	}
 

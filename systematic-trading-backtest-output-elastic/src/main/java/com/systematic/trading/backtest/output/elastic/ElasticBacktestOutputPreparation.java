@@ -31,7 +31,7 @@ package com.systematic.trading.backtest.output.elastic;
 
 import java.util.concurrent.ExecutorService;
 
-import com.systematic.trading.backtest.output.BacktestOutputPreparation;
+import com.systematic.trading.backtest.event.BacktestEventListenerPreparation;
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
 import com.systematic.trading.backtest.output.elastic.dao.ElasticDao;
 import com.systematic.trading.backtest.output.elastic.dao.impl.HttpElasticDao;
@@ -48,7 +48,7 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalA
  * 
  * @author CJ Hare
  */
-public class ElasticBacktestOutputPreparation implements BacktestOutputPreparation {
+public class ElasticBacktestOutputPreparation implements BacktestEventListenerPreparation {
 
 	/** Pool is only used for Bulk API requests, which are not used during the preparation. */
 	private static final ExecutorService NO_POOL = null;

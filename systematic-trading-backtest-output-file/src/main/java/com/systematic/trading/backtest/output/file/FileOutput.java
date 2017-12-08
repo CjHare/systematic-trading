@@ -31,7 +31,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.output.BacktestOutput;
+import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
 import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
@@ -42,7 +42,7 @@ import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventLi
  * 
  * @author CJ Hare
  */
-public abstract class FileOutput implements BacktestOutput {
+public abstract class FileOutput implements BacktestEventListener {
 
 	private static final Logger LOG = LogManager.getLogger(FileOutput.class);
 
