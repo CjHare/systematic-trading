@@ -152,10 +152,10 @@ public class EntryOrderAnalysis {
 
 		//TODO starting cash balance
 
-		//TODO Expecting buy event
+		//TODO Expecting buy event on 2017-02-13
 		final LocalDate today = LocalDate.of(2017, Month.FEBRUARY, 14);
 
-		final BigDecimal openingFunds = BigDecimal.valueOf(10000);
+		final BigDecimal openingFunds = BigDecimal.valueOf(10000.88);
 
 		//		final LocalDate today = LocalDate.now();
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(today.minusDays(LOOKBACK), today);

@@ -29,6 +29,8 @@
  */
 package com.systematic.trading.analysis.output;
 
+import java.text.DecimalFormat;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,8 +50,11 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  */
 public class LogEntryOrderOutput implements BacktestOutput {
 
-	/** Classes logger. */
+	/** Classes' logger. */
 	private static final Logger LOG = LogManager.getLogger(LogEntryOrderOutput.class);
+
+	/** Format for the oder amounts */
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".00");
 
 	@Override
 	public void event( final CashEvent event ) {
@@ -58,7 +63,17 @@ public class LogEntryOrderOutput implements BacktestOutput {
 
 	@Override
 	public void event( final OrderEvent event ) {
-		LOG.info(event);
+
+		switch (event.getType()) {
+
+			case ENTRY:
+				LOG.info(String.format("Buy event on %s. Place a buy order for the total value of %s",
+				        event.getTransactionDate(), TWO_DECIMAL_PLACES.format(event.getTotalCost())));
+			break;
+
+			default:
+			break;
+		}
 	}
 
 	@Override
