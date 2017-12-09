@@ -55,10 +55,8 @@ import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptre
 import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
 import com.systematic.trading.backtest.description.DescriptionGenerator;
 import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
-import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
-import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.data.DataService;
@@ -68,6 +66,16 @@ import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
+import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.input.DataServiceTypeLaunchArgument;
+import com.systematic.trading.input.EndDateLaunchArgument;
+import com.systematic.trading.input.EquityDatasetLaunchArgument;
+import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.input.LaunchArgumentValidator;
+import com.systematic.trading.input.LaunchArguments;
+import com.systematic.trading.input.OutputLaunchArgument;
+import com.systematic.trading.input.StartDateLaunchArgument;
+import com.systematic.trading.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.model.EquityClass;
 
 /**
@@ -90,12 +98,19 @@ public class EntryOrderAnalysis {
 
 	public static void main( final String... args ) throws ServiceException {
 
+		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
+
+		//TODO remove the nulll, create a specialised laucnh args for the analysis
+		//TODO builder
+		
+		final LaunchArguments launchArgs = new LaunchArguments(new CommandLineLaunchArgumentsParser(), null,
+		        new DataServiceTypeLaunchArgument(), null, null, new EquityDatasetLaunchArgument(validator),
+		        new TickerSymbolLaunchArgument(validator), null, args);
+
 		//TODO these values should be input arguments
 		final BigDecimal openingFunds = BigDecimal.valueOf(10000);
-		final EquityConfiguration equity = new EquityConfiguration(new EquityDataset("WIKI"), new TickerSymbol("BRK_A"),
-		        EquityClass.STOCK);
 
-		new EntryOrderAnalysis(new DataServiceType("tables")).run(equity, openingFunds);
+		new EntryOrderAnalysis(new DataServiceType("tables")).run(launchArgs, openingFunds);
 
 	}
 
@@ -111,8 +126,13 @@ public class EntryOrderAnalysis {
 		this.description = new StandardDescriptionGenerator();
 	}
 
-	private void run( final EquityConfiguration equity, final BigDecimal openingFunds ) throws ServiceException {
+	private EquityConfiguration equity( final LaunchArguments launchArgs ) {
+		return new EquityConfiguration(launchArgs.getEquityDataset(), launchArgs.getTickerSymbol(), EquityClass.STOCK);
+	}
 
+	private void run( final LaunchArguments launchArgs, final BigDecimal openingFunds ) throws ServiceException {
+
+		final EquityConfiguration equity = equity(launchArgs);
 		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity, openingFunds);
 		recordStrategy(backtestConfiguration.getStrategy());
 		recordAnalysisPeriod(backtestConfiguration.getBacktestDates());
