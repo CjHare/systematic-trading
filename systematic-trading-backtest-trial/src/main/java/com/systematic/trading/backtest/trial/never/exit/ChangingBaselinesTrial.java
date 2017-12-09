@@ -37,17 +37,17 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
-import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
-import com.systematic.trading.backtest.input.DataServiceTypeLaunchArgument;
-import com.systematic.trading.backtest.input.EndDateLaunchArgument;
-import com.systematic.trading.backtest.input.EquityDatasetLaunchArgument;
-import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
-import com.systematic.trading.backtest.input.LaunchArgumentValidator;
-import com.systematic.trading.backtest.input.LaunchArguments;
-import com.systematic.trading.backtest.input.OutputLaunchArgument;
-import com.systematic.trading.backtest.input.StartDateLaunchArgument;
-import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trial.BaseTrial;
+import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.input.DataServiceTypeLaunchArgument;
+import com.systematic.trading.input.EndDateLaunchArgument;
+import com.systematic.trading.input.EquityDatasetLaunchArgument;
+import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.input.LaunchArgumentValidator;
+import com.systematic.trading.input.LaunchArguments;
+import com.systematic.trading.input.OutputLaunchArgument;
+import com.systematic.trading.input.StartDateLaunchArgument;
+import com.systematic.trading.input.TickerSymbolLaunchArgument;
 
 /**
  * Comparing indicator and periodic results when they're using different brokerage misses out other variables i.e. the on-going management fees. 

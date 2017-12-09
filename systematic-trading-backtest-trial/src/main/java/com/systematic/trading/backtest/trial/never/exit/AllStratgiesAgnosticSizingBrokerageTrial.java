@@ -38,19 +38,19 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
-import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
-import com.systematic.trading.backtest.input.DataServiceTypeLaunchArgument;
-import com.systematic.trading.backtest.input.EndDateLaunchArgument;
-import com.systematic.trading.backtest.input.EquityDatasetLaunchArgument;
-import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
-import com.systematic.trading.backtest.input.LaunchArgumentValidator;
-import com.systematic.trading.backtest.input.LaunchArguments;
-import com.systematic.trading.backtest.input.OutputLaunchArgument;
-import com.systematic.trading.backtest.input.StartDateLaunchArgument;
-import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.AllTrials;
+import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.input.DataServiceTypeLaunchArgument;
+import com.systematic.trading.input.EndDateLaunchArgument;
+import com.systematic.trading.input.EquityDatasetLaunchArgument;
+import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.input.LaunchArgumentValidator;
+import com.systematic.trading.input.LaunchArguments;
+import com.systematic.trading.input.OutputLaunchArgument;
+import com.systematic.trading.input.StartDateLaunchArgument;
+import com.systematic.trading.input.TickerSymbolLaunchArgument;
 
 /**
  * All strategies using the same Vanguard brokerage.

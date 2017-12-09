@@ -46,19 +46,19 @@ import com.systematic.trading.backtest.configuration.strategy.indicator.Indicato
 import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
-import com.systematic.trading.backtest.input.CommandLineLaunchArgumentsParser;
-import com.systematic.trading.backtest.input.DataServiceTypeLaunchArgument;
-import com.systematic.trading.backtest.input.EndDateLaunchArgument;
-import com.systematic.trading.backtest.input.EquityDatasetLaunchArgument;
-import com.systematic.trading.backtest.input.FileBaseDirectoryLaunchArgument;
-import com.systematic.trading.backtest.input.LaunchArgumentValidator;
-import com.systematic.trading.backtest.input.LaunchArguments;
-import com.systematic.trading.backtest.input.OutputLaunchArgument;
-import com.systematic.trading.backtest.input.StartDateLaunchArgument;
-import com.systematic.trading.backtest.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.BaseTrial;
+import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.input.DataServiceTypeLaunchArgument;
+import com.systematic.trading.input.EndDateLaunchArgument;
+import com.systematic.trading.input.EquityDatasetLaunchArgument;
+import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.input.LaunchArgumentValidator;
+import com.systematic.trading.input.LaunchArguments;
+import com.systematic.trading.input.OutputLaunchArgument;
+import com.systematic.trading.input.StartDateLaunchArgument;
+import com.systematic.trading.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
 /**

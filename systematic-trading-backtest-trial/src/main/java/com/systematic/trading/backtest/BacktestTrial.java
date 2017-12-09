@@ -42,7 +42,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.OutputType;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.description.DescriptionGenerator;
@@ -51,7 +50,7 @@ import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.event.BacktestEventListenerPreparation;
 import com.systematic.trading.backtest.event.SilentBacktestEventLisener;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
-import com.systematic.trading.backtest.input.LaunchArguments;
+import com.systematic.trading.backtest.input.OutputType;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutputPreparation;
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfigurationSingleton;
@@ -68,6 +67,7 @@ import com.systematic.trading.data.exception.CannotRetrieveConfigurationExceptio
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.exception.ServiceException;
+import com.systematic.trading.input.LaunchArguments;
 import com.systematic.trading.model.EquityClass;
 
 /**
@@ -201,7 +201,7 @@ public class BacktestTrial {
 	}
 
 	private String getOutputDirectory( final DepositConfiguration depositAmount, final LaunchArguments arguments ) {
-		return isFileBasedDisplay(arguments) ? arguments.getOutputDirectory(depositAmount) : "";
+		return isFileBasedDisplay(arguments) ? arguments.getOutputDirectory(depositAmount.toString()) : "";
 	}
 
 	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration,
@@ -259,7 +259,7 @@ public class BacktestTrial {
 		// Arrange output to files, only once per a run
 
 		if (isFileBasedDisplay(arguments)) {
-			final String outputDirectory = arguments.getOutputDirectory(depositAmount);
+			final String outputDirectory = arguments.getOutputDirectory(depositAmount.toString());
 			try {
 				new ClearFileDestination(outputDirectory).clear();
 			} catch (final IOException e) {

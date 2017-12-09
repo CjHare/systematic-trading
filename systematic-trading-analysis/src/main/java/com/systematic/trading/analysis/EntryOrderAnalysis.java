@@ -42,8 +42,6 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.equity.EquityDataset;
-import com.systematic.trading.backtest.configuration.equity.TickerSymbol;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
@@ -57,8 +55,10 @@ import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptre
 import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
 import com.systematic.trading.backtest.description.DescriptionGenerator;
 import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
+import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
+import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.data.DataService;
