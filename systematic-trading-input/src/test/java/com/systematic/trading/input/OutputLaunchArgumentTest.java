@@ -49,9 +49,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.input.OutputType;
-import com.systematic.trading.input.LaunchArgumentValidator;
-import com.systematic.trading.input.OutputLaunchArgument;
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
+import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * Unit test for the OutputLaunchArgument.

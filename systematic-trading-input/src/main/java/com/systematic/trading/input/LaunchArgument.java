@@ -30,13 +30,44 @@
 package com.systematic.trading.input;
 
 import java.util.Map;
-
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
+import java.util.Optional;
 
 /**
  * @author CJ Hare
  */
 public interface LaunchArgument<T> {
+
+	enum ArgumentKey {
+		DATA_SERVICE_TYPE("-data_service_type"),
+		END_DATE("-end_date"),
+		EQUITY_DATASET("-equity_dataset"),
+		OUTPUT_TYPE("-output"),
+		FILE_BASE_DIRECTORY("-output_file_base_directory"),
+		START_DATE("-start_date"),
+		TICKER_SYMBOL("-ticker_symbol");
+
+		private final String key;
+
+		private ArgumentKey( final String key ) {
+			this.key = key;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public static Optional<ArgumentKey> get( final String arg ) {
+
+			for (final ArgumentKey candidate : ArgumentKey.values()) {
+				if (candidate.key.equals(arg)) {
+					return Optional.of(candidate);
+				}
+			}
+
+			return Optional.empty();
+
+		}
+	}
 
 	T get( Map<ArgumentKey, String> arguments );
 }

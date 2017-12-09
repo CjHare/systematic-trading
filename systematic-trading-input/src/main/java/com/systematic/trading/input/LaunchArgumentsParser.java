@@ -31,7 +31,7 @@ package com.systematic.trading.input;
 
 import java.util.Map;
 
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
+import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * Parses a feed of launch arguments for the back test application.
@@ -40,6 +40,5 @@ import com.systematic.trading.input.LaunchArguments.ArgumentKey;
  */
 public interface LaunchArgumentsParser {
 
-	//TODO change back to String... after updating mockito version
 	Map<ArgumentKey, String> parse( final String[] args );
 }

@@ -32,7 +32,6 @@ package com.systematic.trading.input;
 import java.util.Map;
 
 import com.systematic.trading.backtest.input.EquityDataset;
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
 
 /**
  * Launch argument parser and validation for the inclusive start date type key value pairing.

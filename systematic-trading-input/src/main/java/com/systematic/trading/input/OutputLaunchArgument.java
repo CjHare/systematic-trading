@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.systematic.trading.backtest.input.OutputType;
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
 
 /**
  * Launch argument parser and validation for the output type key value pairing.

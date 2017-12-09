@@ -32,7 +32,6 @@ package com.systematic.trading.input;
 import java.util.Map;
 
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
 
 /**
  * Launch argument parser for the Base directory of the file output.

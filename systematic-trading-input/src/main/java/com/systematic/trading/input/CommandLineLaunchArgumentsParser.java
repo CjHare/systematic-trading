@@ -36,7 +36,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
+import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * Parses the launch arguments, converting them into a typed map.

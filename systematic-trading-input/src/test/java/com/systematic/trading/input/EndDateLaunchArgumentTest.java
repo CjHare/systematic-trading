@@ -52,9 +52,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.input.BacktestEndDate;
-import com.systematic.trading.input.EndDateLaunchArgument;
-import com.systematic.trading.input.LaunchArgumentValidator;
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
+import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * @author CJ Hare

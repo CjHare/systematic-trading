@@ -67,7 +67,7 @@ import com.systematic.trading.data.exception.CannotRetrieveConfigurationExceptio
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.exception.ServiceException;
-import com.systematic.trading.input.LaunchArguments;
+import com.systematic.trading.input.BacktestLaunchArguments;
 import com.systematic.trading.model.EquityClass;
 
 /**
@@ -99,7 +99,7 @@ public class BacktestTrial {
 		this.dataService = new HibernateDataService();
 	}
 
-	public void runBacktest( final BacktestConfiguration configuration, final LaunchArguments parserdArguments )
+	public void runBacktest( final BacktestConfiguration configuration, final BacktestLaunchArguments parserdArguments )
 	        throws ServiceException {
 
 		// Date range is from the first of the starting month until now
@@ -172,7 +172,7 @@ public class BacktestTrial {
 		}
 	}
 
-	private BacktestEventListener getOutput( final DepositConfiguration depositAmount, final LaunchArguments arguments,
+	private BacktestEventListener getOutput( final DepositConfiguration depositAmount, final BacktestLaunchArguments arguments,
 	        final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
 	        throws BacktestInitialisationException {
 
@@ -200,7 +200,7 @@ public class BacktestTrial {
 		}
 	}
 
-	private String getOutputDirectory( final DepositConfiguration depositAmount, final LaunchArguments arguments ) {
+	private String getOutputDirectory( final DepositConfiguration depositAmount, final BacktestLaunchArguments arguments ) {
 		return isFileBasedDisplay(arguments) ? arguments.getOutputDirectory(depositAmount.toString()) : "";
 	}
 
@@ -214,7 +214,7 @@ public class BacktestTrial {
 		return String.format("%s%s", baseOutputDirectory, description.bootstrapConfiguration(configuration));
 	}
 
-	private BacktestEventListenerPreparation getOutput( final LaunchArguments arguments ) {
+	private BacktestEventListenerPreparation getOutput( final BacktestLaunchArguments arguments ) {
 		final OutputType type = arguments.getOutputType();
 
 		switch (type) {
@@ -231,7 +231,7 @@ public class BacktestTrial {
 		}
 	}
 
-	private ExecutorService getOutputPool( final LaunchArguments arguments )
+	private ExecutorService getOutputPool( final BacktestLaunchArguments arguments )
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 		final OutputType type = arguments.getOutputType();
 
@@ -250,7 +250,7 @@ public class BacktestTrial {
 		}
 	}
 
-	private void clearOutputDirectory( final DepositConfiguration depositAmount, final LaunchArguments arguments )
+	private void clearOutputDirectory( final DepositConfiguration depositAmount, final BacktestLaunchArguments arguments )
 	        throws ServiceException {
 		//TODO delete must run BEFORE any of the tests! that'll ensure race conditions are avoided
 
@@ -268,7 +268,7 @@ public class BacktestTrial {
 		}
 	}
 
-	private boolean isFileBasedDisplay( final LaunchArguments arguments ) {
+	private boolean isFileBasedDisplay( final BacktestLaunchArguments arguments ) {
 		return arguments.getOutputType() == OutputType.FILE_COMPLETE
 		        || arguments.getOutputType() == OutputType.FILE_MINIMUM;
 	}

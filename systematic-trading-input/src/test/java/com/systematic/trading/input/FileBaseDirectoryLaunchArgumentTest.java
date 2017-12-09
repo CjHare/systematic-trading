@@ -48,7 +48,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
+import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * Unit test for the FileBaseDirectoryLaunchArgument.

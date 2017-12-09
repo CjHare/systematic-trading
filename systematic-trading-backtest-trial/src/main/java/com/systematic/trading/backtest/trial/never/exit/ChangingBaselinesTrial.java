@@ -44,7 +44,7 @@ import com.systematic.trading.input.EndDateLaunchArgument;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
 import com.systematic.trading.input.LaunchArgumentValidator;
-import com.systematic.trading.input.LaunchArguments;
+import com.systematic.trading.input.BacktestLaunchArguments;
 import com.systematic.trading.input.OutputLaunchArgument;
 import com.systematic.trading.input.StartDateLaunchArgument;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
@@ -59,7 +59,7 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 
-		final LaunchArguments launchArgs = new LaunchArguments(new CommandLineLaunchArgumentsParser(),
+		final BacktestLaunchArguments launchArgs = new BacktestLaunchArguments(new CommandLineLaunchArgumentsParser(),
 		        new OutputLaunchArgument(validator), new DataServiceTypeLaunchArgument(),
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new EquityDatasetLaunchArgument(validator), new TickerSymbolLaunchArgument(validator),

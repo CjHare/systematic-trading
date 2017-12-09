@@ -52,7 +52,7 @@ import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
 import com.systematic.trading.data.DataServiceType;
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
+import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * Test for the BacktestLaunchArgumentParser.
@@ -60,7 +60,7 @@ import com.systematic.trading.input.LaunchArguments.ArgumentKey;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class LaunchArgumentsTest {
+public class BacktestLaunchArgumentsTest {
 
 	private static final String ARGUMENT_PARSER_EXCEPTION_MESSAGE = "Argument parser exception message";
 	private static final String DIRCTORY_EXCEPTION_MESSAGE = "Directory exception message";
@@ -94,7 +94,7 @@ public class LaunchArgumentsTest {
 	private LaunchArgument<TickerSymbol> tickerSymbolArgument;
 
 	/** Launch argument parser instance being tested. */
-	private LaunchArguments parser;
+	private BacktestLaunchArguments parser;
 
 	@Test
 	public void outputType() {
@@ -193,7 +193,7 @@ public class LaunchArgumentsTest {
 	}
 
 	private void createLaunchArguments( final String... args ) {
-		parser = new LaunchArguments(argumentParser, outputTypeArgument, dataServiceArgument, startDateArgument,
+		parser = new BacktestLaunchArguments(argumentParser, outputTypeArgument, dataServiceArgument, startDateArgument,
 		        endDateArgument, equityDatasetArgument, tickerSymbolArgument, directoryArgument, args);
 	}
 

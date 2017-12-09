@@ -33,7 +33,6 @@ import java.time.LocalDate;
 import java.util.Map;
 
 import com.systematic.trading.backtest.input.BacktestStartDate;
-import com.systematic.trading.input.LaunchArguments.ArgumentKey;
 
 /**
  * Launch argument parser and validation for the inclusive start date type key value pairing.

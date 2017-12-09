@@ -66,15 +66,11 @@ import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
+import com.systematic.trading.input.AnalysisLaunchArguments;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
-import com.systematic.trading.input.EndDateLaunchArgument;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
-import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
 import com.systematic.trading.input.LaunchArgumentValidator;
-import com.systematic.trading.input.LaunchArguments;
-import com.systematic.trading.input.OutputLaunchArgument;
-import com.systematic.trading.input.StartDateLaunchArgument;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.model.EquityClass;
 
@@ -99,13 +95,9 @@ public class EntryOrderAnalysis {
 	public static void main( final String... args ) throws ServiceException {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
-
-		//TODO remove the nulll, create a specialised laucnh args for the analysis
-		//TODO builder
-		
-		final LaunchArguments launchArgs = new LaunchArguments(new CommandLineLaunchArgumentsParser(), null,
-		        new DataServiceTypeLaunchArgument(), null, null, new EquityDatasetLaunchArgument(validator),
-		        new TickerSymbolLaunchArgument(validator), null, args);
+		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(new CommandLineLaunchArgumentsParser(),
+		        new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
+		        new TickerSymbolLaunchArgument(validator), args);
 
 		//TODO these values should be input arguments
 		final BigDecimal openingFunds = BigDecimal.valueOf(10000);
@@ -126,11 +118,12 @@ public class EntryOrderAnalysis {
 		this.description = new StandardDescriptionGenerator();
 	}
 
-	private EquityConfiguration equity( final LaunchArguments launchArgs ) {
+	private EquityConfiguration equity( final AnalysisLaunchArguments launchArgs ) {
 		return new EquityConfiguration(launchArgs.getEquityDataset(), launchArgs.getTickerSymbol(), EquityClass.STOCK);
 	}
 
-	private void run( final LaunchArguments launchArgs, final BigDecimal openingFunds ) throws ServiceException {
+	private void run( final AnalysisLaunchArguments launchArgs, final BigDecimal openingFunds )
+	        throws ServiceException {
 
 		final EquityConfiguration equity = equity(launchArgs);
 		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity, openingFunds);

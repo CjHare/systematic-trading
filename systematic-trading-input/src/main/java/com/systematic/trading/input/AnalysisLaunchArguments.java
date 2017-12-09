@@ -30,69 +30,21 @@
 package com.systematic.trading.input;
 
 import java.util.Map;
-import java.util.Optional;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
-import com.systematic.trading.backtest.input.BacktestEndDate;
-import com.systematic.trading.backtest.input.BacktestStartDate;
 import com.systematic.trading.backtest.input.EquityDataset;
-import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
-import com.systematic.trading.backtest.input.OutputType;
 import com.systematic.trading.data.DataServiceType;
+import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * An aggregation facade for parsing the arguments given on launch, their validation and type conversion.
  * 
  * @author CJ Hare
  */
-public class LaunchArguments {
-
-	enum ArgumentKey {
-		DATA_SERVICE_TYPE("-data_service_type"),
-		END_DATE("-end_date"),
-		EQUITY_DATASET("-equity_dataset"),
-		OUTPUT_TYPE("-output"),
-		FILE_BASE_DIRECTORY("-output_file_base_directory"),
-		START_DATE("-start_date"),
-		TICKER_SYMBOL("-ticker_symbol");
-
-		private final String key;
-
-		private ArgumentKey( final String key ) {
-			this.key = key;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public static Optional<ArgumentKey> get( final String arg ) {
-
-			for (final ArgumentKey candidate : ArgumentKey.values()) {
-				if (candidate.key.equals(arg)) {
-					return Optional.of(candidate);
-				}
-			}
-
-			return Optional.empty();
-
-		}
-	}
-
-	/** Data source that will receive the application's output.*/
-	private final OutputType outputType;
-
-	/** Optional argument, used with file output types.*/
-	private final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectory;
+public class AnalysisLaunchArguments {
 
 	/** Parsed launch arguments.*/
 	private final Map<ArgumentKey, String> arguments;
-
-	/** Mandatory start date for the back test.*/
-	private final BacktestStartDate startDate;
-
-	/** Mandatory end date for the back test.*/
-	private final BacktestEndDate endDate;
 
 	/** Ticker Symbol to perform the back testing on.*/
 	private final TickerSymbol tickerSymbol;
@@ -103,37 +55,14 @@ public class LaunchArguments {
 	/**	Optional argument, which data source type to use when retrieving data. */
 	private final DataServiceType dataService;
 
-	public LaunchArguments( final LaunchArgumentsParser argumentParser, final LaunchArgument<OutputType> outputArgument,
+	public AnalysisLaunchArguments( final LaunchArgumentsParser argumentParser,
 	        final LaunchArgument<DataServiceType> dataServiceArgument,
-	        final LaunchArgument<BacktestStartDate> startDateArgument,
-	        final LaunchArgument<BacktestEndDate> endDateArgument,
 	        final LaunchArgument<EquityDataset> equityDatasetArgument,
-	        final LaunchArgument<TickerSymbol> tickerSymbolArgument,
-	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument, final String... args ) {
+	        final LaunchArgument<TickerSymbol> tickerSymbolArgument, final String... args ) {
 		this.arguments = argumentParser.parse(args);
-		this.outputType = outputArgument.get(arguments);
-		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
-		this.startDate = startDateArgument.get(arguments);
-		this.endDate = endDateArgument.get(arguments);
 		this.equityDataset = equityDatasetArgument.get(arguments);
 		this.tickerSymbol = tickerSymbolArgument.get(arguments);
 		this.dataService = dataServiceArgument.get(arguments);
-	}
-
-	public String getOutputDirectory( final String depositAmount ) {
-		return fileBaseOutputDirectory.get(arguments).getDirectory(depositAmount);
-	}
-
-	public BacktestStartDate getStartDate() {
-		return startDate;
-	}
-
-	public BacktestEndDate getEndDate() {
-		return endDate;
-	}
-
-	public OutputType getOutputType() {
-		return outputType;
 	}
 
 	public TickerSymbol getTickerSymbol() {
