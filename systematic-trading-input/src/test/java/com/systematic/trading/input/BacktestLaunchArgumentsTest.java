@@ -45,13 +45,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.BacktestEndDate;
 import com.systematic.trading.backtest.input.BacktestStartDate;
-import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
-import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
@@ -62,21 +59,14 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 @RunWith(MockitoJUnitRunner.class)
 public class BacktestLaunchArgumentsTest {
 
-	private static final String ARGUMENT_PARSER_EXCEPTION_MESSAGE = "Argument parser exception message";
 	private static final String DIRCTORY_EXCEPTION_MESSAGE = "Directory exception message";
 	private static final String OUTPUT_EXCEPTION_MESSAGE = "Ooutput Type exception message";
-	private static final String START_DATE_ARGUMENT_EXCEPTION_MESSAGE = "Start Date argument exception message";
-	private static final String END_DATE_ARGUMENT_EXCEPTION_MESSAGE = "End Date argument exception message";
-	private static final String TICKER_SYMBOL_ARGUMENT_EXCEPTION_MESSAGE = "Ticker Symbol argument exception message";
 
 	@Mock
 	private LaunchArgumentsParser argumentParser;
 
 	@Mock
 	private LaunchArgument<OutputType> outputTypeArgument;
-
-	@Mock
-	private LaunchArgument<DataServiceType> dataServiceArgument;
 
 	@Mock
 	private LaunchArgument<FileBaseOutputDirectory> directoryArgument;
@@ -88,10 +78,7 @@ public class BacktestLaunchArgumentsTest {
 	private LaunchArgument<BacktestEndDate> endDateArgument;
 
 	@Mock
-	private LaunchArgument<EquityDataset> equityDatasetArgument;
-
-	@Mock
-	private LaunchArgument<TickerSymbol> tickerSymbolArgument;
+	private EquityArguments equityArguments;
 
 	/** Launch argument parser instance being tested. */
 	private BacktestLaunchArguments parser;
@@ -99,14 +86,13 @@ public class BacktestLaunchArgumentsTest {
 	@Test
 	public void outputType() {
 		final String outputType = "elastic_search";
-		final String[] launchArguments = { "-output", outputType };
+		final Map<ArgumentKey, String> launchArguments = getArgumentMap(outputType);
 		setUpArgumentMap(outputType);
 		setUpOutputArgument(OutputType.ELASTIC_SEARCH);
 
 		createLaunchArguments(launchArguments);
 
 		verifyOutputType(OutputType.ELASTIC_SEARCH);
-		verifyArgumentsParsed(launchArguments);
 		verifyOutputTypeArgument(outputType);
 	}
 
@@ -114,21 +100,20 @@ public class BacktestLaunchArgumentsTest {
 	public void fileOutputDirectory() {
 		final String outputDirectory = "../../simulations";
 		final String outputType = "no_display";
-		final String[] launchArguments = { "-output", outputType, "-output_file_base_directory", outputDirectory };
+		final Map<ArgumentKey, String> launchArguments = getArgumentMap(outputType, outputDirectory);
 		setUpArgumentMap(outputType, outputDirectory);
 		setUpDirectoryArgument(outputDirectory);
 
 		createLaunchArguments(launchArguments);
 
 		verifyOutputDirectory(outputDirectory);
-		verifyArgumentsParsed(launchArguments);
 		verifyOutputDirectoryArgument(outputType, outputDirectory);
 	}
 
 	@Test
 	public void outputArgumentException() {
 		final String outputType = "unmatched output type";
-		final String[] launchArguments = { "-output", outputType };
+		final Map<ArgumentKey, String> launchArguments = getArgumentMap(outputType);
 		setUpOutputArgumentException();
 		setUpArgumentMap(outputType);
 
@@ -138,36 +123,9 @@ public class BacktestLaunchArgumentsTest {
 	}
 
 	@Test
-	public void argumentParserException() {
-		setUpArgumentParserException();
-
-		createLaunchArgumentsExpectingException(ARGUMENT_PARSER_EXCEPTION_MESSAGE);
-	}
-
-	@Test
-	public void startDateArgumentException() {
-		setUpStartDateArgumentxception();
-
-		createLaunchArgumentsExpectingException(START_DATE_ARGUMENT_EXCEPTION_MESSAGE);
-	}
-
-	@Test
-	public void endDateArgumentException() {
-		setUpEndDateArgumentxception();
-
-		createLaunchArgumentsExpectingException(END_DATE_ARGUMENT_EXCEPTION_MESSAGE);
-	}
-
-	@Test
-	public void tickerSymbolArgumentException() {
-		setUpTickerSymbolArgumentxception();
-
-		createLaunchArgumentsExpectingException(TICKER_SYMBOL_ARGUMENT_EXCEPTION_MESSAGE);
-	}
-
-	@Test
 	public void getFileOutputDirectoryException() {
-		final String[] launchArguments = { "-output", "unmatched output type" };
+		final String outputType = "unmatched output type";
+		final Map<ArgumentKey, String> launchArguments = getArgumentMap(outputType);
 		setUpDirectoryArgumentException();
 		createLaunchArguments(launchArguments);
 
@@ -183,18 +141,19 @@ public class BacktestLaunchArgumentsTest {
 		}
 	}
 
-	private void createLaunchArgumentsExpectingException( final String expectedMessage, final String... args ) {
+	private void createLaunchArgumentsExpectingException( final String expectedMessage,
+	        final Map<ArgumentKey, String> arguments ) {
 		try {
-			createLaunchArguments(args);
+			createLaunchArguments(arguments);
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(expectedMessage, e.getMessage());
 		}
 	}
 
-	private void createLaunchArguments( final String... args ) {
-		parser = new BacktestLaunchArguments(argumentParser, outputTypeArgument, dataServiceArgument, startDateArgument,
-		        endDateArgument, equityDatasetArgument, tickerSymbolArgument, directoryArgument, args);
+	private void createLaunchArguments( final Map<ArgumentKey, String> arguments ) {
+		parser = new BacktestLaunchArguments(outputTypeArgument, equityArguments, startDateArgument, endDateArgument,
+		        directoryArgument, arguments);
 	}
 
 	private void verifyOutputType( final OutputType expected ) {
@@ -215,33 +174,8 @@ public class BacktestLaunchArgumentsTest {
 		verifyNoMoreInteractions(outputTypeArgument);
 	}
 
-	private void verifyArgumentsParsed( final String[] launchArguments ) {
-		verify(argumentParser).parse(launchArguments);
-		verifyNoMoreInteractions(argumentParser);
-	}
-
 	private void setUpOutputArgument( final OutputType type ) {
 		when(outputTypeArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(type);
-	}
-
-	private void setUpArgumentParserException() {
-		when(argumentParser.parse(any(String[].class)))
-		        .thenThrow(new IllegalArgumentException(ARGUMENT_PARSER_EXCEPTION_MESSAGE));
-	}
-
-	private void setUpStartDateArgumentxception() {
-		when(argumentParser.parse(any(String[].class)))
-		        .thenThrow(new IllegalArgumentException(START_DATE_ARGUMENT_EXCEPTION_MESSAGE));
-	}
-
-	private void setUpEndDateArgumentxception() {
-		when(argumentParser.parse(any(String[].class)))
-		        .thenThrow(new IllegalArgumentException(END_DATE_ARGUMENT_EXCEPTION_MESSAGE));
-	}
-
-	private void setUpTickerSymbolArgumentxception() {
-		when(argumentParser.parse(any(String[].class)))
-		        .thenThrow(new IllegalArgumentException(TICKER_SYMBOL_ARGUMENT_EXCEPTION_MESSAGE));
 	}
 
 	private void setUpDirectoryArgument( final String directory ) {

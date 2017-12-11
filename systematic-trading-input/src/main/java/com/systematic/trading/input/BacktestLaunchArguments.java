@@ -47,6 +47,9 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
  */
 public class BacktestLaunchArguments {
 
+	/** Equity and it's data source. */
+	private final EquityArguments equityArguments;
+
 	/** Data source that will receive the application's output.*/
 	private final OutputType outputType;
 
@@ -62,30 +65,17 @@ public class BacktestLaunchArguments {
 	/** Mandatory end date for the back test.*/
 	private final BacktestEndDate endDate;
 
-	/** Ticker Symbol to perform the back testing on.*/
-	private final TickerSymbol tickerSymbol;
-
-	/**	Optional argument, data set to retrieve the ticker symbol from. */
-	private final EquityDataset equityDataset;
-
-	/**	Optional argument, which data source type to use when retrieving data. */
-	private final DataServiceType dataService;
-
-	public BacktestLaunchArguments( final LaunchArgumentsParser argumentParser,
-	        final LaunchArgument<OutputType> outputArgument, final LaunchArgument<DataServiceType> dataServiceArgument,
-	        final LaunchArgument<BacktestStartDate> startDateArgument,
+	public BacktestLaunchArguments( final LaunchArgument<OutputType> outputArgument,
+	        final EquityArguments equityArguments, final LaunchArgument<BacktestStartDate> startDateArgument,
 	        final LaunchArgument<BacktestEndDate> endDateArgument,
-	        final LaunchArgument<EquityDataset> equityDatasetArgument,
-	        final LaunchArgument<TickerSymbol> tickerSymbolArgument,
-	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument, final String... args ) {
-		this.arguments = argumentParser.parse(args);
+	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument,
+	        final Map<ArgumentKey, String> arguments ) {
+		this.arguments = arguments;
 		this.outputType = outputArgument.get(arguments);
 		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
 		this.startDate = startDateArgument.get(arguments);
 		this.endDate = endDateArgument.get(arguments);
-		this.equityDataset = equityDatasetArgument.get(arguments);
-		this.tickerSymbol = tickerSymbolArgument.get(arguments);
-		this.dataService = dataServiceArgument.get(arguments);
+		this.equityArguments = equityArguments;
 	}
 
 	public String getOutputDirectory( final String depositAmount ) {
@@ -105,14 +95,14 @@ public class BacktestLaunchArguments {
 	}
 
 	public TickerSymbol getTickerSymbol() {
-		return tickerSymbol;
+		return equityArguments.getTickerSymbol();
 	}
 
 	public EquityDataset getEquityDataset() {
-		return equityDataset;
+		return equityArguments.getEquityDataset();
 	}
 
 	public DataServiceType getDataService() {
-		return dataService;
+		return equityArguments.getDataService();
 	}
 }
