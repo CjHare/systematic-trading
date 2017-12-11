@@ -28,6 +28,7 @@ package com.systematic.trading.analysis;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Map;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
@@ -70,8 +71,10 @@ import com.systematic.trading.input.AnalysisLaunchArguments;
 import com.systematic.trading.input.BigDecimalLaunchArgument;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
+import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.LaunchArgument;
+import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.model.EquityClass;
@@ -98,10 +101,11 @@ public class EntryOrderAnalysis {
 	public static void main( final String... args ) throws ServiceException {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
-		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(new CommandLineLaunchArgumentsParser(),
-		        new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
-		        new TickerSymbolLaunchArgument(validator),
-		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS), args);
+		final Map<ArgumentKey, String> arguments = new CommandLineLaunchArgumentsParser().parse(args);
+		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(
+		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
+		                new TickerSymbolLaunchArgument(validator), arguments),
+		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS), arguments);
 
 		new EntryOrderAnalysis(launchArgs.getDataService()).run(launchArgs);
 

@@ -29,7 +29,6 @@
  */
 package com.systematic.trading.input;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
@@ -38,37 +37,38 @@ import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
- * An aggregation facade for parsing the arguments given on launch, their validation and type conversion.
+ * Aggregation of arguments related to the equity and price data source.
  * 
  * @author CJ Hare
  */
-public class AnalysisLaunchArguments {
+public class EquityArguments {
 
-	/** Equity and it's data source. */
-	private final EquityArguments equityArguments;
+	/** Ticker Symbol to perform the back testing on.*/
+	private final TickerSymbol tickerSymbol;
 
-	/** Funds contained the cash account to use when opening positions. */
-	private final BigDecimal openingFunds;
+	/**	Optional argument, data set to retrieve the ticker symbol from. */
+	private final EquityDataset equityDataset;
 
-	public AnalysisLaunchArguments( final EquityArguments equityArguments,
-	        final LaunchArgument<BigDecimal> openingFundsArgument, final Map<ArgumentKey, String> arguments ) {
-		this.openingFunds = openingFundsArgument.get(arguments);
-		this.equityArguments = equityArguments;
+	/**	Optional argument, which data source type to use when retrieving data. */
+	private final DataServiceType dataService;
+
+	public EquityArguments( final LaunchArgument<DataServiceType> dataServiceArgument,
+	        final LaunchArgument<EquityDataset> equityDatasetArgument,
+	        final LaunchArgument<TickerSymbol> tickerSymbolArgument, final Map<ArgumentKey, String> arguments ) {
+		this.equityDataset = equityDatasetArgument.get(arguments);
+		this.tickerSymbol = tickerSymbolArgument.get(arguments);
+		this.dataService = dataServiceArgument.get(arguments);
 	}
 
 	public TickerSymbol getTickerSymbol() {
-		return equityArguments.getTickerSymbol();
+		return tickerSymbol;
 	}
 
 	public EquityDataset getEquityDataset() {
-		return equityArguments.getEquityDataset();
+		return equityDataset;
 	}
 
 	public DataServiceType getDataService() {
-		return equityArguments.getDataService();
-	}
-
-	public BigDecimal getOpeningFunds() {
-		return openingFunds;
+		return dataService;
 	}
 }
