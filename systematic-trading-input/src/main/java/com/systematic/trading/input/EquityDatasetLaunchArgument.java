@@ -34,7 +34,7 @@ import java.util.Map;
 import com.systematic.trading.backtest.input.EquityDataset;
 
 /**
- * Launch argument parser and validation for the inclusive start date type key value pairing.
+ * Launch argument parser and validation for the equity dataset.
  * 
  * @author CJ Hare
  */
@@ -52,6 +52,7 @@ public class EquityDatasetLaunchArgument implements LaunchArgument<EquityDataset
 		final String dataset = arguments.get(ArgumentKey.EQUITY_DATASET);
 
 		validator.validate(dataset, "%s argument is not present", ArgumentKey.EQUITY_DATASET.getKey());
+		validator.validateNotEmpty(dataset, "%s argument cannot be empty", ArgumentKey.EQUITY_DATASET.getKey());
 
 		return new EquityDataset(dataset);
 	}
