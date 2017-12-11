@@ -34,7 +34,7 @@ import java.util.Map;
 import com.systematic.trading.backtest.equity.TickerSymbol;
 
 /**
- * Launch argument parser and validation for the inclusive start date type key value pairing.
+ * Launch argument parser and validation for the ticker symbol key value pairing.
  * 
  * @author CJ Hare
  */

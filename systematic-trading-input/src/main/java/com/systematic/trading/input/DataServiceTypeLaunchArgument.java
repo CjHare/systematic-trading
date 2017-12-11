@@ -34,7 +34,7 @@ import java.util.Map;
 import com.systematic.trading.data.DataServiceType;
 
 /**
- * Launch argument parser and validation for the inclusive start date type key value pairing.
+ * Launch argument parser and validation for the data service type key value pairing.
  * 
  * @author CJ Hare
  */

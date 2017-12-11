@@ -34,7 +34,7 @@ import java.util.Map;
 import com.systematic.trading.backtest.input.EquityDataset;
 
 /**
- * Launch argument parser and validation for the equity dataset.
+ * Launch argument parser and validation for the equity dataset key value pairing.
  * 
  * @author CJ Hare
  */

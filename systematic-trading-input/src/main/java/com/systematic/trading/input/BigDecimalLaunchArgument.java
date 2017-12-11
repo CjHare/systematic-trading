@@ -33,7 +33,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 /**
- * Launch argument parser and validation for the inclusive start date type key value pairing.
+ * Launch argument parser and validation for a big decimal value.
  * 
  * @author CJ Hare
  */
@@ -45,7 +45,8 @@ public class BigDecimalLaunchArgument implements LaunchArgument<BigDecimal> {
 	/** Key for the argument value which a BigDecimal is expected. */
 	private final LaunchArgument.ArgumentKey argument;
 
-	public BigDecimalLaunchArgument( final LaunchArgumentValidator validator, final LaunchArgument.ArgumentKey argument ) {
+	public BigDecimalLaunchArgument( final LaunchArgumentValidator validator,
+	        final LaunchArgument.ArgumentKey argument ) {
 		this.validator = validator;
 		this.argument = argument;
 	}

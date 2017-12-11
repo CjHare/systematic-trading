@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
+ * Launch arguments.
+ * 
  * @author CJ Hare
  */
 public interface LaunchArgument<T> {
@@ -43,7 +45,7 @@ public interface LaunchArgument<T> {
 		EQUITY_DATASET("-equity_dataset"),
 		FILE_BASE_DIRECTORY("-output_file_base_directory"),
 		OPENING_FUNDS("-opening_funds"),
-		OUTPUT_TYPE("-output"),		
+		OUTPUT_TYPE("-output"),
 		START_DATE("-start_date"),
 		TICKER_SYMBOL("-ticker_symbol");
 
