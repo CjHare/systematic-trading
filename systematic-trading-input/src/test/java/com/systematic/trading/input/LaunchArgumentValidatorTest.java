@@ -80,6 +80,41 @@ public class LaunchArgumentValidatorTest {
 	}
 
 	@Test
+	public void missingLocalDateValue() {
+		try {
+			new LaunchArgumentValidator().validateDateFormat(null, "Expected date format error message");
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("Expected date format error message", e.getMessage());
+		}
+	}
+
+	@Test
+	public void missingNotEmptyValue() {
+		try {
+			new LaunchArgumentValidator().validateNotEmpty(null, "Expected not empty error message");
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("Expected not empty error message", e.getMessage());
+		}
+	}
+
+	@Test
+	public void notEmptyValue() {
+		try {
+			new LaunchArgumentValidator().validateNotEmpty("", "Expected not empty error message");
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals("Expected not empty error message", e.getMessage());
+		}
+	}
+
+	@Test
+	public void presentValue() {
+		new LaunchArgumentValidator().validateNotEmpty("not empty", "Expected not empty error message");
+	}
+
+	@Test
 	public void validLocalDateFormat() {
 		new LaunchArgumentValidator().validateDateFormat("2017-06-06", "Not expected message");
 	}

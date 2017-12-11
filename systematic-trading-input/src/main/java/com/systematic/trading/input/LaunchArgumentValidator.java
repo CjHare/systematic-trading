@@ -76,10 +76,12 @@ public class LaunchArgumentValidator {
 	private boolean isInvalidFormat( final String value ) {
 		try {
 			// Just making sure the date can be parsed, giving back an actual object
-			return LocalDate.parse(value) == null;
+			LocalDate.parse(value);
 
 		} catch (final DateTimeParseException e) {
 			return true;
 		}
+
+		return false;
 	}
 }
