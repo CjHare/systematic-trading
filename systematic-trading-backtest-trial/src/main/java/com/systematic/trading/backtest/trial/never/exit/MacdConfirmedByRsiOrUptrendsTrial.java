@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,12 +55,14 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.BaseTrial;
 import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.BigDecimalLaunchArgument;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.input.EndDateLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.OutputLaunchArgument;
@@ -81,6 +84,7 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 		final BacktestLaunchArguments launchArgs = new BacktestLaunchArguments(new OutputLaunchArgument(validator),
 		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), arguments),
+		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS),
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
@@ -89,86 +93,87 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 
 	@Override
 	public List<BacktestBootstrapConfiguration> get( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
+	        final DepositConfiguration deposit ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(getPeriod(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
+		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
 		        PeriodicConfiguration.MONTHLY));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final MinimumTrade minimumTrade = MinimumTrade.ONE_THOUSAND;
 
 		// Signal based buying
-		configurations.addAll(getMacdConfirmedByRsiOrUptrends(equity, simulationDates, deposit,
+		configurations.addAll(getMacdConfirmedByRsiOrUptrends(equity, simulationDates, openingFunds, deposit,
 		        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
 
-		configurations.addAll(
-		        getMacd(equity, simulationDates, deposit, new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
-
-		configurations.addAll(
-		        getRsi(equity, simulationDates, deposit, new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
-
-		configurations.addAll(getSmaEmaUptrendsAndRsi(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
+		configurations.addAll(getMacd(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
 		        minimumTrade, maximumTrade));
 
-		configurations.addAll(getEmaUptrendsAndRsi(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
+		configurations.addAll(getRsi(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
 		        minimumTrade, maximumTrade));
 
-		configurations.addAll(getSmaUptrendsAndRsi(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
-		        minimumTrade, maximumTrade));
+		configurations.addAll(getSmaEmaUptrendsAndRsi(equity, simulationDates, openingFunds, deposit,
+		        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
+
+		configurations.addAll(getEmaUptrendsAndRsi(equity, simulationDates, openingFunds, deposit,
+		        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
+
+		configurations.addAll(getSmaUptrendsAndRsi(equity, simulationDates, openingFunds, deposit,
+		        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
 
 		return configurations;
 	}
 
 	private List<BacktestBootstrapConfiguration> getMacdConfirmedByRsiOrUptrends( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
-	        final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
+	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
+	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length);
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		        factory.strategy(getMediumMacdConfirmedByRsi(), entryPositionSizing, exit, exitPositionSizing)));
 
 		configurations
-		        .add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		        .add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		                factory.strategy(factory.entry(getMediumMacdConfirmedByRsi(),
 		                        OperatorConfiguration.Selection.OR, getShortSmaConfirmedByEma()), entryPositionSizing,
 		                        exit, exitPositionSizing)));
 
 		configurations
-		        .add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		        .add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		                factory.strategy(factory.entry(getMediumMacdConfirmedByRsi(),
 		                        OperatorConfiguration.Selection.OR, getShortEmaConfirmedByEma()), entryPositionSizing,
 		                        exit, exitPositionSizing)));
 
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		        factory.strategy(
 		                factory.entry(getMediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR, getLongEma()),
 		                entryPositionSizing, exit, exitPositionSizing)));
 
 		configurations
-		        .add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		        .add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		                factory.strategy(
 		                        factory.entry(getMediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR,
 		                                getShortEmaOrSmaConfirmedByEma()),
 		                        entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		        factory.strategy(getLongEma(), entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		        factory.strategy(getLongSma(), entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		        factory.strategy(getLongEmaOrSma(), entryPositionSizing, exit, exitPositionSizing)));
 
 		configurations
-		        .add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		        .add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		                factory.strategy(factory.entry(getMediumMacdConfirmedByRsi(),
 		                        OperatorConfiguration.Selection.OR, getLongEmaOrSma()), entryPositionSizing, exit,
 		                        exitPositionSizing)));
@@ -187,9 +192,9 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 	}
 
 	protected List<BacktestBootstrapConfiguration> getLongMacdConfirmedByRsi( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
-	        final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
+	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
+	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
@@ -207,7 +212,7 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 			final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 			final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
 			        exitPositionSizing);
-			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage, strategy));
+			configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
 		}
 
 		return configurations;

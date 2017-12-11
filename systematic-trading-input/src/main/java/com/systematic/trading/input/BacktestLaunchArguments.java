@@ -29,6 +29,7 @@
  */
 package com.systematic.trading.input;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
@@ -65,12 +66,17 @@ public class BacktestLaunchArguments {
 	/** Mandatory end date for the back test.*/
 	private final BacktestEndDate endDate;
 
+	/** Funds contained the cash account to use when opening positions. */
+	private final BigDecimal openingFunds;
+
 	public BacktestLaunchArguments( final LaunchArgument<OutputType> outputArgument,
-	        final EquityArguments equityArguments, final LaunchArgument<BacktestStartDate> startDateArgument,
+	        final EquityArguments equityArguments, final LaunchArgument<BigDecimal> openingFundsArgument,
+	        final LaunchArgument<BacktestStartDate> startDateArgument,
 	        final LaunchArgument<BacktestEndDate> endDateArgument,
 	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument,
 	        final Map<ArgumentKey, String> arguments ) {
 		this.arguments = arguments;
+		this.openingFunds = openingFundsArgument.get(arguments);
 		this.outputType = outputArgument.get(arguments);
 		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
 		this.startDate = startDateArgument.get(arguments);
@@ -104,5 +110,9 @@ public class BacktestLaunchArguments {
 
 	public DataServiceType getDataService() {
 		return equityArguments.getDataService();
+	}
+
+	public BigDecimal getOpeningFunds() {
+		return openingFunds;
 	}
 }

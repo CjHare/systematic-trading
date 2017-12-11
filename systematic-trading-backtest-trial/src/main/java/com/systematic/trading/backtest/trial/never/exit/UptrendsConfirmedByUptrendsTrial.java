@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +52,14 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.BaseTrial;
 import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.BigDecimalLaunchArgument;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.input.EndDateLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.OutputLaunchArgument;
@@ -79,6 +82,7 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 		final BacktestLaunchArguments launchArgs = new BacktestLaunchArguments(new OutputLaunchArgument(validator),
 		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), arguments),
+		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS),
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
@@ -87,28 +91,30 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 
 	@Override
 	public List<BacktestBootstrapConfiguration> get( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
+	        final DepositConfiguration deposit ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		final BrokerageTransactionFeeStructure brokerage = new VanguardBrokerageFees();
 
 		// Date based buying
-		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicConfiguration.WEEKLY));
+		configurations.add(
+		        getPeriod(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations
-		        .addAll(getCombinedUptrends(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		configurations.addAll(getCombinedUptrends(equity, simulationDates, openingFunds, deposit, brokerage,
+		        minimumTrade, maximumTrade));
 
 		return configurations;
 	}
 
 	private List<BacktestBootstrapConfiguration> getCombinedUptrends( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit,
-	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
-	        final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
+	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
+	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
 		        2 + ConfirmaByConfiguration.values().length);
@@ -120,24 +126,24 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 		// (LongSMA OR LongEMA) AND (MediumSMA OR MediumEMA)
 		final EntryConfiguration mediumLongEntry = factory.entry(getLongSmaOrEma(), OperatorConfiguration.Selection.AND,
 		        getMediumSmaOrEma());
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		        factory.strategy(mediumLongEntry, entryPositionSizing, exit, exitPositionSizing)));
 
 		// (LongSMA OR LongEMA) AND (ShortSMA OR ShortEMA)
 		final EntryConfiguration shortLongEntry = factory.entry(getLongSmaOrEma(), OperatorConfiguration.Selection.AND,
 		        getShortSmaOrEma());
-		configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+		configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 		        factory.strategy(shortLongEntry, entryPositionSizing, exit, exitPositionSizing)));
 
 		for (final ConfirmaByConfiguration by : ConfirmaByConfiguration.values()) {
 
 			// (MediumSMA OR MediumEMA) ConfirmedBy (LongSMA OR LongEMA)
 			final EntryConfiguration mediumConfirmedEntry = factory.entry(getMediumSmaOrEma(), by, getLongSmaOrEma());
-			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 			        factory.strategy(mediumConfirmedEntry, entryPositionSizing, exit, exitPositionSizing)));
 
 			// (ShortSMA OR ShortEMA) ConfirmedBy (LongSMA OR LongEMA) 
-			configurations.add(getConfiguration(equity, simulationDates, deposit, brokerage,
+			configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
 			        factory.strategy(factory.entry(getShortSmaOrEma(), by, getLongSmaOrEma()), entryPositionSizing,
 			                exit, exitPositionSizing)));
 		}

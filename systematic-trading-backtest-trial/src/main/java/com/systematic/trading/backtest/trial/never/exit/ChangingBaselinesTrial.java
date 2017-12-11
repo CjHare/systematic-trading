@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +46,10 @@ import com.systematic.trading.input.EndDateLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.BigDecimalLaunchArgument;
 import com.systematic.trading.input.OutputLaunchArgument;
 import com.systematic.trading.input.StartDateLaunchArgument;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
@@ -65,6 +68,7 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 		final BacktestLaunchArguments launchArgs = new BacktestLaunchArguments(new OutputLaunchArgument(validator),
 		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), arguments),
+		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS),
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
@@ -73,20 +77,21 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 
 	@Override
 	public List<BacktestBootstrapConfiguration> get( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
+	        final DepositConfiguration deposit ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(
-		        getPeriod(equity, simulationDates, deposit, new VanguardBrokerageFees(), PeriodicConfiguration.WEEKLY));
-
-		configurations.add(getPeriod(equity, simulationDates, deposit, new VanguardBrokerageFees(),
-		        PeriodicConfiguration.MONTHLY));
-
-		configurations.add(getPeriod(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
+		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
 		        PeriodicConfiguration.WEEKLY));
 
-		configurations.add(getPeriod(equity, simulationDates, deposit, new SelfWealthBrokerageFees(),
+		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
+		        PeriodicConfiguration.MONTHLY));
+
+		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
+		        PeriodicConfiguration.WEEKLY));
+
+		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
 		        PeriodicConfiguration.MONTHLY));
 
 		return configurations;

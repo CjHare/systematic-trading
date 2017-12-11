@@ -30,6 +30,7 @@
 package com.systematic.trading.backtest;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
@@ -106,12 +107,11 @@ public class BacktestTrial {
 		final LocalDate simulationStartDate = parserdArguments.getStartDate().getDate();
 		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
 
-		// Currently only for the single equity
-		final EquityConfiguration equity = new EquityConfiguration(parserdArguments.getEquityDataset(),
-		        parserdArguments.getTickerSymbol(), EquityClass.STOCK);
+		final EquityConfiguration equity = equity(parserdArguments);
 
 		//TODO convert into input arguments
 		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
+		final BigDecimal openingFunds = parserdArguments.getOpeningFunds();
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
@@ -131,7 +131,7 @@ public class BacktestTrial {
 		timer.start();
 
 		final List<BacktestBootstrapConfiguration> backtestConfigurations = configuration.get(equity, simulationDates,
-		        depositAmount);
+		        openingFunds, depositAmount);
 
 		try {
 			clearOutputDirectory(depositAmount, parserdArguments);
@@ -161,6 +161,10 @@ public class BacktestTrial {
 		        Duration.ofMillis(timer.getTime())));
 	}
 
+	private EquityConfiguration equity( final BacktestLaunchArguments launchArgs ) {
+		return new EquityConfiguration(launchArgs.getEquityDataset(), launchArgs.getTickerSymbol(), EquityClass.STOCK);
+	}
+
 	private void closePool( final ExecutorService pool ) {
 		pool.shutdown();
 
@@ -172,9 +176,9 @@ public class BacktestTrial {
 		}
 	}
 
-	private BacktestEventListener getOutput( final DepositConfiguration depositAmount, final BacktestLaunchArguments arguments,
-	        final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
-	        throws BacktestInitialisationException {
+	private BacktestEventListener getOutput( final DepositConfiguration depositAmount,
+	        final BacktestLaunchArguments arguments, final BacktestBootstrapConfiguration configuration,
+	        final ExecutorService pool ) throws BacktestInitialisationException {
 
 		final BacktestBatchId batchId = getBatchId(configuration, depositAmount);
 		final OutputType type = arguments.getOutputType();
@@ -200,7 +204,8 @@ public class BacktestTrial {
 		}
 	}
 
-	private String getOutputDirectory( final DepositConfiguration depositAmount, final BacktestLaunchArguments arguments ) {
+	private String getOutputDirectory( final DepositConfiguration depositAmount,
+	        final BacktestLaunchArguments arguments ) {
 		return isFileBasedDisplay(arguments) ? arguments.getOutputDirectory(depositAmount.toString()) : "";
 	}
 
@@ -250,8 +255,8 @@ public class BacktestTrial {
 		}
 	}
 
-	private void clearOutputDirectory( final DepositConfiguration depositAmount, final BacktestLaunchArguments arguments )
-	        throws ServiceException {
+	private void clearOutputDirectory( final DepositConfiguration depositAmount,
+	        final BacktestLaunchArguments arguments ) throws ServiceException {
 		//TODO delete must run BEFORE any of the tests! that'll ensure race conditions are avoided
 
 		//TODO this should happen only once & be moved into the file DAOs

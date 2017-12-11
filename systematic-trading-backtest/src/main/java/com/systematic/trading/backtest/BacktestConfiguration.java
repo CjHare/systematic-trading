@@ -1,5 +1,6 @@
 package com.systematic.trading.backtest;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
@@ -14,5 +15,5 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 public interface BacktestConfiguration {
 
 	List<BacktestBootstrapConfiguration> get( EquityConfiguration equity, BacktestSimulationDates simulationDates,
-	        DepositConfiguration deposit );
+	        BigDecimal openingFunds, DepositConfiguration deposit );
 }

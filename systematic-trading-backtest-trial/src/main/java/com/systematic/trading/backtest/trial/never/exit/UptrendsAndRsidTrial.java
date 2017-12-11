@@ -25,6 +25,7 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,12 +42,14 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.BaseTrial;
 import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.BigDecimalLaunchArgument;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.input.EndDateLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.OutputLaunchArgument;
@@ -67,6 +70,7 @@ public class UptrendsAndRsidTrial extends BaseTrial implements BacktestConfigura
 		final BacktestLaunchArguments launchArgs = new BacktestLaunchArguments(new OutputLaunchArgument(validator),
 		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), arguments),
+		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS),
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
@@ -75,21 +79,24 @@ public class UptrendsAndRsidTrial extends BaseTrial implements BacktestConfigura
 
 	@Override
 	public List<BacktestBootstrapConfiguration> get( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
+	        final DepositConfiguration deposit ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		final BrokerageTransactionFeeStructure brokerage = new VanguardBrokerageFees();
 
 		// Date based buying
-		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicConfiguration.WEEKLY));
-		configurations.add(getPeriod(equity, simulationDates, deposit, brokerage, PeriodicConfiguration.MONTHLY));
+		configurations.add(
+		        getPeriod(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
+		configurations.add(
+		        getPeriod(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(
-		        getSmaEmaUptrendsAndRsi(equity, simulationDates, deposit, brokerage, minimumTrade, maximumTrade));
+		configurations.addAll(getSmaEmaUptrendsAndRsi(equity, simulationDates, openingFunds, deposit, brokerage,
+		        minimumTrade, maximumTrade));
 
 		return configurations;
 	}

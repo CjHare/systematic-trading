@@ -51,6 +51,7 @@ public class BacktestBootstrapConfigurationBuilder {
 	private DepositConfiguration deposit;
 	private BrokerageTransactionFeeStructure brokerage;
 	private StrategyConfiguration strategy;
+	private BigDecimal openingFunds;
 
 	public BacktestBootstrapConfigurationBuilder withEquity( final EquityConfiguration equity ) {
 		this.equity = equity;
@@ -77,9 +78,13 @@ public class BacktestBootstrapConfigurationBuilder {
 		return this;
 	}
 
-	public BacktestBootstrapConfiguration build() {
+	public BacktestBootstrapConfigurationBuilder withOpeningFunds( final BigDecimal openingFunds ) {
+		this.openingFunds = openingFunds;
+		return this;
+	}
 
+	public BacktestBootstrapConfiguration build() {
 		return new BacktestBootstrapConfiguration(simulationDates, brokerage,
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, BigDecimal.ZERO, deposit, strategy, equity);
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, openingFunds, deposit, strategy, equity);
 	}
 }

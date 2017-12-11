@@ -29,6 +29,7 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -48,12 +49,14 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.AllTrials;
 import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.BigDecimalLaunchArgument;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.input.EndDateLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.OutputLaunchArgument;
@@ -76,6 +79,7 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 		final BacktestLaunchArguments launchArgs = new BacktestLaunchArguments(new OutputLaunchArgument(validator),
 		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), arguments),
+		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS),
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
@@ -99,12 +103,13 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 	}
 
 	@Override
-	public List<BacktestBootstrapConfiguration> get( EquityConfiguration equity,
-	        BacktestSimulationDates simulationDates, DepositConfiguration deposit ) {
-		List<BacktestBootstrapConfiguration> configurations = super.get(equity, simulationDates, deposit);
+	public List<BacktestBootstrapConfiguration> get( final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
+	        final DepositConfiguration deposit ) {
+		List<BacktestBootstrapConfiguration> configurations = super.get(equity, simulationDates, openingFunds, deposit);
 
 		// Vanguard Retail - baseline
-		configurations.add(getBaseline(equity, simulationDates, deposit));
+		configurations.add(getBaseline(equity, simulationDates, openingFunds, deposit));
 
 		return configurations;
 	}
