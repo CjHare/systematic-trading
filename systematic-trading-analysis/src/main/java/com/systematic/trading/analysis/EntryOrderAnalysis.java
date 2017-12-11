@@ -103,7 +103,7 @@ public class EntryOrderAnalysis {
 		        new TickerSymbolLaunchArgument(validator),
 		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS), args);
 
-		new EntryOrderAnalysis(new DataServiceType("tables")).run(launchArgs);
+		new EntryOrderAnalysis(launchArgs.getDataService()).run(launchArgs);
 
 	}
 
