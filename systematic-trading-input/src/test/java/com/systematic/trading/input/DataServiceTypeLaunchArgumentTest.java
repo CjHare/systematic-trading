@@ -64,7 +64,7 @@ public class DataServiceTypeLaunchArgumentTest {
 	@Test
 	public void present() {
 		final String expectedSymbol = "ServiceType";
-		final Map<ArgumentKey, String> launchArguments = setUpArgumenta(expectedSymbol);
+		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
 		final DataServiceType symbol = getDataServiceType(launchArguments);
 
@@ -73,7 +73,7 @@ public class DataServiceTypeLaunchArgumentTest {
 
 	@Test
 	public void absentValue() {
-		final Map<ArgumentKey, String> launchArguments = setUpArgumenta(null);
+		final Map<ArgumentKey, String> launchArguments = setUpArguments(null);
 
 		final DataServiceType symbol = getDataServiceType(launchArguments);
 
@@ -82,7 +82,7 @@ public class DataServiceTypeLaunchArgumentTest {
 
 	@Test
 	public void absentKey() {
-		final Map<ArgumentKey, String> launchArguments = setUpNoArgumenta();
+		final Map<ArgumentKey, String> launchArguments = setUpNoArguments();
 
 		final DataServiceType symbol = getDataServiceType(launchArguments);
 
@@ -103,13 +103,13 @@ public class DataServiceTypeLaunchArgumentTest {
 		assertTrue(StringUtils.equals(expected, actual.getType()));
 	}
 
-	private Map<ArgumentKey, String> setUpArgumenta( final String value ) {
+	private Map<ArgumentKey, String> setUpArguments( final String value ) {
 		final Map<ArgumentKey, String> arguments = new HashMap<>();
 		arguments.put(ArgumentKey.DATA_SERVICE_TYPE, value);
 		return arguments;
 	}
 
-	private Map<ArgumentKey, String> setUpNoArgumenta() {
+	private Map<ArgumentKey, String> setUpNoArguments() {
 		final Map<ArgumentKey, String> arguments = new HashMap<>();
 		return arguments;
 	}
