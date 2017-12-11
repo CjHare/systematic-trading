@@ -29,6 +29,7 @@
  */
 package com.systematic.trading.input;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
@@ -75,5 +76,10 @@ public class AnalysisLaunchArguments {
 
 	public DataServiceType getDataService() {
 		return dataService;
+	}
+
+	public BigDecimal getOpeningFunds() {
+		final String funds = arguments.get(LaunchArgument.ArgumentKey.OPENING_FUNDS);
+		return funds == null ? BigDecimal.ZERO : new BigDecimal(funds);
 	}
 }

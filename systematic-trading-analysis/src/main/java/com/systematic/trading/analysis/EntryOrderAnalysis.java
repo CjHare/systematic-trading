@@ -87,9 +87,10 @@ public class EntryOrderAnalysis {
 	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
 
-	/** Local source of the trading prices.*/
+	/** Local source of the trading prices. */
 	private final DataService dataService;
 
+	/** Display name for the strategy analyzed. */
 	private final DescriptionGenerator description;
 
 	public static void main( final String... args ) throws ServiceException {
@@ -99,10 +100,7 @@ public class EntryOrderAnalysis {
 		        new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
 		        new TickerSymbolLaunchArgument(validator), args);
 
-		//TODO these values should be input arguments
-		final BigDecimal openingFunds = BigDecimal.valueOf(10000);
-
-		new EntryOrderAnalysis(new DataServiceType("tables")).run(launchArgs, openingFunds);
+		new EntryOrderAnalysis(new DataServiceType("tables")).run(launchArgs);
 
 	}
 
@@ -122,11 +120,11 @@ public class EntryOrderAnalysis {
 		return new EquityConfiguration(launchArgs.getEquityDataset(), launchArgs.getTickerSymbol(), EquityClass.STOCK);
 	}
 
-	private void run( final AnalysisLaunchArguments launchArgs, final BigDecimal openingFunds )
-	        throws ServiceException {
+	private void run( final AnalysisLaunchArguments launchArgs ) throws ServiceException {
 
 		final EquityConfiguration equity = equity(launchArgs);
-		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity, openingFunds);
+		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity,
+		        launchArgs.getOpeningFunds());
 		recordStrategy(backtestConfiguration.getStrategy());
 		recordAnalysisPeriod(backtestConfiguration.getBacktestDates());
 

@@ -41,8 +41,9 @@ public interface LaunchArgument<T> {
 		DATA_SERVICE_TYPE("-data_service_type"),
 		END_DATE("-end_date"),
 		EQUITY_DATASET("-equity_dataset"),
-		OUTPUT_TYPE("-output"),
 		FILE_BASE_DIRECTORY("-output_file_base_directory"),
+		OPENING_FUNDS("-opening_funds"),
+		OUTPUT_TYPE("-output"),		
 		START_DATE("-start_date"),
 		TICKER_SYMBOL("-ticker_symbol");
 
