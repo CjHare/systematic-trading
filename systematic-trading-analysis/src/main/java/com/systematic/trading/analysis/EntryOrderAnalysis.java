@@ -67,9 +67,11 @@ import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.input.AnalysisLaunchArguments;
+import com.systematic.trading.input.BigDecimalLaunchArgument;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
+import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.model.EquityClass;
@@ -98,7 +100,8 @@ public class EntryOrderAnalysis {
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(new CommandLineLaunchArgumentsParser(),
 		        new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
-		        new TickerSymbolLaunchArgument(validator), args);
+		        new TickerSymbolLaunchArgument(validator),
+		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS), args);
 
 		new EntryOrderAnalysis(new DataServiceType("tables")).run(launchArgs);
 

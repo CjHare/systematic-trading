@@ -44,11 +44,11 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
  */
 public class AnalysisLaunchArguments {
 
-	/** Parsed launch arguments.*/
-	private final Map<ArgumentKey, String> arguments;
-
 	/** Ticker Symbol to perform the back testing on.*/
 	private final TickerSymbol tickerSymbol;
+
+	/** Funds contained the cash account to use when opening positions. */
+	private final BigDecimal openingFunds;
 
 	/**	Optional argument, data set to retrieve the ticker symbol from. */
 	private final EquityDataset equityDataset;
@@ -59,11 +59,14 @@ public class AnalysisLaunchArguments {
 	public AnalysisLaunchArguments( final LaunchArgumentsParser argumentParser,
 	        final LaunchArgument<DataServiceType> dataServiceArgument,
 	        final LaunchArgument<EquityDataset> equityDatasetArgument,
-	        final LaunchArgument<TickerSymbol> tickerSymbolArgument, final String... args ) {
-		this.arguments = argumentParser.parse(args);
+	        final LaunchArgument<TickerSymbol> tickerSymbolArgument,
+	        final LaunchArgument<BigDecimal> openingFundsArgument, final String... args ) {
+
+		final Map<ArgumentKey, String> arguments = argumentParser.parse(args);
 		this.equityDataset = equityDatasetArgument.get(arguments);
 		this.tickerSymbol = tickerSymbolArgument.get(arguments);
 		this.dataService = dataServiceArgument.get(arguments);
+		this.openingFunds = openingFundsArgument.get(arguments);
 	}
 
 	public TickerSymbol getTickerSymbol() {
@@ -79,7 +82,6 @@ public class AnalysisLaunchArguments {
 	}
 
 	public BigDecimal getOpeningFunds() {
-		final String funds = arguments.get(LaunchArgument.ArgumentKey.OPENING_FUNDS);
-		return funds == null ? BigDecimal.ZERO : new BigDecimal(funds);
+		return openingFunds;
 	}
 }
