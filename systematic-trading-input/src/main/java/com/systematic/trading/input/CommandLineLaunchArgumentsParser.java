@@ -59,14 +59,13 @@ public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 
 			if (key.isPresent()) {
 				if (hasInsufficuentArgumentCount(i + 1, args)) {
-					incorrectArguments("Missing value for argument key %s", args[i]);
+					missingArgument(args[i]);
 				}
 
 				argumentPairs.put(key.get(), args[i + 1]);
 
 			} else {
-				final String unknown = args[i];
-				LOG.warn("Unknown / unused argument {}", () -> unknown);
+				unmappedArgument(args[i]);
 			}
 		}
 
@@ -77,7 +76,17 @@ public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 		return index >= args.length;
 	}
 
-	private void incorrectArguments( final String message, final Object argument ) {
-		throw new IllegalArgumentException(String.format(message, argument));
+	/** 
+	 * Argument expecting a matching value.
+	 */
+	private void missingArgument( final String argumentKey ) {
+		throw new IllegalArgumentException(String.format("Missing value for argument key %s", argumentKey));
+	}
+
+	/**
+	 * Argument value that is not paired with an expected key.
+	 */
+	private void unmappedArgument( final String argument ) {
+		LOG.warn("Unknown / unused argument {}", () -> argument);
 	}
 }
