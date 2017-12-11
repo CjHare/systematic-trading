@@ -69,6 +69,7 @@ public class StartDateLaunchArgumentTest {
 	@Mock
 	private LaunchArgumentValidator validator;
 
+	/** Launch argument parser instance being tested. */
 	private StartDateLaunchArgument argument;
 
 	@Before
@@ -92,32 +93,32 @@ public class StartDateLaunchArgumentTest {
 		final String expectedStartDate = "06-06-2017";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
-		getStartDateExpectingException(VALIDATOR_FORMAT_EXCEPTION_MESSAGE, launchArguments);
+		startDateExpectingException(VALIDATOR_FORMAT_EXCEPTION_MESSAGE, launchArguments);
 
 		veriyValidation(expectedStartDate);
 	}
 
 	@Test
-	public void missingStartDateValue() {
+	public void missingValue() {
 		setUpValidatorException();
 		final Map<ArgumentKey, String> launchArguments = setUpArguments("");
 
-		getStartDateExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
+		startDateExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 
 		veriyValidationExceptionOnValidate("");
 	}
 
 	@Test
-	public void missingStartDate() {
+	public void missingKey() {
 		setUpValidatorException();
 		final Map<ArgumentKey, String> launchArguments = new HashMap<>();
 
-		getStartDateExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
+		startDateExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 
 		veriyValidationExceptionOnValidate(null);
 	}
 
-	private void getStartDateExpectingException( final String expectedMessage,
+	private void startDateExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
 		try {
 			getStartDate(launchArguments);

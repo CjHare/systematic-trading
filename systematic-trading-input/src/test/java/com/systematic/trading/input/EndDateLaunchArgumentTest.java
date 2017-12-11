@@ -102,7 +102,7 @@ public class EndDateLaunchArgumentTest {
 	}
 
 	@Test
-	public void missingEndDateValue() {
+	public void missingValue() {
 		setUpValidatorException();
 
 		try {
@@ -115,7 +115,7 @@ public class EndDateLaunchArgumentTest {
 	}
 
 	@Test
-	public void missingEndDate() {
+	public void missingKey() {
 		setUpValidatorException();
 
 		try {

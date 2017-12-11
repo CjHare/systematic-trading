@@ -67,6 +67,7 @@ public class TickerSymbolLaunchArgumentTest {
 	@Mock
 	private LaunchArgumentValidator validator;
 
+	/** Launch argument parser instance being tested. */
 	private TickerSymbolLaunchArgument argument;
 
 	@Before
@@ -85,24 +86,24 @@ public class TickerSymbolLaunchArgumentTest {
 	}
 
 	@Test
-	public void missingSymbolValue() {
+	public void missingValue() {
 		setUpValidatorException();
 
-		getTickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
+		tickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
 
 		veriyValidationExceptionOnValidate("");
 	}
 
 	@Test
-	public void missingSymbol() {
+	public void missingKey() {
 		setUpValidatorException();
 
-		getTickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
+		tickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
 
 		veriyValidationExceptionOnValidate(null);
 	}
 
-	private void getTickerSymbolExpectingException( final String expectedMessage,
+	private void tickerSymbolExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
 		try {
 			getTickerSymbol(launchArguments);

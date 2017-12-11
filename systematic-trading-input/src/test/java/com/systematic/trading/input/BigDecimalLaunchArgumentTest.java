@@ -66,6 +66,7 @@ public class BigDecimalLaunchArgumentTest {
 	@Mock
 	private LaunchArgumentValidator validator;
 
+	/** Launch argument parser instance being tested. */
 	private BigDecimalLaunchArgument argument;
 
 	@Before

@@ -111,7 +111,7 @@ public class BacktestLaunchArgumentsTest {
 	}
 
 	@Test
-	public void getFileOutputDirectory() {
+	public void fileOutputDirectory() {
 		final String outputDirectory = "../../simulations";
 		final String outputType = "no_display";
 		final String[] launchArguments = { "-output", outputType, "-output_file_base_directory", outputDirectory };
@@ -171,10 +171,10 @@ public class BacktestLaunchArgumentsTest {
 		setUpDirectoryArgumentException();
 		createLaunchArguments(launchArguments);
 
-		getOutputDirectoryExpectingException(DIRCTORY_EXCEPTION_MESSAGE);
+		outputDirectoryExpectingException(DIRCTORY_EXCEPTION_MESSAGE);
 	}
 
-	private void getOutputDirectoryExpectingException( final String expectedMessage ) {
+	private void outputDirectoryExpectingException( final String expectedMessage ) {
 		try {
 			parser.getOutputDirectory("WEEKLY_150");
 			fail("expecting an exception");

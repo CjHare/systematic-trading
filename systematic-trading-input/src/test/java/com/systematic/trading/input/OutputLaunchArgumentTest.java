@@ -123,7 +123,7 @@ public class OutputLaunchArgumentTest {
 		setUpValidatorException();
 		final Map<ArgumentKey, String> launchArguments = setUpArguments("unknown");
 
-		getOutputExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
+		outputExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 
 		veriyValidation(null, "unknown");
 	}
@@ -133,12 +133,12 @@ public class OutputLaunchArgumentTest {
 		setUpValidatorException();
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(null);
 
-		getOutputExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
+		outputExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 
 		veriyValidation(null, null);
 	}
 
-	private void getOutputExpectingException( final String expectedMessage,
+	private void outputExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
 
 		try {
