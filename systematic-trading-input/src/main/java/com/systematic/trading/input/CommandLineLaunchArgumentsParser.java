@@ -77,7 +77,7 @@ public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 		return index >= args.length;
 	}
 
-	private void incorrectArguments( final String message, final Object... arguments ) {
-		throw new IllegalArgumentException(String.format(message, arguments));
+	private void incorrectArguments( final String message, final Object argument ) {
+		throw new IllegalArgumentException(String.format(message, argument));
 	}
 }
