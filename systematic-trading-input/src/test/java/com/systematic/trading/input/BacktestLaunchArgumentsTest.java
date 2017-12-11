@@ -30,13 +30,16 @@
 package com.systematic.trading.input;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -45,10 +48,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.BacktestEndDate;
 import com.systematic.trading.backtest.input.BacktestStartDate;
+import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
+import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
@@ -123,13 +129,87 @@ public class BacktestLaunchArgumentsTest {
 	}
 
 	@Test
-	public void getFileOutputDirectoryException() {
+	public void fileOutputDirectoryException() {
 		final String outputType = "unmatched output type";
 		final Map<ArgumentKey, String> launchArguments = getArgumentMap(outputType);
 		setUpDirectoryArgumentException();
+
 		createLaunchArguments(launchArguments);
 
 		outputDirectoryExpectingException(DIRCTORY_EXCEPTION_MESSAGE);
+	}
+
+	@Test
+	public void startDate() {
+		final LocalDate today = LocalDate.now();
+		setUpStartDate(today);
+
+		createLaunchArguments();
+
+		verifyStartDate(today);
+		verifyStartDateArgument();
+	}
+
+	@Test
+	public void endDate() {
+		final LocalDate today = LocalDate.now();
+		setUpEndDate(today);
+
+		createLaunchArguments();
+
+		verifyEndDate(today);
+		verifyEndDateArgument();
+	}
+
+	@Test
+	public void dataService() {
+		final String serviceName = "identity of the data service";
+		setUpDataService(serviceName);
+
+		createLaunchArguments();
+
+		verifyDataService(serviceName);
+	}
+
+	@Test
+	public void equityDataSet() {
+		final String serviceName = "identity of the data set";
+		setUpEquityDataSet(serviceName);
+
+		createLaunchArguments();
+
+		verifyEquityDataSet(serviceName);
+	}
+
+	@Test
+	public void ticketSymbol() {
+		final String tickerSymbol = "SYMBOL";
+		setUpTickerSymbol(tickerSymbol);
+
+		createLaunchArguments();
+
+		verifyTickerSymbol(tickerSymbol);
+	}
+
+	private void setUpStartDate( final LocalDate startDate ) {
+		when(startDateArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		        .thenReturn(new BacktestStartDate(startDate));
+	}
+
+	private void setUpEndDate( final LocalDate startDate ) {
+		when(endDateArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(new BacktestEndDate(startDate));
+	}
+
+	private void setUpTickerSymbol( final String serviceName ) {
+		when(equityArguments.getTickerSymbol()).thenReturn(new TickerSymbol(serviceName));
+	}
+
+	private void setUpDataService( final String serviceName ) {
+		when(equityArguments.getDataService()).thenReturn(new DataServiceType(serviceName));
+	}
+
+	private void setUpEquityDataSet( final String serviceName ) {
+		when(equityArguments.getEquityDataset()).thenReturn(new EquityDataset(serviceName));
 	}
 
 	private void outputDirectoryExpectingException( final String expectedMessage ) {
@@ -156,6 +236,28 @@ public class BacktestLaunchArgumentsTest {
 		        directoryArgument, arguments);
 	}
 
+	private void createLaunchArguments() {
+		createLaunchArguments(new EnumMap<>(ArgumentKey.class));
+	}
+
+	private void verifyDataService( final String expected ) {
+		assertNotNull(parser.getDataService());
+		assertEquals(expected, parser.getDataService().getType());
+		verify(equityArguments, atLeastOnce()).getDataService();
+	}
+
+	private void verifyEquityDataSet( final String expected ) {
+		assertNotNull(parser.getEquityDataset());
+		assertEquals(expected, parser.getEquityDataset().getDataset());
+		verify(equityArguments, atLeastOnce()).getEquityDataset();
+	}
+
+	private void verifyTickerSymbol( final String expected ) {
+		assertNotNull(parser.getTickerSymbol());
+		assertEquals(expected, parser.getTickerSymbol().getSymbol());
+		verify(equityArguments, atLeastOnce()).getTickerSymbol();
+	}
+
 	private void verifyOutputType( final OutputType expected ) {
 		assertEquals(expected, parser.getOutputType());
 	}
@@ -164,9 +266,29 @@ public class BacktestLaunchArgumentsTest {
 		assertEquals(String.format("%s/WEEKLY_150/", baseDirectory), parser.getOutputDirectory("WEEKLY_150"));
 	}
 
+	private void verifyStartDate( final LocalDate expected ) {
+		assertNotNull(parser.getStartDate());
+		assertEquals(expected, parser.getStartDate().getDate());
+	}
+
+	private void verifyEndDate( final LocalDate expected ) {
+		assertNotNull(parser.getEndDate());
+		assertEquals(expected, parser.getEndDate().getDate());
+	}
+
 	private void verifyOutputDirectoryArgument( final String outputValue, final String fileBaseDirectory ) {
 		verify(directoryArgument).get(getArgumentMap(outputValue, fileBaseDirectory));
 		verifyNoMoreInteractions(directoryArgument);
+	}
+
+	private void verifyStartDateArgument() {
+		verify(startDateArgument).get(new EnumMap<>(ArgumentKey.class));
+		verifyNoMoreInteractions(startDateArgument);
+	}
+
+	private void verifyEndDateArgument() {
+		verify(endDateArgument).get(new EnumMap<>(ArgumentKey.class));
+		verifyNoMoreInteractions(endDateArgument);
 	}
 
 	private void verifyOutputTypeArgument( final String outputTypeValue ) {
