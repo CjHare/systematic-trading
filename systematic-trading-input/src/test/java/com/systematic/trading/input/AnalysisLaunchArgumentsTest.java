@@ -31,6 +31,7 @@ package com.systematic.trading.input;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -59,6 +60,8 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 @RunWith(MockitoJUnitRunner.class)
 public class AnalysisLaunchArgumentsTest {
 
+	private static final String OPENING_FUNDS_EXCEPTION_MESSAGE = "Opening Funds exception message";
+
 	@Mock
 	private EquityArguments equityArguments;
 
@@ -77,6 +80,16 @@ public class AnalysisLaunchArgumentsTest {
 		createLaunchArguments(arguments);
 
 		verifyOpeningFunds(openingFunds);
+		verifyOpeningFundsArgument(arguments);
+	}
+
+	@Test
+	public void openingFundsException() {
+		final Map<ArgumentKey, String> arguments = argumentMap("101.45");
+		setUpOpeningFundsException();
+
+		createLaunchArgumentsExpectingException(OPENING_FUNDS_EXCEPTION_MESSAGE, arguments);
+
 		verifyOpeningFundsArgument(arguments);
 	}
 
@@ -110,8 +123,20 @@ public class AnalysisLaunchArgumentsTest {
 		verifyTickerSymbol(tickerSymbol);
 	}
 
-	private void setUpOpeningFunds( final String funds ) {
-		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(new BigDecimal(funds));
+	private Map<ArgumentKey, String> argumentMap( final String openingFunds ) {
+		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
+		arguments.put(ArgumentKey.OPENING_FUNDS, openingFunds);
+		return arguments;
+	}
+
+	private void createLaunchArgumentsExpectingException( final String expectedMessage,
+	        final Map<ArgumentKey, String> arguments ) {
+		try {
+			createLaunchArguments(arguments);
+			fail("expecting an exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals(expectedMessage, e.getMessage());
+		}
 	}
 
 	private void createLaunchArguments( final Map<ArgumentKey, String> arguments ) {
@@ -120,6 +145,10 @@ public class AnalysisLaunchArgumentsTest {
 
 	private void createLaunchArguments() {
 		createLaunchArguments(new EnumMap<>(ArgumentKey.class));
+	}
+
+	private void setUpOpeningFunds( final String funds ) {
+		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(new BigDecimal(funds));
 	}
 
 	private void setUpTickerSymbol( final String serviceName ) {
@@ -132,6 +161,11 @@ public class AnalysisLaunchArgumentsTest {
 
 	private void setUpEquityDataSet( final String serviceName ) {
 		when(equityArguments.getEquityDataset()).thenReturn(new EquityDataset(serviceName));
+	}
+
+	private void setUpOpeningFundsException() {
+		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		        .thenThrow(new IllegalArgumentException(OPENING_FUNDS_EXCEPTION_MESSAGE));
 	}
 
 	private void verifyDataService( final String expected ) {
@@ -160,11 +194,5 @@ public class AnalysisLaunchArgumentsTest {
 	private void verifyOpeningFundsArgument( final Map<ArgumentKey, String> arguments ) {
 		verify(openingFundsArgument).get(arguments);
 		verifyNoMoreInteractions(openingFundsArgument);
-	}
-
-	private Map<ArgumentKey, String> argumentMap( final String openingFunds ) {
-		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
-		arguments.put(ArgumentKey.OPENING_FUNDS, openingFunds);
-		return arguments;
 	}
 }
