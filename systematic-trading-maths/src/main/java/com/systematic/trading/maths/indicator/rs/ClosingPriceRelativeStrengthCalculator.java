@@ -58,6 +58,9 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	/** Comparator result for today == yesterday closing price. */
 	private static final int NO_PRICE_MOVEMENT = 0;
 
+	/** Number of prices needed for the wind up and days for RSI values to produce. */
+	private final int minimumNumberOfPrices;
+
 	/** The number of trading days to look back for calculation. */
 	private final int lookback;
 
@@ -72,10 +75,13 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 
 	/**
 	 * @param lookback the number of days to use when calculating the RS.
+	 * @param additionalRsiValues additional number of RSI values that need generating.
 	 * @param validator validates and parses input.
 	 * @param MATH_CONTEXT the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public ClosingPriceRelativeStrengthCalculator( final int lookback, final Validator validator ) {
+	public ClosingPriceRelativeStrengthCalculator( final int lookback, final int additionalRsiValues,
+	        final Validator validator ) {
+		this.minimumNumberOfPrices = lookback + additionalRsiValues;
 		this.lookback = lookback;
 		this.validator = validator;
 		this.history = BigDecimal.valueOf(lookback);
@@ -86,7 +92,7 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 
 	@Override
 	public int getMinimumNumberOfPrices() {
-		return lookback;
+		return minimumNumberOfPrices;
 	}
 
 	@Override

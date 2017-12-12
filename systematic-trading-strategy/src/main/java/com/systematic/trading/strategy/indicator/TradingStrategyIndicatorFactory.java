@@ -90,14 +90,10 @@ public class TradingStrategyIndicatorFactory {
 	public Indicator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter,
 	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
 
-		//TODO decide this in some fashion based on the configuration provided - confirmedBy
-		final int minimumNumberOfEmaValues = 5;
-
 		final SignalGenerator<RelativeStrengthIndexLine> generator = new RelativeStrengthIndexBullishSignalGenerator(
 		        rsiConfiguration.getOversold());
-
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(
-		        new ClosingPriceRelativeStrengthCalculator(rsiConfiguration.getLookback(),
+		        new ClosingPriceRelativeStrengthCalculator(rsiConfiguration.getLookback(), priceDataRange,
 		                new IllegalArgumentThrowingValidator()),
 		        new IllegalArgumentThrowingValidator());
 

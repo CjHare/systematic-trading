@@ -179,11 +179,11 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	@Test
 	public void minimumNumberOfPrices() {
-		setUpCalculator(14);
+		setUpCalculator(14, 2);
 
 		final int minimumNumberOfPrices = calculator.getMinimumNumberOfPrices();
 
-		assertEquals(14, minimumNumberOfPrices);
+		assertEquals(16, minimumNumberOfPrices);
 	}
 
 	private RelativeStrengthLine rs( final TradingDayPrices[] data ) {
@@ -200,7 +200,11 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	}
 
 	private void setUpCalculator( final int lookback ) {
-		calculator = new ClosingPriceRelativeStrengthCalculator(lookback, validator);
+		setUpCalculator(lookback, 0);
+	}
+
+	private void setUpCalculator( final int lookback, final int additionalRsiValues ) {
+		calculator = new ClosingPriceRelativeStrengthCalculator(lookback, additionalRsiValues, validator);
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
