@@ -204,7 +204,7 @@ public class BacktestBootstrapContextBulider {
 	private Entry createEntry( final IndicatorEntryConfiguration indicatorConfig, final SignalRangeFilter signalRange,
 	        final long priceDataRange ) {
 		return new TradingStrategyFactory().entry(new TradingStrategyIndicatorFactory()
-		        .create(indicatorConfig.getIndicator(), signalRange, signalAnalysisListener, priceDataRange));
+		        .create(indicatorConfig.getIndicator(), signalRange, signalAnalysisListener, (int) priceDataRange));
 	}
 
 	private Entry createEntry( final PeriodicEntryConfiguration periodicConfig ) {
