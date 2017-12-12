@@ -40,6 +40,7 @@ import com.systematic.trading.backtest.configuration.deposit.DepositConfiguratio
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
+import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
@@ -71,15 +72,23 @@ public abstract class BaseTrial {
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length);
 
-		for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+		for (final MacdConfiguration macdConfiguration : MacdConfiguration.values()) {
+			for (final RsiConfiguration rsiConfiguration : RsiConfiguration.values()) {
+				for (final ConfirmaByConfiguration confirmBy : ConfirmaByConfiguration.values()) {
 
-			final EntryConfiguration entry = factory.entry(converter.translate(rsiConfiguration));
-			final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
-			final ExitConfiguration exit = factory.exit();
-			final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
-			final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
-			        exitPositionSizing);
-			configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
+					final EntryConfiguration entry = factory.entry(
+					        factory.entry(converter.translate(macdConfiguration)), confirmBy,
+					        factory.entry(converter.translate(rsiConfiguration)));
+					final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade,
+					        maximumTrade);
+					final ExitConfiguration exit = factory.exit();
+					final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
+					final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
+					        exitPositionSizing);
+					configurations
+					        .add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
+				}
+			}
 		}
 
 		return configurations;
