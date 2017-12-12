@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
@@ -138,34 +139,41 @@ public class BacktestBootstrapContextBulider {
 		final EntryConfiguration entryConfig = strategy.getEntry();
 
 		return createEntry(entryConfig,
-		        createSignalRangeFilter(startConfirmationRange(entryConfig) + endConfirmationRange(entryConfig)));
+		        createSignalRangeFilter(startConfirmationRange(entryConfig) + endConfirmationRange(entryConfig)),
+		        priceDataRange(entryConfig));
+	}
+
+	private long priceDataRange( final EntryConfiguration entryConfig ) {
+		return entryConfig.priceDataRange().get(ChronoUnit.DAYS);
 	}
 
 	/**
 	 * @param signalRange widest signal range, eventually will be overridden by a confirmation.
 	 */
-	private Entry createEntry( final EntryConfiguration entryConfig, final SignalRangeFilter signalRange ) {
+	private Entry createEntry( final EntryConfiguration entryConfig, final SignalRangeFilter signalRange,
+	        final long priceDataRange ) {
 
 		if (entryConfig instanceof PeriodicEntryConfiguration) {
 			return createEntry((PeriodicEntryConfiguration) entryConfig);
 		}
 
 		if (entryConfig instanceof IndicatorEntryConfiguration) {
-			return createEntry((IndicatorEntryConfiguration) entryConfig, signalRange);
+			return createEntry((IndicatorEntryConfiguration) entryConfig, signalRange, priceDataRange);
 		}
 
 		if (entryConfig instanceof ConfirmedByEntryConfiguration) {
-			return createEntry((ConfirmedByEntryConfiguration) entryConfig, signalRange);
+			return createEntry((ConfirmedByEntryConfiguration) entryConfig, signalRange, priceDataRange);
 		}
 
 		if (entryConfig instanceof OperatorEntryConfiguration) {
-			return createEntry((OperatorEntryConfiguration) entryConfig, signalRange);
+			return createEntry((OperatorEntryConfiguration) entryConfig, signalRange, priceDataRange);
 		}
 
 		throw new IllegalArgumentException(String.format("Entry configuration not supported: %s", entryConfig));
 	}
 
-	private Entry createEntry( final OperatorEntryConfiguration operatorConfig, final SignalRangeFilter signalRange ) {
+	private Entry createEntry( final OperatorEntryConfiguration operatorConfig, final SignalRangeFilter signalRange,
+	        final long priceDataRange ) {
 		final Operator operator;
 
 		switch (operatorConfig.getOp()) {
@@ -178,23 +186,25 @@ public class BacktestBootstrapContextBulider {
 			break;
 		}
 
-		return new TradingStrategyFactory().entry(createEntry(operatorConfig.getLeftEntry(), signalRange), operator,
-		        createEntry(operatorConfig.getRighEntry(), signalRange));
+		return new TradingStrategyFactory().entry(
+		        createEntry(operatorConfig.getLeftEntry(), signalRange, priceDataRange), operator,
+		        createEntry(operatorConfig.getRighEntry(), signalRange, priceDataRange));
 	}
 
 	private Entry createEntry( final ConfirmedByEntryConfiguration confirmedByConfig,
-	        final SignalRangeFilter signalRange ) {
+	        final SignalRangeFilter signalRange, final long priceDataRange ) {
 		final ConfirmaByConfiguration by = confirmedByConfig.getConfirmBy();
 
-		return new TradingStrategyFactory().entry(createEntry(confirmedByConfig.getAnchor(), signalRange),
+		return new TradingStrategyFactory().entry(
+		        createEntry(confirmedByConfig.getAnchor(), signalRange, priceDataRange),
 		        new TradingStrategyConfirmedBy(by.getConfirmationDayRange(), by.getDelayUntilConfirmationRange()),
-		        createEntry(confirmedByConfig.getConfirmation(), signalRange));
+		        createEntry(confirmedByConfig.getConfirmation(), signalRange, priceDataRange));
 	}
 
-	private Entry createEntry( final IndicatorEntryConfiguration indicatorConfig,
-	        final SignalRangeFilter signalRange ) {
+	private Entry createEntry( final IndicatorEntryConfiguration indicatorConfig, final SignalRangeFilter signalRange,
+	        final long priceDataRange ) {
 		return new TradingStrategyFactory().entry(new TradingStrategyIndicatorFactory()
-		        .create(indicatorConfig.getIndicator(), signalRange, signalAnalysisListener));
+		        .create(indicatorConfig.getIndicator(), signalRange, signalAnalysisListener, priceDataRange));
 	}
 
 	private Entry createEntry( final PeriodicEntryConfiguration periodicConfig ) {

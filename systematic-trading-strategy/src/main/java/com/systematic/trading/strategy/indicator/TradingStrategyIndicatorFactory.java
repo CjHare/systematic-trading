@@ -69,26 +69,29 @@ public class TradingStrategyIndicatorFactory {
 	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
 	 */
 	public Indicator create( final IndicatorConfiguration signal, final SignalRangeFilter filter,
-	        final SignalAnalysisListener signalListener ) {
+	        final SignalAnalysisListener signalListener, final long priceDataRange ) {
 
 		if (signal instanceof MacdConfiguration) {
-			return create((MacdConfiguration) signal, filter, signalListener);
+			return create((MacdConfiguration) signal, filter, signalListener, priceDataRange);
 		}
 		if (signal instanceof RsiConfiguration) {
-			return create((RsiConfiguration) signal, filter, signalListener);
+			return create((RsiConfiguration) signal, filter, signalListener, priceDataRange);
 		}
 		if (signal instanceof SmaUptrendConfiguration) {
-			return create((SmaUptrendConfiguration) signal, filter, signalListener);
+			return create((SmaUptrendConfiguration) signal, filter, signalListener, priceDataRange);
 		}
 		if (signal instanceof EmaUptrendConfiguration) {
-			return create((EmaUptrendConfiguration) signal, filter, signalListener);
+			return create((EmaUptrendConfiguration) signal, filter, signalListener, priceDataRange);
 		}
 
 		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
 	}
 
 	public Indicator create( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter,
-	        final SignalAnalysisListener signalListener ) {
+	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
+
+		//TODO decide this in some fashion based on the configuration provided - confirmedBy
+		final int minimumNumberOfEmaValues = 5;
 
 		final SignalGenerator<RelativeStrengthIndexLine> generator = new RelativeStrengthIndexBullishSignalGenerator(
 		        rsiConfiguration.getOversold());
@@ -103,42 +106,37 @@ public class TradingStrategyIndicatorFactory {
 	}
 
 	public Indicator create( final SmaUptrendConfiguration sma, final SignalRangeFilter filter,
-	        final SignalAnalysisListener signalListener ) {
+	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
 
+		final int minimumNumberOfSmaValues = priceDataRange + sma.getDaysOfGradient();
 		final SignalGenerator<SimpleMovingAverageLine> generator = new SimpleMovingAverageBullishGradientSignalGenerator();
-
 		final SimpleMovingAverageIndicator calculator = new ClosingPriceSimpleMovingAverageCalculator(sma.getLookback(),
-		        sma.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
+		        minimumNumberOfSmaValues, new IllegalArgumentThrowingValidator());
 
 		return new TradingStrategyIndicator<SimpleMovingAverageLine, SimpleMovingAverageIndicator>(sma.getId(),
 		        calculator, generator, filter, signalListener);
 	}
 
 	public Indicator create( final EmaUptrendConfiguration ema, final SignalRangeFilter filter,
-	        final SignalAnalysisListener signalListener ) {
+	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
 
 		final SignalGenerator<ExponentialMovingAverageLine> generator = new ExponentialMovingAverageBullishGradientSignalGenerator();
-
-		
-
-		//TODO decide this in some fashion based on the configuration provided - confirmedBy
-		final int minimumNumberOfEmaValues = 5;
-		
+		final int minimumNumberOfEmaValues = priceDataRange + ema.getDaysOfGradient();
 		final ExponentialMovingAverageIndicator calculator = new ClosingPriceExponentialMovingAverageCalculator(
-		        ema.getLookback(), ema.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
+		        ema.getLookback(), minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
 
 		return new TradingStrategyIndicator<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator>(
 		        ema.getId(), calculator, generator, filter, signalListener);
 	}
 
+	/**
+	 * @param priceDataRange the number of MACD values to create to use in evaluation (perhaps in conjunction with other indicators).
+	 */
 	public Indicator create( final MacdConfiguration macdConfiguration, final SignalRangeFilter filter,
-	        final SignalAnalysisListener signalListener ) {
+	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
 
 		final SignalGenerator<MovingAverageConvergenceDivergenceLines> generator = new MovingAverageConvergenceDivergenceBullishSignalGenerator();
-
-		//TODO decide this in some fashion based on the configuration provided - confirmedBy
-		final int minimumNumberOfEmaValues = 5 +  macdConfiguration.getSignalTimePeriods();
-
+		final int minimumNumberOfEmaValues = priceDataRange + macdConfiguration.getSignalTimePeriods();
 		final ExponentialMovingAverageIndicator fastEma = new ClosingPriceExponentialMovingAverageCalculator(
 		        macdConfiguration.getFastTimePeriods(), minimumNumberOfEmaValues,
 		        new IllegalArgumentThrowingValidator());
@@ -147,7 +145,6 @@ public class TradingStrategyIndicatorFactory {
 		        new IllegalArgumentThrowingValidator());
 		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(
 		        macdConfiguration.getSignalTimePeriods(), new IllegalArgumentThrowingValidator());
-
 		final MovingAverageConvergenceDivergenceIndicator macd = new MovingAverageConvergenceDivergenceCalculator(
 		        fastEma, slowEma, signalEma, new IllegalArgumentThrowingValidator());
 
