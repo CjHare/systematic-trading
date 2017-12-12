@@ -23,46 +23,106 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.brokerage.fees;
+package com.systematic.trading.backtest.brokerage.fee;
 
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
+import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
- * Test the fee structure for Vanguard Retail fund, .10% buy / sell spread.
+ * Test the fee structure for Bell Direct.
+ * 
+ * CMC Markets has three pricing tiers based on the number of trades in that month
+ *  1st)  Trade # 0 - 10 : $11 or 0.10%, whichever is the greater
+ *  2nd) Trade # 11 - 30 : $9.90 or 0.08%, whichever greater
+ *  3rd)    Trade # 31 + : All trades are $9.90 or 0.075%, whichever greater
  * 
  * @author CJ Hare
  */
-public class VanguardFeeStructureTest {
+public class CmcMarketsFeeStructureTest {
 
-	private VanguardBrokerageFees feeStructure;
+	private CmcMarketsBrokerageFees feeStructure;
 
 	@Before
 	public void setUp() {
-		feeStructure = new VanguardBrokerageFees();
+		feeStructure = new CmcMarketsBrokerageFees();
 	}
 
 	@Test
-	public void trade() {
-		final BigDecimal fee = calculateFee(1234.5, 1);
+	public void firstTieratFee() {
+		final BigDecimal fee = calculateFee(1000, 1);
 
-		verifyFee(0.9876, fee);
+		verifyFee(11, fee);
 	}
 
 	@Test
-	public void tradeRandomNumberOfPreviousTrades() {
-		final BigDecimal fee = calculateFee(12345.67, ThreadLocalRandom.current().nextInt(20000));
+	public void firstTierEdgeFlatFee() {
+		final BigDecimal fee = calculateFee(1000, 10);
 
-		verifyFee(9.876536, fee);
+		verifyFee(11, fee);
+	}
+
+	@Test
+	public void secondTierFlatFee() {
+		final BigDecimal fee = calculateFee(1000, 11);
+
+		verifyFee(9.9, fee);
+	}
+
+	@Test
+	public void secondTierEdgeFlatFee() {
+		final BigDecimal fee = calculateFee(1000, 30);
+
+		verifyFee(9.9, fee);
+	}
+
+	@Test
+	public void thirdTierFlatFee() {
+		final BigDecimal fee = calculateFee(1000, 31);
+
+		verifyFee(9.9, fee);
+	}
+
+	@Test
+	public void firstTierPercentageFee() {
+		final BigDecimal fee = calculateFee(54321, 1);
+
+		verifyFee(54.321, fee);
+	}
+
+	@Test
+	public void firstTierEdgePercentageFee() {
+		final BigDecimal fee = calculateFee(50000, 10);
+
+		verifyFee(50, fee);
+	}
+
+	@Test
+	public void secondTierPercentageFee() {
+		final BigDecimal fee = calculateFee(50000, 11);
+
+		verifyFee(40, fee);
+	}
+
+	@Test
+	public void secondTierEdgePercentageFee() {
+		final BigDecimal fee = calculateFee(50000, 30);
+
+		verifyFee(40, fee);
+	}
+
+	@Test
+	public void thirdTierPercentageFee() {
+		final BigDecimal fee = calculateFee(50000, 31);
+
+		verifyFee(37.5, fee);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
