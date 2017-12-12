@@ -111,4 +111,49 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 	public void setEquityDataset( final String equityDataset ) {
 		this.equityDataset = equityDataset;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((equityDataset == null) ? 0 : equityDataset.hashCode());
+		result = prime * result + ((exclusiveEndDate == null) ? 0 : exclusiveEndDate.hashCode());
+		result = prime * result + ((inclusiveStartDate == null) ? 0 : inclusiveStartDate.hashCode());
+		result = prime * result + ((tickerSymbol == null) ? 0 : tickerSymbol.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj ) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+
+		final HibernateHistoryRetrievalRequest other = (HibernateHistoryRetrievalRequest) obj;
+
+		return tickerSymbolEquals(other) && equityDatasetEquals(other) && inclusiveStartDateEquals(other)
+		        && exclusiveEndDateEquals(other);
+	}
+
+	private boolean inclusiveStartDateEquals( final HibernateHistoryRetrievalRequest other ) {
+		return inclusiveStartDate == other.inclusiveStartDate
+		        || (inclusiveStartDate != null && inclusiveStartDate.equals(other.inclusiveStartDate));
+	}
+
+	private boolean exclusiveEndDateEquals( final HibernateHistoryRetrievalRequest other ) {
+		return exclusiveEndDate == other.exclusiveEndDate
+		        || (exclusiveEndDate != null && exclusiveEndDate.equals(other.exclusiveEndDate));
+	}
+
+	private boolean tickerSymbolEquals( final HibernateHistoryRetrievalRequest other ) {
+		return tickerSymbol == other.tickerSymbol || (tickerSymbol != null && tickerSymbol.equals(other.tickerSymbol));
+	}
+
+	private boolean equityDatasetEquals( final HibernateHistoryRetrievalRequest other ) {
+		return equityDataset == other.equityDataset
+		        || (equityDataset != null && equityDataset.equals(other.equityDataset));
+	}
 }
