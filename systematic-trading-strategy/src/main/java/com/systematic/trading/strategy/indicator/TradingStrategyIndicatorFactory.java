@@ -119,6 +119,11 @@ public class TradingStrategyIndicatorFactory {
 
 		final SignalGenerator<ExponentialMovingAverageLine> generator = new ExponentialMovingAverageBullishGradientSignalGenerator();
 
+		
+
+		//TODO decide this in some fashion based on the configuration provided - confirmedBy
+		final int minimumNumberOfEmaValues = 5;
+		
 		final ExponentialMovingAverageIndicator calculator = new ClosingPriceExponentialMovingAverageCalculator(
 		        ema.getLookback(), ema.getDaysOfGradient(), new IllegalArgumentThrowingValidator());
 
@@ -131,8 +136,8 @@ public class TradingStrategyIndicatorFactory {
 
 		final SignalGenerator<MovingAverageConvergenceDivergenceLines> generator = new MovingAverageConvergenceDivergenceBullishSignalGenerator();
 
-		//TODO decide this in some fashion based on the configuration provided
-		final int minimumNumberOfEmaValues = 5;
+		//TODO decide this in some fashion based on the configuration provided - confirmedBy
+		final int minimumNumberOfEmaValues = 5 +  macdConfiguration.getSignalTimePeriods();
 
 		final ExponentialMovingAverageIndicator fastEma = new ClosingPriceExponentialMovingAverageCalculator(
 		        macdConfiguration.getFastTimePeriods(), minimumNumberOfEmaValues,

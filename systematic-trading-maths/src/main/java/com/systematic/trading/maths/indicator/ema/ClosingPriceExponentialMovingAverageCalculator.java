@@ -70,7 +70,7 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 		validator.verifyGreaterThan(1, lookback);
 		validator.verifyGreaterThan(1, daysOfEmaValues);
 
-		this.minimumNumberOfPrices = 2 * lookback + daysOfEmaValues;
+		this.minimumNumberOfPrices = lookback + daysOfEmaValues;
 		this.smoothingConstant = calculateSmoothingConstant(lookback);
 		this.validator = validator;
 		this.lookback = lookback;

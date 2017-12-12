@@ -122,6 +122,41 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 		verifyValidation(data, lookback);
 	}
 
+	/**
+	 * The additional days of EMA values should have no affect on the calculations, only on the minimum data set size.
+	 */
+	@Test
+	public void emaIntelExampleAdditionalDaysofEmaValues() {
+		final int lookback = 10;
+		final TradingDayPrices[] data = createExamplePrices();
+		setUpCalculator(lookback, 5);
+
+		final ExponentialMovingAverageLine ema = ema(data);
+
+		verifyEma(ema,
+		        line(point(LocalDate.of(2010, 4, 7), 22.22), point(LocalDate.of(2010, 4, 8), 22.21),
+		                point(LocalDate.of(2010, 4, 9), 22.24), point(LocalDate.of(2010, 4, 12), 22.27),
+		                point(LocalDate.of(2010, 4, 13), 22.33), point(LocalDate.of(2010, 4, 14), 22.52),
+		                point(LocalDate.of(2010, 4, 15), 22.80), point(LocalDate.of(2010, 4, 16), 22.97),
+		                point(LocalDate.of(2010, 4, 19), 23.13), point(LocalDate.of(2010, 4, 20), 23.28),
+		                point(LocalDate.of(2010, 4, 21), 23.34), point(LocalDate.of(2010, 4, 22), 23.43),
+		                point(LocalDate.of(2010, 4, 23), 23.51), point(LocalDate.of(2010, 4, 26), 23.53),
+		                point(LocalDate.of(2010, 4, 27), 23.47), point(LocalDate.of(2010, 4, 28), 23.40),
+		                point(LocalDate.of(2010, 4, 29), 23.39), point(LocalDate.of(2010, 4, 30), 23.26),
+		                point(LocalDate.of(2010, 5, 3), 23.23), point(LocalDate.of(2010, 5, 4), 23.08),
+		                point(LocalDate.of(2010, 5, 5), 22.92)));
+		verifyValidation(data, lookback);
+	}
+
+	@Test
+	public void additionalDaysOfEmaValues() {
+		setUpCalculator(10, 5);
+
+		final int requiredDays = calculator.getMinimumNumberOfPrices();
+
+		assertEquals(15, requiredDays);
+	}
+
 	@Test
 	public void emaIncreasing() {
 		final int lookback = 5;
@@ -152,13 +187,16 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 		verifyValidation(data, lookback);
 	}
 
+	/**
+	 * Default of a single EMA value in additional to the lookback
+	 */
 	@Test
 	public void getMinimumNumberOfPrices() {
 		setUpCalculator(4);
 
 		final int requiredDays = calculator.getMinimumNumberOfPrices();
 
-		assertEquals(9, requiredDays);
+		assertEquals(5, requiredDays);
 	}
 
 	private ExponentialMovingAverageLine ema( final TradingDayPrices[] data ) {
