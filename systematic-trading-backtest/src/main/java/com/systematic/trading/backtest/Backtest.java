@@ -60,8 +60,7 @@ public class Backtest {
 	/** Local source of the trading prices.*/
 	private final DataService dataService;
 
-	public Backtest( final DataService dataService, final DataServiceUpdater dataServiceUpdater )
-	        throws ServiceException {
+	public Backtest( final DataService dataService, final DataServiceUpdater dataServiceUpdater ) {
 		this.dataService = dataService;
 		this.dataServiceUpdater = dataServiceUpdater;
 	}
