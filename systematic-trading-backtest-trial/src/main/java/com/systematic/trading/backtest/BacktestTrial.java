@@ -78,7 +78,7 @@ import com.systematic.trading.model.EquityClass;
  */
 public class BacktestTrial {
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(Backtest.class);
+	private static final Logger LOG = LogManager.getLogger(BacktestTrial.class);
 
 	// TODO the description is specific to the type of output - file, console, elastic :. refactor - move into BacktestLaunchArgumentParser
 	private final DescriptionGenerator description = new StandardDescriptionGenerator();
