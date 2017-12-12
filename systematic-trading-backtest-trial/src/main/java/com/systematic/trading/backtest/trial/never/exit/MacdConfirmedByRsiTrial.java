@@ -37,17 +37,6 @@ import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
-import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.indicator.IndicatorConfigurationTranslator;
-import com.systematic.trading.backtest.configuration.strategy.indicator.MacdConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.indicator.RsiConfiguration;
-import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
@@ -108,33 +97,6 @@ public class MacdConfirmedByRsiTrial extends BaseTrial implements BacktestConfig
 		// Signal based buying
 		configurations.addAll(getLongMacdConfirmedByRsi(equity, simulationDates, openingFunds, deposit, brokerage,
 		        minimumTrade, maximumTrade));
-
-		return configurations;
-	}
-
-	protected List<BacktestBootstrapConfiguration> getLongMacdConfirmedByRsi( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
-	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
-		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
-		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
-		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
-		        ConfirmaByConfiguration.values().length);
-
-		final EntryConfiguration longMacdEntry = factory.entry(converter.translate(MacdConfiguration.LONG));
-		final EntryConfiguration rsientry = factory.entry(factory.entry(converter.translate(RsiConfiguration.MEDIUM)),
-		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(RsiConfiguration.LONG)));
-
-		for (final ConfirmaByConfiguration confirmConfiguration : ConfirmaByConfiguration.values()) {
-
-			final EntryConfiguration entry = factory.entry(longMacdEntry, confirmConfiguration, rsientry);
-			final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
-			final ExitConfiguration exit = factory.exit();
-			final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
-			final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
-			        exitPositionSizing);
-			configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
-		}
 
 		return configurations;
 	}

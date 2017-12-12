@@ -332,4 +332,31 @@ public abstract class BaseTrial {
 
 		return configurations;
 	}
+
+	protected List<BacktestBootstrapConfiguration> getLongMacdConfirmedByRsi( final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
+	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
+	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
+		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
+		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
+		        ConfirmaByConfiguration.values().length);
+
+		final EntryConfiguration longMacdEntry = factory.entry(converter.translate(MacdConfiguration.LONG));
+		final EntryConfiguration rsientry = factory.entry(factory.entry(converter.translate(RsiConfiguration.MEDIUM)),
+		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(RsiConfiguration.LONG)));
+
+		for (final ConfirmaByConfiguration confirmConfiguration : ConfirmaByConfiguration.values()) {
+
+			final EntryConfiguration entry = factory.entry(longMacdEntry, confirmConfiguration, rsientry);
+			final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
+			final ExitConfiguration exit = factory.exit();
+			final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
+			final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
+			        exitPositionSizing);
+			configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
+		}
+
+		return configurations;
+	}
 }
