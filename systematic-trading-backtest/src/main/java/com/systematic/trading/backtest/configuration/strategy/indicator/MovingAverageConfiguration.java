@@ -33,26 +33,36 @@ import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
+ * Configuration common for simple and exponential moving averages.
+ * 
  * @author CJ Hare
  */
-public enum SmaUptrendConfiguration implements IndicatorConfiguration {
+public class MovingAverageConfiguration implements IndicatorConfiguration {
 
-	SHORT(20, 5, "SMA-Uptrend-Short"),
-	MEDIUM(50, 5, "SMA-Uptrend-Medium"),
-	LONG(100, 5, "SMA-Uptrend-Long");
+	private final int lookback;
+	private final int daysOfGradient;
+	private final String description;
 
-	private MovingAverageConfiguration configuration;
-
-	SmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
-		this.configuration = new MovingAverageConfiguration(lookback, daysOfGradient, description);
+	public MovingAverageConfiguration( final int lookback, final int daysOfGradient, final String description ) {
+		this.daysOfGradient = daysOfGradient;
+		this.lookback = lookback;
+		this.description = description;
 	}
 
-	public MovingAverageConfiguration getConfiguration() {
-		return configuration;
+	public int getLookback() {
+		return lookback;
+	}
+
+	public int getDaysOfGradient() {
+		return daysOfGradient;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 
 	@Override
 	public IndicatorId getId() {
-		return configuration.getId();
+		return new IndicatorId(description);
 	}
 }

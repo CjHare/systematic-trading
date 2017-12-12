@@ -41,31 +41,18 @@ public enum EmaUptrendConfiguration implements IndicatorConfiguration {
 	MEDIUM(50, 5, "EMA-Uptrend-Medium"),
 	LONG(100, 5, "EMA-Uptrend-Long");
 
-	private final int lookback;
-	private final int daysOfGradient;
-	private final String description;
+	private MovingAverageConfiguration configuration;
 
 	EmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
-		this.daysOfGradient = daysOfGradient;
-		this.lookback = lookback;
-		this.description = description;
-
+		this.configuration = new MovingAverageConfiguration(lookback, daysOfGradient, description);
 	}
 
-	public int getLookback() {
-		return lookback;
-	}
-
-	public int getDaysOfGradient() {
-		return daysOfGradient;
-	}
-
-	public String getDescription() {
-		return description;
+	public MovingAverageConfiguration getConfiguration() {
+		return configuration;
 	}
 
 	@Override
 	public IndicatorId getId() {
-		return new IndicatorId(description);
+		return configuration.getId();
 	}
 }

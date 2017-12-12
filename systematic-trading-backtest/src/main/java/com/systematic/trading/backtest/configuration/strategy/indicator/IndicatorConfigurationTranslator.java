@@ -52,14 +52,16 @@ public class IndicatorConfigurationTranslator {
 	}
 
 	public IndicatorConfiguration translate( final SmaUptrendConfiguration smaConfiguration ) {
+		final MovingAverageConfiguration configuration = smaConfiguration.getConfiguration();
 		return new com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration(
-		        new IndicatorId(smaConfiguration.getDescription()), smaConfiguration.getLookback(),
-		        smaConfiguration.getDaysOfGradient());
+		        new IndicatorId(configuration.getDescription()), configuration.getLookback(),
+		        configuration.getDaysOfGradient());
 	}
 
 	public IndicatorConfiguration translate( final EmaUptrendConfiguration emaConfiguration ) {
-		return new com.systematic.trading.strategy.indicator.configuration.EmaUptrendConfiguration(
-		        new IndicatorId(emaConfiguration.getDescription()), emaConfiguration.getLookback(),
-		        emaConfiguration.getDaysOfGradient());
+		final MovingAverageConfiguration configuration = emaConfiguration.getConfiguration();
+		return new com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration(
+		        new IndicatorId(configuration.getDescription()), configuration.getLookback(),
+		        configuration.getDaysOfGradient());
 	}
 }
