@@ -68,6 +68,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	private static final String OPERATOR_PREFIX = "(";
 	private static final String OPERATOR_SUFFIX = ")";
 
+	@Override
 	public String strategy( final EntryConfiguration entry, final EntrySizeConfiguration entryPositionSizing,
 	        final ExitConfiguration exit, final ExitSizeConfiguration exitPositionSizing ) {
 
@@ -79,6 +80,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		return out.toString();
 	}
 
+	@Override
 	public String positionSize( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
 
 		final StringJoiner out = new StringJoiner(SEPARATOR);
@@ -87,6 +89,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		return out.toString();
 	}
 
+	@Override
 	public String bootstrapConfiguration( final BacktestBootstrapConfiguration configuration ) {
 
 		final StringJoiner out = new StringJoiner(SEPARATOR);
@@ -97,6 +100,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		return out.toString();
 	}
 
+	@Override
 	public String bootstrapConfigurationWithDeposit( final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
 
@@ -109,6 +113,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		return out.toString();
 	}
 
+	@Override
 	public String periodicEntry( final PeriodicConfiguration frequency ) {
 		switch (frequency) {
 			case WEEKLY:
@@ -122,10 +127,12 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		}
 	}
 
+	@Override
 	public String indicator( final IndicatorConfiguration indicator ) {
 		return indicator.getId().getName();
 	}
 
+	@Override
 	public String entry( final EntryConfiguration leftEntry, final OperatorConfiguration.Selection op,
 	        final EntryConfiguration righEntry ) {
 
@@ -138,6 +145,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		return out.toString();
 	}
 
+	@Override
 	public String entry( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
 

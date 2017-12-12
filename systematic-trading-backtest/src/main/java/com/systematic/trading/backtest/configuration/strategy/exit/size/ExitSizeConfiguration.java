@@ -39,6 +39,6 @@ public class ExitSizeConfiguration implements Describable {
 
 	@Override
 	public String getDescription( final DescriptionGenerator description ) {
-		return "";
+		return "All";
 	}
 }
