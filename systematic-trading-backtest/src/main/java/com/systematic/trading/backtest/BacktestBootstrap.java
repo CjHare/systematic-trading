@@ -79,10 +79,6 @@ public class BacktestBootstrap {
 
 		final TradingDayPrices lastTradingDay = tradingData.getTradingDayPrices().get(latestDate);
 
-		// TODO stuff about the start date != earliest date, find the closest to start date maybe?
-
-		// TODO run with a full output & check no deposits & signals
-
 		// Cumulative recording of investment progression
 		final ReturnOnInvestmentListener roi = new CulmativeReturnOnInvestment();
 
