@@ -31,55 +31,41 @@ package com.systematic.trading.signals.data.api.quandl.converter;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
 
 /**
- * Each of the columns expected columns are present.
+ * Common utility methods for the response column classes.
  * 
  * @author CJ Hare
  */
-public class AllResponseColumns implements ResponseColumns {
+public class ResponseColumnsUtil {
 
-	private static final String DATE_COLUMN_NAME = "date";
-	private static final String OPEN_PRICE_COLUMN_NAME = "open";
-	private static final String HIGH_PRICE_COLUMN_NAME = "high";
-	private static final String LOW_PRICE_COLUMN_NAME = "low";
-	private static final String CLOSE_PRICE_COLUMN_NAME = "close";
+	public int indexOf( final List<QuandlColumnName> columns, final String name )
+	        throws CannotRetrieveDataException {
 
-	private final ResponseColumnsUtil columnUtils = new ResponseColumnsUtil();
+		for (int i = 0; i < columns.size(); i++) {
+			if (columnNameEquals(name, columns.get(i))) {
+				return i;
+			}
+		}
 
-	@Override
-	public boolean canParse( final List<QuandlColumnName> columns ) {
-		return columnUtils.containsName(DATE_COLUMN_NAME, columns)
-		        && columnUtils.containsName(OPEN_PRICE_COLUMN_NAME, columns)
-		        && columnUtils.containsName(HIGH_PRICE_COLUMN_NAME, columns)
-		        && columnUtils.containsName(LOW_PRICE_COLUMN_NAME, columns)
-		        && columnUtils.containsName(CLOSE_PRICE_COLUMN_NAME, columns);
+		throw new CannotRetrieveDataException(String.format("Missing expected column: %s", name));
 	}
 
-	@Override
-	public int dateIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return columnUtils.indexOf(columns, DATE_COLUMN_NAME);
+	public boolean containsName( final String name, final List<QuandlColumnName> columns ) {
+		for (int i = 0; i < columns.size(); i++) {
+			if (columnNameEquals(name, columns.get(i))) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
-	@Override
-	public int openPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return columnUtils.indexOf(columns, OPEN_PRICE_COLUMN_NAME);
-	}
-
-	@Override
-	public int highPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return columnUtils.indexOf(columns, HIGH_PRICE_COLUMN_NAME);
-	}
-
-	@Override
-	public int lowPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return columnUtils.indexOf(columns, LOW_PRICE_COLUMN_NAME);
-	}
-
-	@Override
-	public int closePriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return columnUtils.indexOf(columns, CLOSE_PRICE_COLUMN_NAME);
+	private boolean columnNameEquals( final String name, final QuandlColumnName column ) {
+		return StringUtils.equalsIgnoreCase(name, column.getName());
 	}
 }

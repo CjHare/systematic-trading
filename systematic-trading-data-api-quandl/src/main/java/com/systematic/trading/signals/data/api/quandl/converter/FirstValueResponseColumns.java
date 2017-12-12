@@ -31,8 +31,6 @@ package com.systematic.trading.signals.data.api.quandl.converter;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
 
@@ -47,9 +45,11 @@ public class FirstValueResponseColumns implements ResponseColumns {
 	private static final int SECOND_INDEX = 2;
 	private static final String DATE_COLUMN_NAME = "date";
 
+	private final ResponseColumnsUtil columnUtils = new ResponseColumnsUtil();
+
 	@Override
 	public boolean canParse( final List<QuandlColumnName> columns ) {
-		return containsColumnName(DATE_COLUMN_NAME, columns) && hasAtLeastOneValueColumn(columns);
+		return columnUtils.containsName(DATE_COLUMN_NAME, columns) && hasAtLeastOneValueColumn(columns);
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class FirstValueResponseColumns implements ResponseColumns {
 
 	private int firstValueIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
 		if (hasAtLeastOneValueColumn(columns)) {
-			return indexOf(columns, DATE_COLUMN_NAME) != FIRST_INDEX ? FIRST_INDEX : SECOND_INDEX;
+			return columnUtils.indexOf(columns, DATE_COLUMN_NAME) != FIRST_INDEX ? FIRST_INDEX : SECOND_INDEX;
 
 		}
 
@@ -91,31 +91,6 @@ public class FirstValueResponseColumns implements ResponseColumns {
 	}
 
 	private int dateColumnIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
-		return indexOf(columns, DATE_COLUMN_NAME);
-	}
-
-	private int indexOf( final List<QuandlColumnName> columns, final String name ) throws CannotRetrieveDataException {
-
-		for (int i = 0; i < columns.size(); i++) {
-			if (columnNameEquals(name, columns.get(i))) {
-				return i;
-			}
-		}
-
-		throw new CannotRetrieveDataException(String.format("Missing expected column: %s", name));
-	}
-
-	private boolean columnNameEquals( final String name, final QuandlColumnName column ) {
-		return StringUtils.equalsIgnoreCase(name, column.getName());
-	}
-
-	private boolean containsColumnName( final String name, final List<QuandlColumnName> columns ) {
-		for (int i = 0; i < columns.size(); i++) {
-			if (columnNameEquals(name, columns.get(i))) {
-				return true;
-			}
-		}
-
-		return false;
+		return columnUtils.indexOf(columns, DATE_COLUMN_NAME);
 	}
 }
