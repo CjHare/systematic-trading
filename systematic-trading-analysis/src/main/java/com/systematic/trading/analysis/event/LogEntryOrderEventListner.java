@@ -42,6 +42,7 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.simulation.order.event.OrderEvent.EquityOrderType;
 
 /**
  * Log output for only the buy orders i.e. 'when' and 'how much' to buy.
@@ -64,15 +65,10 @@ public class LogEntryOrderEventListner implements BacktestEventListener {
 	@Override
 	public void event( final OrderEvent event ) {
 
-		switch (event.getType()) {
+		if (event.getType() == EquityOrderType.ENTRY) {
+			LOG.info(String.format("Buy event on %s. Place a buy order for the total value of %s",
+			        event.getTransactionDate(), TWO_DECIMAL_PLACES.format(event.getTotalCost())));
 
-			case ENTRY:
-				LOG.info(String.format("Buy event on %s. Place a buy order for the total value of %s",
-				        event.getTransactionDate(), TWO_DECIMAL_PLACES.format(event.getTotalCost())));
-			break;
-
-			default:
-			break;
 		}
 	}
 
