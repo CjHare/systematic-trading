@@ -43,8 +43,8 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
  */
 public class FirstValueResponseColumns implements ResponseColumns {
 
-	private static int FIRST_INDEX = 1;
-	private static int SECOND_INDEX = 2;
+	private static final int FIRST_INDEX = 1;
+	private static final int SECOND_INDEX = 2;
 	private static final String DATE_COLUMN_NAME = "date";
 
 	@Override
