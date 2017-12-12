@@ -32,16 +32,12 @@ package com.systematic.trading.signals.data.api.quandl.dao.impl;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -62,7 +58,7 @@ import com.systematic.trading.signals.data.api.quandl.resource.DatatableResponse
  * 
  * @author CJ Hare
  */
-public class HttpQuandlDatatableApiDao implements QuandlApiDao {
+public class HttpQuandlDatatableApiDao extends HttpQuandlApiDao implements QuandlApiDao {
 
 	private static final String PATH = "api/v3/datatables/WIKI/PRICES.json";
 	private static final String COLUMN_NAMES_KEY = "qopts.columns";
@@ -73,22 +69,14 @@ public class HttpQuandlDatatableApiDao implements QuandlApiDao {
 	private static final String API_KEY = "api_key";
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyMMdd");
 
-	private static final Logger LOG = LogManager.getLogger(QuandlApiDao.class);
-	private static final int HTTP_OK = 200;
-
 	/** Base of the Restful end point. */
 	private final WebTarget root;
 
 	/** User key for accessing the Quandl end point.*/
 	private final String apiKey;
 
-	/** Base one, number of attempts per a Quandl call.*/
-	private final int numberOfRetries;
-
-	/** Staggered wait time between retry attempts.*/
-	private final int retryBackoffMs;
-
 	public HttpQuandlDatatableApiDao( final EquityApiConfiguration configuration ) {
+		super(configuration);
 
 		// Registering the provider for POJO -> JSON
 		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
@@ -97,8 +85,6 @@ public class HttpQuandlDatatableApiDao implements QuandlApiDao {
 		this.root = ClientBuilder.newClient(clientConfig).target(configuration.getEndpoint());
 
 		this.apiKey = configuration.getApiKey();
-		this.numberOfRetries = configuration.getNumberOfRetries();
-		this.retryBackoffMs = configuration.getRetryBackOffMs();
 	}
 
 	@Override
@@ -123,44 +109,5 @@ public class HttpQuandlDatatableApiDao implements QuandlApiDao {
 		        .queryParam(START_DATE_KEY, inclusiveStartDate.format(QUANDL_DATE_FORMAT))
 		        .queryParam(END_DATE_KEY, exclusiveEndDate.format(QUANDL_DATE_FORMAT))
 		        .queryParam(TICKER_SYMBOL_KEY, tickerSymbol).queryParam(API_KEY, apiKey);
-	}
-
-	private Response get( final WebTarget url, final BlockingEventCount throttler ) throws CannotRetrieveDataException {
-		int attempt = 1;
-
-		do {
-			LOG.info("Retrieving from {}", url);
-
-			throttler.add();
-			final Response response = url.request(MediaType.APPLICATION_JSON).get();
-
-			if (isResponseOk(response)) {
-				return response;
-
-			} else {
-				LOG.warn(String.format("Failed to retrieve data, HTTP code: %s, request: %s", response.getStatus(),
-				        url));
-
-				waitBackOffDuration(attempt);
-			}
-
-		} while (++attempt <= numberOfRetries);
-
-		throw new CannotRetrieveDataException(String.format("Failed to retrieve data for request: %s", url));
-	}
-
-	private void waitBackOffDuration( final long attempt ) {
-		try {
-			TimeUnit.MILLISECONDS.sleep(attempt * retryBackoffMs);
-		} catch (InterruptedException e) {
-			LOG.warn("Wait between retrieval calls interrupted", e);
-
-			// Restore interrupted state...
-			Thread.currentThread().interrupt();
-		}
-	}
-
-	private boolean isResponseOk( final Response response ) {
-		return response.getStatus() == HTTP_OK;
 	}
 }
