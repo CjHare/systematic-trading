@@ -83,7 +83,7 @@ public class FirstValueResponseColumns implements ResponseColumns {
 
 		}
 
-		throw new CannotRetrieveDataException(String.format("Missing any value column"));
+		throw new CannotRetrieveDataException("Missing any value columns");
 	}
 
 	private boolean hasAtLeastOneValueColumn( final List<QuandlColumnName> columns ) {
