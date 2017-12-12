@@ -91,13 +91,13 @@ public class Backtest {
 		final LocalDate endDate = simulationDate.getEndDate();
 
 		if (startDate.getDayOfMonth() != 1) {
-			LOG.info(String.format(
+			LOG.debug(String.format(
 			        "Remote data retrieval for start date: %s has been adjusted to the beginning of the month ",
 			        startDate));
 		}
 
 		if (endDate.getDayOfMonth() != 1) {
-			LOG.warn(
+			LOG.debug(
 			        "With the current data retrieval implementation, an End date of the first day of the month is more efficient");
 		}
 
