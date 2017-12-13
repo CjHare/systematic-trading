@@ -62,7 +62,7 @@ public class MovingAverageConfiguration implements IndicatorConfiguration {
 	}
 
 	@Override
-	public IndicatorId getId() {
+	public IndicatorId id() {
 		return new IndicatorId(description);
 	}
 }

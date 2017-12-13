@@ -52,7 +52,7 @@ public enum SmaUptrendConfiguration implements IndicatorConfiguration {
 	}
 
 	@Override
-	public IndicatorId getId() {
+	public IndicatorId id() {
 		return configuration.id();
 	}
 }
