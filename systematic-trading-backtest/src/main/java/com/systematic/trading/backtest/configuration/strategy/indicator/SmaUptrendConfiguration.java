@@ -53,6 +53,6 @@ public enum SmaUptrendConfiguration implements IndicatorConfiguration {
 
 	@Override
 	public IndicatorId getId() {
-		return configuration.getId();
+		return configuration.id();
 	}
 }

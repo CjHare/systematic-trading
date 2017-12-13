@@ -150,7 +150,7 @@ public class TradingStrategy implements Strategy {
 	}
 
 	@Override
-	public Period getWarmUpPeriod() {
+	public Period warmUpPeriod() {
 		return Period.ofDays((int) Math.ceil(entry.numberOfTradingDaysRequired() * CONVERT_TO_TRADING_DAYS));
 	}
 

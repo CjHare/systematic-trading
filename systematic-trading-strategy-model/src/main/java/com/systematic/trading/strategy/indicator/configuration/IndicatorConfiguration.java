@@ -39,5 +39,5 @@ public interface IndicatorConfiguration {
 	 * 
 	 * @return the type of signal the configuration matches.
 	 */
-	IndicatorId getId();
+	IndicatorId id();
 }

@@ -45,11 +45,11 @@ public class SmaUptrendConfiguration extends IndicatorConfigurationBase {
 		this.lookback = lookback;
 	}
 
-	public int getLookback() {
+	public int lookback() {
 		return lookback;
 	}
 
-	public int getDaysOfGradient() {
+	public int daysOfGradient() {
 		return daysOfGradient;
 	}
 }

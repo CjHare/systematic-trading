@@ -48,15 +48,15 @@ public class RsiConfiguration extends IndicatorConfigurationBase {
 		this.overbought = overbought;
 	}
 
-	public int getLookback() {
+	public int lookback() {
 		return lookback;
 	}
 
-	public BigDecimal getOversold() {
+	public BigDecimal oversold() {
 		return oversold;
 	}
 
-	public BigDecimal getOverbought() {
+	public BigDecimal overbought() {
 		return overbought;
 	}
 }

@@ -69,7 +69,7 @@ public class Backtest {
 	        final BacktestEventListener output ) throws ServiceException {
 
 		final BacktestBootstrapContext context = createContext(configuration, output);
-		final Period warmUp = context.getTradingStrategy().getWarmUpPeriod();
+		final Period warmUp = context.getTradingStrategy().warmUpPeriod();
 		recordWarmUpPeriod(warmUp);
 		final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityDataset(),
 		        equity.getEquityIdentity(), configuration.getBacktestDates(), warmUp);

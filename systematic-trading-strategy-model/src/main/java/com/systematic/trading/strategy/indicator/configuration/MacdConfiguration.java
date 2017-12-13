@@ -46,15 +46,15 @@ public class MacdConfiguration extends IndicatorConfigurationBase {
 		this.signalTimePeriods = signalTimePeriods;
 	}
 
-	public int getFastTimePeriods() {
+	public int fastTimePeriods() {
 		return fastTimePeriods;
 	}
 
-	public int getSlowTimePeriods() {
+	public int slowTimePeriods() {
 		return slowTimePeriods;
 	}
 
-	public int getSignalTimePeriods() {
+	public int signalTimePeriods() {
 		return signalTimePeriods;
 	}
 }

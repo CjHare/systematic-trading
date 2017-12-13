@@ -187,7 +187,7 @@ public class StandardDescriptionGeneratorTest {
 
 	private IndicatorConfiguration setUpIndicator() {
 		final IndicatorConfiguration indicator = mock(IndicatorConfiguration.class);
-		when(indicator.getId()).thenReturn(new IndicatorId("Indicator"));
+		when(indicator.id()).thenReturn(new IndicatorId("Indicator"));
 		return indicator;
 	}
 

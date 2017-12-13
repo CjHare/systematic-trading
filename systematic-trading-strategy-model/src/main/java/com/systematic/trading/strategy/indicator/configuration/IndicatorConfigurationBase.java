@@ -46,7 +46,7 @@ public abstract class IndicatorConfigurationBase implements IndicatorConfigurati
 	}
 
 	@Override
-	public IndicatorId getId() {
+	public IndicatorId id() {
 		return type;
 	}
 }

@@ -53,6 +53,6 @@ public enum EmaUptrendConfiguration implements IndicatorConfiguration {
 
 	@Override
 	public IndicatorId getId() {
-		return configuration.getId();
+		return configuration.id();
 	}
 }

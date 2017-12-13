@@ -50,7 +50,7 @@ public interface Strategy {
 	 * 
 	 * @return time period required before the start of the analysis is to begin.
 	 */
-	Period getWarmUpPeriod();
+	Period warmUpPeriod();
 
 	/**
 	 * Updates the trading logic with a subsequent trading point.

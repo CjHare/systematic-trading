@@ -129,7 +129,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 
 	@Override
 	public String indicator( final IndicatorConfiguration indicator ) {
-		return indicator.getId().getName();
+		return indicator.id().getName();
 	}
 
 	@Override
