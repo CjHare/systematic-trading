@@ -61,11 +61,11 @@ public class TradingStrategyConfirmationEntry implements Entry {
 		final List<DatedSignal> anchorSignals = anchorIndicator.analyse(data);
 		final List<DatedSignal> signals = new ArrayList<>(anchorSignals.size());
 
-		if (!anchorSignals.isEmpty()) {
+		if (hasSignals(anchorSignals)) {
 			final List<DatedSignal> confirmationSignals = confirmationIndicator.analyse(data);
 
 			for (final DatedSignal anchorSignal : anchorSignals) {
-				final Optional<DatedSignal> latestConfirmation = getLatestConformationSignal(anchorSignal,
+				final Optional<DatedSignal> latestConfirmation = latestConformationSignal(anchorSignal,
 				        confirmationSignals);
 
 				if (latestConfirmation.isPresent()) {
@@ -77,13 +77,16 @@ public class TradingStrategyConfirmationEntry implements Entry {
 		return signals;
 	}
 
-	private Optional<DatedSignal> getLatestConformationSignal( final DatedSignal anchorSignal,
+	private boolean hasSignals( final List<DatedSignal> signals ) {
+		return !signals.isEmpty();
+	}
+
+	private Optional<DatedSignal> latestConformationSignal( final DatedSignal anchorSignal,
 	        final List<DatedSignal> confirmationSignals ) {
 
 		DatedSignal match = null;
 
 		for (final DatedSignal confirmationSignal : confirmationSignals) {
-
 			if (confirmation.isConfirmedBy(anchorSignal, confirmationSignal)) {
 				match = confirmationSignal;
 			}

@@ -30,6 +30,7 @@
 package com.systematic.trading.strategy.entry;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,66 +45,96 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;
-import com.systematic.trading.strategy.periodic.Periodic;
+import com.systematic.trading.strategy.confirmation.Confirmation;
 
 /**
- * Periodic entry delegate, with a single trading data point required.
+ * Verifies behaviour of the entry that uses two indicators, the first an anchor, the second as confirmation.
  * 
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class TradingStrategyPeriodicEntryTest {
+public class TradingStrategyConfirmationEntryTest {
 
 	@Mock
-	private Periodic frequency;
+	private Entry anchorIndicator;
+
+	@Mock
+	private Confirmation confirmation;
+
+	@Mock
+	private Entry confirmationIndicator;
 
 	@Mock
 	private List<DatedSignal> expectedAnalysis;
 
 	/** Entry instance being tested. */
-	private TradingStrategyPeriodicEntry entry;
+	private TradingStrategyConfirmationEntry entry;
 
 	@Before
 	public void setUp() {
-		entry = new TradingStrategyPeriodicEntry(frequency);
-		setUpPeriodic();
+		entry = new TradingStrategyConfirmationEntry(anchorIndicator, confirmation, confirmationIndicator);
 	}
 
 	@Test
-	public void tradingDataPoints() {
+	public void tradingDataPointsAnchor() {
+		setUpTradingDataPoints(5, 1, 4);
 
 		final int requiredPriceDataPoints = entry.numberOfTradingDaysRequired();
 
-		verifyPriceDataPoints(requiredPriceDataPoints);
+		verifyPriceDataPoints(6, requiredPriceDataPoints);
+		verifyTradingDataPointsDelegation();
+	}
+
+	@Test
+	public void tradingDataPointsConfirmation() {
+		setUpTradingDataPoints(3, 1, 6);
+
+		final int requiredPriceDataPoints = entry.numberOfTradingDaysRequired();
+
+		verifyPriceDataPoints(7, requiredPriceDataPoints);
+		verifyTradingDataPointsDelegation();
 	}
 
 	@Test
 	public void analyse() {
 		final TradingDayPrices[] data = new TradingDayPrices[5];
 
+		when(expectedAnalysis.isEmpty()).thenReturn(true);
+		when(anchorIndicator.analyse(any(TradingDayPrices[].class))).thenReturn(expectedAnalysis);
+
 		final List<DatedSignal> analysis = analyse(data);
 
-		verifyAnalysis(analysis);
-		verifyDelegation(data);
+		verifyAnalysisEmpty(analysis);
+		verifyAnchorAnalysisDelegation(data);
 	}
 
-	private void setUpPeriodic() {
-		when(frequency.analyse(any(TradingDayPrices[].class))).thenReturn(expectedAnalysis);
+	private void setUpTradingDataPoints( final int anchorIndicatorPoints, final int confirmationPoints,
+	        final int confirmationIndicatorPoints ) {
+		when(anchorIndicator.numberOfTradingDaysRequired()).thenReturn(anchorIndicatorPoints);
+		when(confirmation.numberOfTradingDaysRequired()).thenReturn(confirmationPoints);
+		when(confirmationIndicator.numberOfTradingDaysRequired()).thenReturn(confirmationIndicatorPoints);
 	}
 
 	private List<DatedSignal> analyse( final TradingDayPrices[] data ) {
 		return entry.analyse(data);
 	}
 
-	private void verifyAnalysis( final List<DatedSignal> analysis ) {
-		assertEquals(expectedAnalysis, analysis);
+	private void verifyPriceDataPoints( final int expected, final int actual ) {
+		assertEquals(expected, actual);
 	}
 
-	private void verifyPriceDataPoints( final int actual ) {
-		assertEquals(1, actual);
+	private void verifyTradingDataPointsDelegation() {
+		verify(anchorIndicator).numberOfTradingDaysRequired();
+		verify(confirmation).numberOfTradingDaysRequired();
+		verify(confirmationIndicator).numberOfTradingDaysRequired();
 	}
 
-	private void verifyDelegation( final TradingDayPrices[] data ) {
-		verify(frequency).analyse(data);
+	private void verifyAnalysisEmpty( final List<DatedSignal> analysis ) {
+		assertNotNull(analysis);
+		assertEquals(true, analysis.isEmpty());
+	}
+
+	private void verifyAnchorAnalysisDelegation( final TradingDayPrices[] data ) {
+		verify(anchorIndicator).analyse(data);
 	}
 }
