@@ -35,6 +35,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -44,6 +46,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.strategy.confirmation.Confirmation;
 
@@ -64,8 +67,8 @@ public class TradingStrategyConfirmationEntryTest {
 	@Mock
 	private Entry confirmationIndicator;
 
-	@Mock
-	private List<DatedSignal> expectedAnalysis;
+	private List<DatedSignal> anchorAnalysis;
+	private List<DatedSignal> confirmationAnalysis;
 
 	/** Entry instance being tested. */
 	private TradingStrategyConfirmationEntry entry;
@@ -73,6 +76,8 @@ public class TradingStrategyConfirmationEntryTest {
 	@Before
 	public void setUp() {
 		entry = new TradingStrategyConfirmationEntry(anchorIndicator, confirmation, confirmationIndicator);
+		anchorAnalysis = new ArrayList<DatedSignal>();
+		confirmationAnalysis = new ArrayList<DatedSignal>();
 	}
 
 	@Test
@@ -96,16 +101,101 @@ public class TradingStrategyConfirmationEntryTest {
 	}
 
 	@Test
-	public void analyse() {
+	public void analyseNoSignal() {
 		final TradingDayPrices[] data = new TradingDayPrices[5];
-
-		when(expectedAnalysis.isEmpty()).thenReturn(true);
-		when(anchorIndicator.analyse(any(TradingDayPrices[].class))).thenReturn(expectedAnalysis);
+		setUpNoSignals();
 
 		final List<DatedSignal> analysis = analyse(data);
 
 		verifyAnalysisEmpty(analysis);
 		verifyAnchorAnalysisDelegation(data);
+	}
+
+	@Test
+	public void analyseAnchorSignal() {
+		final TradingDayPrices[] data = new TradingDayPrices[5];
+		setUpAnchorSignals(bullishSignal());
+
+		final List<DatedSignal> analysis = analyse(data);
+
+		verifyAnalysisEmpty(analysis);
+		verifyAnchorAnalysisDelegation(data);
+	}
+
+	@Test
+	public void analyseUnconfirmedSignals() {
+		final TradingDayPrices[] data = new TradingDayPrices[5];
+		setUpAnchorSignals(bullishSignal());
+		setUpConfirmationSignals(bullishSignal());
+
+		final List<DatedSignal> analysis = analyse(data);
+
+		verifyAnalysisEmpty(analysis);
+		verifyAnchorAnalysisDelegation(data);
+		verifyConfirmationAnalysisDelegation(data);
+	}
+
+	@Test
+	public void analyseConfirmedSignals() {
+		final TradingDayPrices[] data = new TradingDayPrices[5];
+		final DatedSignal signal = bullishSignal();
+		setUpAnchorSignals(signal);
+		setUpConfirmationSignals(signal);
+		setUpConfirmedSignals();
+
+		final List<DatedSignal> analysis = analyse(data);
+
+		verifyAnalysis(analysis, signal);
+		verifyAnchorAnalysisDelegation(data);
+		verifyConfirmationAnalysisDelegation(data);
+	}
+
+	/**
+	 * When two confirmation signals match an anchor signal the latter is chosen.
+	 */
+	@Test
+	public void analyseDoubleConfirmation() {
+		final TradingDayPrices[] data = new TradingDayPrices[5];
+		final DatedSignal firstSignal = bullishSignalYesterday();
+		final DatedSignal secondSignal = bullishSignal();
+		setUpAnchorSignals(firstSignal);
+		setUpConfirmationSignals(firstSignal, secondSignal);
+		setUpConfirmedSignals();
+
+		final List<DatedSignal> analysis = analyse(data);
+
+		verifyAnalysis(analysis, secondSignal);
+		verifyAnchorAnalysisDelegation(data);
+		verifyConfirmationAnalysisDelegation(data);
+	}
+
+	private DatedSignal bullishSignal() {
+		return new DatedSignal(LocalDate.now(), SignalType.BULLISH);
+	}
+
+	private DatedSignal bullishSignalYesterday() {
+		return new DatedSignal(LocalDate.now().minusDays(1), SignalType.BULLISH);
+	}
+
+	private void setUpConfirmedSignals() {
+		when(confirmation.isConfirmedBy(any(DatedSignal.class), any(DatedSignal.class))).thenReturn(true);
+	}
+
+	private void setUpAnchorSignals( final DatedSignal anchorSignal ) {
+		when(anchorIndicator.analyse(any(TradingDayPrices[].class))).thenReturn(anchorAnalysis);
+		anchorAnalysis.add(anchorSignal);
+	}
+
+	private void setUpConfirmationSignals( final DatedSignal... anchorSignal ) {
+		when(confirmationIndicator.analyse(any(TradingDayPrices[].class))).thenReturn(confirmationAnalysis);
+
+		for (final DatedSignal signal : anchorSignal) {
+			confirmationAnalysis.add(signal);
+		}
+	}
+
+	private void setUpNoSignals() {
+		when(anchorIndicator.analyse(any(TradingDayPrices[].class))).thenReturn(anchorAnalysis);
 	}
 
 	private void setUpTradingDataPoints( final int anchorIndicatorPoints, final int confirmationPoints,
@@ -132,6 +222,20 @@ public class TradingStrategyConfirmationEntryTest {
 	private void verifyAnalysisEmpty( final List<DatedSignal> analysis ) {
 		assertNotNull(analysis);
 		assertEquals(true, analysis.isEmpty());
+	}
+
+	private void verifyAnalysis( final List<DatedSignal> analysis, final DatedSignal... expected ) {
+		assertNotNull(analysis);
+		assertEquals(false, analysis.isEmpty());
+		assertEquals(expected.length, analysis.size());
+
+		for (int i = 0; i < expected.length; i++) {
+			assertEquals(expected[i], analysis.get(i));
+		}
+	}
+
+	private void verifyConfirmationAnalysisDelegation( final TradingDayPrices[] data ) {
+		verify(confirmationIndicator).analyse(data);
 	}
 
 	private void verifyAnchorAnalysisDelegation( final TradingDayPrices[] data ) {

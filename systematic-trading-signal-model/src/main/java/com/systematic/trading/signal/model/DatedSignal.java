@@ -51,4 +51,30 @@ public class DatedSignal {
 	public SignalType getType() {
 		return type;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals( final Object obj ) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+
+		final DatedSignal other = (DatedSignal) obj;
+		return dateEquals(other) && type == other.type;
+	}
+
+	private boolean dateEquals( final DatedSignal other ) {
+		return date == other.date || (date != null && date.equals(other.date));
+	}
 }
