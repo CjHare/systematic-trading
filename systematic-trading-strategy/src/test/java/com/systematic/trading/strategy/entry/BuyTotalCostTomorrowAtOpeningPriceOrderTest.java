@@ -51,6 +51,8 @@ import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
+import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.simulation.order.event.OrderEvent.EquityOrderType;
 import com.systematic.trading.strategy.matcher.EquityOrderVolumeMatcher;
 import com.systematic.trading.strategy.matcher.PriceMatcher;
 
@@ -61,7 +63,9 @@ import com.systematic.trading.strategy.matcher.PriceMatcher;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
+
 	private static final LocalDate TODAY = LocalDate.now();
+	private static final BigDecimal TOTAL_COST = BigDecimal.valueOf(44);
 
 	@Mock
 	private TradingDayPrices todaysTrading;
@@ -79,9 +83,8 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 
 	@Before
 	public void setUp() {
-		final BigDecimal targetTotalCost = BigDecimal.valueOf(44);
 		final int equityDecimalPlaces = 4;
-		order = new BuyTotalCostTomorrowAtOpeningPriceOrder(targetTotalCost, EquityClass.STOCK, equityDecimalPlaces,
+		order = new BuyTotalCostTomorrowAtOpeningPriceOrder(TOTAL_COST, EquityClass.STOCK, equityDecimalPlaces,
 		        LocalDate.now(), MathContext.DECIMAL64);
 	}
 
@@ -96,17 +99,35 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	}
 
 	@Test
-	public void isValid() {
-		final boolean isValid = order.isValid(todaysTrading);
+	public void valid() {
+
+		final boolean isValid = isValid();
 
 		assertEquals(true, isValid);
 	}
 
 	@Test
-	public void areExecutionConditionsMet() {
-		final boolean areConditionMet = order.areExecutionConditionsMet(todaysTrading);
+	public void executionConditionsMet() {
+
+		final boolean areConditionMet = areExecutionConditionsMet();
 
 		assertEquals(true, areConditionMet);
+	}
+
+	@Test
+	public void orderEvent() {
+
+		final OrderEvent event = order.getOrderEvent();
+
+		verifyOrderEvent(event);
+	}
+
+	private boolean isValid() {
+		return order.isValid(todaysTrading);
+	}
+
+	private boolean areExecutionConditionsMet() {
+		return order.areExecutionConditionsMet(todaysTrading);
 	}
 
 	private void executeOrder() throws InsufficientEquitiesException, InsufficientFundsException {
@@ -122,7 +143,6 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 		final OpeningPrice openingPrice = mock(OpeningPrice.class);
 		when(openingPrice.getPrice()).thenReturn(BigDecimal.valueOf(equityPrice));
 		when(todaysTrading.getOpeningPrice()).thenReturn(openingPrice);
-
 		when(todaysTrading.getDate()).thenReturn(TODAY);
 	}
 
@@ -131,5 +151,11 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 		        eq(TODAY));
 		verify(todaysTrading, atLeastOnce()).getDate();
 		verify(todaysTrading, atLeastOnce()).getOpeningPrice();
+	}
+
+	private void verifyOrderEvent( final OrderEvent event ) {
+		assertEquals(TOTAL_COST, event.getTotalCost());
+		assertEquals(TODAY, event.getTransactionDate());
+		assertEquals(EquityOrderType.ENTRY, event.getType());
 	}
 }

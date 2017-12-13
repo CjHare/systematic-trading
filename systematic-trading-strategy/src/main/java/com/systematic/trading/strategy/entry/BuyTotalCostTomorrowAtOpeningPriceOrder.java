@@ -85,34 +85,45 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 		return true;
 	}
 
-	private EquityOrderVolume getOrderVolume( final BigDecimal numberOfEquities ) {
-		return EquityOrderVolume.valueOf(numberOfEquities.setScale(scale, BigDecimal.ROUND_DOWN));
-	}
-
 	@Override
 	public void execute( final BrokerageTransactionFee fees, final BrokerageTransaction broker,
-	        final CashAccount cashAccount, final TradingDayPrices todaysTrade )
+	        final CashAccount cashAccount, final TradingDayPrices todaysPrice )
 	        throws InsufficientEquitiesException, InsufficientFundsException {
 
-		final BigDecimal maximumTransactionCost = fees.calculateFee(targetTotalCost, type, todaysTrade.getDate());
-		final BigDecimal openingPrice = todaysTrade.getOpeningPrice().getPrice();
-		final BigDecimal numberOfEquities = targetTotalCost.subtract(maximumTransactionCost, mathContext)
-		        .divide(openingPrice, mathContext);
-
-		final EquityOrderVolume volume = getOrderVolume(numberOfEquities);
-
-		final BigDecimal actualTotalCost = broker.calculateBuy(todaysTrade.getOpeningPrice(), volume,
-		        todaysTrade.getDate());
-
-		// Take the funds
-		cashAccount.debit(actualTotalCost, todaysTrade.getDate());
-
-		// Award the equities
-		broker.buy(todaysTrade.getOpeningPrice(), volume, todaysTrade.getDate());
+		final EquityOrderVolume volume = getOrderVolume(fees, todaysPrice);
+		debitEquityCost(cashAccount, todaysPrice, equityCost(broker, todaysPrice, volume));
+		addEquities(broker, todaysPrice, volume);
 	}
 
 	@Override
 	public OrderEvent getOrderEvent() {
 		return new PlaceOrderTotalCostEvent(targetTotalCost, creationDate, EquityOrderType.ENTRY);
+	}
+
+	private BigDecimal equityCost( final BrokerageTransaction broker, final TradingDayPrices todaysPrice,
+	        final EquityOrderVolume volume ) {
+		return broker.calculateBuy(todaysPrice.getOpeningPrice(), volume, todaysPrice.getDate());
+	}
+
+	private void debitEquityCost( final CashAccount cashAccount, final TradingDayPrices todaysPrice,
+	        final BigDecimal actualTotalCost ) throws InsufficientFundsException {
+		cashAccount.debit(actualTotalCost, todaysPrice.getDate());
+	}
+
+	private void addEquities( final BrokerageTransaction broker, final TradingDayPrices todaysPrice,
+	        final EquityOrderVolume volume ) {
+		broker.buy(todaysPrice.getOpeningPrice(), volume, todaysPrice.getDate());
+	}
+
+	private EquityOrderVolume getOrderVolume( final BrokerageTransactionFee fees, final TradingDayPrices todaysPrice ) {
+		final BigDecimal maximumTransactionCost = fees.calculateFee(targetTotalCost, type, todaysPrice.getDate());
+		final BigDecimal openingPrice = todaysPrice.getOpeningPrice().getPrice();
+		final BigDecimal numberOfEquities = targetTotalCost.subtract(maximumTransactionCost, mathContext)
+		        .divide(openingPrice, mathContext);
+		return getOrderVolume(numberOfEquities);
+	}
+
+	private EquityOrderVolume getOrderVolume( final BigDecimal numberOfEquities ) {
+		return EquityOrderVolume.valueOf(numberOfEquities.setScale(scale, BigDecimal.ROUND_DOWN));
 	}
 }
