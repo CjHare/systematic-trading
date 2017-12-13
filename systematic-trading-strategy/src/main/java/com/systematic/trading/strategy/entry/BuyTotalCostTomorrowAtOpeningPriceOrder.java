@@ -96,7 +96,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	}
 
 	@Override
-	public OrderEvent getOrderEvent() {
+	public OrderEvent orderEvent() {
 		return new PlaceOrderTotalCostEvent(targetTotalCost, creationDate, EquityOrderType.ENTRY);
 	}
 

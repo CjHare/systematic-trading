@@ -65,7 +65,7 @@ public class IndicatorSignalEventTest {
 		final IndicatorSignalEvent event = event();
 
 		assertNotNull(event);
-		assertEquals(type, event.getSignalType());
+		assertEquals(type, event.signalType());
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class IndicatorSignalEventTest {
 		final IndicatorSignalEvent event = event();
 
 		assertNotNull(event);
-		assertEquals(LocalDate.now(), event.getSignalDate());
+		assertEquals(LocalDate.now(), event.signalDate());
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class IndicatorSignalEventTest {
 
 	private void verifyDirectionType( final SignalType expected, final IndicatorSignalEvent event ) {
 		assertNotNull(event);
-		assertEquals(expected, event.getDirectionType());
+		assertEquals(expected, event.directionType());
 	}
 
 	private IndicatorSignalEvent event() {

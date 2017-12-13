@@ -55,7 +55,7 @@ public class TradingStrategyIndicatorEntry implements Entry {
 	}
 
 	@Override
-	public int getNumberOfTradingDaysRequired() {
-		return indicator.getNumberOfTradingDaysRequired();
+	public int numberOfTradingDaysRequired() {
+		return indicator.numberOfTradingDaysRequired();
 	}
 }

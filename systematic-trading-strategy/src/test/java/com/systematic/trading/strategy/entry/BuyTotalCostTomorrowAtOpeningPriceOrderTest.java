@@ -117,7 +117,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	@Test
 	public void orderEvent() {
 
-		final OrderEvent event = order.getOrderEvent();
+		final OrderEvent event = order.orderEvent();
 
 		verifyOrderEvent(event);
 	}

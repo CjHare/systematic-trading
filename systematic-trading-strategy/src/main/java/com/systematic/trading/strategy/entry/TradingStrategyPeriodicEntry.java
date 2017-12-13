@@ -54,7 +54,7 @@ public class TradingStrategyPeriodicEntry implements Entry {
 	}
 
 	@Override
-	public int getNumberOfTradingDaysRequired() {
+	public int numberOfTradingDaysRequired() {
 		return 1;
 	}
 }

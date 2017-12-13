@@ -162,7 +162,7 @@ public class Simulation {
 		final EquityOrder order = strategy.exitTick(broker, data);
 
 		if (order != null) {
-			notifyListeners(order.getOrderEvent());
+			notifyListeners(order.orderEvent());
 			openOrders.add(order);
 		}
 
@@ -180,7 +180,7 @@ public class Simulation {
 		final EquityOrder order = strategy.entryTick(broker, funds, data);
 
 		if (order != null) {
-			notifyListeners(order.getOrderEvent());
+			notifyListeners(order.orderEvent());
 			openOrders.add(order);
 		}
 
@@ -245,7 +245,7 @@ public class Simulation {
 			switch (action) {
 				case DELETE:
 					// Discard the order
-					notifyListeners(new EquityOrderDeletedDueToInsufficentFundsEvent(order.getOrderEvent()));
+					notifyListeners(new EquityOrderDeletedDueToInsufficentFundsEvent(order.orderEvent()));
 					return null;
 				case RESUMIT:
 				default:

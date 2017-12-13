@@ -62,10 +62,6 @@ public class TradingStrategyPeriodic implements Periodic {
 		lastOrder = LocalDate.from(firstOrder).minus(frequency);
 	}
 
-	public Period getFrequency() {
-		return frequency;
-	}
-
 	@Override
 	public List<DatedSignal> analyse( TradingDayPrices[] data ) {
 		List<DatedSignal> signals = new ArrayList<>(1);

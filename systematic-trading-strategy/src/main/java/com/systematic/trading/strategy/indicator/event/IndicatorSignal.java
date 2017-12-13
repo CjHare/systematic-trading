@@ -34,6 +34,7 @@ import com.systematic.trading.signal.IndicatorId;
  * Denotes the occurrence and details of a indicator signal event.
  */
 public class IndicatorSignal {
+	
 	private final LocalDate date;
 	private final IndicatorId signal;
 	private final SignalType direction;
@@ -44,15 +45,15 @@ public class IndicatorSignal {
 		this.direction = direction;
 	}
 
-	public LocalDate getDate() {
+	public LocalDate date() {
 		return date;
 	}
 
-	public IndicatorId getSignal() {
+	public IndicatorId signal() {
 		return signal;
 	}
 
-	public SignalType getDirection() {
+	public SignalType direction() {
 		return direction;
 	}
 }

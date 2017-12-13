@@ -42,19 +42,19 @@ public interface SignalAnalysisEvent {
 	 * 
 	 * @return the type of indicator signals generated.
 	 */
-	IndicatorId getSignalType();
+	IndicatorId signalType();
 
 	/**
 	 * Date of the signal event occurrence.
 	 * 
 	 * @return date of the signal, when there is one.
 	 */
-	LocalDate getSignalDate();
+	LocalDate signalDate();
 
 	/**
 	 * The direction of the indicator signal generated from analysis.
 	 * 
 	 * @return the direction of the signal.
 	 */
-	SignalType getDirectionType();
+	SignalType directionType();
 }

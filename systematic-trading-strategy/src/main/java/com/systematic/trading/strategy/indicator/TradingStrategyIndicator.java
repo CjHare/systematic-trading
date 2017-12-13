@@ -92,7 +92,7 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 	}
 
 	@Override
-	public int getNumberOfTradingDaysRequired() {
+	public int numberOfTradingDaysRequired() {
 		return calculator.getMinimumNumberOfPrices();
 	}
 

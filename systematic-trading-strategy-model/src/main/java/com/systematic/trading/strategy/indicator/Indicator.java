@@ -60,5 +60,5 @@ public interface Indicator {
 	 * 
 	 * @return number of data to provide for the analysis.
 	 */
-	int getNumberOfTradingDaysRequired();
+	int numberOfTradingDaysRequired();
 }

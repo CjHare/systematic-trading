@@ -61,7 +61,7 @@ public class TradingStrategyConfirmedBy implements Confirmation {
 	}
 
 	@Override
-	public int getNumberOfTradingDaysRequired() {
+	public int numberOfTradingDaysRequired() {
 		return confirmationDayRange + delayUntilConfirmationRange;
 	}
 

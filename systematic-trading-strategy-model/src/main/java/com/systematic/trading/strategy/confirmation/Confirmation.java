@@ -54,5 +54,5 @@ public interface Confirmation {
 	 * 
 	 * @return number of data to provide for the analysis.
 	 */
-	int getNumberOfTradingDaysRequired();
+	int numberOfTradingDaysRequired();
 }

@@ -74,5 +74,5 @@ public interface EquityOrder {
 	 * 
 	 * @return details of the order for statistical and recording purposes.
 	 */
-	OrderEvent getOrderEvent();
+	OrderEvent orderEvent();
 }

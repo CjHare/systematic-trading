@@ -65,26 +65,26 @@ public class LargestPossibleEntryPosition implements EntrySize {
 	 * @return when the bounds are not met, then zero is returned, indicating no entry should be made.
 	 */
 	public BigDecimal entryPositionSize( final CashAccount cashAccount ) {
-		final Optional<BigDecimal> minimumPosition = getMinimumPosition(cashAccount);
+		final Optional<BigDecimal> minimumPosition = minimumPosition(cashAccount);
 
 		if (!minimumPosition.isPresent()) {
 			return BigDecimal.ZERO;
 		}
 
-		return minimumPosition.get().max(getMaximumPosition(cashAccount));
+		return minimumPosition.get().max(maximumPosition(cashAccount));
 	}
 
 	/**
 	 * @return minimum position size, a value from the positive space of numbers.
 	 */
-	private Optional<BigDecimal> getMinimumPosition( final CashAccount cashAccount ) {
+	private Optional<BigDecimal> minimumPosition( final CashAccount cashAccount ) {
 		final BigDecimal minimumPosition = minimum.bounds(cashAccount.getBalance());
 
 		return isBalanceBelow(cashAccount, minimumPosition) ? Optional.empty()
 		        : Optional.of(BigDecimal.ZERO.max(minimumPosition));
 	}
 
-	private BigDecimal getMaximumPosition( final CashAccount cashAccount ) {
+	private BigDecimal maximumPosition( final CashAccount cashAccount ) {
 		final BigDecimal availableCapital = cashAccount.getBalance();
 		final BigDecimal maximumPosition = maximum.bounds(cashAccount.getBalance());
 

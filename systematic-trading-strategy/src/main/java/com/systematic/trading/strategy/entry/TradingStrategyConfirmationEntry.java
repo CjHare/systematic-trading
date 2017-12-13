@@ -93,8 +93,8 @@ public class TradingStrategyConfirmationEntry implements Entry {
 	}
 
 	@Override
-	public int getNumberOfTradingDaysRequired() {
-		return Math.max(anchorIndicator.getNumberOfTradingDaysRequired(),
-		        confirmationIndicator.getNumberOfTradingDaysRequired()) + confirmation.getNumberOfTradingDaysRequired();
+	public int numberOfTradingDaysRequired() {
+		return Math.max(anchorIndicator.numberOfTradingDaysRequired(),
+		        confirmationIndicator.numberOfTradingDaysRequired()) + confirmation.numberOfTradingDaysRequired();
 	}
 }
