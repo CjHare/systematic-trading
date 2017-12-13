@@ -89,6 +89,9 @@ public class EntryOrderAnalysis {
 	/** Classes' logger. */
 	private static final Logger LOG = LogManager.getLogger(EntryOrderAnalysis.class);
 
+	/** Days of signals analysis to generate and display. */
+	private static final int DAYS_OF_SIGNALS = 7;
+
 	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
 
@@ -167,8 +170,9 @@ public class EntryOrderAnalysis {
 
 		final StrategyConfiguration strategy = strategy();
 		final LocalDate today = LocalDate.now();
+
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(
-		        today.minus(strategy.getEntry().priceDataRange()), today);
+		        today.minus(strategy.getEntry().priceDataRange()).minusDays(DAYS_OF_SIGNALS), today);
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, openingFunds, DepositConfiguration.NONE,
@@ -179,6 +183,10 @@ public class EntryOrderAnalysis {
 		return new LogEntryOrderEventListner();
 	}
 
+	/**
+	 * Hard coded strategy:
+	 * 	entry: (SMA-Long OR EMA-Long) AND RSI-Short
+	 */
 	private StrategyConfiguration strategy() {
 
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
