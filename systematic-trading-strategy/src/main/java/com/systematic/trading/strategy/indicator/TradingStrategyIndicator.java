@@ -80,7 +80,7 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 	}
 
 	@Override
-	public List<DatedSignal> analyse( TradingDayPrices[] data ) {
+	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
 		final List<DatedSignal> signals = generator.generate(calculator.calculate(data), signalDateRange(data));
 		notifyListners(signals);
 		return signals;
