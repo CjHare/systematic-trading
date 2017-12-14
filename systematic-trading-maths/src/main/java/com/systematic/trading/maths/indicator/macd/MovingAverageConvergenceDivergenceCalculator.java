@@ -66,8 +66,8 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	}
 
 	@Override
-	public int getMinimumNumberOfPrices() {
-		return slowEma.getMinimumNumberOfPrices();
+	public int minimumNumberOfPrices() {
+		return slowEma.minimumNumberOfPrices();
 	}
 
 	@Override

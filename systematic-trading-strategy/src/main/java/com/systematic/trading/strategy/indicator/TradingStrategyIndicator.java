@@ -87,13 +87,13 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 	}
 
 	private Predicate<LocalDate> signalDateRange( final TradingDayPrices[] data ) {
-		return candidateDate -> dateRangeFilter.isWithinSignalRange(signalRangeFilter.getEarliestSignalDate(data),
-		        signalRangeFilter.getLatestSignalDate(data), candidateDate);
+		return candidateDate -> dateRangeFilter.isWithinSignalRange(signalRangeFilter.earliestSignalDate(data),
+		        signalRangeFilter.latestSignalDate(data), candidateDate);
 	}
 
 	@Override
 	public int numberOfTradingDaysRequired() {
-		return calculator.getMinimumNumberOfPrices();
+		return calculator.minimumNumberOfPrices();
 	}
 
 	private void notifyListners( final List<DatedSignal> signals ) {

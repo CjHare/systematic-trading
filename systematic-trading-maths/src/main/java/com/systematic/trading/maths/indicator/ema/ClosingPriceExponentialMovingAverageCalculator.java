@@ -77,7 +77,7 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 	}
 
 	@Override
-	public int getMinimumNumberOfPrices() {
+	public int minimumNumberOfPrices() {
 		return minimumNumberOfPrices;
 	}
 

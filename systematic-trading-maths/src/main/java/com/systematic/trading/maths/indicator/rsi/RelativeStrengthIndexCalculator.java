@@ -68,15 +68,15 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 	}
 
 	@Override
-	public int getMinimumNumberOfPrices() {
-		return MINIMUM_NUMBER_OF_PRICES + rs.getMinimumNumberOfPrices();
+	public int minimumNumberOfPrices() {
+		return MINIMUM_NUMBER_OF_PRICES + rs.minimumNumberOfPrices();
 	}
 
 	@Override
 	public RelativeStrengthIndexLine calculate( final TradingDayPrices[] data ) {
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
-		validator.verifyEnoughValues(data, rs.getMinimumNumberOfPrices());
+		validator.verifyEnoughValues(data, rs.minimumNumberOfPrices());
 
 		final RelativeStrengthLine rsLine = rs.calculate(data);
 		final SortedMap<LocalDate, BigDecimal> rsi = new TreeMap<>();

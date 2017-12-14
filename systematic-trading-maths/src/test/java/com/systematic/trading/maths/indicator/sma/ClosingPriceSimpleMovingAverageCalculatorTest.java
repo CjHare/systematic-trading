@@ -135,7 +135,7 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 	public void requiredNumberOfTradingDays() {
 		setUpCalculator(11, 6);
 
-		final int required = calculator.getMinimumNumberOfPrices();
+		final int required = calculator.minimumNumberOfPrices();
 
 		assertEquals(17, required);
 	}

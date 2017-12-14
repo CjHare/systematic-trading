@@ -69,7 +69,7 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 	}
 
 	@Override
-	public int getMinimumNumberOfPrices() {
+	public int minimumNumberOfPrices() {
 		return minimumNumberOfPrices;
 	}
 

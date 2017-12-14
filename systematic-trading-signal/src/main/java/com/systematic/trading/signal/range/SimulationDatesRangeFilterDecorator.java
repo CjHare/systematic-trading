@@ -57,14 +57,14 @@ public class SimulationDatesRangeFilterDecorator implements SignalRangeFilter {
 	}
 
 	@Override
-	public LocalDate getEarliestSignalDate( final TradingDayPrices[] data ) {
-		final LocalDate earliestDate = filter.getEarliestSignalDate(data);
+	public LocalDate earliestSignalDate( final TradingDayPrices[] data ) {
+		final LocalDate earliestDate = filter.earliestSignalDate(data);
 		return isAfterStartDate(earliestDate) ? earliestDate : simulationStartDate;
 	}
 
 	@Override
-	public LocalDate getLatestSignalDate( final TradingDayPrices[] data ) {
-		final LocalDate latestDate = filter.getLatestSignalDate(data);
+	public LocalDate latestSignalDate( final TradingDayPrices[] data ) {
+		final LocalDate latestDate = filter.latestSignalDate(data);
 		return isBeforeEndDate(latestDate) ? latestDate : simulationEndDate;
 	}
 

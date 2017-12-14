@@ -51,5 +51,5 @@ public interface SignalCalculator<T> {
 	 * 
 	 * @return the number of trading days data needed for the SMA.
 	 */
-	int getMinimumNumberOfPrices();
+	int minimumNumberOfPrices();
 }

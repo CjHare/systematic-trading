@@ -152,7 +152,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	public void additionalDaysOfEmaValues() {
 		setUpCalculator(10, 5);
 
-		final int requiredDays = calculator.getMinimumNumberOfPrices();
+		final int requiredDays = calculator.minimumNumberOfPrices();
 
 		assertEquals(15, requiredDays);
 	}
@@ -194,7 +194,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	public void getMinimumNumberOfPrices() {
 		setUpCalculator(4);
 
-		final int requiredDays = calculator.getMinimumNumberOfPrices();
+		final int requiredDays = calculator.minimumNumberOfPrices();
 
 		assertEquals(5, requiredDays);
 	}

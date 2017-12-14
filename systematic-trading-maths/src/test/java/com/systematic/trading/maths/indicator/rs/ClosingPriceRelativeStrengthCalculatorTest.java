@@ -181,7 +181,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	public void minimumNumberOfPrices() {
 		setUpCalculator(14, 2);
 
-		final int minimumNumberOfPrices = calculator.getMinimumNumberOfPrices();
+		final int minimumNumberOfPrices = calculator.minimumNumberOfPrices();
 
 		assertEquals(16, minimumNumberOfPrices);
 	}

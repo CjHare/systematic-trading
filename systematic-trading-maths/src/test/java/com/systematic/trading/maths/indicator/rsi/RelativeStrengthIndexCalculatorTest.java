@@ -123,7 +123,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	public void minimumNumberOfPrices() {
 		setUpCalculator();
 
-		final int minimumNumberOfPrices = calculator.getMinimumNumberOfPrices();
+		final int minimumNumberOfPrices = calculator.minimumNumberOfPrices();
 
 		assertEquals(10, minimumNumberOfPrices);
 	}
@@ -138,7 +138,7 @@ public class RelativeStrengthIndexCalculatorTest {
 			}
 		}
 
-		when(relativeStrength.getMinimumNumberOfPrices()).thenReturn(8);
+		when(relativeStrength.minimumNumberOfPrices()).thenReturn(8);
 		calculator = new RelativeStrengthIndexCalculator(relativeStrength, validator);
 	}
 

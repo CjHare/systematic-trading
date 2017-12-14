@@ -94,7 +94,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	public void minimumNumberOfPrices() {
 		setUpMinimumNumberOfPrices(16);
 
-		final int minimumNuumberOfPrices = calculator.getMinimumNumberOfPrices();
+		final int minimumNuumberOfPrices = calculator.minimumNumberOfPrices();
 
 		assertEquals(16, minimumNuumberOfPrices);
 		verifyMinimumNumberOfPricesInteractions();
@@ -177,14 +177,14 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	private void verifyMinimumNumberOfPricesInteractions() {
-		verify(slowEma).getMinimumNumberOfPrices();
+		verify(slowEma).minimumNumberOfPrices();
 		verifyNoMoreInteractions(slowEma);
 		verifyZeroInteractions(fastEma);
 		verifyZeroInteractions(signalEma);
 	}
 
 	private void setUpMinimumNumberOfPrices( final int minimium ) {
-		when(slowEma.getMinimumNumberOfPrices()).thenReturn(minimium);
+		when(slowEma.minimumNumberOfPrices()).thenReturn(minimium);
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data ) {

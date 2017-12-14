@@ -128,11 +128,11 @@ public class TradingDaySignalRangeFilterTest {
 	}
 
 	private LocalDate earliestDate( final TradingDayPrices[] data ) {
-		return filter.getEarliestSignalDate(data);
+		return filter.earliestSignalDate(data);
 	}
 
 	private LocalDate latestDate( final TradingDayPrices[] data ) {
-		return filter.getLatestSignalDate(data);
+		return filter.latestSignalDate(data);
 	}
 
 	private void verifySignalDate( final int expectedDaySinceEpoch, final LocalDate earliest ) {

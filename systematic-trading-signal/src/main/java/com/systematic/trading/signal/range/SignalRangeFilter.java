@@ -47,7 +47,7 @@ public interface SignalRangeFilter {
 	 * 				Must contain at least one entry.
 	 * @return inclusive date for when the first signal may be generated.
 	 */
-	public LocalDate getEarliestSignalDate( final TradingDayPrices[] data );
+	public LocalDate earliestSignalDate( final TradingDayPrices[] data );
 
 	/**
 	 * Calculates the latest date on which signals may be generated.
@@ -56,5 +56,5 @@ public interface SignalRangeFilter {
 	 * 				Must contain at least one entry.
 	 * @return inclusive date for when the last signal may be generated.
 	 */
-	public LocalDate getLatestSignalDate( final TradingDayPrices[] data );
+	public LocalDate latestSignalDate( final TradingDayPrices[] data );
 }

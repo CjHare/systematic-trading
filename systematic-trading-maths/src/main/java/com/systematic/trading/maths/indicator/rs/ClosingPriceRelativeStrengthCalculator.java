@@ -91,7 +91,7 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	}
 
 	@Override
-	public int getMinimumNumberOfPrices() {
+	public int minimumNumberOfPrices() {
 		return minimumNumberOfPrices;
 	}
 
