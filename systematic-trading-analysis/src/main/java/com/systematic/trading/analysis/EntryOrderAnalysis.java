@@ -90,7 +90,7 @@ public class EntryOrderAnalysis {
 	private static final Logger LOG = LogManager.getLogger(EntryOrderAnalysis.class);
 
 	/** Days of signals analysis to generate and display. */
-	private static final int DAYS_OF_SIGNALS = 7;
+	private static final int DAYS_OF_SIGNALS = 1;
 
 	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
