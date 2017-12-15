@@ -69,18 +69,18 @@ public class TradingStrategyConfirmedBy implements Confirmation {
 	 * Confirmation signal date is equal or after the earliest acceptable date.
 	 */
 	private boolean isAfterConfirmationDelay( final DatedSignal anchor, final DatedSignal confirmation ) {
-		return !confirmation.getDate().isBefore(earliestConfirmationDate(anchor));
+		return !confirmation.date().isBefore(earliestConfirmationDate(anchor));
 	}
 
 	private boolean isBeforeConfirmationRangeEnd( final DatedSignal anchor, final DatedSignal confirmation ) {
-		return !confirmation.getDate().isAfter(latestConfirmationDate(anchor));
+		return !confirmation.date().isAfter(latestConfirmationDate(anchor));
 	}
 
 	private LocalDate earliestConfirmationDate( final DatedSignal anchor ) {
-		return anchor.getDate().plusDays(delayUntilConfirmationRange);
+		return anchor.date().plusDays(delayUntilConfirmationRange);
 	}
 
 	private LocalDate latestConfirmationDate( final DatedSignal anchor ) {
-		return anchor.getDate().plusDays((long) delayUntilConfirmationRange + confirmationDayRange);
+		return anchor.date().plusDays((long) delayUntilConfirmationRange + confirmationDayRange);
 	}
 }

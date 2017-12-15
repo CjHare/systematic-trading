@@ -44,11 +44,11 @@ public class DatedSignal {
 		this.type = type;
 	}
 
-	public LocalDate getDate() {
+	public LocalDate date() {
 		return date;
 	}
 
-	public SignalType getType() {
+	public SignalType type() {
 		return type;
 	}
 

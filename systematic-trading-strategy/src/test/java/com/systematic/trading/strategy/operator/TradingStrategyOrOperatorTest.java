@@ -90,8 +90,8 @@ public class TradingStrategyOrOperatorTest {
 
 		for (int i = 0; i < expected.size(); i++) {
 
-			assertEquals(expected.get(i).getDate(), actual.get(i).getDate());
-			assertEquals(expected.get(i).getType(), actual.get(i).getType());
+			assertEquals(expected.get(i).date(), actual.get(i).date());
+			assertEquals(expected.get(i).type(), actual.get(i).type());
 		}
 	}
 }

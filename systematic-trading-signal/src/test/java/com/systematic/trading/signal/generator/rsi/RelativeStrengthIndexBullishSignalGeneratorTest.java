@@ -193,8 +193,8 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 	}
 
 	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {
-		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.getDate());
-		assertEquals(SignalType.BULLISH, signal.getType());
+		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.date());
+		assertEquals(SignalType.BULLISH, signal.type());
 	}
 
 	private void verifySignalRangeTests( final int size ) {

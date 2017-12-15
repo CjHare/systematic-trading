@@ -156,7 +156,7 @@ public class TradingStrategy implements Strategy {
 
 	private boolean hasDatedSignal( final List<DatedSignal> signals, final TradingDayPrices data ) {
 		for (final DatedSignal signal : signals) {
-			if (signal.getDate().equals(data.getDate())) {
+			if (signal.date().equals(data.getDate())) {
 				return true;
 			}
 		}

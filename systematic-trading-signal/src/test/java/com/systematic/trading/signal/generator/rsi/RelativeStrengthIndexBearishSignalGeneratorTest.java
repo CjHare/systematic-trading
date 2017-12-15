@@ -199,8 +199,8 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	}
 
 	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {
-		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.getDate());
-		assertEquals(SignalType.BEARISH, signal.getType());
+		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.date());
+		assertEquals(SignalType.BEARISH, signal.type());
 	}
 
 	private void verifySignalRangeTests( final int size ) {

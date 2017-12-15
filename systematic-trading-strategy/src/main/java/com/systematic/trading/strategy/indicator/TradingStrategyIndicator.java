@@ -101,7 +101,7 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 		// Create the event only when there are listeners
 		for (final DatedSignal signal : signals) {
 			final SignalAnalysisEvent event = new IndicatorSignalEvent(
-			        new IndicatorSignal(signal.getDate(), id, generator.getType()));
+			        new IndicatorSignal(signal.date(), id, generator.getType()));
 			signalListner.event(event);
 		}
 	}

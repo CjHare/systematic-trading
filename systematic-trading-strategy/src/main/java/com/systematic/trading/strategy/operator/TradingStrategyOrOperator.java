@@ -62,7 +62,7 @@ public class TradingStrategyOrOperator implements Operator {
 	private boolean doesNotContain( final List<DatedSignal> left, final DatedSignal contender ) {
 
 		for (final DatedSignal ds : left) {
-			if (ds.getDate().equals(contender.getDate()) && ds.getType() == contender.getType()) {
+			if (ds.date().equals(contender.date()) && ds.type() == contender.type()) {
 				return false;
 			}
 		}
