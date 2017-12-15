@@ -29,67 +29,53 @@
  */
 package com.systematic.trading.strategy.periodic;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.model.DatedSignal;
 
 /**
- * Periodic signal creation at frequency intervals.
+ * Verifying a weekly Trading Strategy Periodic performs the analysis correctly.
  * 
  * @author CJ Hare
  */
-public class TradingStrategyPeriodic implements Periodic {
+public class TradingStrategyPeriodicTest {
 
-	/** How often to create signals. */
-	private final Period frequency;
+	/** Days in the week. */
+	private static final Period WEEK = Period.ofDays(7);
 
-	/** The type of signal the periodic is generating. */
-	private final SignalType type;
+	/** Trading strategy periodic being tested. */
+	private TradingStrategyPeriodic periodic;
 
-	/** The last date purchase order was created. */
-	private LocalDate lastOrder;
-
-	public TradingStrategyPeriodic( final LocalDate firstOrder, final Period frequency, final SignalType type ) {
-		this.frequency = frequency;
-		this.type = type;
-
-		// The first order needs to be on that date, not interval after
-		this.lastOrder = LocalDate.from(firstOrder).minus(frequency);
+	@Before
+	public void setUp() {
+		periodic = new TradingStrategyPeriodic(LocalDate.now(), WEEK, SignalType.BULLISH);
 	}
 
-	@Override
-	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
-		List<DatedSignal> signals = new ArrayList<>(1);
+	@Test
+	public void analyseNoData() {
+		final TradingDayPrices[] data = new TradingDayPrices[0];
 
-		if (data.length > 0) {
-			final LocalDate tradingDate = data[data.length - 1].getDate();
+		final List<DatedSignal> signals = analyse(data);
 
-			if (isOrderTime(tradingDate)) {
-				updateLastOrder(tradingDate);
-				signals.add(new DatedSignal(tradingDate, type));
-			}
-		}
-
-		return signals;
+		verifyNoSignals(signals);
 	}
 
-	private boolean isOrderTime( final LocalDate tradingDate ) {
-		return tradingDate.isAfter(lastOrder.plus(frequency));
+	private List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+		return periodic.analyse(data);
 	}
 
-	/**
-	 * Full intervals to bring the date as close to today as possible, without going beyond.
-	 */
-	private void updateLastOrder( final LocalDate today ) {
-		while (lastOrder.isBefore(today)) {
-			lastOrder = lastOrder.plus(frequency);
-		}
-
-		lastOrder = lastOrder.minus(frequency);
+	private void verifyNoSignals( final List<DatedSignal> signals ) {
+		assertNotNull(signals);
+		assertEquals(0, signals.size());
 	}
 }
