@@ -32,10 +32,12 @@ package com.systematic.trading.strategy.indicator;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -47,6 +49,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.SignalCalculator;
 import com.systematic.trading.signal.IndicatorId;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
@@ -77,6 +80,9 @@ public class TradingStrategyIndicatorTest {
 	@Mock
 	private SignalAnalysisListener signalListner;
 
+	@Mock
+	private Object indocatorCalculation;
+
 	/** Instance being tested. */
 	private Indicator indicator;
 
@@ -84,6 +90,8 @@ public class TradingStrategyIndicatorTest {
 	public void setUp() {
 		indicator = new TradingStrategyIndicator<Object, SignalCalculator<Object>>(id, calculator, generator,
 		        signalRangeFilter, signalListner);
+
+		setUpCalculator(indocatorCalculation);
 	}
 
 	@Test
@@ -100,21 +108,62 @@ public class TradingStrategyIndicatorTest {
 	public void analyseNoSignal() {
 		final TradingDayPrices[] data = new TradingDayPrices[5];
 		final List<DatedSignal> expected = new ArrayList<>();
+		setUpGenerator(expected);
+
+		final List<DatedSignal> signals = analyse(data);
+
+		verifyAnalysis(expected, signals);
+		verifyGeneratorDelegation();
+		verifyCalculatorDelegation(data);
+		verifyZeroDateFiltering();
+		verifyNoSignalProcessed();
+	}
+
+	@Test
+	public void analyse() {
+		final TradingDayPrices[] data = new TradingDayPrices[2];
+		final List<DatedSignal> expected = new ArrayList<>();
+		expected.add(signal(LocalDate.of(2012, 12, 30), SignalType.BULLISH));
+		setUpGenerator(expected);
+
+		final List<DatedSignal> signals = analyse(data);
+
+		verifyAnalysis(expected, signals);
+		verifyGeneratorDelegation();
+		verifyCalculatorDelegation(data);
+		verifyZeroDateFiltering();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setUpGenerator( final List<DatedSignal> expected ) {
 		when(generator.generate(any(Object.class), any(Predicate.class))).thenReturn(expected);
+	}
 
-		final Object calculation = mock(Object.class);
+	private List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+		return indicator.analyse(data);
+	}
+
+	private DatedSignal signal( final LocalDate date, final SignalType type ) {
+		return new DatedSignal(date, type);
+	}
+
+	private void setUpCalculator( final Object calculation ) {
 		when(calculator.calculate(any(TradingDayPrices[].class))).thenReturn(calculation);
-
-		final List<DatedSignal> signals = indicator.analyse(data);
-
-		assertEquals(expected, signals);
-
-		verify(calculator).calculate(data);
-		verify(generator).generate(eq(calculation), any(Predicate.class));
 	}
 
 	private void setUpRequiredPriceTicks( final int ticks ) {
 		when(calculator.minimumNumberOfPrices()).thenReturn(ticks);
+	}
+
+	/**
+	 * Date filtering is delegated to the generator, which is mock.
+	 */
+	private void verifyZeroDateFiltering() {
+		verifyZeroInteractions(signalRangeFilter);
+	}
+
+	private void verifyNoSignalProcessed() {
+		verifyZeroInteractions(signalListner);
 	}
 
 	private void verifyPriceTicks( final int expected, final int actual ) {
@@ -123,5 +172,20 @@ public class TradingStrategyIndicatorTest {
 
 	private void verifyPriceTickDelegation() {
 		verify(calculator).minimumNumberOfPrices();
+		verifyNoMoreInteractions(calculator);
+	}
+
+	private void verifyCalculatorDelegation( final TradingDayPrices[] data ) {
+		verify(calculator).calculate(data);
+		verifyNoMoreInteractions(calculator);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void verifyGeneratorDelegation() {
+		verify(generator).generate(eq(indocatorCalculation), any(Predicate.class));
+	}
+
+	private void verifyAnalysis( final List<DatedSignal> expected, final List<DatedSignal> actual ) {
+		assertEquals(expected, actual);
 	}
 }
