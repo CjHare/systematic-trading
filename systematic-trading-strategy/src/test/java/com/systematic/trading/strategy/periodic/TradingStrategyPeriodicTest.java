@@ -32,6 +32,7 @@ package com.systematic.trading.strategy.periodic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -40,6 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.signal.model.DatedSignal;
 
@@ -53,12 +55,15 @@ public class TradingStrategyPeriodicTest {
 	/** Days in the week. */
 	private static final Period WEEK = Period.ofDays(7);
 
+	/** Today's date, the first order date of the periodic. */
+	private static final LocalDate TODAY = LocalDate.now();
+
 	/** Trading strategy periodic being tested. */
 	private TradingStrategyPeriodic periodic;
 
 	@Before
 	public void setUp() {
-		periodic = new TradingStrategyPeriodic(LocalDate.now(), WEEK, SignalType.BULLISH);
+		periodic = new TradingStrategyPeriodic(TODAY, WEEK, SignalType.BULLISH);
 	}
 
 	@Test
@@ -67,15 +72,76 @@ public class TradingStrategyPeriodicTest {
 
 		final List<DatedSignal> signals = analyse(data);
 
-		verifyNoSignals(signals);
+		verifySignals(signals);
+	}
+
+	@Test
+	public void analyseNoSignal() {
+		final TradingDayPrices[] data = new TradingDayPrices[1];
+		data[0] = price(TODAY);
+
+		final List<DatedSignal> signals = analyse(data);
+
+		verifySignals(signals);
+	}
+
+	@Test
+	public void analyseNoSignlDayBefore() {
+		final TradingDayPrices[] data = new TradingDayPrices[2];
+		data[0] = price(TODAY.minusDays(1));
+		data[1] = price(TODAY);
+
+		final List<DatedSignal> signals = analyse(data);
+
+		verifySignals(signals);
+	}
+
+	@Test
+	public void analyse() {
+		final TradingDayPrices[] data = new TradingDayPrices[2];
+		data[0] = price(TODAY);
+		data[1] = price(TODAY.plus(WEEK));
+
+		final List<DatedSignal> signals = analyse(data);
+
+		verifySignals(signals, TODAY.plus(WEEK));
+	}
+
+	@Test
+	public void analyseWithDayAfter() {
+		final TradingDayPrices[] data = new TradingDayPrices[3];
+		data[0] = price(TODAY);
+		data[1] = price(TODAY.plus(WEEK));
+		data[2] = price(TODAY.plus(WEEK).plusDays(1));
+
+		final List<DatedSignal> signals = analyse(data);
+
+		verifySignals(signals, TODAY.plus(WEEK));
+	}
+
+	@Test
+	public void analyseWithDayBefore() {
+		final TradingDayPrices[] data = new TradingDayPrices[3];
+		data[0] = price(TODAY);
+		data[1] = price(TODAY.plus(WEEK).minusDays(1));
+		data[2] = price(TODAY.plus(WEEK));
+
+		final List<DatedSignal> signals = analyse(data);
+
+		verifySignals(signals, TODAY.plus(WEEK));
+	}
+
+	private TradingDayPrices price( final LocalDate date ) {
+		return new TradingDayPricesImpl("tickerSymbol", date, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+		        BigDecimal.ZERO);
 	}
 
 	private List<DatedSignal> analyse( final TradingDayPrices[] data ) {
 		return periodic.analyse(data);
 	}
 
-	private void verifyNoSignals( final List<DatedSignal> signals ) {
+	private void verifySignals( final List<DatedSignal> signals, final LocalDate... signalDates ) {
 		assertNotNull(signals);
-		assertEquals(0, signals.size());
+		assertEquals(signalDates.length, signals.size());
 	}
 }
