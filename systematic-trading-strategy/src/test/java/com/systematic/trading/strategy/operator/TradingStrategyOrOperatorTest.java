@@ -57,9 +57,40 @@ public class TradingStrategyOrOperatorTest {
 	}
 
 	@Test
+	public void conjoin() {
+		final List<DatedSignal> left = signals(LocalDate.of(2011, 4, 18));
+		final List<DatedSignal> right = signals(LocalDate.of(2011, 5, 21), LocalDate.of(2011, 6, 26));
+
+		final List<DatedSignal> signals = conjoin(left, right);
+
+		verifySignals(signals(LocalDate.of(2011, 4, 18), LocalDate.of(2011, 5, 21), LocalDate.of(2011, 6, 26)),
+		        signals);
+	}
+
+	@Test
 	public void conjoinLeftOnly() {
 		final List<DatedSignal> left = signals(LocalDate.of(2011, 5, 21));
 		final List<DatedSignal> right = signals();
+
+		final List<DatedSignal> signals = conjoin(left, right);
+
+		verifySignals(signals(LocalDate.of(2011, 5, 21)), signals);
+	}
+
+	@Test
+	public void conjoinRightOnly() {
+		final List<DatedSignal> left = signals();
+		final List<DatedSignal> right = signals(LocalDate.of(2011, 5, 21));
+
+		final List<DatedSignal> signals = conjoin(left, right);
+
+		verifySignals(signals(LocalDate.of(2011, 5, 21)), signals);
+	}
+
+	@Test
+	public void conjoinBoth() {
+		final List<DatedSignal> left = signals(LocalDate.of(2011, 5, 21));
+		final List<DatedSignal> right = signals(LocalDate.of(2011, 5, 21));
 
 		final List<DatedSignal> signals = conjoin(left, right);
 
