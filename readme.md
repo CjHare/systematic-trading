@@ -12,10 +12,10 @@ Systematic trading refers to a way of defining goals, risk controls and rules to
 Systematic trading can cover the manual, full or partial automation of trade execution. Although systems using technical analysis are more common, there are also some that use fundamental data. Also included are high frequency trading systems and slower types of investment such as systematic trend following and passive index tracking.
 
 ## What?
-A tool to assist in understanding, evaluating and comparison of technical analysis based trading strategies.
+A tool to assist in understanding, evaluating and comparing technical analysis based trading strategies.
 
-Providing an extensible framework that retrieves historical time series price data, feeding it through a 
-realistic trading simulation to generate events fed to a chosen output for later analysis. Back-testing includes configurable options, such as opening funds, periodic depositing, position sizing, entry and exit strategies using combined signals.
+Providing an extensible framework that retrieves historical time series price data, then feeds it through a 
+simulation engine to generate events, which are directed to a chosen output for later analysis. Back-testing includes configurable options, such as opening funds, periodic depositing, position sizing, entry and exit strategies using combined signals.
 
 
 ## Why?
