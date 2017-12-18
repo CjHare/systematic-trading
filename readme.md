@@ -8,7 +8,8 @@ https://sonarcloud.io/api/badges/measure?key=com.systematic.trading:systematic-t
 
 # Systematic Trading
 Systematic trading refers to a way of defining goals, rules and risk controls to methodically make trading decisions.
-The term systematic trading covers manual, full or partial automation execution of trades. Although technical systematic systems are more common, there are also systems using fundamental data. Systematic trading includes both high frequency trading and slower types of investment such as systematic trend following and passive index tracking.
+
+Systematic trading covers manual, full or partial automation execution of trades. Although technical systematic systems are more common, there are also systems using fundamental data. Systematic trading includes both high frequency trading and slower types of investment such as systematic trend following and passive index tracking.
 
 ## What?
 An application for the analysis and comparison of trading strategies over an equity's historical time period.
