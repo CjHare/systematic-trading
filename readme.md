@@ -24,7 +24,7 @@ Broadly speaking there are three main aspects to trading:
 - Position sizing: money management
 - Psychology: discipline to keep to the strategy
 
-My objective is to determining an appropriate system consisting of strategy and position sizing, with sufficient back-testing to then also have the confidence to follow the system, however events may unfold.
+My goal is to determine a trading system consisting of strategy and position sizing, with sufficient back-testing to also have acquired the confidence to follow the system, however events may unfold in the future.
 
 
 ### How to run
