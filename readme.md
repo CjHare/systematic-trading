@@ -20,9 +20,9 @@ simulation engine to generate events, which are directed to a chosen output for 
 
 ## Why?
 Broadly speaking there are three main aspects to trading:
-* Strategy (deciding entry & exit)
-* Position sizing (money management)
-* Psychology (discipline to keep to the strategy)
+- Strategy (deciding entry & exit)
+- Position sizing (money management)
+- Psychology (discipline to keep to the strategy)
 
 My objective is to determining an appropriate system consisting of strategy and position sizing, with sufficient back-testing to then also have the confidence to follow the system, however events may unfold.
 
