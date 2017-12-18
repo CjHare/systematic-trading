@@ -29,9 +29,9 @@ My goal is to determine a trading system consisting of strategy and position siz
 
 ### How to run
 
-1. delete any existing database with delete-database.bat
-2. start server with start-database-server.bat
-3. Run all configurations over the last 10 years on NYSE:BRK_A run backtest-all-configurations.bat
+1. delete any existing local database with scripts/delete-database.bat
+2. start server with scripts/start-database-server.bat
+3. Run all configurations over the last 10 years on NYSE:BRK_A run to file output scripts/backtest/brk_quandl-datatable_file.bat
 
 * NOTE: when running from within an IDE the configuration directories need to be added to the classpath
 * Building from Maven, build systematic-trading\systematic-trading-parent pom prior to the project pom
