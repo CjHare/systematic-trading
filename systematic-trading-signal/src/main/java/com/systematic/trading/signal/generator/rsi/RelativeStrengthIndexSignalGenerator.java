@@ -57,7 +57,7 @@ public abstract class RelativeStrengthIndexSignalGenerator implements SignalGene
 
 			if (yesterday != null && signalRange.test(today.getKey())
 			        && hasMomentumDirectionChanged(yesterday.getValue(), today.getValue())) {
-				signals.add(new DatedSignal(today.getKey(), getType()));
+				signals.add(new DatedSignal(today.getKey(), type()));
 			}
 
 			yesterday = today;

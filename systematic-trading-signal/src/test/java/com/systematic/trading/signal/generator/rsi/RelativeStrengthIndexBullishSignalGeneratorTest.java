@@ -83,7 +83,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 
 	@Test
 	public void getType() {
-		assertEquals(SignalType.BULLISH, bullishRsi.getType());
+		assertEquals(SignalType.BULLISH, bullishRsi.type());
 	}
 
 	@Test

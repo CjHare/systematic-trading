@@ -52,7 +52,7 @@ import com.systematic.trading.signal.model.DatedSignal;
 public class SimpleMovingAverageBullishGradientSignalGenerator implements SignalGenerator<SimpleMovingAverageLine> {
 
 	@Override
-	public SignalType getType() {
+	public SignalType type() {
 		return SignalType.BULLISH;
 	}
 
@@ -68,7 +68,7 @@ public class SimpleMovingAverageBullishGradientSignalGenerator implements Signal
 			final LocalDate today = entry.getKey();
 
 			if (previousEntry != null && signalRange.test(today) && isPositiveGradient(entry, previousEntry)) {
-				signals.add(new DatedSignal(today, getType()));
+				signals.add(new DatedSignal(today, type()));
 			}
 
 			previousEntry = entry;

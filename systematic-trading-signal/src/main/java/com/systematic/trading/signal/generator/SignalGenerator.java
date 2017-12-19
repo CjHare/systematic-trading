@@ -57,5 +57,5 @@ public interface SignalGenerator<T> {
 	 * 
 	 * @return type of signal created by the calculator.
 	 */
-	SignalType getType();
+	SignalType type();
 }

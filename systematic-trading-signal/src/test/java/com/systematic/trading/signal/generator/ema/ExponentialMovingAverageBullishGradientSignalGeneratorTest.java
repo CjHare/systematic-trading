@@ -89,7 +89,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 
 	@Test
 	public void getTYpe() {
-		assertEquals(SignalType.BULLISH, signalGenerators.getType());
+		assertEquals(SignalType.BULLISH, signalGenerators.type());
 	}
 
 	@Test

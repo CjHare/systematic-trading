@@ -94,7 +94,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 
 	@Test
 	public void getType() {
-		assertEquals(SignalType.BULLISH, signalGenerator.getType());
+		assertEquals(SignalType.BULLISH, signalGenerator.type());
 	}
 
 	@Test

@@ -51,7 +51,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
         implements SignalGenerator<MovingAverageConvergenceDivergenceLines> {
 
 	@Override
-	public SignalType getType() {
+	public SignalType type() {
 		return SignalType.BULLISH;
 	}
 
@@ -72,7 +72,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 			if (yesterday != null && signalRange.test(today) && isBullishSignal(macd.get(today), macd.get(yesterday),
 			        signaLine.get(today), signaLine.get(yesterday))) {
 
-				signals.add(new DatedSignal(today, getType()));
+				signals.add(new DatedSignal(today, type()));
 			}
 
 			yesterday = today;

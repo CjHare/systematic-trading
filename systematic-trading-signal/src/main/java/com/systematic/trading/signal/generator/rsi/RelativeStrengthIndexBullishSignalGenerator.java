@@ -52,7 +52,7 @@ public class RelativeStrengthIndexBullishSignalGenerator extends RelativeStrengt
 	}
 
 	@Override
-	public SignalType getType() {
+	public SignalType type() {
 		return SignalType.BULLISH;
 	}
 
