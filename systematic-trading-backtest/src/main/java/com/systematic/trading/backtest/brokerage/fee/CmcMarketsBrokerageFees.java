@@ -57,7 +57,7 @@ public class CmcMarketsBrokerageFees implements BrokerageTransactionFeeStructure
 		switch (type) {
 			case BOND:
 			case STOCK:
-				brokerage = calculateStockFee(tradeValue, tradesThisMonth);
+				brokerage = stock(tradeValue, tradesThisMonth);
 			break;
 			default:
 				throw new UnsupportedEquityClass(type);
@@ -66,7 +66,7 @@ public class CmcMarketsBrokerageFees implements BrokerageTransactionFeeStructure
 		return brokerage;
 	}
 
-	private BigDecimal calculateStockFee( final BigDecimal tradeValue, final int tradesThisMonth ) {
+	private BigDecimal stock( final BigDecimal tradeValue, final int tradesThisMonth ) {
 		final BigDecimal brokerage;
 
 		// Your first 10 trades per month = $11 or 0.1%
