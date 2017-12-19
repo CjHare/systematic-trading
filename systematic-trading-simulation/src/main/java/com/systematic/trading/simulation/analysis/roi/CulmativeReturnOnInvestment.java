@@ -64,7 +64,7 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 	public void update( final Brokerage broker, final CashAccount cashAccount, final TradingDayPrices tradingData ) {
 
 		final BigDecimal percentageChange = calculatePercentageChangeInNetWorth(broker, cashAccount, tradingData);
-		final ReturnOnInvestmentEvent event = createEvent(percentageChange, tradingData.getDate());
+		final ReturnOnInvestmentEvent event = createEvent(percentageChange, tradingData.date());
 
 		notifyListeners(event);
 	}
@@ -102,7 +102,7 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 	        final TradingDayPrices tradingData ) {
 
 		final Networth netWorth = new Networth();
-		netWorth.addEquity(broker.getEquityBalance(), tradingData.getClosingPrice().getPrice());
+		netWorth.addEquity(broker.getEquityBalance(), tradingData.closingPrice().getPrice());
 		netWorth.add(cashAccount.getBalance());
 
 		final BigDecimal percentageChange;

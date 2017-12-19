@@ -62,7 +62,7 @@ public class BacktestTickerSymbolTradingData implements TickerSymbolTradingData 
 		final Map<LocalDate, TradingDayPrices> modifiableTradingData = new HashMap<>();
 
 		for (final TradingDayPrices tradingDay : data) {
-			modifiableTradingData.put(tradingDay.getDate(), tradingDay);
+			modifiableTradingData.put(tradingDay.date(), tradingDay);
 		}
 
 		if (modifiableTradingData.isEmpty()) {
@@ -104,11 +104,11 @@ public class BacktestTickerSymbolTradingData implements TickerSymbolTradingData 
 	}
 
 	private LocalDate getEarliestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
-		LocalDate earliest = tradingData.values().iterator().next().getDate();
+		LocalDate earliest = tradingData.values().iterator().next().date();
 
 		for (final TradingDayPrices contender : tradingData.values()) {
-			if (contender.getDate().isBefore(earliest)) {
-				earliest = contender.getDate();
+			if (contender.date().isBefore(earliest)) {
+				earliest = contender.date();
 			}
 		}
 
@@ -116,11 +116,11 @@ public class BacktestTickerSymbolTradingData implements TickerSymbolTradingData 
 	}
 
 	private LocalDate getLatestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
-		LocalDate latest = tradingData.values().iterator().next().getDate();
+		LocalDate latest = tradingData.values().iterator().next().date();
 
 		for (final TradingDayPrices contender : tradingData.values()) {
-			if (contender.getDate().isAfter(latest)) {
-				latest = contender.getDate();
+			if (contender.date().isAfter(latest)) {
+				latest = contender.date();
 			}
 		}
 

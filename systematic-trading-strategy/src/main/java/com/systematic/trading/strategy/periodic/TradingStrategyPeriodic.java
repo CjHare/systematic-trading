@@ -67,7 +67,7 @@ public class TradingStrategyPeriodic implements Periodic {
 		List<DatedSignal> signals = new ArrayList<>(1);
 
 		if (hasPrices(data)) {
-			final LocalDate tradingDate = data[data.length - 1].getDate();
+			final LocalDate tradingDate = data[data.length - 1].date();
 
 			if (isOrderTime(tradingDate)) {
 				updateLastOrder(tradingDate);

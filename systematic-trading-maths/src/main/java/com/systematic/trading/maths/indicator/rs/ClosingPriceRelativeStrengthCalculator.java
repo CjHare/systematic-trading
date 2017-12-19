@@ -112,11 +112,11 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 		// Calculate the starting values via SMA
 		final AverageGainToLoss initialLookback = new AverageGainToLoss(history, MATH_CONTEXT);
 
-		ClosingPrice closeYesterday = data[0].getClosingPrice();
+		ClosingPrice closeYesterday = data[0].closingPrice();
 		ClosingPrice closeToday;
 
 		for (int i = 1; i < lookback; i++) {
-			closeToday = data[i].getClosingPrice();
+			closeToday = data[i].closingPrice();
 
 			switch (closeToday.compareTo(closeYesterday)) {
 
@@ -158,8 +158,8 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 
 		for (int i = lookback; i < data.length; i++) {
 
-			closeToday = data[i].getClosingPrice();
-			closeYesterday = data[i - 1].getClosingPrice();
+			closeToday = data[i].closingPrice();
+			closeYesterday = data[i - 1].closingPrice();
 
 			switch (closeToday.compareTo(closeYesterday)) {
 
@@ -194,7 +194,7 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 				relativeStrength = averageGain.divide(averageLoss, MATH_CONTEXT);
 			}
 
-			rsLine.put(data[i].getDate(), relativeStrength);
+			rsLine.put(data[i].date(), relativeStrength);
 		}
 
 		return new RelativeStrengthLine(rsLine);

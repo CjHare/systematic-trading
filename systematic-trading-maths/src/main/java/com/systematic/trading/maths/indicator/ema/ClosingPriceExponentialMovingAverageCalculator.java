@@ -100,21 +100,21 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 		BigDecimal smaSum = BigDecimal.ZERO;
 
 		for (int i = startSmaIndex; i < endSmaIndex; i++) {
-			smaSum = smaSum.add(data[i].getClosingPrice().getPrice(), MATH_CONTEXT);
+			smaSum = smaSum.add(data[i].closingPrice().getPrice(), MATH_CONTEXT);
 		}
 
 		smaSum = getSma(smaSum);
 
 		// First value is the moving average for yesterday
-		ema.put(data[endSmaIndex - 1].getDate(), smaSum);
+		ema.put(data[endSmaIndex - 1].date(), smaSum);
 
 		final int startEmaIndex = endSmaIndex;
 		BigDecimal emaValue = smaSum;
 
 		// One SMA value and the <= in loop
 		for (int i = startEmaIndex; i <= endEmaIndex; i++) {
-			emaValue = getEma(emaValue, data[i].getClosingPrice().getPrice());
-			ema.put(data[i].getDate(), emaValue);
+			emaValue = getEma(emaValue, data[i].closingPrice().getPrice());
+			ema.put(data[i].date(), emaValue);
 		}
 
 		return new ExponentialMovingAverageLine(ema);

@@ -114,9 +114,9 @@ public class TradingStrategy implements Strategy {
 
 				//TODO do some better encapsulation / refactor
 				final BigDecimal amount = entryPositionSizing.entryPositionSize(cashAccount);
-				final LocalDate tradingDate = data.getDate();
+				final LocalDate tradingDate = data.date();
 				final BigDecimal maximumTransactionCost = fees.calculateFee(amount, type, tradingDate);
-				final BigDecimal closingPrice = data.getClosingPrice().getPrice();
+				final BigDecimal closingPrice = data.closingPrice().getPrice();
 				final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, MATH_CONTEXT)
 				        .divide(closingPrice, MATH_CONTEXT).setScale(scale, BigDecimal.ROUND_DOWN);
 
@@ -156,7 +156,7 @@ public class TradingStrategy implements Strategy {
 
 	private boolean hasDatedSignal( final List<DatedSignal> signals, final TradingDayPrices data ) {
 		for (final DatedSignal signal : signals) {
-			if (signal.date().equals(data.getDate())) {
+			if (signal.date().equals(data.date())) {
 				return true;
 			}
 		}

@@ -98,7 +98,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 
 		// For the first value just use the TR
 		final BigDecimal firstTrueRange = calculateFirstAtr(data);
-		averageTrueRanges.put(data[lookback - 1].getDate(), firstTrueRange);
+		averageTrueRanges.put(data[lookback - 1].date(), firstTrueRange);
 
 		// Starting ATR is just the first value
 		BigDecimal priorAtr = firstTrueRange;
@@ -106,7 +106,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 
 		for (int i = lookback; i < data.length; i++) {
 			atr = average(trueRange(data[i], data[i - 1]), priorAtr);
-			averageTrueRanges.put(data[i].getDate(), atr);
+			averageTrueRanges.put(data[i].date(), atr);
 			priorAtr = atr;
 		}
 
@@ -130,21 +130,21 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 	 * Difference between the high and low prices.
 	 */
 	private BigDecimal trueRangeMethodOne( final TradingDayPrices today ) {
-		return today.getHighestPrice().subtract(today.getLowestPrice(), MATH_CONTEXT).abs();
+		return today.highestPrice().subtract(today.lowestPrice(), MATH_CONTEXT).abs();
 	}
 
 	/**
 	 * Difference between the today's high price and yesterday's close price.
 	 */
 	private BigDecimal trueRangeMethodTwo( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		return today.getHighestPrice().subtract(yesterday.getClosingPrice(), MATH_CONTEXT).abs();
+		return today.highestPrice().subtract(yesterday.closingPrice(), MATH_CONTEXT).abs();
 	}
 
 	/**
 	 * Difference between today's low price and yesterdays close price.
 	 */
 	private BigDecimal trueRangeMethodThree( final TradingDayPrices today, final TradingDayPrices yesterday ) {
-		return today.getLowestPrice().subtract(yesterday.getClosingPrice(), MATH_CONTEXT).abs();
+		return today.lowestPrice().subtract(yesterday.closingPrice(), MATH_CONTEXT).abs();
 	}
 
 	/**

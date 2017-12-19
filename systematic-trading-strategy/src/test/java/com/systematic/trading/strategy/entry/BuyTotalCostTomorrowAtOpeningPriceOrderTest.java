@@ -142,15 +142,15 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	private void setUpTradingPrices( final double equityPrice ) {
 		final OpeningPrice openingPrice = mock(OpeningPrice.class);
 		when(openingPrice.getPrice()).thenReturn(BigDecimal.valueOf(equityPrice));
-		when(todaysTrading.getOpeningPrice()).thenReturn(openingPrice);
-		when(todaysTrading.getDate()).thenReturn(TODAY);
+		when(todaysTrading.openingPrice()).thenReturn(openingPrice);
+		when(todaysTrading.date()).thenReturn(TODAY);
 	}
 
 	private void verifyBuyOrderPlaced( final double equityPrice, final double volume ) {
 		verify(broker).buy(PriceMatcher.argumentMatches(equityPrice), EquityOrderVolumeMatcher.argumentMatches(volume),
 		        eq(TODAY));
-		verify(todaysTrading, atLeastOnce()).getDate();
-		verify(todaysTrading, atLeastOnce()).getOpeningPrice();
+		verify(todaysTrading, atLeastOnce()).date();
+		verify(todaysTrading, atLeastOnce()).openingPrice();
 	}
 
 	private void verifyOrderEvent( final OrderEvent event ) {

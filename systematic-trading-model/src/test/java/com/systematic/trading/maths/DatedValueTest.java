@@ -33,7 +33,7 @@ public class DatedValueTest {
 
 	@Test
 	public void getDate() {
-		assertEquals(DATE, datedValue.getDate());
+		assertEquals(DATE, datedValue.date());
 	}
 
 	@Test
@@ -43,26 +43,26 @@ public class DatedValueTest {
 
 	@Test
 	public void getClosingPrice() {
-		assertEquals(VALUE, datedValue.getClosingPrice().getPrice());
+		assertEquals(VALUE, datedValue.closingPrice().getPrice());
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void getLowestPrice() {
-		datedValue.getLowestPrice();
+		datedValue.lowestPrice();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void getHighestPrice() {
-		datedValue.getHighestPrice();
+		datedValue.highestPrice();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void getOpeningPrice() {
-		datedValue.getOpeningPrice();
+		datedValue.openingPrice();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void getTickerSymbol() {
-		datedValue.getTickerSymbol();
+		datedValue.tickerSymbol();
 	}
 }

@@ -220,11 +220,11 @@ public class TradingStrategyTest {
 	}
 
 	private void setUpTradingDayPrices() {
-		when(data.getDate()).thenReturn(LocalDate.now());
+		when(data.date()).thenReturn(LocalDate.now());
 
 		final ClosingPrice closing = mock(ClosingPrice.class);
 		when(closing.getPrice()).thenReturn(BigDecimal.ONE);
-		when(data.getClosingPrice()).thenReturn(closing);
+		when(data.closingPrice()).thenReturn(closing);
 	}
 
 	private void setUpFees( final double value ) {

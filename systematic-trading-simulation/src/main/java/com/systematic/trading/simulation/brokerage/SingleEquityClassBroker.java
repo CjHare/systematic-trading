@@ -183,7 +183,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	@Override
 	public void update( final TradingDayPrices tradingData ) {
 
-		final LocalDate tradingDate = tradingData.getDate();
+		final LocalDate tradingDate = tradingData.date();
 
 		final BigDecimal feeInEquities = equityManagementFee.update(equityBalance, lastManagementFee, tradingData);
 
@@ -191,7 +191,7 @@ public class SingleEquityClassBroker implements Brokerage {
 		if (BigDecimal.ZERO.compareTo(feeInEquities) != 0) {
 
 			final BigDecimal startingEquityBalance = equityBalance;
-			final BigDecimal transactionValue = tradingData.getClosingPrice().getPrice().multiply(feeInEquities,
+			final BigDecimal transactionValue = tradingData.closingPrice().getPrice().multiply(feeInEquities,
 			        MATH_CONTEXT);
 
 			// Erode the original equity balance with the management fee

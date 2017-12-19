@@ -57,7 +57,7 @@ public class TradingDayPricesDateMatcher extends ArgumentMatcher<TradingDayPrice
 
 	@Override
 	public boolean matches( final Object argument ) {
-		return argument instanceof TradingDayPrices && expectedDate.isEqual(((TradingDayPrices) argument).getDate());
+		return argument instanceof TradingDayPrices && expectedDate.isEqual(((TradingDayPrices) argument).date());
 	}
 
 	@Override

@@ -102,22 +102,22 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	private BigDecimal equityCost( final BrokerageTransaction broker, final TradingDayPrices todaysPrice,
 	        final EquityOrderVolume volume ) {
-		return broker.calculateBuy(todaysPrice.getOpeningPrice(), volume, todaysPrice.getDate());
+		return broker.calculateBuy(todaysPrice.openingPrice(), volume, todaysPrice.date());
 	}
 
 	private void debitEquityCost( final CashAccount cashAccount, final TradingDayPrices todaysPrice,
 	        final BigDecimal actualTotalCost ) throws InsufficientFundsException {
-		cashAccount.debit(actualTotalCost, todaysPrice.getDate());
+		cashAccount.debit(actualTotalCost, todaysPrice.date());
 	}
 
 	private void addEquities( final BrokerageTransaction broker, final TradingDayPrices todaysPrice,
 	        final EquityOrderVolume volume ) {
-		broker.buy(todaysPrice.getOpeningPrice(), volume, todaysPrice.getDate());
+		broker.buy(todaysPrice.openingPrice(), volume, todaysPrice.date());
 	}
 
 	private EquityOrderVolume getOrderVolume( final BrokerageTransactionFee fees, final TradingDayPrices todaysPrice ) {
-		final BigDecimal maximumTransactionCost = fees.calculateFee(targetTotalCost, type, todaysPrice.getDate());
-		final BigDecimal openingPrice = todaysPrice.getOpeningPrice().getPrice();
+		final BigDecimal maximumTransactionCost = fees.calculateFee(targetTotalCost, type, todaysPrice.date());
+		final BigDecimal openingPrice = todaysPrice.openingPrice().getPrice();
 		final BigDecimal numberOfEquities = targetTotalCost.subtract(maximumTransactionCost, mathContext)
 		        .divide(openingPrice, mathContext);
 		return getOrderVolume(numberOfEquities);

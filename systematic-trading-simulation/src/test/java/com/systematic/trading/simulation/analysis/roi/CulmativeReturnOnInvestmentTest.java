@@ -226,7 +226,7 @@ public class CulmativeReturnOnInvestmentTest {
 	}
 
 	private void setUpTradingDataClosingPrice( final double... closingPrices ) {
-		OngoingStubbing<ClosingPrice> getClosingPrice = when(tradingData.getClosingPrice());
+		OngoingStubbing<ClosingPrice> getClosingPrice = when(tradingData.closingPrice());
 
 		for (final double closingPrice : closingPrices) {
 			getClosingPrice = getClosingPrice.thenReturn(ClosingPrice.valueOf(BigDecimal.valueOf(closingPrice)));
@@ -245,7 +245,7 @@ public class CulmativeReturnOnInvestmentTest {
 	 * Trading data entries are sorted with oldest first.
 	 */
 	private void setUpTradingDataDate( final int days ) {
-		OngoingStubbing<LocalDate> getData = when(tradingData.getDate());
+		OngoingStubbing<LocalDate> getData = when(tradingData.date());
 
 		for (int i = days - 1; i >= 0; i--) {
 			getData = getData.thenReturn(TODAY.minus(Period.ofDays(i)));

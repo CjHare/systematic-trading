@@ -83,7 +83,7 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 
 		// Start at the end and work towards the origin
 		for (int i = lookback - 1; i < data.length; i++) {
-			sma.put(data[i].getDate(), simpleAverage(i, data));
+			sma.put(data[i].date(), simpleAverage(i, data));
 		}
 
 		return new SimpleMovingAverageLine(sma);
@@ -94,10 +94,10 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 	 */
 	private BigDecimal simpleAverage( final int endIndex, final TradingDayPrices[] data ) {
 		final int startIndex = endIndex - lookback + 1;
-		BigDecimal average = data[endIndex].getClosingPrice().getPrice();
+		BigDecimal average = data[endIndex].closingPrice().getPrice();
 
 		for (int i = startIndex; i < endIndex; i++) {
-			average = average.add(data[i].getClosingPrice().getPrice());
+			average = average.add(data[i].closingPrice().getPrice());
 		}
 
 		return average.divide(BigDecimal.valueOf(lookback), MATH_CONTEXT);

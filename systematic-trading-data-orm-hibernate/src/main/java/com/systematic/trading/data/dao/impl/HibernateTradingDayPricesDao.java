@@ -169,20 +169,20 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 	private void create( final TradingDayPrices data, final Session session ) {
 		final String sql = String.format(
 		        "INSERT INTO history_%s (date, opening_price, lowest_price, highest_price, closing_price) VALUES (:date, :opening_price, :lowest_price, :highest_price, :closing_price)",
-		        sanitise(data.getTickerSymbol()));
+		        sanitise(data.tickerSymbol()));
 
 		final Query query = session.createSQLQuery(sql);
-		query.setDate("date", Date.valueOf(data.getDate()));
-		query.setBigDecimal("opening_price", data.getOpeningPrice().getPrice());
-		query.setBigDecimal("lowest_price", data.getLowestPrice().getPrice());
-		query.setBigDecimal("highest_price", data.getHighestPrice().getPrice());
-		query.setBigDecimal("closing_price", data.getClosingPrice().getPrice());
+		query.setDate("date", Date.valueOf(data.date()));
+		query.setBigDecimal("opening_price", data.openingPrice().getPrice());
+		query.setBigDecimal("lowest_price", data.lowestPrice().getPrice());
+		query.setBigDecimal("highest_price", data.highestPrice().getPrice());
+		query.setBigDecimal("closing_price", data.closingPrice().getPrice());
 
 		try {
 			query.executeUpdate();
 		} catch (final HibernateException e) {
 			throw new HibernateException(
-			        String.format("Failed inserting %s on %s", data.getTickerSymbol(), data.getDate()), e);
+			        String.format("Failed inserting %s on %s", data.tickerSymbol(), data.date()), e);
 		}
 	}
 

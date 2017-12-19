@@ -44,40 +44,40 @@ public interface TradingDayPrices {
 	 * 
 	 * @return date of the trading data.
 	 */
-	LocalDate getDate();
+	LocalDate date();
 
 	/**
 	 * Price at the market close.
 	 * 
 	 * @return price of the equity at the close of trading.
 	 */
-	ClosingPrice getClosingPrice();
+	ClosingPrice closingPrice();
 
 	/**
 	 * Lowest price of the equity during the day.
 	 * 
 	 * @return lowest price of the equity during the day's trading.
 	 */
-	LowestPrice getLowestPrice();
+	LowestPrice lowestPrice();
 
 	/**
 	 * Highest price of the equity during the day.
 	 * 
 	 * @return highest price of the equity during the day's trading.
 	 */
-	HighestEquityPrice getHighestPrice();
+	HighestEquityPrice highestPrice();
 
 	/**
 	 * Price of the equity at the start of trading.
 	 * 
 	 * @return opening price of the equity during the day's trading.
 	 */
-	OpeningPrice getOpeningPrice();
+	OpeningPrice openingPrice();
 
 	/**
 	 * The abbreviation used in markets for the equity.
 	 * 
 	 * @return market abbreviation.
 	 */
-	String getTickerSymbol();
+	String tickerSymbol();
 }

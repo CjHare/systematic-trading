@@ -118,10 +118,10 @@ public class QuandlResponseConverterTest {
 		assertEquals("Number of prices does not match expectations", expected.length / 4, prices.length);
 
 		for (int i = 0, j = 0; i < expected.length; i += 4, j++) {
-			verifyBigDecimalEquals(expected[i], prices[j].getOpeningPrice().getPrice());
-			verifyBigDecimalEquals(expected[i + 1], prices[j].getLowestPrice().getPrice());
-			verifyBigDecimalEquals(expected[i + 2], prices[j].getHighestPrice().getPrice());
-			verifyBigDecimalEquals(expected[i + 3], prices[j].getClosingPrice().getPrice());
+			verifyBigDecimalEquals(expected[i], prices[j].openingPrice().getPrice());
+			verifyBigDecimalEquals(expected[i + 1], prices[j].lowestPrice().getPrice());
+			verifyBigDecimalEquals(expected[i + 2], prices[j].highestPrice().getPrice());
+			verifyBigDecimalEquals(expected[i + 3], prices[j].closingPrice().getPrice());
 		}
 	}
 
