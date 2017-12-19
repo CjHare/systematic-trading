@@ -84,7 +84,7 @@ public class TradingStrategyConfirmationEntryTest {
 	public void tradingDataPointsAnchor() {
 		setUpTradingDataPoints(5, 1, 4);
 
-		final int requiredPriceDataPoints = entry.numberOfTradingDaysRequired();
+		final int requiredPriceDataPoints = entry.requiredTradingPrices();
 
 		verifyPriceDataPoints(6, requiredPriceDataPoints);
 		verifyTradingDataPointsDelegation();
@@ -94,7 +94,7 @@ public class TradingStrategyConfirmationEntryTest {
 	public void tradingDataPointsConfirmation() {
 		setUpTradingDataPoints(3, 1, 6);
 
-		final int requiredPriceDataPoints = entry.numberOfTradingDaysRequired();
+		final int requiredPriceDataPoints = entry.requiredTradingPrices();
 
 		verifyPriceDataPoints(7, requiredPriceDataPoints);
 		verifyTradingDataPointsDelegation();
@@ -200,9 +200,9 @@ public class TradingStrategyConfirmationEntryTest {
 
 	private void setUpTradingDataPoints( final int anchorIndicatorPoints, final int confirmationPoints,
 	        final int confirmationIndicatorPoints ) {
-		when(anchorIndicator.numberOfTradingDaysRequired()).thenReturn(anchorIndicatorPoints);
-		when(confirmation.numberOfTradingDaysRequired()).thenReturn(confirmationPoints);
-		when(confirmationIndicator.numberOfTradingDaysRequired()).thenReturn(confirmationIndicatorPoints);
+		when(anchorIndicator.requiredTradingPrices()).thenReturn(anchorIndicatorPoints);
+		when(confirmation.requiredTradingPrices()).thenReturn(confirmationPoints);
+		when(confirmationIndicator.requiredTradingPrices()).thenReturn(confirmationIndicatorPoints);
 	}
 
 	private List<DatedSignal> analyse( final TradingDayPrices[] data ) {
@@ -214,9 +214,9 @@ public class TradingStrategyConfirmationEntryTest {
 	}
 
 	private void verifyTradingDataPointsDelegation() {
-		verify(anchorIndicator).numberOfTradingDaysRequired();
-		verify(confirmation).numberOfTradingDaysRequired();
-		verify(confirmationIndicator).numberOfTradingDaysRequired();
+		verify(anchorIndicator).requiredTradingPrices();
+		verify(confirmation).requiredTradingPrices();
+		verify(confirmationIndicator).requiredTradingPrices();
 	}
 
 	private void verifyAnalysisEmpty( final List<DatedSignal> analysis ) {

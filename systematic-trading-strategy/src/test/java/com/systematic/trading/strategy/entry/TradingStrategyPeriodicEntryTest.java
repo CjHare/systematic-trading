@@ -72,7 +72,7 @@ public class TradingStrategyPeriodicEntryTest {
 	@Test
 	public void tradingDataPoints() {
 
-		final int requiredPriceDataPoints = entry.numberOfTradingDaysRequired();
+		final int requiredPriceDataPoints = entry.requiredTradingPrices();
 
 		verifyPriceDataPoints(requiredPriceDataPoints);
 	}

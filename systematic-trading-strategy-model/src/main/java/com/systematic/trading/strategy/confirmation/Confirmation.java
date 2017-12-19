@@ -50,9 +50,9 @@ public interface Confirmation {
 	boolean isConfirmedBy( DatedSignal anchor, DatedSignal confirmation );
 
 	/**
-	 * The number of trading days data required for entry calculation.
+	 * The number of trading data points required for entry calculation.
 	 * 
 	 * @return number of data to provide for the analysis.
 	 */
-	int numberOfTradingDaysRequired();
+	int requiredTradingPrices();
 }

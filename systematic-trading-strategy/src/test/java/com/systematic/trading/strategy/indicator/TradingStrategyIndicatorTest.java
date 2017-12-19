@@ -98,7 +98,7 @@ public class TradingStrategyIndicatorTest {
 	public void requiredPriceTicks() {
 		setUpRequiredPriceTicks(4);
 
-		final int ticks = indicator.numberOfTradingDaysRequired();
+		final int ticks = indicator.requiredTradingPrices();
 
 		verifyPriceTicks(4, ticks);
 		verifyPriceTickDelegation();

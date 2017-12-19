@@ -58,7 +58,7 @@ public class TradingStrategyOperatorEntry implements Entry {
 	}
 
 	@Override
-	public int numberOfTradingDaysRequired() {
-		return Math.max(leftEntry.numberOfTradingDaysRequired(), righEntry.numberOfTradingDaysRequired());
+	public int requiredTradingPrices() {
+		return Math.max(leftEntry.requiredTradingPrices(), righEntry.requiredTradingPrices());
 	}
 }

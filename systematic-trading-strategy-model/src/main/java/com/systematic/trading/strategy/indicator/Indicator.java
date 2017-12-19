@@ -48,7 +48,7 @@ import com.systematic.trading.signal.model.DatedSignal;
 public interface Indicator {
 
 	/**
-	 * Given a set of trading data, performs appropriate analysis to generate signals.
+	 * Given a set of trading price data, performs appropriate analysis to generate signals.
 	 * 
 	 * @param data trading day data.
 	 * @return any signals generated over the given data.
@@ -56,9 +56,9 @@ public interface Indicator {
 	List<DatedSignal> analyse( TradingDayPrices[] data );
 
 	/**
-	 * The number of trading days data required for entry calculation.
+	 * The number of trading data points required for entry calculation.
 	 * 
 	 * @return number of data to provide for the analysis.
 	 */
-	int numberOfTradingDaysRequired();
+	int requiredTradingPrices();
 }

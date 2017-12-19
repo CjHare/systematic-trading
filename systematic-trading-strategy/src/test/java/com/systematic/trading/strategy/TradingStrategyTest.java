@@ -216,7 +216,7 @@ public class TradingStrategyTest {
 	}
 
 	private void setUpNotEnoughDataPricePoints() {
-		when(entry.numberOfTradingDaysRequired()).thenReturn(9);
+		when(entry.requiredTradingPrices()).thenReturn(9);
 	}
 
 	private void setUpTradingDayPrices() {
@@ -237,7 +237,7 @@ public class TradingStrategyTest {
 	}
 
 	private void setUpWarmupPeriod( final int period ) {
-		when(entry.numberOfTradingDaysRequired()).thenReturn(period);
+		when(entry.requiredTradingPrices()).thenReturn(period);
 	}
 
 	private void setUpEntryPositionSizing( final double value ) {

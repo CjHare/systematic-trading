@@ -49,7 +49,7 @@ public class TradingStrategyConfirmedByTest {
 	private TradingStrategyConfirmedBy confirmBy;
 
 	@Test
-	public void numberOfTradingDaysRequired() {
+	public void requiredTradingPrices() {
 		setUpConfirmBy(1, 5);
 
 		final int pricePoints = priceDataPoints();
@@ -58,7 +58,7 @@ public class TradingStrategyConfirmedByTest {
 	}
 
 	@Test
-	public void numberOfTradingDaysRequiredSwitch() {
+	public void requiredTradingPricesSwitch() {
 		setUpConfirmBy(2, 3);
 
 		final int pricePoints = priceDataPoints();
@@ -115,7 +115,7 @@ public class TradingStrategyConfirmedByTest {
 	}
 
 	private int priceDataPoints() {
-		return confirmBy.numberOfTradingDaysRequired();
+		return confirmBy.requiredTradingPrices();
 	}
 
 	private void setUpConfirmBy( final int confirmationDayRange, final int delayUntilConfirmationRange ) {

@@ -73,7 +73,7 @@ public class TradingStrategyIndicatorEntryTest {
 	public void tradingDataPoints() {
 		setUpTradingDataPoints(7);
 
-		final int requiredPriceDataPoints = entry.numberOfTradingDaysRequired();
+		final int requiredPriceDataPoints = entry.requiredTradingPrices();
 
 		verifyPriceDataPoints(7, requiredPriceDataPoints);
 		verifyTradingDataPointsDelegation();
@@ -90,7 +90,7 @@ public class TradingStrategyIndicatorEntryTest {
 	}
 
 	private void setUpTradingDataPoints( final int dataPoints ) {
-		when(indicator.numberOfTradingDaysRequired()).thenReturn(dataPoints);
+		when(indicator.requiredTradingPrices()).thenReturn(dataPoints);
 	}
 
 	private void setUpIndicator() {
@@ -110,7 +110,7 @@ public class TradingStrategyIndicatorEntryTest {
 	}
 
 	private void verifyTradingDataPointsDelegation() {
-		verify(indicator).numberOfTradingDaysRequired();
+		verify(indicator).requiredTradingPrices();
 	}
 
 	private void verifyAnalysisDelegation( final TradingDayPrices[] data ) {

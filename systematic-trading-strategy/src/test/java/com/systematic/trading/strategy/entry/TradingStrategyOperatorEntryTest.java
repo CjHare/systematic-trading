@@ -89,7 +89,7 @@ public class TradingStrategyOperatorEntryTest {
 		setUpSubEntry(leftEntry, 1);
 		setUpSubEntry(righEntry, 5);
 
-		final int requiredPriceDataPoints = entry.numberOfTradingDaysRequired();
+		final int requiredPriceDataPoints = entry.requiredTradingPrices();
 
 		verifyPriceDataPoints(5, requiredPriceDataPoints);
 		verifyTradingDataPointDelegation();
@@ -100,7 +100,7 @@ public class TradingStrategyOperatorEntryTest {
 		setUpSubEntry(leftEntry, 4);
 		setUpSubEntry(righEntry, 2);
 
-		final int requiredPriceDataPoints = entry.numberOfTradingDaysRequired();
+		final int requiredPriceDataPoints = entry.requiredTradingPrices();
 
 		verifyPriceDataPoints(4, requiredPriceDataPoints);
 		verifyTradingDataPointDelegation();
@@ -121,7 +121,7 @@ public class TradingStrategyOperatorEntryTest {
 	}
 
 	private void setUpSubEntry( Entry subEntry, final int tradingDataPoints ) {
-		when(subEntry.numberOfTradingDaysRequired()).thenReturn(tradingDataPoints);
+		when(subEntry.requiredTradingPrices()).thenReturn(tradingDataPoints);
 	}
 
 	private void setUpSubEntry( Entry subEntry, final List<DatedSignal> subEntryAnalysis ) {
@@ -141,8 +141,8 @@ public class TradingStrategyOperatorEntryTest {
 	}
 
 	private void verifyTradingDataPointDelegation() {
-		verify(leftEntry).numberOfTradingDaysRequired();
-		verify(righEntry).numberOfTradingDaysRequired();
+		verify(leftEntry).requiredTradingPrices();
+		verify(righEntry).requiredTradingPrices();
 	}
 
 	private void verifyAnalysisDelegation( final TradingDayPrices[] data ) {

@@ -95,7 +95,7 @@ public class TradingStrategy implements Strategy {
 		this.type = type;
 		this.scale = scale;
 
-		this.tradingData = new LimitedSizeQueue<>(TradingDayPrices.class, entry.numberOfTradingDaysRequired());
+		this.tradingData = new LimitedSizeQueue<>(TradingDayPrices.class, entry.requiredTradingPrices());
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class TradingStrategy implements Strategy {
 		// Add the day's data to the rolling queue
 		tradingData.add(data);
 
-		if (tradingData.size() == entry.numberOfTradingDaysRequired()) {
+		if (tradingData.size() == entry.requiredTradingPrices()) {
 
 			//TODO change to avoid converting to a list
 			// Create signals from the available trading data
@@ -148,7 +148,7 @@ public class TradingStrategy implements Strategy {
 
 	@Override
 	public Period warmUpPeriod() {
-		return Period.ofDays((int) Math.ceil(entry.numberOfTradingDaysRequired() * CONVERT_TO_TRADING_DAYS));
+		return Period.ofDays((int) Math.ceil(entry.requiredTradingPrices() * CONVERT_TO_TRADING_DAYS));
 	}
 
 	private Optional<EquityOrder> noOrder() {
