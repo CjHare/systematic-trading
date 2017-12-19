@@ -39,7 +39,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.strategy.confirmation.Confirmation;
 import com.systematic.trading.strategy.entry.Entry;
+import com.systematic.trading.strategy.entry.TradingStrategyConfirmationEntry;
 import com.systematic.trading.strategy.entry.TradingStrategyIndicatorEntry;
 import com.systematic.trading.strategy.entry.TradingStrategyOperatorEntry;
 import com.systematic.trading.strategy.entry.TradingStrategyPeriodicEntry;
@@ -86,6 +88,13 @@ public class TradingStrategyFactoryTest {
 		        EquityClass.STOCK, 2);
 
 		assertEquals(TradingStrategy.class, strategy.getClass());
+	}
+
+	@Test
+	public void confirmedByEntry() {
+		final Entry entry = factory.entry(leftEntry, mock(Confirmation.class), righEntry);
+
+		assertEquals(TradingStrategyConfirmationEntry.class, entry.getClass());
 	}
 
 	@Test
