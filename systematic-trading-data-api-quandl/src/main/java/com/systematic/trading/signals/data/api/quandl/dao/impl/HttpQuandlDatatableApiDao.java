@@ -82,28 +82,28 @@ public class HttpQuandlDatatableApiDao extends HttpQuandlApiDao implements Quand
 		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
 
 		// End point target root
-		this.root = ClientBuilder.newClient(clientConfig).target(configuration.getEndpoint());
+		this.root = ClientBuilder.newClient(clientConfig).target(configuration.endpoint());
 
-		this.apiKey = configuration.getApiKey();
+		this.apiKey = configuration.apiKey();
 	}
 
 	@Override
 	public QuandlResultSet get( final String dataset, final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate, final BlockingEventCount throttler ) throws CannotRetrieveDataException {
-		final WebTarget url = createUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final WebTarget url = url(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
 		final Response response = get(url, throttler);
 
-		final DatatableResource datatable = response.readEntity(DatatableResponseResource.class).getDatatable();
+		final DatatableResource datatable = response.readEntity(DatatableResponseResource.class).datatable();
 
-		return new QuandlResultSet(columns(datatable.getColumns()), datatable.getData());
+		return new QuandlResultSet(columns(datatable.columns()), datatable.data());
 	}
 
 	private List<QuandlColumnName> columns( final List<ColumnResource> columns ) {
-		return columns.stream().map(column -> new QuandlColumnName(column.getName())).collect(Collectors.toList());
+		return columns.stream().map(column -> new QuandlColumnName(column.name())).collect(Collectors.toList());
 	}
 
-	private WebTarget createUrl( final String tickerSymbol, final LocalDate inclusiveStartDate,
+	private WebTarget url( final String tickerSymbol, final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) {
 		return root.path(PATH).queryParam(COLUMN_NAMES_KEY, COLUMN_NAMES_VALUE)
 		        .queryParam(START_DATE_KEY, inclusiveStartDate.format(QUANDL_DATE_FORMAT))

@@ -69,7 +69,7 @@ public interface TradingDayPricesDao {
 	 * @param endDate inclusive end date for the data range.
 	 * @return the set of trading data points within the given dates.
 	 */
-	TradingDayPrices[] get( String tickerSymbol, LocalDate startDate, LocalDate endDate );
+	TradingDayPrices[] prices( String tickerSymbol, LocalDate startDate, LocalDate endDate );
 
 	/**
 	 * Counts the number of data points within the given range
@@ -88,5 +88,5 @@ public interface TradingDayPricesDao {
 	 * @return the most trading data point since the given date, or <code>null</code> if there are
 	 *         none or the table does not exist.
 	 */
-	TradingDayPrices getMostRecent( String tickerSymbol );
+	TradingDayPrices mostRecent( String tickerSymbol );
 }

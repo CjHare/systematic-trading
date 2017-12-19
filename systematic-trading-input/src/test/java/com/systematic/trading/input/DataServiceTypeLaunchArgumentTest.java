@@ -99,8 +99,8 @@ public class DataServiceTypeLaunchArgumentTest {
 
 	private void verifDataServiceType( final String expected, final DataServiceType actual ) {
 		assertNotNull(actual);
-		assertNotNull(actual.getType());
-		assertTrue(StringUtils.equals(expected, actual.getType()));
+		assertNotNull(actual.type());
+		assertTrue(StringUtils.equals(expected, actual.type()));
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {

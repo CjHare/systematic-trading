@@ -56,7 +56,8 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 
 	@Override
 	public void create( final TradingDayPrices[] data ) {
-		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
+		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
 		final Transaction tx = session.beginTransaction();
 
 		for (final TradingDayPrices d : data) {
@@ -79,7 +80,8 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 
 	@Override
 	public void create( final TradingDayPrices data ) {
-		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
+		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
 		session.beginTransaction();
 		create(data, session);
 		session.getTransaction().commit();
@@ -87,19 +89,21 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 
 	@Override
 	public void createTableIfAbsent( final String tickerSymbol ) {
-		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
+		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
 		session.beginTransaction();
 		createTable(tickerSymbol, session);
 		session.getTransaction().commit();
 	}
 
 	@Override
-	public TradingDayPrices getMostRecent( final String tickerSymbol ) {
+	public TradingDayPrices mostRecent( final String tickerSymbol ) {
+
 		final String sql = String.format(
 		        "SELECT date, opening_price, lowest_price, highest_price, closing_price FROM history_%s ORDER BY date DESC LIMIT 1",
 		        sanitise(tickerSymbol));
 
-		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
 		session.beginTransaction();
 		final Query query = session.createSQLQuery(sql);
 
@@ -113,17 +117,17 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		}
 
 		// Convert result entries into the DataPoint
-		return tradingDayPricesParser.parseDataPoint(tickerSymbol, result.get(0));
+		return tradingDayPricesParser.tradingPrices(tickerSymbol, result.get(0));
 	}
 
 	@Override
-	public TradingDayPrices[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
+	public TradingDayPrices[] prices( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 
 		final String sql = String.format(
 		        "SELECT date, opening_price, lowest_price, highest_price, closing_price FROM history_%s WHERE date BETWEEN :start_date AND :end_date ORDER BY date DESC",
 		        sanitise(tickerSymbol));
 
-		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
 		session.beginTransaction();
 		final Query query = session.createSQLQuery(sql);
 		query.setDate("start_date", Date.valueOf(startDate));
@@ -141,7 +145,7 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		// Convert result entries into the DataPoint
 		final TradingDayPrices[] data = new TradingDayPrices[result.size()];
 		for (int i = 0; i < data.length; i++) {
-			data[i] = tradingDayPricesParser.parseDataPoint(tickerSymbol, result.get(i));
+			data[i] = tradingDayPricesParser.tradingPrices(tickerSymbol, result.get(i));
 		}
 
 		return data;
@@ -153,7 +157,7 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		final String sql = String.format("SELECT count(1) FROM history_%s WHERE date BETWEEN :start_date AND :end_date",
 		        sanitise(tickerSymbol));
 
-		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
 		final Transaction tx = session.beginTransaction();
 		final Query query = session.createSQLQuery(sql);
 		query.setDate("start_date", Date.valueOf(startDate));
@@ -167,6 +171,7 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 	}
 
 	private void create( final TradingDayPrices data, final Session session ) {
+
 		final String sql = String.format(
 		        "INSERT INTO history_%s (date, opening_price, lowest_price, highest_price, closing_price) VALUES (:date, :opening_price, :lowest_price, :highest_price, :closing_price)",
 		        sanitise(data.tickerSymbol()));
@@ -181,12 +186,13 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		try {
 			query.executeUpdate();
 		} catch (final HibernateException e) {
-			throw new HibernateException(
-			        String.format("Failed inserting %s on %s", data.tickerSymbol(), data.date()), e);
+			throw new HibernateException(String.format("Failed inserting %s on %s", data.tickerSymbol(), data.date()),
+			        e);
 		}
 	}
 
 	private void createTable( final String tickerSymbol, final Session session ) {
+
 		final StringBuilder template = new StringBuilder();
 		template.append("CREATE TABLE IF NOT EXISTS history_%s (");
 		template.append("date DATE,");

@@ -170,7 +170,7 @@ public class AnalysisLaunchArgumentsTest {
 
 	private void verifyDataService( final String expected ) {
 		assertNotNull(parser.getDataService());
-		assertEquals(expected, parser.getDataService().getType());
+		assertEquals(expected, parser.getDataService().type());
 		verify(equityArguments, atLeastOnce()).getDataService();
 	}
 

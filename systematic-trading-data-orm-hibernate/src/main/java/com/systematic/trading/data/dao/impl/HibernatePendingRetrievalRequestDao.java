@@ -57,7 +57,7 @@ public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequ
 	@Override
 	public void create( final List<HistoryRetrievalRequest> requests ) {
 
-		final Session session = HibernateUtil.getSessionFactory().openSession();
+		final Session session = HibernateUtil.sessionFactory().openSession();
 		for (final HistoryRetrievalRequest request : requests) {
 			create((HibernateHistoryRetrievalRequest) request, session);
 		}
@@ -65,31 +65,10 @@ public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequ
 		session.close();
 	}
 
-	private void create( final HibernateHistoryRetrievalRequest request, final Session session ) {
-
-		final Transaction tx = session.beginTransaction();
-
-		try {
-			session.save(request);
-			tx.commit();
-		} catch (final HibernateException e) {
-			// May already have the record inserted
-			LOG.info("{}",
-			        () -> String.format("Failed to save request for %s, %s to %s, problem: %s",
-			                request.getTickerSymbol(), request.getInclusiveStartDate(), request.getExclusiveEndDate(),
-			                e.getMessage()));
-			LOG.debug(e);
-
-			if (tx != null && tx.isActive()) {
-				tx.rollback();
-			}
-		}
-	}
-
 	@Override
-	public List<HistoryRetrievalRequest> get( final String tickerSymbol ) {
+	public List<HistoryRetrievalRequest> requests( final String tickerSymbol ) {
 
-		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
 		Transaction tx = session.beginTransaction();
 
 		try {
@@ -114,17 +93,37 @@ public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequ
 
 	@Override
 	public void delete( final HistoryRetrievalRequest request ) {
-		final Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		
+		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
 		Transaction tx = session.beginTransaction();
 
 		try {
 			session.delete(request);
 		} catch (final HibernateException e) {
-			LOG.error("{}", () -> String.format("Error deleting entry for %s %s %s %s", request.getTickerSymbol(),
-			        request.getInclusiveStartDate(), request.getExclusiveEndDate(), e.getMessage()));
+			LOG.error("{}", () -> String.format("Error deleting entry for %s %s %s %s", request.tickerSymbol(),
+			        request.inclusiveStartDate(), request.exclusiveEndDate(), e.getMessage()));
 			LOG.error(e);
 		}
 
 		tx.commit();
+	}
+
+	private void create( final HibernateHistoryRetrievalRequest request, final Session session ) {
+
+		final Transaction tx = session.beginTransaction();
+
+		try {
+			session.save(request);
+			tx.commit();
+		} catch (final HibernateException e) {
+			// May already have the record inserted
+			LOG.info("{}", () -> String.format("Failed to save request for %s, %s to %s, problem: %s",
+			        request.tickerSymbol(), request.inclusiveStartDate(), request.exclusiveEndDate(), e.getMessage()));
+			LOG.debug(e);
+
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+		}
 	}
 }

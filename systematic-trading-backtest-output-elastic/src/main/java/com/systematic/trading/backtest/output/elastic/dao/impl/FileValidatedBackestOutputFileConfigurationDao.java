@@ -64,7 +64,7 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 	@Override
 	public BackestOutputElasticConfiguration configuration()
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
-		final Properties properties = new FileConfigurationDao().get(BACKTEST_OUTPUT_ELASTIC_PROPERTIES_FILE);
+		final Properties properties = new FileConfigurationDao().configuration(BACKTEST_OUTPUT_ELASTIC_PROPERTIES_FILE);
 
 		final int numberOfConnections = integerProperty(properties,
 		        BacktestOutputElasticProperty.NUMBER_OF_CONNECTIONS, numberOfConnectionsValidator);

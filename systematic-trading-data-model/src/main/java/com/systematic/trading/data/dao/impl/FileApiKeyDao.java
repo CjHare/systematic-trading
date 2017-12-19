@@ -52,7 +52,7 @@ public class FileApiKeyDao implements ApiKeyDao {
 	private static final ClassLoader CLASSPATH = ApiKeyDao.class.getClassLoader();
 
 	@Override
-	public String get( final String keyFileLocation ) throws CannotRetrieveConfigurationException {
+	public String apiKey( final String keyFileLocation ) throws CannotRetrieveConfigurationException {
 		try {
 
 			final URL location = CLASSPATH.getResource(keyFileLocation);

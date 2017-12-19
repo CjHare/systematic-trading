@@ -61,9 +61,9 @@ public class QuandlResponseConverter {
 	        throws CannotRetrieveDataException {
 
 		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<>();
-		final List<QuandlColumnName> columns = resultSet.getColumns();
-		final List<List<Object>> data = resultSet.getData();
-		final ResponseColumns mapping = getColumnMapping(columns);
+		final List<QuandlColumnName> columns = resultSet.columns();
+		final List<List<Object>> data = resultSet.data();
+		final ResponseColumns mapping = columnMapping(columns);
 		final int dateIndex = mapping.dateIndex(columns);
 		final int openPriceIndex = mapping.openPriceIndex(columns);
 		final int highPriceIndex = mapping.highPriceIndex(columns);
@@ -71,18 +71,18 @@ public class QuandlResponseConverter {
 		final int closePriceIndex = mapping.closePriceIndex(columns);
 
 		for (final List<Object> tuple : data) {
-			final LocalDate tradingDate = getTradingDate(tuple.get(dateIndex));
+			final LocalDate tradingDate = tradingDate(tuple.get(dateIndex));
 
 			prices.put(tradingDate,
-			        new TradingDayPricesImpl(tickerSymbol, tradingDate, getgPrice(tuple.get(openPriceIndex)),
-			                getgPrice(tuple.get(lowPriceIndex)), getgPrice(tuple.get(highPriceIndex)),
-			                getgPrice(tuple.get(closePriceIndex))));
+			        new TradingDayPricesImpl(tickerSymbol, tradingDate, price(tuple.get(openPriceIndex)),
+			                price(tuple.get(lowPriceIndex)), price(tuple.get(highPriceIndex)),
+			                price(tuple.get(closePriceIndex))));
 		}
 
 		return prices.values().toArray(new TradingDayPrices[0]);
 	}
 
-	private ResponseColumns getColumnMapping( final List<QuandlColumnName> columns ) {
+	private ResponseColumns columnMapping( final List<QuandlColumnName> columns ) {
 
 		if (allColumns.canParse(columns)) {
 			return allColumns;
@@ -91,11 +91,11 @@ public class QuandlResponseConverter {
 		return dateValueColumns;
 	}
 
-	private BigDecimal getgPrice( final Object price ) {
+	private BigDecimal price( final Object price ) {
 		return new BigDecimal((Double) price).setScale(TWO_DECIMAL_PLACES, RoundingMode.HALF_EVEN);
 	}
 
-	private LocalDate getTradingDate( final Object date ) {
+	private LocalDate tradingDate( final Object date ) {
 		return LocalDate.parse((String) date, QUANDL_DATE_FORMAT);
 	}
 }

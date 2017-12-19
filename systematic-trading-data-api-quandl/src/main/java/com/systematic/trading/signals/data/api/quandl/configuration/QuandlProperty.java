@@ -49,7 +49,7 @@ public enum QuandlProperty {
 		this.key = key;
 	}
 
-	public String getKey() {
+	public String key() {
 		return key;
 	}
 }

@@ -83,14 +83,14 @@ public class QuanalAPITest {
 	public void maximumRetrievalPeriodPerCall() {
 		final Period expected = setUpMaximumRetrieval();
 
-		final Period actual = new QuandlAPI(dao, configuration, dataFormat).getMaximumDurationPerConnection();
+		final Period actual = new QuandlAPI(dao, configuration, dataFormat).maximumDurationPerConnection();
 
 		verfiyMaximumRetrieval(expected, actual);
 		verifyNoQuandlCall();
 	}
 
 	@Test
-	public void getStockDataEmptyPayload() throws CannotRetrieveDataException {
+	public void stockDataEmptyPayload() throws CannotRetrieveDataException {
 		final TradingDayPrices[] expectedPrices = setUpQuandlResponse();
 
 		final String datasetId = randomDatasetId();
@@ -106,7 +106,7 @@ public class QuanalAPITest {
 
 	private TradingDayPrices[] callQuandl( final String datasetId, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
-		return new QuandlAPI(dao, configuration, dataFormat).getStockData(datasetId, tickerSymbol, inclusiveStartDate,
+		return new QuandlAPI(dao, configuration, dataFormat).stockData(datasetId, tickerSymbol, inclusiveStartDate,
 		        exclusiveEndDate, throttler);
 	}
 
@@ -174,7 +174,7 @@ public class QuanalAPITest {
 	 */
 	private Period setUpMaximumRetrieval() {
 		final int months = new Random().nextInt(12);
-		when(configuration.getMaximumMonthsPerConnection()).thenReturn(months);
+		when(configuration.maximumMonthsPerConnection()).thenReturn(months);
 		return Period.ofMonths(months);
 	}
 

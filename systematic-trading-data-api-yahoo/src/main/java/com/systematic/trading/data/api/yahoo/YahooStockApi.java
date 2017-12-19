@@ -68,7 +68,7 @@ public class YahooStockApi implements EquityApi {
 
 	private static final HttpUtil HTTP_UTILS = new HttpUtil();
 
-	private String getJsonUrl( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate )
+	private String jsonUrl( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate )
 	        throws CannotRetrieveDataException {
 
 		try {
@@ -150,35 +150,35 @@ public class YahooStockApi implements EquityApi {
 	}
 
 	@Override
-	public TradingDayPrices[] getStockData( final String dataset, final String tickerSymbol,
+	public TradingDayPrices[] stockData( final String dataset, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate, final BlockingEventCount throttler )
 	        throws CannotRetrieveDataException {
-		final String uri = getJsonUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final String uri = jsonUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 		LOG.info("{}", () -> String.format("%s API call to: %s", tickerSymbol, uri));
 
 		throttler.add();
-		final String json = HTTP_UTILS.httpGet(uri);
+		final String json = HTTP_UTILS.get(uri);
 
 		return parseJson(tickerSymbol, json);
 	}
 
 	@Override
-	public Period getMaximumDurationPerConnection() {
+	public Period maximumDurationPerConnection() {
 		return Period.ofYears(1);
 	}
 
 	@Override
-	public int getMaximumConcurrentConnections() {
+	public int maximumConcurrentConnections() {
 		return NUMBER_CONCURRENT_CONNECTIONS;
 	}
 
 	@Override
-	public int getMaximumRetrievalTimeSeconds() {
+	public int maximumRetrievalTimeSeconds() {
 		return MAXIMUM_RETRIEVAL_TIME;
 	}
 
 	@Override
-	public int getMaximumConnectionsPerSecond() {
+	public int maximumConnectionsPerSecond() {
 		return MAXIMUM_CONNECTION_PER_SECOND;
 	}
 }

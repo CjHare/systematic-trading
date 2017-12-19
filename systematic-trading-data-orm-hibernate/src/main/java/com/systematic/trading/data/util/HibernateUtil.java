@@ -67,7 +67,7 @@ public class HibernateUtil {
 		}
 	}
 
-	public static SessionFactory getSessionFactory() {
+	public static SessionFactory sessionFactory() {
 		return SESSION_FACTORY;
 	}
 

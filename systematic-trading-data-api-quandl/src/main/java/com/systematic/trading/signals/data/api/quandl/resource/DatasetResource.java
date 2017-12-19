@@ -33,6 +33,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
@@ -48,20 +49,23 @@ public class DatasetResource {
 	private List<String> columns;
 	private List<List<Object>> data;
 
-	public List<String> getColumns() {
+	@JsonSetter("column_names")
+	public List<String> columns() {
 		return columns;
 	}
 
 	@JsonSetter("column_names")
-	public void setColumns( final List<String> columns ) {
+	public void columns( final List<String> columns ) {
 		this.columns = columns;
 	}
 
-	public List<List<Object>> getData() {
+	@JsonProperty("data")
+	public List<List<Object>> data() {
 		return data;
 	}
 
-	public void setData( final List<List<Object>> data ) {
+	@JsonProperty("data")
+	public void data( final List<List<Object>> data ) {
 		this.data = data;
 	}
 }

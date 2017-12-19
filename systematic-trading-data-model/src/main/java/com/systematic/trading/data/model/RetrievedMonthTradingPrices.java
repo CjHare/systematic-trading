@@ -41,10 +41,10 @@ public interface RetrievedMonthTradingPrices {
 	/**
 	 * For whom the trading price data has already been retrieved.
 	 */
-	String getTickerSymbol();
+	String tickerSymbol();
 
 	/**
 	 * The year and month that trading price data has already been retrieved.
 	 */
-	YearMonth getYearMonth();
+	YearMonth yearMonth();
 }

@@ -77,38 +77,46 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 	}
 
 	@Override
-	public String getTickerSymbol() {
+	@Column(name = "ticker_symbol")
+	public String tickerSymbol() {
 		return tickerSymbol;
 	}
 
-	public void setTickerSymbol( final String tickerSymbol ) {
+	@Column(name = "ticker_symbol")
+	public void tickerSymbol( final String tickerSymbol ) {
 		this.tickerSymbol = tickerSymbol;
 	}
 
 	@Override
-	public Date getInclusiveStartDate() {
+	@Column(name = "start")
+	public Date inclusiveStartDate() {
 		return inclusiveStartDate;
 	}
 
-	public void setInclusiveStartDate( final Date inclusiveStartDate ) {
+	@Column(name = "start")
+	public void inclusiveStartDate( final Date inclusiveStartDate ) {
 		this.inclusiveStartDate = inclusiveStartDate;
 	}
 
 	@Override
-	public Date getExclusiveEndDate() {
+	@Column(name = "end")
+	public Date exclusiveEndDate() {
 		return exclusiveEndDate;
 	}
 
-	public void setExclusiveEndDate( final Date exclusiveEndDate ) {
+	@Column(name = "end")
+	public void exclusiveEndDate( final Date exclusiveEndDate ) {
 		this.exclusiveEndDate = exclusiveEndDate;
 	}
 
 	@Override
-	public String getEquityDataset() {
+	@Column(name = "dataset")
+	public String equityDataset() {
 		return equityDataset;
 	}
 
-	public void setEquityDataset( final String equityDataset ) {
+	@Column(name = "dataset")
+	public void equityDataset( final String equityDataset ) {
 		this.equityDataset = equityDataset;
 	}
 

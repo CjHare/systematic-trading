@@ -45,5 +45,5 @@ public interface ApiKeyDao {
 	 * @return API key.
 	 * @throws CannotRetrieveConfigurationException problem encountered retrieving the API key.
 	 */
-	String get( String keyFileLocation ) throws CannotRetrieveConfigurationException;
+	String apiKey( String keyFileLocation ) throws CannotRetrieveConfigurationException;
 }

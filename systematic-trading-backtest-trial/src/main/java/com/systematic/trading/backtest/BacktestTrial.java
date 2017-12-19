@@ -149,7 +149,7 @@ public class BacktestTrial {
 				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, depositAmount));
 			}
 		} finally {
-			HibernateUtil.getSessionFactory().close();
+			HibernateUtil.sessionFactory().close();
 			closePool(outputPool);
 		}
 

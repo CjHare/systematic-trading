@@ -33,6 +33,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
@@ -47,19 +48,23 @@ public class DatatableResource {
 	private List<ColumnResource> columns;
 	private List<List<Object>> data;
 
-	public List<ColumnResource> getColumns() {
+	@JsonProperty("columns")
+	public List<ColumnResource> columns() {
 		return columns;
 	}
 
-	public void setColumns( final List<ColumnResource> columns ) {
+	@JsonProperty("columns")
+	public void columns( final List<ColumnResource> columns ) {
 		this.columns = columns;
 	}
 
-	public List<List<Object>> getData() {
+	@JsonProperty("data")
+	public List<List<Object>> data() {
 		return data;
 	}
 
-	public void setData( final List<List<Object>> data ) {
+	@JsonProperty("data")
+	public void data( final List<List<Object>> data ) {
 		this.data = data;
 	}
 }

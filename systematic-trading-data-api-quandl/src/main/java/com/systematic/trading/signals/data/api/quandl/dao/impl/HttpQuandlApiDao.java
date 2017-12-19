@@ -61,8 +61,8 @@ public abstract class HttpQuandlApiDao {
 	private final int retryBackoffMs;
 
 	public HttpQuandlApiDao( final EquityApiConfiguration configuration ) {
-		this.numberOfRetries = configuration.getNumberOfRetries();
-		this.retryBackoffMs = configuration.getRetryBackOffMs();
+		this.numberOfRetries = configuration.numberOfRetries();
+		this.retryBackoffMs = configuration.retryBackOffMs();
 	}
 
 	protected Response get( final WebTarget url, final BlockingEventCount throttler )

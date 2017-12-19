@@ -33,6 +33,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The row data, ordered according to the ColumnsResource.
@@ -44,11 +45,13 @@ public class RowResource {
 
 	private List<Object> data;
 
-	public List<Object> getData() {
+	@JsonProperty("data")
+	public List<Object> data() {
 		return data;
 	}
 
-	public void setData( final List<Object> data ) {
+	@JsonProperty("data")
+	public void data( final List<Object> data ) {
 		this.data = data;
 	}
 }

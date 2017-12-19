@@ -53,7 +53,7 @@ public interface PendingRetrievalRequestDao {
 	 * @param tickerSymbol symbol of the equity who history to retrieve.
 	 * @return pending history retrieval requests.
 	 */
-	List<HistoryRetrievalRequest> get( String tickerSymbol );
+	List<HistoryRetrievalRequest> requests( String tickerSymbol );
 
 	/**
 	 * Remove a pending history retrieval request.

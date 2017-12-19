@@ -145,7 +145,7 @@ public class EntryOrderAnalysis {
 			new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration, output());
 
 		} finally {
-			HibernateUtil.getSessionFactory().close();
+			HibernateUtil.sessionFactory().close();
 		}
 
 		timer.stop();

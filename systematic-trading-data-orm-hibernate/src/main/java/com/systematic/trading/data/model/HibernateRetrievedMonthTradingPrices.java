@@ -73,12 +73,12 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 	}
 
 	@Override
-	public String getTickerSymbol() {
+	public String tickerSymbol() {
 		return tickerSymbol;
 	}
 
 	@Override
-	public YearMonth getYearMonth() {
+	public YearMonth yearMonth() {
 		return YearMonth.of(year, month);
 	}
 

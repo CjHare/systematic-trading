@@ -47,5 +47,5 @@ public interface ConfigurationDao {
 	 * @return properties contained within.
 	 * @throws CannotRetrieveConfigurationException problem encountered retrieving properties.
 	 */
-	Properties get( String propertyFile ) throws CannotRetrieveConfigurationException;
+	Properties configuration( String propertyFile ) throws CannotRetrieveConfigurationException;
 }

@@ -55,5 +55,5 @@ public interface RetrievedMonthTradingPricesDao {
 	 * @param endYear last year for the range of values to retrieve.
 	 * @return ally full months of already obtained.
 	 */
-	List<RetrievedMonthTradingPrices> get( String tickerSymbol, int startYear, int endYear );
+	List<RetrievedMonthTradingPrices> requests( String tickerSymbol, int startYear, int endYear );
 }

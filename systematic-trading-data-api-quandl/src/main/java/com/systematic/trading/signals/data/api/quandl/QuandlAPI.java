@@ -61,14 +61,14 @@ public class QuandlAPI implements EquityApi {
 	        final QuandlResponseConverter dataFormat ) {
 		this.dao = dao;
 		this.dataFormat = dataFormat;
-		this.maximumDurationPerConnection = Period.ofMonths(configuration.getMaximumMonthsPerConnection());
-		this.maximumConcurrentConnections = configuration.getMaximumConcurrentConnections();
-		this.maximumRetrievalTimeSeconds = configuration.getMaximumRetrievalTimeSeconds();
-		this.maximumConnectionsPerSecond = configuration.getMaximumConcurrentConnections();
+		this.maximumDurationPerConnection = Period.ofMonths(configuration.maximumMonthsPerConnection());
+		this.maximumConcurrentConnections = configuration.maximumConcurrentConnections();
+		this.maximumRetrievalTimeSeconds = configuration.maximumRetrievalTimeSeconds();
+		this.maximumConnectionsPerSecond = configuration.maximumConcurrentConnections();
 	}
 
 	@Override
-	public TradingDayPrices[] getStockData( final String equityDataset, final String tickerSymbol,
+	public TradingDayPrices[] stockData( final String equityDataset, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate, final BlockingEventCount throttler )
 	        throws CannotRetrieveDataException {
 		final QuandlResultSet response = dao.get(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate,
@@ -78,22 +78,22 @@ public class QuandlAPI implements EquityApi {
 	}
 
 	@Override
-	public Period getMaximumDurationPerConnection() {
+	public Period maximumDurationPerConnection() {
 		return maximumDurationPerConnection;
 	}
 
 	@Override
-	public int getMaximumConcurrentConnections() {
+	public int maximumConcurrentConnections() {
 		return maximumConcurrentConnections;
 	}
 
 	@Override
-	public int getMaximumRetrievalTimeSeconds() {
+	public int maximumRetrievalTimeSeconds() {
 		return maximumRetrievalTimeSeconds;
 	}
 
 	@Override
-	public int getMaximumConnectionsPerSecond() {
+	public int maximumConnectionsPerSecond() {
 		return maximumConnectionsPerSecond;
 	}
 }

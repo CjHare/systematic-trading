@@ -38,7 +38,8 @@ import com.systematic.trading.data.exception.CannotRetrieveDataException;
 
 public class HttpUtil {
 
-	public String httpGet( final String url ) throws CannotRetrieveDataException {
+	public String get( final String url ) throws CannotRetrieveDataException {
+		
 		final StringBuilder result = new StringBuilder();
 
 		try {

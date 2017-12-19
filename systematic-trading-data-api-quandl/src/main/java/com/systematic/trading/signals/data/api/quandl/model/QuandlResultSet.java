@@ -50,11 +50,11 @@ public class QuandlResultSet {
 		this.data = data;
 	}
 
-	public List<QuandlColumnName> getColumns() {
+	public List<QuandlColumnName> columns() {
 		return columns;
 	}
 
-	public List<List<Object>> getData() {
+	public List<List<Object>> data() {
 		return data;
 	}
 }

@@ -47,5 +47,5 @@ public interface QuandlConfigurationDao {
 	 * @throws ConfigurationValidationException problem encountered during validation.
 	 * @throws CannotRetrieveConfigurationException problem encountered during retrieval.
 	 */
-	EquityApiConfiguration get() throws ConfigurationValidationException, CannotRetrieveConfigurationException;
+	EquityApiConfiguration configuration() throws ConfigurationValidationException, CannotRetrieveConfigurationException;
 }

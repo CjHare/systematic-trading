@@ -49,7 +49,7 @@ public interface EquityApi {
 	 * @return the given data parsed into domain objects.
 	 * @throws CannotRetrieveDataException problem encountered in retrieving the stock data.
 	 */
-	TradingDayPrices[] getStockData( String equityDataset, String symbol, LocalDate inclusiveStartDate,
+	TradingDayPrices[] stockData( String equityDataset, String symbol, LocalDate inclusiveStartDate,
 	        LocalDate exclusiveEndDate, BlockingEventCount activeConnectionCount ) throws CannotRetrieveDataException;
 
 	/**
@@ -57,26 +57,26 @@ public interface EquityApi {
 	 * 
 	 * @return number of days that can be retrieved each attempt.
 	 */
-	Period getMaximumDurationPerConnection();
+	Period maximumDurationPerConnection();
 
 	/**
 	 * Number of concurrent calls accepted by the API.
 	 * 
 	 * @return number of threads that may simultaneously call the API.
 	 */
-	int getMaximumConcurrentConnections();
+	int maximumConcurrentConnections();
 
 	/**
 	 * Maximum number of seconds that a retrieval will take.
 	 * 
 	 * @return maximum time allowed for a call, worst scenario (i.e. full retries). 
 	 */
-	int getMaximumRetrievalTimeSeconds();
+	int maximumRetrievalTimeSeconds();
 
 	/**
 	 * Allowed limit on the number of connections to the API.
 	 * 
 	 * @return number of connections allowed per a rolling second.
 	 */
-	int getMaximumConnectionsPerSecond();
+	int maximumConnectionsPerSecond();
 }

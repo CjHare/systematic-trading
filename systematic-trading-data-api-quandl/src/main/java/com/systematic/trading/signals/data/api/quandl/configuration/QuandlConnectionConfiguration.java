@@ -49,23 +49,23 @@ public class QuandlConnectionConfiguration {
 		this.maximumRetrievalTimeSeconds = maximumRetrievalTimeSeconds;
 	}
 
-	public String getEndpoint() {
+	public String endpoint() {
 		return endpoint;
 	}
 
-	public String getApiKey() {
+	public String apiKey() {
 		return apiKey;
 	}
 
-	public int getNumberOfRetries() {
+	public int numberOfRetries() {
 		return numberOfRetries;
 	}
 
-	public int getRetryBackOffMs() {
+	public int retryBackOffMs() {
 		return retryBackOffMs;
 	}
 
-	public int getMaximumRetrievalTimeSeconds() {
+	public int maximumRetrievalTimeSeconds() {
 		return maximumRetrievalTimeSeconds;
 	}
 }

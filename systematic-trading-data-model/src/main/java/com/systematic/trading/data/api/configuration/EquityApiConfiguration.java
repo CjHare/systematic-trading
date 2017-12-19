@@ -39,21 +39,21 @@ public interface EquityApiConfiguration {
 	/**
 	 * The root location of the EquityApi endpoint.
 	 */
-	public String getEndpoint();
+	public String endpoint();
 
 	/**
 	 * The key required to access the service.
 	 * 
 	 * @return the API key or <code>null</code> when no key is required,
 	 */
-	public String getApiKey();
+	public String apiKey();
 
 	/**
 	 * The number of times to retry a single call before failing.
 	 * 
 	 * @return maximum number of attempts for a single request, performed serially.
 	 */
-	public int getNumberOfRetries();
+	public int numberOfRetries();
 
 	/**
 	 * Sleeping time between retry attempts, where every retry attempt the sleep time increases by back off amount.
@@ -65,33 +65,33 @@ public interface EquityApiConfiguration {
 	 * 
 	 * @return staggering sleep time between each retry attempt, in milliseconds.
 	 */
-	public int getRetryBackOffMs();
+	public int retryBackOffMs();
 
 	/**
 	 * The long amount of time to allow for a making a call to the API.
 	 * 
 	 * @return maximum amount of time until the retrieval attempt is failed, should include timeouts, latency, retry attempts and backoffs.
 	 */
-	public int getMaximumRetrievalTimeSeconds();
+	public int maximumRetrievalTimeSeconds();
 
 	/**
 	 * Maximum number of concurrent connections allowed to the API.
 	 * 
 	 * @return the number of simultaneous connections that will be used to retrieve data.
 	 */
-	public int getMaximumConcurrentConnections();
+	public int maximumConcurrentConnections();
 
 	/**
 	 * Maximum number of connections to the API service allowed per a second.
 	 * 
 	 * @return the limit on the number of connections every rolling second.
 	 */
-	public int getMaximumConnectionsPerSecond();
+	public int maximumConnectionsPerSecond();
 
 	/**
 	 * Limit the pay load that will be retrieve per a connection.
 	 * 
 	 * @return maximum number of months of data requested per a connection to the API.
 	 */
-	public int getMaximumMonthsPerConnection();
+	public int maximumMonthsPerConnection();
 }

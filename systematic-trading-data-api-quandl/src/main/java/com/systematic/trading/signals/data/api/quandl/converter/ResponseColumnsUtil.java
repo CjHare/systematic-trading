@@ -66,6 +66,6 @@ public class ResponseColumnsUtil {
 	}
 
 	private boolean columnNameEquals( final String name, final QuandlColumnName column ) {
-		return StringUtils.equalsIgnoreCase(name, column.getName());
+		return StringUtils.equalsIgnoreCase(name, column.name());
 	}
 }

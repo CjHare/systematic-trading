@@ -79,29 +79,29 @@ public class HttpQuandlDatasetApiDao extends HttpQuandlApiDao implements QuandlA
 		final ClientConfig clientConfig = new ClientConfig().register(JacksonJsonProvider.class);
 
 		// End point target root
-		this.root = ClientBuilder.newClient(clientConfig).target(configuration.getEndpoint());
+		this.root = ClientBuilder.newClient(clientConfig).target(configuration.endpoint());
 
-		this.apiKey = configuration.getApiKey();
+		this.apiKey = configuration.apiKey();
 	}
 
 	@Override
 	public QuandlResultSet get( final String timeSeriesDataset, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate, final BlockingEventCount throttler )
 	        throws CannotRetrieveDataException {
-		final WebTarget url = createUrl(timeSeriesDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final WebTarget url = url(timeSeriesDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
 		final Response response = get(url, throttler);
 
-		final DatasetResource dataset = response.readEntity(DatasetResponseResource.class).getDataset();
+		final DatasetResource dataset = response.readEntity(DatasetResponseResource.class).dataset();
 
-		return new QuandlResultSet(columns(dataset.getColumns()), dataset.getData());
+		return new QuandlResultSet(columns(dataset.columns()), dataset.data());
 	}
 
 	private List<QuandlColumnName> columns( final List<String> names ) {
 		return names.stream().map(name -> new QuandlColumnName(name)).collect(Collectors.toList());
 	}
 
-	private WebTarget createUrl( final String timeSeriesDataset, final String tickerSymbol,
+	private WebTarget url( final String timeSeriesDataset, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
 		return root.path(String.format(PATH, timeSeriesDataset, tickerSymbol))
 		        .queryParam(START_DATE_KEY, inclusiveStartDate.format(QUANDL_DATE_FORMAT))

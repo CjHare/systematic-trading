@@ -30,6 +30,7 @@
 package com.systematic.trading.signals.data.api.quandl.resource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Column resource contains at least the needed column name.
@@ -48,11 +49,13 @@ public class ColumnResource {
 		this.name = name;
 	}
 
-	public String getName() {
+	@JsonProperty("name")
+	public String name() {
 		return name;
 	}
 
-	public void setName( final String name ) {
+	@JsonProperty("name")
+	public void name( final String name ) {
 		this.name = name;
 	}
 }

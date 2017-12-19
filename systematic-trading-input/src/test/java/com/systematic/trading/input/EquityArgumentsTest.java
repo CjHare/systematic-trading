@@ -194,7 +194,7 @@ public class EquityArgumentsTest {
 
 	private void verifyDataService( final String expected ) {
 		assertNotNull(parser.getDataService());
-		assertEquals(expected, parser.getDataService().getType());
+		assertEquals(expected, parser.getDataService().type());
 	}
 
 	private void verifyEquityDataSet( final String expected ) {

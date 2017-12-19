@@ -35,11 +35,11 @@ import java.sql.Date;
  */
 public interface HistoryRetrievalRequest {
 
-	String getEquityDataset();
+	String equityDataset();
 
-	String getTickerSymbol();
+	String tickerSymbol();
 
-	Date getInclusiveStartDate();
+	Date inclusiveStartDate();
 
-	Date getExclusiveEndDate();
+	Date exclusiveEndDate();
 }

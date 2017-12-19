@@ -43,23 +43,24 @@ import com.systematic.trading.data.price.OpeningPrice;
  */
 public class TradingDayPricesParser {
 
-	public TradingDayPrices parseDataPoint( final String tickerSymbol, final Object uncast ) {
+	public TradingDayPrices tradingPrices( final String tickerSymbol, final Object uncast ) {
+		
 		final Object[] data = (Object[]) uncast;
-		final LocalDate date = parseDate(data[0]);
+		final LocalDate date = date(data[0]);
 
-		final OpeningPrice openingPrice = OpeningPrice.valueOf(parseBigDecimal(data[3]));
-		final LowestPrice lowestPrice = LowestPrice.valueOf(parseBigDecimal(data[1]));
-		final HighestEquityPrice highestPrice = HighestEquityPrice.valueOf(parseBigDecimal(data[2]));
-		final ClosingPrice closingPrice = ClosingPrice.valueOf(parseBigDecimal(data[4]));
+		final OpeningPrice openingPrice = OpeningPrice.valueOf(bigDecimal(data[3]));
+		final LowestPrice lowestPrice = LowestPrice.valueOf(bigDecimal(data[1]));
+		final HighestEquityPrice highestPrice = HighestEquityPrice.valueOf(bigDecimal(data[2]));
+		final ClosingPrice closingPrice = ClosingPrice.valueOf(bigDecimal(data[4]));
 
 		return new TradingDayPricesImpl(tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice);
 	}
 
-	private LocalDate parseDate( final Object o ) {
+	private LocalDate date( final Object o ) {
 		return Date.valueOf(o.toString()).toLocalDate();
 	}
 
-	private BigDecimal parseBigDecimal( final Object o ) {
+	private BigDecimal bigDecimal( final Object o ) {
 		return BigDecimal.valueOf(Double.valueOf(o.toString()));
 	}
 }

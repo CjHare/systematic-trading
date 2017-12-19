@@ -54,42 +54,42 @@ public class QuandlConfiguration implements EquityApiConfiguration {
 	}
 
 	@Override
-	public String getEndpoint() {
-		return connectionConfiguration.getEndpoint();
+	public String endpoint() {
+		return connectionConfiguration.endpoint();
 	}
 
 	@Override
-	public String getApiKey() {
-		return connectionConfiguration.getApiKey();
+	public String apiKey() {
+		return connectionConfiguration.apiKey();
 	}
 
 	@Override
-	public int getNumberOfRetries() {
-		return connectionConfiguration.getNumberOfRetries();
+	public int numberOfRetries() {
+		return connectionConfiguration.numberOfRetries();
 	}
 
 	@Override
-	public int getRetryBackOffMs() {
-		return connectionConfiguration.getRetryBackOffMs();
+	public int retryBackOffMs() {
+		return connectionConfiguration.retryBackOffMs();
 	}
 
 	@Override
-	public int getMaximumRetrievalTimeSeconds() {
-		return connectionConfiguration.getMaximumRetrievalTimeSeconds();
+	public int maximumRetrievalTimeSeconds() {
+		return connectionConfiguration.maximumRetrievalTimeSeconds();
 	}
 
 	@Override
-	public int getMaximumConcurrentConnections() {
+	public int maximumConcurrentConnections() {
 		return maximumConcurrentConnections;
 	}
 
 	@Override
-	public int getMaximumConnectionsPerSecond() {
+	public int maximumConnectionsPerSecond() {
 		return maximumConnectionsPerSecond;
 	}
 
 	@Override
-	public int getMaximumMonthsPerConnection() {
+	public int maximumMonthsPerConnection() {
 		return maximumMonthsPerConnection;
 	}
 }

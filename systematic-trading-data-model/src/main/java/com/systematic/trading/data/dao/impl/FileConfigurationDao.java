@@ -40,7 +40,7 @@ import com.systematic.trading.data.dao.ConfigurationDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 
 /**
- * 
+ * Retrieving configuration properties stored in a file.
  * 
  * @author CJ Hare
  */
@@ -51,7 +51,7 @@ public class FileConfigurationDao implements ConfigurationDao {
 	private static final Logger LOG = LogManager.getLogger(ConfigurationDao.class);
 
 	@Override
-	public Properties get( final String propertyFile ) throws CannotRetrieveConfigurationException {
+	public Properties configuration( final String propertyFile ) throws CannotRetrieveConfigurationException {
 		final Properties properties = new Properties();
 
 		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {
