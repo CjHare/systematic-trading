@@ -27,19 +27,35 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.output.file.configuration;
+package com.systematic.trading.backtest.output.file.dao.impl;
+
+import java.text.DecimalFormat;
+
+import com.systematic.trading.backtest.output.file.dao.OrderEventFileDao;
+import com.systematic.trading.backtest.output.file.util.FileMultithreading;
+import com.systematic.trading.simulation.order.event.OrderEvent;
 
 /**
- * General configuration data useful for the output of back test data to file.
+ * Formats the order displays ready for output.
  * 
  * @author CJ Hare
  */
-public interface BackestOutputFileConfiguration {
+public class FileOrderEventFileDao implements OrderEventFileDao {
 
-	/**
-	 * Retrieves the number of threads, determining the maximum number of file writes to perform concurrently.
-	 * 
-	 * @return number of threads to write concurrently.
-	 */
-	int numberOfThreads();
+	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
+
+	/** Display responsible for handling the file output. */
+	private final FileMultithreading file;
+
+	public FileOrderEventFileDao( final FileMultithreading file ) {
+		this.file = file;
+
+		file.write("=== Order Events ===\n");
+	}
+
+	@Override
+	public void event( final OrderEvent event ) {
+		file.write(String.format("Place Order - %s total cost %s created after c.o.b on %s%n", event.getType(),
+		        TWO_DECIMAL_PLACES.format(event.getTotalCost()), event.getTransactionDate()));
+	}
 }

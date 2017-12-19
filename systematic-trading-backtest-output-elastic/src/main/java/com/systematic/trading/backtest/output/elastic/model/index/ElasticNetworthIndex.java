@@ -55,17 +55,17 @@ public class ElasticNetworthIndex extends ElasticCommonIndex {
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
+	protected ElasticIndexName indexName() {
 		return ElasticIndexName.NETWORTH;
 	}
 
 	@Override
-	protected ElasticIndexMapping getIndexMapping() {
-		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
-		        getPair(ElasticFieldName.CASH_BALANCE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.EQUITY_BALANCE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.EQUITY_BALANCE_VALUE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.NETWORTH, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.EVENT_DATE, ElasticFieldType.DATE)));
+	protected ElasticIndexMapping indexMapping() {
+		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
+		        pair(ElasticFieldName.CASH_BALANCE, ElasticFieldType.FLOAT),
+		        pair(ElasticFieldName.EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		        pair(ElasticFieldName.EQUITY_BALANCE_VALUE, ElasticFieldType.FLOAT),
+		        pair(ElasticFieldName.NETWORTH, ElasticFieldType.FLOAT),
+		        pair(ElasticFieldName.EVENT_DATE, ElasticFieldType.DATE)));
 	}
 }

@@ -46,11 +46,11 @@ public abstract class FileOutput implements BacktestEventListener {
 
 	private static final Logger LOG = LogManager.getLogger(FileOutput.class);
 
-	protected abstract EventStatisticsDao getEventStatisticsDao();
+	protected abstract EventStatisticsDao eventStatisticsDao();
 
-	protected abstract NetWorthSummaryDao getNetWorthSummaryDao();
+	protected abstract NetWorthSummaryDao netWorthSummaryDao();
 
-	protected abstract NetWorthEventListener getNetWorthEventListener();
+	protected abstract NetWorthEventListener netWorthEventListener();
 
 	@Override
 	public void stateChanged( final SimulationState transitionedState ) {
@@ -62,14 +62,14 @@ public abstract class FileOutput implements BacktestEventListener {
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
-		getNetWorthEventListener().event(event, state);
-		getNetWorthSummaryDao().event(event, state);
+		netWorthEventListener().event(event, state);
+		netWorthSummaryDao().event(event, state);
 	}
 
 	/**
 	 * Retrieves the base directory, after verifying it's existence.
 	 */
-	protected String getVerifiedDirectory( final String outputDirectory ) throws IOException {
+	protected String verifiedDirectory( final String outputDirectory ) throws IOException {
 		final File outputDirectoryFile = new File(outputDirectory);
 		if (!outputDirectoryFile.exists() && !outputDirectoryFile.mkdirs()) {
 			throw new IllegalArgumentException(
@@ -82,8 +82,7 @@ public abstract class FileOutput implements BacktestEventListener {
 	}
 
 	private void simulationCompleted() {
-		getEventStatisticsDao().outputEventStatistics();
-		getNetWorthSummaryDao().outputNetWorth();
+		eventStatisticsDao().eventStatistics();
+		netWorthSummaryDao().netWorth();
 	}
-
 }

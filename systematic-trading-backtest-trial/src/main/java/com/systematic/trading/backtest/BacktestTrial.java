@@ -119,12 +119,12 @@ public class BacktestTrial {
 		recordSimulationDates(simulationDates);
 
 		// Multi-threading support for output classes
-		final ExecutorService outputPool = getOutputPool(parserdArguments);
+		final ExecutorService outputPool = outputPool(parserdArguments);
 
 		// TODO run the test over the full period with exclusion on filters
 		// TODO no deposits until actual start date, rather then from the warm-up period
 
-		final BacktestEventListenerPreparation outputPreparation = getOutput(parserdArguments);
+		final BacktestEventListenerPreparation outputPreparation = output(parserdArguments);
 		outputPreparation.setUp();
 
 		final StopWatch timer = new StopWatch();
@@ -137,7 +137,7 @@ public class BacktestTrial {
 			clearOutputDirectory(depositAmount, parserdArguments);
 
 			for (final BacktestBootstrapConfiguration backtestConfiguration : backtestConfigurations) {
-				final BacktestEventListener output = getOutput(depositAmount, parserdArguments, backtestConfiguration,
+				final BacktestEventListener output = output(depositAmount, parserdArguments, backtestConfiguration,
 				        outputPool);
 
 				LOG.info("Backtesting beginning for: {}",
@@ -176,24 +176,24 @@ public class BacktestTrial {
 		}
 	}
 
-	private BacktestEventListener getOutput( final DepositConfiguration depositAmount,
+	private BacktestEventListener output( final DepositConfiguration depositAmount,
 	        final BacktestLaunchArguments arguments, final BacktestBootstrapConfiguration configuration,
 	        final ExecutorService pool ) throws BacktestInitialisationException {
 
-		final BacktestBatchId batchId = getBatchId(configuration, depositAmount);
+		final BacktestBatchId batchId = batchId(configuration, depositAmount);
 		final OutputType type = arguments.getOutputType();
 
 		try {
 			switch (type) {
 				case ELASTIC_SEARCH:
 					return new ElasticBacktestOutput(batchId, pool,
-					        BackestOutputElasticConfigurationSingleton.getConfiguration());
+					        BackestOutputElasticConfigurationSingleton.configuration());
 				case FILE_COMPLETE:
 					return new CompleteFileOutputService(batchId,
-					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool);
+					        outputDirectory(outputDirectory(depositAmount, arguments), configuration), pool);
 				case FILE_MINIMUM:
 					return new MinimalFileOutputService(batchId,
-					        getOutputDirectory(getOutputDirectory(depositAmount, arguments), configuration), pool);
+					        outputDirectory(outputDirectory(depositAmount, arguments), configuration), pool);
 				case NO_DISPLAY:
 					return new SilentBacktestEventLisener();
 				default:
@@ -204,28 +204,28 @@ public class BacktestTrial {
 		}
 	}
 
-	private String getOutputDirectory( final DepositConfiguration depositAmount,
+	private String outputDirectory( final DepositConfiguration depositAmount,
 	        final BacktestLaunchArguments arguments ) {
 		return isFileBasedDisplay(arguments) ? arguments.getOutputDirectory(depositAmount.toString()) : "";
 	}
 
-	private BacktestBatchId getBatchId( final BacktestBootstrapConfiguration configuration,
+	private BacktestBatchId batchId( final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
 		return new BacktestBatchId(description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
 	}
 
-	private String getOutputDirectory( final String baseOutputDirectory,
+	private String outputDirectory( final String baseOutputDirectory,
 	        final BacktestBootstrapConfiguration configuration ) {
 		return String.format("%s%s", baseOutputDirectory, description.bootstrapConfiguration(configuration));
 	}
 
-	private BacktestEventListenerPreparation getOutput( final BacktestLaunchArguments arguments ) {
+	private BacktestEventListenerPreparation output( final BacktestLaunchArguments arguments ) {
 		final OutputType type = arguments.getOutputType();
 
 		switch (type) {
 			case ELASTIC_SEARCH:
 				return new ElasticBacktestOutputPreparation(
-				        BackestOutputElasticConfigurationSingleton.getConfiguration());
+				        BackestOutputElasticConfigurationSingleton.configuration());
 			case FILE_COMPLETE:
 			case FILE_MINIMUM:
 			case NO_DISPLAY:
@@ -236,18 +236,18 @@ public class BacktestTrial {
 		}
 	}
 
-	private ExecutorService getOutputPool( final BacktestLaunchArguments arguments )
+	private ExecutorService outputPool( final BacktestLaunchArguments arguments )
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 		final OutputType type = arguments.getOutputType();
 
 		switch (type) {
 			case ELASTIC_SEARCH:
 				return Executors.newFixedThreadPool(
-				        BackestOutputElasticConfigurationSingleton.getConfiguration().getNumberOfConnections());
+				        BackestOutputElasticConfigurationSingleton.configuration().numberOfConnections());
 			case FILE_COMPLETE:
 			case FILE_MINIMUM:
 				return Executors.newFixedThreadPool(
-				        new FileValidatedBackestOutputFileConfigurationDao().get().getNumberOfThreads());
+				        new FileValidatedBackestOutputFileConfigurationDao().configuration().numberOfThreads());
 			case NO_DISPLAY:
 				return Executors.newSingleThreadScheduledExecutor();
 			default:

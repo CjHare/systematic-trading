@@ -47,6 +47,6 @@ public interface BackestOutputFileConfigurationDao {
 	 * @throws ConfigurationValidationException problem encountered during validation.
 	 * @throws CannotRetrieveConfigurationException problem encountered during retrieval.
 	 */
-	BackestOutputElasticConfiguration get()
+	BackestOutputElasticConfiguration configuration()
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException;
 }

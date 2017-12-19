@@ -34,5 +34,5 @@ import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventLi
  */
 public interface NetWorthSummaryDao extends NetWorthEventListener {
 
-	void outputNetWorth();
+	void netWorth();
 }

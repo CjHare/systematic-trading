@@ -62,7 +62,7 @@ public class FileEventStatisticsDao implements EventStatisticsDao {
 	}
 
 	@Override
-	public void outputEventStatistics() {
+	public void eventStatistics() {
 
 		final StringBuilder output = new StringBuilder();
 

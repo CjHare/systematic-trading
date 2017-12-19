@@ -74,11 +74,11 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 		// Only interested in the net worth when the simulation is complete
 		if (SimulationState.COMPLETE == state) {
-			file.write(createOutput(event));
+			file.write(output(event));
 		}
 	}
 
-	private String createOutput( final NetWorthEvent event ) {
+	private String output( final NetWorthEvent event ) {
 		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
 		out.add(compoundAnnualGrowth(event));
 		out.add(netWorth(event));

@@ -82,16 +82,16 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
+		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
 		        PeriodicConfiguration.WEEKLY));
 
-		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
+		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
 		        PeriodicConfiguration.MONTHLY));
 
-		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
+		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
 		        PeriodicConfiguration.WEEKLY));
 
-		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
+		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
 		        PeriodicConfiguration.MONTHLY));
 
 		return configurations;

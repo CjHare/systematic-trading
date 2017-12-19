@@ -57,13 +57,13 @@ public enum ElasticFieldName {
 	TRANSACTION_FEE(ElasticTypeName.TRANSACTION_FEE),
 	TOTAL_COST(ElasticTypeName.TOTAL_COST);
 
-	private final String name;
+	private final String fieldName;
 
 	ElasticFieldName( final String name ) {
-		this.name = name;
+		this.fieldName = name;
 	}
 
-	public String getName() {
-		return name;
+	public String fieldName() {
+		return fieldName;
 	}
 }

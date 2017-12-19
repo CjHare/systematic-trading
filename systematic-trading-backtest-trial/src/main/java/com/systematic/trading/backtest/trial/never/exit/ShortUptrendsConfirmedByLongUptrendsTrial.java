@@ -97,23 +97,23 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
+		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
 		        PeriodicConfiguration.WEEKLY));
-		configurations.add(getPeriod(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
+		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
 		        PeriodicConfiguration.MONTHLY));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
 		for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-			configurations.addAll(getCombinedUptrends(equity, simulationDates, openingFunds, deposit,
+			configurations.addAll(combinedUptrends(equity, simulationDates, openingFunds, deposit,
 			        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
 		}
 
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getCombinedUptrends( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> combinedUptrends( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
 	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
@@ -123,15 +123,15 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 
-		configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
-		        factory.strategy(factory.entry(getShortSmaOrEma(),
-		                ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_THREE_DAYS, getLongSmaOrEma()), entryPositionSizing,
+		configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
+		        factory.strategy(factory.entry(shortSmaOrEma(),
+		                ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_THREE_DAYS, longSmaOrEma()), entryPositionSizing,
 		                exit, exitPositionSizing)));
 
 		return configurations;
 	}
 
-	private EntryConfiguration getShortSmaOrEma() {
+	private EntryConfiguration shortSmaOrEma() {
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 
@@ -139,7 +139,7 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.SHORT)));
 	}
 
-	private EntryConfiguration getLongSmaOrEma() {
+	private EntryConfiguration longSmaOrEma() {
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 

@@ -29,9 +29,9 @@ import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.output.file.dao.OrderEventFileDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileBrokerageEventDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileCashEventDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileOrderEventFileDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
@@ -57,39 +57,11 @@ public class EventListenerOutput implements CashEventListener, OrderEventListene
 	public EventListenerOutput( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
 	        final FileMultithreading file ) {
 
-		file.write(createHeaderOutput(tradingData, dates));
+		file.write(header(tradingData, dates));
 
 		this.cashEventListener = new FileCashEventDao(file);
-		this.orderEventListener = new OrderEventFileDao(file);
+		this.orderEventListener = new FileOrderEventFileDao(file);
 		this.brokerageEventListener = new FileBrokerageEventDao(file);
-	}
-
-	private String createHeaderOutput( final TickerSymbolTradingData tradingData,
-	        final BacktestSimulationDates dates ) {
-
-		final StringBuilder output = new StringBuilder();
-		output.append(String.format("%n"));
-		output.append(String.format("#######################%n"));
-		output.append(String.format("### Backtest Events ###%n"));
-		output.append(String.format("#######################%n"));
-		output.append(String.format("%n"));
-
-		output.append(
-		        String.format("Data set for %s from %s to %s%n", tradingData.equityIdentity().getTickerSymbol(),
-		                tradingData.earliestDate(), tradingData.latestDate()));
-
-		output.append(String.format("Simulation dates for %s from %s to %s%n",
-		        tradingData.equityIdentity().getTickerSymbol(), dates.startDate(), dates.endDate()));
-
-		final long daysBetween = ChronoUnit.DAYS.between(tradingData.earliestDate(), tradingData.latestDate());
-		final double percentageTradingDays = ((double) tradingData.requiredTradingPrices() / daysBetween) * 100;
-
-		output.append(String.format("# trading days: %s over %s days (%s percentage trading days)%n",
-		        tradingData.requiredTradingPrices(), daysBetween, TWO_DECIMAL_PLACES.format(percentageTradingDays)));
-
-		output.append(String.format("%n"));
-
-		return output.toString();
 	}
 
 	@Override
@@ -105,5 +77,31 @@ public class EventListenerOutput implements CashEventListener, OrderEventListene
 	@Override
 	public void event( final CashEvent event ) {
 		cashEventListener.event(event);
+	}
+
+	private String header( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates ) {
+
+		final StringBuilder output = new StringBuilder();
+		output.append(String.format("%n"));
+		output.append(String.format("#######################%n"));
+		output.append(String.format("### Backtest Events ###%n"));
+		output.append(String.format("#######################%n"));
+		output.append(String.format("%n"));
+
+		output.append(String.format("Data set for %s from %s to %s%n", tradingData.equityIdentity().getTickerSymbol(),
+		        tradingData.earliestDate(), tradingData.latestDate()));
+
+		output.append(String.format("Simulation dates for %s from %s to %s%n",
+		        tradingData.equityIdentity().getTickerSymbol(), dates.startDate(), dates.endDate()));
+
+		final long daysBetween = ChronoUnit.DAYS.between(tradingData.earliestDate(), tradingData.latestDate());
+		final double percentageTradingDays = ((double) tradingData.requiredTradingPrices() / daysBetween) * 100;
+
+		output.append(String.format("# trading days: %s over %s days (%s percentage trading days)%n",
+		        tradingData.requiredTradingPrices(), daysBetween, TWO_DECIMAL_PLACES.format(percentageTradingDays)));
+
+		output.append(String.format("%n"));
+
+		return output.toString();
 	}
 }

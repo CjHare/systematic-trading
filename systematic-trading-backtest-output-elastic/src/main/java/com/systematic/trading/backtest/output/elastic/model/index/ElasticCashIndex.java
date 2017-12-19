@@ -55,16 +55,16 @@ public class ElasticCashIndex extends ElasticCommonIndex {
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
+	protected ElasticIndexName indexName() {
 		return ElasticIndexName.CASH;
 	}
 
 	@Override
-	protected ElasticIndexMapping getIndexMapping() {
-		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
-		        getPair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
+	protected ElasticIndexMapping indexMapping() {
+		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
+		        pair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
+		        pair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
+		        pair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT),
+		        pair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 }

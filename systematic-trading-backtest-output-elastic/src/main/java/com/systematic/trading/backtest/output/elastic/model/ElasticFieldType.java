@@ -37,13 +37,13 @@ public enum ElasticFieldType {
 	FLOAT("float"),
 	TEXT("text");
 
-	private final String name;
+	private final String fieldName;
 
 	ElasticFieldType( final String name ) {
-		this.name = name;
+		this.fieldName = name;
 	}
 
-	public String getName() {
-		return name;
+	public String fieldName() {
+		return fieldName;
 	}
 }

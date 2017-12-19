@@ -50,14 +50,14 @@ public class BackestOutputElasticConfigurationSingleton {
 
 	static {
 		try {
-			INSTANCE = new FileValidatedBackestOutputFileConfigurationDao().get();
+			INSTANCE = new FileValidatedBackestOutputFileConfigurationDao().configuration();
 		} catch (final ConfigurationValidationException | CannotRetrieveConfigurationException e) {
 			LOG.error(e);
 			throw new IllegalArgumentException("Missing BackestOutputElasticConfiguration");
 		}
 	}
 
-	public static BackestOutputElasticConfiguration getConfiguration() {
+	public static BackestOutputElasticConfiguration configuration() {
 		return INSTANCE;
 	}
 

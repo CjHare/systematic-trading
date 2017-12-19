@@ -53,20 +53,20 @@ public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
 
 	public void event( final BacktestBatchId id, final ReturnOnInvestmentEvent event ) {
 		create(id, new ElasticReturnOnInvestmentEventRequestResource(event,
-		        new ElasticReturnOnInvestmentEventFrequency(event).getFrequency()));
+		        new ElasticReturnOnInvestmentEventFrequency(event).frequency()));
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
+	protected ElasticIndexName indexName() {
 		return ElasticIndexName.RETURN_ON_INVESTMENT;
 	}
 
 	@Override
-	protected ElasticIndexMapping getIndexMapping() {
+	protected ElasticIndexMapping indexMapping() {
 		return new ElasticIndexMapping(
-		        Arrays.asList(getPair(ElasticFieldName.PERCENTAGE_CHANGE, ElasticFieldType.FLOAT),
-		                getPair(ElasticFieldName.FREQUENCY, ElasticFieldType.KEYWORD),
-		                getPair(ElasticFieldName.INCLUSIVE_START_DATE, ElasticFieldType.DATE),
-		                getPair(ElasticFieldName.EXCLUSIVE_END_DATE, ElasticFieldType.DATE)));
+		        Arrays.asList(pair(ElasticFieldName.PERCENTAGE_CHANGE, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.FREQUENCY, ElasticFieldType.KEYWORD),
+		                pair(ElasticFieldName.INCLUSIVE_START_DATE, ElasticFieldType.DATE),
+		                pair(ElasticFieldName.EXCLUSIVE_END_DATE, ElasticFieldType.DATE)));
 	}
 }

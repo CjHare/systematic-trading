@@ -42,26 +42,26 @@ public interface BackestOutputElasticConfiguration {
 	 * 
 	 * @return number of Elastic search nodes to share the data across.
 	 */
-	int getNumberOfShards();
+	int numberOfShards();
 
 	/**
 	 * The number of replica shards (copies) that each primary shard should have, which defaults to 1. 	
 	 * 
 	 * @return number of Elastic search replications for each index.
 	 */
-	int getNumberOfReplicas();
+	int numberOfReplicas();
 
 	/**
 	 * Retrieve the number of records to send to the Elastic Search bulk API.
 	 * 
 	 * @return maximum number of records to send to the bulk API.
 	 */
-	int getBulkApiQueueSize();
+	int bulkApiQueueSize();
 
 	/**
 	 * Number of concurrent connections to establish to Elastic Search.
 	 * 
 	 * @return number of threads for outputting data to Elastic Search.
 	 */
-	int getNumberOfConnections();
+	int numberOfConnections();
 }

@@ -109,7 +109,7 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 		List<BacktestBootstrapConfiguration> configurations = super.configuration(equity, simulationDates, openingFunds, deposit);
 
 		// Vanguard Retail - baseline
-		configurations.add(getBaseline(equity, simulationDates, openingFunds, deposit));
+		configurations.add(baseline(equity, simulationDates, openingFunds, deposit));
 
 		return configurations;
 	}

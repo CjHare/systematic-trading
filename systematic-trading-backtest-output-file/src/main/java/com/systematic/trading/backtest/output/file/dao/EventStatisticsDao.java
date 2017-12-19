@@ -33,5 +33,5 @@ package com.systematic.trading.backtest.output.file.dao;
 @FunctionalInterface
 public interface EventStatisticsDao {
 
-	void outputEventStatistics();
+	void eventStatistics();
 }

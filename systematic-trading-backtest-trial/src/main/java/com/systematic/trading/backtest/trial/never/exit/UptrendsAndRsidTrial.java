@@ -87,15 +87,15 @@ public class UptrendsAndRsidTrial extends BaseTrial implements BacktestConfigura
 
 		// Date based buying
 		configurations.add(
-		        getPeriod(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
+		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
 		configurations.add(
-		        getPeriod(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
+		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(getSmaEmaUptrendsAndRsi(equity, simulationDates, openingFunds, deposit, brokerage,
+		configurations.addAll(smaEmaUptrendsAndRsi(equity, simulationDates, openingFunds, deposit, brokerage,
 		        minimumTrade, maximumTrade));
 
 		return configurations;

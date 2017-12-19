@@ -87,15 +87,15 @@ public class EmaUptrendOrSmaUptrendTrial extends BaseTrial implements BacktestCo
 
 		// Date based buying
 		configurations.add(
-		        getPeriod(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
+		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
 		configurations.add(
-		        getPeriod(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
+		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(getSmaOrEmaUptrends(equity, simulationDates, openingFunds, deposit, brokerage,
+		configurations.addAll(smaOrEmaUptrends(equity, simulationDates, openingFunds, deposit, brokerage,
 		        minimumTrade, maximumTrade));
 
 		return configurations;

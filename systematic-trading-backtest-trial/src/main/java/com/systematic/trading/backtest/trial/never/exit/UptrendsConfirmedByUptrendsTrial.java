@@ -99,19 +99,19 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 
 		// Date based buying
 		configurations.add(
-		        getPeriod(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
+		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(getCombinedUptrends(equity, simulationDates, openingFunds, deposit, brokerage,
+		configurations.addAll(combinedUptrends(equity, simulationDates, openingFunds, deposit, brokerage,
 		        minimumTrade, maximumTrade));
 
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> getCombinedUptrends( final EquityConfiguration equity,
+	private List<BacktestBootstrapConfiguration> combinedUptrends( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
 	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
@@ -124,34 +124,34 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 
 		// (LongSMA OR LongEMA) AND (MediumSMA OR MediumEMA)
-		final EntryConfiguration mediumLongEntry = factory.entry(getLongSmaOrEma(), OperatorConfiguration.Selection.AND,
-		        getMediumSmaOrEma());
-		configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
+		final EntryConfiguration mediumLongEntry = factory.entry(longSmaOrEma(), OperatorConfiguration.Selection.AND,
+		        mediumSmaOrEma());
+		configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
 		        factory.strategy(mediumLongEntry, entryPositionSizing, exit, exitPositionSizing)));
 
 		// (LongSMA OR LongEMA) AND (ShortSMA OR ShortEMA)
-		final EntryConfiguration shortLongEntry = factory.entry(getLongSmaOrEma(), OperatorConfiguration.Selection.AND,
-		        getShortSmaOrEma());
-		configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
+		final EntryConfiguration shortLongEntry = factory.entry(longSmaOrEma(), OperatorConfiguration.Selection.AND,
+		        shortSmaOrEma());
+		configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
 		        factory.strategy(shortLongEntry, entryPositionSizing, exit, exitPositionSizing)));
 
 		for (final ConfirmaByConfiguration by : ConfirmaByConfiguration.values()) {
 
 			// (MediumSMA OR MediumEMA) ConfirmedBy (LongSMA OR LongEMA)
-			final EntryConfiguration mediumConfirmedEntry = factory.entry(getMediumSmaOrEma(), by, getLongSmaOrEma());
-			configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
+			final EntryConfiguration mediumConfirmedEntry = factory.entry(mediumSmaOrEma(), by, longSmaOrEma());
+			configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
 			        factory.strategy(mediumConfirmedEntry, entryPositionSizing, exit, exitPositionSizing)));
 
 			// (ShortSMA OR ShortEMA) ConfirmedBy (LongSMA OR LongEMA) 
-			configurations.add(getConfiguration(equity, simulationDates, openingFunds, deposit, brokerage,
-			        factory.strategy(factory.entry(getShortSmaOrEma(), by, getLongSmaOrEma()), entryPositionSizing,
+			configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
+			        factory.strategy(factory.entry(shortSmaOrEma(), by, longSmaOrEma()), entryPositionSizing,
 			                exit, exitPositionSizing)));
 		}
 
 		return configurations;
 	}
 
-	private EntryConfiguration getShortSmaOrEma() {
+	private EntryConfiguration shortSmaOrEma() {
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 
@@ -159,7 +159,7 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.SHORT)));
 	}
 
-	private EntryConfiguration getMediumSmaOrEma() {
+	private EntryConfiguration mediumSmaOrEma() {
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 
@@ -167,7 +167,7 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.MEDIUM)));
 	}
 
-	private EntryConfiguration getLongSmaOrEma() {
+	private EntryConfiguration longSmaOrEma() {
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 

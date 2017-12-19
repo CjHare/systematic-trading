@@ -56,22 +56,22 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 	}
 
 	@Override
-	public BackestOutputFileConfiguration get()
+	public BackestOutputFileConfiguration configuration()
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 		final Properties properties = new FileConfigurationDao().get(BACKTEST_OUTPUT_PROPERTIES_FILE);
 
-		final int numberOfThreads = getIntegerProperty(properties, BacktestOutputFileProperty.NUMBER_OF_THREADS,
+		final int numberOfThreads = integerProperty(properties, BacktestOutputFileProperty.NUMBER_OF_THREADS,
 		        numberOfThreadsValidator);
 
 		return new BackestOutputFileConfigurationImpl(numberOfThreads);
 	}
 
-	private int getIntegerProperty( final Properties properties, final BacktestOutputFileProperty property,
+	private int integerProperty( final Properties properties, final BacktestOutputFileProperty property,
 	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
-		return validator.validate(getProperty(properties, property));
+		return validator.validate(property(properties, property));
 	}
 
-	private String getProperty( final Properties properties, final BacktestOutputFileProperty property ) {
-		return properties.getProperty(property.getKey());
+	private String property( final Properties properties, final BacktestOutputFileProperty property ) {
+		return properties.getProperty(property.key());
 	}
 }

@@ -68,22 +68,22 @@ public class ElasticIndexMapping {
 		final Map<String, Object> message = new HashMap<>();
 
 		for (final Pair<ElasticFieldName, ElasticFieldType> field : fields) {
-			message.put(getName(field), getType(field));
+			message.put(name(field), type(field));
 		}
 
 		this.typeMapping = Collections.unmodifiableMap(message);
 	}
 
-	public Map<String, Object> getTypeMapping() {
+	public Map<String, Object> typeMapping() {
 		return typeMapping;
 	}
 
-	private String getName( final Pair<ElasticFieldName, ElasticFieldType> field ) {
-		return field.getLeft().getName();
+	private String name( final Pair<ElasticFieldName, ElasticFieldType> field ) {
+		return field.getLeft().fieldName();
 	}
 
-	private Map.Entry<String, String> getType( final Pair<ElasticFieldName, ElasticFieldType> field ) {
-		return new SimpleEntry<>(TYPE, field.getRight().getName());
+	private Map.Entry<String, String> type( final Pair<ElasticFieldName, ElasticFieldType> field ) {
+		return new SimpleEntry<>(TYPE, field.getRight().fieldName());
 	}
 
 	@Override

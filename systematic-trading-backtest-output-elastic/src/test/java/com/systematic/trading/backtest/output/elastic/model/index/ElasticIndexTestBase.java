@@ -85,8 +85,8 @@ public abstract class ElasticIndexTestBase {
 
 	@Before
 	public void setUp() {
-		when(dao.getIndex(any(ElasticIndexName.class))).thenReturn(getIndexResponse);
-		when(dao.getMapping(any(ElasticIndexName.class), any(BacktestBatchId.class))).thenReturn(getIndexTypeResponse);
+		when(dao.index(any(ElasticIndexName.class))).thenReturn(getIndexResponse);
+		when(dao.mapping(any(ElasticIndexName.class), any(BacktestBatchId.class))).thenReturn(getIndexTypeResponse);
 	}
 
 	@Test
@@ -161,7 +161,7 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	private void setRefreshInterval( final boolean refresh ) {
-		index.setRefreshInterval(refresh);
+		index.refreshInterval(refresh);
 	}
 
 	private void initIndex( final String batchId ) {
@@ -184,7 +184,7 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	private void verifyPresentMappingCalls( final String batchId ) {
-		verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
+		verify(dao).mapping(eq(getIndexName()), equalsBacktestId(batchId));
 		verifyNoMoreInteractions(dao);
 
 		verifyGetIndexType();
@@ -192,7 +192,7 @@ public abstract class ElasticIndexTestBase {
 
 	private void verifyMissingMappingCalls( final String batchId ) {
 		final InOrder order = inOrder(dao);
-		order.verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
+		order.verify(dao).mapping(eq(getIndexName()), equalsBacktestId(batchId));
 		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
 		        equalsJson(getJsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);
@@ -200,7 +200,7 @@ public abstract class ElasticIndexTestBase {
 
 	private void verifyPutIndexCall() {
 		final InOrder order = inOrder(dao);
-		order.verify(dao).getIndex(getIndexName());
+		order.verify(dao).index(getIndexName());
 		order.verify(dao).put(eq(getIndexName()), equalsJson(getJsonPutIndex()));
 		verifyNoMoreInteractions(dao);
 
@@ -209,7 +209,7 @@ public abstract class ElasticIndexTestBase {
 
 	private void verifyMissingIndexCalls( final String batchId ) {
 		final InOrder order = inOrder(dao);
-		order.verify(dao).getMapping(eq(getIndexName()), equalsBacktestId(batchId));
+		order.verify(dao).mapping(eq(getIndexName()), equalsBacktestId(batchId));
 		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
 		        equalsJson(getJsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);

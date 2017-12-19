@@ -58,7 +58,7 @@ public class HistogramOutput {
 		final Map<String, BigInteger> binnedBuyEvents = new TreeMap<>();
 		for (final Map.Entry<BigDecimal, BigInteger> equities : events.entrySet()) {
 			final BigDecimal frequency = equities.getKey();
-			final String bin = getBin(smallestKey, largestKey, frequency);
+			final String bin = bin(smallestKey, largestKey, frequency);
 			final BigInteger count = events.get(frequency);
 			binnedBuyEvents.put(bin, binnedBuyEvents.get(bin) == null ? count : binnedBuyEvents.get(bin).add(count));
 		}
@@ -68,7 +68,7 @@ public class HistogramOutput {
 		}
 	}
 
-	private String getBin( final BigDecimal smallest, final BigDecimal largest, final BigDecimal value ) {
+	private String bin( final BigDecimal smallest, final BigDecimal largest, final BigDecimal value ) {
 
 		// bins covering the whole range of values
 		final BigDecimal binSize = largest.subtract(smallest).divide(TEN);

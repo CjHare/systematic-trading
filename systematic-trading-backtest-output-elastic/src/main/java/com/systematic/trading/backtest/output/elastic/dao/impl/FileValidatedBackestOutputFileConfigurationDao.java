@@ -62,29 +62,29 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 	}
 
 	@Override
-	public BackestOutputElasticConfiguration get()
+	public BackestOutputElasticConfiguration configuration()
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 		final Properties properties = new FileConfigurationDao().get(BACKTEST_OUTPUT_ELASTIC_PROPERTIES_FILE);
 
-		final int numberOfConnections = getIntegerProperty(properties,
+		final int numberOfConnections = integerProperty(properties,
 		        BacktestOutputElasticProperty.NUMBER_OF_CONNECTIONS, numberOfConnectionsValidator);
-		final int numberOfShards = getIntegerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_SHARDS,
+		final int numberOfShards = integerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_SHARDS,
 		        numberOfShardsValidator);
-		final int numberOfReplicas = getIntegerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_REPLICAS,
+		final int numberOfReplicas = integerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_REPLICAS,
 		        numberOfReplicasValidator);
-		final int bulkApiBucketSize = getIntegerProperty(properties, BacktestOutputElasticProperty.BULK_API_BUCKET_SIZE,
+		final int bulkApiBucketSize = integerProperty(properties, BacktestOutputElasticProperty.BULK_API_BUCKET_SIZE,
 		        bulkApiBucketSizeValidator);
 
 		return new BackestOutputFileConfigurationImpl(numberOfConnections, numberOfShards, numberOfReplicas,
 		        bulkApiBucketSize);
 	}
 
-	private int getIntegerProperty( final Properties properties, final BacktestOutputElasticProperty property,
+	private int integerProperty( final Properties properties, final BacktestOutputElasticProperty property,
 	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
-		return validator.validate(getProperty(properties, property));
+		return validator.validate(property(properties, property));
 	}
 
-	private String getProperty( final Properties properties, final BacktestOutputElasticProperty property ) {
-		return properties.getProperty(property.getKey());
+	private String property( final Properties properties, final BacktestOutputElasticProperty property ) {
+		return properties.getProperty(property.key());
 	}
 }

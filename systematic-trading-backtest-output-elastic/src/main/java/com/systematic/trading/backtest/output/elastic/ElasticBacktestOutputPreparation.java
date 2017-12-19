@@ -94,12 +94,12 @@ public class ElasticBacktestOutputPreparation implements BacktestEventListenerPr
 	}
 
 	private void setRefreshInterval( final boolean enabled ) {
-		signalAnalysisIndex.setRefreshInterval(enabled);
-		cashIndex.setRefreshInterval(enabled);
-		orderIndex.setRefreshInterval(enabled);
-		brokerageIndex.setRefreshInterval(enabled);
-		returnOnInvestmentIndex.setRefreshInterval(enabled);
-		networthIndex.setRefreshInterval(enabled);
-		equityIndex.setRefreshInterval(enabled);
+		signalAnalysisIndex.refreshInterval(enabled);
+		cashIndex.refreshInterval(enabled);
+		orderIndex.refreshInterval(enabled);
+		brokerageIndex.refreshInterval(enabled);
+		returnOnInvestmentIndex.refreshInterval(enabled);
+		networthIndex.refreshInterval(enabled);
+		equityIndex.refreshInterval(enabled);
 	}
 }

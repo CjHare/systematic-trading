@@ -68,7 +68,7 @@ public class MinimalFileOutputService extends FileOutput implements BacktestEven
 
 	public MinimalFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
 	        final ExecutorService pool ) throws IOException {
-		this.baseDirectory = getVerifiedDirectory(outputDirectory);
+		this.baseDirectory = verifiedDirectory(outputDirectory);
 		this.pool = pool;
 		this.batchId = batchId;
 	}
@@ -78,16 +78,12 @@ public class MinimalFileOutputService extends FileOutput implements BacktestEven
 	        final EventStatistics eventStatistics, final CumulativeReturnOnInvestment cumulativeRoi,
 	        final TradingDayPrices lastTradingDay ) {
 
-		final FileMultithreading statisticsFile = getFileDisplay("/statistics.txt");
+		final FileMultithreading statisticsFile = fileDisplay("/statistics.txt");
 		this.statisticsDisplay = new FileEventStatisticsDao(eventStatistics, statisticsFile);
 		this.netWorthDisplay = new FileNetWorthSummaryDao(cumulativeRoi, statisticsFile);
 
-		final FileMultithreading comparisonFile = getFileDisplay("/../summary.txt");
+		final FileMultithreading comparisonFile = fileDisplay("/../summary.txt");
 		netWorthComparisonDisplay = new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile);
-	}
-
-	private FileMultithreading getFileDisplay( final String suffix ) {
-		return new FileMultithreading(baseDirectory + suffix, pool);
 	}
 
 	@Override
@@ -121,17 +117,21 @@ public class MinimalFileOutputService extends FileOutput implements BacktestEven
 	}
 
 	@Override
-	protected EventStatisticsDao getEventStatisticsDao() {
+	protected EventStatisticsDao eventStatisticsDao() {
 		return statisticsDisplay;
 	}
 
 	@Override
-	protected NetWorthSummaryDao getNetWorthSummaryDao() {
+	protected NetWorthSummaryDao netWorthSummaryDao() {
 		return netWorthDisplay;
 	}
 
 	@Override
-	protected NetWorthEventListener getNetWorthEventListener() {
+	protected NetWorthEventListener netWorthEventListener() {
 		return netWorthComparisonDisplay;
+	}
+
+	private FileMultithreading fileDisplay( final String suffix ) {
+		return new FileMultithreading(baseDirectory + suffix, pool);
 	}
 }

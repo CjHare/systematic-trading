@@ -25,10 +25,6 @@
  */
 package com.systematic.trading.backtest.output.file.dao;
 
-import java.text.DecimalFormat;
-
-import com.systematic.trading.backtest.output.file.util.FileMultithreading;
-import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
 
 /**
@@ -36,22 +32,5 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public class OrderEventFileDao implements OrderEventListener {
-
-	private static final DecimalFormat TWO_DECIMAL_PLACES = new DecimalFormat(".##");
-
-	/** Display responsible for handling the file output. */
-	private final FileMultithreading file;
-
-	public OrderEventFileDao( final FileMultithreading file ) {
-		this.file = file;
-
-		file.write("=== Order Events ===\n");
-	}
-
-	@Override
-	public void event( final OrderEvent event ) {
-		file.write(String.format("Place Order - %s total cost %s created after c.o.b on %s%n", event.getType(),
-		        TWO_DECIMAL_PLACES.format(event.getTotalCost()), event.getTransactionDate()));
-	}
+public interface OrderEventFileDao extends OrderEventListener {
 }

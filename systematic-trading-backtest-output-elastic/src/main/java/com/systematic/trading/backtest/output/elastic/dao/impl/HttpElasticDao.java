@@ -94,13 +94,13 @@ public class HttpElasticDao implements ElasticDao {
 	}
 
 	@Override
-	public Response getIndex( final ElasticIndexName indexName ) {
-		final String path = indexName.getName();
+	public Response index( final ElasticIndexName indexName ) {
+		final String path = indexName.indexName();
 		return root.path(path).request(MediaType.APPLICATION_JSON).get();
 	}
 
 	@Override
-	public Response getMapping( final ElasticIndexName indexName, final BacktestBatchId id ) {
+	public Response mapping( final ElasticIndexName indexName, final BacktestBatchId id ) {
 		final String path = getMappingPath(indexName, id);
 		return root.path(path).request(MediaType.APPLICATION_JSON).get();
 	}
@@ -140,7 +140,7 @@ public class HttpElasticDao implements ElasticDao {
 	@Override
 	public void put( final ElasticIndexName indexName, final Entity<?> requestBody ) {
 
-		final String path = indexName.getName();
+		final String path = indexName.indexName();
 		final Response response = root.path(path).request().put(requestBody);
 
 		if (response.getStatus() != 200) {
@@ -164,18 +164,18 @@ public class HttpElasticDao implements ElasticDao {
 	}
 
 	private String getSettingPath( final ElasticIndexName indexName ) {
-		return String.format("%s/_settings", indexName.getName());
+		return String.format("%s/_settings", indexName.indexName());
 	}
 
 	/**
 	 * Path for retrieving or putting mapping data to elastic search.
 	 */
 	private String getMappingPath( final ElasticIndexName indexName, final BacktestBatchId id ) {
-		return String.format("%s/_mapping/%s/", indexName.getName(), id.name());
+		return String.format("%s/_mapping/%s/", indexName.indexName(), id.name());
 	}
 
 	private String getIndexBulkApiPath( final ElasticIndexName indexName ) {
-		return String.format("%s/_bulk", indexName.getName());
+		return String.format("%s/_bulk", indexName.indexName());
 	}
 
 	private boolean isInvalidResponse( final ElasticBulkApiResponseResource eventResponse ) {

@@ -152,7 +152,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 	}
 
 	private String getEventFrequency() {
-		return new ElasticReturnOnInvestmentEventFrequency(event).getFrequency();
+		return new ElasticReturnOnInvestmentEventFrequency(event).frequency();
 	}
 
 	private void setUpEvent( final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {

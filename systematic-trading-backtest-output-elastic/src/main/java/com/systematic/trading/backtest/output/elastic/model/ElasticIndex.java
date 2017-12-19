@@ -66,7 +66,7 @@ public class ElasticIndex {
 		settings = Collections.unmodifiableMap(message);
 	}
 
-	public Map<String, Object> getSettings() {
+	public Map<String, Object> settings() {
 		return settings;
 	}
 

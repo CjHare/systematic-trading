@@ -57,7 +57,7 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 		file.write("=== Return On Investment Events ===%n");
 	}
 
-	public String createOutput( final ReturnOnInvestmentEvent event ) {
+	public String output( final ReturnOnInvestmentEvent event ) {
 
 		final StringBuilder output = new StringBuilder();
 		final BigDecimal percentageChange = event.getPercentageChange();
@@ -74,12 +74,12 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 
 		if (isMonthlyRoiOutput(elapsed)) {
 			output.append(String.format("Monthly - ROI: %s percent over %s month(s), from %s to %s%n",
-			        formattedPercentageChange, getRoundedMonths(elapsed), startDateInclusive, endDateExclusive));
+			        formattedPercentageChange, roundedMonths(elapsed), startDateInclusive, endDateExclusive));
 		}
 
 		if (isYearlyRoiOutput(elapsed)) {
 			output.append(String.format("Yearly - ROI: %s percent over %s year(s), from %s to %s%n",
-			        formattedPercentageChange, getRoundedYears(elapsed), startDateInclusive, endDateExclusive));
+			        formattedPercentageChange, roundedYears(elapsed), startDateInclusive, endDateExclusive));
 		}
 
 		return output.toString();
@@ -96,7 +96,7 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 	}
 
 	private boolean hasMostlyDays( final Period elapsed ) {
-		return elapsed.getDays() > 0 && getRoundedMonths(elapsed) == 0 && getRoundedYears(elapsed) == 0;
+		return elapsed.getDays() > 0 && roundedMonths(elapsed) == 0 && roundedYears(elapsed) == 0;
 	}
 
 	private boolean isMonthlyRoiOutput( final Period elapsed ) {
@@ -110,10 +110,10 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 	}
 
 	private boolean hasMostlyMonths( final Period elapsed ) {
-		return getRoundedMonths(elapsed) > 0 && getRoundedYears(elapsed) == 0;
+		return roundedMonths(elapsed) > 0 && roundedYears(elapsed) == 0;
 	}
 
-	private int getRoundedMonths( final Period elapsed ) {
+	private int roundedMonths( final Period elapsed ) {
 		return elapsed.getDays() > 20 ? elapsed.getMonths() + 1 : elapsed.getMonths();
 	}
 
@@ -121,19 +121,19 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 		switch (roiType) {
 			case ALL:
 			case YEARLY:
-				return getRoundedYears(elapsed) > 0;
+				return roundedYears(elapsed) > 0;
 			default:
 				return false;
 		}
 	}
 
-	private int getRoundedYears( final Period elapsed ) {
+	private int roundedYears( final Period elapsed ) {
 		return elapsed.getDays() > 20 && elapsed.getMonths() == 11 ? elapsed.getYears() + 1 : elapsed.getYears();
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
 
-		file.write(createOutput((ReturnOnInvestmentEvent) event));
+		file.write(output((ReturnOnInvestmentEvent) event));
 	}
 }

@@ -40,13 +40,13 @@ public enum ElasticIndexName {
 	RETURN_ON_INVESTMENT("return-on-investment"),
 	SIGNAL_ANALYSIS("signal-analysis");
 
-	private final String name;
+	private final String indexName;
 
 	ElasticIndexName( final String name ) {
-		this.name = name;
+		this.indexName = name;
 	}
 
-	public String getName() {
-		return name;
+	public String indexName() {
+		return indexName;
 	}
 }

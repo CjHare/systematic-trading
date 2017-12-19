@@ -47,7 +47,7 @@ public enum BacktestOutputElasticProperty {
 		this.key = key;
 	}
 
-	public String getKey() {
+	public String key() {
 		return key;
 	}
 }

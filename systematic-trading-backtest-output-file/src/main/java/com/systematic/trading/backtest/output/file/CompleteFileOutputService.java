@@ -37,7 +37,6 @@ import com.systematic.trading.backtest.output.file.dao.EquityEventDao;
 import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
 import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
 import com.systematic.trading.backtest.output.file.dao.NetworthComparisonDao;
-import com.systematic.trading.backtest.output.file.dao.OrderEventFileDao;
 import com.systematic.trading.backtest.output.file.dao.ReturnOnInvestmentDao;
 import com.systematic.trading.backtest.output.file.dao.SignalAnalysisDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileBrokerageEventDao;
@@ -46,6 +45,7 @@ import com.systematic.trading.backtest.output.file.dao.impl.FileEquityEventDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileEventStatisticsDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileNetWorthSummaryDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileNetworthComparisonDao;
+import com.systematic.trading.backtest.output.file.dao.impl.FileOrderEventFileDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileReturnOnInvestmentDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileSignalAnalysisDao;
 import com.systematic.trading.backtest.output.file.model.ReturnOnInvestmentPeriod;
@@ -90,7 +90,7 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 
 	public CompleteFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
 	        final ExecutorService pool ) throws IOException {
-		this.baseDirectory = getVerifiedDirectory(outputDirectory);
+		this.baseDirectory = verifiedDirectory(outputDirectory);
 		this.pool = pool;
 		this.batchId = batchId;
 	}
@@ -100,49 +100,45 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 	        final EventStatistics eventStatistics, final CumulativeReturnOnInvestment cumulativeRoi,
 	        final TradingDayPrices lastTradingDay ) {
 
-		final FileMultithreading returnOnInvestmentFile = getFileDisplay("/return-on-investment.txt");
+		final FileMultithreading returnOnInvestmentFile = fileDisplay("/return-on-investment.txt");
 		this.roiDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.ALL, returnOnInvestmentFile);
 
-		final FileMultithreading returnOnInvestmentDailyFilen = getFileDisplay("/return-on-investment-daily.txt");
+		final FileMultithreading returnOnInvestmentDailyFilen = fileDisplay("/return-on-investment-daily.txt");
 		this.roiDailyDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.DAILY,
 		        returnOnInvestmentDailyFilen);
 
-		final FileMultithreading returnOnInvestmentMonthlyFile = getFileDisplay("/return-on-investment-monthly.txt");
+		final FileMultithreading returnOnInvestmentMonthlyFile = fileDisplay("/return-on-investment-monthly.txt");
 		this.roiMonthlyDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.MONTHLY,
 		        returnOnInvestmentMonthlyFile);
 
-		final FileMultithreading returnOnInvestmentYearlyFile = getFileDisplay("/return-on-investment-yearly.txt");
+		final FileMultithreading returnOnInvestmentYearlyFile = fileDisplay("/return-on-investment-yearly.txt");
 		this.roiYearlyDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.YEARLY,
 		        returnOnInvestmentYearlyFile);
 
-		final FileMultithreading eventFile = getFileDisplay("/events.txt");
+		final FileMultithreading eventFile = fileDisplay("/events.txt");
 		this.eventDisplay = new EventListenerOutput(tradingData, dates, eventFile);
 
-		final FileMultithreading cashEventFile = getFileDisplay("/events-cash.txt");
+		final FileMultithreading cashEventFile = fileDisplay("/events-cash.txt");
 		this.cashEventDisplay = new FileCashEventDao(cashEventFile);
 
-		final FileMultithreading orderEventFile = getFileDisplay("/events-order.txt");
-		this.ordertEventDisplay = new OrderEventFileDao(orderEventFile);
+		final FileMultithreading orderEventFile = fileDisplay("/events-order.txt");
+		this.ordertEventDisplay = new FileOrderEventFileDao(orderEventFile);
 
-		final FileMultithreading brokerageEventFile = getFileDisplay("/events-brokerage.txt");
+		final FileMultithreading brokerageEventFile = fileDisplay("/events-brokerage.txt");
 		this.brokerageEventDisplay = new FileBrokerageEventDao(brokerageEventFile);
 
-		final FileMultithreading equityEventFile = getFileDisplay("/events-equity.txt");
+		final FileMultithreading equityEventFile = fileDisplay("/events-equity.txt");
 		this.equityEventDisplay = new FileEquityEventDao(equityEventFile);
 
-		final FileMultithreading statisticsFile = getFileDisplay("/statistics.txt");
+		final FileMultithreading statisticsFile = fileDisplay("/statistics.txt");
 		this.statisticsDisplay = new FileEventStatisticsDao(eventStatistics, statisticsFile);
 		this.netWorthDisplay = new FileNetWorthSummaryDao(cumulativeRoi, statisticsFile);
 
-		final FileMultithreading signalAnalysisFile = getFileDisplay("/signals.txt");
+		final FileMultithreading signalAnalysisFile = fileDisplay("/signals.txt");
 		this.signalAnalysisDisplay = new FileSignalAnalysisDao(signalAnalysisFile);
 
-		final FileMultithreading comparisonFile = getFileDisplay("/../summary.csv");
+		final FileMultithreading comparisonFile = fileDisplay("/../summary.csv");
 		netWorthComparisonDisplay = new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile);
-	}
-
-	private FileMultithreading getFileDisplay( final String suffix ) {
-		return new FileMultithreading(baseDirectory + suffix, pool);
 	}
 
 	@Override
@@ -182,17 +178,21 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 	}
 
 	@Override
-	protected EventStatisticsDao getEventStatisticsDao() {
+	protected EventStatisticsDao eventStatisticsDao() {
 		return statisticsDisplay;
 	}
 
 	@Override
-	protected NetWorthSummaryDao getNetWorthSummaryDao() {
+	protected NetWorthSummaryDao netWorthSummaryDao() {
 		return netWorthDisplay;
 	}
 
 	@Override
-	protected NetWorthEventListener getNetWorthEventListener() {
+	protected NetWorthEventListener netWorthEventListener() {
 		return netWorthComparisonDisplay;
+	}
+
+	private FileMultithreading fileDisplay( final String suffix ) {
+		return new FileMultithreading(baseDirectory + suffix, pool);
 	}
 }

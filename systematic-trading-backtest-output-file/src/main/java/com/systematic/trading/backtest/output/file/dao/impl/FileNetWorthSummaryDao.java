@@ -60,7 +60,7 @@ public class FileNetWorthSummaryDao implements NetWorthSummaryDao {
 	}
 
 	@Override
-	public void outputNetWorth() {
+	public void netWorth() {
 
 		final BigDecimal balance = lastEvent.getEquityBalance();
 		final BigDecimal holdingValue = lastEvent.getEquityBalanceValue();

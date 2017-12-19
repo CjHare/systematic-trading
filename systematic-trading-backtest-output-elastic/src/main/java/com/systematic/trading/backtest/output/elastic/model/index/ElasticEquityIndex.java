@@ -55,17 +55,17 @@ public class ElasticEquityIndex extends ElasticCommonIndex {
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
+	protected ElasticIndexName indexName() {
 		return ElasticIndexName.EQUITY;
 	}
 
 	@Override
-	protected ElasticIndexMapping getIndexMapping() {
-		return new ElasticIndexMapping(Arrays.asList(getPair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
-		        getPair(ElasticFieldName.IDENTITY, ElasticFieldType.TEXT),
-		        getPair(ElasticFieldName.EQUITY_AMOUNT, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.STARTING_EQUITY_BALANCE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.END_EQUITY_BALANCE, ElasticFieldType.FLOAT),
-		        getPair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
+	protected ElasticIndexMapping indexMapping() {
+		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
+		        pair(ElasticFieldName.IDENTITY, ElasticFieldType.TEXT),
+		        pair(ElasticFieldName.EQUITY_AMOUNT, ElasticFieldType.FLOAT),
+		        pair(ElasticFieldName.STARTING_EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		        pair(ElasticFieldName.END_EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		        pair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 }

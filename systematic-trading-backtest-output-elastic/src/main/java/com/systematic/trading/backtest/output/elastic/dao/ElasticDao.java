@@ -38,9 +38,9 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
  */
 public interface ElasticDao {
 
-	Response getIndex( ElasticIndexName indexName );
+	Response index( ElasticIndexName indexName );
 
-	Response getMapping( ElasticIndexName indexName, BacktestBatchId id );
+	Response mapping( ElasticIndexName indexName, BacktestBatchId id );
 
 	void postTypes( ElasticIndexName indexName, Entity<?> requestBody );
 

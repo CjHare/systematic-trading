@@ -87,17 +87,17 @@ public class MacdRsiTrial extends BaseTrial implements BacktestConfiguration {
 
 		// Date based buying
 		configurations.add(
-		        getPeriod(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
+		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
 		configurations.add(
-		        getPeriod(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
+		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
 		configurations
-		        .addAll(getMacd(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade, maximumTrade));
-		configurations.addAll(getMacdConfirmedByRsi(equity, simulationDates, openingFunds, deposit, brokerage,
+		        .addAll(macd(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade, maximumTrade));
+		configurations.addAll(macdConfirmedByRsi(equity, simulationDates, openingFunds, deposit, brokerage,
 		        minimumTrade, maximumTrade));
 
 		return configurations;

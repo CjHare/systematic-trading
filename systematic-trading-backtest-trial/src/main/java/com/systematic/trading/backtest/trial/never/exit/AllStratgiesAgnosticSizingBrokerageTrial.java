@@ -42,6 +42,8 @@ import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.AllTrials;
+import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.BigDecimalLaunchArgument;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.input.EndDateLaunchArgument;
@@ -49,13 +51,11 @@ import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
 import com.systematic.trading.input.LaunchArgument;
+import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
-import com.systematic.trading.input.BacktestLaunchArguments;
-import com.systematic.trading.input.BigDecimalLaunchArgument;
 import com.systematic.trading.input.OutputLaunchArgument;
 import com.systematic.trading.input.StartDateLaunchArgument;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * All strategies using the same Vanguard brokerage.
@@ -81,13 +81,13 @@ public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implemen
 		        launchArgs);
 	}
 
-	private static Set<Pair<MinimumTrade, MaximumTrade>> getPositionSizing() {
+	private static Set<Pair<MinimumTrade, MaximumTrade>> positionSizing() {
 		final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes = new HashSet<>();
 		tradeSizes.add(new ImmutablePair<MinimumTrade, MaximumTrade>(MinimumTrade.ZERO, MaximumTrade.ALL));
 		return tradeSizes;
 	}
 
 	public AllStratgiesAgnosticSizingBrokerageTrial() {
-		super(new VanguardBrokerageFees(), getPositionSizing());
+		super(new VanguardBrokerageFees(), positionSizing());
 	}
 }
