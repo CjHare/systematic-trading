@@ -102,7 +102,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	private BigDecimal equityCost( final BrokerageTransaction broker, final TradingDayPrices todaysPrice,
 	        final EquityOrderVolume volume ) {
-		return broker.calculateBuy(todaysPrice.openingPrice(), volume, todaysPrice.date());
+		return broker.cost(todaysPrice.openingPrice(), volume, todaysPrice.date());
 	}
 
 	private void debitEquityCost( final CashAccount cashAccount, final TradingDayPrices todaysPrice,

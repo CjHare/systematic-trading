@@ -158,7 +158,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	}
 
 	@Override
-	public BigDecimal calculateBuy( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
+	public BigDecimal cost( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
 		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), MATH_CONTEXT);
 		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
 		final BigDecimal tradeFee = transactionFee.calculateFee(tradeValue, equity.getType(), tradesThisMonth);

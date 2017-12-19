@@ -156,7 +156,7 @@ public class SingleEquityClassBrokerTest {
 	}
 
 	private BigDecimal calculateBuy( final double volume ) {
-		return broker.calculateBuy(Price.valueOf(EQUITY_PRICE), EquityOrderVolume.valueOf(BigDecimal.valueOf(volume)),
+		return broker.cost(Price.valueOf(EQUITY_PRICE), EquityOrderVolume.valueOf(BigDecimal.valueOf(volume)),
 		        LocalDate.now());
 	}
 

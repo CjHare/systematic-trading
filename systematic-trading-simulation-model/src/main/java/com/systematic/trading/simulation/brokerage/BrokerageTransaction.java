@@ -40,14 +40,14 @@ import com.systematic.trading.simulation.order.EquityOrderVolume;
 public interface BrokerageTransaction {
 
 	/**
-	 * Calculates the total cost of performing a purchase.
+	 * Calculates the total cost of performing a purchase, no transaction is performed.
 	 * 
 	 * @param price mean price paid for the equity.
 	 * @param volume number of equities being purchased.
 	 * @param tradeDate date of execution.
-	 * @return total cost of the trade to be deducted from the cash account.
+	 * @return total cost of the trade that would deducted from the cash account for the transaction.
 	 */
-	BigDecimal calculateBuy( Price price, EquityOrderVolume volume, LocalDate tradeDate );
+	BigDecimal cost( Price price, EquityOrderVolume volume, LocalDate tradeDate );
 
 	/**
 	 * Performs a purchase, applying the corresponding brokers fees.
