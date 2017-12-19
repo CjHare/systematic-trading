@@ -77,13 +77,13 @@ public class CulmativeTotalReturnOnInvestmentTest {
 
 	private void event( final double percentageChange ) {
 		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
-		when(event.getPercentageChange()).thenReturn(BigDecimal.valueOf(percentageChange));
+		when(event.percentageChange()).thenReturn(BigDecimal.valueOf(percentageChange));
 
 		calculator.event(event);
 	}
 
 	private void verfiyCulumateRoi( final double expectedCulumativeRoi ) {
-		assertEquals(String.format("%s != %s", expectedCulumativeRoi, calculator.getCumulativeReturnOnInvestment()), 0,
-		        BigDecimal.valueOf(expectedCulumativeRoi).compareTo(calculator.getCumulativeReturnOnInvestment()));
+		assertEquals(String.format("%s != %s", expectedCulumativeRoi, calculator.cumulativeReturnOnInvestment()), 0,
+		        BigDecimal.valueOf(expectedCulumativeRoi).compareTo(calculator.cumulativeReturnOnInvestment()));
 	}
 }

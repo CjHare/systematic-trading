@@ -177,7 +177,7 @@ public class LargestPossibleEntryPositionTest {
 	}
 
 	private void verifyGetBalance() {
-		verify(cashAccount, atLeastOnce()).getBalance();
+		verify(cashAccount, atLeastOnce()).balance();
 		verifyNoMoreInteractions(cashAccount);
 	}
 
@@ -200,7 +200,7 @@ public class LargestPossibleEntryPositionTest {
 	}
 
 	private void setUpCashAccount( final double balance ) {
-		when(cashAccount.getBalance()).thenReturn(BigDecimal.valueOf(balance));
+		when(cashAccount.balance()).thenReturn(BigDecimal.valueOf(balance));
 	}
 
 	private void setUpMinimumBounds( final double amount ) {

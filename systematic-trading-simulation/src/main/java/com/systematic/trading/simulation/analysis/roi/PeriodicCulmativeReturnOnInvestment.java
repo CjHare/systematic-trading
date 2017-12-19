@@ -71,8 +71,8 @@ public class PeriodicCulmativeReturnOnInvestment implements ReturnOnInvestmentEv
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		final BigDecimal percentageChange = event.getPercentageChange();
-		date = event.getExclusiveEndDate();
+		final BigDecimal percentageChange = event.percentageChange();
+		date = event.exclusiveEndDate();
 		cumulativeROI.add(percentageChange);
 
 		if (nextSummaryDate.isBefore(date) || nextSummaryDate.equals(date)) {
@@ -95,5 +95,4 @@ public class PeriodicCulmativeReturnOnInvestment implements ReturnOnInvestmentEv
 			listeners.add(listener);
 		}
 	}
-
 }

@@ -47,5 +47,5 @@ public interface EquityManagementFeeCalculator {
 	 *            apply the fee for.
 	 * @return management fee for the duration in the number of equities.
 	 */
-	BigDecimal calculateFee( BigDecimal numberOfEquities, ClosingPrice singleEquityValue, Period durationToCalculate );
+	BigDecimal calculate( BigDecimal numberOfEquities, ClosingPrice singleEquityValue, Period durationToCalculate );
 }

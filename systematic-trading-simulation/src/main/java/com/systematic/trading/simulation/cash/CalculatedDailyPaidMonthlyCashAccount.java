@@ -35,8 +35,8 @@ import java.util.List;
 import com.systematic.trading.simulation.cash.event.CashAccountEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent.CashEventType;
-import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
+import com.systematic.trading.simulation.cash.exception.InsufficientFundsException;
 
 /**
  * Flat interest rates calculated daily, paid monthly.
@@ -102,29 +102,6 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		}
 	}
 
-	private LocalDate applyFullMonthInterest( final LocalDate last ) {
-
-		// Number of days interest this month
-		final int daysInterest = last.getMonth().length(last.isLeapYear()) - last.getDayOfMonth() + 1;
-
-		// Calculate and pay the interest
-		final BigDecimal fundsBefore = funds;
-		final boolean isLeapYear = last.isLeapYear();
-		final BigDecimal interest = rate.interest(funds, daysInterest, isLeapYear).add(escrow, mathContext);
-		funds = funds.add(interest, mathContext);
-		escrow = BigDecimal.ZERO;
-
-		// Next month begins on the first day
-		LocalDate firstDayOfNextMonth = LocalDate.of(last.getYear(), last.getMonthValue(), 1);
-		firstDayOfNextMonth = firstDayOfNextMonth.plus(Period.ofMonths(1));
-
-		// Record the credit transaction
-		notifyListeners(
-		        new CashAccountEvent(fundsBefore, funds, interest, CashEventType.INTEREST, firstDayOfNextMonth));
-
-		return firstDayOfNextMonth;
-	}
-
 	@Override
 	public void debit( final BigDecimal debit, final LocalDate transactionDate ) throws InsufficientFundsException {
 
@@ -151,7 +128,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	}
 
 	@Override
-	public BigDecimal getBalance() {
+	public BigDecimal balance() {
 		// Only available funds count, not those in escrow
 		return funds;
 	}
@@ -166,16 +143,39 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 		notifyListeners(new CashAccountEvent(fundsBefore, funds, deposit, CashEventType.DEPOSIT, transactionDate));
 	}
 
+	@Override
+	public void addListener( final CashEventListener listener ) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+		}
+	}
+
 	private void notifyListeners( final CashEvent event ) {
 		for (final CashEventListener listener : listeners) {
 			listener.event(event);
 		}
 	}
 
-	@Override
-	public void addListener( final CashEventListener listener ) {
-		if (!listeners.contains(listener)) {
-			listeners.add(listener);
-		}
+	private LocalDate applyFullMonthInterest( final LocalDate last ) {
+
+		// Number of days interest this month
+		final int daysInterest = last.getMonth().length(last.isLeapYear()) - last.getDayOfMonth() + 1;
+
+		// Calculate and pay the interest
+		final BigDecimal fundsBefore = funds;
+		final boolean isLeapYear = last.isLeapYear();
+		final BigDecimal interest = rate.interest(funds, daysInterest, isLeapYear).add(escrow, mathContext);
+		funds = funds.add(interest, mathContext);
+		escrow = BigDecimal.ZERO;
+
+		// Next month begins on the first day
+		LocalDate firstDayOfNextMonth = LocalDate.of(last.getYear(), last.getMonthValue(), 1);
+		firstDayOfNextMonth = firstDayOfNextMonth.plus(Period.ofMonths(1));
+
+		// Record the credit transaction
+		notifyListeners(
+		        new CashAccountEvent(fundsBefore, funds, interest, CashEventType.INTEREST, firstDayOfNextMonth));
+
+		return firstDayOfNextMonth;
 	}
 }

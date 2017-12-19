@@ -62,10 +62,10 @@ public class FileNetWorthSummaryDao implements NetWorthSummaryDao {
 	@Override
 	public void netWorth() {
 
-		final BigDecimal balance = lastEvent.getEquityBalance();
-		final BigDecimal holdingValue = lastEvent.getEquityBalanceValue();
-		final BigDecimal cashBalance = lastEvent.getCashBalance();
-		final BigDecimal netWorth = lastEvent.getNetWorth();
+		final BigDecimal balance = lastEvent.equityBalance();
+		final BigDecimal holdingValue = lastEvent.equityBalanceValue();
+		final BigDecimal cashBalance = lastEvent.cashBalance();
+		final BigDecimal netWorth = lastEvent.netWorth();
 
 		final StringBuilder output = new StringBuilder();
 
@@ -76,7 +76,7 @@ public class FileNetWorthSummaryDao implements NetWorthSummaryDao {
 
 		// TODO this value is of dubious value, needs weighting (plus passing into summary)
 		output.append(String.format("%nInvestment Cumulative ROI: %s%n",
-		        TWO_DECIMAL_PLACES.format(cumulativeRoi.getCumulativeReturnOnInvestment())));
+		        TWO_DECIMAL_PLACES.format(cumulativeRoi.cumulativeReturnOnInvestment())));
 
 		file.write(output.toString());
 	}

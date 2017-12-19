@@ -50,7 +50,7 @@ public class FlatEquityManagementFeeCalculator implements EquityManagementFeeCal
 	}
 
 	@Override
-	public BigDecimal calculateFee( final BigDecimal numberOfEquities, final ClosingPrice singleEquityValue,
+	public BigDecimal calculate( final BigDecimal numberOfEquities, final ClosingPrice singleEquityValue,
 	        final Period durationToCalculate ) {
 
 		if (durationToCalculate.getYears() > 0) {

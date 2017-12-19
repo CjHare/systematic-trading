@@ -38,18 +38,8 @@ import com.systematic.trading.event.Event;
 public interface BrokerageEvent extends Event {
 
 	public enum BrokerageAccountEventType {
-		BUY("Buy"),
-		SELL("Sell");
-
-		private final String display;
-
-		BrokerageAccountEventType( final String display ) {
-			this.display = display;
-		}
-
-		public String getName() {
-			return display;
-		}
+		BUY,
+		SELL;
 	}
 
 	/**
@@ -57,47 +47,47 @@ public interface BrokerageEvent extends Event {
 	 * 
 	 * @return general category the event falls within.
 	 */
-	BrokerageAccountEventType getType();
+	BrokerageAccountEventType type();
 
 	/**
 	 * Brokers fee for performing the trade.
 	 * 
 	 * @return amount paid to the broker to facilitate the trade.
 	 */
-	BigDecimal getTransactionFee();
+	BigDecimal transactionFee();
 
 	/**
 	 * Number of equities prior to the brokerage event.
 	 * 
 	 * @return quantities of equities prior to the brokerage event.
 	 */
-	BigDecimal getStartingEquityBalance();
+	BigDecimal startingEquityBalance();
 
 	/**
 	 * Number of equities after the brokerage event.
 	 * 
 	 * @return quantities of equities after the brokerage event.
 	 */
-	BigDecimal getEndEquityBalance();
+	BigDecimal endEquityBalance();
 
 	/**
 	 * Date of brokerage event.
 	 * 
 	 * @return when the brokerage event occurred.
 	 */
-	LocalDate getTransactionDate();
+	LocalDate transactionDate();
 
 	/**
 	 * Value of the equities purchased (excluding brokerage fee)
 	 * 
 	 * @return value of the equities being purchased.
 	 */
-	BigDecimal getEquityValue();
+	BigDecimal equityValue();
 
 	/**
 	 * The number of equities involved in the brokerage transaction.
 	 * 
 	 * @return number of equities being brokered.
 	 */
-	BigDecimal getEquityAmount();
+	BigDecimal equityAmount();
 }

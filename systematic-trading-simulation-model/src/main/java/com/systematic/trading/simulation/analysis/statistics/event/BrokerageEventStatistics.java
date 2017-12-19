@@ -50,33 +50,33 @@ public interface BrokerageEventStatistics {
 	 * 
 	 * @return sum of the brokerage fees for the purchases and sales performed.
 	 */
-	BigDecimal getBrokerageFees();
+	BigDecimal brokerageFees();
 
 	/**
 	 * Number of purchase transactions performed.
 	 * 
 	 * @return number of brokerage purchase actions carried out.
 	 */
-	BigInteger getBuyEventCount();
+	BigInteger buyEventCount();
 
 	/**
 	 * Number of sale transactions performed.
 	 * 
 	 * @return number of brokerage sale actions carried out.
 	 */
-	BigInteger getSellEventCount();
+	BigInteger sellEventCount();
 
 	/**
 	 * Total of the buy events that occurred.
 	 * 
 	 * @return the number equities brought and their frequency.
 	 */
-	Map<BigDecimal, BigInteger> getBuyEvents();
+	Map<BigDecimal, BigInteger> buyEvents();
 
 	/**
 	 * Total of the sell events that occurred.
 	 * 
 	 * @return the number equities sold and their frequency.
 	 */
-	Map<BigDecimal, BigInteger> getSellEvents();
+	Map<BigDecimal, BigInteger> sellEvents();
 }

@@ -47,17 +47,17 @@ public class CumulativeEventStatistics implements EventStatistics {
 	private final EquityEventStatistics equityStatistics = new CumulativeEquityEventStatistics();
 
 	@Override
-	public OrderEventStatistics getOrderEventStatistics() {
+	public OrderEventStatistics orderEventStatistics() {
 		return orderStatistics;
 	}
 
 	@Override
-	public BrokerageEventStatistics getBrokerageEventStatistics() {
+	public BrokerageEventStatistics brokerageEventStatistics() {
 		return brokerageStatistics;
 	}
 
 	@Override
-	public CashEventStatistics getCashEventStatistics() {
+	public CashEventStatistics cashEventStatistics() {
 		return cashStatistics;
 	}
 
@@ -77,7 +77,7 @@ public class CumulativeEventStatistics implements EventStatistics {
 	}
 
 	@Override
-	public EquityEventStatistics getEquityEventStatistics() {
+	public EquityEventStatistics equityEventStatistics() {
 		return equityStatistics;
 	}
 

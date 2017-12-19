@@ -39,5 +39,5 @@ public interface EquityOrderInsufficientFundsEvent extends OrderEvent {
 	 * 
 	 * @return general category the cash event falls within.
 	 */
-	EquityOrderInsufficientFundsAction getInsufficientFundsAction();
+	EquityOrderInsufficientFundsAction insufficientFundsAction();
 }

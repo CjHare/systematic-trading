@@ -39,17 +39,7 @@ import com.systematic.trading.model.EquityIdentity;
 public interface EquityEvent extends Event {
 
 	public enum EquityEventType {
-		MANAGEMENT_FEE("Management_Fee");
-
-		private final String name;
-
-		EquityEventType( final String name ) {
-			this.name = name;
-		}
-
-		public String getName() {
-			return name;
-		}
+		MANAGEMENT_FEE;
 	}
 
 	/**
@@ -57,40 +47,40 @@ public interface EquityEvent extends Event {
 	 * 
 	 * @return general category the event falls within.
 	 */
-	EquityEventType getType();
+	EquityEventType type();
 
 	/**
 	 * Number of equities prior to the brokerage event.
 	 * 
 	 * @return quantities of equities prior to the brokerage event.
 	 */
-	BigDecimal getStartingEquityBalance();
+	BigDecimal startingEquityBalance();
 
 	/**
 	 * Number of equities after the equity event.
 	 * 
 	 * @return quantities of equities after the equity event.
 	 */
-	BigDecimal getEndEquityBalance();
+	BigDecimal endEquityBalance();
 
 	/**
 	 * Date of equity event.
 	 * 
 	 * @return when the equity event occurred.
 	 */
-	LocalDate getTransactionDate();
+	LocalDate transactionDate();
 
 	/**
 	 * The number of equities involved in the event.
 	 * 
 	 * @return number of equities.
 	 */
-	BigDecimal getEquityAmount();
+	BigDecimal equityAmount();
 
 	/**
 	 * Equity that the event has been applied onto.
 	 * 
 	 * @return identity of the equity that was subject to the event.
 	 */
-	EquityIdentity getIdentity();
+	EquityIdentity identity();
 }

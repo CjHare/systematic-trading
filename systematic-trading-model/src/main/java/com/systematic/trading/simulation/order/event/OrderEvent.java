@@ -53,19 +53,19 @@ public interface OrderEvent extends Event {
 	 * 
 	 * @return purpose of the order that triggered the event recording.
 	 */
-	EquityOrderType getType();
+	EquityOrderType type();
 
 	/**
 	 * Date of cash event.
 	 * 
 	 * @return when the cash event occurred.
 	 */
-	LocalDate getTransactionDate();
+	LocalDate transactionDate();
 
 	/**
 	 * Total cost of the order.
 	 * 
 	 * @return cost of the order including any fees.
 	 */
-	BigDecimal getTotalCost();
+	BigDecimal totalCost();
 }

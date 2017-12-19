@@ -49,12 +49,12 @@ public class BrokerageAccountEvent extends StandardEquityEvent implements Broker
 	}
 
 	@Override
-	public BrokerageAccountEventType getType() {
+	public BrokerageAccountEventType type() {
 		return type;
 	}
 
 	@Override
-	public BigDecimal getTransactionFee() {
+	public BigDecimal transactionFee() {
 		return transactionFee;
 	}
 }

@@ -45,23 +45,23 @@ public abstract class StandardEquityEvent {
 		this.equityAmount = equityAmount;
 	}
 
-	public BigDecimal getStartingEquityBalance() {
+	public BigDecimal startingEquityBalance() {
 		return startingEquityBalance;
 	}
 
-	public BigDecimal getEndEquityBalance() {
+	public BigDecimal endEquityBalance() {
 		return endEquityBalance;
 	}
 
-	public BigDecimal getEquityValue() {
+	public BigDecimal equityValue() {
 		return equityalue;
 	}
 
-	public BigDecimal getEquityAmount() {
+	public BigDecimal equityAmount() {
 		return equityAmount;
 	}
 
-	public LocalDate getTransactionDate() {
+	public LocalDate transactionDate() {
 		return transactionDate;
 	}
 }

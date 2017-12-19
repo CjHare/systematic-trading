@@ -36,17 +36,7 @@ import java.time.LocalDate;
 public interface NetWorthEvent {
 
 	public enum NetWorthEventType {
-		COMPLETED("Completed");
-
-		private final String name;
-
-		NetWorthEventType( final String name ) {
-			this.name = name;
-		}
-
-		public String getName() {
-			return name;
-		}
+		COMPLETED;
 	}
 
 	/**
@@ -54,21 +44,21 @@ public interface NetWorthEvent {
 	 * 
 	 * @return number of equities held.
 	 */
-	BigDecimal getEquityBalance();
+	BigDecimal equityBalance();
 
 	/**
 	 * Retrieve the value of the balance of equities.
 	 * 
 	 * @return how much the equities held are worth.
 	 */
-	BigDecimal getEquityBalanceValue();
+	BigDecimal equityBalanceValue();
 
 	/**
 	 * Balance held in the cash account.
 	 * 
 	 * @return funds not invested in equities.
 	 */
-	BigDecimal getCashBalance();
+	BigDecimal cashBalance();
 
 	/**
 	 * Retrieve the total net worth.
@@ -76,19 +66,19 @@ public interface NetWorthEvent {
 	 * @return sum of the cash balance(s) and equities value, exclusive of any transaction fee, or
 	 *         capital gains tax for liquidation.
 	 */
-	BigDecimal getNetWorth();
+	BigDecimal netWorth();
 
 	/**
 	 * Date when the event occurred
 	 * 
 	 * @return the date when the event occurred.
 	 */
-	LocalDate getEventDate();
+	LocalDate eventDate();
 
 	/**
 	 * Trigger for the Net worth event.
 	 * 
 	 * @return type of Net worth event.
 	 */
-	NetWorthEventType getType();
+	NetWorthEventType type();
 }

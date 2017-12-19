@@ -76,7 +76,7 @@ public interface CashAccount {
 	 * 
 	 * @return positive number when the account is credit, negative otherwise.
 	 */
-	BigDecimal getBalance();
+	BigDecimal balance();
 
 	/**
 	 * Adds a listener that is interested in CashEvents.

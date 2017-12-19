@@ -47,9 +47,9 @@ public class ElasticOrderEventRequestResource extends EventResource {
 	private final LocalDate transactionDate;
 
 	public ElasticOrderEventRequestResource( final OrderEvent event ) {
-		super(event.getType().name());
-		this.totalCost = event.getTotalCost().floatValue();
-		this.transactionDate = event.getTransactionDate();
+		super(event.type().name());
+		this.totalCost = event.totalCost().floatValue();
+		this.transactionDate = event.transactionDate();
 	}
 
 	@JsonProperty(ElasticTypeName.TOTAL_COST)

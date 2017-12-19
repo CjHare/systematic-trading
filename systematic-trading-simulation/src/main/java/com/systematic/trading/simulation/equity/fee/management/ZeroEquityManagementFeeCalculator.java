@@ -39,7 +39,7 @@ import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculato
 public class ZeroEquityManagementFeeCalculator implements EquityManagementFeeCalculator {
 
 	@Override
-	public BigDecimal calculateFee( final BigDecimal numberOfEquities, final ClosingPrice singleEquityValue,
+	public BigDecimal calculate( final BigDecimal numberOfEquities, final ClosingPrice singleEquityValue,
 	        final Period durationToCalculate ) {
 		return BigDecimal.ZERO;
 	}

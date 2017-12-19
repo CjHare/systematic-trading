@@ -51,27 +51,27 @@ public class CashAccountEvent implements CashEvent {
 	}
 
 	@Override
-	public BigDecimal getAmount() {
+	public BigDecimal amount() {
 		return amount;
 	}
 
 	@Override
-	public BigDecimal getFundsBefore() {
+	public BigDecimal fundsBefore() {
 		return fundsBefore;
 	}
 
 	@Override
-	public BigDecimal getFundsAfter() {
+	public BigDecimal fundsAfter() {
 		return fundsAfter;
 	}
 
 	@Override
-	public LocalDate getTransactionDate() {
+	public LocalDate transactionDate() {
 		return transactionDate;
 	}
 
 	@Override
-	public CashEventType getType() {
+	public CashEventType type() {
 		return type;
 	}
 }

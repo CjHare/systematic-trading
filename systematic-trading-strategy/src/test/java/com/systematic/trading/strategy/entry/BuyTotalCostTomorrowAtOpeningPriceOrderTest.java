@@ -154,8 +154,8 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	}
 
 	private void verifyOrderEvent( final OrderEvent event ) {
-		assertEquals(TOTAL_COST, event.getTotalCost());
-		assertEquals(TODAY, event.getTransactionDate());
-		assertEquals(EquityOrderType.ENTRY, event.getType());
+		assertEquals(TOTAL_COST, event.totalCost());
+		assertEquals(TODAY, event.transactionDate());
+		assertEquals(EquityOrderType.ENTRY, event.type());
 	}
 }

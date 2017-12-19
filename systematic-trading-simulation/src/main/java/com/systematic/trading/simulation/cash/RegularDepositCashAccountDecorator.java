@@ -73,7 +73,7 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 		if (isDepositTime(tradingDate)) {
 
 			// Multiple intervals may have elapsed
-			final int numberOfDeposits = getNumberOfDeposits(tradingDate);
+			final int numberOfDeposits = numberOfDeposits(tradingDate);
 			for (int i = 0; i < numberOfDeposits; i++) {
 				deposit(depositAmount, tradingDate);
 			}
@@ -96,8 +96,8 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 	}
 
 	@Override
-	public BigDecimal getBalance() {
-		return account.getBalance();
+	public BigDecimal balance() {
+		return account.balance();
 	}
 
 	@Override
@@ -114,16 +114,16 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 		return tradingDate.isAfter(lastDeposit.plus(interval));
 	}
 
-	private int getNumberOfDeposits( final LocalDate tradingDate ) {
+	private int numberOfDeposits( final LocalDate tradingDate ) {
 		return Period.between(lastDeposit, tradingDate).getDays() / interval.getDays();
 	}
 
 	//TODO shift the interval and deposit amount into a tuple object
-	public BigDecimal getDepositAmount() {
+	public BigDecimal depositAmount() {
 		return depositAmount;
 	}
 
-	public Period getInterval() {
+	public Period interval() {
 		return interval;
 	}
 }

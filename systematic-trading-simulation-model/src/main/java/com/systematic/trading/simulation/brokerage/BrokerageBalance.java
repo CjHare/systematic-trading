@@ -40,5 +40,5 @@ public interface BrokerageBalance {
 	 * 
 	 * @return number of equities currently held.
 	 */
-	BigDecimal getEquityBalance();
+	BigDecimal equityBalance();
 }

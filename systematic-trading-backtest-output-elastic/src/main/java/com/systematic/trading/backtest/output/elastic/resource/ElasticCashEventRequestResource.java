@@ -44,10 +44,10 @@ public class ElasticCashEventRequestResource extends TransactionDateEventResourc
 	private final float fundsAfter;
 
 	public ElasticCashEventRequestResource( final CashEvent event ) {
-		super(event.getType().getName(), event.getTransactionDate());
-		this.amount = event.getAmount().floatValue();
-		this.fundsBefore = event.getFundsBefore().floatValue();
-		this.fundsAfter = event.getFundsAfter().floatValue();
+		super(event.type().name(), event.transactionDate());
+		this.amount = event.amount().floatValue();
+		this.fundsBefore = event.fundsBefore().floatValue();
+		this.fundsAfter = event.fundsAfter().floatValue();
 	}
 
 	@JsonProperty(ElasticTypeName.AMOUNT)

@@ -39,23 +39,13 @@ public interface CashEvent extends Event {
 
 	enum CashEventType {
 		/** From the sale of equities. */
-		CREDIT("Credit"),
+		CREDIT,
 		/** From the purchase of equities. */
-		DEBIT("Debit"),
+		DEBIT,
 		/** Non-equity source of funds being credited. */
-		DEPOSIT("Deposit"),
+		DEPOSIT,
 		/** Interest paid on cash held in transactional account. */
-		INTEREST("Interest");
-
-		private final String name;
-
-		CashEventType( final String name ) {
-			this.name = name;
-		}
-
-		public String getName() {
-			return name;
-		}
+		INTEREST;
 	}
 
 	/**
@@ -63,33 +53,33 @@ public interface CashEvent extends Event {
 	 * 
 	 * @return general category the cash event falls within.
 	 */
-	CashEventType getType();
+	CashEventType type();
 
 	/**
 	 * Value of the cash event.
 	 * 
 	 * @return amount of cash involved in the event.
 	 */
-	BigDecimal getAmount();
+	BigDecimal amount();
 
 	/**
 	 * Available fund prior to the cash event.
 	 * 
 	 * @return funds available before the cash event.
 	 */
-	BigDecimal getFundsBefore();
+	BigDecimal fundsBefore();
 
 	/**
 	 * Available funds after the cash event.
 	 * 
 	 * @return funds available after the cash event.
 	 */
-	BigDecimal getFundsAfter();
+	BigDecimal fundsAfter();
 
 	/**
 	 * Date of cash event.
 	 * 
 	 * @return when the cash event occurred.
 	 */
-	LocalDate getTransactionDate();
+	LocalDate transactionDate();
 }

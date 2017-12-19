@@ -53,5 +53,5 @@ public interface EquityManagementFeeStructure {
 	 * @param tradingDate today's trading date.
 	 * @return the date of the most recent management fee prior to the given tradingDate.
 	 */
-	LocalDate getLastManagementFeeDate( LocalDate tradingDate );
+	LocalDate lastManagementFeeDate( LocalDate tradingDate );
 }

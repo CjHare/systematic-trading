@@ -94,38 +94,38 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private String profit( final NetWorthEvent event ) {
 		return String.format("Profit: %s", TWO_DECIMAL_PLACES.format(
-		        event.getNetWorth().subtract(statistics.getCashEventStatistics().getAmountDeposited(), MATH_CONTEXT)));
+		        event.netWorth().subtract(statistics.cashEventStatistics().amountDeposited(), MATH_CONTEXT)));
 	}
 
 	private String deposited() {
 		return String.format("Deposited: %s",
-		        TWO_DECIMAL_PLACES.format(statistics.getCashEventStatistics().getAmountDeposited()));
+		        TWO_DECIMAL_PLACES.format(statistics.cashEventStatistics().amountDeposited()));
 	}
 
 	private String cashAccount( final NetWorthEvent event ) {
-		return String.format("Cash account: %s", TWO_DECIMAL_PLACES.format(event.getCashBalance()));
+		return String.format("Cash account: %s", TWO_DECIMAL_PLACES.format(event.cashBalance()));
 	}
 
 	private String compoundAnnualGrowth( final NetWorthEvent event ) {
 
 		final Period duration = Period.between(dates.startDate(), dates.endDate());
-		final BigDecimal deposited = statistics.getCashEventStatistics().getAmountDeposited();
-		final BigDecimal netWorth = event.getNetWorth();
+		final BigDecimal deposited = statistics.cashEventStatistics().amountDeposited();
+		final BigDecimal netWorth = event.netWorth();
 		final BigDecimal cagr = compoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears());
 
 		return String.format("CAGR: %s", FOUR_DECIMAL_PLACES.format(cagr));
 	}
 
 	private String netWorth( final NetWorthEvent event ) {
-		return String.format("Net Worth: %s", TWO_DECIMAL_PLACES.format(event.getNetWorth()));
+		return String.format("Net Worth: %s", TWO_DECIMAL_PLACES.format(event.netWorth()));
 	}
 
 	private String equitiesHeld( final NetWorthEvent event ) {
-		return String.format("Equities Held: %s", TWO_DECIMAL_PLACES.format(event.getEquityBalance()));
+		return String.format("Equities Held: %s", TWO_DECIMAL_PLACES.format(event.equityBalance()));
 	}
 
 	private String holdingsValue( final NetWorthEvent event ) {
-		return String.format("Holdings value: %s", TWO_DECIMAL_PLACES.format(event.getEquityBalanceValue()));
+		return String.format("Holdings value: %s", TWO_DECIMAL_PLACES.format(event.equityBalanceValue()));
 	}
 
 	private String exitLogic() {
@@ -137,16 +137,16 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 	}
 
 	private String exitOrdersDeleted() {
-		return String.format("Exit orders deleted: %s", statistics.getOrderEventStatistics().getDeleteExitEventCount());
+		return String.format("Exit orders deleted: %s", statistics.orderEventStatistics().deleteExitEventCount());
 	}
 
 	private String exitOrdersExecuted() {
-		return String.format("Exit orders executed: %s", statistics.getOrderEventStatistics().getExitEventCount()
-		        - statistics.getOrderEventStatistics().getDeleteExitEventCount());
+		return String.format("Exit orders executed: %s", statistics.orderEventStatistics().exitEventCount()
+		        - statistics.orderEventStatistics().deleteExitEventCount());
 	}
 
 	private String exitOrdersPlaced() {
-		return String.format("Exit orders placed: %s", statistics.getOrderEventStatistics().getExitEventCount());
+		return String.format("Exit orders placed: %s", statistics.orderEventStatistics().exitEventCount());
 	}
 
 	private String entryLogic() {
@@ -160,15 +160,15 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private String entryOrdersDeleted() {
 		return String.format("Entry orders deleted: %s",
-		        statistics.getOrderEventStatistics().getDeleteEntryEventCount());
+		        statistics.orderEventStatistics().deleteEntryEventCount());
 	}
 
 	private String entryOrdersExecuted() {
-		return String.format("Entry orders executed: %s", statistics.getOrderEventStatistics().getEntryEventCount()
-		        - statistics.getOrderEventStatistics().getDeleteEntryEventCount());
+		return String.format("Entry orders executed: %s", statistics.orderEventStatistics().entryEventCount()
+		        - statistics.orderEventStatistics().deleteEntryEventCount());
 	}
 
 	private String entryOrdersPlaced() {
-		return String.format("Entry orders placed: %s", statistics.getOrderEventStatistics().getEntryEventCount());
+		return String.format("Entry orders placed: %s", statistics.orderEventStatistics().entryEventCount());
 	}
 }

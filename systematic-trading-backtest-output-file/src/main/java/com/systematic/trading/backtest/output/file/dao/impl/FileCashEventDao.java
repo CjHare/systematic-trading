@@ -51,8 +51,8 @@ public class FileCashEventDao implements CashEventDao {
 
 	@Override
 	public void event( final CashEvent event ) {
-		file.write(String.format("Cash Account - %s: %s - funds %s -> %s on %s%n", event.getType(),
-		        TWO_DECIMAL_PLACES.format(event.getAmount()), TWO_DECIMAL_PLACES.format(event.getFundsBefore()),
-		        TWO_DECIMAL_PLACES.format(event.getFundsAfter()), event.getTransactionDate()));
+		file.write(String.format("Cash Account - %s: %s - funds %s -> %s on %s%n", event.type(),
+		        TWO_DECIMAL_PLACES.format(event.amount()), TWO_DECIMAL_PLACES.format(event.fundsBefore()),
+		        TWO_DECIMAL_PLACES.format(event.fundsAfter()), event.transactionDate()));
 	}
 }

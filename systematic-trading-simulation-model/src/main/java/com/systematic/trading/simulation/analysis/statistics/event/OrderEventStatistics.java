@@ -46,26 +46,26 @@ public interface OrderEventStatistics {
 	 * 
 	 * @return number of entry events events recorded.
 	 */
-	int getEntryEventCount();
+	int entryEventCount();
 
 	/**
 	 * Number of delete entry events recorded.
 	 * 
 	 * @return number of delete entry events events recorded.
 	 */
-	int getDeleteEntryEventCount();
+	int deleteEntryEventCount();
 
 	/**
 	 * Number of exit events recorded.
 	 * 
 	 * @return number of exit events events recorded.
 	 */
-	int getExitEventCount();
+	int exitEventCount();
 
 	/**
 	 * Number of delete exit events recorded.
 	 * 
 	 * @return number of delete exit events events recorded.
 	 */
-	int getDeleteExitEventCount();
+	int deleteExitEventCount();
 }

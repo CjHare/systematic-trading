@@ -47,26 +47,26 @@ public interface EventStatistics
 	 * 
 	 * @return order events recorded to date.
 	 */
-	OrderEventStatistics getOrderEventStatistics();
+	OrderEventStatistics orderEventStatistics();
 
 	/**
 	 * Retrieves the recorded brokerage event statistics.
 	 * 
 	 * @return brokerage events recorded to date.
 	 */
-	BrokerageEventStatistics getBrokerageEventStatistics();
+	BrokerageEventStatistics brokerageEventStatistics();
 
 	/**
 	 * Retrieves the recorded cash event statistics.
 	 * 
 	 * @return cash events recorded to date.
 	 */
-	CashEventStatistics getCashEventStatistics();
+	CashEventStatistics cashEventStatistics();
 
 	/**
 	 * Retrieves the recorded equity event statistics.
 	 * 
 	 * @return equity events recorded to date.
 	 */
-	EquityEventStatistics getEquityEventStatistics();
+	EquityEventStatistics equityEventStatistics();
 }

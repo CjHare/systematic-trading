@@ -62,11 +62,11 @@ public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 	@Override
 	public void stateChanged( final SimulationState transitionedState ) {
 
-		final BigDecimal equityBalance = broker.getEquityBalance();
+		final BigDecimal equityBalance = broker.equityBalance();
 		final BigDecimal lastClosingPrice = lastTradingDay.closingPrice().getPrice();
 		final BigDecimal equityBalanceValue = equityBalance.multiply(lastClosingPrice);
-		final BigDecimal cashBalance = cashAccount.getBalance();
-		final BigDecimal networth = cashAccount.getBalance().add(equityBalanceValue);
+		final BigDecimal cashBalance = cashAccount.balance();
+		final BigDecimal networth = cashAccount.balance().add(equityBalanceValue);
 		final LocalDate eventDate = lastTradingDay.date();
 		final NetWorthEventType type = NetWorthEventType.COMPLETED;
 

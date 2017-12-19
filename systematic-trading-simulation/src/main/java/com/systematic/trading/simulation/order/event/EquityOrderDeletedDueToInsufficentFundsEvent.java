@@ -46,7 +46,7 @@ public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrder
 	public EquityOrderDeletedDueToInsufficentFundsEvent( final OrderEvent order ) {
 
 		// Convert into the delete version
-		switch (order.getType()) {
+		switch (order.type()) {
 			case ENTRY:
 				this.type = EquityOrderType.DELETE_ENTRY;
 			break;
@@ -54,29 +54,29 @@ public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrder
 				this.type = EquityOrderType.DELETE_EXIT;
 			break;
 			default:
-				throw new IllegalArgumentException(String.format("Unexpected order type %s", order.getType()));
+				throw new IllegalArgumentException(String.format("Unexpected order type %s", order.type()));
 		}
 
 		this.orderEvent = order;
 	}
 
 	@Override
-	public EquityOrderInsufficientFundsAction getInsufficientFundsAction() {
+	public EquityOrderInsufficientFundsAction insufficientFundsAction() {
 		return EquityOrderInsufficientFundsAction.DELETE;
 	}
 
 	@Override
-	public EquityOrderType getType() {
+	public EquityOrderType type() {
 		return type;
 	}
 
 	@Override
-	public LocalDate getTransactionDate() {
-		return orderEvent.getTransactionDate();
+	public LocalDate transactionDate() {
+		return orderEvent.transactionDate();
 	}
 
 	@Override
-	public BigDecimal getTotalCost() {
-		return orderEvent.getTotalCost();
+	public BigDecimal totalCost() {
+		return orderEvent.totalCost();
 	}
 }

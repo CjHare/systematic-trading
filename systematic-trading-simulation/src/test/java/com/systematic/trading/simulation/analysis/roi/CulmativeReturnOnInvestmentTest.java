@@ -213,7 +213,7 @@ public class CulmativeReturnOnInvestmentTest {
 	}
 
 	private void setUpEquityBalance( final double... balances ) {
-		OngoingStubbing<BigDecimal> getEquityBalance = when(broker.getEquityBalance());
+		OngoingStubbing<BigDecimal> getEquityBalance = when(broker.equityBalance());
 
 		for (final double balance : balances) {
 			getEquityBalance = getEquityBalance.thenReturn(BigDecimal.valueOf(balance));
@@ -234,7 +234,7 @@ public class CulmativeReturnOnInvestmentTest {
 	}
 
 	private void setUpCashBalance( final double... cashBalances ) {
-		OngoingStubbing<BigDecimal> getBalance = when(cashAccount.getBalance());
+		OngoingStubbing<BigDecimal> getBalance = when(cashAccount.balance());
 
 		for (final double cashBalance : cashBalances) {
 			getBalance = getBalance.thenReturn(BigDecimal.valueOf(cashBalance));

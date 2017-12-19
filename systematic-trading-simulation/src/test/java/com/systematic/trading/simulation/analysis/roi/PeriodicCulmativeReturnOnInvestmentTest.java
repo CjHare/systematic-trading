@@ -141,8 +141,8 @@ public class PeriodicCulmativeReturnOnInvestmentTest {
 	}
 
 	private void verifyEventInteraction( final ReturnOnInvestmentEvent event ) {
-		verify(event).getPercentageChange();
-		verify(event).getExclusiveEndDate();
+		verify(event).percentageChange();
+		verify(event).exclusiveEndDate();
 	}
 
 	private void event( final ReturnOnInvestmentEvent event ) {
@@ -157,8 +157,8 @@ public class PeriodicCulmativeReturnOnInvestmentTest {
 
 	private ReturnOnInvestmentEvent setUpRoiEvent( final double change, final LocalDate endDate ) {
 		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
-		when(event.getPercentageChange()).thenReturn(BigDecimal.valueOf(change));
-		when(event.getExclusiveEndDate()).thenReturn(endDate);
+		when(event.percentageChange()).thenReturn(BigDecimal.valueOf(change));
+		when(event.exclusiveEndDate()).thenReturn(endDate);
 		return event;
 	}
 }

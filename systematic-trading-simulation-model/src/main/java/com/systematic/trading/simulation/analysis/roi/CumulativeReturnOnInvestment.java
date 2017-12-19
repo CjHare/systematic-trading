@@ -38,5 +38,5 @@ public interface CumulativeReturnOnInvestment {
 	 * 
 	 * @return gross return on investment.
 	 */
-	BigDecimal getCumulativeReturnOnInvestment();
+	BigDecimal cumulativeReturnOnInvestment();
 }

@@ -43,12 +43,12 @@ public class CulmativeTotalReturnOnInvestment
 	private final ReturnOnInvestment cumulativeROI = new ReturnOnInvestment();
 
 	@Override
-	public BigDecimal getCumulativeReturnOnInvestment() {
+	public BigDecimal cumulativeReturnOnInvestment() {
 		return cumulativeROI.get();
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
-		cumulativeROI.add(event.getPercentageChange());
+		cumulativeROI.add(event.percentageChange());
 	}
 }

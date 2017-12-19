@@ -171,8 +171,8 @@ public class SingleEquityClassBrokerTest {
 	}
 
 	private void verifyEquityBalance( final double expected ) {
-		assertEquals(String.format("Expected %s != Equity Balance %s", expected, broker.getEquityBalance()), 0,
-		        BigDecimal.valueOf(expected).compareTo(broker.getEquityBalance()));
+		assertEquals(String.format("Expected %s != Equity Balance %s", expected, broker.equityBalance()), 0,
+		        BigDecimal.valueOf(expected).compareTo(broker.equityBalance()));
 	}
 
 	private void setUpBrokerageFee( final double transactionCost ) {

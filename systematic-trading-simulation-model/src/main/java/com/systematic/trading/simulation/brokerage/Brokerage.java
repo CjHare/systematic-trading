@@ -57,5 +57,5 @@ public interface Brokerage
 	 * 
 	 * @return name of the broker.
 	 */
-	String getName();
+	String name();
 }

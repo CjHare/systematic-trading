@@ -50,12 +50,12 @@ public class SingleEquityEvent extends StandardEquityEvent implements EquityEven
 	}
 
 	@Override
-	public EquityEventType getType() {
+	public EquityEventType type() {
 		return type;
 	}
 
 	@Override
-	public EquityIdentity getIdentity() {
+	public EquityIdentity identity() {
 		return id;
 	}
 }

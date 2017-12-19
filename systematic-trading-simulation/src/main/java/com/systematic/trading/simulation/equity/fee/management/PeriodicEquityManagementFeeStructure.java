@@ -68,7 +68,7 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 		final LocalDate tradingDate = tradingData.date();
 
 		if (lastManagementFeeDate.plus(frequency).isBefore(tradingDate)) {
-			return fee.calculateFee(numberOfEquities, tradingData.closingPrice(),
+			return fee.calculate(numberOfEquities, tradingData.closingPrice(),
 			        Period.between(lastManagementFeeDate, tradingDate));
 		}
 
@@ -76,7 +76,7 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	}
 
 	@Override
-	public LocalDate getLastManagementFeeDate( final LocalDate tradingDate ) {
+	public LocalDate lastManagementFeeDate( final LocalDate tradingDate ) {
 
 		// Loop through from the first date until an interval after the trading date
 		LocalDate nextFeeDate = feeStartDate;

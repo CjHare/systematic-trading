@@ -42,19 +42,19 @@ public interface ReturnOnInvestmentEvent extends Event {
 	 * 
 	 * @return relative change of the investment value.
 	 */
-	BigDecimal getPercentageChange();
+	BigDecimal percentageChange();
 
 	/**
 	 * Exclusive start date for the event.
 	 * 
 	 * @return beginning of the time frame providing the ROI.
 	 */
-	LocalDate getInclusiveStartDate();
+	LocalDate inclusiveStartDate();
 
 	/**
 	 * Inclusive end date for the event.
 	 * 
 	 * @return terminating date of the time frame providing the ROI.
 	 */
-	LocalDate getExclusiveEndDate();
+	LocalDate exclusiveEndDate();
 }

@@ -51,10 +51,10 @@ public class FileBrokerageEventDao implements BrokerageEventDao {
 
 	@Override
 	public void event( final BrokerageEvent event ) {
-		file.write(String.format("Brokerage Account - %s - %s: %s - equity balance %s -> %s on %s%n", event.getType(),
-		        TWO_DECIMAL_PLACES.format(event.getEquityValue()),
-		        TWO_DECIMAL_PLACES.format(event.getEquityAmount()),
-		        TWO_DECIMAL_PLACES.format(event.getStartingEquityBalance()),
-		        TWO_DECIMAL_PLACES.format(event.getEndEquityBalance()), event.getTransactionDate()));
+		file.write(String.format("Brokerage Account - %s - %s: %s - equity balance %s -> %s on %s%n", event.type(),
+		        TWO_DECIMAL_PLACES.format(event.equityValue()),
+		        TWO_DECIMAL_PLACES.format(event.equityAmount()),
+		        TWO_DECIMAL_PLACES.format(event.startingEquityBalance()),
+		        TWO_DECIMAL_PLACES.format(event.endEquityBalance()), event.transactionDate()));
 	}
 }

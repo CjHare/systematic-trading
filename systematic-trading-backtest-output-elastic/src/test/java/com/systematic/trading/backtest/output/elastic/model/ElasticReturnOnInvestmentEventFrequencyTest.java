@@ -156,7 +156,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 	}
 
 	private void setUpEvent( final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
-		when(event.getInclusiveStartDate()).thenReturn(inclusiveStartDate);
-		when(event.getExclusiveEndDate()).thenReturn(exclusiveEndDate);
+		when(event.inclusiveStartDate()).thenReturn(inclusiveStartDate);
+		when(event.exclusiveEndDate()).thenReturn(exclusiveEndDate);
 	}
 }

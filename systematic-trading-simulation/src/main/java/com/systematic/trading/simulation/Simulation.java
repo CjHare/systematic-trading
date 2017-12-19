@@ -132,6 +132,28 @@ public class Simulation {
 	}
 
 	/**
+	 * Adds the listener to the set of order event listeners.
+	 * 
+	 * @param listener will receive notification of order event occurrences.
+	 */
+	public void addListener( final OrderEventListener listener ) {
+		if (!orderEventListeners.contains(listener)) {
+			orderEventListeners.add(listener);
+		}
+	}
+
+	/**
+	 * Adds the listener to the set of state transition listeners.
+	 * 
+	 * @param listener will receive notification of simulation state change occurrences.
+	 */
+	public void addListener( final SimulationStateListener listener ) {
+		if (!stateListeners.contains(listener)) {
+			stateListeners.add(listener);
+		}
+	}
+
+	/**
 	 * Processes any outstanding orders when their execution criteria and add any additional orders
 	 * based on the day's trading data.
 	 * 
@@ -270,28 +292,6 @@ public class Simulation {
 	private void notifyListeners( final SimulationState event ) {
 		for (final SimulationStateListener listener : stateListeners) {
 			listener.stateChanged(event);
-		}
-	}
-
-	/**
-	 * Adds the listener to the set of order event listeners.
-	 * 
-	 * @param listener will receive notification of order event occurrences.
-	 */
-	public void addListener( final OrderEventListener listener ) {
-		if (!orderEventListeners.contains(listener)) {
-			orderEventListeners.add(listener);
-		}
-	}
-
-	/**
-	 * Adds the listener to the set of state transition listeners.
-	 * 
-	 * @param listener will receive notification of simulation state change occurrences.
-	 */
-	public void addListener( final SimulationStateListener listener ) {
-		if (!stateListeners.contains(listener)) {
-			stateListeners.add(listener);
 		}
 	}
 }

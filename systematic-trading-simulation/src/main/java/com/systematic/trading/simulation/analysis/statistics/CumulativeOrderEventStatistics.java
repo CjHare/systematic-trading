@@ -43,7 +43,7 @@ public class CumulativeOrderEventStatistics implements OrderEventStatistics {
 	@Override
 	public void event( final OrderEvent event ) {
 
-		switch (event.getType()) {
+		switch (event.type()) {
 			case ENTRY:
 				entryEventCount++;
 			break;
@@ -57,27 +57,27 @@ public class CumulativeOrderEventStatistics implements OrderEventStatistics {
 				deleteExitEventCount++;
 			break;
 			default:
-				throw new IllegalArgumentException(String.format("Order event type %s is unexpected", event.getType()));
+				throw new IllegalArgumentException(String.format("Order event type %s is unexpected", event.type()));
 		}
 	}
 
 	@Override
-	public int getEntryEventCount() {
+	public int entryEventCount() {
 		return entryEventCount;
 	}
 
 	@Override
-	public int getDeleteEntryEventCount() {
+	public int deleteEntryEventCount() {
 		return deleteEntryEventCount;
 	}
 
 	@Override
-	public int getExitEventCount() {
+	public int exitEventCount() {
 		return exitEventCount;
 	}
 
 	@Override
-	public int getDeleteExitEventCount() {
+	public int deleteExitEventCount() {
 		return deleteExitEventCount;
 	}
 }

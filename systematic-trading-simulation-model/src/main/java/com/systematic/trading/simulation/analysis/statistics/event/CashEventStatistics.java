@@ -48,40 +48,40 @@ public interface CashEventStatistics {
 	 * 
 	 * @return total of the deposit events currently received.
 	 */
-	BigDecimal getAmountDeposited();
+	BigDecimal amountDeposited();
 
 	/**
 	 * Retrieves the sum of the interest events.
 	 * 
 	 * @return total of the interest events currently received.
 	 */
-	BigDecimal getInterestEarned();
+	BigDecimal interestEarned();
 
 	/**
 	 * Number of credit transactions recorded.
 	 * 
 	 * @return number of cash credit actions carried out.
 	 */
-	int getCreditEventCount();
+	int creditEventCount();
 
 	/**
 	 * Number of debit transactions recorded.
 	 * 
 	 * @return number of cash bedbit actions carried out.
 	 */
-	int getDebitEventCount();
+	int debitEventCount();
 
 	/**
 	 * Number of deposit transactions recorded.
 	 * 
 	 * @return number of cash desposit actions carried out.
 	 */
-	int getDepositEventCount();
+	int depositEventCount();
 
 	/**
 	 * Number of interest transactions recorded.
 	 * 
 	 * @return number of interest credit actions carried out.
 	 */
-	int getInterestEventCount();
+	int interestEventCount();
 }

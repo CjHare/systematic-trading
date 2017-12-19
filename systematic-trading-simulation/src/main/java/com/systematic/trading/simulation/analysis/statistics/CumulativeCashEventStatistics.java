@@ -47,7 +47,7 @@ public class CumulativeCashEventStatistics implements CashEventStatistics {
 	@Override
 	public void event( final CashEvent event ) {
 
-		switch (event.getType()) {
+		switch (event.type()) {
 			case CREDIT:
 				creditEventCount++;
 			break;
@@ -56,44 +56,44 @@ public class CumulativeCashEventStatistics implements CashEventStatistics {
 			break;
 			case DEPOSIT:
 				depositEventCount++;
-				amountDeposited = amountDeposited.add(event.getAmount());
+				amountDeposited = amountDeposited.add(event.amount());
 			break;
 			case INTEREST:
 				interestEventCount++;
-				interestEarned = interestEarned.add(event.getAmount());
+				interestEarned = interestEarned.add(event.amount());
 			break;
 			default:
-				throw new IllegalArgumentException(String.format("Cash event type %s is unexpected", event.getType()));
+				throw new IllegalArgumentException(String.format("Cash event type %s is unexpected", event.type()));
 		}
 	}
 
 	@Override
-	public BigDecimal getAmountDeposited() {
+	public BigDecimal amountDeposited() {
 		return amountDeposited;
 	}
 
 	@Override
-	public BigDecimal getInterestEarned() {
+	public BigDecimal interestEarned() {
 		return interestEarned;
 	}
 
 	@Override
-	public int getCreditEventCount() {
+	public int creditEventCount() {
 		return creditEventCount;
 	}
 
 	@Override
-	public int getDebitEventCount() {
+	public int debitEventCount() {
 		return debitEventCount;
 	}
 
 	@Override
-	public int getDepositEventCount() {
+	public int depositEventCount() {
 		return depositEventCount;
 	}
 
 	@Override
-	public int getInterestEventCount() {
+	public int interestEventCount() {
 		return interestEventCount;
 	}
 }

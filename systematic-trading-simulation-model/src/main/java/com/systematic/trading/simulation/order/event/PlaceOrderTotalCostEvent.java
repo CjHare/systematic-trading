@@ -47,17 +47,17 @@ public class PlaceOrderTotalCostEvent implements OrderEvent {
 	}
 
 	@Override
-	public EquityOrderType getType() {
+	public EquityOrderType type() {
 		return type;
 	}
 
 	@Override
-	public LocalDate getTransactionDate() {
+	public LocalDate transactionDate() {
 		return transactionDate;
 	}
 
 	@Override
-	public BigDecimal getTotalCost() {
+	public BigDecimal totalCost() {
 		return totalCost;
 	}
 }

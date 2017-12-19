@@ -48,5 +48,5 @@ public interface EquityEventStatistics {
 	 * 
 	 * @return total paid in management fees, in equities.
 	 */
-	BigDecimal getTotalManagmentFeesInEquities();
+	BigDecimal totalManagmentFeesInEquities();
 }

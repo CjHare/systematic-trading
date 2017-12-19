@@ -127,10 +127,10 @@ public class RegularDepositCashAccountDecoratorTest {
 	}
 
 	private void verifyBalance( final double expectedBalance ) {
-		final BigDecimal actualBalance = regularDeposits.getBalance();
+		final BigDecimal actualBalance = regularDeposits.balance();
 		assertEquals(String.format("Expected %s != %s", expectedBalance, actualBalance), 0,
 		        BigDecimal.valueOf(345).compareTo(actualBalance));
-		verify(account).getBalance();
+		verify(account).balance();
 		verifyNoMoreInteractions(account);
 	}
 
@@ -151,7 +151,7 @@ public class RegularDepositCashAccountDecoratorTest {
 	}
 
 	private void setUpBalance( final double expectedBalance ) {
-		when(account.getBalance()).thenReturn(BigDecimal.valueOf(expectedBalance));
+		when(account.balance()).thenReturn(BigDecimal.valueOf(expectedBalance));
 	}
 
 	private void credit( final double amount, final LocalDate transactionDate ) {

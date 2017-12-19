@@ -46,12 +46,12 @@ public class ElasticBrokerageEventRequestResource extends TransactionDateEventRe
 	private final float transactionFee;
 
 	public ElasticBrokerageEventRequestResource( final BrokerageEvent event ) {
-		super(event.getType().getName(), event.getTransactionDate());
-		this.equityAmount = event.getEquityAmount().floatValue();
-		this.equityValue = event.getEquityValue().floatValue();
-		this.startingEquityBalance = event.getStartingEquityBalance().floatValue();
-		this.endEquityBalance = event.getEndEquityBalance().floatValue();
-		this.transactionFee = event.getTransactionFee().floatValue();
+		super(event.type().name(), event.transactionDate());
+		this.equityAmount = event.equityAmount().floatValue();
+		this.equityValue = event.equityValue().floatValue();
+		this.startingEquityBalance = event.startingEquityBalance().floatValue();
+		this.endEquityBalance = event.endEquityBalance().floatValue();
+		this.transactionFee = event.transactionFee().floatValue();
 	}
 
 	@JsonProperty(ElasticTypeName.EQUITY_VALUE)

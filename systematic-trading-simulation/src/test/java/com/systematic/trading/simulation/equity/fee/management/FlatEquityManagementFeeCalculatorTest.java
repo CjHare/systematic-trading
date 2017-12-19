@@ -105,7 +105,7 @@ public class FlatEquityManagementFeeCalculatorTest {
 
 	private BigDecimal calculateFee( final double numberOfEquities, final double singleEquityValue,
 	        final Period durationToCalculate ) {
-		return fee.calculateFee(BigDecimal.valueOf(numberOfEquities),
+		return fee.calculate(BigDecimal.valueOf(numberOfEquities),
 		        ClosingPrice.valueOf(BigDecimal.valueOf(singleEquityValue)), durationToCalculate);
 	}
 

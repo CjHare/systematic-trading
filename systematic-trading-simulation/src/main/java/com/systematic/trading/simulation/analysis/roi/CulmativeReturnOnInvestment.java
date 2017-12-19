@@ -63,8 +63,8 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 	@Override
 	public void update( final Brokerage broker, final CashAccount cashAccount, final TradingDayPrices tradingData ) {
 
-		final BigDecimal percentageChange = calculatePercentageChangeInNetWorth(broker, cashAccount, tradingData);
-		final ReturnOnInvestmentEvent event = createEvent(percentageChange, tradingData.date());
+		final BigDecimal percentageChange = percentageChangeInNetWorth(broker, cashAccount, tradingData);
+		final ReturnOnInvestmentEvent event = event(percentageChange, tradingData.date());
 
 		notifyListeners(event);
 	}
@@ -82,7 +82,16 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 		}
 	}
 
-	private ReturnOnInvestmentEvent createEvent( final BigDecimal percentageChange, final LocalDate latestDate ) {
+	@Override
+	public void event( final CashEvent cashEvent ) {
+
+		if (CashEventType.DEPOSIT == cashEvent.type()) {
+			// Add the deposit to the running total
+			adjustment.add(cashEvent.amount());
+		}
+	}
+
+	private ReturnOnInvestmentEvent event( final BigDecimal percentageChange, final LocalDate latestDate ) {
 
 		if (previousDate == null) {
 			// No previous data, the change is ONE
@@ -98,12 +107,12 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 		return event;
 	}
 
-	private BigDecimal calculatePercentageChangeInNetWorth( final Brokerage broker, final CashAccount cashAccount,
+	private BigDecimal percentageChangeInNetWorth( final Brokerage broker, final CashAccount cashAccount,
 	        final TradingDayPrices tradingData ) {
 
 		final Networth netWorth = new Networth();
-		netWorth.addEquity(broker.getEquityBalance(), tradingData.closingPrice().getPrice());
-		netWorth.add(cashAccount.getBalance());
+		netWorth.addEquity(broker.equityBalance(), tradingData.closingPrice().getPrice());
+		netWorth.add(cashAccount.balance());
 
 		final BigDecimal percentageChange;
 
@@ -119,14 +128,5 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 		adjustment.reset();
 
 		return percentageChange;
-	}
-
-	@Override
-	public void event( final CashEvent cashEvent ) {
-
-		if (CashEventType.DEPOSIT == cashEvent.getType()) {
-			// Add the deposit to the running total
-			adjustment.add(cashEvent.getAmount());
-		}
 	}
 }
