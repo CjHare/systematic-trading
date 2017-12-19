@@ -146,9 +146,9 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 	private void verifySma( final SimpleMovingAverageLine sma, final SortedMap<LocalDate, BigDecimal> expected ) {
 		assertNotNull(sma);
-		assertNotNull(sma.getSma());
-		assertEquals(expected.size(), sma.getSma().size());
-		assertValues(expected, sma.getSma());
+		assertNotNull(sma.sma());
+		assertEquals(expected.size(), sma.sma().size());
+		assertValues(expected, sma.sma());
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int numberDataPoints, final int lookback ) {

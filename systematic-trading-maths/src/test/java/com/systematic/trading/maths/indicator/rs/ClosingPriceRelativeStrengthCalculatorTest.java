@@ -216,9 +216,9 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	private void verifyRs( final RelativeStrengthLine rs, final SortedMap<LocalDate, BigDecimal> expected ) {
 		assertNotNull(rs);
-		assertNotNull(rs.getRs());
-		assertEquals(expected.size(), rs.getRs().size());
-		assertValues(expected, rs.getRs());
+		assertNotNull(rs.rs());
+		assertEquals(expected.size(), rs.rs().size());
+		assertValues(expected, rs.rs());
 	}
 
 	private void setUpValidationErrorNullInput() {

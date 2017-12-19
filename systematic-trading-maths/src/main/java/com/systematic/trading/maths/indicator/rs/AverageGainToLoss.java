@@ -21,25 +21,25 @@ public class AverageGainToLoss {
 		this.downward = BigDecimal.ZERO;
 	}
 
-	public BigDecimal getAverageGain() {
+	public BigDecimal averageGain() {
 		return upward.divide(division, mathContext);
 	}
 
-	public BigDecimal getAverageLoss() {
+	public BigDecimal averageLoss() {
 		return downward.divide(division, mathContext);
 	}
 
 	/**
 	 * Adding a gain, with an inferred loss of zero.
 	 */
-	public void addGain( final BigDecimal gain ) {
+	public void gain( final BigDecimal gain ) {
 		this.upward = upward.add(gain, mathContext);
 	}
 
 	/**
 	 * Adding a loss, with an inferred gain of zero.
 	 */
-	public void addLoss( final BigDecimal loss ) {
+	public void loss( final BigDecimal loss ) {
 		this.downward = downward.add(loss, mathContext);
 	}
 }

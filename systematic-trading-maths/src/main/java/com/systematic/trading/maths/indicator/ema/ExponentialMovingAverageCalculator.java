@@ -74,7 +74,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	public ExponentialMovingAverageCalculator( final int lookback, final Validator validator ) {
 		validator.verifyGreaterThan(1, lookback);
 
-		this.smoothingConstant = calculateSmoothingConstant(lookback);
+		this.smoothingConstant = smoothingConstant(lookback);
 		this.validator = validator;
 		this.lookback = lookback;
 	}
@@ -85,10 +85,10 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 		validator.verifyZeroNullEntries(data.values());
 		validator.verifyEnoughValues(data.values(), lookback);
 
-		return calculateEma(data);
+		return ema(data);
 	}
 
-	private ExponentialMovingAverageLine calculateEma( final SortedMap<LocalDate, BigDecimal> data ) {
+	private ExponentialMovingAverageLine ema( final SortedMap<LocalDate, BigDecimal> data ) {
 		final SortedMap<LocalDate, BigDecimal> ema = new TreeMap<>();
 
 		int smaDataPointCount = 0;
@@ -102,12 +102,12 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 				smaDataPointCount++;
 
 				if (isSmaCalculationComplete(smaDataPointCount)) {
-					emaValue = getSma(smaSum);
+					emaValue = sma(smaSum);
 					ema.put(entry.getKey(), emaValue);
 				}
 
 			} else {
-				emaValue = getEma(emaValue, entry.getValue());
+				emaValue = ema(emaValue, entry.getValue());
 				ema.put(entry.getKey(), emaValue);
 			}
 		}
@@ -118,20 +118,20 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	/**
 	 * EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) 
 	 */
-	private BigDecimal getEma( final BigDecimal yesterdayEma, final BigDecimal todayClose ) {
+	private BigDecimal ema( final BigDecimal yesterdayEma, final BigDecimal todayClose ) {
 		return todayClose.subtract(yesterdayEma, MATH_CONTEXT).multiply(smoothingConstant, MATH_CONTEXT)
 		        .add(yesterdayEma, MATH_CONTEXT);
 
 	}
 
-	private BigDecimal getSma( final BigDecimal sum ) {
+	private BigDecimal sma( final BigDecimal sum ) {
 		return sum.divide(BigDecimal.valueOf(lookback), MATH_CONTEXT);
 	}
 
 	/**
 	 * 2 / numberOfValues + 1
 	 */
-	private BigDecimal calculateSmoothingConstant( final int lookback ) {
+	private BigDecimal smoothingConstant( final int lookback ) {
 		return BigDecimal.valueOf(2d / (lookback + 1));
 	}
 

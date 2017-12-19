@@ -68,7 +68,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	@Override
 	public <T> void verifyEnoughValues( final Collection<T> data, final int requiredNumberOfPrices ) {
-		validateNumberOfItems(getNumberOfNonNullItems(data), requiredNumberOfPrices);
+		validateNumberOfItems(numberOfNonNullItems(data), requiredNumberOfPrices);
 	}
 
 	@Override
@@ -80,8 +80,8 @@ public class IllegalArgumentThrowingValidator implements Validator {
 			firstNonNullItem++;
 		}
 
-		final int lastNonNullItem = getLastNonNullIndex(data);
-		final int numberOfItems = getNumberOfItems(firstNonNullItem, lastNonNullItem);
+		final int lastNonNullItem = lastNonNullIndex(data);
+		final int numberOfItems = numberOfItems(firstNonNullItem, lastNonNullItem);
 
 		validateNumberOfItems(numberOfItems, requiredNumberOfPrices);
 	}
@@ -92,7 +92,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 		}
 	}
 
-	private <T> int getLastNonNullIndex( final T[] data ) {
+	private <T> int lastNonNullIndex( final T[] data ) {
 		// Find last non-null index
 		int lastNonNullItem = data.length - 1;
 
@@ -112,12 +112,12 @@ public class IllegalArgumentThrowingValidator implements Validator {
 		}
 	}
 
-	private int getNumberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {
+	private int numberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {
 		// Number of items, accounting for zero indexed array
 		return lastNonNullItem - firstNonNullItem + 1;
 	}
 
-	private <T> int getNumberOfNonNullItems( final Collection<T> data ) {
+	private <T> int numberOfNonNullItems( final Collection<T> data ) {
 
 		// Are the items consecutively populated (as expected)
 		int numberOfConsecutiveItems = 0;

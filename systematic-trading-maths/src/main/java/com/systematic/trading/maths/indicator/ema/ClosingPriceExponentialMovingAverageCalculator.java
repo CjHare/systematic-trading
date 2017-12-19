@@ -71,7 +71,7 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 		validator.verifyGreaterThan(1, daysOfEmaValues);
 
 		this.minimumNumberOfPrices = lookback + daysOfEmaValues;
-		this.smoothingConstant = calculateSmoothingConstant(lookback);
+		this.smoothingConstant = smoothingConstant(lookback);
 		this.validator = validator;
 		this.lookback = lookback;
 	}
@@ -88,10 +88,10 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 		validator.verifyEnoughValues(data, lookback);
 
 		// With zero null entries the beginning is zero, then end last index
-		return calculateEma(data, 0, data.length - 1);
+		return ema(data, 0, data.length - 1);
 	}
 
-	private ExponentialMovingAverageLine calculateEma( final TradingDayPrices[] data, final int startSmaIndex,
+	private ExponentialMovingAverageLine ema( final TradingDayPrices[] data, final int startSmaIndex,
 	        final int endEmaIndex ) {
 		final SortedMap<LocalDate, BigDecimal> ema = new TreeMap<>();
 
@@ -103,7 +103,7 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 			smaSum = smaSum.add(data[i].closingPrice().getPrice(), MATH_CONTEXT);
 		}
 
-		smaSum = getSma(smaSum);
+		smaSum = sma(smaSum);
 
 		// First value is the moving average for yesterday
 		ema.put(data[endSmaIndex - 1].date(), smaSum);
@@ -113,7 +113,7 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 
 		// One SMA value and the <= in loop
 		for (int i = startEmaIndex; i <= endEmaIndex; i++) {
-			emaValue = getEma(emaValue, data[i].closingPrice().getPrice());
+			emaValue = ema(emaValue, data[i].closingPrice().getPrice());
 			ema.put(data[i].date(), emaValue);
 		}
 
@@ -123,20 +123,20 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 	/**
 	 * EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) 
 	 */
-	private BigDecimal getEma( final BigDecimal yesterdayEma, final BigDecimal todayClose ) {
+	private BigDecimal ema( final BigDecimal yesterdayEma, final BigDecimal todayClose ) {
 		return todayClose.subtract(yesterdayEma, MATH_CONTEXT).multiply(smoothingConstant, MATH_CONTEXT)
 		        .add(yesterdayEma, MATH_CONTEXT);
 
 	}
 
-	private BigDecimal getSma( final BigDecimal sum ) {
+	private BigDecimal sma( final BigDecimal sum ) {
 		return sum.divide(BigDecimal.valueOf(lookback), MATH_CONTEXT);
 	}
 
 	/**
 	 * 2 / numberOfValues + 1
 	 */
-	private BigDecimal calculateSmoothingConstant( final int lookback ) {
+	private BigDecimal smoothingConstant( final int lookback ) {
 		return BigDecimal.valueOf(2d / (lookback + 1));
 	}
 }

@@ -150,9 +150,9 @@ public class RelativeStrengthIndexCalculatorTest {
 
 	private void verifyRsi( final RelativeStrengthIndexLine rsi, final SortedMap<LocalDate, BigDecimal> expected ) {
 		assertNotNull(rsi);
-		assertNotNull(rsi.getRsi());
-		assertEquals(expected.size(), rsi.getRsi().size());
-		assertValues(expected, rsi.getRsi());
+		assertNotNull(rsi.rsi());
+		assertEquals(expected.size(), rsi.rsi().size());
+		assertValues(expected, rsi.rsi());
 	}
 
 	private void verifyRs( final TradingDayPrices[] prices ) {

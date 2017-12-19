@@ -180,7 +180,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 			line.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
 		}
 
-		when(rsi.getRsi()).thenReturn(line);
+		when(rsi.rsi()).thenReturn(line);
 	}
 
 	private void setUpCalculator() {

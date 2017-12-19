@@ -49,11 +49,11 @@ public class MovingAverageConvergenceDivergenceLines {
 		this.signalLine = signalLine;
 	}
 
-	public SortedMap<LocalDate, BigDecimal> getMacd() {
+	public SortedMap<LocalDate, BigDecimal> macd() {
 		return macd;
 	}
 
-	public SortedMap<LocalDate, BigDecimal> getSignalLine() {
+	public SortedMap<LocalDate, BigDecimal> signalLine() {
 		return signalLine;
 	}
 }

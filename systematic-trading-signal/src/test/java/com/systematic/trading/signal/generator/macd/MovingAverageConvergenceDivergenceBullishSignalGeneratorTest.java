@@ -86,8 +86,8 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 		// Default result set of no results
 		macd = new TreeMap<>();
 		signaLine = new TreeMap<>();
-		when(lines.getMacd()).thenReturn(macd);
-		when(lines.getSignalLine()).thenReturn(signaLine);
+		when(lines.macd()).thenReturn(macd);
+		when(lines.signalLine()).thenReturn(signaLine);
 
 		setUpDateRange(true);
 	}
@@ -264,7 +264,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 	private void verifySignalRangeTests( final int size ) {
 
 		final InOrder order = inOrder(lines, signalRange);
-		order.verify(lines).getSignalLine();
+		order.verify(lines).signalLine();
 
 		// Starting index @ 1, because there cannot be a signal on the first day :. excluded
 		for (int i = 1; i < size; i++) {

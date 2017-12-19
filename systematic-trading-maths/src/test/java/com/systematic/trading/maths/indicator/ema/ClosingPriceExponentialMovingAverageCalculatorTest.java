@@ -218,9 +218,9 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	private void verifyEma( final ExponentialMovingAverageLine actual,
 	        final SortedMap<LocalDate, BigDecimal> expected ) {
 		assertNotNull(actual);
-		assertNotNull(actual.getEma());
-		assertEquals(expected.size(), actual.getEma().size());
-		assertValues(expected, actual.getEma());
+		assertNotNull(actual.ema());
+		assertEquals(expected.size(), actual.ema().size());
+		assertValues(expected, actual.ema());
 
 	}
 

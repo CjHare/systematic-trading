@@ -81,7 +81,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 
 		// Default results of no results
 		sma = new TreeMap<>();
-		when(lines.getSma()).thenReturn(sma);
+		when(lines.sma()).thenReturn(sma);
 
 		setUpDateRange(true);
 	}

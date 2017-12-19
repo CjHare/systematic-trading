@@ -206,8 +206,8 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	        final SortedMap<LocalDate, BigDecimal> expectedSignalLine ) {
 		assertNotNull(lines);
 
-		verifySortedMap(expectedMacd, lines.getMacd());
-		verifySortedMap(expectedSignalLine, lines.getSignalLine());
+		verifySortedMap(expectedMacd, lines.macd());
+		verifySortedMap(expectedSignalLine, lines.signalLine());
 	}
 
 	private void verifySortedMap( final SortedMap<LocalDate, BigDecimal> expected,

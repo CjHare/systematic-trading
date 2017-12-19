@@ -184,9 +184,9 @@ public class AverageTrueRangeCalculatorTest {
 
 	private void verifyAtr( final AverageTrueRangeLine atr, final SortedMap<LocalDate, BigDecimal> expected ) {
 		assertNotNull(atr);
-		assertNotNull(atr.getAtr());
-		assertEquals(expected.size(), atr.getAtr().size());
-		assertValues(expected, atr.getAtr());
+		assertNotNull(atr.atr());
+		assertEquals(expected.size(), atr.atr().size());
+		assertValues(expected, atr.atr());
 	}
 
 	private void setUpCalculator( final int lookback ) {

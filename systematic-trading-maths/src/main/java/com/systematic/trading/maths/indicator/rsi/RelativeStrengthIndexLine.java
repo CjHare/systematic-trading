@@ -46,7 +46,7 @@ public class RelativeStrengthIndexLine {
 		this.rsi = rsi;
 	}
 
-	public SortedMap<LocalDate, BigDecimal> getRsi() {
+	public SortedMap<LocalDate, BigDecimal> rsi() {
 		return rsi;
 	}
 }

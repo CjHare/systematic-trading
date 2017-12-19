@@ -59,8 +59,8 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 	public List<DatedSignal> generate( final MovingAverageConvergenceDivergenceLines lines,
 	        Predicate<LocalDate> signalRange ) {
 
-		final SortedMap<LocalDate, BigDecimal> macd = lines.getMacd();
-		final SortedMap<LocalDate, BigDecimal> signaLine = lines.getSignalLine();
+		final SortedMap<LocalDate, BigDecimal> macd = lines.macd();
+		final SortedMap<LocalDate, BigDecimal> signaLine = lines.signalLine();
 		final List<DatedSignal> signals = new ArrayList<>();
 
 		// SortedMaps ordered by date, need to skip the first entry, using yesterday as a flag

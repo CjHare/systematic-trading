@@ -61,7 +61,7 @@ public class ExponentialMovingAverageBullishGradientSignalGenerator
 	public List<DatedSignal> generate( final ExponentialMovingAverageLine indicatorOutput,
 	        final Predicate<LocalDate> signalRange ) {
 
-		final SortedMap<LocalDate, BigDecimal> ema = indicatorOutput.getEma();
+		final SortedMap<LocalDate, BigDecimal> ema = indicatorOutput.ema();
 		final List<DatedSignal> signals = new ArrayList<>();
 		Map.Entry<LocalDate, BigDecimal> previousEntry = null;
 

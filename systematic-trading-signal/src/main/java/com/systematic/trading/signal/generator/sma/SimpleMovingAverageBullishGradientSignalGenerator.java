@@ -60,7 +60,7 @@ public class SimpleMovingAverageBullishGradientSignalGenerator implements Signal
 	public List<DatedSignal> generate( final SimpleMovingAverageLine indicatorOutput,
 	        final Predicate<LocalDate> signalRange ) {
 
-		final SortedMap<LocalDate, BigDecimal> sma = indicatorOutput.getSma();
+		final SortedMap<LocalDate, BigDecimal> sma = indicatorOutput.sma();
 		final List<DatedSignal> signals = new ArrayList<>();
 		Map.Entry<LocalDate, BigDecimal> previousEntry = null;
 

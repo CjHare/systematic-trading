@@ -53,7 +53,7 @@ public abstract class RelativeStrengthIndexSignalGenerator implements SignalGene
 		final List<DatedSignal> signals = new ArrayList<>();
 		Map.Entry<LocalDate, BigDecimal> yesterday = null;
 
-		for (Map.Entry<LocalDate, BigDecimal> today : rsiLine.getRsi().entrySet()) {
+		for (Map.Entry<LocalDate, BigDecimal> today : rsiLine.rsi().entrySet()) {
 
 			if (yesterday != null && signalRange.test(today.getKey())
 			        && hasMomentumDirectionChanged(yesterday.getValue(), today.getValue())) {

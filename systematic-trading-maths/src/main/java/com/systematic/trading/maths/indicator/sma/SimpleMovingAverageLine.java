@@ -46,7 +46,7 @@ public class SimpleMovingAverageLine {
 		this.sma = sma;
 	}
 
-	public SortedMap<LocalDate, BigDecimal> getSma() {
+	public SortedMap<LocalDate, BigDecimal> sma() {
 		return sma;
 	}
 }

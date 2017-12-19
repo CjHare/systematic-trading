@@ -121,11 +121,11 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 			switch (closeToday.compareTo(closeYesterday)) {
 
 				case PRICE_TODAY_IS_HIGHER:
-					initialLookback.addGain(closeToday.subtract(closeYesterday, MATH_CONTEXT));
+					initialLookback.gain(closeToday.subtract(closeYesterday, MATH_CONTEXT));
 				break;
 
 				case PRICE_YESTERDAY_WAS_HIGHER:
-					initialLookback.addLoss(closeYesterday.subtract(closeToday, MATH_CONTEXT));
+					initialLookback.loss(closeYesterday.subtract(closeToday, MATH_CONTEXT));
 				break;
 
 				case NO_PRICE_MOVEMENT:
@@ -146,8 +146,8 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	 * 	Average Loss = [(previous Average Loss) x archive + current Loss] / lookback.
 	 */
 	private RelativeStrengthLine rs( final TradingDayPrices[] data, final AverageGainToLoss initialLookback ) {
-		BigDecimal averageGain = initialLookback.getAverageGain();
-		BigDecimal averageLoss = initialLookback.getAverageLoss();
+		BigDecimal averageGain = initialLookback.averageGain();
+		BigDecimal averageLoss = initialLookback.averageLoss();
 		BigDecimal currentGain;
 		BigDecimal currentLoss;
 		BigDecimal relativeStrength;

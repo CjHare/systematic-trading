@@ -81,8 +81,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 		final RelativeStrengthLine rsLine = rs.calculate(data);
 		final SortedMap<LocalDate, BigDecimal> rsi = new TreeMap<>();
 
-		for (final Map.Entry<LocalDate, BigDecimal> entry : rsLine.getRs().entrySet()) {
-			rsi.put(entry.getKey(), calculateRsi(entry));
+		for (final Map.Entry<LocalDate, BigDecimal> entry : rsLine.rs().entrySet()) {
+			rsi.put(entry.getKey(), rsi(entry));
 		}
 
 		return new RelativeStrengthIndexLine(rsi);
@@ -91,7 +91,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 	/* 
 	 * RSI = 100 - 100 /( 1 + RS ) 
 	 */
-	private BigDecimal calculateRsi( final Map.Entry<LocalDate, BigDecimal> entry ) {
+	private BigDecimal rsi( final Map.Entry<LocalDate, BigDecimal> entry ) {
 		return ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(entry.getValue()), MATH_CONTEXT));
 	}
 }

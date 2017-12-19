@@ -46,7 +46,7 @@ public class AverageTrueRangeLine {
 		this.atr = atr;
 	}
 
-	public SortedMap<LocalDate, BigDecimal> getAtr() {
+	public SortedMap<LocalDate, BigDecimal> atr() {
 		return atr;
 	}
 }

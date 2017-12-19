@@ -80,8 +80,8 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 		final ExponentialMovingAverageLine fastEmaValues = fastEma.calculate(data);
 
 		final SortedMap<LocalDate, BigDecimal> macd = new TreeMap<>();
-		final SortedMap<LocalDate, BigDecimal> slow = slowEmaValues.getEma();
-		final SortedMap<LocalDate, BigDecimal> fast = fastEmaValues.getEma();
+		final SortedMap<LocalDate, BigDecimal> slow = slowEmaValues.ema();
+		final SortedMap<LocalDate, BigDecimal> fast = fastEmaValues.ema();
 		LocalDate today;
 
 		for (final Map.Entry<LocalDate, BigDecimal> slowEntry : slow.entrySet()) {
@@ -92,6 +92,6 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 			}
 		}
 
-		return new MovingAverageConvergenceDivergenceLines(macd, signalEma.calculate(macd).getEma());
+		return new MovingAverageConvergenceDivergenceLines(macd, signalEma.calculate(macd).ema());
 	}
 }

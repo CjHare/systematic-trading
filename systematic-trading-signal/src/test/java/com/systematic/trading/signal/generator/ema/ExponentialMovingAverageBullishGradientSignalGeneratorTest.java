@@ -82,7 +82,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 
 		// Default data set of no results
 		ema = new TreeMap<>();
-		when(line.getEma()).thenReturn(ema);
+		when(line.ema()).thenReturn(ema);
 
 		setUpDateRange(true);
 	}
