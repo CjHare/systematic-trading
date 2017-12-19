@@ -230,20 +230,20 @@ public class BacktestLaunchArgumentsTest {
 	}
 
 	private void setUpTickerSymbol( final String serviceName ) {
-		when(equityArguments.getTickerSymbol()).thenReturn(new TickerSymbol(serviceName));
+		when(equityArguments.tickerSymbol()).thenReturn(new TickerSymbol(serviceName));
 	}
 
 	private void setUpDataService( final String serviceName ) {
-		when(equityArguments.getDataService()).thenReturn(new DataServiceType(serviceName));
+		when(equityArguments.dataService()).thenReturn(new DataServiceType(serviceName));
 	}
 
 	private void setUpEquityDataSet( final String serviceName ) {
-		when(equityArguments.getEquityDataset()).thenReturn(new EquityDataset(serviceName));
+		when(equityArguments.equityDataset()).thenReturn(new EquityDataset(serviceName));
 	}
 
 	private void outputDirectoryExpectingException( final String expectedMessage ) {
 		try {
-			parser.getOutputDirectory("WEEKLY_150");
+			parser.outputDirectory("WEEKLY_150");
 			fail("expecting an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(expectedMessage, e.getMessage());
@@ -270,43 +270,43 @@ public class BacktestLaunchArgumentsTest {
 	}
 
 	private void verifyDataService( final String expected ) {
-		assertNotNull(parser.getDataService());
-		assertEquals(expected, parser.getDataService().type());
-		verify(equityArguments, atLeastOnce()).getDataService();
+		assertNotNull(parser.dataService());
+		assertEquals(expected, parser.dataService().type());
+		verify(equityArguments, atLeastOnce()).dataService();
 	}
 
 	private void verifyEquityDataSet( final String expected ) {
-		assertNotNull(parser.getEquityDataset());
-		assertEquals(expected, parser.getEquityDataset().dataset());
-		verify(equityArguments, atLeastOnce()).getEquityDataset();
+		assertNotNull(parser.equityDataset());
+		assertEquals(expected, parser.equityDataset().dataset());
+		verify(equityArguments, atLeastOnce()).equityDataset();
 	}
 
 	private void verifyTickerSymbol( final String expected ) {
-		assertNotNull(parser.getTickerSymbol());
-		assertEquals(expected, parser.getTickerSymbol().symbol());
-		verify(equityArguments, atLeastOnce()).getTickerSymbol();
+		assertNotNull(parser.tickerSymbol());
+		assertEquals(expected, parser.tickerSymbol().symbol());
+		verify(equityArguments, atLeastOnce()).tickerSymbol();
 	}
 
 	private void verifyOutputType( final OutputType expected ) {
-		assertEquals(expected, parser.getOutputType());
+		assertEquals(expected, parser.outputType());
 	}
 
 	private void verifyOutputDirectory( final String baseDirectory ) {
-		assertEquals(String.format("%s/WEEKLY_150/", baseDirectory), parser.getOutputDirectory("WEEKLY_150"));
+		assertEquals(String.format("%s/WEEKLY_150/", baseDirectory), parser.outputDirectory("WEEKLY_150"));
 	}
 
 	private void verifyOpeningFunds( final String openingFunds ) {
-		assertEquals(new BigDecimal(openingFunds), parser.getOpeningFunds());
+		assertEquals(new BigDecimal(openingFunds), parser.openingFunds());
 	}
 
 	private void verifyStartDate( final LocalDate expected ) {
-		assertNotNull(parser.getStartDate());
-		assertEquals(expected, parser.getStartDate().date());
+		assertNotNull(parser.startDate());
+		assertEquals(expected, parser.startDate().date());
 	}
 
 	private void verifyEndDate( final LocalDate expected ) {
-		assertNotNull(parser.getEndDate());
-		assertEquals(expected, parser.getEndDate().date());
+		assertNotNull(parser.endDate());
+		assertEquals(expected, parser.endDate().date());
 	}
 
 	private void verifyOutputDirectoryArgument( final String outputValue, final String fileBaseDirectory ) {

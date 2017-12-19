@@ -86,7 +86,7 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
-		new BacktestTrial(launchArgs.getDataService()).runBacktest(new UptrendsConfirmedByUptrendsTrial(), launchArgs);
+		new BacktestTrial(launchArgs.dataService()).runBacktest(new UptrendsConfirmedByUptrendsTrial(), launchArgs);
 	}
 
 	@Override

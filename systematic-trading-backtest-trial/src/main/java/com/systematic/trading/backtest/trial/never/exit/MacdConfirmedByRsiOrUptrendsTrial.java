@@ -87,7 +87,7 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
-		new BacktestTrial(launchArgs.getDataService()).runBacktest(new MacdConfirmedByRsiOrUptrendsTrial(), launchArgs);
+		new BacktestTrial(launchArgs.dataService()).runBacktest(new MacdConfirmedByRsiOrUptrendsTrial(), launchArgs);
 	}
 
 	@Override

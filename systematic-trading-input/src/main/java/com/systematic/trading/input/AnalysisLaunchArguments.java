@@ -56,19 +56,19 @@ public class AnalysisLaunchArguments {
 		this.equityArguments = equityArguments;
 	}
 
-	public TickerSymbol getTickerSymbol() {
-		return equityArguments.getTickerSymbol();
+	public TickerSymbol tickerSymbol() {
+		return equityArguments.tickerSymbol();
 	}
 
-	public EquityDataset getEquityDataset() {
-		return equityArguments.getEquityDataset();
+	public EquityDataset equityDataset() {
+		return equityArguments.equityDataset();
 	}
 
-	public DataServiceType getDataService() {
-		return equityArguments.getDataService();
+	public DataServiceType dataService() {
+		return equityArguments.dataService();
 	}
 
-	public BigDecimal getOpeningFunds() {
+	public BigDecimal openingFunds() {
 		return openingFunds;
 	}
 }

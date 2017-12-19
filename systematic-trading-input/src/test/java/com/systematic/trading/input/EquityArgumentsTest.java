@@ -193,18 +193,18 @@ public class EquityArgumentsTest {
 	}
 
 	private void verifyDataService( final String expected ) {
-		assertNotNull(parser.getDataService());
-		assertEquals(expected, parser.getDataService().type());
+		assertNotNull(parser.dataService());
+		assertEquals(expected, parser.dataService().type());
 	}
 
 	private void verifyEquityDataSet( final String expected ) {
-		assertNotNull(parser.getEquityDataset());
-		assertEquals(expected, parser.getEquityDataset().dataset());
+		assertNotNull(parser.equityDataset());
+		assertEquals(expected, parser.equityDataset().dataset());
 	}
 
 	private void verifyTickerSymbol( final String expected ) {
-		assertNotNull(parser.getTickerSymbol());
-		assertEquals(expected, parser.getTickerSymbol().symbol());
+		assertNotNull(parser.tickerSymbol());
+		assertEquals(expected, parser.tickerSymbol().symbol());
 	}
 
 	private void verifDataServiceArgument( final Map<ArgumentKey, String> arguments ) {

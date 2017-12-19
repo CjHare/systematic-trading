@@ -74,7 +74,7 @@ public class MacdConfirmedByRsiTrial extends BaseTrial implements BacktestConfig
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
-		new BacktestTrial(launchArgs.getDataService()).runBacktest(new MacdConfirmedByRsiTrial(), launchArgs);
+		new BacktestTrial(launchArgs.dataService()).runBacktest(new MacdConfirmedByRsiTrial(), launchArgs);
 	}
 
 	@Override

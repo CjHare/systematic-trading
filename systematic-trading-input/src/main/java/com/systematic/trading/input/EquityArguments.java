@@ -60,15 +60,15 @@ public class EquityArguments {
 		this.dataService = dataServiceArgument.get(arguments);
 	}
 
-	public TickerSymbol getTickerSymbol() {
+	public TickerSymbol tickerSymbol() {
 		return tickerSymbol;
 	}
 
-	public EquityDataset getEquityDataset() {
+	public EquityDataset equityDataset() {
 		return equityDataset;
 	}
 
-	public DataServiceType getDataService() {
+	public DataServiceType dataService() {
 		return dataService;
 	}
 }

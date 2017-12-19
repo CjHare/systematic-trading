@@ -74,7 +74,7 @@ public class UptrendsAndRsidTrial extends BaseTrial implements BacktestConfigura
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
-		new BacktestTrial(launchArgs.getDataService()).runBacktest(new UptrendsAndRsidTrial(), launchArgs);
+		new BacktestTrial(launchArgs.dataService()).runBacktest(new UptrendsAndRsidTrial(), launchArgs);
 	}
 
 	@Override

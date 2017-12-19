@@ -104,14 +104,14 @@ public class BacktestTrial {
 	        throws ServiceException {
 
 		// Date range is from the first of the starting month until now
-		final LocalDate simulationStartDate = parserdArguments.getStartDate().date();
-		final LocalDate simulationEndDate = parserdArguments.getEndDate().date();
+		final LocalDate simulationStartDate = parserdArguments.startDate().date();
+		final LocalDate simulationEndDate = parserdArguments.endDate().date();
 
 		final EquityConfiguration equity = equity(parserdArguments);
 
 		//TODO convert into input arguments
 		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
-		final BigDecimal openingFunds = parserdArguments.getOpeningFunds();
+		final BigDecimal openingFunds = parserdArguments.openingFunds();
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
@@ -162,7 +162,7 @@ public class BacktestTrial {
 	}
 
 	private EquityConfiguration equity( final BacktestLaunchArguments launchArgs ) {
-		return new EquityConfiguration(launchArgs.getEquityDataset(), launchArgs.getTickerSymbol(), EquityClass.STOCK);
+		return new EquityConfiguration(launchArgs.equityDataset(), launchArgs.tickerSymbol(), EquityClass.STOCK);
 	}
 
 	private void closePool( final ExecutorService pool ) {
@@ -181,7 +181,7 @@ public class BacktestTrial {
 	        final ExecutorService pool ) throws BacktestInitialisationException {
 
 		final BacktestBatchId batchId = batchId(configuration, depositAmount);
-		final OutputType type = arguments.getOutputType();
+		final OutputType type = arguments.outputType();
 
 		try {
 			switch (type) {
@@ -206,7 +206,7 @@ public class BacktestTrial {
 
 	private String outputDirectory( final DepositConfiguration depositAmount,
 	        final BacktestLaunchArguments arguments ) {
-		return isFileBasedDisplay(arguments) ? arguments.getOutputDirectory(depositAmount.toString()) : "";
+		return isFileBasedDisplay(arguments) ? arguments.outputDirectory(depositAmount.toString()) : "";
 	}
 
 	private BacktestBatchId batchId( final BacktestBootstrapConfiguration configuration,
@@ -220,7 +220,7 @@ public class BacktestTrial {
 	}
 
 	private BacktestEventListenerPreparation output( final BacktestLaunchArguments arguments ) {
-		final OutputType type = arguments.getOutputType();
+		final OutputType type = arguments.outputType();
 
 		switch (type) {
 			case ELASTIC_SEARCH:
@@ -238,7 +238,7 @@ public class BacktestTrial {
 
 	private ExecutorService outputPool( final BacktestLaunchArguments arguments )
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
-		final OutputType type = arguments.getOutputType();
+		final OutputType type = arguments.outputType();
 
 		switch (type) {
 			case ELASTIC_SEARCH:
@@ -264,7 +264,7 @@ public class BacktestTrial {
 		// Arrange output to files, only once per a run
 
 		if (isFileBasedDisplay(arguments)) {
-			final String outputDirectory = arguments.getOutputDirectory(depositAmount.toString());
+			final String outputDirectory = arguments.outputDirectory(depositAmount.toString());
 			try {
 				new ClearFileDestination(outputDirectory).clear();
 			} catch (final IOException e) {
@@ -274,8 +274,8 @@ public class BacktestTrial {
 	}
 
 	private boolean isFileBasedDisplay( final BacktestLaunchArguments arguments ) {
-		return arguments.getOutputType() == OutputType.FILE_COMPLETE
-		        || arguments.getOutputType() == OutputType.FILE_MINIMUM;
+		return arguments.outputType() == OutputType.FILE_COMPLETE
+		        || arguments.outputType() == OutputType.FILE_MINIMUM;
 	}
 
 	private void recordSimulationDates( final BacktestSimulationDates simulationDates ) {

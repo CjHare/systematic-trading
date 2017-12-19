@@ -86,7 +86,7 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
-		new BacktestTrial(launchArgs.getDataService()).runBacktest(new ShortUptrendsConfirmedByLongUptrendsTrial(),
+		new BacktestTrial(launchArgs.dataService()).runBacktest(new ShortUptrendsConfirmedByLongUptrendsTrial(),
 		        launchArgs);
 	}
 

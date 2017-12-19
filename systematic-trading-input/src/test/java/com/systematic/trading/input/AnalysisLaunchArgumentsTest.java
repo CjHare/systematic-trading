@@ -152,15 +152,15 @@ public class AnalysisLaunchArgumentsTest {
 	}
 
 	private void setUpTickerSymbol( final String serviceName ) {
-		when(equityArguments.getTickerSymbol()).thenReturn(new TickerSymbol(serviceName));
+		when(equityArguments.tickerSymbol()).thenReturn(new TickerSymbol(serviceName));
 	}
 
 	private void setUpDataService( final String serviceName ) {
-		when(equityArguments.getDataService()).thenReturn(new DataServiceType(serviceName));
+		when(equityArguments.dataService()).thenReturn(new DataServiceType(serviceName));
 	}
 
 	private void setUpEquityDataSet( final String serviceName ) {
-		when(equityArguments.getEquityDataset()).thenReturn(new EquityDataset(serviceName));
+		when(equityArguments.equityDataset()).thenReturn(new EquityDataset(serviceName));
 	}
 
 	private void setUpOpeningFundsException() {
@@ -169,26 +169,26 @@ public class AnalysisLaunchArgumentsTest {
 	}
 
 	private void verifyDataService( final String expected ) {
-		assertNotNull(parser.getDataService());
-		assertEquals(expected, parser.getDataService().type());
-		verify(equityArguments, atLeastOnce()).getDataService();
+		assertNotNull(parser.dataService());
+		assertEquals(expected, parser.dataService().type());
+		verify(equityArguments, atLeastOnce()).dataService();
 	}
 
 	private void verifyEquityDataSet( final String expected ) {
-		assertNotNull(parser.getEquityDataset());
-		assertEquals(expected, parser.getEquityDataset().dataset());
-		verify(equityArguments, atLeastOnce()).getEquityDataset();
+		assertNotNull(parser.equityDataset());
+		assertEquals(expected, parser.equityDataset().dataset());
+		verify(equityArguments, atLeastOnce()).equityDataset();
 	}
 
 	private void verifyTickerSymbol( final String expected ) {
-		assertNotNull(parser.getTickerSymbol());
-		assertEquals(expected, parser.getTickerSymbol().symbol());
-		verify(equityArguments, atLeastOnce()).getTickerSymbol();
+		assertNotNull(parser.tickerSymbol());
+		assertEquals(expected, parser.tickerSymbol().symbol());
+		verify(equityArguments, atLeastOnce()).tickerSymbol();
 	}
 
 	private void verifyOpeningFunds( final String expected ) {
-		assertNotNull(parser.getOpeningFunds());
-		assertEquals(new BigDecimal(expected), parser.getOpeningFunds());
+		assertNotNull(parser.openingFunds());
+		assertEquals(new BigDecimal(expected), parser.openingFunds());
 	}
 
 	private void verifyOpeningFundsArgument( final Map<ArgumentKey, String> arguments ) {

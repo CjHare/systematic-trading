@@ -74,7 +74,7 @@ public class EmaUptrendVsSmaUptrendTrial extends BaseTrial implements BacktestCo
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
-		new BacktestTrial(launchArgs.getDataService()).runBacktest(new EmaUptrendVsSmaUptrendTrial(), launchArgs);
+		new BacktestTrial(launchArgs.dataService()).runBacktest(new EmaUptrendVsSmaUptrendTrial(), launchArgs);
 	}
 
 	@Override

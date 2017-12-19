@@ -110,7 +110,7 @@ public class EntryOrderAnalysis {
 		                new TickerSymbolLaunchArgument(validator), arguments),
 		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS), arguments);
 
-		new EntryOrderAnalysis(launchArgs.getDataService()).run(launchArgs);
+		new EntryOrderAnalysis(launchArgs.dataService()).run(launchArgs);
 
 	}
 
@@ -127,14 +127,14 @@ public class EntryOrderAnalysis {
 	}
 
 	private EquityConfiguration equity( final AnalysisLaunchArguments launchArgs ) {
-		return new EquityConfiguration(launchArgs.getEquityDataset(), launchArgs.getTickerSymbol(), EquityClass.STOCK);
+		return new EquityConfiguration(launchArgs.equityDataset(), launchArgs.tickerSymbol(), EquityClass.STOCK);
 	}
 
 	private void run( final AnalysisLaunchArguments launchArgs ) throws ServiceException {
 
 		final EquityConfiguration equity = equity(launchArgs);
 		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity,
-		        launchArgs.getOpeningFunds());
+		        launchArgs.openingFunds());
 		recordStrategy(backtestConfiguration.strategy());
 		recordAnalysisPeriod(backtestConfiguration.backtestDates());
 

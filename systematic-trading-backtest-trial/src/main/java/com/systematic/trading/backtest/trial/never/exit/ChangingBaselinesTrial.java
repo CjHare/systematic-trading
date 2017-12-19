@@ -72,7 +72,7 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
-		new BacktestTrial(launchArgs.getDataService()).runBacktest(new ChangingBaselinesTrial(), launchArgs);
+		new BacktestTrial(launchArgs.dataService()).runBacktest(new ChangingBaselinesTrial(), launchArgs);
 	}
 
 	@Override

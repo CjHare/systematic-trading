@@ -84,35 +84,35 @@ public class BacktestLaunchArguments {
 		this.equityArguments = equityArguments;
 	}
 
-	public String getOutputDirectory( final String depositAmount ) {
+	public String outputDirectory( final String depositAmount ) {
 		return fileBaseOutputDirectory.get(arguments).directory(depositAmount);
 	}
 
-	public BacktestStartDate getStartDate() {
+	public BacktestStartDate startDate() {
 		return startDate;
 	}
 
-	public BacktestEndDate getEndDate() {
+	public BacktestEndDate endDate() {
 		return endDate;
 	}
 
-	public OutputType getOutputType() {
+	public OutputType outputType() {
 		return outputType;
 	}
 
-	public TickerSymbol getTickerSymbol() {
-		return equityArguments.getTickerSymbol();
+	public TickerSymbol tickerSymbol() {
+		return equityArguments.tickerSymbol();
 	}
 
-	public EquityDataset getEquityDataset() {
-		return equityArguments.getEquityDataset();
+	public EquityDataset equityDataset() {
+		return equityArguments.equityDataset();
 	}
 
-	public DataServiceType getDataService() {
-		return equityArguments.getDataService();
+	public DataServiceType dataService() {
+		return equityArguments.dataService();
 	}
 
-	public BigDecimal getOpeningFunds() {
+	public BigDecimal openingFunds() {
 		return openingFunds;
 	}
 }

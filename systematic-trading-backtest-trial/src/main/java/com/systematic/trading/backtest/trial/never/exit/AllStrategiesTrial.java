@@ -83,7 +83,7 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
-		new BacktestTrial(launchArgs.getDataService()).runBacktest(new AllStrategiesTrial(), launchArgs);
+		new BacktestTrial(launchArgs.dataService()).runBacktest(new AllStrategiesTrial(), launchArgs);
 	}
 
 	private static Set<Pair<MinimumTrade, MaximumTrade>> getPositionSizing() {

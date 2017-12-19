@@ -77,7 +77,7 @@ public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implemen
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
-		new BacktestTrial(launchArgs.getDataService()).runBacktest(new AllStratgiesAgnosticSizingBrokerageTrial(),
+		new BacktestTrial(launchArgs.dataService()).runBacktest(new AllStratgiesAgnosticSizingBrokerageTrial(),
 		        launchArgs);
 	}
 

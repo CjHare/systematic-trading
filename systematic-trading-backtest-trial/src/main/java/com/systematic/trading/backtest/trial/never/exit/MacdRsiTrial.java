@@ -74,7 +74,7 @@ public class MacdRsiTrial extends BaseTrial implements BacktestConfiguration {
 		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator), arguments);
 
-		new BacktestTrial(launchArgs.getDataService()).runBacktest(new MacdRsiTrial(), launchArgs);
+		new BacktestTrial(launchArgs.dataService()).runBacktest(new MacdRsiTrial(), launchArgs);
 	}
 
 	@Override
