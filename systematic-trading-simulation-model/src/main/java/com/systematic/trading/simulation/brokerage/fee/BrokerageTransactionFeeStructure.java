@@ -46,5 +46,5 @@ public interface BrokerageTransactionFeeStructure {
 	 *            e.g. if this is the tenth trade this month the value is ten.
 	 * @return transaction (brokerage) cost.
 	 */
-	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, int tradesThisMonth );
+	BigDecimal cost( BigDecimal tradeValue, EquityClass type, int tradesThisMonth );
 }

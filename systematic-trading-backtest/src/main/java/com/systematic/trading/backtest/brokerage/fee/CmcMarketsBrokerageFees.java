@@ -50,7 +50,7 @@ public class CmcMarketsBrokerageFees implements BrokerageTransactionFeeStructure
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	@Override
-	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
+	public BigDecimal cost( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
 
 		final BigDecimal brokerage;
 

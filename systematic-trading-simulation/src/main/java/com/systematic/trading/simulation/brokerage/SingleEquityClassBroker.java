@@ -102,7 +102,7 @@ public class SingleEquityClassBroker implements Brokerage {
 
 		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), MATH_CONTEXT);
 		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
-		final BigDecimal tradeFee = transactionFee.calculateFee(tradeValue, equity.getType(), tradesThisMonth);
+		final BigDecimal tradeFee = transactionFee.cost(tradeValue, equity.getType(), tradesThisMonth);
 
 		// Adding the equity purchases to the balance
 		final BigDecimal startingEquityBalance = equityBalance;
@@ -126,7 +126,7 @@ public class SingleEquityClassBroker implements Brokerage {
 
 		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), MATH_CONTEXT);
 		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
-		final BigDecimal tradeFee = transactionFee.calculateFee(tradeValue, equity.getType(), tradesThisMonth);
+		final BigDecimal tradeFee = transactionFee.cost(tradeValue, equity.getType(), tradesThisMonth);
 
 		// Record of the sell transaction
 		notifyListeners(new BrokerageAccountEvent(startingEquityBalance, equityBalance, volume.getVolume(),
@@ -142,7 +142,7 @@ public class SingleEquityClassBroker implements Brokerage {
 
 	@Override
 	public BigDecimal cost( final BigDecimal tradeValue, final EquityClass type, final LocalDate tradeDate ) {
-		return transactionFee.calculateFee(tradeValue, type, monthlyTradeCounter.get(tradeDate));
+		return transactionFee.cost(tradeValue, type, monthlyTradeCounter.get(tradeDate));
 	}
 
 	private void notifyListeners( final BrokerageEvent event ) {
@@ -161,7 +161,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	public BigDecimal cost( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
 		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), MATH_CONTEXT);
 		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
-		final BigDecimal tradeFee = transactionFee.calculateFee(tradeValue, equity.getType(), tradesThisMonth);
+		final BigDecimal tradeFee = transactionFee.cost(tradeValue, equity.getType(), tradesThisMonth);
 
 		return tradeValue.add(tradeFee, MATH_CONTEXT);
 	}

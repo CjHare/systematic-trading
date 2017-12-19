@@ -176,7 +176,7 @@ public class SingleEquityClassBrokerTest {
 	}
 
 	private void setUpBrokerageFee( final double transactionCost ) {
-		when(feeStructure.calculateFee(any(BigDecimal.class), any(EquityClass.class), anyInt()))
+		when(feeStructure.cost(any(BigDecimal.class), any(EquityClass.class), anyInt()))
 		        .thenReturn(BigDecimal.valueOf(transactionCost));
 	}
 
@@ -184,7 +184,7 @@ public class SingleEquityClassBrokerTest {
 		int count = 1;
 
 		for (final double equityCount : numberOfEquities) {
-			verify(feeStructure).calculateFee(BigDecimal.valueOf(equityCount).multiply(EQUITY_PRICE), EquityClass.STOCK,
+			verify(feeStructure).cost(BigDecimal.valueOf(equityCount).multiply(EQUITY_PRICE), EquityClass.STOCK,
 			        count++);
 		}
 

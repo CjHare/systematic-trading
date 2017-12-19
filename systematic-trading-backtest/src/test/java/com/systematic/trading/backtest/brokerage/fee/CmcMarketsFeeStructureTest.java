@@ -127,21 +127,21 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassFuture() {
-		feeStructure.calculateFee(BigDecimal.ZERO, EquityClass.FUTURE, 0);
+		feeStructure.cost(BigDecimal.ZERO, EquityClass.FUTURE, 0);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassForex() {
-		feeStructure.calculateFee(BigDecimal.ZERO, EquityClass.FOREX, 0);
+		feeStructure.cost(BigDecimal.ZERO, EquityClass.FOREX, 0);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassMetal() {
-		feeStructure.calculateFee(BigDecimal.ZERO, EquityClass.METAL, 0);
+		feeStructure.cost(BigDecimal.ZERO, EquityClass.METAL, 0);
 	}
 
 	private BigDecimal calculateFee( final double tradeValue, final int inclusiveNumberOfTrades ) {
-		return feeStructure.calculateFee(BigDecimal.valueOf(tradeValue), EquityClass.STOCK, inclusiveNumberOfTrades);
+		return feeStructure.cost(BigDecimal.valueOf(tradeValue), EquityClass.STOCK, inclusiveNumberOfTrades);
 	}
 
 	private void verifyFee( final double expected, final BigDecimal fee ) {

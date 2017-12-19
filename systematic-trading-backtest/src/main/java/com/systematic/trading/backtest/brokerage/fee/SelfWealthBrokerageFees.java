@@ -41,7 +41,7 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 public class SelfWealthBrokerageFees implements BrokerageTransactionFeeStructure {
 
 	@Override
-	public BigDecimal calculateFee( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
+	public BigDecimal cost( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
 
 		final BigDecimal brokerage;
 
