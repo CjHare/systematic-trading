@@ -47,5 +47,5 @@ public interface BrokerageTransactionFee {
 	 * @return transaction (brokerage) cost.
 	 * @throws UnsupportedEquityClass encountered when the broker does not support the equity type.
 	 */
-	BigDecimal calculateFee( BigDecimal tradeValue, EquityClass type, LocalDate tradeDate );
+	BigDecimal cost( BigDecimal tradeValue, EquityClass type, LocalDate tradeDate );
 }

@@ -116,7 +116,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	}
 
 	private EquityOrderVolume getOrderVolume( final BrokerageTransactionFee fees, final TradingDayPrices todaysPrice ) {
-		final BigDecimal maximumTransactionCost = fees.calculateFee(targetTotalCost, type, todaysPrice.date());
+		final BigDecimal maximumTransactionCost = fees.cost(targetTotalCost, type, todaysPrice.date());
 		final BigDecimal openingPrice = todaysPrice.openingPrice().getPrice();
 		final BigDecimal numberOfEquities = targetTotalCost.subtract(maximumTransactionCost, mathContext)
 		        .divide(openingPrice, mathContext);

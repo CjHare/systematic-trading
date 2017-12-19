@@ -116,7 +116,7 @@ public class TradingStrategy implements Strategy {
 				//TODO do some better encapsulation / refactor
 				final BigDecimal amount = entryPositionSizing.entryPositionSize(cashAccount);
 				final LocalDate tradingDate = data.date();
-				final BigDecimal maximumTransactionCost = fees.calculateFee(amount, type, tradingDate);
+				final BigDecimal maximumTransactionCost = fees.cost(amount, type, tradingDate);
 				final BigDecimal closingPrice = data.closingPrice().getPrice();
 				final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, MATH_CONTEXT)
 				        .divide(closingPrice, MATH_CONTEXT).setScale(scale, BigDecimal.ROUND_DOWN);

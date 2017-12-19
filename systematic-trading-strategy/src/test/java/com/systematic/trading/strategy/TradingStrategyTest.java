@@ -228,7 +228,7 @@ public class TradingStrategyTest {
 	}
 
 	private void setUpFees( final double value ) {
-		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		when(fees.cost(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
 		        .thenReturn(BigDecimal.valueOf(value));
 	}
 
@@ -278,6 +278,6 @@ public class TradingStrategyTest {
 	}
 
 	private void verifyFeeDelegation( final double entrySizePosition ) {
-		verify(fees).calculateFee(BigDecimal.valueOf(entrySizePosition), TYPE, LocalDate.now());
+		verify(fees).cost(BigDecimal.valueOf(entrySizePosition), TYPE, LocalDate.now());
 	}
 }

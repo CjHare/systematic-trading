@@ -135,7 +135,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	}
 
 	private void setUpFeeCalculation( final double fee ) {
-		when(fees.calculateFee(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
+		when(fees.cost(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
 		        .thenReturn(BigDecimal.valueOf(fee));
 	}
 

@@ -145,7 +145,7 @@ public class SingleEquityClassBrokerTest {
 	public void calculateFee() {
 		setUpBrokerageFee(6.78787);
 
-		final BigDecimal fee = broker.calculateFee(EQUITY_PRICE, EquityClass.STOCK, LocalDate.now());
+		final BigDecimal fee = broker.cost(EQUITY_PRICE, EquityClass.STOCK, LocalDate.now());
 
 		verifyCost(6.78787, fee);
 	}
