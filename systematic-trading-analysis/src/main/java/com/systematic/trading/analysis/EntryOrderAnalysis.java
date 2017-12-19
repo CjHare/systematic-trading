@@ -98,7 +98,7 @@ public class EntryOrderAnalysis {
 	/** Local source of the trading prices. */
 	private final DataService dataService;
 
-	/** Display name for the strategy analyzed. */
+	/** Display name for the strategy analysed. */
 	private final DescriptionGenerator description;
 
 	public static void main( final String... args ) throws ServiceException {
