@@ -37,7 +37,6 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.analysis.event.LogEntryOrderEventListner;
 import com.systematic.trading.backtest.Backtest;
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.InvalidSimulationDatesException;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
@@ -58,6 +57,7 @@ import com.systematic.trading.backtest.description.DescriptionGenerator;
 import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
 import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
+import com.systematic.trading.backtest.exception.InvalidSimulationDatesException;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.data.DataService;
@@ -161,8 +161,8 @@ public class EntryOrderAnalysis {
 	}
 
 	private void recordAnalysisPeriod( final BacktestSimulationDates analysisPeriod ) {
-		LOG.info("{}", () -> String.format("Analysis start: %s, end: %s", analysisPeriod.getStartDate(),
-		        analysisPeriod.getEndDate()));
+		LOG.info("{}", () -> String.format("Analysis start: %s, end: %s", analysisPeriod.startDate(),
+		        analysisPeriod.endDate()));
 	}
 
 	private BacktestBootstrapConfiguration configuration( final EquityConfiguration equity,

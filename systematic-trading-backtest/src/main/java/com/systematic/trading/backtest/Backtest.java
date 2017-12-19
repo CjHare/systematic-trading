@@ -87,8 +87,8 @@ public class Backtest {
 	private TickerSymbolTradingData tradingData( final String equityDataset, final EquityIdentity equity,
 	        final BacktestSimulationDates simulationDate, final Period warmUp ) throws ServiceException {
 
-		final LocalDate startDate = simulationDate.getStartDate().minus(warmUp);
-		final LocalDate endDate = simulationDate.getEndDate();
+		final LocalDate startDate = simulationDate.startDate().minus(warmUp);
+		final LocalDate endDate = simulationDate.endDate();
 
 		if (startDate.getDayOfMonth() != 1) {
 			LOG.debug(String.format(

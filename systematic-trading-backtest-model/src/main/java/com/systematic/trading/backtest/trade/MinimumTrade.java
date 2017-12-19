@@ -46,7 +46,7 @@ public enum MinimumTrade {
 		this.value = value;
 	}
 
-	public BigDecimal getValue() {
+	public BigDecimal value() {
 		return value;
 	}
 }

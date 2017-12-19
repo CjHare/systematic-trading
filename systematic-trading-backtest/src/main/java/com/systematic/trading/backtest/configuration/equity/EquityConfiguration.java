@@ -53,7 +53,7 @@ public class EquityConfiguration {
 	}
 
 	public EquityIdentity gquityIdentity() {
-		return new EquityIdentity(tickerSymbol.getSymbol(), equityType, SCALE);
+		return new EquityIdentity(tickerSymbol.symbol(), equityType, SCALE);
 	}
 
 	public EquityManagementFeeConfiguration managementFee() {
@@ -61,6 +61,6 @@ public class EquityConfiguration {
 	}
 
 	public String equityDataset() {
-		return equityDataset == null ? null : equityDataset.getDataset();
+		return equityDataset == null ? null : equityDataset.dataset();
 	}
 }

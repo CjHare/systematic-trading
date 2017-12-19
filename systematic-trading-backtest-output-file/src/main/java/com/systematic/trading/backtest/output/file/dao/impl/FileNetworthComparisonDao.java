@@ -108,7 +108,7 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private String compoundAnnualGrowth( final NetWorthEvent event ) {
 
-		final Period duration = Period.between(dates.getStartDate(), dates.getEndDate());
+		final Period duration = Period.between(dates.startDate(), dates.endDate());
 		final BigDecimal deposited = statistics.getCashEventStatistics().getAmountDeposited();
 		final BigDecimal netWorth = event.getNetWorth();
 		final BigDecimal cagr = compoundAnnualGrowthRate.calculate(deposited, netWorth, duration.getYears());
@@ -151,7 +151,7 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private String entryLogic() {
 		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
-		out.add(batchId.getName());
+		out.add(batchId.name());
 		out.add(entryOrdersPlaced());
 		out.add(entryOrdersExecuted());
 		out.add(entryOrdersDeleted());

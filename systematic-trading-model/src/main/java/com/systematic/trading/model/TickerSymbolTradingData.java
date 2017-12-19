@@ -42,33 +42,33 @@ public interface TickerSymbolTradingData {
 	 * 
 	 * @return never <code>null</code>.
 	 */
-	EquityIdentity getEquityIdentity();
+	EquityIdentity equityIdentity();
 
 	/**
 	 * Marks the beginning of the trading data range.
 	 * 
 	 * @return Inclusive date for the beginning of the data set.
 	 */
-	LocalDate getEarliestDate();
+	LocalDate earliestDate();
 
 	/**
 	 * Marks the end of the trading data range.
 	 * 
 	 * @return Inclusive date for the end of the data set.
 	 */
-	LocalDate getLatestDate();
+	LocalDate latestDate();
 
 	/**
-	 * Retrieve the number of trading days data.
+	 * Retrieve the number of trading prices data points.
 	 * 
 	 * @return the number of trading data points within the defined start and end dates.
 	 */
-	int getNumberOfTradingDays();
+	int requiredTradingPrices();
 
 	/**
-	 * Retrieves the map of trading days to their prices.
+	 * Retrieves the map of trading data points to their prices.
 	 * 
 	 * @return trading prices keyed by the date they correspond with.
 	 */
-	Map<LocalDate, TradingDayPrices> getTradingDayPrices();
+	Map<LocalDate, TradingDayPrices> tradingPrices();
 }

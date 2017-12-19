@@ -122,8 +122,8 @@ public class EquityDatasetLaunchArgumentTest {
 
 	private void verifEquityDataset( final String expected, final EquityDataset actual ) {
 		assertNotNull(actual);
-		assertNotNull(actual.getDataset());
-		assertTrue(StringUtils.equals(expected, actual.getDataset()));
+		assertNotNull(actual.dataset());
+		assertTrue(StringUtils.equals(expected, actual.dataset()));
 	}
 
 	private void equityDatasetExpectingException( final String expectedMessage,

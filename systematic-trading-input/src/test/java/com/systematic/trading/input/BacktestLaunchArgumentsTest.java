@@ -277,13 +277,13 @@ public class BacktestLaunchArgumentsTest {
 
 	private void verifyEquityDataSet( final String expected ) {
 		assertNotNull(parser.getEquityDataset());
-		assertEquals(expected, parser.getEquityDataset().getDataset());
+		assertEquals(expected, parser.getEquityDataset().dataset());
 		verify(equityArguments, atLeastOnce()).getEquityDataset();
 	}
 
 	private void verifyTickerSymbol( final String expected ) {
 		assertNotNull(parser.getTickerSymbol());
-		assertEquals(expected, parser.getTickerSymbol().getSymbol());
+		assertEquals(expected, parser.getTickerSymbol().symbol());
 		verify(equityArguments, atLeastOnce()).getTickerSymbol();
 	}
 
@@ -301,12 +301,12 @@ public class BacktestLaunchArgumentsTest {
 
 	private void verifyStartDate( final LocalDate expected ) {
 		assertNotNull(parser.getStartDate());
-		assertEquals(expected, parser.getStartDate().getDate());
+		assertEquals(expected, parser.getStartDate().date());
 	}
 
 	private void verifyEndDate( final LocalDate expected ) {
 		assertNotNull(parser.getEndDate());
-		assertEquals(expected, parser.getEndDate().getDate());
+		assertEquals(expected, parser.getEndDate().date());
 	}
 
 	private void verifyOutputDirectoryArgument( final String outputValue, final String fileBaseDirectory ) {

@@ -75,17 +75,17 @@ public class EventListenerOutput implements CashEventListener, OrderEventListene
 		output.append(String.format("%n"));
 
 		output.append(
-		        String.format("Data set for %s from %s to %s%n", tradingData.getEquityIdentity().getTickerSymbol(),
-		                tradingData.getEarliestDate(), tradingData.getLatestDate()));
+		        String.format("Data set for %s from %s to %s%n", tradingData.equityIdentity().getTickerSymbol(),
+		                tradingData.earliestDate(), tradingData.latestDate()));
 
 		output.append(String.format("Simulation dates for %s from %s to %s%n",
-		        tradingData.getEquityIdentity().getTickerSymbol(), dates.getStartDate(), dates.getEndDate()));
+		        tradingData.equityIdentity().getTickerSymbol(), dates.startDate(), dates.endDate()));
 
-		final long daysBetween = ChronoUnit.DAYS.between(tradingData.getEarliestDate(), tradingData.getLatestDate());
-		final double percentageTradingDays = ((double) tradingData.getNumberOfTradingDays() / daysBetween) * 100;
+		final long daysBetween = ChronoUnit.DAYS.between(tradingData.earliestDate(), tradingData.latestDate());
+		final double percentageTradingDays = ((double) tradingData.requiredTradingPrices() / daysBetween) * 100;
 
 		output.append(String.format("# trading days: %s over %s days (%s percentage trading days)%n",
-		        tradingData.getNumberOfTradingDays(), daysBetween, TWO_DECIMAL_PLACES.format(percentageTradingDays)));
+		        tradingData.requiredTradingPrices(), daysBetween, TWO_DECIMAL_PLACES.format(percentageTradingDays)));
 
 		output.append(String.format("%n"));
 

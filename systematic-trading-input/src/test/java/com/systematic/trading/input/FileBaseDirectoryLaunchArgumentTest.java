@@ -111,7 +111,7 @@ public class FileBaseDirectoryLaunchArgumentTest {
 	}
 
 	private void verifyDirectory( final String expected, final FileBaseOutputDirectory output ) {
-		assertEquals(String.format("%s/WEEKLY_200/", expected), output.getDirectory("WEEKLY_200"));
+		assertEquals(String.format("%s/WEEKLY_200/", expected), output.directory("WEEKLY_200"));
 	}
 
 	private void setUpValidatorException() {

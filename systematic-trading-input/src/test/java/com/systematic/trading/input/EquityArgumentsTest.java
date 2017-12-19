@@ -199,12 +199,12 @@ public class EquityArgumentsTest {
 
 	private void verifyEquityDataSet( final String expected ) {
 		assertNotNull(parser.getEquityDataset());
-		assertEquals(expected, parser.getEquityDataset().getDataset());
+		assertEquals(expected, parser.getEquityDataset().dataset());
 	}
 
 	private void verifyTickerSymbol( final String expected ) {
 		assertNotNull(parser.getTickerSymbol());
-		assertEquals(expected, parser.getTickerSymbol().getSymbol());
+		assertEquals(expected, parser.getTickerSymbol().symbol());
 	}
 
 	private void verifDataServiceArgument( final Map<ArgumentKey, String> arguments ) {

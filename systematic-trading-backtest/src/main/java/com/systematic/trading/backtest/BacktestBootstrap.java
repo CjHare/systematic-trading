@@ -72,12 +72,12 @@ public class BacktestBootstrap {
 	public void run() {
 
 		// First data point may not be the requested start date
-		final LocalDate earliestDate = tradingData.getEarliestDate();
+		final LocalDate earliestDate = tradingData.earliestDate();
 
 		// Final trading day data point, may not be be requested end date
-		final LocalDate latestDate = tradingData.getLatestDate();
+		final LocalDate latestDate = tradingData.latestDate();
 
-		final TradingDayPrices lastTradingDay = tradingData.getTradingDayPrices().get(latestDate);
+		final TradingDayPrices lastTradingDay = tradingData.tradingPrices().get(latestDate);
 
 		// Cumulative recording of investment progression
 		final ReturnOnInvestmentListener roi = new CulmativeReturnOnInvestment();

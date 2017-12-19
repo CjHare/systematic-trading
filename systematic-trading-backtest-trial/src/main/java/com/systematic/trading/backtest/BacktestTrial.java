@@ -104,8 +104,8 @@ public class BacktestTrial {
 	        throws ServiceException {
 
 		// Date range is from the first of the starting month until now
-		final LocalDate simulationStartDate = parserdArguments.getStartDate().getDate();
-		final LocalDate simulationEndDate = parserdArguments.getEndDate().getDate();
+		final LocalDate simulationStartDate = parserdArguments.getStartDate().date();
+		final LocalDate simulationEndDate = parserdArguments.getEndDate().date();
 
 		final EquityConfiguration equity = equity(parserdArguments);
 
@@ -279,8 +279,8 @@ public class BacktestTrial {
 	}
 
 	private void recordSimulationDates( final BacktestSimulationDates simulationDates ) {
-		LOG.info("Simulation Start Date: {}", simulationDates.getStartDate());
-		LOG.info("Simulation End Date: {}", simulationDates.getEndDate());
+		LOG.info("Simulation Start Date: {}", simulationDates.startDate());
+		LOG.info("Simulation End Date: {}", simulationDates.endDate());
 	}
 
 	private String unsupportedMessage( final OutputType type ) {

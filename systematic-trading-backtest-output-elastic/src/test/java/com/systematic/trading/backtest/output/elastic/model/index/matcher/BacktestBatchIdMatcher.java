@@ -43,7 +43,7 @@ public class BacktestBatchIdMatcher extends ArgumentMatcher<BacktestBatchId> {
 
 		if (argument instanceof BacktestBatchId) {
 			final BacktestBatchId entity = (BacktestBatchId) argument;
-			return StringUtils.equals(expectedId, entity.getName());
+			return StringUtils.equals(expectedId, entity.name());
 		}
 
 		return false;

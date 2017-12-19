@@ -130,8 +130,8 @@ public class TickerSymbolLaunchArgumentTest {
 
 	private void verifSymbol( final String expected, final TickerSymbol actual ) {
 		assertNotNull(actual);
-		assertNotNull(actual.getSymbol());
-		assertTrue(StringUtils.equals(expected, actual.getSymbol()));
+		assertNotNull(actual.symbol());
+		assertTrue(StringUtils.equals(expected, actual.symbol()));
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {

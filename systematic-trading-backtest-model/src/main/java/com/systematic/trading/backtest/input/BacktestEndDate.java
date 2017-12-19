@@ -44,7 +44,7 @@ public class BacktestEndDate {
 		this.date = date;
 	}
 
-	public LocalDate getDate() {
+	public LocalDate date() {
 		return date;
 	}
 }

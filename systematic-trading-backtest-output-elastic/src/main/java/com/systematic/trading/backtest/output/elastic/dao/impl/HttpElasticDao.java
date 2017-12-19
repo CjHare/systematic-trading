@@ -171,7 +171,7 @@ public class HttpElasticDao implements ElasticDao {
 	 * Path for retrieving or putting mapping data to elastic search.
 	 */
 	private String getMappingPath( final ElasticIndexName indexName, final BacktestBatchId id ) {
-		return String.format("%s/_mapping/%s/", indexName.getName(), id.getName());
+		return String.format("%s/_mapping/%s/", indexName.getName(), id.name());
 	}
 
 	private String getIndexBulkApiPath( final ElasticIndexName indexName ) {

@@ -112,7 +112,7 @@ public class BacktestBootstrapContextBulider {
 
 	public BacktestBootstrapContextBulider withConfiguration( final BacktestBootstrapConfiguration configuration ) {
 		this.simulationDates = configuration.backtestDates();
-		this.managementFeeStartDate = firstDayOfYear(simulationDates.getStartDate());
+		this.managementFeeStartDate = firstDayOfYear(simulationDates.startDate());
 		this.deposit = configuration.deposit();
 		this.openingFunds = configuration.openingFunds();
 		this.equity = configuration.equity();
@@ -208,7 +208,7 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private Entry periodicEntry( final PeriodicEntryConfiguration periodicConfig ) {
-		return new TradingStrategyFactory().entry(new TradingStrategyPeriodic(simulationDates.getStartDate(),
+		return new TradingStrategyFactory().entry(new TradingStrategyPeriodic(simulationDates.startDate(),
 		        (periodicConfig).frequency().frequency(), SignalType.BULLISH));
 	}
 
@@ -257,7 +257,7 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private SignalRangeFilter signalRangeFilter( final int previousTradingDaySignalRange ) {
-		return new SimulationDatesRangeFilterDecorator(simulationDates.getStartDate(), simulationDates.getEndDate(),
+		return new SimulationDatesRangeFilterDecorator(simulationDates.startDate(), simulationDates.endDate(),
 		        new TradingDaySignalRangeFilter(previousTradingDaySignalRange));
 	}
 
@@ -271,15 +271,15 @@ public class BacktestBootstrapContextBulider {
 
 	private EntrySize entryPositionSize() {
 		final EntryPositionBounds minimum = new AbsoluteEntryPositionBounds(
-		        strategy.entryPositionSizing().minimumTrade().getValue());
+		        strategy.entryPositionSizing().minimumTrade().value());
 		final EntryPositionBounds maximum = new RelativeEntryPositionBounds(
-		        strategy.entryPositionSizing().maximumTrade().getValue());
+		        strategy.entryPositionSizing().maximumTrade().value());
 
 		return new LargestPossibleEntryPosition(minimum, maximum);
 	}
 
 	private CashAccount cashAccount() {
-		return CashAccountFactory.getInstance().create(simulationDates.getStartDate(), openingFunds, deposit);
+		return CashAccountFactory.getInstance().create(simulationDates.startDate(), openingFunds, deposit);
 	}
 
 	private Brokerage brokerage() {
@@ -288,7 +288,7 @@ public class BacktestBootstrapContextBulider {
 		        equity.gquityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 
-		return new BrokerageFactoroy().create(equityConfiguration, brokerageType, simulationDates.getStartDate());
+		return new BrokerageFactoroy().create(equityConfiguration, brokerageType, simulationDates.startDate());
 	}
 
 	private LocalDate firstDayOfYear( final LocalDate date ) {

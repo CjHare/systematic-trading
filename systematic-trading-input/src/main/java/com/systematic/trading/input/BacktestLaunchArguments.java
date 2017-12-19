@@ -85,7 +85,7 @@ public class BacktestLaunchArguments {
 	}
 
 	public String getOutputDirectory( final String depositAmount ) {
-		return fileBaseOutputDirectory.get(arguments).getDirectory(depositAmount);
+		return fileBaseOutputDirectory.get(arguments).directory(depositAmount);
 	}
 
 	public BacktestStartDate getStartDate() {

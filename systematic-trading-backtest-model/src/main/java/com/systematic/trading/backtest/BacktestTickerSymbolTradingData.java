@@ -74,36 +74,36 @@ public class BacktestTickerSymbolTradingData implements TickerSymbolTradingData 
 		}
 
 		this.tradingData = Collections.unmodifiableMap(modifiableTradingData);
-		this.earliestDate = getEarliestDate(tradingData);
-		this.latestDate = getLatestDate(tradingData);
+		this.earliestDate = earliestDate(tradingData);
+		this.latestDate = latestDate(tradingData);
 	}
 
 	@Override
-	public LocalDate getEarliestDate() {
+	public LocalDate earliestDate() {
 		return earliestDate;
 	}
 
 	@Override
-	public LocalDate getLatestDate() {
+	public LocalDate latestDate() {
 		return latestDate;
 	}
 
 	@Override
-	public int getNumberOfTradingDays() {
+	public int requiredTradingPrices() {
 		return tradingData.size();
 	}
 
 	@Override
-	public Map<LocalDate, TradingDayPrices> getTradingDayPrices() {
+	public Map<LocalDate, TradingDayPrices> tradingPrices() {
 		return tradingData;
 	}
 
 	@Override
-	public EquityIdentity getEquityIdentity() {
+	public EquityIdentity equityIdentity() {
 		return equity;
 	}
 
-	private LocalDate getEarliestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
+	private LocalDate earliestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
 		LocalDate earliest = tradingData.values().iterator().next().date();
 
 		for (final TradingDayPrices contender : tradingData.values()) {
@@ -115,7 +115,7 @@ public class BacktestTickerSymbolTradingData implements TickerSymbolTradingData 
 		return earliest;
 	}
 
-	private LocalDate getLatestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
+	private LocalDate latestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
 		LocalDate latest = tradingData.values().iterator().next().date();
 
 		for (final TradingDayPrices contender : tradingData.values()) {

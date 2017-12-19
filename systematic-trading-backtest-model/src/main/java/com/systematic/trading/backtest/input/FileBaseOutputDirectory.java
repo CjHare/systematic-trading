@@ -44,7 +44,7 @@ public class FileBaseOutputDirectory {
 		this.directory = directory;
 	}
 
-	public String getDirectory( final String depositAmount ) {
+	public String directory( final String depositAmount ) {
 		return String.format(BASE_OUTPUT_DIRECTORY, directory, depositAmount);
 	}
 }

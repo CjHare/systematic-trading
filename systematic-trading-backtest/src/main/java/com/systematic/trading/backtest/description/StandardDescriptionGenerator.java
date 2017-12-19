@@ -231,13 +231,13 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	}
 
 	private String minimumTradeValue( final MinimumTrade trade ) {
-		return String.format("Minimum%s%s", SEPARATOR, NO_DECIMAL_PLACES.format(trade.getValue()));
+		return String.format("Minimum%s%s", SEPARATOR, NO_DECIMAL_PLACES.format(trade.value()));
 	}
 
 	private String maximumTradeValue( final MaximumTrade trade ) {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add("Maximum");
-		out.add(convertToPercetage(trade.getValue()));
+		out.add(convertToPercetage(trade.value()));
 		out.add("percent");
 		return out.toString();
 	}

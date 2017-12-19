@@ -141,7 +141,7 @@ public abstract class ElasticCommonIndex {
 
 	protected ElasticBulkApiMetaDataRequestResource createBulkApiMeta( final BacktestBatchId id ) {
 		//TODO put this into a builder & move ACTION_CREATE_GENERATE_DOCUMENT_ID out of this class
-		return new ElasticBulkApiMetaDataRequestResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, null, id.getName(), null);
+		return new ElasticBulkApiMetaDataRequestResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, null, id.name(), null);
 	}
 
 	protected ElasticIndex getIndex() {

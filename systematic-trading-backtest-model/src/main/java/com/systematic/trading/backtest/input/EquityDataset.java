@@ -42,7 +42,7 @@ public class EquityDataset {
 		this.dataset = dataset;
 	}
 
-	public String getDataset() {
+	public String dataset() {
 		return dataset;
 	}
 }

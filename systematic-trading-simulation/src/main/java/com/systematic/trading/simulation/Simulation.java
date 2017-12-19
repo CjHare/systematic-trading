@@ -98,11 +98,11 @@ public class Simulation {
 
 	public void run() {
 
-		final Map<LocalDate, TradingDayPrices> tradingDayPrices = tradingData.getTradingDayPrices();
-		final LocalDate endDate = tradingData.getLatestDate();
+		final Map<LocalDate, TradingDayPrices> tradingDayPrices = tradingData.tradingPrices();
+		final LocalDate endDate = tradingData.latestDate();
 
 		List<EquityOrder> orders = new ArrayList<>();
-		LocalDate currentDate = tradingData.getEarliestDate();
+		LocalDate currentDate = tradingData.earliestDate();
 
 		while (currentDate.isBefore(endDate)) {
 
