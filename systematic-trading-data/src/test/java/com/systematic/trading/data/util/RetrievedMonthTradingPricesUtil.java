@@ -49,12 +49,12 @@ public class RetrievedMonthTradingPricesUtil {
 			retrieved.add(new RetrievedMonthTradingPrices() {
 
 				@Override
-				public YearMonth getYearMonth() {
+				public YearMonth yearMonth() {
 					return ym;
 				}
 
 				@Override
-				public String getTickerSymbol() {
+				public String tickerSymbol() {
 					return tickerSymbol;
 				}
 

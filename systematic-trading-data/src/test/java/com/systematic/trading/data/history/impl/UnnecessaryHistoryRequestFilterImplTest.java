@@ -203,12 +203,12 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 	}
 
 	private void setUpLocalHistory( final YearMonth... ym ) {
-		when(retrievedHistoryDao.get(anyString(), anyInt(), anyInt()))
+		when(retrievedHistoryDao.requests(anyString(), anyInt(), anyInt()))
 		        .thenReturn(retrievedMonthTradingPricesUtil.create(tickerSymbol, ym));
 	}
 
 	private void verifyLocalHistoryRequest( final int startYear, final int endYear ) {
-		verify(retrievedHistoryDao).get(tickerSymbol, startYear, endYear);
+		verify(retrievedHistoryDao).requests(tickerSymbol, startYear, endYear);
 		verifyNoMoreInteractions(retrievedHistoryDao);
 	}
 

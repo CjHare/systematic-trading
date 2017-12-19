@@ -61,22 +61,22 @@ public class HistoryRetrievalRequestUtil {
 	        final LocalDate end ) {
 		return new HistoryRetrievalRequest() {
 			@Override
-			public String getEquityDataset() {
+			public String equityDataset() {
 				return datasetId;
 			}
 
 			@Override
-			public String getTickerSymbol() {
+			public String tickerSymbol() {
 				return tickerSymbol;
 			}
 
 			@Override
-			public Date getInclusiveStartDate() {
+			public Date inclusiveStartDate() {
 				return Date.valueOf(start);
 			}
 
 			@Override
-			public Date getExclusiveEndDate() {
+			public Date exclusiveEndDate() {
 				return Date.valueOf(end);
 			}
 		};
@@ -86,9 +86,9 @@ public class HistoryRetrievalRequestUtil {
 		boolean found = false;
 
 		for (final HistoryRetrievalRequest actual : actualValues) {
-			found = StringUtils.equals(expected.getTickerSymbol(), actual.getTickerSymbol())
-			        && expected.getInclusiveStartDate().equals(actual.getInclusiveStartDate())
-			        && expected.getExclusiveEndDate().equals(actual.getExclusiveEndDate());
+			found = StringUtils.equals(expected.tickerSymbol(), actual.tickerSymbol())
+			        && expected.inclusiveStartDate().equals(actual.inclusiveStartDate())
+			        && expected.exclusiveEndDate().equals(actual.exclusiveEndDate());
 
 			if (found) {
 				break;
@@ -97,7 +97,7 @@ public class HistoryRetrievalRequestUtil {
 
 		if (!found) {
 			fail(String.format("Faled to find a HistoryRetrievalRequest with ticker: %s, start date: %s, end date: %s",
-			        expected.getTickerSymbol(), expected.getInclusiveStartDate(), expected.getExclusiveEndDate()));
+			        expected.tickerSymbol(), expected.inclusiveStartDate(), expected.exclusiveEndDate()));
 		}
 	}
 }

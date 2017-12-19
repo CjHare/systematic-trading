@@ -58,7 +58,7 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 
 		// Bring the working start date to the start of the next month (if needed)
 		if (isNotBeginningOfMonth(startDateInclusive)) {
-			final LocalDate nextMonthStart = getBeginningNextMonth(startDateInclusive);
+			final LocalDate nextMonthStart = beginningOfNextMonth(startDateInclusive);
 			requests.add(
 			        new HibernateHistoryRetrievalRequest(equityDataset, tickerSymbol, startDateInclusive, nextMonthStart));
 			workingInclusiveStartDate = nextMonthStart;
@@ -66,7 +66,7 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 
 		// Monthly entry for every in between
 		while (isNotReached(endYearMonth, workingInclusiveStartDate)) {
-			final LocalDate nextMonthStart = getBeginningNextMonth(workingInclusiveStartDate);
+			final LocalDate nextMonthStart = beginningOfNextMonth(workingInclusiveStartDate);
 			requests.add(new HibernateHistoryRetrievalRequest(equityDataset, tickerSymbol, workingInclusiveStartDate,
 			        nextMonthStart));
 			workingInclusiveStartDate = nextMonthStart;
@@ -89,7 +89,7 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 		return startDateInclusive.getDayOfMonth() != 1;
 	}
 
-	private LocalDate getBeginningNextMonth( final LocalDate date ) {
+	private LocalDate beginningOfNextMonth( final LocalDate date ) {
 		return date.plusMonths(1).withDayOfMonth(1);
 	}
 }

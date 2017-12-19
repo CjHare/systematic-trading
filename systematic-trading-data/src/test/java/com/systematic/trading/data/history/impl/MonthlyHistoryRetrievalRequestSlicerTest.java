@@ -129,10 +129,9 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 		assertEquals(startEndDates.length, actualValues.size());
 
 		for (int i = 0; i < startEndDates.length; i++) {
-			assertEquals(tickerSymbol, actualValues.get(i).getTickerSymbol());
-			assertEquals(startEndDates[i].getLeft(), actualValues.get(i).getInclusiveStartDate().toLocalDate());
-			assertEquals(startEndDates[i].getRight(), actualValues.get(i).getExclusiveEndDate().toLocalDate());
-
+			assertEquals(tickerSymbol, actualValues.get(i).tickerSymbol());
+			assertEquals(startEndDates[i].getLeft(), actualValues.get(i).inclusiveStartDate().toLocalDate());
+			assertEquals(startEndDates[i].getRight(), actualValues.get(i).exclusiveEndDate().toLocalDate());
 		}
 	}
 }

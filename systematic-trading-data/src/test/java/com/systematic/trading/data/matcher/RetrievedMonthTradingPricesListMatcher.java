@@ -58,9 +58,9 @@ public class RetrievedMonthTradingPricesListMatcher extends ArgumentMatcher<List
 			}
 
 			for (final RetrievedMonthTradingPrices expected : retrieved) {
-				final String expectedTickerSymbol = expected.getTickerSymbol();
-				final int expectedYear = expected.getYearMonth().getYear();
-				final int expectedMonth = expected.getYearMonth().getMonthValue();
+				final String expectedTickerSymbol = expected.tickerSymbol();
+				final int expectedYear = expected.yearMonth().getYear();
+				final int expectedMonth = expected.yearMonth().getMonthValue();
 
 				// At least one match needs to be in the actual array of values
 				if (!hasMatch(expectedTickerSymbol, expectedYear, expectedMonth, actualValues)) {
@@ -84,9 +84,9 @@ public class RetrievedMonthTradingPricesListMatcher extends ArgumentMatcher<List
 		boolean matched = false;
 
 		for (final RetrievedMonthTradingPrices actual : actualValues) {
-			matched = StringUtils.equals(expectedTickerSymbol, actual.getTickerSymbol())
-			        && expectedYear == actual.getYearMonth().getYear()
-			        && expectedMonth == actual.getYearMonth().getMonthValue();
+			matched = StringUtils.equals(expectedTickerSymbol, actual.tickerSymbol())
+			        && expectedYear == actual.yearMonth().getYear()
+			        && expectedMonth == actual.yearMonth().getMonthValue();
 
 			if (matched) {
 				break;

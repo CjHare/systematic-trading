@@ -65,24 +65,24 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 
 		for (final HistoryRetrievalRequest fulfilled : fulfilledRequests) {
 
-			final String tickerSymbol = fulfilled.getTickerSymbol();
-			final LocalDate start = fulfilled.getInclusiveStartDate().toLocalDate();
-			final LocalDate end = fulfilled.getExclusiveEndDate().toLocalDate();
+			final String tickerSymbol = fulfilled.tickerSymbol();
+			final LocalDate start = fulfilled.inclusiveStartDate().toLocalDate();
+			final LocalDate end = fulfilled.exclusiveEndDate().toLocalDate();
 
 			if (isBeginningTradingMonth(start)) {
-				retrieved.add(createRetrievedMonth(tickerSymbol, start));
+				retrieved.add(retrievedMonth(tickerSymbol, start));
 			}
 
 			if (isOverOneMonthBetween(start, end)) {
 				LocalDate between = start.withDayOfMonth(1).plusMonths(1);
 
 				while (between.isBefore(end) && hasDifferentYearMonth(between, end)) {
-					retrieved.add(createRetrievedMonth(tickerSymbol, between));
+					retrieved.add(retrievedMonth(tickerSymbol, between));
 					between = between.plusMonths(1);
 				}
 
 				if (isEndTradingMonth(end) || isMonthCompletedByOtherRequests(end, fulfilledRequests)) {
-					retrieved.add(createRetrievedMonth(tickerSymbol, end));
+					retrieved.add(retrievedMonth(tickerSymbol, end));
 				}
 			}
 		}
@@ -100,19 +100,19 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		LocalDate expectedStart = end;
 
 		final SortedSet<HistoryRetrievalRequest> byStartDate = new TreeSet<>(
-		        ( a, b ) -> a.getInclusiveStartDate().compareTo(b.getInclusiveStartDate()));
+		        ( a, b ) -> a.inclusiveStartDate().compareTo(b.inclusiveStartDate()));
 		fulfilledRequests.stream().forEach(byStartDate::add);
 
 		for (final HistoryRetrievalRequest fulfilled : byStartDate) {
-			final LocalDate contender = fulfilled.getInclusiveStartDate().toLocalDate();
+			final LocalDate contender = fulfilled.inclusiveStartDate().toLocalDate();
 
 			if (expectedStart.isEqual(contender)) {
-				if (isEndTradingMonth(fulfilled.getExclusiveEndDate().toLocalDate())) {
+				if (isEndTradingMonth(fulfilled.exclusiveEndDate().toLocalDate())) {
 					return true;
 				}
 
 				// Continue to see whether the month is complete by another request
-				expectedStart = fulfilled.getExclusiveEndDate().toLocalDate();
+				expectedStart = fulfilled.exclusiveEndDate().toLocalDate();
 			}
 		}
 
@@ -123,7 +123,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		return a.getYear() != b.getYear() || a.getMonthValue() != b.getMonthValue();
 	}
 
-	private RetrievedMonthTradingPrices createRetrievedMonth( final String tickerSymbol, final LocalDate yearMonth ) {
+	private RetrievedMonthTradingPrices retrievedMonth( final String tickerSymbol, final LocalDate yearMonth ) {
 		return new HibernateRetrievedMonthTradingPrices(tickerSymbol,
 		        YearMonth.of(yearMonth.getYear(), yearMonth.getMonth().getValue()));
 	}

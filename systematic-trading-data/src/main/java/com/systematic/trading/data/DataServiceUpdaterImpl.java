@@ -65,8 +65,8 @@ import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.converter.QuandlResponseConverter;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
-import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlDatatableApiDao;
 import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlDatasetApiDao;
+import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlDatatableApiDao;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
@@ -86,7 +86,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	public DataServiceUpdaterImpl( final DataServiceType serviceType )
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 		final RetrievedMonthTradingPricesDao retrievedHistoryDao = new HibernateRetrievedMonthTradingPricesDao();
-		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().get();
+		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().configuration();
 
 		this.api = new QuandlAPI(createDao(serviceType, configuration), configuration, new QuandlResponseConverter());
 		this.retrievedHistoryRecorder = new RetrievedYearMonthRecorder(retrievedHistoryDao);
@@ -126,15 +126,15 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			return new HttpQuandlDatatableApiDao(configuration);
 		}
 
-		throw new IllegalArgumentException(String.format("Data service type not catered for: %s", type.getType()));
+		throw new IllegalArgumentException(String.format("Data service type not catered for: %s", type.type()));
 	}
 
 	private boolean isTimeSeriesDataService( final DataServiceType type ) {
-		return StringUtils.equals("time-series", type.getType());
+		return StringUtils.equals("time-series", type.type());
 	}
 
 	private boolean isTablesDataService( final DataServiceType type ) {
-		return StringUtils.equals("tables", type.getType());
+		return StringUtils.equals("tables", type.type());
 	}
 
 	private void ensureAllRetrievalRequestsProcessed( final String tickerSymbol ) throws CannotRetrieveDataException {
@@ -149,22 +149,22 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 */
 	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests )
 	        throws CannotRetrieveDataException {
-		final ExecutorService pool = Executors.newFixedThreadPool(api.getMaximumConcurrentConnections());
-		final BlockingEventCount activeConnectionCount = new BlockingEventCountQueue(
-		        api.getMaximumConnectionsPerSecond(), THROTTLER_CLEAN_INTERVAL);
+		final ExecutorService pool = Executors.newFixedThreadPool(api.maximumConcurrentConnections());
+		final BlockingEventCount activeConnectionCount = new BlockingEventCountQueue(api.maximumConnectionsPerSecond(),
+		        THROTTLER_CLEAN_INTERVAL);
 		final EventCountCleanUp activeConnectionCountCleaner = startEventCountCleaner(activeConnectionCount);
 
 		for (final HistoryRetrievalRequest request : requests) {
 
-			final String equityDataset = request.getEquityDataset();
-			final String tickerSymbol = request.getTickerSymbol();
-			final LocalDate inclusiveStartDate = request.getInclusiveStartDate().toLocalDate();
-			final LocalDate exclusiveEndDate = request.getExclusiveEndDate().toLocalDate();
+			final String equityDataset = request.equityDataset();
+			final String tickerSymbol = request.tickerSymbol();
+			final LocalDate inclusiveStartDate = request.inclusiveStartDate().toLocalDate();
+			final LocalDate exclusiveEndDate = request.exclusiveEndDate().toLocalDate();
 
 			pool.execute(() -> {
 				try {
 					// Pull the data from the Stock API
-					TradingDayPrices[] tradingData = api.getStockData(equityDataset, tickerSymbol, inclusiveStartDate,
+					TradingDayPrices[] tradingData = api.stockData(equityDataset, tickerSymbol, inclusiveStartDate,
 					        exclusiveEndDate, activeConnectionCount);
 
 					if (tradingData.length == 0) {
@@ -193,7 +193,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private void shutdown( final ExecutorService pool, final List<HistoryRetrievalRequest> requests )
 	        throws CannotRetrieveDataException {
-		final int timeout = requests.size() * api.getMaximumRetrievalTimeSeconds();
+		final int timeout = requests.size() * api.maximumRetrievalTimeSeconds();
 		pool.shutdown();
 
 		try {
@@ -227,7 +227,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	}
 
 	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
-		return pendingRetrievalRequestDao.get(tickerSymbol);
+		return pendingRetrievalRequestDao.requests(tickerSymbol);
 	}
 
 	private List<HistoryRetrievalRequest> slice( final String equityDataset, final String tickerSymbol,
@@ -240,6 +240,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	}
 
 	private List<HistoryRetrievalRequest> merge( final List<HistoryRetrievalRequest> requests ) {
-		return historyRetrievalRequestMerger.merge(requests, api.getMaximumDurationPerConnection());
+		return historyRetrievalRequestMerger.merge(requests, api.maximumDurationPerConnection());
 	}
 }
