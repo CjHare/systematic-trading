@@ -73,10 +73,10 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	        final ExitConfiguration exit, final ExitSizeConfiguration exitPositionSizing ) {
 
 		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(entry.getDescription(this));
-		out.add(entryPositionSizing.getDescription(this));
-		out.add(exit.getDescription(this));
-		out.add(exitPositionSizing.getDescription(this));
+		out.add(entry.description(this));
+		out.add(entryPositionSizing.description(this));
+		out.add(exit.description(this));
+		out.add(exitPositionSizing.description(this));
 		return out.toString();
 	}
 
@@ -93,10 +93,10 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	public String bootstrapConfiguration( final BacktestBootstrapConfiguration configuration ) {
 
 		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(equity(configuration.getEquity()));
-		out.add(brokerage(configuration.getBrokerageFees()));
-		out.add(cashAccount(configuration.getCashAccount()));
-		out.add(configuration.getStrategy().getDescription(this));
+		out.add(equity(configuration.equity()));
+		out.add(brokerage(configuration.brokerageFees()));
+		out.add(cashAccount(configuration.cashAccount()));
+		out.add(configuration.strategy().description(this));
 		return out.toString();
 	}
 
@@ -105,11 +105,11 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	        final DepositConfiguration depositAmount ) {
 
 		final StringJoiner out = new StringJoiner(SEPARATOR);
-		out.add(equity(configuration.getEquity()));
-		out.add(brokerage(configuration.getBrokerageFees()));
+		out.add(equity(configuration.equity()));
+		out.add(brokerage(configuration.brokerageFees()));
 		out.add(deposit(depositAmount));
-		out.add(cashAccount(configuration.getCashAccount()));
-		out.add(configuration.getStrategy().getDescription(this));
+		out.add(cashAccount(configuration.cashAccount()));
+		out.add(configuration.strategy().description(this));
 		return out.toString();
 	}
 
@@ -149,8 +149,8 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	public String entry( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
 
-		final int delay = confirmBy.getDelayUntilConfirmationRange();
-		final int range = confirmBy.getConfirmationDayRange();
+		final int delay = confirmBy.delayUntilConfirmationRange();
+		final int range = confirmBy.confirmationDayRange();
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(entryDisplay(anchor));
 		out.add("confirmedBy");
@@ -167,12 +167,12 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add("Deposit");
-		out.add(String.valueOf(depositAmount.getAmount()));
-		out.add(getNiceDisplay(depositAmount.getFrequency()));
+		out.add(String.valueOf(depositAmount.aAmount()));
+		out.add(textualDisplay(depositAmount.frequency()));
 		return out.toString();
 	}
 
-	private String getNiceDisplay( final Period time ) {
+	private String textualDisplay( final Period time ) {
 
 		if (Period.ofDays(7).equals(time)) {
 			return "Weekly";
@@ -193,7 +193,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		if (entry.hasSubEntry()) {
 			out.append(OPERATOR_PREFIX);
 		}
-		out.append(entry.getDescription(this));
+		out.append(entry.description(this));
 		if (entry.hasSubEntry()) {
 			out.append(OPERATOR_SUFFIX);
 		}
@@ -202,7 +202,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	}
 
 	private String equity( final EquityConfiguration equity ) {
-		return equity.getEquityIdentity().getTickerSymbol();
+		return equity.gquityIdentity().getTickerSymbol();
 	}
 
 	private String cashAccount( final CashAccountConfiguration cashAccount ) {

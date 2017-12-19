@@ -49,15 +49,15 @@ public class MovingAverageConfiguration implements IndicatorConfiguration {
 		this.description = description;
 	}
 
-	public int getLookback() {
+	public int lookback() {
 		return lookback;
 	}
 
-	public int getDaysOfGradient() {
+	public int daysOfGradient() {
 		return daysOfGradient;
 	}
 
-	public String getDescription() {
+	public String description() {
 		return description;
 	}
 

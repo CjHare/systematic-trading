@@ -44,8 +44,8 @@ public class BrokerageFactoroy {
 	public Brokerage create( final EquityWithFeeConfiguration equity, final BrokerageTransactionFeeStructure fees,
 	        final LocalDate startDate ) {
 
-		final EquityManagementFeeStructure equityManagementFee = equity.getManagementFee();
-		final EquityIdentity equityId = equity.getIdentity();
+		final EquityManagementFeeStructure equityManagementFee = equity.managementFee();
+		final EquityIdentity equityId = equity.identity();
 
 		return new SingleEquityClassBroker(fees.toString(), fees, equityManagementFee, equityId, startDate);
 	}

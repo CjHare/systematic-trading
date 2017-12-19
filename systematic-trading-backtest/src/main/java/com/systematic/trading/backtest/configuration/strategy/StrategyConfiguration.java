@@ -55,24 +55,24 @@ public class StrategyConfiguration implements Describable {
 		this.exitPositionSizing = exitPositionSizing;
 	}
 
-	public EntryConfiguration getEntry() {
+	public EntryConfiguration entry() {
 		return entry;
 	}
 
-	public EntrySizeConfiguration getEntryPositionSizing() {
+	public EntrySizeConfiguration entryPositionSizing() {
 		return entryPositionSizing;
 	}
 
-	public ExitConfiguration getExit() {
+	public ExitConfiguration exit() {
 		return exit;
 	}
 
-	public ExitSizeConfiguration getExitPositionSizing() {
+	public ExitSizeConfiguration exitPositionSizing() {
 		return exitPositionSizing;
 	}
 
 	@Override
-	public String getDescription( final DescriptionGenerator description ) {
+	public String description( final DescriptionGenerator description ) {
 		return description.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 	}
 }

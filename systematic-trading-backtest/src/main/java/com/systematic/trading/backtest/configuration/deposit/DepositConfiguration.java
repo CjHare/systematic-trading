@@ -49,11 +49,11 @@ public enum DepositConfiguration {
 		this.amount = amount;
 	}
 
-	public BigDecimal getAmount() {
+	public BigDecimal aAmount() {
 		return amount;
 	}
 
-	public Period getFrequency() {
+	public Period frequency() {
 		return frequency;
 	}
 }

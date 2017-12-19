@@ -19,11 +19,11 @@ public enum EquityManagementFeeConfiguration {
 		this.percentageFee = percentageFee;
 	}
 
-	public BigDecimal[] getFeeRange() {
+	public BigDecimal[] feeRange() {
 		return feeRange;
 	}
 
-	public BigDecimal[] getPercentageFee() {
+	public BigDecimal[] percentageFee() {
 		return percentageFee;
 	}
 }

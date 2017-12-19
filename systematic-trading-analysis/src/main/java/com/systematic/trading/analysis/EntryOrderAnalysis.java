@@ -135,8 +135,8 @@ public class EntryOrderAnalysis {
 		final EquityConfiguration equity = equity(launchArgs);
 		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity,
 		        launchArgs.getOpeningFunds());
-		recordStrategy(backtestConfiguration.getStrategy());
-		recordAnalysisPeriod(backtestConfiguration.getBacktestDates());
+		recordStrategy(backtestConfiguration.strategy());
+		recordAnalysisPeriod(backtestConfiguration.backtestDates());
 
 		final StopWatch timer = new StopWatch();
 		timer.start();
@@ -153,7 +153,7 @@ public class EntryOrderAnalysis {
 	}
 
 	private void recordStrategy( final StrategyConfiguration strategy ) {
-		LOG.info("{}", () -> String.format("Strategy: %s", strategy.getDescription(description)));
+		LOG.info("{}", () -> String.format("Strategy: %s", strategy.description(description)));
 	}
 
 	private void recordExecutionTime( final StopWatch timer ) {
@@ -172,7 +172,7 @@ public class EntryOrderAnalysis {
 		final LocalDate today = LocalDate.now();
 
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(
-		        today.minus(strategy.getEntry().priceDataRange()).minusDays(DAYS_OF_SIGNALS), today);
+		        today.minus(strategy.entry().priceDataRange()).minusDays(DAYS_OF_SIGNALS), today);
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, openingFunds, DepositConfiguration.NONE,

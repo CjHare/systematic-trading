@@ -38,7 +38,7 @@ import com.systematic.trading.backtest.description.DescriptionGenerator;
 public class ExitConfiguration implements Describable {
 
 	@Override
-	public String getDescription( final DescriptionGenerator description ) {
+	public String description( final DescriptionGenerator description ) {
 		return "HoldForever";
 	}
 }

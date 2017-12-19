@@ -52,11 +52,11 @@ public class EquityWithFeeConfiguration {
 		this.identity = identity;
 	}
 
-	public EquityIdentity getIdentity() {
+	public EquityIdentity identity() {
 		return identity;
 	}
 
-	public EquityManagementFeeStructure getManagementFee() {
+	public EquityManagementFeeStructure managementFee() {
 		return managementFee;
 	}
 }

@@ -39,31 +39,31 @@ public class BacktestBootstrapConfiguration {
 		this.equity = equity;
 	}
 
-	public BacktestSimulationDates getBacktestDates() {
+	public BacktestSimulationDates backtestDates() {
 		return backtestDates;
 	}
 
-	public BrokerageTransactionFeeStructure getBrokerageFees() {
+	public BrokerageTransactionFeeStructure brokerageFees() {
 		return brokerageFees;
 	}
 
-	public CashAccountConfiguration getCashAccount() {
+	public CashAccountConfiguration cashAccount() {
 		return cashAccount;
 	}
 
-	public BigDecimal getOpeningFunds() {
+	public BigDecimal openingFunds() {
 		return openingFunds;
 	}
 
-	public DepositConfiguration getDeposit() {
+	public DepositConfiguration deposit() {
 		return deposit;
 	}
 
-	public StrategyConfiguration getStrategy() {
+	public StrategyConfiguration strategy() {
 		return strategy;
 	}
 
-	public EquityConfiguration getEquity() {
+	public EquityConfiguration equity() {
 		return equity;
 	}
 }

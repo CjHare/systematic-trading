@@ -51,20 +51,20 @@ public class ConfirmedByEntryConfiguration implements EntryConfiguration {
 		this.confirmation = confirmation;
 	}
 
-	public EntryConfiguration getAnchor() {
+	public EntryConfiguration anchor() {
 		return anchor;
 	}
 
-	public ConfirmaByConfiguration getConfirmBy() {
+	public ConfirmaByConfiguration confirmBy() {
 		return confirmBy;
 	}
 
-	public EntryConfiguration getConfirmation() {
+	public EntryConfiguration confirmation() {
 		return confirmation;
 	}
 
 	@Override
-	public String getDescription( final DescriptionGenerator description ) {
+	public String description( final DescriptionGenerator description ) {
 		return description.entry(anchor, confirmBy, confirmation);
 	}
 
@@ -75,6 +75,6 @@ public class ConfirmedByEntryConfiguration implements EntryConfiguration {
 
 	@Override
 	public TemporalAmount priceDataRange() {
-		return Period.ofDays(confirmBy.getDelayUntilConfirmationRange() + confirmBy.getConfirmationDayRange());
+		return Period.ofDays(confirmBy.delayUntilConfirmationRange() + confirmBy.confirmationDayRange());
 	}
 }

@@ -47,16 +47,16 @@ public class EntrySizeConfiguration implements Describable {
 		this.maximumTrade = maximumTrade;
 	}
 
-	public MinimumTrade getMinimumTrade() {
+	public MinimumTrade minimumTrade() {
 		return minimumTrade;
 	}
 
-	public MaximumTrade getMaximumTrade() {
+	public MaximumTrade maximumTrade() {
 		return maximumTrade;
 	}
 
 	@Override
-	public String getDescription( final DescriptionGenerator description ) {
+	public String description( final DescriptionGenerator description ) {
 		return description.positionSize(minimumTrade, maximumTrade);
 	}
 }

@@ -72,7 +72,7 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 	}
 
 	@Override
-	public List<BacktestBootstrapConfiguration> get( final EquityConfiguration equity,
+	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit ) {
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();

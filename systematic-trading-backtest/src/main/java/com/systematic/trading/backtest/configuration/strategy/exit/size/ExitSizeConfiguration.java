@@ -38,7 +38,7 @@ import com.systematic.trading.backtest.description.DescriptionGenerator;
 public class ExitSizeConfiguration implements Describable {
 
 	@Override
-	public String getDescription( final DescriptionGenerator description ) {
+	public String description( final DescriptionGenerator description ) {
 		return "All";
 	}
 }

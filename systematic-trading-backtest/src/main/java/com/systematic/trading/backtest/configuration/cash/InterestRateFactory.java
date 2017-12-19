@@ -61,7 +61,7 @@ public class InterestRateFactory {
 	        final MathContext mathContext ) {
 
 		try {
-			Constructor<?> cons = configuration.getType().getConstructor(BigDecimal.class, MathContext.class);
+			Constructor<?> cons = configuration.type().getConstructor(BigDecimal.class, MathContext.class);
 
 			return (InterestRate) cons.newInstance(annualRate, mathContext);
 		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException

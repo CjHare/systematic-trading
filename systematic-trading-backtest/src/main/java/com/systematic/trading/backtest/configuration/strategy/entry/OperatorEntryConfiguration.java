@@ -51,20 +51,20 @@ public class OperatorEntryConfiguration implements EntryConfiguration {
 		this.righEntry = righEntry;
 	}
 
-	public EntryConfiguration getLeftEntry() {
+	public EntryConfiguration leftEntry() {
 		return leftEntry;
 	}
 
-	public OperatorConfiguration.Selection getOp() {
+	public OperatorConfiguration.Selection operator() {
 		return op;
 	}
 
-	public EntryConfiguration getRighEntry() {
+	public EntryConfiguration righEntry() {
 		return righEntry;
 	}
 
 	@Override
-	public String getDescription( final DescriptionGenerator description ) {
+	public String description( final DescriptionGenerator description ) {
 		return description.entry(leftEntry, op, righEntry);
 	}
 

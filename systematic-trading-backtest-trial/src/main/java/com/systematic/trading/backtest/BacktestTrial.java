@@ -130,7 +130,7 @@ public class BacktestTrial {
 		final StopWatch timer = new StopWatch();
 		timer.start();
 
-		final List<BacktestBootstrapConfiguration> backtestConfigurations = configuration.get(equity, simulationDates,
+		final List<BacktestBootstrapConfiguration> backtestConfigurations = configuration.configuration(equity, simulationDates,
 		        openingFunds, depositAmount);
 
 		try {

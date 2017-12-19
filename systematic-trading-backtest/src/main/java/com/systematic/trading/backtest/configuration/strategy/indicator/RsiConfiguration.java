@@ -56,19 +56,19 @@ public enum RsiConfiguration implements IndicatorConfiguration {
 		this.description = description;
 	}
 
-	public int getLookback() {
+	public int lookback() {
 		return lookback;
 	}
 
-	public BigDecimal getOversold() {
+	public BigDecimal oversold() {
 		return oversold;
 	}
 
-	public BigDecimal getOverbought() {
+	public BigDecimal overbought() {
 		return overbought;
 	}
 
-	public String getDescription() {
+	public String description() {
 		return description;
 	}
 

@@ -42,7 +42,7 @@ public enum CashAccountConfiguration {
 		this.type = type;
 	}
 
-	public Class<?> getType() {
+	public Class<?> type() {
 		return type;
 	}
 }

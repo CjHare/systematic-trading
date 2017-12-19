@@ -193,32 +193,32 @@ public class StandardDescriptionGeneratorTest {
 
 	private ExitSizeConfiguration setUpExitSizing( final String description ) {
 		final ExitSizeConfiguration entry = mock(ExitSizeConfiguration.class);
-		when(entry.getDescription(any(DescriptionGenerator.class))).thenReturn(description);
+		when(entry.description(any(DescriptionGenerator.class))).thenReturn(description);
 		return entry;
 	}
 
 	private ExitConfiguration setUpExit( final String description ) {
 		final ExitConfiguration exit = mock(ExitConfiguration.class);
-		when(exit.getDescription(any(DescriptionGenerator.class))).thenReturn(description);
+		when(exit.description(any(DescriptionGenerator.class))).thenReturn(description);
 		return exit;
 	}
 
 	private EntrySizeConfiguration setUpEntrySizing( final String description ) {
 		final EntrySizeConfiguration entry = mock(EntrySizeConfiguration.class);
-		when(entry.getDescription(any(DescriptionGenerator.class))).thenReturn(description);
+		when(entry.description(any(DescriptionGenerator.class))).thenReturn(description);
 		return entry;
 	}
 
 	private EntryConfiguration setUpEntryWithSubEntry( final String description ) {
 		final EntryConfiguration entry = mock(EntryConfiguration.class);
-		when(entry.getDescription(any(DescriptionGenerator.class))).thenReturn(description);
+		when(entry.description(any(DescriptionGenerator.class))).thenReturn(description);
 		when(entry.hasSubEntry()).thenReturn(true);
 		return entry;
 	}
 
 	private EntryConfiguration setUpEntry( final String description ) {
 		final EntryConfiguration entry = mock(EntryConfiguration.class);
-		when(entry.getDescription(any(DescriptionGenerator.class))).thenReturn(description);
+		when(entry.description(any(DescriptionGenerator.class))).thenReturn(description);
 		return entry;
 	}
 
@@ -228,9 +228,9 @@ public class StandardDescriptionGeneratorTest {
 		final CashAccountConfiguration cashAccount = CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY;
 		final DepositConfiguration deposit = DepositConfiguration.WEEKLY_200;
 		final StrategyConfiguration strategy = mock(StrategyConfiguration.class);
-		when(strategy.getDescription(any(DescriptionGenerator.class))).thenReturn("sTrategy-deScription");
+		when(strategy.description(any(DescriptionGenerator.class))).thenReturn("sTrategy-deScription");
 		final EquityConfiguration equity = mock(EquityConfiguration.class);
-		when(equity.getEquityIdentity()).thenReturn(new EquityIdentity("ZXY", null, 0));
+		when(equity.gquityIdentity()).thenReturn(new EquityIdentity("ZXY", null, 0));
 
 		return new BacktestBootstrapConfiguration(backtestDates, brokerageFees, cashAccount, BigDecimal.ZERO, deposit,
 		        strategy, equity);

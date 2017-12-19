@@ -97,14 +97,14 @@ public class BacktestBootstrap {
 		final CulmativeTotalReturnOnInvestment cumulativeRoi = new CulmativeTotalReturnOnInvestment();
 		roi.addListener(cumulativeRoi);
 
-		final Brokerage broker = context.getBroker();
+		final Brokerage broker = context.broker();
 
-		final CashAccount cashAccount = context.getCashAccount();
+		final CashAccount cashAccount = context.cashAccount();
 		cashAccount.addListener(roi);
 
 		// Engine dealing with the event flow
 		final Simulation simulation = new Simulation(tradingData, broker, cashAccount, roi,
-		        context.getTradingStrategy());
+		        context.tradingStrategy());
 
 		// Statistics recorder for the various cash account, brokerage and order events
 		final EventStatistics eventStatistics = new CumulativeEventStatistics();
@@ -120,7 +120,7 @@ public class BacktestBootstrap {
 		simulation.addListener(networthSummay);
 
 		// Display for simulation output
-		output.init(tradingData, context.getSimulationDates(), eventStatistics, cumulativeRoi, lastTradingDay);
+		output.init(tradingData, context.simulationDates(), eventStatistics, cumulativeRoi, lastTradingDay);
 		simulation.addListener((OrderEventListener) output);
 		simulation.addListener((SimulationStateListener) output);
 		networthSummay.addListener(output);

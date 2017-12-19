@@ -103,10 +103,10 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 	}
 
 	@Override
-	public List<BacktestBootstrapConfiguration> get( final EquityConfiguration equity,
+	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit ) {
-		List<BacktestBootstrapConfiguration> configurations = super.get(equity, simulationDates, openingFunds, deposit);
+		List<BacktestBootstrapConfiguration> configurations = super.configuration(equity, simulationDates, openingFunds, deposit);
 
 		// Vanguard Retail - baseline
 		configurations.add(getBaseline(equity, simulationDates, openingFunds, deposit));

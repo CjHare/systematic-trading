@@ -68,23 +68,23 @@ public class Backtest {
 	public void run( final EquityConfiguration equity, final BacktestBootstrapConfiguration configuration,
 	        final BacktestEventListener output ) throws ServiceException {
 
-		final BacktestBootstrapContext context = createContext(configuration, output);
-		final Period warmUp = context.getTradingStrategy().warmUpPeriod();
+		final BacktestBootstrapContext context = context(configuration, output);
+		final Period warmUp = context.tradingStrategy().warmUpPeriod();
 		recordWarmUpPeriod(warmUp);
-		final TickerSymbolTradingData tradingData = getTradingData(equity.getEquityDataset(),
-		        equity.getEquityIdentity(), configuration.getBacktestDates(), warmUp);
+		final TickerSymbolTradingData tradingData = tradingData(equity.equityDataset(),
+		        equity.gquityIdentity(), configuration.backtestDates(), warmUp);
 		final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
 		bootstrap.run();
 	}
 
-	private BacktestBootstrapContext createContext( final BacktestBootstrapConfiguration configuration,
+	private BacktestBootstrapContext context( final BacktestBootstrapConfiguration configuration,
 	        final SignalAnalysisListener listener ) {
 		return new BacktestBootstrapContextBulider().withConfiguration(configuration)
 		        .withSignalAnalysisListeners(listener).build();
 	}
 
-	private TickerSymbolTradingData getTradingData( final String equityDataset, final EquityIdentity equity,
+	private TickerSymbolTradingData tradingData( final String equityDataset, final EquityIdentity equity,
 	        final BacktestSimulationDates simulationDate, final Period warmUp ) throws ServiceException {
 
 		final LocalDate startDate = simulationDate.getStartDate().minus(warmUp);

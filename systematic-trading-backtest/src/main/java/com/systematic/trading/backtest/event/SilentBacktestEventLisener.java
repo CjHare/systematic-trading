@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.event;
 
-import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
@@ -79,7 +78,7 @@ public class SilentBacktestEventLisener implements BacktestEventListener {
 	}
 
 	@Override
-	public void event( EquityEvent event ) {
+	public void event( final EquityEvent event ) {
 		// Recording of this event is not required for no display
 	}
 }

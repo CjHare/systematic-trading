@@ -46,12 +46,12 @@ public class PeriodicEntryConfiguration implements EntryConfiguration {
 		this.frequency = frequency;
 	}
 
-	public PeriodicConfiguration getFrequency() {
+	public PeriodicConfiguration frequency() {
 		return frequency;
 	}
 
 	@Override
-	public String getDescription( final DescriptionGenerator description ) {
+	public String description( final DescriptionGenerator description ) {
 		return description.periodicEntry(frequency);
 	}
 

@@ -54,19 +54,19 @@ public enum MacdConfiguration implements IndicatorConfiguration {
 		this.signalTimePeriods = signalTimePeriods;
 	}
 
-	public String getDescription() {
+	public String description() {
 		return description;
 	}
 
-	public int getFastTimePeriods() {
+	public int fastTimePeriods() {
 		return fastTimePeriods;
 	}
 
-	public int getSlowTimePeriods() {
+	public int slowTimePeriods() {
 		return slowTimePeriods;
 	}
 
-	public int getSignalTimePeriods() {
+	public int signalTimePeriods() {
 		return signalTimePeriods;
 	}
 

@@ -67,8 +67,8 @@ public class CashAccountFactory {
 	public CashAccount create( final LocalDate startDate, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit ) {
 
-		final BigDecimal depositAmount = deposit.getAmount();
-		final Period depositFrequency = deposit.getFrequency();
+		final BigDecimal depositAmount = deposit.aAmount();
+		final Period depositFrequency = deposit.frequency();
 
 		// TODO all these into a configuration - interest rate, deposit & frequency
 		final BigDecimal annualRate = BigDecimal.valueOf(1.5);
@@ -91,7 +91,7 @@ public class CashAccountFactory {
 	        final BigDecimal openingFunds, final LocalDate openingDate, final MathContext mathContext ) {
 
 		try {
-			Constructor<?> cons = configuration.getType().getConstructor(InterestRate.class, BigDecimal.class,
+			Constructor<?> cons = configuration.type().getConstructor(InterestRate.class, BigDecimal.class,
 			        LocalDate.class, MathContext.class);
 
 			return (CashAccount) cons.newInstance(annualInterestRate, openingFunds, openingDate, mathContext);

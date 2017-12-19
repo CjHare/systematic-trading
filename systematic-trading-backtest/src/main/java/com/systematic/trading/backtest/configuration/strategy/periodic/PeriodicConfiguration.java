@@ -42,7 +42,7 @@ public enum PeriodicConfiguration {
 		this.frequency = frequency;
 	}
 
-	public Period getFrequency() {
+	public Period frequency() {
 		return frequency;
 	}
 }

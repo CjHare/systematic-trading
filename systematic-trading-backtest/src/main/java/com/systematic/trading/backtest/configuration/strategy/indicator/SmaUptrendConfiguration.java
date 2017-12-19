@@ -47,7 +47,7 @@ public enum SmaUptrendConfiguration implements IndicatorConfiguration {
 		this.configuration = new MovingAverageConfiguration(lookback, daysOfGradient, description);
 	}
 
-	public MovingAverageConfiguration getConfiguration() {
+	public MovingAverageConfiguration configuration() {
 		return configuration;
 	}
 

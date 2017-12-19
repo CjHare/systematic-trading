@@ -44,5 +44,5 @@ public interface Describable {
 	 * @param description creates textual descriptions.
 	 * @return unique description, used for display purposes.
 	 */
-	String getDescription( DescriptionGenerator description );
+	String description( DescriptionGenerator description );
 }

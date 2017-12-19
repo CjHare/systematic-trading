@@ -111,13 +111,13 @@ public class BacktestBootstrapContextBulider {
 	private SignalAnalysisListener signalAnalysisListener;
 
 	public BacktestBootstrapContextBulider withConfiguration( final BacktestBootstrapConfiguration configuration ) {
-		this.simulationDates = configuration.getBacktestDates();
-		this.managementFeeStartDate = getFirstDayOfYear(simulationDates.getStartDate());
-		this.deposit = configuration.getDeposit();
-		this.openingFunds = configuration.getOpeningFunds();
-		this.equity = configuration.getEquity();
-		this.brokerageType = configuration.getBrokerageFees();
-		this.strategy = configuration.getStrategy();
+		this.simulationDates = configuration.backtestDates();
+		this.managementFeeStartDate = firstDayOfYear(simulationDates.getStartDate());
+		this.deposit = configuration.deposit();
+		this.openingFunds = configuration.openingFunds();
+		this.equity = configuration.equity();
+		this.brokerageType = configuration.brokerageFees();
+		this.strategy = configuration.strategy();
 		return this;
 	}
 
@@ -127,19 +127,19 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	public BacktestBootstrapContext build() {
-		return new BacktestBootstrapContext(createStrategy(), createBrokerage(), createCashAccount(), simulationDates);
+		return new BacktestBootstrapContext(strategy(), brokerage(), cashAccount(), simulationDates);
 	}
 
-	private Strategy createStrategy() {
-		return new TradingStrategyFactory().strategy(createEntry(), createEntryPositionSize(), createExit(),
-		        createExitPositionSize(), EquityClass.STOCK, EQUITY_SCALE);
+	private Strategy strategy() {
+		return new TradingStrategyFactory().strategy(entry(), entryPositionSize(), exit(),
+		        exitPositionSize(), EquityClass.STOCK, EQUITY_SCALE);
 	}
 
-	private Entry createEntry() {
-		final EntryConfiguration entryConfig = strategy.getEntry();
+	private Entry entry() {
+		final EntryConfiguration entryConfig = strategy.entry();
 
-		return createEntry(entryConfig,
-		        createSignalRangeFilter(startConfirmationRange(entryConfig) + endConfirmationRange(entryConfig)),
+		return entry(entryConfig,
+		        signalRangeFilter(startConfirmationRange(entryConfig) + endConfirmationRange(entryConfig)),
 		        priceDataRange(entryConfig));
 	}
 
@@ -150,33 +150,33 @@ public class BacktestBootstrapContextBulider {
 	/**
 	 * @param signalRange widest signal range, eventually will be overridden by a confirmation.
 	 */
-	private Entry createEntry( final EntryConfiguration entryConfig, final SignalRangeFilter signalRange,
+	private Entry entry( final EntryConfiguration entryConfig, final SignalRangeFilter signalRange,
 	        final long priceDataRange ) {
 
 		if (entryConfig instanceof PeriodicEntryConfiguration) {
-			return createEntry((PeriodicEntryConfiguration) entryConfig);
+			return periodicEntry((PeriodicEntryConfiguration) entryConfig);
 		}
 
 		if (entryConfig instanceof IndicatorEntryConfiguration) {
-			return createEntry((IndicatorEntryConfiguration) entryConfig, signalRange, priceDataRange);
+			return indicatorEntry((IndicatorEntryConfiguration) entryConfig, signalRange, priceDataRange);
 		}
 
 		if (entryConfig instanceof ConfirmedByEntryConfiguration) {
-			return createEntry((ConfirmedByEntryConfiguration) entryConfig, signalRange, priceDataRange);
+			return confirmByEntry((ConfirmedByEntryConfiguration) entryConfig, signalRange, priceDataRange);
 		}
 
 		if (entryConfig instanceof OperatorEntryConfiguration) {
-			return createEntry((OperatorEntryConfiguration) entryConfig, signalRange, priceDataRange);
+			return operatorEntry((OperatorEntryConfiguration) entryConfig, signalRange, priceDataRange);
 		}
 
 		throw new IllegalArgumentException(String.format("Entry configuration not supported: %s", entryConfig));
 	}
 
-	private Entry createEntry( final OperatorEntryConfiguration operatorConfig, final SignalRangeFilter signalRange,
+	private Entry operatorEntry( final OperatorEntryConfiguration operatorConfig, final SignalRangeFilter signalRange,
 	        final long priceDataRange ) {
 		final Operator operator;
 
-		switch (operatorConfig.getOp()) {
+		switch (operatorConfig.operator()) {
 			case AND:
 				operator = new TradingStrategyAndOperator();
 			break;
@@ -187,29 +187,29 @@ public class BacktestBootstrapContextBulider {
 		}
 
 		return new TradingStrategyFactory().entry(
-		        createEntry(operatorConfig.getLeftEntry(), signalRange, priceDataRange), operator,
-		        createEntry(operatorConfig.getRighEntry(), signalRange, priceDataRange));
+		        entry(operatorConfig.leftEntry(), signalRange, priceDataRange), operator,
+		        entry(operatorConfig.righEntry(), signalRange, priceDataRange));
 	}
 
-	private Entry createEntry( final ConfirmedByEntryConfiguration confirmedByConfig,
+	private Entry confirmByEntry( final ConfirmedByEntryConfiguration confirmedByConfig,
 	        final SignalRangeFilter signalRange, final long priceDataRange ) {
-		final ConfirmaByConfiguration by = confirmedByConfig.getConfirmBy();
+		final ConfirmaByConfiguration by = confirmedByConfig.confirmBy();
 
 		return new TradingStrategyFactory().entry(
-		        createEntry(confirmedByConfig.getAnchor(), signalRange, priceDataRange),
-		        new TradingStrategyConfirmedBy(by.getConfirmationDayRange(), by.getDelayUntilConfirmationRange()),
-		        createEntry(confirmedByConfig.getConfirmation(), signalRange, priceDataRange));
+		        entry(confirmedByConfig.anchor(), signalRange, priceDataRange),
+		        new TradingStrategyConfirmedBy(by.confirmationDayRange(), by.delayUntilConfirmationRange()),
+		        entry(confirmedByConfig.confirmation(), signalRange, priceDataRange));
 	}
 
-	private Entry createEntry( final IndicatorEntryConfiguration indicatorConfig, final SignalRangeFilter signalRange,
+	private Entry indicatorEntry( final IndicatorEntryConfiguration indicatorConfig, final SignalRangeFilter signalRange,
 	        final long priceDataRange ) {
 		return new TradingStrategyFactory().entry(new TradingStrategyIndicatorFactory()
-		        .create(indicatorConfig.getIndicator(), signalRange, signalAnalysisListener, (int) priceDataRange));
+		        .create(indicatorConfig.indicator(), signalRange, signalAnalysisListener, (int) priceDataRange));
 	}
 
-	private Entry createEntry( final PeriodicEntryConfiguration periodicConfig ) {
+	private Entry periodicEntry( final PeriodicEntryConfiguration periodicConfig ) {
 		return new TradingStrategyFactory().entry(new TradingStrategyPeriodic(simulationDates.getStartDate(),
-		        (periodicConfig).getFrequency().getFrequency(), SignalType.BULLISH));
+		        (periodicConfig).frequency().frequency(), SignalType.BULLISH));
 	}
 
 	/**
@@ -219,17 +219,17 @@ public class BacktestBootstrapContextBulider {
 
 		if (entryConfig instanceof ConfirmedByEntryConfiguration) {
 			final ConfirmedByEntryConfiguration confirmedByConfig = (ConfirmedByEntryConfiguration) entryConfig;
-			final int configEnd = confirmedByConfig.getConfirmBy().getConfirmationDayRange()
-			        + confirmedByConfig.getConfirmBy().getDelayUntilConfirmationRange();
+			final int configEnd = confirmedByConfig.confirmBy().confirmationDayRange()
+			        + confirmedByConfig.confirmBy().delayUntilConfirmationRange();
 
-			return Math.max(configEnd, Math.max(endConfirmationRange(confirmedByConfig.getAnchor()),
-			        endConfirmationRange(confirmedByConfig.getConfirmation())));
+			return Math.max(configEnd, Math.max(endConfirmationRange(confirmedByConfig.anchor()),
+			        endConfirmationRange(confirmedByConfig.confirmation())));
 		}
 
 		if (entryConfig instanceof OperatorEntryConfiguration) {
 			final OperatorEntryConfiguration operatorConfig = (OperatorEntryConfiguration) entryConfig;
-			return Math.max(endConfirmationRange(operatorConfig.getLeftEntry()),
-			        endConfirmationRange(operatorConfig.getRighEntry()));
+			return Math.max(endConfirmationRange(operatorConfig.leftEntry()),
+			        endConfirmationRange(operatorConfig.righEntry()));
 		}
 
 		// No range, i.e. only the current trading date
@@ -241,64 +241,64 @@ public class BacktestBootstrapContextBulider {
 		if (entryConfig instanceof ConfirmedByEntryConfiguration) {
 			final ConfirmedByEntryConfiguration confirmedByConfig = (ConfirmedByEntryConfiguration) entryConfig;
 
-			return Math.min(confirmedByConfig.getConfirmBy().getDelayUntilConfirmationRange(),
-			        Math.min(startConfirmationRange(confirmedByConfig.getAnchor()),
-			                startConfirmationRange(confirmedByConfig.getConfirmation())));
+			return Math.min(confirmedByConfig.confirmBy().delayUntilConfirmationRange(),
+			        Math.min(startConfirmationRange(confirmedByConfig.anchor()),
+			                startConfirmationRange(confirmedByConfig.confirmation())));
 		}
 
 		if (entryConfig instanceof OperatorEntryConfiguration) {
 			final OperatorEntryConfiguration operatorConfig = (OperatorEntryConfiguration) entryConfig;
-			return Math.min(startConfirmationRange(operatorConfig.getLeftEntry()),
-			        startConfirmationRange(operatorConfig.getRighEntry()));
+			return Math.min(startConfirmationRange(operatorConfig.leftEntry()),
+			        startConfirmationRange(operatorConfig.righEntry()));
 		}
 
 		// No range, i.e. only the current trading date
 		return 0;
 	}
 
-	private SignalRangeFilter createSignalRangeFilter( final int previousTradingDaySignalRange ) {
+	private SignalRangeFilter signalRangeFilter( final int previousTradingDaySignalRange ) {
 		return new SimulationDatesRangeFilterDecorator(simulationDates.getStartDate(), simulationDates.getEndDate(),
 		        new TradingDaySignalRangeFilter(previousTradingDaySignalRange));
 	}
 
-	private Exit createExit() {
+	private Exit exit() {
 		return new TradingStrategyFactory().exit();
 	}
 
-	private ExitSize createExitPositionSize() {
+	private ExitSize exitPositionSize() {
 		return new NeverExitPosition();
 	}
 
-	private EntrySize createEntryPositionSize() {
+	private EntrySize entryPositionSize() {
 		final EntryPositionBounds minimum = new AbsoluteEntryPositionBounds(
-		        strategy.getEntryPositionSizing().getMinimumTrade().getValue());
+		        strategy.entryPositionSizing().minimumTrade().getValue());
 		final EntryPositionBounds maximum = new RelativeEntryPositionBounds(
-		        strategy.getEntryPositionSizing().getMaximumTrade().getValue());
+		        strategy.entryPositionSizing().maximumTrade().getValue());
 
 		return new LargestPossibleEntryPosition(minimum, maximum);
 	}
 
-	private CashAccount createCashAccount() {
+	private CashAccount cashAccount() {
 		return CashAccountFactory.getInstance().create(simulationDates.getStartDate(), openingFunds, deposit);
 	}
 
-	private Brokerage createBrokerage() {
-		final EquityManagementFeeCalculator feeCalculator = createFeeCalculator(equity.getManagementFee());
+	private Brokerage brokerage() {
+		final EquityManagementFeeCalculator feeCalculator = feeCalculator(equity.managementFee());
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
-		        equity.getEquityIdentity(),
+		        equity.gquityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 
 		return new BrokerageFactoroy().create(equityConfiguration, brokerageType, simulationDates.getStartDate());
 	}
 
-	private LocalDate getFirstDayOfYear( final LocalDate date ) {
+	private LocalDate firstDayOfYear( final LocalDate date ) {
 		return LocalDate.of(date.getYear(), 1, 1);
 	}
 
-	private EquityManagementFeeCalculator createFeeCalculator( final EquityManagementFeeConfiguration managementFee ) {
+	private EquityManagementFeeCalculator feeCalculator( final EquityManagementFeeConfiguration managementFee ) {
 		switch (managementFee) {
 			case VGS:
-				return new FlatEquityManagementFeeCalculator(managementFee.getPercentageFee()[0]);
+				return new FlatEquityManagementFeeCalculator(managementFee.percentageFee()[0]);
 
 			case NONE:
 			default:

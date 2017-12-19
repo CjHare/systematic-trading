@@ -52,15 +52,15 @@ public class EquityConfiguration {
 		this.managementFee = EquityManagementFeeConfiguration.NONE;
 	}
 
-	public EquityIdentity getEquityIdentity() {
+	public EquityIdentity gquityIdentity() {
 		return new EquityIdentity(tickerSymbol.getSymbol(), equityType, SCALE);
 	}
 
-	public EquityManagementFeeConfiguration getManagementFee() {
+	public EquityManagementFeeConfiguration managementFee() {
 		return managementFee;
 	}
 
-	public String getEquityDataset() {
+	public String equityDataset() {
 		return equityDataset == null ? null : equityDataset.getDataset();
 	}
 }
