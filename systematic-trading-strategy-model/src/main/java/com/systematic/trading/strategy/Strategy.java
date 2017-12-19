@@ -30,6 +30,7 @@
 package com.systematic.trading.strategy;
 
 import java.time.Period;
+import java.util.Optional;
 
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
@@ -62,7 +63,7 @@ public interface Strategy {
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
 	 *         be placed.
 	 */
-	EquityOrder entryTick( BrokerageTransactionFee fees, CashAccount cashAccount, TradingDayPrices data );
+	Optional<EquityOrder> entryTick( BrokerageTransactionFee fees, CashAccount cashAccount, TradingDayPrices data );
 
 	/**
 	 * Action to take on the order when the triggering conditions are met, however there are
@@ -81,5 +82,5 @@ public interface Strategy {
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
 	 *         be placed.
 	 */
-	EquityOrder exitTick( BrokerageTransaction broker, TradingDayPrices data );
+	Optional<EquityOrder> exitTick( BrokerageTransaction broker, TradingDayPrices data );
 }

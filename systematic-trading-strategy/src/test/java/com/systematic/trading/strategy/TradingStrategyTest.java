@@ -42,6 +42,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -133,9 +134,9 @@ public class TradingStrategyTest {
 	public void entryUpdateNoEnoughPriceData() {
 		setUpNotEnoughDataPricePoints();
 
-		final EquityOrder order = entryTick();
+		final Optional<EquityOrder> order = entryTick();
 
-		verifENoEntryOrder(order);
+		verifyNoOrder(order);
 	}
 
 	@Test
@@ -144,9 +145,9 @@ public class TradingStrategyTest {
 		setUpEntryPositionSizing(3.67);
 		setUpFees(0.88);
 
-		final EquityOrder order = entryTick();
+		final Optional<EquityOrder> order = entryTick();
 
-		verifEEntryOrder(order);
+		verifyOrder(order);
 		verifyFeeDelegation(3.67);
 		verifyAnalysisDelegation();
 		verifyEntryPositionSizingDelegation();
@@ -158,9 +159,9 @@ public class TradingStrategyTest {
 		setUpEntryPositionSizing(0.75);
 		setUpFees(0.88);
 
-		final EquityOrder order = entryTick();
+		final Optional<EquityOrder> order = entryTick();
 
-		verifENoEntryOrder(order);
+		verifyNoOrder(order);
 		verifyFeeDelegation(0.75);
 		verifyAnalysisDelegation();
 		verifyEntryPositionSizingDelegation();
@@ -170,26 +171,26 @@ public class TradingStrategyTest {
 	public void entryUpdateNoOrderSignalYesterday() {
 		setUpSignal(1);
 
-		final EquityOrder order = entryTick();
+		final Optional<EquityOrder> order = entryTick();
 
-		verifENoEntryOrder(order);
+		verifyNoOrder(order);
 		verifyAnalysisDelegation();
 	}
 
 	@Test
 	public void entryUpdateNoAction() {
 
-		final EquityOrder order = entryTick();
+		final Optional<EquityOrder> order = entryTick();
 
-		verifENoEntryOrder(order);
+		verifyNoOrder(order);
 	}
 
 	@Test
 	public void exitUpdateNoAction() {
 
-		final EquityOrder order = exitTick();
+		final Optional<EquityOrder> order = exitTick();
 
-		verifENoExitOrder(order);
+		verifyNoOrder(order);
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -199,11 +200,11 @@ public class TradingStrategyTest {
 		exitTick();
 	}
 
-	private EquityOrder entryTick() {
+	private Optional<EquityOrder> entryTick() {
 		return strategy.entryTick(fees, cashAccount, data);
 	}
 
-	private EquityOrder exitTick() {
+	private Optional<EquityOrder> exitTick() {
 		return strategy.exitTick(brokerage, data);
 	}
 
@@ -259,16 +260,14 @@ public class TradingStrategyTest {
 		assertEquals(expected, actual);
 	}
 
-	private void verifENoExitOrder( final EquityOrder actual ) {
-		assertNull(actual);
-	}
-
-	private void verifENoEntryOrder( final EquityOrder actual ) {
-		assertNull(actual);
-	}
-
-	private void verifEEntryOrder( final EquityOrder actual ) {
+	private void verifyNoOrder( final Optional<EquityOrder> actual ) {
 		assertNotNull(actual);
+		assertEquals("Not expecting any order", false, actual.isPresent());
+	}
+
+	private void verifyOrder( final Optional<EquityOrder> actual ) {
+		assertNotNull(actual);
+		assertNotNull(actual.get());
 	}
 
 	private void verifyAnalysisDelegation() {

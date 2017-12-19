@@ -30,6 +30,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -159,11 +160,11 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the exit logic.
 	 */
 	private List<EquityOrder> addExitOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
-		final EquityOrder order = strategy.exitTick(broker, data);
+		final Optional<EquityOrder> order = strategy.exitTick(broker, data);
 
-		if (order != null) {
-			notifyListeners(order.orderEvent());
-			openOrders.add(order);
+		if (order.isPresent()) {
+			notifyListeners(order.get().orderEvent());
+			openOrders.add(order.get());
 		}
 
 		return openOrders;
@@ -177,11 +178,11 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the entry logic.
 	 */
 	private List<EquityOrder> addEntryOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
-		final EquityOrder order = strategy.entryTick(broker, funds, data);
+		final Optional<EquityOrder> order = strategy.entryTick(broker, funds, data);
 
-		if (order != null) {
-			notifyListeners(order.orderEvent());
-			openOrders.add(order);
+		if (order.isPresent()) {
+			notifyListeners(order.get().orderEvent());
+			openOrders.add(order.get());
 		}
 
 		return openOrders;
@@ -249,9 +250,10 @@ public class Simulation {
 					return null;
 				case RESUMIT:
 				default:
-					throw new IllegalArgumentException(String.format(
-					        "Unsupported insufficient funds action: %s for order: %s using strategy: %s", action,
-					        order, strategy), e);
+					throw new IllegalArgumentException(
+					        String.format("Unsupported insufficient funds action: %s for order: %s using strategy: %s",
+					                action, order, strategy),
+					        e);
 			}
 		} catch (final InsufficientEquitiesException e) {
 			LOG.error(e);

@@ -34,6 +34,7 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 
 import com.systematic.trading.collection.LimitedSizeQueue;
 import com.systematic.trading.data.TradingDayPrices;
@@ -98,7 +99,7 @@ public class TradingStrategy implements Strategy {
 	}
 
 	@Override
-	public EquityOrder entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+	public Optional<EquityOrder> entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
 	        final TradingDayPrices data ) {
 
 		// Add the day's data to the rolling queue
@@ -121,37 +122,37 @@ public class TradingStrategy implements Strategy {
 				        .divide(closingPrice, MATH_CONTEXT).setScale(scale, BigDecimal.ROUND_DOWN);
 
 				if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
-					return new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, MATH_CONTEXT);
+					return Optional.of(new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate,
+					        MATH_CONTEXT));
 				}
 			}
 		}
 
-		//TODO use optional instead of null
-		// No order to place
-		return null;
+		return noOrder();
 	}
 
-	//TODO this behaviour configurable or fix as delete in the simulation?
 	@Override
 	public EquityOrderInsufficientFundsAction actionOnInsufficentFunds( final EquityOrder order ) {
 		return EquityOrderInsufficientFundsAction.DELETE;
 	}
 
 	@Override
-	public EquityOrder exitTick( final BrokerageTransaction broker, final TradingDayPrices data ) {
+	public Optional<EquityOrder> exitTick( final BrokerageTransaction broker, final TradingDayPrices data ) {
 
 		if (exit.exitTick(broker, data)) {
 			throw new UnsupportedOperationException("Implement sell order logic");
 		}
 
-		//TODO use optional instead of null
-		// No order to place
-		return null;
+		return noOrder();
 	}
 
 	@Override
 	public Period warmUpPeriod() {
 		return Period.ofDays((int) Math.ceil(entry.numberOfTradingDaysRequired() * CONVERT_TO_TRADING_DAYS));
+	}
+
+	private Optional<EquityOrder> noOrder() {
+		return Optional.empty();
 	}
 
 	private boolean hasDatedSignal( final List<DatedSignal> signals, final TradingDayPrices data ) {
