@@ -50,8 +50,7 @@ public class FlatInterestRate implements InterestRate {
 
 	/**
 	 * @param annualInterestRate
-	 *            rate of interest applied over the course of a year, where 2% is
-	 *            2.0.
+	 *            rate of interest applied over the course of a year, where 2% is 2.0.
 	 * @param mathContext
 	 *            math context defining the scale and precision to apply to operations.
 	 */

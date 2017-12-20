@@ -129,7 +129,8 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	}
 
 	/**
-	 * The additional days of EMA values should have no affect on the calculations, only on the minimum data set size.
+	 * The additional days of EMA values should have no affect on the calculations, only on the
+	 * minimum data set size.
 	 */
 	@Test
 	public void emaIntelExampleAdditionalDaysofEmaValues() {

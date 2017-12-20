@@ -222,7 +222,8 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	/**
-	 * Widest value for the confirmationDayRange, accounting for the latest delay until confirmation range begins.
+	 * Widest value for the confirmationDayRange, accounting for the latest delay until confirmation
+	 * range begins.
 	 */
 	private int endConfirmationRange( final EntryConfiguration entryConfig ) {
 

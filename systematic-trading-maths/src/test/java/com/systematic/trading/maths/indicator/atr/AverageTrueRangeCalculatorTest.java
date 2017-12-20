@@ -242,10 +242,9 @@ public class AverageTrueRangeCalculatorTest {
 	/**
 	 * Prices starting on LocalDate.of(2017, 7, 10).
 	 * 
-	 * Three cases for ATR:
-	 * - Biggest swing is between today's high & low
-	 * - Biggest swing is between the highest of today and yesterday's close
-	 * - Biggest swing is between the low of today and yesterday's close
+	 * Three cases for ATR: - Biggest swing is between today's high & low - Biggest swing is between
+	 * the highest of today and yesterday's close - Biggest swing is between the low of today and
+	 * yesterday's close
 	 */
 	private TradingDayPrices[] createThreeTypesOfVolatility() {
 

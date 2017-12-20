@@ -47,8 +47,8 @@ public class EquityIdentity {
 	 * @param type
 	 *            determines how the equity is treated.
 	 * @param scale
-	 *            the number of decimal places for the units that the equity may be traded in,
-	 *            zero being whole units only.
+	 *            the number of decimal places for the units that the equity may be traded in, zero
+	 *            being whole units only.
 	 */
 	public EquityIdentity( final String tickerSymbol, final EquityClass type, final int scale ) {
 		this.tickerSymbol = tickerSymbol;

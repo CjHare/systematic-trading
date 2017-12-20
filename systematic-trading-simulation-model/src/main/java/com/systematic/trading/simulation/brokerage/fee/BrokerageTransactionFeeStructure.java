@@ -45,8 +45,8 @@ public interface BrokerageTransactionFeeStructure {
 	 * @param type
 	 *            different classes may attract alternative pricing structures.
 	 * @param tradesThisMonth
-	 *            the number of trades, inclusive of this one per the calendar month
-	 *            e.g. if this is the tenth trade this month the value is ten.
+	 *            the number of trades, inclusive of this one per the calendar month e.g. if this is
+	 *            the tenth trade this month the value is ten.
 	 * @return transaction (brokerage) cost.
 	 */
 	BigDecimal cost( BigDecimal tradeValue, EquityClass type, int tradesThisMonth );

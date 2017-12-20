@@ -46,8 +46,8 @@ public interface EquityManagementFeeCalculator {
 	 * @param singleEquityValue
 	 *            the value of a single equity.
 	 * @param durationToCalculate
-	 *            time elapsed since the last management fee, or length of time to
-	 *            apply the fee for.
+	 *            time elapsed since the last management fee, or length of time to apply the fee
+	 *            for.
 	 * @return management fee for the duration in the number of equities.
 	 */
 	BigDecimal calculate( BigDecimal numberOfEquities, ClosingPrice singleEquityValue, Period durationToCalculate );

@@ -73,8 +73,8 @@ public interface Validator {
 	 * the list.
 	 * 
 	 * @param values
-	 *            list of values to check for a run of non <code>null</code> entries of the
-	 *            desired size.
+	 *            list of values to check for a run of non <code>null</code> entries of the desired
+	 *            size.
 	 * @param numberOfValues
 	 *            minimum number of values expected.
 	 */
@@ -85,8 +85,8 @@ public interface Validator {
 	 * the array.
 	 * 
 	 * @param values
-	 *            array of values to check for a run of non <code>null</code> entries of the
-	 *            desired size.
+	 *            array of values to check for a run of non <code>null</code> entries of the desired
+	 *            size.
 	 * @param numberOfValues
 	 *            minimum number of values expected.
 	 */

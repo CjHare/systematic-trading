@@ -49,7 +49,8 @@ import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 
 /**
- * Verifying the behaviour for a SimpleMovingAverageCalculator implementation that uses the closing price.
+ * Verifying the behaviour for a SimpleMovingAverageCalculator implementation that uses the closing
+ * price.
  * 
  * @author CJ Hare
  */

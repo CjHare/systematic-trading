@@ -39,12 +39,11 @@ import com.systematic.trading.maths.indicator.Validator;
  * 
  * Example calculation applied to a lookback of 14
  * 
- * Current ATR = [(Prior ATR x 13) + Current TR] / 14
- * - Multiply the previous 14-day ATR by 13.
- * - Add the most recent day's TR value.
- * - Divide the total by 14
+ * Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the previous 14-day ATR by 13. -
+ * Add the most recent day's TR value. - Divide the total by 14
  * 
- * For the period of the lookback there are not ATR, with the first value being the average of the lookback TR values.
+ * For the period of the lookback there are not ATR, with the first value being the average of the
+ * lookback TR values.
  * 
  * @author CJ Hare
  */
@@ -70,8 +69,8 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 
 	/**
 	 * @param lookback
-	 *            the number of days to use when calculating the ATR, also the number of days
-	 *            prior to the averaging becoming correct.
+	 *            the number of days to use when calculating the ATR, also the number of days prior
+	 *            to the averaging becoming correct.
 	 * @param validator
 	 *            validates and parses input.
 	 */

@@ -38,7 +38,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * As the LocalDate JSON conversion mixes up the ordering of elements, a more generous matching is required.
+ * As the LocalDate JSON conversion mixes up the ordering of elements, a more generous matching is
+ * required.
  * 
  * @author CJ Hare
  */

@@ -42,16 +42,14 @@ import com.systematic.trading.maths.indicator.Validator;
  * weighting factors which decrease exponentially. The weighting for each older datum decreases
  * exponentially, never reaching zero.
  * <p/>
- * Greater accuracy is achieved with more data points, with the days of gradient being larger, the EMA becomes more
- * accurate.
- * However with more data, more computation is required, meaning a balance between volume of data and accuracy is
- * needed.
+ * Greater accuracy is achieved with more data points, with the days of gradient being larger, the
+ * EMA becomes more accurate. However with more data, more computation is required, meaning a
+ * balance between volume of data and accuracy is needed.
  * <p/>
- * This implementation calculates the EMA by first calculating the starting value using a SMA,
- * then applies each value with the smoothing constant to produce the EMA.
- * This does mean those dates used as part of the SMA will not have corresponding EMA values,
- * with those in the first period of the lookback being considered as inaccurate, not appropriate for use in signal
- * generation.
+ * This implementation calculates the EMA by first calculating the starting value using a SMA, then
+ * applies each value with the smoothing constant to produce the EMA. This does mean those dates
+ * used as part of the SMA will not have corresponding EMA values, with those in the first period of
+ * the lookback being considered as inaccurate, not appropriate for use in signal generation.
  * 
  * @author CJ Hare
  */

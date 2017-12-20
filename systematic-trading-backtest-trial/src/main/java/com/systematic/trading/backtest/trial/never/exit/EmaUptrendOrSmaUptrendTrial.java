@@ -58,7 +58,8 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
 /**
- * Executes all the combinations of SMA and EMA uptrrends. When there is either an SMA or EMA signal it's a buy signal.
+ * Executes all the combinations of SMA and EMA uptrrends. When there is either an SMA or EMA signal
+ * it's a buy signal.
  * 
  * @author CJ Hare
  */

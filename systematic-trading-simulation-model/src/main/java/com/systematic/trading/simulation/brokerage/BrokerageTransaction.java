@@ -48,7 +48,8 @@ public interface BrokerageTransaction {
 	 *            number of equities being purchased.
 	 * @param tradeDate
 	 *            date of execution.
-	 * @return total cost of the trade that would deducted from the cash account for the transaction.
+	 * @return total cost of the trade that would deducted from the cash account for the
+	 *         transaction.
 	 */
 	BigDecimal cost( Price price, EquityOrderVolume volume, LocalDate tradeDate );
 
@@ -75,8 +76,7 @@ public interface BrokerageTransaction {
 	 * @param tradeDate
 	 *            date of execution.
 	 * @throws InsufficientEquitiesException
-	 *             encountered when there are insufficient equities are
-	 *             held.
+	 *             encountered when there are insufficient equities are held.
 	 * @return total funds acquired from the liquidation.
 	 */
 	BigDecimal sell( Price price, EquityOrderVolume volume, LocalDate tradeDate ) throws InsufficientEquitiesException;

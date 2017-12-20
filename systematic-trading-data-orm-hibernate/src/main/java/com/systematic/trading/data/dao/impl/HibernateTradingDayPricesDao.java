@@ -66,7 +66,8 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 			} catch (final HibernateException e) {
 
 				if (e.getCause() instanceof ConstraintViolationException) {
-					// Only constraint violation here will be primary key, or attempting to insert data already present
+					// Only constraint violation here will be primary key, or attempting to insert
+					// data already present
 					LOG.debug(e.getMessage());
 				} else {
 					throw e;

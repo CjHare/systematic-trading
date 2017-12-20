@@ -47,8 +47,7 @@ public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
 	 * @param exclusiveStartDate
 	 *            the beginning of the elapsed time the percentage change occurred.
 	 * @param inclusiveEndDate
-	 *            the last day of the elapsed time where the percentage change
-	 *            occurred.
+	 *            the last day of the elapsed time where the percentage change occurred.
 	 */
 	public ReturnOnInvestmentEventImpl( final BigDecimal percentageChange, final LocalDate exclusiveStartDate,
 	        final LocalDate inclusiveEndDate ) {

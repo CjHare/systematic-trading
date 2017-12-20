@@ -43,8 +43,8 @@ public interface DataServiceUpdater {
 	 * @param equityDataset
 	 *            identifier for the dataset to retrieve the ticker symbol from.
 	 * @param tickerSymbol
-	 *            identifier for the equity to retrieve the data on, ensures at least the
-	 *            last two month is available locally.
+	 *            identifier for the equity to retrieve the data on, ensures at least the last two
+	 *            month is available locally.
 	 * @param startDate
 	 *            the inclusive start date, of the required data set.
 	 * @param endDate

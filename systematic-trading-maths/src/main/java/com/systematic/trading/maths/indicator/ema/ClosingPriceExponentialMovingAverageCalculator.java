@@ -35,11 +35,11 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 
 /**
- * This implementation calculates the EMA from the closing price, by first calculating the starting value using a SMA,
- * then applies each value with the smoothing constant to produce the EMA.
- * This does mean those dates used as part of the SMA will not have corresponding EMA values,
- * with those in the first period of the lookback being considered as inaccurate, not appropriate for use in signal
- * generation.
+ * This implementation calculates the EMA from the closing price, by first calculating the starting
+ * value using a SMA, then applies each value with the smoothing constant to produce the EMA. This
+ * does mean those dates used as part of the SMA will not have corresponding EMA values, with those
+ * in the first period of the lookback being considered as inaccurate, not appropriate for use in
+ * signal generation.
  * 
  * @author CJ Hare
  */

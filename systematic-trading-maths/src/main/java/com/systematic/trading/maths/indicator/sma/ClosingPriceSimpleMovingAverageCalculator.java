@@ -57,8 +57,8 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 	 * @param lookback
 	 *            the number of days to use when calculating the SMA.
 	 * @param daysOfSmaValues
-	 *            the number of trading days to have a SMA values for, with lookback being the number of trading days
-	 *            averaged..
+	 *            the number of trading days to have a SMA values for, with lookback being the
+	 *            number of trading days averaged..
 	 * @param validator
 	 *            validates and parses input.
 	 * @param store

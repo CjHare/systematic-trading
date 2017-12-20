@@ -68,9 +68,11 @@ import com.systematic.trading.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
 /**
- * Combines EMA and SMA up trends, combining both the longs with the mediums and longs and short up trends.
+ * Combines EMA and SMA up trends, combining both the longs with the mediums and longs and short up
+ * trends.
  * 
- * As the short and medium up trends fire events earlier then the long, the long get used as the confirm signal.
+ * As the short and medium up trends fire events earlier then the long, the long get used as the
+ * confirm signal.
  * 
  * @author CJ Hare
  */
