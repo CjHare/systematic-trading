@@ -114,7 +114,6 @@ public class EntryOrderAnalysis {
 		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS), arguments);
 
 		new EntryOrderAnalysis(launchArgs.dataService()).run(launchArgs);
-
 	}
 
 	public EntryOrderAnalysis( final DataServiceType serviceType ) throws BacktestInitialisationException {
