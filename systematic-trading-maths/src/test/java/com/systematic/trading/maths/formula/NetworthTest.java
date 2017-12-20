@@ -37,7 +37,7 @@ import org.junit.Test;
  * 
  * @author CJ Hare
  */
-public class NetwothTest {
+public class NetworthTest {
 
 	/** Instance being tested, */
 	private Networth networth;
@@ -51,7 +51,7 @@ public class NetwothTest {
 	@Test
 	public void get() {
 
-		assertBigDecimalEquals(0, getNetworth());
+		assertBigDecimalEquals(0, networth());
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class NetwothTest {
 
 		networth.reset();
 
-		assertBigDecimalEquals(0, getNetworth());
+		assertBigDecimalEquals(0, networth());
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class NetwothTest {
 
 		addValue(value);
 
-		assertBigDecimalEquals(value, getNetworth());
+		assertBigDecimalEquals(value, networth());
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class NetwothTest {
 
 		addEquity(1.234567, 9876.21);
 
-		assertBigDecimalEquals(12192.84, getNetworth());
+		assertBigDecimalEquals(12192.84, networth());
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class NetwothTest {
 		addValue(1.234567);
 		addValue(34.234567);
 
-		assertBigDecimalEquals(35.46913, getNetworth());
+		assertBigDecimalEquals(35.46913, networth());
 	}
 
 	@Test
@@ -125,9 +125,9 @@ public class NetwothTest {
 		assertBigDecimalEquals(112.3457, change);
 	}
 
-	private BigDecimal getNetworth() {
+	private BigDecimal networth() {
 
-		return networth.get();
+		return networth.networth();
 	}
 
 	private BigDecimal percentageChange( final Networth endNetworth, final Networth adjustment ) {

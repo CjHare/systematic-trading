@@ -42,26 +42,26 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"amount\":{\"type\":\"float\"},\"funds_after\":{\"type\":\"float\"},\"funds_before\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"}}";
 
 	@Override
-	protected String getJsonPutIndex() {
+	protected String jsonPutIndex() {
 
 		return JSON_PUT_INDEX;
 	}
 
 	@Override
-	protected String getJsonPutIndexMapping() {
+	protected String jsonPutIndexMapping() {
 
 		return JSON_PUT_INDEX_MAPPING;
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
+	protected ElasticIndexName indexName() {
 
 		return ElasticIndexName.CASH;
 	}
 
 	@Override
-	protected ElasticCommonIndex createIndex() {
+	protected ElasticCommonIndex index() {
 
-		return new ElasticCashIndex(getDao(), getPool(), getElasticConfig());
+		return new ElasticCashIndex(dao(), pool(), elasticConfig());
 	}
 }

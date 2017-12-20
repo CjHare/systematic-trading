@@ -99,14 +99,14 @@ public class HttpElasticDao implements ElasticDao {
 	@Override
 	public Response mapping( final ElasticIndexName indexName, final BacktestBatchId id ) {
 
-		final String path = getMappingPath(indexName, id);
+		final String path = mappingPath(indexName, id);
 		return root.path(path).request(MediaType.APPLICATION_JSON).get();
 	}
 
 	@Override
 	public void postTypes( final ElasticIndexName indexName, final Entity<?> requestBody ) {
 
-		final WebTarget url = bulkApiRoot.path(getIndexBulkApiPath(indexName));
+		final WebTarget url = bulkApiRoot.path(indexBulkApiPath(indexName));
 
 		// Bulk API uses only HTTP POST for all operations
 		final Response response = url.request(MediaType.APPLICATION_JSON).post(requestBody);
@@ -128,7 +128,7 @@ public class HttpElasticDao implements ElasticDao {
 	@Override
 	public void putMapping( final ElasticIndexName indexName, final BacktestBatchId id, final Entity<?> requestBody ) {
 
-		final String path = getMappingPath(indexName, id);
+		final String path = mappingPath(indexName, id);
 		final Response response = root.path(path).request().put(requestBody);
 
 		if (response.getStatus() != 200) {
@@ -153,7 +153,7 @@ public class HttpElasticDao implements ElasticDao {
 	@Override
 	public void putSetting( final ElasticIndexName indexName, final Entity<?> requestBody ) {
 
-		final String path = getSettingPath(indexName);
+		final String path = settingPath(indexName);
 		final Response response = root.path(path).request().put(requestBody);
 
 		if (response.getStatus() != 200) {
@@ -162,7 +162,7 @@ public class HttpElasticDao implements ElasticDao {
 
 	}
 
-	private String getSettingPath( final ElasticIndexName indexName ) {
+	private String settingPath( final ElasticIndexName indexName ) {
 
 		return String.format("%s/_settings", indexName.indexName());
 	}
@@ -170,12 +170,12 @@ public class HttpElasticDao implements ElasticDao {
 	/**
 	 * Path for retrieving or putting mapping data to elastic search.
 	 */
-	private String getMappingPath( final ElasticIndexName indexName, final BacktestBatchId id ) {
+	private String mappingPath( final ElasticIndexName indexName, final BacktestBatchId id ) {
 
 		return String.format("%s/_mapping/%s/", indexName.indexName(), id.name());
 	}
 
-	private String getIndexBulkApiPath( final ElasticIndexName indexName ) {
+	private String indexBulkApiPath( final ElasticIndexName indexName ) {
 
 		return String.format("%s/_bulk", indexName.indexName());
 	}

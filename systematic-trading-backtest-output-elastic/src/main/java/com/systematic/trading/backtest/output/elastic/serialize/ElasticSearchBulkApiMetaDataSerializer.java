@@ -66,7 +66,7 @@ public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<Elasti
 		}
 
 		gen.writeStartObject();
-		gen.writeFieldName(value.getAction());
+		gen.writeFieldName(value.action());
 		writeMeta(value, gen);
 		gen.writeEndObject();
 	}
@@ -76,16 +76,16 @@ public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<Elasti
 
 		gen.writeStartObject();
 
-		if (StringUtils.isNotBlank(value.getIndex())) {
-			gen.writeStringField(INDEX, value.getIndex());
+		if (StringUtils.isNotBlank(value.index())) {
+			gen.writeStringField(INDEX, value.index());
 		}
 
-		if (StringUtils.isNotBlank(value.getType())) {
-			gen.writeStringField(TYPE, value.getType());
+		if (StringUtils.isNotBlank(value.type())) {
+			gen.writeStringField(TYPE, value.type());
 		}
 
-		if (StringUtils.isNotBlank(value.getId())) {
-			gen.writeStringField(ID, value.getId());
+		if (StringUtils.isNotBlank(value.id())) {
+			gen.writeStringField(ID, value.id());
 		}
 
 		gen.writeEndObject();

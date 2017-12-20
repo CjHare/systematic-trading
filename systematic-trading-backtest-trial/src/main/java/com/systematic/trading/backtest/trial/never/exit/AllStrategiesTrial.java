@@ -82,7 +82,7 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 		new BacktestTrial(launchArgs.dataService()).runBacktest(new AllStrategiesTrial(), launchArgs);
 	}
 
-	private static Set<Pair<MinimumTrade, MaximumTrade>> getPositionSizing() {
+	private static Set<Pair<MinimumTrade, MaximumTrade>> positionSizing() {
 
 		final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes = new HashSet<>();
 
@@ -96,7 +96,7 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 	}
 
 	public AllStrategiesTrial() {
-		super(new CmcMarketsBrokerageFees(), getPositionSizing());
+		super(new CmcMarketsBrokerageFees(), positionSizing());
 	}
 
 	@Override

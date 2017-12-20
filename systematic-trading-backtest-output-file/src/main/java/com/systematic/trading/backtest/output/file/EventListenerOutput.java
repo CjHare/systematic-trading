@@ -91,11 +91,11 @@ public class EventListenerOutput implements CashEventListener, OrderEventListene
 		output.append(String.format("#######################%n"));
 		output.append(String.format("%n"));
 
-		output.append(String.format("Data set for %s from %s to %s%n", tradingData.equityIdentity().getTickerSymbol(),
+		output.append(String.format("Data set for %s from %s to %s%n", tradingData.equityIdentity().tickerSymbol(),
 		        tradingData.earliestDate(), tradingData.latestDate()));
 
 		output.append(String.format("Simulation dates for %s from %s to %s%n",
-		        tradingData.equityIdentity().getTickerSymbol(), dates.startDate(), dates.endDate()));
+		        tradingData.equityIdentity().tickerSymbol(), dates.startDate(), dates.endDate()));
 
 		final long daysBetween = ChronoUnit.DAYS.between(tradingData.earliestDate(), tradingData.latestDate());
 		final double percentageTradingDays = ((double) tradingData.requiredTradingPrices() / daysBetween) * 100;

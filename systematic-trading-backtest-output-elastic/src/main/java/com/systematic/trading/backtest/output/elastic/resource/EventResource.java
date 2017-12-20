@@ -42,7 +42,7 @@ public abstract class EventResource {
 	}
 
 	@JsonProperty(ElasticTypeName.EVENT)
-	public String getEvent() {
+	public String event() {
 
 		return event;
 	}

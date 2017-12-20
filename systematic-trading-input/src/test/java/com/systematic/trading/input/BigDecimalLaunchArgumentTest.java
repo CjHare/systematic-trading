@@ -77,9 +77,9 @@ public class BigDecimalLaunchArgumentTest {
 		final String expected = "1.1";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expected);
 
-		final BigDecimal symbol = getValue(launchArguments);
+		final BigDecimal symbol = value(launchArguments);
 
-		verifSymbol(expected, symbol);
+		verifySymbol(expected, symbol);
 	}
 
 	@Test
@@ -87,9 +87,9 @@ public class BigDecimalLaunchArgumentTest {
 
 		setUpValidatorException();
 
-		getValueExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
+		valueExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
 
-		veriyValidationExceptionOnValidate("");
+		verifyValidationExceptionOnValidate("");
 	}
 
 	@Test
@@ -97,23 +97,23 @@ public class BigDecimalLaunchArgumentTest {
 
 		setUpValidatorException();
 
-		getValueExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
+		valueExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
 
-		veriyValidationExceptionOnValidate(null);
+		verifyValidationExceptionOnValidate(null);
 	}
 
-	private void getValueExpectingException( final String expectedMessage,
+	private void valueExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
 
 		try {
-			getValue(launchArguments);
+			value(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(expectedMessage, e.getMessage());
 		}
 	}
 
-	private BigDecimal getValue( final Map<ArgumentKey, String> launchArguments ) {
+	private BigDecimal value( final Map<ArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -124,14 +124,14 @@ public class BigDecimalLaunchArgumentTest {
 		        anyString());
 	}
 
-	private void veriyValidationExceptionOnValidate( final String launchArgument ) {
+	private void verifyValidationExceptionOnValidate( final String launchArgument ) {
 
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}
 
-	private void verifSymbol( final String expected, final BigDecimal actual ) {
+	private void verifySymbol( final String expected, final BigDecimal actual ) {
 
 		assertNotNull(actual);
 		assertNotNull(actual);

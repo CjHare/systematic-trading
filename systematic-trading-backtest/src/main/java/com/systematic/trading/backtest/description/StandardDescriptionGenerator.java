@@ -127,7 +127,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	@Override
 	public String indicator( final IndicatorConfiguration indicator ) {
 
-		return indicator.id().getName();
+		return indicator.id().name();
 	}
 
 	@Override
@@ -201,7 +201,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 
 	private String equity( final EquityConfiguration equity ) {
 
-		return equity.gquityIdentity().getTickerSymbol();
+		return equity.gquityIdentity().tickerSymbol();
 	}
 
 	private String cashAccount( final CashAccountConfiguration cashAccount ) {

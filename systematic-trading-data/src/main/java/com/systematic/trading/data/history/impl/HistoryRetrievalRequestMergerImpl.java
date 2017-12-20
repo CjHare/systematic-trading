@@ -77,7 +77,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		for (int i = 0; i < lastRequestIndex; i++) {
 
 			final Pair<Period, HistoryRetrievalRequestBuilder> mergeOutcome = mergeRequest(maximum,
-			        lastRequest(i, sortedRequests), sortedRequests.get(i), getNextRequest(i, sortedRequests), remaining,
+			        lastRequest(i, sortedRequests), sortedRequests.get(i), nextRequest(i, sortedRequests), remaining,
 			        mergingRequests, mergedRequests);
 
 			remaining = mergeOutcome.getLeft();
@@ -161,7 +161,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		return i > 0 ? Optional.of(requests.get(i - 1)) : Optional.empty();
 	}
 
-	private HistoryRetrievalRequest getNextRequest( final int i, final List<HistoryRetrievalRequest> requests ) {
+	private HistoryRetrievalRequest nextRequest( final int i, final List<HistoryRetrievalRequest> requests ) {
 
 		return requests.get(i + 1);
 	}

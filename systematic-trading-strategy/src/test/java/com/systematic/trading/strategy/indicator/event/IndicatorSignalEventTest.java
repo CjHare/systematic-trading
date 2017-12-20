@@ -61,7 +61,7 @@ public class IndicatorSignalEventTest {
 	}
 
 	@Test
-	public void getSignalType() {
+	public void signalType() {
 
 		final IndicatorSignalEvent event = event();
 
@@ -70,7 +70,7 @@ public class IndicatorSignalEventTest {
 	}
 
 	@Test
-	public void getDate() {
+	public void date() {
 
 		setUpIndicatorSignal(SignalType.BULLISH);
 
@@ -81,7 +81,7 @@ public class IndicatorSignalEventTest {
 	}
 
 	@Test
-	public void getDirectionTypeBullish() {
+	public void directionTypeBullish() {
 
 		setUpIndicatorSignal(SignalType.BULLISH);
 
@@ -91,7 +91,7 @@ public class IndicatorSignalEventTest {
 	}
 
 	@Test
-	public void getDirectionTypeBearish() {
+	public void directionTypeBearish() {
 
 		setUpIndicatorSignal(SignalType.BEARISH);
 

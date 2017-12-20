@@ -175,10 +175,10 @@ public abstract class ElasticIndexTestBase {
 
 	private void initIndex( final String batchId ) {
 
-		index.init(getBatchId(batchId));
+		index.init(batchId(batchId));
 	}
 
-	private BacktestBatchId getBatchId( final String id ) {
+	private BacktestBatchId batchId( final String id ) {
 
 		return new BacktestBatchId(id);
 	}
@@ -198,7 +198,7 @@ public abstract class ElasticIndexTestBase {
 
 	private void verifyPresentMappingCalls( final String batchId ) {
 
-		verify(dao).mapping(eq(getIndexName()), equalsBacktestId(batchId));
+		verify(dao).mapping(eq(indexName()), equalsBacktestId(batchId));
 		verifyNoMoreInteractions(dao);
 
 		verifyGetIndexType();
@@ -207,17 +207,17 @@ public abstract class ElasticIndexTestBase {
 	private void verifyMissingMappingCalls( final String batchId ) {
 
 		final InOrder order = inOrder(dao);
-		order.verify(dao).mapping(eq(getIndexName()), equalsBacktestId(batchId));
-		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
-		        equalsJson(getJsonPutIndexMapping()));
+		order.verify(dao).mapping(eq(indexName()), equalsBacktestId(batchId));
+		order.verify(dao).putMapping(eq(indexName()), equalsBacktestId(batchId),
+		        equalsJson(jsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);
 	}
 
 	private void verifyPutIndexCall() {
 
 		final InOrder order = inOrder(dao);
-		order.verify(dao).index(getIndexName());
-		order.verify(dao).put(eq(getIndexName()), equalsJson(getJsonPutIndex()));
+		order.verify(dao).index(indexName());
+		order.verify(dao).put(eq(indexName()), equalsJson(jsonPutIndex()));
 		verifyNoMoreInteractions(dao);
 
 		verifyGetIndex();
@@ -226,9 +226,9 @@ public abstract class ElasticIndexTestBase {
 	private void verifyMissingIndexCalls( final String batchId ) {
 
 		final InOrder order = inOrder(dao);
-		order.verify(dao).mapping(eq(getIndexName()), equalsBacktestId(batchId));
-		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
-		        equalsJson(getJsonPutIndexMapping()));
+		order.verify(dao).mapping(eq(indexName()), equalsBacktestId(batchId));
+		order.verify(dao).putMapping(eq(indexName()), equalsBacktestId(batchId),
+		        equalsJson(jsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);
 	}
 
@@ -247,35 +247,35 @@ public abstract class ElasticIndexTestBase {
 		final String expectedJson = String.format("\"refresh_interval\":\"%s\"",
 		        enabled ? INDEX_SETTING_REFRESH_DEFAULT : INDEX_SETTING_REFRESH_DISABLE);
 
-		verify(dao).putSetting(eq(getIndexName()), equalsJson(expectedJson));
+		verify(dao).putSetting(eq(indexName()), equalsJson(expectedJson));
 		verifyNoMoreInteractions(dao);
 	}
 
 	private void setUpIndex() {
 
-		index = createIndex();
+		index = index();
 	}
 
-	protected ElasticDao getDao() {
+	protected ElasticDao dao() {
 
 		return dao;
 	}
 
-	protected ExecutorService getPool() {
+	protected ExecutorService pool() {
 
 		return Executors.newSingleThreadExecutor();
 	}
 
-	protected BackestOutputElasticConfiguration getElasticConfig() {
+	protected BackestOutputElasticConfiguration elasticConfig() {
 
 		return new BackestOutputFileConfigurationImpl(7, 5, 1, 1);
 	}
 
-	protected abstract String getJsonPutIndex();
+	protected abstract String jsonPutIndex();
 
-	protected abstract String getJsonPutIndexMapping();
+	protected abstract String jsonPutIndexMapping();
 
-	protected abstract ElasticIndexName getIndexName();
+	protected abstract ElasticIndexName indexName();
 
-	protected abstract ElasticCommonIndex createIndex();
+	protected abstract ElasticCommonIndex index();
 }

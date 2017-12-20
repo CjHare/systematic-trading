@@ -55,7 +55,7 @@ public class PriceMatcher extends ArgumentMatcher<Price> {
 	@Override
 	public boolean matches( final Object argument ) {
 
-		return argument instanceof Price && expected.compareTo(((Price) argument).getPrice()) == 0;
+		return argument instanceof Price && expected.compareTo(((Price) argument).price()) == 0;
 	}
 
 	@Override

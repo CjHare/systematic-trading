@@ -80,9 +80,9 @@ public class EndDateLaunchArgumentTest {
 		final String expectedStartDate = "2017-06-06";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
-		final BacktestEndDate startDate = getEndDate(launchArguments);
+		final BacktestEndDate startDate = endDate(launchArguments);
 
-		verifStartyDate(expectedStartDate, startDate);
+		verifyStartDate(expectedStartDate, startDate);
 	}
 
 	@Test
@@ -92,11 +92,11 @@ public class EndDateLaunchArgumentTest {
 		final String expectedStartDate = "06-06-2017";
 
 		try {
-			getEndDate(setUpArguments(expectedStartDate));
+			endDate(setUpArguments(expectedStartDate));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_FORMAT_EXCEPTION_MESSAGE, e.getMessage());
-			veriyValidation(expectedStartDate);
+			verifyValidation(expectedStartDate);
 		}
 	}
 
@@ -106,11 +106,11 @@ public class EndDateLaunchArgumentTest {
 		setUpValidatorException();
 
 		try {
-			getEndDate(setUpArguments(""));
+			endDate(setUpArguments(""));
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			veriyValidationExceptionOnValidate("");
+			verifyValidationExceptionOnValidate("");
 		}
 	}
 
@@ -120,15 +120,15 @@ public class EndDateLaunchArgumentTest {
 		setUpValidatorException();
 
 		try {
-			getEndDate(new HashMap<ArgumentKey, String>());
+			endDate(new HashMap<ArgumentKey, String>());
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
-			veriyValidationExceptionOnValidate(null);
+			verifyValidationExceptionOnValidate(null);
 		}
 	}
 
-	private BacktestEndDate getEndDate( final Map<ArgumentKey, String> arguments ) {
+	private BacktestEndDate endDate( final Map<ArgumentKey, String> arguments ) {
 
 		return argument.get(arguments);
 	}
@@ -145,7 +145,7 @@ public class EndDateLaunchArgumentTest {
 		        .validateDateFormat(anyString(), anyString(), any());
 	}
 
-	private void veriyValidation( final String launchArgument ) {
+	private void verifyValidation( final String launchArgument ) {
 
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
@@ -153,14 +153,14 @@ public class EndDateLaunchArgumentTest {
 		verifyNoMoreInteractions(validator);
 	}
 
-	private void veriyValidationExceptionOnValidate( final String launchArgument ) {
+	private void verifyValidationExceptionOnValidate( final String launchArgument ) {
 
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}
 
-	private void verifStartyDate( final String expected, final BacktestEndDate axtual ) {
+	private void verifyStartDate( final String expected, final BacktestEndDate axtual ) {
 
 		assertNotNull(axtual);
 		assertNotNull(axtual.date());

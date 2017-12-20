@@ -57,27 +57,27 @@ public class ElasticReturnOnInvestmentEventRequestResource {
 	}
 
 	@JsonProperty(ElasticTypeName.PERCENTAGE_CHANGE)
-	public float getPercentageChange() {
+	public float percentageChange() {
 
 		return percentageChange;
 	}
 
 	@JsonProperty(ElasticTypeName.FREQUENCY)
-	public String getFrequency() {
+	public String frequency() {
 
 		return frequency;
 	}
 
 	@JsonProperty(ElasticTypeName.INCLUSIVE_START_DATE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
-	public LocalDate getExlusiveStartDate() {
+	public LocalDate exlusiveStartDate() {
 
 		return inclusiveStartDate;
 	}
 
 	@JsonProperty(ElasticTypeName.EXCLUSIVE_END_DATE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
-	public LocalDate getInclusiveEndDate() {
+	public LocalDate inclusiveEndDate() {
 
 		return exclusiveEndDate;
 	}

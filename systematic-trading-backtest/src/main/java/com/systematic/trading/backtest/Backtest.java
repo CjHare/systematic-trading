@@ -105,10 +105,10 @@ public class Backtest {
 		final LocalDate retrievalStartDate = startDate.withDayOfMonth(1);
 
 		// Retrieve and cache data range from remote data source
-		dataServiceUpdater.get(equityDataset, equity.getTickerSymbol(), retrievalStartDate, endDate);
+		dataServiceUpdater.get(equityDataset, equity.tickerSymbol(), retrievalStartDate, endDate);
 
 		// Retrieve from local cache the desired data range
-		final TradingDayPrices[] prices = dataService.get(equity.getTickerSymbol(), startDate, endDate);
+		final TradingDayPrices[] prices = dataService.get(equity.tickerSymbol(), startDate, endDate);
 
 		return new BacktestTickerSymbolTradingData(equity, prices);
 	}

@@ -78,11 +78,11 @@ public class TradingDayPricesBuilder {
 
 	public TradingDayPrices build() {
 
-		return new TradingDayPricesImpl(NO_TICKER_SYMBOL, getTradingDate(), BigDecimal.valueOf(openingPrice),
+		return new TradingDayPricesImpl(NO_TICKER_SYMBOL, tradingDate(), BigDecimal.valueOf(openingPrice),
 		        BigDecimal.valueOf(lowestPrice), BigDecimal.valueOf(highestPrice), BigDecimal.valueOf(closingPrice));
 	}
 
-	private LocalDate getTradingDate() {
+	private LocalDate tradingDate() {
 
 		return tradingDate == null ? LocalDate.now() : tradingDate;
 	}

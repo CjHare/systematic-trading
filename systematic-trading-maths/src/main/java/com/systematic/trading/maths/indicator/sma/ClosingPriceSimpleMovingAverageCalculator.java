@@ -103,10 +103,10 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 	private BigDecimal simpleAverage( final int endIndex, final TradingDayPrices[] data ) {
 
 		final int startIndex = endIndex - lookback + 1;
-		BigDecimal average = data[endIndex].closingPrice().getPrice();
+		BigDecimal average = data[endIndex].closingPrice().price();
 
 		for (int i = startIndex; i < endIndex; i++) {
-			average = average.add(data[i].closingPrice().getPrice());
+			average = average.add(data[i].closingPrice().price());
 		}
 
 		return average.divide(BigDecimal.valueOf(lookback), MATH_CONTEXT);

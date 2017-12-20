@@ -67,7 +67,7 @@ public class Networth {
 		totalNetworth = BigDecimal.ZERO;
 	}
 
-	public BigDecimal get() {
+	public BigDecimal networth() {
 
 		return totalNetworth;
 	}
@@ -85,8 +85,8 @@ public class Networth {
 	public BigDecimal percentageChange( final Networth endNetworth, final Networth adjustment ) {
 
 		// Difference / previous worth
-		final BigDecimal absoluteChange = endNetworth.get().subtract(totalNetworth, MATH_CONTEXT)
-		        .subtract(adjustment.get(), MATH_CONTEXT);
+		final BigDecimal absoluteChange = endNetworth.networth().subtract(totalNetworth, MATH_CONTEXT)
+		        .subtract(adjustment.networth(), MATH_CONTEXT);
 
 		if (BigDecimal.ZERO.compareTo(absoluteChange) == 0) {
 			return BigDecimal.ZERO;

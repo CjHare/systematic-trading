@@ -61,7 +61,7 @@ public class DatedValue implements TradingDayPrices {
 		return date;
 	}
 
-	public BigDecimal getValue() {
+	public BigDecimal value() {
 
 		return value;
 	}

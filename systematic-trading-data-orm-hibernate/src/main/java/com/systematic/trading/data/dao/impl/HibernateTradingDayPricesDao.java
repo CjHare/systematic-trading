@@ -179,10 +179,10 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 
 		final Query query = session.createSQLQuery(sql);
 		query.setDate("date", Date.valueOf(data.date()));
-		query.setBigDecimal("opening_price", data.openingPrice().getPrice());
-		query.setBigDecimal("lowest_price", data.lowestPrice().getPrice());
-		query.setBigDecimal("highest_price", data.highestPrice().getPrice());
-		query.setBigDecimal("closing_price", data.closingPrice().getPrice());
+		query.setBigDecimal("opening_price", data.openingPrice().price());
+		query.setBigDecimal("lowest_price", data.lowestPrice().price());
+		query.setBigDecimal("highest_price", data.highestPrice().price());
+		query.setBigDecimal("closing_price", data.closingPrice().price());
 
 		try {
 			query.executeUpdate();

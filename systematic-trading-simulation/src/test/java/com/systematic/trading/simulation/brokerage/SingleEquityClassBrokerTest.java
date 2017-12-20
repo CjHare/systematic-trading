@@ -75,7 +75,7 @@ public class SingleEquityClassBrokerTest {
 
 		broker = new SingleEquityClassBroker("BrokerName", feeStructure, equityFee, equity, LocalDate.now());
 
-		when(equity.getType()).thenReturn(EquityClass.STOCK);
+		when(equity.type()).thenReturn(EquityClass.STOCK);
 	}
 
 	@Test

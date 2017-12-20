@@ -79,7 +79,7 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 	}
 
 	@Test
-	public void getType() {
+	public void type() {
 
 		assertEquals(SignalType.BEARISH, bearishRsi.type());
 	}
@@ -202,6 +202,11 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 		bearishRsi = new RelativeStrengthIndexBearishSignalGenerator(BigDecimal.valueOf(OVER_BROUGHT));
 	}
 
+	private void setUpDateRange( final boolean insideRange ) {
+
+		when(signalRange.test(any(LocalDate.class))).thenReturn(insideRange);
+	}
+
 	private void verifySignals( final int expectedSize, final List<DatedSignal> signals ) {
 
 		assertNotNull(signals);
@@ -224,10 +229,5 @@ public class RelativeStrengthIndexBearishSignalGeneratorTest {
 		}
 
 		verifyNoMoreInteractions(signalRange);
-	}
-
-	private void setUpDateRange( final boolean insideRange ) {
-
-		when(signalRange.test(any(LocalDate.class))).thenReturn(insideRange);
 	}
 }

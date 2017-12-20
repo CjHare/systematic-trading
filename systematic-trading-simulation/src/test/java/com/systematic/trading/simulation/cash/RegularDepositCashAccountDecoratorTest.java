@@ -104,7 +104,7 @@ public class RegularDepositCashAccountDecoratorTest {
 	}
 
 	@Test
-	public void getBalance() {
+	public void balance() {
 
 		setUpBalance(345);
 

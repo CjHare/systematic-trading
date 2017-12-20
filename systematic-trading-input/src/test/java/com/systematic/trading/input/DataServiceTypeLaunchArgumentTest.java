@@ -64,9 +64,9 @@ public class DataServiceTypeLaunchArgumentTest {
 		final String expectedSymbol = "ServiceType";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
-		final DataServiceType symbol = getDataServiceType(launchArguments);
+		final DataServiceType symbol = dataServiceType(launchArguments);
 
-		verifDataServiceType(expectedSymbol, symbol);
+		verifyDataServiceType(expectedSymbol, symbol);
 	}
 
 	@Test
@@ -74,9 +74,9 @@ public class DataServiceTypeLaunchArgumentTest {
 
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(null);
 
-		final DataServiceType symbol = getDataServiceType(launchArguments);
+		final DataServiceType symbol = dataServiceType(launchArguments);
 
-		verifNoDataServiceType(symbol);
+		verifyNoDataServiceType(symbol);
 	}
 
 	@Test
@@ -84,22 +84,22 @@ public class DataServiceTypeLaunchArgumentTest {
 
 		final Map<ArgumentKey, String> launchArguments = setUpNoArguments();
 
-		final DataServiceType symbol = getDataServiceType(launchArguments);
+		final DataServiceType symbol = dataServiceType(launchArguments);
 
-		verifNoDataServiceType(symbol);
+		verifyNoDataServiceType(symbol);
 	}
 
-	private DataServiceType getDataServiceType( final Map<ArgumentKey, String> launchArguments ) {
+	private DataServiceType dataServiceType( final Map<ArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
 
-	private void verifNoDataServiceType( final DataServiceType actual ) {
+	private void verifyNoDataServiceType( final DataServiceType actual ) {
 
 		assertNull(actual);
 	}
 
-	private void verifDataServiceType( final String expected, final DataServiceType actual ) {
+	private void verifyDataServiceType( final String expected, final DataServiceType actual ) {
 
 		assertNotNull(actual);
 		assertNotNull(actual.type());

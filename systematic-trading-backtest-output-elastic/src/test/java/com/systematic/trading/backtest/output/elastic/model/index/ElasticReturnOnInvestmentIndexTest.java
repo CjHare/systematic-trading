@@ -42,26 +42,26 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"inclusive_start_date\":{\"type\":\"date\"},\"exclusive_end_date\":{\"type\":\"date\"},\"percentage_change\":{\"type\":\"float\"},\"frequency\":{\"type\":\"keyword\"}}}";
 
 	@Override
-	protected String getJsonPutIndex() {
+	protected String jsonPutIndex() {
 
 		return JSON_PUT_INDEX;
 	}
 
 	@Override
-	protected String getJsonPutIndexMapping() {
+	protected String jsonPutIndexMapping() {
 
 		return JSON_PUT_INDEX_MAPPING;
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
+	protected ElasticIndexName indexName() {
 
 		return ElasticIndexName.RETURN_ON_INVESTMENT;
 	}
 
 	@Override
-	protected ElasticCommonIndex createIndex() {
+	protected ElasticCommonIndex index() {
 
-		return new ElasticReturnOnInvestmentIndex(getDao(), getPool(), getElasticConfig());
+		return new ElasticReturnOnInvestmentIndex(dao(), pool(), elasticConfig());
 	}
 }

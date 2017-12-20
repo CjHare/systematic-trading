@@ -64,7 +64,7 @@ public class EquityOrderVolume {
 	 * 
 	 * @return volume of the order, never <code>null</code>.
 	 */
-	public BigDecimal getVolume() {
+	public BigDecimal volume() {
 
 		return volume;
 	}
@@ -78,7 +78,7 @@ public class EquityOrderVolume {
 	@Override
 	public boolean equals( final Object obj ) {
 
-		return obj instanceof EquityOrderVolume && getVolume().equals(((EquityOrderVolume) obj).getVolume());
+		return obj instanceof EquityOrderVolume && volume().equals(((EquityOrderVolume) obj).volume());
 	}
 
 	@Override

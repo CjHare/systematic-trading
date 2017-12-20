@@ -42,26 +42,26 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"signal_date\":{\"type\":\"date\"},\"signal_type\":{\"type\":\"keyword\"},\"direction_type\":{\"type\":\"text\"}}}";
 
 	@Override
-	protected String getJsonPutIndex() {
+	protected String jsonPutIndex() {
 
 		return JSON_PUT_INDEX;
 	}
 
 	@Override
-	protected String getJsonPutIndexMapping() {
+	protected String jsonPutIndexMapping() {
 
 		return JSON_PUT_INDEX_MAPPING;
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
+	protected ElasticIndexName indexName() {
 
 		return ElasticIndexName.SIGNAL_ANALYSIS;
 	}
 
 	@Override
-	protected ElasticCommonIndex createIndex() {
+	protected ElasticCommonIndex index() {
 
-		return new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
+		return new ElasticSignalAnalysisIndex(dao(), pool(), elasticConfig());
 	}
 }

@@ -90,7 +90,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 	}
 
 	@Test
-	public void getType() {
+	public void type() {
 
 		assertEquals(SignalType.BULLISH, signalGenerator.type());
 	}
@@ -267,6 +267,18 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 		return signalGenerator.generate(lines, signalRange);
 	}
 
+	private void setUpSignalLine( final double... values ) {
+
+		for (int i = 0; i < values.length; i++)
+			signaLine.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
+	}
+
+	private void setUpMacd( final double... values ) {
+
+		for (int i = 0; i < values.length; i++)
+			macd.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
+	}
+
 	private void setUpDateRange( final boolean insideRange ) {
 
 		when(signalRange.test(any(LocalDate.class))).thenReturn(insideRange);
@@ -295,17 +307,5 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 
 		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.date());
 		assertEquals(SignalType.BULLISH, signal.type());
-	}
-
-	private void setUpSignalLine( final double... values ) {
-
-		for (int i = 0; i < values.length; i++)
-			signaLine.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
-	}
-
-	private void setUpMacd( final double... values ) {
-
-		for (int i = 0; i < values.length; i++)
-			macd.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
 	}
 }

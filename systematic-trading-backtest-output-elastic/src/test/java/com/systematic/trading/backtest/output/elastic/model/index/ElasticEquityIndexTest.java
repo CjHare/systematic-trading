@@ -42,26 +42,26 @@ public class ElasticEquityIndexTest extends ElasticIndexTestBase {
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"transaction_date\":{\"type\":\"date\"},\"identity\":{\"type\":\"text\"},\"starting_equity_balance\":{\"type\":\"float\"},\"end_equity_balance\":{\"type\":\"float\"},\"equity_amount\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"}}";
 
 	@Override
-	protected String getJsonPutIndex() {
+	protected String jsonPutIndex() {
 
 		return JSON_PUT_INDEX;
 	}
 
 	@Override
-	protected String getJsonPutIndexMapping() {
+	protected String jsonPutIndexMapping() {
 
 		return JSON_PUT_INDEX_MAPPING;
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
+	protected ElasticIndexName indexName() {
 
 		return ElasticIndexName.EQUITY;
 	}
 
 	@Override
-	protected ElasticCommonIndex createIndex() {
+	protected ElasticCommonIndex index() {
 
-		return new ElasticEquityIndex(getDao(), getPool(), getElasticConfig());
+		return new ElasticEquityIndex(dao(), pool(), elasticConfig());
 	}
 }

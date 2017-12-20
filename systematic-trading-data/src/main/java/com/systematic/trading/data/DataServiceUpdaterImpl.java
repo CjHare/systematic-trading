@@ -88,7 +88,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		final RetrievedMonthTradingPricesDao retrievedHistoryDao = new HibernateRetrievedMonthTradingPricesDao();
 		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().configuration();
 
-		this.api = new QuandlAPI(createDao(serviceType, configuration), configuration, new QuandlResponseConverter());
+		this.api = new QuandlAPI(dao(serviceType, configuration), configuration, new QuandlResponseConverter());
 		this.retrievedHistoryRecorder = new RetrievedYearMonthRecorder(retrievedHistoryDao);
 		this.pendingRetrievalRequestDao = new HibernatePendingRetrievalRequestDao();
 		this.tradingDayPricesDao = new HibernateTradingDayPricesDao();
@@ -107,7 +107,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		lodgeOnlyNeededHistoryRetrievalRequests(equityDataset, tickerSymbol, startDate, endDate);
 
-		final List<HistoryRetrievalRequest> outstandingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
+		final List<HistoryRetrievalRequest> outstandingRequests = outstandingHistoryRetrievalRequests(tickerSymbol);
 
 		if (!outstandingRequests.isEmpty()) {
 			processHistoryRetrievalRequests(outstandingRequests);
@@ -116,7 +116,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		}
 	}
 
-	private QuandlApiDao createDao( final DataServiceType type, final EquityApiConfiguration configuration ) {
+	private QuandlApiDao dao( final DataServiceType type, final EquityApiConfiguration configuration ) {
 
 		if (isTimeSeriesDataService(type)) {
 			return new HttpQuandlDatasetApiDao(configuration);
@@ -141,7 +141,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private void ensureAllRetrievalRequestsProcessed( final String tickerSymbol ) throws CannotRetrieveDataException {
 
-		final List<HistoryRetrievalRequest> remainingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
+		final List<HistoryRetrievalRequest> remainingRequests = outstandingHistoryRetrievalRequests(tickerSymbol);
 		if (!remainingRequests.isEmpty()) {
 			throw new CannotRetrieveDataException("Failed to retrieve all the required data");
 		}
@@ -234,7 +234,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		pendingRetrievalRequestDao.create(requests);
 	}
 
-	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
+	private List<HistoryRetrievalRequest> outstandingHistoryRetrievalRequests( final String tickerSymbol ) {
 
 		return pendingRetrievalRequestDao.requests(tickerSymbol);
 	}

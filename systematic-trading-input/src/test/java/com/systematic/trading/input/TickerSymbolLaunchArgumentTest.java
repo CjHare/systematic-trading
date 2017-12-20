@@ -78,9 +78,9 @@ public class TickerSymbolLaunchArgumentTest {
 		final String expectedSymbol = "AAPL";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
-		final TickerSymbol symbol = getTickerSymbol(launchArguments);
+		final TickerSymbol symbol = tickerSymbol(launchArguments);
 
-		verifSymbol(expectedSymbol, symbol);
+		verifySymbol(expectedSymbol, symbol);
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class TickerSymbolLaunchArgumentTest {
 
 		tickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
 
-		veriyValidationExceptionOnValidate("");
+		verifyValidationExceptionOnValidate("");
 	}
 
 	@Test
@@ -100,21 +100,21 @@ public class TickerSymbolLaunchArgumentTest {
 
 		tickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
 
-		veriyValidationExceptionOnValidate(null);
+		verifyValidationExceptionOnValidate(null);
 	}
 
 	private void tickerSymbolExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
 
 		try {
-			getTickerSymbol(launchArguments);
+			tickerSymbol(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(expectedMessage, e.getMessage());
 		}
 	}
 
-	private TickerSymbol getTickerSymbol( final Map<ArgumentKey, String> launchArguments ) {
+	private TickerSymbol tickerSymbol( final Map<ArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -125,14 +125,14 @@ public class TickerSymbolLaunchArgumentTest {
 		        anyString());
 	}
 
-	private void veriyValidationExceptionOnValidate( final String launchArgument ) {
+	private void verifyValidationExceptionOnValidate( final String launchArgument ) {
 
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}
 
-	private void verifSymbol( final String expected, final TickerSymbol actual ) {
+	private void verifySymbol( final String expected, final TickerSymbol actual ) {
 
 		assertNotNull(actual);
 		assertNotNull(actual.symbol());

@@ -84,7 +84,7 @@ public class SimpleMovingAverageBullishGradientSignalGeneratorTest {
 	}
 
 	@Test
-	public void getTYpe() {
+	public void type() {
 
 		assertEquals(SignalType.BULLISH, signalGenerators.type());
 	}

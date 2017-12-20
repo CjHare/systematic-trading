@@ -80,9 +80,9 @@ public class EquityDatasetLaunchArgumentTest {
 		final String expectedSymbol = "ServiceType";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
-		final EquityDataset symbol = getEquityDataset(launchArguments);
+		final EquityDataset symbol = equityDataset(launchArguments);
 
-		verifEquityDataset(expectedSymbol, symbol);
+		verifyEquityDataset(expectedSymbol, symbol);
 	}
 
 	@Test
@@ -92,7 +92,7 @@ public class EquityDatasetLaunchArgumentTest {
 
 		equityDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
 
-		veriyValidationExceptionOnValidate("");
+		verifyValidationExceptionOnValidate("");
 	}
 
 	@Test
@@ -102,7 +102,7 @@ public class EquityDatasetLaunchArgumentTest {
 
 		equityDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
 
-		veriyValidationExceptionOnValidate(null);
+		verifyValidationExceptionOnValidate(null);
 	}
 
 	private void setUpValidatorException() {
@@ -111,19 +111,19 @@ public class EquityDatasetLaunchArgumentTest {
 		        anyString());
 	}
 
-	private void veriyValidationExceptionOnValidate( final String launchArgument ) {
+	private void verifyValidationExceptionOnValidate( final String launchArgument ) {
 
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}
 
-	private EquityDataset getEquityDataset( final Map<ArgumentKey, String> launchArguments ) {
+	private EquityDataset equityDataset( final Map<ArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
 
-	private void verifEquityDataset( final String expected, final EquityDataset actual ) {
+	private void verifyEquityDataset( final String expected, final EquityDataset actual ) {
 
 		assertNotNull(actual);
 		assertNotNull(actual.dataset());
@@ -134,7 +134,7 @@ public class EquityDatasetLaunchArgumentTest {
 	        final Map<ArgumentKey, String> launchArguments ) {
 
 		try {
-			getEquityDataset(launchArguments);
+			equityDataset(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(expectedMessage, e.getMessage());

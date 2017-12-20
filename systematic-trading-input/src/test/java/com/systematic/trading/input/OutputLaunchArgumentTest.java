@@ -77,10 +77,10 @@ public class OutputLaunchArgumentTest {
 		final String outputType = "no_display";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
-		final OutputType output = getOutput(launchArguments);
+		final OutputType output = output(launchArguments);
 
 		verifyRetrievedType(OutputType.NO_DISPLAY, output);
-		veriyValidation(OutputType.NO_DISPLAY, outputType);
+		verifyValidation(OutputType.NO_DISPLAY, outputType);
 	}
 
 	@Test
@@ -89,10 +89,10 @@ public class OutputLaunchArgumentTest {
 		final String outputType = "file_minimum";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
-		final OutputType output = getOutput(launchArguments);
+		final OutputType output = output(launchArguments);
 
 		verifyRetrievedType(OutputType.FILE_MINIMUM, output);
-		veriyValidation(OutputType.FILE_MINIMUM, outputType);
+		verifyValidation(OutputType.FILE_MINIMUM, outputType);
 	}
 
 	@Test
@@ -101,10 +101,10 @@ public class OutputLaunchArgumentTest {
 		final String outputType = "file_complete";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
-		final OutputType output = getOutput(launchArguments);
+		final OutputType output = output(launchArguments);
 
 		verifyRetrievedType(OutputType.FILE_COMPLETE, output);
-		veriyValidation(OutputType.FILE_COMPLETE, outputType);
+		verifyValidation(OutputType.FILE_COMPLETE, outputType);
 	}
 
 	@Test
@@ -113,10 +113,10 @@ public class OutputLaunchArgumentTest {
 		final String outputType = "elastic_search";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
-		final OutputType output = getOutput(launchArguments);
+		final OutputType output = output(launchArguments);
 
 		verifyRetrievedType(OutputType.ELASTIC_SEARCH, output);
-		veriyValidation(OutputType.ELASTIC_SEARCH, outputType);
+		verifyValidation(OutputType.ELASTIC_SEARCH, outputType);
 	}
 
 	@Test
@@ -127,7 +127,7 @@ public class OutputLaunchArgumentTest {
 
 		outputExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 
-		veriyValidation(null, "unknown");
+		verifyValidation(null, "unknown");
 	}
 
 	@Test
@@ -138,21 +138,21 @@ public class OutputLaunchArgumentTest {
 
 		outputExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 
-		veriyValidation(null, null);
+		verifyValidation(null, null);
 	}
 
 	private void outputExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
 
 		try {
-			getOutput(launchArguments);
+			output(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(expectedMessage, e.getMessage());
 		}
 	}
 
-	private OutputType getOutput( final Map<ArgumentKey, String> launchArguments ) {
+	private OutputType output( final Map<ArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -162,7 +162,7 @@ public class OutputLaunchArgumentTest {
 		assertEquals(expected, actual);
 	}
 
-	private void veriyValidation( final OutputType outputType, final String launchArgument ) {
+	private void verifyValidation( final OutputType outputType, final String launchArgument ) {
 
 		verify(validator).validate(outputType == null ? isNull() : eq(outputType), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT), launchArgument == null ? isNull() : eq(launchArgument));

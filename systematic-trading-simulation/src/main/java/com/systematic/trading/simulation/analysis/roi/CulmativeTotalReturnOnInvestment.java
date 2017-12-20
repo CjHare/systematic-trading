@@ -44,7 +44,7 @@ public class CulmativeTotalReturnOnInvestment implements ReturnOnInvestmentEvent
 	@Override
 	public BigDecimal cumulativeReturnOnInvestment() {
 
-		return cumulativeROI.get();
+		return cumulativeROI.roi();
 	}
 
 	@Override

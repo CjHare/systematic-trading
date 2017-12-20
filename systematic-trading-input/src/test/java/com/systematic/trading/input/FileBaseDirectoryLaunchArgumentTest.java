@@ -76,7 +76,7 @@ public class FileBaseDirectoryLaunchArgumentTest {
 		setUpValidatorException();
 
 		try {
-			getOutputDirectory(null);
+			outputDirectory(null);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
@@ -89,7 +89,7 @@ public class FileBaseDirectoryLaunchArgumentTest {
 
 		final String baseDirectory = "base";
 
-		final FileBaseOutputDirectory output = getOutputDirectory(baseDirectory);
+		final FileBaseOutputDirectory output = outputDirectory(baseDirectory);
 
 		verifyDirectory(baseDirectory, output);
 		verifyValidation(baseDirectory);
@@ -100,13 +100,13 @@ public class FileBaseDirectoryLaunchArgumentTest {
 
 		final String baseDirectory = "one/two";
 
-		final FileBaseOutputDirectory output = getOutputDirectory(baseDirectory);
+		final FileBaseOutputDirectory output = outputDirectory(baseDirectory);
 
 		verifyDirectory(baseDirectory, output);
 		verifyValidation(baseDirectory);
 	}
 
-	private FileBaseOutputDirectory getOutputDirectory( final String baseDirectory ) {
+	private FileBaseOutputDirectory outputDirectory( final String baseDirectory ) {
 
 		return launchArgument.get(setUpArguments(baseDirectory));
 	}

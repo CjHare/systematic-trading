@@ -202,7 +202,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	 * Default of a single EMA value in additional to the lookback
 	 */
 	@Test
-	public void getMinimumNumberOfPrices() {
+	public void minimumNumberOfPrices() {
 
 		setUpCalculator(4);
 

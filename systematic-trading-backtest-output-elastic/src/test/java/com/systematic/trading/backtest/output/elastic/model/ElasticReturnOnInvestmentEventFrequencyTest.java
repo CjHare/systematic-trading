@@ -53,7 +53,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2008, 02, 12), LocalDate.of(2009, 02, 12));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.YEARLY, frequency);
 	}
@@ -63,7 +63,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2010, 02, 12), LocalDate.of(2011, 02, 14));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.YEARLY, frequency);
 	}
@@ -73,7 +73,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2011, 02, 14), LocalDate.of(2012, 02, 13));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.YEARLY, frequency);
 	}
@@ -83,7 +83,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2008, 01, 12), LocalDate.of(2008, 02, 12));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.MONTHLY, frequency);
 	}
@@ -93,7 +93,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2010, 01, 12), LocalDate.of(2010, 02, 14));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.MONTHLY, frequency);
 	}
@@ -103,7 +103,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2011, 01, 14), LocalDate.of(2011, 02, 13));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.MONTHLY, frequency);
 	}
@@ -113,7 +113,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2008, 01, 12), LocalDate.of(2008, 01, 19));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.WEEKLY, frequency);
 	}
@@ -123,7 +123,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2010, 01, 12), LocalDate.of(2010, 01, 20));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.WEEKLY, frequency);
 	}
@@ -133,7 +133,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2011, 01, 14), LocalDate.of(2011, 01, 19));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.WEEKLY, frequency);
 	}
@@ -143,7 +143,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2008, 01, 12), LocalDate.of(2008, 01, 12));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.DAILY, frequency);
 	}
@@ -153,12 +153,12 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 		setUpEvent(LocalDate.of(2008, 01, 12), LocalDate.of(2008, 01, 16));
 
-		final String frequency = getEventFrequency();
+		final String frequency = eventFrequency();
 
 		assertEquals(ElasticTypeValue.DAILY, frequency);
 	}
 
-	private String getEventFrequency() {
+	private String eventFrequency() {
 
 		return new ElasticReturnOnInvestmentEventFrequency(event).frequency();
 	}

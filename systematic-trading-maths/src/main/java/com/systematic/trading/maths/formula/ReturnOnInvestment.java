@@ -50,7 +50,7 @@ public class ReturnOnInvestment {
 		roi = BigDecimal.ZERO;
 	}
 
-	public BigDecimal get() {
+	public BigDecimal roi() {
 
 		return roi;
 	}

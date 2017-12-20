@@ -51,19 +51,19 @@ public class ElasticCashEventRequestResource extends TransactionDateEventResourc
 	}
 
 	@JsonProperty(ElasticTypeName.AMOUNT)
-	public float getAmount() {
+	public float amount() {
 
 		return amount;
 	}
 
 	@JsonProperty(ElasticTypeName.FUNDS_BEFORE)
-	public float getFundsBefore() {
+	public float fundsBefore() {
 
 		return fundsBefore;
 	}
 
 	@JsonProperty(ElasticTypeName.FUNDS_AFTER)
-	public float getFundsAfter() {
+	public float fundsAfter() {
 
 		return fundsAfter;
 	}

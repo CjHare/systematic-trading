@@ -46,7 +46,7 @@ public class IndicatorId {
 		// TODO implement a static set flyweight style pattern, enforce uniqueness on create()
 	}
 
-	public String getName() {
+	public String name() {
 
 		return name;
 	}
@@ -62,6 +62,6 @@ public class IndicatorId {
 	@Override
 	public boolean equals( final Object o ) {
 
-		return o instanceof IndicatorId && name.equals(((IndicatorId) o).getName());
+		return o instanceof IndicatorId && name.equals(((IndicatorId) o).name());
 	}
 }

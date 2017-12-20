@@ -90,7 +90,7 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 		throw new UnsupportedOperationException("Please use LimitedQueue.toArray() instead");
 	}
 
-	public int getLimit() {
+	public int limit() {
 
 		return limit;
 	}

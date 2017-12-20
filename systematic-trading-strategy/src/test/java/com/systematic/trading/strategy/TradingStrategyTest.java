@@ -233,7 +233,7 @@ public class TradingStrategyTest {
 		when(data.date()).thenReturn(LocalDate.now());
 
 		final ClosingPrice closing = mock(ClosingPrice.class);
-		when(closing.getPrice()).thenReturn(BigDecimal.ONE);
+		when(closing.price()).thenReturn(BigDecimal.ONE);
 		when(data.closingPrice()).thenReturn(closing);
 	}
 

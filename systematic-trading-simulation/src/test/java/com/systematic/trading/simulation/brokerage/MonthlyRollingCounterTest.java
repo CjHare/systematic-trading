@@ -97,13 +97,13 @@ public class MonthlyRollingCounterTest {
 	}
 
 	@Test
-	public void getCountZero() {
+	public void countZero() {
 
 		verifyCurrentMonthCount(0);
 	}
 
 	@Test
-	public void getRollingCounterLost() {
+	public void rollingCounterLost() {
 
 		incrementreviousMonth();
 		incrementCurrentMonth();

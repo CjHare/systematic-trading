@@ -46,32 +46,32 @@ public class ElasticEquityEventRequestResource extends TransactionDateEventResou
 
 	public ElasticEquityEventRequestResource( final EquityEvent event ) {
 		super(event.type().name(), event.transactionDate());
-		this.identity = event.identity().getTickerSymbol();
+		this.identity = event.identity().tickerSymbol();
 		this.startingEquityBalance = event.startingEquityBalance().floatValue();
 		this.endEquityBalance = event.endEquityBalance().floatValue();
 		this.equityAmount = event.equityAmount().floatValue();
 	}
 
 	@JsonProperty(ElasticTypeName.IDENTITY)
-	public String getIdentity() {
+	public String identity() {
 
 		return identity;
 	}
 
 	@JsonProperty(ElasticTypeName.STARTING_EQUITY_BALANCE)
-	public float getStartingEquityBalance() {
+	public float startingEquityBalance() {
 
 		return startingEquityBalance;
 	}
 
 	@JsonProperty(ElasticTypeName.END_EQUITY_BALANCE)
-	public float getEndEquityBalance() {
+	public float endEquityBalance() {
 
 		return endEquityBalance;
 	}
 
 	@JsonProperty(ElasticTypeName.EQUITY_AMOUNT)
-	public float getEquityAmount() {
+	public float equityAmount() {
 
 		return equityAmount;
 	}

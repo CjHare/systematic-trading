@@ -55,31 +55,31 @@ public class ElasticBrokerageEventRequestResource extends TransactionDateEventRe
 	}
 
 	@JsonProperty(ElasticTypeName.EQUITY_VALUE)
-	public float getEquityValue() {
+	public float equityValue() {
 
 		return equityValue;
 	}
 
 	@JsonProperty(ElasticTypeName.EQUITY_AMOUNT)
-	public float getEquityAmount() {
+	public float equityAmount() {
 
 		return equityAmount;
 	}
 
 	@JsonProperty(ElasticTypeName.STARTING_EQUITY_BALANCE)
-	public float getStartingEquityBalance() {
+	public float startingEquityBalance() {
 
 		return startingEquityBalance;
 	}
 
 	@JsonProperty(ElasticTypeName.END_EQUITY_BALANCE)
-	public float getEndEquityBalance() {
+	public float endEquityBalance() {
 
 		return endEquityBalance;
 	}
 
 	@JsonProperty(ElasticTypeName.TRANSACTION_FEE)
-	public float getTransactionFee() {
+	public float transactionFee() {
 
 		return transactionFee;
 	}

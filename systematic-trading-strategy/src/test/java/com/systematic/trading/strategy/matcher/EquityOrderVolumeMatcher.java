@@ -56,7 +56,7 @@ public class EquityOrderVolumeMatcher extends ArgumentMatcher<EquityOrderVolume>
 	public boolean matches( final Object argument ) {
 
 		return argument instanceof EquityOrderVolume
-		        && expected.compareTo(((EquityOrderVolume) argument).getVolume()) == 0;
+		        && expected.compareTo(((EquityOrderVolume) argument).volume()) == 0;
 	}
 
 	@Override

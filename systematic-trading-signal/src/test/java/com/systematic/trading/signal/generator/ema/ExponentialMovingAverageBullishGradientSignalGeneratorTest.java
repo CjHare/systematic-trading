@@ -85,7 +85,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 	}
 
 	@Test
-	public void getTYpe() {
+	public void type() {
 
 		assertEquals(SignalType.BULLISH, signalGenerators.type());
 	}
@@ -187,6 +187,17 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 		return signalGenerators.generate(line, signalRange);
 	}
 
+	private void setUpSma( final double... values ) {
+
+		for (int i = 0; i < values.length; i++)
+			ema.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
+	}
+
+	private void setUpDateRange( final boolean insideRange ) {
+
+		when(signalRange.test(any(LocalDate.class))).thenReturn(insideRange);
+	}
+
 	private void verifySignalRangeTests( final int size ) {
 
 		if (size == 0) {
@@ -210,20 +221,10 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 		assertEquals(expectedSize, signals.size());
 	}
 
-	private void setUpSma( final double... values ) {
-
-		for (int i = 0; i < values.length; i++)
-			ema.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
-	}
-
 	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {
 
 		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.date());
 		assertEquals(SignalType.BULLISH, signal.type());
 	}
 
-	private void setUpDateRange( final boolean insideRange ) {
-
-		when(signalRange.test(any(LocalDate.class))).thenReturn(insideRange);
-	}
 }

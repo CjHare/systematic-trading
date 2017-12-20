@@ -77,7 +77,7 @@ public class PeriodicCulmativeReturnOnInvestment implements ReturnOnInvestmentEv
 		cumulativeROI.add(percentageChange);
 
 		if (nextSummaryDate.isBefore(date) || nextSummaryDate.equals(date)) {
-			notifyListeners(cumulativeROI.get(), lastSummaryDate, date);
+			notifyListeners(cumulativeROI.roi(), lastSummaryDate, date);
 			cumulativeROI.reset();
 			lastSummaryDate = date;
 			nextSummaryDate = nextSummaryDate.plus(summaryPeriod);

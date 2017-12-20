@@ -92,7 +92,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	        final CashAccount cashAccount, final TradingDayPrices todaysPrice )
 	        throws InsufficientEquitiesException, InsufficientFundsException {
 
-		final EquityOrderVolume volume = getOrderVolume(fees, todaysPrice);
+		final EquityOrderVolume volume = orderVolume(fees, todaysPrice);
 		debitEquityCost(cashAccount, todaysPrice, equityCost(broker, todaysPrice, volume));
 		addEquities(broker, todaysPrice, volume);
 	}
@@ -121,16 +121,16 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 		broker.buy(todaysPrice.openingPrice(), volume, todaysPrice.date());
 	}
 
-	private EquityOrderVolume getOrderVolume( final BrokerageTransactionFee fees, final TradingDayPrices todaysPrice ) {
+	private EquityOrderVolume orderVolume( final BrokerageTransactionFee fees, final TradingDayPrices todaysPrice ) {
 
 		final BigDecimal maximumTransactionCost = fees.cost(targetTotalCost, type, todaysPrice.date());
-		final BigDecimal openingPrice = todaysPrice.openingPrice().getPrice();
+		final BigDecimal openingPrice = todaysPrice.openingPrice().price();
 		final BigDecimal numberOfEquities = targetTotalCost.subtract(maximumTransactionCost, mathContext)
 		        .divide(openingPrice, mathContext);
-		return getOrderVolume(numberOfEquities);
+		return orderVolume(numberOfEquities);
 	}
 
-	private EquityOrderVolume getOrderVolume( final BigDecimal numberOfEquities ) {
+	private EquityOrderVolume orderVolume( final BigDecimal numberOfEquities ) {
 
 		return EquityOrderVolume.valueOf(numberOfEquities.setScale(scale, BigDecimal.ROUND_DOWN));
 	}

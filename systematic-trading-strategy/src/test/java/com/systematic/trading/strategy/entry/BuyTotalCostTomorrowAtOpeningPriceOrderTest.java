@@ -148,7 +148,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	private void setUpTradingPrices( final double equityPrice ) {
 
 		final OpeningPrice openingPrice = mock(OpeningPrice.class);
-		when(openingPrice.getPrice()).thenReturn(BigDecimal.valueOf(equityPrice));
+		when(openingPrice.price()).thenReturn(BigDecimal.valueOf(equityPrice));
 		when(todaysTrading.openingPrice()).thenReturn(openingPrice);
 		when(todaysTrading.date()).thenReturn(TODAY);
 	}

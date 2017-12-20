@@ -81,7 +81,7 @@ public class LargestPossibleEntryPositionTest {
 		final BigDecimal size = entryPosition();
 
 		verifyPosition(0, size);
-		verifyGetBalance();
+		verifyBalance();
 		verifyMinimumBounds(10);
 		verifyNoMaximumBounds();
 	}
@@ -96,7 +96,7 @@ public class LargestPossibleEntryPositionTest {
 		final BigDecimal size = entryPosition();
 
 		verifyPosition(32, size);
-		verifyGetBalance();
+		verifyBalance();
 		verifyMinimumBounds(32);
 		verifyMaximumBounds(32);
 	}
@@ -111,7 +111,7 @@ public class LargestPossibleEntryPositionTest {
 		final BigDecimal size = entryPosition();
 
 		verifyPosition(45, size);
-		verifyGetBalance();
+		verifyBalance();
 		verifyMinimumBounds(45);
 		verifyMaximumBounds(45);
 	}
@@ -126,7 +126,7 @@ public class LargestPossibleEntryPositionTest {
 		final BigDecimal size = entryPosition();
 
 		verifyPosition(80, size);
-		verifyGetBalance();
+		verifyBalance();
 		verifyMinimumBounds(125);
 		verifyMaximumBounds(125);
 	}
@@ -141,7 +141,7 @@ public class LargestPossibleEntryPositionTest {
 		final BigDecimal size = entryPosition();
 
 		verifyPosition(100, size);
-		verifyGetBalance();
+		verifyBalance();
 		verifyMinimumBounds(125);
 		verifyMaximumBounds(125);
 	}
@@ -156,7 +156,7 @@ public class LargestPossibleEntryPositionTest {
 		final BigDecimal size = entryPosition();
 
 		verifyPosition(50, size);
-		verifyGetBalance();
+		verifyBalance();
 		verifyMinimumBounds(125);
 		verifyMaximumBounds(125);
 	}
@@ -171,7 +171,7 @@ public class LargestPossibleEntryPositionTest {
 		final BigDecimal size = entryPosition();
 
 		verifyPosition(24, size);
-		verifyGetBalance();
+		verifyBalance();
 		verifyMinimumBounds(125);
 		verifyMaximumBounds(125);
 	}
@@ -181,7 +181,7 @@ public class LargestPossibleEntryPositionTest {
 		assertBigDecimalEquals(expected, actual);
 	}
 
-	private void verifyGetBalance() {
+	private void verifyBalance() {
 
 		verify(cashAccount, atLeastOnce()).balance();
 		verifyNoMoreInteractions(cashAccount);

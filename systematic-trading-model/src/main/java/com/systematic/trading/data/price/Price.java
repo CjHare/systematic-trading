@@ -63,7 +63,7 @@ public class Price {
 	 * 
 	 * @return price, never <code>null</code>.
 	 */
-	public BigDecimal getPrice() {
+	public BigDecimal price() {
 
 		return amount;
 	}
@@ -77,7 +77,7 @@ public class Price {
 	 */
 	public boolean isGreaterThan( final Price other ) {
 
-		return getPrice().compareTo(other.getPrice()) > 0;
+		return price().compareTo(other.price()) > 0;
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class Price {
 	 */
 	public boolean isLessThan( final Price other ) {
 
-		return getPrice().compareTo(other.getPrice()) < 0;
+		return price().compareTo(other.price()) < 0;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class Price {
 	 */
 	public boolean isEqaul( final Price other ) {
 
-		return getPrice().compareTo(other.getPrice()) == 0;
+		return price().compareTo(other.price()) == 0;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class Price {
 	 */
 	public int compareTo( final Price other ) {
 
-		return getPrice().compareTo(other.getPrice());
+		return price().compareTo(other.price());
 	}
 
 	/**
@@ -128,6 +128,6 @@ public class Price {
 	 */
 	public BigDecimal subtract( final Price other, final MathContext mathContext ) {
 
-		return getPrice().subtract(other.getPrice(), mathContext);
+		return price().subtract(other.price(), mathContext);
 	}
 }

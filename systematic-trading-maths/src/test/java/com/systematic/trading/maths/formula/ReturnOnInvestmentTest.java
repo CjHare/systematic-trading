@@ -85,7 +85,7 @@ public class ReturnOnInvestmentTest {
 
 	private void verifyRoi( final double expected ) {
 
-		assertBigDecimalEquals(expected, roi.get());
+		assertBigDecimalEquals(expected, roi.roi());
 	}
 
 	private void addRoi( final double value ) {

@@ -42,26 +42,26 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"equity_balance_value\":{\"type\":\"float\"},\"event_date\":{\"type\":\"date\"},\"networth\":{\"type\":\"float\"},\"event\":{\"type\":\"keyword\"},\"cash_balance\":{\"type\":\"float\"},\"equity_balance\":{\"type\":\"float\"}}";
 
 	@Override
-	protected String getJsonPutIndex() {
+	protected String jsonPutIndex() {
 
 		return JSON_PUT_INDEX;
 	}
 
 	@Override
-	protected String getJsonPutIndexMapping() {
+	protected String jsonPutIndexMapping() {
 
 		return JSON_PUT_INDEX_MAPPING;
 	}
 
 	@Override
-	protected ElasticIndexName getIndexName() {
+	protected ElasticIndexName indexName() {
 
 		return ElasticIndexName.NETWORTH;
 	}
 
 	@Override
-	protected ElasticCommonIndex createIndex() {
+	protected ElasticCommonIndex index() {
 
-		return new ElasticNetworthIndex(getDao(), getPool(), getElasticConfig());
+		return new ElasticNetworthIndex(dao(), pool(), elasticConfig());
 	}
 }

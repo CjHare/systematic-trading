@@ -113,7 +113,7 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 	        final TradingDayPrices tradingData ) {
 
 		final Networth netWorth = new Networth();
-		netWorth.addEquity(broker.equityBalance(), tradingData.closingPrice().getPrice());
+		netWorth.addEquity(broker.equityBalance(), tradingData.closingPrice().price());
 		netWorth.add(cashAccount.balance());
 
 		final BigDecimal percentageChange;
