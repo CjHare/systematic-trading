@@ -56,23 +56,28 @@ public class StrategyConfiguration implements Describable {
 	}
 
 	public EntryConfiguration entry() {
+
 		return entry;
 	}
 
 	public EntrySizeConfiguration entryPositionSizing() {
+
 		return entryPositionSizing;
 	}
 
 	public ExitConfiguration exit() {
+
 		return exit;
 	}
 
 	public ExitSizeConfiguration exitPositionSizing() {
+
 		return exitPositionSizing;
 	}
 
 	@Override
 	public String description( final DescriptionGenerator description ) {
+
 		return description.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 	}
 }

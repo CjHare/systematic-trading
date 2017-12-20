@@ -92,11 +92,13 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 
 	@Override
 	public int minimumNumberOfPrices() {
+
 		return minimumNumberOfPrices;
 	}
 
 	@Override
 	public RelativeStrengthLine calculate( final TradingDayPrices[] data ) {
+
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, lookback);
@@ -146,6 +148,7 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	 * 	Average Loss = [(previous Average Loss) x archive + current Loss] / lookback.
 	 */
 	private RelativeStrengthLine rs( final TradingDayPrices[] data, final AverageGainToLoss initialLookback ) {
+
 		BigDecimal averageGain = initialLookback.averageGain();
 		BigDecimal averageLoss = initialLookback.averageLoss();
 		BigDecimal currentGain;
@@ -204,11 +207,13 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	 * Apply the RS smoothing technique to include another value to the average.
 	 */
 	private BigDecimal smooth( final BigDecimal currentValue, final BigDecimal averageValue ) {
+
 		return averageValue.multiply(archive, MATH_CONTEXT).add(currentValue, MATH_CONTEXT).divide(history,
 		        MATH_CONTEXT);
 	}
 
 	private boolean isZeroOrBelow( final BigDecimal value ) {
+
 		return value.compareTo(BigDecimal.ZERO) <= 0;
 	}
 }

@@ -43,21 +43,25 @@ public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 	@Override
 	protected String getJsonPutIndex() {
+
 		return JSON_PUT_INDEX;
 	}
 
 	@Override
 	protected String getJsonPutIndexMapping() {
+
 		return JSON_PUT_INDEX_MAPPING;
 	}
 
 	@Override
 	protected ElasticIndexName getIndexName() {
+
 		return ElasticIndexName.RETURN_ON_INVESTMENT;
 	}
 
 	@Override
 	protected ElasticCommonIndex createIndex() {
+
 		return new ElasticReturnOnInvestmentIndex(getDao(), getPool(), getElasticConfig());
 	}
 }

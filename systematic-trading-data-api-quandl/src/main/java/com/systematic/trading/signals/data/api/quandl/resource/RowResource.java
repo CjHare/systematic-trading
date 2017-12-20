@@ -47,11 +47,13 @@ public class RowResource {
 
 	@JsonProperty("data")
 	public List<Object> data() {
+
 		return data;
 	}
 
 	@JsonProperty("data")
 	public void data( final List<Object> data ) {
+
 		this.data = data;
 	}
 }

@@ -43,21 +43,25 @@ public class ElasticNetworthIndexTest extends ElasticIndexTestBase {
 
 	@Override
 	protected String getJsonPutIndex() {
+
 		return JSON_PUT_INDEX;
 	}
 
 	@Override
 	protected String getJsonPutIndexMapping() {
+
 		return JSON_PUT_INDEX_MAPPING;
 	}
 
 	@Override
 	protected ElasticIndexName getIndexName() {
+
 		return ElasticIndexName.NETWORTH;
 	}
 
 	@Override
 	protected ElasticCommonIndex createIndex() {
+
 		return new ElasticNetworthIndex(getDao(), getPool(), getElasticConfig());
 	}
 }

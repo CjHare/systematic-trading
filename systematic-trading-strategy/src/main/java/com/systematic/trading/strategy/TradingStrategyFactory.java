@@ -58,31 +58,37 @@ public class TradingStrategyFactory implements StrategyFactory {
 	@Override
 	public Strategy strategy( final Entry entry, final EntrySize entryPositionSizing, final Exit exit,
 	        final ExitSize exitPositionSizing, final EquityClass type, final int scale ) {
+
 		return new TradingStrategy(entry, entryPositionSizing, exit, exitPositionSizing, type, scale);
 	}
 
 	@Override
 	public Entry entry( final Entry leftEntry, final Operator operator, final Entry righEntry ) {
+
 		return new TradingStrategyOperatorEntry(leftEntry, operator, righEntry);
 	}
 
 	@Override
 	public Entry entry( final Entry anchor, final Confirmation confirmBy, final Entry confirmation ) {
+
 		return new TradingStrategyConfirmationEntry(anchor, confirmBy, confirmation);
 	}
 
 	@Override
 	public Entry entry( final Indicator indicator ) {
+
 		return new TradingStrategyIndicatorEntry(indicator);
 	}
 
 	@Override
 	public Entry entry( final Periodic periodic ) {
+
 		return new TradingStrategyPeriodicEntry(periodic);
 	}
 
 	@Override
 	public Exit exit() {
+
 		return new TradingStrategyExit();
 	}
 

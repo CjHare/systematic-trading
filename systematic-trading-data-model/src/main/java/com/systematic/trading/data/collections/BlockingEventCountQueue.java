@@ -43,6 +43,7 @@ import org.apache.logging.log4j.Logger;
  * @author CJ Hare
  */
 public class BlockingEventCountQueue implements BlockingEventCount {
+
 	private static final Logger LOG = LogManager.getLogger(BlockingEventCount.class);
 
 	private final BlockingQueue<LocalTime> ringBuffer;
@@ -55,6 +56,7 @@ public class BlockingEventCountQueue implements BlockingEventCount {
 
 	@Override
 	public void add() {
+
 		try {
 			ringBuffer.put(LocalTime.now());
 
@@ -68,6 +70,7 @@ public class BlockingEventCountQueue implements BlockingEventCount {
 
 	@Override
 	public synchronized void clean() {
+
 		final LocalTime expired = LocalTime.now().minus(expiry);
 		final int entries = ringBuffer.size();
 

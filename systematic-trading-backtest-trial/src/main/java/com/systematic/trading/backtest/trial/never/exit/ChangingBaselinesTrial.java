@@ -61,6 +61,7 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
  * @author CJ Hare
  */
 public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfiguration {
+
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
@@ -79,6 +80,7 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit ) {
+
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying

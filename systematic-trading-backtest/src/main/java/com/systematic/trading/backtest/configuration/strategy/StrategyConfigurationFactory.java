@@ -54,28 +54,34 @@ public class StrategyConfigurationFactory {
 	public StrategyConfiguration strategy( final EntryConfiguration entry,
 	        final EntrySizeConfiguration entryPositionSizing, final ExitConfiguration exit,
 	        final ExitSizeConfiguration exitPositionSizing ) {
+
 		return new StrategyConfiguration(entry, entryPositionSizing, exit, exitPositionSizing);
 	}
 
 	public EntryConfiguration entry( final EntryConfiguration leftEntry, final OperatorConfiguration.Selection op,
 	        final EntryConfiguration righEntry ) {
+
 		return new OperatorEntryConfiguration(leftEntry, op, righEntry);
 	}
 
 	public EntryConfiguration entry( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
+
 		return new ConfirmedByEntryConfiguration(anchor, confirmBy, confirmation);
 	}
 
 	public EntryConfiguration entry( final IndicatorConfiguration indicator ) {
+
 		return new IndicatorEntryConfiguration(indicator);
 	}
 
 	public EntryConfiguration entry( final PeriodicConfiguration frequency ) {
+
 		return new PeriodicEntryConfiguration(frequency);
 	}
 
 	public ExitConfiguration exit() {
+
 		return new ExitConfiguration();
 	}
 }

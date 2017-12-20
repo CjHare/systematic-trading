@@ -103,8 +103,7 @@ public class BacktestBootstrap {
 		cashAccount.addListener(roi);
 
 		// Engine dealing with the event flow
-		final Simulation simulation = new Simulation(tradingData, broker, cashAccount, roi,
-		        context.tradingStrategy());
+		final Simulation simulation = new Simulation(tradingData, broker, cashAccount, roi, context.tradingStrategy());
 
 		// Statistics recorder for the various cash account, brokerage and order events
 		final EventStatistics eventStatistics = new CumulativeEventStatistics();

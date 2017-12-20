@@ -49,6 +49,7 @@ public class BacktestSimulationDatesTest {
 
 	@Test
 	public void endDateAfterStartDate() throws InvalidSimulationDatesException {
+
 		final LocalDate startDate = LocalDate.of(2001, 6, 16);
 		final LocalDate endDate = LocalDate.of(2001, 6, 17);
 
@@ -60,6 +61,7 @@ public class BacktestSimulationDatesTest {
 
 	@Test
 	public void endDateEqualsStartDate() throws InvalidSimulationDatesException {
+
 		final LocalDate startDate = LocalDate.of(2001, 6, 16);
 		final LocalDate endDate = LocalDate.of(2001, 6, 16);
 
@@ -71,6 +73,7 @@ public class BacktestSimulationDatesTest {
 
 	@Test(expected = InvalidSimulationDatesException.class)
 	public void endDateBeforeStartDate() throws InvalidSimulationDatesException {
+
 		final LocalDate startDate = LocalDate.of(2001, 6, 16);
 		final LocalDate endDate = LocalDate.of(2001, 6, 11);
 
@@ -79,14 +82,17 @@ public class BacktestSimulationDatesTest {
 
 	private void createSimulationDates( final LocalDate startDate, final LocalDate endDate )
 	        throws InvalidSimulationDatesException {
+
 		dates = new BacktestSimulationDates(startDate, endDate);
 	}
 
 	private void verifySimulationStartDate( final LocalDate expected ) {
+
 		assertEquals(expected, dates.startDate());
 	}
 
 	private void verifySimulationEndDate( final LocalDate expected ) {
+
 		assertEquals(expected, dates.endDate());
 	}
 }

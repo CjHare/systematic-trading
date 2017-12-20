@@ -85,12 +85,14 @@ public abstract class ElasticIndexTestBase {
 
 	@Before
 	public void setUp() {
+
 		when(dao.index(any(ElasticIndexName.class))).thenReturn(getIndexResponse);
 		when(dao.mapping(any(ElasticIndexName.class), any(BacktestBatchId.class))).thenReturn(getIndexTypeResponse);
 	}
 
 	@Test
 	public void initMissingIndex() {
+
 		final String batchId = "MissingIndexBatchForTesting";
 		setUpIndex();
 
@@ -101,6 +103,7 @@ public abstract class ElasticIndexTestBase {
 
 	@Test
 	public void initPresentIndexMissingMapping() {
+
 		setUpIndexAsPresent();
 		final String batchId = "MissingIndexBatchForTesting";
 		setUpIndex();
@@ -112,6 +115,7 @@ public abstract class ElasticIndexTestBase {
 
 	@Test
 	public void initPresentIndexPresentMapping() {
+
 		setUpIndexAsPresent();
 		setUpMappingAsPresent();
 		final String batchId = "MissingIndexBatchForTesting";
@@ -131,6 +135,7 @@ public abstract class ElasticIndexTestBase {
 
 	@Test
 	public void disableRefreshInterval() {
+
 		setUpIndex();
 
 		setRefreshInterval(false);
@@ -140,6 +145,7 @@ public abstract class ElasticIndexTestBase {
 
 	@Test
 	public void enableRefreshInterval() {
+
 		setUpIndex();
 
 		setRefreshInterval(true);
@@ -149,6 +155,7 @@ public abstract class ElasticIndexTestBase {
 
 	@Test
 	public void ensureIndexExists() {
+
 		setUpIndex();
 
 		createIndexIfAbsent();
@@ -157,33 +164,40 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	private void createIndexIfAbsent() {
+
 		index.ensureIndexExists();
 	}
 
 	private void setRefreshInterval( final boolean refresh ) {
+
 		index.refreshInterval(refresh);
 	}
 
 	private void initIndex( final String batchId ) {
+
 		index.init(getBatchId(batchId));
 	}
 
 	private BacktestBatchId getBatchId( final String id ) {
+
 		return new BacktestBatchId(id);
 	}
 
 	private void verifyGetIndex() {
+
 		verify(getIndexResponse).getStatus();
 		verifyNoMoreInteractions(getIndexResponse);
 	}
 
 	private void verifyGetIndexType() {
+
 		verify(getIndexTypeResponse, atLeastOnce()).getStatus();
 		verify(getIndexTypeResponse).readEntity(ElasticEmptyIndexMapping.class);
 		verifyNoMoreInteractions(getIndexTypeResponse);
 	}
 
 	private void verifyPresentMappingCalls( final String batchId ) {
+
 		verify(dao).mapping(eq(getIndexName()), equalsBacktestId(batchId));
 		verifyNoMoreInteractions(dao);
 
@@ -191,6 +205,7 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	private void verifyMissingMappingCalls( final String batchId ) {
+
 		final InOrder order = inOrder(dao);
 		order.verify(dao).mapping(eq(getIndexName()), equalsBacktestId(batchId));
 		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
@@ -199,6 +214,7 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	private void verifyPutIndexCall() {
+
 		final InOrder order = inOrder(dao);
 		order.verify(dao).index(getIndexName());
 		order.verify(dao).put(eq(getIndexName()), equalsJson(getJsonPutIndex()));
@@ -208,6 +224,7 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	private void verifyMissingIndexCalls( final String batchId ) {
+
 		final InOrder order = inOrder(dao);
 		order.verify(dao).mapping(eq(getIndexName()), equalsBacktestId(batchId));
 		order.verify(dao).putMapping(eq(getIndexName()), equalsBacktestId(batchId),
@@ -216,14 +233,17 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	private void setUpIndexAsPresent() {
+
 		when(getIndexResponse.getStatus()).thenReturn(200);
 	}
 
 	private void setUpMappingAsPresent() {
+
 		when(getIndexTypeResponse.getStatus()).thenReturn(200);
 	}
 
 	private void verfiyRefreshInterval( final boolean enabled ) {
+
 		final String expectedJson = String.format("\"refresh_interval\":\"%s\"",
 		        enabled ? INDEX_SETTING_REFRESH_DEFAULT : INDEX_SETTING_REFRESH_DISABLE);
 
@@ -232,18 +252,22 @@ public abstract class ElasticIndexTestBase {
 	}
 
 	private void setUpIndex() {
+
 		index = createIndex();
 	}
 
 	protected ElasticDao getDao() {
+
 		return dao;
 	}
 
 	protected ExecutorService getPool() {
+
 		return Executors.newSingleThreadExecutor();
 	}
 
 	protected BackestOutputElasticConfiguration getElasticConfig() {
+
 		return new BackestOutputFileConfigurationImpl(7, 5, 1, 1);
 	}
 

@@ -51,6 +51,7 @@ public class AllResponseColumns implements ResponseColumns {
 
 	@Override
 	public boolean canParse( final List<QuandlColumnName> columns ) {
+
 		return columnUtils.containsName(DATE_COLUMN_NAME, columns)
 		        && columnUtils.containsName(OPEN_PRICE_COLUMN_NAME, columns)
 		        && columnUtils.containsName(HIGH_PRICE_COLUMN_NAME, columns)
@@ -60,26 +61,31 @@ public class AllResponseColumns implements ResponseColumns {
 
 	@Override
 	public int dateIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return columnUtils.indexOf(columns, DATE_COLUMN_NAME);
 	}
 
 	@Override
 	public int openPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return columnUtils.indexOf(columns, OPEN_PRICE_COLUMN_NAME);
 	}
 
 	@Override
 	public int highPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return columnUtils.indexOf(columns, HIGH_PRICE_COLUMN_NAME);
 	}
 
 	@Override
 	public int lowPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return columnUtils.indexOf(columns, LOW_PRICE_COLUMN_NAME);
 	}
 
 	@Override
 	public int closePriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return columnUtils.indexOf(columns, CLOSE_PRICE_COLUMN_NAME);
 	}
 }

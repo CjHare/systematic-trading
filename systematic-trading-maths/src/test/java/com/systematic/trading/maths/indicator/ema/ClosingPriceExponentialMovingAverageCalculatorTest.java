@@ -65,18 +65,21 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidLookback() {
+
 		setUpValidationErrorGreaterThan();
 		setUpCalculator(0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidDaysOfEmaValues() {
+
 		setUpValidationErrorGreaterThan();
 		setUpCalculator(1, 0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNullInput() {
+
 		setUpValidationErrorNullInput();
 		setUpCalculator(1);
 
@@ -85,6 +88,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNullEntries() {
+
 		setUpValidationErrorNullEntries();
 		setUpCalculator(2);
 
@@ -93,6 +97,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNotEnoughValues() {
+
 		setUpValidationErrorNullInput();
 		setUpCalculator(1);
 
@@ -101,6 +106,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 
 	@Test
 	public void emaIntelExample() {
+
 		final int lookback = 10;
 		final TradingDayPrices[] data = createExamplePrices();
 		setUpCalculator(lookback);
@@ -127,6 +133,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	 */
 	@Test
 	public void emaIntelExampleAdditionalDaysofEmaValues() {
+
 		final int lookback = 10;
 		final TradingDayPrices[] data = createExamplePrices();
 		setUpCalculator(lookback, 5);
@@ -150,6 +157,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 
 	@Test
 	public void additionalDaysOfEmaValues() {
+
 		setUpCalculator(10, 5);
 
 		final int requiredDays = calculator.minimumNumberOfPrices();
@@ -159,6 +167,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 
 	@Test
 	public void emaIncreasing() {
+
 		final int lookback = 5;
 		final TradingDayPrices[] data = createIncreasingPrices();
 		setUpCalculator(lookback);
@@ -174,6 +183,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 
 	@Test
 	public void emaFlat() {
+
 		final int lookback = 4;
 		final TradingDayPrices[] data = createFlatPrices();
 		setUpCalculator(lookback);
@@ -192,6 +202,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	 */
 	@Test
 	public void getMinimumNumberOfPrices() {
+
 		setUpCalculator(4);
 
 		final int requiredDays = calculator.minimumNumberOfPrices();
@@ -200,23 +211,28 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	}
 
 	private ExponentialMovingAverageLine ema( final TradingDayPrices[] data ) {
+
 		return calculator.calculate(data);
 	}
 
 	private void setUpValidationErrorGreaterThan() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyGreaterThan(anyInt(), eq(0));
 	}
 
 	private void setUpValidationErrorNullInput() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
 	private void setUpValidationErrorNullEntries() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 	}
 
 	private void verifyEma( final ExponentialMovingAverageLine actual,
 	        final SortedMap<LocalDate, BigDecimal> expected ) {
+
 		assertNotNull(actual);
 		assertNotNull(actual.ema());
 		assertEquals(expected.size(), actual.ema().size());
@@ -225,14 +241,17 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	}
 
 	private void setUpCalculator( final int lookback ) {
+
 		calculator = new ClosingPriceExponentialMovingAverageCalculator(lookback, 1, validator);
 	}
 
 	private void setUpCalculator( final int lookback, final int daysOfEmaValues ) {
+
 		calculator = new ClosingPriceExponentialMovingAverageCalculator(lookback, daysOfEmaValues, validator);
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
+
 		verify(validator).verifyGreaterThan(1, lookback);
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyEnoughValues(data, lookback);
@@ -243,6 +262,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	 * Flat prices starting from LocalDate.of(2017, 10, 9).
 	 */
 	private TradingDayPrices[] createFlatPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2017, 10, 9), LocalDate.of(2017, 10, 10), LocalDate.of(2017, 10, 11),
 		        LocalDate.of(2017, 10, 12), LocalDate.of(2017, 10, 13), LocalDate.of(2017, 10, 16),
 		        LocalDate.of(2017, 10, 17), LocalDate.of(2017, 10, 18) };
@@ -255,6 +275,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	 * Increasing prices starting from LocalDate.of(2017, 9, 11).
 	 */
 	private TradingDayPrices[] createIncreasingPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2017, 9, 11), LocalDate.of(2017, 9, 12), LocalDate.of(2017, 9, 13),
 		        LocalDate.of(2017, 9, 14), LocalDate.of(2017, 9, 15), LocalDate.of(2017, 9, 18),
 		        LocalDate.of(2017, 9, 19), LocalDate.of(2017, 9, 20), LocalDate.of(2017, 9, 21),
@@ -268,6 +289,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	 * Thirty days of price data for Intel starting from LocalDate.of(2010, 3, 24).
 	 */
 	private TradingDayPrices[] createExamplePrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2010, 3, 24), LocalDate.of(2010, 3, 25), LocalDate.of(2010, 3, 26),
 		        LocalDate.of(2010, 3, 29), LocalDate.of(2010, 3, 30), LocalDate.of(2010, 3, 31),
 		        LocalDate.of(2010, 4, 1), LocalDate.of(2010, 4, 5), LocalDate.of(2010, 4, 6), LocalDate.of(2010, 4, 7),
@@ -286,6 +308,7 @@ public class ClosingPriceExponentialMovingAverageCalculatorTest {
 	}
 
 	private TradingDayPrices[] createPrices( final LocalDate[] dates, final double[] close ) {
+
 		final TradingDayPrices[] data = new TradingDayPrices[dates.length];
 
 		// Only the close price is used in the EMA calculation

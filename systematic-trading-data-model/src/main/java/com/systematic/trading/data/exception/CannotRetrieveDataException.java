@@ -33,7 +33,7 @@ import com.systematic.trading.exception.ServiceException;
  * @author CJ Hare
  */
 public class CannotRetrieveDataException extends ServiceException {
-	
+
 	/** Serialization identity. */
 	private static final long serialVersionUID = 1L;
 

@@ -49,6 +49,7 @@ import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
  * @author CJ Hare
  */
 public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorder {
+
 	private final RetrievedMonthTradingPricesDao retrievedMonthsDao;
 
 	public RetrievedYearMonthRecorder( final RetrievedMonthTradingPricesDao retrievedMonthsDao ) {
@@ -57,6 +58,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 
 	@Override
 	public void retrieved( final List<HistoryRetrievalRequest> fulfilledRequests ) {
+
 		if (fulfilledRequests == null || fulfilledRequests.isEmpty()) {
 			return;
 		}
@@ -91,12 +93,14 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 	}
 
 	private boolean isOverOneMonthBetween( final LocalDate start, final LocalDate end ) {
+
 		final LocalDate oneMonthOut = start.plusMonths(1);
 		return oneMonthOut.isBefore(end) || oneMonthOut.isEqual(end);
 	}
 
 	private boolean isMonthCompletedByOtherRequests( final LocalDate end,
 	        final List<HistoryRetrievalRequest> fulfilledRequests ) {
+
 		LocalDate expectedStart = end;
 
 		final SortedSet<HistoryRetrievalRequest> byStartDate = new TreeSet<>(
@@ -120,36 +124,44 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 	}
 
 	private boolean hasDifferentYearMonth( final LocalDate a, final LocalDate b ) {
+
 		return a.getYear() != b.getYear() || a.getMonthValue() != b.getMonthValue();
 	}
 
 	private RetrievedMonthTradingPrices retrievedMonth( final String tickerSymbol, final LocalDate yearMonth ) {
+
 		return new HibernateRetrievedMonthTradingPrices(tickerSymbol,
 		        YearMonth.of(yearMonth.getYear(), yearMonth.getMonth().getValue()));
 	}
 
 	private boolean isEndTradingMonth( final LocalDate contender ) {
+
 		final YearMonth ym = YearMonth.of(contender.getYear(), contender.getMonth());
 		return isLastDayOfMonth(contender, ym) || isLastFridayOfMonth(contender, ym);
 	}
 
 	private boolean isBeginningTradingMonth( final LocalDate contender ) {
+
 		return isFirstDayOfMonth(contender) || isFirstMondayOfMonth(contender);
 	}
 
 	private boolean isFirstMondayOfMonth( final LocalDate contender ) {
+
 		return contender.getDayOfWeek() == DayOfWeek.MONDAY && contender.getDayOfMonth() < DayOfWeek.values().length;
 	}
 
 	private boolean isFirstDayOfMonth( final LocalDate contender ) {
+
 		return contender.getDayOfMonth() == 1;
 	}
 
 	private boolean isLastDayOfMonth( final LocalDate contender, final YearMonth ym ) {
+
 		return contender.getDayOfMonth() == ym.lengthOfMonth();
 	}
 
 	private boolean isLastFridayOfMonth( final LocalDate contender, final YearMonth ym ) {
+
 		return contender.getDayOfMonth() > ym.lengthOfMonth() - 3 && contender.getDayOfWeek() == DayOfWeek.FRIDAY;
 	}
 }

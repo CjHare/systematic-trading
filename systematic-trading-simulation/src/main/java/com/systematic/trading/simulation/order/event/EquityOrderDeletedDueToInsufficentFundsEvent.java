@@ -62,21 +62,25 @@ public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrder
 
 	@Override
 	public EquityOrderInsufficientFundsAction insufficientFundsAction() {
+
 		return EquityOrderInsufficientFundsAction.DELETE;
 	}
 
 	@Override
 	public EquityOrderType type() {
+
 		return type;
 	}
 
 	@Override
 	public LocalDate transactionDate() {
+
 		return orderEvent.transactionDate();
 	}
 
 	@Override
 	public BigDecimal totalCost() {
+
 		return orderEvent.totalCost();
 	}
 }

@@ -43,6 +43,7 @@ public class QuandlColumnName {
 	}
 
 	public String name() {
+
 		return name;
 	}
 }

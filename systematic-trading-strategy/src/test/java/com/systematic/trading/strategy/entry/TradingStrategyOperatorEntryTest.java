@@ -78,6 +78,7 @@ public class TradingStrategyOperatorEntryTest {
 
 	@Before
 	public void setUp() {
+
 		entry = new TradingStrategyOperatorEntry(leftEntry, operator, righEntry);
 		setUpSubEntry(leftEntry, leftAnalysis);
 		setUpSubEntry(righEntry, rightAnalysis);
@@ -86,6 +87,7 @@ public class TradingStrategyOperatorEntryTest {
 
 	@Test
 	public void tradingDataPointsLeftEntry() {
+
 		setUpSubEntry(leftEntry, 1);
 		setUpSubEntry(righEntry, 5);
 
@@ -97,6 +99,7 @@ public class TradingStrategyOperatorEntryTest {
 
 	@Test
 	public void tradingDataPointsRightEntry() {
+
 		setUpSubEntry(leftEntry, 4);
 		setUpSubEntry(righEntry, 2);
 
@@ -108,6 +111,7 @@ public class TradingStrategyOperatorEntryTest {
 
 	@Test
 	public void analyse() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[5];
 
 		final List<DatedSignal> analysis = analyse(data);
@@ -117,35 +121,43 @@ public class TradingStrategyOperatorEntryTest {
 	}
 
 	private void setUpOperator( List<DatedSignal> expected ) {
+
 		when(operator.conjoin(anyListOf(DatedSignal.class), anyListOf(DatedSignal.class))).thenReturn(expected);
 	}
 
 	private void setUpSubEntry( Entry subEntry, final int tradingDataPoints ) {
+
 		when(subEntry.requiredTradingPrices()).thenReturn(tradingDataPoints);
 	}
 
 	private void setUpSubEntry( Entry subEntry, final List<DatedSignal> subEntryAnalysis ) {
+
 		when(subEntry.analyse(any(TradingDayPrices[].class))).thenReturn(subEntryAnalysis);
 	}
 
 	private List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+
 		return entry.analyse(data);
 	}
 
 	private void verifyAnalysis( final List<DatedSignal> actual ) {
+
 		assertEquals(expectedAnalysis, actual);
 	}
 
 	private void verifyPriceDataPoints( final int expected, final int actual ) {
+
 		assertEquals(expected, actual);
 	}
 
 	private void verifyTradingDataPointDelegation() {
+
 		verify(leftEntry).requiredTradingPrices();
 		verify(righEntry).requiredTradingPrices();
 	}
 
 	private void verifyAnalysisDelegation( final TradingDayPrices[] data ) {
+
 		verify(leftEntry).analyse(data);
 		verify(righEntry).analyse(data);
 		verify(operator).conjoin(leftAnalysis, rightAnalysis);

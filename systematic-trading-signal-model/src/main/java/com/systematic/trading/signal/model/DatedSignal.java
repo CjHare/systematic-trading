@@ -45,15 +45,18 @@ public class DatedSignal {
 	}
 
 	public LocalDate date() {
+
 		return date;
 	}
 
 	public SignalType type() {
+
 		return type;
 	}
 
 	@Override
 	public int hashCode() {
+
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((date == null) ? 0 : date.hashCode());
@@ -63,6 +66,7 @@ public class DatedSignal {
 
 	@Override
 	public boolean equals( final Object obj ) {
+
 		if (this == obj) {
 			return true;
 		}
@@ -75,6 +79,7 @@ public class DatedSignal {
 	}
 
 	private boolean dateEquals( final DatedSignal other ) {
+
 		return date == other.date || (date != null && date.equals(other.date));
 	}
 }

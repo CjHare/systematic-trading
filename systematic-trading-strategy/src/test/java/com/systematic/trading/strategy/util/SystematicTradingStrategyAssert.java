@@ -41,6 +41,7 @@ import java.math.BigDecimal;
 public class SystematicTradingStrategyAssert {
 
 	public static void assertBigDecimalEquals( final double expected, BigDecimal actual ) {
+
 		assertEquals(String.format("%s != %s", expected, actual), 0, BigDecimal.valueOf(expected).compareTo(actual));
 	}
 }

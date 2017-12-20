@@ -62,6 +62,7 @@ public class TradingStrategyExitTest {
 	}
 
 	private boolean tick() {
+
 		return new TradingStrategyExit().exitTick(broker, data);
 	}
 }

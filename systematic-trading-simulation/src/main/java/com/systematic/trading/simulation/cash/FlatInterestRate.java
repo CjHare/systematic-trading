@@ -66,6 +66,7 @@ public class FlatInterestRate implements InterestRate {
 
 	@Override
 	public BigDecimal interest( final BigDecimal funds, final int days, final boolean isLeapYear ) {
+
 		if (days == 0) {
 			return BigDecimal.ZERO;
 		}

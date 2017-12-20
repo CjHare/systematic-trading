@@ -84,6 +84,7 @@ public class NetWorthSummaryEventGenerator implements SimulationStateListener {
 	 * @param listener party interested in net worth events.
 	 */
 	public void addListener( final NetWorthEventListener listener ) {
+
 		listeners.add(listener);
 	}
 }

@@ -78,10 +78,12 @@ public class MonthlyRollingCounter {
 	}
 
 	private boolean isSameMonthAsLastAddition( final LocalDate tradeDate ) {
+
 		return yearOfLastAddition == tradeDate.getYear() && monthOfLastAddition == tradeDate.getMonth();
 	}
 
 	private void resetCounter( final LocalDate tradeDate ) {
+
 		yearOfLastAddition = tradeDate.getYear();
 		monthOfLastAddition = tradeDate.getMonth();
 		additionsThisMonth = 1;

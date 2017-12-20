@@ -43,6 +43,7 @@ public enum PeriodicConfiguration {
 	}
 
 	public Period frequency() {
+
 		return frequency;
 	}
 }

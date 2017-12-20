@@ -69,11 +69,13 @@ public class NdjsonListSerializerTest {
 
 	@Before
 	public void setUp() {
+
 		serializer = new NdjsonListSerializer();
 	}
 
 	@Test
 	public void serializeNullArray() throws IOException {
+
 		serialize(null);
 
 		verifyNoJson();
@@ -81,6 +83,7 @@ public class NdjsonListSerializerTest {
 
 	@Test
 	public void serializeEmptyArray() throws IOException {
+
 		final List<String> values = setUpValues();
 
 		serialize(values);
@@ -90,6 +93,7 @@ public class NdjsonListSerializerTest {
 
 	@Test
 	public void serializeSingleEntry() throws IOException {
+
 		final List<String> values = setUpValues("the_only_value");
 
 		serialize(values);
@@ -99,6 +103,7 @@ public class NdjsonListSerializerTest {
 
 	@Test
 	public void serializeMultipleEntries() throws IOException {
+
 		final List<String> values = setUpValues("first_value", "second_value", "third_value");
 
 		serialize(values);
@@ -107,6 +112,7 @@ public class NdjsonListSerializerTest {
 	}
 
 	private List<String> setUpValues( final String... values ) {
+
 		final List<String> setUp = new ArrayList<>();
 
 		for (final String value : values) {
@@ -117,10 +123,12 @@ public class NdjsonListSerializerTest {
 	}
 
 	private void serialize( final List<?> values ) throws IOException {
+
 		serializer.serialize(values, gen, provider);
 	}
 
 	private void verifyJson( final String... expexted ) throws IOException {
+
 		for (String o : expexted) {
 			verify(gen).writeObject(o);
 		}
@@ -130,6 +138,7 @@ public class NdjsonListSerializerTest {
 	}
 
 	private void verifyNoJson() {
+
 		verifyZeroInteractions(gen);
 	}
 }

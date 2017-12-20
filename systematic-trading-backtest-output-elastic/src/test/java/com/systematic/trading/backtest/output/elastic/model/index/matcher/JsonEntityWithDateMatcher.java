@@ -66,10 +66,12 @@ public class JsonEntityWithDateMatcher extends ArgumentMatcher<Entity<?>> {
 	}
 
 	private boolean containsJson( final String json ) {
+
 		return StringUtils.contains(json, expectedJson);
 	}
 
 	private boolean containsDate( final String json ) {
+
 		return StringUtils.contains(json, String.format("\"dayOfMonth\":%s", date.getDayOfMonth()))
 		        && StringUtils.contains(json, String.format("\"monthValue\":%s", date.getMonthValue()))
 		        && StringUtils.contains(json, String.format("\"year\":%s", date.getYear()));
@@ -77,11 +79,13 @@ public class JsonEntityWithDateMatcher extends ArgumentMatcher<Entity<?>> {
 
 	@Override
 	public void describeTo( Description description ) {
+
 		description.appendText(expectedJson);
 		description.appendText(date.toString());
 	}
 
 	private Optional<String> parseEntity( final Entity<?> entity ) {
+
 		try {
 			return Optional.of(mapper.writeValueAsString(entity.getEntity()));
 		} catch (JsonProcessingException e) {

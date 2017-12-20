@@ -42,16 +42,18 @@ public class IndicatorId {
 		this.name = name;
 
 		//TODO validate name != null or empty string
-		
+
 		//TODO implement a static set flyweight style pattern, enforce uniqueness on create()
 	}
 
 	public String getName() {
+
 		return name;
 	}
 
 	@Override
 	public int hashCode() {
+
 		int result = 1;
 		result = PRIME_NUMBER * result + ((name == null) ? 0 : name.hashCode());
 		return result;
@@ -59,6 +61,7 @@ public class IndicatorId {
 
 	@Override
 	public boolean equals( final Object o ) {
+
 		return o instanceof IndicatorId && name.equals(((IndicatorId) o).getName());
 	}
 }

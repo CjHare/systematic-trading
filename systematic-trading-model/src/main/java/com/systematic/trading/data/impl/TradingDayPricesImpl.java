@@ -65,31 +65,37 @@ public class TradingDayPricesImpl implements TradingDayPrices {
 
 	@Override
 	public LocalDate date() {
+
 		return date;
 	}
 
 	@Override
 	public ClosingPrice closingPrice() {
+
 		return closingPrice;
 	}
 
 	@Override
 	public LowestPrice lowestPrice() {
+
 		return lowestPrice;
 	}
 
 	@Override
 	public HighestEquityPrice highestPrice() {
+
 		return highestPrice;
 	}
 
 	@Override
 	public String tickerSymbol() {
+
 		return tickerSymbol;
 	}
 
 	@Override
 	public OpeningPrice openingPrice() {
+
 		return openingPrice;
 	}
 }

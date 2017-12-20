@@ -53,6 +53,7 @@ public class BigDecimalLaunchArgument implements LaunchArgument<BigDecimal> {
 
 	@Override
 	public BigDecimal get( final Map<ArgumentKey, String> arguments ) {
+
 		final String value = arguments.get(argument);
 
 		validator.validate(value, "%s argument is not present", argument.getKey());

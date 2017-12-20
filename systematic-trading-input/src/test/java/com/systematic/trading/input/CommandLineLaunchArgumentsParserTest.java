@@ -48,6 +48,7 @@ public class CommandLineLaunchArgumentsParserTest {
 
 	@Test
 	public void outputType() {
+
 		final String[] launchArguments = { "-output", "elastic_search" };
 
 		final Map<ArgumentKey, String> results = parse(launchArguments);
@@ -57,6 +58,7 @@ public class CommandLineLaunchArgumentsParserTest {
 
 	@Test
 	public void tooManyArguments() {
+
 		final String[] launchArguments = { "-output", "no_display", "another_argument" };
 
 		final Map<ArgumentKey, String> results = parse(launchArguments);
@@ -66,6 +68,7 @@ public class CommandLineLaunchArgumentsParserTest {
 
 	@Test
 	public void tooFewArguments() {
+
 		final String[] launchArguments = { "-output" };
 
 		try {
@@ -77,10 +80,12 @@ public class CommandLineLaunchArgumentsParserTest {
 	}
 
 	private Map<ArgumentKey, String> parse( final String[] launchArguments ) {
+
 		return new CommandLineLaunchArgumentsParser().parse(launchArguments);
 	}
 
 	private void verifyOutputType( final String expectedOutputType, final Map<ArgumentKey, String> results ) {
+
 		assertNotNull(results);
 		assertEquals(expectedOutputType, results.get(ArgumentKey.OUTPUT_TYPE));
 	}

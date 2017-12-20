@@ -51,16 +51,19 @@ public class CulmativeTotalReturnOnInvestmentTest {
 
 	@Before
 	public void setUp() {
+
 		calculator = new CulmativeTotalReturnOnInvestment();
 	}
 
 	@Test
 	public void noEvents() {
+
 		verfiyCulumateRoi(0);
 	}
 
 	@Test
 	public void oneEvent() {
+
 		event(101);
 
 		verfiyCulumateRoi(101);
@@ -68,6 +71,7 @@ public class CulmativeTotalReturnOnInvestmentTest {
 
 	@Test
 	public void threeEvents() {
+
 		event(22);
 		event(33);
 		event(4.35);
@@ -76,6 +80,7 @@ public class CulmativeTotalReturnOnInvestmentTest {
 	}
 
 	private void event( final double percentageChange ) {
+
 		final ReturnOnInvestmentEvent event = mock(ReturnOnInvestmentEvent.class);
 		when(event.percentageChange()).thenReturn(BigDecimal.valueOf(percentageChange));
 
@@ -83,6 +88,7 @@ public class CulmativeTotalReturnOnInvestmentTest {
 	}
 
 	private void verfiyCulumateRoi( final double expectedCulumativeRoi ) {
+
 		assertEquals(String.format("%s != %s", expectedCulumativeRoi, calculator.cumulativeReturnOnInvestment()), 0,
 		        BigDecimal.valueOf(expectedCulumativeRoi).compareTo(calculator.cumulativeReturnOnInvestment()));
 	}

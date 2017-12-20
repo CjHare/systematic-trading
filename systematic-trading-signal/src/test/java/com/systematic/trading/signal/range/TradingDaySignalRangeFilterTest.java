@@ -59,6 +59,7 @@ public class TradingDaySignalRangeFilterTest {
 
 	@Test
 	public void firstDayEarliestSinalDate() {
+
 		final int range = random();
 		final TradingDayPrices[] data = createTradingDays(range);
 		setUpFilter(range);
@@ -70,6 +71,7 @@ public class TradingDaySignalRangeFilterTest {
 
 	@Test
 	public void secondDayEarliestSinalDate() {
+
 		final int range = random();
 		final TradingDayPrices[] data = createTradingDays(range + 1);
 		setUpFilter(range);
@@ -81,6 +83,7 @@ public class TradingDaySignalRangeFilterTest {
 
 	@Test
 	public void tooFewFirstDayEarliestSinalDate() {
+
 		final int range = random();
 		final TradingDayPrices[] data = createTradingDays(range - 1);
 		setUpFilter(range);
@@ -92,6 +95,7 @@ public class TradingDaySignalRangeFilterTest {
 
 	@Test
 	public void earliestSinalDateSingleDate() {
+
 		final int range = 1;
 		final TradingDayPrices[] data = createTradingDays(range);
 		setUpFilter(range);
@@ -103,6 +107,7 @@ public class TradingDaySignalRangeFilterTest {
 
 	@Test
 	public void latestSignalDate() {
+
 		final int range = random();
 		final TradingDayPrices[] data = createTradingDays(range);
 		setUpFilter(range);
@@ -114,6 +119,7 @@ public class TradingDaySignalRangeFilterTest {
 
 	@Test
 	public void latestSignalDateSingleValue() {
+
 		final int range = 1;
 		final TradingDayPrices[] data = createTradingDays(range);
 		setUpFilter(range);
@@ -124,22 +130,27 @@ public class TradingDaySignalRangeFilterTest {
 	}
 
 	private void setUpFilter( final int range ) {
+
 		filter = new TradingDaySignalRangeFilter(range);
 	}
 
 	private LocalDate earliestDate( final TradingDayPrices[] data ) {
+
 		return filter.earliestSignalDate(data);
 	}
 
 	private LocalDate latestDate( final TradingDayPrices[] data ) {
+
 		return filter.latestSignalDate(data);
 	}
 
 	private void verifySignalDate( final int expectedDaySinceEpoch, final LocalDate earliest ) {
+
 		assertEquals(LocalDate.ofEpochDay(expectedDaySinceEpoch), earliest);
 	}
 
 	private TradingDayPrices[] createTradingDays( final int numberOfDays ) {
+
 		final int size = numberOfDays + 1;
 		final TradingDayPrices[] days = new TradingDayPrices[size];
 
@@ -152,6 +163,7 @@ public class TradingDaySignalRangeFilterTest {
 	}
 
 	private int random() {
+
 		return RNG.nextInt(RANGE_MAXIMUM) + 5;
 	}
 }

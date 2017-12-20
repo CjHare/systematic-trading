@@ -48,6 +48,7 @@ public class EquityOrderVolumeMatcher extends ArgumentMatcher<EquityOrderVolume>
 	private final BigDecimal expected;
 
 	public static EquityOrderVolume argumentMatches( final double expected ) {
+
 		return argThat(new EquityOrderVolumeMatcher(BigDecimal.valueOf(expected)));
 	}
 
@@ -57,12 +58,14 @@ public class EquityOrderVolumeMatcher extends ArgumentMatcher<EquityOrderVolume>
 
 	@Override
 	public boolean matches( final Object argument ) {
+
 		return argument instanceof EquityOrderVolume
 		        && expected.compareTo(((EquityOrderVolume) argument).getVolume()) == 0;
 	}
 
 	@Override
 	public void describeTo( final Description description ) {
+
 		description.appendText(String.format("Expecting %s", expected));
 	}
 }

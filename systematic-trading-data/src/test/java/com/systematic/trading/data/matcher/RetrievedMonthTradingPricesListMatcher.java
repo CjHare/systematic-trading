@@ -76,11 +76,13 @@ public class RetrievedMonthTradingPricesListMatcher extends ArgumentMatcher<List
 
 	@Override
 	public void describeTo( Description description ) {
+
 		description.appendText(retrieved.stream().map(r -> r.toString()).collect(Collectors.joining(", ")));
 	}
 
 	private boolean hasMatch( final String expectedTickerSymbol, final int expectedYear, final int expectedMonth,
 	        final List<RetrievedMonthTradingPrices> actualValues ) {
+
 		boolean matched = false;
 
 		for (final RetrievedMonthTradingPrices actual : actualValues) {

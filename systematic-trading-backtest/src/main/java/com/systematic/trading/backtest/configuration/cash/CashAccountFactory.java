@@ -59,6 +59,7 @@ public class CashAccountFactory {
 	}
 
 	public static final CashAccountFactory getInstance() {
+
 		return INSTANCE;
 	}
 

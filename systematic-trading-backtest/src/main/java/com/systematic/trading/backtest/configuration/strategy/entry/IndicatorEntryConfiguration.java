@@ -47,21 +47,25 @@ public class IndicatorEntryConfiguration implements EntryConfiguration {
 	}
 
 	public IndicatorConfiguration indicator() {
+
 		return indicator;
 	}
 
 	@Override
 	public String description( final DescriptionGenerator description ) {
+
 		return description.indicator(indicator);
 	}
 
 	@Override
 	public boolean hasSubEntry() {
+
 		return false;
 	}
 
 	@Override
 	public TemporalAmount priceDataRange() {
+
 		return Period.ofDays(1);
 	}
 }

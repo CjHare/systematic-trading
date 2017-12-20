@@ -63,6 +63,7 @@ public class AverageTrueRangeCalculatorTest {
 
 	@Test
 	public void minimumNumberOfPrices() {
+
 		setUpCalculator(2);
 
 		final int requiredDays = calculator.minimumNumberOfPrices();
@@ -72,6 +73,7 @@ public class AverageTrueRangeCalculatorTest {
 
 	@Test
 	public void atrFlat() {
+
 		final int lookback = 2;
 		final TradingDayPrices[] data = createPrices();
 		setUpCalculator(lookback);
@@ -85,6 +87,7 @@ public class AverageTrueRangeCalculatorTest {
 
 	@Test
 	public void atrIncreasing() {
+
 		final int lookback = 4;
 		final TradingDayPrices[] data = createIncreasingPrices();
 		setUpCalculator(lookback);
@@ -98,6 +101,7 @@ public class AverageTrueRangeCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void atrInitialNullEntry() {
+
 		final int lookback = 2;
 		final TradingDayPrices[] data = createPrices();
 		data[0] = null;
@@ -109,6 +113,7 @@ public class AverageTrueRangeCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void atrLastNullEntry() {
+
 		final int lookback = 2;
 		final TradingDayPrices[] data = createPrices();
 		data[data.length - 1] = null;
@@ -120,6 +125,7 @@ public class AverageTrueRangeCalculatorTest {
 
 	@Test
 	public void atrThreeRangeTypes() {
+
 		final int lookback = 4;
 		final TradingDayPrices[] data = createThreeTypesOfVolatility();
 		setUpCalculator(lookback);
@@ -133,6 +139,7 @@ public class AverageTrueRangeCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void atrNullInput() {
+
 		setUpValidationErrorNullInput();
 		setUpCalculator(1);
 
@@ -144,6 +151,7 @@ public class AverageTrueRangeCalculatorTest {
 	 * QQQQ (Powershares QQQ Trust), from 1 April 2010 - 13 May 2010
 	 */
 	public void atrExample() {
+
 		final int lookback = 14;
 		final TradingDayPrices[] data = createExampleAverageTrueRange();
 		setUpCalculator(lookback);
@@ -164,18 +172,22 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	private AverageTrueRangeLine atr( final TradingDayPrices[] data ) {
+
 		return calculator.calculate(data);
 	}
 
 	private void setUpValidationErrorNoNullEntries() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 	}
 
 	private void setUpValidationErrorNullInput() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
+
 		verify(validator).verifyGreaterThan(1, lookback);
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyZeroNullEntries(data);
@@ -183,6 +195,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	private void verifyAtr( final AverageTrueRangeLine atr, final SortedMap<LocalDate, BigDecimal> expected ) {
+
 		assertNotNull(atr);
 		assertNotNull(atr.atr());
 		assertEquals(expected.size(), atr.atr().size());
@@ -190,6 +203,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	private void setUpCalculator( final int lookback ) {
+
 		calculator = new AverageTrueRangeCalculator(lookback, validator);
 	}
 
@@ -199,6 +213,7 @@ public class AverageTrueRangeCalculatorTest {
 	 * ATR should always be two, as there are not changes in the price or ranges between days.
 	 */
 	private TradingDayPrices[] createPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2015, 7, 15), LocalDate.of(2015, 7, 16), LocalDate.of(2015, 7, 17),
 		        LocalDate.of(2015, 7, 20), LocalDate.of(2015, 7, 21) };
 		final double[] high = { 2, 2, 2, 2, 2 };
@@ -214,6 +229,7 @@ public class AverageTrueRangeCalculatorTest {
 	 * The closing price has linear increases, with the daily high increase being quadratic.
 	 */
 	private TradingDayPrices[] createIncreasingPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2016, 11, 14), LocalDate.of(2016, 11, 15), LocalDate.of(2016, 11, 16),
 		        LocalDate.of(2016, 11, 17), LocalDate.of(2016, 11, 18), LocalDate.of(2016, 11, 21) };
 		final double[] high = { 0, 6, 12, 18, 24, 30 };
@@ -232,6 +248,7 @@ public class AverageTrueRangeCalculatorTest {
 	 *	- Biggest swing is between the low of today and yesterday's close
 	 */
 	private TradingDayPrices[] createThreeTypesOfVolatility() {
+
 		final LocalDate[] dates = { LocalDate.of(2017, 7, 10), LocalDate.of(2017, 7, 11), LocalDate.of(2017, 7, 12),
 		        LocalDate.of(2017, 7, 13), LocalDate.of(2017, 7, 14), LocalDate.of(2017, 7, 17),
 		        LocalDate.of(2017, 7, 18) };
@@ -246,6 +263,7 @@ public class AverageTrueRangeCalculatorTest {
 	 * QQQQ (Powershares QQQ Trust), from 1 April 2010 - 13 May 2010
 	 */
 	private TradingDayPrices[] createExampleAverageTrueRange() {
+
 		final LocalDate[] dates = { LocalDate.of(2010, 4, 1), LocalDate.of(2010, 4, 5), LocalDate.of(2010, 4, 6),
 		        LocalDate.of(2010, 4, 7), LocalDate.of(2010, 4, 8), LocalDate.of(2010, 4, 9), LocalDate.of(2010, 4, 12),
 		        LocalDate.of(2010, 4, 13), LocalDate.of(2010, 4, 14), LocalDate.of(2010, 4, 15),
@@ -271,6 +289,7 @@ public class AverageTrueRangeCalculatorTest {
 
 	private TradingDayPrices[] createPrices( final LocalDate[] dates, final double[] high, final double[] low,
 	        final double[] close ) {
+
 		final TradingDayPrices[] data = new TradingDayPrices[dates.length];
 
 		// Open values are not used in ATR calculations

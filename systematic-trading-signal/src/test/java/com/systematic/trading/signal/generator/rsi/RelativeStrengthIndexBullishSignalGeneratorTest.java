@@ -77,17 +77,20 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 
 	@Before
 	public void setUp() {
+
 		setUpCalculator();
 		setUpDateRange(true);
 	}
 
 	@Test
 	public void getType() {
+
 		assertEquals(SignalType.BULLISH, bullishRsi.type());
 	}
 
 	@Test
 	public void neverUndersold() {
+
 		setUpRsi(0.5, 0.4, 0.6, 0.5);
 		final List<DatedSignal> signals = generate();
 
@@ -97,6 +100,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 
 	@Test
 	public void alwaysUndersold() {
+
 		setUpRsi(0.1, 0.2, 0.25, 0.1);
 		final List<DatedSignal> signals = generate();
 
@@ -106,6 +110,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 
 	@Test
 	public void outsideDateRange() {
+
 		setUpRsi(0.5, 0.2, 0.1, 0.15);
 		setUpDateRange(false);
 
@@ -117,6 +122,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 
 	@Test
 	public void undersoldCrossover() {
+
 		setUpRsi(0.5, 0.4, 0.29, 0.5);
 
 		final List<DatedSignal> signals = generate();
@@ -128,6 +134,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 
 	@Test
 	public void signalOnUndersold() {
+
 		setUpRsi(0.3, 0.3, 0.3, 0.3);
 
 		final List<DatedSignal> signals = generate();
@@ -138,6 +145,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 
 	@Test
 	public void touchUndersold() {
+
 		setUpRsi(0.1, 0.3, 0.2, 0.15);
 
 		final List<DatedSignal> signals = generate();
@@ -148,6 +156,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 
 	@Test
 	public void twiceUndersold() {
+
 		setUpRsi(0.9, 0.2, 0.5, 0.3, 0.4, 0.3);
 
 		final List<DatedSignal> signals = generate();
@@ -160,6 +169,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 
 	@Test
 	public void fallBelowThenOnUndersoldCrossover() {
+
 		setUpRsi(0.4, 0.3, 0.3, 0.2, 0.5);
 
 		final List<DatedSignal> signals = generate();
@@ -170,10 +180,12 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 	}
 
 	private List<DatedSignal> generate() {
+
 		return bullishRsi.generate(rsi, signalRange);
 	}
 
 	private void setUpRsi( final double... values ) {
+
 		SortedMap<LocalDate, BigDecimal> line = new TreeMap<>();
 
 		for (int i = 0; i < values.length; i++) {
@@ -184,20 +196,24 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 	}
 
 	private void setUpCalculator() {
+
 		bullishRsi = new RelativeStrengthIndexBullishSignalGenerator(BigDecimal.valueOf(OVER_SOLD));
 	}
 
 	private void verifySignals( final int expectedSize, final List<DatedSignal> signals ) {
+
 		assertNotNull(signals);
 		assertEquals(expectedSize, signals.size());
 	}
 
 	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {
+
 		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.date());
 		assertEquals(SignalType.BULLISH, signal.type());
 	}
 
 	private void verifySignalRangeTests( final int size ) {
+
 		final InOrder order = inOrder(signalRange);
 
 		// Starting index @ 1, because there cannot be a signal on the first day :. excluded
@@ -209,6 +225,7 @@ public class RelativeStrengthIndexBullishSignalGeneratorTest {
 	}
 
 	private void setUpDateRange( final boolean insideRange ) {
+
 		when(signalRange.test(any(LocalDate.class))).thenReturn(insideRange);
 	}
 }

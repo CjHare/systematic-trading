@@ -78,11 +78,13 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 
 	@Override
 	public int minimumNumberOfPrices() {
+
 		return minimumNumberOfPrices;
 	}
 
 	@Override
 	public ExponentialMovingAverageLine calculate( final TradingDayPrices[] data ) {
+
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, lookback);
@@ -93,6 +95,7 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 
 	private ExponentialMovingAverageLine ema( final TradingDayPrices[] data, final int startSmaIndex,
 	        final int endEmaIndex ) {
+
 		final SortedMap<LocalDate, BigDecimal> ema = new TreeMap<>();
 
 		/* SMA for the initial time periods */
@@ -124,12 +127,14 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 	 * EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) 
 	 */
 	private BigDecimal ema( final BigDecimal yesterdayEma, final BigDecimal todayClose ) {
+
 		return todayClose.subtract(yesterdayEma, MATH_CONTEXT).multiply(smoothingConstant, MATH_CONTEXT)
 		        .add(yesterdayEma, MATH_CONTEXT);
 
 	}
 
 	private BigDecimal sma( final BigDecimal sum ) {
+
 		return sum.divide(BigDecimal.valueOf(lookback), MATH_CONTEXT);
 	}
 
@@ -137,6 +142,7 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 	 * 2 / numberOfValues + 1
 	 */
 	private BigDecimal smoothingConstant( final int lookback ) {
+
 		return BigDecimal.valueOf(2d / (lookback + 1));
 	}
 }

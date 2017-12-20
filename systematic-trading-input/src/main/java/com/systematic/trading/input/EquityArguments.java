@@ -61,14 +61,17 @@ public class EquityArguments {
 	}
 
 	public TickerSymbol tickerSymbol() {
+
 		return tickerSymbol;
 	}
 
 	public EquityDataset equityDataset() {
+
 		return equityDataset;
 	}
 
 	public DataServiceType dataService() {
+
 		return dataService;
 	}
 }

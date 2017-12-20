@@ -50,10 +50,12 @@ public enum DepositConfiguration {
 	}
 
 	public BigDecimal aAmount() {
+
 		return amount;
 	}
 
 	public Period frequency() {
+
 		return frequency;
 	}
 }

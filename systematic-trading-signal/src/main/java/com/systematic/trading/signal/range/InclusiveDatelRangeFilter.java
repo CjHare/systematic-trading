@@ -48,15 +48,18 @@ public class InclusiveDatelRangeFilter {
 	 */
 	public boolean isWithinSignalRange( final LocalDate earliestInclusiveDate, final LocalDate latestInclusiveDate,
 	        final LocalDate candidate ) {
+
 		return isWithinEarliestSignalRange(earliestInclusiveDate, candidate)
 		        && isWithinLatestSignalRange(latestInclusiveDate, candidate);
 	}
 
 	private boolean isWithinEarliestSignalRange( final LocalDate earliestInclusiveDate, final LocalDate candidate ) {
+
 		return !candidate.isBefore(earliestInclusiveDate);
 	}
 
 	private boolean isWithinLatestSignalRange( final LocalDate latestInclusiveDate, final LocalDate candidate ) {
+
 		return !candidate.isAfter(latestInclusiveDate);
 	}
 }

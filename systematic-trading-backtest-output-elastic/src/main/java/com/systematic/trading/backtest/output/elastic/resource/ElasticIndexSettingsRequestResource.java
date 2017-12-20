@@ -50,6 +50,7 @@ public class ElasticIndexSettingsRequestResource {
 
 	@JsonProperty("refresh_interval")
 	public String getInterval() {
+
 		return interval;
 	}
 }

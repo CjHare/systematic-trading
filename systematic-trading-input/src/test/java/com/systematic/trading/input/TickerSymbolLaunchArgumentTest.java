@@ -72,11 +72,13 @@ public class TickerSymbolLaunchArgumentTest {
 
 	@Before
 	public void setUp() {
+
 		argument = new TickerSymbolLaunchArgument(validator);
 	}
 
 	@Test
 	public void validSymbol() {
+
 		final String expectedSymbol = "AAPL";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
@@ -87,6 +89,7 @@ public class TickerSymbolLaunchArgumentTest {
 
 	@Test
 	public void missingValue() {
+
 		setUpValidatorException();
 
 		tickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
@@ -96,6 +99,7 @@ public class TickerSymbolLaunchArgumentTest {
 
 	@Test
 	public void missingKey() {
+
 		setUpValidatorException();
 
 		tickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
@@ -105,6 +109,7 @@ public class TickerSymbolLaunchArgumentTest {
 
 	private void tickerSymbolExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
+
 		try {
 			getTickerSymbol(launchArguments);
 			fail("Expecting exception");
@@ -114,27 +119,32 @@ public class TickerSymbolLaunchArgumentTest {
 	}
 
 	private TickerSymbol getTickerSymbol( final Map<ArgumentKey, String> launchArguments ) {
+
 		return argument.get(launchArguments);
 	}
 
 	private void setUpValidatorException() {
+
 		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
 		        anyString());
 	}
 
 	private void veriyValidationExceptionOnValidate( final String launchArgument ) {
+
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}
 
 	private void verifSymbol( final String expected, final TickerSymbol actual ) {
+
 		assertNotNull(actual);
 		assertNotNull(actual.symbol());
 		assertTrue(StringUtils.equals(expected, actual.symbol()));
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+
 		final Map<ArgumentKey, String> arguments = new HashMap<>();
 		arguments.put(ArgumentKey.TICKER_SYMBOL, value);
 		return arguments;

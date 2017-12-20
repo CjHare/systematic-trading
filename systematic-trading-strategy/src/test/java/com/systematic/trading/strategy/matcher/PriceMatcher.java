@@ -48,6 +48,7 @@ public class PriceMatcher extends ArgumentMatcher<Price> {
 	private final BigDecimal expected;
 
 	public static Price argumentMatches( final double expected ) {
+
 		return argThat(new PriceMatcher(BigDecimal.valueOf(expected)));
 	}
 
@@ -57,11 +58,13 @@ public class PriceMatcher extends ArgumentMatcher<Price> {
 
 	@Override
 	public boolean matches( final Object argument ) {
+
 		return argument instanceof Price && expected.compareTo(((Price) argument).getPrice()) == 0;
 	}
 
 	@Override
 	public void describeTo( final Description description ) {
+
 		description.appendText(String.format("Expecting %s", expected));
 	}
 }

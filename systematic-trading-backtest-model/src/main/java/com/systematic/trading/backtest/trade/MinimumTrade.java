@@ -47,6 +47,7 @@ public enum MinimumTrade {
 	}
 
 	public BigDecimal value() {
+
 		return value;
 	}
 }

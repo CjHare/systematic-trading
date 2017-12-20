@@ -36,14 +36,17 @@ import com.systematic.trading.backtest.BacktestBatchId;
 public class ElasticMatcher {
 
 	public static BacktestBatchId equalsBacktestId( final String batchId ) {
+
 		return argThat(new BacktestBatchIdMatcher(batchId));
 	}
 
 	public static Entity<?> equalsJson( final String json ) {
+
 		return argThat(new JsonEntityMatcher(json));
 	}
 
 	public static Entity<?> equalsJson( final String json, final LocalDate transactionDate ) {
+
 		return argThat(new JsonEntityWithDateMatcher(json, transactionDate));
 	}
 

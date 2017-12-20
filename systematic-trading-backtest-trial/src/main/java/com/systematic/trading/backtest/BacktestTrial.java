@@ -77,6 +77,7 @@ import com.systematic.trading.model.EquityClass;
  * @author CJ Hare
  */
 public class BacktestTrial {
+
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(BacktestTrial.class);
 
@@ -130,8 +131,8 @@ public class BacktestTrial {
 		final StopWatch timer = new StopWatch();
 		timer.start();
 
-		final List<BacktestBootstrapConfiguration> backtestConfigurations = configuration.configuration(equity, simulationDates,
-		        openingFunds, depositAmount);
+		final List<BacktestBootstrapConfiguration> backtestConfigurations = configuration.configuration(equity,
+		        simulationDates, openingFunds, depositAmount);
 
 		try {
 			clearOutputDirectory(depositAmount, parserdArguments);
@@ -162,10 +163,12 @@ public class BacktestTrial {
 	}
 
 	private EquityConfiguration equity( final BacktestLaunchArguments launchArgs ) {
+
 		return new EquityConfiguration(launchArgs.equityDataset(), launchArgs.tickerSymbol(), EquityClass.STOCK);
 	}
 
 	private void closePool( final ExecutorService pool ) {
+
 		pool.shutdown();
 
 		LOG.info("Waiting at most 90 minutes for result output to complete...");
@@ -206,26 +209,29 @@ public class BacktestTrial {
 
 	private String outputDirectory( final DepositConfiguration depositAmount,
 	        final BacktestLaunchArguments arguments ) {
+
 		return isFileBasedDisplay(arguments) ? arguments.outputDirectory(depositAmount.toString()) : "";
 	}
 
 	private BacktestBatchId batchId( final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
+
 		return new BacktestBatchId(description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
 	}
 
 	private String outputDirectory( final String baseOutputDirectory,
 	        final BacktestBootstrapConfiguration configuration ) {
+
 		return String.format("%s%s", baseOutputDirectory, description.bootstrapConfiguration(configuration));
 	}
 
 	private BacktestEventListenerPreparation output( final BacktestLaunchArguments arguments ) {
+
 		final OutputType type = arguments.outputType();
 
 		switch (type) {
 			case ELASTIC_SEARCH:
-				return new ElasticBacktestOutputPreparation(
-				        BackestOutputElasticConfigurationSingleton.configuration());
+				return new ElasticBacktestOutputPreparation(BackestOutputElasticConfigurationSingleton.configuration());
 			case FILE_COMPLETE:
 			case FILE_MINIMUM:
 			case NO_DISPLAY:
@@ -238,6 +244,7 @@ public class BacktestTrial {
 
 	private ExecutorService outputPool( final BacktestLaunchArguments arguments )
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+
 		final OutputType type = arguments.outputType();
 
 		switch (type) {
@@ -274,16 +281,18 @@ public class BacktestTrial {
 	}
 
 	private boolean isFileBasedDisplay( final BacktestLaunchArguments arguments ) {
-		return arguments.outputType() == OutputType.FILE_COMPLETE
-		        || arguments.outputType() == OutputType.FILE_MINIMUM;
+
+		return arguments.outputType() == OutputType.FILE_COMPLETE || arguments.outputType() == OutputType.FILE_MINIMUM;
 	}
 
 	private void recordSimulationDates( final BacktestSimulationDates simulationDates ) {
+
 		LOG.info("Simulation Start Date: {}", simulationDates.startDate());
 		LOG.info("Simulation End Date: {}", simulationDates.endDate());
 	}
 
 	private String unsupportedMessage( final OutputType type ) {
+
 		return String.format("Output Type unsupported: %s", type);
 	}
 }

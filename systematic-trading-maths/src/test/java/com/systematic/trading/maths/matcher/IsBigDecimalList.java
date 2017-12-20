@@ -73,6 +73,7 @@ public class IsBigDecimalList extends ArgumentMatcher<List<BigDecimal>> {
 
 	@Override
 	public void describeTo( final Description description ) {
+
 		description.appendText("[");
 		for (int i = 0; i < expected.length; i++) {
 			description.appendText(String.valueOf(expected[i]));

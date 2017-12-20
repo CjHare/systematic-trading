@@ -67,6 +67,7 @@ public class BacktestBootstrapContext {
 	 * @return trading strategy, never <code>null</code>.
 	 */
 	public Strategy tradingStrategy() {
+
 		return tradingStrategy;
 	}
 
@@ -76,6 +77,7 @@ public class BacktestBootstrapContext {
 	 * @return broker that executes buy and sell orders.
 	 */
 	public Brokerage broker() {
+
 		return brokerage;
 	}
 
@@ -85,6 +87,7 @@ public class BacktestBootstrapContext {
 	 * @return cash account to use during the simulation.
 	 */
 	public CashAccount cashAccount() {
+
 		return cashAccount;
 	}
 
@@ -94,6 +97,7 @@ public class BacktestBootstrapContext {
 	 * @return everything about the simulation dates.
 	 */
 	public BacktestSimulationDates simulationDates() {
+
 		return simulationDates;
 	}
 }

@@ -75,12 +75,14 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	@Override
 	public boolean isValid( final TradingDayPrices todaysTrading ) {
+
 		// Never expire
 		return true;
 	}
 
 	@Override
 	public boolean areExecutionConditionsMet( final TradingDayPrices todaysTrading ) {
+
 		// Buy irrespective of the date or price
 		return true;
 	}
@@ -97,25 +99,30 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	@Override
 	public OrderEvent orderEvent() {
+
 		return new PlaceOrderTotalCostEvent(targetTotalCost, creationDate, EquityOrderType.ENTRY);
 	}
 
 	private BigDecimal equityCost( final BrokerageTransaction broker, final TradingDayPrices todaysPrice,
 	        final EquityOrderVolume volume ) {
+
 		return broker.cost(todaysPrice.openingPrice(), volume, todaysPrice.date());
 	}
 
 	private void debitEquityCost( final CashAccount cashAccount, final TradingDayPrices todaysPrice,
 	        final BigDecimal actualTotalCost ) throws InsufficientFundsException {
+
 		cashAccount.debit(actualTotalCost, todaysPrice.date());
 	}
 
 	private void addEquities( final BrokerageTransaction broker, final TradingDayPrices todaysPrice,
 	        final EquityOrderVolume volume ) {
+
 		broker.buy(todaysPrice.openingPrice(), volume, todaysPrice.date());
 	}
 
 	private EquityOrderVolume getOrderVolume( final BrokerageTransactionFee fees, final TradingDayPrices todaysPrice ) {
+
 		final BigDecimal maximumTransactionCost = fees.cost(targetTotalCost, type, todaysPrice.date());
 		final BigDecimal openingPrice = todaysPrice.openingPrice().getPrice();
 		final BigDecimal numberOfEquities = targetTotalCost.subtract(maximumTransactionCost, mathContext)
@@ -124,6 +131,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	}
 
 	private EquityOrderVolume getOrderVolume( final BigDecimal numberOfEquities ) {
+
 		return EquityOrderVolume.valueOf(numberOfEquities.setScale(scale, BigDecimal.ROUND_DOWN));
 	}
 }

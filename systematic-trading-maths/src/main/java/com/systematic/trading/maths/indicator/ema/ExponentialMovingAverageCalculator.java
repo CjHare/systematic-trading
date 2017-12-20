@@ -81,6 +81,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 
 	@Override
 	public ExponentialMovingAverageLine calculate( final SortedMap<LocalDate, BigDecimal> data ) {
+
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data.values());
 		validator.verifyEnoughValues(data.values(), lookback);
@@ -89,6 +90,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	}
 
 	private ExponentialMovingAverageLine ema( final SortedMap<LocalDate, BigDecimal> data ) {
+
 		final SortedMap<LocalDate, BigDecimal> ema = new TreeMap<>();
 
 		int smaDataPointCount = 0;
@@ -119,12 +121,14 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	 * EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) 
 	 */
 	private BigDecimal ema( final BigDecimal yesterdayEma, final BigDecimal todayClose ) {
+
 		return todayClose.subtract(yesterdayEma, MATH_CONTEXT).multiply(smoothingConstant, MATH_CONTEXT)
 		        .add(yesterdayEma, MATH_CONTEXT);
 
 	}
 
 	private BigDecimal sma( final BigDecimal sum ) {
+
 		return sum.divide(BigDecimal.valueOf(lookback), MATH_CONTEXT);
 	}
 
@@ -132,14 +136,17 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	 * 2 / numberOfValues + 1
 	 */
 	private BigDecimal smoothingConstant( final int lookback ) {
+
 		return BigDecimal.valueOf(2d / (lookback + 1));
 	}
 
 	private boolean isSmaCalculation( final int smaDataPoints ) {
+
 		return smaDataPoints < lookback;
 	}
 
 	private boolean isSmaCalculationComplete( final int smaDataPoints ) {
+
 		return smaDataPoints == lookback;
 	}
 }

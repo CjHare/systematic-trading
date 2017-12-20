@@ -52,29 +52,35 @@ public class ConfirmedByEntryConfiguration implements EntryConfiguration {
 	}
 
 	public EntryConfiguration anchor() {
+
 		return anchor;
 	}
 
 	public ConfirmaByConfiguration confirmBy() {
+
 		return confirmBy;
 	}
 
 	public EntryConfiguration confirmation() {
+
 		return confirmation;
 	}
 
 	@Override
 	public String description( final DescriptionGenerator description ) {
+
 		return description.entry(anchor, confirmBy, confirmation);
 	}
 
 	@Override
 	public boolean hasSubEntry() {
+
 		return true;
 	}
 
 	@Override
 	public TemporalAmount priceDataRange() {
+
 		return Period.ofDays(confirmBy.delayUntilConfirmationRange() + confirmBy.confirmationDayRange());
 	}
 }

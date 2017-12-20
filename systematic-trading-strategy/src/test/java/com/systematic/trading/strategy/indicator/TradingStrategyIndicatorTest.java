@@ -88,6 +88,7 @@ public class TradingStrategyIndicatorTest {
 
 	@Before
 	public void setUp() {
+
 		indicator = new TradingStrategyIndicator<Object, SignalCalculator<Object>>(id, calculator, generator,
 		        signalRangeFilter, signalListner);
 
@@ -96,6 +97,7 @@ public class TradingStrategyIndicatorTest {
 
 	@Test
 	public void requiredPriceTicks() {
+
 		setUpRequiredPriceTicks(4);
 
 		final int ticks = indicator.requiredTradingPrices();
@@ -106,6 +108,7 @@ public class TradingStrategyIndicatorTest {
 
 	@Test
 	public void analyseNoSignal() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[5];
 		final List<DatedSignal> expected = new ArrayList<>();
 		setUpGenerator(expected);
@@ -121,6 +124,7 @@ public class TradingStrategyIndicatorTest {
 
 	@Test
 	public void analyse() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[2];
 		final List<DatedSignal> expected = new ArrayList<>();
 		expected.add(signal(LocalDate.of(2012, 12, 30), SignalType.BULLISH));
@@ -136,22 +140,27 @@ public class TradingStrategyIndicatorTest {
 
 	@SuppressWarnings("unchecked")
 	private void setUpGenerator( final List<DatedSignal> expected ) {
+
 		when(generator.generate(any(Object.class), any(Predicate.class))).thenReturn(expected);
 	}
 
 	private List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+
 		return indicator.analyse(data);
 	}
 
 	private DatedSignal signal( final LocalDate date, final SignalType type ) {
+
 		return new DatedSignal(date, type);
 	}
 
 	private void setUpCalculator( final Object calculation ) {
+
 		when(calculator.calculate(any(TradingDayPrices[].class))).thenReturn(calculation);
 	}
 
 	private void setUpRequiredPriceTicks( final int ticks ) {
+
 		when(calculator.minimumNumberOfPrices()).thenReturn(ticks);
 	}
 
@@ -159,33 +168,40 @@ public class TradingStrategyIndicatorTest {
 	 * Date filtering is delegated to the generator, which is mock.
 	 */
 	private void verifyZeroDateFiltering() {
+
 		verifyZeroInteractions(signalRangeFilter);
 	}
 
 	private void verifyNoSignalProcessed() {
+
 		verifyZeroInteractions(signalListner);
 	}
 
 	private void verifyPriceTicks( final int expected, final int actual ) {
+
 		assertEquals(expected, actual);
 	}
 
 	private void verifyPriceTickDelegation() {
+
 		verify(calculator).minimumNumberOfPrices();
 		verifyNoMoreInteractions(calculator);
 	}
 
 	private void verifyCalculatorDelegation( final TradingDayPrices[] data ) {
+
 		verify(calculator).calculate(data);
 		verifyNoMoreInteractions(calculator);
 	}
 
 	@SuppressWarnings("unchecked")
 	private void verifyGeneratorDelegation() {
+
 		verify(generator).generate(eq(indocatorCalculation), any(Predicate.class));
 	}
 
 	private void verifyAnalysis( final List<DatedSignal> expected, final List<DatedSignal> actual ) {
+
 		assertEquals(expected, actual);
 	}
 }

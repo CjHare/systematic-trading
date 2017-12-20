@@ -48,41 +48,49 @@ public class CumulativeEventStatistics implements EventStatistics {
 
 	@Override
 	public OrderEventStatistics orderEventStatistics() {
+
 		return orderStatistics;
 	}
 
 	@Override
 	public BrokerageEventStatistics brokerageEventStatistics() {
+
 		return brokerageStatistics;
 	}
 
 	@Override
 	public CashEventStatistics cashEventStatistics() {
+
 		return cashStatistics;
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
+
 		cashStatistics.event(event);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
+
 		brokerageStatistics.event(event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
+
 		orderStatistics.event(event);
 	}
 
 	@Override
 	public EquityEventStatistics equityEventStatistics() {
+
 		return equityStatistics;
 	}
 
 	@Override
 	public void event( final EquityEvent event ) {
+
 		equityStatistics.event(event);
 	}
 }

@@ -52,23 +52,28 @@ public class TradingDaySignalRangeFilter implements SignalRangeFilter {
 
 	@Override
 	public LocalDate earliestSignalDate( final TradingDayPrices[] data ) {
+
 		return data[earliestAboveZeroIndex(data)].date();
 	}
 
 	@Override
 	public LocalDate latestSignalDate( final TradingDayPrices[] data ) {
+
 		return data[latestAboveZeroIndex(data)].date();
 	}
 
 	private int latestAboveZeroIndex( final TradingDayPrices[] data ) {
+
 		return aboveZeroIndex(data.length);
 	}
 
 	private int earliestAboveZeroIndex( final TradingDayPrices[] data ) {
+
 		return aboveZeroIndex(data.length - previousTradingDaySignalRange);
 	}
 
 	private int aboveZeroIndex( final int value ) {
+
 		return Math.max(0, value - ZERO_BASED_INDEX_OFFSET);
 	}
 }

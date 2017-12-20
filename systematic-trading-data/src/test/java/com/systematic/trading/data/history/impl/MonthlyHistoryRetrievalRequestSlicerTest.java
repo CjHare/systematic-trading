@@ -61,6 +61,7 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 
 	@Before
 	public void setUp() {
+
 		slicer = new MonthlyHistoryRetrievalRequestSlicer();
 		tickerSymbol = RandomStringGenerator.generate();
 		dataset = RandomStringGenerator.generate();
@@ -68,6 +69,7 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 
 	@Test
 	public void oneHalfMonth() {
+
 		final LocalDate inclusiveStartDate = LocalDate.of(2011, 5, 1);
 		final LocalDate exclusiveEndDate = LocalDate.of(2011, 5, 18);
 
@@ -78,6 +80,7 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 
 	@Test
 	public void oneWholeMonth() {
+
 		final LocalDate inclusiveStartDate = LocalDate.of(2011, 5, 1);
 		final LocalDate exclusiveEndDate = LocalDate.of(2011, 6, 1);
 
@@ -88,6 +91,7 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 
 	@Test
 	public void oneHalfOneWholeMonth() {
+
 		final LocalDate inclusiveStartDate = LocalDate.of(2011, 4, 14);
 		final LocalDate exclusiveEndDate = LocalDate.of(2011, 6, 1);
 
@@ -99,6 +103,7 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 
 	@Test
 	public void twoHalfThreeWholeMonth() {
+
 		final LocalDate inclusiveStartDate = LocalDate.of(2011, 4, 14);
 		final LocalDate exclusiveEndDate = LocalDate.of(2011, 8, 19);
 
@@ -113,11 +118,13 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 
 	private List<HistoryRetrievalRequest> slice( final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) {
+
 		return slicer.slice(dataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
 	private Pair<LocalDate, LocalDate> expectedDates( final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) {
+
 		return new ImmutablePair<LocalDate, LocalDate>(inclusiveStartDate, exclusiveEndDate);
 	}
 

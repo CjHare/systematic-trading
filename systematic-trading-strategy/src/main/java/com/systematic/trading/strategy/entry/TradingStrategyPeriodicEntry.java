@@ -50,11 +50,13 @@ public class TradingStrategyPeriodicEntry implements Entry {
 
 	@Override
 	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+
 		return frequency.analyse(data);
 	}
 
 	@Override
 	public int requiredTradingPrices() {
+
 		return 1;
 	}
 }

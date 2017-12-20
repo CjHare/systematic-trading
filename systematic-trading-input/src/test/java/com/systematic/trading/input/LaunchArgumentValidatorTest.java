@@ -45,11 +45,13 @@ public class LaunchArgumentValidatorTest {
 
 	@Test
 	public void validate() {
+
 		new LaunchArgumentValidator().validate("", "Not expected message");
 	}
 
 	@Test
 	public void validateException() {
+
 		try {
 			new LaunchArgumentValidator().validate(null, "Expected error message");
 			fail("Expecting exception");
@@ -60,6 +62,7 @@ public class LaunchArgumentValidatorTest {
 
 	@Test
 	public void validateMessage() {
+
 		try {
 			new LaunchArgumentValidator().validate(null, "Expected error message, %s, %s, %s", "one", "two", "three");
 			fail("Expecting exception");
@@ -70,6 +73,7 @@ public class LaunchArgumentValidatorTest {
 
 	@Test
 	public void invalidLocalDateFormat() {
+
 		try {
 			new LaunchArgumentValidator().validateDateFormat("invalid date format",
 			        "Expected date format error message");
@@ -81,6 +85,7 @@ public class LaunchArgumentValidatorTest {
 
 	@Test
 	public void missingLocalDateValue() {
+
 		try {
 			new LaunchArgumentValidator().validateDateFormat(null, "Expected date format error message");
 			fail("Expecting exception");
@@ -91,6 +96,7 @@ public class LaunchArgumentValidatorTest {
 
 	@Test
 	public void missingNotEmptyValue() {
+
 		try {
 			new LaunchArgumentValidator().validateNotEmpty(null, "Expected not empty error message");
 			fail("Expecting exception");
@@ -101,6 +107,7 @@ public class LaunchArgumentValidatorTest {
 
 	@Test
 	public void notEmptyValue() {
+
 		try {
 			new LaunchArgumentValidator().validateNotEmpty("", "Expected not empty error message");
 			fail("Expecting exception");
@@ -111,11 +118,13 @@ public class LaunchArgumentValidatorTest {
 
 	@Test
 	public void presentValue() {
+
 		new LaunchArgumentValidator().validateNotEmpty("not empty", "Expected not empty error message");
 	}
 
 	@Test
 	public void validLocalDateFormat() {
+
 		new LaunchArgumentValidator().validateDateFormat("2017-06-06", "Not expected message");
 	}
 }

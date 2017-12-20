@@ -51,16 +51,19 @@ public class ElasticCashIndex extends ElasticCommonIndex {
 	}
 
 	public void event( final BacktestBatchId id, final CashEvent event ) {
+
 		create(id, new ElasticCashEventRequestResource(event));
 	}
 
 	@Override
 	protected ElasticIndexName indexName() {
+
 		return ElasticIndexName.CASH;
 	}
 
 	@Override
 	protected ElasticIndexMapping indexMapping() {
+
 		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
 		        pair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
 		        pair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),

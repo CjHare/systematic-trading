@@ -54,6 +54,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void yearly() {
+
 		setUpEvent(LocalDate.of(2008, 02, 12), LocalDate.of(2009, 02, 12));
 
 		final String frequency = getEventFrequency();
@@ -63,6 +64,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void justOverYearly() {
+
 		setUpEvent(LocalDate.of(2010, 02, 12), LocalDate.of(2011, 02, 14));
 
 		final String frequency = getEventFrequency();
@@ -72,6 +74,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void justUnderYearly() {
+
 		setUpEvent(LocalDate.of(2011, 02, 14), LocalDate.of(2012, 02, 13));
 
 		final String frequency = getEventFrequency();
@@ -81,6 +84,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void monthly() {
+
 		setUpEvent(LocalDate.of(2008, 01, 12), LocalDate.of(2008, 02, 12));
 
 		final String frequency = getEventFrequency();
@@ -90,6 +94,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void justOverMonthly() {
+
 		setUpEvent(LocalDate.of(2010, 01, 12), LocalDate.of(2010, 02, 14));
 
 		final String frequency = getEventFrequency();
@@ -99,6 +104,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void justUnderMonthly() {
+
 		setUpEvent(LocalDate.of(2011, 01, 14), LocalDate.of(2011, 02, 13));
 
 		final String frequency = getEventFrequency();
@@ -108,6 +114,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void weekly() {
+
 		setUpEvent(LocalDate.of(2008, 01, 12), LocalDate.of(2008, 01, 19));
 
 		final String frequency = getEventFrequency();
@@ -117,6 +124,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void justOverWeekly() {
+
 		setUpEvent(LocalDate.of(2010, 01, 12), LocalDate.of(2010, 01, 20));
 
 		final String frequency = getEventFrequency();
@@ -126,6 +134,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void justUnderWeekly() {
+
 		setUpEvent(LocalDate.of(2011, 01, 14), LocalDate.of(2011, 01, 19));
 
 		final String frequency = getEventFrequency();
@@ -135,6 +144,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void daily() {
+
 		setUpEvent(LocalDate.of(2008, 01, 12), LocalDate.of(2008, 01, 12));
 
 		final String frequency = getEventFrequency();
@@ -144,6 +154,7 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 
 	@Test
 	public void justAboveDaily() {
+
 		setUpEvent(LocalDate.of(2008, 01, 12), LocalDate.of(2008, 01, 16));
 
 		final String frequency = getEventFrequency();
@@ -152,10 +163,12 @@ public class ElasticReturnOnInvestmentEventFrequencyTest {
 	}
 
 	private String getEventFrequency() {
+
 		return new ElasticReturnOnInvestmentEventFrequency(event).frequency();
 	}
 
 	private void setUpEvent( final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
+
 		when(event.inclusiveStartDate()).thenReturn(inclusiveStartDate);
 		when(event.exclusiveEndDate()).thenReturn(exclusiveEndDate);
 	}

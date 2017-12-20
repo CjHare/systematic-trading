@@ -53,6 +53,7 @@ public class SimpleMovingAverageBullishGradientSignalGenerator implements Signal
 
 	@Override
 	public SignalType type() {
+
 		return SignalType.BULLISH;
 	}
 
@@ -79,6 +80,7 @@ public class SimpleMovingAverageBullishGradientSignalGenerator implements Signal
 
 	private boolean isPositiveGradient( final Map.Entry<LocalDate, BigDecimal> entry,
 	        final Map.Entry<LocalDate, BigDecimal> previousEtnry ) {
+
 		return entry.getValue().subtract(previousEtnry.getValue()).compareTo(BigDecimal.ZERO) > 0;
 	}
 }

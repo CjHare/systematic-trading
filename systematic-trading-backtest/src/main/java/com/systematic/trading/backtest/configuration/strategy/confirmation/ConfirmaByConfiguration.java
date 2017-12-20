@@ -47,10 +47,12 @@ public enum ConfirmaByConfiguration {
 	}
 
 	public int confirmationDayRange() {
+
 		return confirmationDayRange;
 	}
 
 	public int delayUntilConfirmationRange() {
+
 		return delayUntilConfirmationRange;
 	}
 }

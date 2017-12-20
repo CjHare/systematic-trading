@@ -74,11 +74,13 @@ public class EndDateLaunchArgumentTest {
 
 	@Before
 	public void setUp() {
+
 		argument = new EndDateLaunchArgument(validator);
 	}
 
 	@Test
 	public void validEndDate() {
+
 		final String expectedStartDate = "2017-06-06";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
@@ -89,6 +91,7 @@ public class EndDateLaunchArgumentTest {
 
 	@Test
 	public void invaliEndDatedFormat() {
+
 		setUpValidatorFormatException();
 		final String expectedStartDate = "06-06-2017";
 
@@ -103,6 +106,7 @@ public class EndDateLaunchArgumentTest {
 
 	@Test
 	public void missingValue() {
+
 		setUpValidatorException();
 
 		try {
@@ -116,6 +120,7 @@ public class EndDateLaunchArgumentTest {
 
 	@Test
 	public void missingKey() {
+
 		setUpValidatorException();
 
 		try {
@@ -128,20 +133,24 @@ public class EndDateLaunchArgumentTest {
 	}
 
 	private BacktestEndDate getEndDate( final Map<ArgumentKey, String> arguments ) {
+
 		return argument.get(arguments);
 	}
 
 	private void setUpValidatorException() {
+
 		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
 		        anyString());
 	}
 
 	private void setUpValidatorFormatException() {
+
 		doThrow(new IllegalArgumentException(VALIDATOR_FORMAT_EXCEPTION_MESSAGE)).when(validator)
 		        .validateDateFormat(anyString(), anyString(), any());
 	}
 
 	private void veriyValidation( final String launchArgument ) {
+
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verify(validator).validateDateFormat(launchArgument, FORMAT_ERROR_MESSAGE, ArgumentKey.END_DATE.getKey());
@@ -149,18 +158,21 @@ public class EndDateLaunchArgumentTest {
 	}
 
 	private void veriyValidationExceptionOnValidate( final String launchArgument ) {
+
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}
 
 	private void verifStartyDate( final String expected, final BacktestEndDate axtual ) {
+
 		assertNotNull(axtual);
 		assertNotNull(axtual.date());
 		assertTrue(LocalDate.parse(expected).equals(axtual.date()));
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+
 		final Map<ArgumentKey, String> arguments = new HashMap<>();
 		arguments.put(ArgumentKey.END_DATE, value);
 		return arguments;

@@ -137,16 +137,19 @@ public class SingleEquityClassBroker implements Brokerage {
 
 	@Override
 	public BigDecimal equityBalance() {
+
 		return equityBalance;
 	}
 
 	@Override
 	public BigDecimal cost( final BigDecimal tradeValue, final EquityClass type, final LocalDate tradeDate ) {
+
 		return transactionFee.cost(tradeValue, type, monthlyTradeCounter.get(tradeDate));
 	}
 
 	@Override
 	public BigDecimal cost( final Price price, final EquityOrderVolume volume, final LocalDate tradeDate ) {
+
 		final BigDecimal tradeValue = price.getPrice().multiply(volume.getVolume(), MATH_CONTEXT);
 		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);
 		final BigDecimal tradeFee = transactionFee.cost(tradeValue, equity.getType(), tradesThisMonth);
@@ -156,6 +159,7 @@ public class SingleEquityClassBroker implements Brokerage {
 
 	@Override
 	public void addListener( final BrokerageEventListener listener ) {
+
 		if (!brokerageListeners.contains(listener)) {
 			brokerageListeners.add(listener);
 		}
@@ -163,6 +167,7 @@ public class SingleEquityClassBroker implements Brokerage {
 
 	@Override
 	public void addListener( final EquityEventListener listener ) {
+
 		if (!equityListeners.contains(listener)) {
 			equityListeners.add(listener);
 		}
@@ -195,16 +200,19 @@ public class SingleEquityClassBroker implements Brokerage {
 
 	@Override
 	public String name() {
+
 		return brokerName;
 	}
 
 	private void notifyListeners( final BrokerageEvent event ) {
+
 		for (final BrokerageEventListener listener : brokerageListeners) {
 			listener.event(event);
 		}
 	}
 
 	private void notifyListeners( final EquityEvent event ) {
+
 		for (final EquityEventListener listener : equityListeners) {
 			listener.event(event);
 		}

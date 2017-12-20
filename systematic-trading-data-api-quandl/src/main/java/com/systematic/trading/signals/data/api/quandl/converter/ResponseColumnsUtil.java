@@ -43,8 +43,7 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
  */
 public class ResponseColumnsUtil {
 
-	public int indexOf( final List<QuandlColumnName> columns, final String name )
-	        throws CannotRetrieveDataException {
+	public int indexOf( final List<QuandlColumnName> columns, final String name ) throws CannotRetrieveDataException {
 
 		for (int i = 0; i < columns.size(); i++) {
 			if (columnNameEquals(name, columns.get(i))) {
@@ -56,6 +55,7 @@ public class ResponseColumnsUtil {
 	}
 
 	public boolean containsName( final String name, final List<QuandlColumnName> columns ) {
+
 		for (int i = 0; i < columns.size(); i++) {
 			if (columnNameEquals(name, columns.get(i))) {
 				return true;
@@ -66,6 +66,7 @@ public class ResponseColumnsUtil {
 	}
 
 	private boolean columnNameEquals( final String name, final QuandlColumnName column ) {
+
 		return StringUtils.equalsIgnoreCase(name, column.name());
 	}
 }

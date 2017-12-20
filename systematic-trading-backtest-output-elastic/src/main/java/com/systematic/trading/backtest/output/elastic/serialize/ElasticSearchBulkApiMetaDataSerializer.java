@@ -77,6 +77,7 @@ public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<Elasti
 
 	private void writeMeta( final ElasticBulkApiMetaDataRequestResource value, final JsonGenerator gen )
 	        throws IOException {
+
 		gen.writeStartObject();
 
 		if (StringUtils.isNotBlank(value.getIndex())) {

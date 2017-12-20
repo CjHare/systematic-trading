@@ -56,6 +56,7 @@ public class IndicatorSignalEventTest {
 
 	@Before
 	public void setUp() {
+
 		signal = new IndicatorSignal(LocalDate.now(), type, SignalType.BULLISH);
 	}
 
@@ -70,6 +71,7 @@ public class IndicatorSignalEventTest {
 
 	@Test
 	public void getDate() {
+
 		setUpIndicatorSignal(SignalType.BULLISH);
 
 		final IndicatorSignalEvent event = event();
@@ -80,6 +82,7 @@ public class IndicatorSignalEventTest {
 
 	@Test
 	public void getDirectionTypeBullish() {
+
 		setUpIndicatorSignal(SignalType.BULLISH);
 
 		final IndicatorSignalEvent event = event();
@@ -89,6 +92,7 @@ public class IndicatorSignalEventTest {
 
 	@Test
 	public void getDirectionTypeBearish() {
+
 		setUpIndicatorSignal(SignalType.BEARISH);
 
 		final IndicatorSignalEvent event = event();
@@ -97,15 +101,18 @@ public class IndicatorSignalEventTest {
 	}
 
 	private void verifyDirectionType( final SignalType expected, final IndicatorSignalEvent event ) {
+
 		assertNotNull(event);
 		assertEquals(expected, event.directionType());
 	}
 
 	private IndicatorSignalEvent event() {
+
 		return new IndicatorSignalEvent(signal);
 	}
 
 	private void setUpIndicatorSignal( final SignalType direction ) {
+
 		signal = new IndicatorSignal(LocalDate.now(), type, direction);
 	}
 }

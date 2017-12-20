@@ -75,11 +75,13 @@ public class StandardDescriptionGeneratorTest {
 
 	@Before
 	public void setUp() {
+
 		descriptions = new StandardDescriptionGenerator();
 	}
 
 	@Test
 	public void minMaxs() {
+
 		final String description = descriptions.positionSize(MinimumTrade.FIVE_HUNDRED, MaximumTrade.HALF);
 
 		assertEquals("Minimum_500_Maximum_50_percent", description);
@@ -87,6 +89,7 @@ public class StandardDescriptionGeneratorTest {
 
 	@Test
 	public void bootstrapConfiguration() {
+
 		final BacktestBootstrapConfiguration configuration = setUpBootstrapConfiguration();
 
 		final String description = descriptions.bootstrapConfiguration(configuration);
@@ -96,6 +99,7 @@ public class StandardDescriptionGeneratorTest {
 
 	@Test
 	public void bootstrapConfigurationWithDeposit() {
+
 		final BacktestBootstrapConfiguration configuration = setUpBootstrapConfiguration();
 		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_150;
 
@@ -106,6 +110,7 @@ public class StandardDescriptionGeneratorTest {
 
 	@Test
 	public void strategy() {
+
 		final EntryConfiguration entry = setUpEntry("eNTry");
 		final EntrySizeConfiguration entryPositionSizing = setUpEntrySizing("EntrySizing");
 		final ExitConfiguration exit = setUpExit("exIT");
@@ -118,6 +123,7 @@ public class StandardDescriptionGeneratorTest {
 
 	@Test
 	public void monthlyPeriodicEntry() {
+
 		final PeriodicConfiguration frequency = PeriodicConfiguration.MONTHLY;
 
 		final String description = descriptions.periodicEntry(frequency);
@@ -127,6 +133,7 @@ public class StandardDescriptionGeneratorTest {
 
 	@Test
 	public void weeklyPeriodicEntry() {
+
 		final PeriodicConfiguration frequency = PeriodicConfiguration.WEEKLY;
 
 		final String description = descriptions.periodicEntry(frequency);
@@ -136,6 +143,7 @@ public class StandardDescriptionGeneratorTest {
 
 	@Test
 	public void indicator() {
+
 		final IndicatorConfiguration indicator = setUpIndicator();
 
 		final String description = descriptions.indicator(indicator);
@@ -145,6 +153,7 @@ public class StandardDescriptionGeneratorTest {
 
 	@Test
 	public void entryLogicalOr() {
+
 		final EntryConfiguration leftEntry = setUpEntry("LEFT-Entry");
 		final EntryConfiguration rightEntry = setUpEntry("RIGHT-Entry");
 
@@ -155,6 +164,7 @@ public class StandardDescriptionGeneratorTest {
 
 	@Test
 	public void entryLogicalOrLeftSubEntry() {
+
 		final EntryConfiguration leftEntry = setUpEntryWithSubEntry("LEFT-Entry");
 		final EntryConfiguration rightEntry = setUpEntryWithSubEntry("RIGHT-Entry");
 
@@ -165,6 +175,7 @@ public class StandardDescriptionGeneratorTest {
 
 	@Test
 	public void entryConfirmation() {
+
 		final EntryConfiguration anchor = setUpEntry("anCHor");
 		final EntryConfiguration confirmation = setUpEntry("CONfirmaTION");
 
@@ -176,6 +187,7 @@ public class StandardDescriptionGeneratorTest {
 
 	@Test
 	public void entryConfirmationSubEntries() {
+
 		final EntryConfiguration anchor = setUpEntryWithSubEntry("anCHor");
 		final EntryConfiguration confirmation = setUpEntryWithSubEntry("CONfirmaTION");
 
@@ -186,30 +198,35 @@ public class StandardDescriptionGeneratorTest {
 	}
 
 	private IndicatorConfiguration setUpIndicator() {
+
 		final IndicatorConfiguration indicator = mock(IndicatorConfiguration.class);
 		when(indicator.id()).thenReturn(new IndicatorId("Indicator"));
 		return indicator;
 	}
 
 	private ExitSizeConfiguration setUpExitSizing( final String description ) {
+
 		final ExitSizeConfiguration entry = mock(ExitSizeConfiguration.class);
 		when(entry.description(any(DescriptionGenerator.class))).thenReturn(description);
 		return entry;
 	}
 
 	private ExitConfiguration setUpExit( final String description ) {
+
 		final ExitConfiguration exit = mock(ExitConfiguration.class);
 		when(exit.description(any(DescriptionGenerator.class))).thenReturn(description);
 		return exit;
 	}
 
 	private EntrySizeConfiguration setUpEntrySizing( final String description ) {
+
 		final EntrySizeConfiguration entry = mock(EntrySizeConfiguration.class);
 		when(entry.description(any(DescriptionGenerator.class))).thenReturn(description);
 		return entry;
 	}
 
 	private EntryConfiguration setUpEntryWithSubEntry( final String description ) {
+
 		final EntryConfiguration entry = mock(EntryConfiguration.class);
 		when(entry.description(any(DescriptionGenerator.class))).thenReturn(description);
 		when(entry.hasSubEntry()).thenReturn(true);
@@ -217,12 +234,14 @@ public class StandardDescriptionGeneratorTest {
 	}
 
 	private EntryConfiguration setUpEntry( final String description ) {
+
 		final EntryConfiguration entry = mock(EntryConfiguration.class);
 		when(entry.description(any(DescriptionGenerator.class))).thenReturn(description);
 		return entry;
 	}
 
 	private BacktestBootstrapConfiguration setUpBootstrapConfiguration() {
+
 		final BacktestSimulationDates backtestDates = mock(BacktestSimulationDates.class);
 		final BrokerageTransactionFeeStructure brokerageFees = mock(SelfWealthBrokerageFees.class);
 		final CashAccountConfiguration cashAccount = CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY;

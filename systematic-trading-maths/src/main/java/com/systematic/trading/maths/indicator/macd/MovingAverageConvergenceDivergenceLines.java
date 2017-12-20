@@ -50,10 +50,12 @@ public class MovingAverageConvergenceDivergenceLines {
 	}
 
 	public SortedMap<LocalDate, BigDecimal> macd() {
+
 		return macd;
 	}
 
 	public SortedMap<LocalDate, BigDecimal> signalLine() {
+
 		return signalLine;
 	}
 }

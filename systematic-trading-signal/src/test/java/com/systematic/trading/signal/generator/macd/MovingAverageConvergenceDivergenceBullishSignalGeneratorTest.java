@@ -81,6 +81,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 
 	@Before
 	public void setUp() {
+
 		signalGenerator = new MovingAverageConvergenceDivergenceBullishSignalGenerator();
 
 		// Default result set of no results
@@ -94,6 +95,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 
 	@Test
 	public void getType() {
+
 		assertEquals(SignalType.BULLISH, signalGenerator.type());
 	}
 
@@ -108,6 +110,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 
 	@Test
 	public void calculateSignalsOnceCrossnigSignalLine() {
+
 		final int numberSignalLinesDates = 4;
 		setUpSignalLine(0, 0.1, 0.2, 0.3);
 		setUpMacd(-1, 0.2, 1, 1.2);
@@ -121,6 +124,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 
 	@Test
 	public void calculateSignalsOnceCrossnigSignalLineOutsideDateRange() {
+
 		final int numberSignalLinesDates = 4;
 		setUpSignalLine(0, 0.1, 0.2, 0.3);
 		setUpMacd(-1, 0.2, 1, 1.2);
@@ -137,6 +141,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 	 * Extended crossing is when the MACD and Signal Line are equal for more then one time slice.
 	 */
 	public void calculateSignalsOnceExtendedCrossnigSignalLine() {
+
 		final int numberSignalLinesDates = 5;
 		setUpSignalLine(0, 0.1, 0.1, 0.2, 0.3);
 		setUpMacd(-1, 0.1, 0.1, 1, 1.2);
@@ -154,6 +159,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 	 * Touch off is when the MACD moves down onto the Signal Line for one time slice, then move above.
 	 */
 	public void calculateSignalsOnceTouchOffCrossnigSignalLine() {
+
 		final int numberSignalLinesDates = 4;
 		setUpSignalLine(0, 0.1, 0.2, 0.3);
 		setUpMacd(1, 0.1, 1, 1.2);
@@ -170,6 +176,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 	 * Both MACD and Signal Lines are going up, but no crossing.
 	 */
 	public void calculateSignalsPositiveGradientsMacdBelowNoCrossnigSignalLine() {
+
 		final int numberSignalLinesDates = 4;
 		setUpSignalLine(3, 3.1, 3.2, 3.3);
 		setUpMacd(1, 1.1, 1.2, 1.3);
@@ -185,6 +192,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 	 * Both MACD and Signal Lines are going up, but no crossing.
 	 */
 	public void calculateSignalsPositiveGradientsMacdAboveoCrossnigSignalLine() {
+
 		final int numberSignalLinesDates = 4;
 		setUpSignalLine(0, 0.1, 0.2, 0.3);
 		setUpMacd(1, 1.1, 1.2, 1.3);
@@ -197,6 +205,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 
 	@Test
 	public void calculateSignalsCrossnigOrigin() {
+
 		final int numberSignalLinesDates = 4;
 		setUpSignalLine(5, 5, 5, 5);
 		setUpMacd(-1, 0.1, 1, 0);
@@ -213,6 +222,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 	 * Extended crossing has the MACD sitting on the origin for a day.
 	 */
 	public void calculateSignalsExtendedCrossnigOrigin() {
+
 		final int numberSignalLinesDates = 5;
 		setUpSignalLine(5, 5, 5, 5, 5);
 		setUpMacd(-0.2, 0, 0, 0.1, 0.2);
@@ -230,6 +240,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 	 * Extended crossing has the MACD sitting on the origin for a day.
 	 */
 	public void calculateSignalsTouchDownCrossnigOrigin() {
+
 		final int numberSignalLinesDates = 5;
 		setUpSignalLine(5, 5, 5, 5, 5);
 		setUpMacd(0.2, 0, 0, 0.1, 0.2);
@@ -243,6 +254,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 
 	@Test
 	public void calculateSignalsMacdUpwardTrendBelowOrigin() {
+
 		final int numberSignalLinesDates = 5;
 		setUpSignalLine(5, 5, 5, 5, 5);
 		setUpMacd(-2, -1.4, -1.2, -0.8, -0.2);
@@ -254,10 +266,12 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 	}
 
 	private List<DatedSignal> generate() {
+
 		return signalGenerator.generate(lines, signalRange);
 	}
 
 	private void setUpDateRange( final boolean insideRange ) {
+
 		when(signalRange.test(any(LocalDate.class))).thenReturn(insideRange);
 	}
 
@@ -275,21 +289,25 @@ public class MovingAverageConvergenceDivergenceBullishSignalGeneratorTest {
 	}
 
 	private void verifySignals( final int expectedSize, final List<DatedSignal> signals ) {
+
 		assertNotNull(signals);
 		assertEquals(expectedSize, signals.size());
 	}
 
 	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {
+
 		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.date());
 		assertEquals(SignalType.BULLISH, signal.type());
 	}
 
 	private void setUpSignalLine( final double... values ) {
+
 		for (int i = 0; i < values.length; i++)
 			signaLine.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
 	}
 
 	private void setUpMacd( final double... values ) {
+
 		for (int i = 0; i < values.length; i++)
 			macd.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
 	}

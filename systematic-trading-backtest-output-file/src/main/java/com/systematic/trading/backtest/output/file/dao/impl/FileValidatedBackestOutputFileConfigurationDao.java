@@ -47,6 +47,7 @@ import com.systematic.trading.exception.ConfigurationValidationException;
  * @author CJ Hare
  */
 public class FileValidatedBackestOutputFileConfigurationDao implements BackestOutputFileConfigurationDao {
+
 	private static final String BACKTEST_OUTPUT_PROPERTIES_FILE = "backtest_output_file.properties";
 
 	private final ConfigurationValidator<Integer> numberOfThreadsValidator;
@@ -58,6 +59,7 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 	@Override
 	public BackestOutputFileConfiguration configuration()
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+
 		final Properties properties = new FileConfigurationDao().configuration(BACKTEST_OUTPUT_PROPERTIES_FILE);
 
 		final int numberOfThreads = integerProperty(properties, BacktestOutputFileProperty.NUMBER_OF_THREADS,
@@ -68,10 +70,12 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 
 	private int integerProperty( final Properties properties, final BacktestOutputFileProperty property,
 	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
+
 		return validator.validate(property(properties, property));
 	}
 
 	private String property( final Properties properties, final BacktestOutputFileProperty property ) {
+
 		return properties.getProperty(property.key());
 	}
 }

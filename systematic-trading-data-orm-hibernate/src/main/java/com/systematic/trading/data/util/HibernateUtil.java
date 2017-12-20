@@ -44,6 +44,7 @@ public class HibernateUtil {
 	}
 
 	private static SessionFactory buildSessionFactory() {
+
 		try {
 
 			final Configuration configuration = new Configuration().configure();
@@ -68,10 +69,12 @@ public class HibernateUtil {
 	}
 
 	public static SessionFactory sessionFactory() {
+
 		return SESSION_FACTORY;
 	}
 
 	private static void verifyDatabaseConnection( final SessionFactory factory ) {
+
 		final Session session = factory.getCurrentSession();
 
 		// When the database server is absent the beginTransaction fails

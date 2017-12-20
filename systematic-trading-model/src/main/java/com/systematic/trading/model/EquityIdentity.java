@@ -59,6 +59,7 @@ public class EquityIdentity {
 	 * @return how to treat the equity.
 	 */
 	public EquityClass getType() {
+
 		return type;
 	}
 
@@ -68,6 +69,7 @@ public class EquityIdentity {
 	 * @return ticker symbol used to identify the equity by the trading data source.
 	 */
 	public String getTickerSymbol() {
+
 		return tickerSymbol;
 	}
 
@@ -77,6 +79,7 @@ public class EquityIdentity {
 	 * @return the fractions of a unit that the equity may be traded in.
 	 */
 	public int getScale() {
+
 		return scale;
 	}
 }

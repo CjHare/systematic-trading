@@ -119,6 +119,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 
 	@Override
 	public void credit( final BigDecimal credit, final LocalDate transactionDate ) {
+
 		final BigDecimal fundsBefore = funds;
 
 		funds = funds.add(credit);
@@ -129,12 +130,14 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 
 	@Override
 	public BigDecimal balance() {
+
 		// Only available funds count, not those in escrow
 		return funds;
 	}
 
 	@Override
 	public void deposit( final BigDecimal deposit, final LocalDate transactionDate ) {
+
 		final BigDecimal fundsBefore = funds;
 
 		funds = funds.add(deposit);
@@ -145,12 +148,14 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 
 	@Override
 	public void addListener( final CashEventListener listener ) {
+
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}
 	}
 
 	private void notifyListeners( final CashEvent event ) {
+
 		for (final CashEventListener listener : listeners) {
 			listener.event(event);
 		}

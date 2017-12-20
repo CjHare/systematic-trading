@@ -43,6 +43,7 @@ public class DataServiceType {
 	}
 
 	public String type() {
+
 		return type;
 	}
 }

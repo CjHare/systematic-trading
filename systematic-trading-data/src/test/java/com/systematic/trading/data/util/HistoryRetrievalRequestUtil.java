@@ -48,6 +48,7 @@ import com.systematic.trading.data.model.HistoryRetrievalRequest;
 public class HistoryRetrievalRequestUtil {
 
 	public List<HistoryRetrievalRequest> asList( final HistoryRetrievalRequest... requests ) {
+
 		final List<HistoryRetrievalRequest> fulfilled = new ArrayList<HistoryRetrievalRequest>();
 
 		for (final HistoryRetrievalRequest request : requests) {
@@ -59,30 +60,37 @@ public class HistoryRetrievalRequestUtil {
 
 	public HistoryRetrievalRequest create( final String datasetId, final String tickerSymbol, final LocalDate start,
 	        final LocalDate end ) {
+
 		return new HistoryRetrievalRequest() {
+
 			@Override
 			public String equityDataset() {
+
 				return datasetId;
 			}
 
 			@Override
 			public String tickerSymbol() {
+
 				return tickerSymbol;
 			}
 
 			@Override
 			public Date inclusiveStartDate() {
+
 				return Date.valueOf(start);
 			}
 
 			@Override
 			public Date exclusiveEndDate() {
+
 				return Date.valueOf(end);
 			}
 		};
 	}
 
 	public void contains( final HistoryRetrievalRequest expected, final List<HistoryRetrievalRequest> actualValues ) {
+
 		boolean found = false;
 
 		for (final HistoryRetrievalRequest actual : actualValues) {

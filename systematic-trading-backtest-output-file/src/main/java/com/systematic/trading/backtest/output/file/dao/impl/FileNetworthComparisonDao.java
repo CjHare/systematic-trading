@@ -79,6 +79,7 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 	}
 
 	private String output( final NetWorthEvent event ) {
+
 		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
 		out.add(compoundAnnualGrowth(event));
 		out.add(netWorth(event));
@@ -93,16 +94,19 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 	}
 
 	private String profit( final NetWorthEvent event ) {
-		return String.format("Profit: %s", TWO_DECIMAL_PLACES.format(
-		        event.netWorth().subtract(statistics.cashEventStatistics().amountDeposited(), MATH_CONTEXT)));
+
+		return String.format("Profit: %s", TWO_DECIMAL_PLACES
+		        .format(event.netWorth().subtract(statistics.cashEventStatistics().amountDeposited(), MATH_CONTEXT)));
 	}
 
 	private String deposited() {
+
 		return String.format("Deposited: %s",
 		        TWO_DECIMAL_PLACES.format(statistics.cashEventStatistics().amountDeposited()));
 	}
 
 	private String cashAccount( final NetWorthEvent event ) {
+
 		return String.format("Cash account: %s", TWO_DECIMAL_PLACES.format(event.cashBalance()));
 	}
 
@@ -117,18 +121,22 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 	}
 
 	private String netWorth( final NetWorthEvent event ) {
+
 		return String.format("Net Worth: %s", TWO_DECIMAL_PLACES.format(event.netWorth()));
 	}
 
 	private String equitiesHeld( final NetWorthEvent event ) {
+
 		return String.format("Equities Held: %s", TWO_DECIMAL_PLACES.format(event.equityBalance()));
 	}
 
 	private String holdingsValue( final NetWorthEvent event ) {
+
 		return String.format("Holdings value: %s", TWO_DECIMAL_PLACES.format(event.equityBalanceValue()));
 	}
 
 	private String exitLogic() {
+
 		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
 		out.add(exitOrdersPlaced());
 		out.add(exitOrdersExecuted());
@@ -137,19 +145,23 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 	}
 
 	private String exitOrdersDeleted() {
+
 		return String.format("Exit orders deleted: %s", statistics.orderEventStatistics().deleteExitEventCount());
 	}
 
 	private String exitOrdersExecuted() {
+
 		return String.format("Exit orders executed: %s", statistics.orderEventStatistics().exitEventCount()
 		        - statistics.orderEventStatistics().deleteExitEventCount());
 	}
 
 	private String exitOrdersPlaced() {
+
 		return String.format("Exit orders placed: %s", statistics.orderEventStatistics().exitEventCount());
 	}
 
 	private String entryLogic() {
+
 		final StringJoiner out = new StringJoiner(COLUMN_SEPARATOR);
 		out.add(batchId.name());
 		out.add(entryOrdersPlaced());
@@ -159,16 +171,18 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 	}
 
 	private String entryOrdersDeleted() {
-		return String.format("Entry orders deleted: %s",
-		        statistics.orderEventStatistics().deleteEntryEventCount());
+
+		return String.format("Entry orders deleted: %s", statistics.orderEventStatistics().deleteEntryEventCount());
 	}
 
 	private String entryOrdersExecuted() {
+
 		return String.format("Entry orders executed: %s", statistics.orderEventStatistics().entryEventCount()
 		        - statistics.orderEventStatistics().deleteEntryEventCount());
 	}
 
 	private String entryOrdersPlaced() {
+
 		return String.format("Entry orders placed: %s", statistics.orderEventStatistics().entryEventCount());
 	}
 }

@@ -69,11 +69,13 @@ public class CumulativeBrokerageEventStatistics implements BrokerageEventStatist
 
 	@Override
 	public BigDecimal brokerageFees() {
+
 		return brokerageFees;
 	}
 
 	@Override
 	public BigInteger buyEventCount() {
+
 		BigInteger buyEventCount = BigInteger.ZERO;
 
 		for (final BigInteger event : buyEvents.values()) {
@@ -85,6 +87,7 @@ public class CumulativeBrokerageEventStatistics implements BrokerageEventStatist
 
 	@Override
 	public BigInteger sellEventCount() {
+
 		BigInteger sellEventCount = BigInteger.ZERO;
 
 		for (final BigInteger event : sellEvents.values()) {
@@ -96,15 +99,18 @@ public class CumulativeBrokerageEventStatistics implements BrokerageEventStatist
 
 	@Override
 	public Map<BigDecimal, BigInteger> buyEvents() {
+
 		return buyEvents;
 	}
 
 	@Override
 	public Map<BigDecimal, BigInteger> sellEvents() {
+
 		return sellEvents;
 	}
 
 	private BigInteger increment( final Map<BigDecimal, BigInteger> count, final BigDecimal key ) {
+
 		return count.get(key) == null ? BigInteger.ONE : count.get(key).add(BigInteger.ONE);
 	}
 }

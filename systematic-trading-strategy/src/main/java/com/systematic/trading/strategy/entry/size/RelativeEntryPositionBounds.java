@@ -47,6 +47,7 @@ public class RelativeEntryPositionBounds implements EntryPositionBounds {
 
 	@Override
 	public BigDecimal bounds( final BigDecimal funds ) {
+
 		return funds.multiply(percentage);
 	}
 }

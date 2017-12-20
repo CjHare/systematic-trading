@@ -47,11 +47,13 @@ public class DatasetResponseResource {
 
 	@JsonProperty("dataset")
 	public DatasetResource dataset() {
+
 		return dataset;
 	}
 
 	@JsonProperty("dataset")
 	public void dataset( final DatasetResource dataset ) {
+
 		this.dataset = dataset;
 	}
 }

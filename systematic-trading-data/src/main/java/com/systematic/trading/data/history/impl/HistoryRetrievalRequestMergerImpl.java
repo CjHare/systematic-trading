@@ -62,6 +62,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	 */
 	public List<HistoryRetrievalRequest> merge( final List<HistoryRetrievalRequest> unsortedRequests,
 	        final Period maximum ) {
+
 		if (hasInsufficentRequestsToMerge(unsortedRequests) || isInvalid(maximum)) {
 			return unsortedRequests;
 		}
@@ -71,6 +72,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 
 	private List<HistoryRetrievalRequest> mergeRequests( final List<HistoryRetrievalRequest> sortedRequests,
 	        final Period maximum ) {
+
 		final List<HistoryRetrievalRequest> mergedRequests = new ArrayList<>(sortedRequests.size());
 		HistoryRetrievalRequestBuilder mergingRequests = resetBuilder(sortedRequests.get(0));
 		final int lastRequestIndex = sortedRequests.size() - 1;
@@ -79,8 +81,8 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		for (int i = 0; i < lastRequestIndex; i++) {
 
 			final Pair<Period, HistoryRetrievalRequestBuilder> mergeOutcome = mergeRequest(maximum,
-			        lastRequest(i, sortedRequests), sortedRequests.get(i), getNextRequest(i, sortedRequests),
-			        remaining, mergingRequests, mergedRequests);
+			        lastRequest(i, sortedRequests), sortedRequests.get(i), getNextRequest(i, sortedRequests), remaining,
+			        mergingRequests, mergedRequests);
 
 			remaining = mergeOutcome.getLeft();
 			mergingRequests = mergeOutcome.getRight();
@@ -95,6 +97,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	        final Optional<HistoryRetrievalRequest> lastRequest, final HistoryRetrievalRequest request,
 	        final HistoryRetrievalRequest nextRequest, Period remaining,
 	        final HistoryRetrievalRequestBuilder mergingRequests, final List<HistoryRetrievalRequest> mergedRequests ) {
+
 		final Period requestLength = requestLength(request);
 		HistoryRetrievalRequestBuilder nextMergingRequests = mergingRequests;
 		Period nextRequestRemaining;
@@ -137,28 +140,33 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 
 	private HistoryRetrievalRequest createRequest( final HistoryRetrievalRequest request,
 	        final HistoryRetrievalRequestBuilder mergedRequest ) {
+
 		return mergedRequest.withExclusiveEndDate(request.exclusiveEndDate()).build();
 	}
 
 	private HistoryRetrievalRequest createLastRequest( final HistoryRetrievalRequest lastRequest,
 	        final HistoryRetrievalRequestBuilder mergedRequest ) {
+
 		return mergedRequest.withExclusiveEndDate(lastRequest.exclusiveEndDate()).build();
 	}
 
 	private boolean hasInsufficentRequestsToMerge( final List<HistoryRetrievalRequest> unsortedRequests ) {
+
 		return unsortedRequests == null || unsortedRequests.isEmpty() || unsortedRequests.size() == 1;
 	}
 
 	private boolean isInvalid( final Period maximum ) {
+
 		return maximum == null || maximum.isZero();
 	}
 
-	private Optional<HistoryRetrievalRequest> lastRequest( final int i,
-	        final List<HistoryRetrievalRequest> requests ) {
+	private Optional<HistoryRetrievalRequest> lastRequest( final int i, final List<HistoryRetrievalRequest> requests ) {
+
 		return i > 0 ? Optional.of(requests.get(i - 1)) : Optional.empty();
 	}
 
 	private HistoryRetrievalRequest getNextRequest( final int i, final List<HistoryRetrievalRequest> requests ) {
+
 		return requests.get(i + 1);
 	}
 
@@ -166,24 +174,29 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	 * Inclusive period i.e. from the inclusive start to the day before the exclusive end.
 	 */
 	private Period requestLength( final HistoryRetrievalRequest request ) {
+
 		return Period.between(request.inclusiveStartDate().toLocalDate(), request.exclusiveEndDate().toLocalDate());
 	}
 
 	private boolean areConsecutive( final HistoryRetrievalRequest first, final HistoryRetrievalRequest second ) {
+
 		return first.exclusiveEndDate().equals(second.inclusiveStartDate());
 	}
 
 	private boolean hasEnoughTime( final Period requestLength, final Period remaining ) {
+
 		return !remaining.minus(requestLength).isNegative();
 	}
 
 	private List<HistoryRetrievalRequest> sortByStartDate( final List<HistoryRetrievalRequest> requests ) {
+
 		Collections.sort(requests, ( HistoryRetrievalRequest a, HistoryRetrievalRequest b ) -> a.inclusiveStartDate()
 		        .compareTo(b.inclusiveStartDate()));
 		return requests;
 	}
 
 	private HistoryRetrievalRequestBuilder resetBuilder( final HistoryRetrievalRequest request ) {
+
 		return builder.withTickerSymbol(request.tickerSymbol()).withDataset(request.equityDataset())
 		        .withInclusiveStartDate(request.inclusiveStartDate());
 	}

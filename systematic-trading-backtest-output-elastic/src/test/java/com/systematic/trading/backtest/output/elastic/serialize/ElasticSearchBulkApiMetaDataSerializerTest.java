@@ -73,6 +73,7 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 
 	@Before
 	public void setUp() {
+
 		serializer = new ElasticSearchBulkApiMetaDataSerializer();
 	}
 
@@ -86,6 +87,7 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 
 	@Test
 	public void serializeAction() throws IOException {
+
 		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action");
 
 		serialize(value);
@@ -95,6 +97,7 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 
 	@Test
 	public void serializeActionIndex() throws IOException {
+
 		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action", "index",
 		        null, null);
 
@@ -105,6 +108,7 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 
 	@Test
 	public void serializeActionIndexType() throws IOException {
+
 		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action", "index",
 		        "type", null);
 
@@ -115,6 +119,7 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 
 	@Test
 	public void serializeActionIndexTypeId() throws IOException {
+
 		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action", "index",
 		        "type", "Id");
 
@@ -124,27 +129,33 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 	}
 
 	private void serialize( final ElasticBulkApiMetaDataRequestResource value ) throws IOException {
+
 		serializer.serialize(value, gen, provider);
 	}
 
 	private void verifyNoJson() {
+
 		verifyZeroInteractions(gen);
 	}
 
 	private void verifyJson( final String action ) throws IOException {
+
 		verifyJson(action, null, null, null);
 	}
 
 	private void verifyJson( final String action, final String index ) throws IOException {
+
 		verifyJson(action, index, null, null);
 	}
 
 	private void verifyJson( final String action, final String index, final String type ) throws IOException {
+
 		verifyJson(action, index, type, null);
 	}
 
 	private void verifyJson( final String action, final String index, final String type, final String id )
 	        throws IOException {
+
 		InOrder order = inOrder(gen);
 		order.verify(gen).writeStartObject();
 		order.verify(gen).writeFieldName(action);

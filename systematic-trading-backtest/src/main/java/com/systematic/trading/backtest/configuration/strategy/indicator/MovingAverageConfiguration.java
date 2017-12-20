@@ -50,19 +50,23 @@ public class MovingAverageConfiguration implements IndicatorConfiguration {
 	}
 
 	public int lookback() {
+
 		return lookback;
 	}
 
 	public int daysOfGradient() {
+
 		return daysOfGradient;
 	}
 
 	public String description() {
+
 		return description;
 	}
 
 	@Override
 	public IndicatorId id() {
+
 		return new IndicatorId(description);
 	}
 }

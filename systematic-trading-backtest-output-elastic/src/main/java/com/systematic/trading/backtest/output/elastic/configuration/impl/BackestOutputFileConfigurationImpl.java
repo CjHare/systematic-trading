@@ -53,21 +53,25 @@ public class BackestOutputFileConfigurationImpl implements BackestOutputElasticC
 
 	@Override
 	public int numberOfShards() {
+
 		return numberOfShards;
 	}
 
 	@Override
 	public int numberOfReplicas() {
+
 		return numberOfReplicas;
 	}
 
 	@Override
 	public int bulkApiQueueSize() {
+
 		return bulkApiQueueSize;
 	}
 
 	@Override
 	public int numberOfConnections() {
+
 		return numberOfConnections;
 	}
 }

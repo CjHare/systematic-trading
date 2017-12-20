@@ -67,11 +67,13 @@ public class ElasticIndex {
 	}
 
 	public Map<String, Object> settings() {
+
 		return settings;
 	}
 
 	@Override
 	public String toString() {
+
 		final StringBuilder out = new StringBuilder("ElasticIndex [settings=");
 		out.append(settings);
 		out.append("]");

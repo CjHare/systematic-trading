@@ -49,14 +49,17 @@ public class RsiConfiguration extends IndicatorConfigurationBase {
 	}
 
 	public int lookback() {
+
 		return lookback;
 	}
 
 	public BigDecimal oversold() {
+
 		return oversold;
 	}
 
 	public BigDecimal overbought() {
+
 		return overbought;
 	}
 }

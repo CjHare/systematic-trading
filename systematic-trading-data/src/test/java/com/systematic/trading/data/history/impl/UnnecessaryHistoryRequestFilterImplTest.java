@@ -82,6 +82,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Before
 	public void setUp() {
+
 		filter = new UnnecessaryHistoryRequestFilterImpl(retrievedHistoryDao);
 		tickerSymbol = RandomStringGenerator.generate();
 		dataset = RandomStringGenerator.generate();
@@ -89,6 +90,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Test
 	public void filterNull() {
+
 		final List<HistoryRetrievalRequest> filtered = filter(null);
 
 		verifyNoRequests(filtered);
@@ -97,6 +99,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Test
 	public void filterNone() {
+
 		final List<HistoryRetrievalRequest> filtered = filter(new ArrayList<>());
 
 		verifyNoRequests(filtered);
@@ -105,6 +108,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Test
 	public void filterMonthRequestNoHistory() {
+
 		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 5, 31)));
 
@@ -116,6 +120,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Test
 	public void filterUnnecessaryMonthRequest() {
+
 		final int startYear = 2010;
 		final int endYear = 2010;
 		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
@@ -130,6 +135,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Test
 	public void filterUnnecessaryTwoMonthRequest() {
+
 		final int startYear = 2010;
 		final int endYear = 2010;
 		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
@@ -144,6 +150,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Test
 	public void filterPartiallyCoveredRequest() {
+
 		final int startYear = 2010;
 		final int endYear = 2010;
 		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
@@ -158,6 +165,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Test
 	public void filterSomeUnnecessaryRequests() {
+
 		final int startYear = 2010;
 		final int endYear = 2010;
 		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
@@ -179,6 +187,7 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 	@Test
 	public void filterSomeUnnecessaryRequestsDisordered() {
+
 		final int startYear = 2010;
 		final int endYear = 2010;
 		final List<HistoryRetrievalRequest> unfilteredRequests = asList(
@@ -199,21 +208,25 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 	}
 
 	private List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> unfilteredRequests ) {
+
 		return filter.filter(unfilteredRequests);
 	}
 
 	private void setUpLocalHistory( final YearMonth... ym ) {
+
 		when(retrievedHistoryDao.requests(anyString(), anyInt(), anyInt()))
 		        .thenReturn(retrievedMonthTradingPricesUtil.create(tickerSymbol, ym));
 	}
 
 	private void verifyLocalHistoryRequest( final int startYear, final int endYear ) {
+
 		verify(retrievedHistoryDao).requests(tickerSymbol, startYear, endYear);
 		verifyNoMoreInteractions(retrievedHistoryDao);
 	}
 
 	private void verifyRetrievalRequests( final List<HistoryRetrievalRequest> expected,
 	        final List<HistoryRetrievalRequest> actual ) {
+
 		assertNotNull(actual);
 		assertEquals(expected.size(), actual.size());
 		for (final HistoryRetrievalRequest expectedRequest : expected) {
@@ -222,19 +235,23 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 	}
 
 	private List<HistoryRetrievalRequest> asList( final HistoryRetrievalRequest... requests ) {
+
 		return historyRetrievalRequestUtil.asList(requests);
 	}
 
 	private HistoryRetrievalRequest create( final LocalDate start, final LocalDate end ) {
+
 		return historyRetrievalRequestUtil.create(dataset, tickerSymbol, start, end);
 	}
 
 	private void verifyNoRequests( final List<HistoryRetrievalRequest> filtered ) {
+
 		assertNotNull(filtered);
 		assertTrue("Expecing no requests left after filtering", filtered.isEmpty());
 	}
 
 	private void verfiyNoLoclaHistoryRequest( final List<HistoryRetrievalRequest> filtered ) {
+
 		verifyZeroInteractions(retrievedHistoryDao);
 	}
 }

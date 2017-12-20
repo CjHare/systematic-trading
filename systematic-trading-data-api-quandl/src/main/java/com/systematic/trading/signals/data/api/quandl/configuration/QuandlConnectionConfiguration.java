@@ -50,22 +50,27 @@ public class QuandlConnectionConfiguration {
 	}
 
 	public String endpoint() {
+
 		return endpoint;
 	}
 
 	public String apiKey() {
+
 		return apiKey;
 	}
 
 	public int numberOfRetries() {
+
 		return numberOfRetries;
 	}
 
 	public int retryBackOffMs() {
+
 		return retryBackOffMs;
 	}
 
 	public int maximumRetrievalTimeSeconds() {
+
 		return maximumRetrievalTimeSeconds;
 	}
 }

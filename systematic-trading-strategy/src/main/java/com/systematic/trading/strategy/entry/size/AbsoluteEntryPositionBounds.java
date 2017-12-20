@@ -47,6 +47,7 @@ public class AbsoluteEntryPositionBounds implements EntryPositionBounds {
 
 	@Override
 	public BigDecimal bounds( final BigDecimal funds ) {
+
 		return value;
 	}
 }

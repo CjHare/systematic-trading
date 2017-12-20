@@ -56,11 +56,13 @@ public class FirstValueResponseColumnsTest {
 
 	@Before
 	public void setUp() {
+
 		responseColumns = new FirstValueResponseColumns();
 	}
 
 	@Test
 	public void canParseNoColumns() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createNoColumns();
 
 		final boolean parsable = canParse(columns);
@@ -70,6 +72,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test
 	public void canParseAllColumns() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createAllColumns();
 
 		final boolean parsable = canParse(columns);
@@ -79,6 +82,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test
 	public void canParseMissingDateColumn() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createMissingDateColumn();
 
 		final boolean parsable = canParse(columns);
@@ -88,6 +92,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test
 	public void canParseMissingValueColumn() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createMissingValueColumn();
 
 		final boolean parsable = canParse(columns);
@@ -97,6 +102,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test(expected = CannotRetrieveDataException.class)
 	public void missingDateColumn() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createMissingDateColumn();
 
 		dateIndex(columns);
@@ -104,6 +110,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test(expected = CannotRetrieveDataException.class)
 	public void missingOpenPriceColumn() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createMissingValueColumn();
 
 		openPriceIndex(columns);
@@ -111,6 +118,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test(expected = CannotRetrieveDataException.class)
 	public void missingClosePriceColumn() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createMissingValueColumn();
 
 		closePriceIndex(columns);
@@ -118,6 +126,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test(expected = CannotRetrieveDataException.class)
 	public void missingHighPriceColumn() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createMissingValueColumn();
 
 		highPriceIndex(columns);
@@ -125,6 +134,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test(expected = CannotRetrieveDataException.class)
 	public void missingLowPriceColumn() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createMissingValueColumn();
 
 		lowPriceIndex(columns);
@@ -132,6 +142,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test
 	public void dateIndex() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createAllColumns();
 
 		final int index = dateIndex(columns);
@@ -141,6 +152,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test
 	public void openPriceIndex() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createAllColumns();
 
 		final int index = openPriceIndex(columns);
@@ -150,6 +162,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test
 	public void closePriceIndex() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createAllColumns();
 
 		final int index = closePriceIndex(columns);
@@ -159,6 +172,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test
 	public void highPriceIndex() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createAllColumns();
 
 		final int index = highPriceIndex(columns);
@@ -168,6 +182,7 @@ public class FirstValueResponseColumnsTest {
 
 	@Test
 	public void lowPriceIndex() throws CannotRetrieveDataException {
+
 		final List<QuandlColumnName> columns = createAllColumns();
 
 		final int index = lowPriceIndex(columns);
@@ -176,58 +191,72 @@ public class FirstValueResponseColumnsTest {
 	}
 
 	private void verifyIndex( final int expected, final int actual ) {
+
 		assertEquals(expected, actual);
 	}
 
 	private void verfiyNotParsable( final boolean parsable ) {
+
 		assertEquals(false, parsable);
 	}
 
 	private void verfiyParsable( final boolean parsable ) {
+
 		assertEquals(true, parsable);
 	}
 
 	private int dateIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return responseColumns.dateIndex(columns);
 	}
 
 	private int openPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return responseColumns.openPriceIndex(columns);
 	}
 
 	private int closePriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return responseColumns.closePriceIndex(columns);
 	}
 
 	private int highPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return responseColumns.highPriceIndex(columns);
 	}
 
 	private int lowPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return responseColumns.lowPriceIndex(columns);
 	}
 
 	private boolean canParse( final List<QuandlColumnName> columns ) {
+
 		return responseColumns.canParse(columns);
 	}
 
 	private List<QuandlColumnName> createNoColumns() {
+
 		return new ArrayList<>();
 	}
 
 	private List<QuandlColumnName> createAllColumns() {
+
 		return createColumns(DATE_COLUMN_NAME, FIRST_VALUE_COLUMN_NAME, SECOND_VALUE_COLUMN_NAME);
 	}
 
 	private List<QuandlColumnName> createMissingDateColumn() {
+
 		return createColumns(FIRST_VALUE_COLUMN_NAME, SECOND_VALUE_COLUMN_NAME);
 	}
 
 	private List<QuandlColumnName> createMissingValueColumn() {
+
 		return createColumns(DATE_COLUMN_NAME);
 	}
 
 	private List<QuandlColumnName> createColumns( final String... names ) {
+
 		final List<QuandlColumnName> columns = new ArrayList<>();
 
 		for (final String name : names) {

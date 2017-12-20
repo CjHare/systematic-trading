@@ -43,11 +43,13 @@ public class LimitedSizeQueueTest {
 
 	@Before
 	public void setUp() {
+
 		list = new LimitedSizeQueue<String>(String.class, 2);
 	}
 
 	@Test
 	public void addUnderLimit() {
+
 		final String one = "one";
 
 		list.add(one);
@@ -57,6 +59,7 @@ public class LimitedSizeQueueTest {
 
 	@Test
 	public void addOnLimit() {
+
 		final String one = "one";
 		final String two = "two";
 
@@ -68,6 +71,7 @@ public class LimitedSizeQueueTest {
 
 	@Test
 	public void addOverLimit() {
+
 		final String one = "one";
 		final String two = "two";
 		final String three = "three";
@@ -81,11 +85,13 @@ public class LimitedSizeQueueTest {
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void toArrayException() {
+
 		list.toArray(new String[0]);
 	}
 
 	@Test
 	public void toArray() {
+
 		final String[] converted = list.toArray();
 
 		verifyContents(converted);
@@ -93,6 +99,7 @@ public class LimitedSizeQueueTest {
 
 	@Test
 	public void toArrayPartiallyPopulated() {
+
 		list.add("first");
 
 		final String[] converted = list.toArray();
@@ -102,6 +109,7 @@ public class LimitedSizeQueueTest {
 
 	@Test
 	public void toArrayFullyPopulated() {
+
 		list.add("first");
 		list.add("second");
 
@@ -111,6 +119,7 @@ public class LimitedSizeQueueTest {
 	}
 
 	private void verifyContents( final String[] converted, final String... expectedContents ) {
+
 		assertEquals(expectedContents.length, converted.length);
 
 		for (int i = 0; i < expectedContents.length; i++) {
@@ -120,6 +129,7 @@ public class LimitedSizeQueueTest {
 	}
 
 	private void verifyContents( final String... expectedContents ) {
+
 		assertEquals(expectedContents.length, list.size());
 
 		for (int i = 0; i < expectedContents.length; i++) {

@@ -52,11 +52,13 @@ public class CmcMarketsFeeStructureTest {
 
 	@Before
 	public void setUp() {
+
 		feeStructure = new CmcMarketsBrokerageFees();
 	}
 
 	@Test
 	public void firstTieratFee() {
+
 		final BigDecimal fee = calculateFee(1000, 1);
 
 		verifyFee(11, fee);
@@ -64,6 +66,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test
 	public void firstTierEdgeFlatFee() {
+
 		final BigDecimal fee = calculateFee(1000, 10);
 
 		verifyFee(11, fee);
@@ -71,6 +74,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test
 	public void secondTierFlatFee() {
+
 		final BigDecimal fee = calculateFee(1000, 11);
 
 		verifyFee(9.9, fee);
@@ -78,6 +82,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test
 	public void secondTierEdgeFlatFee() {
+
 		final BigDecimal fee = calculateFee(1000, 30);
 
 		verifyFee(9.9, fee);
@@ -85,6 +90,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test
 	public void thirdTierFlatFee() {
+
 		final BigDecimal fee = calculateFee(1000, 31);
 
 		verifyFee(9.9, fee);
@@ -92,6 +98,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test
 	public void firstTierPercentageFee() {
+
 		final BigDecimal fee = calculateFee(54321, 1);
 
 		verifyFee(54.321, fee);
@@ -99,6 +106,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test
 	public void firstTierEdgePercentageFee() {
+
 		final BigDecimal fee = calculateFee(50000, 10);
 
 		verifyFee(50, fee);
@@ -106,6 +114,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test
 	public void secondTierPercentageFee() {
+
 		final BigDecimal fee = calculateFee(50000, 11);
 
 		verifyFee(40, fee);
@@ -113,6 +122,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test
 	public void secondTierEdgePercentageFee() {
+
 		final BigDecimal fee = calculateFee(50000, 30);
 
 		verifyFee(40, fee);
@@ -120,6 +130,7 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test
 	public void thirdTierPercentageFee() {
+
 		final BigDecimal fee = calculateFee(50000, 31);
 
 		verifyFee(37.5, fee);
@@ -127,24 +138,29 @@ public class CmcMarketsFeeStructureTest {
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassFuture() {
+
 		feeStructure.cost(BigDecimal.ZERO, EquityClass.FUTURE, 0);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassForex() {
+
 		feeStructure.cost(BigDecimal.ZERO, EquityClass.FOREX, 0);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassMetal() {
+
 		feeStructure.cost(BigDecimal.ZERO, EquityClass.METAL, 0);
 	}
 
 	private BigDecimal calculateFee( final double tradeValue, final int inclusiveNumberOfTrades ) {
+
 		return feeStructure.cost(BigDecimal.valueOf(tradeValue), EquityClass.STOCK, inclusiveNumberOfTrades);
 	}
 
 	private void verifyFee( final double expected, final BigDecimal fee ) {
+
 		assertEquals(String.format("Expected of %s != Fee of %s", expected, fee), 0,
 		        BigDecimal.valueOf(expected).compareTo(fee));
 	}

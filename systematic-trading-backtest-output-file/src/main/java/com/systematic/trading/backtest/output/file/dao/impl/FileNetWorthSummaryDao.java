@@ -51,8 +51,7 @@ public class FileNetWorthSummaryDao implements NetWorthSummaryDao {
 	/** The last net worth recording, which makes it into the summary. */
 	private NetWorthEvent lastEvent;
 
-	public FileNetWorthSummaryDao( final CumulativeReturnOnInvestment cumulativeRoi,
-	        final FileMultithreading file ) {
+	public FileNetWorthSummaryDao( final CumulativeReturnOnInvestment cumulativeRoi, final FileMultithreading file ) {
 		this.cumulativeRoi = cumulativeRoi;
 		this.file = file;
 

@@ -66,16 +66,19 @@ public class EventListenerOutput implements CashEventListener, OrderEventListene
 
 	@Override
 	public void event( final BrokerageEvent event ) {
+
 		brokerageEventListener.event(event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
+
 		orderEventListener.event(event);
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
+
 		cashEventListener.event(event);
 	}
 

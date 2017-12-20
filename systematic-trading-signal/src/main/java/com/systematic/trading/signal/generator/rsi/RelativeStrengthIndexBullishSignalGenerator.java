@@ -53,6 +53,7 @@ public class RelativeStrengthIndexBullishSignalGenerator extends RelativeStrengt
 
 	@Override
 	public SignalType type() {
+
 		return SignalType.BULLISH;
 	}
 
@@ -61,6 +62,7 @@ public class RelativeStrengthIndexBullishSignalGenerator extends RelativeStrengt
 	 * Has the RSI moved from below or on the over sold line to above it?
 	 */
 	protected boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today ) {
+
 		return today.compareTo(oversold) > 0 && yesterday.compareTo(oversold) <= 0;
 	}
 }

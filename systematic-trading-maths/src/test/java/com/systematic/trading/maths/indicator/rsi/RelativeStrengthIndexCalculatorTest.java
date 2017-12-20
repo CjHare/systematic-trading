@@ -73,6 +73,7 @@ public class RelativeStrengthIndexCalculatorTest {
 	 * Powershares QQQ Trust prices from 14 Dec 2009 to 1 Feb 2010.
 	 */
 	public void rsiExample() {
+
 		final RelativeStrengthLine rsData = createExampleRelativeStrengthValues();
 		setUpCalculator(rsData);
 		final TradingDayPrices[] data = new TradingDayPrices[] {};
@@ -97,6 +98,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNullInput() {
+
 		setUpValidationErrorNullInput();
 		setUpCalculator();
 
@@ -105,6 +107,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void startingWithNullDataPoint() {
+
 		setUpValidationErrorNoNullEntries();
 		setUpCalculator();
 
@@ -113,6 +116,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void endingWithNullDataPoint() {
+
 		setUpValidationErrorNoNullEntries();
 		setUpCalculator();
 
@@ -121,6 +125,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 	@Test
 	public void minimumNumberOfPrices() {
+
 		setUpCalculator();
 
 		final int minimumNumberOfPrices = calculator.minimumNumberOfPrices();
@@ -130,6 +135,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 	@SafeVarargs
 	private final void setUpCalculator( final RelativeStrengthLine... rsData ) {
+
 		if (rsData.length > 0) {
 			OngoingStubbing<RelativeStrengthLine> rsResponses = when(
 			        relativeStrength.calculate(any(TradingDayPrices[].class)));
@@ -143,12 +149,14 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data ) {
+
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyEnoughValues(data, 8);
 		verify(validator).verifyZeroNullEntries(data);
 	}
 
 	private void verifyRsi( final RelativeStrengthIndexLine rsi, final SortedMap<LocalDate, BigDecimal> expected ) {
+
 		assertNotNull(rsi);
 		assertNotNull(rsi.rsi());
 		assertEquals(expected.size(), rsi.rsi().size());
@@ -156,22 +164,27 @@ public class RelativeStrengthIndexCalculatorTest {
 	}
 
 	private void verifyRs( final TradingDayPrices[] prices ) {
+
 		verify(relativeStrength).calculate(prices);
 	}
 
 	private void setUpValidationErrorNoNullEntries() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 	}
 
 	private RelativeStrengthIndexLine rsi( final TradingDayPrices[] prices ) {
+
 		return calculator.calculate(prices);
 	}
 
 	private void setUpValidationErrorNullInput() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
 	private RelativeStrengthLine createExampleRelativeStrengthValues() {
+
 		final LocalDate[] dates = { LocalDate.of(2010, 1, 5), LocalDate.of(2010, 1, 6), LocalDate.of(2010, 1, 7),
 		        LocalDate.of(2010, 1, 8), LocalDate.of(2010, 1, 11), LocalDate.of(2010, 1, 12),
 		        LocalDate.of(2010, 1, 13), LocalDate.of(2010, 1, 14), LocalDate.of(2010, 1, 15),
@@ -187,6 +200,7 @@ public class RelativeStrengthIndexCalculatorTest {
 
 	private final SortedMap<LocalDate, BigDecimal> createRelativeStrengthValues( final LocalDate[] dates,
 	        final double[] value ) {
+
 		final SortedMap<LocalDate, BigDecimal> rs = new TreeMap<>();
 
 		for (int i = 0; i < dates.length; i++) {

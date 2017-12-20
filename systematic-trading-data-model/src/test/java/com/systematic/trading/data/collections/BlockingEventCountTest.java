@@ -47,16 +47,19 @@ public class BlockingEventCountTest {
 
 	@Test
 	public void add() {
+
 		create(1).add();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void addNoSpace() {
+
 		create(0).add();
 	}
 
 	@Test
 	public void addMore() throws InterruptedException {
+
 		final BlockingEventCount events = create(1);
 
 		addEvent(events);
@@ -66,6 +69,7 @@ public class BlockingEventCountTest {
 
 	@Test
 	public void addTwiceWithClean() throws InterruptedException {
+
 		final BlockingEventCount events = create(1);
 
 		addEvent(events);
@@ -76,10 +80,12 @@ public class BlockingEventCountTest {
 	}
 
 	private BlockingEventCount create( final int size ) {
+
 		return new BlockingEventCountQueue(size, EXPIRY);
 	}
 
 	private void addEvent( final BlockingEventCount ringBuffer ) throws InterruptedException {
+
 		final Thread expectedImmediateAdd = new Thread(() -> {
 			ringBuffer.add();
 		});
@@ -96,11 +102,13 @@ public class BlockingEventCountTest {
 	 * Blocks until all the entries are expired then cleans the bufferRing.
 	 */
 	private void cleanRingBuffer( final BlockingEventCount ringBuffer ) throws InterruptedException {
+
 		TimeUnit.MILLISECONDS.sleep(110);
 		ringBuffer.clean();
 	}
 
 	private void addExpectingBlocking( final BlockingEventCount ringBuffer ) throws InterruptedException {
+
 		final Thread expectedToWait = new Thread(() -> {
 			ringBuffer.add();
 		});

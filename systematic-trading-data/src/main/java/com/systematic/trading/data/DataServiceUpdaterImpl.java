@@ -130,14 +130,17 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	}
 
 	private boolean isTimeSeriesDataService( final DataServiceType type ) {
+
 		return StringUtils.equals("time-series", type.type());
 	}
 
 	private boolean isTablesDataService( final DataServiceType type ) {
+
 		return StringUtils.equals("tables", type.type());
 	}
 
 	private void ensureAllRetrievalRequestsProcessed( final String tickerSymbol ) throws CannotRetrieveDataException {
+
 		final List<HistoryRetrievalRequest> remainingRequests = getOutstandingHistoryRetrievalRequests(tickerSymbol);
 		if (!remainingRequests.isEmpty()) {
 			throw new CannotRetrieveDataException("Failed to retrieve all the required data");
@@ -149,6 +152,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 */
 	private void processHistoryRetrievalRequests( final List<HistoryRetrievalRequest> requests )
 	        throws CannotRetrieveDataException {
+
 		final ExecutorService pool = Executors.newFixedThreadPool(api.maximumConcurrentConnections());
 		final BlockingEventCount activeConnectionCount = new BlockingEventCountQueue(api.maximumConnectionsPerSecond(),
 		        THROTTLER_CLEAN_INTERVAL);
@@ -193,6 +197,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private void shutdown( final ExecutorService pool, final List<HistoryRetrievalRequest> requests )
 	        throws CannotRetrieveDataException {
+
 		final int timeout = requests.size() * api.maximumRetrievalTimeSeconds();
 		pool.shutdown();
 
@@ -210,6 +215,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	 * Spawns a daemon thread to perform the periodic (every second) clean of the event count.
 	 */
 	private EventCountCleanUp startEventCountCleaner( final BlockingEventCount eventCount ) {
+
 		final EventCountCleanUp throttlerCleanUp = new EventCountCleanUp(eventCount, THROTTLER_CLEAN_INTERVAL);
 		final Thread cleanUp = new Thread(throttlerCleanUp);
 		cleanUp.setDaemon(true);
@@ -219,27 +225,33 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private void lodgeOnlyNeededHistoryRetrievalRequests( final String equityDataset, final String tickerSymbol,
 	        final LocalDate startDate, final LocalDate endDate ) {
+
 		lodge(merge(filter(slice(equityDataset, tickerSymbol, startDate, endDate))));
 	}
 
 	private void lodge( final List<HistoryRetrievalRequest> requests ) {
+
 		pendingRetrievalRequestDao.create(requests);
 	}
 
 	private List<HistoryRetrievalRequest> getOutstandingHistoryRetrievalRequests( final String tickerSymbol ) {
+
 		return pendingRetrievalRequestDao.requests(tickerSymbol);
 	}
 
 	private List<HistoryRetrievalRequest> slice( final String equityDataset, final String tickerSymbol,
 	        final LocalDate startDate, final LocalDate endDate ) {
+
 		return historyRetrievalRequestSlicer.slice(equityDataset, tickerSymbol, startDate, endDate);
 	}
 
 	private List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> requests ) {
+
 		return unecessaryRequestFilter.filter(requests);
 	}
 
 	private List<HistoryRetrievalRequest> merge( final List<HistoryRetrievalRequest> requests ) {
+
 		return historyRetrievalRequestMerger.merge(requests, api.maximumDurationPerConnection());
 	}
 }

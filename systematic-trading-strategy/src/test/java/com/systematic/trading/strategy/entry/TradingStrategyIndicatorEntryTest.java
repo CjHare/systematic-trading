@@ -65,12 +65,14 @@ public class TradingStrategyIndicatorEntryTest {
 
 	@Before
 	public void setUp() {
+
 		entry = new TradingStrategyIndicatorEntry(indicator);
 		setUpIndicator();
 	}
 
 	@Test
 	public void tradingDataPoints() {
+
 		setUpTradingDataPoints(7);
 
 		final int requiredPriceDataPoints = entry.requiredTradingPrices();
@@ -81,6 +83,7 @@ public class TradingStrategyIndicatorEntryTest {
 
 	@Test
 	public void analyse() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[5];
 
 		final List<DatedSignal> analysis = analyse(data);
@@ -90,30 +93,37 @@ public class TradingStrategyIndicatorEntryTest {
 	}
 
 	private void setUpTradingDataPoints( final int dataPoints ) {
+
 		when(indicator.requiredTradingPrices()).thenReturn(dataPoints);
 	}
 
 	private void setUpIndicator() {
+
 		when(indicator.analyse(any(TradingDayPrices[].class))).thenReturn(expectedAnalysis);
 	}
 
 	private List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+
 		return entry.analyse(data);
 	}
 
 	private void verifyAnalysis( final List<DatedSignal> analysis ) {
+
 		assertEquals(expectedAnalysis, analysis);
 	}
 
 	private void verifyPriceDataPoints( final int expected, final int actual ) {
+
 		assertEquals(expected, actual);
 	}
 
 	private void verifyTradingDataPointsDelegation() {
+
 		verify(indicator).requiredTradingPrices();
 	}
 
 	private void verifyAnalysisDelegation( final TradingDayPrices[] data ) {
+
 		verify(indicator).analyse(data);
 	}
 }

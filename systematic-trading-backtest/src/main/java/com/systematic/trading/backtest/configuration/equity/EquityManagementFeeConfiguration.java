@@ -20,10 +20,12 @@ public enum EquityManagementFeeConfiguration {
 	}
 
 	public BigDecimal[] feeRange() {
+
 		return feeRange;
 	}
 
 	public BigDecimal[] percentageFee() {
+
 		return percentageFee;
 	}
 }

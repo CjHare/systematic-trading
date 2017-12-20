@@ -74,10 +74,12 @@ public class IntegerConfigurationValidator implements ConfigurationValidator<Int
 	}
 
 	private boolean isOutsideRange( final int value ) {
+
 		return value < minimumInclusive || value > maximumInclusive;
 	}
 
 	private void verifyMinimumLessThenMaximum() {
+
 		if (minimumInclusive > maximumInclusive) {
 			throw new IllegalArgumentException(
 			        String.format("Minimum is expected to be less then the maximum, minumum: %s, maximum: %s",

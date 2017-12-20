@@ -78,6 +78,7 @@ public class TradingStrategyConfirmationEntry implements Entry {
 	}
 
 	private boolean hasSignals( final List<DatedSignal> signals ) {
+
 		return !signals.isEmpty();
 	}
 
@@ -97,7 +98,8 @@ public class TradingStrategyConfirmationEntry implements Entry {
 
 	@Override
 	public int requiredTradingPrices() {
-		return Math.max(anchorIndicator.requiredTradingPrices(),
-		        confirmationIndicator.requiredTradingPrices()) + confirmation.requiredTradingPrices();
+
+		return Math.max(anchorIndicator.requiredTradingPrices(), confirmationIndicator.requiredTradingPrices())
+		        + confirmation.requiredTradingPrices();
 	}
 }

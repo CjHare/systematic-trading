@@ -50,6 +50,7 @@ public class EquityOrderVolume {
 	 * @return equivalent volume.
 	 */
 	public static EquityOrderVolume valueOf( final BigDecimal volume ) {
+
 		if (volume == null) {
 			throw new IllegalArgumentException("null is not accepted by OrderVolume.valueOf()");
 		}
@@ -63,21 +64,25 @@ public class EquityOrderVolume {
 	 * @return volume of the order, never <code>null</code>.
 	 */
 	public BigDecimal getVolume() {
+
 		return volume;
 	}
 
 	@Override
 	public String toString() {
+
 		return String.valueOf(volume);
 	}
 
 	@Override
 	public boolean equals( final Object obj ) {
+
 		return obj instanceof EquityOrderVolume && getVolume().equals(((EquityOrderVolume) obj).getVolume());
 	}
 
 	@Override
 	public int hashCode() {
+
 		int result = 1;
 		result = PRIME_VALUE * result + ((volume == null) ? 0 : volume.hashCode());
 		return result;

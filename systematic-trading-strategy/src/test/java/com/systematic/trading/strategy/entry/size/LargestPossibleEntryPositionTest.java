@@ -69,6 +69,7 @@ public class LargestPossibleEntryPositionTest {
 
 	@Before
 	public void setUp() {
+
 		entrySize = new LargestPossibleEntryPosition(minimum, maximum);
 	}
 
@@ -77,6 +78,7 @@ public class LargestPossibleEntryPositionTest {
 	 * No position when below the minimum
 	 */
 	public void belowMinimm() {
+
 		setUpCashAccount(10);
 		setUpMinimumBounds(55);
 
@@ -90,6 +92,7 @@ public class LargestPossibleEntryPositionTest {
 
 	@Test
 	public void onMinimumBelowMaximum() {
+
 		setUpCashAccount(32);
 		setUpMinimumBounds(32);
 		setUpMaximumBounds(100);
@@ -104,6 +107,7 @@ public class LargestPossibleEntryPositionTest {
 
 	@Test
 	public void aboveMinimumBelowMaximum() {
+
 		setUpCashAccount(45);
 		setUpMinimumBounds(20);
 		setUpMaximumBounds(90);
@@ -118,6 +122,7 @@ public class LargestPossibleEntryPositionTest {
 
 	@Test
 	public void aboveMinimumAboveMaximum() {
+
 		setUpCashAccount(125);
 		setUpMinimumBounds(40);
 		setUpMaximumBounds(80);
@@ -132,6 +137,7 @@ public class LargestPossibleEntryPositionTest {
 
 	@Test
 	public void minimumAboveMaximum() {
+
 		setUpCashAccount(125);
 		setUpMinimumBounds(100);
 		setUpMaximumBounds(50);
@@ -146,6 +152,7 @@ public class LargestPossibleEntryPositionTest {
 
 	@Test
 	public void minimumNegative() {
+
 		setUpCashAccount(125);
 		setUpMinimumBounds(-1);
 		setUpMaximumBounds(50);
@@ -160,6 +167,7 @@ public class LargestPossibleEntryPositionTest {
 
 	@Test
 	public void maximumNegative() {
+
 		setUpCashAccount(125);
 		setUpMinimumBounds(24);
 		setUpMaximumBounds(-1);
@@ -173,41 +181,50 @@ public class LargestPossibleEntryPositionTest {
 	}
 
 	private void verifyPosition( final double expected, final BigDecimal actual ) {
+
 		assertBigDecimalEquals(expected, actual);
 	}
 
 	private void verifyGetBalance() {
+
 		verify(cashAccount, atLeastOnce()).balance();
 		verifyNoMoreInteractions(cashAccount);
 	}
 
 	private void verifyMinimumBounds( final double expected ) {
+
 		verify(minimum).bounds(BigDecimalMatcher.argumentMatches(expected));
 		verifyNoMoreInteractions(minimum);
 	}
 
 	private void verifyMaximumBounds( final double expected ) {
+
 		verify(maximum).bounds(BigDecimalMatcher.argumentMatches(expected));
 		verifyNoMoreInteractions(maximum);
 	}
 
 	private void verifyNoMaximumBounds() {
+
 		verifyZeroInteractions(maximum);
 	}
 
 	private BigDecimal entryPosition() {
+
 		return entrySize.entryPositionSize(cashAccount);
 	}
 
 	private void setUpCashAccount( final double balance ) {
+
 		when(cashAccount.balance()).thenReturn(BigDecimal.valueOf(balance));
 	}
 
 	private void setUpMinimumBounds( final double amount ) {
+
 		when(minimum.bounds(any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(amount));
 	}
 
 	private void setUpMaximumBounds( final double amount ) {
+
 		when(maximum.bounds(any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(amount));
 	}
 }

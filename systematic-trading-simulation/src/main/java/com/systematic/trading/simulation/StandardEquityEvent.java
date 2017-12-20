@@ -46,22 +46,27 @@ public abstract class StandardEquityEvent {
 	}
 
 	public BigDecimal startingEquityBalance() {
+
 		return startingEquityBalance;
 	}
 
 	public BigDecimal endEquityBalance() {
+
 		return endEquityBalance;
 	}
 
 	public BigDecimal equityValue() {
+
 		return equityalue;
 	}
 
 	public BigDecimal equityAmount() {
+
 		return equityAmount;
 	}
 
 	public LocalDate transactionDate() {
+
 		return transactionDate;
 	}
 }

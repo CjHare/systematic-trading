@@ -70,6 +70,7 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 	}
 
 	private void notifyListeners( final ReturnOnInvestmentEvent event ) {
+
 		for (final ReturnOnInvestmentEventListener listener : listeners) {
 			listener.event(event);
 		}
@@ -77,6 +78,7 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 
 	@Override
 	public void addListener( final ReturnOnInvestmentEventListener listener ) {
+
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}

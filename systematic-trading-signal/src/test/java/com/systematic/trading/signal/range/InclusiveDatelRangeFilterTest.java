@@ -51,11 +51,13 @@ public class InclusiveDatelRangeFilterTest {
 
 	@Before
 	public void setUp() {
+
 		filter = new InclusiveDatelRangeFilter();
 	}
 
 	@Test
 	public void tooEarly() {
+
 		final LocalDate earliestInclusiveDate = LocalDate.ofEpochDay(6);
 		final LocalDate latestInclusiveDate = LocalDate.ofEpochDay(100);
 		final LocalDate candidate = LocalDate.ofEpochDay(5);
@@ -67,6 +69,7 @@ public class InclusiveDatelRangeFilterTest {
 
 	@Test
 	public void tooLate() {
+
 		final LocalDate earliestInclusiveDate = LocalDate.ofEpochDay(6);
 		final LocalDate latestInclusiveDate = LocalDate.ofEpochDay(100);
 		final LocalDate candidate = LocalDate.ofEpochDay(101);
@@ -78,6 +81,7 @@ public class InclusiveDatelRangeFilterTest {
 
 	@Test
 	public void earliestAcceptable() {
+
 		final LocalDate earliestInclusiveDate = LocalDate.ofEpochDay(6);
 		final LocalDate latestInclusiveDate = LocalDate.ofEpochDay(100);
 		final LocalDate candidate = earliestInclusiveDate;
@@ -89,6 +93,7 @@ public class InclusiveDatelRangeFilterTest {
 
 	@Test
 	public void latestAcceptable() {
+
 		final LocalDate earliestInclusiveDate = LocalDate.ofEpochDay(6);
 		final LocalDate latestInclusiveDate = LocalDate.ofEpochDay(100);
 		final LocalDate candidate = latestInclusiveDate;
@@ -100,6 +105,7 @@ public class InclusiveDatelRangeFilterTest {
 
 	private boolean isWithinSignalRange( final LocalDate earliestInclusiveDate, final LocalDate latestInclusiveDate,
 	        final LocalDate candidate ) {
+
 		return filter.isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);
 	}
 }

@@ -48,16 +48,19 @@ public class NetwothTest {
 
 	@Before
 	public void setUp() {
+
 		networth = new Networth();
 	}
 
 	@Test
 	public void get() {
+
 		assertBigDecimalEquals(0, getNetworth());
 	}
 
 	@Test
 	public void reset() {
+
 		addValue(1);
 
 		networth.reset();
@@ -67,6 +70,7 @@ public class NetwothTest {
 
 	@Test
 	public void add() {
+
 		final double value = 1.234567;
 
 		addValue(value);
@@ -76,6 +80,7 @@ public class NetwothTest {
 
 	@Test
 	public void addEquity() {
+
 		addEquity(1.234567, 9876.21);
 
 		assertBigDecimalEquals(12192.84, getNetworth());
@@ -83,6 +88,7 @@ public class NetwothTest {
 
 	@Test
 	public void addTwoValues() {
+
 		addValue(1.234567);
 		addValue(34.234567);
 
@@ -91,6 +97,7 @@ public class NetwothTest {
 
 	@Test
 	public void percetageChangeNone() {
+
 		final Networth endNetworth = setUpNetworth(0);
 		final Networth adjustment = setUpNetworth(0);
 
@@ -101,6 +108,7 @@ public class NetwothTest {
 
 	@Test
 	public void percetageChangeNoneWithAdjustment() {
+
 		final Networth endNetworth = setUpNetworth(1);
 		final Networth adjustment = setUpNetworth(1);
 
@@ -111,6 +119,7 @@ public class NetwothTest {
 
 	@Test
 	public void percetageChange() {
+
 		final Networth endNetworth = setUpNetworth(3.1234567);
 		final Networth adjustment = setUpNetworth(1);
 		addValue(1);
@@ -121,24 +130,29 @@ public class NetwothTest {
 	}
 
 	private BigDecimal getNetworth() {
+
 		return networth.get();
 	}
 
 	private BigDecimal percentageChange( final Networth endNetworth, final Networth adjustment ) {
+
 		return networth.percentageChange(endNetworth, adjustment);
 	}
 
 	private Networth setUpNetworth( final double networth ) {
+
 		final Networth worth = new Networth();
 		worth.add(BigDecimal.valueOf(networth));
 		return worth;
 	}
 
 	private void addValue( final double value ) {
+
 		networth.add(BigDecimal.valueOf(value));
 	}
 
 	private void addEquity( final double quantity, final double price ) {
+
 		networth.addEquity(BigDecimal.valueOf(quantity), BigDecimal.valueOf(price));
 	}
 }

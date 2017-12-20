@@ -45,6 +45,7 @@ public class OpeningPrice extends Price {
 	 * @return equivalent opening price for the given decimal.
 	 */
 	public static OpeningPrice valueOf( final BigDecimal amount ) {
+
 		if (amount == null) {
 			throw new IllegalArgumentException("null is not accepted by OpeningPrice.valueOf()");
 		}

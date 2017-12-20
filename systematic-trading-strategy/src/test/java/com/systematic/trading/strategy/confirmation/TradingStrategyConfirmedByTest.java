@@ -50,6 +50,7 @@ public class TradingStrategyConfirmedByTest {
 
 	@Test
 	public void requiredTradingPrices() {
+
 		setUpConfirmBy(1, 5);
 
 		final int pricePoints = priceDataPoints();
@@ -59,6 +60,7 @@ public class TradingStrategyConfirmedByTest {
 
 	@Test
 	public void requiredTradingPricesSwitch() {
+
 		setUpConfirmBy(2, 3);
 
 		final int pricePoints = priceDataPoints();
@@ -68,6 +70,7 @@ public class TradingStrategyConfirmedByTest {
 
 	@Test
 	public void confirmationTooEarly() {
+
 		final DatedSignal anchor = signal(LocalDate.of(2015, 2, 18));
 		final DatedSignal confirmation = signal(LocalDate.of(2015, 2, 19));
 		setUpConfirmBy(3, 2);
@@ -79,6 +82,7 @@ public class TradingStrategyConfirmedByTest {
 
 	@Test
 	public void confirmationTooLate() {
+
 		final DatedSignal anchor = signal(LocalDate.of(2015, 2, 18));
 		final DatedSignal confirmation = signal(LocalDate.of(2015, 2, 24));
 		setUpConfirmBy(3, 2);
@@ -90,6 +94,7 @@ public class TradingStrategyConfirmedByTest {
 
 	@Test
 	public void earliestConfirmationDate() {
+
 		final DatedSignal anchor = signal(LocalDate.of(2015, 2, 18));
 		final DatedSignal confirmation = signal(LocalDate.of(2015, 2, 20));
 		setUpConfirmBy(3, 2);
@@ -101,6 +106,7 @@ public class TradingStrategyConfirmedByTest {
 
 	@Test
 	public void latestConfirmationDate() {
+
 		final DatedSignal anchor = signal(LocalDate.of(2015, 2, 18));
 		final DatedSignal confirmation = signal(LocalDate.of(2015, 2, 23));
 		setUpConfirmBy(3, 2);
@@ -111,22 +117,27 @@ public class TradingStrategyConfirmedByTest {
 	}
 
 	private DatedSignal signal( final LocalDate date ) {
+
 		return new DatedSignal(date, SignalType.BULLISH);
 	}
 
 	private int priceDataPoints() {
+
 		return confirmBy.requiredTradingPrices();
 	}
 
 	private void setUpConfirmBy( final int confirmationDayRange, final int delayUntilConfirmationRange ) {
+
 		confirmBy = new TradingStrategyConfirmedBy(confirmationDayRange, delayUntilConfirmationRange);
 	}
 
 	private void verifyNoConfirmation( final boolean actual ) {
+
 		assertEquals(false, actual);
 	}
 
 	private void verifyConfirmation( final boolean actual ) {
+
 		assertEquals(true, actual);
 	}
 }

@@ -47,5 +47,6 @@ public interface DataServiceUpdater {
 	 * @param endDate the inclusive end date, of the required data set.
 	 * @throws ServiceException problem has been encountered during the data retrieval.
 	 */
-	void get( String equityDataset, String tickerSymbol, LocalDate startDate, LocalDate endDate ) throws ServiceException;
+	void get( String equityDataset, String tickerSymbol, LocalDate startDate, LocalDate endDate )
+	        throws ServiceException;
 }

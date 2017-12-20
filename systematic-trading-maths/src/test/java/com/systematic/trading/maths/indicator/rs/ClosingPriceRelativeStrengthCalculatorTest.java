@@ -64,6 +64,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	@Test
 	public void rsIncreasing() {
+
 		final int lookback = 4;
 		final TradingDayPrices[] data = createIncreasingPrices();
 		setUpCalculator(lookback);
@@ -82,6 +83,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	 * We only get an RS value AFTER there is at least one gain.
 	 */
 	public void rsDecreasing() {
+
 		final int lookback = 4;
 		final TradingDayPrices[] data = createDecreasingPrices();
 		setUpCalculator(lookback);
@@ -97,6 +99,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	@Test
 	public void rsFlat() {
+
 		final int lookback = 5;
 		final TradingDayPrices[] data = createFlatPrices();
 		setUpCalculator(lookback);
@@ -112,6 +115,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	@Test
 	public void rsIncreasingThenDecreasing() {
+
 		final int lookback = 6;
 		setUpCalculator(lookback);
 		final TradingDayPrices[] data = createIncreasingThenDecreasingPrices();
@@ -133,6 +137,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	 * Powershares QQQ Trust prices from 14 Dec 2009 to 1 Feb 2010.
 	 */
 	public void rsExample() {
+
 		final int lookback = 14;
 		final TradingDayPrices[] data = createExampleRelativeStrength();
 		setUpCalculator(lookback);
@@ -155,6 +160,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void rsNullEntires() {
+
 		setUpValidationErrorNullEntries();
 		setUpCalculator(1);
 
@@ -163,6 +169,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void rsNotEnoughDataPoints() {
+
 		setUpValidationErrorEnoughValues();
 		setUpCalculator(4);
 
@@ -171,6 +178,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void rsNullInput() {
+
 		setUpValidationErrorNullInput();
 		setUpCalculator(1);
 
@@ -179,6 +187,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	@Test
 	public void minimumNumberOfPrices() {
+
 		setUpCalculator(14, 2);
 
 		final int minimumNumberOfPrices = calculator.minimumNumberOfPrices();
@@ -187,27 +196,33 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	}
 
 	private RelativeStrengthLine rs( final TradingDayPrices[] data ) {
+
 		return calculator.calculate(data);
 	}
 
 	private void setUpValidationErrorEnoughValues() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
 		        anyInt());
 	}
 
 	private void setUpValidationErrorNullEntries() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 	}
 
 	private void setUpCalculator( final int lookback ) {
+
 		setUpCalculator(lookback, 0);
 	}
 
 	private void setUpCalculator( final int lookback, final int additionalRsiValues ) {
+
 		calculator = new ClosingPriceRelativeStrengthCalculator(lookback, additionalRsiValues, validator);
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int lookback ) {
+
 		verify(validator).verifyGreaterThan(1, lookback);
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyZeroNullEntries(data);
@@ -215,6 +230,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	}
 
 	private void verifyRs( final RelativeStrengthLine rs, final SortedMap<LocalDate, BigDecimal> expected ) {
+
 		assertNotNull(rs);
 		assertNotNull(rs.rs());
 		assertEquals(expected.size(), rs.rs().size());
@@ -222,6 +238,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	}
 
 	private void setUpValidationErrorNullInput() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
@@ -229,6 +246,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	 * Fifteen days of prices, with the price increase then decreasing after the seventh day, starting at LocalDate.of(2017, 10, 2)
 	 */
 	private TradingDayPrices[] createIncreasingThenDecreasingPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2017, 10, 2), LocalDate.of(2017, 10, 3), LocalDate.of(2017, 10, 4),
 		        LocalDate.of(2017, 10, 5), LocalDate.of(2017, 10, 6), LocalDate.of(2017, 10, 9),
 		        LocalDate.of(2017, 10, 10), LocalDate.of(2017, 10, 11), LocalDate.of(2017, 10, 12),
@@ -243,6 +261,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	 * Ten days of prices containing no change in the price, starting at LocalDate.of(2017, 7, 10)
 	 */
 	private TradingDayPrices[] createFlatPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2017, 7, 10), LocalDate.of(2017, 7, 11), LocalDate.of(2017, 7, 12),
 		        LocalDate.of(2017, 7, 13), LocalDate.of(2017, 7, 14), LocalDate.of(2017, 7, 17),
 		        LocalDate.of(2017, 7, 18), LocalDate.of(2017, 7, 19), LocalDate.of(2017, 7, 20),
@@ -256,6 +275,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	 * Ten closing prices that start increasing after the forth entry, starting at LocalDate.of(2017, 9, 18).
 	 */
 	private TradingDayPrices[] createIncreasingPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2017, 9, 18), LocalDate.of(2017, 9, 19), LocalDate.of(2017, 9, 20),
 		        LocalDate.of(2017, 9, 21), LocalDate.of(2017, 9, 22), LocalDate.of(2017, 9, 25),
 		        LocalDate.of(2017, 9, 26), LocalDate.of(2017, 9, 27), LocalDate.of(2017, 9, 28),
@@ -269,6 +289,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	 * Ten closing prices that start decreasing after the forth entry, starting at LocalDate.of(2017, 9, 18).
 	 */
 	private TradingDayPrices[] createDecreasingPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2017, 9, 18), LocalDate.of(2017, 9, 19), LocalDate.of(2017, 9, 20),
 		        LocalDate.of(2017, 9, 21), LocalDate.of(2017, 9, 22), LocalDate.of(2017, 9, 25),
 		        LocalDate.of(2017, 9, 26), LocalDate.of(2017, 9, 27), LocalDate.of(2017, 9, 28),
@@ -282,6 +303,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	 * Thirty three days of QQQQ (Powershares QQQ Trust) closing prices starting from LocalDate.of(2009,12,14).
 	 */
 	private TradingDayPrices[] createExampleRelativeStrength() {
+
 		final LocalDate[] dates = { LocalDate.of(2009, 12, 14), LocalDate.of(2009, 12, 15), LocalDate.of(2009, 12, 16),
 		        LocalDate.of(2009, 12, 17), LocalDate.of(2009, 12, 18), LocalDate.of(2009, 12, 21),
 		        LocalDate.of(2009, 12, 22), LocalDate.of(2009, 12, 23), LocalDate.of(2009, 12, 24),
@@ -302,6 +324,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	}
 
 	private TradingDayPrices[] createPrices( final LocalDate[] dates, final double[] close ) {
+
 		final TradingDayPrices[] data = new TradingDayPrices[dates.length];
 
 		// Only close values are used in RS calculations

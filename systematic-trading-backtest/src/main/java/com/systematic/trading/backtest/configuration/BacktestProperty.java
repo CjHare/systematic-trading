@@ -46,6 +46,7 @@ public enum BacktestProperty {
 	}
 
 	public String key() {
+
 		return key;
 	}
 }

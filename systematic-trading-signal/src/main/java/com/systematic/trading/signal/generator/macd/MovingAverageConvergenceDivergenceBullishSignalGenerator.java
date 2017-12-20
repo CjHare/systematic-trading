@@ -52,6 +52,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 
 	@Override
 	public SignalType type() {
+
 		return SignalType.BULLISH;
 	}
 
@@ -86,6 +87,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 	 */
 	private boolean isBullishSignal( final BigDecimal todayMacd, final BigDecimal yesterdayMacd,
 	        final BigDecimal todaySignalLine, final BigDecimal yesterdaySignalLine ) {
+
 		return crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
 		        || crossingOrigin(yesterdayMacd, todayMacd);
 	}
@@ -96,23 +98,28 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 	 */
 	private boolean crossingSignalLine( final BigDecimal yesterdayMacd, final BigDecimal todayMacd,
 	        final BigDecimal yesterdaySignalLine, final BigDecimal todaySignalLine ) {
+
 		return isHigher(todayMacd, yesterdayMacd) && isEvenOrHigher(todayMacd, todaySignalLine)
 		        && isHigher(yesterdaySignalLine, yesterdayMacd);
 	}
 
 	private boolean isHigher( final BigDecimal today, final BigDecimal yesterday ) {
+
 		return today.compareTo(yesterday) > 0;
 	}
 
 	private boolean isEvenOrHigher( final BigDecimal today, final BigDecimal yesterday ) {
+
 		return today.compareTo(yesterday) >= 0;
 	}
 
 	private boolean isEvenOrLower( final BigDecimal today, final BigDecimal yesterday ) {
+
 		return today.compareTo(yesterday) <= 0;
 	}
 
 	private boolean crossingOrigin( final BigDecimal yesterdayMacd, final BigDecimal todayMacd ) {
+
 		return isHigher(todayMacd, yesterdayMacd) && isEvenOrHigher(todayMacd, BigDecimal.ZERO)
 		        && isEvenOrLower(yesterdayMacd, BigDecimal.ZERO);
 	}

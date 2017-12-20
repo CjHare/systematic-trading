@@ -41,6 +41,7 @@ public class ZeroEquityManagementFeeCalculator implements EquityManagementFeeCal
 	@Override
 	public BigDecimal calculate( final BigDecimal numberOfEquities, final ClosingPrice singleEquityValue,
 	        final Period durationToCalculate ) {
+
 		return BigDecimal.ZERO;
 	}
 }

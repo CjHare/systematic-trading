@@ -40,11 +40,13 @@ public interface BacktestEventListenerPreparation {
 	 * Opportunity for performing any once off set up for the output.
 	 */
 	default void setUp() {
+
 	}
 
 	/**
 	 * Opportunity for performing any once off tear down for the output.
 	 */
 	default void tearDown() {
+
 	}
 }

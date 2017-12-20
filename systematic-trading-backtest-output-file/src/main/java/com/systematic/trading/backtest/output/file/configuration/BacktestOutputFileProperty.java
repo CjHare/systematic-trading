@@ -45,6 +45,7 @@ public enum BacktestOutputFileProperty {
 	}
 
 	public String key() {
+
 		return key;
 	}
 }

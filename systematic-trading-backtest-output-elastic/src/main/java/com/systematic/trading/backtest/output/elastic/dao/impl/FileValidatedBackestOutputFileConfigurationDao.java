@@ -47,6 +47,7 @@ import com.systematic.trading.exception.ConfigurationValidationException;
  * @author CJ Hare
  */
 public class FileValidatedBackestOutputFileConfigurationDao implements BackestOutputFileConfigurationDao {
+
 	private static final String BACKTEST_OUTPUT_ELASTIC_PROPERTIES_FILE = "backtest_output_elastic.properties";
 
 	private final ConfigurationValidator<Integer> numberOfConnectionsValidator;
@@ -64,10 +65,11 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 	@Override
 	public BackestOutputElasticConfiguration configuration()
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+
 		final Properties properties = new FileConfigurationDao().configuration(BACKTEST_OUTPUT_ELASTIC_PROPERTIES_FILE);
 
-		final int numberOfConnections = integerProperty(properties,
-		        BacktestOutputElasticProperty.NUMBER_OF_CONNECTIONS, numberOfConnectionsValidator);
+		final int numberOfConnections = integerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_CONNECTIONS,
+		        numberOfConnectionsValidator);
 		final int numberOfShards = integerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_SHARDS,
 		        numberOfShardsValidator);
 		final int numberOfReplicas = integerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_REPLICAS,
@@ -81,10 +83,12 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 
 	private int integerProperty( final Properties properties, final BacktestOutputElasticProperty property,
 	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
+
 		return validator.validate(property(properties, property));
 	}
 
 	private String property( final Properties properties, final BacktestOutputElasticProperty property ) {
+
 		return properties.getProperty(property.key());
 	}
 }

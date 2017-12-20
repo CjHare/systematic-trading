@@ -66,18 +66,22 @@ public class ElasticBulkApiMetaDataRequestResource {
 	}
 
 	public String getAction() {
+
 		return action;
 	}
 
 	public String getIndex() {
+
 		return index;
 	}
 
 	public String getType() {
+
 		return type;
 	}
 
 	public String getId() {
+
 		return id;
 	}
 }

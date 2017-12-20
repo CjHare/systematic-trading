@@ -39,6 +39,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RandomStringGenerator {
 
 	public static String generate() {
+
 		final int leftLimit = 97; // letter 'a'
 		final int rightLimit = 122; // letter 'z'
 		final int range = rightLimit - leftLimit;

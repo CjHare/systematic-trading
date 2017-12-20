@@ -44,7 +44,7 @@ import com.systematic.trading.data.price.OpeningPrice;
 public class TradingDayPricesParser {
 
 	public TradingDayPrices tradingPrices( final String tickerSymbol, final Object uncast ) {
-		
+
 		final Object[] data = (Object[]) uncast;
 		final LocalDate date = date(data[0]);
 
@@ -57,10 +57,12 @@ public class TradingDayPricesParser {
 	}
 
 	private LocalDate date( final Object o ) {
+
 		return Date.valueOf(o.toString()).toLocalDate();
 	}
 
 	private BigDecimal bigDecimal( final Object o ) {
+
 		return BigDecimal.valueOf(Double.valueOf(o.toString()));
 	}
 }

@@ -96,6 +96,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void outputType() {
+
 		final String outputType = "elastic_search";
 		final Map<ArgumentKey, String> launchArguments = getArgumentMap(outputType);
 		setUpArgumentMap(outputType);
@@ -109,6 +110,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void fileOutputDirectory() {
+
 		final String outputDirectory = "../../simulations";
 		final String outputType = "no_display";
 		final Map<ArgumentKey, String> launchArguments = getArgumentMap(outputType, outputDirectory);
@@ -123,6 +125,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void openingFunds() {
+
 		final String outputDirectory = "../../simulations";
 		final String outputType = "no_display";
 		final String openingFunds = "101.67";
@@ -138,6 +141,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void outputArgumentException() {
+
 		final String outputType = "unmatched output type";
 		final Map<ArgumentKey, String> launchArguments = getArgumentMap(outputType);
 		setUpOutputArgumentException();
@@ -150,6 +154,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void fileOutputDirectoryException() {
+
 		final String outputType = "unmatched output type";
 		final Map<ArgumentKey, String> launchArguments = getArgumentMap(outputType);
 		setUpDirectoryArgumentException();
@@ -161,6 +166,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void openingFundsException() {
+
 		final String outputType = "unmatched output type";
 		final Map<ArgumentKey, String> launchArguments = getArgumentMap(outputType);
 		setUpOpeningFundsArgumentException();
@@ -170,6 +176,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void startDate() {
+
 		final LocalDate today = LocalDate.now();
 		setUpStartDate(today);
 
@@ -181,6 +188,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void endDate() {
+
 		final LocalDate today = LocalDate.now();
 		setUpEndDate(today);
 
@@ -192,6 +200,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void dataService() {
+
 		final String serviceName = "identity of the data service";
 		setUpDataService(serviceName);
 
@@ -202,6 +211,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void equityDataSet() {
+
 		final String serviceName = "identity of the data set";
 		setUpEquityDataSet(serviceName);
 
@@ -212,6 +222,7 @@ public class BacktestLaunchArgumentsTest {
 
 	@Test
 	public void ticketSymbol() {
+
 		final String tickerSymbol = "SYMBOL";
 		setUpTickerSymbol(tickerSymbol);
 
@@ -221,27 +232,33 @@ public class BacktestLaunchArgumentsTest {
 	}
 
 	private void setUpStartDate( final LocalDate startDate ) {
+
 		when(startDateArgument.get(anyMapOf(ArgumentKey.class, String.class)))
 		        .thenReturn(new BacktestStartDate(startDate));
 	}
 
 	private void setUpEndDate( final LocalDate startDate ) {
+
 		when(endDateArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(new BacktestEndDate(startDate));
 	}
 
 	private void setUpTickerSymbol( final String serviceName ) {
+
 		when(equityArguments.tickerSymbol()).thenReturn(new TickerSymbol(serviceName));
 	}
 
 	private void setUpDataService( final String serviceName ) {
+
 		when(equityArguments.dataService()).thenReturn(new DataServiceType(serviceName));
 	}
 
 	private void setUpEquityDataSet( final String serviceName ) {
+
 		when(equityArguments.equityDataset()).thenReturn(new EquityDataset(serviceName));
 	}
 
 	private void outputDirectoryExpectingException( final String expectedMessage ) {
+
 		try {
 			parser.outputDirectory("WEEKLY_150");
 			fail("expecting an exception");
@@ -252,6 +269,7 @@ public class BacktestLaunchArgumentsTest {
 
 	private void createLaunchArgumentsExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> arguments ) {
+
 		try {
 			createLaunchArguments(arguments);
 			fail("expecting an exception");
@@ -261,130 +279,156 @@ public class BacktestLaunchArgumentsTest {
 	}
 
 	private void createLaunchArguments( final Map<ArgumentKey, String> arguments ) {
+
 		parser = new BacktestLaunchArguments(outputTypeArgument, equityArguments, openingFundsArgument,
 		        startDateArgument, endDateArgument, directoryArgument, arguments);
 	}
 
 	private void createLaunchArguments() {
+
 		createLaunchArguments(new EnumMap<>(ArgumentKey.class));
 	}
 
 	private void verifyDataService( final String expected ) {
+
 		assertNotNull(parser.dataService());
 		assertEquals(expected, parser.dataService().type());
 		verify(equityArguments, atLeastOnce()).dataService();
 	}
 
 	private void verifyEquityDataSet( final String expected ) {
+
 		assertNotNull(parser.equityDataset());
 		assertEquals(expected, parser.equityDataset().dataset());
 		verify(equityArguments, atLeastOnce()).equityDataset();
 	}
 
 	private void verifyTickerSymbol( final String expected ) {
+
 		assertNotNull(parser.tickerSymbol());
 		assertEquals(expected, parser.tickerSymbol().symbol());
 		verify(equityArguments, atLeastOnce()).tickerSymbol();
 	}
 
 	private void verifyOutputType( final OutputType expected ) {
+
 		assertEquals(expected, parser.outputType());
 	}
 
 	private void verifyOutputDirectory( final String baseDirectory ) {
+
 		assertEquals(String.format("%s/WEEKLY_150/", baseDirectory), parser.outputDirectory("WEEKLY_150"));
 	}
 
 	private void verifyOpeningFunds( final String openingFunds ) {
+
 		assertEquals(new BigDecimal(openingFunds), parser.openingFunds());
 	}
 
 	private void verifyStartDate( final LocalDate expected ) {
+
 		assertNotNull(parser.startDate());
 		assertEquals(expected, parser.startDate().date());
 	}
 
 	private void verifyEndDate( final LocalDate expected ) {
+
 		assertNotNull(parser.endDate());
 		assertEquals(expected, parser.endDate().date());
 	}
 
 	private void verifyOutputDirectoryArgument( final String outputValue, final String fileBaseDirectory ) {
+
 		verify(directoryArgument).get(getArgumentMap(outputValue, fileBaseDirectory));
 		verifyNoMoreInteractions(directoryArgument);
 	}
 
 	private void verifyOpeningFundsArgument( final String outputValue, final String fileBaseDirectory,
 	        final String openingFunds ) {
+
 		verify(openingFundsArgument).get(getArgumentMap(outputValue, fileBaseDirectory, openingFunds));
 		verifyNoMoreInteractions(openingFundsArgument);
 	}
 
 	private void verifyStartDateArgument() {
+
 		verify(startDateArgument).get(new EnumMap<>(ArgumentKey.class));
 		verifyNoMoreInteractions(startDateArgument);
 	}
 
 	private void verifyEndDateArgument() {
+
 		verify(endDateArgument).get(new EnumMap<>(ArgumentKey.class));
 		verifyNoMoreInteractions(endDateArgument);
 	}
 
 	private void verifyOutputTypeArgument( final String outputTypeValue ) {
+
 		verify(outputTypeArgument).get(getArgumentMap(outputTypeValue));
 		verifyNoMoreInteractions(outputTypeArgument);
 	}
 
 	private void setUpOutputArgument( final OutputType type ) {
+
 		when(outputTypeArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(type);
 	}
 
 	private void setUpDirectoryArgument( final String directory ) {
+
 		when(directoryArgument.get(anyMapOf(ArgumentKey.class, String.class)))
 		        .thenReturn(new FileBaseOutputDirectory(directory));
 	}
 
 	private void setUpOpeningFundsArgument( final String openingFunds ) {
+
 		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class)))
 		        .thenReturn(new BigDecimal(openingFunds));
 	}
 
 	private void setUpOutputArgumentException() {
+
 		when(outputTypeArgument.get(anyMapOf(ArgumentKey.class, String.class)))
 		        .thenThrow(new IllegalArgumentException(OUTPUT_EXCEPTION_MESSAGE));
 	}
 
 	private void setUpDirectoryArgumentException() {
+
 		when(directoryArgument.get(anyMapOf(ArgumentKey.class, String.class)))
 		        .thenThrow(new IllegalArgumentException(DIRCTORY_EXCEPTION_MESSAGE));
 	}
 
 	private void setUpOpeningFundsArgumentException() {
+
 		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class)))
 		        .thenThrow(new IllegalArgumentException(OPENING_FUNDS_EXCEPTION_MESSAGE));
 	}
 
 	private void setUpArgumentMap( final String outputValue ) {
+
 		when(argumentParser.parse(any(String[].class))).thenReturn(getArgumentMap(outputValue));
 	}
 
 	private void setUpArgumentMap( final String outputValue, final String fileBaseDirectory ) {
+
 		when(argumentParser.parse(any(String[].class))).thenReturn(getArgumentMap(outputValue, fileBaseDirectory));
 	}
 
 	private void setUpArgumentMap( final String outputValue, final String fileBaseDirectory,
 	        final String openingFunds ) {
+
 		when(argumentParser.parse(any(String[].class)))
 		        .thenReturn(getArgumentMap(outputValue, fileBaseDirectory, openingFunds));
 	}
 
 	private Map<ArgumentKey, String> getArgumentMap( final String outputValue ) {
+
 		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
 		arguments.put(ArgumentKey.OUTPUT_TYPE, outputValue);
 		return arguments;
 	}
 
 	private Map<ArgumentKey, String> getArgumentMap( final String outputValue, final String fileBaseDirectory ) {
+
 		final Map<ArgumentKey, String> arguments = getArgumentMap(outputValue);
 		arguments.put(ArgumentKey.FILE_BASE_DIRECTORY, fileBaseDirectory);
 
@@ -393,6 +437,7 @@ public class BacktestLaunchArgumentsTest {
 
 	private Map<ArgumentKey, String> getArgumentMap( final String outputValue, final String fileBaseDirectory,
 	        final String openingFunds ) {
+
 		final Map<ArgumentKey, String> arguments = getArgumentMap(outputValue, fileBaseDirectory);
 		arguments.put(ArgumentKey.OPENING_FUNDS, openingFunds);
 

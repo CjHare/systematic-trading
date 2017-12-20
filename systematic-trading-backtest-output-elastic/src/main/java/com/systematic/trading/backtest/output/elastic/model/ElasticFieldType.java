@@ -44,6 +44,7 @@ public enum ElasticFieldType {
 	}
 
 	public String fieldName() {
+
 		return fieldName;
 	}
 }

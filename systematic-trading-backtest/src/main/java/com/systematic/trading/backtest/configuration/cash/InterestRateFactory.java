@@ -51,6 +51,7 @@ public class InterestRateFactory {
 	}
 
 	public static final InterestRateFactory getInstance() {
+
 		return INSTANCE;
 	}
 

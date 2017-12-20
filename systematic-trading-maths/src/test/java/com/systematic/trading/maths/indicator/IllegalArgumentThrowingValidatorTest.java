@@ -43,26 +43,31 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Before
 	public void setUp() {
+
 		validator = new IllegalArgumentThrowingValidator();
 	}
 
 	@Test
 	public void verifyGreaterThan() {
+
 		verifyGreaterThan(1, 2);
 	}
 
 	@Test
 	public void verifyGreaterThanEquals() {
+
 		verifyGreaterThan(5, 5);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyGreaterThanSmaller() {
+
 		verifyGreaterThan(10, 9);
 	}
 
 	@Test
 	public void verifyEnoughValues() {
+
 		final List<String> data = createList("one", "two");
 
 		verifyEnoughValues(data, 2);
@@ -70,6 +75,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyNotEnoughValues() {
+
 		final List<String> data = createList("one");
 
 		verifyEnoughValues(data, 2);
@@ -77,6 +83,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyEnoughValuesAllNull() {
+
 		final List<String> data = createList(null, null);
 
 		verifyEnoughValues(data, 2);
@@ -84,6 +91,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyEnoughValuesIgnoringStartingNull() {
+
 		final List<String> data = createList(null, "one", "two");
 
 		verifyEnoughValues(data, 2);
@@ -91,6 +99,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyEnoughValuesIgnoringLastNull() {
+
 		final List<String> data = createList("one", "two", null);
 
 		verifyEnoughValues(data, 2);
@@ -98,6 +107,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyEnoughValuesThreeValues() {
+
 		final List<String> data = createList("one", "two", "three");
 
 		verifyEnoughValues(data, 3);
@@ -105,6 +115,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyEnoughValuesArray() {
+
 		final String[] data = createArray("one", "two");
 
 		verifyEnoughValues(data, 2);
@@ -112,6 +123,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyNotEnoughValuesArray() {
+
 		final String[] data = createArray("one");
 
 		verifyEnoughValues(data, 2);
@@ -119,6 +131,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyEnoughValuesArrayAllNull() {
+
 		final String[] data = new String[2];
 
 		verifyEnoughValues(data, 2);
@@ -126,6 +139,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyEnoughValuesArrayIgnoringStartingNull() {
+
 		final String[] data = createArray(null, "one", "two");
 
 		verifyEnoughValues(data, 2);
@@ -133,6 +147,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyEnoughValuesArrayIgnoringLastNull() {
+
 		final String[] data = createArray("one", "two", null);
 
 		verifyEnoughValues(data, 2);
@@ -140,6 +155,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyEnoughValuesArrayThreeValues() {
+
 		final String[] data = createArray("one", "two", "three");
 
 		verifyEnoughValues(data, 3);
@@ -147,6 +163,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyZeroNullEntriesEmpty() {
+
 		final List<String> data = new ArrayList<String>();
 
 		verifyZeroNullEntries(data);
@@ -154,6 +171,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyZeroNullEntries() {
+
 		final List<String> data = createList("one");
 
 		verifyZeroNullEntries(data);
@@ -161,6 +179,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesStartingNull() {
+
 		final List<String> data = createList(null, "one", "two");
 
 		verifyZeroNullEntries(data);
@@ -168,6 +187,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesMidNull() {
+
 		final List<String> data = createList("one", null, "two");
 
 		verifyZeroNullEntries(data);
@@ -175,6 +195,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyZeroNullEntriesArrayEmpty() {
+
 		final String[] data = new String[0];
 
 		verifyZeroNullEntries(data);
@@ -182,6 +203,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyZeroNullEntriesArray() {
+
 		final String[] data = createArray("one");
 
 		verifyZeroNullEntries(data);
@@ -189,6 +211,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesSArraytartingNull() {
+
 		final String[] data = createArray(null, "one", "two");
 
 		verifyZeroNullEntries(data);
@@ -196,6 +219,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesArrayEndingNull() {
+
 		final String[] data = createArray("one", "two", null);
 
 		verifyZeroNullEntries(data);
@@ -203,6 +227,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyZeroNullEntriesArrayMidNull() {
+
 		final String[] data = createArray("one", null, "two");
 
 		verifyZeroNullEntries(data);
@@ -210,6 +235,7 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test
 	public void verifyNotNull() {
+
 		final String[] data = new String[0];
 
 		verifyNotNull(data);
@@ -217,34 +243,42 @@ public class IllegalArgumentThrowingValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void verifyNotNullWhenNull() {
+
 		verifyNotNull(null);
 	}
 
 	private void verifyNotNull( final Object instance ) {
+
 		validator.verifyNotNull(instance);
 	}
 
 	private void verifyZeroNullEntries( final String[] data ) {
+
 		validator.verifyZeroNullEntries(data);
 	}
 
 	private void verifyZeroNullEntries( final List<String> data ) {
+
 		validator.verifyZeroNullEntries(data);
 	}
 
 	private void verifyEnoughValues( final String[] data, final int expectedNumberOfValues ) {
+
 		validator.verifyEnoughValues(data, expectedNumberOfValues);
 	}
 
 	private void verifyEnoughValues( final List<String> data, final int expectedNumberOfValues ) {
+
 		validator.verifyEnoughValues(data, expectedNumberOfValues);
 	}
 
 	private void verifyGreaterThan( final int minimum, final int actual ) {
+
 		validator.verifyGreaterThan(minimum, actual);
 	}
 
 	private List<String> createList( final String... values ) {
+
 		final List<String> data = new ArrayList<String>();
 
 		for (final String value : values) {
@@ -255,6 +289,7 @@ public class IllegalArgumentThrowingValidatorTest {
 	}
 
 	private String[] createArray( final String... values ) {
+
 		return values;
 	}
 }

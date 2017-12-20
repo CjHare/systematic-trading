@@ -48,6 +48,7 @@ import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
  * @author CJ Hare
  */
 public class QuandlResponseConverter {
+
 	private static final DateTimeFormatter QUANDL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private static final int TWO_DECIMAL_PLACES = 2;
 
@@ -92,10 +93,12 @@ public class QuandlResponseConverter {
 	}
 
 	private BigDecimal price( final Object price ) {
+
 		return new BigDecimal((Double) price).setScale(TWO_DECIMAL_PLACES, RoundingMode.HALF_EVEN);
 	}
 
 	private LocalDate tradingDate( final Object date ) {
+
 		return LocalDate.parse((String) date, QUANDL_DATE_FORMAT);
 	}
 }

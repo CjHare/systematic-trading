@@ -58,6 +58,7 @@ public class BackestOutputElasticConfigurationSingleton {
 	}
 
 	public static BackestOutputElasticConfiguration configuration() {
+
 		return INSTANCE;
 	}
 

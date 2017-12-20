@@ -50,41 +50,48 @@ public class HibernateHistoryRetrievalRequestBuilder implements HistoryRetrieval
 
 	@Override
 	public HistoryRetrievalRequestBuilder withInclusiveStartDate( Date inclusiveStartDate ) {
+
 		this.inclusiveStartDate = inclusiveStartDate.toLocalDate();
 		return this;
 	}
 
 	@Override
 	public HistoryRetrievalRequestBuilder withExclusiveEndDate( Date exclusiveEndDate ) {
+
 		this.exclusiveEndDate = exclusiveEndDate.toLocalDate();
 		return this;
 	}
 
 	@Override
 	public HistoryRetrievalRequestBuilder withTickerSymbol( String tickerSymbol ) {
+
 		this.tickerSymbol = tickerSymbol;
 		return this;
 	}
 
 	@Override
 	public HistoryRetrievalRequest build() {
+
 		return new HibernateHistoryRetrievalRequest(dataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
 	@Override
 	public HistoryRetrievalRequestBuilder withExclusiveEndDate( final LocalDate exclusiveEndDate ) {
+
 		this.exclusiveEndDate = exclusiveEndDate;
 		return this;
 	}
 
 	@Override
 	public HistoryRetrievalRequestBuilder withInclusiveStartDate( final LocalDate inclusiveStartDate ) {
+
 		this.inclusiveStartDate = inclusiveStartDate;
 		return this;
 	}
 
 	@Override
 	public HistoryRetrievalRequestBuilder withDataset( final String dataset ) {
+
 		this.dataset = dataset;
 		return this;
 	}

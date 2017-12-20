@@ -60,32 +60,38 @@ public class ElasticNetWorthEventRequestResource extends EventResource {
 
 	@JsonProperty(ElasticTypeName.CASH_BALANCE)
 	public float getCashBalance() {
+
 		return cashBalance;
 	}
 
 	@JsonProperty(ElasticTypeName.EQUITY_BALANCE)
 	public float getEquityBalance() {
+
 		return equityBalance;
 	}
 
 	@JsonProperty(ElasticTypeName.EQUITY_BALANCE_VALUE)
 	public float getEquityBalanceValue() {
+
 		return equityBalanceValue;
 	}
 
 	@JsonProperty(ElasticTypeName.NETWORTH)
 	public float getNetworth() {
+
 		return networth;
 	}
 
 	@JsonProperty(ElasticTypeName.EVENT_DATE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getEventDate() {
+
 		return eventDate;
 	}
 
 	@Override
 	public String toString() {
+
 		final StringBuilder out = new StringBuilder("ElasticNetWorthEventResource [");
 		out.append(super.toString());
 		out.append("cashBalance=");

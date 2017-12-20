@@ -111,6 +111,7 @@ public class BacktestBootstrapContextBulider {
 	private SignalAnalysisListener signalAnalysisListener;
 
 	public BacktestBootstrapContextBulider withConfiguration( final BacktestBootstrapConfiguration configuration ) {
+
 		this.simulationDates = configuration.backtestDates();
 		this.managementFeeStartDate = firstDayOfYear(simulationDates.startDate());
 		this.deposit = configuration.deposit();
@@ -122,20 +123,24 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	public BacktestBootstrapContextBulider withSignalAnalysisListeners( final SignalAnalysisListener listener ) {
+
 		this.signalAnalysisListener = listener;
 		return this;
 	}
 
 	public BacktestBootstrapContext build() {
+
 		return new BacktestBootstrapContext(strategy(), brokerage(), cashAccount(), simulationDates);
 	}
 
 	private Strategy strategy() {
-		return new TradingStrategyFactory().strategy(entry(), entryPositionSize(), exit(),
-		        exitPositionSize(), EquityClass.STOCK, EQUITY_SCALE);
+
+		return new TradingStrategyFactory().strategy(entry(), entryPositionSize(), exit(), exitPositionSize(),
+		        EquityClass.STOCK, EQUITY_SCALE);
 	}
 
 	private Entry entry() {
+
 		final EntryConfiguration entryConfig = strategy.entry();
 
 		return entry(entryConfig,
@@ -144,6 +149,7 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private long priceDataRange( final EntryConfiguration entryConfig ) {
+
 		return entryConfig.priceDataRange().get(ChronoUnit.DAYS);
 	}
 
@@ -174,6 +180,7 @@ public class BacktestBootstrapContextBulider {
 
 	private Entry operatorEntry( final OperatorEntryConfiguration operatorConfig, final SignalRangeFilter signalRange,
 	        final long priceDataRange ) {
+
 		final Operator operator;
 
 		switch (operatorConfig.operator()) {
@@ -186,28 +193,29 @@ public class BacktestBootstrapContextBulider {
 			break;
 		}
 
-		return new TradingStrategyFactory().entry(
-		        entry(operatorConfig.leftEntry(), signalRange, priceDataRange), operator,
-		        entry(operatorConfig.righEntry(), signalRange, priceDataRange));
+		return new TradingStrategyFactory().entry(entry(operatorConfig.leftEntry(), signalRange, priceDataRange),
+		        operator, entry(operatorConfig.righEntry(), signalRange, priceDataRange));
 	}
 
 	private Entry confirmByEntry( final ConfirmedByEntryConfiguration confirmedByConfig,
 	        final SignalRangeFilter signalRange, final long priceDataRange ) {
+
 		final ConfirmaByConfiguration by = confirmedByConfig.confirmBy();
 
-		return new TradingStrategyFactory().entry(
-		        entry(confirmedByConfig.anchor(), signalRange, priceDataRange),
+		return new TradingStrategyFactory().entry(entry(confirmedByConfig.anchor(), signalRange, priceDataRange),
 		        new TradingStrategyConfirmedBy(by.confirmationDayRange(), by.delayUntilConfirmationRange()),
 		        entry(confirmedByConfig.confirmation(), signalRange, priceDataRange));
 	}
 
-	private Entry indicatorEntry( final IndicatorEntryConfiguration indicatorConfig, final SignalRangeFilter signalRange,
-	        final long priceDataRange ) {
+	private Entry indicatorEntry( final IndicatorEntryConfiguration indicatorConfig,
+	        final SignalRangeFilter signalRange, final long priceDataRange ) {
+
 		return new TradingStrategyFactory().entry(new TradingStrategyIndicatorFactory()
 		        .create(indicatorConfig.indicator(), signalRange, signalAnalysisListener, (int) priceDataRange));
 	}
 
 	private Entry periodicEntry( final PeriodicEntryConfiguration periodicConfig ) {
+
 		return new TradingStrategyFactory().entry(new TradingStrategyPeriodic(simulationDates.startDate(),
 		        (periodicConfig).frequency().frequency(), SignalType.BULLISH));
 	}
@@ -257,19 +265,23 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private SignalRangeFilter signalRangeFilter( final int previousTradingDaySignalRange ) {
+
 		return new SimulationDatesRangeFilterDecorator(simulationDates.startDate(), simulationDates.endDate(),
 		        new TradingDaySignalRangeFilter(previousTradingDaySignalRange));
 	}
 
 	private Exit exit() {
+
 		return new TradingStrategyFactory().exit();
 	}
 
 	private ExitSize exitPositionSize() {
+
 		return new NeverExitPosition();
 	}
 
 	private EntrySize entryPositionSize() {
+
 		final EntryPositionBounds minimum = new AbsoluteEntryPositionBounds(
 		        strategy.entryPositionSizing().minimumTrade().value());
 		final EntryPositionBounds maximum = new RelativeEntryPositionBounds(
@@ -279,23 +291,26 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	private CashAccount cashAccount() {
+
 		return CashAccountFactory.getInstance().create(simulationDates.startDate(), openingFunds, deposit);
 	}
 
 	private Brokerage brokerage() {
+
 		final EquityManagementFeeCalculator feeCalculator = feeCalculator(equity.managementFee());
-		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
-		        equity.gquityIdentity(),
+		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(equity.gquityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 
 		return new BrokerageFactoroy().create(equityConfiguration, brokerageType, simulationDates.startDate());
 	}
 
 	private LocalDate firstDayOfYear( final LocalDate date ) {
+
 		return LocalDate.of(date.getYear(), 1, 1);
 	}
 
 	private EquityManagementFeeCalculator feeCalculator( final EquityManagementFeeConfiguration managementFee ) {
+
 		switch (managementFee) {
 			case VGS:
 				return new FlatEquityManagementFeeCalculator(managementFee.percentageFee()[0]);

@@ -48,6 +48,7 @@ public enum BacktestOutputElasticProperty {
 	}
 
 	public String key() {
+
 		return key;
 	}
 }

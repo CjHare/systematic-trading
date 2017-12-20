@@ -64,6 +64,7 @@ public class TradingStrategyPeriodic implements Periodic {
 
 	@Override
 	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+
 		List<DatedSignal> signals = new ArrayList<>(1);
 
 		if (hasPrices(data)) {
@@ -82,6 +83,7 @@ public class TradingStrategyPeriodic implements Periodic {
 	 * Full intervals to bring the date as close to today as possible, without going beyond.
 	 */
 	private void updateLastOrder( final LocalDate today ) {
+
 		while (lastOrder.isBefore(today)) {
 			lastOrder = lastOrder.plus(frequency);
 		}
@@ -90,10 +92,12 @@ public class TradingStrategyPeriodic implements Periodic {
 	}
 
 	private boolean hasPrices( final TradingDayPrices[] data ) {
+
 		return data.length > 0;
 	}
 
 	private boolean isOrderTime( final LocalDate tradingDate ) {
+
 		return tradingDate.isAfter(lastOrder.plus(frequency));
 	}
 }

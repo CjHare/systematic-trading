@@ -49,6 +49,7 @@ public class EquityDatasetLaunchArgument implements LaunchArgument<EquityDataset
 
 	@Override
 	public EquityDataset get( final Map<ArgumentKey, String> arguments ) {
+
 		final String dataset = arguments.get(ArgumentKey.EQUITY_DATASET);
 
 		validator.validate(dataset, "%s argument is not present", ArgumentKey.EQUITY_DATASET.getKey());

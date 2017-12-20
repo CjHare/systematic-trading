@@ -56,6 +56,7 @@ import com.systematic.trading.simulation.order.EquityOrderVolume;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SingleEquityClassBrokerTest {
+
 	private static final BigDecimal EQUITY_PRICE = BigDecimal.valueOf(101);
 
 	@Mock
@@ -71,6 +72,7 @@ public class SingleEquityClassBrokerTest {
 
 	@Before
 	public void setUp() {
+
 		broker = new SingleEquityClassBroker("BrokerName", feeStructure, equityFee, equity, LocalDate.now());
 
 		when(equity.getType()).thenReturn(EquityClass.STOCK);
@@ -78,6 +80,7 @@ public class SingleEquityClassBrokerTest {
 
 	@Test
 	public void buy() {
+
 		setUpBrokerageFee(10.99);
 
 		buy(11);
@@ -88,6 +91,7 @@ public class SingleEquityClassBrokerTest {
 
 	@Test
 	public void calculateBuy() {
+
 		setUpBrokerageFee(1.23);
 
 		final BigDecimal cost = calculateBuy(11);
@@ -102,6 +106,7 @@ public class SingleEquityClassBrokerTest {
 	 * Buying from a non-zero balance
 	 */
 	public void buyAdditional() {
+
 		setUpBrokerageFee(7.89);
 
 		buy(22.5);
@@ -116,6 +121,7 @@ public class SingleEquityClassBrokerTest {
 	 * Calculating the buy cost does not increment held equities.
 	 */
 	public void caculateBuyAdditional() {
+
 		setUpBrokerageFee(10.99);
 		buy(22.5);
 
@@ -127,6 +133,7 @@ public class SingleEquityClassBrokerTest {
 
 	@Test
 	public void sell() throws InsufficientEquitiesException {
+
 		setUpBrokerageFee(10.78);
 		buy(18);
 
@@ -138,11 +145,13 @@ public class SingleEquityClassBrokerTest {
 
 	@Test(expected = InsufficientEquitiesException.class)
 	public void sellWithException() throws InsufficientEquitiesException {
+
 		sell(1);
 	}
 
 	@Test
 	public void calculateFee() {
+
 		setUpBrokerageFee(6.78787);
 
 		final BigDecimal fee = broker.cost(EQUITY_PRICE, EquityClass.STOCK, LocalDate.now());
@@ -151,36 +160,43 @@ public class SingleEquityClassBrokerTest {
 	}
 
 	private BigDecimal sell( final double volume ) throws InsufficientEquitiesException {
+
 		return broker.sell(Price.valueOf(EQUITY_PRICE), EquityOrderVolume.valueOf(BigDecimal.valueOf(volume)),
 		        LocalDate.now());
 	}
 
 	private BigDecimal calculateBuy( final double volume ) {
+
 		return broker.cost(Price.valueOf(EQUITY_PRICE), EquityOrderVolume.valueOf(BigDecimal.valueOf(volume)),
 		        LocalDate.now());
 	}
 
 	private void buy( final double equityVolume ) {
+
 		broker.buy(Price.valueOf(EQUITY_PRICE), EquityOrderVolume.valueOf(BigDecimal.valueOf(equityVolume)),
 		        LocalDate.now());
 	}
 
 	private void verifyCost( final double expected, final BigDecimal cost ) {
+
 		assertEquals(String.format("Expected %s != Cost %s", expected, cost), 0,
 		        BigDecimal.valueOf(expected).compareTo(cost));
 	}
 
 	private void verifyEquityBalance( final double expected ) {
+
 		assertEquals(String.format("Expected %s != Equity Balance %s", expected, broker.equityBalance()), 0,
 		        BigDecimal.valueOf(expected).compareTo(broker.equityBalance()));
 	}
 
 	private void setUpBrokerageFee( final double transactionCost ) {
+
 		when(feeStructure.cost(any(BigDecimal.class), any(EquityClass.class), anyInt()))
 		        .thenReturn(BigDecimal.valueOf(transactionCost));
 	}
 
 	private void verifyFeeCalculation( final double... numberOfEquities ) {
+
 		int count = 1;
 
 		for (final double equityCount : numberOfEquities) {

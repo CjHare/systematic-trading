@@ -53,6 +53,7 @@ public class RelativeStrengthIndexBearishSignalGenerator extends RelativeStrengt
 
 	@Override
 	public SignalType type() {
+
 		return SignalType.BEARISH;
 	}
 
@@ -61,6 +62,7 @@ public class RelativeStrengthIndexBearishSignalGenerator extends RelativeStrengt
 	 * Has the RSI moved from above or on the over sold line to below it?
 	 */
 	protected boolean hasMomentumDirectionChanged( final BigDecimal yesterday, final BigDecimal today ) {
+
 		return today.compareTo(overbrought) < 0 && yesterday.compareTo(overbrought) >= 0;
 	}
 }

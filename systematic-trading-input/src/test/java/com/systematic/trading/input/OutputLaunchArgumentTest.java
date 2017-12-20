@@ -71,11 +71,13 @@ public class OutputLaunchArgumentTest {
 
 	@Before
 	public void setUp() {
+
 		argument = new OutputLaunchArgument(validator);
 	}
 
 	@Test
 	public void noDisplayOutputType() {
+
 		final String outputType = "no_display";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
@@ -87,6 +89,7 @@ public class OutputLaunchArgumentTest {
 
 	@Test
 	public void fileMinimumOutputType() {
+
 		final String outputType = "file_minimum";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
@@ -98,6 +101,7 @@ public class OutputLaunchArgumentTest {
 
 	@Test
 	public void fileCompleteOutputType() {
+
 		final String outputType = "file_complete";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
@@ -109,6 +113,7 @@ public class OutputLaunchArgumentTest {
 
 	@Test
 	public void elasticSearchOutputType() {
+
 		final String outputType = "elastic_search";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
 
@@ -120,6 +125,7 @@ public class OutputLaunchArgumentTest {
 
 	@Test
 	public void unknownOutputType() {
+
 		setUpValidatorException();
 		final Map<ArgumentKey, String> launchArguments = setUpArguments("unknown");
 
@@ -130,6 +136,7 @@ public class OutputLaunchArgumentTest {
 
 	@Test
 	public void nullOutputType() {
+
 		setUpValidatorException();
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(null);
 
@@ -150,25 +157,30 @@ public class OutputLaunchArgumentTest {
 	}
 
 	private OutputType getOutput( final Map<ArgumentKey, String> launchArguments ) {
+
 		return argument.get(launchArguments);
 	}
 
 	private void verifyRetrievedType( final OutputType expected, final OutputType actual ) {
+
 		assertEquals(expected, actual);
 	}
 
 	private void veriyValidation( final OutputType outputType, final String launchArgument ) {
+
 		verify(validator).validate(outputType == null ? isNull() : eq(outputType), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT), launchArgument == null ? isNull() : eq(launchArgument));
 		verifyNoMoreInteractions(validator);
 	}
 
 	private void setUpValidatorException() {
+
 		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
 		        anyString(), anyString());
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+
 		final Map<ArgumentKey, String> arguments = new HashMap<>();
 		arguments.put(ArgumentKey.OUTPUT_TYPE, value);
 		return arguments;

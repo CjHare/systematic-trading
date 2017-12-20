@@ -63,21 +63,25 @@ public class CumulativeOrderEventStatistics implements OrderEventStatistics {
 
 	@Override
 	public int entryEventCount() {
+
 		return entryEventCount;
 	}
 
 	@Override
 	public int deleteEntryEventCount() {
+
 		return deleteEntryEventCount;
 	}
 
 	@Override
 	public int exitEventCount() {
+
 		return exitEventCount;
 	}
 
 	@Override
 	public int deleteExitEventCount() {
+
 		return deleteExitEventCount;
 	}
 }

@@ -81,6 +81,7 @@ public class QuanalAPITest {
 
 	@Test
 	public void maximumRetrievalPeriodPerCall() {
+
 		final Period expected = setUpMaximumRetrieval();
 
 		final Period actual = new QuandlAPI(dao, configuration, dataFormat).maximumDurationPerConnection();
@@ -91,6 +92,7 @@ public class QuanalAPITest {
 
 	@Test
 	public void stockDataEmptyPayload() throws CannotRetrieveDataException {
+
 		final TradingDayPrices[] expectedPrices = setUpQuandlResponse();
 
 		final String datasetId = randomDatasetId();
@@ -106,11 +108,13 @@ public class QuanalAPITest {
 
 	private TradingDayPrices[] callQuandl( final String datasetId, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+
 		return new QuandlAPI(dao, configuration, dataFormat).stockData(datasetId, tickerSymbol, inclusiveStartDate,
 		        exclusiveEndDate, throttler);
 	}
 
 	private void verifyTradingDayPrices( final TradingDayPrices[] expected, final TradingDayPrices[] actual ) {
+
 		assertNotNull(actual);
 		assertEquals("Number of prices does not match expectations", expected.length, actual.length);
 
@@ -121,12 +125,14 @@ public class QuanalAPITest {
 
 	private void verifyQuandlCall( final String datasetId, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+
 		verify(dao).get(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
 		verifyNoMoreInteractions(dao);
 		verifyNoMoreInteractions(throttler);
 	}
 
 	private TradingDayPrices[] setUpQuandlResponse() throws CannotRetrieveDataException {
+
 		final QuandlResultSet results = mock(QuandlResultSet.class);
 		when(dao.get(anyString(), anyString(), any(LocalDate.class), any(LocalDate.class),
 		        any(BlockingEventCount.class))).thenReturn(results);
@@ -142,6 +148,7 @@ public class QuanalAPITest {
 	 * Ends after a random period (1-100 days) after the start.
 	 */
 	private LocalDate randomEndDate( final LocalDate startDate ) {
+
 		final long minDay = startDate.toEpochDay() + 1;
 		final long maxDay = startDate.toEpochDay() + 100;
 		final long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
@@ -149,6 +156,7 @@ public class QuanalAPITest {
 	}
 
 	private LocalDate randomStartDate() {
+
 		final long minDay = LocalDate.of(1970, 1, 1).toEpochDay();
 		final long maxDay = LocalDate.now().toEpochDay();
 		final long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
@@ -159,6 +167,7 @@ public class QuanalAPITest {
 	 * Generates a 4 code point string, using only the letters a-z
 	 */
 	private String randomTickerSymbol() {
+
 		return new RandomStringGenerator.Builder().withinRange('a', 'z').build().generate(4);
 	}
 
@@ -166,6 +175,7 @@ public class QuanalAPITest {
 	 * Generates a 4 code point string, using only the letters a-z
 	 */
 	private String randomDatasetId() {
+
 		return new RandomStringGenerator.Builder().withinRange('a', 'z').build().generate(4);
 	}
 
@@ -173,16 +183,19 @@ public class QuanalAPITest {
 	 * Generates a random number of months as the maximum to retrieve.
 	 */
 	private Period setUpMaximumRetrieval() {
+
 		final int months = new Random().nextInt(12);
 		when(configuration.maximumMonthsPerConnection()).thenReturn(months);
 		return Period.ofMonths(months);
 	}
 
 	private void verfiyMaximumRetrieval( final Period expected, final Period actual ) {
+
 		assertEquals("Number of months to retrieve does not match", expected, actual);
 	}
 
 	private void verifyNoQuandlCall() {
+
 		verifyZeroInteractions(dao);
 		verifyZeroInteractions(throttler);
 	}

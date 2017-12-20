@@ -53,14 +53,17 @@ public class EquityConfiguration {
 	}
 
 	public EquityIdentity gquityIdentity() {
+
 		return new EquityIdentity(tickerSymbol.symbol(), equityType, SCALE);
 	}
 
 	public EquityManagementFeeConfiguration managementFee() {
+
 		return managementFee;
 	}
 
 	public String equityDataset() {
+
 		return equityDataset == null ? null : equityDataset.dataset();
 	}
 }

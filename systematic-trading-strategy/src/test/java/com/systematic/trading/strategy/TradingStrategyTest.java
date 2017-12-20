@@ -103,6 +103,7 @@ public class TradingStrategyTest {
 
 	@Before
 	public void setUp() {
+
 		strategy = new TradingStrategy(entry, entryPositionSizing, exit, exitPositionSizing, TYPE, SCALE);
 
 		setUpTradingDayPrices();
@@ -110,6 +111,7 @@ public class TradingStrategyTest {
 
 	@Test
 	public void actionOnInsufficentFunds() {
+
 		final EquityOrder order = setUpOrder();
 
 		final EquityOrderInsufficientFundsAction action = strategy.actionOnInsufficentFunds(order);
@@ -122,6 +124,7 @@ public class TradingStrategyTest {
 	 */
 	@Test
 	public void warmUpPeriod() {
+
 		setUpWarmupPeriod(5);
 
 		final Period warmUp = strategy.warmUpPeriod();
@@ -131,6 +134,7 @@ public class TradingStrategyTest {
 
 	@Test
 	public void entryUpdateNoEnoughPriceData() {
+
 		setUpNotEnoughDataPricePoints();
 
 		final Optional<EquityOrder> order = entryTick();
@@ -140,6 +144,7 @@ public class TradingStrategyTest {
 
 	@Test
 	public void entryUpdate() {
+
 		setUpSignal(0);
 		setUpEntryPositionSizing(3.67);
 		setUpFees(0.88);
@@ -154,6 +159,7 @@ public class TradingStrategyTest {
 
 	@Test
 	public void entryUpdateNoOrder() {
+
 		setUpSignal(0);
 		setUpEntryPositionSizing(0.75);
 		setUpFees(0.88);
@@ -168,6 +174,7 @@ public class TradingStrategyTest {
 
 	@Test
 	public void entryUpdateNoOrderSignalYesterday() {
+
 		setUpSignal(1);
 
 		final Optional<EquityOrder> order = entryTick();
@@ -194,20 +201,24 @@ public class TradingStrategyTest {
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void exitUpdate() {
+
 		setUpExitUpdateAction();
 
 		exitTick();
 	}
 
 	private Optional<EquityOrder> entryTick() {
+
 		return strategy.entryTick(fees, cashAccount, data);
 	}
 
 	private Optional<EquityOrder> exitTick() {
+
 		return strategy.exitTick(brokerage, data);
 	}
 
 	private void setUpSignal( final int ticksPrevious ) {
+
 		final DatedSignal signal = mock(DatedSignal.class);
 		when(signal.date()).thenReturn(LocalDate.now().minusDays(ticksPrevious));
 		final List<DatedSignal> signals = new ArrayList<>();
@@ -216,10 +227,12 @@ public class TradingStrategyTest {
 	}
 
 	private void setUpNotEnoughDataPricePoints() {
+
 		when(entry.requiredTradingPrices()).thenReturn(9);
 	}
 
 	private void setUpTradingDayPrices() {
+
 		when(data.date()).thenReturn(LocalDate.now());
 
 		final ClosingPrice closing = mock(ClosingPrice.class);
@@ -228,56 +241,68 @@ public class TradingStrategyTest {
 	}
 
 	private void setUpFees( final double value ) {
+
 		when(fees.cost(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
 		        .thenReturn(BigDecimal.valueOf(value));
 	}
 
 	private void setUpExitUpdateAction() {
+
 		when(exit.exitTick(any(BrokerageTransaction.class), any(TradingDayPrices.class))).thenReturn(true);
 	}
 
 	private void setUpWarmupPeriod( final int period ) {
+
 		when(entry.requiredTradingPrices()).thenReturn(period);
 	}
 
 	private void setUpEntryPositionSizing( final double value ) {
+
 		when(entryPositionSizing.entryPositionSize(any(CashAccount.class))).thenReturn(BigDecimal.valueOf(value));
 	}
 
 	private EquityOrder setUpOrder() {
+
 		return mock(EquityOrder.class);
 	}
 
 	private void verifyWarmUpPeriod( final int expected, final Period actual ) {
+
 		assertNotNull(actual);
 		assertEquals(Period.ofDays(expected), actual);
 	}
 
 	private void verifyInsufficentFundsAction( final EquityOrderInsufficientFundsAction expected,
 	        final EquityOrderInsufficientFundsAction actual ) {
+
 		assertNotNull(actual);
 		assertEquals(expected, actual);
 	}
 
 	private void verifyNoOrder( final Optional<EquityOrder> actual ) {
+
 		assertNotNull(actual);
 		assertEquals("Not expecting any order", false, actual.isPresent());
 	}
 
 	private void verifyOrder( final Optional<EquityOrder> actual ) {
+
 		assertNotNull(actual);
 		assertNotNull(actual.get());
 	}
 
 	private void verifyAnalysisDelegation() {
+
 		verify(entry).analyse(any(TradingDayPrices[].class));
 	}
 
 	private void verifyEntryPositionSizingDelegation() {
+
 		verify(entryPositionSizing).entryPositionSize(cashAccount);
 	}
 
 	private void verifyFeeDelegation( final double entrySizePosition ) {
+
 		verify(fees).cost(BigDecimal.valueOf(entrySizePosition), TYPE, LocalDate.now());
 	}
 }

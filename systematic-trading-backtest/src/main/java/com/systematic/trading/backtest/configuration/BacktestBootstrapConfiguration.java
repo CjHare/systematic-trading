@@ -40,30 +40,37 @@ public class BacktestBootstrapConfiguration {
 	}
 
 	public BacktestSimulationDates backtestDates() {
+
 		return backtestDates;
 	}
 
 	public BrokerageTransactionFeeStructure brokerageFees() {
+
 		return brokerageFees;
 	}
 
 	public CashAccountConfiguration cashAccount() {
+
 		return cashAccount;
 	}
 
 	public BigDecimal openingFunds() {
+
 		return openingFunds;
 	}
 
 	public DepositConfiguration deposit() {
+
 		return deposit;
 	}
 
 	public StrategyConfiguration strategy() {
+
 		return strategy;
 	}
 
 	public EquityConfiguration equity() {
+
 		return equity;
 	}
 }

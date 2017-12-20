@@ -52,6 +52,7 @@ public class FileConfigurationDao implements ConfigurationDao {
 
 	@Override
 	public Properties configuration( final String propertyFile ) throws CannotRetrieveConfigurationException {
+
 		final Properties properties = new Properties();
 
 		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {

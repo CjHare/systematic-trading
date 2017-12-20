@@ -93,7 +93,7 @@ public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequ
 
 	@Override
 	public void delete( final HistoryRetrievalRequest request ) {
-		
+
 		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
 		Transaction tx = session.beginTransaction();
 

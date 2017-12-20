@@ -50,21 +50,25 @@ public class DatatableResource {
 
 	@JsonProperty("columns")
 	public List<ColumnResource> columns() {
+
 		return columns;
 	}
 
 	@JsonProperty("columns")
 	public void columns( final List<ColumnResource> columns ) {
+
 		this.columns = columns;
 	}
 
 	@JsonProperty("data")
 	public List<List<Object>> data() {
+
 		return data;
 	}
 
 	@JsonProperty("data")
 	public void data( final List<List<Object>> data ) {
+
 		this.data = data;
 	}
 }

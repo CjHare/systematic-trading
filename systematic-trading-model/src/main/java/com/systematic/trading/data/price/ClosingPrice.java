@@ -45,6 +45,7 @@ public class ClosingPrice extends Price {
 	 * @return equivalent closing price for the given decimal.
 	 */
 	public static ClosingPrice valueOf( final BigDecimal amount ) {
+
 		if (amount == null) {
 			throw new IllegalArgumentException("null is not accepted by ClosingPrice.valueOf()");
 		}

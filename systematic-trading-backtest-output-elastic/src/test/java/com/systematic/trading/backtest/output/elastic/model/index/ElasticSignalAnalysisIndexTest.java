@@ -43,21 +43,25 @@ public class ElasticSignalAnalysisIndexTest extends ElasticIndexTestBase {
 
 	@Override
 	protected String getJsonPutIndex() {
+
 		return JSON_PUT_INDEX;
 	}
 
 	@Override
 	protected String getJsonPutIndexMapping() {
+
 		return JSON_PUT_INDEX_MAPPING;
 	}
 
 	@Override
 	protected ElasticIndexName getIndexName() {
+
 		return ElasticIndexName.SIGNAL_ANALYSIS;
 	}
 
 	@Override
 	protected ElasticCommonIndex createIndex() {
+
 		return new ElasticSignalAnalysisIndex(getDao(), getPool(), getElasticConfig());
 	}
 }

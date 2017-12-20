@@ -85,6 +85,7 @@ public class ElasticBacktestOutput implements BacktestEventListener {
 	public void init( TickerSymbolTradingData tradingData, BacktestSimulationDates dates,
 	        EventStatistics eventStatistics, CumulativeReturnOnInvestment cumulativeRoi,
 	        TradingDayPrices lastTradingDay ) {
+
 		signalAnalysisIndex.init(batchId);
 		cashIndex.init(batchId);
 		orderIndex.init(batchId);
@@ -96,26 +97,31 @@ public class ElasticBacktestOutput implements BacktestEventListener {
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
+
 		signalAnalysisIndex.event(batchId, event);
 	}
 
 	@Override
 	public void event( final CashEvent event ) {
+
 		cashIndex.event(batchId, event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
+
 		orderIndex.event(batchId, event);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
+
 		brokerageIndex.event(batchId, event);
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
+
 		returnOnInvestmentIndex.event(batchId, event);
 	}
 
@@ -136,11 +142,13 @@ public class ElasticBacktestOutput implements BacktestEventListener {
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
+
 		networthIndex.event(batchId, event);
 	}
 
 	@Override
 	public void event( final EquityEvent event ) {
+
 		equityIndex.event(batchId, event);
 	}
 }

@@ -54,17 +54,20 @@ public class ElasticOrderEventRequestResource extends EventResource {
 
 	@JsonProperty(ElasticTypeName.TOTAL_COST)
 	public float getTotalCost() {
+
 		return totalCost;
 	}
 
 	@JsonProperty(ElasticTypeName.TRANSACTION_DATE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getTransactionDate() {
+
 		return transactionDate;
 	}
 
 	@Override
 	public String toString() {
+
 		final StringBuilder out = new StringBuilder("ElasticOrderEventResource [");
 		out.append(super.toString());
 		out.append(", totalCost=");

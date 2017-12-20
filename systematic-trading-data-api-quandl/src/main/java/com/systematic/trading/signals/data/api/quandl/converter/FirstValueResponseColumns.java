@@ -49,35 +49,42 @@ public class FirstValueResponseColumns implements ResponseColumns {
 
 	@Override
 	public boolean canParse( final List<QuandlColumnName> columns ) {
+
 		return columnUtils.containsName(DATE_COLUMN_NAME, columns) && hasAtLeastOneValueColumn(columns);
 	}
 
 	@Override
 	public int dateIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return dateColumnIndex(columns);
 	}
 
 	@Override
 	public int openPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return firstValueIndex(columns);
 	}
 
 	@Override
 	public int highPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return firstValueIndex(columns);
 	}
 
 	@Override
 	public int lowPriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return firstValueIndex(columns);
 	}
 
 	@Override
 	public int closePriceIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return firstValueIndex(columns);
 	}
 
 	private int firstValueIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		if (hasAtLeastOneValueColumn(columns)) {
 			return columnUtils.indexOf(columns, DATE_COLUMN_NAME) != FIRST_INDEX ? FIRST_INDEX : SECOND_INDEX;
 
@@ -87,10 +94,12 @@ public class FirstValueResponseColumns implements ResponseColumns {
 	}
 
 	private boolean hasAtLeastOneValueColumn( final List<QuandlColumnName> columns ) {
+
 		return columns.size() > 1;
 	}
 
 	private int dateColumnIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
+
 		return columnUtils.indexOf(columns, DATE_COLUMN_NAME);
 	}
 }

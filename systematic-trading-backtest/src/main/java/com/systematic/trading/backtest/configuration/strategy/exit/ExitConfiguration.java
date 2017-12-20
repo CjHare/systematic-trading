@@ -39,6 +39,7 @@ public class ExitConfiguration implements Describable {
 
 	@Override
 	public String description( final DescriptionGenerator description ) {
+
 		return "HoldForever";
 	}
 }

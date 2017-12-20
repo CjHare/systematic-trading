@@ -55,6 +55,7 @@ public class FileOrderEventFileDao implements OrderEventFileDao {
 
 	@Override
 	public void event( final OrderEvent event ) {
+
 		file.write(String.format("Place Order - %s total cost %s created after c.o.b on %s%n", event.type(),
 		        TWO_DECIMAL_PLACES.format(event.totalCost()), event.transactionDate()));
 	}

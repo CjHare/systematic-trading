@@ -62,6 +62,7 @@ public class EventCountCleanUp implements Runnable {
 
 	@Override
 	public void run() {
+
 		while (running) {
 			ringBuffer.clean();
 
@@ -77,6 +78,7 @@ public class EventCountCleanUp implements Runnable {
 	}
 
 	public void end() {
+
 		running = false;
 	}
 }

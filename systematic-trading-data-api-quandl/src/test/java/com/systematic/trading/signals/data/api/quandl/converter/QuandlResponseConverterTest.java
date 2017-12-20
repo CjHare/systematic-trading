@@ -53,6 +53,7 @@ public class QuandlResponseConverterTest {
 
 	@Test
 	public void convertEmptyPayload() throws CannotRetrieveDataException {
+
 		final String tickerSymbol = randomTickerSymbol();
 		final QuandlResultSet datatable = emptyResultSet();
 
@@ -63,6 +64,7 @@ public class QuandlResponseConverterTest {
 
 	@Test
 	public void convertOneTuple() throws CannotRetrieveDataException {
+
 		final String tickerSymbol = randomTickerSymbol();
 		final QuandlResultSet datatable = resultSetWithOneTuple();
 
@@ -73,6 +75,7 @@ public class QuandlResponseConverterTest {
 
 	@Test
 	public void convertSuffledColumns() throws CannotRetrieveDataException {
+
 		final String tickerSymbol = randomTickerSymbol();
 		final QuandlResultSet datatable = resultSetSuffledColumns();
 
@@ -83,6 +86,7 @@ public class QuandlResponseConverterTest {
 
 	@Test
 	public void convertTwoTuples() throws CannotRetrieveDataException {
+
 		final String tickerSymbol = randomTickerSymbol();
 		final QuandlResultSet datatable = resultSetWithTwoTuple();
 
@@ -92,6 +96,7 @@ public class QuandlResponseConverterTest {
 	}
 
 	private QuandlResultSet resultSetWithTwoTuple() throws CannotRetrieveDataException {
+
 		final List<List<Object>> data = new ArrayList<>();
 		data.add(tuple("2012-01-23", 2.8, 2.05, 3.99, 2.81));
 		data.add(tuple("2012-01-24", 2.5, 1.75, 3.25, 2.8));
@@ -100,6 +105,7 @@ public class QuandlResponseConverterTest {
 	}
 
 	private QuandlResultSet resultSetWithOneTuple() throws CannotRetrieveDataException {
+
 		final List<List<Object>> data = new ArrayList<>();
 		data.add(tuple("2010-12-01", 2.5, 1.75, 3.25, 2.8));
 
@@ -107,6 +113,7 @@ public class QuandlResponseConverterTest {
 	}
 
 	private QuandlResultSet resultSetSuffledColumns() throws CannotRetrieveDataException {
+
 		final List<List<Object>> data = new ArrayList<>();
 		data.add(tuple("2010-12-01", 2.5, 1.75, 3.25, 2.8));
 
@@ -114,6 +121,7 @@ public class QuandlResponseConverterTest {
 	}
 
 	private void verifyPrices( final TradingDayPrices[] prices, final double... expected ) {
+
 		assertNotNull(prices);
 		assertEquals("Number of prices does not match expectations", expected.length / 4, prices.length);
 
@@ -126,6 +134,7 @@ public class QuandlResponseConverterTest {
 	}
 
 	private void verifyBigDecimalEquals( final double expected, final BigDecimal actual ) {
+
 		assertEquals(String.format("Expected %s != %s", expected, actual), 0,
 		        BigDecimal.valueOf(expected).compareTo(actual));
 
@@ -133,6 +142,7 @@ public class QuandlResponseConverterTest {
 
 	private List<Object> tuple( final String date, final double open, final double high, final double low,
 	        final double close ) {
+
 		final List<Object> tuple = new ArrayList<>();
 		tuple.add(date);
 		tuple.add(open);
@@ -143,6 +153,7 @@ public class QuandlResponseConverterTest {
 	}
 
 	private List<QuandlColumnName> standardColumns() {
+
 		final List<QuandlColumnName> columns = new ArrayList<>();
 		columns.add(new QuandlColumnName("date"));
 		columns.add(new QuandlColumnName("open"));
@@ -153,6 +164,7 @@ public class QuandlResponseConverterTest {
 	}
 
 	private List<QuandlColumnName> shuffledColumns() {
+
 		final List<QuandlColumnName> columns = new ArrayList<>();
 		columns.add(new QuandlColumnName("date"));
 		columns.add(new QuandlColumnName("low"));
@@ -163,6 +175,7 @@ public class QuandlResponseConverterTest {
 	}
 
 	private QuandlResultSet emptyResultSet() throws CannotRetrieveDataException {
+
 		return new QuandlResultSet(standardColumns(), new ArrayList<>());
 	}
 
@@ -170,6 +183,7 @@ public class QuandlResponseConverterTest {
 	 * Generates a 4 code point string, using only the letters a-z
 	 */
 	private String randomTickerSymbol() {
+
 		return new RandomStringGenerator.Builder().withinRange('a', 'z').build().generate(4);
 	}
 }

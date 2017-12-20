@@ -43,21 +43,25 @@ public class ElasticCashIndexTest extends ElasticIndexTestBase {
 
 	@Override
 	protected String getJsonPutIndex() {
+
 		return JSON_PUT_INDEX;
 	}
 
 	@Override
 	protected String getJsonPutIndexMapping() {
+
 		return JSON_PUT_INDEX_MAPPING;
 	}
 
 	@Override
 	protected ElasticIndexName getIndexName() {
+
 		return ElasticIndexName.CASH;
 	}
 
 	@Override
 	protected ElasticCommonIndex createIndex() {
+
 		return new ElasticCashIndex(getDao(), getPool(), getElasticConfig());
 	}
 }

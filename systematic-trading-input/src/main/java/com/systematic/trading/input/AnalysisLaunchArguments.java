@@ -57,18 +57,22 @@ public class AnalysisLaunchArguments {
 	}
 
 	public TickerSymbol tickerSymbol() {
+
 		return equityArguments.tickerSymbol();
 	}
 
 	public EquityDataset equityDataset() {
+
 		return equityArguments.equityDataset();
 	}
 
 	public DataServiceType dataService() {
+
 		return equityArguments.dataService();
 	}
 
 	public BigDecimal openingFunds() {
+
 		return openingFunds;
 	}
 }

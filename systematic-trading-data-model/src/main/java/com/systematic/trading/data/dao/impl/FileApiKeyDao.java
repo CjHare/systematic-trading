@@ -46,6 +46,7 @@ import com.systematic.trading.data.exception.CannotRetrieveConfigurationExceptio
  * @author CJ Hare
  */
 public class FileApiKeyDao implements ApiKeyDao {
+
 	private static final String ERROR_MISSING_KEY_FILE = "Missing api key file, sign up for your desired service and put the key into a file named %s on the classpath";
 	private static final String ERROR_EMPTY_KEY_FILE = "Problem reading API key from file at %s";
 
@@ -53,6 +54,7 @@ public class FileApiKeyDao implements ApiKeyDao {
 
 	@Override
 	public String apiKey( final String keyFileLocation ) throws CannotRetrieveConfigurationException {
+
 		try {
 
 			final URL location = CLASSPATH.getResource(keyFileLocation);

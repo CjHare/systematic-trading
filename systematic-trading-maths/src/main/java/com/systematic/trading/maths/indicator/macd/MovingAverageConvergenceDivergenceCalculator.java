@@ -67,11 +67,13 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 
 	@Override
 	public int minimumNumberOfPrices() {
+
 		return slowEma.minimumNumberOfPrices();
 	}
 
 	@Override
 	public MovingAverageConvergenceDivergenceLines calculate( final TradingDayPrices[] data ) {
+
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, 1);

@@ -56,21 +56,25 @@ public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
 
 	@Override
 	public BigDecimal percentageChange() {
+
 		return percentageChange;
 	}
 
 	@Override
 	public LocalDate inclusiveStartDate() {
+
 		return exclusiveStartDate;
 	}
 
 	@Override
 	public LocalDate exclusiveEndDate() {
+
 		return inclusiveEndDate;
 	}
 
 	@Override
 	public String toString() {
+
 		return String.format("Percentage change: %s, Exclusive start date: %s, Inclusive end date: %s",
 		        percentageChange, exclusiveStartDate, inclusiveEndDate);
 	}

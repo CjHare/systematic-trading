@@ -48,6 +48,7 @@ public class TradingDayPricesDateMatcher extends ArgumentMatcher<TradingDayPrice
 	private final LocalDate expectedDate;
 
 	public static TradingDayPrices argumentMatches( final LocalDate expectedDate ) {
+
 		return argThat(new TradingDayPricesDateMatcher(expectedDate));
 	}
 
@@ -57,11 +58,13 @@ public class TradingDayPricesDateMatcher extends ArgumentMatcher<TradingDayPrice
 
 	@Override
 	public boolean matches( final Object argument ) {
+
 		return argument instanceof TradingDayPrices && expectedDate.isEqual(((TradingDayPrices) argument).date());
 	}
 
 	@Override
 	public void describeTo( final Description description ) {
+
 		description.appendText(String.format("Expecting %s", expectedDate));
 	}
 }

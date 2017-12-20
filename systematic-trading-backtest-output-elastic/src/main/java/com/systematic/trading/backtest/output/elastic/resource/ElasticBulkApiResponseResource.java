@@ -51,6 +51,7 @@ public class ElasticBulkApiResponseResource {
 	}
 
 	public boolean hasErrors() {
+
 		return errors;
 	}
 }

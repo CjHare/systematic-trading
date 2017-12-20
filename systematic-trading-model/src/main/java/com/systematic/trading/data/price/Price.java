@@ -49,6 +49,7 @@ public class Price {
 	 * @return equivalent price for the given decimal.
 	 */
 	public static Price valueOf( final BigDecimal amount ) {
+
 		if (amount == null) {
 			throw new IllegalArgumentException("null is not accepted by Price.valueOf()");
 		}
@@ -62,6 +63,7 @@ public class Price {
 	 * @return price, never <code>null</code>.
 	 */
 	public BigDecimal getPrice() {
+
 		return amount;
 	}
 
@@ -72,6 +74,7 @@ public class Price {
 	 * @return <code>true</code> when the other is smaller, <code>false</code> otherwise.
 	 */
 	public boolean isGreaterThan( final Price other ) {
+
 		return getPrice().compareTo(other.getPrice()) > 0;
 	}
 
@@ -82,6 +85,7 @@ public class Price {
 	 * @return <code>true</code> when the other value is larger, <code>false</code> otherwise.
 	 */
 	public boolean isLessThan( final Price other ) {
+
 		return getPrice().compareTo(other.getPrice()) < 0;
 	}
 
@@ -92,6 +96,7 @@ public class Price {
 	 * @return <code>true</code> when the other value is the same, <code>false</code> otherwise.
 	 */
 	public boolean isEqaul( final Price other ) {
+
 		return getPrice().compareTo(other.getPrice()) == 0;
 	}
 
@@ -103,6 +108,7 @@ public class Price {
 	 *         {@code other}.
 	 */
 	public int compareTo( final Price other ) {
+
 		return getPrice().compareTo(other.getPrice());
 	}
 
@@ -114,6 +120,7 @@ public class Price {
 	 * @return the result of the subtraction, not side effecting this Price.
 	 */
 	public BigDecimal subtract( final Price other, final MathContext mathContext ) {
+
 		return getPrice().subtract(other.getPrice(), mathContext);
 	}
 }

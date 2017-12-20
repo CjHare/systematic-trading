@@ -79,49 +79,58 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 	@Override
 	@Column(name = "ticker_symbol")
 	public String tickerSymbol() {
+
 		return tickerSymbol;
 	}
 
 	@Column(name = "ticker_symbol")
 	public void tickerSymbol( final String tickerSymbol ) {
+
 		this.tickerSymbol = tickerSymbol;
 	}
 
 	@Override
 	@Column(name = "start")
 	public Date inclusiveStartDate() {
+
 		return inclusiveStartDate;
 	}
 
 	@Column(name = "start")
 	public void inclusiveStartDate( final Date inclusiveStartDate ) {
+
 		this.inclusiveStartDate = inclusiveStartDate;
 	}
 
 	@Override
 	@Column(name = "end")
 	public Date exclusiveEndDate() {
+
 		return exclusiveEndDate;
 	}
 
 	@Column(name = "end")
 	public void exclusiveEndDate( final Date exclusiveEndDate ) {
+
 		this.exclusiveEndDate = exclusiveEndDate;
 	}
 
 	@Override
 	@Column(name = "dataset")
 	public String equityDataset() {
+
 		return equityDataset;
 	}
 
 	@Column(name = "dataset")
 	public void equityDataset( final String equityDataset ) {
+
 		this.equityDataset = equityDataset;
 	}
 
 	@Override
 	public int hashCode() {
+
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((equityDataset == null) ? 0 : equityDataset.hashCode());
@@ -133,6 +142,7 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 
 	@Override
 	public boolean equals( Object obj ) {
+
 		if (this == obj) {
 			return true;
 		}
@@ -147,20 +157,24 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 	}
 
 	private boolean inclusiveStartDateEquals( final HibernateHistoryRetrievalRequest other ) {
+
 		return inclusiveStartDate == other.inclusiveStartDate
 		        || (inclusiveStartDate != null && inclusiveStartDate.equals(other.inclusiveStartDate));
 	}
 
 	private boolean exclusiveEndDateEquals( final HibernateHistoryRetrievalRequest other ) {
+
 		return exclusiveEndDate == other.exclusiveEndDate
 		        || (exclusiveEndDate != null && exclusiveEndDate.equals(other.exclusiveEndDate));
 	}
 
 	private boolean tickerSymbolEquals( final HibernateHistoryRetrievalRequest other ) {
+
 		return tickerSymbol == other.tickerSymbol || (tickerSymbol != null && tickerSymbol.equals(other.tickerSymbol));
 	}
 
 	private boolean equityDatasetEquals( final HibernateHistoryRetrievalRequest other ) {
+
 		return equityDataset == other.equityDataset
 		        || (equityDataset != null && equityDataset.equals(other.equityDataset));
 	}

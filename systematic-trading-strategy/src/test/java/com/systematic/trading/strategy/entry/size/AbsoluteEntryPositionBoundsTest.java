@@ -46,6 +46,7 @@ public class AbsoluteEntryPositionBoundsTest {
 
 	@Test
 	public void boundsInteger() {
+
 		setUpBounds(55);
 
 		final BigDecimal positionSize = bounds();
@@ -55,6 +56,7 @@ public class AbsoluteEntryPositionBoundsTest {
 
 	@Test
 	public void boundsDecimal() {
+
 		setUpBounds(12.45);
 
 		final BigDecimal positionSize = bounds();
@@ -63,14 +65,17 @@ public class AbsoluteEntryPositionBoundsTest {
 	}
 
 	private void verifyPositionSize( final double expected, final BigDecimal actual ) {
+
 		assertBigDecimalEquals(expected, actual);
 	}
 
 	private BigDecimal bounds() {
+
 		return bounds.bounds(BigDecimal.ZERO);
 	}
 
 	private void setUpBounds( final double value ) {
+
 		bounds = new AbsoluteEntryPositionBounds(BigDecimal.valueOf(value));
 	}
 }

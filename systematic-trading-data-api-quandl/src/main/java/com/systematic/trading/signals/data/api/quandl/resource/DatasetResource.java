@@ -51,21 +51,25 @@ public class DatasetResource {
 
 	@JsonSetter("column_names")
 	public List<String> columns() {
+
 		return columns;
 	}
 
 	@JsonSetter("column_names")
 	public void columns( final List<String> columns ) {
+
 		this.columns = columns;
 	}
 
 	@JsonProperty("data")
 	public List<List<Object>> data() {
+
 		return data;
 	}
 
 	@JsonProperty("data")
 	public void data( final List<List<Object>> data ) {
+
 		this.data = data;
 	}
 }

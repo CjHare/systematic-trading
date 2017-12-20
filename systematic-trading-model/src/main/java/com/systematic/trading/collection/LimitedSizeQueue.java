@@ -33,6 +33,7 @@ import java.util.LinkedList;
  * @author CJ Hare
  */
 public class LimitedSizeQueue<E> extends LinkedList<E> {
+
 	private static final long serialVersionUID = 1L;
 
 	/** Hash coding needs a prime number to help keep things unique. */
@@ -60,6 +61,7 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 
 	@Override
 	public boolean add( final E o ) {
+
 		super.add(o);
 
 		while (size() > limit) {
@@ -74,6 +76,7 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 	 * More efficient implementation, with regard to memory usage.
 	 */
 	public E[] toArray() {
+
 		if (size() >= limit) {
 			return super.toArray(items);
 		} else {
@@ -83,15 +86,18 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 
 	@Override
 	public <T> T[] toArray( final T[] a ) {
+
 		throw new UnsupportedOperationException("Please use LimitedQueue.toArray() instead");
 	}
 
 	public int getLimit() {
+
 		return limit;
 	}
 
 	@Override
 	public int hashCode() {
+
 		int result = super.hashCode();
 		result = PRIME_VALUE * result + limit;
 		return result;
@@ -99,6 +105,7 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 
 	@Override
 	public boolean equals( final Object obj ) {
+
 		if (this == obj)
 			return true;
 		if (!super.equals(obj))

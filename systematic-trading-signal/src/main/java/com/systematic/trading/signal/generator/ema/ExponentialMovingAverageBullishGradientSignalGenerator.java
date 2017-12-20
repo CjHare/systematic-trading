@@ -54,6 +54,7 @@ public class ExponentialMovingAverageBullishGradientSignalGenerator
 
 	@Override
 	public SignalType type() {
+
 		return SignalType.BULLISH;
 	}
 
@@ -80,6 +81,7 @@ public class ExponentialMovingAverageBullishGradientSignalGenerator
 
 	private boolean isPositiveGradient( final Map.Entry<LocalDate, BigDecimal> entry,
 	        final Map.Entry<LocalDate, BigDecimal> previousEtnry ) {
+
 		return entry.getValue().subtract(previousEtnry.getValue()).compareTo(BigDecimal.ZERO) > 0;
 	}
 }

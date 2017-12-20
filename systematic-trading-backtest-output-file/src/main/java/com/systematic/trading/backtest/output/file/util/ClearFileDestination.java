@@ -60,6 +60,7 @@ public class ClearFileDestination {
 	}
 
 	private void verifyDirectoryIsEmpty( final String outputDirectory ) {
+
 		final File outputDirectoryFile = new File(outputDirectory);
 
 		if (outputDirectoryFile.listFiles().length != 0) {

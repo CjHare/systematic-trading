@@ -56,6 +56,7 @@ public interface LaunchArgument<T> {
 		}
 
 		public String getKey() {
+
 			return key;
 		}
 

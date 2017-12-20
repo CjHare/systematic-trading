@@ -67,6 +67,7 @@ public class ElasticReturnOnInvestmentEventFrequency {
 	 * Accepts just either side of being yearly in addition to being spot on, catering for offset years. 
 	 */
 	private boolean isYearly( final Period frequency ) {
+
 		return frequency.getYears() > 0 || frequency.getMonths() >= 11;
 	}
 
@@ -74,6 +75,7 @@ public class ElasticReturnOnInvestmentEventFrequency {
 	 * Accepts just either side of being monthly in addition to being spot on, catering for offset months. 
 	 */
 	private boolean isMonthly( final Period frequency ) {
+
 		return frequency.getMonths() > 0 || frequency.getDays() >= 26;
 	}
 
@@ -81,10 +83,12 @@ public class ElasticReturnOnInvestmentEventFrequency {
 	 * Five or more days is considered weekly, everything below falls into daily.
 	 */
 	private boolean isWeekly( final Period frequency ) {
+
 		return frequency.getDays() >= 5;
 	}
 
 	public String frequency() {
+
 		return frequency;
 	}
 }

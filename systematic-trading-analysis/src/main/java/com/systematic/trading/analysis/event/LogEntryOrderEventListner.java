@@ -59,6 +59,7 @@ public class LogEntryOrderEventListner implements BacktestEventListener {
 
 	@Override
 	public void event( final CashEvent event ) {
+
 		// Only displaying the entry order events
 	}
 
@@ -74,31 +75,37 @@ public class LogEntryOrderEventListner implements BacktestEventListener {
 
 	@Override
 	public void event( final BrokerageEvent event ) {
+
 		// Only displaying the entry order events
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
+
 		// Only displaying the entry order events
 	}
 
 	@Override
 	public void stateChanged( final SimulationState transitionedState ) {
+
 		// Only displaying the entry order events
 	}
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
+
 		// Only displaying the entry order events
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
+
 		// Only displaying the entry order events
 	}
 
 	@Override
 	public void event( final EquityEvent event ) {
+
 		// Only displaying the entry order events
 	}
 }

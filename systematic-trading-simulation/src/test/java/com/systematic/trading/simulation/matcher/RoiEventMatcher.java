@@ -45,12 +45,14 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  * @author CJ Hare
  */
 public class RoiEventMatcher extends ArgumentMatcher<ReturnOnInvestmentEvent> {
+
 	private final BigDecimal percentageChange;
 	private final LocalDate startDateExclusive;
 	private final LocalDate endDateInclusive;
 
 	public static ReturnOnInvestmentEvent argumentMatches( final BigDecimal percentageChange,
 	        final LocalDate startDateExclusive, final LocalDate endDateInclusive ) {
+
 		return argThat(new RoiEventMatcher(percentageChange, startDateExclusive, endDateInclusive));
 	}
 
@@ -63,6 +65,7 @@ public class RoiEventMatcher extends ArgumentMatcher<ReturnOnInvestmentEvent> {
 
 	@Override
 	public boolean matches( final Object argument ) {
+
 		final ReturnOnInvestmentEvent event = (ReturnOnInvestmentEvent) argument;
 
 		return percentageChange.compareTo(event.percentageChange()) == 0
@@ -72,6 +75,7 @@ public class RoiEventMatcher extends ArgumentMatcher<ReturnOnInvestmentEvent> {
 
 	@Override
 	public void describeTo( Description description ) {
+
 		description.appendText(String.format("Percentage change: %s, Exclusive start date: %s, Inclusive end date: %s",
 		        percentageChange, startDateExclusive, endDateInclusive));
 	}

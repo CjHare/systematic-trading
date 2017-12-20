@@ -38,6 +38,7 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
  * @author CJ Hare
  */
 public abstract class EventResource {
+
 	private final String event;
 
 	public EventResource( final String event ) {
@@ -46,11 +47,13 @@ public abstract class EventResource {
 
 	@JsonProperty(ElasticTypeName.EVENT)
 	public String getEvent() {
+
 		return event;
 	}
 
 	@Override
 	public String toString() {
+
 		final StringBuilder out = new StringBuilder("EventResource [");
 		out.append(super.toString());
 		out.append(", event=");

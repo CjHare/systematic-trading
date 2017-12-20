@@ -51,11 +51,13 @@ public class TradingStrategyIndicatorEntry implements Entry {
 
 	@Override
 	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+
 		return indicator.analyse(data);
 	}
 
 	@Override
 	public int requiredTradingPrices() {
+
 		return indicator.requiredTradingPrices();
 	}
 }

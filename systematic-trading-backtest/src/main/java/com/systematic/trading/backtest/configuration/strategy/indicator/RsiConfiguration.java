@@ -57,23 +57,28 @@ public enum RsiConfiguration implements IndicatorConfiguration {
 	}
 
 	public int lookback() {
+
 		return lookback;
 	}
 
 	public BigDecimal oversold() {
+
 		return oversold;
 	}
 
 	public BigDecimal overbought() {
+
 		return overbought;
 	}
 
 	public String description() {
+
 		return description;
 	}
 
 	@Override
 	public IndicatorId id() {
+
 		return new IndicatorId(description);
 	}
 }

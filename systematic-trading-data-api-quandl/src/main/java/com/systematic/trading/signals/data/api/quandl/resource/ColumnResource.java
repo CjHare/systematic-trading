@@ -51,11 +51,13 @@ public class ColumnResource {
 
 	@JsonProperty("name")
 	public String name() {
+
 		return name;
 	}
 
 	@JsonProperty("name")
 	public void name( final String name ) {
+
 		this.name = name;
 	}
 }

@@ -85,11 +85,13 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 
 	@Override
 	public int minimumNumberOfPrices() {
+
 		return minimumNumberOfPrices;
 	}
 
 	@Override
 	public AverageTrueRangeLine calculate( final TradingDayPrices[] data ) {
+
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, lookback);
@@ -117,6 +119,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 	 * First ATR is the average of the TR for the first lookback period.
 	 */
 	private BigDecimal calculateFirstAtr( final TradingDayPrices[] data ) {
+
 		BigDecimal totalTrueRange = trueRangeMethodOne(data[0]);
 
 		for (int i = 1; i < lookback; i++) {
@@ -130,6 +133,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 	 * Difference between the high and low prices.
 	 */
 	private BigDecimal trueRangeMethodOne( final TradingDayPrices today ) {
+
 		return today.highestPrice().subtract(today.lowestPrice(), MATH_CONTEXT).abs();
 	}
 
@@ -137,6 +141,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 	 * Difference between the today's high price and yesterday's close price.
 	 */
 	private BigDecimal trueRangeMethodTwo( final TradingDayPrices today, final TradingDayPrices yesterday ) {
+
 		return today.highestPrice().subtract(yesterday.closingPrice(), MATH_CONTEXT).abs();
 	}
 
@@ -144,6 +149,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 	 * Difference between today's low price and yesterdays close price.
 	 */
 	private BigDecimal trueRangeMethodThree( final TradingDayPrices today, final TradingDayPrices yesterday ) {
+
 		return today.lowestPrice().subtract(yesterday.closingPrice(), MATH_CONTEXT).abs();
 	}
 
@@ -151,11 +157,13 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 	 * @return highest value of the three true range methods.
 	 */
 	private BigDecimal trueRange( final TradingDayPrices today, final TradingDayPrices yesterday ) {
+
 		return trueRangeMethodOne(today).max(trueRangeMethodTwo(today, yesterday))
 		        .max(trueRangeMethodThree(today, yesterday));
 	}
 
 	private BigDecimal average( final BigDecimal currentTrueRange, final BigDecimal priorAverageTrueRange ) {
+
 		/* For a look back of 14: Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the
 		 * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14 */
 		return priorAverageTrueRange.multiply(priorMultiplier).add(currentTrueRange).divide(lookbackDivider,

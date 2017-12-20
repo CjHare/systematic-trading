@@ -63,6 +63,7 @@ import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeSt
  * @author CJ Hare
  */
 public class EmaUptrendOrSmaUptrendTrial extends BaseTrial implements BacktestConfiguration {
+
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
@@ -81,13 +82,14 @@ public class EmaUptrendOrSmaUptrendTrial extends BaseTrial implements BacktestCo
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit ) {
+
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		final BrokerageTransactionFeeStructure brokerage = new VanguardBrokerageFees();
 
 		// Date based buying
-		configurations.add(
-		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
+		configurations
+		        .add(periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
 		configurations.add(
 		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
 
@@ -95,8 +97,8 @@ public class EmaUptrendOrSmaUptrendTrial extends BaseTrial implements BacktestCo
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(smaOrEmaUptrends(equity, simulationDates, openingFunds, deposit, brokerage,
-		        minimumTrade, maximumTrade));
+		configurations.addAll(smaOrEmaUptrends(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade,
+		        maximumTrade));
 
 		return configurations;
 	}

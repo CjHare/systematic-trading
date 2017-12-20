@@ -78,6 +78,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Before
 	public void setUp() {
+
 		recorder = new RetrievedYearMonthRecorder(retrievedMonthsDao);
 		tickerSymbol = RandomStringGenerator.generate();
 		datasetId = RandomStringGenerator.generate();
@@ -85,6 +86,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void retrievedNull() {
+
 		final List<HistoryRetrievalRequest> fulfilled = null;
 
 		retrieved(fulfilled);
@@ -94,6 +96,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void retrievedNothing() {
+
 		final List<HistoryRetrievalRequest> fulfilled = new ArrayList<HistoryRetrievalRequest>();
 
 		retrieved(fulfilled);
@@ -103,6 +106,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void oneWholeMonth() {
+
 		final LocalDate start = LocalDate.of(2010, 5, 1);
 		final LocalDate end = LocalDate.of(2010, 5, 31);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
@@ -114,6 +118,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void oneWholeMonthPlusEndEdge() {
+
 		final LocalDate start = LocalDate.of(2010, 5, 1);
 		final LocalDate end = LocalDate.of(2010, 6, 20);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
@@ -125,6 +130,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void oneWholeMonthPlusStartEdge() {
+
 		final LocalDate start = LocalDate.of(2010, 4, 7);
 		final LocalDate end = LocalDate.of(2010, 5, 31);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
@@ -136,6 +142,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void oneWholeMonthPlusBothEdges() {
+
 		final LocalDate start = LocalDate.of(2010, 4, 7);
 		final LocalDate end = LocalDate.of(2010, 6, 19);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
@@ -147,6 +154,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void twoWholeMonths() {
+
 		final LocalDate start = LocalDate.of(2010, 5, 1);
 		final LocalDate end = LocalDate.of(2010, 6, 30);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
@@ -158,6 +166,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void oneYearOneMonth() {
+
 		final LocalDate start = LocalDate.of(2010, 5, 1);
 		final LocalDate end = LocalDate.of(2011, 6, 30);
 		final List<HistoryRetrievalRequest> fulfilled = asList(create(start, end));
@@ -172,6 +181,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void twoRequestsOneWholeMonth() {
+
 		final List<HistoryRetrievalRequest> fulfilled = asList(
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 5, 31)),
 		        create(LocalDate.of(2010, 5, 31), LocalDate.of(2010, 6, 30)));
@@ -183,6 +193,7 @@ public class RetrievedYearMonthRecorderTest {
 
 	@Test
 	public void twoRequestsSplitMonths() {
+
 		final List<HistoryRetrievalRequest> fulfilled = asList(
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 6, 15)),
 		        create(LocalDate.of(2010, 6, 15), LocalDate.of(2010, 7, 31)));
@@ -193,24 +204,29 @@ public class RetrievedYearMonthRecorderTest {
 	}
 
 	private void retrieved( final List<HistoryRetrievalRequest> fulfilled ) {
+
 		recorder.retrieved(fulfilled);
 	}
 
 	private void verifyMonths( final YearMonth... month ) {
+
 		verify(retrievedMonthsDao).create(argThat(new RetrievedMonthTradingPricesListMatcher(
 		        retrievedMonthTradingPricesUtil.create(tickerSymbol, month))));
 		verifyNoMoreInteractions(retrievedMonthsDao);
 	}
 
 	private List<HistoryRetrievalRequest> asList( final HistoryRetrievalRequest... requests ) {
+
 		return historyRetrievalRequestUtil.asList(requests);
 	}
 
 	private HistoryRetrievalRequest create( final LocalDate start, final LocalDate end ) {
+
 		return historyRetrievalRequestUtil.create(datasetId, tickerSymbol, start, end);
 	}
 
 	private void verifyNoMonthsRetrieved() {
+
 		verifyZeroInteractions(retrievedMonthsDao);
 	}
 }

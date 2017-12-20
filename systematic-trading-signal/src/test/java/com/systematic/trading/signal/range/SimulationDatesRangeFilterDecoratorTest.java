@@ -63,6 +63,7 @@ public class SimulationDatesRangeFilterDecoratorTest {
 
 	@Test
 	public void beforeEarliestDate() {
+
 		final TradingDayPrices[] priceData = new TradingDayPrices[1];
 		final LocalDate simulationStartDate = LocalDate.of(2000, FEBRUARY, 1);
 		final LocalDate simulationEndDate = LocalDate.of(2010, MARCH, 1);
@@ -78,6 +79,7 @@ public class SimulationDatesRangeFilterDecoratorTest {
 
 	@Test
 	public void onEarliestDate() {
+
 		final TradingDayPrices[] priceData = new TradingDayPrices[2];
 		final LocalDate simulationStartDate = LocalDate.of(2001, FEBRUARY, 1);
 		final LocalDate simulationEndDate = LocalDate.of(2011, MARCH, 1);
@@ -93,6 +95,7 @@ public class SimulationDatesRangeFilterDecoratorTest {
 
 	@Test
 	public void afterEarliestDate() {
+
 		final TradingDayPrices[] priceData = new TradingDayPrices[3];
 		final LocalDate simulationStartDate = LocalDate.of(2002, FEBRUARY, 1);
 		final LocalDate simulationEndDate = LocalDate.of(2012, MARCH, 1);
@@ -108,6 +111,7 @@ public class SimulationDatesRangeFilterDecoratorTest {
 
 	@Test
 	public void beforeLatesttDate() {
+
 		final TradingDayPrices[] priceData = new TradingDayPrices[4];
 		final LocalDate simulationStartDate = LocalDate.of(2000, MARCH, 1);
 		final LocalDate simulationEndDate = LocalDate.of(2010, FEBRUARY, 1);
@@ -123,6 +127,7 @@ public class SimulationDatesRangeFilterDecoratorTest {
 
 	@Test
 	public void onLatesttDate() {
+
 		final TradingDayPrices[] priceData = new TradingDayPrices[5];
 		final LocalDate simulationStartDate = LocalDate.of(2003, MARCH, 1);
 		final LocalDate simulationEndDate = LocalDate.of(2013, FEBRUARY, 1);
@@ -138,6 +143,7 @@ public class SimulationDatesRangeFilterDecoratorTest {
 
 	@Test
 	public void afterLatesttDate() {
+
 		final TradingDayPrices[] priceData = new TradingDayPrices[6];
 		final LocalDate simulationStartDate = LocalDate.of(2005, MARCH, 1);
 		final LocalDate simulationEndDate = LocalDate.of(2015, FEBRUARY, 1);
@@ -152,35 +158,43 @@ public class SimulationDatesRangeFilterDecoratorTest {
 	}
 
 	private LocalDate earliestSignalDate( final TradingDayPrices[] priceData ) {
+
 		return decorator.earliestSignalDate(priceData);
 	}
 
 	private LocalDate latestSignalDate( final TradingDayPrices[] priceData ) {
+
 		return decorator.latestSignalDate(priceData);
 	}
 
 	private void setUpDecorate( final LocalDate simulationStartDate, final LocalDate simulationEndDate ) {
+
 		decorator = new SimulationDatesRangeFilterDecorator(simulationStartDate, simulationEndDate, filter);
 	}
 
 	private void setUpFilterEarliestDate( final LocalDate earliestDate, final TradingDayPrices[] data ) {
+
 		when(filter.earliestSignalDate(any(TradingDayPrices[].class))).thenReturn(earliestDate);
 	}
 
 	private void setUpFilterLatestDate( final LocalDate latestDate, final TradingDayPrices[] data ) {
+
 		when(filter.latestSignalDate(any(TradingDayPrices[].class))).thenReturn(latestDate);
 	}
 
 	private void verifyDate( final LocalDate expected, final LocalDate actual ) {
+
 		assertNotNull(actual);
 		assertEquals(expected, actual);
 	}
 
 	private void verifyEarliestDateDelegation( final TradingDayPrices[] data ) {
+
 		verify(filter).earliestSignalDate(data);
 	}
 
 	private void verifyLatestDateDelegation( final TradingDayPrices[] data ) {
+
 		verify(filter).latestSignalDate(data);
 	}
 }

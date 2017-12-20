@@ -52,29 +52,35 @@ public class OperatorEntryConfiguration implements EntryConfiguration {
 	}
 
 	public EntryConfiguration leftEntry() {
+
 		return leftEntry;
 	}
 
 	public OperatorConfiguration.Selection operator() {
+
 		return op;
 	}
 
 	public EntryConfiguration righEntry() {
+
 		return righEntry;
 	}
 
 	@Override
 	public String description( final DescriptionGenerator description ) {
+
 		return description.entry(leftEntry, op, righEntry);
 	}
 
 	@Override
 	public boolean hasSubEntry() {
+
 		return true;
 	}
 
 	@Override
 	public TemporalAmount priceDataRange() {
+
 		return Period.ofDays(1);
 	}
 }

@@ -68,6 +68,7 @@ public class SimulationTest {
 	//TODO add more UT
 
 	private void createSimulation( final TickerSymbolTradingData tradingData ) {
+
 		new Simulation(tradingData, broker, funds, roiCalculator, strategy);
 	}
 }

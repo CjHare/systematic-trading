@@ -51,16 +51,19 @@ public class ElasticOrderIndex extends ElasticCommonIndex {
 	}
 
 	public void event( final BacktestBatchId id, final OrderEvent event ) {
+
 		create(id, new ElasticOrderEventRequestResource(event));
 	}
 
 	@Override
 	protected ElasticIndexName indexName() {
+
 		return ElasticIndexName.ORDER;
 	}
 
 	@Override
 	protected ElasticIndexMapping indexMapping() {
+
 		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
 		        pair(ElasticFieldName.TOTAL_COST, ElasticFieldType.FLOAT),
 		        pair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));

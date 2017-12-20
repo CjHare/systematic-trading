@@ -43,6 +43,7 @@ public class TickerSymbol {
 	}
 
 	public String symbol() {
+
 		return symbol;
 	}
 }

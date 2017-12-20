@@ -40,28 +40,30 @@ import com.systematic.trading.strategy.indicator.configuration.IndicatorConfigur
 public class IndicatorConfigurationTranslator {
 
 	public IndicatorConfiguration translate( final MacdConfiguration macdConfiguration ) {
+
 		return new com.systematic.trading.strategy.indicator.configuration.MacdConfiguration(
 		        new IndicatorId(macdConfiguration.description()), macdConfiguration.fastTimePeriods(),
 		        macdConfiguration.slowTimePeriods(), macdConfiguration.signalTimePeriods());
 	}
 
 	public IndicatorConfiguration translate( final RsiConfiguration rsiConfiguration ) {
+
 		return new com.systematic.trading.strategy.indicator.configuration.RsiConfiguration(
 		        new IndicatorId(rsiConfiguration.description()), rsiConfiguration.lookback(),
 		        rsiConfiguration.overbought(), rsiConfiguration.oversold());
 	}
 
 	public IndicatorConfiguration translate( final SmaUptrendConfiguration smaConfiguration ) {
+
 		final MovingAverageConfiguration configuration = smaConfiguration.configuration();
 		return new com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration(
-		        new IndicatorId(configuration.description()), configuration.lookback(),
-		        configuration.daysOfGradient());
+		        new IndicatorId(configuration.description()), configuration.lookback(), configuration.daysOfGradient());
 	}
 
 	public IndicatorConfiguration translate( final EmaUptrendConfiguration emaConfiguration ) {
+
 		final MovingAverageConfiguration configuration = emaConfiguration.configuration();
 		return new com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration(
-		        new IndicatorId(configuration.description()), configuration.lookback(),
-		        configuration.daysOfGradient());
+		        new IndicatorId(configuration.description()), configuration.lookback(), configuration.daysOfGradient());
 	}
 }

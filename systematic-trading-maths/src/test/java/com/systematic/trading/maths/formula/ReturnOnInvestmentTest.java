@@ -48,16 +48,19 @@ public class ReturnOnInvestmentTest {
 
 	@Before
 	public void setUp() {
+
 		roi = new ReturnOnInvestment();
 	}
 
 	@Test
 	public void get() {
+
 		verifyRoi(0);
 	}
 
 	@Test
 	public void reset() {
+
 		addRoi(1);
 
 		roi.reset();
@@ -67,6 +70,7 @@ public class ReturnOnInvestmentTest {
 
 	@Test
 	public void add() {
+
 		final double value = 1.234567;
 
 		addRoi(value);
@@ -76,6 +80,7 @@ public class ReturnOnInvestmentTest {
 
 	@Test
 	public void addTwoValues() {
+
 		addRoi(1.234567);
 		addRoi(34.234567);
 
@@ -83,10 +88,12 @@ public class ReturnOnInvestmentTest {
 	}
 
 	private void verifyRoi( final double expected ) {
+
 		assertBigDecimalEquals(expected, roi.get());
 	}
 
 	private void addRoi( final double value ) {
+
 		roi.add(BigDecimal.valueOf(value));
 	}
 }

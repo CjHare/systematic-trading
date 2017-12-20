@@ -51,6 +51,7 @@ public class IntegerConfigurationValidatorTest {
 
 	@Test
 	public void onMinimum() throws ConfigurationValidationException {
+
 		final int minimumValue = random();
 
 		setupValidator(minimumValue, MAX);
@@ -60,6 +61,7 @@ public class IntegerConfigurationValidatorTest {
 
 	@Test(expected = ConfigurationValidationException.class)
 	public void belowMinimum() throws ConfigurationValidationException {
+
 		final int minimumValue = random();
 
 		setupValidator(minimumValue, MAX);
@@ -69,6 +71,7 @@ public class IntegerConfigurationValidatorTest {
 
 	@Test
 	public void onMaximum() throws ConfigurationValidationException {
+
 		final int maximumValue = random();
 
 		setupValidator(MIN, maximumValue);
@@ -78,6 +81,7 @@ public class IntegerConfigurationValidatorTest {
 
 	@Test(expected = ConfigurationValidationException.class)
 	public void aboveMaximum() throws ConfigurationValidationException {
+
 		final int maximumValue = random();
 
 		setupValidator(MIN, maximumValue);
@@ -87,25 +91,30 @@ public class IntegerConfigurationValidatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void minimumAboveMaximum() {
+
 		setupValidator(MAX, MIN);
 	}
 
 	@Test(expected = ConfigurationValidationException.class)
 	public void noValue() throws ConfigurationValidationException {
+
 		setupValidator(MIN, MAX);
 
 		validate(null);
 	}
 
 	private void validate( final Integer value ) throws ConfigurationValidationException {
+
 		validator.validate(String.valueOf(value));
 	}
 
 	private int random() {
+
 		return new Random().nextInt(MAX);
 	}
 
 	private void setupValidator( final int minimum, final int maximum ) {
+
 		validator = new IntegerConfigurationValidator(minimum, maximum);
 	}
 }

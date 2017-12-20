@@ -59,7 +59,8 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 	 * @param validator validates and parses input.
 	 * @param store source for the storage array.
 	 */
-	public ClosingPriceSimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues, final Validator validator ) {
+	public ClosingPriceSimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues,
+	        final Validator validator ) {
 		validator.verifyGreaterThan(1, lookback);
 		validator.verifyGreaterThan(1, daysOfSmaValues);
 
@@ -70,11 +71,13 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 
 	@Override
 	public int minimumNumberOfPrices() {
+
 		return minimumNumberOfPrices;
 	}
 
 	@Override
 	public SimpleMovingAverageLine calculate( final TradingDayPrices[] data ) {
+
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, minimumNumberOfPrices);
@@ -93,6 +96,7 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 	 * Calculate the average from this value and the previous look back amount.
 	 */
 	private BigDecimal simpleAverage( final int endIndex, final TradingDayPrices[] data ) {
+
 		final int startIndex = endIndex - lookback + 1;
 		BigDecimal average = data[endIndex].closingPrice().getPrice();
 

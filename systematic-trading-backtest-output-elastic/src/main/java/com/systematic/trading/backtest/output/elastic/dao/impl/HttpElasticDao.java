@@ -95,18 +95,21 @@ public class HttpElasticDao implements ElasticDao {
 
 	@Override
 	public Response index( final ElasticIndexName indexName ) {
+
 		final String path = indexName.indexName();
 		return root.path(path).request(MediaType.APPLICATION_JSON).get();
 	}
 
 	@Override
 	public Response mapping( final ElasticIndexName indexName, final BacktestBatchId id ) {
+
 		final String path = getMappingPath(indexName, id);
 		return root.path(path).request(MediaType.APPLICATION_JSON).get();
 	}
 
 	@Override
 	public void postTypes( final ElasticIndexName indexName, final Entity<?> requestBody ) {
+
 		final WebTarget url = bulkApiRoot.path(getIndexBulkApiPath(indexName));
 
 		// Bulk API uses only HTTP POST for all operations
@@ -150,7 +153,7 @@ public class HttpElasticDao implements ElasticDao {
 	}
 
 	//TODO move the Entity.json() operations into this DAO
-	
+
 	@Override
 	public void putSetting( final ElasticIndexName indexName, final Entity<?> requestBody ) {
 
@@ -164,6 +167,7 @@ public class HttpElasticDao implements ElasticDao {
 	}
 
 	private String getSettingPath( final ElasticIndexName indexName ) {
+
 		return String.format("%s/_settings", indexName.indexName());
 	}
 
@@ -171,14 +175,17 @@ public class HttpElasticDao implements ElasticDao {
 	 * Path for retrieving or putting mapping data to elastic search.
 	 */
 	private String getMappingPath( final ElasticIndexName indexName, final BacktestBatchId id ) {
+
 		return String.format("%s/_mapping/%s/", indexName.indexName(), id.name());
 	}
 
 	private String getIndexBulkApiPath( final ElasticIndexName indexName ) {
+
 		return String.format("%s/_bulk", indexName.indexName());
 	}
 
 	private boolean isInvalidResponse( final ElasticBulkApiResponseResource eventResponse ) {
+
 		return eventResponse.hasErrors();
 	}
 }

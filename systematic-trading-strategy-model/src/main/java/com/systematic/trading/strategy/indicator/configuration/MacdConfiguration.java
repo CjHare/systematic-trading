@@ -47,14 +47,17 @@ public class MacdConfiguration extends IndicatorConfigurationBase {
 	}
 
 	public int fastTimePeriods() {
+
 		return fastTimePeriods;
 	}
 
 	public int slowTimePeriods() {
+
 		return slowTimePeriods;
 	}
 
 	public int signalTimePeriods() {
+
 		return signalTimePeriods;
 	}
 }

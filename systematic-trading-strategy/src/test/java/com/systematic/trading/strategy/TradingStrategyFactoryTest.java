@@ -74,11 +74,13 @@ public class TradingStrategyFactoryTest {
 
 	@Before
 	public void setUp() {
+
 		factory = new TradingStrategyFactory();
 	}
 
 	@Test
 	public void strategy() {
+
 		final Entry entry = mock(Entry.class);
 		final EntrySize entryPositionSizing = mock(EntrySize.class);
 		final Exit exit = mock(Exit.class);
@@ -92,6 +94,7 @@ public class TradingStrategyFactoryTest {
 
 	@Test
 	public void confirmedByEntry() {
+
 		final Entry entry = factory.entry(leftEntry, mock(Confirmation.class), righEntry);
 
 		assertEquals(TradingStrategyConfirmationEntry.class, entry.getClass());
@@ -99,6 +102,7 @@ public class TradingStrategyFactoryTest {
 
 	@Test
 	public void orOperatorEntry() {
+
 		final Entry entry = factory.entry(leftEntry, new TradingStrategyOrOperator(), righEntry);
 
 		assertEquals(TradingStrategyOperatorEntry.class, entry.getClass());
@@ -106,6 +110,7 @@ public class TradingStrategyFactoryTest {
 
 	@Test
 	public void andOperatorEntry() {
+
 		final Entry entry = factory.entry(leftEntry, new TradingStrategyAndOperator(), righEntry);
 
 		assertEquals(TradingStrategyOperatorEntry.class, entry.getClass());
@@ -113,6 +118,7 @@ public class TradingStrategyFactoryTest {
 
 	@Test
 	public void indicatorEntry() {
+
 		final Indicator indicator = mock(Indicator.class);
 
 		final Entry entry = factory.entry(indicator);
@@ -122,6 +128,7 @@ public class TradingStrategyFactoryTest {
 
 	@Test
 	public void periodicEntry() {
+
 		final Periodic indicator = mock(Periodic.class);
 
 		final Entry entry = factory.entry(indicator);
@@ -131,6 +138,7 @@ public class TradingStrategyFactoryTest {
 
 	@Test
 	public void exit() {
+
 		final Exit exit = factory.exit();
 
 		assertEquals(TradingStrategyExit.class, exit.getClass());
@@ -138,6 +146,7 @@ public class TradingStrategyFactoryTest {
 
 	@Test
 	public void orOperator() {
+
 		final Operator op = factory.operator(Operator.Selection.OR);
 
 		assertEquals(TradingStrategyOrOperator.class, op.getClass());
@@ -145,6 +154,7 @@ public class TradingStrategyFactoryTest {
 
 	@Test
 	public void andOperator() {
+
 		final Operator op = factory.operator(Operator.Selection.AND);
 
 		assertEquals(TradingStrategyAndOperator.class, op.getClass());

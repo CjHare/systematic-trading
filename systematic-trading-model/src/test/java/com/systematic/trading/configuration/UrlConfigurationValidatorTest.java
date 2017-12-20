@@ -46,25 +46,30 @@ public class UrlConfigurationValidatorTest {
 
 	@Before
 	public void setUp() {
+
 		this.validator = new UrlConfigurationValidator();
 	}
 
 	@Test(expected = ConfigurationValidationException.class)
 	public void noValue() throws ConfigurationValidationException {
+
 		validate(null);
 	}
 
 	@Test
 	public void validUrl() throws ConfigurationValidationException {
+
 		validate("https://validurl.com");
 	}
 
 	@Test(expected = ConfigurationValidationException.class)
 	public void invalidUrl() throws ConfigurationValidationException {
+
 		validate("invalidUrl.com");
 	}
 
 	private void validate( final String value ) throws ConfigurationValidationException {
+
 		validator.validate(value);
 	}
 }

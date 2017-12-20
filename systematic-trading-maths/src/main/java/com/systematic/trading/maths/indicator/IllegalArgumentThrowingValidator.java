@@ -40,6 +40,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	@Override
 	public void verifyGreaterThan( final int minimum, final int actual ) {
+
 		if (actual < minimum) {
 			throw new IllegalArgumentException(String.format(MESSAGE_GREATER_THEN, minimum, actual));
 		}
@@ -47,6 +48,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	@Override
 	public void verifyNotNull( final Object instance ) {
+
 		if (instance == null) {
 			throw new IllegalArgumentException(MESSAGE_NULL_INPUT);
 		}
@@ -54,6 +56,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	@Override
 	public <T> void verifyZeroNullEntries( final Collection<T> values ) {
+
 		for (final T value : values) {
 			verifyNotNullValue(value, values);
 		}
@@ -61,6 +64,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	@Override
 	public <T> void verifyZeroNullEntries( final T[] values ) {
+
 		for (final T value : values) {
 			verifyNotNullValue(value, values);
 		}
@@ -68,6 +72,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	@Override
 	public <T> void verifyEnoughValues( final Collection<T> data, final int requiredNumberOfPrices ) {
+
 		validateNumberOfItems(numberOfNonNullItems(data), requiredNumberOfPrices);
 	}
 
@@ -87,12 +92,14 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	}
 
 	private void verifyNotNullValue( final Object maybe, final Object values ) {
+
 		if (maybe == null) {
 			throw new IllegalArgumentException(String.format(MESSAGE_NULL_VALUE, values));
 		}
 	}
 
 	private <T> int lastNonNullIndex( final T[] data ) {
+
 		// Find last non-null index
 		int lastNonNullItem = data.length - 1;
 
@@ -104,6 +111,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	}
 
 	private void validateNumberOfItems( final int numberOfItems, final int minimumNumberOfPrices ) {
+
 		// Enough data to calculate indicator?
 		if (numberOfItems < minimumNumberOfPrices) {
 			throw new IllegalArgumentException(
@@ -113,6 +121,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	}
 
 	private int numberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {
+
 		// Number of items, accounting for zero indexed array
 		return lastNonNullItem - firstNonNullItem + 1;
 	}
@@ -132,14 +141,17 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	}
 
 	private <T> boolean isNullEntryWithinArray( final T[] data, final int index ) {
+
 		return isWithinArray(data.length, index) && isNullEntry(data, index);
 	}
 
 	private <T> boolean isNullEntry( final T[] data, final int index ) {
+
 		return data[index] == null;
 	}
 
 	private boolean isWithinArray( final int size, final int index ) {
+
 		return (index >= 0) && (index < size);
 	}
 }

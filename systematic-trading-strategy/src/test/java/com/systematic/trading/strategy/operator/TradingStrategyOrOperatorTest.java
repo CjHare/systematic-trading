@@ -54,11 +54,13 @@ public class TradingStrategyOrOperatorTest {
 
 	@Before
 	public void setUp() {
+
 		operator = new TradingStrategyOrOperator();
 	}
 
 	@Test
 	public void conjoin() {
+
 		final List<DatedSignal> left = signals(signal(LocalDate.of(2011, 4, 18)), signal(LocalDate.of(2011, 5, 20)));
 		final List<DatedSignal> right = signals(signal(LocalDate.of(2011, 5, 22)), signal(LocalDate.of(2011, 5, 24)),
 		        signal(LocalDate.of(2011, 6, 26), SignalType.BEARISH));
@@ -72,6 +74,7 @@ public class TradingStrategyOrOperatorTest {
 
 	@Test
 	public void conjoinLeftOnly() {
+
 		final List<DatedSignal> left = signals(signal(LocalDate.of(2011, 5, 21)));
 		final List<DatedSignal> right = signals();
 
@@ -82,6 +85,7 @@ public class TradingStrategyOrOperatorTest {
 
 	@Test
 	public void conjoinRightOnly() {
+
 		final List<DatedSignal> left = signals();
 		final List<DatedSignal> right = signals(signal(LocalDate.of(2011, 5, 21)));
 
@@ -92,6 +96,7 @@ public class TradingStrategyOrOperatorTest {
 
 	@Test
 	public void conjoinBoth() {
+
 		final List<DatedSignal> left = signals(signal(LocalDate.of(2011, 5, 21)));
 		final List<DatedSignal> right = signals(signal(LocalDate.of(2011, 5, 21)));
 
@@ -101,10 +106,12 @@ public class TradingStrategyOrOperatorTest {
 	}
 
 	private List<DatedSignal> conjoin( final List<DatedSignal> left, final List<DatedSignal> right ) {
+
 		return operator.conjoin(left, right);
 	}
 
 	private List<DatedSignal> signals( final DatedSignal... dates ) {
+
 		final List<DatedSignal> signals = new ArrayList<>(dates.length);
 
 		for (final DatedSignal date : dates) {
@@ -115,14 +122,17 @@ public class TradingStrategyOrOperatorTest {
 	}
 
 	private DatedSignal signal( final LocalDate date ) {
+
 		return new DatedSignal(date, SignalType.BULLISH);
 	}
 
 	private DatedSignal signal( final LocalDate date, final SignalType type ) {
+
 		return new DatedSignal(date, type);
 	}
 
 	private void verifySignals( final List<DatedSignal> expected, final List<DatedSignal> actual ) {
+
 		assertNotNull(actual);
 		assertEquals(expected.size(), actual.size());
 

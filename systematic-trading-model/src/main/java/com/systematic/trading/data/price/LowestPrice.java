@@ -45,6 +45,7 @@ public class LowestPrice extends Price {
 	 * @return equivalent lowest price for the given decimal.
 	 */
 	public static LowestPrice valueOf( final BigDecimal amount ) {
+
 		if (amount == null) {
 			throw new IllegalArgumentException("null is not accepted by LowestPrice.valueOf()");
 		}

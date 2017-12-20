@@ -52,6 +52,7 @@ import com.systematic.trading.data.price.LowestPrice;
 import com.systematic.trading.data.price.OpeningPrice;
 
 public class YahooStockApi implements EquityApi {
+
 	private static final Logger LOG = LogManager.getLogger(YahooStockApi.class);
 
 	private static final String API_PART_ONE = "http://query.yahooapis.com/v1/public/yql?q=select%20Date,Open,High,Low,Close%20from%20yahoo.finance.historicaldata%20where%20symbol=%22";
@@ -88,6 +89,7 @@ public class YahooStockApi implements EquityApi {
 
 	private TradingDayPrices[] parseJson( final String tickerSymbol, final String result )
 	        throws CannotRetrieveDataException {
+
 		List<TradingDayPrices> data = new ArrayList<>();
 
 		try {
@@ -122,6 +124,7 @@ public class YahooStockApi implements EquityApi {
 
 	private List<TradingDayPrices> parseQuoteAsJsonObject( List<TradingDayPrices> data, final JSONObject query,
 	        final String tickerSymbol ) {
+
 		final JSONObject result = query.getJSONObject("results");
 		data.add(parseQuote(tickerSymbol, result.getJSONObject("quote")));
 		return data;
@@ -129,6 +132,7 @@ public class YahooStockApi implements EquityApi {
 
 	private List<TradingDayPrices> parseQuoteAsJsonArray( List<TradingDayPrices> data, final JSONObject query,
 	        final int numberOfQuotes, final String tickerSymbol ) {
+
 		final JSONObject results = query.getJSONObject("results");
 		final JSONArray quote = results.getJSONArray("quote");
 		for (int i = 0; i < numberOfQuotes; i++) {
@@ -139,6 +143,7 @@ public class YahooStockApi implements EquityApi {
 	}
 
 	private TradingDayPricesImpl parseQuote( final String tickerSymbol, final JSONObject quote ) {
+
 		final String unparseDdate = quote.getString("Date");
 		final LocalDate date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(unparseDdate));
 		final ClosingPrice closingPrice = ClosingPrice.valueOf(BigDecimal.valueOf(quote.getDouble("Close")));
@@ -153,6 +158,7 @@ public class YahooStockApi implements EquityApi {
 	public TradingDayPrices[] stockData( final String dataset, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate, final BlockingEventCount throttler )
 	        throws CannotRetrieveDataException {
+
 		final String uri = jsonUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 		LOG.info("{}", () -> String.format("%s API call to: %s", tickerSymbol, uri));
 
@@ -164,21 +170,25 @@ public class YahooStockApi implements EquityApi {
 
 	@Override
 	public Period maximumDurationPerConnection() {
+
 		return Period.ofYears(1);
 	}
 
 	@Override
 	public int maximumConcurrentConnections() {
+
 		return NUMBER_CONCURRENT_CONNECTIONS;
 	}
 
 	@Override
 	public int maximumRetrievalTimeSeconds() {
+
 		return MAXIMUM_RETRIEVAL_TIME;
 	}
 
 	@Override
 	public int maximumConnectionsPerSecond() {
+
 		return MAXIMUM_CONNECTION_PER_SECOND;
 	}
 }

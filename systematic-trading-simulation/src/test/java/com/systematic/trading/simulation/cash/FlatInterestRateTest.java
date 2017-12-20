@@ -48,11 +48,13 @@ public class FlatInterestRateTest {
 
 	@Before
 	public void setUp() {
+
 		rate = new FlatInterestRate(BigDecimal.valueOf(7.5), MathContext.DECIMAL64);
 	}
 
 	@Test
 	public void zeroDaysInterest() {
+
 		final BigDecimal interest = interest(0);
 
 		verifyInterest(0, interest);
@@ -60,6 +62,7 @@ public class FlatInterestRateTest {
 
 	@Test
 	public void oneDaysInterest() {
+
 		final BigDecimal interest = interest(1);
 
 		verifyInterest(205.4794520547945, interest);
@@ -67,6 +70,7 @@ public class FlatInterestRateTest {
 
 	@Test
 	public void oneDaysInterestLeapYear() {
+
 		final BigDecimal interest = interestLeapYear(1);
 
 		verifyInterest(204.9180327868852, interest);
@@ -82,20 +86,24 @@ public class FlatInterestRateTest {
 
 	@Test
 	public void tenDaysInterestLeapYear() {
+
 		final BigDecimal interest = interestLeapYear(10);
 
 		verifyInterest(2049.180327868852, interest);
 	}
 
 	private BigDecimal interest( final int days ) {
+
 		return rate.interest(FUNDS, days, false);
 	}
 
 	private BigDecimal interestLeapYear( final int days ) {
+
 		return rate.interest(FUNDS, days, true);
 	}
 
 	private void verifyInterest( final double expected, final BigDecimal interest ) {
+
 		assertEquals(String.format("Expected %s != %s", expected, interest), 0,
 		        BigDecimal.valueOf(expected).compareTo(interest));
 	}

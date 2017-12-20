@@ -47,6 +47,7 @@ public enum ElasticIndexName {
 	}
 
 	public String indexName() {
+
 		return indexName;
 	}
 }

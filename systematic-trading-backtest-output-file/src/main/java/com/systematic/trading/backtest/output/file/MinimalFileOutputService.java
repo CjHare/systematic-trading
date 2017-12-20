@@ -78,31 +78,37 @@ public class MinimalFileOutputService extends FileOutput {
 
 	@Override
 	public void event( final CashEvent event ) {
+
 		// Recording of this event is not required for minimal display
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
+
 		// Recording of this event is not required for minimal display
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
+
 		// Recording of this event is not required for minimal display
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
+
 		// Recording of this event is not required for minimal display
 	}
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
+
 		// Recording of this event is not required for minimal display
 	}
 
 	@Override
 	public void event( EquityEvent event ) {
+
 		// Recording of this event is not required for minimal display
 	}
 }

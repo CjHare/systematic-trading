@@ -87,43 +87,52 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 	@Override
 	public void debit( final BigDecimal debitAmount, final LocalDate transactionDate )
 	        throws InsufficientFundsException {
+
 		account.debit(debitAmount, transactionDate);
 	}
 
 	@Override
 	public void credit( final BigDecimal creditAmount, final LocalDate transactionDate ) {
+
 		account.credit(creditAmount, transactionDate);
 	}
 
 	@Override
 	public BigDecimal balance() {
+
 		return account.balance();
 	}
 
 	@Override
 	public void deposit( final BigDecimal depositAmount, final LocalDate transactionDate ) {
+
 		account.deposit(depositAmount, transactionDate);
 	}
 
 	@Override
 	public void addListener( final CashEventListener listener ) {
+
 		account.addListener(listener);
 	}
 
 	private boolean isDepositTime( final LocalDate tradingDate ) {
+
 		return tradingDate.isAfter(lastDeposit.plus(interval));
 	}
 
 	private int numberOfDeposits( final LocalDate tradingDate ) {
+
 		return Period.between(lastDeposit, tradingDate).getDays() / interval.getDays();
 	}
 
 	//TODO shift the interval and deposit amount into a tuple object
 	public BigDecimal depositAmount() {
+
 		return depositAmount;
 	}
 
 	public Period interval() {
+
 		return interval;
 	}
 }

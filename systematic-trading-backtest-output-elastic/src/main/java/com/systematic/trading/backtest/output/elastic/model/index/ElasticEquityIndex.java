@@ -51,16 +51,19 @@ public class ElasticEquityIndex extends ElasticCommonIndex {
 	}
 
 	public void event( final BacktestBatchId id, final EquityEvent event ) {
+
 		create(id, new ElasticEquityEventRequestResource(event));
 	}
 
 	@Override
 	protected ElasticIndexName indexName() {
+
 		return ElasticIndexName.EQUITY;
 	}
 
 	@Override
 	protected ElasticIndexMapping indexMapping() {
+
 		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
 		        pair(ElasticFieldName.IDENTITY, ElasticFieldType.TEXT),
 		        pair(ElasticFieldName.EQUITY_AMOUNT, ElasticFieldType.FLOAT),

@@ -70,11 +70,13 @@ public class FileBaseDirectoryLaunchArgumentTest {
 
 	@Before
 	public void setUp() {
+
 		launchArgument = new FileBaseDirectoryLaunchArgument(validator);
 	}
 
 	@Test
 	public void nullFileBaseOutputDirectory() {
+
 		setUpValidatorException();
 
 		try {
@@ -88,6 +90,7 @@ public class FileBaseDirectoryLaunchArgumentTest {
 
 	@Test
 	public void relativeFileBaseOutputDirectory() {
+
 		final String baseDirectory = "base";
 
 		final FileBaseOutputDirectory output = getOutputDirectory(baseDirectory);
@@ -98,6 +101,7 @@ public class FileBaseDirectoryLaunchArgumentTest {
 
 	@Test
 	public void multiLevelRelativeFileBaseOutputDirectory() {
+
 		final String baseDirectory = "one/two";
 
 		final FileBaseOutputDirectory output = getOutputDirectory(baseDirectory);
@@ -107,24 +111,29 @@ public class FileBaseDirectoryLaunchArgumentTest {
 	}
 
 	private FileBaseOutputDirectory getOutputDirectory( final String baseDirectory ) {
+
 		return launchArgument.get(setUpArguments(baseDirectory));
 	}
 
 	private void verifyDirectory( final String expected, final FileBaseOutputDirectory output ) {
+
 		assertEquals(String.format("%s/WEEKLY_200/", expected), output.directory("WEEKLY_200"));
 	}
 
 	private void setUpValidatorException() {
+
 		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
 		        anyString());
 	}
 
 	private void verifyValidation( final Object value ) {
+
 		verify(validator).validate(value == null ? isNull() : eq(value), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT));
 
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+
 		final Map<ArgumentKey, String> arguments = new HashMap<>();
 		arguments.put(ArgumentKey.FILE_BASE_DIRECTORY, value);
 		return arguments;

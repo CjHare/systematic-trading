@@ -73,11 +73,13 @@ public class IsSortedMap extends ArgumentMatcher<SortedMap<LocalDate, BigDecimal
 
 	private boolean isMissingEntry( Map.Entry<LocalDate, BigDecimal> entry,
 	        final SortedMap<LocalDate, BigDecimal> given ) {
+
 		return !given.containsKey(entry.getKey()) || entry.getValue().compareTo(given.get(entry.getKey())) != 0;
 	}
 
 	@Override
 	public void describeTo( final Description description ) {
+
 		description.appendText(expected.toString());
 	}
 }

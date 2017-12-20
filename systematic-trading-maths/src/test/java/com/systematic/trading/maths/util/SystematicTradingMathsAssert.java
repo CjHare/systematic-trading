@@ -53,11 +53,13 @@ public class SystematicTradingMathsAssert {
 	private static final RoundingMode MODE = RoundingMode.HALF_EVEN;
 
 	public static Pair<LocalDate, BigDecimal> point( final LocalDate key, final double value ) {
+
 		return new ImmutablePair<LocalDate, BigDecimal>(key, BigDecimal.valueOf(value));
 	}
 
 	@SafeVarargs
 	public static final SortedMap<LocalDate, BigDecimal> line( final Pair<LocalDate, BigDecimal>... pairs ) {
+
 		final SortedMap<LocalDate, BigDecimal> values = new TreeMap<>();
 
 		for (final Pair<LocalDate, BigDecimal> pair : pairs) {
@@ -69,6 +71,7 @@ public class SystematicTradingMathsAssert {
 
 	public static void assertValues( final SortedMap<LocalDate, BigDecimal> expected,
 	        final SortedMap<LocalDate, BigDecimal> actual ) {
+
 		assertEquals(expected.size(), actual.size());
 
 		for (final Map.Entry<LocalDate, BigDecimal> entry : expected.entrySet()) {
@@ -80,6 +83,7 @@ public class SystematicTradingMathsAssert {
 
 	public static void assertValuesTwoDecimalPlaces( final double[] expected,
 	        final SortedMap<LocalDate, BigDecimal> actual ) {
+
 		assertArraySizeEqual(expected, actual);
 		int index = 0;
 
@@ -90,21 +94,25 @@ public class SystematicTradingMathsAssert {
 	}
 
 	public static void assertBigDecimalEquals( final BigDecimal expected, BigDecimal actual ) {
+
 		assertEquals(String.format("%s != %s", expected, actual), 0,
 		        expected.setScale(TWO_DECIMAL_PLACES, MODE).compareTo(actual.setScale(TWO_DECIMAL_PLACES, MODE)));
 	}
 
 	public static void assertBigDecimalEquals( final double expected, BigDecimal actual ) {
+
 		assertEquals(String.format("%s != %s", expected, actual), 0, BigDecimal.valueOf(expected).compareTo(actual));
 	}
 
 	private static void assertBigDecimalEquals( final double expected, final BigDecimal actual,
 	        final RoundingMode mode ) {
+
 		assertEquals(String.format("%s != %s", expected, actual), 0,
 		        BigDecimal.valueOf(expected).compareTo(actual.setScale(TWO_DECIMAL_PLACES, mode)));
 	}
 
 	private static void assertArraySizeEqual( final double[] expected, final Map<?, ?> actual ) {
+
 		assertNotNull("Need an expected array", expected);
 		assertNotNull("Need an actual/results array", actual);
 		assertEquals("Actual length != Expected length", expected.length, actual.size());

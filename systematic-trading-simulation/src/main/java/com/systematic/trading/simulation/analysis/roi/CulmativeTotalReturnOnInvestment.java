@@ -36,19 +36,20 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  * 
  * @author CJ Hare
  */
-public class CulmativeTotalReturnOnInvestment
-        implements ReturnOnInvestmentEventListener, CumulativeReturnOnInvestment {
+public class CulmativeTotalReturnOnInvestment implements ReturnOnInvestmentEventListener, CumulativeReturnOnInvestment {
 
 	/** Running total of the ROI. */
 	private final ReturnOnInvestment cumulativeROI = new ReturnOnInvestment();
 
 	@Override
 	public BigDecimal cumulativeReturnOnInvestment() {
+
 		return cumulativeROI.get();
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
+
 		cumulativeROI.add(event.percentageChange());
 	}
 }

@@ -109,8 +109,8 @@ public class TradingStrategyIndicatorFactory {
 		final SimpleMovingAverageIndicator calculator = new ClosingPriceSimpleMovingAverageCalculator(sma.lookback(),
 		        minimumNumberOfSmaValues, new IllegalArgumentThrowingValidator());
 
-		return new TradingStrategyIndicator<SimpleMovingAverageLine, SimpleMovingAverageIndicator>(sma.id(),
-		        calculator, generator, filter, signalListener);
+		return new TradingStrategyIndicator<SimpleMovingAverageLine, SimpleMovingAverageIndicator>(sma.id(), calculator,
+		        generator, filter, signalListener);
 	}
 
 	private Indicator emaUptrand( final EmaUptrendConfiguration ema, final SignalRangeFilter filter,
@@ -121,8 +121,8 @@ public class TradingStrategyIndicatorFactory {
 		final ExponentialMovingAverageIndicator calculator = new ClosingPriceExponentialMovingAverageCalculator(
 		        ema.lookback(), minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
 
-		return new TradingStrategyIndicator<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator>(
-		        ema.id(), calculator, generator, filter, signalListener);
+		return new TradingStrategyIndicator<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator>(ema.id(),
+		        calculator, generator, filter, signalListener);
 	}
 
 	/**
@@ -134,11 +134,9 @@ public class TradingStrategyIndicatorFactory {
 		final SignalGenerator<MovingAverageConvergenceDivergenceLines> generator = new MovingAverageConvergenceDivergenceBullishSignalGenerator();
 		final int minimumNumberOfEmaValues = priceDataRange + macdConfiguration.signalTimePeriods();
 		final ExponentialMovingAverageIndicator fastEma = new ClosingPriceExponentialMovingAverageCalculator(
-		        macdConfiguration.fastTimePeriods(), minimumNumberOfEmaValues,
-		        new IllegalArgumentThrowingValidator());
+		        macdConfiguration.fastTimePeriods(), minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
 		final ExponentialMovingAverageIndicator slowEma = new ClosingPriceExponentialMovingAverageCalculator(
-		        macdConfiguration.slowTimePeriods(), minimumNumberOfEmaValues,
-		        new IllegalArgumentThrowingValidator());
+		        macdConfiguration.slowTimePeriods(), minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
 		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(
 		        macdConfiguration.signalTimePeriods(), new IllegalArgumentThrowingValidator());
 		final MovingAverageConvergenceDivergenceIndicator macd = new MovingAverageConvergenceDivergenceCalculator(

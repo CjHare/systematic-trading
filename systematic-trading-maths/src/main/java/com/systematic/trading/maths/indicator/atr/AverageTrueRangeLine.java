@@ -47,6 +47,7 @@ public class AverageTrueRangeLine {
 	}
 
 	public SortedMap<LocalDate, BigDecimal> atr() {
+
 		return atr;
 	}
 }

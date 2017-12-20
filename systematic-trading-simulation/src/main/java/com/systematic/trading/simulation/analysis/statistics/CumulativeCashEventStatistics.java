@@ -69,31 +69,37 @@ public class CumulativeCashEventStatistics implements CashEventStatistics {
 
 	@Override
 	public BigDecimal amountDeposited() {
+
 		return amountDeposited;
 	}
 
 	@Override
 	public BigDecimal interestEarned() {
+
 		return interestEarned;
 	}
 
 	@Override
 	public int creditEventCount() {
+
 		return creditEventCount;
 	}
 
 	@Override
 	public int debitEventCount() {
+
 		return debitEventCount;
 	}
 
 	@Override
 	public int depositEventCount() {
+
 		return depositEventCount;
 	}
 
 	@Override
 	public int interestEventCount() {
+
 		return interestEventCount;
 	}
 }

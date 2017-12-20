@@ -75,6 +75,7 @@ import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeSt
  * @author CJ Hare
  */
 public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements BacktestConfiguration {
+
 	public static void main( final String... args ) throws Exception {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
@@ -93,20 +94,21 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit ) {
+
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		final BrokerageTransactionFeeStructure brokerage = new VanguardBrokerageFees();
 
 		// Date based buying
-		configurations.add(
-		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
+		configurations
+		        .add(periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(combinedUptrends(equity, simulationDates, openingFunds, deposit, brokerage,
-		        minimumTrade, maximumTrade));
+		configurations.addAll(combinedUptrends(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade,
+		        maximumTrade));
 
 		return configurations;
 	}
@@ -115,6 +117,7 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
 	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
 		        2 + ConfirmaByConfiguration.values().length);
@@ -144,14 +147,15 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 
 			// (ShortSMA OR ShortEMA) ConfirmedBy (LongSMA OR LongEMA) 
 			configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
-			        factory.strategy(factory.entry(shortSmaOrEma(), by, longSmaOrEma()), entryPositionSizing,
-			                exit, exitPositionSizing)));
+			        factory.strategy(factory.entry(shortSmaOrEma(), by, longSmaOrEma()), entryPositionSizing, exit,
+			                exitPositionSizing)));
 		}
 
 		return configurations;
 	}
 
 	private EntryConfiguration shortSmaOrEma() {
+
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 
@@ -160,6 +164,7 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 	}
 
 	private EntryConfiguration mediumSmaOrEma() {
+
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 
@@ -168,6 +173,7 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 	}
 
 	private EntryConfiguration longSmaOrEma() {
+
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 

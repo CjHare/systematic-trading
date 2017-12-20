@@ -50,6 +50,7 @@ public class EndDateLaunchArgument implements LaunchArgument<BacktestEndDate> {
 
 	@Override
 	public BacktestEndDate get( final Map<ArgumentKey, String> arguments ) {
+
 		final String endDate = arguments.get(ArgumentKey.END_DATE);
 
 		validator.validate(endDate, "%s argument is not present", ArgumentKey.END_DATE.getKey());

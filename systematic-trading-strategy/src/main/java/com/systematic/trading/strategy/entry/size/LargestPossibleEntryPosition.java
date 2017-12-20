@@ -54,8 +54,7 @@ public class LargestPossibleEntryPosition implements EntrySize {
 	 * @param minimum lower cap on the opening position size.
 	 * @param maximum upper cap on the opening position size.
 	 */
-	public LargestPossibleEntryPosition( final EntryPositionBounds minimum,
-	        final EntryPositionBounds maximum ) {
+	public LargestPossibleEntryPosition( final EntryPositionBounds minimum, final EntryPositionBounds maximum ) {
 		this.minimum = minimum;
 		this.maximum = maximum;
 	}
@@ -65,6 +64,7 @@ public class LargestPossibleEntryPosition implements EntrySize {
 	 * @return when the bounds are not met, then zero is returned, indicating no entry should be made.
 	 */
 	public BigDecimal entryPositionSize( final CashAccount cashAccount ) {
+
 		final Optional<BigDecimal> minimumPosition = minimumPosition(cashAccount);
 
 		if (!minimumPosition.isPresent()) {
@@ -78,6 +78,7 @@ public class LargestPossibleEntryPosition implements EntrySize {
 	 * @return minimum position size, a value from the positive space of numbers.
 	 */
 	private Optional<BigDecimal> minimumPosition( final CashAccount cashAccount ) {
+
 		final BigDecimal minimumPosition = minimum.bounds(cashAccount.balance());
 
 		return isBalanceBelow(cashAccount, minimumPosition) ? Optional.empty()
@@ -85,6 +86,7 @@ public class LargestPossibleEntryPosition implements EntrySize {
 	}
 
 	private BigDecimal maximumPosition( final CashAccount cashAccount ) {
+
 		final BigDecimal availableCapital = cashAccount.balance();
 		final BigDecimal maximumPosition = maximum.bounds(cashAccount.balance());
 
@@ -92,6 +94,7 @@ public class LargestPossibleEntryPosition implements EntrySize {
 	}
 
 	private boolean isBalanceBelow( final CashAccount cashAccount, final BigDecimal bar ) {
+
 		return bar.compareTo(cashAccount.balance()) > 0;
 	}
 }

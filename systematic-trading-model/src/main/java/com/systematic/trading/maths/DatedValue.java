@@ -57,36 +57,43 @@ public class DatedValue implements TradingDayPrices {
 
 	@Override
 	public LocalDate date() {
+
 		return date;
 	}
 
 	public BigDecimal getValue() {
+
 		return value;
 	}
 
 	@Override
 	public ClosingPrice closingPrice() {
+
 		// Immutable value is verified as non-null in constructor
 		return ClosingPrice.valueOf(value);
 	}
 
 	@Override
 	public LowestPrice lowestPrice() {
+
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public HighestEquityPrice highestPrice() {
+
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public OpeningPrice openingPrice() {
+
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String tickerSymbol() {
+
 		throw new UnsupportedOperationException();
 	}
 }

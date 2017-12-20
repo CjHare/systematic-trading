@@ -53,10 +53,12 @@ public class EquityWithFeeConfiguration {
 	}
 
 	public EquityIdentity identity() {
+
 		return identity;
 	}
 
 	public EquityManagementFeeStructure managementFee() {
+
 		return managementFee;
 	}
 }

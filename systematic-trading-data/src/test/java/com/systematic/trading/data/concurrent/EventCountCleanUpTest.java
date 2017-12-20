@@ -60,6 +60,7 @@ public class EventCountCleanUpTest {
 
 	@Test
 	public void end() throws InterruptedException {
+
 		final EventCountCleanUp throttlerCode = new EventCountCleanUp(ringBuffer, interval);
 		final Thread throttler = start(throttlerCode);
 
@@ -70,6 +71,7 @@ public class EventCountCleanUpTest {
 
 	@Test
 	public void interval() throws InterruptedException {
+
 		final EventCountCleanUp throttlerCode = new EventCountCleanUp(ringBuffer, interval);
 		start(throttlerCode);
 
@@ -79,19 +81,23 @@ public class EventCountCleanUpTest {
 	}
 
 	private void verifyCleanEvents( final int times ) {
+
 		verify(ringBuffer, atLeast(times)).clean();
 	}
 
 	private void waitForTwoDurations() throws InterruptedException {
+
 		TimeUnit.MILLISECONDS.sleep(interval.toMillis() * 2 + (interval.toMillis() / 20));
 	}
 
 	private void verifyEnded( final Thread cleanUpThread ) {
+
 		assertFalse("Wrapping thread should have finished", cleanUpThread.isAlive());
 		verifyZeroInteractions(ringBuffer);
 	}
 
 	private void end( final EventCountCleanUp throttlerCleanUp ) throws InterruptedException {
+
 		throttlerCleanUp.end();
 
 		// Wait for at least one loop to pick up the end i.e. close off the run()
@@ -99,6 +105,7 @@ public class EventCountCleanUpTest {
 	}
 
 	private Thread start( final EventCountCleanUp throttlerCleanUp ) {
+
 		final Thread cleanUp = new Thread(throttlerCleanUp);
 		cleanUp.setDaemon(true);
 		cleanUp.start();

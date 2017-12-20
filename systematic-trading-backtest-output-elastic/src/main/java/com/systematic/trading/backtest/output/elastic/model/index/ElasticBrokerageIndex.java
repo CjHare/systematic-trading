@@ -51,16 +51,19 @@ public class ElasticBrokerageIndex extends ElasticCommonIndex {
 	}
 
 	public void event( final BacktestBatchId id, final BrokerageEvent event ) {
+
 		create(id, new ElasticBrokerageEventRequestResource(event));
 	}
 
 	@Override
 	protected ElasticIndexName indexName() {
+
 		return ElasticIndexName.BROKERAGE;
 	}
 
 	@Override
 	protected ElasticIndexMapping indexMapping() {
+
 		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
 		        pair(ElasticFieldName.EQUITY_AMOUNT, ElasticFieldType.FLOAT),
 		        pair(ElasticFieldName.STARTING_EQUITY_BALANCE, ElasticFieldType.FLOAT),

@@ -71,8 +71,8 @@ public class Backtest {
 		final BacktestBootstrapContext context = context(configuration, output);
 		final Period warmUp = context.tradingStrategy().warmUpPeriod();
 		recordWarmUpPeriod(warmUp);
-		final TickerSymbolTradingData tradingData = tradingData(equity.equityDataset(),
-		        equity.gquityIdentity(), configuration.backtestDates(), warmUp);
+		final TickerSymbolTradingData tradingData = tradingData(equity.equityDataset(), equity.gquityIdentity(),
+		        configuration.backtestDates(), warmUp);
 		final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
 		bootstrap.run();
@@ -80,6 +80,7 @@ public class Backtest {
 
 	private BacktestBootstrapContext context( final BacktestBootstrapConfiguration configuration,
 	        final SignalAnalysisListener listener ) {
+
 		return new BacktestBootstrapContextBulider().withConfiguration(configuration)
 		        .withSignalAnalysisListeners(listener).build();
 	}
@@ -113,6 +114,7 @@ public class Backtest {
 	}
 
 	private void recordWarmUpPeriod( final Period warmUpPeriod ) {
+
 		LOG.info("{}", () -> String.format("Simulation Warm Up Period of Days: %s, Months: %s, Years: %s",
 		        warmUpPeriod.getDays(), warmUpPeriod.getMonths(), warmUpPeriod.getYears()));
 	}

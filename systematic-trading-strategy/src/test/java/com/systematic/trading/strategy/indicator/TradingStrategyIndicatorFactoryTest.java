@@ -69,11 +69,13 @@ public class TradingStrategyIndicatorFactoryTest {
 
 	@Before
 	public void setUp() {
+
 		factory = new TradingStrategyIndicatorFactory();
 	}
 
 	@Test
 	public void macd() {
+
 		final MacdConfiguration configuration = macdConfig();
 
 		final Indicator indicator = create(configuration);
@@ -83,6 +85,7 @@ public class TradingStrategyIndicatorFactoryTest {
 
 	@Test
 	public void rsi() {
+
 		final RsiConfiguration configuration = rsiConfig();
 
 		final Indicator indicator = create(configuration);
@@ -92,6 +95,7 @@ public class TradingStrategyIndicatorFactoryTest {
 
 	@Test
 	public void smaUptrend() {
+
 		final SmaUptrendConfiguration configuration = smaUptrendConfig();
 
 		final Indicator indicator = create(configuration);
@@ -101,6 +105,7 @@ public class TradingStrategyIndicatorFactoryTest {
 
 	@Test
 	public void emaUptrend() {
+
 		final EmaUptrendConfiguration configuration = emaUptrendConfig();
 
 		final Indicator indicator = create(configuration);
@@ -110,17 +115,20 @@ public class TradingStrategyIndicatorFactoryTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void noIndicatorConfiguration() {
+
 		final IndicatorConfiguration configuration = null;
 
 		create(configuration);
 	}
 
 	private Indicator create( final IndicatorConfiguration signal ) {
+
 		return factory.create(signal, filter, signalListener, PRICE_TICKS);
 
 	}
 
 	private MacdConfiguration macdConfig() {
+
 		final MacdConfiguration macd = mock(MacdConfiguration.class);
 		when(macd.fastTimePeriods()).thenReturn(5);
 		when(macd.slowTimePeriods()).thenReturn(10);
@@ -129,24 +137,28 @@ public class TradingStrategyIndicatorFactoryTest {
 	}
 
 	private RsiConfiguration rsiConfig() {
+
 		final RsiConfiguration rsi = mock(RsiConfiguration.class);
 		when(rsi.lookback()).thenReturn(8);
 		return rsi;
 	}
 
 	private SmaUptrendConfiguration smaUptrendConfig() {
+
 		final SmaUptrendConfiguration sma = mock(SmaUptrendConfiguration.class);
 		when(sma.lookback()).thenReturn(18);
 		return sma;
 	}
 
 	private EmaUptrendConfiguration emaUptrendConfig() {
+
 		final EmaUptrendConfiguration sma = mock(EmaUptrendConfiguration.class);
 		when(sma.lookback()).thenReturn(15);
 		return sma;
 	}
 
 	private void verifyIndicator( final Indicator indicator ) {
+
 		assertNotNull(indicator);
 		assertTrue("Expecting instance of TradingStrategyIndicator", indicator instanceof TradingStrategyIndicator);
 	}

@@ -80,30 +80,36 @@ public class BacktestTickerSymbolTradingData implements TickerSymbolTradingData 
 
 	@Override
 	public LocalDate earliestDate() {
+
 		return earliestDate;
 	}
 
 	@Override
 	public LocalDate latestDate() {
+
 		return latestDate;
 	}
 
 	@Override
 	public int requiredTradingPrices() {
+
 		return tradingData.size();
 	}
 
 	@Override
 	public Map<LocalDate, TradingDayPrices> tradingPrices() {
+
 		return tradingData;
 	}
 
 	@Override
 	public EquityIdentity equityIdentity() {
+
 		return equity;
 	}
 
 	private LocalDate earliestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
+
 		LocalDate earliest = tradingData.values().iterator().next().date();
 
 		for (final TradingDayPrices contender : tradingData.values()) {
@@ -116,6 +122,7 @@ public class BacktestTickerSymbolTradingData implements TickerSymbolTradingData 
 	}
 
 	private LocalDate latestDate( final Map<LocalDate, TradingDayPrices> tradingData ) {
+
 		LocalDate latest = tradingData.values().iterator().next().date();
 
 		for (final TradingDayPrices contender : tradingData.values()) {

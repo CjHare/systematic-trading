@@ -86,6 +86,7 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 	}
 
 	private boolean isDailyRoiOutput( final Period elapsed ) {
+
 		switch (roiType) {
 			case ALL:
 			case DAILY:
@@ -96,10 +97,12 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 	}
 
 	private boolean hasMostlyDays( final Period elapsed ) {
+
 		return elapsed.getDays() > 0 && roundedMonths(elapsed) == 0 && roundedYears(elapsed) == 0;
 	}
 
 	private boolean isMonthlyRoiOutput( final Period elapsed ) {
+
 		switch (roiType) {
 			case ALL:
 			case MONTHLY:
@@ -110,14 +113,17 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 	}
 
 	private boolean hasMostlyMonths( final Period elapsed ) {
+
 		return roundedMonths(elapsed) > 0 && roundedYears(elapsed) == 0;
 	}
 
 	private int roundedMonths( final Period elapsed ) {
+
 		return elapsed.getDays() > 20 ? elapsed.getMonths() + 1 : elapsed.getMonths();
 	}
 
 	private boolean isYearlyRoiOutput( final Period elapsed ) {
+
 		switch (roiType) {
 			case ALL:
 			case YEARLY:
@@ -128,6 +134,7 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 	}
 
 	private int roundedYears( final Period elapsed ) {
+
 		return elapsed.getDays() > 20 && elapsed.getMonths() == 11 ? elapsed.getYears() + 1 : elapsed.getYears();
 	}
 

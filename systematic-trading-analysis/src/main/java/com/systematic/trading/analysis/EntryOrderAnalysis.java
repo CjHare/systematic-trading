@@ -127,14 +127,14 @@ public class EntryOrderAnalysis {
 	}
 
 	private EquityConfiguration equity( final AnalysisLaunchArguments launchArgs ) {
+
 		return new EquityConfiguration(launchArgs.equityDataset(), launchArgs.tickerSymbol(), EquityClass.STOCK);
 	}
 
 	private void run( final AnalysisLaunchArguments launchArgs ) throws ServiceException {
 
 		final EquityConfiguration equity = equity(launchArgs);
-		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity,
-		        launchArgs.openingFunds());
+		final BacktestBootstrapConfiguration backtestConfiguration = configuration(equity, launchArgs.openingFunds());
 		recordStrategy(backtestConfiguration.strategy());
 		recordAnalysisPeriod(backtestConfiguration.backtestDates());
 
@@ -153,14 +153,17 @@ public class EntryOrderAnalysis {
 	}
 
 	private void recordStrategy( final StrategyConfiguration strategy ) {
+
 		LOG.info("{}", () -> String.format("Strategy: %s", strategy.description(description)));
 	}
 
 	private void recordExecutionTime( final StopWatch timer ) {
+
 		LOG.info(() -> String.format("Finished, time taken: %s", Duration.ofMillis(timer.getTime())));
 	}
 
 	private void recordAnalysisPeriod( final BacktestSimulationDates analysisPeriod ) {
+
 		LOG.info("{}", () -> String.format("Analysis start: %s, end: %s", analysisPeriod.startDate(),
 		        analysisPeriod.endDate()));
 	}
@@ -180,6 +183,7 @@ public class EntryOrderAnalysis {
 	}
 
 	private BacktestEventListener output() {
+
 		return new LogEntryOrderEventListner();
 	}
 

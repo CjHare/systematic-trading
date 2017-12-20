@@ -82,6 +82,7 @@ public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implemen
 	}
 
 	private static Set<Pair<MinimumTrade, MaximumTrade>> positionSizing() {
+
 		final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes = new HashSet<>();
 		tradeSizes.add(new ImmutablePair<MinimumTrade, MaximumTrade>(MinimumTrade.ZERO, MaximumTrade.ALL));
 		return tradeSizes;

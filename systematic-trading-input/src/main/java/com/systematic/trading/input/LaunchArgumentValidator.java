@@ -42,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 public class LaunchArgumentValidator {
 
 	public void validate( final Object value, final String errorMessage, final Object... errorMessageArguments ) {
+
 		if (isInvalidArgument(value)) {
 			incorrectArguments(errorMessage, errorMessageArguments);
 		}
@@ -49,6 +50,7 @@ public class LaunchArgumentValidator {
 
 	public void validateDateFormat( final String value, final String errorMessage,
 	        final Object... errorMessageArguments ) {
+
 		if (isInvalidArgument(value) || isInvalidFormat(value)) {
 			incorrectArguments(errorMessage, errorMessageArguments);
 		}
@@ -56,24 +58,29 @@ public class LaunchArgumentValidator {
 
 	public void validateNotEmpty( final String value, final String errorMessage,
 	        final Object... errorMessageArguments ) {
+
 		if (isInvalidArgument(value) || isEmpty(value)) {
 			incorrectArguments(errorMessage, errorMessageArguments);
 		}
 	}
 
 	private boolean isEmpty( final String value ) {
+
 		return StringUtils.isEmpty(value);
 	}
 
 	private boolean isInvalidArgument( final Object value ) {
+
 		return value == null;
 	}
 
 	private void incorrectArguments( final String message, final Object... arguments ) {
+
 		throw new IllegalArgumentException(String.format(message, arguments));
 	}
 
 	private boolean isInvalidFormat( final String value ) {
+
 		try {
 			// Just making sure the date can be parsed, giving back an actual object
 			LocalDate.parse(value);

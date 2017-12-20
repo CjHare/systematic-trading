@@ -69,11 +69,13 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 
 	@Override
 	public int minimumNumberOfPrices() {
+
 		return MINIMUM_NUMBER_OF_PRICES + rs.minimumNumberOfPrices();
 	}
 
 	@Override
 	public RelativeStrengthIndexLine calculate( final TradingDayPrices[] data ) {
+
 		validator.verifyNotNull(data);
 		validator.verifyZeroNullEntries(data);
 		validator.verifyEnoughValues(data, rs.minimumNumberOfPrices());
@@ -92,6 +94,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 	 * RSI = 100 - 100 /( 1 + RS ) 
 	 */
 	private BigDecimal rsi( final Map.Entry<LocalDate, BigDecimal> entry ) {
+
 		return ONE_HUNDRED.subtract(ONE_HUNDRED.divide(BigDecimal.ONE.add(entry.getValue()), MATH_CONTEXT));
 	}
 }

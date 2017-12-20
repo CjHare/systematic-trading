@@ -64,6 +64,7 @@ public abstract class FileOutput implements BacktestEventListener {
 	 * Retrieves the base directory, after verifying it's existence.
 	 */
 	public String verifiedDirectory( final String outputDirectory ) throws IOException {
+
 		final File outputDirectoryFile = new File(outputDirectory);
 		if (!outputDirectoryFile.exists() && !outputDirectoryFile.mkdirs()) {
 			throw new IllegalArgumentException(
@@ -76,18 +77,22 @@ public abstract class FileOutput implements BacktestEventListener {
 	}
 
 	public EventStatisticsDao eventStatisticsDao() {
+
 		return statisticsDisplay;
 	}
 
 	public NetWorthSummaryDao netWorthSummaryDao() {
+
 		return netWorthDisplay;
 	}
 
 	public NetWorthEventListener netWorthEventListener() {
+
 		return netWorthComparisonDisplay;
 	}
 
 	public FileMultithreading fileDisplay( final String suffix ) {
+
 		return new FileMultithreading(baseDirectory + suffix, pool);
 	}
 
@@ -101,23 +106,28 @@ public abstract class FileOutput implements BacktestEventListener {
 
 	@Override
 	public void event( final NetWorthEvent event, final SimulationState state ) {
+
 		netWorthEventListener().event(event, state);
 		netWorthSummaryDao().event(event, state);
 	}
 
 	protected void eventStatisticsDao( final EventStatisticsDao statisticsDisplay ) {
+
 		this.statisticsDisplay = statisticsDisplay;
 	}
 
 	protected void netWorthSummaryDao( final NetWorthSummaryDao netWorthDisplay ) {
+
 		this.netWorthDisplay = netWorthDisplay;
 	}
 
 	protected void netWorthEventListener( final NetWorthEventListener netWorthComparisonDisplay ) {
+
 		this.netWorthComparisonDisplay = netWorthComparisonDisplay;
 	}
 
 	private void simulationCompleted() {
+
 		eventStatisticsDao().eventStatistics();
 		netWorthSummaryDao().netWorth();
 	}

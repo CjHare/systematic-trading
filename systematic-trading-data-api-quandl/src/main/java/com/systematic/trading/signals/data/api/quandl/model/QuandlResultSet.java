@@ -51,10 +51,12 @@ public class QuandlResultSet {
 	}
 
 	public List<QuandlColumnName> columns() {
+
 		return columns;
 	}
 
 	public List<List<Object>> data() {
+
 		return data;
 	}
 }

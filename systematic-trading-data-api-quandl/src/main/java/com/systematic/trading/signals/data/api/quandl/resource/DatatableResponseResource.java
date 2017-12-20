@@ -47,11 +47,13 @@ public class DatatableResponseResource {
 
 	@JsonProperty("datatable")
 	public DatatableResource datatable() {
+
 		return datatable;
 	}
 
 	@JsonProperty("datatable")
 	public void datatable( final DatatableResource datatable ) {
+
 		this.datatable = datatable;
 	}
 }

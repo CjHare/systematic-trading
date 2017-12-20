@@ -46,16 +46,19 @@ public class IndicatorSignalEvent implements SignalAnalysisEvent {
 
 	@Override
 	public IndicatorId signalType() {
+
 		return signal.signal();
 	}
 
 	@Override
 	public LocalDate signalDate() {
+
 		return signal.date();
 	}
 
 	@Override
 	public SignalType directionType() {
+
 		return signal.direction();
 	}
 }

@@ -52,11 +52,13 @@ public class ElasticIndexMappingTest {
 
 	@Before
 	public void setUp() {
+
 		mapper = new ObjectMapper();
 	}
 
 	@Test
 	public void jsonSingleField() throws JsonProcessingException {
+
 		final ElasticIndexMapping index = new ElasticIndexMapping(
 		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT));
 
@@ -67,6 +69,7 @@ public class ElasticIndexMappingTest {
 
 	@Test
 	public void jsonMultipleFields() throws JsonProcessingException {
+
 		final ElasticIndexMapping index = new ElasticIndexMapping(Arrays.asList(
 		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
 		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.AMOUNT,
@@ -78,6 +81,7 @@ public class ElasticIndexMappingTest {
 	}
 
 	private String write( final ElasticIndexMapping index ) throws JsonProcessingException {
+
 		return mapper.writeValueAsString(index);
 	}
 }

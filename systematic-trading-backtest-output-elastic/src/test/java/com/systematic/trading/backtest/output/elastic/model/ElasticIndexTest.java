@@ -49,11 +49,13 @@ public class ElasticIndexTest {
 
 	@Before
 	public void setUp() {
+
 		mapper = new ObjectMapper();
 	}
 
 	@Test
 	public void jsonSingleField() throws JsonProcessingException {
+
 		final int numberOfShards = 4;
 		final int numberOfReplicas = 5;
 		final ElasticIndex index = new ElasticIndex(numberOfShards, numberOfReplicas);
@@ -65,6 +67,7 @@ public class ElasticIndexTest {
 
 	@Test
 	public void jsonSingleFieldAlternativeValues() throws JsonProcessingException {
+
 		final int numberOfShards = 123;
 		final int numberOfReplicas = 543;
 		final ElasticIndex index = new ElasticIndex(numberOfShards, numberOfReplicas);
@@ -75,10 +78,12 @@ public class ElasticIndexTest {
 	}
 
 	private String write( final ElasticIndex index ) throws JsonProcessingException {
+
 		return mapper.writeValueAsString(index);
 	}
 
 	private void verifyJson( final int numberOfShards, final int numberOfReplicas, final String json ) {
+
 		assertEquals(String.format("{\"settings\":{\"number_of_shards\":%d,\"number_of_replicas\":%d}}", numberOfShards,
 		        numberOfReplicas), json);
 	}

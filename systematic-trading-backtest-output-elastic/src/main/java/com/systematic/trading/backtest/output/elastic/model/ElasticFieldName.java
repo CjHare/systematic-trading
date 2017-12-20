@@ -64,6 +64,7 @@ public enum ElasticFieldName {
 	}
 
 	public String fieldName() {
+
 		return fieldName;
 	}
 }

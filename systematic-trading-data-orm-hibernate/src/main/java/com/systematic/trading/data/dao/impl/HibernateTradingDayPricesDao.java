@@ -210,6 +210,7 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 	}
 
 	private String sanitise( final String unsanitised ) {
+
 		return unsanitised.replaceAll("\\.", "_").replaceAll("[-+.^:,]", "_").toLowerCase();
 	}
 }

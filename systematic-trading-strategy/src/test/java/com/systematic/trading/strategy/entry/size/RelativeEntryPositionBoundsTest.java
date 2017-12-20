@@ -46,6 +46,7 @@ public class RelativeEntryPositionBoundsTest {
 
 	@Test
 	public void percentageInteger() {
+
 		setUpBounds(2);
 
 		final BigDecimal positionSize = bounds(100);
@@ -55,6 +56,7 @@ public class RelativeEntryPositionBoundsTest {
 
 	@Test
 	public void percentageDecimal() {
+
 		setUpBounds(0.4567);
 
 		final BigDecimal positionSize = bounds(10);
@@ -63,14 +65,17 @@ public class RelativeEntryPositionBoundsTest {
 	}
 
 	private void verifyPositionSize( final double expected, final BigDecimal actual ) {
+
 		assertBigDecimalEquals(expected, actual);
 	}
 
 	private BigDecimal bounds( final double availableCaptial ) {
+
 		return bounds.bounds(BigDecimal.valueOf(availableCaptial));
 	}
 
 	private void setUpBounds( final double percentage ) {
+
 		bounds = new RelativeEntryPositionBounds(BigDecimal.valueOf(percentage));
 	}
 }

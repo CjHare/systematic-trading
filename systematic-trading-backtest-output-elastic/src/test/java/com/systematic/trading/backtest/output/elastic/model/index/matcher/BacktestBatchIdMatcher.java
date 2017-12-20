@@ -51,6 +51,7 @@ public class BacktestBatchIdMatcher extends ArgumentMatcher<BacktestBatchId> {
 
 	@Override
 	public void describeTo( Description description ) {
+
 		description.appendText(expectedId);
 	}
 }

@@ -48,11 +48,13 @@ public class VanguardFeeStructureTest {
 
 	@Before
 	public void setUp() {
+
 		feeStructure = new VanguardBrokerageFees();
 	}
 
 	@Test
 	public void trade() {
+
 		final BigDecimal fee = calculateFee(1234.5, 1);
 
 		verifyFee(0.9876, fee);
@@ -60,6 +62,7 @@ public class VanguardFeeStructureTest {
 
 	@Test
 	public void tradeRandomNumberOfPreviousTrades() {
+
 		final BigDecimal fee = calculateFee(12345.67, ThreadLocalRandom.current().nextInt(20000));
 
 		verifyFee(9.876536, fee);
@@ -67,24 +70,29 @@ public class VanguardFeeStructureTest {
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassFuture() {
+
 		feeStructure.cost(BigDecimal.ZERO, EquityClass.FUTURE, 0);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassForex() {
+
 		feeStructure.cost(BigDecimal.ZERO, EquityClass.FOREX, 0);
 	}
 
 	@Test(expected = UnsupportedEquityClass.class)
 	public void equityClassMetal() {
+
 		feeStructure.cost(BigDecimal.ZERO, EquityClass.METAL, 0);
 	}
 
 	private BigDecimal calculateFee( final double tradeValue, final int inclusiveNumberOfTrades ) {
+
 		return feeStructure.cost(BigDecimal.valueOf(tradeValue), EquityClass.STOCK, inclusiveNumberOfTrades);
 	}
 
 	private void verifyFee( final double expected, final BigDecimal fee ) {
+
 		assertEquals(String.format("Expected of %s != Fee of %s", expected, fee), 0,
 		        BigDecimal.valueOf(expected).compareTo(fee));
 	}

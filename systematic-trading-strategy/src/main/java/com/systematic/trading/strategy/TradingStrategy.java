@@ -133,6 +133,7 @@ public class TradingStrategy implements Strategy {
 
 	@Override
 	public EquityOrderInsufficientFundsAction actionOnInsufficentFunds( final EquityOrder order ) {
+
 		return EquityOrderInsufficientFundsAction.DELETE;
 	}
 
@@ -148,14 +149,17 @@ public class TradingStrategy implements Strategy {
 
 	@Override
 	public Period warmUpPeriod() {
+
 		return Period.ofDays((int) Math.ceil(entry.requiredTradingPrices() * CONVERT_TO_TRADING_DAYS));
 	}
 
 	private Optional<EquityOrder> noOrder() {
+
 		return Optional.empty();
 	}
 
 	private boolean hasDatedSignal( final List<DatedSignal> signals, final TradingDayPrices data ) {
+
 		for (final DatedSignal signal : signals) {
 			if (signal.date().equals(data.date())) {
 				return true;

@@ -46,11 +46,13 @@ public class MonthlyRollingCounterTest {
 
 	@Before
 	public void setUp() {
+
 		counter = new MonthlyRollingCounter();
 	}
 
 	@Test
 	public void addOne() {
+
 		incrementCurrentMonth();
 
 		verifyCurrentMonthCount(1);
@@ -58,6 +60,7 @@ public class MonthlyRollingCounterTest {
 
 	@Test
 	public void addTwo() {
+
 		incrementCurrentMonth();
 		incrementCurrentMonth();
 
@@ -66,6 +69,7 @@ public class MonthlyRollingCounterTest {
 
 	@Test
 	public void addTwoMonthSplit() {
+
 		incrementreviousMonth();
 		incrementCurrentMonth();
 
@@ -74,6 +78,7 @@ public class MonthlyRollingCounterTest {
 
 	@Test
 	public void addTwoYearsSplit() {
+
 		incrementPreviousYear();
 		incrementCurrentMonth();
 
@@ -93,11 +98,13 @@ public class MonthlyRollingCounterTest {
 
 	@Test
 	public void getCountZero() {
+
 		verifyCurrentMonthCount(0);
 	}
 
 	@Test
 	public void getRollingCounterLost() {
+
 		incrementreviousMonth();
 		incrementCurrentMonth();
 
@@ -105,22 +112,27 @@ public class MonthlyRollingCounterTest {
 	}
 
 	private void incrementCurrentMonth() {
+
 		counter.add(LocalDate.now());
 	}
 
 	private void incrementreviousMonth() {
+
 		counter.add(LocalDate.now().minus(Period.ofMonths(1)));
 	}
 
 	private void incrementPreviousYear() {
+
 		counter.add(LocalDate.now().minus(Period.ofYears(1)));
 	}
 
 	private void verifyCurrentMonthCount( final int expected ) {
+
 		assertEquals(expected, counter.get(LocalDate.now()));
 	}
 
 	private void veriyfPreviousMonthCount( final int expected ) {
+
 		assertEquals(expected, counter.get(LocalDate.now().minus(Period.ofMonths(1))));
 	}
 }

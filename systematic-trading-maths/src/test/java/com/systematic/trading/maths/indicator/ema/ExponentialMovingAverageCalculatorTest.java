@@ -64,12 +64,14 @@ public class ExponentialMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidLookback() {
+
 		setUpValidationErrorGreaterThan();
 		setUpCalculator(0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNullInput() {
+
 		setUpValidationErrorNullInput();
 		setUpCalculator(1);
 
@@ -78,6 +80,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNullEntries() {
+
 		setUpValidationErrorNullEntries();
 		setUpCalculator(2);
 		final SortedMap<LocalDate, BigDecimal> data = new TreeMap<LocalDate, BigDecimal>();
@@ -88,6 +91,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNotEnoughValues() {
+
 		setUpValidationErrorNullInput();
 		setUpCalculator(1);
 
@@ -96,6 +100,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 	@Test
 	public void emaIntelExample() {
+
 		final int lookback = 10;
 		final SortedMap<LocalDate, BigDecimal> data = createIntelExamplePrices();
 		setUpCalculator(lookback);
@@ -119,6 +124,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 	@Test
 	public void emaIncreasing() {
+
 		final int lookback = 5;
 		final SortedMap<LocalDate, BigDecimal> data = createIncreasingPrices();
 		setUpCalculator(lookback);
@@ -134,6 +140,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 	@Test
 	public void emaFlat() {
+
 		final int lookback = 4;
 		final SortedMap<LocalDate, BigDecimal> data = createFlatPrices();
 		setUpCalculator(lookback);
@@ -148,27 +155,33 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	private ExponentialMovingAverageLine ema( final SortedMap<LocalDate, BigDecimal> data ) {
+
 		return calculator.calculate(data);
 	}
 
 	private void setUpValidationErrorGreaterThan() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyGreaterThan(anyInt(), anyInt());
 	}
 
 	private void setUpValidationErrorNullInput() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
 	@SuppressWarnings("unchecked")
 	private void setUpValidationErrorNullEntries() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(anyCollection());
 	}
 
 	private void setUpCalculator( final int lookback ) {
+
 		calculator = new ExponentialMovingAverageCalculator(lookback, validator);
 	}
 
 	private void verifyValidation( final SortedMap<LocalDate, BigDecimal> data, final int lookback ) {
+
 		verify(validator).verifyGreaterThan(1, lookback);
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyEnoughValues(data.values(), lookback);
@@ -177,6 +190,7 @@ public class ExponentialMovingAverageCalculatorTest {
 
 	private void verifyEma( final ExponentialMovingAverageLine actual,
 	        final SortedMap<LocalDate, BigDecimal> expected ) {
+
 		assertNotNull(actual);
 		assertNotNull(actual.ema());
 		assertEquals(expected.size(), actual.ema().size());
@@ -188,6 +202,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	 * Flat prices starting from LocalDate.of(2017, 10, 9).
 	 */
 	private SortedMap<LocalDate, BigDecimal> createFlatPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2017, 10, 9), LocalDate.of(2017, 10, 10), LocalDate.of(2017, 10, 11),
 		        LocalDate.of(2017, 10, 12), LocalDate.of(2017, 10, 13), LocalDate.of(2017, 10, 16),
 		        LocalDate.of(2017, 10, 17), LocalDate.of(2017, 10, 18) };
@@ -200,6 +215,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	 * Increasing prices starting from LocalDate.of(2017, 9, 11).
 	 */
 	private SortedMap<LocalDate, BigDecimal> createIncreasingPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2017, 9, 11), LocalDate.of(2017, 9, 12), LocalDate.of(2017, 9, 13),
 		        LocalDate.of(2017, 9, 14), LocalDate.of(2017, 9, 15), LocalDate.of(2017, 9, 18),
 		        LocalDate.of(2017, 9, 19), LocalDate.of(2017, 9, 20), LocalDate.of(2017, 9, 21),
@@ -213,6 +229,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	 * Thirty days of price data for Intel starting from LocalDate.of(2010, 3, 24).
 	 */
 	private SortedMap<LocalDate, BigDecimal> createIntelExamplePrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2010, 3, 24), LocalDate.of(2010, 3, 25), LocalDate.of(2010, 3, 26),
 		        LocalDate.of(2010, 3, 29), LocalDate.of(2010, 3, 30), LocalDate.of(2010, 3, 31),
 		        LocalDate.of(2010, 4, 1), LocalDate.of(2010, 4, 5), LocalDate.of(2010, 4, 6), LocalDate.of(2010, 4, 7),
@@ -231,6 +248,7 @@ public class ExponentialMovingAverageCalculatorTest {
 	}
 
 	private final SortedMap<LocalDate, BigDecimal> createPrices( final LocalDate[] dates, final double[] close ) {
+
 		final SortedMap<LocalDate, BigDecimal> data = new TreeMap<LocalDate, BigDecimal>();
 
 		for (int i = 0; i < dates.length; i++) {

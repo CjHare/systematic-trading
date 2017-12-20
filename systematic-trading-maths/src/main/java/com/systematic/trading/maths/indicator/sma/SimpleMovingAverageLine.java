@@ -47,6 +47,7 @@ public class SimpleMovingAverageLine {
 	}
 
 	public SortedMap<LocalDate, BigDecimal> sma() {
+
 		return sma;
 	}
 }

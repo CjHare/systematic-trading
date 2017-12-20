@@ -53,11 +53,13 @@ public abstract class TransactionDateEventResource extends EventResource {
 	@JsonProperty(ElasticTypeName.TRANSACTION_DATE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getTransactionDate() {
+
 		return transactionDate;
 	}
 
 	@Override
 	public String toString() {
+
 		final StringBuilder out = new StringBuilder("TransactionDateEventResource [");
 		out.append(super.toString());
 		out.append(", transactionDate=");

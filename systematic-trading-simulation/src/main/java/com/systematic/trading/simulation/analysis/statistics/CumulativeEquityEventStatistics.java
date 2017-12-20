@@ -41,11 +41,13 @@ public class CumulativeEquityEventStatistics implements EquityEventStatistics {
 
 	@Override
 	public void event( final EquityEvent event ) {
+
 		managementFeesInEquities = managementFeesInEquities.add(event.equityAmount());
 	}
 
 	@Override
 	public BigDecimal totalManagmentFeesInEquities() {
+
 		return managementFeesInEquities;
 	}
 }

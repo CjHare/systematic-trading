@@ -64,6 +64,7 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 	@Test
 	public void smaIncreasingValues() {
+
 		final int lookback = 3;
 		final TradingDayPrices[] data = createIncreasingPrices();
 		setUpCalculator(lookback, 6);
@@ -80,6 +81,7 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 	@Test
 	public void smaIntelExample() {
+
 		final int lookback = 10;
 		final TradingDayPrices[] data = createIntelExamplePrices();
 		setUpCalculator(lookback, 4);
@@ -103,12 +105,14 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void tooFewDaysOfSmaValues() {
+
 		setUpValidationErrorTooFewsDaysOfSmaValues();
 		setUpCalculator(6, 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void nulEntries() {
+
 		setUpValidationErrorZeroNullEntries();
 		setUpCalculator(2, 5);
 
@@ -117,6 +121,7 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void notEnoughDataPoints() {
+
 		setUValidationErrorNotEnoughValues();
 		setUpCalculator(2, 5);
 
@@ -125,6 +130,7 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emaNullInput() {
+
 		setUpValidationErrorNullInput();
 		setUpCalculator(1, 1);
 
@@ -133,6 +139,7 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 	@Test
 	public void requiredNumberOfTradingDays() {
+
 		setUpCalculator(11, 6);
 
 		final int required = calculator.minimumNumberOfPrices();
@@ -141,10 +148,12 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 	}
 
 	private void setUpCalculator( final int lookback, final int daysOfSmaValues ) {
+
 		calculator = new ClosingPriceSimpleMovingAverageCalculator(lookback, daysOfSmaValues, validator);
 	}
 
 	private void verifySma( final SimpleMovingAverageLine sma, final SortedMap<LocalDate, BigDecimal> expected ) {
+
 		assertNotNull(sma);
 		assertNotNull(sma.sma());
 		assertEquals(expected.size(), sma.sma().size());
@@ -152,6 +161,7 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data, final int numberDataPoints, final int lookback ) {
+
 		verify(validator).verifyGreaterThan(1, lookback);
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyZeroNullEntries(data);
@@ -159,23 +169,28 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 	}
 
 	private void setUpValidationErrorZeroNullEntries() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 	}
 
 	private void setUValidationErrorNotEnoughValues() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
 		        anyInt());
 	}
 
 	private void setUpValidationErrorTooFewsDaysOfSmaValues() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyGreaterThan(anyInt(), anyInt());
 	}
 
 	private SimpleMovingAverageLine sma( final TradingDayPrices[] data ) {
+
 		return calculator.calculate(data);
 	}
 
 	private void setUpValidationErrorNullInput() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
@@ -183,6 +198,7 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 	 * Thirty days of price data for Intel starting from LocalDate.of(2010, 3, 24).
 	 */
 	private TradingDayPrices[] createIntelExamplePrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2010, 3, 24), LocalDate.of(2010, 3, 25), LocalDate.of(2010, 3, 26),
 		        LocalDate.of(2010, 3, 29), LocalDate.of(2010, 3, 30), LocalDate.of(2010, 3, 31),
 		        LocalDate.of(2010, 4, 1), LocalDate.of(2010, 4, 5), LocalDate.of(2010, 4, 6), LocalDate.of(2010, 4, 7),
@@ -204,6 +220,7 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 	 * Ten days of price data for prices starting from LocalDate.of(2017, 10, 2).
 	 */
 	private TradingDayPrices[] createIncreasingPrices() {
+
 		final LocalDate[] dates = { LocalDate.of(2017, 10, 2), LocalDate.of(2017, 10, 3), LocalDate.of(2017, 10, 4),
 		        LocalDate.of(2017, 10, 5), LocalDate.of(2017, 10, 6), LocalDate.of(2017, 10, 9),
 		        LocalDate.of(2017, 10, 10), LocalDate.of(2017, 10, 11), LocalDate.of(2017, 10, 12),
@@ -214,6 +231,7 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 	}
 
 	private TradingDayPrices[] createPrices( final LocalDate[] dates, final double[] close ) {
+
 		final TradingDayPrices[] data = new TradingDayPrices[dates.length];
 
 		// Only the close price is used in the EMA calculation

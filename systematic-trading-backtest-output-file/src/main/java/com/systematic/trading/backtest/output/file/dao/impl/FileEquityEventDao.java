@@ -51,6 +51,7 @@ public class FileEquityEventDao implements EquityEventDao {
 
 	@Override
 	public void event( EquityEvent event ) {
+
 		file.write(String.format("Equity Event - %s: %s - equity balance %s -> %s on %s%n", event.type(),
 		        TWO_DECIMAL_PLACES.format(event.equityAmount()),
 		        TWO_DECIMAL_PLACES.format(event.startingEquityBalance()),

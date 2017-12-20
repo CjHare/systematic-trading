@@ -71,11 +71,13 @@ public class BigDecimalLaunchArgumentTest {
 
 	@Before
 	public void setUp() {
+
 		argument = new BigDecimalLaunchArgument(validator, KEY);
 	}
 
 	@Test
 	public void validBigDecimal() {
+
 		final String expected = "1.1";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expected);
 
@@ -86,6 +88,7 @@ public class BigDecimalLaunchArgumentTest {
 
 	@Test
 	public void missingValue() {
+
 		setUpValidatorException();
 
 		getValueExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
@@ -95,6 +98,7 @@ public class BigDecimalLaunchArgumentTest {
 
 	@Test
 	public void missingKey() {
+
 		setUpValidatorException();
 
 		getValueExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
@@ -104,6 +108,7 @@ public class BigDecimalLaunchArgumentTest {
 
 	private void getValueExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
+
 		try {
 			getValue(launchArguments);
 			fail("Expecting exception");
@@ -113,27 +118,32 @@ public class BigDecimalLaunchArgumentTest {
 	}
 
 	private BigDecimal getValue( final Map<ArgumentKey, String> launchArguments ) {
+
 		return argument.get(launchArguments);
 	}
 
 	private void setUpValidatorException() {
+
 		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
 		        anyString());
 	}
 
 	private void veriyValidationExceptionOnValidate( final String launchArgument ) {
+
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}
 
 	private void verifSymbol( final String expected, final BigDecimal actual ) {
+
 		assertNotNull(actual);
 		assertNotNull(actual);
 		assertEquals(new BigDecimal(expected), actual);
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+
 		final Map<ArgumentKey, String> arguments = new HashMap<>();
 		arguments.put(KEY, value);
 		return arguments;

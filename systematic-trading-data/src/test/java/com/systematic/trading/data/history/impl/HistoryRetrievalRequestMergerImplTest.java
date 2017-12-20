@@ -82,6 +82,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Before
 	public void setUp() {
+
 		merger = new HistoryRetrievalRequestMergerImpl(requestBuilder);
 		tickerSymbol = RandomStringGenerator.generate();
 		dataset = RandomStringGenerator.generate();
@@ -89,6 +90,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void nullRequests() {
+
 		final List<HistoryRetrievalRequest> merged = merge(null, null);
 
 		assertNull(merged);
@@ -96,6 +98,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void noRequestsNoMaximum() {
+
 		final List<HistoryRetrievalRequest> merged = merge(new ArrayList<HistoryRetrievalRequest>(), null);
 
 		verifyRetrievalRequests(Collections.emptyList(), merged);
@@ -103,6 +106,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void oneRequestNoMaximum() {
+
 		final List<HistoryRetrievalRequest> toMerge = asList(
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 5, 31)));
 		setUpBuilder(toMerge);
@@ -114,6 +118,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void twoNonConsercutiveRequestsNoMaximum() {
+
 		final List<HistoryRetrievalRequest> toMerge = asList(create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 6, 1)),
 		        create(LocalDate.of(2010, 8, 1), LocalDate.of(2010, 9, 1)));
 		setUpBuilder(toMerge);
@@ -125,6 +130,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void noRequests() {
+
 		final List<HistoryRetrievalRequest> merged = merge(new ArrayList<HistoryRetrievalRequest>());
 
 		verifyRetrievalRequests(Collections.emptyList(), merged);
@@ -132,6 +138,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void oneRequest() {
+
 		final List<HistoryRetrievalRequest> toMerge = asList(
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 5, 31)));
 		setUpBuilder(toMerge);
@@ -143,6 +150,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void twoNonConsercutiveRequests() {
+
 		final List<HistoryRetrievalRequest> toMerge = asList(create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 6, 1)),
 		        create(LocalDate.of(2010, 8, 1), LocalDate.of(2010, 9, 1)));
 		setUpBuilder(toMerge);
@@ -154,6 +162,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void twoConsercutiveRequests() {
+
 		final List<HistoryRetrievalRequest> toMerge = asList(create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 6, 1)),
 		        create(LocalDate.of(2010, 6, 1), LocalDate.of(2010, 7, 1)));
 		final List<HistoryRetrievalRequest> expected = asList(
@@ -167,6 +176,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void threeConsercutiveRequestsSpanningMaximum() {
+
 		final List<HistoryRetrievalRequest> toMerge = asList(create(LocalDate.of(2010, 3, 1), LocalDate.of(2010, 6, 1)),
 		        create(LocalDate.of(2010, 6, 1), LocalDate.of(2010, 9, 1)),
 		        create(LocalDate.of(2010, 9, 1), LocalDate.of(2010, 12, 1)));
@@ -183,6 +193,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void longRequest() {
+
 		final List<HistoryRetrievalRequest> toMerge = asList(
 		        create(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 1)));
 
@@ -193,6 +204,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void overTwoMaximumPeriodsOfRequests() {
+
 		final List<HistoryRetrievalRequest> toMerge = asList(create(LocalDate.of(2010, 3, 1), LocalDate.of(2010, 4, 1)),
 		        create(LocalDate.of(2010, 4, 1), LocalDate.of(2010, 5, 1)),
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 6, 1)),
@@ -214,6 +226,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void twoConsercutiveWithLoosePrefixedRequest() {
+
 		final List<HistoryRetrievalRequest> toMerge = asList(create(LocalDate.of(2010, 2, 1), LocalDate.of(2010, 3, 1)),
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 6, 1)),
 		        create(LocalDate.of(2010, 6, 1), LocalDate.of(2010, 7, 1)));
@@ -229,6 +242,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	@Test
 	public void twoConsercutiveWithLooseSuffixedRequest() {
+
 		final List<HistoryRetrievalRequest> toMerge = asList(
 		        create(LocalDate.of(2010, 9, 1), LocalDate.of(2010, 10, 1)),
 		        create(LocalDate.of(2010, 5, 1), LocalDate.of(2010, 6, 1)),
@@ -244,6 +258,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 	}
 
 	private List<HistoryRetrievalRequest> merge( List<HistoryRetrievalRequest> requests, final Period maximum ) {
+
 		return merger.merge(requests, maximum);
 	}
 
@@ -251,10 +266,12 @@ public class HistoryRetrievalRequestMergerImplTest {
 	 * Default to MAXIMUM.
 	 */
 	private List<HistoryRetrievalRequest> merge( List<HistoryRetrievalRequest> requests ) {
+
 		return merger.merge(requests, MAXIMUM);
 	}
 
 	private void setUpBuilder( final List<HistoryRetrievalRequest> requests ) {
+
 		when(requestBuilder.withTickerSymbol(anyString())).thenReturn(requestBuilder);
 		when(requestBuilder.withExclusiveEndDate(any(Date.class))).thenReturn(requestBuilder);
 		when(requestBuilder.withExclusiveEndDate(any(LocalDate.class))).thenReturn(requestBuilder);
@@ -270,6 +287,7 @@ public class HistoryRetrievalRequestMergerImplTest {
 
 	private void verifyRetrievalRequests( final List<HistoryRetrievalRequest> expected,
 	        final List<HistoryRetrievalRequest> actual ) {
+
 		assertNotNull(actual);
 		assertEquals(expected.size(), actual.size());
 		for (final HistoryRetrievalRequest expectedRequest : expected) {
@@ -278,10 +296,12 @@ public class HistoryRetrievalRequestMergerImplTest {
 	}
 
 	private List<HistoryRetrievalRequest> asList( final HistoryRetrievalRequest... requests ) {
+
 		return historyRetrievalRequestUtil.asList(requests);
 	}
 
 	private HistoryRetrievalRequest create( final LocalDate start, final LocalDate end ) {
+
 		return historyRetrievalRequestUtil.create(dataset, tickerSymbol, start, end);
 	}
 }

@@ -133,24 +133,28 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 
 	@Override
 	public void event( final CashEvent event ) {
+
 		eventDisplay.event(event);
 		cashEventDisplay.event(event);
 	}
 
 	@Override
 	public void event( final OrderEvent event ) {
+
 		eventDisplay.event(event);
 		ordertEventDisplay.event(event);
 	}
 
 	@Override
 	public void event( final BrokerageEvent event ) {
+
 		eventDisplay.event(event);
 		brokerageEventDisplay.event(event);
 	}
 
 	@Override
 	public void event( final ReturnOnInvestmentEvent event ) {
+
 		roiDisplay.event(event);
 		roiDailyDisplay.event(event);
 		roiMonthlyDisplay.event(event);
@@ -159,11 +163,13 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 
 	@Override
 	public void event( final SignalAnalysisEvent event ) {
+
 		signalAnalysisDisplay.event(event);
 	}
 
 	@Override
 	public void event( final EquityEvent event ) {
+
 		equityEventDisplay.event(event);
 	}
 }

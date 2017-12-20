@@ -67,6 +67,7 @@ public abstract class HttpQuandlApiDao {
 
 	protected Response get( final WebTarget url, final BlockingEventCount throttler )
 	        throws CannotRetrieveDataException {
+
 		int attempt = 1;
 
 		do {
@@ -91,6 +92,7 @@ public abstract class HttpQuandlApiDao {
 	}
 
 	private void waitBackOffDuration( final long attempt ) {
+
 		try {
 			TimeUnit.MILLISECONDS.sleep(attempt * retryBackoffMs);
 		} catch (InterruptedException e) {
@@ -102,6 +104,7 @@ public abstract class HttpQuandlApiDao {
 	}
 
 	private boolean isResponseOk( final Response response ) {
+
 		return response.getStatus() == HTTP_OK;
 	}
 }

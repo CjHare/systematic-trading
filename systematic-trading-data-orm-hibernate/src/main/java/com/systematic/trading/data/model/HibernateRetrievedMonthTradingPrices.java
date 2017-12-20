@@ -74,33 +74,40 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 
 	@Override
 	public String tickerSymbol() {
+
 		return tickerSymbol;
 	}
 
 	@Override
 	public YearMonth yearMonth() {
+
 		return YearMonth.of(year, month);
 	}
 
 	public void setTickerSymbol( final String tickerSymbol ) {
+
 		this.tickerSymbol = tickerSymbol;
 	}
 
 	public void setYearMonth( final YearMonth yearMonth ) {
+
 		this.year = yearMonth.getYear();
 		this.month = yearMonth.getMonthValue();
 	}
 
 	public void setMonth( int month ) {
+
 		this.month = month;
 	}
 
 	public void setYear( int year ) {
+
 		this.year = year;
 	}
 
 	@Override
 	public String toString() {
+
 		final StringBuilder out = new StringBuilder("HibernateRetrievedMonthTradingPrices [tickerSymbol=")
 		        .append(tickerSymbol);
 		out.append(", month=").append(month);
@@ -111,6 +118,7 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 
 	@Override
 	public int hashCode() {
+
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + month;
@@ -121,6 +129,7 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 
 	@Override
 	public boolean equals( Object obj ) {
+
 		if (this == obj) {
 			return true;
 		}
@@ -134,6 +143,7 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 	}
 
 	private boolean tickerSymbolEquals( final HibernateRetrievedMonthTradingPrices other ) {
+
 		return tickerSymbol == other.tickerSymbol || (tickerSymbol != null && tickerSymbol.equals(other.tickerSymbol));
 	}
 }

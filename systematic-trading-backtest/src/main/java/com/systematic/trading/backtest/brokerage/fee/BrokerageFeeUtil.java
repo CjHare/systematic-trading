@@ -59,6 +59,7 @@ public class BrokerageFeeUtil {
 	 */
 	public static BigDecimal applyLargest( final BigDecimal tradeValue, final BigDecimal absoluteFee,
 	        final BigDecimal percentage, final MathContext mathContext ) {
+
 		final BigDecimal relativeFee = tradeValue.multiply(percentage, mathContext);
 		return absoluteFee.compareTo(relativeFee) > 0 ? absoluteFee : relativeFee;
 	}

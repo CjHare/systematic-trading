@@ -43,6 +43,7 @@ public enum CashAccountConfiguration {
 	}
 
 	public Class<?> type() {
+
 		return type;
 	}
 }

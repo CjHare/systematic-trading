@@ -52,21 +52,25 @@ public class ElasticCashEventRequestResource extends TransactionDateEventResourc
 
 	@JsonProperty(ElasticTypeName.AMOUNT)
 	public float getAmount() {
+
 		return amount;
 	}
 
 	@JsonProperty(ElasticTypeName.FUNDS_BEFORE)
 	public float getFundsBefore() {
+
 		return fundsBefore;
 	}
 
 	@JsonProperty(ElasticTypeName.FUNDS_AFTER)
 	public float getFundsAfter() {
+
 		return fundsAfter;
 	}
 
 	@Override
 	public String toString() {
+
 		final StringBuilder out = new StringBuilder("ElasticCashEventResource [");
 		out.append(super.toString());
 		out.append(", amount=");

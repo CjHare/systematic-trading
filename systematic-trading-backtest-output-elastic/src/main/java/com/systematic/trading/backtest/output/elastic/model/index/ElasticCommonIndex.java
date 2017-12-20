@@ -99,6 +99,7 @@ public abstract class ElasticCommonIndex {
 	 * Ensures the index and mapping are created, and verifies there is not existing data.
 	 */
 	public void init( final BacktestBatchId id ) {
+
 		if (isIndexMappingMissing(id)) {
 			putIndexMapping(id);
 		} else {
@@ -108,23 +109,27 @@ public abstract class ElasticCommonIndex {
 	}
 
 	public void ensureIndexExists() {
+
 		if (isIndexMissing()) {
 			putIndex();
 		}
 	}
 
 	public void refreshInterval( final boolean enabled ) {
+
 		dao.putSetting(indexName(), Entity.json(new ElasticIndexSettingsRequestResource(
 		        enabled ? INDEX_SETTING_REFRESH_DEFAULT : INDEX_SETTING_REFRESH_DISABLE)));
 	}
 
 	public void flush() {
+
 		if (!bulkApiQueue.isEmpty()) {
 			send(bulkApiQueue);
 		}
 	}
 
 	protected <T> void create( final BacktestBatchId id, final T requestResource ) {
+
 		bulkApiQueue.add(createBulkApiMeta(id));
 		bulkApiQueue.add(requestResource);
 
@@ -136,15 +141,18 @@ public abstract class ElasticCommonIndex {
 	}
 
 	private void send( final List<?> requests ) {
+
 		pool.submit(() -> dao.postTypes(indexName(), Entity.json(requests)));
 	}
 
 	protected ElasticBulkApiMetaDataRequestResource createBulkApiMeta( final BacktestBatchId id ) {
+
 		//TODO put this into a builder & move ACTION_CREATE_GENERATE_DOCUMENT_ID out of this class
 		return new ElasticBulkApiMetaDataRequestResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, null, id.name(), null);
 	}
 
 	protected ElasticIndex index() {
+
 		return new ElasticIndex(numberOfShards, numberOfReplicas);
 	}
 
@@ -154,19 +162,23 @@ public abstract class ElasticCommonIndex {
 
 	protected Pair<ElasticFieldName, ElasticFieldType> pair( final ElasticFieldName name,
 	        final ElasticFieldType type ) {
+
 		return new ImmutablePair<>(name, type);
 	}
 
 	private boolean isBulkApiBucketFull() {
+
 		return bulkApiQueue.size() >= bulkApiQueueSize;
 	}
 
 	private boolean isIndexMissing() {
+
 		final Response response = dao.index(indexName());
 		return response.getStatus() != 200;
 	}
 
 	private boolean isIndexMappingMissing( final BacktestBatchId id ) {
+
 		final Response response = dao.mapping(indexName(), id);
 
 		//TODO mapping shouls be 200 & empty JSON - test with data present - currently exceptional
@@ -176,10 +188,12 @@ public abstract class ElasticCommonIndex {
 	}
 
 	private void putIndex() {
+
 		dao.put(indexName(), Entity.json(index()));
 	}
 
 	private void putIndexMapping( final BacktestBatchId id ) {
+
 		dao.putMapping(indexName(), id, Entity.json(indexMapping()));
 	}
 }

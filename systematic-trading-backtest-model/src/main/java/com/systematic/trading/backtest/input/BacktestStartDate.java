@@ -45,6 +45,7 @@ public class BacktestStartDate {
 	}
 
 	public LocalDate date() {
+
 		return date;
 	}
 }

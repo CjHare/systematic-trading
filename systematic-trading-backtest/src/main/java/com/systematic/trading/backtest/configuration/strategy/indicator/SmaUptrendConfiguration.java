@@ -48,11 +48,13 @@ public enum SmaUptrendConfiguration implements IndicatorConfiguration {
 	}
 
 	public MovingAverageConfiguration configuration() {
+
 		return configuration;
 	}
 
 	@Override
 	public IndicatorId id() {
+
 		return configuration.id();
 	}
 }

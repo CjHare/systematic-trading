@@ -59,6 +59,7 @@ public class OutputLaunchArgument implements LaunchArgument<OutputType> {
 
 	@Override
 	public OutputType get( final Map<ArgumentKey, String> arguments ) {
+
 		final OutputType outputType = OUTPUT_TYPE_MAPPING.get(arguments.get(ArgumentKey.OUTPUT_TYPE));
 
 		validator.validate(outputType, "%s argument is not in the set of supported OutputTypes: %s",

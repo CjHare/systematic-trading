@@ -51,36 +51,43 @@ public class TradingDayPricesBuilder {
 	private double closingPrice;
 
 	public TradingDayPricesBuilder withOpeningPrice( final double openingPrice ) {
+
 		this.openingPrice = openingPrice;
 		return this;
 	}
 
 	public TradingDayPricesBuilder withLowestPrice( final double lowestPrice ) {
+
 		this.lowestPrice = lowestPrice;
 		return this;
 	}
 
 	public TradingDayPricesBuilder withHighestPrice( final double highestPrice ) {
+
 		this.highestPrice = highestPrice;
 		return this;
 	}
 
 	public TradingDayPricesBuilder withClosingPrice( final double closingPrice ) {
+
 		this.closingPrice = closingPrice;
 		return this;
 	}
 
 	public TradingDayPricesBuilder withTradingDate( final LocalDate tradingDate ) {
+
 		this.tradingDate = tradingDate;
 		return this;
 	}
 
 	public TradingDayPrices build() {
+
 		return new TradingDayPricesImpl(NO_TICKER_SYMBOL, getTradingDate(), BigDecimal.valueOf(openingPrice),
 		        BigDecimal.valueOf(lowestPrice), BigDecimal.valueOf(highestPrice), BigDecimal.valueOf(closingPrice));
 	}
 
 	private LocalDate getTradingDate() {
+
 		return tradingDate == null ? LocalDate.now() : tradingDate;
 	}
 }

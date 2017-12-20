@@ -65,6 +65,7 @@ public class TradingStrategyPeriodicEntryTest {
 
 	@Before
 	public void setUp() {
+
 		entry = new TradingStrategyPeriodicEntry(frequency);
 		setUpPeriodic();
 	}
@@ -79,6 +80,7 @@ public class TradingStrategyPeriodicEntryTest {
 
 	@Test
 	public void analyse() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[5];
 
 		final List<DatedSignal> analysis = analyse(data);
@@ -88,22 +90,27 @@ public class TradingStrategyPeriodicEntryTest {
 	}
 
 	private void setUpPeriodic() {
+
 		when(frequency.analyse(any(TradingDayPrices[].class))).thenReturn(expectedAnalysis);
 	}
 
 	private List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+
 		return entry.analyse(data);
 	}
 
 	private void verifyAnalysis( final List<DatedSignal> analysis ) {
+
 		assertEquals(expectedAnalysis, analysis);
 	}
 
 	private void verifyPriceDataPoints( final int actual ) {
+
 		assertEquals(1, actual);
 	}
 
 	private void verifyDelegation( final TradingDayPrices[] data ) {
+
 		verify(frequency).analyse(data);
 	}
 }

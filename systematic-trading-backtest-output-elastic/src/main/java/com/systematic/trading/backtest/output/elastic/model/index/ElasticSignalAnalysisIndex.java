@@ -51,16 +51,19 @@ public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 	}
 
 	public void event( final BacktestBatchId id, final SignalAnalysisEvent event ) {
+
 		create(id, new ElasticSignalAnalysisEventRequestResource(event));
 	}
 
 	@Override
 	protected ElasticIndexName indexName() {
+
 		return ElasticIndexName.SIGNAL_ANALYSIS;
 	}
 
 	@Override
 	protected ElasticIndexMapping indexMapping() {
+
 		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.SIGNAL_TYPE, ElasticFieldType.KEYWORD),
 		        pair(ElasticFieldName.DIRECTION_TYPE, ElasticFieldType.TEXT),
 		        pair(ElasticFieldName.SIGNAL_DATE, ElasticFieldType.DATE)));

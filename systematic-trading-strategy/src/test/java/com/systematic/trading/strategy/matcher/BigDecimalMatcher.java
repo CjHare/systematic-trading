@@ -44,6 +44,7 @@ public class BigDecimalMatcher extends ArgumentMatcher<BigDecimal> {
 	private final BigDecimal expected;
 
 	public static BigDecimal argumentMatches( final double expected ) {
+
 		return argThat(new BigDecimalMatcher(BigDecimal.valueOf(expected)));
 	}
 
@@ -53,11 +54,13 @@ public class BigDecimalMatcher extends ArgumentMatcher<BigDecimal> {
 
 	@Override
 	public boolean matches( final Object argument ) {
+
 		return argument instanceof BigDecimal && expected.compareTo((BigDecimal) argument) == 0;
 	}
 
 	@Override
 	public void describeTo( final Description description ) {
+
 		description.appendText(String.format("Expecting %s", expected));
 	}
 }

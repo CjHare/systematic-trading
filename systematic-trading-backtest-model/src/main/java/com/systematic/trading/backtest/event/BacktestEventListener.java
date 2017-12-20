@@ -54,5 +54,6 @@ public interface BacktestEventListener
 	default void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
 	        final EventStatistics eventStatistics, final CumulativeReturnOnInvestment cumulativeRoi,
 	        final TradingDayPrices lastTradingDay ) {
+
 	}
 }

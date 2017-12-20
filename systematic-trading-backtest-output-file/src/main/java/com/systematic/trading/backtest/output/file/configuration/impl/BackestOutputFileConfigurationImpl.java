@@ -46,6 +46,7 @@ public class BackestOutputFileConfigurationImpl implements BackestOutputFileConf
 
 	@Override
 	public int numberOfThreads() {
+
 		return numberOfThreads;
 	}
 }

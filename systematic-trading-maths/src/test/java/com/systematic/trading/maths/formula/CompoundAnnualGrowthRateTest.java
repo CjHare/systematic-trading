@@ -44,11 +44,13 @@ public class CompoundAnnualGrowthRateTest {
 
 	@Before
 	public void setUp() {
+
 		calculator = new CompoundAnnualGrowthRate();
 	}
 
 	@Test
 	public void cagrTenPercent() {
+
 		final BigDecimal startValue = BigDecimal.ONE;
 		final BigDecimal endValue = BigDecimal.valueOf(1.21);
 		final int years = 2;
@@ -59,6 +61,7 @@ public class CompoundAnnualGrowthRateTest {
 	}
 
 	public void cagrOnePercent() {
+
 		final BigDecimal startValue = BigDecimal.ONE;
 		final BigDecimal endValue = BigDecimal.valueOf(1.01);
 		final int years = 1;
@@ -69,6 +72,7 @@ public class CompoundAnnualGrowthRateTest {
 	}
 
 	private BigDecimal calculate( final BigDecimal startValue, final BigDecimal finishValue, final int years ) {
+
 		return calculator.calculate(startValue, finishValue, years);
 	}
 }

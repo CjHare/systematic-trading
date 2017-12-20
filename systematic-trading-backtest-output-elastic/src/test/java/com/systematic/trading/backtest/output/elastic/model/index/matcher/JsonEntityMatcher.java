@@ -64,10 +64,12 @@ public class JsonEntityMatcher extends ArgumentMatcher<Entity<?>> {
 
 	@Override
 	public void describeTo( Description description ) {
+
 		description.appendText(expectedJson);
 	}
 
 	private Optional<String> parseEntity( final Entity<?> entity ) {
+
 		try {
 			return Optional.of(mapper.writeValueAsString(entity.getEntity()));
 		} catch (JsonProcessingException e) {

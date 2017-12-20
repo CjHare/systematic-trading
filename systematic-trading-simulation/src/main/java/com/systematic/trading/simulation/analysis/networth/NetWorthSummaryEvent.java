@@ -57,31 +57,37 @@ public class NetWorthSummaryEvent implements NetWorthEvent {
 
 	@Override
 	public BigDecimal equityBalance() {
+
 		return equityBalance;
 	}
 
 	@Override
 	public BigDecimal equityBalanceValue() {
+
 		return equityBalanceValue;
 	}
 
 	@Override
 	public BigDecimal cashBalance() {
+
 		return cashBalance;
 	}
 
 	@Override
 	public BigDecimal netWorth() {
+
 		return networth;
 	}
 
 	@Override
 	public LocalDate eventDate() {
+
 		return eventDate;
 	}
 
 	@Override
 	public NetWorthEventType type() {
+
 		return type;
 	}
 }

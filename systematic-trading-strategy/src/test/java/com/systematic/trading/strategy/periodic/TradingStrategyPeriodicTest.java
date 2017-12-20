@@ -63,11 +63,13 @@ public class TradingStrategyPeriodicTest {
 
 	@Before
 	public void setUp() {
+
 		periodic = new TradingStrategyPeriodic(TODAY, WEEK, SignalType.BULLISH);
 	}
 
 	@Test
 	public void analyseNoData() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[0];
 
 		final List<DatedSignal> signals = analyse(data);
@@ -77,6 +79,7 @@ public class TradingStrategyPeriodicTest {
 
 	@Test
 	public void analyseNoSignal() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[1];
 		data[0] = price(TODAY);
 
@@ -87,6 +90,7 @@ public class TradingStrategyPeriodicTest {
 
 	@Test
 	public void analyseNoSignlDayBefore() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[2];
 		data[0] = price(TODAY.minusDays(1));
 		data[1] = price(TODAY);
@@ -98,6 +102,7 @@ public class TradingStrategyPeriodicTest {
 
 	@Test
 	public void analyse() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[2];
 		data[0] = price(TODAY);
 		data[1] = price(TODAY.plus(WEEK));
@@ -109,6 +114,7 @@ public class TradingStrategyPeriodicTest {
 
 	@Test
 	public void analyseWithDayAfter() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[3];
 		data[0] = price(TODAY);
 		data[1] = price(TODAY.plus(WEEK));
@@ -121,6 +127,7 @@ public class TradingStrategyPeriodicTest {
 
 	@Test
 	public void analyseWithDayBefore() {
+
 		final TradingDayPrices[] data = new TradingDayPrices[3];
 		data[0] = price(TODAY);
 		data[1] = price(TODAY.plus(WEEK).minusDays(1));
@@ -132,15 +139,18 @@ public class TradingStrategyPeriodicTest {
 	}
 
 	private TradingDayPrices price( final LocalDate date ) {
+
 		return new TradingDayPricesImpl("tickerSymbol", date, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
 		        BigDecimal.ZERO);
 	}
 
 	private List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+
 		return periodic.analyse(data);
 	}
 
 	private void verifySignals( final List<DatedSignal> signals, final LocalDate... signalDates ) {
+
 		assertNotNull(signals);
 		assertEquals(signalDates.length, signals.size());
 	}

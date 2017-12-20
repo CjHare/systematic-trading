@@ -46,14 +46,17 @@ public class ReturnOnInvestment {
 	private BigDecimal roi = BigDecimal.ZERO;
 
 	public void add( final BigDecimal value ) {
+
 		roi = roi.add(value, MATH_CONTEXT);
 	}
 
 	public void reset() {
+
 		roi = BigDecimal.ZERO;
 	}
 
 	public BigDecimal get() {
+
 		return roi;
 	}
 }

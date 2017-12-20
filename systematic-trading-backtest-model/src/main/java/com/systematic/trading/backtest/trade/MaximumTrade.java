@@ -46,6 +46,7 @@ public enum MaximumTrade {
 	}
 
 	public BigDecimal value() {
+
 		return value;
 	}
 }

@@ -85,34 +85,42 @@ public class BacktestLaunchArguments {
 	}
 
 	public String outputDirectory( final String depositAmount ) {
+
 		return fileBaseOutputDirectory.get(arguments).directory(depositAmount);
 	}
 
 	public BacktestStartDate startDate() {
+
 		return startDate;
 	}
 
 	public BacktestEndDate endDate() {
+
 		return endDate;
 	}
 
 	public OutputType outputType() {
+
 		return outputType;
 	}
 
 	public TickerSymbol tickerSymbol() {
+
 		return equityArguments.tickerSymbol();
 	}
 
 	public EquityDataset equityDataset() {
+
 		return equityArguments.equityDataset();
 	}
 
 	public DataServiceType dataService() {
+
 		return equityArguments.dataService();
 	}
 
 	public BigDecimal openingFunds() {
+
 		return openingFunds;
 	}
 }

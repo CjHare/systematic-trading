@@ -55,22 +55,26 @@ public class ElasticSignalAnalysisEventRequestResource {
 
 	@JsonProperty(ElasticTypeName.SIGNAL_TYPE)
 	public String getSignalType() {
+
 		return signalType;
 	}
 
 	@JsonProperty(ElasticTypeName.DIRECTION_TYPE)
 	public String getDirectionType() {
+
 		return directionType;
 	}
 
 	@JsonProperty(ElasticTypeName.SIGNAL_DATE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate getSignalDate() {
+
 		return signalDate;
 	}
 
 	@Override
 	public String toString() {
+
 		final StringBuilder out = new StringBuilder("ElasticReturnOnInvestmentEventResource [");
 		out.append("signalType=");
 		out.append(signalType);

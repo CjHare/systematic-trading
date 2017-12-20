@@ -83,6 +83,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 
 	@Before
 	public void setUp() {
+
 		final int equityDecimalPlaces = 4;
 		order = new BuyTotalCostTomorrowAtOpeningPriceOrder(TOTAL_COST, EquityClass.STOCK, equityDecimalPlaces,
 		        LocalDate.now(), MathContext.DECIMAL64);
@@ -90,6 +91,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 
 	@Test
 	public void execute() throws InsufficientEquitiesException, InsufficientFundsException {
+
 		setUpTradingPrices(5);
 		setUpFeeCalculation(3);
 
@@ -123,23 +125,28 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	}
 
 	private boolean isValid() {
+
 		return order.isValid(todaysTrading);
 	}
 
 	private boolean areExecutionConditionsMet() {
+
 		return order.areExecutionConditionsMet(todaysTrading);
 	}
 
 	private void executeOrder() throws InsufficientEquitiesException, InsufficientFundsException {
+
 		order.execute(fees, broker, cashAccount, todaysTrading);
 	}
 
 	private void setUpFeeCalculation( final double fee ) {
+
 		when(fees.cost(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
 		        .thenReturn(BigDecimal.valueOf(fee));
 	}
 
 	private void setUpTradingPrices( final double equityPrice ) {
+
 		final OpeningPrice openingPrice = mock(OpeningPrice.class);
 		when(openingPrice.getPrice()).thenReturn(BigDecimal.valueOf(equityPrice));
 		when(todaysTrading.openingPrice()).thenReturn(openingPrice);
@@ -147,6 +154,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	}
 
 	private void verifyBuyOrderPlaced( final double equityPrice, final double volume ) {
+
 		verify(broker).buy(PriceMatcher.argumentMatches(equityPrice), EquityOrderVolumeMatcher.argumentMatches(volume),
 		        eq(TODAY));
 		verify(todaysTrading, atLeastOnce()).date();
@@ -154,6 +162,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	}
 
 	private void verifyOrderEvent( final OrderEvent event ) {
+
 		assertEquals(TOTAL_COST, event.totalCost());
 		assertEquals(TODAY, event.transactionDate());
 		assertEquals(EquityOrderType.ENTRY, event.type());

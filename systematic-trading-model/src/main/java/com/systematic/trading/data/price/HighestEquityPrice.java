@@ -45,6 +45,7 @@ public class HighestEquityPrice extends Price {
 	 * @return equivalent highest price for the given decimal.
 	 */
 	public static HighestEquityPrice valueOf( final BigDecimal price ) {
+
 		if (price == null) {
 			throw new IllegalArgumentException("null is not accepted by HighestPrice.valueOf()");
 		}

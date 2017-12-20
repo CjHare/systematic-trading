@@ -78,6 +78,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 
 	@Before
 	public void setUp() {
+
 		signalGenerators = new ExponentialMovingAverageBullishGradientSignalGenerator();
 
 		// Default data set of no results
@@ -89,11 +90,13 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 
 	@Test
 	public void getTYpe() {
+
 		assertEquals(SignalType.BULLISH, signalGenerators.type());
 	}
 
 	@Test
 	public void outOfDateRange() {
+
 		setUpDateRange(false);
 		setUpSma(1, 1.1, 1.2);
 
@@ -105,6 +108,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 
 	@Test
 	public void tooFewValues() {
+
 		setUpSma(0.5);
 
 		final List<DatedSignal> signals = generate();
@@ -124,6 +128,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 
 	@Test
 	public void flatline() {
+
 		setUpSma(0.5, 0.5, 0.5, 0.5);
 
 		final List<DatedSignal> signals = generate();
@@ -134,6 +139,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 
 	@Test
 	public void downardGradient() {
+
 		setUpSma(0.5, 0.4, 0.3, 0.2);
 
 		final List<DatedSignal> signals = generate();
@@ -144,6 +150,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 
 	@Test
 	public void upwardGradient() {
+
 		setUpSma(0.5, 0.6, 0.7, 0.8);
 
 		final List<DatedSignal> signals = generate();
@@ -157,6 +164,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 
 	@Test
 	public void upwardGradientThenFlat() {
+
 		setUpSma(0.5, 0.6, 0.6);
 
 		final List<DatedSignal> signals = generate();
@@ -168,6 +176,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 
 	@Test
 	public void downwardThenUpwardGradientThenFlat() {
+
 		setUpSma(0.55, 0.5, 0.4, 0.4, 0.5);
 
 		final List<DatedSignal> signals = generate();
@@ -178,6 +187,7 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 	}
 
 	private List<DatedSignal> generate() {
+
 		return signalGenerators.generate(line, signalRange);
 	}
 
@@ -199,21 +209,25 @@ public class ExponentialMovingAverageBullishGradientSignalGeneratorTest {
 	}
 
 	private void verifySignals( final int expectedSize, final List<DatedSignal> signals ) {
+
 		assertNotNull(signals);
 		assertEquals(expectedSize, signals.size());
 	}
 
 	private void setUpSma( final double... values ) {
+
 		for (int i = 0; i < values.length; i++)
 			ema.put(LocalDate.ofEpochDay(i), BigDecimal.valueOf(values[i]));
 	}
 
 	private void verfiyDatedSignal( final int dateIndex, final DatedSignal signal ) {
+
 		assertEquals(LocalDate.ofEpochDay(dateIndex), signal.date());
 		assertEquals(SignalType.BULLISH, signal.type());
 	}
 
 	private void setUpDateRange( final boolean insideRange ) {
+
 		when(signalRange.test(any(LocalDate.class))).thenReturn(insideRange);
 	}
 }

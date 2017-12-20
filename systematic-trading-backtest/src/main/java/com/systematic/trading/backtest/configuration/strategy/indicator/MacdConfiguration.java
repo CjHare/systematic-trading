@@ -55,23 +55,28 @@ public enum MacdConfiguration implements IndicatorConfiguration {
 	}
 
 	public String description() {
+
 		return description;
 	}
 
 	public int fastTimePeriods() {
+
 		return fastTimePeriods;
 	}
 
 	public int slowTimePeriods() {
+
 		return slowTimePeriods;
 	}
 
 	public int signalTimePeriods() {
+
 		return signalTimePeriods;
 	}
 
 	@Override
 	public IndicatorId id() {
+
 		return new IndicatorId(description);
 	}
 }

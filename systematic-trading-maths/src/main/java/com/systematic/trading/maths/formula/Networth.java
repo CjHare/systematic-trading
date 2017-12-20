@@ -49,6 +49,7 @@ public class Networth {
 	private BigDecimal totalNetworth = BigDecimal.ZERO;
 
 	public void add( final BigDecimal value ) {
+
 		totalNetworth = totalNetworth.add(value, MATH_CONTEXT);
 	}
 
@@ -59,14 +60,17 @@ public class Networth {
 	 * @param price value of the equity.
 	 */
 	public void addEquity( final BigDecimal quantity, final BigDecimal price ) {
+
 		add(quantity.multiply(price, MATH_CONTEXT));
 	}
 
 	public void reset() {
+
 		totalNetworth = BigDecimal.ZERO;
 	}
 
 	public BigDecimal get() {
+
 		return totalNetworth;
 	}
 

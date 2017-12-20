@@ -35,6 +35,7 @@ package com.systematic.trading.backtest.output.elastic.model;
  * @author CJ Hare
  */
 public final class ElasticTypeValue {
+
 	public static final String DAILY = "Daily";
 	public static final String WEEKLY = "Weekly";
 	public static final String MONTHLY = "Monthly";

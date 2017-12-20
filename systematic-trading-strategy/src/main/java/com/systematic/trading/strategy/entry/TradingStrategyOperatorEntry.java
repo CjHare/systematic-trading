@@ -54,11 +54,13 @@ public class TradingStrategyOperatorEntry implements Entry {
 
 	@Override
 	public List<DatedSignal> analyse( final TradingDayPrices[] data ) {
+
 		return operator.conjoin(leftEntry.analyse(data), righEntry.analyse(data));
 	}
 
 	@Override
 	public int requiredTradingPrices() {
+
 		return Math.max(leftEntry.requiredTradingPrices(), righEntry.requiredTradingPrices());
 	}
 }

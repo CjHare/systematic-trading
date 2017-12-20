@@ -74,16 +74,19 @@ public class ElasticBacktestOutputPreparation implements BacktestEventListenerPr
 
 	@Override
 	public void setUp() {
+
 		ensureIndexesExist();
 		setRefreshInterval(false);
 	}
 
 	@Override
 	public void tearDown() {
+
 		setRefreshInterval(true);
 	}
 
 	private void ensureIndexesExist() {
+
 		signalAnalysisIndex.ensureIndexExists();
 		cashIndex.ensureIndexExists();
 		orderIndex.ensureIndexExists();
@@ -94,6 +97,7 @@ public class ElasticBacktestOutputPreparation implements BacktestEventListenerPr
 	}
 
 	private void setRefreshInterval( final boolean enabled ) {
+
 		signalAnalysisIndex.refreshInterval(enabled);
 		cashIndex.refreshInterval(enabled);
 		orderIndex.refreshInterval(enabled);

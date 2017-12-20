@@ -51,16 +51,19 @@ public class ElasticNetworthIndex extends ElasticCommonIndex {
 	}
 
 	public void event( final BacktestBatchId id, final NetWorthEvent event ) {
+
 		create(id, new ElasticNetWorthEventRequestResource(event));
 	}
 
 	@Override
 	protected ElasticIndexName indexName() {
+
 		return ElasticIndexName.NETWORTH;
 	}
 
 	@Override
 	protected ElasticIndexMapping indexMapping() {
+
 		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
 		        pair(ElasticFieldName.CASH_BALANCE, ElasticFieldType.FLOAT),
 		        pair(ElasticFieldName.EQUITY_BALANCE, ElasticFieldType.FLOAT),

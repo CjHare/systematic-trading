@@ -87,6 +87,7 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 	}
 
 	private static Set<Pair<MinimumTrade, MaximumTrade>> getPositionSizing() {
+
 		final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes = new HashSet<>();
 
 		for (final MinimumTrade minimum : MinimumTrade.values()) {
@@ -106,7 +107,9 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit ) {
-		List<BacktestBootstrapConfiguration> configurations = super.configuration(equity, simulationDates, openingFunds, deposit);
+
+		List<BacktestBootstrapConfiguration> configurations = super.configuration(equity, simulationDates, openingFunds,
+		        deposit);
 
 		// Vanguard Retail - baseline
 		configurations.add(baseline(equity, simulationDates, openingFunds, deposit));

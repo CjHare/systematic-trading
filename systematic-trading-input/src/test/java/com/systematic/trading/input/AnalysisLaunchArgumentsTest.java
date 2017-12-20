@@ -73,6 +73,7 @@ public class AnalysisLaunchArgumentsTest {
 
 	@Test
 	public void openingFunds() {
+
 		final String openingFunds = "101.45";
 		final Map<ArgumentKey, String> arguments = argumentMap(openingFunds);
 		setUpOpeningFunds(openingFunds);
@@ -85,6 +86,7 @@ public class AnalysisLaunchArgumentsTest {
 
 	@Test
 	public void openingFundsException() {
+
 		final Map<ArgumentKey, String> arguments = argumentMap("101.45");
 		setUpOpeningFundsException();
 
@@ -95,6 +97,7 @@ public class AnalysisLaunchArgumentsTest {
 
 	@Test
 	public void dataService() {
+
 		final String serviceName = "identity of the data service";
 		setUpDataService(serviceName);
 
@@ -105,6 +108,7 @@ public class AnalysisLaunchArgumentsTest {
 
 	@Test
 	public void equityDataSet() {
+
 		final String serviceName = "identity of the data set";
 		setUpEquityDataSet(serviceName);
 
@@ -115,6 +119,7 @@ public class AnalysisLaunchArgumentsTest {
 
 	@Test
 	public void ticketSymbol() {
+
 		final String tickerSymbol = "SYMBOL";
 		setUpTickerSymbol(tickerSymbol);
 
@@ -124,6 +129,7 @@ public class AnalysisLaunchArgumentsTest {
 	}
 
 	private Map<ArgumentKey, String> argumentMap( final String openingFunds ) {
+
 		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
 		arguments.put(ArgumentKey.OPENING_FUNDS, openingFunds);
 		return arguments;
@@ -131,6 +137,7 @@ public class AnalysisLaunchArgumentsTest {
 
 	private void createLaunchArgumentsExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> arguments ) {
+
 		try {
 			createLaunchArguments(arguments);
 			fail("expecting an exception");
@@ -140,58 +147,70 @@ public class AnalysisLaunchArgumentsTest {
 	}
 
 	private void createLaunchArguments( final Map<ArgumentKey, String> arguments ) {
+
 		parser = new AnalysisLaunchArguments(equityArguments, openingFundsArgument, arguments);
 	}
 
 	private void createLaunchArguments() {
+
 		createLaunchArguments(new EnumMap<>(ArgumentKey.class));
 	}
 
 	private void setUpOpeningFunds( final String funds ) {
+
 		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(new BigDecimal(funds));
 	}
 
 	private void setUpTickerSymbol( final String serviceName ) {
+
 		when(equityArguments.tickerSymbol()).thenReturn(new TickerSymbol(serviceName));
 	}
 
 	private void setUpDataService( final String serviceName ) {
+
 		when(equityArguments.dataService()).thenReturn(new DataServiceType(serviceName));
 	}
 
 	private void setUpEquityDataSet( final String serviceName ) {
+
 		when(equityArguments.equityDataset()).thenReturn(new EquityDataset(serviceName));
 	}
 
 	private void setUpOpeningFundsException() {
+
 		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class)))
 		        .thenThrow(new IllegalArgumentException(OPENING_FUNDS_EXCEPTION_MESSAGE));
 	}
 
 	private void verifyDataService( final String expected ) {
+
 		assertNotNull(parser.dataService());
 		assertEquals(expected, parser.dataService().type());
 		verify(equityArguments, atLeastOnce()).dataService();
 	}
 
 	private void verifyEquityDataSet( final String expected ) {
+
 		assertNotNull(parser.equityDataset());
 		assertEquals(expected, parser.equityDataset().dataset());
 		verify(equityArguments, atLeastOnce()).equityDataset();
 	}
 
 	private void verifyTickerSymbol( final String expected ) {
+
 		assertNotNull(parser.tickerSymbol());
 		assertEquals(expected, parser.tickerSymbol().symbol());
 		verify(equityArguments, atLeastOnce()).tickerSymbol();
 	}
 
 	private void verifyOpeningFunds( final String expected ) {
+
 		assertNotNull(parser.openingFunds());
 		assertEquals(new BigDecimal(expected), parser.openingFunds());
 	}
 
 	private void verifyOpeningFundsArgument( final Map<ArgumentKey, String> arguments ) {
+
 		verify(openingFundsArgument).get(arguments);
 		verifyNoMoreInteractions(openingFundsArgument);
 	}

@@ -47,6 +47,7 @@ public class RelativeStrengthLine {
 	}
 
 	public SortedMap<LocalDate, BigDecimal> rs() {
+
 		return rs;
 	}
 }

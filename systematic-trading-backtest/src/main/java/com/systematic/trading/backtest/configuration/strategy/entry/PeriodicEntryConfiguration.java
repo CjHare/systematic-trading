@@ -47,21 +47,25 @@ public class PeriodicEntryConfiguration implements EntryConfiguration {
 	}
 
 	public PeriodicConfiguration frequency() {
+
 		return frequency;
 	}
 
 	@Override
 	public String description( final DescriptionGenerator description ) {
+
 		return description.periodicEntry(frequency);
 	}
 
 	@Override
 	public boolean hasSubEntry() {
+
 		return false;
 	}
 
 	@Override
 	public TemporalAmount priceDataRange() {
+
 		return Period.ofDays(1);
 	}
 }

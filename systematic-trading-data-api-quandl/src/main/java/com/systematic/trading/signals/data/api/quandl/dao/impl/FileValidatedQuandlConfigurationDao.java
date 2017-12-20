@@ -50,6 +50,7 @@ import com.systematic.trading.signals.data.api.quandl.dao.QuandlConfigurationDao
  * @author CJ Hare
  */
 public class FileValidatedQuandlConfigurationDao implements QuandlConfigurationDao {
+
 	private static final String QUANDL_PROPERTIES_FILE = "quandl.properties";
 	private static final String QUANDL_API_KEY_FILE = "quandl.key";
 
@@ -72,15 +73,16 @@ public class FileValidatedQuandlConfigurationDao implements QuandlConfigurationD
 	}
 
 	@Override
-	public EquityApiConfiguration configuration() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+	public EquityApiConfiguration configuration()
+	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+
 		final String apiKey = new FileApiKeyDao().apiKey(QUANDL_API_KEY_FILE);
 		final Properties properties = new FileConfigurationDao().configuration(QUANDL_PROPERTIES_FILE);
 
 		final String endpoint = stringProperty(properties, QuandlProperty.ENDPOINT, endpointValidator);
 		final int numberOfRetries = integerProperty(properties, QuandlProperty.NUMBER_OF_RETRIES,
 		        numberOfRetiresValidator);
-		final int retryBackOffMs = integerProperty(properties, QuandlProperty.RETRY_BACKOFF_MS,
-		        retryBackOffValidator);
+		final int retryBackOffMs = integerProperty(properties, QuandlProperty.RETRY_BACKOFF_MS, retryBackOffValidator);
 		final int maximumRetrievalTimeSeconds = integerProperty(properties,
 		        QuandlProperty.MAXIMUM_RETRIEVAL_TIME_SECONDS, maximumRetrievalTimeValidator);
 		final int maximumConcurrentConnections = integerProperty(properties,
@@ -98,15 +100,18 @@ public class FileValidatedQuandlConfigurationDao implements QuandlConfigurationD
 
 	private String stringProperty( final Properties properties, final QuandlProperty property,
 	        final ConfigurationValidator<String> validator ) throws ConfigurationValidationException {
+
 		return validator.validate(property(properties, property));
 	}
 
 	private int integerProperty( final Properties properties, final QuandlProperty property,
 	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
+
 		return validator.validate(property(properties, property));
 	}
 
 	private String property( final Properties properties, final QuandlProperty property ) {
+
 		return properties.getProperty(property.key());
 	}
 }

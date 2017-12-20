@@ -35,6 +35,7 @@ package com.systematic.trading.backtest.output.elastic.model;
  * @author CJ Hare
  */
 public final class ElasticTypeName {
+
 	public static final String AMOUNT = "amount";
 	public static final String CASH_BALANCE = "cash_balance";
 	public static final String DIRECTION_TYPE = "direction_type";

@@ -87,11 +87,13 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Before
 	public void setUp() {
+
 		calculator = new MovingAverageConvergenceDivergenceCalculator(fastEma, slowEma, signalEma, validator);
 	}
 
 	@Test
 	public void minimumNumberOfPrices() {
+
 		setUpMinimumNumberOfPrices(16);
 
 		final int minimumNuumberOfPrices = calculator.minimumNumberOfPrices();
@@ -102,6 +104,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void nullDataSet() {
+
 		setUpEngoughValuesValidationException();
 
 		macd(null);
@@ -109,6 +112,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emptyDataSet() {
+
 		setUpNoNUllEntriesValidationException();
 
 		macd(new TradingDayPrices[0]);
@@ -116,6 +120,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void singleNullEntryDataSet() {
+
 		setUpEngoughValuesValidationException();
 
 		macd(new TradingDayPrices[1]);
@@ -123,6 +128,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Test
 	public void macd() {
+
 		final TradingDayPrices[] data = createPrices(5);
 		final SortedMap<LocalDate, BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
 		final SortedMap<LocalDate, BigDecimal> macdValues = asBigDecimal(-2.3, -1.4, -2.5, -1.0, 0.25);
@@ -139,6 +145,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Test
 	public void macdSameSizeFastSlowEma() {
+
 		final TradingDayPrices[] data = createPrices(5);
 		final SortedMap<LocalDate, BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
 		final SortedMap<LocalDate, BigDecimal> macdValues = asBigDecimal(-0.1, 0.8, -0.3, 0.6, 0.75);
@@ -155,6 +162,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Test
 	public void macdSameLargerFastSlowEma() {
+
 		final TradingDayPrices[] data = createPrices(5);
 		final SortedMap<LocalDate, BigDecimal> signalLine = asBigDecimal(5.5, 4.4, 3.3, 2.2, 1.1);
 		final SortedMap<LocalDate, BigDecimal> macdValues = asBigDecimal(-0.1, 0.8, -0.3, 0.6, 0.75);
@@ -171,12 +179,14 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void macdNullInput() {
+
 		setUpValidationErrorNullInput();
 
 		macd(null);
 	}
 
 	private void verifyMinimumNumberOfPricesInteractions() {
+
 		verify(slowEma).minimumNumberOfPrices();
 		verifyNoMoreInteractions(slowEma);
 		verifyZeroInteractions(fastEma);
@@ -184,26 +194,31 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	private void setUpMinimumNumberOfPrices( final int minimium ) {
+
 		when(slowEma.minimumNumberOfPrices()).thenReturn(minimium);
 	}
 
 	private void verifyValidation( final TradingDayPrices[] data ) {
+
 		verify(validator).verifyNotNull(data);
 		verify(validator).verifyEnoughValues(data, 1);
 		verify(validator).verifyZeroNullEntries(data);
 	}
 
 	private MovingAverageConvergenceDivergenceLines macd( final TradingDayPrices[] dataSet ) {
+
 		return calculator.calculate(dataSet);
 	}
 
 	private void setUpValidationErrorNullInput() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
 	private void verifyMacdLines( final MovingAverageConvergenceDivergenceLines lines,
 	        final SortedMap<LocalDate, BigDecimal> expectedMacd,
 	        final SortedMap<LocalDate, BigDecimal> expectedSignalLine ) {
+
 		assertNotNull(lines);
 
 		verifySortedMap(expectedMacd, lines.macd());
@@ -212,6 +227,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	private void verifySortedMap( final SortedMap<LocalDate, BigDecimal> expected,
 	        final SortedMap<LocalDate, BigDecimal> actual ) {
+
 		assertNotNull(actual);
 		assertNotNull(expected);
 		assertEquals(expected.size(), actual.size());
@@ -223,6 +239,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	private void verfiyEmaCalls( final TradingDayPrices[] dataSet, final SortedMap<LocalDate, BigDecimal> macdValues ) {
+
 		verify(fastEma).calculate(dataSet);
 		verifyNoMoreInteractions(fastEma);
 
@@ -235,15 +252,18 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	@SuppressWarnings("unchecked")
 	private void setUpSignalEma( final SortedMap<LocalDate, BigDecimal> signalLine ) {
+
 		when(signalEma.calculate(any(SortedMap.class))).thenReturn(new ExponentialMovingAverageLine(signalLine));
 	}
 
 	private void setUpSlowEma( final int offset, final double... values ) {
+
 		when(slowEma.calculate(any(TradingDayPrices[].class)))
 		        .thenReturn(new ExponentialMovingAverageLine(asBigDecimalDateOffset(offset, values)));
 	}
 
 	private void setUpFastEma( final double... values ) {
+
 		when(fastEma.calculate(any(TradingDayPrices[].class)))
 		        .thenReturn(new ExponentialMovingAverageLine(asBigDecimal(values)));
 	}
@@ -252,6 +272,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	 * Creates the requested number of local dates, starting from the Epoch.
 	 */
 	public List<LocalDate> createLocalDates( final int size ) {
+
 		final List<LocalDate> list = new ArrayList<>(size);
 
 		for (int i = 0; i < size; i++) {
@@ -262,10 +283,12 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	public SortedMap<LocalDate, BigDecimal> asBigDecimal( final double... values ) {
+
 		return asBigDecimalDateOffset(0, values);
 	}
 
 	public SortedMap<LocalDate, BigDecimal> asBigDecimalDateOffset( final int dateOffset, final double... values ) {
+
 		final SortedMap<LocalDate, BigDecimal> converted = new TreeMap<>();
 
 		for (int i = 0; i < values.length; i++) {
@@ -276,6 +299,7 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	private TradingDayPrices[] createPrices( final int size ) {
+
 		final TradingDayPrices[] prices = new TradingDayPrices[size];
 
 		for (int i = 0; i < prices.length; i++) {
@@ -286,15 +310,18 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 	}
 
 	private void setUpEngoughValuesValidationException() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
 		        anyInt());
 	}
 
 	private void setUpNoNUllEntriesValidationException() {
+
 		doThrow(new IllegalArgumentException()).when(validator).verifyZeroNullEntries(any(TradingDayPrices[].class));
 	}
 
 	private SortedMap<LocalDate, BigDecimal> isSortedMap( final SortedMap<LocalDate, BigDecimal> values ) {
+
 		return argThat(new IsSortedMap(values));
 	}
 }

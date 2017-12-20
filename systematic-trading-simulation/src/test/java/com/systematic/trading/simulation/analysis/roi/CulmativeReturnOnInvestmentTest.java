@@ -84,11 +84,13 @@ public class CulmativeReturnOnInvestmentTest {
 
 	@Before
 	public void setUp() {
+
 		calculator = setUpReturnOnInvestmentCalculator();
 	}
 
 	@Test
 	public void firstUpdateNoDeposit() {
+
 		setUpCashBalance(4.5);
 		setUpEquityBalance(11.22);
 		setUpTradingData(99.87);
@@ -100,6 +102,7 @@ public class CulmativeReturnOnInvestmentTest {
 
 	@Test
 	public void firstUpdateWithOneDeposit() {
+
 		setUpCashBalance(4.5);
 		setUpEquityBalance(11.22);
 		setUpTradingData(99.87);
@@ -112,6 +115,7 @@ public class CulmativeReturnOnInvestmentTest {
 
 	@Test
 	public void firstUpdateWithThreeeDeposits() {
+
 		setUpCashBalance(4.5);
 		setUpEquityBalance(11.22);
 		setUpTradingData(99.87);
@@ -126,6 +130,7 @@ public class CulmativeReturnOnInvestmentTest {
 
 	@Test
 	public void twoUpdatesNoDeposit() {
+
 		setUpCashBalance(0);
 		setUpEquityBalance(10, 11);
 		setUpTradingData(99.87, 99.87);
@@ -138,6 +143,7 @@ public class CulmativeReturnOnInvestmentTest {
 
 	@Test
 	public void twoUpdatesOneDeposit() {
+
 		setUpCashBalance(0, 866);
 		setUpEquityBalance(10, 11);
 		setUpTradingData(99.87, 99.87);
@@ -151,6 +157,7 @@ public class CulmativeReturnOnInvestmentTest {
 
 	@Test
 	public void twoUpdatesThreeDeposits() {
+
 		setUpCashBalance(0, 866);
 		setUpEquityBalance(10, 11);
 		setUpTradingData(99.87, 99.87);
@@ -166,6 +173,7 @@ public class CulmativeReturnOnInvestmentTest {
 
 	@Test
 	public void twoUpdatesOneDepositPlusInterest() {
+
 		setUpCashBalance(0, 867);
 		setUpEquityBalance(10, 11);
 		setUpTradingData(100, 100);
@@ -179,22 +187,26 @@ public class CulmativeReturnOnInvestmentTest {
 	}
 
 	private void verifyRoiChange( final BigDecimal expectedSecondDayChange ) {
+
 		final InOrder eventOrder = inOrder(listener);
 		eventOrder.verify(listener).event(isExpectedRoiEvent(NO_CHANGE, TWO_DAYS_AGO, YESTERFAY));
 		eventOrder.verify(listener).event(isExpectedRoiEvent(expectedSecondDayChange, YESTERFAY, TODAY));
 	}
 
 	private void verifyNoRoiChange() {
+
 		verify(listener).event(isExpectedRoiEvent(NO_CHANGE, YESTERFAY, TODAY));
 	}
 
 	public void interest( final double balanceBefore, final double percentInterest ) {
+
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(balanceBefore),
 		        BigDecimal.valueOf(balanceBefore + balanceBefore * (percentInterest / 100)),
 		        BigDecimal.valueOf(percentInterest), CashEventType.INTEREST, TODAY));
 	}
 
 	public void deposit( final double balanceBefore, final double amount ) {
+
 		calculator.event(new CashAccountEvent(BigDecimal.valueOf(balanceBefore),
 		        BigDecimal.valueOf(balanceBefore + amount), BigDecimal.valueOf(amount), CashEventType.DEPOSIT, TODAY));
 	}
@@ -203,16 +215,19 @@ public class CulmativeReturnOnInvestmentTest {
 	 *	Process and generate notifications
 	 */
 	private void update() {
+
 		calculator.update(broker, cashAccount, tradingData);
 	}
 
 	private ReturnOnInvestmentListener setUpReturnOnInvestmentCalculator() {
+
 		final ReturnOnInvestmentListener calculator = new CulmativeReturnOnInvestment();
 		calculator.addListener(listener);
 		return calculator;
 	}
 
 	private void setUpEquityBalance( final double... balances ) {
+
 		OngoingStubbing<BigDecimal> getEquityBalance = when(broker.equityBalance());
 
 		for (final double balance : balances) {
@@ -221,11 +236,13 @@ public class CulmativeReturnOnInvestmentTest {
 	}
 
 	private void setUpTradingData( final double... closingPrices ) {
+
 		setUpTradingDataClosingPrice(closingPrices);
 		setUpTradingDataDate(closingPrices.length);
 	}
 
 	private void setUpTradingDataClosingPrice( final double... closingPrices ) {
+
 		OngoingStubbing<ClosingPrice> getClosingPrice = when(tradingData.closingPrice());
 
 		for (final double closingPrice : closingPrices) {
@@ -234,6 +251,7 @@ public class CulmativeReturnOnInvestmentTest {
 	}
 
 	private void setUpCashBalance( final double... cashBalances ) {
+
 		OngoingStubbing<BigDecimal> getBalance = when(cashAccount.balance());
 
 		for (final double cashBalance : cashBalances) {
@@ -245,6 +263,7 @@ public class CulmativeReturnOnInvestmentTest {
 	 * Trading data entries are sorted with oldest first.
 	 */
 	private void setUpTradingDataDate( final int days ) {
+
 		OngoingStubbing<LocalDate> getData = when(tradingData.date());
 
 		for (int i = days - 1; i >= 0; i--) {
@@ -254,6 +273,7 @@ public class CulmativeReturnOnInvestmentTest {
 
 	private ReturnOnInvestmentEvent isExpectedRoiEvent( final BigDecimal percentageChange,
 	        final LocalDate startDateInclusive, final LocalDate endDateInclusive ) {
+
 		return RoiEventMatcher.argumentMatches(percentageChange, startDateInclusive, endDateInclusive);
 	}
 }

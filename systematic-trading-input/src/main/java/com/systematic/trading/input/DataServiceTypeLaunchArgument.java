@@ -42,6 +42,7 @@ public class DataServiceTypeLaunchArgument implements LaunchArgument<DataService
 
 	@Override
 	public DataServiceType get( final Map<ArgumentKey, String> arguments ) {
+
 		final String dataService = arguments.get(ArgumentKey.DATA_SERVICE_TYPE);
 
 		return dataService == null ? null : new DataServiceType(dataService);

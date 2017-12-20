@@ -61,7 +61,7 @@ import com.systematic.trading.strategy.indicator.configuration.IndicatorConfigur
 public class StandardDescriptionGenerator implements DescriptionGenerator {
 
 	//TODO create two level description generator - don't want to use this as parameter!
-	
+
 	private static final String SEPARATOR = "_";
 	private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 	private static final DecimalFormat NO_DECIMAL_PLACES = new DecimalFormat("#");
@@ -115,6 +115,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 
 	@Override
 	public String periodicEntry( final PeriodicConfiguration frequency ) {
+
 		switch (frequency) {
 			case WEEKLY:
 				return "Buy-Weekly";
@@ -129,6 +130,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 
 	@Override
 	public String indicator( final IndicatorConfiguration indicator ) {
+
 		return indicator.id().getName();
 	}
 
@@ -202,6 +204,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	}
 
 	private String equity( final EquityConfiguration equity ) {
+
 		return equity.gquityIdentity().getTickerSymbol();
 	}
 
@@ -231,10 +234,12 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	}
 
 	private String minimumTradeValue( final MinimumTrade trade ) {
+
 		return String.format("Minimum%s%s", SEPARATOR, NO_DECIMAL_PLACES.format(trade.value()));
 	}
 
 	private String maximumTradeValue( final MaximumTrade trade ) {
+
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add("Maximum");
 		out.add(convertToPercetage(trade.value()));
@@ -243,6 +248,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	}
 
 	private String convertToPercetage( final BigDecimal toPercentage ) {
+
 		return String.format("%s", NO_DECIMAL_PLACES.format(toPercentage.multiply(ONE_HUNDRED)));
 	}
 }

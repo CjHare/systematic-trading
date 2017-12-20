@@ -137,6 +137,7 @@ public class Simulation {
 	 * @param listener will receive notification of order event occurrences.
 	 */
 	public void addListener( final OrderEventListener listener ) {
+
 		if (!orderEventListeners.contains(listener)) {
 			orderEventListeners.add(listener);
 		}
@@ -148,6 +149,7 @@ public class Simulation {
 	 * @param listener will receive notification of simulation state change occurrences.
 	 */
 	public void addListener( final SimulationStateListener listener ) {
+
 		if (!stateListeners.contains(listener)) {
 			stateListeners.add(listener);
 		}
@@ -182,6 +184,7 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the exit logic.
 	 */
 	private List<EquityOrder> addExitOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
+
 		final Optional<EquityOrder> order = strategy.exitTick(broker, data);
 
 		if (order.isPresent()) {
@@ -200,6 +203,7 @@ public class Simulation {
 	 * @return the given list of open orders, plus any order added by the entry logic.
 	 */
 	private List<EquityOrder> addEntryOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
+
 		final Optional<EquityOrder> order = strategy.entryTick(broker, funds, data);
 
 		if (order.isPresent()) {
@@ -216,6 +220,7 @@ public class Simulation {
 	 * @return orders that were not executed as their conditions were not met.
 	 */
 	private List<EquityOrder> processOutstandingOrders( final List<EquityOrder> orders, final TradingDayPrices data ) {
+
 		final List<EquityOrder> remainingOrders = new ArrayList<>(orders.size());
 
 		for (final EquityOrder order : orders) {
@@ -255,6 +260,7 @@ public class Simulation {
 	 * @throws OrderException
 	 */
 	private EquityOrder executeOrder( final EquityOrder order, final TradingDayPrices data ) {
+
 		try {
 			order.execute(broker, broker, funds, data);
 
@@ -284,12 +290,14 @@ public class Simulation {
 	}
 
 	private void notifyListeners( final OrderEvent event ) {
+
 		for (final OrderEventListener listener : orderEventListeners) {
 			listener.event(event);
 		}
 	}
 
 	private void notifyListeners( final SimulationState event ) {
+
 		for (final SimulationStateListener listener : stateListeners) {
 			listener.stateChanged(event);
 		}

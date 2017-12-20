@@ -43,6 +43,7 @@ import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
 public class RetrievedMonthTradingPricesUtil {
 
 	public List<RetrievedMonthTradingPrices> create( final String tickerSymbol, final YearMonth... yms ) {
+
 		final List<RetrievedMonthTradingPrices> retrieved = new ArrayList<>();
 
 		for (final YearMonth ym : yms) {
@@ -50,16 +51,19 @@ public class RetrievedMonthTradingPricesUtil {
 
 				@Override
 				public YearMonth yearMonth() {
+
 					return ym;
 				}
 
 				@Override
 				public String tickerSymbol() {
+
 					return tickerSymbol;
 				}
 
 				@Override
 				public String toString() {
+
 					return new StringBuilder("[RetrievedMonthTradingPrices, tickerSymbol=").append(tickerSymbol)
 					        .append(", ").append("YearMonth=").append(ym).append("]").toString();
 				}

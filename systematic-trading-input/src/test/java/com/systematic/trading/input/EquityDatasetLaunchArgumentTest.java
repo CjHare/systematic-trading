@@ -74,11 +74,13 @@ public class EquityDatasetLaunchArgumentTest {
 
 	@Before
 	public void setUp() {
+
 		argument = new EquityDatasetLaunchArgument(validator);
 	}
 
 	@Test
 	public void present() {
+
 		final String expectedSymbol = "ServiceType";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
@@ -89,6 +91,7 @@ public class EquityDatasetLaunchArgumentTest {
 
 	@Test
 	public void missingValue() {
+
 		setUpValidatorException();
 
 		equityDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
@@ -98,6 +101,7 @@ public class EquityDatasetLaunchArgumentTest {
 
 	@Test
 	public void missingKey() {
+
 		setUpValidatorException();
 
 		equityDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
@@ -106,21 +110,25 @@ public class EquityDatasetLaunchArgumentTest {
 	}
 
 	private void setUpValidatorException() {
+
 		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
 		        anyString());
 	}
 
 	private void veriyValidationExceptionOnValidate( final String launchArgument ) {
+
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}
 
 	private EquityDataset getEquityDataset( final Map<ArgumentKey, String> launchArguments ) {
+
 		return argument.get(launchArguments);
 	}
 
 	private void verifEquityDataset( final String expected, final EquityDataset actual ) {
+
 		assertNotNull(actual);
 		assertNotNull(actual.dataset());
 		assertTrue(StringUtils.equals(expected, actual.dataset()));
@@ -128,6 +136,7 @@ public class EquityDatasetLaunchArgumentTest {
 
 	private void equityDatasetExpectingException( final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
+
 		try {
 			getEquityDataset(launchArguments);
 			fail("Expecting exception");
@@ -137,6 +146,7 @@ public class EquityDatasetLaunchArgumentTest {
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+
 		final Map<ArgumentKey, String> arguments = new HashMap<>();
 		arguments.put(ArgumentKey.EQUITY_DATASET, value);
 		return arguments;
