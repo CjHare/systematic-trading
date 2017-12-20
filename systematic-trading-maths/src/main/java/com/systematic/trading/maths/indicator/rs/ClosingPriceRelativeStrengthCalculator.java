@@ -36,7 +36,7 @@ import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.maths.indicator.Validator;
 
 /**
- * This implementation uses only the closing price data, 
+ * This implementation uses only the closing price data,
  * applying the EMA style smoothing in the calculation of the relative strength (J. Welles Wilder approach),
  * rather then Culter's SMA approach.
  * 
@@ -74,10 +74,14 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	private final BigDecimal archive;
 
 	/**
-	 * @param lookback the number of days to use when calculating the RS.
-	 * @param additionalRsiValues additional number of RSI values that need generating.
-	 * @param validator validates and parses input.
-	 * @param MATH_CONTEXT the scale, precision and rounding to apply to mathematical operations.
+	 * @param lookback
+	 *            the number of days to use when calculating the RS.
+	 * @param additionalRsiValues
+	 *            additional number of RSI values that need generating.
+	 * @param validator
+	 *            validates and parses input.
+	 * @param MATH_CONTEXT
+	 *            the scale, precision and rounding to apply to mathematical operations.
 	 */
 	public ClosingPriceRelativeStrengthCalculator( final int lookback, final int additionalRsiValues,
 	        final Validator validator ) {
@@ -107,7 +111,8 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	}
 
 	/**
-	 * For the first zero - time period entries calculate the SMA based on up to down movement to use as the first RS value.
+	 * For the first zero - time period entries calculate the SMA based on up to down movement to use as the first RS
+	 * value.
 	 */
 	private AverageGainToLoss windup( final TradingDayPrices[] data ) {
 
@@ -143,9 +148,9 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 
 	/**
 	 * RS Calculation being:
-	 * 	Archive = look back - 1
-	 * 	Average Gain = [(previous Average Gain) x archive + current Gain] / lookback.
-	 * 	Average Loss = [(previous Average Loss) x archive + current Loss] / lookback.
+	 * Archive = look back - 1
+	 * Average Gain = [(previous Average Gain) x archive + current Gain] / lookback.
+	 * Average Loss = [(previous Average Loss) x archive + current Loss] / lookback.
 	 */
 	private RelativeStrengthLine rs( final TradingDayPrices[] data, final AverageGainToLoss initialLookback ) {
 
@@ -184,8 +189,9 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 			}
 
 			/**
-			 * Wilder originally formulated the calculation of the moving average as: newval = (prevval * (period - 1) + newdata) / period. 
-			 * This is fully equivalent to the exponential smoothing of a n-period smoothed moving average (SMMA). 
+			 * Wilder originally formulated the calculation of the moving average as: newval = (prevval * (period - 1) +
+			 * newdata) / period.
+			 * This is fully equivalent to the exponential smoothing of a n-period smoothed moving average (SMMA).
 			 */
 			averageGain = smooth(currentGain, averageGain);
 			averageLoss = smooth(currentLoss, averageLoss);

@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -61,7 +61,7 @@ public class TradingStrategy implements Strategy {
 	/** Warm up period is in trading days, not normals days. */
 	private static final double CONVERT_TO_TRADING_DAYS = 7 / 4.5;
 
-	//TODO should remove this MC or encapsulate
+	// TODO should remove this MC or encapsulate
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
@@ -107,13 +107,13 @@ public class TradingStrategy implements Strategy {
 
 		if (tradingData.size() == entry.requiredTradingPrices()) {
 
-			//TODO change to avoid converting to a list
+			// TODO change to avoid converting to a list
 			// Create signals from the available trading data
 			final List<DatedSignal> signals = entry.analyse(tradingData.toArray());
 
 			if (hasDatedSignal(signals, data)) {
 
-				//TODO do some better encapsulation / refactor
+				// TODO do some better encapsulation / refactor
 				final BigDecimal amount = entryPositionSizing.entryPositionSize(cashAccount);
 				final LocalDate tradingDate = data.date();
 				final BigDecimal maximumTransactionCost = fees.cost(amount, type, tradingDate);

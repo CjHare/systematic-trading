@@ -65,7 +65,7 @@ public class SimulationTest {
 		createSimulation(tradingData);
 	}
 
-	//TODO add more UT
+	// TODO add more UT
 
 	private void createSimulation( final TickerSymbolTradingData tradingData ) {
 

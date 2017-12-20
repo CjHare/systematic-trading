@@ -38,7 +38,8 @@ public interface EquityManagementFee {
 	/**
 	 * Applies relevant management fee calculations and payments based on the passage of time.
 	 * 
-	 * @param tradingDate the next day of trading data.
+	 * @param tradingDate
+	 *            the next day of trading data.
 	 */
 	void update( final TradingDayPrices tradingData );
 }

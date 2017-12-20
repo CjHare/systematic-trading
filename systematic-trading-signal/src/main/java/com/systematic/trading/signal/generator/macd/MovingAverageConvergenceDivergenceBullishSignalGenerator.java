@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -43,7 +43,8 @@ import com.systematic.trading.signal.generator.SignalGenerator;
 import com.systematic.trading.signal.model.DatedSignal;
 
 /**
- * MACD bullish signal calculator, takes the MACD lines calculated from the price data and calculates bullish signals from it.
+ * MACD bullish signal calculator, takes the MACD lines calculated from the price data and calculates bullish signals
+ * from it.
  * 
  * @author CJ Hare
  */
@@ -83,7 +84,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 	}
 
 	/**
-	 *  Buy (Bullish) signal is from a cross over of the signal line, or crossing over the origin
+	 * Buy (Bullish) signal is from a cross over of the signal line, or crossing over the origin
 	 */
 	private boolean isBullishSignal( final BigDecimal todayMacd, final BigDecimal yesterdayMacd,
 	        final BigDecimal todaySignalLine, final BigDecimal yesterdaySignalLine ) {
@@ -92,7 +93,7 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 		        || crossingOrigin(yesterdayMacd, todayMacd);
 	}
 
-	/* 
+	/*
 	 * Between yesterday and today: - MACD need to be moving upwards - today's MACD needs to be
 	 * above today's signal line - yesterday's MACD needs to be below yesterday's signal line
 	 */

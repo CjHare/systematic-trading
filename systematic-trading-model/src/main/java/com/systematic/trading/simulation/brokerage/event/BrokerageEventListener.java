@@ -36,7 +36,8 @@ public interface BrokerageEventListener {
 	/**
 	 * Notification that an Brokerage Event has occurred.
 	 * 
-	 * @param event the type of event that the listener is interested.
+	 * @param event
+	 *            the type of event that the listener is interested.
 	 */
 	void event( BrokerageEvent event );
 }

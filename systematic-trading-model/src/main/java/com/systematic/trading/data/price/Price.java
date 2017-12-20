@@ -45,7 +45,8 @@ public class Price {
 	/**
 	 * Creates a price from an underlying decimal value.
 	 * 
-	 * @param amount decimal to create as a price, cannot be <code>null</code>.
+	 * @param amount
+	 *            decimal to create as a price, cannot be <code>null</code>.
 	 * @return equivalent price for the given decimal.
 	 */
 	public static Price valueOf( final BigDecimal amount ) {
@@ -70,7 +71,8 @@ public class Price {
 	/**
 	 * Is the price larger then another price.
 	 * 
-	 * @param other comparison value.
+	 * @param other
+	 *            comparison value.
 	 * @return <code>true</code> when the other is smaller, <code>false</code> otherwise.
 	 */
 	public boolean isGreaterThan( final Price other ) {
@@ -81,7 +83,8 @@ public class Price {
 	/**
 	 * Is the price smaller then another price.
 	 * 
-	 * @param other comparison value.
+	 * @param other
+	 *            comparison value.
 	 * @return <code>true</code> when the other value is larger, <code>false</code> otherwise.
 	 */
 	public boolean isLessThan( final Price other ) {
@@ -92,7 +95,8 @@ public class Price {
 	/**
 	 * Whether the price is the same as another price.
 	 * 
-	 * @param other comparison value.
+	 * @param other
+	 *            comparison value.
 	 * @return <code>true</code> when the other value is the same, <code>false</code> otherwise.
 	 */
 	public boolean isEqaul( final Price other ) {
@@ -103,7 +107,8 @@ public class Price {
 	/**
 	 * Compares this {@code Price} with the specified {@code Price}.
 	 *
-	 * @param other {@code Price} to which this {@code Price} is to be compared.
+	 * @param other
+	 *            {@code Price} to which this {@code Price} is to be compared.
 	 * @return -1, 0, or 1 as this {@code Price} is numerically less than, equal to, or greater than
 	 *         {@code other}.
 	 */
@@ -115,8 +120,10 @@ public class Price {
 	/**
 	 * Result of subtracting the other price from this one.
 	 * 
-	 * @param other the price to subtract.
-	 * @param mathContext scale, precision and rounding to apply to mathematical operations.
+	 * @param other
+	 *            the price to subtract.
+	 * @param mathContext
+	 *            scale, precision and rounding to apply to mathematical operations.
 	 * @return the result of the subtraction, not side effecting this Price.
 	 */
 	public BigDecimal subtract( final Price other, final MathContext mathContext ) {

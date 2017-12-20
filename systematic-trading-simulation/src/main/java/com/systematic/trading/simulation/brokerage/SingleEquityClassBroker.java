@@ -82,7 +82,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	/** Parties interested in listening to equity events. */
 	private final List<EquityEventListener> equityListeners = new ArrayList<>();
 
-	/** Identifier for the broker.*/
+	/** Identifier for the broker. */
 	private final String brokerName;
 
 	public SingleEquityClassBroker( final String brokerName, final BrokerageTransactionFeeStructure fees,

@@ -49,9 +49,11 @@ public class FlatInterestRate implements InterestRate {
 	private final MathContext mathContext;
 
 	/**
-	 * @param annualInterestRate rate of interest applied over the course of a year, where 2% is
+	 * @param annualInterestRate
+	 *            rate of interest applied over the course of a year, where 2% is
 	 *            2.0.
-	 * @param mathContext math context defining the scale and precision to apply to operations.
+	 * @param mathContext
+	 *            math context defining the scale and precision to apply to operations.
 	 */
 	public FlatInterestRate( final BigDecimal annualInterestRate, final MathContext mathContext ) {
 

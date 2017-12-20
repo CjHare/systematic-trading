@@ -41,24 +41,30 @@ public interface CashAccount {
 	/**
 	 * Applies relevant interest calculations and payments based on the passage of time.
 	 * 
-	 * @param tradingDate the next day of trading data to add.
+	 * @param tradingDate
+	 *            the next day of trading data to add.
 	 */
 	void update( final LocalDate tradingDate );
 
 	/**
 	 * Removes funds from an account.
 	 * 
-	 * @param debitAmount sum to be removed from the account.
-	 * @param transactionDate date of the debit.
-	 * @throws InsufficientFundsException encountered when the funds cannot be debited.
+	 * @param debitAmount
+	 *            sum to be removed from the account.
+	 * @param transactionDate
+	 *            date of the debit.
+	 * @throws InsufficientFundsException
+	 *             encountered when the funds cannot be debited.
 	 */
 	void debit( BigDecimal debitAmount, LocalDate transactionDate ) throws InsufficientFundsException;
 
 	/**
 	 * Adds funds to an account.
 	 * 
-	 * @param creditAmount sum to be added to the account.
-	 * @param transactionDate date of the credit.
+	 * @param creditAmount
+	 *            sum to be added to the account.
+	 * @param transactionDate
+	 *            date of the credit.
 	 */
 	void credit( BigDecimal creditAmount, LocalDate transactionDate );
 
@@ -66,8 +72,10 @@ public interface CashAccount {
 	 * Adds funds to an account that is considered a deposit, where the funds come from an outside
 	 * source rather then from a trading activity.
 	 * 
-	 * @param depositAmount sum to be added to the account.
-	 * @param transactionDate date of the deposit.
+	 * @param depositAmount
+	 *            sum to be added to the account.
+	 * @param transactionDate
+	 *            date of the deposit.
 	 */
 	void deposit( BigDecimal depositAmount, LocalDate transactionDate );
 
@@ -81,7 +89,8 @@ public interface CashAccount {
 	/**
 	 * Adds a listener that is interested in CashEvents.
 	 * 
-	 * @param listener to receive cash event notifications.
+	 * @param listener
+	 *            to receive cash event notifications.
 	 */
 	void addListener( CashEventListener listener );
 }

@@ -41,7 +41,8 @@ public class ClosingPrice extends Price {
 	/**
 	 * Creates a close price from an underlying decimal value.
 	 * 
-	 * @param amount decimal to create as a close price, cannot be <code>null</code>.
+	 * @param amount
+	 *            decimal to create as a close price, cannot be <code>null</code>.
 	 * @return equivalent closing price for the given decimal.
 	 */
 	public static ClosingPrice valueOf( final BigDecimal amount ) {

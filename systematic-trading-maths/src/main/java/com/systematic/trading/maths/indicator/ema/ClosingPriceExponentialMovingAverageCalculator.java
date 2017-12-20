@@ -35,10 +35,11 @@ import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 
 /**
- * This implementation calculates the EMA from the closing price, by first calculating the starting value using a SMA, 
- * then applies each value with the smoothing constant to produce the EMA. 
- * This does mean those dates used as part of the SMA will not have corresponding EMA values, 
- * with those in the first period of the lookback being considered as inaccurate, not appropriate for use in signal generation.
+ * This implementation calculates the EMA from the closing price, by first calculating the starting value using a SMA,
+ * then applies each value with the smoothing constant to produce the EMA.
+ * This does mean those dates used as part of the SMA will not have corresponding EMA values,
+ * with those in the first period of the lookback being considered as inaccurate, not appropriate for use in signal
+ * generation.
  * 
  * @author CJ Hare
  */
@@ -60,10 +61,14 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 	private final Validator validator;
 
 	/**
-	 * @param lookback the number of days to use when calculating the EMA.
-	 * @param daysOfEmaValues the minimum number of EMA values to produce.
-	 * @param validator validates and parses input.
-	 * @param mathContext the scale, precision and rounding to apply to mathematical operations.
+	 * @param lookback
+	 *            the number of days to use when calculating the EMA.
+	 * @param daysOfEmaValues
+	 *            the minimum number of EMA values to produce.
+	 * @param validator
+	 *            validates and parses input.
+	 * @param mathContext
+	 *            the scale, precision and rounding to apply to mathematical operations.
 	 */
 	public ClosingPriceExponentialMovingAverageCalculator( final int lookback, final int daysOfEmaValues,
 	        final Validator validator ) {
@@ -124,7 +129,7 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 	}
 
 	/**
-	 * EMA {Close - EMA(previous day)} x multiplier + EMA(previous day) 
+	 * EMA {Close - EMA(previous day)} x multiplier + EMA(previous day)
 	 */
 	private BigDecimal ema( final BigDecimal yesterdayEma, final BigDecimal todayClose ) {
 

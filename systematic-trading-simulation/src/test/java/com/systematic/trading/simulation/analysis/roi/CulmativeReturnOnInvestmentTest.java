@@ -79,7 +79,7 @@ public class CulmativeReturnOnInvestmentTest {
 	@Mock
 	private ReturnOnInvestmentEventListener listener;
 
-	/** The calculator being evaluated by the unit test.*/
+	/** The calculator being evaluated by the unit test. */
 	private ReturnOnInvestmentListener calculator;
 
 	@Before
@@ -212,7 +212,7 @@ public class CulmativeReturnOnInvestmentTest {
 	}
 
 	/**
-	 *	Process and generate notifications
+	 * Process and generate notifications
 	 */
 	private void update() {
 

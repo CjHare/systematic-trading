@@ -154,7 +154,8 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	/**
-	 * @param signalRange widest signal range, eventually will be overridden by a confirmation.
+	 * @param signalRange
+	 *            widest signal range, eventually will be overridden by a confirmation.
 	 */
 	private Entry entry( final EntryConfiguration entryConfig, final SignalRangeFilter signalRange,
 	        final long priceDataRange ) {
@@ -221,7 +222,7 @@ public class BacktestBootstrapContextBulider {
 	}
 
 	/**
-	 * Widest value for the confirmationDayRange, accounting for the latest delay until confirmation range begins. 
+	 * Widest value for the confirmationDayRange, accounting for the latest delay until confirmation range begins.
 	 */
 	private int endConfirmationRange( final EntryConfiguration entryConfig ) {
 

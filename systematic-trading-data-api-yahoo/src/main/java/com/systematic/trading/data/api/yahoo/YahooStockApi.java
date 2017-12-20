@@ -65,7 +65,7 @@ public class YahooStockApi implements EquityApi {
 	private static final int MAXIMUM_CONNECTION_PER_SECOND = 10;
 
 	// Dividend API
-	//	http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.dividendhistory%20where%20symbol=%22VGS.AX%22%20and%20startDate=%222015-01-01%22%20and%20endDate=%222015-02-01%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys
+	// http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.dividendhistory%20where%20symbol=%22VGS.AX%22%20and%20startDate=%222015-01-01%22%20and%20endDate=%222015-02-01%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys
 
 	private static final HttpUtil HTTP_UTILS = new HttpUtil();
 

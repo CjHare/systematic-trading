@@ -51,10 +51,14 @@ public class BrokerageFeeUtil {
 	/**
 	 * Calculates and return the larger value from the absolute and percentage.
 	 * 
-	 * @param tradeValue sum of the equity trade whose brokerage is being calculated.
-	 * @param absoluteFee absolute amount for brokerage.
-	 * @param percentage relative amount based of the tradeValue.
-	 * @param context math context defining the scale and precision to apply to operations.
+	 * @param tradeValue
+	 *            sum of the equity trade whose brokerage is being calculated.
+	 * @param absoluteFee
+	 *            absolute amount for brokerage.
+	 * @param percentage
+	 *            relative amount based of the tradeValue.
+	 * @param context
+	 *            math context defining the scale and precision to apply to operations.
 	 * @return the larger between the absolute and relative given the specific trade value.
 	 */
 	public static BigDecimal applyLargest( final BigDecimal tradeValue, final BigDecimal absoluteFee,

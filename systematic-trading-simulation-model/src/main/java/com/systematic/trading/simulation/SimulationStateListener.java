@@ -39,7 +39,8 @@ public interface SimulationStateListener {
 	/**
 	 * Notification that the simulation has moved from one state into another.
 	 * 
-	 * @param transitionedState the new state the simulation has entered.
+	 * @param transitionedState
+	 *            the new state the simulation has entered.
 	 */
 	void stateChanged( SimulationState transitionedState );
 }

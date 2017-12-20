@@ -65,7 +65,7 @@ public class PeriodicCulmativeReturnOnInvestmentTest {
 	@Mock
 	private ReturnOnInvestmentEventListener listener;
 
-	/** The ROI calculator being unit tested.*/
+	/** The ROI calculator being unit tested. */
 	private PeriodicCulmativeReturnOnInvestment calculator;
 
 	@Before

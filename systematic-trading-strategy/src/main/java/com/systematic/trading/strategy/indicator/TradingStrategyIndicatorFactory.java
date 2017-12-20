@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -66,7 +66,8 @@ import com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfigu
 public class TradingStrategyIndicatorFactory {
 
 	/**
-	 * @param previousTradingDaySignalRange how many days previous to latest trading date to generate signals on.
+	 * @param previousTradingDaySignalRange
+	 *            how many days previous to latest trading date to generate signals on.
 	 */
 	public Indicator create( final IndicatorConfiguration signal, final SignalRangeFilter filter,
 	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
@@ -126,7 +127,9 @@ public class TradingStrategyIndicatorFactory {
 	}
 
 	/**
-	 * @param priceDataRange the number of MACD values to create to use in evaluation (perhaps in conjunction with other indicators).
+	 * @param priceDataRange
+	 *            the number of MACD values to create to use in evaluation (perhaps in conjunction with other
+	 *            indicators).
 	 */
 	private Indicator macd( final MacdConfiguration macdConfiguration, final SignalRangeFilter filter,
 	        final SignalAnalysisListener signalListener, final int priceDataRange ) {

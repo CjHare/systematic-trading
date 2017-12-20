@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -34,7 +34,7 @@ import java.math.MathContext;
 
 /**
  * A facade encapsulate precision calculations regarding the Networth calculation.
- *  
+ * 
  * @author CJ Hare
  */
 public class Networth {
@@ -56,8 +56,10 @@ public class Networth {
 	/**
 	 * Adds the value of a quantity of an equity at the close of day price.
 	 * 
-	 * @param quantity number of the equity to add.
-	 * @param price value of the equity.
+	 * @param quantity
+	 *            number of the equity to add.
+	 * @param price
+	 *            value of the equity.
 	 */
 	public void addEquity( final BigDecimal quantity, final BigDecimal price ) {
 
@@ -77,8 +79,10 @@ public class Networth {
 	/**
 	 * Percentage increase or decrease between here and the endValue.
 	 * 
-	 * @param endNetworth the end net worth to calculate the percentage increase to obtain.
-	 * @param adjustment value to subtract from the change in net worth values increase.
+	 * @param endNetworth
+	 *            the end net worth to calculate the percentage increase to obtain.
+	 * @param adjustment
+	 *            value to subtract from the change in net worth values increase.
 	 * @return percentage channge to get from this net worth to the end value, factoring in the adjustment.
 	 */
 	public BigDecimal percentageChange( final Networth endNetworth, final Networth adjustment ) {

@@ -52,10 +52,14 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 	private final Period interval;
 
 	/**
-	 * @param depositAmount size of each deposit.
-	 * @param account Cash account that receives the deposits.
-	 * @param firstDeposit date for the first deposit.
-	 * @param interval time between deposit events.
+	 * @param depositAmount
+	 *            size of each deposit.
+	 * @param account
+	 *            Cash account that receives the deposits.
+	 * @param firstDeposit
+	 *            date for the first deposit.
+	 * @param interval
+	 *            time between deposit events.
 	 */
 	public RegularDepositCashAccountDecorator( final BigDecimal depositAmount, final CashAccount account,
 	        final LocalDate firstDeposit, final Period interval ) {
@@ -125,7 +129,7 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 		return Period.between(lastDeposit, tradingDate).getDays() / interval.getDays();
 	}
 
-	//TODO shift the interval and deposit amount into a tuple object
+	// TODO shift the interval and deposit amount into a tuple object
 	public BigDecimal depositAmount() {
 
 		return depositAmount;

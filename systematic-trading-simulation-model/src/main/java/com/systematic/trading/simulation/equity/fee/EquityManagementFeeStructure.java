@@ -40,8 +40,10 @@ public interface EquityManagementFeeStructure {
 	/**
 	 * Applies relevant management fee calculations and payments based on the passage of time.
 	 * 
-	 * @param lastManagementFeeDate the last date there was a non-zero management fee.
-	 * @param tradingData the day of trading data.
+	 * @param lastManagementFeeDate
+	 *            the last date there was a non-zero management fee.
+	 * @param tradingData
+	 *            the day of trading data.
 	 * @return number of equities that are to be taken as the equity funds under management fee.
 	 */
 	BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
@@ -50,7 +52,8 @@ public interface EquityManagementFeeStructure {
 	/**
 	 * Calculates the most recent management fee date.
 	 * 
-	 * @param tradingDate today's trading date.
+	 * @param tradingDate
+	 *            today's trading date.
 	 * @return the date of the most recent management fee prior to the given tradingDate.
 	 */
 	LocalDate lastManagementFeeDate( LocalDate tradingDate );

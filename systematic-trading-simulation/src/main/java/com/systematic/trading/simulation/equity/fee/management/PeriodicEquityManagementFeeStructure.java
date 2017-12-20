@@ -50,9 +50,12 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	private final LocalDate feeStartDate;
 
 	/**
-	 * @param feePercentage percentage of the holdings taken as the fee.
-	 * @param frequency how often the management fee is applied.
-	 * @param mathContext context to apply to calculations.
+	 * @param feePercentage
+	 *            percentage of the holdings taken as the fee.
+	 * @param frequency
+	 *            how often the management fee is applied.
+	 * @param mathContext
+	 *            context to apply to calculations.
 	 */
 	public PeriodicEquityManagementFeeStructure( final LocalDate feeStartDate, final EquityManagementFeeCalculator fee,
 	        final Period frequency ) {

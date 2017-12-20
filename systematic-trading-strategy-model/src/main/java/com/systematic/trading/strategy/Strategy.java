@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -56,10 +56,13 @@ public interface Strategy {
 	/**
 	 * Updates the trading logic with a subsequent trading point.
 	 * 
-	 * @param fees the brokerage to execute the order with, and whose fees are to be included in the
+	 * @param fees
+	 *            the brokerage to execute the order with, and whose fees are to be included in the
 	 *            transaction.
-	 * @param cashAccount currently available funds.
-	 * @param data next day of trading to add, also applying logic for trade signals.
+	 * @param cashAccount
+	 *            currently available funds.
+	 * @param data
+	 *            next day of trading to add, also applying logic for trade signals.
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
 	 *         be placed.
 	 */
@@ -69,7 +72,8 @@ public interface Strategy {
 	 * Action to take on the order when the triggering conditions are met, however there are
 	 * insufficient available funds.
 	 * 
-	 * @param order that cannot be executed, due to lack of funds.
+	 * @param order
+	 *            that cannot be executed, due to lack of funds.
 	 * @return action to take in this situation.
 	 */
 	EquityOrderInsufficientFundsAction actionOnInsufficentFunds( EquityOrder order );
@@ -77,8 +81,10 @@ public interface Strategy {
 	/**
 	 * Updates the trading logic with a subsequent trading point and open positions.
 	 * 
-	 * @param broker the positions currently open.
-	 * @param data next day of trading to add, also applying logic for trade signals.
+	 * @param broker
+	 *            the positions currently open.
+	 * @param data
+	 *            next day of trading to add, also applying logic for trade signals.
 	 * @return the order to place at the next opportunity, or <code>null</code> when no order is to
 	 *         be placed.
 	 */

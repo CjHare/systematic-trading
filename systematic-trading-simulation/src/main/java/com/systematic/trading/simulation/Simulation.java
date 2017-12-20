@@ -134,7 +134,8 @@ public class Simulation {
 	/**
 	 * Adds the listener to the set of order event listeners.
 	 * 
-	 * @param listener will receive notification of order event occurrences.
+	 * @param listener
+	 *            will receive notification of order event occurrences.
 	 */
 	public void addListener( final OrderEventListener listener ) {
 
@@ -146,7 +147,8 @@ public class Simulation {
 	/**
 	 * Adds the listener to the set of state transition listeners.
 	 * 
-	 * @param listener will receive notification of simulation state change occurrences.
+	 * @param listener
+	 *            will receive notification of simulation state change occurrences.
 	 */
 	public void addListener( final SimulationStateListener listener ) {
 
@@ -159,8 +161,10 @@ public class Simulation {
 	 * Processes any outstanding orders when their execution criteria and add any additional orders
 	 * based on the day's trading data.
 	 * 
-	 * @param tradingDataToday trading data for today.
-	 * @param orders orders carried over from yesterday.
+	 * @param tradingDataToday
+	 *            trading data for today.
+	 * @param orders
+	 *            orders carried over from yesterday.
 	 * @return the outstanding orders to carry over to tomorrow.
 	 */
 	private List<EquityOrder> processTradingData( final TradingDayPrices tradingDataToday,
@@ -179,8 +183,10 @@ public class Simulation {
 	/**
 	 * Update the exit logic analysis, adding any orders triggered by the day's trading data.
 	 * 
-	 * @param data todays trading data.
-	 * @param openOrders the existing trading orders unfulfilled.
+	 * @param data
+	 *            todays trading data.
+	 * @param openOrders
+	 *            the existing trading orders unfulfilled.
 	 * @return the given list of open orders, plus any order added by the exit logic.
 	 */
 	private List<EquityOrder> addExitOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
@@ -198,8 +204,10 @@ public class Simulation {
 	/**
 	 * Update the entry logic analysis, adding any orders triggered by the day's trading data.
 	 * 
-	 * @param data todays trading data.
-	 * @param openOrders the existing trading orders unfulfilled.
+	 * @param data
+	 *            todays trading data.
+	 * @param openOrders
+	 *            the existing trading orders unfulfilled.
 	 * @return the given list of open orders, plus any order added by the entry logic.
 	 */
 	private List<EquityOrder> addEntryOrderForToday( final TradingDayPrices data, final List<EquityOrder> openOrders ) {
@@ -255,7 +263,8 @@ public class Simulation {
 	/**
 	 * Attempt to execute the order.
 	 * 
-	 * @param order trade to execute.
+	 * @param order
+	 *            trade to execute.
 	 * @return <code>null</code> on success, or an order to re-attempt next cycle.
 	 * @throws OrderException
 	 */

@@ -39,7 +39,8 @@ public interface CashEventStatistics {
 	/**
 	 * Cash event that merits the attention of the statistical recording.
 	 * 
-	 * @param event details of the cash event to record.
+	 * @param event
+	 *            details of the cash event to record.
 	 */
 	void event( CashEvent event );
 

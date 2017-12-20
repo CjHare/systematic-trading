@@ -72,7 +72,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private static final Logger LOG = LogManager.getLogger(DataServiceUpdaterImpl.class);
 
-	/** Invoke the clean operation on the throttler, ten times a second.*/
+	/** Invoke the clean operation on the throttler, ten times a second. */
 	private static final Duration THROTTLER_CLEAN_INTERVAL = Duration.of(100, ChronoUnit.MILLIS);
 
 	private final EquityApi api;

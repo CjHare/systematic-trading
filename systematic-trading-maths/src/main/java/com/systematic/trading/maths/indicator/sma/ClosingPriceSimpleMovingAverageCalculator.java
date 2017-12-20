@@ -54,10 +54,15 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 	private final Validator validator;
 
 	/**
-	 * @param lookback the number of days to use when calculating the SMA.
-	 * @param daysOfSmaValues the number of trading days to have a SMA values for, with lookback being the number of trading days averaged..
-	 * @param validator validates and parses input.
-	 * @param store source for the storage array.
+	 * @param lookback
+	 *            the number of days to use when calculating the SMA.
+	 * @param daysOfSmaValues
+	 *            the number of trading days to have a SMA values for, with lookback being the number of trading days
+	 *            averaged..
+	 * @param validator
+	 *            validates and parses input.
+	 * @param store
+	 *            source for the storage array.
 	 */
 	public ClosingPriceSimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues,
 	        final Validator validator ) {

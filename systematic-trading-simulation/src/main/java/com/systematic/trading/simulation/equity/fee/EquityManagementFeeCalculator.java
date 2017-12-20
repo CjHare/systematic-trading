@@ -41,9 +41,12 @@ public interface EquityManagementFeeCalculator {
 	/**
 	 * Calculates the management fee.
 	 * 
-	 * @param numberOfEquities equities to apply the management fee onto.
-	 * @param singleEquityValue the value of a single equity.
-	 * @param durationToCalculate time elapsed since the last management fee, or length of time to
+	 * @param numberOfEquities
+	 *            equities to apply the management fee onto.
+	 * @param singleEquityValue
+	 *            the value of a single equity.
+	 * @param durationToCalculate
+	 *            time elapsed since the last management fee, or length of time to
 	 *            apply the fee for.
 	 * @return management fee for the duration in the number of equities.
 	 */

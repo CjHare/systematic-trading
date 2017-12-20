@@ -41,14 +41,16 @@ public interface Brokerage
 	/**
 	 * Adds a listener interested in brokerage events.
 	 * 
-	 * @param listener to receive brokerage event notifications.
+	 * @param listener
+	 *            to receive brokerage event notifications.
 	 */
 	void addListener( BrokerageEventListener listener );
 
 	/**
 	 * Adds a listener interested in equity events.
 	 * 
-	 * @param listener to receive equity event notifications.
+	 * @param listener
+	 *            to receive equity event notifications.
 	 */
 	void addListener( EquityEventListener listener );
 

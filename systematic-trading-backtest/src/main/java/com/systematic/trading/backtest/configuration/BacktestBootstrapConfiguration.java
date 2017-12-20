@@ -20,7 +20,7 @@ public class BacktestBootstrapConfiguration {
 	private final BrokerageTransactionFeeStructure brokerageFees;
 	private final CashAccountConfiguration cashAccount;
 
-	//TODO despoit config & opening funds into an object
+	// TODO despoit config & opening funds into an object
 	private final DepositConfiguration deposit;
 	private final BigDecimal openingFunds;
 	private final StrategyConfiguration strategy;

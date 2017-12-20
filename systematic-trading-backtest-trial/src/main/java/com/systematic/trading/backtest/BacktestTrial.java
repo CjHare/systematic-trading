@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -81,13 +81,14 @@ public class BacktestTrial {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(BacktestTrial.class);
 
-	// TODO the description is specific to the type of output - file, console, elastic :. refactor - move into BacktestLaunchArgumentParser
+	// TODO the description is specific to the type of output - file, console, elastic :. refactor - move into
+	// BacktestLaunchArgumentParser
 	private final DescriptionGenerator description = new StandardDescriptionGenerator();
 
 	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
 
-	/** Local source of the trading prices.*/
+	/** Local source of the trading prices. */
 	private final DataService dataService;
 
 	public BacktestTrial( final DataServiceType serviceType ) throws ServiceException {
@@ -110,7 +111,7 @@ public class BacktestTrial {
 
 		final EquityConfiguration equity = equity(parserdArguments);
 
-		//TODO convert into input arguments
+		// TODO convert into input arguments
 		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_200;
 		final BigDecimal openingFunds = parserdArguments.openingFunds();
 
@@ -264,10 +265,10 @@ public class BacktestTrial {
 
 	private void clearOutputDirectory( final DepositConfiguration depositAmount,
 	        final BacktestLaunchArguments arguments ) throws ServiceException {
-		//TODO delete must run BEFORE any of the tests! that'll ensure race conditions are avoided
+		// TODO delete must run BEFORE any of the tests! that'll ensure race conditions are avoided
 
-		//TODO this should happen only once & be moved into the file DAOs
-		//TODO currently deleting at the deposit level, move up? i.e. ..\results\WEEKLY_150\
+		// TODO this should happen only once & be moved into the file DAOs
+		// TODO currently deleting at the deposit level, move up? i.e. ..\results\WEEKLY_150\
 		// Arrange output to files, only once per a run
 
 		if (isFileBasedDisplay(arguments)) {

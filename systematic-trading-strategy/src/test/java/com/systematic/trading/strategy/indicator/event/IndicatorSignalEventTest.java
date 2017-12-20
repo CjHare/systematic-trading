@@ -51,7 +51,7 @@ public class IndicatorSignalEventTest {
 	@Mock
 	private IndicatorId type;
 
-	/** Signal instance being tested.*/
+	/** Signal instance being tested. */
 	private IndicatorSignal signal;
 
 	@Before

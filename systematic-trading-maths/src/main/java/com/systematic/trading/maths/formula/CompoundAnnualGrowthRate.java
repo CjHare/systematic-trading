@@ -53,9 +53,12 @@ public class CompoundAnnualGrowthRate {
 	 * period in question by its value at the beginning of that period, raise the result to the
 	 * power of one divided by the period length, and subtract one from the subsequent result.
 	 * 
-	 * @param startValue beginning amount.
-	 * @param finishValue amount at end of investment term.
-	 * @param years number of years between the beginning value and finish value.
+	 * @param startValue
+	 *            beginning amount.
+	 * @param finishValue
+	 *            amount at end of investment term.
+	 * @param years
+	 *            number of years between the beginning value and finish value.
 	 * @return the compound annual growth rate, as a signed percentage.
 	 */
 	public BigDecimal calculate( final BigDecimal startValue, final BigDecimal finishValue, final int years ) {

@@ -40,7 +40,8 @@ public interface ExponentialMovingAverage {
 	/**
 	 * Calculates the exponential moving average.
 	 * 
-	 * @param data ordered chronologically, from oldest to youngest (most recent first).
+	 * @param data
+	 *            ordered chronologically, from oldest to youngest (most recent first).
 	 * @return exponential moving average values.
 	 */
 	ExponentialMovingAverageLine calculate( SortedMap<LocalDate, BigDecimal> data );

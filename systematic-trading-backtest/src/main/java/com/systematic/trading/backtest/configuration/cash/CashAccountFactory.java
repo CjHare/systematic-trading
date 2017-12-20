@@ -63,7 +63,7 @@ public class CashAccountFactory {
 		return INSTANCE;
 	}
 
-	//TODO different methods, pass the none onto the caller
+	// TODO different methods, pass the none onto the caller
 
 	public CashAccount create( final LocalDate startDate, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit ) {

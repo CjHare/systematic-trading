@@ -145,7 +145,7 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 			configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
 			        factory.strategy(mediumConfirmedEntry, entryPositionSizing, exit, exitPositionSizing)));
 
-			// (ShortSMA OR ShortEMA) ConfirmedBy (LongSMA OR LongEMA) 
+			// (ShortSMA OR ShortEMA) ConfirmedBy (LongSMA OR LongEMA)
 			configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
 			        factory.strategy(factory.entry(shortSmaOrEma(), by, longSmaOrEma()), entryPositionSizing, exit,
 			                exitPositionSizing)));

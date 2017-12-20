@@ -38,9 +38,9 @@ import com.systematic.trading.maths.indicator.SignalCalculator;
  * Wilder started with a concept called True Range (TR), which is defined as the greatest of the
  * following:
  * <ul>
- * 	<li>Method 1: Current High less the current Low</li>
- * 	<li>Method 2: Current High less the previous Close (absolute value)</li>
- * 	<li>Method 3: Current Low less the previous Close (absolute value)</li>
+ * <li>Method 1: Current High less the current Low</li>
+ * <li>Method 2: Current High less the previous Close (absolute value)</li>
+ * <li>Method 3: Current Low less the previous Close (absolute value)</li>
  * </ul>
  * 
  * If the current period's high is above the prior period's high and the low is below the prior

@@ -49,7 +49,8 @@ public class MonthlyRollingCounter {
 	/**
 	 * Increments the counter for the given month.
 	 * 
-	 * @param date date of the counter increment.
+	 * @param date
+	 *            date of the counter increment.
 	 * @return count for the month of the given date.
 	 */
 	public int add( final LocalDate date ) {

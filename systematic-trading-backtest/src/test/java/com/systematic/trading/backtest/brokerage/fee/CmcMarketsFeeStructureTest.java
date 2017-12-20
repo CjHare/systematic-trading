@@ -40,9 +40,9 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
  * Test the fee structure for Bell Direct.
  * 
  * CMC Markets has three pricing tiers based on the number of trades in that month
- *  1st)  Trade # 0 - 10 : $11 or 0.10%, whichever is the greater
- *  2nd) Trade # 11 - 30 : $9.90 or 0.08%, whichever greater
- *  3rd)    Trade # 31 + : All trades are $9.90 or 0.075%, whichever greater
+ * 1st) Trade # 0 - 10 : $11 or 0.10%, whichever is the greater
+ * 2nd) Trade # 11 - 30 : $9.90 or 0.08%, whichever greater
+ * 3rd) Trade # 31 + : All trades are $9.90 or 0.075%, whichever greater
  * 
  * @author CJ Hare
  */

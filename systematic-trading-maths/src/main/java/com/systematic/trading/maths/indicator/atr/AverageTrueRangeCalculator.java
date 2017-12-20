@@ -40,9 +40,9 @@ import com.systematic.trading.maths.indicator.Validator;
  * Example calculation applied to a lookback of 14
  * 
  * Current ATR = [(Prior ATR x 13) + Current TR] / 14
- *  - Multiply the previous 14-day ATR by 13.
- *  - Add the most recent day's TR value.
- *  - Divide the total by 14
+ * - Multiply the previous 14-day ATR by 13.
+ * - Add the most recent day's TR value.
+ * - Divide the total by 14
  * 
  * For the period of the lookback there are not ATR, with the first value being the average of the lookback TR values.
  * 
@@ -69,9 +69,11 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 	private final Validator validator;
 
 	/**
-	 * @param lookback the number of days to use when calculating the ATR, also the number of days
+	 * @param lookback
+	 *            the number of days to use when calculating the ATR, also the number of days
 	 *            prior to the averaging becoming correct.
-	 * @param validator validates and parses input.
+	 * @param validator
+	 *            validates and parses input.
 	 */
 	public AverageTrueRangeCalculator( final int lookback, final Validator validator ) {
 		validator.verifyGreaterThan(1, lookback);
@@ -164,8 +166,10 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 
 	private BigDecimal average( final BigDecimal currentTrueRange, final BigDecimal priorAverageTrueRange ) {
 
-		/* For a look back of 14: Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the
-		 * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14 */
+		/*
+		 * For a look back of 14: Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the
+		 * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14
+		 */
 		return priorAverageTrueRange.multiply(priorMultiplier).add(currentTrueRange).divide(lookbackDivider,
 		        MATH_CONTEXT);
 	}

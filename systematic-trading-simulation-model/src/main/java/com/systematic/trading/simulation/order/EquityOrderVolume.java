@@ -34,7 +34,7 @@ import java.math.BigDecimal;
  */
 public class EquityOrderVolume {
 
-	/** Prime number to help keep the hash code unique.*/
+	/** Prime number to help keep the hash code unique. */
 	private static final int PRIME_VALUE = 31;
 
 	private final BigDecimal volume;
@@ -46,7 +46,8 @@ public class EquityOrderVolume {
 	/**
 	 * Creates a volume of an order from a decimal.
 	 * 
-	 * @param volume decimal to create the volume from, cannot be <code>null</code>.
+	 * @param volume
+	 *            decimal to create the volume from, cannot be <code>null</code>.
 	 * @return equivalent volume.
 	 */
 	public static EquityOrderVolume valueOf( final BigDecimal volume ) {

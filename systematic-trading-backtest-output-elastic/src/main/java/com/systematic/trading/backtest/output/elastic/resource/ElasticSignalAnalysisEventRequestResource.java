@@ -36,7 +36,7 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 
 /**
- * Resource for an brokerage event to send to Elastic search. 
+ * Resource for an brokerage event to send to Elastic search.
  * 
  * @author CJ Hare
  */

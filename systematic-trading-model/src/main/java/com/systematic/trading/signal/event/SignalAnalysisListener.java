@@ -36,7 +36,8 @@ public interface SignalAnalysisListener {
 	/**
 	 * Event has occurred that may be of interest to the listener.
 	 * 
-	 * @param event something wicked this way comes.
+	 * @param event
+	 *            something wicked this way comes.
 	 */
 	void event( SignalAnalysisEvent event );
 }

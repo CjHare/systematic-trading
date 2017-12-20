@@ -60,7 +60,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 	private final RelativeStrengthIndicator rs;
 
 	/**
-	 * @param validator validates and parses input.
+	 * @param validator
+	 *            validates and parses input.
 	 */
 	public RelativeStrengthIndexCalculator( final RelativeStrengthIndicator rs, final Validator validator ) {
 		this.validator = validator;
@@ -90,8 +91,8 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 		return new RelativeStrengthIndexLine(rsi);
 	}
 
-	/* 
-	 * RSI = 100 - 100 /( 1 + RS ) 
+	/*
+	 * RSI = 100 - 100 /( 1 + RS )
 	 */
 	private BigDecimal rsi( final Map.Entry<LocalDate, BigDecimal> entry ) {
 

@@ -42,8 +42,10 @@ public class EquityWithFeeConfiguration {
 	private final EquityManagementFeeStructure managementFee;
 
 	/**
-	 * @param identity the equity in question.
-	 * @param managementFee any possible management fee structure, applied when holding the equity,
+	 * @param identity
+	 *            the equity in question.
+	 * @param managementFee
+	 *            any possible management fee structure, applied when holding the equity,
 	 *            bar <code>null</code>.
 	 */
 	public EquityWithFeeConfiguration( final EquityIdentity identity,

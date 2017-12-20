@@ -37,13 +37,16 @@ import com.systematic.trading.maths.indicator.SignalCalculator;
  * 
  * There are three common methods used to interpret the MACD:
  * <ul>
- * 	<li>Crossovers - when the MACD falls below the signal line, it is a bearish signal, indicating that it may be time to sell. 
- * 		Conversely, when the MACD rises above the signal line, the indicator gives a bullish signal, suggesting upward momentum will be experienced. 
+ * <li>Crossovers - when the MACD falls below the signal line, it is a bearish signal, indicating that it may be time to
+ * sell.
+ * Conversely, when the MACD rises above the signal line, the indicator gives a bullish signal, suggesting upward
+ * momentum will be experienced.
  * </li>
- * 	<li>Divergence - when the security price diverges from the MACD. It signals the end of the current trend.
+ * <li>Divergence - when the security price diverges from the MACD. It signals the end of the current trend.
  * </li>
- * 	<li>Dramatic rise - when the MACD rises dramatically; the shorter moving average pulls away from the longer-term moving average, 
- * 		it's a signal that the security is overbought and will soon return to normal levels.
+ * <li>Dramatic rise - when the MACD rises dramatically; the shorter moving average pulls away from the longer-term
+ * moving average,
+ * it's a signal that the security is overbought and will soon return to normal levels.
  * </li>
  * </ul>
  * 

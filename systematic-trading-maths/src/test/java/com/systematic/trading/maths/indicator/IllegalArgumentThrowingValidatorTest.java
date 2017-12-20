@@ -38,7 +38,7 @@ import org.junit.Test;
  */
 public class IllegalArgumentThrowingValidatorTest {
 
-	/** Validator instance being tested.*/
+	/** Validator instance being tested. */
 	private IllegalArgumentThrowingValidator validator;
 
 	@Before

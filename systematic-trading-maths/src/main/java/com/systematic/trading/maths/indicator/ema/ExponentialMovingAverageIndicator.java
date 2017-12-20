@@ -35,8 +35,10 @@ import com.systematic.trading.maths.indicator.SignalCalculator;
  * weighting factors which decrease exponentially. The weighting for each older datum decreases
  * exponentially, never reaching zero.
  * 
- * Greater accuracy is achieved with more data points, with the days of gradient being larger, the EMA becomes more accurate.
- * However with more data, more computation is required, meaning a balance between volume of data and accuracy is needed.
+ * Greater accuracy is achieved with more data points, with the days of gradient being larger, the EMA becomes more
+ * accurate.
+ * However with more data, more computation is required, meaning a balance between volume of data and accuracy is
+ * needed.
  * 
  * @author CJ Hare
  */

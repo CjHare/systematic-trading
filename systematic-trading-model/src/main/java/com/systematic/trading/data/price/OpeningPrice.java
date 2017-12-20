@@ -41,7 +41,8 @@ public class OpeningPrice extends Price {
 	/**
 	 * Creates an opening price from an underlying decimal value.
 	 * 
-	 * @param amount decimal to create as an opening price, cannot be <code>null</code>.
+	 * @param amount
+	 *            decimal to create as an opening price, cannot be <code>null</code>.
 	 * @return equivalent opening price for the given decimal.
 	 */
 	public static OpeningPrice valueOf( final BigDecimal amount ) {

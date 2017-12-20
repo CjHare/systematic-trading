@@ -41,11 +41,15 @@ public interface BrokerageTransactionFee {
 	/**
 	 * Calculates the brokerage fee based on the given details.
 	 * 
-	 * @param tradeValue sum of the equities being purchased.
-	 * @param type different classes may attract alternative pricing structures.
-	 * @param tradeDate the date for the intended transaction.
+	 * @param tradeValue
+	 *            sum of the equities being purchased.
+	 * @param type
+	 *            different classes may attract alternative pricing structures.
+	 * @param tradeDate
+	 *            the date for the intended transaction.
 	 * @return transaction (brokerage) cost.
-	 * @throws UnsupportedEquityClass encountered when the broker does not support the equity type.
+	 * @throws UnsupportedEquityClass
+	 *             encountered when the broker does not support the equity type.
 	 */
 	BigDecimal cost( BigDecimal tradeValue, EquityClass type, LocalDate tradeDate );
 }

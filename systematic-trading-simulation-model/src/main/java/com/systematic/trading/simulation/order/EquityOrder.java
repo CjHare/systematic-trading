@@ -43,7 +43,8 @@ public interface EquityOrder {
 	/**
 	 * Whether the order has yet to expire.
 	 * 
-	 * @param todaysTrading the price action for today.
+	 * @param todaysTrading
+	 *            the price action for today.
 	 * @return <code>true</code> has expire and should not be executed, <code>false</code>
 	 *         otherwise.
 	 */
@@ -52,7 +53,8 @@ public interface EquityOrder {
 	/**
 	 * Whether the day's trading movement satisfied the execution criteria for the order.
 	 * 
-	 * @param todaysTrading the price action for today.
+	 * @param todaysTrading
+	 *            the price action for today.
 	 * @return <code>true</code> the conditions are met, <code>false</code> otherwise.
 	 */
 	boolean areExecutionConditionsMet( TradingDayPrices todaysTrading );
@@ -60,11 +62,16 @@ public interface EquityOrder {
 	/**
 	 * Executes the trade, side affecting the broker and cash account.
 	 * 
-	 * @param fees costs associated with performing transactions.
-	 * @param broker performs the execution of the order.
-	 * @param cashAccount where the money for the transaction is withdrawn.
-	 * @param todaysTrading the price action for today.
-	 * @throws OrderException when the order fails.
+	 * @param fees
+	 *            costs associated with performing transactions.
+	 * @param broker
+	 *            performs the execution of the order.
+	 * @param cashAccount
+	 *            where the money for the transaction is withdrawn.
+	 * @param todaysTrading
+	 *            the price action for today.
+	 * @throws OrderException
+	 *             when the order fails.
 	 */
 	void execute( BrokerageTransactionFee fees, BrokerageTransaction broker, CashAccount cashAccount,
 	        TradingDayPrices todaysTrading ) throws InsufficientEquitiesException, InsufficientFundsException;

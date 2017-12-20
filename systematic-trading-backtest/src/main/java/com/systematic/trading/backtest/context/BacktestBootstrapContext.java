@@ -31,7 +31,7 @@ import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.strategy.Strategy;
 
 /**
- * Context that a back testing will occurs within. 
+ * Context that a back testing will occurs within.
  * 
  * @author CJ Hare
  */
@@ -50,8 +50,10 @@ public class BacktestBootstrapContext {
 	private final BacktestSimulationDates simulationDates;
 
 	/**
-	 * @param startDate inclusive beginning date for the back testing.
-	 * @param endDate inclusive end date for back testing.
+	 * @param startDate
+	 *            inclusive beginning date for the back testing.
+	 * @param endDate
+	 *            inclusive end date for back testing.
 	 */
 	public BacktestBootstrapContext( final Strategy tradingStrategy, final Brokerage brokerage,
 	        final CashAccount cashAccount, final BacktestSimulationDates simulationDates ) {

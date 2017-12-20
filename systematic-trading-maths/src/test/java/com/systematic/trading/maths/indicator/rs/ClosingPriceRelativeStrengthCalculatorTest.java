@@ -243,7 +243,8 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 	}
 
 	/**
-	 * Fifteen days of prices, with the price increase then decreasing after the seventh day, starting at LocalDate.of(2017, 10, 2)
+	 * Fifteen days of prices, with the price increase then decreasing after the seventh day, starting at
+	 * LocalDate.of(2017, 10, 2)
 	 */
 	private TradingDayPrices[] createIncreasingThenDecreasingPrices() {
 
@@ -271,7 +272,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 		return createPrices(dates, close);
 	}
 
-	/** 
+	/**
 	 * Ten closing prices that start increasing after the forth entry, starting at LocalDate.of(2017, 9, 18).
 	 */
 	private TradingDayPrices[] createIncreasingPrices() {
@@ -285,7 +286,7 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 		return createPrices(dates, close);
 	}
 
-	/** 
+	/**
 	 * Ten closing prices that start decreasing after the forth entry, starting at LocalDate.of(2017, 9, 18).
 	 */
 	private TradingDayPrices[] createDecreasingPrices() {

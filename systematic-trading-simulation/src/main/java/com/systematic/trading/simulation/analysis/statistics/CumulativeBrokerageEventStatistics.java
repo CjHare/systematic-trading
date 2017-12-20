@@ -40,13 +40,13 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
  */
 public class CumulativeBrokerageEventStatistics implements BrokerageEventStatistics {
 
-	/** Running total of all brokerage fees paid.*/
+	/** Running total of all brokerage fees paid. */
 	private BigDecimal brokerageFees = BigDecimal.ZERO;
 
-	/** Buy events are put into bins of their precise amount, aggregation left for display step.*/
+	/** Buy events are put into bins of their precise amount, aggregation left for display step. */
 	private Map<BigDecimal, BigInteger> buyEvents = new HashMap<>();
 
-	/** Sell events are put into bins of their precise amount, aggregation left for display step.*/
+	/** Sell events are put into bins of their precise amount, aggregation left for display step. */
 	private Map<BigDecimal, BigInteger> sellEvents = new HashMap<>();
 
 	@Override

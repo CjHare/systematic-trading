@@ -39,7 +39,8 @@ public interface EquityEventStatistics {
 	/**
 	 * Equity event has occurred and merits recording.
 	 * 
-	 * @param event an event warranting attention of the statistics.
+	 * @param event
+	 *            an event warranting attention of the statistics.
 	 */
 	void event( EquityEvent event );
 

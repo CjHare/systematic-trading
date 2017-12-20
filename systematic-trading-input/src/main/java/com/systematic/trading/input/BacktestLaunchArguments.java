@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -51,19 +51,19 @@ public class BacktestLaunchArguments {
 	/** Equity and it's data source. */
 	private final EquityArguments equityArguments;
 
-	/** Data source that will receive the application's output.*/
+	/** Data source that will receive the application's output. */
 	private final OutputType outputType;
 
-	/** Optional argument, used with file output types.*/
+	/** Optional argument, used with file output types. */
 	private final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectory;
 
-	/** Parsed launch arguments.*/
+	/** Parsed launch arguments. */
 	private final Map<ArgumentKey, String> arguments;
 
-	/** Mandatory start date for the back test.*/
+	/** Mandatory start date for the back test. */
 	private final BacktestStartDate startDate;
 
-	/** Mandatory end date for the back test.*/
+	/** Mandatory end date for the back test. */
 	private final BacktestEndDate endDate;
 
 	/** Funds contained the cash account to use when opening positions. */

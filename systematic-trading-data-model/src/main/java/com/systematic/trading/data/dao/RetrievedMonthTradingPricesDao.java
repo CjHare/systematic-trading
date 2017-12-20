@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -34,7 +34,8 @@ import java.util.List;
 import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
 
 /**
- * Data Access Object to dealing with whether the trading data for a ticker symbol on any given month, has already been retrieved.
+ * Data Access Object to dealing with whether the trading data for a ticker symbol on any given month, has already been
+ * retrieved.
  * 
  * @author CJ Hare
  */
@@ -43,16 +44,20 @@ public interface RetrievedMonthTradingPricesDao {
 	/**
 	 * Creates the entry for the completed retrieval requests.
 	 * 
-	 * @param requests history retrieval requests that has been completed.
+	 * @param requests
+	 *            history retrieval requests that has been completed.
 	 */
 	void create( List<RetrievedMonthTradingPrices> retrieved );
 
 	/**
 	 * Retrieve the months of already obtained price data.
 	 * 
-	 * @param tickerSymbol symbol of the equity who history to retrieve.
-	 * @param startYear beginning year for the range of values to retrieve.
-	 * @param endYear last year for the range of values to retrieve.
+	 * @param tickerSymbol
+	 *            symbol of the equity who history to retrieve.
+	 * @param startYear
+	 *            beginning year for the range of values to retrieve.
+	 * @param endYear
+	 *            last year for the range of values to retrieve.
 	 * @return ally full months of already obtained.
 	 */
 	List<RetrievedMonthTradingPrices> requests( String tickerSymbol, int startYear, int endYear );

@@ -36,7 +36,8 @@ public interface OrderEventListener {
 	/**
 	 * Notification that an Order Event has occurred.
 	 * 
-	 * @param event the type of event that the listener is interested.
+	 * @param event
+	 *            the type of event that the listener is interested.
 	 */
 	void event( OrderEvent event );
 }

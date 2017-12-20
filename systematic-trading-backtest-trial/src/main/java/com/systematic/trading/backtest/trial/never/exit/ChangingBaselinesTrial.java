@@ -56,7 +56,8 @@ import com.systematic.trading.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
- * Comparing indicator and periodic results when they're using different brokerage misses out other variables i.e. the on-going management fees. 
+ * Comparing indicator and periodic results when they're using different brokerage misses out other variables i.e. the
+ * on-going management fees.
  * 
  * @author CJ Hare
  */

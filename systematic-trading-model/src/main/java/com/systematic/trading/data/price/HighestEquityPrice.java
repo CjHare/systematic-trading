@@ -41,7 +41,8 @@ public class HighestEquityPrice extends Price {
 	/**
 	 * Creates a highest price from an underlying decimal value.
 	 * 
-	 * @param price decimal to create as an highest price, cannot be <code>null</code>.
+	 * @param price
+	 *            decimal to create as an highest price, cannot be <code>null</code>.
 	 * @return equivalent highest price for the given decimal.
 	 */
 	public static HighestEquityPrice valueOf( final BigDecimal price ) {

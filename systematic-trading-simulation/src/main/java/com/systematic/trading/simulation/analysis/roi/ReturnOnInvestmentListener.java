@@ -41,16 +41,20 @@ public interface ReturnOnInvestmentListener extends CashEventListener {
 	/**
 	 * Updates the recording of the ROI.
 	 * 
-	 * @param broker manages the number of equities currently held.
-	 * @param cashAccount manages the available cash balance.
-	 * @param tradingData the day's trading price action.
+	 * @param broker
+	 *            manages the number of equities currently held.
+	 * @param cashAccount
+	 *            manages the available cash balance.
+	 * @param tradingData
+	 *            the day's trading price action.
 	 */
 	void update( Brokerage broker, CashAccount cashAccount, TradingDayPrices tradingData );
 
 	/**
 	 * Adds a listener interested in calculator events.
 	 * 
-	 * @param listener will receive notification ReturnOnInvestment events.
+	 * @param listener
+	 *            will receive notification ReturnOnInvestment events.
 	 */
 	void addListener( final ReturnOnInvestmentEventListener listener );
 }

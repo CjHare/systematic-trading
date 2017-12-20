@@ -40,9 +40,12 @@ public interface BrokerageTransactionFeeStructure {
 	/**
 	 * Calculates the brokerage fee based on the given details.
 	 * 
-	 * @param tradeValue sum of the equities being purchased.
-	 * @param type different classes may attract alternative pricing structures.
-	 * @param tradesThisMonth the number of trades, inclusive of this one per the calendar month
+	 * @param tradeValue
+	 *            sum of the equities being purchased.
+	 * @param type
+	 *            different classes may attract alternative pricing structures.
+	 * @param tradesThisMonth
+	 *            the number of trades, inclusive of this one per the calendar month
 	 *            e.g. if this is the tenth trade this month the value is ten.
 	 * @return transaction (brokerage) cost.
 	 */

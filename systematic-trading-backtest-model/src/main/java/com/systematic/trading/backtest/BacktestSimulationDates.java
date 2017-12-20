@@ -40,8 +40,10 @@ public class BacktestSimulationDates {
 	private final LocalDate endDate;
 
 	/**
-	 * @param startDate must be before or on the end date.
-	 * @param endDate must be on or after the start date.
+	 * @param startDate
+	 *            must be before or on the end date.
+	 * @param endDate
+	 *            must be on or after the start date.
 	 */
 	public BacktestSimulationDates( final LocalDate startDate, final LocalDate endDate )
 	        throws InvalidSimulationDatesException {

@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -35,7 +35,7 @@ import java.util.List;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 
 /**
- * Merges consecutive requests to create the largest (and fewest possible) requests. 
+ * Merges consecutive requests to create the largest (and fewest possible) requests.
  * 
  * @author CJ Hare
  */
@@ -44,8 +44,10 @@ public interface HistoryRetrievalRequestMerger {
 	/**
 	 * Merges the given requests into the fewest possible number.
 	 * 
-	 * @param requests unordered, disjointed requests.
-	 * @param maximum large period of consecutive request time i.e. largest time period for a merged request.
+	 * @param requests
+	 *            unordered, disjointed requests.
+	 * @param maximum
+	 *            large period of consecutive request time i.e. largest time period for a merged request.
 	 * @return merged requests,
 	 */
 	List<HistoryRetrievalRequest> merge( List<HistoryRetrievalRequest> requests, final Period maximum );

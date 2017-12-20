@@ -41,7 +41,8 @@ public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrder
 	private final OrderEvent orderEvent;
 
 	/**
-	 * @param originalOrderType order prior to being deleted.
+	 * @param originalOrderType
+	 *            order prior to being deleted.
 	 */
 	public EquityOrderDeletedDueToInsufficentFundsEvent( final OrderEvent order ) {
 

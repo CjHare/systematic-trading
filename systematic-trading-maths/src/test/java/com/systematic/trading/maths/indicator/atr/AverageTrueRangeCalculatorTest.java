@@ -147,7 +147,7 @@ public class AverageTrueRangeCalculatorTest {
 	}
 
 	@Test
-	/** 
+	/**
 	 * QQQQ (Powershares QQQ Trust), from 1 April 2010 - 13 May 2010
 	 */
 	public void atrExample() {
@@ -243,9 +243,9 @@ public class AverageTrueRangeCalculatorTest {
 	 * Prices starting on LocalDate.of(2017, 7, 10).
 	 * 
 	 * Three cases for ATR:
-	 *  - Biggest swing is between today's high & low
-	 *	- Biggest swing is between the highest of today and yesterday's close
-	 *	- Biggest swing is between the low of today and yesterday's close
+	 * - Biggest swing is between today's high & low
+	 * - Biggest swing is between the highest of today and yesterday's close
+	 * - Biggest swing is between the low of today and yesterday's close
 	 */
 	private TradingDayPrices[] createThreeTypesOfVolatility() {
 
@@ -259,7 +259,7 @@ public class AverageTrueRangeCalculatorTest {
 		return createPrices(dates, high, low, close);
 	}
 
-	/** 
+	/**
 	 * QQQQ (Powershares QQQ Trust), from 1 April 2010 - 13 May 2010
 	 */
 	private TradingDayPrices[] createExampleAverageTrueRange() {

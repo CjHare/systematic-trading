@@ -31,7 +31,7 @@ import com.systematic.trading.signal.IndicatorId;
  * Configuration for the SMA signal calculator.
  * 
  * Five days of gradient is chosen to support being used with the 1-4 days confirmation.
- *  
+ * 
  * @author CJ Hare
  */
 public class EmaUptrendConfiguration extends IndicatorConfigurationBase {

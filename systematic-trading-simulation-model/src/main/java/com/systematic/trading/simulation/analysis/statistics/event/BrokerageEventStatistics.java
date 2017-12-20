@@ -41,7 +41,8 @@ public interface BrokerageEventStatistics {
 	/**
 	 * Brokerage event has occurred and merits recording.
 	 * 
-	 * @param event brokerage related event warranting attention of the statistics.
+	 * @param event
+	 *            brokerage related event warranting attention of the statistics.
 	 */
 	void event( BrokerageEvent event );
 

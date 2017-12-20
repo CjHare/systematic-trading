@@ -31,9 +31,9 @@ package com.systematic.trading.model;
  * @author CJ Hare
  */
 public enum EquityClass {
-    //TODO move this into a package related to the broker (as that's who uses it)
+    // TODO move this into a package related to the broker (as that's who uses it)
 
-    //TODO QuityClass is related to the brokerage, keep the enum, but inject the equity with the ticker symbol
+    // TODO QuityClass is related to the brokerage, keep the enum, but inject the equity with the ticker symbol
 	BOND,
 	CFD,
 	FUTURE,

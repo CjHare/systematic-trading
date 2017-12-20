@@ -42,9 +42,12 @@ public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
 	/**
 	 * Records a change in the state of the return on investment
 	 * 
-	 * @param percentageChange amount the net worth has relatively changed by in the given time.
-	 * @param exclusiveStartDate the beginning of the elapsed time the percentage change occurred.
-	 * @param inclusiveEndDate the last day of the elapsed time where the percentage change
+	 * @param percentageChange
+	 *            amount the net worth has relatively changed by in the given time.
+	 * @param exclusiveStartDate
+	 *            the beginning of the elapsed time the percentage change occurred.
+	 * @param inclusiveEndDate
+	 *            the last day of the elapsed time where the percentage change
 	 *            occurred.
 	 */
 	public ReturnOnInvestmentEventImpl( final BigDecimal percentageChange, final LocalDate exclusiveStartDate,

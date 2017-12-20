@@ -58,7 +58,8 @@ public class FileMultithreading {
 	/**
 	 * Asynchronous writing operation.
 	 * 
-	 * @param content gets queued for writing to the output file.
+	 * @param content
+	 *            gets queued for writing to the output file.
 	 */
 	public void write( final String content ) {
 

@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -44,7 +44,8 @@ public interface ResponseColumns {
 	/**
 	 * Whether the columns are appropriate for parsing by this instance.
 	 * 
-	 * @param columns the Quandl column names for the corresponding data.
+	 * @param columns
+	 *            the Quandl column names for the corresponding data.
 	 * @return <code>true</code> when the columns can be parsed, <code>false</code> otherwise.
 	 */
 	boolean canParse( List<QuandlColumnName> columns );
@@ -52,45 +53,55 @@ public interface ResponseColumns {
 	/**
 	 * Column index for the trading day 'date' value.
 	 * 
-	 * @param columns the Quandl column names for the corresponding data to find the date.
+	 * @param columns
+	 *            the Quandl column names for the corresponding data to find the date.
 	 * @return column index for the date.
-	 * @throws CannotRetrieveDataException date column is missing from the given columns.
+	 * @throws CannotRetrieveDataException
+	 *             date column is missing from the given columns.
 	 */
 	int dateIndex( List<QuandlColumnName> columns ) throws CannotRetrieveDataException;
 
 	/**
 	 * Column index for the trading day 'open' price.
 	 * 
-	 * @param columns the Quandl column names for the corresponding data to find the open price.
+	 * @param columns
+	 *            the Quandl column names for the corresponding data to find the open price.
 	 * @return column index for the open price.
-	 * @throws CannotRetrieveDataException open price column is missing from the given columns.
+	 * @throws CannotRetrieveDataException
+	 *             open price column is missing from the given columns.
 	 */
 	int openPriceIndex( List<QuandlColumnName> columns ) throws CannotRetrieveDataException;
 
 	/**
 	 * Column index for the trading day 'high' price.
 	 * 
-	 * @param columns the Quandl column names for the corresponding data to find the high price.
+	 * @param columns
+	 *            the Quandl column names for the corresponding data to find the high price.
 	 * @return column index for the high price.
-	 * @throws CannotRetrieveDataException high price column is missing from the given columns.
+	 * @throws CannotRetrieveDataException
+	 *             high price column is missing from the given columns.
 	 */
 	int highPriceIndex( List<QuandlColumnName> columns ) throws CannotRetrieveDataException;
 
 	/**
 	 * Column index for the trading day 'low' price.
 	 * 
-	 * @param columns the Quandl column names for the corresponding data to find the low price.
+	 * @param columns
+	 *            the Quandl column names for the corresponding data to find the low price.
 	 * @return column index for the low price.
-	 * @throws CannotRetrieveDataException low price column is missing from the given columns.
+	 * @throws CannotRetrieveDataException
+	 *             low price column is missing from the given columns.
 	 */
 	int lowPriceIndex( List<QuandlColumnName> columns ) throws CannotRetrieveDataException;
 
 	/**
 	 * Column index for the trading day 'close' price.
 	 * 
-	 * @param columns the Quandl column names for the corresponding data to find the close price.
+	 * @param columns
+	 *            the Quandl column names for the corresponding data to find the close price.
 	 * @return column index for the close price.
-	 * @throws CannotRetrieveDataException close price column is missing from the given columns.
+	 * @throws CannotRetrieveDataException
+	 *             close price column is missing from the given columns.
 	 */
 	int closePriceIndex( List<QuandlColumnName> columns ) throws CannotRetrieveDataException;
 }

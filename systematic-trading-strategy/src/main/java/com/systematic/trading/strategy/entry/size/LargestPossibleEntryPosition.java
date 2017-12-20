@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -37,7 +37,7 @@ import com.systematic.trading.simulation.cash.CashAccount;
 /**
  * The largest possible entry size that is limited by a maximum and minimum bounds.
  * 
- * There will only be an entry when a size above the minimum can be achieved, 
+ * There will only be an entry when a size above the minimum can be achieved,
  * with the cap being the maximum.
  * 
  * @author CJ Hare
@@ -51,8 +51,10 @@ public class LargestPossibleEntryPosition implements EntrySize {
 	private final EntryPositionBounds maximum;
 
 	/**
-	 * @param minimum lower cap on the opening position size.
-	 * @param maximum upper cap on the opening position size.
+	 * @param minimum
+	 *            lower cap on the opening position size.
+	 * @param maximum
+	 *            upper cap on the opening position size.
 	 */
 	public LargestPossibleEntryPosition( final EntryPositionBounds minimum, final EntryPositionBounds maximum ) {
 		this.minimum = minimum;

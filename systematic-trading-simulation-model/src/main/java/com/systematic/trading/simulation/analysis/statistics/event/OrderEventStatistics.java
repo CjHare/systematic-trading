@@ -37,7 +37,8 @@ public interface OrderEventStatistics {
 	/**
 	 * Order event has occurred and merits recording.
 	 * 
-	 * @param event order related event warranting attention of the statistics.
+	 * @param event
+	 *            order related event warranting attention of the statistics.
 	 */
 	void event( OrderEvent event );
 

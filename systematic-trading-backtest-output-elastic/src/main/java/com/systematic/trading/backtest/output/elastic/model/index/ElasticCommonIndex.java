@@ -49,7 +49,7 @@ import com.systematic.trading.backtest.output.elastic.resource.ElasticBulkApiMet
 import com.systematic.trading.backtest.output.elastic.resource.ElasticIndexSettingsRequestResource;
 
 /**
- * Behaviour  common for indexes put into Elastic Search
+ * Behaviour common for indexes put into Elastic Search
  * 
  * @author CJ Hare
  */
@@ -64,10 +64,10 @@ public abstract class ElasticCommonIndex {
 	/** Default value for the refresh interval. */
 	private static final String INDEX_SETTING_REFRESH_DEFAULT = "1s";
 
-	/** Access to Elastic Search endpoint.*/
+	/** Access to Elastic Search endpoint. */
 	private final ElasticDao dao;
 
-	/** Number of requests that are grouped together for the Bulk API.*/
+	/** Number of requests that are grouped together for the Bulk API. */
 	private final int bulkApiQueueSize;
 
 	/** Storage for the meta and source requests. */
@@ -147,7 +147,7 @@ public abstract class ElasticCommonIndex {
 
 	protected ElasticBulkApiMetaDataRequestResource createBulkApiMeta( final BacktestBatchId id ) {
 
-		//TODO put this into a builder & move ACTION_CREATE_GENERATE_DOCUMENT_ID out of this class
+		// TODO put this into a builder & move ACTION_CREATE_GENERATE_DOCUMENT_ID out of this class
 		return new ElasticBulkApiMetaDataRequestResource(ACTION_CREATE_GENERATE_DOCUMENT_ID, null, id.name(), null);
 	}
 
@@ -181,7 +181,7 @@ public abstract class ElasticCommonIndex {
 
 		final Response response = dao.mapping(indexName(), id);
 
-		//TODO mapping shouls be 200 & empty JSON - test with data present - currently exceptional
+		// TODO mapping shouls be 200 & empty JSON - test with data present - currently exceptional
 
 		return response.getStatus() != 200
 		        || (response.getStatus() == 200 && response.readEntity(ElasticEmptyIndexMapping.class) != null);

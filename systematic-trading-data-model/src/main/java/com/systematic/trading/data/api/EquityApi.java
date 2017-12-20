@@ -41,13 +41,19 @@ public interface EquityApi {
 
 	/**
 	 * 
-	 * @param equityDataset identifier for the source to retrieve the ticker symbol from.
-	 * @param symbol ticker symbol for the stock to retrieve data on.
-	 * @param inclusiveStartDate the inclusive start date for the data points.
-	 * @param exclusiveEndDate the exclusive end date for the data points.
-	 * @param activeConnectionCount used to throttle the number of connection to abide by API constraints.
+	 * @param equityDataset
+	 *            identifier for the source to retrieve the ticker symbol from.
+	 * @param symbol
+	 *            ticker symbol for the stock to retrieve data on.
+	 * @param inclusiveStartDate
+	 *            the inclusive start date for the data points.
+	 * @param exclusiveEndDate
+	 *            the exclusive end date for the data points.
+	 * @param activeConnectionCount
+	 *            used to throttle the number of connection to abide by API constraints.
 	 * @return the given data parsed into domain objects.
-	 * @throws CannotRetrieveDataException problem encountered in retrieving the stock data.
+	 * @throws CannotRetrieveDataException
+	 *             problem encountered in retrieving the stock data.
 	 */
 	TradingDayPrices[] stockData( String equityDataset, String symbol, LocalDate inclusiveStartDate,
 	        LocalDate exclusiveEndDate, BlockingEventCount activeConnectionCount ) throws CannotRetrieveDataException;
@@ -69,7 +75,7 @@ public interface EquityApi {
 	/**
 	 * Maximum number of seconds that a retrieval will take.
 	 * 
-	 * @return maximum time allowed for a call, worst scenario (i.e. full retries). 
+	 * @return maximum time allowed for a call, worst scenario (i.e. full retries).
 	 */
 	int maximumRetrievalTimeSeconds();
 

@@ -38,9 +38,12 @@ public interface InterestRate {
 	/**
 	 * Calculate the interest accrued, with no accumulation.
 	 * 
-	 * @param funds amount the interest is calculated on.
-	 * @param daysOfInterest number of days the interest is earned, typically under a month.
-	 * @param isLeapYear whether the year the interest is calculated is a leap year.
+	 * @param funds
+	 *            amount the interest is calculated on.
+	 * @param daysOfInterest
+	 *            number of days the interest is earned, typically under a month.
+	 * @param isLeapYear
+	 *            whether the year the interest is calculated is a leap year.
 	 * @return amount of interest to award for the given time.
 	 */
 	BigDecimal interest( BigDecimal funds, int daysOfInterest, boolean isLeapYear );

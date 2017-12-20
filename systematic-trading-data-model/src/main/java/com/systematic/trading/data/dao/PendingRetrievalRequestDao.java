@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -43,14 +43,16 @@ public interface PendingRetrievalRequestDao {
 	/**
 	 * Creates the pending retrieval requests.
 	 * 
-	 * @param requests history retrieval requests to persist.
+	 * @param requests
+	 *            history retrieval requests to persist.
 	 */
 	void create( List<HistoryRetrievalRequest> requests );
 
 	/**
 	 * Retrieve the pending history requests.
 	 * 
-	 * @param tickerSymbol symbol of the equity who history to retrieve.
+	 * @param tickerSymbol
+	 *            symbol of the equity who history to retrieve.
 	 * @return pending history retrieval requests.
 	 */
 	List<HistoryRetrievalRequest> requests( String tickerSymbol );
@@ -58,7 +60,8 @@ public interface PendingRetrievalRequestDao {
 	/**
 	 * Remove a pending history retrieval request.
 	 * 
-	 * @param request will be removed from the pending list.
+	 * @param request
+	 *            will be removed from the pending list.
 	 */
 	void delete( HistoryRetrievalRequest request );
 }

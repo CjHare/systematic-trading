@@ -41,9 +41,9 @@ public class IndicatorId {
 	public IndicatorId( final String name ) {
 		this.name = name;
 
-		//TODO validate name != null or empty string
+		// TODO validate name != null or empty string
 
-		//TODO implement a static set flyweight style pattern, enforce uniqueness on create()
+		// TODO implement a static set flyweight style pattern, enforce uniqueness on create()
 	}
 
 	public String getName() {

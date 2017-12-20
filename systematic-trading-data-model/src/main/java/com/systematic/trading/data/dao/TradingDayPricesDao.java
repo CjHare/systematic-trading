@@ -39,7 +39,8 @@ public interface TradingDayPricesDao {
 	/**
 	 * Inserts a new DataPoint into it's appropriate ticker symbol table.
 	 * 
-	 * @param data to create.
+	 * @param data
+	 *            to create.
 	 * @return The number of entities updated or deleted.
 	 */
 	void create( TradingDayPrices data );
@@ -47,8 +48,10 @@ public interface TradingDayPricesDao {
 	/**
 	 * Inserts DataPoint into the appropriate ticker symbol table.
 	 * 
-	 * @param data to create.
-	 * @param session transaction to perform he insert query within.
+	 * @param data
+	 *            to create.
+	 * @param session
+	 *            transaction to perform he insert query within.
 	 * @return The number of entities updated or deleted.
 	 */
 	void create( TradingDayPrices[] data );
@@ -56,7 +59,8 @@ public interface TradingDayPricesDao {
 	/**
 	 * If not already present creates the appropriate data point table.
 	 * 
-	 * @param tickerSymbol to create.
+	 * @param tickerSymbol
+	 *            to create.
 	 * @return The number of entities updated or deleted.
 	 */
 	void createTableIfAbsent( String tickerSymbol );
@@ -64,9 +68,12 @@ public interface TradingDayPricesDao {
 	/**
 	 * Retrieves the set of data points within the given dates.
 	 * 
-	 * @param tickerSymbol symbol of the equity to retrieve.
-	 * @param startDate inclusive beginning date for the data range.
-	 * @param endDate inclusive end date for the data range.
+	 * @param tickerSymbol
+	 *            symbol of the equity to retrieve.
+	 * @param startDate
+	 *            inclusive beginning date for the data range.
+	 * @param endDate
+	 *            inclusive end date for the data range.
 	 * @return the set of trading data points within the given dates.
 	 */
 	TradingDayPrices[] prices( String tickerSymbol, LocalDate startDate, LocalDate endDate );
@@ -74,9 +81,12 @@ public interface TradingDayPricesDao {
 	/**
 	 * Counts the number of data points within the given range
 	 * 
-	 * @param tickerSymbol symbol of the equity to retrieve.
-	 * @param startDate inclusive beginning date for the data range.
-	 * @param endDate inclusive end date for the data range.
+	 * @param tickerSymbol
+	 *            symbol of the equity to retrieve.
+	 * @param startDate
+	 *            inclusive beginning date for the data range.
+	 * @param endDate
+	 *            inclusive end date for the data range.
 	 * @return the number of trading data points within the given dates.
 	 */
 	long count( String tickerSymbol, LocalDate startDate, LocalDate endDate );
@@ -84,7 +94,8 @@ public interface TradingDayPricesDao {
 	/**
 	 * Retrieves the most recent data point since the given date.
 	 * 
-	 * @param tickerSymbol symbol of the equity to retrieve.
+	 * @param tickerSymbol
+	 *            symbol of the equity to retrieve.
 	 * @return the most trading data point since the given date, or <code>null</code> if there are
 	 *         none or the table does not exist.
 	 */

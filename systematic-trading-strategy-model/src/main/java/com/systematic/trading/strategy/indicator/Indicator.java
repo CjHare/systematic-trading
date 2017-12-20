@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -38,10 +38,10 @@ import com.systematic.trading.signal.model.DatedSignal;
  * An indicator interprets price data and potentially generates date based signals.
  * 
  * Indicator := ATR
- * 				EMA
- * 				MACD
- * 				SMA
- * 				RSI
+ * EMA
+ * MACD
+ * SMA
+ * RSI
  * 
  * @author CJ Hare
  */
@@ -50,7 +50,8 @@ public interface Indicator {
 	/**
 	 * Given a set of trading price data, performs appropriate analysis to generate signals.
 	 * 
-	 * @param data trading day data.
+	 * @param data
+	 *            trading day data.
 	 * @return any signals generated over the given data.
 	 */
 	List<DatedSignal> analyse( TradingDayPrices[] data );

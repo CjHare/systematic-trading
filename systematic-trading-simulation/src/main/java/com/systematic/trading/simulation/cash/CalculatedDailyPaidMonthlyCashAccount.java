@@ -64,10 +64,14 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	private final List<CashEventListener> listeners = new ArrayList<>();
 
 	/**
-	 * @param rate calculated daily to the funds and paid monthly, cannot be <code>null</code>.
-	 * @param openingFunds starting balance for the account, cannot be <code>null</code>.
-	 * @param openingDate date to start calculating interest from, cannot be <code>null</code>.
-	 * @param mathContext math context defining the scale and precision to apply to operations.
+	 * @param rate
+	 *            calculated daily to the funds and paid monthly, cannot be <code>null</code>.
+	 * @param openingFunds
+	 *            starting balance for the account, cannot be <code>null</code>.
+	 * @param openingDate
+	 *            date to start calculating interest from, cannot be <code>null</code>.
+	 * @param mathContext
+	 *            math context defining the scale and precision to apply to operations.
 	 */
 	public CalculatedDailyPaidMonthlyCashAccount( final InterestRate rate, final BigDecimal openingFunds,
 	        final LocalDate openingDate, final MathContext mathContext ) {

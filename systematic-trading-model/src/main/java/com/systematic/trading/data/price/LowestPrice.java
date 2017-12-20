@@ -41,7 +41,8 @@ public class LowestPrice extends Price {
 	/**
 	 * Creates a lowest price from an underlying decimal value.
 	 * 
-	 * @param amount decimal to create as an lowest price, cannot be <code>null</code>.
+	 * @param amount
+	 *            decimal to create as an lowest price, cannot be <code>null</code>.
 	 * @return equivalent lowest price for the given decimal.
 	 */
 	public static LowestPrice valueOf( final BigDecimal amount ) {

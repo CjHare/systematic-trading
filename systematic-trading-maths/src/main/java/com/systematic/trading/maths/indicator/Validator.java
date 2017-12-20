@@ -37,29 +37,34 @@ public interface Validator {
 	/**
 	 * Verify the value meets the minimum expected.
 	 * 
-	 * @param minimum actual  must be larger then this value.
-	 * @param actual value being evaluated.
+	 * @param minimum
+	 *            actual must be larger then this value.
+	 * @param actual
+	 *            value being evaluated.
 	 */
 	void verifyGreaterThan( int minimum, int actual );
 
 	/**
 	 * Verifies the instance refers to an actual object, not the null reference.
 	 * 
-	 * @param instnace what is being verified as not null.
+	 * @param instnace
+	 *            what is being verified as not null.
 	 */
 	void verifyNotNull( Object instance );
 
 	/**
 	 * Verifies there are no <code>null</code> entries in the list.
 	 * 
-	 * @param values list of values to parse for the existence of <code>null</code>.
+	 * @param values
+	 *            list of values to parse for the existence of <code>null</code>.
 	 */
 	<T> void verifyZeroNullEntries( Collection<T> values );
 
 	/**
 	 * Verifies there are no <code>null</code> entries in the array.
 	 * 
-	 * @param values array of values to parse for the existence of <code>null</code>.
+	 * @param values
+	 *            array of values to parse for the existence of <code>null</code>.
 	 */
 	<T> void verifyZeroNullEntries( T[] values );
 
@@ -67,9 +72,11 @@ public interface Validator {
 	 * Verifies that there are the expected number of non <code>null</code> sequential entries in
 	 * the list.
 	 * 
-	 * @param values list of values to check for a run of non <code>null</code> entries of the
+	 * @param values
+	 *            list of values to check for a run of non <code>null</code> entries of the
 	 *            desired size.
-	 * @param numberOfValues minimum number of values expected.
+	 * @param numberOfValues
+	 *            minimum number of values expected.
 	 */
 	<T> void verifyEnoughValues( Collection<T> values, int numberOfValues );
 
@@ -77,9 +84,11 @@ public interface Validator {
 	 * Verifies that there are the expected number of non <code>null</code> sequential entries in
 	 * the array.
 	 * 
-	 * @param values array of values to check for a run of non <code>null</code> entries of the
+	 * @param values
+	 *            array of values to check for a run of non <code>null</code> entries of the
 	 *            desired size.
-	 * @param numberOfValues minimum number of values expected.
+	 * @param numberOfValues
+	 *            minimum number of values expected.
 	 */
 	<T> void verifyEnoughValues( T[] values, int numberOfValues );
 }

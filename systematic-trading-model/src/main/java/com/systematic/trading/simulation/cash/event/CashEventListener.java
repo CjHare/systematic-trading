@@ -36,7 +36,8 @@ public interface CashEventListener {
 	/**
 	 * Notification that an Cash Event has occurred.
 	 * 
-	 * @param event the type of event that the listener is interested.
+	 * @param event
+	 *            the type of event that the listener is interested.
 	 */
 	void event( CashEvent event );
 }

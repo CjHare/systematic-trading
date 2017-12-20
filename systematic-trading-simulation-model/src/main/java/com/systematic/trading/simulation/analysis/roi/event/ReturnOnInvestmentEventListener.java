@@ -36,7 +36,8 @@ public interface ReturnOnInvestmentEventListener {
 	/**
 	 * A Return On Investment event has occurred.
 	 * 
-	 * @param event the type of event that the listener is interested.
+	 * @param event
+	 *            the type of event that the listener is interested.
 	 */
 	void event( ReturnOnInvestmentEvent event );
 }

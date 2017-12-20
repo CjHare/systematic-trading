@@ -42,9 +42,12 @@ public interface BrokerageTransaction {
 	/**
 	 * Calculates the total cost of performing a purchase, no transaction is performed.
 	 * 
-	 * @param price mean price paid for the equity.
-	 * @param volume number of equities being purchased.
-	 * @param tradeDate date of execution.
+	 * @param price
+	 *            mean price paid for the equity.
+	 * @param volume
+	 *            number of equities being purchased.
+	 * @param tradeDate
+	 *            date of execution.
 	 * @return total cost of the trade that would deducted from the cash account for the transaction.
 	 */
 	BigDecimal cost( Price price, EquityOrderVolume volume, LocalDate tradeDate );
@@ -52,9 +55,12 @@ public interface BrokerageTransaction {
 	/**
 	 * Performs a purchase, applying the corresponding brokers fees.
 	 * 
-	 * @param price mean price paid for the equity.
-	 * @param volume number of equities being purchased.
-	 * @param tradeDate date of execution.
+	 * @param price
+	 *            mean price paid for the equity.
+	 * @param volume
+	 *            number of equities being purchased.
+	 * @param tradeDate
+	 *            date of execution.
 	 * @return total cost of the trade to be deducted from the cash account.
 	 */
 	void buy( Price price, EquityOrderVolume volume, LocalDate tradeDate );
@@ -62,10 +68,14 @@ public interface BrokerageTransaction {
 	/**
 	 * Performs a liquidation, applying the corresponding brokers fees.
 	 * 
-	 * @param price mean price paid for the equity.
-	 * @param volume number of equities being sold.
-	 * @param tradeDate date of execution.
-	 * @throws InsufficientEquitiesException encountered when there are insufficient equities are
+	 * @param price
+	 *            mean price paid for the equity.
+	 * @param volume
+	 *            number of equities being sold.
+	 * @param tradeDate
+	 *            date of execution.
+	 * @throws InsufficientEquitiesException
+	 *             encountered when there are insufficient equities are
 	 *             held.
 	 * @return total funds acquired from the liquidation.
 	 */

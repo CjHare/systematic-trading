@@ -57,7 +57,7 @@ public class Backtest {
 	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
 
-	/** Local source of the trading prices.*/
+	/** Local source of the trading prices. */
 	private final DataService dataService;
 
 	public Backtest( final DataService dataService, final DataServiceUpdater dataServiceUpdater ) {
@@ -104,7 +104,7 @@ public class Backtest {
 
 		final LocalDate retrievalStartDate = startDate.withDayOfMonth(1);
 
-		// Retrieve and cache data range from remote data source		
+		// Retrieve and cache data range from remote data source
 		dataServiceUpdater.get(equityDataset, equity.getTickerSymbol(), retrievalStartDate, endDate);
 
 		// Retrieve from local cache the desired data range
