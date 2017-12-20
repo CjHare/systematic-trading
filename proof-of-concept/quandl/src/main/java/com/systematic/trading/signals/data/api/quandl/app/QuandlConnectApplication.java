@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -47,12 +47,13 @@ import org.glassfish.jersey.client.ClientConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.systematic.trading.signals.data.api.quandl.model.QuandlResponseResource;
+import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
 
 /**
  * Application for checking the connection and Jackson data structures used.
  * 
- * The systematic-trading-data-api-quandl\configuration needs to be added to the classpath, equivalent to adding the JVM option -cp "systematic-trading-data-api-quandl\configuration".
+ * The systematic-trading-data-api-quandl\configuration needs to be added to the classpath,
+ * equivalent to adding the JVM option -cp "systematic-trading-data-api-quandl\configuration".
  * 
  * @author CJ Hare
  */
@@ -66,6 +67,7 @@ public class QuandlConnectApplication {
 	private static final String QUANDL_ENDPOINT_URL = "https://www.quandl.com";
 
 	public static void main( final String[] args ) throws JsonProcessingException {
+
 		new QuandlConnectApplication().get();
 
 		System.out.println("No AssertException or other RuntimeExceptions means the test connection succeeded!");
@@ -83,32 +85,35 @@ public class QuandlConnectApplication {
 	}
 
 	public void get() throws JsonProcessingException {
-		final WebTarget url = createUrl();
-		final QuandlResponseResource inflatedJson = callQuandl(url);
+
+		final WebTarget url = url();
+		final QuandlResultSet inflatedJson = quandl(url);
 		verifyResource(inflatedJson);
 	}
 
 	/**
 	 * Invoke the Quandl service, parse the returned JSON as a QuandlResponseResource.
 	 */
-	private QuandlResponseResource callQuandl( final WebTarget url ) {
-		return url.request(MediaType.APPLICATION_JSON).get(QuandlResponseResource.class);
+	private QuandlResultSet quandl( final WebTarget url ) {
+
+		return url.request(MediaType.APPLICATION_JSON).get(QuandlResultSet.class);
 	}
 
 	/**
 	 * Constructs the URL for the query of AAPL end of day prices between 15 Jan 2015 - 1 Apr 2015.
 	 */
-	private WebTarget createUrl() {
+	private WebTarget url() {
+
 		final String path = "api/v3/datatables/WIKI/PRICES.json";
 		return root.path(path).queryParam("qopts.columns", "date,open,high,low,close")
 		        .queryParam("date.gte", "20150115").queryParam("date.lt", "20150401").queryParam("ticker", "AAPL")
-		        .queryParam("api_key", getQuandlApiKey());
+		        .queryParam("api_key", quandlApiKey());
 	}
 
 	/**
 	 * Retrieve the user specific API key for accessing Quandl.
 	 */
-	private String getQuandlApiKey() {
+	private String quandlApiKey() {
 
 		try {
 			final URL keyFile = getClass().getResource("/quandl.key");
@@ -134,7 +139,8 @@ public class QuandlConnectApplication {
 	/**
 	 * Verifies the parsed JSON object has the expected structure.
 	 */
-	private void verifyResource( final QuandlResponseResource inflatedJson ) throws JsonProcessingException {
+	private void verifyResource( final QuandlResultSet inflatedJson ) throws JsonProcessingException {
+
 		final String actualJson = new ObjectMapper().writeValueAsString(inflatedJson);
 
 		if (!StringUtils.equals(EXPECTED_JSON, actualJson)) {

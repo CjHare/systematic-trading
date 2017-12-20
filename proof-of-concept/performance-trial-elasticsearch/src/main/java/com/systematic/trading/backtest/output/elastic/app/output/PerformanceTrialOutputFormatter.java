@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -46,31 +46,38 @@ public class PerformanceTrialOutputFormatter {
 	private final int SECONDS_PER_MINUTE = 60;
 
 	public String format( final String trialId, final PerformanceTrialSummary summary ) {
-		return String.format("%s, %d, %s, %.2f, %s", trialId, summary.getNumberOfRecords(),
-		        format(summary.getElapsed()), summary.getRecordsPerSecond(), System.lineSeparator());
+
+		return String.format("%s, %d, %s, %.2f, %s", trialId, summary.numberOfRecords(), format(summary.elapsed()),
+		        summary.recordsPerSecond(), System.lineSeparator());
 	}
 
 	/**
-	 * @param duration in the format of: hours:minutes:seconds
+	 * @param duration
+	 *            in the format of: hours:minutes:seconds
 	 */
 	private String format( final Duration duration ) {
-		return String.format("%s%d:%02d:%02d", isNegative(duration) ? NEGATIVE_SIGN : EMPTY_STRING, getHours(duration),
-		        getMinutes(duration), getSeconds(duration));
+
+		return String.format("%s%d:%02d:%02d", isNegative(duration) ? NEGATIVE_SIGN : EMPTY_STRING, hours(duration),
+		        minutes(duration), seconds(duration));
 	}
 
 	private boolean isNegative( final Duration duration ) {
+
 		return duration.getSeconds() < 0;
 	}
 
-	private long getHours( final Duration duration ) {
+	private long hours( final Duration duration ) {
+
 		return Math.abs(duration.getSeconds()) / SECONDS_PER_HOUR;
 	}
 
-	private long getMinutes( final Duration duration ) {
+	private long minutes( final Duration duration ) {
+
 		return (Math.abs(duration.getSeconds()) % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE;
 	}
 
-	private long getSeconds( final Duration duration ) {
+	private long seconds( final Duration duration ) {
+
 		return Math.abs(duration.getSeconds()) % SECONDS_PER_MINUTE;
 	}
 }

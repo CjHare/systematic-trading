@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -42,13 +42,16 @@ public class ElasticSearchConfigurationBuilder {
 	/** HTTP pay load size ~10KiB (10240 bytes - each created index entry is about 90 bytes). */
 	private static final int DEFAULT_BULK_API_BUCKET_SIZE = 1200;
 
-	/** 
-	 * The number of primary shards that an index should have, which defaults to 5. 
+	/**
+	 * The number of primary shards that an index should have, which defaults to 5.
 	 * This setting cannot be changed after index creation.
 	 */
 	private static final int DEFAULT_NUMBER_OF_SHARDS = 5;
 
-	/** The number of replica shards (copies) that each primary shard should have, which defaults to 1. */
+	/**
+	 * The number of replica shards (copies) that each primary shard should have, which defaults to
+	 * 1.
+	 */
 	private static final int DEFAULT_NUMBER_OF_REPLICAS = 1;
 
 	private String endpoint;
@@ -60,58 +63,70 @@ public class ElasticSearchConfigurationBuilder {
 	private boolean bulkApiMetaContainsType;
 
 	public ElasticSearchConfigurationBuilder withEndpoint( final String endpoint ) {
+
 		this.endpoint = endpoint;
 		return this;
 	}
 
 	public ElasticSearchConfigurationBuilder withShards( final int numberOfShards ) {
+
 		this.numberOfShards = numberOfShards;
 		return this;
 	}
 
 	public ElasticSearchConfigurationBuilder withReplicas( final int numberOfReplicas ) {
+
 		this.numberOfReplicas = numberOfReplicas;
 		return this;
 	}
 
 	public ElasticSearchConfigurationBuilder withDisableIndexRefresh( final boolean disableIndexRefresh ) {
+
 		this.disableIndexRefresh = disableIndexRefresh;
 		return this;
 	}
 
 	public ElasticSearchConfigurationBuilder withBulkApiBucketSize( final int bucketSize ) {
+
 		this.bulkApiBucketSize = bucketSize;
 		return this;
 	}
 
 	public ElasticSearchConfigurationBuilder withBulkApiMetaContainsIndex( final boolean bulkApiMetaContainsIndex ) {
+
 		this.bulkApiMetaContainsIndex = bulkApiMetaContainsIndex;
 		return this;
 	}
 
 	public ElasticSearchConfigurationBuilder withBulkApiMetaContainsType( final boolean bulkApiMetaContainsType ) {
+
 		this.bulkApiMetaContainsType = bulkApiMetaContainsType;
 		return this;
 	}
 
 	public ElasticSearchConfiguration build() {
-		return new ElasticSearchConfiguration(getEndpoint(), getNumberOfShards(), getNumberOfReplicas(),
-		        disableIndexRefresh, getBulkApiBucketSize(), bulkApiMetaContainsIndex, bulkApiMetaContainsType);
+
+		return new ElasticSearchConfiguration(endpoint(), numberOfShards(), numberOfReplicas(), disableIndexRefresh,
+		        bulkApiBucketSize(), bulkApiMetaContainsIndex, bulkApiMetaContainsType);
 	}
 
-	private String getEndpoint() {
+	private String endpoint() {
+
 		return endpoint == null ? ELASTIC_ENDPOINT_URL : endpoint;
 	}
 
-	private int getNumberOfShards() {
+	private int numberOfShards() {
+
 		return numberOfShards == null ? DEFAULT_NUMBER_OF_SHARDS : numberOfShards;
 	}
 
-	private int getNumberOfReplicas() {
+	private int numberOfReplicas() {
+
 		return numberOfReplicas == null ? DEFAULT_NUMBER_OF_REPLICAS : numberOfReplicas;
 	}
 
-	private int getBulkApiBucketSize() {
+	private int bulkApiBucketSize() {
+
 		return bulkApiBucketSize == null ? DEFAULT_BULK_API_BUCKET_SIZE : bulkApiBucketSize;
 	}
 }

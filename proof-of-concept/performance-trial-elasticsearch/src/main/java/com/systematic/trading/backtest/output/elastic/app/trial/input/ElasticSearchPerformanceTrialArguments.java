@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -46,27 +46,31 @@ public class ElasticSearchPerformanceTrialArguments {
 	/** Number of records to post to elastic search. */
 	private static final int DEFAULT_NUMBER_OF_RECORDS = 2000;
 
-	public static PerformanceTrialOutput getOutput( final String trialId, final String... args ) {
-		return hasOutputFileArgument(args)
-		        ? new PerformanceTrialFileAppenderOutput(geOutputFile(trialId, args), trialId)
-		        : new PerformanceTrialOverwriteFileOutput(geOutputFile(trialId, args), trialId);
+	public static PerformanceTrialOutput output( final String trialId, final String... args ) {
+
+		return hasOutputFileArgument(args) ? new PerformanceTrialFileAppenderOutput(outputFile(trialId, args), trialId)
+		        : new PerformanceTrialOverwriteFileOutput(outputFile(trialId, args), trialId);
 	}
 
-	public static int getNumberOfRecords( final String... args ) {
+	public static int numberOfRecords( final String... args ) {
+
 		return hasNumberOfRecordsArgument(args) ? Integer.parseInt(args[ARGUMENT_INDEX_NUMBER_OF_RECORDS])
 		        : DEFAULT_NUMBER_OF_RECORDS;
 	}
 
-	public static String geOutputFile( final String trialId, final String... args ) {
+	public static String outputFile( final String trialId, final String... args ) {
+
 		return hasOutputFileArgument(args) ? args[ARGUMENT_INDEX_OUTPUT_FILE]
 		        : String.format("results/%s.csv", trialId);
 	}
 
 	private static boolean hasOutputFileArgument( final String... args ) {
+
 		return args.length > ARGUMENT_INDEX_OUTPUT_FILE;
 	}
 
 	private static boolean hasNumberOfRecordsArgument( final String... args ) {
+
 		return args.length > ARGUMENT_INDEX_NUMBER_OF_RECORDS;
 	}
 }

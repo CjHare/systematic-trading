@@ -54,36 +54,49 @@ public class ElasticPostEventResponseResource {
 		this.type = type;
 	}
 
-	public String getCreated() {
+	@JsonProperty("created")
+	public String created() {
+
 		return created;
 	}
 
-	public String getId() {
+	@JsonProperty("_id")
+	public String id() {
+
 		return id;
 	}
 
-	public String getIndex() {
+	@JsonProperty("_index")
+	public String index() {
+
 		return index;
 	}
 
-	public String getResult() {
+	@JsonProperty("result")
+	public String result() {
+
 		return result;
 	}
 
-	public String getType() {
+	@JsonProperty("_type")
+	public String type() {
+
 		return type;
 	}
 
 	public boolean isCreated() {
+
 		return "true".equals(created);
 	}
 
 	public boolean isResultCreated() {
+
 		return "created".equals(result);
 	}
 
 	@Override
 	public String toString() {
+
 		final StringBuilder out = new StringBuilder("ElasticPostEventResponse [");
 		out.append("created=");
 		out.append(created);

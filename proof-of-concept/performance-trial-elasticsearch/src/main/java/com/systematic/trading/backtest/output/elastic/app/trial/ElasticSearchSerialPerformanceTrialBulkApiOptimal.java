@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -38,24 +38,24 @@ import com.systematic.trading.exception.ServiceException;
  * Stand alone application for clocking the time in performing posting of records to Elastic Search.
  * 
  * Investigating:
- *   Performance for optimal configuration
- *   20 KiB of requests to the bulk API.
- *   Disabling Elastic index refreshing during update.
- *   Off-loading the Elastic Search call to a queue for a multiple threads.
- *   No Replicas.
+ * Performance for optimal configuration
+ * 20 KiB of requests to the bulk API.
+ * Disabling Elastic index refreshing during update.
+ * Off-loading the Elastic Search call to a queue for a multiple threads.
+ * No Replicas.
  * 
- *  Trial Configuration:
- *    1,000 records
- *    Serial execution
- *    Single record API
+ * Trial Configuration:
+ * 1,000 records
+ * Serial execution
+ * Single record API
  * 
- *  Elastic Index Configuration (default):
- *    5 Shards
- *    1 Replica
- *   
+ * Elastic Index Configuration (default):
+ * 5 Shards
+ * 1 Replica
+ * 
  * Optional input:
- *   args[0] == number of records
- *   args[0] == output file
+ * args[0] == number of records
+ * args[0] == output file
  * 
  * @author CJ Hare
  */
@@ -70,9 +70,10 @@ public class ElasticSearchSerialPerformanceTrialBulkApiOptimal {
 	private static final int BUCKET_SIZE = 2400;
 
 	public static void main( final String... args ) throws ServiceException {
-		ElasticSearchPerformanceTrialArguments.getOutput(TRIAL_ID, args)
+
+		ElasticSearchPerformanceTrialArguments.output(TRIAL_ID, args)
 		        .display(new ParallelBulkApiPerformanceTrial(
-		                ElasticSearchPerformanceTrialArguments.getNumberOfRecords(args), NUMBER_OF_THREADS,
+		                ElasticSearchPerformanceTrialArguments.numberOfRecords(args), NUMBER_OF_THREADS,
 		                new ElasticSearchConfigurationBuilder().withBulkApiBucketSize(BUCKET_SIZE)
 		                        .withDisableIndexRefresh(true).withReplicas(0).build()).execute());
 	}

@@ -30,12 +30,12 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.systematic.trading.backtest.output.elastic.app.PerformanceTrialFields;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Resource for an brokerage event to send to Elastic search. 
+ * Resource for an brokerage event to send to Elastic search.
  * 
  * @author CJ Hare
  */
@@ -53,18 +53,21 @@ public class ElasticSearchPerformanceTrialRequestResource {
 	}
 
 	@JsonProperty(PerformanceTrialFields.TEXT_FIELD_NAME)
-	public String getText() {
+	public String text() {
+
 		return text;
 	}
 
 	@JsonProperty(PerformanceTrialFields.FLOAT_FIELD_NAME)
-	public float getValue() {
+	public float value() {
+
 		return value;
 	}
 
 	@JsonProperty(PerformanceTrialFields.DATE_FIELD_NAME)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
-	public LocalDate getDate() {
+	public LocalDate date() {
+
 		return date;
 	}
 }

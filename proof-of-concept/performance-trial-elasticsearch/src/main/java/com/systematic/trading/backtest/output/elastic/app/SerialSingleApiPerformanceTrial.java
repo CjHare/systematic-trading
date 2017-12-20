@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -34,7 +34,8 @@ import org.apache.commons.lang3.time.StopWatch;
 import com.systematic.trading.backtest.output.elastic.app.configuration.ElasticSearchConfiguration;
 
 /**
- * Performance trial with each call to elastic search being performed one after the other (serially).
+ * Performance trial with each call to elastic search being performed one after the other
+ * (serially).
  * 
  * @author CJ Hare
  */
@@ -45,8 +46,9 @@ public class SerialSingleApiPerformanceTrial extends PerformanceTrial {
 	}
 
 	protected StopWatch sendData() {
-		final int numberOfRecords = getNumberOfRecords();
-		final ElasticSearchFacade elastic = getFacade();
+
+		final int numberOfRecords = numberOfRecords();
+		final ElasticSearchFacade elastic = facade();
 
 		final StopWatch timer = new StopWatch();
 		timer.start();

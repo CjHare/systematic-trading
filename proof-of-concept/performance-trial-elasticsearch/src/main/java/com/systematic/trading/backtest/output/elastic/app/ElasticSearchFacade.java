@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -69,7 +69,8 @@ import com.systematic.trading.backtest.output.elastic.serialize.NdjsonListSerial
 /**
  * Facade to Elastic Search, abstracting the index and mappings.
  * 
- * Facilitates posting to a single index with mapping, with a text, float and date field, mirroring the structure 
+ * Facilitates posting to a single index with mapping, with a text, float and date field, mirroring
+ * the structure
  * and field types that will be used for a back test run.
  * 
  * @author CJ Hare
@@ -97,7 +98,7 @@ public class ElasticSearchFacade {
 		jsonProvider.setMapper(jsonMapper);
 		final ClientConfig jsonConfig = new ClientConfig(jsonProvider);
 
-		this.root = ClientBuilder.newClient(jsonConfig).target(elasticConfig.getEndpoint());
+		this.root = ClientBuilder.newClient(jsonConfig).target(elasticConfig.endpoint());
 
 		// Registering the provider for POJO -> NDJSON
 		final ObjectMapper ndjsonMapper = new ObjectMapper();
@@ -111,16 +112,17 @@ public class ElasticSearchFacade {
 
 		final ClientConfig ndjsonConfig = new ClientConfig(ndjsonProvider);
 
-		this.bulkApiRoot = ClientBuilder.newClient(ndjsonConfig).target(elasticConfig.getEndpoint());
+		this.bulkApiRoot = ClientBuilder.newClient(ndjsonConfig).target(elasticConfig.endpoint());
 
-		this.numberOfShards = elasticConfig.getNumberOfShards();
-		this.numberOfReplicas = elasticConfig.getNumberOfReplicas();
+		this.numberOfShards = elasticConfig.numberOfShards();
+		this.numberOfReplicas = elasticConfig.numberOfReplicas();
 	}
 
 	/**
 	 * Deletes any existing index, mapping and data.
 	 */
 	public void delete() {
+
 		final Response response = root.path(INDEX_NAME).request(MediaType.APPLICATION_JSON).delete();
 		final int code = response.getStatus();
 
@@ -131,7 +133,8 @@ public class ElasticSearchFacade {
 	}
 
 	public void putIndex() {
-		final Response response = root.path(INDEX_NAME).request().put(getIndexRequestBody());
+
+		final Response response = root.path(INDEX_NAME).request().put(indexRequestBody());
 
 		if (response.getStatus() != 200) {
 			throw new ElasticException(
@@ -140,12 +143,12 @@ public class ElasticSearchFacade {
 	}
 
 	public void putMapping() {
+
 		final Map<String, Object> message = new HashMap<>();
-		message.put(TEXT_FIELD_NAME, getType(ElasticFieldType.TEXT.getName()));
-		message.put(DATE_FIELD_NAME, getType(ElasticFieldType.DATE.getName()));
-		message.put(FLOAT_FIELD_NAME, getType(ElasticFieldType.FLOAT.getName()));
-		final Response response = root.path(getMappingPath()).request()
-		        .put(Entity.json(new ElasticIndexMapping(message)));
+		message.put(TEXT_FIELD_NAME, type(ElasticFieldType.TEXT.fieldName()));
+		message.put(DATE_FIELD_NAME, type(ElasticFieldType.DATE.fieldName()));
+		message.put(FLOAT_FIELD_NAME, type(ElasticFieldType.FLOAT.fieldName()));
+		final Response response = root.path(mappingPath()).request().put(Entity.json(new ElasticIndexMapping(message)));
 
 		if (response.getStatus() != 200) {
 			throw new ElasticException(
@@ -154,8 +157,9 @@ public class ElasticSearchFacade {
 	}
 
 	public void postType( final ElasticSearchPerformanceTrialRequestResource request ) {
+
 		final Entity<?> requestBody = Entity.json(request);
-		final WebTarget url = root.path(getTypePath());
+		final WebTarget url = root.path(typePath());
 
 		// Using the elastic search ID auto-generation, so we're using a post not a put
 		final Response response = url.request(MediaType.APPLICATION_JSON).post(requestBody);
@@ -176,8 +180,9 @@ public class ElasticSearchFacade {
 	}
 
 	public void postTypes( final List<?> request ) {
+
 		final Entity<?> requestBody = Entity.json(request);
-		final WebTarget url = bulkApiRoot.path(getTypePath()).path("_bulk");
+		final WebTarget url = bulkApiRoot.path(typePath()).path("_bulk");
 
 		// Bulk API uses only HTTP POST for all operations
 		final Response response = url.request(MediaType.APPLICATION_JSON).post(requestBody);
@@ -197,8 +202,9 @@ public class ElasticSearchFacade {
 	}
 
 	public void disableIndexRefresh() {
+
 		final Response response = root.path(INDEX_NAME).path(ElasticSearchFields.SETTINGS).request()
-		        .put(getDisableRefreshRequestBody());
+		        .put(disableRefreshRequestBody());
 
 		if (response.getStatus() != 200) {
 			throw new ElasticException(
@@ -208,8 +214,9 @@ public class ElasticSearchFacade {
 	}
 
 	public void enableIndexRefresh() {
+
 		final Response response = root.path(INDEX_NAME).path(ElasticSearchFields.SETTINGS).request()
-		        .put(getEnableRefreshRequestBody());
+		        .put(enableRefreshRequestBody());
 
 		if (response.getStatus() != 200) {
 			throw new ElasticException(String.format("Failed to put the enable index settings to index: %s, status: %s",
@@ -217,41 +224,50 @@ public class ElasticSearchFacade {
 		}
 	}
 
-	private Entity<?> getIndexRequestBody() {
+	private Entity<?> indexRequestBody() {
+
 		return Entity.json(new ElasticIndex(numberOfShards, numberOfReplicas));
 	}
 
-	private Entity<?> getDisableRefreshRequestBody() {
+	private Entity<?> disableRefreshRequestBody() {
+
 		return Entity.json(new ElasticIndexSettingsRequestResource(INDEX_SETTING_DISABLE_REFRESH));
 	}
 
-	private Entity<?> getEnableRefreshRequestBody() {
+	private Entity<?> enableRefreshRequestBody() {
+
 		return Entity.json(new ElasticIndexSettingsRequestResource(INDEX_SETTING_DEFAULT_REFRESH));
 	}
 
-	private String getMappingPath() {
+	private String mappingPath() {
+
 		return String.format("%s/_mapping/%s/", INDEX_NAME, MAPPING_NAME);
 	}
 
-	private String getTypePath() {
+	private String typePath() {
+
 		return String.format("%s/%s/", INDEX_NAME, MAPPING_NAME);
 	}
 
-	private Map.Entry<String, String> getType( final String field ) {
+	private Map.Entry<String, String> type( final String field ) {
+
 		return new SimpleEntry<String, String>(TYPE, field);
 	}
 
 	private boolean isInvalidResponse( final ElasticBulkApiResponseResource eventResponse ) {
+
 		return eventResponse.hasErrors();
 	}
 
 	private boolean isInvalidResponse( final ElasticPostEventResponseResource eventResponse ) {
+
 		return !isValidResponse(eventResponse);
 	}
 
 	private boolean isValidResponse( final ElasticPostEventResponseResource eventResponse ) {
+
 		return eventResponse.isCreated() && eventResponse.isResultCreated()
-		        && StringUtils.equals(INDEX_NAME, eventResponse.getIndex())
-		        && StringUtils.equals(MAPPING_NAME, eventResponse.getType());
+		        && StringUtils.equals(INDEX_NAME, eventResponse.index())
+		        && StringUtils.equals(MAPPING_NAME, eventResponse.type());
 	}
 }

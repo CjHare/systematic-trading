@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  *
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * * Neither the name of [project] nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -40,7 +40,7 @@ import com.systematic.trading.backtest.output.elastic.app.resource.ElasticSearch
 import com.systematic.trading.backtest.output.elastic.resource.ElasticBulkApiMetaDataRequestResource;
 
 /**
- * Behaviour for evaluating Elastic search performance. 
+ * Behaviour for evaluating Elastic search performance.
  * 
  * @author CJ Hare
  */
@@ -75,6 +75,7 @@ public abstract class PerformanceTrial {
 	}
 
 	public PerformanceTrialSummary execute() {
+
 		clear();
 		setUp();
 		final PerformanceTrialSummary summary = summarise(sendData());
@@ -85,31 +86,38 @@ public abstract class PerformanceTrial {
 	protected abstract StopWatch sendData();
 
 	/**
-	 * @param value the only difference between each record.
+	 * @param value
+	 *            the only difference between each record.
 	 */
 	protected ElasticSearchPerformanceTrialRequestResource createRecord( final int value ) {
+
 		return new ElasticSearchPerformanceTrialRequestResource(TEXT, value, DATE);
 	}
 
-	protected ElasticBulkApiMetaDataRequestResource createBulkApiMeta() {
+	protected ElasticBulkApiMetaDataRequestResource bulkApiMeta() {
+
 		return new ElasticBulkApiMetaDataRequestResource(ACTION_CREATE_GENERATE_DOCUMENT_ID,
 		        bulkApiMetaContainsIndex ? PerformanceTrialFields.INDEX_NAME : null,
 		        bulkApiMetaContainsType ? PerformanceTrialFields.MAPPING_NAME : null, null);
 	}
 
-	protected ElasticSearchFacade getFacade() {
+	protected ElasticSearchFacade facade() {
+
 		return elastic;
 	}
 
-	protected int getNumberOfRecords() {
+	protected int numberOfRecords() {
+
 		return numberOfRecords;
 	}
 
 	private void clear() {
+
 		elastic.delete();
 	}
 
 	private void setUp() {
+
 		elastic.putIndex();
 		elastic.putMapping();
 
@@ -119,21 +127,25 @@ public abstract class PerformanceTrial {
 	}
 
 	private void tearDown() {
+
 		if (disableIndexRefresh) {
 			elastic.enableIndexRefresh();
 		}
 	}
 
 	private PerformanceTrialSummary summarise( final StopWatch timer ) {
-		return new PerformanceTrialSummary(numberOfRecords, Duration.ofSeconds(getSeconds(timer)),
-		        getRecordsInsertedPerSecond(timer));
+
+		return new PerformanceTrialSummary(numberOfRecords, Duration.ofSeconds(seconds(timer)),
+		        recordsInsertedPerSecond(timer));
 	}
 
-	private long getSeconds( final StopWatch timer ) {
+	private long seconds( final StopWatch timer ) {
+
 		return timer.getTime() / 1000l;
 	}
 
-	private float getRecordsInsertedPerSecond( final StopWatch timer ) {
-		return numberOfRecords / (float) getSeconds(timer);
+	private float recordsInsertedPerSecond( final StopWatch timer ) {
+
+		return numberOfRecords / (float) seconds(timer);
 	}
 }
