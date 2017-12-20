@@ -34,9 +34,6 @@ import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.output.file.dao.BrokerageEventDao;
 import com.systematic.trading.backtest.output.file.dao.CashEventDao;
 import com.systematic.trading.backtest.output.file.dao.EquityEventDao;
-import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
-import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
-import com.systematic.trading.backtest.output.file.dao.NetworthComparisonDao;
 import com.systematic.trading.backtest.output.file.dao.ReturnOnInvestmentDao;
 import com.systematic.trading.backtest.output.file.dao.SignalAnalysisDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileBrokerageEventDao;
@@ -53,7 +50,6 @@ import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
-import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
@@ -71,8 +67,6 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
 public class CompleteFileOutputService extends FileOutput implements BacktestEventListener {
 
 	private final BacktestBatchId batchId;
-	private final ExecutorService pool;
-	private final String baseDirectory;
 
 	private ReturnOnInvestmentDao roiDisplay;
 	private ReturnOnInvestmentDao roiDailyDisplay;
@@ -83,15 +77,11 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 	private BrokerageEventDao brokerageEventDisplay;
 	private OrderEventListener ordertEventDisplay;
 	private SignalAnalysisDao signalAnalysisDisplay;
-	private EventStatisticsDao statisticsDisplay;
-	private NetWorthSummaryDao netWorthDisplay;
-	private NetworthComparisonDao netWorthComparisonDisplay;
 	private EquityEventDao equityEventDisplay;
 
 	public CompleteFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
 	        final ExecutorService pool ) throws IOException {
-		this.baseDirectory = verifiedDirectory(outputDirectory);
-		this.pool = pool;
+		super(outputDirectory, pool);
 		this.batchId = batchId;
 	}
 
@@ -131,14 +121,14 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 		this.equityEventDisplay = new FileEquityEventDao(equityEventFile);
 
 		final FileMultithreading statisticsFile = fileDisplay("/statistics.txt");
-		this.statisticsDisplay = new FileEventStatisticsDao(eventStatistics, statisticsFile);
-		this.netWorthDisplay = new FileNetWorthSummaryDao(cumulativeRoi, statisticsFile);
+		eventStatisticsDao(new FileEventStatisticsDao(eventStatistics, statisticsFile));
+		netWorthSummaryDao(new FileNetWorthSummaryDao(cumulativeRoi, statisticsFile));
 
 		final FileMultithreading signalAnalysisFile = fileDisplay("/signals.txt");
 		this.signalAnalysisDisplay = new FileSignalAnalysisDao(signalAnalysisFile);
 
 		final FileMultithreading comparisonFile = fileDisplay("/../summary.csv");
-		netWorthComparisonDisplay = new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile);
+		netWorthEventListener(new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile));
 	}
 
 	@Override
@@ -175,24 +165,5 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 	@Override
 	public void event( final EquityEvent event ) {
 		equityEventDisplay.event(event);
-	}
-
-	@Override
-	protected EventStatisticsDao eventStatisticsDao() {
-		return statisticsDisplay;
-	}
-
-	@Override
-	protected NetWorthSummaryDao netWorthSummaryDao() {
-		return netWorthDisplay;
-	}
-
-	@Override
-	protected NetWorthEventListener netWorthEventListener() {
-		return netWorthComparisonDisplay;
-	}
-
-	private FileMultithreading fileDisplay( final String suffix ) {
-		return new FileMultithreading(baseDirectory + suffix, pool);
 	}
 }

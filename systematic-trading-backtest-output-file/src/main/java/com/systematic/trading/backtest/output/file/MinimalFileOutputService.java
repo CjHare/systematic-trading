@@ -30,9 +30,6 @@ import java.util.concurrent.ExecutorService;
 
 import com.systematic.trading.backtest.BacktestBatchId;
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.event.BacktestEventListener;
-import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
-import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileEventStatisticsDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileNetWorthSummaryDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileNetworthComparisonDao;
@@ -40,7 +37,6 @@ import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
-import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
@@ -57,19 +53,13 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  * 
  * @author CJ Hare
  */
-public class MinimalFileOutputService extends FileOutput implements BacktestEventListener {
+public class MinimalFileOutputService extends FileOutput {
 
-	private final String baseDirectory;
-	private EventStatisticsDao statisticsDisplay;
-	private NetWorthSummaryDao netWorthDisplay;
-	private NetWorthEventListener netWorthComparisonDisplay;
-	private final ExecutorService pool;
 	private final BacktestBatchId batchId;
 
 	public MinimalFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
 	        final ExecutorService pool ) throws IOException {
-		this.baseDirectory = verifiedDirectory(outputDirectory);
-		this.pool = pool;
+		super(outputDirectory, pool);
 		this.batchId = batchId;
 	}
 
@@ -79,11 +69,11 @@ public class MinimalFileOutputService extends FileOutput implements BacktestEven
 	        final TradingDayPrices lastTradingDay ) {
 
 		final FileMultithreading statisticsFile = fileDisplay("/statistics.txt");
-		this.statisticsDisplay = new FileEventStatisticsDao(eventStatistics, statisticsFile);
-		this.netWorthDisplay = new FileNetWorthSummaryDao(cumulativeRoi, statisticsFile);
+		eventStatisticsDao(new FileEventStatisticsDao(eventStatistics, statisticsFile));
+		netWorthSummaryDao(new FileNetWorthSummaryDao(cumulativeRoi, statisticsFile));
 
 		final FileMultithreading comparisonFile = fileDisplay("/../summary.txt");
-		netWorthComparisonDisplay = new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile);
+		netWorthEventListener(new FileNetworthComparisonDao(batchId, dates, eventStatistics, comparisonFile));
 	}
 
 	@Override
@@ -114,24 +104,5 @@ public class MinimalFileOutputService extends FileOutput implements BacktestEven
 	@Override
 	public void event( EquityEvent event ) {
 		// Recording of this event is not required for minimal display
-	}
-
-	@Override
-	protected EventStatisticsDao eventStatisticsDao() {
-		return statisticsDisplay;
-	}
-
-	@Override
-	protected NetWorthSummaryDao netWorthSummaryDao() {
-		return netWorthDisplay;
-	}
-
-	@Override
-	protected NetWorthEventListener netWorthEventListener() {
-		return netWorthComparisonDisplay;
-	}
-
-	private FileMultithreading fileDisplay( final String suffix ) {
-		return new FileMultithreading(baseDirectory + suffix, pool);
 	}
 }

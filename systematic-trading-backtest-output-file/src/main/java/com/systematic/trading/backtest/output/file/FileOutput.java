@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.output.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +35,7 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.output.file.dao.EventStatisticsDao;
 import com.systematic.trading.backtest.output.file.dao.NetWorthSummaryDao;
+import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;
 
@@ -44,13 +46,50 @@ import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventLi
  */
 public abstract class FileOutput implements BacktestEventListener {
 
+	/** Classes' little logger. */
 	private static final Logger LOG = LogManager.getLogger(FileOutput.class);
 
-	protected abstract EventStatisticsDao eventStatisticsDao();
+	private final String baseDirectory;
+	private EventStatisticsDao statisticsDisplay;
+	private NetWorthSummaryDao netWorthDisplay;
+	private NetWorthEventListener netWorthComparisonDisplay;
+	private final ExecutorService pool;
 
-	protected abstract NetWorthSummaryDao netWorthSummaryDao();
+	public FileOutput( final String outputDirectory, final ExecutorService pool ) throws IOException {
+		this.baseDirectory = verifiedDirectory(outputDirectory);
+		this.pool = pool;
+	}
 
-	protected abstract NetWorthEventListener netWorthEventListener();
+	/**
+	 * Retrieves the base directory, after verifying it's existence.
+	 */
+	public String verifiedDirectory( final String outputDirectory ) throws IOException {
+		final File outputDirectoryFile = new File(outputDirectory);
+		if (!outputDirectoryFile.exists() && !outputDirectoryFile.mkdirs()) {
+			throw new IllegalArgumentException(
+			        String.format("Failed to create / access directory: %s", outputDirectory));
+		}
+
+		final String directory = outputDirectoryFile.getCanonicalPath();
+		LOG.info("Output directory: {}", () -> directory);
+		return directory;
+	}
+
+	public EventStatisticsDao eventStatisticsDao() {
+		return statisticsDisplay;
+	}
+
+	public NetWorthSummaryDao netWorthSummaryDao() {
+		return netWorthDisplay;
+	}
+
+	public NetWorthEventListener netWorthEventListener() {
+		return netWorthComparisonDisplay;
+	}
+
+	public FileMultithreading fileDisplay( final String suffix ) {
+		return new FileMultithreading(baseDirectory + suffix, pool);
+	}
 
 	@Override
 	public void stateChanged( final SimulationState transitionedState ) {
@@ -66,19 +105,16 @@ public abstract class FileOutput implements BacktestEventListener {
 		netWorthSummaryDao().event(event, state);
 	}
 
-	/**
-	 * Retrieves the base directory, after verifying it's existence.
-	 */
-	protected String verifiedDirectory( final String outputDirectory ) throws IOException {
-		final File outputDirectoryFile = new File(outputDirectory);
-		if (!outputDirectoryFile.exists() && !outputDirectoryFile.mkdirs()) {
-			throw new IllegalArgumentException(
-			        String.format("Failed to create / access directory: %s", outputDirectory));
-		}
+	protected void eventStatisticsDao( final EventStatisticsDao statisticsDisplay ) {
+		this.statisticsDisplay = statisticsDisplay;
+	}
 
-		final String directory = outputDirectoryFile.getCanonicalPath();
-		LOG.info("Output directory: {}", () -> directory);
-		return directory;
+	protected void netWorthSummaryDao( final NetWorthSummaryDao netWorthDisplay ) {
+		this.netWorthDisplay = netWorthDisplay;
+	}
+
+	protected void netWorthEventListener( final NetWorthEventListener netWorthComparisonDisplay ) {
+		this.netWorthComparisonDisplay = netWorthComparisonDisplay;
 	}
 
 	private void simulationCompleted() {
