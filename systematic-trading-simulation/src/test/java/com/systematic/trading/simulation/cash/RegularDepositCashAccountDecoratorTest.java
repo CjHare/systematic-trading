@@ -90,7 +90,7 @@ public class RegularDepositCashAccountDecoratorTest {
 
 		debit(54.321, transactionDate);
 
-		veriftDebit(54.321, transactionDate);
+		verifyDebit(54.321, transactionDate);
 	}
 
 	@Test
@@ -184,15 +184,15 @@ public class RegularDepositCashAccountDecoratorTest {
 		regularDeposits.debit(BigDecimal.valueOf(amount), transactionDate);
 	}
 
-	private void veriftDebit( final double amount, final LocalDate transactionDate ) throws InsufficientFundsException {
-
-		verify(account).debit(BigDecimalMatcher.argumentMatches(amount), eq(transactionDate));
-		verifyNoMoreInteractions(account);
-	}
-
 	private void deposit( final double amount, final LocalDate transactionDate ) {
 
 		regularDeposits.deposit(BigDecimal.valueOf(amount), transactionDate);
+	}
+
+	private void verifyDebit( final double amount, final LocalDate transactionDate ) throws InsufficientFundsException {
+
+		verify(account).debit(BigDecimalMatcher.argumentMatches(amount), eq(transactionDate));
+		verifyNoMoreInteractions(account);
 	}
 
 	private void verifyDeposit( final double amount, final LocalDate transactionDate ) {

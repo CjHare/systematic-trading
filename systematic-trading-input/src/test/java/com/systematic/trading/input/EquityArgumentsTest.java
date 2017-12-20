@@ -80,7 +80,7 @@ public class EquityArgumentsTest {
 		createEquityArguments(arguments);
 
 		verifyDataService(service);
-		verifDataServiceArgument(arguments);
+		verifyDataServiceArgument(arguments);
 	}
 
 	@Test
@@ -91,7 +91,7 @@ public class EquityArgumentsTest {
 
 		createEquityArgumentsExpectingException(DATA_SERVICE_EXCEPTION_MESSAGE, arguments);
 
-		verifDataServiceArgument(arguments);
+		verifyDataServiceArgument(arguments);
 	}
 
 	@Test
@@ -221,7 +221,7 @@ public class EquityArgumentsTest {
 		assertEquals(expected, parser.tickerSymbol().symbol());
 	}
 
-	private void verifDataServiceArgument( final Map<ArgumentKey, String> arguments ) {
+	private void verifyDataServiceArgument( final Map<ArgumentKey, String> arguments ) {
 
 		verify(equityDatasetArgument).get(arguments);
 		verifyNoMoreInteractions(equityDatasetArgument);

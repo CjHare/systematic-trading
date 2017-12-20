@@ -108,7 +108,7 @@ public class MonthlyRollingCounterTest {
 		incrementreviousMonth();
 		incrementCurrentMonth();
 
-		veriyfPreviousMonthCount(0);
+		verifyPreviousMonthCount(0);
 	}
 
 	private void incrementCurrentMonth() {
@@ -131,7 +131,7 @@ public class MonthlyRollingCounterTest {
 		assertEquals(expected, counter.get(LocalDate.now()));
 	}
 
-	private void veriyfPreviousMonthCount( final int expected ) {
+	private void verifyPreviousMonthCount( final int expected ) {
 
 		assertEquals(expected, counter.get(LocalDate.now().minus(Period.ofMonths(1))));
 	}
