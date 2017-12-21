@@ -23,6 +23,11 @@
 			<artifactId>systematic-trading-simulation-model</artifactId>
 			<version>${systematic.trading.simulation.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-strategy-model</artifactId>
+			<version>${systematic.trading.strategy.version}</version>
+		</dependency>
 	</dependencies>
 
 </project>

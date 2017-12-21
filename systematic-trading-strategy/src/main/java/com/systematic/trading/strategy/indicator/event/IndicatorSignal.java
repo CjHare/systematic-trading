@@ -28,7 +28,7 @@ package com.systematic.trading.strategy.indicator.event;
 import java.time.LocalDate;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorId;
+import com.systematic.trading.strategy.indicator.IndicatorId;
 
 /**
  * Denotes the occurrence and details of a indicator signal event.

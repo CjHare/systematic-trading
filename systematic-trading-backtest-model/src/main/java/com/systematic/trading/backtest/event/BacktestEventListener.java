@@ -28,7 +28,6 @@ package com.systematic.trading.backtest.event;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.SimulationStateListener;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;
 import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;
@@ -38,6 +37,7 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
 import com.systematic.trading.simulation.cash.event.CashEventListener;
 import com.systematic.trading.simulation.equity.event.EquityEventListener;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
+import com.systematic.trading.strategy.signal.SignalAnalysisListener;
 
 /**
  * Event driven outputs from the back testing simulation.

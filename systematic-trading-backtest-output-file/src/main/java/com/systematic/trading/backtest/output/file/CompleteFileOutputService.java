@@ -49,7 +49,6 @@ import com.systematic.trading.backtest.output.file.model.ReturnOnInvestmentPerio
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.statistics.EventStatistics;
@@ -58,6 +57,7 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEventListener;
+import com.systematic.trading.strategy.signal.SignalAnalysisEvent;
 
 /**
  * Single entry point to output a simulation run into files, displaying all events.

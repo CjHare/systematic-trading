@@ -47,11 +47,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.SignalCalculator;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.signal.IndicatorId;
-import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signal.generator.SignalGenerator;
 import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.signal.range.SignalRangeFilter;
+import com.systematic.trading.strategy.signal.SignalAnalysisListener;
 
 /**
  * Verifying the trading strategy indicator behaviour.

@@ -27,7 +27,7 @@ package com.systematic.trading.backtest.output.file.dao.impl;
 
 import com.systematic.trading.backtest.output.file.dao.SignalAnalysisDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
-import com.systematic.trading.signal.event.SignalAnalysisEvent;
+import com.systematic.trading.strategy.signal.SignalAnalysisEvent;
 
 /**
  * Interested in displaying signal analysis events.

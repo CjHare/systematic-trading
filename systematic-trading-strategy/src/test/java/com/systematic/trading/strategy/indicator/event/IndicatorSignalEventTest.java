@@ -37,8 +37,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorId;
-import com.systematic.trading.strategy.indicator.event.IndicatorSignalEvent;
+import com.systematic.trading.strategy.indicator.IndicatorId;
 
 /**
  * Verifies the IndicatorSignalEvent.

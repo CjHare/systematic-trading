@@ -47,7 +47,6 @@ import com.systematic.trading.backtest.configuration.strategy.entry.OperatorEntr
 import com.systematic.trading.backtest.configuration.strategy.entry.PeriodicEntryConfiguration;
 import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signal.range.SignalRangeFilter;
 import com.systematic.trading.signal.range.SimulationDatesRangeFilterDecorator;
 import com.systematic.trading.signal.range.TradingDaySignalRangeFilter;
@@ -75,6 +74,7 @@ import com.systematic.trading.strategy.operator.Operator;
 import com.systematic.trading.strategy.operator.TradingStrategyAndOperator;
 import com.systematic.trading.strategy.operator.TradingStrategyOrOperator;
 import com.systematic.trading.strategy.periodic.TradingStrategyPeriodic;
+import com.systematic.trading.strategy.signal.SignalAnalysisListener;
 
 /**
  * Creates the Bootstrap configurations for back testing.

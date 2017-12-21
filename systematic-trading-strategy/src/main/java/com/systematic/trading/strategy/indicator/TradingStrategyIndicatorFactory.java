@@ -41,7 +41,6 @@ import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.maths.indicator.sma.ClosingPriceSimpleMovingAverageCalculator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
-import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signal.generator.SignalGenerator;
 import com.systematic.trading.signal.generator.ema.ExponentialMovingAverageBullishGradientSignalGenerator;
 import com.systematic.trading.signal.generator.macd.MovingAverageConvergenceDivergenceBullishSignalGenerator;
@@ -53,6 +52,7 @@ import com.systematic.trading.strategy.indicator.configuration.IndicatorConfigur
 import com.systematic.trading.strategy.indicator.configuration.MacdConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.RsiConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration;
+import com.systematic.trading.strategy.signal.SignalAnalysisListener;
 
 /**
  * Factory methods for creating Indicators.

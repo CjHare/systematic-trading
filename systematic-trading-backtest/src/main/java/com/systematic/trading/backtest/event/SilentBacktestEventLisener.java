@@ -25,13 +25,13 @@
  */
 package com.systematic.trading.backtest.event;
 
-import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.strategy.signal.SignalAnalysisEvent;
 
 /**
  * Single entry point to output for a simulation run without actually outputting any of the events.

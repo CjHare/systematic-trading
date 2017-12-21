@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.strategy.indicator;
 
-import com.systematic.trading.signal.IndicatorId;
+import com.systematic.trading.strategy.indicator.IndicatorId;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**

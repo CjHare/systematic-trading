@@ -27,7 +27,7 @@ package com.systematic.trading.strategy.indicator.configuration;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.signal.IndicatorId;
+import com.systematic.trading.strategy.indicator.IndicatorId;
 
 /**
  * Configuration for the MACD signal calculator.

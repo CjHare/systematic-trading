@@ -36,7 +36,7 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticFieldType;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexMapping;
 import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 import com.systematic.trading.backtest.output.elastic.resource.ElasticSignalAnalysisEventRequestResource;
-import com.systematic.trading.signal.event.SignalAnalysisEvent;
+import com.systematic.trading.strategy.signal.SignalAnalysisEvent;
 
 /**
  * Elastic Search index for signal analysis events.

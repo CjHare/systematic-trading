@@ -42,7 +42,6 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticReturnO
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalAnalysisIndex;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
@@ -51,6 +50,7 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
+import com.systematic.trading.strategy.signal.SignalAnalysisEvent;
 
 /**
  * A Facade for getting the event data into Elastic Search using the rest HTTP end point.

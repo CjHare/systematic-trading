@@ -31,7 +31,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.event.BacktestEventListener;
-import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
@@ -39,6 +38,7 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent;
 import com.systematic.trading.simulation.order.event.OrderEvent.EquityOrderType;
+import com.systematic.trading.strategy.signal.SignalAnalysisEvent;
 
 /**
  * Log output for only the buy orders i.e. 'when' and 'how much' to buy.

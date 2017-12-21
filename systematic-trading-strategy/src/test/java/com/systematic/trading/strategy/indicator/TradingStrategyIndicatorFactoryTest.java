@@ -36,13 +36,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signal.range.SignalRangeFilter;
 import com.systematic.trading.strategy.indicator.configuration.EmaUptrendConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.MacdConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.RsiConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration;
+import com.systematic.trading.strategy.signal.SignalAnalysisListener;
 
 /**
  * Verifies the indicator factory behaves correctly.

@@ -23,12 +23,12 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signal.event;
+package com.systematic.trading.strategy.signal;
 
 import java.time.LocalDate;
 
 import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.signal.IndicatorId;
+import com.systematic.trading.strategy.indicator.IndicatorId;
 
 /**
  * An interesting event that occurs when analyzing data to generate signals.

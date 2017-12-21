@@ -42,7 +42,7 @@ import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.signal.event.SignalAnalysisListener;
+import com.systematic.trading.strategy.signal.SignalAnalysisListener;
 
 /**
  * Connects together the various parts and performs the back testing.

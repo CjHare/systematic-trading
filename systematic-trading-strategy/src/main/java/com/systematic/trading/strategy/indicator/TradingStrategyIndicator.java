@@ -31,15 +31,14 @@ import java.util.function.Predicate;
 
 import com.systematic.trading.maths.indicator.SignalCalculator;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.signal.IndicatorId;
-import com.systematic.trading.signal.event.SignalAnalysisEvent;
-import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.signal.generator.SignalGenerator;
 import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.signal.range.InclusiveDatelRangeFilter;
 import com.systematic.trading.signal.range.SignalRangeFilter;
 import com.systematic.trading.strategy.indicator.event.IndicatorSignal;
 import com.systematic.trading.strategy.indicator.event.IndicatorSignalEvent;
+import com.systematic.trading.strategy.signal.SignalAnalysisEvent;
+import com.systematic.trading.strategy.signal.SignalAnalysisListener;
 
 /**
  * Trading strategy indicator that generates signals.

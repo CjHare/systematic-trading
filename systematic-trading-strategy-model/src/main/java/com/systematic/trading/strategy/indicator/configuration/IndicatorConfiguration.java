@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.strategy.indicator.configuration;
 
-import com.systematic.trading.signal.IndicatorId;
+import com.systematic.trading.strategy.indicator.IndicatorId;
 
 /**
  * Generic details about configurations.
