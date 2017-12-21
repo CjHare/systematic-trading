@@ -23,38 +23,31 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.brokerage.event;
+package com.systematic.trading.simulation.equity.event;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.event.Event;
+import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.simulation.event.Event;
 
 /**
- * A brokerage event that warrants being recorded.
+ * An event derived from holding an equity that warrants recording.
  * 
  * @author CJ Hare
  */
-public interface BrokerageEvent extends Event {
+public interface EquityEvent extends Event {
 
-	public enum BrokerageAccountEventType {
-		BUY,
-		SELL;
+	public enum EquityEventType {
+		MANAGEMENT_FEE;
 	}
 
 	/**
-	 * Retrieves the classification for the brokerage event.
+	 * Retrieves the classification for the equity event.
 	 * 
 	 * @return general category the event falls within.
 	 */
-	BrokerageAccountEventType type();
-
-	/**
-	 * Brokers fee for performing the trade.
-	 * 
-	 * @return amount paid to the broker to facilitate the trade.
-	 */
-	BigDecimal transactionFee();
+	EquityEventType type();
 
 	/**
 	 * Number of equities prior to the brokerage event.
@@ -64,30 +57,30 @@ public interface BrokerageEvent extends Event {
 	BigDecimal startingEquityBalance();
 
 	/**
-	 * Number of equities after the brokerage event.
+	 * Number of equities after the equity event.
 	 * 
-	 * @return quantities of equities after the brokerage event.
+	 * @return quantities of equities after the equity event.
 	 */
 	BigDecimal endEquityBalance();
 
 	/**
-	 * Date of brokerage event.
+	 * Date of equity event.
 	 * 
-	 * @return when the brokerage event occurred.
+	 * @return when the equity event occurred.
 	 */
 	LocalDate transactionDate();
 
 	/**
-	 * Value of the equities purchased (excluding brokerage fee)
+	 * The number of equities involved in the event.
 	 * 
-	 * @return value of the equities being purchased.
-	 */
-	BigDecimal equityValue();
-
-	/**
-	 * The number of equities involved in the brokerage transaction.
-	 * 
-	 * @return number of equities being brokered.
+	 * @return number of equities.
 	 */
 	BigDecimal equityAmount();
+
+	/**
+	 * Equity that the event has been applied onto.
+	 * 
+	 * @return identity of the equity that was subject to the event.
+	 */
+	EquityIdentity identity();
 }

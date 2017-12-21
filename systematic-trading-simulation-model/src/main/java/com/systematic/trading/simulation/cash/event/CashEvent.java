@@ -23,64 +23,63 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.equity.event;
+package com.systematic.trading.simulation.cash.event;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.event.Event;
-import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.simulation.event.Event;
 
 /**
- * An event derived from holding an equity that warrants recording.
+ * A cash event that warrants being recorded.
  * 
  * @author CJ Hare
  */
-public interface EquityEvent extends Event {
+public interface CashEvent extends Event {
 
-	public enum EquityEventType {
-		MANAGEMENT_FEE;
+	enum CashEventType {
+		/** From the sale of equities. */
+		CREDIT,
+		/** From the purchase of equities. */
+		DEBIT,
+		/** Non-equity source of funds being credited. */
+		DEPOSIT,
+		/** Interest paid on cash held in transactional account. */
+		INTEREST;
 	}
 
 	/**
-	 * Retrieves the classification for the equity event.
+	 * Retrieves the classification of cash event.
 	 * 
-	 * @return general category the event falls within.
+	 * @return general category the cash event falls within.
 	 */
-	EquityEventType type();
+	CashEventType type();
 
 	/**
-	 * Number of equities prior to the brokerage event.
+	 * Value of the cash event.
 	 * 
-	 * @return quantities of equities prior to the brokerage event.
+	 * @return amount of cash involved in the event.
 	 */
-	BigDecimal startingEquityBalance();
+	BigDecimal amount();
 
 	/**
-	 * Number of equities after the equity event.
+	 * Available fund prior to the cash event.
 	 * 
-	 * @return quantities of equities after the equity event.
+	 * @return funds available before the cash event.
 	 */
-	BigDecimal endEquityBalance();
+	BigDecimal fundsBefore();
 
 	/**
-	 * Date of equity event.
+	 * Available funds after the cash event.
 	 * 
-	 * @return when the equity event occurred.
+	 * @return funds available after the cash event.
+	 */
+	BigDecimal fundsAfter();
+
+	/**
+	 * Date of cash event.
+	 * 
+	 * @return when the cash event occurred.
 	 */
 	LocalDate transactionDate();
-
-	/**
-	 * The number of equities involved in the event.
-	 * 
-	 * @return number of equities.
-	 */
-	BigDecimal equityAmount();
-
-	/**
-	 * Equity that the event has been applied onto.
-	 * 
-	 * @return identity of the equity that was subject to the event.
-	 */
-	EquityIdentity identity();
 }

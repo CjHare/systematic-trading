@@ -23,58 +23,38 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.cash.event;
+package com.systematic.trading.simulation.order.event;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.event.Event;
+import com.systematic.trading.simulation.event.Event;
 
 /**
- * A cash event that warrants being recorded.
+ * An order event that warrants being recorded.
  * 
  * @author CJ Hare
  */
-public interface CashEvent extends Event {
+public interface OrderEvent extends Event {
 
-	enum CashEventType {
-		/** From the sale of equities. */
-		CREDIT,
-		/** From the purchase of equities. */
-		DEBIT,
-		/** Non-equity source of funds being credited. */
-		DEPOSIT,
-		/** Interest paid on cash held in transactional account. */
-		INTEREST;
+	/**
+	 * All the different event types for equity orders.
+	 * 
+	 * @author CJ Hare
+	 */
+	public enum EquityOrderType {
+		ENTRY,
+		EXIT,
+		DELETE_ENTRY,
+		DELETE_EXIT
 	}
 
 	/**
-	 * Retrieves the classification of cash event.
+	 * Retrieve the type of the order.
 	 * 
-	 * @return general category the cash event falls within.
+	 * @return purpose of the order that triggered the event recording.
 	 */
-	CashEventType type();
-
-	/**
-	 * Value of the cash event.
-	 * 
-	 * @return amount of cash involved in the event.
-	 */
-	BigDecimal amount();
-
-	/**
-	 * Available fund prior to the cash event.
-	 * 
-	 * @return funds available before the cash event.
-	 */
-	BigDecimal fundsBefore();
-
-	/**
-	 * Available funds after the cash event.
-	 * 
-	 * @return funds available after the cash event.
-	 */
-	BigDecimal fundsAfter();
+	EquityOrderType type();
 
 	/**
 	 * Date of cash event.
@@ -82,4 +62,11 @@ public interface CashEvent extends Event {
 	 * @return when the cash event occurred.
 	 */
 	LocalDate transactionDate();
+
+	/**
+	 * Total cost of the order.
+	 * 
+	 * @return cost of the order including any fees.
+	 */
+	BigDecimal totalCost();
 }

@@ -23,50 +23,71 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.simulation.order.event;
+package com.systematic.trading.simulation.brokerage.event;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.event.Event;
+import com.systematic.trading.simulation.event.Event;
 
 /**
- * An order event that warrants being recorded.
+ * A brokerage event that warrants being recorded.
  * 
  * @author CJ Hare
  */
-public interface OrderEvent extends Event {
+public interface BrokerageEvent extends Event {
 
-	/**
-	 * All the different event types for equity orders.
-	 * 
-	 * @author CJ Hare
-	 */
-	public enum EquityOrderType {
-		ENTRY,
-		EXIT,
-		DELETE_ENTRY,
-		DELETE_EXIT
+	public enum BrokerageAccountEventType {
+		BUY,
+		SELL;
 	}
 
 	/**
-	 * Retrieve the type of the order.
+	 * Retrieves the classification for the brokerage event.
 	 * 
-	 * @return purpose of the order that triggered the event recording.
+	 * @return general category the event falls within.
 	 */
-	EquityOrderType type();
+	BrokerageAccountEventType type();
 
 	/**
-	 * Date of cash event.
+	 * Brokers fee for performing the trade.
 	 * 
-	 * @return when the cash event occurred.
+	 * @return amount paid to the broker to facilitate the trade.
+	 */
+	BigDecimal transactionFee();
+
+	/**
+	 * Number of equities prior to the brokerage event.
+	 * 
+	 * @return quantities of equities prior to the brokerage event.
+	 */
+	BigDecimal startingEquityBalance();
+
+	/**
+	 * Number of equities after the brokerage event.
+	 * 
+	 * @return quantities of equities after the brokerage event.
+	 */
+	BigDecimal endEquityBalance();
+
+	/**
+	 * Date of brokerage event.
+	 * 
+	 * @return when the brokerage event occurred.
 	 */
 	LocalDate transactionDate();
 
 	/**
-	 * Total cost of the order.
+	 * Value of the equities purchased (excluding brokerage fee)
 	 * 
-	 * @return cost of the order including any fees.
+	 * @return value of the equities being purchased.
 	 */
-	BigDecimal totalCost();
+	BigDecimal equityValue();
+
+	/**
+	 * The number of equities involved in the brokerage transaction.
+	 * 
+	 * @return number of equities being brokered.
+	 */
+	BigDecimal equityAmount();
 }

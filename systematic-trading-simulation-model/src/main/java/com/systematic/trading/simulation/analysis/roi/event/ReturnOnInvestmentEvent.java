@@ -28,7 +28,7 @@ package com.systematic.trading.simulation.analysis.roi.event;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.event.Event;
+import com.systematic.trading.simulation.event.Event;
 
 /**
  * Event related to calculation of ROI has occurred
