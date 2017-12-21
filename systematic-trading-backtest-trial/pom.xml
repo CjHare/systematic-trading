@@ -16,11 +16,6 @@
 	
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-backtest</artifactId>
-			<version>${systematic.trading.backtest.version}</version>
-		</dependency>		
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-backtest-output-elastic</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>		
@@ -29,28 +24,39 @@
 			<artifactId>systematic-trading-backtest-output-file</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
+
+				
+		<!-- Container dependencies (for instancing concrete instances)-->		
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-input</artifactId>
-			<version>${systematic.trading.input.version}</version>
-		</dependency>		
-		
-		<!-- Container dependencies (for instancing concrete instances)-->
+			<artifactId>systematic-trading-backtest</artifactId>
+			<version>${systematic.trading.backtest.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-data</artifactId>
 			<version>${systematic.trading.data.version}</version>
-		</dependency>
+		</dependency>		
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-input</artifactId>
+			<version>${systematic.trading.input.version}</version>
+		</dependency>			
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-signal</artifactId>
 			<version>${systematic.trading.signal.version}</version>
-		</dependency>					
+		</dependency>		
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-simulation</artifactId>
 			<version>${systematic.trading.simulation.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-strategy</artifactId>
+			<version>${systematic.trading.strategy.version}</version>
+		</dependency>	
 		
 	</dependencies>
 

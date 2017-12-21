@@ -16,19 +16,13 @@
 
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-simulation</artifactId>
-			<version>${systematic.trading.simulation.version}</version>
+			<artifactId>systematic-trading-backtest-model</artifactId>
+			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-strategy</artifactId>
-			<version>${systematic.trading.strategy.version}</version>
-		</dependency>	
-		
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-backtest-model</artifactId>
-			<version>${systematic.trading.backtest.version}</version>
+			<artifactId>systematic-trading-data-model</artifactId>
+			<version>${systematic.trading.data.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
@@ -40,25 +34,28 @@
 			<artifactId>systematic-trading-signal-model</artifactId>
 			<version>${systematic.trading.signal.version}</version>
 		</dependency>
+
+		<!-- Dependency on simulation required, purpose is to create simulation -->
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data-model</artifactId>
-			<version>${systematic.trading.data.version}</version>
+			<artifactId>systematic-trading-simulation</artifactId>
+			<version>${systematic.trading.simulation.version}</version>
 		</dependency>
 
+		<!-- StringUtils / Tuples -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>${apache.commons.lang.version}</version>
 		</dependency>
-		
+
 		<!-- Logging framework -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>${apache.log4j.version}</version>
 		</dependency>
-				
+
 	</dependencies>
 
 </project>
