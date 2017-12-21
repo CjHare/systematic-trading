@@ -37,6 +37,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-signal-model</artifactId>
+			<version>${systematic.trading.signal.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-data-model</artifactId>
 			<version>${systematic.trading.data.version}</version>
 		</dependency>

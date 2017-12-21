@@ -31,10 +31,8 @@ import java.time.Period;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
-import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
@@ -42,7 +40,6 @@ import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.model.TickerSymbolTradingData;
 import com.systematic.trading.model.equity.EquityIdentity;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.strategy.signal.SignalAnalysisListener;
 
 /**
  * Connects together the various parts and performs the back testing.
@@ -65,24 +62,16 @@ public class Backtest {
 		this.dataServiceUpdater = dataServiceUpdater;
 	}
 
-	public void run( final EquityConfiguration equity, final BacktestBootstrapConfiguration configuration,
-	        final BacktestEventListener output ) throws ServiceException {
+	public void run( final EquityConfiguration equity, final BacktestSimulationDates dates,
+	        final BacktestBootstrapContext context, final BacktestEventListener output ) throws ServiceException {
 
-		final BacktestBootstrapContext context = context(configuration, output);
 		final Period warmUp = context.tradingStrategy().warmUpPeriod();
 		recordWarmUpPeriod(warmUp);
-		final TickerSymbolTradingData tradingData = tradingData(equity.equityDataset(), equity.gquityIdentity(),
-		        configuration.backtestDates(), warmUp);
+		final TickerSymbolTradingData tradingData = tradingData(equity.equityDataset(), equity.gquityIdentity(), dates,
+		        warmUp);
 		final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
 		bootstrap.run();
-	}
-
-	private BacktestBootstrapContext context( final BacktestBootstrapConfiguration configuration,
-	        final SignalAnalysisListener listener ) {
-
-		return new BacktestBootstrapContextBulider().withConfiguration(configuration)
-		        .withSignalAnalysisListeners(listener).build();
 	}
 
 	private TickerSymbolTradingData tradingData( final String equityDataset, final EquityIdentity equity,

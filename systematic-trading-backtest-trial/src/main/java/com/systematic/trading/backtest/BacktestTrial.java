@@ -41,6 +41,7 @@ import org.apache.logging.log4j.Logger;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
+import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.description.DescriptionGenerator;
 import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
 import com.systematic.trading.backtest.event.BacktestEventListener;
@@ -138,11 +139,13 @@ public class BacktestTrial {
 			for (final BacktestBootstrapConfiguration backtestConfiguration : backtestConfigurations) {
 				final BacktestEventListener output = output(depositAmount, parserdArguments, backtestConfiguration,
 				        outputPool);
+				final BacktestBootstrapContext context = context(backtestConfiguration, output);
 
 				LOG.info("Backtesting beginning for: {}",
 				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, depositAmount));
 
-				new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration, output);
+				new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration.backtestDates(),
+				        context, output);
 
 				LOG.info("Backtesting complete for: {}",
 				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, depositAmount));
@@ -158,6 +161,13 @@ public class BacktestTrial {
 
 		LOG.info(() -> String.format("Finished outputting %s results, time taken: %s", backtestConfigurations.size(),
 		        Duration.ofMillis(timer.getTime())));
+	}
+
+	private BacktestBootstrapContext context( final BacktestBootstrapConfiguration config,
+	        final BacktestEventListener listener ) {
+
+		return new BacktestBootstrapContextBulider().withConfiguration(config).withSignalAnalysisListeners(listener)
+		        .build();
 	}
 
 	private EquityConfiguration equity( final BacktestLaunchArguments launchArgs ) {

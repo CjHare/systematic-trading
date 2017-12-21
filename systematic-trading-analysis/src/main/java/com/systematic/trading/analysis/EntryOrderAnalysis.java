@@ -53,6 +53,7 @@ import com.systematic.trading.backtest.configuration.strategy.indicator.Indicato
 import com.systematic.trading.backtest.configuration.strategy.indicator.RsiConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
+import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.description.DescriptionGenerator;
 import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
 import com.systematic.trading.backtest.event.BacktestEventListener;
@@ -75,9 +76,9 @@ import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
+import com.systematic.trading.model.equity.EquityClass;
 
 /**
  * An analysis to generate buy signals to execute on a daily basis, a specialized version of a back
@@ -144,7 +145,8 @@ public class EntryOrderAnalysis {
 		timer.start();
 
 		try {
-			new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration, output());
+			new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration.backtestDates(),
+			        context(backtestConfiguration, output()), output());
 
 		} finally {
 			HibernateUtil.sessionFactory().close();
@@ -152,6 +154,13 @@ public class EntryOrderAnalysis {
 
 		timer.stop();
 		recordExecutionTime(timer);
+	}
+
+	private BacktestBootstrapContext context( final BacktestBootstrapConfiguration config,
+	        final BacktestEventListener listener ) {
+
+		return new BacktestBootstrapContextBulider().withConfiguration(config)
+		        .withSignalAnalysisListeners(listener).build();
 	}
 
 	private void recordStrategy( final StrategyConfiguration strategy ) {

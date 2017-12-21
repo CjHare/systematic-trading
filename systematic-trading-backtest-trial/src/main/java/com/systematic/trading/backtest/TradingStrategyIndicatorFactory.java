@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.indicator;
+package com.systematic.trading.backtest;
 
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.ema.ClosingPriceExponentialMovingAverageCalculator;
@@ -47,6 +47,8 @@ import com.systematic.trading.signal.generator.macd.MovingAverageConvergenceDive
 import com.systematic.trading.signal.generator.rsi.RelativeStrengthIndexBullishSignalGenerator;
 import com.systematic.trading.signal.generator.sma.SimpleMovingAverageBullishGradientSignalGenerator;
 import com.systematic.trading.signal.range.SignalRangeFilter;
+import com.systematic.trading.strategy.indicator.Indicator;
+import com.systematic.trading.strategy.indicator.TradingStrategyIndicator;
 import com.systematic.trading.strategy.indicator.configuration.EmaUptrendConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.MacdConfiguration;

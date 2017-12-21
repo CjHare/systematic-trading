@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.strategy.indicator;
+package com.systematic.trading.analysis;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -36,7 +36,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.systematic.trading.analysis.TradingStrategyIndicatorFactory;
 import com.systematic.trading.signal.range.SignalRangeFilter;
+import com.systematic.trading.strategy.indicator.Indicator;
+import com.systematic.trading.strategy.indicator.TradingStrategyIndicator;
 import com.systematic.trading.strategy.indicator.configuration.EmaUptrendConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 import com.systematic.trading.strategy.indicator.configuration.MacdConfiguration;

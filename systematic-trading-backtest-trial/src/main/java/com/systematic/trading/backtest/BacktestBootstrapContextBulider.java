@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.context;
+package com.systematic.trading.backtest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,6 +45,7 @@ import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfigu
 import com.systematic.trading.backtest.configuration.strategy.entry.IndicatorEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.OperatorEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.PeriodicEntryConfiguration;
+import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.signal.range.SignalRangeFilter;
@@ -69,7 +70,6 @@ import com.systematic.trading.strategy.entry.size.RelativeEntryPositionBounds;
 import com.systematic.trading.strategy.exit.Exit;
 import com.systematic.trading.strategy.exit.size.ExitSize;
 import com.systematic.trading.strategy.exit.size.NeverExitPosition;
-import com.systematic.trading.strategy.indicator.TradingStrategyIndicatorFactory;
 import com.systematic.trading.strategy.operator.Operator;
 import com.systematic.trading.strategy.operator.TradingStrategyAndOperator;
 import com.systematic.trading.strategy.operator.TradingStrategyOrOperator;
