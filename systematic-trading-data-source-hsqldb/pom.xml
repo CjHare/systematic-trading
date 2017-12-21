@@ -12,10 +12,6 @@
 	<artifactId>systematic-trading-data-source-hsqldb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<properties>
-		<hypersql.version>2.3.3</hypersql.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.hsqldb</groupId>
