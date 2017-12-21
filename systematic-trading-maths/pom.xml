@@ -19,13 +19,13 @@
 			<version>${systematic.trading.model.version}</version>
 		</dependency>
 		
+		<!-- StringUtils / Tuples -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>${apache.commons.lang.version}</version>
 			<scope>test</scope>
-		</dependency>
-		
+		</dependency>		
 	</dependencies>
 
 </project>

@@ -13,7 +13,18 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-data-model</artifactId>
+			<version>${systematic.trading.data.model.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-model</artifactId>
+			<version>${systematic.trading.model.version}</version>
+		</dependency>
+		
+		<!-- HTTP libraries -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>fluent-hc</artifactId>
@@ -35,22 +46,11 @@
 			<version>${apache.http.components.version}</version>
 		</dependency>
 
+		<!-- JSON library -->
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>${org.json.version}</version>
-		</dependency>
-
-		<!-- Systematic Trading -->
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data-model</artifactId>
-			<version>${systematic.trading.data.model.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-model</artifactId>
-			<version>${systematic.trading.model.version}</version>
 		</dependency>
 
 		<!-- Logging framework -->

@@ -13,7 +13,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
-	
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-backtest-output-elastic</artifactId>
@@ -57,7 +56,6 @@
 			<artifactId>systematic-trading-strategy</artifactId>
 			<version>${systematic.trading.strategy.version}</version>
 		</dependency>	
-		
 	</dependencies>
 
 

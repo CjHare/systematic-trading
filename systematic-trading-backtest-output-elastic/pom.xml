@@ -13,11 +13,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-backtest-output-model</artifactId>
-			<version>${systematic.trading.backtest.output.model.version}</version>
+			<artifactId>systematic-trading-backtest-model</artifactId>
+			<version>${systematic.trading.backtest.model.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
@@ -59,6 +58,7 @@
 			<version>${jackson.version}</version>
 		</dependency>
 		
+		<!-- StringUtils / Tuples -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

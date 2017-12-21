@@ -13,22 +13,16 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
-	
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-maths</artifactId>
-			<version>${systematic.trading.maths.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-strategy-model</artifactId>
-			<version>${systematic.trading.strategy.model.version}</version>
-		</dependency>		
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-simulation-model</artifactId>
 			<version>${systematic.trading.simulation.model.version}</version>
 		</dependency>	
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-strategy-model</artifactId>
+			<version>${systematic.trading.strategy.model.version}</version>
+		</dependency>		
 
 		<!-- Logging framework -->
 		<dependency>
@@ -44,6 +38,6 @@
 			<version>${apache.commons.lang.version}</version>
 			<scope>test</scope>
 		</dependency>
-				
 	</dependencies>
+	
 </project>

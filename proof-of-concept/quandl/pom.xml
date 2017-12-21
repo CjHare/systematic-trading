@@ -18,7 +18,6 @@
 			<artifactId>systematic-trading-data-api-quandl</artifactId>
 			<version>${systematic.trading.backtest.version}</version>
 		</dependency>
-
 	</dependencies>
 
 </project>

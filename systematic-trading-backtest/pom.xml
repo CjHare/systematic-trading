@@ -13,7 +13,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-backtest-model</artifactId>
@@ -26,13 +25,13 @@
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-strategy-model</artifactId>
-			<version>${systematic.trading.strategy.version}</version>
+			<artifactId>systematic-trading-signal-model</artifactId>
+			<version>${systematic.trading.signal.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-signal-model</artifactId>
-			<version>${systematic.trading.signal.version}</version>
+			<artifactId>systematic-trading-strategy-model</artifactId>
+			<version>${systematic.trading.strategy.version}</version>
 		</dependency>
 
 		<!-- Dependency on simulation required, purpose is to create simulation -->
@@ -55,7 +54,6 @@
 			<artifactId>log4j-core</artifactId>
 			<version>${apache.log4j.version}</version>
 		</dependency>
-
 	</dependencies>
 
 </project>

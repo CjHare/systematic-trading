@@ -13,19 +13,16 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-signal-model</artifactId>
 			<version>${systematic.trading.signal.model.version}</version>
 		</dependency>
-	
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-simulation-model</artifactId>
 			<version>${systematic.trading.simulation.model.version}</version>
 		</dependency>
-		
 	</dependencies>
 
 </project>

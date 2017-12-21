@@ -18,6 +18,8 @@
 			<artifactId>systematic-trading-data-model</artifactId>
 			<version>${systematic.trading.data.model.version}</version>
 		</dependency>
+		
+		<!-- Data service instantiation -->
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-data-api-yahoo</artifactId>

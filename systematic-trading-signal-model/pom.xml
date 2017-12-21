@@ -12,7 +12,8 @@
 	<artifactId>systematic-trading-signal-model</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<dependencies>
+	<dependencies>	
+		<!-- Maths contain the indicators used when generating signals -->		
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-maths</artifactId>
