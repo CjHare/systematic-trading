@@ -9,28 +9,17 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>systematic-trading-backtest-output-file</artifactId>
+	<artifactId>systematic-trading-backtest-output-model</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-backtest-output-model</artifactId>
-			<version>${systematic.trading.backtest.output.model.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.systematic.trading</groupId>
-			<artifactId>systematic-trading-data-model</artifactId>
-			<version>${systematic.trading.data.version}</version>
+			<artifactId>systematic-trading-backtest-model</artifactId>
+			<version>${systematic.trading.backtest.model.version}</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>${mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 </project>

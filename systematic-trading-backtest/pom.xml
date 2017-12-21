@@ -35,6 +35,11 @@
 			<artifactId>systematic-trading-strategy-model</artifactId>
 			<version>${systematic.trading.strategy.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.systematic.trading</groupId>
+			<artifactId>systematic-trading-data-model</artifactId>
+			<version>${systematic.trading.data.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>

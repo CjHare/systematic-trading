@@ -32,7 +32,6 @@ import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
-import com.systematic.trading.collection.LimitedSizeQueue;
 import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityClass;
 import com.systematic.trading.signal.model.DatedSignal;
@@ -46,6 +45,7 @@ import com.systematic.trading.strategy.entry.Entry;
 import com.systematic.trading.strategy.entry.size.EntrySize;
 import com.systematic.trading.strategy.exit.Exit;
 import com.systematic.trading.strategy.exit.size.ExitSize;
+import com.systematic.trading.strategy.model.collection.LimitedSizeQueue;
 
 /**
  * A trading strategy.
