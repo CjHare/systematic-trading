@@ -60,7 +60,7 @@ public interface TradingDayPrices {
 	 * 
 	 * @return highest price of the equity during the day's trading.
 	 */
-	HighestEquityPrice highestPrice();
+	HighestPrice highestPrice();
 
 	/**
 	 * Price of the equity at the start of trading.

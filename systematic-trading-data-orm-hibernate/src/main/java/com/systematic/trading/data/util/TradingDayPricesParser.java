@@ -30,7 +30,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 import com.systematic.trading.model.price.ClosingPrice;
-import com.systematic.trading.model.price.HighestEquityPrice;
+import com.systematic.trading.model.price.HighestPrice;
 import com.systematic.trading.model.price.LowestPrice;
 import com.systematic.trading.model.price.OpeningPrice;
 import com.systematic.trading.model.price.TradingDayPrices;
@@ -50,7 +50,7 @@ public class TradingDayPricesParser {
 
 		final OpeningPrice openingPrice = OpeningPrice.valueOf(bigDecimal(data[3]));
 		final LowestPrice lowestPrice = LowestPrice.valueOf(bigDecimal(data[1]));
-		final HighestEquityPrice highestPrice = HighestEquityPrice.valueOf(bigDecimal(data[2]));
+		final HighestPrice highestPrice = HighestPrice.valueOf(bigDecimal(data[2]));
 		final ClosingPrice closingPrice = ClosingPrice.valueOf(bigDecimal(data[4]));
 
 		return new TradingDayPricesImpl(tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice);

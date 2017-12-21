@@ -45,7 +45,7 @@ import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.model.price.ClosingPrice;
-import com.systematic.trading.model.price.HighestEquityPrice;
+import com.systematic.trading.model.price.HighestPrice;
 import com.systematic.trading.model.price.LowestPrice;
 import com.systematic.trading.model.price.OpeningPrice;
 import com.systematic.trading.model.price.TradingDayPrices;
@@ -148,7 +148,7 @@ public class YahooStockApi implements EquityApi {
 		final LocalDate date = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(unparseDdate));
 		final ClosingPrice closingPrice = ClosingPrice.valueOf(BigDecimal.valueOf(quote.getDouble("Close")));
 		final LowestPrice lowestPrice = LowestPrice.valueOf(BigDecimal.valueOf(quote.getDouble("Low")));
-		final HighestEquityPrice highestPrice = HighestEquityPrice.valueOf(BigDecimal.valueOf(quote.getDouble("High")));
+		final HighestPrice highestPrice = HighestPrice.valueOf(BigDecimal.valueOf(quote.getDouble("High")));
 		final OpeningPrice openingPrice = OpeningPrice.valueOf(BigDecimal.valueOf(quote.getDouble("Open")));
 
 		return new TradingDayPricesImpl(tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice);
