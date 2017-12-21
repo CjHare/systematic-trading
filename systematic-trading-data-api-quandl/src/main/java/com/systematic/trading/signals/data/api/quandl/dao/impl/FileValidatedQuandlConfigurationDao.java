@@ -32,7 +32,6 @@ import com.systematic.trading.configuration.IntegerConfigurationValidator;
 import com.systematic.trading.configuration.UrlConfigurationValidator;
 import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
-import com.systematic.trading.data.dao.impl.FileApiKeyDao;
 import com.systematic.trading.data.dao.impl.FileConfigurationDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.signals.data.api.quandl.configuration.QuandlConfiguration;

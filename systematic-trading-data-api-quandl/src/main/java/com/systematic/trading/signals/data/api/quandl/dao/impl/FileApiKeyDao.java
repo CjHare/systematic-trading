@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.dao.impl;
+package com.systematic.trading.signals.data.api.quandl.dao.impl;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -33,8 +33,8 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.List;
 
-import com.systematic.trading.data.dao.ApiKeyDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
+import com.systematic.trading.signals.data.api.quandl.dao.ApiKeyDao;
 
 /**
  * Implementation of ApiKeyDao accessing a file from the classpath.
