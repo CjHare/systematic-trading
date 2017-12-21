@@ -39,8 +39,8 @@ import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.exception.ServiceException;
-import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.model.equity.EquityIdentity;
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.strategy.signal.SignalAnalysisListener;
 

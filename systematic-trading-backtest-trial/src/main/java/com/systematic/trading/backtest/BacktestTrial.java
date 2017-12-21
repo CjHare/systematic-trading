@@ -55,6 +55,7 @@ import com.systematic.trading.backtest.output.file.CompleteFileOutputService;
 import com.systematic.trading.backtest.output.file.MinimalFileOutputService;
 import com.systematic.trading.backtest.output.file.dao.impl.FileValidatedBackestOutputFileConfigurationDao;
 import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
+import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.data.DataServiceUpdater;
@@ -62,10 +63,9 @@ import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.util.HibernateUtil;
-import com.systematic.trading.exception.ConfigurationValidationException;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.input.BacktestLaunchArguments;
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.equity.EquityClass;
 
 /**
  * Setup specific behaviour for the Trial of back tests.

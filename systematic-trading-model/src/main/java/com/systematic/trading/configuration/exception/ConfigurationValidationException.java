@@ -23,66 +23,21 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.model;
+package com.systematic.trading.configuration.exception;
+
+import com.systematic.trading.exception.ServiceException;
 
 /**
- * Highest level of unique identifier for an equity within the wider simulation.
+ * Problem has occurred when attempting validation of configuration data.
  * 
  * @author CJ Hare
  */
-public class EquityIdentity {
+public class ConfigurationValidationException extends ServiceException {
 
-	/** How the equity is treated. */
-	private final EquityClass type;
+	/** Serialization identity. */
+	private static final long serialVersionUID = 1L;
 
-	/** Symbol used to identify the equity in the source of the trading data. */
-	private final String tickerSymbol;
-
-	/** Number of decimal places that the equity is traded in, 0 for only whole units. */
-	private final int scale;
-
-	/**
-	 * @param tickerSymbol
-	 *            identity of the equity within the source of the trading data.
-	 * @param type
-	 *            determines how the equity is treated.
-	 * @param scale
-	 *            the number of decimal places for the units that the equity may be traded in, zero
-	 *            being whole units only.
-	 */
-	public EquityIdentity( final String tickerSymbol, final EquityClass type, final int scale ) {
-		this.tickerSymbol = tickerSymbol;
-		this.scale = scale;
-		this.type = type;
-	}
-
-	/**
-	 * Retrieves the type of equity.
-	 * 
-	 * @return how to treat the equity.
-	 */
-	public EquityClass type() {
-
-		return type;
-	}
-
-	/**
-	 * Retrieves the identity of the equity.
-	 * 
-	 * @return ticker symbol used to identify the equity by the trading data source.
-	 */
-	public String tickerSymbol() {
-
-		return tickerSymbol;
-	}
-
-	/**
-	 * The number of decimal places for the trading units.
-	 * 
-	 * @return the fractions of a unit that the equity may be traded in.
-	 */
-	public int scale() {
-
-		return scale;
+	public ConfigurationValidationException( final String message ) {
+		super(message);
 	}
 }

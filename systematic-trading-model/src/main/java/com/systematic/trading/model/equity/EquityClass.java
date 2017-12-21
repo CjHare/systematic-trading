@@ -23,19 +23,24 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.exception;
+package com.systematic.trading.model.equity;
 
 /**
- * Problem has occurred when attempting validation of configuration data.
+ * The different ways the equity classes are viewed by brokers.
  * 
  * @author CJ Hare
  */
-public class ConfigurationValidationException extends ServiceException {
+public enum EquityClass {
+    // TODO move this into a package related to the broker (as that's who uses it)
 
-	/** Serialization identity. */
-	private static final long serialVersionUID = 1L;
-
-	public ConfigurationValidationException( final String message ) {
-		super(message);
-	}
+    // TODO QuityClass is related to the brokerage, keep the enum, but inject the equity with the
+    // ticker symbol
+	BOND,
+	CFD,
+	FUTURE,
+	FOREX,
+	METAL,
+	OPTION,
+	STOCK,
+	WARRENT,
 }

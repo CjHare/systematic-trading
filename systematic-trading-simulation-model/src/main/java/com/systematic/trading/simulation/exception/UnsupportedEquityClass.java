@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.simulation.exception;
 
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.equity.EquityClass;
 
 /**
  * When the type of equity is unsupported by a broker.

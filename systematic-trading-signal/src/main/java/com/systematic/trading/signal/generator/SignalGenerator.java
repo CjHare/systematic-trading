@@ -29,7 +29,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.signal.model.DatedSignal;
 
 /**

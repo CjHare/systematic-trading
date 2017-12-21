@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.configuration;
 
-import com.systematic.trading.exception.ConfigurationValidationException;
+import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 
 /**
  * Validator for a configuration value.

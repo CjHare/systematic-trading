@@ -23,73 +23,66 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.model.price;
+package com.systematic.trading.model.equity;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+/**
+ * Highest level of unique identifier for an equity within the wider simulation.
+ * 
+ * @author CJ Hare
+ */
+public class EquityIdentity {
 
-public class TradingDayPricesImpl implements TradingDayPrices {
+	/** How the equity is treated. */
+	private final EquityClass type;
 
+	/** Symbol used to identify the equity in the source of the trading data. */
 	private final String tickerSymbol;
-	private final LocalDate date;
-	private final ClosingPrice closingPrice;
-	private final LowestPrice lowestPrice;
-	private final HighestEquityPrice highestPrice;
-	private final OpeningPrice openingPrice;
 
-	public TradingDayPricesImpl( final String tickerSymbol, final LocalDate date, final BigDecimal openingPrice,
-	        final BigDecimal lowestPrice, final BigDecimal highestPrice, final BigDecimal closingPrice ) {
+	/** Number of decimal places that the equity is traded in, 0 for only whole units. */
+	private final int scale;
+
+	/**
+	 * @param tickerSymbol
+	 *            identity of the equity within the source of the trading data.
+	 * @param type
+	 *            determines how the equity is treated.
+	 * @param scale
+	 *            the number of decimal places for the units that the equity may be traded in, zero
+	 *            being whole units only.
+	 */
+	public EquityIdentity( final String tickerSymbol, final EquityClass type, final int scale ) {
 		this.tickerSymbol = tickerSymbol;
-		this.date = date;
-		this.openingPrice = OpeningPrice.valueOf(openingPrice);
-		this.lowestPrice = LowestPrice.valueOf(lowestPrice);
-		this.highestPrice = HighestEquityPrice.valueOf(highestPrice);
-		this.closingPrice = ClosingPrice.valueOf(closingPrice);
+		this.scale = scale;
+		this.type = type;
 	}
 
-	public TradingDayPricesImpl( final String tickerSymbol, final LocalDate date, final OpeningPrice openingPrice,
-	        final LowestPrice lowestPrice, final HighestEquityPrice highestPrice, final ClosingPrice closingPrice ) {
-		this.tickerSymbol = tickerSymbol;
-		this.openingPrice = openingPrice;
-		this.closingPrice = closingPrice;
-		this.highestPrice = highestPrice;
-		this.lowestPrice = lowestPrice;
-		this.date = date;
+	/**
+	 * Retrieves the type of equity.
+	 * 
+	 * @return how to treat the equity.
+	 */
+	public EquityClass type() {
+
+		return type;
 	}
 
-	@Override
-	public LocalDate date() {
-
-		return date;
-	}
-
-	@Override
-	public ClosingPrice closingPrice() {
-
-		return closingPrice;
-	}
-
-	@Override
-	public LowestPrice lowestPrice() {
-
-		return lowestPrice;
-	}
-
-	@Override
-	public HighestEquityPrice highestPrice() {
-
-		return highestPrice;
-	}
-
-	@Override
+	/**
+	 * Retrieves the identity of the equity.
+	 * 
+	 * @return ticker symbol used to identify the equity by the trading data source.
+	 */
 	public String tickerSymbol() {
 
 		return tickerSymbol;
 	}
 
-	@Override
-	public OpeningPrice openingPrice() {
+	/**
+	 * The number of decimal places for the trading units.
+	 * 
+	 * @return the fractions of a unit that the equity may be traded in.
+	 */
+	public int scale() {
 
-		return openingPrice;
+		return scale;
 	}
 }

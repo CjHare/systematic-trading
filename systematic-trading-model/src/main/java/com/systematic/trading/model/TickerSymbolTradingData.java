@@ -28,6 +28,7 @@ package com.systematic.trading.model;
 import java.time.LocalDate;
 import java.util.Map;
 
+import com.systematic.trading.model.equity.EquityIdentity;
 import com.systematic.trading.model.price.TradingDayPrices;
 
 /**

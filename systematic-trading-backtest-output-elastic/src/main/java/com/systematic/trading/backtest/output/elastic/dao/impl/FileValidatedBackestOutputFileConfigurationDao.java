@@ -33,9 +33,9 @@ import com.systematic.trading.backtest.output.elastic.configuration.impl.Backest
 import com.systematic.trading.backtest.output.elastic.dao.BackestOutputFileConfigurationDao;
 import com.systematic.trading.configuration.ConfigurationValidator;
 import com.systematic.trading.configuration.IntegerConfigurationValidator;
+import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 import com.systematic.trading.data.dao.impl.FileConfigurationDao;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
-import com.systematic.trading.exception.ConfigurationValidationException;
 
 /**
  * Providing validation of the configuration properties for the elastic output of the back test.

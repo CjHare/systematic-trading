@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.strategy.confirmation.Confirmation;
 import com.systematic.trading.strategy.entry.Entry;
 import com.systematic.trading.strategy.entry.TradingStrategyConfirmationEntry;

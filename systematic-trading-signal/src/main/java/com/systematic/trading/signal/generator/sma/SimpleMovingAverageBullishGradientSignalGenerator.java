@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.function.Predicate;
 
-import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.maths.indicator.sma.SimpleMovingAverageLine;
+import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.signal.generator.SignalGenerator;
 import com.systematic.trading.signal.model.DatedSignal;
 

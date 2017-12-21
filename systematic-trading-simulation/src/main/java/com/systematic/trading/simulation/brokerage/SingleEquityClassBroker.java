@@ -31,8 +31,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.model.equity.EquityClass;
+import com.systematic.trading.model.equity.EquityIdentity;
 import com.systematic.trading.model.price.Price;
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.event.BrokerageAccountEvent;

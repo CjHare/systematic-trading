@@ -45,8 +45,8 @@ import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfigu
 import com.systematic.trading.backtest.configuration.strategy.entry.IndicatorEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.OperatorEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.PeriodicEntryConfiguration;
-import com.systematic.trading.maths.SignalType;
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.equity.EquityClass;
+import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.signal.range.SignalRangeFilter;
 import com.systematic.trading.signal.range.SimulationDatesRangeFilterDecorator;
 import com.systematic.trading.signal.range.TradingDaySignalRangeFilter;

@@ -45,7 +45,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.price.ClosingPrice;
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;

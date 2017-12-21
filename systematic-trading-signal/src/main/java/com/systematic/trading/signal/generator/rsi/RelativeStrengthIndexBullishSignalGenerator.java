@@ -27,7 +27,7 @@ package com.systematic.trading.signal.generator.rsi;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.model.signal.SignalType;
 
 /**
  * Given RSI line points calculates when the following bullish events occurred:

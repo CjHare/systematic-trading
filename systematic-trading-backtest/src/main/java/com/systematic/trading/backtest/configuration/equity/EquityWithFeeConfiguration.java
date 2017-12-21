@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.backtest.configuration.equity;
 
-import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.model.equity.EquityIdentity;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 
 /**

@@ -27,8 +27,8 @@ package com.systematic.trading.backtest.configuration.equity;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.EquityDataset;
-import com.systematic.trading.model.EquityClass;
-import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.model.equity.EquityClass;
+import com.systematic.trading.model.equity.EquityIdentity;
 
 /**
  * Supported configurations of equities for back testing.

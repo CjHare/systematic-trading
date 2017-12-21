@@ -28,7 +28,7 @@ package com.systematic.trading.simulation.equity.event;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.model.equity.EquityIdentity;
 import com.systematic.trading.simulation.event.Event;
 
 /**

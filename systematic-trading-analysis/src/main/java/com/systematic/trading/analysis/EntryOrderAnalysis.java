@@ -75,9 +75,9 @@ import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
+import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
-import com.systematic.trading.model.EquityClass;
 
 /**
  * An analysis to generate buy signals to execute on a daily basis, a specialized version of a back

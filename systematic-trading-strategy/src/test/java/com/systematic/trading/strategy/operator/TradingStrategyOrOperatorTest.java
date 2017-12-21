@@ -35,7 +35,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.signal.model.DatedSignal;
 
 /**

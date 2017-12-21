@@ -34,7 +34,7 @@ import com.systematic.trading.model.price.HighestEquityPrice;
 import com.systematic.trading.model.price.LowestPrice;
 import com.systematic.trading.model.price.OpeningPrice;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.model.price.TradingDayPricesImpl;
+import com.systematic.trading.model.price.impl.TradingDayPricesImpl;
 
 /**
  * Provides utility operations for dealing with TradingDayPrices.

@@ -26,8 +26,8 @@
 package com.systematic.trading.backtest.output.elastic.dao;
 
 import com.systematic.trading.backtest.output.elastic.configuration.BackestOutputElasticConfiguration;
+import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
-import com.systematic.trading.exception.ConfigurationValidationException;
 
 /**
  * Deals with the loading and validation of the back test output to Elastic search configuration.

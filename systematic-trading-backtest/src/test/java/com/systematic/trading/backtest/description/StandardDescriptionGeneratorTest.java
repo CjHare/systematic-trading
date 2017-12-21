@@ -53,7 +53,7 @@ import com.systematic.trading.backtest.configuration.strategy.operator.OperatorC
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.model.equity.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 import com.systematic.trading.strategy.indicator.IndicatorId;
 import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;

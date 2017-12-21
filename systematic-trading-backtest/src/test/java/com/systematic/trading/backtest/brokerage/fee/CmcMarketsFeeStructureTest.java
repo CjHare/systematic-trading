@@ -33,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**

@@ -28,7 +28,7 @@ package com.systematic.trading.backtest.configuration.brokerage;
 import java.time.LocalDate;
 
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
-import com.systematic.trading.model.EquityIdentity;
+import com.systematic.trading.model.equity.EquityIdentity;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.brokerage.SingleEquityClassBroker;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;

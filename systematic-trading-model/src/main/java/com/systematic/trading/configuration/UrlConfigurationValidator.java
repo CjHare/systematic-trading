@@ -28,7 +28,7 @@ package com.systematic.trading.configuration;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.systematic.trading.exception.ConfigurationValidationException;
+import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 
 /**
  * Validates input as a URL.

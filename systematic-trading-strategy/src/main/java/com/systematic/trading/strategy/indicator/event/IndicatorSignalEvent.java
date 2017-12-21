@@ -27,7 +27,7 @@ package com.systematic.trading.strategy.indicator.event;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.strategy.indicator.IndicatorId;
 import com.systematic.trading.strategy.signal.SignalAnalysisEvent;
 

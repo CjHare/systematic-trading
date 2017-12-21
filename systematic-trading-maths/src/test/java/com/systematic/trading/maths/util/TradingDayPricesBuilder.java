@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.model.price.TradingDayPricesImpl;
+import com.systematic.trading.model.price.impl.TradingDayPricesImpl;
 
 /**
  * Convenience utility for creating concrete TradingDayPrices.

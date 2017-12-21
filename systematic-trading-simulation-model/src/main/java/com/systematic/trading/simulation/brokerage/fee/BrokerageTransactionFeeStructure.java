@@ -27,7 +27,7 @@ package com.systematic.trading.simulation.brokerage.fee;
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.equity.EquityClass;
 
 /**
  * Brokerage fees applied to all an equity transaction.

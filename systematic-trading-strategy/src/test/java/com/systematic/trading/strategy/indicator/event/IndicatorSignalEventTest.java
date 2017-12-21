@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.strategy.indicator.IndicatorId;
 
 /**

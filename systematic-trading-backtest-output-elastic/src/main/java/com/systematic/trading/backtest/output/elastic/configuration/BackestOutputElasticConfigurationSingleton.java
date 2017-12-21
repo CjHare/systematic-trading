@@ -29,8 +29,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.output.elastic.dao.impl.FileValidatedBackestOutputFileConfigurationDao;
+import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
-import com.systematic.trading.exception.ConfigurationValidationException;
 
 /**
  * Singleton instance of the immutable elastic configuration properties.

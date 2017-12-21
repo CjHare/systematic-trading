@@ -23,24 +23,77 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.model;
+package com.systematic.trading.model.maths;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.systematic.trading.model.price.ClosingPrice;
+import com.systematic.trading.model.price.HighestEquityPrice;
+import com.systematic.trading.model.price.LowestPrice;
+import com.systematic.trading.model.price.OpeningPrice;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
- * The different ways the equity classes are viewed by brokers.
+ * Data object pairing a date and a value.
  * 
  * @author CJ Hare
  */
-public enum EquityClass {
-    // TODO move this into a package related to the broker (as that's who uses it)
+public class DatedValue implements TradingDayPrices {
 
-    // TODO QuityClass is related to the brokerage, keep the enum, but inject the equity with the
-    // ticker symbol
-	BOND,
-	CFD,
-	FUTURE,
-	FOREX,
-	METAL,
-	OPTION,
-	STOCK,
-	WARRENT,
+	private final LocalDate date;
+	private final BigDecimal value;
+
+	public DatedValue( final LocalDate date, final BigDecimal value ) {
+
+		if (date == null || value == null) {
+			throw new IllegalArgumentException(
+			        String.format("Expecting non null date and value, given Date: %s and Value: %s", date, value));
+		}
+
+		this.date = date;
+		this.value = value;
+	}
+
+	@Override
+	public LocalDate date() {
+
+		return date;
+	}
+
+	public BigDecimal value() {
+
+		return value;
+	}
+
+	@Override
+	public ClosingPrice closingPrice() {
+
+		// Immutable value is verified as non-null in constructor
+		return ClosingPrice.valueOf(value);
+	}
+
+	@Override
+	public LowestPrice lowestPrice() {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public HighestEquityPrice highestPrice() {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public OpeningPrice openingPrice() {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String tickerSymbol() {
+
+		throw new UnsupportedOperationException();
+	}
 }

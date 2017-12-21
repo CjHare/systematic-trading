@@ -27,7 +27,7 @@ package com.systematic.trading.signal.model;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.model.signal.SignalType;
 
 /**
  * Tuple of a date and a signal type.

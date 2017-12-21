@@ -41,8 +41,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.model.price.TradingDayPrices;
+import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.strategy.confirmation.Confirmation;
 

@@ -30,8 +30,8 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.maths.SignalType;
 import com.systematic.trading.model.price.TradingDayPrices;
+import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.signal.model.DatedSignal;
 
 /**

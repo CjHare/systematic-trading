@@ -32,7 +32,7 @@ import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;

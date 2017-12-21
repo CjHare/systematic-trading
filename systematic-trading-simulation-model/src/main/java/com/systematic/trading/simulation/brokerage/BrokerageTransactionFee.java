@@ -28,7 +28,7 @@ package com.systematic.trading.simulation.brokerage;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.equity.EquityClass;
 
 /**
  * Brokerage fees applied to all an equity transaction.

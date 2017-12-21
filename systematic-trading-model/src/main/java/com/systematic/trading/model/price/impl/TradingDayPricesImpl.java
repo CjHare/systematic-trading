@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.maths;
+package com.systematic.trading.model.price.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -34,25 +34,33 @@ import com.systematic.trading.model.price.LowestPrice;
 import com.systematic.trading.model.price.OpeningPrice;
 import com.systematic.trading.model.price.TradingDayPrices;
 
-/**
- * Data object pairing a date and a value.
- * 
- * @author CJ Hare
- */
-public class DatedValue implements TradingDayPrices {
+public class TradingDayPricesImpl implements TradingDayPrices {
 
+	private final String tickerSymbol;
 	private final LocalDate date;
-	private final BigDecimal value;
+	private final ClosingPrice closingPrice;
+	private final LowestPrice lowestPrice;
+	private final HighestEquityPrice highestPrice;
+	private final OpeningPrice openingPrice;
 
-	public DatedValue( final LocalDate date, final BigDecimal value ) {
-
-		if (date == null || value == null) {
-			throw new IllegalArgumentException(
-			        String.format("Expecting non null date and value, given Date: %s and Value: %s", date, value));
-		}
-
+	public TradingDayPricesImpl( final String tickerSymbol, final LocalDate date, final BigDecimal openingPrice,
+	        final BigDecimal lowestPrice, final BigDecimal highestPrice, final BigDecimal closingPrice ) {
+		this.tickerSymbol = tickerSymbol;
 		this.date = date;
-		this.value = value;
+		this.openingPrice = OpeningPrice.valueOf(openingPrice);
+		this.lowestPrice = LowestPrice.valueOf(lowestPrice);
+		this.highestPrice = HighestEquityPrice.valueOf(highestPrice);
+		this.closingPrice = ClosingPrice.valueOf(closingPrice);
+	}
+
+	public TradingDayPricesImpl( final String tickerSymbol, final LocalDate date, final OpeningPrice openingPrice,
+	        final LowestPrice lowestPrice, final HighestEquityPrice highestPrice, final ClosingPrice closingPrice ) {
+		this.tickerSymbol = tickerSymbol;
+		this.openingPrice = openingPrice;
+		this.closingPrice = closingPrice;
+		this.highestPrice = highestPrice;
+		this.lowestPrice = lowestPrice;
+		this.date = date;
 	}
 
 	@Override
@@ -61,39 +69,33 @@ public class DatedValue implements TradingDayPrices {
 		return date;
 	}
 
-	public BigDecimal value() {
-
-		return value;
-	}
-
 	@Override
 	public ClosingPrice closingPrice() {
 
-		// Immutable value is verified as non-null in constructor
-		return ClosingPrice.valueOf(value);
+		return closingPrice;
 	}
 
 	@Override
 	public LowestPrice lowestPrice() {
 
-		throw new UnsupportedOperationException();
+		return lowestPrice;
 	}
 
 	@Override
 	public HighestEquityPrice highestPrice() {
 
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public OpeningPrice openingPrice() {
-
-		throw new UnsupportedOperationException();
+		return highestPrice;
 	}
 
 	@Override
 	public String tickerSymbol() {
 
-		throw new UnsupportedOperationException();
+		return tickerSymbol;
+	}
+
+	@Override
+	public OpeningPrice openingPrice() {
+
+		return openingPrice;
 	}
 }
