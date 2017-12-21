@@ -28,7 +28,7 @@ package com.systematic.trading.simulation.brokerage;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.data.price.Price;
+import com.systematic.trading.model.price.Price;
 import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
 import com.systematic.trading.simulation.order.EquityOrderVolume;
 

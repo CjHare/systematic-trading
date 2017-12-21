@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.simulation.equity;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * Brokerage funds under management fee.

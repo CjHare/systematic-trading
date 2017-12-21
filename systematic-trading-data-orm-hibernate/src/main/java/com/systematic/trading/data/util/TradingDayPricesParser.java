@@ -29,12 +29,12 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.impl.TradingDayPricesImpl;
-import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestEquityPrice;
-import com.systematic.trading.data.price.LowestPrice;
-import com.systematic.trading.data.price.OpeningPrice;
+import com.systematic.trading.model.price.ClosingPrice;
+import com.systematic.trading.model.price.HighestEquityPrice;
+import com.systematic.trading.model.price.LowestPrice;
+import com.systematic.trading.model.price.OpeningPrice;
+import com.systematic.trading.model.price.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPricesImpl;
 
 /**
  * Provides utility operations for dealing with TradingDayPrices.

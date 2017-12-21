@@ -46,10 +46,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.OngoingStubbing;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.rs.RelativeStrengthIndicator;
 import com.systematic.trading.maths.indicator.rs.RelativeStrengthLine;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * Verifies the behaviour of RelativeStrengthIndexCalculator.

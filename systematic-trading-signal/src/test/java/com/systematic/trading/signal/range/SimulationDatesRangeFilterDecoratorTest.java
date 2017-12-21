@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * SimulationDatesRangeFilterDecorator decorates a date filter adding a earliest and latest date

@@ -23,34 +23,56 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.price;
+package com.systematic.trading.model.price;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
- * Within a trading day the highest price of the equity.
+ * Data points for a single day of trading.
  * 
  * @author CJ Hare
  */
-public class HighestEquityPrice extends Price {
-
-	protected HighestEquityPrice( final BigDecimal price ) {
-		super(price);
-	}
+public interface TradingDayPrices {
 
 	/**
-	 * Creates a highest price from an underlying decimal value.
+	 * The calendar date for the day's trading.
 	 * 
-	 * @param price
-	 *            decimal to create as an highest price, cannot be <code>null</code>.
-	 * @return equivalent highest price for the given decimal.
+	 * @return date of the trading data.
 	 */
-	public static HighestEquityPrice valueOf( final BigDecimal price ) {
+	LocalDate date();
 
-		if (price == null) {
-			throw new IllegalArgumentException("null is not accepted by HighestPrice.valueOf()");
-		}
+	/**
+	 * Price at the market close.
+	 * 
+	 * @return price of the equity at the close of trading.
+	 */
+	ClosingPrice closingPrice();
 
-		return new HighestEquityPrice(price);
-	}
+	/**
+	 * Lowest price of the equity during the day.
+	 * 
+	 * @return lowest price of the equity during the day's trading.
+	 */
+	LowestPrice lowestPrice();
+
+	/**
+	 * Highest price of the equity during the day.
+	 * 
+	 * @return highest price of the equity during the day's trading.
+	 */
+	HighestEquityPrice highestPrice();
+
+	/**
+	 * Price of the equity at the start of trading.
+	 * 
+	 * @return opening price of the equity during the day's trading.
+	 */
+	OpeningPrice openingPrice();
+
+	/**
+	 * The abbreviation used in markets for the equity.
+	 * 
+	 * @return market abbreviation.
+	 */
+	String tickerSymbol();
 }

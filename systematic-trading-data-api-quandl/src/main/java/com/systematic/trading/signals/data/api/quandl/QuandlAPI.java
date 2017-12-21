@@ -28,11 +28,11 @@ package com.systematic.trading.signals.data.api.quandl;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signals.data.api.quandl.converter.QuandlResponseConverter;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;

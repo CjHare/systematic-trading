@@ -36,9 +36,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.impl.TradingDayPricesImpl;
 import com.systematic.trading.maths.SignalType;
+import com.systematic.trading.model.price.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPricesImpl;
 import com.systematic.trading.signal.model.DatedSignal;
 
 /**

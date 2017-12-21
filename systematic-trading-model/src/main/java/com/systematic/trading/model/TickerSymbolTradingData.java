@@ -28,7 +28,7 @@ package com.systematic.trading.model;
 import java.time.LocalDate;
 import java.util.Map;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * Details for the trading range, per a specific ticker symbol.

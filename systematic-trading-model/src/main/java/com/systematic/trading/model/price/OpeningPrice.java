@@ -23,29 +23,34 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data;
+package com.systematic.trading.model.price;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 
 /**
- * Point of contact to retrieve data.
+ * Within a trading day the opening price of the equity.
  * 
  * @author CJ Hare
  */
-@FunctionalInterface
-public interface DataService {
+public class OpeningPrice extends Price {
+
+	protected OpeningPrice( final BigDecimal amount ) {
+		super(amount);
+	}
 
 	/**
-	 * Retrieves the data for a specific equity.
+	 * Creates an opening price from an underlying decimal value.
 	 * 
-	 * @param tickerSymbol
-	 *            identifier for the equity to retrieve the data on.
-	 * @param startDate
-	 *            inclusive beginning date for the data range.
-	 * @param endDate
-	 *            inclusive end date for the data range.
-	 * @return all the trading days data points, when none are available size if zero will be
-	 *         returned.
+	 * @param amount
+	 *            decimal to create as an opening price, cannot be <code>null</code>.
+	 * @return equivalent opening price for the given decimal.
 	 */
-	TradingDayPrices[] get( String tickerSymbol, LocalDate startDate, LocalDate endDate );
+	public static OpeningPrice valueOf( final BigDecimal amount ) {
+
+		if (amount == null) {
+			throw new IllegalArgumentException("null is not accepted by OpeningPrice.valueOf()");
+		}
+
+		return new OpeningPrice(amount);
+	}
 }

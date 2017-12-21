@@ -35,8 +35,8 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.SimulationStateListener.SimulationState;
 import com.systematic.trading.simulation.analysis.roi.ReturnOnInvestmentListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;

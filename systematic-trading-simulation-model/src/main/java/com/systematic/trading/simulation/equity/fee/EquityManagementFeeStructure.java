@@ -28,7 +28,7 @@ package com.systematic.trading.simulation.equity.fee;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * Brokerage funds under management fee.

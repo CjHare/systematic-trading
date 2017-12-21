@@ -28,7 +28,7 @@ package com.systematic.trading.strategy;
 import java.time.Period;
 import java.util.Optional;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.cash.CashAccount;

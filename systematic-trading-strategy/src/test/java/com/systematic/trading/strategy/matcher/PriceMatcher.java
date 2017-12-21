@@ -32,7 +32,7 @@ import java.math.BigDecimal;
 import org.hamcrest.Description;
 import org.mockito.ArgumentMatcher;
 
-import com.systematic.trading.data.price.Price;
+import com.systematic.trading.model.price.Price;
 
 /**
  * Compares the value held by Price.

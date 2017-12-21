@@ -32,9 +32,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.TreeMap;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.impl.TradingDayPricesImpl;
+import com.systematic.trading.model.price.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPricesImpl;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
 

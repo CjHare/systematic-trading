@@ -32,7 +32,7 @@ import java.time.LocalDate;
 import org.hamcrest.Description;
 import org.mockito.ArgumentMatcher;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * Matches the only on the date of the TradingDayPrices

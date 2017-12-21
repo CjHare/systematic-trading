@@ -32,10 +32,10 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.indicator.rs.RelativeStrengthIndicator;
 import com.systematic.trading.maths.indicator.rs.RelativeStrengthLine;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * Relative Strength Index - RSI

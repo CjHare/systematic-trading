@@ -61,6 +61,7 @@ import com.systematic.trading.data.history.impl.UnnecessaryHistoryRequestFilterI
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.builder.impl.HibernateHistoryRetrievalRequestBuilder;
 import com.systematic.trading.exception.ConfigurationValidationException;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.converter.QuandlResponseConverter;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;

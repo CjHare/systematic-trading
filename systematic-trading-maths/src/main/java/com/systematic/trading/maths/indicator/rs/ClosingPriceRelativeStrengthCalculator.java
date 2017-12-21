@@ -31,9 +31,9 @@ import java.time.LocalDate;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.price.ClosingPrice;
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.model.price.ClosingPrice;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * This implementation uses only the closing price data, applying the EMA style smoothing in the

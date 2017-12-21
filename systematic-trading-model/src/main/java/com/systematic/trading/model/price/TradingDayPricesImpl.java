@@ -23,16 +23,10 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.impl;
+package com.systematic.trading.model.price;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestEquityPrice;
-import com.systematic.trading.data.price.LowestPrice;
-import com.systematic.trading.data.price.OpeningPrice;
 
 public class TradingDayPricesImpl implements TradingDayPrices {
 

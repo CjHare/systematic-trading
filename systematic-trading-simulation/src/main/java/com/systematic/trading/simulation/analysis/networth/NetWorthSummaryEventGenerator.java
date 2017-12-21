@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.SimulationStateListener;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;

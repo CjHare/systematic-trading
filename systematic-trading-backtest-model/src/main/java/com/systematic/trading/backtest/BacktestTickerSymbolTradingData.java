@@ -30,9 +30,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.EquityIdentity;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * Summary details for the trading data used for a single ticker symbol.

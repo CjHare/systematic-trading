@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;
 import com.systematic.trading.strategy.confirmation.Confirmation;
 

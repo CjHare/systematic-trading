@@ -31,8 +31,8 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.formula.Networth;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventImpl;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;

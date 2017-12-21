@@ -27,57 +27,27 @@ package com.systematic.trading.data;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestEquityPrice;
-import com.systematic.trading.data.price.LowestPrice;
-import com.systematic.trading.data.price.OpeningPrice;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
- * Data points for a single day of trading.
+ * Point of contact to retrieve data.
  * 
  * @author CJ Hare
  */
-public interface TradingDayPrices {
+@FunctionalInterface
+public interface DataService {
 
 	/**
-	 * The calendar date for the day's trading.
+	 * Retrieves the data for a specific equity.
 	 * 
-	 * @return date of the trading data.
+	 * @param tickerSymbol
+	 *            identifier for the equity to retrieve the data on.
+	 * @param startDate
+	 *            inclusive beginning date for the data range.
+	 * @param endDate
+	 *            inclusive end date for the data range.
+	 * @return all the trading days data points, when none are available size if zero will be
+	 *         returned.
 	 */
-	LocalDate date();
-
-	/**
-	 * Price at the market close.
-	 * 
-	 * @return price of the equity at the close of trading.
-	 */
-	ClosingPrice closingPrice();
-
-	/**
-	 * Lowest price of the equity during the day.
-	 * 
-	 * @return lowest price of the equity during the day's trading.
-	 */
-	LowestPrice lowestPrice();
-
-	/**
-	 * Highest price of the equity during the day.
-	 * 
-	 * @return highest price of the equity during the day's trading.
-	 */
-	HighestEquityPrice highestPrice();
-
-	/**
-	 * Price of the equity at the start of trading.
-	 * 
-	 * @return opening price of the equity during the day's trading.
-	 */
-	OpeningPrice openingPrice();
-
-	/**
-	 * The abbreviation used in markets for the equity.
-	 * 
-	 * @return market abbreviation.
-	 */
-	String tickerSymbol();
+	TradingDayPrices[] get( String tickerSymbol, LocalDate startDate, LocalDate endDate );
 }

@@ -33,7 +33,7 @@ import java.time.Period;
 
 import org.junit.Test;
 
-import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.model.price.ClosingPrice;
 
 /**
  * Verifies behaviour of the FlatEquityManagementFeeCalculator.

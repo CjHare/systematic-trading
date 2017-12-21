@@ -29,6 +29,7 @@ import java.time.LocalDate;
 
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 public class HibernateDataService implements DataService {
 

@@ -41,15 +41,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.data.impl.TradingDayPricesImpl;
-import com.systematic.trading.data.price.ClosingPrice;
-import com.systematic.trading.data.price.HighestEquityPrice;
-import com.systematic.trading.data.price.LowestPrice;
-import com.systematic.trading.data.price.OpeningPrice;
+import com.systematic.trading.model.price.ClosingPrice;
+import com.systematic.trading.model.price.HighestEquityPrice;
+import com.systematic.trading.model.price.LowestPrice;
+import com.systematic.trading.model.price.OpeningPrice;
+import com.systematic.trading.model.price.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPricesImpl;
 
 public class YahooStockApi implements EquityApi {
 

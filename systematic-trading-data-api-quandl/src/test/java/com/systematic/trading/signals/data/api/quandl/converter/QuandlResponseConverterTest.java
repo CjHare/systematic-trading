@@ -35,8 +35,8 @@ import java.util.List;
 import org.apache.commons.text.RandomStringGenerator;
 import org.junit.Test;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlColumnName;
 import com.systematic.trading.signals.data.api.quandl.model.QuandlResultSet;
 

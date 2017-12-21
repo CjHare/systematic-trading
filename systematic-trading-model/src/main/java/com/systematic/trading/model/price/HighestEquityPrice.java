@@ -23,34 +23,34 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.price;
+package com.systematic.trading.model.price;
 
 import java.math.BigDecimal;
 
 /**
- * Within a trading day the opening price of the equity.
+ * Within a trading day the highest price of the equity.
  * 
  * @author CJ Hare
  */
-public class OpeningPrice extends Price {
+public class HighestEquityPrice extends Price {
 
-	protected OpeningPrice( final BigDecimal amount ) {
-		super(amount);
+	protected HighestEquityPrice( final BigDecimal price ) {
+		super(price);
 	}
 
 	/**
-	 * Creates an opening price from an underlying decimal value.
+	 * Creates a highest price from an underlying decimal value.
 	 * 
-	 * @param amount
-	 *            decimal to create as an opening price, cannot be <code>null</code>.
-	 * @return equivalent opening price for the given decimal.
+	 * @param price
+	 *            decimal to create as an highest price, cannot be <code>null</code>.
+	 * @return equivalent highest price for the given decimal.
 	 */
-	public static OpeningPrice valueOf( final BigDecimal amount ) {
+	public static HighestEquityPrice valueOf( final BigDecimal price ) {
 
-		if (amount == null) {
-			throw new IllegalArgumentException("null is not accepted by OpeningPrice.valueOf()");
+		if (price == null) {
+			throw new IllegalArgumentException("null is not accepted by HighestPrice.valueOf()");
 		}
 
-		return new OpeningPrice(amount);
+		return new HighestEquityPrice(price);
 	}
 }

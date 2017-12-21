@@ -27,7 +27,7 @@ package com.systematic.trading.data.dao;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * Trading Day Prices DAO.

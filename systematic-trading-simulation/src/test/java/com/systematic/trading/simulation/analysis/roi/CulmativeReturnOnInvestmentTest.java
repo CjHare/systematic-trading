@@ -41,8 +41,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.OngoingStubbing;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.model.price.ClosingPrice;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;

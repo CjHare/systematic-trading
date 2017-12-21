@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.simulation.analysis.roi;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEventListener;
 import com.systematic.trading.simulation.brokerage.Brokerage;
 import com.systematic.trading.simulation.cash.CashAccount;

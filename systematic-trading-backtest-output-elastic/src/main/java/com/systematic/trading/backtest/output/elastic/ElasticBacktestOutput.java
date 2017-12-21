@@ -40,8 +40,8 @@ import com.systematic.trading.backtest.output.elastic.model.index.ElasticNetwort
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticOrderIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticReturnOnInvestmentIndex;
 import com.systematic.trading.backtest.output.elastic.model.index.ElasticSignalAnalysisIndex;
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
 import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;

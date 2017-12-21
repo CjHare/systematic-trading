@@ -28,8 +28,8 @@ package com.systematic.trading.maths.util;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.impl.TradingDayPricesImpl;
+import com.systematic.trading.model.price.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPricesImpl;
 
 /**
  * Convenience utility for creating concrete TradingDayPrices.

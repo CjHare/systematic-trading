@@ -27,7 +27,7 @@ package com.systematic.trading.signal.range;
 
 import java.time.LocalDate;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * A filter that is used to exclude the range of trading days when a signal can be generated.

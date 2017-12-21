@@ -44,9 +44,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
 import com.systematic.trading.maths.util.TradingDayPricesBuilder;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * Verifying the behaviour for a SimpleMovingAverageCalculator implementation that uses the closing

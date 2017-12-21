@@ -28,7 +28,7 @@ package com.systematic.trading.simulation.equity.fee.management;
 import java.math.BigDecimal;
 import java.time.Period;
 
-import com.systematic.trading.data.price.ClosingPrice;
+import com.systematic.trading.model.price.ClosingPrice;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
 
 /**

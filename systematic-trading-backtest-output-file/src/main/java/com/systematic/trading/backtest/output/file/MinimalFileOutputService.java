@@ -34,8 +34,8 @@ import com.systematic.trading.backtest.output.file.dao.impl.FileEventStatisticsD
 import com.systematic.trading.backtest.output.file.dao.impl.FileNetWorthSummaryDao;
 import com.systematic.trading.backtest.output.file.dao.impl.FileNetworthComparisonDao;
 import com.systematic.trading.backtest.output.file.util.FileMultithreading;
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signal.event.SignalAnalysisEvent;
 import com.systematic.trading.simulation.analysis.roi.CumulativeReturnOnInvestment;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;

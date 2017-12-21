@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.strategy.exit;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 
 /**

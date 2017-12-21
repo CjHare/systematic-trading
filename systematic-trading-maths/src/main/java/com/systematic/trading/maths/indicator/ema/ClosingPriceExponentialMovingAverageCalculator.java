@@ -31,8 +31,8 @@ import java.time.LocalDate;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * This implementation calculates the EMA from the closing price, by first calculating the starting

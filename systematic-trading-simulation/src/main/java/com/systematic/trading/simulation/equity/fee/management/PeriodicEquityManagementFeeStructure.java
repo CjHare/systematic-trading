@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeCalculator;
 import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure;
 

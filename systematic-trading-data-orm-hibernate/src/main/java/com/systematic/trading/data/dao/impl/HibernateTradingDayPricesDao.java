@@ -38,10 +38,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
 
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.data.util.TradingDayPricesParser;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * DAO dealing with the Trading Day Prices history via Hibernate.

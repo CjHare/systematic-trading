@@ -25,7 +25,7 @@
  */
 package com.systematic.trading.maths.indicator;
 
-import com.systematic.trading.data.TradingDayPrices;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * An indicator that interprets price data in a specific way.

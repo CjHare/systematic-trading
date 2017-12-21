@@ -26,8 +26,8 @@
 package com.systematic.trading.backtest.event;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signal.event.SignalAnalysisListener;
 import com.systematic.trading.simulation.SimulationStateListener;
 import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventListener;

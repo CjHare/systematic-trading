@@ -30,8 +30,8 @@ import java.time.Period;
 
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.event.BacktestEventListener;
-import com.systematic.trading.data.TradingDayPrices;
 import com.systematic.trading.model.TickerSymbolTradingData;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.Simulation;
 import com.systematic.trading.simulation.SimulationStateListener;
 import com.systematic.trading.simulation.analysis.networth.NetWorthSummaryEventGenerator;

@@ -43,9 +43,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.data.TradingDayPrices;
-import com.systematic.trading.data.price.OpeningPrice;
 import com.systematic.trading.model.EquityClass;
+import com.systematic.trading.model.price.OpeningPrice;
+import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
 import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
