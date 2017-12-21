@@ -23,14 +23,6 @@
 			<artifactId>systematic-trading-strategy-model</artifactId>
 			<version>${systematic.trading.strategy.model.version}</version>
 		</dependency>
-		
-		<!-- Only for testing -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${apache.commons.lang.version}</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 </project>

@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+		<!-- Hypersonic Database -->
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>

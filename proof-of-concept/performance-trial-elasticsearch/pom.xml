@@ -52,13 +52,6 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-		
-		<!-- StringUtils / Tuples -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${apache.commons.lang.version}</version>
-		</dependency>
 	</dependencies>
 
 	<build>

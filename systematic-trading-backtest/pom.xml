@@ -40,20 +40,6 @@
 			<artifactId>systematic-trading-simulation</artifactId>
 			<version>${systematic.trading.simulation.version}</version>
 		</dependency>
-
-		<!-- StringUtils / Tuples -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${apache.commons.lang.version}</version>
-		</dependency>
-
-		<!-- Logging framework -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${apache.log4j.version}</version>
-		</dependency>
 	</dependencies>
 
 </project>

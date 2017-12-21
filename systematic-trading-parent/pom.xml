@@ -49,7 +49,6 @@
 	</properties>
 
 	<dependencies>
-
 		<!-- These JNA are used by Android API -->
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
@@ -60,6 +59,20 @@
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
 			<version>${jna.version}</version>
+		</dependency>
+
+		<!-- StringUtils / Tuples -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${apache.commons.lang.version}</version>
+		</dependency>
+
+		<!-- Logging framework -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${apache.log4j.version}</version>
 		</dependency>
 
 		<!-- Testing only dependencies -->
@@ -75,7 +88,6 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>
