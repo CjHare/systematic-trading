@@ -1,6 +1,7 @@
 package com.systematic.trading.backtest.configuration;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
@@ -19,9 +20,7 @@ public class BacktestBootstrapConfiguration {
 	private final BacktestSimulationDates backtestDates;
 	private final BrokerageTransactionFeeStructure brokerageFees;
 	private final CashAccountConfiguration cashAccount;
-
-	// TODO despoit config & opening funds into an object
-	private final DepositConfiguration deposit;
+	private final Optional<DepositConfiguration> deposit;
 	private final BigDecimal openingFunds;
 	private final StrategyConfiguration strategy;
 	private final EquityConfiguration equity;
@@ -34,7 +33,19 @@ public class BacktestBootstrapConfiguration {
 		this.brokerageFees = brokerageFees;
 		this.cashAccount = cashAccount;
 		this.openingFunds = openingFunds;
-		this.deposit = deposit;
+		this.deposit = Optional.of(deposit);
+		this.strategy = strategy;
+		this.equity = equity;
+	}
+
+	public BacktestBootstrapConfiguration( final BacktestSimulationDates backtestDates,
+	        final BrokerageTransactionFeeStructure brokerageFees, final CashAccountConfiguration cashAccount,
+	        final BigDecimal openingFunds, StrategyConfiguration strategy, final EquityConfiguration equity ) {
+		this.backtestDates = backtestDates;
+		this.brokerageFees = brokerageFees;
+		this.cashAccount = cashAccount;
+		this.openingFunds = openingFunds;
+		this.deposit = Optional.empty();
 		this.strategy = strategy;
 		this.equity = equity;
 	}
@@ -59,7 +70,7 @@ public class BacktestBootstrapConfiguration {
 		return openingFunds;
 	}
 
-	public DepositConfiguration deposit() {
+	public Optional<DepositConfiguration> deposit() {
 
 		return deposit;
 	}

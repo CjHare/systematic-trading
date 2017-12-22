@@ -37,6 +37,8 @@ public interface LaunchArgument<T> {
 
 	enum ArgumentKey {
 		DATA_SERVICE_TYPE("-data_service_type"),
+		DEPOSIT_AMOUNT("-deposit_amount"),
+		DEPOSIT_FREQUENCY("-deposit_frequency"),
 		END_DATE("-end_date"),
 		EQUITY_DATASET("-equity_dataset"),
 		FILE_BASE_DIRECTORY("-output_file_base_directory"),
@@ -65,7 +67,6 @@ public interface LaunchArgument<T> {
 			}
 
 			return Optional.empty();
-
 		}
 	}
 

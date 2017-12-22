@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
@@ -93,7 +94,7 @@ public class BacktestBootstrapContextBulider {
 	private EquityConfiguration equity;
 
 	/** Weekly deposit amount into the cash account. */
-	private DepositConfiguration deposit;
+	private Optional<DepositConfiguration> deposit;
 
 	/** Starting balance for the cash account. */
 	private BigDecimal openingFunds;
@@ -294,7 +295,11 @@ public class BacktestBootstrapContextBulider {
 
 	private CashAccount cashAccount() {
 
-		return CashAccountFactory.getInstance().create(simulationDates.startDate(), openingFunds, deposit);
+		if (deposit.isPresent()) {
+			return CashAccountFactory.getInstance().create(simulationDates.startDate(), openingFunds, deposit.get());
+		}
+
+		return CashAccountFactory.getInstance().create(simulationDates.startDate(), openingFunds);
 	}
 
 	private Brokerage brokerage() {

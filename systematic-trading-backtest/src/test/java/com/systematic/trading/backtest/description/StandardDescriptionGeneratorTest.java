@@ -31,6 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.time.Period;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -97,7 +98,7 @@ public class StandardDescriptionGeneratorTest {
 	public void bootstrapConfigurationWithDeposit() {
 
 		final BacktestBootstrapConfiguration configuration = setUpBootstrapConfiguration();
-		final DepositConfiguration depositAmount = DepositConfiguration.WEEKLY_150;
+		final DepositConfiguration depositAmount = new DepositConfiguration(BigDecimal.valueOf(150), Period.ofWeeks(1));
 
 		final String description = descriptions.bootstrapConfigurationWithDeposit(configuration, depositAmount);
 
@@ -241,7 +242,7 @@ public class StandardDescriptionGeneratorTest {
 		final BacktestSimulationDates backtestDates = mock(BacktestSimulationDates.class);
 		final BrokerageTransactionFeeStructure brokerageFees = mock(SelfWealthBrokerageFees.class);
 		final CashAccountConfiguration cashAccount = CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY;
-		final DepositConfiguration deposit = DepositConfiguration.WEEKLY_200;
+		final DepositConfiguration deposit = new DepositConfiguration(BigDecimal.valueOf(200), Period.ofWeeks(1));
 		final StrategyConfiguration strategy = mock(StrategyConfiguration.class);
 		when(strategy.description(any(DescriptionGenerator.class))).thenReturn("sTrategy-deScription");
 		final EquityConfiguration equity = mock(EquityConfiguration.class);

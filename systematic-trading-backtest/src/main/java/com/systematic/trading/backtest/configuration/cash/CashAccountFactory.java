@@ -63,8 +63,6 @@ public class CashAccountFactory {
 		return INSTANCE;
 	}
 
-	// TODO different methods, pass the none onto the caller
-
 	public CashAccount create( final LocalDate startDate, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit ) {
 
@@ -78,11 +76,19 @@ public class CashAccountFactory {
 		final CashAccount underlyingAccount = create(CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
 		        annualInterestRate, openingFunds, startDate, MATH_CONTEXT);
 
-		if (deposit == DepositConfiguration.NONE) {
-			return underlyingAccount;
-		}
-
 		return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate, depositFrequency);
+	}
+
+	public CashAccount create( final LocalDate startDate, final BigDecimal openingFunds ) {
+
+		// TODO all these into a configuration - interest rate, deposit & frequency
+		final BigDecimal annualRate = BigDecimal.valueOf(1.5);
+		final InterestRate annualInterestRate = InterestRateFactory.getInstance()
+		        .create(InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, MATH_CONTEXT);
+		final CashAccount underlyingAccount = create(CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
+		        annualInterestRate, openingFunds, startDate, MATH_CONTEXT);
+
+		return underlyingAccount;
 	}
 
 	/**

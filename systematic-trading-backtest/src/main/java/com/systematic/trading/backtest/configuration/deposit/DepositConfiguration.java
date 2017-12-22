@@ -33,18 +33,20 @@ import java.time.Period;
  * 
  * @author CJ Hare
  */
-public enum DepositConfiguration {
-
-	NONE(null, null),
-	WEEKLY_150(BigDecimal.valueOf(150), Period.ofWeeks(1)),
-	WEEKLY_200(BigDecimal.valueOf(200), Period.ofWeeks(1)),
-	WEEKLY_250(BigDecimal.valueOf(250), Period.ofWeeks(1)),
-	WEEKLY_2000(BigDecimal.valueOf(2000), Period.ofWeeks(1));
+public class DepositConfiguration {
 
 	private final BigDecimal amount;
-	private final transient Period frequency;
+	private final Period frequency;
 
-	DepositConfiguration( final BigDecimal amount, final Period frequency ) {
+	/**
+	 * No deposits are to be made.
+	 */
+	public DepositConfiguration() {
+		this.frequency = Period.ZERO;
+		this.amount = BigDecimal.ZERO;
+	}
+
+	public DepositConfiguration( final BigDecimal amount, final Period frequency ) {
 		this.frequency = frequency;
 		this.amount = amount;
 	}

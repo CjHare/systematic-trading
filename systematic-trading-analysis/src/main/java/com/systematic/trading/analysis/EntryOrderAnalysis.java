@@ -40,7 +40,6 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
@@ -94,9 +93,7 @@ public class EntryOrderAnalysis {
 	/** Days of signals analysis to generate and display. */
 	private static final int DAYS_OF_SIGNALS = 1;
 
-	/**
-	 * Ensures all the necessary trading data get retrieved into the local source.
-	 */
+	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
 
 	/** Local source of the trading prices. */
@@ -189,8 +186,7 @@ public class EntryOrderAnalysis {
 		        today.minus(strategy.entry().priceDataRange()).minusDays(DAYS_OF_SIGNALS), today);
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, openingFunds, DepositConfiguration.NONE,
-		        strategy, equity);
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, openingFunds, strategy, equity);
 	}
 
 	private BacktestEventListener output() {
