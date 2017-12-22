@@ -49,8 +49,7 @@ public class DepositAmountLaunchArgument implements LaunchArgument<BigDecimal> {
 		final String depositAmount = arguments.get(ArgumentKey.DEPOSIT_AMOUNT);
 
 		validator.validate(depositAmount, "%s argument is not present", ArgumentKey.DEPOSIT_AMOUNT.getKey());
-		validator.validateDateFormat(depositAmount, "%s argument date format is invalid",
-		        ArgumentKey.DEPOSIT_AMOUNT.getKey());
+		validator.validateNotEmpty(depositAmount, "%s argument cannot be empty", ArgumentKey.DEPOSIT_AMOUNT.getKey());
 
 		return new BigDecimal(depositAmount);
 	}

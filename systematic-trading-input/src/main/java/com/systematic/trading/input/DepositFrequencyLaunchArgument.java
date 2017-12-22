@@ -50,7 +50,7 @@ public class DepositFrequencyLaunchArgument implements LaunchArgument<DepositFre
 		final String candidateFrequency = arguments.get(ArgumentKey.DEPOSIT_FREQUENCY);
 
 		validator.validate(candidateFrequency, "%s argument is not present", ArgumentKey.DEPOSIT_FREQUENCY.getKey());
-		validator.validateDateFormat(candidateFrequency, "%s argument date format is invalid",
+		validator.validateNotEmpty(candidateFrequency, "%s argument cannot be empty",
 		        ArgumentKey.DEPOSIT_FREQUENCY.getKey());
 
 		final DepositFrequency frequency = DepositFrequency.valueOf(candidateFrequency);
