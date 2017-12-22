@@ -53,13 +53,13 @@ public class IndicatorConfigurationTranslator {
 
 		final MovingAverageConfiguration configuration = smaConfiguration.configuration();
 		return new com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration(
-		        new IndicatorId(configuration.description()), configuration.lookback(), configuration.daysOfGradient());
+		        new IndicatorId(configuration.description()), configuration.lookback(), configuration.gradientPoints());
 	}
 
 	public IndicatorConfiguration translate( final EmaUptrendConfiguration emaConfiguration ) {
 
 		final MovingAverageConfiguration configuration = emaConfiguration.configuration();
 		return new com.systematic.trading.strategy.indicator.configuration.SmaUptrendConfiguration(
-		        new IndicatorId(configuration.description()), configuration.lookback(), configuration.daysOfGradient());
+		        new IndicatorId(configuration.description()), configuration.lookback(), configuration.gradientPoints());
 	}
 }

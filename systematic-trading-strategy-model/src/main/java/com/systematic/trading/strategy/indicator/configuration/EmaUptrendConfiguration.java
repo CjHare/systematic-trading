@@ -37,11 +37,11 @@ import com.systematic.trading.strategy.indicator.IndicatorId;
 public class EmaUptrendConfiguration extends IndicatorConfigurationBase {
 
 	private final int lookback;
-	private final int daysOfGradient;
+	private final int gradientPoints;
 
-	public EmaUptrendConfiguration( final IndicatorId id, final int lookback, final int daysOfGradient ) {
+	public EmaUptrendConfiguration( final IndicatorId id, final int lookback, final int gradientPoints ) {
 		super(id);
-		this.daysOfGradient = daysOfGradient;
+		this.gradientPoints = gradientPoints;
 		this.lookback = lookback;
 	}
 
@@ -50,8 +50,8 @@ public class EmaUptrendConfiguration extends IndicatorConfigurationBase {
 		return lookback;
 	}
 
-	public int daysOfGradient() {
+	public int gradientPoints() {
 
-		return daysOfGradient;
+		return gradientPoints;
 	}
 }

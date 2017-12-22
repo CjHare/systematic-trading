@@ -36,11 +36,11 @@ import com.systematic.trading.strategy.indicator.configuration.IndicatorConfigur
 public class MovingAverageConfiguration implements IndicatorConfiguration {
 
 	private final int lookback;
-	private final int daysOfGradient;
+	private final int gradientPoints;
 	private final String description;
 
-	public MovingAverageConfiguration( final int lookback, final int daysOfGradient, final String description ) {
-		this.daysOfGradient = daysOfGradient;
+	public MovingAverageConfiguration( final int lookback, final int gradientPoints, final String description ) {
+		this.gradientPoints = gradientPoints;
 		this.lookback = lookback;
 		this.description = description;
 	}
@@ -50,9 +50,9 @@ public class MovingAverageConfiguration implements IndicatorConfiguration {
 		return lookback;
 	}
 
-	public int daysOfGradient() {
+	public int gradientPoints() {
 
-		return daysOfGradient;
+		return gradientPoints;
 	}
 
 	public String description() {

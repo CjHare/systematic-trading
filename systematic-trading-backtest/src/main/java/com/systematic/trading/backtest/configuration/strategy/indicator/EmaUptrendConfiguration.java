@@ -39,8 +39,8 @@ public enum EmaUptrendConfiguration implements IndicatorConfiguration {
 
 	private MovingAverageConfiguration configuration;
 
-	EmaUptrendConfiguration( final int lookback, final int daysOfGradient, final String description ) {
-		this.configuration = new MovingAverageConfiguration(lookback, daysOfGradient, description);
+	EmaUptrendConfiguration( final int lookback, final int gradientPoints, final String description ) {
+		this.configuration = new MovingAverageConfiguration(lookback, gradientPoints, description);
 	}
 
 	public MovingAverageConfiguration configuration() {

@@ -103,7 +103,7 @@ public class TradingStrategyIndicatorFactory {
 	private Indicator smaUptrend( final SmaUptrendConfiguration sma, final SignalRangeFilter filter,
 	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
 
-		final int minimumNumberOfSmaValues = priceDataRange + sma.daysOfGradient();
+		final int minimumNumberOfSmaValues = priceDataRange + sma.gradientPoints();
 		final SignalGenerator<SimpleMovingAverageLine> generator = new SimpleMovingAverageBullishGradientSignalGenerator();
 		final SimpleMovingAverageIndicator calculator = new ClosingPriceSimpleMovingAverageCalculator(sma.lookback(),
 		        minimumNumberOfSmaValues, new IllegalArgumentThrowingValidator());
@@ -116,7 +116,7 @@ public class TradingStrategyIndicatorFactory {
 	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
 
 		final SignalGenerator<ExponentialMovingAverageLine> generator = new ExponentialMovingAverageBullishGradientSignalGenerator();
-		final int minimumNumberOfEmaValues = priceDataRange + ema.daysOfGradient();
+		final int minimumNumberOfEmaValues = priceDataRange + ema.gradientPoints();
 		final ExponentialMovingAverageIndicator calculator = new ClosingPriceExponentialMovingAverageCalculator(
 		        ema.lookback(), minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
 
