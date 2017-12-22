@@ -29,32 +29,28 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 /**
- * Launch argument parser and validation for a big decimal value.
+ * Launch argument parser and validation for the opening funds, a big decimal value.
  * 
  * @author CJ Hare
  */
-public class BigDecimalLaunchArgument implements LaunchArgument<BigDecimal> {
+public class OpeningFundsLaunchArgument implements LaunchArgument<BigDecimal> {
 
 	/** Provides validation for the launch argument value. */
 	private final LaunchArgumentValidator validator;
 
-	/** Key for the argument value which a BigDecimal is expected. */
-	private final LaunchArgument.ArgumentKey argument;
-
-	public BigDecimalLaunchArgument( final LaunchArgumentValidator validator,
-	        final LaunchArgument.ArgumentKey argument ) {
+	public OpeningFundsLaunchArgument( final LaunchArgumentValidator validator ) {
 		this.validator = validator;
-		this.argument = argument;
 	}
 
 	@Override
 	public BigDecimal get( final Map<ArgumentKey, String> arguments ) {
 
-		final String value = arguments.get(argument);
+		final String openingFunds = arguments.get(ArgumentKey.OPENING_FUNDS);
 
-		validator.validate(value, "%s argument is not present", argument.getKey());
-		validator.validateNotEmpty(value, "%s argument cannot be empty", argument.getKey());
+		validator.validate(openingFunds, "%s argument is not present", ArgumentKey.OPENING_FUNDS.getKey());
+		validator.validateDateFormat(openingFunds, "%s argument date format is invalid",
+		        ArgumentKey.OPENING_FUNDS.getKey());
 
-		return new BigDecimal(value);
+		return new BigDecimal(openingFunds);
 	}
 }

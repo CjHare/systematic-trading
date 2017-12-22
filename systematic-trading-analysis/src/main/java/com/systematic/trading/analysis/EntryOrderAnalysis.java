@@ -70,14 +70,13 @@ import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.input.AnalysisLaunchArguments;
-import com.systematic.trading.input.BigDecimalLaunchArgument;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
-import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
+import com.systematic.trading.input.OpeningFundsLaunchArgument;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.model.equity.EquityClass;
 
@@ -113,7 +112,7 @@ public class EntryOrderAnalysis {
 		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(
 		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), arguments),
-		        new BigDecimalLaunchArgument(validator, LaunchArgument.ArgumentKey.OPENING_FUNDS), arguments);
+		        new OpeningFundsLaunchArgument(validator), arguments);
 
 		new EntryOrderAnalysis(launchArgs.dataService()).run(launchArgs);
 	}
@@ -160,8 +159,8 @@ public class EntryOrderAnalysis {
 	private BacktestBootstrapContext context( final BacktestBootstrapConfiguration config,
 	        final BacktestEventListener listener ) {
 
-		return new BacktestBootstrapContextBulider().withConfiguration(config)
-		        .withSignalAnalysisListeners(listener).build();
+		return new BacktestBootstrapContextBulider().withConfiguration(config).withSignalAnalysisListeners(listener)
+		        .build();
 	}
 
 	private void recordStrategy( final StrategyConfiguration strategy ) {

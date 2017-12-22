@@ -52,7 +52,7 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class BigDecimalLaunchArgumentTest {
+public class OpeningFundsLaunchArgumentTest {
 
 	private static final LaunchArgument.ArgumentKey KEY = LaunchArgument.ArgumentKey.OPENING_FUNDS;
 	private static final String ERROR_MESSAGE = "%s argument is not present";
@@ -63,12 +63,12 @@ public class BigDecimalLaunchArgumentTest {
 	private LaunchArgumentValidator validator;
 
 	/** Launch argument parser instance being tested. */
-	private BigDecimalLaunchArgument argument;
+	private OpeningFundsLaunchArgument argument;
 
 	@Before
 	public void setUp() {
 
-		argument = new BigDecimalLaunchArgument(validator, KEY);
+		argument = new OpeningFundsLaunchArgument(validator);
 	}
 
 	@Test
