@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.analysis;
+package com.systematic.trading.backtest.configuration;
 
 import com.systematic.trading.maths.indicator.IllegalArgumentThrowingValidator;
 import com.systematic.trading.maths.indicator.ema.ClosingPriceExponentialMovingAverageCalculator;

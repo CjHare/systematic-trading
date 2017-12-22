@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest;
+package com.systematic.trading.backtest.context;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,6 +32,7 @@ import java.time.temporal.ChronoUnit;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.configuration.TradingStrategyIndicatorFactory;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFactoroy;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
 import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
@@ -45,7 +46,6 @@ import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfigu
 import com.systematic.trading.backtest.configuration.strategy.entry.IndicatorEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.OperatorEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.PeriodicEntryConfiguration;
-import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.signal.range.SignalRangeFilter;

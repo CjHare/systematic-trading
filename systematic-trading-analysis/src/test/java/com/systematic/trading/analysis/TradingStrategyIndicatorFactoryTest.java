@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.analysis.TradingStrategyIndicatorFactory;
+import com.systematic.trading.backtest.configuration.TradingStrategyIndicatorFactory;
 import com.systematic.trading.signal.range.SignalRangeFilter;
 import com.systematic.trading.strategy.indicator.Indicator;
 import com.systematic.trading.strategy.indicator.TradingStrategyIndicator;

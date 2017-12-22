@@ -54,6 +54,7 @@ import com.systematic.trading.backtest.configuration.strategy.indicator.RsiConfi
 import com.systematic.trading.backtest.configuration.strategy.indicator.SmaUptrendConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
+import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.description.DescriptionGenerator;
 import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
 import com.systematic.trading.backtest.event.BacktestEventListener;
