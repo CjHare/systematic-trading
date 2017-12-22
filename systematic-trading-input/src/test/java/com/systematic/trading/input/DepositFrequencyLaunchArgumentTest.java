@@ -52,9 +52,9 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class OpeningFundsLaunchArgumentTest {
+public class DepositFrequencyLaunchArgumentTest {
 
-	private static final LaunchArgument.ArgumentKey KEY = LaunchArgument.ArgumentKey.OPENING_FUNDS;
+	private static final LaunchArgument.ArgumentKey KEY = LaunchArgument.ArgumentKey.DEPOSIT_AMOUNT;
 	private static final String ERROR_MESSAGE = "%s argument is not present";
 	private static final String FIRST_ERROR_ARGUMENT = KEY.getKey();
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
@@ -63,23 +63,23 @@ public class OpeningFundsLaunchArgumentTest {
 	private LaunchArgumentValidator validator;
 
 	/** Launch argument parser instance being tested. */
-	private OpeningFundsLaunchArgument argument;
+	private DepositAmountLaunchArgument argument;
 
 	@Before
 	public void setUp() {
 
-		argument = new OpeningFundsLaunchArgument(validator);
+		argument = new DepositAmountLaunchArgument(validator);
 	}
 
 	@Test
-	public void validOpeningFunds() {
+	public void validDepositAmount() {
 
-		final String expected = "1.2";
+		final String expected = "4.75";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expected);
 
 		final BigDecimal symbol = value(launchArguments);
 
-		verifyOpeningFunds(expected, symbol);
+		verifyDepositAmount(expected, symbol);
 	}
 
 	@Test
@@ -131,7 +131,7 @@ public class OpeningFundsLaunchArgumentTest {
 		verifyNoMoreInteractions(validator);
 	}
 
-	private void verifyOpeningFunds( final String expected, final BigDecimal actual ) {
+	private void verifyDepositAmount( final String expected, final BigDecimal actual ) {
 
 		assertNotNull(actual);
 		assertNotNull(actual);

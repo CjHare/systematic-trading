@@ -54,6 +54,8 @@ import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.input.BacktestLaunchArguments;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
+import com.systematic.trading.input.DepositAmountLaunchArgument;
+import com.systematic.trading.input.DepositFrequencyLaunchArgument;
 import com.systematic.trading.input.EndDateLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
@@ -82,7 +84,8 @@ public abstract class BaseTrial {
 		return new BacktestLaunchArguments(new OutputLaunchArgument(validator),
 		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator), arguments),
-		        new OpeningFundsLaunchArgument(validator), null, null, new StartDateLaunchArgument(validator),
+		        new OpeningFundsLaunchArgument(validator), new DepositAmountLaunchArgument(validator),
+		        new DepositFrequencyLaunchArgument(validator), new StartDateLaunchArgument(validator),
 		        new EndDateLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator), arguments);
 	}
 

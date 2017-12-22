@@ -355,7 +355,7 @@ public class BacktestLaunchArgumentsTest {
 
 	private void verifyDespoitFrequency( final DepositFrequency expected ) {
 
-		assertNotNull(parser.depositAmount());
+		assertNotNull(parser.depositFrequency());
 		assertEquals(expected, parser.depositFrequency());
 	}
 
