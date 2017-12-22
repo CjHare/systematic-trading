@@ -47,14 +47,12 @@ public class DepositFrequencyLaunchArgument implements LaunchArgument<DepositFre
 	@Override
 	public DepositFrequency get( final Map<ArgumentKey, String> arguments ) {
 
-		final String candidateFrequency = arguments.get(ArgumentKey.DEPOSIT_FREQUENCY);
+		final String frequency = arguments.get(ArgumentKey.DEPOSIT_FREQUENCY);
 
-		validator.validate(candidateFrequency, "%s argument is not present", ArgumentKey.DEPOSIT_FREQUENCY.getKey());
-		validator.validateNotEmpty(candidateFrequency, "%s argument cannot be empty",
+		validator.validate(frequency, "%s argument is not present", ArgumentKey.DEPOSIT_FREQUENCY.getKey());
+		validator.validateNotEmpty(frequency, "%s argument cannot be empty",
 		        ArgumentKey.DEPOSIT_FREQUENCY.getKey());
 
-		final DepositFrequency frequency = DepositFrequency.valueOf(candidateFrequency);
-
-		return frequency;
+		return DepositFrequency.valueOf(frequency);
 	}
 }
