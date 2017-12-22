@@ -28,7 +28,6 @@ package com.systematic.trading.backtest.trial.never.exit;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
@@ -41,18 +40,6 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trial.BaseTrial;
 import com.systematic.trading.input.BacktestLaunchArguments;
-import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
-import com.systematic.trading.input.DataServiceTypeLaunchArgument;
-import com.systematic.trading.input.EndDateLaunchArgument;
-import com.systematic.trading.input.EquityArguments;
-import com.systematic.trading.input.EquityDatasetLaunchArgument;
-import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
-import com.systematic.trading.input.LaunchArgumentValidator;
-import com.systematic.trading.input.OpeningFundsLaunchArgument;
-import com.systematic.trading.input.OutputLaunchArgument;
-import com.systematic.trading.input.StartDateLaunchArgument;
-import com.systematic.trading.input.TickerSymbolLaunchArgument;
 
 /**
  * Comparing indicator and periodic results when they're using different brokerage misses out other
@@ -64,14 +51,8 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 
 	public static void main( final String... args ) throws Exception {
 
-		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
-		final Map<ArgumentKey, String> arguments = new CommandLineLaunchArgumentsParser().parse(args);
-		final BacktestLaunchArguments launchArgs = new BacktestLaunchArguments(new OutputLaunchArgument(validator),
-		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
-		                new TickerSymbolLaunchArgument(validator), arguments),
-		        new OpeningFundsLaunchArgument(validator), new StartDateLaunchArgument(validator),
-		        new EndDateLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator), arguments);
-
+		final BacktestLaunchArguments launchArgs = launchArguments(args);
+		
 		new BacktestTrial(launchArgs.dataService()).runBacktest(new ChangingBaselinesTrial(), launchArgs);
 	}
 

@@ -165,8 +165,8 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add("Deposit");
-		out.add(String.valueOf(depositAmount.aAmount()));
-		out.add(textualDisplay(depositAmount.frequency()));
+		out.add(String.valueOf(depositAmount.amount()));
+		out.add(textualDisplay(depositAmount.frequency().period()));
 		return out.toString();
 	}
 

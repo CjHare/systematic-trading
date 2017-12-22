@@ -66,8 +66,8 @@ public class CashAccountFactory {
 	public CashAccount create( final LocalDate startDate, final BigDecimal openingFunds,
 	        final DepositConfiguration deposit ) {
 
-		final BigDecimal depositAmount = deposit.aAmount();
-		final Period depositFrequency = deposit.frequency();
+		final BigDecimal depositAmount = deposit.amount();
+		final Period depositFrequency = deposit.frequency().period();
 
 		// TODO all these into a configuration - interest rate, deposit & frequency
 		final BigDecimal annualRate = BigDecimal.valueOf(1.5);

@@ -31,7 +31,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.time.Period;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +51,7 @@ import com.systematic.trading.backtest.configuration.strategy.exit.ExitConfigura
 import com.systematic.trading.backtest.configuration.strategy.exit.size.ExitSizeConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.operator.OperatorConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
+import com.systematic.trading.backtest.input.DepositFrequency;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.model.equity.EquityIdentity;
@@ -98,7 +98,8 @@ public class StandardDescriptionGeneratorTest {
 	public void bootstrapConfigurationWithDeposit() {
 
 		final BacktestBootstrapConfiguration configuration = setUpBootstrapConfiguration();
-		final DepositConfiguration depositAmount = new DepositConfiguration(BigDecimal.valueOf(150), Period.ofWeeks(1));
+		final DepositConfiguration depositAmount = new DepositConfiguration(BigDecimal.valueOf(150),
+		        DepositFrequency.WEEKLY);
 
 		final String description = descriptions.bootstrapConfigurationWithDeposit(configuration, depositAmount);
 
@@ -242,7 +243,7 @@ public class StandardDescriptionGeneratorTest {
 		final BacktestSimulationDates backtestDates = mock(BacktestSimulationDates.class);
 		final BrokerageTransactionFeeStructure brokerageFees = mock(SelfWealthBrokerageFees.class);
 		final CashAccountConfiguration cashAccount = CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY;
-		final DepositConfiguration deposit = new DepositConfiguration(BigDecimal.valueOf(200), Period.ofWeeks(1));
+		final DepositConfiguration deposit = new DepositConfiguration(BigDecimal.valueOf(200), DepositFrequency.WEEKLY);
 		final StrategyConfiguration strategy = mock(StrategyConfiguration.class);
 		when(strategy.description(any(DescriptionGenerator.class))).thenReturn("sTrategy-deScription");
 		final EquityConfiguration equity = mock(EquityConfiguration.class);

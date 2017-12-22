@@ -48,6 +48,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.BacktestEndDate;
 import com.systematic.trading.backtest.input.BacktestStartDate;
+import com.systematic.trading.backtest.input.DepositFrequency;
 import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
@@ -71,6 +72,12 @@ public class BacktestLaunchArgumentsTest {
 
 	@Mock
 	private LaunchArgument<BigDecimal> openingFundsArgument;
+
+	@Mock
+	private LaunchArgument<BigDecimal> depositAmountArgument;
+
+	@Mock
+	private LaunchArgument<DepositFrequency> depositFrequencyArgument;
 
 	@Mock
 	private LaunchArgument<OutputType> outputTypeArgument;
@@ -227,6 +234,39 @@ public class BacktestLaunchArgumentsTest {
 		verifyTickerSymbol(tickerSymbol);
 	}
 
+	@Test
+	public void depositAmount() {
+
+		final double depositAmount = 205.67;
+		setUpDepositAmount(depositAmount);
+
+		launchArguments();
+
+		verifyDepositAmount(depositAmount);
+	}
+
+	@Test
+	public void depositFrequency() {
+
+		final DepositFrequency frequency = DepositFrequency.WEEKLY;
+		setUpDepositFrequency(frequency);
+
+		launchArguments();
+
+		verifyDespoitFrequency(frequency);
+	}
+
+	private void setUpDepositFrequency( final DepositFrequency frequency ) {
+
+		when(depositFrequencyArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(frequency);
+	}
+
+	private void setUpDepositAmount( final double amount ) {
+
+		when(depositAmountArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		        .thenReturn(BigDecimal.valueOf(amount));
+	}
+
 	private void setUpStartDate( final LocalDate startDate ) {
 
 		when(startDateArgument.get(anyMapOf(ArgumentKey.class, String.class)))
@@ -277,7 +317,8 @@ public class BacktestLaunchArgumentsTest {
 	private void launchArguments( final Map<ArgumentKey, String> arguments ) {
 
 		parser = new BacktestLaunchArguments(outputTypeArgument, equityArguments, openingFundsArgument,
-		        startDateArgument, endDateArgument, directoryArgument, arguments);
+		        depositAmountArgument, depositFrequencyArgument, startDateArgument, endDateArgument, directoryArgument,
+		        arguments);
 	}
 
 	private void launchArguments() {
@@ -304,6 +345,18 @@ public class BacktestLaunchArgumentsTest {
 		assertNotNull(parser.tickerSymbol());
 		assertEquals(expected, parser.tickerSymbol().symbol());
 		verify(equityArguments, atLeastOnce()).tickerSymbol();
+	}
+
+	private void verifyDepositAmount( final double expected ) {
+
+		assertNotNull(parser.depositAmount());
+		assertEquals(BigDecimal.valueOf(expected), parser.depositAmount());
+	}
+
+	private void verifyDespoitFrequency( final DepositFrequency expected ) {
+
+		assertNotNull(parser.depositAmount());
+		assertEquals(expected, parser.depositFrequency());
 	}
 
 	private void verifyOutputType( final OutputType expected ) {

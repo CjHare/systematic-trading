@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -112,7 +111,8 @@ public class BacktestTrial {
 		final EquityConfiguration equity = equity(parserdArguments);
 
 		// TODO convert into input arguments
-		final DepositConfiguration depositAmount = new DepositConfiguration(BigDecimal.valueOf(200), Period.ofWeeks(1));
+		final DepositConfiguration depositAmount = new DepositConfiguration(parserdArguments.depositAmount(),
+		        parserdArguments.depositFrequency());
 		final BigDecimal openingFunds = parserdArguments.openingFunds();
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly

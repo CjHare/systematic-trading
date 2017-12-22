@@ -26,7 +26,8 @@
 package com.systematic.trading.backtest.configuration.deposit;
 
 import java.math.BigDecimal;
-import java.time.Period;
+
+import com.systematic.trading.backtest.input.DepositFrequency;
 
 /**
  * Amount of deposits an their frequency.
@@ -36,27 +37,19 @@ import java.time.Period;
 public class DepositConfiguration {
 
 	private final BigDecimal amount;
-	private final Period frequency;
+	private final DepositFrequency frequency;
 
-	/**
-	 * No deposits are to be made.
-	 */
-	public DepositConfiguration() {
-		this.frequency = Period.ZERO;
-		this.amount = BigDecimal.ZERO;
-	}
-
-	public DepositConfiguration( final BigDecimal amount, final Period frequency ) {
+	public DepositConfiguration( final BigDecimal amount, final DepositFrequency frequency ) {
 		this.frequency = frequency;
 		this.amount = amount;
 	}
 
-	public BigDecimal aAmount() {
+	public BigDecimal amount() {
 
 		return amount;
 	}
 
-	public Period frequency() {
+	public DepositFrequency frequency() {
 
 		return frequency;
 	}

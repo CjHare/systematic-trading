@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest.trial.never.exit;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -39,18 +38,6 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.AllTrials;
 import com.systematic.trading.input.BacktestLaunchArguments;
-import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
-import com.systematic.trading.input.DataServiceTypeLaunchArgument;
-import com.systematic.trading.input.EndDateLaunchArgument;
-import com.systematic.trading.input.EquityArguments;
-import com.systematic.trading.input.EquityDatasetLaunchArgument;
-import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
-import com.systematic.trading.input.LaunchArgumentValidator;
-import com.systematic.trading.input.OpeningFundsLaunchArgument;
-import com.systematic.trading.input.OutputLaunchArgument;
-import com.systematic.trading.input.StartDateLaunchArgument;
-import com.systematic.trading.input.TickerSymbolLaunchArgument;
 
 /**
  * All strategies using the same Vanguard brokerage.
@@ -63,13 +50,7 @@ public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implemen
 
 	public static void main( final String... args ) throws Exception {
 
-		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
-		final Map<ArgumentKey, String> arguments = new CommandLineLaunchArgumentsParser().parse(args);
-		final BacktestLaunchArguments launchArgs = new BacktestLaunchArguments(new OutputLaunchArgument(validator),
-		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
-		                new TickerSymbolLaunchArgument(validator), arguments),
-		        new OpeningFundsLaunchArgument(validator),		        new StartDateLaunchArgument(validator), new EndDateLaunchArgument(validator),
-		        new FileBaseDirectoryLaunchArgument(validator), arguments);
+		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
 		new BacktestTrial(launchArgs.dataService()).runBacktest(new AllStratgiesAgnosticSizingBrokerageTrial(),
 		        launchArgs);

@@ -31,6 +31,7 @@ import java.util.Map;
 import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.BacktestEndDate;
 import com.systematic.trading.backtest.input.BacktestStartDate;
+import com.systematic.trading.backtest.input.DepositFrequency;
 import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
@@ -66,13 +67,23 @@ public class BacktestLaunchArguments {
 	/** Funds contained the cash account to use when opening positions. */
 	private final BigDecimal openingFunds;
 
+	/** Amount to deposit into the cash account on an on-going basis. */
+	private final BigDecimal depositAmount;
+
+	/** How often to deposit into the cash account. */
+	private final DepositFrequency depositFrequency;
+
 	public BacktestLaunchArguments( final LaunchArgument<OutputType> outputArgument,
 	        final EquityArguments equityArguments, final LaunchArgument<BigDecimal> openingFundsArgument,
+	        final LaunchArgument<BigDecimal> depositAmountArgument,
+	        final LaunchArgument<DepositFrequency> depositFrequencyArgument,
 	        final LaunchArgument<BacktestStartDate> startDateArgument,
 	        final LaunchArgument<BacktestEndDate> endDateArgument,
 	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument,
 	        final Map<ArgumentKey, String> arguments ) {
 		this.arguments = arguments;
+		this.depositAmount = depositAmountArgument.get(arguments);
+		this.depositFrequency = depositFrequencyArgument.get(arguments);
 		this.openingFunds = openingFundsArgument.get(arguments);
 		this.outputType = outputArgument.get(arguments);
 		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
@@ -119,5 +130,15 @@ public class BacktestLaunchArguments {
 	public BigDecimal openingFunds() {
 
 		return openingFunds;
+	}
+
+	public BigDecimal depositAmount() {
+
+		return depositAmount;
+	}
+
+	public DepositFrequency depositFrequency() {
+
+		return depositFrequency;
 	}
 }

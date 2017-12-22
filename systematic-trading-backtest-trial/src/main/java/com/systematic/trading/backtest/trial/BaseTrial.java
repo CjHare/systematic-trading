@@ -28,6 +28,7 @@ package com.systematic.trading.backtest.trial;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
@@ -50,6 +51,19 @@ import com.systematic.trading.backtest.configuration.strategy.operator.OperatorC
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.input.DataServiceTypeLaunchArgument;
+import com.systematic.trading.input.EndDateLaunchArgument;
+import com.systematic.trading.input.EquityArguments;
+import com.systematic.trading.input.EquityDatasetLaunchArgument;
+import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
+import com.systematic.trading.input.LaunchArgument.ArgumentKey;
+import com.systematic.trading.input.LaunchArgumentValidator;
+import com.systematic.trading.input.OpeningFundsLaunchArgument;
+import com.systematic.trading.input.OutputLaunchArgument;
+import com.systematic.trading.input.StartDateLaunchArgument;
+import com.systematic.trading.input.TickerSymbolLaunchArgument;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
 /**
@@ -60,6 +74,17 @@ import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeSt
 public abstract class BaseTrial {
 
 	private final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
+
+	protected static BacktestLaunchArguments launchArguments( final String... args ) {
+
+		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
+		final Map<ArgumentKey, String> arguments = new CommandLineLaunchArgumentsParser().parse(args);
+		return new BacktestLaunchArguments(new OutputLaunchArgument(validator),
+		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
+		                new TickerSymbolLaunchArgument(validator), arguments),
+		        new OpeningFundsLaunchArgument(validator), null, null, new StartDateLaunchArgument(validator),
+		        new EndDateLaunchArgument(validator), new FileBaseDirectoryLaunchArgument(validator), arguments);
+	}
 
 	protected List<BacktestBootstrapConfiguration> macdConfirmedByRsi( final EquityConfiguration equity,
 	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
