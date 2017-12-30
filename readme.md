@@ -28,7 +28,7 @@ My goal is to determine a trading system consisting of strategy and position siz
 
 
 ## How to run
-Before executing the program, there are some choices that need making regarding where the price data to run the simulation comes from and where the output generated from the simulation goes.
+Before executing the program, choices need making regarding where the price data to run the simulation comes from and where the output generated from the simulation goes.
 
 ### Price Data Source
 When the requested price data is missing from the local data source, a call is made to the external price data provider. 
