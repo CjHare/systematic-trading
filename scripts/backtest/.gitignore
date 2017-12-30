@@ -2,7 +2,8 @@
 *
 
 # But not these files used in docs/examples...
-backtest.bat
+!backtest.bat
+!example
 !*/brk_a-elasticsearch.bat
 !*/brk_a-file.bat
 !*/oil-elasticsearch.bat
