@@ -1,0 +1,6 @@
+# Ignore everything
+*
+
+# But not these files template files...
+!analysis
+!analysis.bat
