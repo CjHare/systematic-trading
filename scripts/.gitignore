@@ -6,7 +6,7 @@
 !analysis.bat
 !backtest
 !*/backtest.bat
-!*/brk_quandl-datatable_es.bat
-!*/brk_quandl-datatable_file.bat
-!*/oil_quandl-dataset_es.bat
-!*/oil_quandl-dataset_file.bat
+!*/brk_a-elasticsearch.bat
+!*/brk_a-file.bat
+!*/oil-elasticsearch.bat
+!*/oil-file.bat
