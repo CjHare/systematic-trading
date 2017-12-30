@@ -49,10 +49,10 @@ Execution of the simulation results in a series of events that need to be aggreg
 The local cache already contains sample data that enables running the below simulations with historical price data.
 
 #### File
-- [June 2007 - June 2017: Berkshire Hathaway A]()
-- [June 2007 - June 2017: OPEC Reference Basket (ORB)]()
+- [June 2007 - June 2017: Berkshire Hathaway A](docs/file/06_2007-06_2017-brk_a.md)
+- [June 2007 - June 2017: OPEC Reference Basket (ORB)](docs/file/06_2007-06_2017-orb.md)
 
 #### ElasticSearch
-- [June 2007 - June 2017: Berkshire Hathaway A]()
-- [June 2007 - June 2017: OPEC Reference Basket (ORB)]()
+- [June 2007 - June 2017: Berkshire Hathaway A](docs/es/06_2007-06_2017-brk_a.md)
+- [June 2007 - June 2017: OPEC Reference Basket (ORB)](docs/es/06_2007-06_2017-orb.md)
 
