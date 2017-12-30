@@ -27,13 +27,24 @@ Broadly speaking there are three main aspects to trading:
 My goal is to determine a trading system consisting of strategy and position sizing, with sufficient back-testing to also have acquired the confidence to follow the system, however events may unfold in the future.
 
 
-### How to run
+## How to run
+Before executing the program, there are some choices that need making regarding where the price data to run the simulation comes from and where the output generated from the simulation goes.
 
-1. delete any existing local database with scripts/delete-database.bat
-2. start server with scripts/start-database-server.bat
-3. Run all configurations over the last 10 years on NYSE:BRK_A run to file output scripts/backtest/brk_quandl-datatable_file.bat
+### Price Data Source
+When the requested price data is missing from the local data source, a call is made to the external price data provider. 
+Valid retrieved price data is cached locally, a HyperSql database in server mode.
 
-* NOTE: when running from within an IDE the configuration directories need to be added to the classpath
-* Building from Maven, build systematic-trading\systematic-trading-parent pom prior to the project pom
+Available
+- Quandl
+- Yahoo Finance API (defunct)
+
+### Event Output Type
+Execution of the simulation results in a series of events that need to be aggregated and stored for later interpretation.
+
+Available
+- File
+- ElasticSearch
+
+
 
 
