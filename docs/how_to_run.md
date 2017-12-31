@@ -17,4 +17,4 @@ Execution of the simulation results in a series of events that need to be aggreg
 - ElasticSearch
 
 ## Examples
-[Examples](example/examples.md)
+To sample the performance and event information, there is a local cache included that contains the historical price data needed to run these [examples](example/examples.md)
