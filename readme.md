@@ -27,4 +27,4 @@ Broadly speaking there are three main aspects to trading:
 My goal is to determine a trading system consisting of strategy and position sizing, with sufficient back-testing to also have acquired the confidence to follow the system, however events may unfold in the future.
 
 
-[Hwo to run](edocs/how_to_run.md)
+[Hwo to run](docs/how_to_run.md)
