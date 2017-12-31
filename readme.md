@@ -27,32 +27,4 @@ Broadly speaking there are three main aspects to trading:
 My goal is to determine a trading system consisting of strategy and position sizing, with sufficient back-testing to also have acquired the confidence to follow the system, however events may unfold in the future.
 
 
-## How to run
-Before executing the program, choices need making regarding where the price data to run the simulation comes from and where the output generated from the simulation goes.
-
-### Price Data Source
-When the requested price data is missing from the local data source, a call is made to the external price data provider. 
-Valid retrieved price data is cached locally, a HyperSql database in server mode.
-
-#### Providers
-- Quandl
-- Yahoo Finance API (defunct)
-
-### Event Output Type
-Execution of the simulation results in a series of events that need to be aggregated and stored for later interpretation.
-
-#### Destinations
-- File
-- ElasticSearch
-
-### Examples
-To sample the performance and event information, there is a local cache included that contains the historical price data needed to run these examples.
-
-#### File
-- [June 2007 - June 2017: Berkshire Hathaway A](docs/example/file/06_2007-06_2017-brk_a.md)
-- [June 2007 - June 2017: OPEC Reference Basket (ORB)](docs/example/file/06_2007-06_2017-orb.md)
-
-#### ElasticSearch
-- [June 2007 - June 2017: Berkshire Hathaway A](docs/example/es/06_2007-06_2017-brk_a.md)
-- [June 2007 - June 2017: OPEC Reference Basket (ORB)](docs/example/es/06_2007-06_2017-orb.md)
-
+[Hwo to run](edocs/how_to_run.md)
