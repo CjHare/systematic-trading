@@ -83,7 +83,8 @@ public class TradingStrategyIndicatorFactory {
 			return emaUptrand((EmaUptrendConfiguration) signal, filter, signalListener, priceDataRange);
 		}
 
-		throw new IllegalArgumentException(String.format("Signal type not catered for: %s", signal));
+		throw new IllegalArgumentException(String.format("Signal type not catered for: %s of %s", signal,
+		        signal == null ? "null" : signal.getClass()));
 	}
 
 	private Indicator rsi( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter,

@@ -180,7 +180,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 
 		final EmaUptrendConfiguration emaConfiguration = EmaUptrendConfiguration.LONG;
 		final RsiConfiguration rsiConfiguration = RsiConfiguration.MEDIUM;
-		final EntryConfiguration entry = factory.entry(factory.entry(emaConfiguration),
+		final EntryConfiguration entry = factory.entry(factory.entry(converter.translate(emaConfiguration)),
 		        OperatorConfiguration.Selection.AND, factory.entry(converter.translate(rsiConfiguration)));
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
@@ -200,7 +200,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
 
 		final EmaUptrendConfiguration emaConfiguration = EmaUptrendConfiguration.LONG;
-		final EntryConfiguration entry = factory.entry(factory.entry(emaConfiguration),
+		final EntryConfiguration entry = factory.entry(factory.entry(converter.translate(emaConfiguration)),
 		        OperatorConfiguration.Selection.AND, factory.entry(PeriodicConfiguration.MONTHLY));
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
@@ -218,7 +218,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
 	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
 
-		final EntryConfiguration entry = factory.entry(MacdConfiguration.MEDIUM);
+		final EntryConfiguration entry = factory.entry(converter.translate(MacdConfiguration.MEDIUM));
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
