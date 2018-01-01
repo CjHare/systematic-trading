@@ -1,5 +1,5 @@
 # How to build
-To compile the Java code and create necessary JARs to run the program, there's required software that needs to be installed and a straightforward build process followed.
+To compile the Java code and create the necessary JARs to execute the Systematic-Trading program, there's software required and a straightforward build process to follow.
 
 ### First build
 1. [Prerequisite software](#prerequisite-software)
