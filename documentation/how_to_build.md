@@ -2,12 +2,12 @@
 To compile the Java code and necessary JARs to run the program there's required software and a straightforward build process, w
 
 ### First build
-1. Prerequisite Software
-2. Initial checkout
-3. Build
+1. [Prerequisite software](#prerequisite-software)
+2. [Initial checkout](#initial-checkout)
+3. [Build](#build)
 
 ### Second build onwards
-1. [Update](#update-(with-no-local-changes))
+1. [Update](#update-with-no-local-changes)
 2. [Build](#build)
 
 
