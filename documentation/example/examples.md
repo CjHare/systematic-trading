@@ -1,5 +1,5 @@
 ## Examples
-The example trial runs a number of backtest simulations, that are buy and hold strategies with variations of entry logic (indicator types and entry strategies)
+The example trial runs a number of backtest simulations, buy and hold strategies with variations of entry logic (indicator types and entry strategies)
 
 Indicator Types:
 - MACD: Moving Average Convergence Divergence
