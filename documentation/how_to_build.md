@@ -1,12 +1,12 @@
 # How to build
-To compile the Java code and necessary JARs to run the program there's required software and a straightforward build process, w
+To compile the Java code and create necessary JARs to run the program, there's required software that needs to be installed and a straightforward build process followed.
 
 ### First build
 1. [Prerequisite software](#prerequisite-software)
 2. [Initial checkout](#initial-checkout)
 3. [Build](#build)
 
-### Second build onwards
+### After the first build
 1. [Update](#update-with-no-local-changes)
 2. [Build](#build)
 
