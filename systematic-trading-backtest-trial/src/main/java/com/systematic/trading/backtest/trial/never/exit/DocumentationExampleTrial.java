@@ -62,8 +62,8 @@ import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeSt
 
 /**
  * Trial used in the documentation example.
- * The, with purpose being to show a subset of all available strategy configurations, but enough to
- * provide a template.
+ * The purpose being to show a subset of all available strategy configurations, with enough variety
+ * to provide a template.
  * 
  * Example strategies hold forever, never generate any sell events.
  * 
