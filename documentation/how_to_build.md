@@ -13,7 +13,7 @@ To compile the Java code and create the necessary JARs to execute the Systematic
 
 ## Prerequisite Software
 Install these software versions or later, ensuring they're available on the system path.
-- Java 1.8.0_65
+- Java SE Development Kit 1.8.0_65
 - Maven 3.2.5
 - Git 2.11.0
 
