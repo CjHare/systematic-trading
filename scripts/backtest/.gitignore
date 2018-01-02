@@ -3,6 +3,7 @@
 
 # But not these files used in docs/examples...
 !example
+!example/quandl.key
 !example/backtest.bat
 !example/brk_a-elasticsearch.bat
 !example/brk_a-file.bat
