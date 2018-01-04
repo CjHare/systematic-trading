@@ -225,7 +225,8 @@ public class BacktestTrial {
 	private String outputDirectory( final DepositConfiguration depositAmount,
 	        final BacktestLaunchArguments arguments ) {
 
-		return isFileBasedDisplay(arguments) ? arguments.outputDirectory(depositAmount.toString()) : "";
+		return isFileBasedDisplay(arguments) ? arguments.outputDirectory(directoryDescription.deposit(depositAmount))
+		        : "";
 	}
 
 	private BacktestBatchId batchId( final BacktestBootstrapConfiguration configuration,
