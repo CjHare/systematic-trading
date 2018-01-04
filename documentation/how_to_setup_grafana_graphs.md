@@ -1,9 +1,9 @@
 # How to setup the Grafana graphs
-After executing a run and choosing ElasticSearch as the ouput, there's a set of Grafana graphs that can be imported and will work after the appropriate data sources are set up.
+After executing a simulation with ElasticSearch designated as the ouput, there's a set of Grafana graphs included in Systematic-Trading project that can be imported, but these require creating the expected data sources.
 
 
 ## Data Sources
-Create these data sources from the Grafana 'Data Source' menu
+Create these data sources using '+Add data srouce' from the Grafana's 'Data Source' menu
 
 | Name                 | Type          | index Name           | Time Field Name      | Version | Group By Time Interval |
 |:--------------------:|:-------------:|:--------------------:|:--------------------:|:-------:|:----------------------:|
