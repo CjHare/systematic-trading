@@ -44,7 +44,9 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
 import com.systematic.trading.backtest.context.BacktestBootstrapContextBulider;
 import com.systematic.trading.backtest.description.DescriptionGenerator;
+import com.systematic.trading.backtest.description.DirectoryDescriptionGenerator;
 import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
+import com.systematic.trading.backtest.description.StandardDirectoryDescriptionGenerator;
 import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.event.BacktestEventListenerPreparation;
 import com.systematic.trading.backtest.event.SilentBacktestEventLisener;
@@ -83,6 +85,9 @@ public class BacktestTrial {
 	// move into
 	// BacktestLaunchArgumentParser
 	private final DescriptionGenerator description = new StandardDescriptionGenerator();
+
+	// TODO this should be in the File output
+	private final DirectoryDescriptionGenerator directoryDescription = new StandardDirectoryDescriptionGenerator();
 
 	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
@@ -281,7 +286,8 @@ public class BacktestTrial {
 		// Arrange output to files, only once per a run
 
 		if (isFileBasedDisplay(arguments)) {
-			final String outputDirectory = arguments.outputDirectory(depositAmount.toString());
+
+			final String outputDirectory = arguments.outputDirectory(directoryDescription.deposit(depositAmount));
 			try {
 				new ClearFileDestination(outputDirectory).clear();
 			} catch (final IOException e) {
