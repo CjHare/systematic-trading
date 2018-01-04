@@ -29,3 +29,5 @@ My goal is to determine a trading system consisting of strategy and position siz
 ## User Guide
 - [How to build](documentation/how_to_build.md)
 - [How to run](documentation/how_to_run.md)
+- [How to setup the Grafana graphs](documentation/how_to_setup_grafana_graphs.md)
+
