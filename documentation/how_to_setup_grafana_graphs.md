@@ -1,5 +1,5 @@
 # How to setup the Grafana graphs
-After simulation run with ElasticSearch as the designated ouput, there's a set of Grafana dashboards (graphs & tables) included in the Systematic-Trading project that can be used for visualisations, but it requires creating the expected data sources.
+After running a simulation with ElasticSearch as the designated ouput, there's a set of Grafana dashboards (graphs & tables) included in the Systematic-Trading project that can be used for visualisations, but it requires creating specific data sources.
 
 
 ## Data Sources
@@ -16,8 +16,9 @@ Create these data sources using '+Add data srouce' from the Grafana's 'Data Sour
 | Signal-Analysis      | ElasticSearch | signal-analysis      | signal_date          |    5x   | 1d                     |
 
 
-## Graphs
-Import these provided graphs by using the any of Grafana's import options (e.g. Grafana Icon > Dashboards > Import > 'Upload .json File')
+## Dashboards
+Import these dashboards by using Grafana's import options
+- Grafana Icon > Dashboards > Import > 'Upload .json File'
 
 #### [Brokerage Purchase Events (Equity Value)](example/grafana_dashboards/brokerage_purchase_events_(equity_value).json)
 The executed purchase orders for each strategy, by their total value (excluding fees).
@@ -41,7 +42,7 @@ Each strategies networth (sum of cash and equity value) at the end of the simula
 The order events placed by the strategies, this is separate to the actual orders executed (as additional logic and variables may come into play). 
 
 #### [Signal Events](example/grafana_dashboards/signal_events.json)
-When each of the indicators used in any of the strategies had signals occurring.
+When each of the indicator configurations used in any of the strategies signals occurred.
 
 #### [Strategy Count](example/grafana_dashboards/strategy_count.json)
 The number of strategies executed.
