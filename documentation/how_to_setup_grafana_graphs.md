@@ -17,5 +17,35 @@ Create these data sources using '+Add data srouce' from the Grafana's 'Data Sour
 
 
 ## Graphs
+Import these provided graphs by using the any of the import options (e.g. Grafana Icon > Dashboards > Import > 'Upload .json File')
 
-###
+- [Brokerage Purchase Events (Equity Value)](example/grafana_dashboards/brokerage_purchase_events_(equity_value).json)
+
+
+- [Brokerage Purchase Events (Equity Volume)](example/grafana_dashboards/brokerage_purchase_events_(equity_volume).json)
+
+
+- [Brokerage Transaction Fees](example/grafana_dashboards/brokerage_transaction_fees.json)
+
+
+- [Daily ROI](example/grafana_dashboards/daily_roi.json)
+
+
+- [Monthly ROI](example/grafana_dashboards/monthly_roi.json)
+
+
+- [Networth](example/grafana_dashboards/networth.json)
+
+
+- [Orders](example/grafana_dashboards/orders.json)
+
+
+- [Signal Events](example/grafana_dashboards/signal_events.json)
+
+
+- [Strategy Count](example/grafana_dashboards/strategy_count.json)
+
+
+- [Yearly ROI](example/grafana_dashboards/yearly_roi.json)
+
+
