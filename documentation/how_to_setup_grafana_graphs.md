@@ -1,5 +1,5 @@
 # How to setup the Grafana graphs
-After executing a simulation with ElasticSearch designated as the ouput, there's a set of Grafana graphs included in Systematic-Trading project that can be imported, but these require creating the expected data sources.
+After simulation run with ElasticSearch as the designated ouput, there's a set of Grafana dashboards (graphs & tables) included in the Systematic-Trading project that can be used for visualisations, but it requires creating the expected data sources.
 
 
 ## Data Sources
@@ -17,16 +17,16 @@ Create these data sources using '+Add data srouce' from the Grafana's 'Data Sour
 
 
 ## Graphs
-Import these provided graphs by using the any of the import options (e.g. Grafana Icon > Dashboards > Import > 'Upload .json File')
+Import these provided graphs by using the any of Grafana's import options (e.g. Grafana Icon > Dashboards > Import > 'Upload .json File')
 
 #### [Brokerage Purchase Events (Equity Value)](example/grafana_dashboards/brokerage_purchase_events_(equity_value).json)
-Executed purchase orders for each strategy, by their total value (excluding fees).
+The executed purchase orders for each strategy, by their total value (excluding fees).
 
 #### [Brokerage Purchase Events (Equity Volume)](example/grafana_dashboards/brokerage_purchase_events_(equity_volume).json)
-Executed purchase orders for each strategy, by the amount of equity acquired (excluding fees).
+The executed purchase orders for each strategy, by the amount of equity acquired (excluding fees).
 
 #### [Brokerage Transaction Fees](example/grafana_dashboards/brokerage_transaction_fees.json)
-Sum of all transaction fees accrued by each strategy over the course of the simulation.
+Sum of all the transaction fees accrued by each strategy over the course of the simulation.
 
 #### [Daily ROI](example/grafana_dashboards/daily_roi.json)
 Daily return on investment; networth change for each strategy on every trading day.
@@ -38,10 +38,10 @@ Monthly return on investment; sum of the daily networth changes over the course 
 Each strategies networth (sum of cash and equity value) at the end of the simulation.
 
 #### [Orders](example/grafana_dashboards/orders.json)
-Orders events placed by the strategies, this is separate to the actual orders executed (as additional logic and variables may come into play). 
+The order events placed by the strategies, this is separate to the actual orders executed (as additional logic and variables may come into play). 
 
 #### [Signal Events](example/grafana_dashboards/signal_events.json)
-When each of the indicator used in the strategies signals events occurred. 
+When each of the indicators used in any of the strategies had signals occurring.
 
 #### [Strategy Count](example/grafana_dashboards/strategy_count.json)
 The number of strategies executed.
