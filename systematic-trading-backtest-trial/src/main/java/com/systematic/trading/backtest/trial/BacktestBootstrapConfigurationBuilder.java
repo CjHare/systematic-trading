@@ -28,7 +28,6 @@ package com.systematic.trading.backtest.trial;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
@@ -78,7 +77,6 @@ public class BacktestBootstrapConfigurationBuilder {
 
 	public BacktestBootstrapConfiguration build() {
 
-		return new BacktestBootstrapConfiguration(simulationDates, brokerage,
-		        CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY, cashAccount, strategy, equity);
+		return new BacktestBootstrapConfiguration(simulationDates, brokerage, cashAccount, strategy, equity);
 	}
 }

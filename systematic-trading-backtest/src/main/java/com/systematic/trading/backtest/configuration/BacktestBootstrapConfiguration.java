@@ -2,7 +2,6 @@ package com.systematic.trading.backtest.configuration;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
@@ -16,19 +15,16 @@ public class BacktestBootstrapConfiguration {
 
 	private final BacktestSimulationDates backtestDates;
 	private final BrokerageTransactionFeeStructure brokerageFees;
-	private final CashAccountConfigurationType cashAccountType;
 	private final StrategyConfiguration strategy;
 	private final EquityConfiguration equity;
 	private final CashAccountConfiguration cashAccount;
 
 	public BacktestBootstrapConfiguration( final BacktestSimulationDates backtestDates,
-	        final BrokerageTransactionFeeStructure brokerageFees, final CashAccountConfigurationType cashAccountType,
-	        final CashAccountConfiguration cashAccount, StrategyConfiguration strategy,
-	        final EquityConfiguration equity ) {
+	        final BrokerageTransactionFeeStructure brokerageFees, final CashAccountConfiguration cashAccount,
+	        StrategyConfiguration strategy, final EquityConfiguration equity ) {
 		this.backtestDates = backtestDates;
 		this.brokerageFees = brokerageFees;
 		this.cashAccount = cashAccount;
-		this.cashAccountType = cashAccountType;
 		this.strategy = strategy;
 		this.equity = equity;
 	}
@@ -41,11 +37,6 @@ public class BacktestBootstrapConfiguration {
 	public BrokerageTransactionFeeStructure brokerageFees() {
 
 		return brokerageFees;
-	}
-
-	public CashAccountConfigurationType cashAccountType() {
-
-		return cashAccountType;
 	}
 
 	public CashAccountConfiguration cashAccount() {

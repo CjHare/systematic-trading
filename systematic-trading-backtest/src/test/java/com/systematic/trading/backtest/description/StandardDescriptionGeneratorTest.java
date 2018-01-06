@@ -41,7 +41,6 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
 import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
@@ -92,7 +91,7 @@ public class StandardDescriptionGeneratorTest {
 
 		final String description = descriptions.bootstrapConfiguration(configuration);
 
-		assertEquals("ZXY_SelfWealth_InterestDaily_sTrategy-deScription", description);
+		assertEquals("ZXY_SelfWealth_sTrategy-deScription", description);
 	}
 
 	@Test
@@ -104,7 +103,7 @@ public class StandardDescriptionGeneratorTest {
 
 		final String description = descriptions.bootstrapConfigurationWithDeposit(configuration, depositAmount);
 
-		assertEquals("ZXY_SelfWealth_Deposit_150_Weekly_InterestDaily_sTrategy-deScription", description);
+		assertEquals("ZXY_SelfWealth_Deposit_150_Weekly_sTrategy-deScription", description);
 	}
 
 	@Test
@@ -244,13 +243,11 @@ public class StandardDescriptionGeneratorTest {
 		final BacktestSimulationDates backtestDates = mock(BacktestSimulationDates.class);
 		final BrokerageTransactionFeeStructure brokerageFees = mock(SelfWealthBrokerageFees.class);
 		final CashAccountConfiguration cashAccount = mock(CashAccountConfiguration.class);
-		final CashAccountConfigurationType cashAccountType = CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY;
 		final StrategyConfiguration strategy = mock(StrategyConfiguration.class);
 		when(strategy.description(any(DescriptionGenerator.class))).thenReturn("sTrategy-deScription");
 		final EquityConfiguration equity = mock(EquityConfiguration.class);
 		when(equity.gquityIdentity()).thenReturn(new EquityIdentity("ZXY", null, 0));
 
-		return new BacktestBootstrapConfiguration(backtestDates, brokerageFees, cashAccountType, cashAccount, strategy,
-		        equity);
+		return new BacktestBootstrapConfiguration(backtestDates, brokerageFees, cashAccount, strategy, equity);
 	}
 }

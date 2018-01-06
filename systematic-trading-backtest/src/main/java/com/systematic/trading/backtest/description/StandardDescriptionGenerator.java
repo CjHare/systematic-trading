@@ -34,7 +34,6 @@ import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
 import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
@@ -91,7 +90,6 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(equity(configuration.equity()));
 		out.add(brokerage(configuration.brokerageFees()));
-		out.add(cashAccount(configuration.cashAccountType()));
 		out.add(configuration.strategy().description(this));
 		return out.toString();
 	}
@@ -104,7 +102,6 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		out.add(equity(configuration.equity()));
 		out.add(brokerage(configuration.brokerageFees()));
 		out.add(deposit(depositAmount));
-		out.add(cashAccount(configuration.cashAccountType()));
 		out.add(configuration.strategy().description(this));
 		return out.toString();
 	}
@@ -202,16 +199,6 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	private String equity( final EquityConfiguration equity ) {
 
 		return equity.gquityIdentity().tickerSymbol();
-	}
-
-	private String cashAccount( final CashAccountConfigurationType cashAccount ) {
-
-		if (CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY == cashAccount) {
-			return "InterestDaily"; // Standard output needs no description
-
-		}
-
-		return "NoInterest";
 	}
 
 	private String brokerage( final BrokerageTransactionFeeStructure brokerage ) {

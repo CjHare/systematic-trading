@@ -25,17 +25,13 @@
  */
 package com.systematic.trading.backtest.configuration.cash;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAccount;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.FlatInterestRate;
 import com.systematic.trading.simulation.cash.InterestRate;
@@ -47,9 +43,6 @@ import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator
  * @author CJ Hare
  */
 public class CashAccountFactory {
-
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(CashAccountFactory.class);
 
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
@@ -68,34 +61,20 @@ public class CashAccountFactory {
 
 			final BigDecimal depositAmount = deposit.get().amount();
 			final Period depositFrequency = deposit.get().frequency().period();
-			final CashAccount underlyingAccount = create(CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY,
-			        annualInterestRate, cashAccount.openingFunds(), startDate);
+			final CashAccount underlyingAccount = create(annualInterestRate, cashAccount.openingFunds(), startDate);
 
 			return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate,
 			        depositFrequency);
 		}
 
-		return create(CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY, annualInterestRate,
-		        cashAccount.openingFunds(), startDate);
+		return create(annualInterestRate, cashAccount.openingFunds(), startDate);
 	}
 
 	/**
 	 * Create an instance of the a cash account.
 	 */
-	private CashAccount create( final CashAccountConfigurationType configuration, final InterestRate annualInterestRate,
-	        final BigDecimal openingFunds, final LocalDate openingDate ) {
+	private CashAccount create( final InterestRate rate, final BigDecimal openingFunds, final LocalDate openingDate ) {
 
-		try {
-			Constructor<?> cons = configuration.type().getConstructor(InterestRate.class, BigDecimal.class,
-			        LocalDate.class, MathContext.class);
-
-			return (CashAccount) cons.newInstance(annualInterestRate, openingFunds, openingDate, MATH_CONTEXT);
-		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-		        | IllegalArgumentException | InvocationTargetException e) {
-			LOG.error(e);
-		}
-
-		throw new IllegalArgumentException(
-		        String.format("Could not create the desired cash accounte: %s", configuration));
+		return new CalculatedDailyPaidMonthlyCashAccount(rate, openingFunds, openingDate, MATH_CONTEXT);
 	}
 }
