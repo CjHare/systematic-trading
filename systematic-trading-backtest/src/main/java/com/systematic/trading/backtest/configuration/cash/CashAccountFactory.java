@@ -50,43 +50,34 @@ public class CashAccountFactory {
 	/** Classes logger. */
 	private static final Logger LOG = LogManager.getLogger(CashAccountFactory.class);
 
-	private static final CashAccountFactory INSTANCE = new CashAccountFactory();
-
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
-	private CashAccountFactory() {
-	}
-
-	public static final CashAccountFactory getInstance() {
-
-		return INSTANCE;
-	}
-
+	// TODO all these into a configuration - interest rate, deposit & frequency
 	public CashAccount create( final LocalDate startDate, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit ) {
+	        final DepositConfiguration deposit, final BigDecimal annualInterest ) {
 
 		final BigDecimal depositAmount = deposit.amount();
 		final Period depositFrequency = deposit.frequency().period();
-
-		// TODO all these into a configuration - interest rate, deposit & frequency
-		final BigDecimal annualRate = BigDecimal.valueOf(1.5);
-		final InterestRate annualInterestRate = InterestRateFactory.getInstance()
-		        .create(InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, MATH_CONTEXT);
+		final InterestRate annualInterestRate = interestRate(annualInterest);
 		final CashAccount underlyingAccount = create(CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
-		        annualInterestRate, openingFunds, startDate, MATH_CONTEXT);
+		        annualInterestRate, openingFunds, startDate);
 
 		return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate, depositFrequency);
 	}
 
-	public CashAccount create( final LocalDate startDate, final BigDecimal openingFunds ) {
+	private InterestRate interestRate( final BigDecimal annualInterestRate ) {
 
-		// TODO all these into a configuration - interest rate, deposit & frequency
-		final BigDecimal annualRate = BigDecimal.valueOf(1.5);
-		final InterestRate annualInterestRate = InterestRateFactory.getInstance()
-		        .create(InterestRateConfiguration.FLAT_INTEREST_RATE, annualRate, MATH_CONTEXT);
+		return InterestRateFactory.getInstance().create(InterestRateConfiguration.FLAT_INTEREST_RATE,
+		        annualInterestRate, MATH_CONTEXT);
+	}
+
+	public CashAccount create( final LocalDate startDate, final BigDecimal openingFunds,
+	        final BigDecimal annualInterest ) {
+
+		final InterestRate annualInterestRate = interestRate(annualInterest);
 		final CashAccount underlyingAccount = create(CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
-		        annualInterestRate, openingFunds, startDate, MATH_CONTEXT);
+		        annualInterestRate, openingFunds, startDate);
 
 		return underlyingAccount;
 	}
@@ -94,14 +85,14 @@ public class CashAccountFactory {
 	/**
 	 * Create an instance of the a cash account.
 	 */
-	public CashAccount create( final CashAccountConfiguration configuration, final InterestRate annualInterestRate,
-	        final BigDecimal openingFunds, final LocalDate openingDate, final MathContext mathContext ) {
+	private CashAccount create( final CashAccountConfiguration configuration, final InterestRate annualInterestRate,
+	        final BigDecimal openingFunds, final LocalDate openingDate ) {
 
 		try {
 			Constructor<?> cons = configuration.type().getConstructor(InterestRate.class, BigDecimal.class,
 			        LocalDate.class, MathContext.class);
 
-			return (CashAccount) cons.newInstance(annualInterestRate, openingFunds, openingDate, mathContext);
+			return (CashAccount) cons.newInstance(annualInterestRate, openingFunds, openingDate, MATH_CONTEXT);
 		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
 		        | IllegalArgumentException | InvocationTargetException e) {
 			LOG.error(e);

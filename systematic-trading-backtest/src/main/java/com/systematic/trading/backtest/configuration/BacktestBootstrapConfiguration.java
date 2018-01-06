@@ -24,14 +24,16 @@ public class BacktestBootstrapConfiguration {
 	private final BigDecimal openingFunds;
 	private final StrategyConfiguration strategy;
 	private final EquityConfiguration equity;
+	private BigDecimal cashAccountInterestRate;
 
 	public BacktestBootstrapConfiguration( final BacktestSimulationDates backtestDates,
 	        final BrokerageTransactionFeeStructure brokerageFees, final CashAccountConfiguration cashAccount,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit, StrategyConfiguration strategy,
-	        final EquityConfiguration equity ) {
+	        final BigDecimal cashAccountInterestRate, final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        StrategyConfiguration strategy, final EquityConfiguration equity ) {
 		this.backtestDates = backtestDates;
 		this.brokerageFees = brokerageFees;
 		this.cashAccount = cashAccount;
+		this.cashAccountInterestRate = cashAccountInterestRate;
 		this.openingFunds = openingFunds;
 		this.deposit = Optional.of(deposit);
 		this.strategy = strategy;
@@ -40,10 +42,12 @@ public class BacktestBootstrapConfiguration {
 
 	public BacktestBootstrapConfiguration( final BacktestSimulationDates backtestDates,
 	        final BrokerageTransactionFeeStructure brokerageFees, final CashAccountConfiguration cashAccount,
-	        final BigDecimal openingFunds, StrategyConfiguration strategy, final EquityConfiguration equity ) {
+	        final BigDecimal cashAccountInterestRate, final BigDecimal openingFunds, StrategyConfiguration strategy,
+	        final EquityConfiguration equity ) {
 		this.backtestDates = backtestDates;
 		this.brokerageFees = brokerageFees;
 		this.cashAccount = cashAccount;
+		this.cashAccountInterestRate = cashAccountInterestRate;
 		this.openingFunds = openingFunds;
 		this.deposit = Optional.empty();
 		this.strategy = strategy;
@@ -83,5 +87,10 @@ public class BacktestBootstrapConfiguration {
 	public EquityConfiguration equity() {
 
 		return equity;
+	}
+
+	public BigDecimal cashAccountInterestRate() {
+
+		return cashAccountInterestRate;
 	}
 }

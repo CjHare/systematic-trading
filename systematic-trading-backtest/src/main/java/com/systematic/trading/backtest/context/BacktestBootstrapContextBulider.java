@@ -99,6 +99,9 @@ public class BacktestBootstrapContextBulider {
 	/** Starting balance for the cash account. */
 	private BigDecimal openingFunds;
 
+	/** Cash account interest rate */
+	private BigDecimal cashAccountInterestRate;
+
 	/** First date to apply the management fee on. */
 	private LocalDate managementFeeStartDate;
 
@@ -117,6 +120,7 @@ public class BacktestBootstrapContextBulider {
 		this.managementFeeStartDate = firstDayOfYear(simulationDates.startDate());
 		this.deposit = configuration.deposit();
 		this.openingFunds = configuration.openingFunds();
+		this.cashAccountInterestRate = configuration.cashAccountInterestRate();
 		this.equity = configuration.equity();
 		this.brokerageType = configuration.brokerageFees();
 		this.strategy = configuration.strategy();
@@ -296,10 +300,11 @@ public class BacktestBootstrapContextBulider {
 	private CashAccount cashAccount() {
 
 		if (deposit.isPresent()) {
-			return CashAccountFactory.getInstance().create(simulationDates.startDate(), openingFunds, deposit.get());
+			return new CashAccountFactory().create(simulationDates.startDate(), openingFunds, deposit.get(),
+			        cashAccountInterestRate);
 		}
 
-		return CashAccountFactory.getInstance().create(simulationDates.startDate(), openingFunds);
+		return new CashAccountFactory().create(simulationDates.startDate(), openingFunds, cashAccountInterestRate);
 	}
 
 	private Brokerage brokerage() {

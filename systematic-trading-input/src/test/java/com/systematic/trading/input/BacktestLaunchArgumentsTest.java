@@ -71,6 +71,9 @@ public class BacktestLaunchArgumentsTest {
 	private LaunchArgumentsParser argumentParser;
 
 	@Mock
+	private LaunchArgument<BigDecimal> interestRateArgument;
+
+	@Mock
 	private LaunchArgument<BigDecimal> openingFundsArgument;
 
 	@Mock
@@ -316,9 +319,9 @@ public class BacktestLaunchArgumentsTest {
 
 	private void launchArguments( final Map<ArgumentKey, String> arguments ) {
 
-		parser = new BacktestLaunchArguments(outputTypeArgument, equityArguments, openingFundsArgument,
-		        depositAmountArgument, depositFrequencyArgument, startDateArgument, endDateArgument, directoryArgument,
-		        arguments);
+		parser = new BacktestLaunchArguments(outputTypeArgument, equityArguments, interestRateArgument,
+		        openingFundsArgument, depositAmountArgument, depositFrequencyArgument, startDateArgument,
+		        endDateArgument, directoryArgument, arguments);
 	}
 
 	private void launchArguments() {

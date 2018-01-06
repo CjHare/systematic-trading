@@ -115,10 +115,11 @@ public class BacktestTrial {
 
 		final EquityConfiguration equity = equity(parserdArguments);
 
-		// TODO convert into input arguments
+		// TODO into a wrapper configuration object
 		final DepositConfiguration depositAmount = new DepositConfiguration(parserdArguments.depositAmount(),
 		        parserdArguments.depositFrequency());
 		final BigDecimal openingFunds = parserdArguments.openingFunds();
+		final BigDecimal cashAccountInterestRate = parserdArguments.interestRate();
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
@@ -138,7 +139,7 @@ public class BacktestTrial {
 		timer.start();
 
 		final List<BacktestBootstrapConfiguration> backtestConfigurations = configuration.configuration(equity,
-		        simulationDates, openingFunds, depositAmount);
+		        simulationDates, cashAccountInterestRate, openingFunds, depositAmount);
 
 		try {
 			clearOutputDirectory(depositAmount, parserdArguments);

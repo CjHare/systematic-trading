@@ -249,7 +249,7 @@ public class StandardDescriptionGeneratorTest {
 		final EquityConfiguration equity = mock(EquityConfiguration.class);
 		when(equity.gquityIdentity()).thenReturn(new EquityIdentity("ZXY", null, 0));
 
-		return new BacktestBootstrapConfiguration(backtestDates, brokerageFees, cashAccount, BigDecimal.ZERO, deposit,
-		        strategy, equity);
+		return new BacktestBootstrapConfiguration(backtestDates, brokerageFees, cashAccount, BigDecimal.ZERO,
+		        BigDecimal.ZERO, deposit, strategy, equity);
 	}
 }

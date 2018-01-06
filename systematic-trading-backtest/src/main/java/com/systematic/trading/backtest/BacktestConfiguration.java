@@ -15,5 +15,6 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 public interface BacktestConfiguration {
 
 	List<BacktestBootstrapConfiguration> configuration( EquityConfiguration equity,
-	        BacktestSimulationDates simulationDates, BigDecimal openingFunds, DepositConfiguration deposit );
+	        BacktestSimulationDates simulationDates, BigDecimal cashAccountInterestRate, BigDecimal openingFunds,
+	        DepositConfiguration deposit );
 }

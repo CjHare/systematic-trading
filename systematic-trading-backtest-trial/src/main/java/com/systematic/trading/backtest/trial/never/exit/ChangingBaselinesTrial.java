@@ -52,29 +52,29 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 	public static void main( final String... args ) throws Exception {
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
-		
+
 		new BacktestTrial(launchArgs.dataService()).runBacktest(new ChangingBaselinesTrial(), launchArgs);
 	}
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
-		        PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		        new VanguardBrokerageFees(), PeriodicConfiguration.WEEKLY));
 
-		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
-		        PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		        new VanguardBrokerageFees(), PeriodicConfiguration.MONTHLY));
 
-		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
-		        PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		        new SelfWealthBrokerageFees(), PeriodicConfiguration.WEEKLY));
 
-		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new SelfWealthBrokerageFees(),
-		        PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		        new SelfWealthBrokerageFees(), PeriodicConfiguration.MONTHLY));
 
 		return configurations;
 	}

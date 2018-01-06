@@ -59,25 +59,25 @@ public class UptrendsAndRsidTrial extends BaseTrial implements BacktestConfigura
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		final BrokerageTransactionFeeStructure brokerage = new VanguardBrokerageFees();
 
 		// Date based buying
-		configurations
-		        .add(periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
-		configurations.add(
-		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
+		        PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
+		        PeriodicConfiguration.MONTHLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(smaEmaUptrendsAndRsi(equity, simulationDates, openingFunds, deposit, brokerage,
-		        minimumTrade, maximumTrade));
+		configurations.addAll(smaEmaUptrendsAndRsi(equity, simulationDates, cashAccountInterestRate, openingFunds,
+		        deposit, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}

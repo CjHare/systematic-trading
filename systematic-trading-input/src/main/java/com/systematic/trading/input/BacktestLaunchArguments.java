@@ -64,9 +64,15 @@ public class BacktestLaunchArguments {
 	/** Mandatory end date for the back test. */
 	private final BacktestEndDate endDate;
 
+	// TODO no BigDecimal - use wrapper types
 	/** Funds contained the cash account to use when opening positions. */
 	private final BigDecimal openingFunds;
 
+	// TODO no BigDecimal - use wrapper types
+	/** Annual interest rate applied to the funds held in the cash account. */
+	private final BigDecimal interestRate;
+
+	// TODO no BigDecimal - use wrapper types
 	/** Amount to deposit into the cash account on an on-going basis. */
 	private final BigDecimal depositAmount;
 
@@ -74,7 +80,8 @@ public class BacktestLaunchArguments {
 	private final DepositFrequency depositFrequency;
 
 	public BacktestLaunchArguments( final LaunchArgument<OutputType> outputArgument,
-	        final EquityArguments equityArguments, final LaunchArgument<BigDecimal> openingFundsArgument,
+	        final EquityArguments equityArguments, final LaunchArgument<BigDecimal> interestRateArgument,
+	        final LaunchArgument<BigDecimal> openingFundsArgument,
 	        final LaunchArgument<BigDecimal> depositAmountArgument,
 	        final LaunchArgument<DepositFrequency> depositFrequencyArgument,
 	        final LaunchArgument<BacktestStartDate> startDateArgument,
@@ -85,6 +92,7 @@ public class BacktestLaunchArguments {
 		this.depositAmount = depositAmountArgument.get(arguments);
 		this.depositFrequency = depositFrequencyArgument.get(arguments);
 		this.openingFunds = openingFundsArgument.get(arguments);
+		this.interestRate = interestRateArgument.get(arguments);
 		this.outputType = outputArgument.get(arguments);
 		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
 		this.startDate = startDateArgument.get(arguments);
@@ -140,5 +148,10 @@ public class BacktestLaunchArguments {
 	public DepositFrequency depositFrequency() {
 
 		return depositFrequency;
+	}
+
+	public BigDecimal interestRate() {
+
+		return interestRate;
 	}
 }

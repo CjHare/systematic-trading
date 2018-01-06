@@ -48,6 +48,7 @@ public class BacktestBootstrapConfigurationBuilder {
 	private BrokerageTransactionFeeStructure brokerage;
 	private StrategyConfiguration strategy;
 	private BigDecimal openingFunds;
+	private BigDecimal cashAccountInterestRate;
 
 	public BacktestBootstrapConfigurationBuilder withEquity( final EquityConfiguration equity ) {
 
@@ -85,9 +86,16 @@ public class BacktestBootstrapConfigurationBuilder {
 		return this;
 	}
 
+	public BacktestBootstrapConfigurationBuilder withCashAccountInterestRate( final BigDecimal interestRate ) {
+
+		this.cashAccountInterestRate = interestRate;
+		return this;
+	}
+
 	public BacktestBootstrapConfiguration build() {
 
 		return new BacktestBootstrapConfiguration(simulationDates, brokerage,
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, openingFunds, deposit, strategy, equity);
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, cashAccountInterestRate, openingFunds, deposit,
+		        strategy, equity);
 	}
 }

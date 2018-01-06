@@ -73,31 +73,32 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		final BrokerageTransactionFeeStructure brokerage = new VanguardBrokerageFees();
 
 		// Date based buying
-		configurations
-		        .add(periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
+		        PeriodicConfiguration.WEEKLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(combinedUptrends(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade,
-		        maximumTrade));
+		configurations.addAll(combinedUptrends(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		        brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}
 
 	private List<BacktestBootstrapConfiguration> combinedUptrends( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
-	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
 
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
@@ -110,26 +111,26 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 		// (LongSMA OR LongEMA) AND (MediumSMA OR MediumEMA)
 		final EntryConfiguration mediumLongEntry = factory.entry(longSmaOrEma(), OperatorConfiguration.Selection.AND,
 		        mediumSmaOrEma());
-		configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
-		        factory.strategy(mediumLongEntry, entryPositionSizing, exit, exitPositionSizing)));
+		configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		        brokerage, factory.strategy(mediumLongEntry, entryPositionSizing, exit, exitPositionSizing)));
 
 		// (LongSMA OR LongEMA) AND (ShortSMA OR ShortEMA)
 		final EntryConfiguration shortLongEntry = factory.entry(longSmaOrEma(), OperatorConfiguration.Selection.AND,
 		        shortSmaOrEma());
-		configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
-		        factory.strategy(shortLongEntry, entryPositionSizing, exit, exitPositionSizing)));
+		configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		        brokerage, factory.strategy(shortLongEntry, entryPositionSizing, exit, exitPositionSizing)));
 
 		for (final ConfirmaByConfiguration by : ConfirmaByConfiguration.values()) {
 
 			// (MediumSMA OR MediumEMA) ConfirmedBy (LongSMA OR LongEMA)
 			final EntryConfiguration mediumConfirmedEntry = factory.entry(mediumSmaOrEma(), by, longSmaOrEma());
-			configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
-			        factory.strategy(mediumConfirmedEntry, entryPositionSizing, exit, exitPositionSizing)));
+			configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+			        brokerage, factory.strategy(mediumConfirmedEntry, entryPositionSizing, exit, exitPositionSizing)));
 
 			// (ShortSMA OR ShortEMA) ConfirmedBy (LongSMA OR LongEMA)
-			configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
-			        factory.strategy(factory.entry(shortSmaOrEma(), by, longSmaOrEma()), entryPositionSizing, exit,
-			                exitPositionSizing)));
+			configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+			        brokerage, factory.strategy(factory.entry(shortSmaOrEma(), by, longSmaOrEma()), entryPositionSizing,
+			                exit, exitPositionSizing)));
 		}
 
 		return configurations;

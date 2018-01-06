@@ -60,25 +60,25 @@ public class EmaUptrendOrSmaUptrendTrial extends BaseTrial implements BacktestCo
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		final BrokerageTransactionFeeStructure brokerage = new VanguardBrokerageFees();
 
 		// Date based buying
-		configurations
-		        .add(periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
-		configurations.add(
-		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
+		        PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
+		        PeriodicConfiguration.MONTHLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(smaOrEmaUptrends(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade,
-		        maximumTrade));
+		configurations.addAll(smaOrEmaUptrends(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		        brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}

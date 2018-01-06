@@ -93,6 +93,9 @@ public class EntryOrderAnalysis {
 	/** Days of signals analysis to generate and display. */
 	private static final int DAYS_OF_SIGNALS = 1;
 
+	/** For analysis we only want to use the starting funds, no interest payments. */
+	private static final BigDecimal IGNORE_INTEREST_RATE = BigDecimal.ZERO;
+
 	/** Ensures all the necessary trading data get retrieved into the local source. */
 	private final DataServiceUpdater dataServiceUpdater;
 
@@ -186,7 +189,8 @@ public class EntryOrderAnalysis {
 		        today.minus(strategy.entry().priceDataRange()).minusDays(DAYS_OF_SIGNALS), today);
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, openingFunds, strategy, equity);
+		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, IGNORE_INTEREST_RATE, openingFunds, strategy,
+		        equity);
 	}
 
 	private BacktestEventListener output() {

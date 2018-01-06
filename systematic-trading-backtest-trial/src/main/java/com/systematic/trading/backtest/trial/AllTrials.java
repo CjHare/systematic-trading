@@ -73,53 +73,54 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations
-		        .add(periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.WEEKLY));
-		configurations.add(
-		        periodic(equity, simulationDates, openingFunds, deposit, brokerage, PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
+		        PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
+		        PeriodicConfiguration.MONTHLY));
 
 		for (final Pair<MinimumTrade, MaximumTrade> tradeSize : tradeSizes) {
 			final MinimumTrade minimumTrade = tradeSize.getLeft();
 			final MaximumTrade maximumTrade = tradeSize.getRight();
 
 			// Signal based buying
-			configurations.addAll(macdConfirmedByRsi(equity, simulationDates, openingFunds, deposit, brokerage,
-			        minimumTrade, maximumTrade));
-			configurations.addAll(sameDayMacdRsi(equity, simulationDates, openingFunds, deposit, brokerage,
-			        minimumTrade, maximumTrade));
-			configurations.addAll(
-			        emaUptrends(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade, maximumTrade));
-			configurations.addAll(
-			        macd(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade, maximumTrade));
-			configurations.addAll(sameDayEmaRsi(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade,
-			        maximumTrade));
-			configurations.addAll(sameDayMacdSmaRsi(equity, simulationDates, openingFunds, deposit, brokerage,
-			        minimumTrade, maximumTrade));
-			configurations.addAll(sameDayMacdEmaRsi(equity, simulationDates, openingFunds, deposit, brokerage,
-			        minimumTrade, maximumTrade));
-			configurations.addAll(sameDayMacdSma(equity, simulationDates, openingFunds, deposit, brokerage,
-			        minimumTrade, maximumTrade));
-			configurations.addAll(sameDaySmaRsi(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade,
-			        maximumTrade));
-			configurations.addAll(
-			        smaUptrends(equity, simulationDates, openingFunds, deposit, brokerage, minimumTrade, maximumTrade));
-			configurations.addAll(smaOrEmaUptrends(equity, simulationDates, openingFunds, deposit, brokerage,
-			        minimumTrade, maximumTrade));
+			configurations.addAll(macdConfirmedByRsi(equity, simulationDates, cashAccountInterestRate, openingFunds,
+			        deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(sameDayMacdRsi(equity, simulationDates, cashAccountInterestRate, openingFunds,
+			        deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(emaUptrends(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+			        brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(macd(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+			        brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(sameDayEmaRsi(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+			        brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(sameDayMacdSmaRsi(equity, simulationDates, cashAccountInterestRate, openingFunds,
+			        deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(sameDayMacdEmaRsi(equity, simulationDates, cashAccountInterestRate, openingFunds,
+			        deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(sameDayMacdSma(equity, simulationDates, cashAccountInterestRate, openingFunds,
+			        deposit, brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(sameDaySmaRsi(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+			        brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(smaUptrends(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+			        brokerage, minimumTrade, maximumTrade));
+			configurations.addAll(smaOrEmaUptrends(equity, simulationDates, cashAccountInterestRate, openingFunds,
+			        deposit, brokerage, minimumTrade, maximumTrade));
 		}
 
 		return configurations;
 	}
 
 	private List<BacktestBootstrapConfiguration> sameDayMacdRsi( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
-	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
 
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
@@ -136,7 +137,8 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 				final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 				final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
 				        exitPositionSizing);
-				configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
+				configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds,
+				        deposit, brokerage, strategy));
 			}
 		}
 
@@ -144,9 +146,10 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 	}
 
 	private List<BacktestBootstrapConfiguration> sameDayMacdSmaRsi( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
-	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
 
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length
@@ -168,8 +171,8 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 					final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 					final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
 					        exitPositionSizing);
-					configurations
-					        .add(configuration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
+					configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds,
+					        deposit, brokerage, strategy));
 				}
 			}
 		}
@@ -178,9 +181,10 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 	}
 
 	private List<BacktestBootstrapConfiguration> sameDayMacdEmaRsi( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
-	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
 
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length
@@ -202,8 +206,8 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 					final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 					final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
 					        exitPositionSizing);
-					configurations
-					        .add(configuration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
+					configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds,
+					        deposit, brokerage, strategy));
 				}
 			}
 		}
@@ -212,9 +216,10 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 	}
 
 	private List<BacktestBootstrapConfiguration> sameDayMacdSma( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
-	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
 
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
@@ -231,7 +236,8 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 				final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 				final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
 				        exitPositionSizing);
-				configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
+				configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds,
+				        deposit, brokerage, strategy));
 			}
 		}
 
@@ -239,9 +245,10 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 	}
 
 	private List<BacktestBootstrapConfiguration> sameDaySmaRsi( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
-	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
 
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
@@ -258,7 +265,8 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 				final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 				final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
 				        exitPositionSizing);
-				configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
+				configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds,
+				        deposit, brokerage, strategy));
 			}
 		}
 
@@ -266,9 +274,10 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 	}
 
 	private List<BacktestBootstrapConfiguration> sameDayEmaRsi( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
-	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
 
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(
@@ -285,7 +294,8 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 				final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 				final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit,
 				        exitPositionSizing);
-				configurations.add(configuration(equity, simulationDates, openingFunds, deposit, brokerage, strategy));
+				configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds,
+				        deposit, brokerage, strategy));
 			}
 		}
 

@@ -72,32 +72,33 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
-		        PeriodicConfiguration.WEEKLY));
-		configurations.add(periodic(equity, simulationDates, openingFunds, deposit, new VanguardBrokerageFees(),
-		        PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		        new VanguardBrokerageFees(), PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		        new VanguardBrokerageFees(), PeriodicConfiguration.MONTHLY));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
 		for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-			configurations.addAll(combinedUptrends(equity, simulationDates, openingFunds, deposit,
-			        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
+			configurations.addAll(combinedUptrends(equity, simulationDates, cashAccountInterestRate, openingFunds,
+			        deposit, new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
 		}
 
 		return configurations;
 	}
 
 	private List<BacktestBootstrapConfiguration> combinedUptrends( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit, final BrokerageTransactionFeeStructure brokerage,
-	        final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
+	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	        final MaximumTrade maximumTrade ) {
 
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>(MacdConfiguration.values().length);
@@ -106,7 +107,7 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 
 		configurations
-		        .add(configuration(equity, simulationDates, openingFunds, deposit, brokerage,
+		        .add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
 		                factory.strategy(factory.entry(shortSmaOrEma(),
 		                        ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_THREE_DAYS, longSmaOrEma()),
 		                        entryPositionSizing, exit, exitPositionSizing)));

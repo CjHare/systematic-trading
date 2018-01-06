@@ -25,51 +25,31 @@
  */
 package com.systematic.trading.input;
 
+import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Optional;
 
 /**
- * Launch arguments.
+ * Launch argument parser and validation for the opening funds, a big decimal value.
  * 
  * @author CJ Hare
  */
-public interface LaunchArgument<T> {
+public class InterestRateLaunchArgument implements LaunchArgument<BigDecimal> {
 
-	enum ArgumentKey {
-		DATA_SERVICE_TYPE("-data_service_type"),
-		DEPOSIT_AMOUNT("-deposit_amount"),
-		DEPOSIT_FREQUENCY("-deposit_frequency"),
-		END_DATE("-end_date"),
-		EQUITY_DATASET("-equity_dataset"),
-		FILE_BASE_DIRECTORY("-output_file_base_directory"),
-		INTEREST_RATE("-interest_rate"),		
-		OPENING_FUNDS("-opening_funds"),
-		OUTPUT_TYPE("-output"),
-		START_DATE("-start_date"),
-		TICKER_SYMBOL("-ticker_symbol");
+	/** Provides validation for the launch argument value. */
+	private final LaunchArgumentValidator validator;
 
-		private final String key;
-
-		private ArgumentKey( final String key ) {
-			this.key = key;
-		}
-
-		public String getKey() {
-
-			return key;
-		}
-
-		public static Optional<ArgumentKey> get( final String arg ) {
-
-			for (final ArgumentKey candidate : ArgumentKey.values()) {
-				if (candidate.key.equals(arg)) {
-					return Optional.of(candidate);
-				}
-			}
-
-			return Optional.empty();
-		}
+	public InterestRateLaunchArgument( final LaunchArgumentValidator validator ) {
+		this.validator = validator;
 	}
 
-	T get( Map<ArgumentKey, String> arguments );
+	@Override
+	public BigDecimal get( final Map<ArgumentKey, String> arguments ) {
+
+		final String openingFunds = arguments.get(ArgumentKey.INTEREST_RATE);
+
+		validator.validate(openingFunds, "%s argument is not present", ArgumentKey.INTEREST_RATE.getKey());
+		validator.validateNotEmpty(openingFunds, "%s argument cannot be empty", ArgumentKey.INTEREST_RATE.getKey());
+
+		return new BigDecimal(openingFunds);
+	}
 }
