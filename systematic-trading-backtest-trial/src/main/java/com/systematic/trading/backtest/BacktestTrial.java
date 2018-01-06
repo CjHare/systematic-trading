@@ -26,7 +26,6 @@
 package com.systematic.trading.backtest;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -38,6 +37,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.context.BacktestBootstrapContext;
@@ -115,12 +115,7 @@ public class BacktestTrial {
 		final BacktestEndDate simulationEndDate = parserdArguments.endDate();
 
 		final EquityConfiguration equity = equity(parserdArguments);
-
-		// TODO into a wrapper configuration object
-		final DepositConfiguration depositAmount = new DepositConfiguration(parserdArguments.depositAmount(),
-		        parserdArguments.depositFrequency());
-		final BigDecimal openingFunds = parserdArguments.openingFunds();
-		final BigDecimal cashAccountInterestRate = parserdArguments.interestRate();
+		final CashAccountConfiguration cashAccount = cashAcount(parserdArguments);
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
@@ -140,24 +135,24 @@ public class BacktestTrial {
 		timer.start();
 
 		final List<BacktestBootstrapConfiguration> backtestConfigurations = configuration.configuration(equity,
-		        simulationDates, cashAccountInterestRate, openingFunds, depositAmount);
+		        simulationDates, cashAccount);
 
 		try {
-			clearOutputDirectory(depositAmount, parserdArguments);
+			clearOutputDirectory(cashAccount.deposit(), parserdArguments);
 
 			for (final BacktestBootstrapConfiguration backtestConfiguration : backtestConfigurations) {
-				final BacktestEventListener output = output(depositAmount, parserdArguments, backtestConfiguration,
-				        outputPool);
+				final BacktestEventListener output = output(cashAccount.deposit(), parserdArguments,
+				        backtestConfiguration, outputPool);
 				final BacktestBootstrapContext context = context(backtestConfiguration, output);
 
-				LOG.info("Backtesting beginning for: {}",
-				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, depositAmount));
+				LOG.info("Backtesting beginning for: {}", () -> description
+				        .bootstrapConfigurationWithDeposit(backtestConfiguration, cashAccount.deposit()));
 
 				new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration.backtestDates(),
 				        context, output);
 
-				LOG.info("Backtesting complete for: {}",
-				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, depositAmount));
+				LOG.info("Backtesting complete for: {}", () -> description
+				        .bootstrapConfigurationWithDeposit(backtestConfiguration, cashAccount.deposit()));
 			}
 		} finally {
 			HibernateUtil.sessionFactory().close();
@@ -170,6 +165,13 @@ public class BacktestTrial {
 
 		LOG.info(() -> String.format("Finished outputting %s results, time taken: %s", backtestConfigurations.size(),
 		        Duration.ofMillis(timer.getTime())));
+	}
+
+	private CashAccountConfiguration cashAcount( final BacktestLaunchArguments parserdArguments ) {
+
+		return new CashAccountConfiguration(
+		        new DepositConfiguration(parserdArguments.depositAmount(), parserdArguments.depositFrequency()),
+		        parserdArguments.interestRate(), parserdArguments.openingFunds());
 	}
 
 	private BacktestBootstrapContext context( final BacktestBootstrapConfiguration config,

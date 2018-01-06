@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trial.BaseTrial;
@@ -58,23 +57,22 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        new VanguardBrokerageFees(), PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccount, new VanguardBrokerageFees(),
+		        PeriodicConfiguration.WEEKLY));
 
-		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        new VanguardBrokerageFees(), PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccount, new VanguardBrokerageFees(),
+		        PeriodicConfiguration.MONTHLY));
 
-		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        new SelfWealthBrokerageFees(), PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(),
+		        PeriodicConfiguration.WEEKLY));
 
-		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        new SelfWealthBrokerageFees(), PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(),
+		        PeriodicConfiguration.MONTHLY));
 
 		return configurations;
 	}

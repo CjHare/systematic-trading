@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
 import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
@@ -72,31 +71,29 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        new VanguardBrokerageFees(), PeriodicConfiguration.WEEKLY));
-		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        new VanguardBrokerageFees(), PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccount, new VanguardBrokerageFees(),
+		        PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccount, new VanguardBrokerageFees(),
+		        PeriodicConfiguration.MONTHLY));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
 		for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-			configurations.addAll(combinedUptrends(equity, simulationDates, cashAccountInterestRate, openingFunds,
-			        deposit, new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
+			configurations.addAll(combinedUptrends(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(),
+			        minimumTrade, maximumTrade));
 		}
 
 		return configurations;
 	}
 
 	private List<BacktestBootstrapConfiguration> combinedUptrends( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
@@ -107,7 +104,7 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 
 		configurations
-		        .add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
+		        .add(configuration(equity, simulationDates, cashAccount, brokerage,
 		                factory.strategy(factory.entry(shortSmaOrEma(),
 		                        ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_THREE_DAYS, longSmaOrEma()),
 		                        entryPositionSizing, exit, exitPositionSizing)));

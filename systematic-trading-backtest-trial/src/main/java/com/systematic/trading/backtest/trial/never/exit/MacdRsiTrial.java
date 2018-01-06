@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
@@ -59,27 +58,23 @@ public class MacdRsiTrial extends BaseTrial implements BacktestConfiguration {
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		final BrokerageTransactionFeeStructure brokerage = new VanguardBrokerageFees();
 
 		// Date based buying
-		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		        PeriodicConfiguration.WEEKLY));
-		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		        PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccount, brokerage, PeriodicConfiguration.WEEKLY));
+		configurations.add(periodic(equity, simulationDates, cashAccount, brokerage, PeriodicConfiguration.MONTHLY));
 
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
-		configurations.addAll(macd(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		        minimumTrade, maximumTrade));
-		configurations.addAll(macdConfirmedByRsi(equity, simulationDates, cashAccountInterestRate, openingFunds,
-		        deposit, brokerage, minimumTrade, maximumTrade));
+		configurations.addAll(macd(equity, simulationDates, cashAccount, brokerage, minimumTrade, maximumTrade));
+		configurations.addAll(
+		        macdConfirmedByRsi(equity, simulationDates, cashAccount, brokerage, minimumTrade, maximumTrade));
 
 		return configurations;
 	}

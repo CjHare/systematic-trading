@@ -40,7 +40,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
 import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
@@ -242,7 +242,7 @@ public class StandardDescriptionGeneratorTest {
 
 		final BacktestSimulationDates backtestDates = mock(BacktestSimulationDates.class);
 		final BrokerageTransactionFeeStructure brokerageFees = mock(SelfWealthBrokerageFees.class);
-		final CashAccountConfiguration cashAccount = CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY;
+		final CashAccountConfigurationType cashAccount = CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY;
 		final DepositConfiguration deposit = new DepositConfiguration(BigDecimal.valueOf(200), DepositFrequency.WEEKLY);
 		final StrategyConfiguration strategy = mock(StrategyConfiguration.class);
 		when(strategy.description(any(DescriptionGenerator.class))).thenReturn("sTrategy-deScription");

@@ -34,7 +34,7 @@ import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
 import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
@@ -204,9 +204,9 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		return equity.gquityIdentity().tickerSymbol();
 	}
 
-	private String cashAccount( final CashAccountConfiguration cashAccount ) {
+	private String cashAccount( final CashAccountConfigurationType cashAccount ) {
 
-		if (CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY == cashAccount) {
+		if (CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY == cashAccount) {
 			return "InterestDaily"; // Standard output needs no description
 
 		}

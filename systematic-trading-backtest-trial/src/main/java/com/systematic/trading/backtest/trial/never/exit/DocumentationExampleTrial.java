@@ -29,7 +29,6 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,7 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
@@ -101,8 +100,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 		final BrokerageTransactionFeeStructure brokerage = new SelfWealthBrokerageFees();
@@ -111,18 +109,16 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
+		configurations.add(periodic(equity, simulationDates, cashAccount, brokerage));
+		configurations.add(indicator(equity, simulationDates, cashAccount, brokerage, minimumTrade, maximumTrade));
 		configurations
-		        .add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage));
-		configurations.add(indicator(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		        minimumTrade, maximumTrade));
-		configurations.add(periodicAndIndicator(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        brokerage, minimumTrade, maximumTrade));
-		configurations.add(indicatorAndIndicator(equity, simulationDates, cashAccountInterestRate, openingFunds,
-		        deposit, brokerage, minimumTrade, maximumTrade));
-		configurations.add(indicatorOrIndicator(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        brokerage, minimumTrade, maximumTrade));
-		configurations.add(indicatorConfirmedByIndicator(equity, simulationDates, cashAccountInterestRate, openingFunds,
-		        deposit, brokerage, minimumTrade, maximumTrade));
+		        .add(periodicAndIndicator(equity, simulationDates, cashAccount, brokerage, minimumTrade, maximumTrade));
+		configurations.add(
+		        indicatorAndIndicator(equity, simulationDates, cashAccount, brokerage, minimumTrade, maximumTrade));
+		configurations
+		        .add(indicatorOrIndicator(equity, simulationDates, cashAccount, brokerage, minimumTrade, maximumTrade));
+		configurations.add(indicatorConfirmedByIndicator(equity, simulationDates, cashAccount, brokerage, minimumTrade,
+		        maximumTrade));
 
 		return configurations;
 	}
@@ -132,8 +128,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	 * days, a buy event is generated.
 	 */
 	private BacktestBootstrapConfiguration indicatorConfirmedByIndicator( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
@@ -147,8 +142,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 
-		return configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		        strategy);
+		return configuration(equity, simulationDates, cashAccount, brokerage, strategy);
 
 	}
 
@@ -156,8 +150,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	 * Buy events are generated whenever there is an EMA or SMA uptrend (positive gradient).
 	 */
 	private BacktestBootstrapConfiguration indicatorOrIndicator( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
@@ -170,8 +163,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 
-		return configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		        strategy);
+		return configuration(equity, simulationDates, cashAccount, brokerage, strategy);
 	}
 
 	/**
@@ -179,8 +171,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	 * buy signal is generated.
 	 */
 	private BacktestBootstrapConfiguration indicatorAndIndicator( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
@@ -193,8 +184,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 
-		return configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		        strategy);
+		return configuration(equity, simulationDates, cashAccount, brokerage, strategy);
 	}
 
 	/**
@@ -202,8 +192,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	 * date).
 	 */
 	private BacktestBootstrapConfiguration periodicAndIndicator( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
@@ -215,16 +204,14 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 
-		return configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		        strategy);
+		return configuration(equity, simulationDates, cashAccount, brokerage, strategy);
 	}
 
 	/**
 	 * Buy signal is generated whenever there is a MACD signal.
 	 */
 	private BacktestBootstrapConfiguration indicator( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
@@ -234,16 +221,14 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 
-		return configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		        strategy);
+		return configuration(equity, simulationDates, cashAccount, brokerage, strategy);
 	}
 
 	/**
 	 * Generates a buy signal monthly, beginning on the simulation start date.
 	 */
 	private BacktestBootstrapConfiguration periodic( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage ) {
 
 		final EntryConfiguration entry = factory.entry(PeriodicConfiguration.MONTHLY);
@@ -253,7 +238,6 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 		final StrategyConfiguration strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing);
 
-		return configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		        strategy);
+		return configuration(equity, simulationDates, cashAccount, brokerage, strategy);
 	}
 }

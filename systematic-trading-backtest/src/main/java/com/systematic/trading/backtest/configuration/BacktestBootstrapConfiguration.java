@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
 import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
@@ -19,7 +19,7 @@ public class BacktestBootstrapConfiguration {
 
 	private final BacktestSimulationDates backtestDates;
 	private final BrokerageTransactionFeeStructure brokerageFees;
-	private final CashAccountConfiguration cashAccount;
+	private final CashAccountConfigurationType cashAccount;
 	private final Optional<DepositConfiguration> deposit;
 	private final BigDecimal openingFunds;
 	private final StrategyConfiguration strategy;
@@ -27,7 +27,7 @@ public class BacktestBootstrapConfiguration {
 	private BigDecimal cashAccountInterestRate;
 
 	public BacktestBootstrapConfiguration( final BacktestSimulationDates backtestDates,
-	        final BrokerageTransactionFeeStructure brokerageFees, final CashAccountConfiguration cashAccount,
+	        final BrokerageTransactionFeeStructure brokerageFees, final CashAccountConfigurationType cashAccount,
 	        final BigDecimal cashAccountInterestRate, final BigDecimal openingFunds, final DepositConfiguration deposit,
 	        StrategyConfiguration strategy, final EquityConfiguration equity ) {
 		this.backtestDates = backtestDates;
@@ -41,7 +41,7 @@ public class BacktestBootstrapConfiguration {
 	}
 
 	public BacktestBootstrapConfiguration( final BacktestSimulationDates backtestDates,
-	        final BrokerageTransactionFeeStructure brokerageFees, final CashAccountConfiguration cashAccount,
+	        final BrokerageTransactionFeeStructure brokerageFees, final CashAccountConfigurationType cashAccount,
 	        final BigDecimal cashAccountInterestRate, final BigDecimal openingFunds, StrategyConfiguration strategy,
 	        final EquityConfiguration equity ) {
 		this.backtestDates = backtestDates;
@@ -64,7 +64,7 @@ public class BacktestBootstrapConfiguration {
 		return brokerageFees;
 	}
 
-	public CashAccountConfiguration cashAccount() {
+	public CashAccountConfigurationType cashAccount() {
 
 		return cashAccount;
 	}

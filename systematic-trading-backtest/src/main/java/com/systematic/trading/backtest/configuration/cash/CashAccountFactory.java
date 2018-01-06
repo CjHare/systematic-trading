@@ -59,7 +59,7 @@ public class CashAccountFactory {
 		final BigDecimal depositAmount = deposit.amount();
 		final Period depositFrequency = deposit.frequency().period();
 		final InterestRate annualInterestRate = interestRate(annualInterest);
-		final CashAccount underlyingAccount = create(CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
+		final CashAccount underlyingAccount = create(CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY,
 		        annualInterestRate, openingFunds, startDate);
 
 		return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate, depositFrequency);
@@ -67,7 +67,7 @@ public class CashAccountFactory {
 
 	private InterestRate interestRate( final BigDecimal annualInterestRate ) {
 
-		return InterestRateFactory.getInstance().create(InterestRateConfiguration.FLAT_INTEREST_RATE,
+		return InterestRateFactory.getInstance().create(InterestRateConfigurationType.FLAT_INTEREST_RATE,
 		        annualInterestRate, MATH_CONTEXT);
 	}
 
@@ -75,7 +75,7 @@ public class CashAccountFactory {
 	        final BigDecimal annualInterest ) {
 
 		final InterestRate annualInterestRate = interestRate(annualInterest);
-		final CashAccount underlyingAccount = create(CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY,
+		final CashAccount underlyingAccount = create(CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY,
 		        annualInterestRate, openingFunds, startDate);
 
 		return underlyingAccount;
@@ -84,7 +84,7 @@ public class CashAccountFactory {
 	/**
 	 * Create an instance of the a cash account.
 	 */
-	private CashAccount create( final CashAccountConfiguration configuration, final InterestRate annualInterestRate,
+	private CashAccount create( final CashAccountConfigurationType configuration, final InterestRate annualInterestRate,
 	        final BigDecimal openingFunds, final LocalDate openingDate ) {
 
 		try {

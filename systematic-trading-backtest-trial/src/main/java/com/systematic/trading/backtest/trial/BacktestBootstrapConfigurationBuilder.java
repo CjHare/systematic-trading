@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
 import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
@@ -95,7 +95,7 @@ public class BacktestBootstrapConfigurationBuilder {
 	public BacktestBootstrapConfiguration build() {
 
 		return new BacktestBootstrapConfiguration(simulationDates, brokerage,
-		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, cashAccountInterestRate, openingFunds, deposit,
+		        CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY, cashAccountInterestRate, openingFunds, deposit,
 		        strategy, equity);
 	}
 }

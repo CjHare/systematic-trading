@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;
 import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
@@ -71,43 +70,41 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(periodic(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        new SelfWealthBrokerageFees(), PeriodicConfiguration.MONTHLY));
+		configurations.add(periodic(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(),
+		        PeriodicConfiguration.MONTHLY));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final MinimumTrade minimumTrade = MinimumTrade.ONE_THOUSAND;
 
 		// Signal based buying
-		configurations.addAll(macdConfirmedByRsiOrUptrends(equity, simulationDates, cashAccountInterestRate,
-		        openingFunds, deposit, new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
-
-		configurations.addAll(macd(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
+		configurations.addAll(macdConfirmedByRsiOrUptrends(equity, simulationDates, cashAccount,
 		        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
 
-		configurations.addAll(rsi(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
+		configurations.addAll(
+		        macd(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
 
-		configurations.addAll(smaEmaUptrendsAndRsi(equity, simulationDates, cashAccountInterestRate, openingFunds,
-		        deposit, new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
+		configurations.addAll(
+		        rsi(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
 
-		configurations.addAll(emaUptrendsAndRsi(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
+		configurations.addAll(smaEmaUptrendsAndRsi(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(),
+		        minimumTrade, maximumTrade));
 
-		configurations.addAll(smaUptrendsAndRsi(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        new SelfWealthBrokerageFees(), minimumTrade, maximumTrade));
+		configurations.addAll(emaUptrendsAndRsi(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(),
+		        minimumTrade, maximumTrade));
+
+		configurations.addAll(smaUptrendsAndRsi(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(),
+		        minimumTrade, maximumTrade));
 
 		return configurations;
 	}
 
 	private List<BacktestBootstrapConfiguration> macdConfirmedByRsiOrUptrends( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit,
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
@@ -117,44 +114,39 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 
-		configurations
-		        .add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		                factory.strategy(mediumMacdConfirmedByRsi(), entryPositionSizing, exit, exitPositionSizing)));
+		configurations.add(configuration(equity, simulationDates, cashAccount, brokerage,
+		        factory.strategy(mediumMacdConfirmedByRsi(), entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations
-		        .add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		                factory.strategy(factory.entry(mediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR,
-		                        shortSmaConfirmedByEma()), entryPositionSizing, exit, exitPositionSizing)));
+		configurations.add(configuration(equity, simulationDates, cashAccount, brokerage, factory.strategy(
+		        factory.entry(mediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR, shortSmaConfirmedByEma()),
+		        entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations
-		        .add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
-		                factory.strategy(factory.entry(mediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR,
-		                        shortEmaConfirmedByEma()), entryPositionSizing, exit, exitPositionSizing)));
+		configurations.add(configuration(equity, simulationDates, cashAccount, brokerage, factory.strategy(
+		        factory.entry(mediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR, shortEmaConfirmedByEma()),
+		        entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        brokerage,
+		configurations.add(configuration(equity, simulationDates, cashAccount, brokerage,
 		        factory.strategy(
 		                factory.entry(mediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR, longEma()),
 		                entryPositionSizing, exit, exitPositionSizing)));
 
 		configurations
-		        .add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit, brokerage,
+		        .add(configuration(equity, simulationDates, cashAccount, brokerage,
 		                factory.strategy(
 		                        factory.entry(mediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR,
 		                                shortEmaOrSmaConfirmedByEma()),
 		                        entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        brokerage, factory.strategy(longEma(), entryPositionSizing, exit, exitPositionSizing)));
+		configurations.add(configuration(equity, simulationDates, cashAccount, brokerage,
+		        factory.strategy(longEma(), entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        brokerage, factory.strategy(longSma(), entryPositionSizing, exit, exitPositionSizing)));
+		configurations.add(configuration(equity, simulationDates, cashAccount, brokerage,
+		        factory.strategy(longSma(), entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        brokerage, factory.strategy(longEmaOrSma(), entryPositionSizing, exit, exitPositionSizing)));
+		configurations.add(configuration(equity, simulationDates, cashAccount, brokerage,
+		        factory.strategy(longEmaOrSma(), entryPositionSizing, exit, exitPositionSizing)));
 
-		configurations.add(configuration(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit,
-		        brokerage,
+		configurations.add(configuration(equity, simulationDates, cashAccount, brokerage,
 		        factory.strategy(
 		                factory.entry(mediumMacdConfirmedByRsi(), OperatorConfiguration.Selection.OR, longEmaOrSma()),
 		                entryPositionSizing, exit, exitPositionSizing)));

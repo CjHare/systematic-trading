@@ -25,52 +25,25 @@
  */
 package com.systematic.trading.backtest.configuration.cash;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.math.MathContext;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.systematic.trading.simulation.cash.InterestRate;
+import com.systematic.trading.simulation.cash.CalculatedDailyPaidMonthlyCashAccount;
 
 /**
- * Creates instances of the available fee structures.
+ * Cash account configurations available.
  * 
  * @author CJ Hare
  */
-public class InterestRateFactory {
+public enum CashAccountConfigurationType {
 
-	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(InterestRateFactory.class);
+	CALCULATED_DAILY_PAID_MONTHLY(CalculatedDailyPaidMonthlyCashAccount.class);
 
-	private static final InterestRateFactory INSTANCE = new InterestRateFactory();
+	private final Class<?> type;
 
-	private InterestRateFactory() {
+	CashAccountConfigurationType( final Class<?> type ) {
+		this.type = type;
 	}
 
-	public static final InterestRateFactory getInstance() {
+	public Class<?> type() {
 
-		return INSTANCE;
-	}
-
-	/**
-	 * Create an instance of the a interest rate.
-	 */
-	public InterestRate create( final InterestRateConfigurationType configuration, final BigDecimal annualRate,
-	        final MathContext mathContext ) {
-
-		try {
-			Constructor<?> cons = configuration.type().getConstructor(BigDecimal.class, MathContext.class);
-
-			return (InterestRate) cons.newInstance(annualRate, mathContext);
-		} catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-		        | IllegalArgumentException | InvocationTargetException e) {
-			LOG.error(e);
-		}
-
-		throw new IllegalArgumentException(
-		        String.format("Could not create the desired interest rate: %s", configuration));
+		return type;
 	}
 }

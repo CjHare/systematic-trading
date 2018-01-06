@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.backtest.trial.never.exit;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +37,7 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
@@ -80,14 +79,12 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 
 	@Override
 	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final BigDecimal cashAccountInterestRate,
-	        final BigDecimal openingFunds, final DepositConfiguration deposit ) {
+	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
 
-		List<BacktestBootstrapConfiguration> configurations = super.configuration(equity, simulationDates,
-		        cashAccountInterestRate, openingFunds, deposit);
+		List<BacktestBootstrapConfiguration> configurations = super.configuration(equity, simulationDates, cashAccount);
 
 		// Vanguard Retail - baseline
-		configurations.add(baseline(equity, simulationDates, cashAccountInterestRate, openingFunds, deposit));
+		configurations.add(baseline(equity, simulationDates, cashAccount));
 
 		return configurations;
 	}
