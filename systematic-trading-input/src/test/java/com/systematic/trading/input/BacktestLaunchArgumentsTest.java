@@ -259,9 +259,25 @@ public class BacktestLaunchArgumentsTest {
 		verifyDespoitFrequency(frequency);
 	}
 
+	@Test
+	public void interestRate() {
+
+		final double interestRate = 34.67;
+		setUpInterestRate(interestRate);
+
+		launchArguments();
+
+		verifyInterestRate(interestRate);
+	}
+
 	private void setUpDepositFrequency( final DepositFrequency frequency ) {
 
 		when(depositFrequencyArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(frequency);
+	}
+
+	private void setUpInterestRate( final double rate ) {
+
+		when(interestRateArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(BigDecimal.valueOf(rate));
 	}
 
 	private void setUpDepositAmount( final double amount ) {
@@ -354,6 +370,12 @@ public class BacktestLaunchArgumentsTest {
 
 		assertNotNull(parser.depositAmount());
 		assertEquals(BigDecimal.valueOf(expected), parser.depositAmount());
+	}
+
+	private void verifyInterestRate( final double expected ) {
+
+		assertNotNull(parser.interestRate());
+		assertEquals(BigDecimal.valueOf(expected), parser.interestRate());
 	}
 
 	private void verifyDespoitFrequency( final DepositFrequency expected ) {
