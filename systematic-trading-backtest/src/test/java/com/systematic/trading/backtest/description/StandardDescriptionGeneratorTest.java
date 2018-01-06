@@ -40,6 +40,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
 import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
@@ -242,14 +243,14 @@ public class StandardDescriptionGeneratorTest {
 
 		final BacktestSimulationDates backtestDates = mock(BacktestSimulationDates.class);
 		final BrokerageTransactionFeeStructure brokerageFees = mock(SelfWealthBrokerageFees.class);
-		final CashAccountConfigurationType cashAccount = CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY;
-		final DepositConfiguration deposit = new DepositConfiguration(BigDecimal.valueOf(200), DepositFrequency.WEEKLY);
+		final CashAccountConfiguration cashAccount = mock(CashAccountConfiguration.class);
+		final CashAccountConfigurationType cashAccountType = CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY;
 		final StrategyConfiguration strategy = mock(StrategyConfiguration.class);
 		when(strategy.description(any(DescriptionGenerator.class))).thenReturn("sTrategy-deScription");
 		final EquityConfiguration equity = mock(EquityConfiguration.class);
 		when(equity.gquityIdentity()).thenReturn(new EquityIdentity("ZXY", null, 0));
 
-		return new BacktestBootstrapConfiguration(backtestDates, brokerageFees, cashAccount, BigDecimal.ZERO,
-		        BigDecimal.ZERO, deposit, strategy, equity);
+		return new BacktestBootstrapConfiguration(backtestDates, brokerageFees, cashAccountType, cashAccount, strategy,
+		        equity);
 	}
 }

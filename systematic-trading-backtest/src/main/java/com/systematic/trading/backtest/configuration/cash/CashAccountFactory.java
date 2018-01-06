@@ -52,33 +52,29 @@ public class CashAccountFactory {
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
-	// TODO all these into a configuration - interest rate, deposit & frequency
-	public CashAccount create( final LocalDate startDate, final BigDecimal openingFunds,
-	        final DepositConfiguration deposit, final BigDecimal annualInterest ) {
-
-		final BigDecimal depositAmount = deposit.amount();
-		final Period depositFrequency = deposit.frequency().period();
-		final InterestRate annualInterestRate = interestRate(annualInterest);
-		final CashAccount underlyingAccount = create(CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY,
-		        annualInterestRate, openingFunds, startDate);
-
-		return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate, depositFrequency);
-	}
-
-	private InterestRate interestRate( final BigDecimal annualInterestRate ) {
+	private InterestRate interestRate( final CashAccountConfiguration cashAccount ) {
 
 		return InterestRateFactory.getInstance().create(InterestRateConfigurationType.FLAT_INTEREST_RATE,
-		        annualInterestRate, MATH_CONTEXT);
+		        cashAccount.interestRate(), MATH_CONTEXT);
 	}
 
-	public CashAccount create( final LocalDate startDate, final BigDecimal openingFunds,
-	        final BigDecimal annualInterest ) {
+	public CashAccount create( final LocalDate startDate, final CashAccountConfiguration cashAccount ) {
 
-		final InterestRate annualInterestRate = interestRate(annualInterest);
-		final CashAccount underlyingAccount = create(CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY,
-		        annualInterestRate, openingFunds, startDate);
+		final InterestRate annualInterestRate = interestRate(cashAccount);
 
-		return underlyingAccount;
+		if (cashAccount.deposit().isPresent()) {
+
+			final BigDecimal depositAmount = cashAccount.deposit().get().amount();
+			final Period depositFrequency = cashAccount.deposit().get().frequency().period();
+			final CashAccount underlyingAccount = create(CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY,
+			        annualInterestRate, cashAccount.openingFunds(), startDate);
+
+			return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate,
+			        depositFrequency);
+		}
+
+		return create(CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY, annualInterestRate,
+		        cashAccount.openingFunds(), startDate);
 	}
 
 	/**

@@ -91,7 +91,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(equity(configuration.equity()));
 		out.add(brokerage(configuration.brokerageFees()));
-		out.add(cashAccount(configuration.cashAccount()));
+		out.add(cashAccount(configuration.cashAccountType()));
 		out.add(configuration.strategy().description(this));
 		return out.toString();
 	}
@@ -104,7 +104,7 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 		out.add(equity(configuration.equity()));
 		out.add(brokerage(configuration.brokerageFees()));
 		out.add(deposit(depositAmount));
-		out.add(cashAccount(configuration.cashAccount()));
+		out.add(cashAccount(configuration.cashAccountType()));
 		out.add(configuration.strategy().description(this));
 		return out.toString();
 	}

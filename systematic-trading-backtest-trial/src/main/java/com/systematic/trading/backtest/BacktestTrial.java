@@ -26,8 +26,10 @@
 package com.systematic.trading.backtest;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -52,6 +54,7 @@ import com.systematic.trading.backtest.event.SilentBacktestEventLisener;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.input.BacktestEndDate;
 import com.systematic.trading.backtest.input.BacktestStartDate;
+import com.systematic.trading.backtest.input.DepositFrequency;
 import com.systematic.trading.backtest.input.OutputType;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutputPreparation;
@@ -116,6 +119,7 @@ public class BacktestTrial {
 
 		final EquityConfiguration equity = equity(parserdArguments);
 		final CashAccountConfiguration cashAccount = cashAcount(parserdArguments);
+		final DepositConfiguration deposit = deposit(cashAccount);
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
@@ -138,21 +142,21 @@ public class BacktestTrial {
 		        simulationDates, cashAccount);
 
 		try {
-			clearOutputDirectory(cashAccount.deposit(), parserdArguments);
+			clearOutputDirectory(cashAccount, parserdArguments);
 
 			for (final BacktestBootstrapConfiguration backtestConfiguration : backtestConfigurations) {
-				final BacktestEventListener output = output(cashAccount.deposit(), parserdArguments,
-				        backtestConfiguration, outputPool);
+				final BacktestEventListener output = output(deposit, parserdArguments, backtestConfiguration,
+				        outputPool);
 				final BacktestBootstrapContext context = context(backtestConfiguration, output);
 
-				LOG.info("Backtesting beginning for: {}", () -> description
-				        .bootstrapConfigurationWithDeposit(backtestConfiguration, cashAccount.deposit()));
+				LOG.info("Backtesting beginning for: {}",
+				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, deposit));
 
 				new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration.backtestDates(),
 				        context, output);
 
-				LOG.info("Backtesting complete for: {}", () -> description
-				        .bootstrapConfigurationWithDeposit(backtestConfiguration, cashAccount.deposit()));
+				LOG.info("Backtesting complete for: {}",
+				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, deposit));
 			}
 		} finally {
 			HibernateUtil.sessionFactory().close();
@@ -198,11 +202,11 @@ public class BacktestTrial {
 		}
 	}
 
-	private BacktestEventListener output( final DepositConfiguration depositAmount,
-	        final BacktestLaunchArguments arguments, final BacktestBootstrapConfiguration configuration,
-	        final ExecutorService pool ) throws BacktestInitialisationException {
+	private BacktestEventListener output( final DepositConfiguration deposit, final BacktestLaunchArguments arguments,
+	        final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
+	        throws BacktestInitialisationException {
 
-		final BacktestBatchId batchId = batchId(configuration, depositAmount);
+		final BacktestBatchId batchId = batchId(configuration, deposit);
 		final OutputType type = arguments.outputType();
 
 		try {
@@ -212,10 +216,10 @@ public class BacktestTrial {
 					        BackestOutputElasticConfigurationSingleton.configuration());
 				case FILE_COMPLETE:
 					return new CompleteFileOutputService(batchId,
-					        outputDirectory(outputDirectory(depositAmount, arguments), configuration), pool);
+					        outputDirectory(outputDirectory(deposit, arguments), configuration), pool);
 				case FILE_MINIMUM:
 					return new MinimalFileOutputService(batchId,
-					        outputDirectory(outputDirectory(depositAmount, arguments), configuration), pool);
+					        outputDirectory(outputDirectory(deposit, arguments), configuration), pool);
 				case NO_DISPLAY:
 					return new SilentBacktestEventLisener();
 				default:
@@ -224,6 +228,18 @@ public class BacktestTrial {
 		} catch (final IOException e) {
 			throw new BacktestInitialisationException(e);
 		}
+	}
+
+	private DepositConfiguration deposit( final CashAccountConfiguration cashAccount ) {
+
+		final Optional<DepositConfiguration> deposit = cashAccount.deposit();
+
+		if (deposit.isPresent()) {
+			return deposit.get();
+		}
+
+		// No deposit
+		return new DepositConfiguration(BigDecimal.ZERO, DepositFrequency.MONTHLY);
 	}
 
 	private String outputDirectory( final DepositConfiguration depositAmount,
@@ -282,7 +298,7 @@ public class BacktestTrial {
 		}
 	}
 
-	private void clearOutputDirectory( final DepositConfiguration depositAmount,
+	private void clearOutputDirectory( final CashAccountConfiguration cashAccount,
 	        final BacktestLaunchArguments arguments ) throws ServiceException {
 		// TODO delete must run BEFORE any of the tests! that'll ensure race conditions are avoided
 
@@ -292,11 +308,15 @@ public class BacktestTrial {
 
 		if (isFileBasedDisplay(arguments)) {
 
-			final String outputDirectory = arguments.outputDirectory(directoryDescription.deposit(depositAmount));
-			try {
-				new ClearFileDestination(outputDirectory).clear();
-			} catch (final IOException e) {
-				throw new BacktestInitialisationException(e);
+			if (cashAccount.deposit().isPresent()) {
+
+				final String outputDirectory = arguments
+				        .outputDirectory(directoryDescription.deposit(cashAccount.deposit().get()));
+				try {
+					new ClearFileDestination(outputDirectory).clear();
+				} catch (final IOException e) {
+					throw new BacktestInitialisationException(e);
+				}
 			}
 		}
 	}

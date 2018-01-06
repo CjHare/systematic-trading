@@ -39,6 +39,7 @@ import com.systematic.trading.backtest.Backtest;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
@@ -192,8 +193,8 @@ public class EntryOrderAnalysis {
 		        new BacktestEndDate(today));
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
-		        CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY, IGNORE_INTEREST_RATE, openingFunds, strategy,
-		        equity);
+		        CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY,
+		        new CashAccountConfiguration(IGNORE_INTEREST_RATE, openingFunds), strategy, equity);
 	}
 
 	private BacktestEventListener output() {

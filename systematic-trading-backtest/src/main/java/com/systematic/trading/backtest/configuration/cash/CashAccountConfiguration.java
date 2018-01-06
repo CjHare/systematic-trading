@@ -30,6 +30,7 @@
 package com.systematic.trading.backtest.configuration.cash;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 /**
  * The cash account configuration to use during the simulation.
@@ -38,19 +39,26 @@ import java.math.BigDecimal;
  */
 public class CashAccountConfiguration {
 
-	private final DepositConfiguration deposit;
+	private final Optional<DepositConfiguration> deposit;
 	private final BigDecimal openingFunds;
 	private final BigDecimal interestRate;
 
-	public CashAccountConfiguration( final DepositConfiguration deposit, final BigDecimal interestRate,
-	        final BigDecimal openingFunds ) {
+	public CashAccountConfiguration( final BigDecimal interestRate, final BigDecimal openingFunds ) {
 
-		this.deposit = deposit;
+		this.deposit = Optional.empty();
 		this.openingFunds = openingFunds;
 		this.interestRate = interestRate;
 	}
 
-	public DepositConfiguration deposit() {
+	public CashAccountConfiguration( final DepositConfiguration deposit, final BigDecimal interestRate,
+	        final BigDecimal openingFunds ) {
+
+		this.deposit = Optional.of(deposit);
+		this.openingFunds = openingFunds;
+		this.interestRate = interestRate;
+	}
+
+	public Optional<DepositConfiguration> deposit() {
 
 		return deposit;
 	}

@@ -25,12 +25,10 @@
  */
 package com.systematic.trading.backtest.trial;
 
-import java.math.BigDecimal;
-
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
+import com.systematic.trading.backtest.configuration.cash.CashAccountConfiguration;
 import com.systematic.trading.backtest.configuration.cash.CashAccountConfigurationType;
-import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
@@ -44,11 +42,9 @@ public class BacktestBootstrapConfigurationBuilder {
 
 	private EquityConfiguration equity;
 	private BacktestSimulationDates simulationDates;
-	private DepositConfiguration deposit;
 	private BrokerageTransactionFeeStructure brokerage;
 	private StrategyConfiguration strategy;
-	private BigDecimal openingFunds;
-	private BigDecimal cashAccountInterestRate;
+	private CashAccountConfiguration cashAccount;
 
 	public BacktestBootstrapConfigurationBuilder withEquity( final EquityConfiguration equity ) {
 
@@ -62,9 +58,9 @@ public class BacktestBootstrapConfigurationBuilder {
 		return this;
 	}
 
-	public BacktestBootstrapConfigurationBuilder withDeposit( final DepositConfiguration deposit ) {
+	public BacktestBootstrapConfigurationBuilder withCashAccount( final CashAccountConfiguration cashAccount ) {
 
-		this.deposit = deposit;
+		this.cashAccount = cashAccount;
 		return this;
 	}
 
@@ -80,22 +76,9 @@ public class BacktestBootstrapConfigurationBuilder {
 		return this;
 	}
 
-	public BacktestBootstrapConfigurationBuilder withOpeningFunds( final BigDecimal openingFunds ) {
-
-		this.openingFunds = openingFunds;
-		return this;
-	}
-
-	public BacktestBootstrapConfigurationBuilder withCashAccountInterestRate( final BigDecimal interestRate ) {
-
-		this.cashAccountInterestRate = interestRate;
-		return this;
-	}
-
 	public BacktestBootstrapConfiguration build() {
 
 		return new BacktestBootstrapConfiguration(simulationDates, brokerage,
-		        CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY, cashAccountInterestRate, openingFunds, deposit,
-		        strategy, equity);
+		        CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY, cashAccount, strategy, equity);
 	}
 }

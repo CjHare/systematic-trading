@@ -199,8 +199,7 @@ public abstract class BaseTrial {
 	        final BrokerageTransactionFeeStructure brokerage, final StrategyConfiguration strategy ) {
 
 		return new BacktestBootstrapConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
-		        .withCashAccountInterestRate(cashAccount.interestRate()).withOpeningFunds(cashAccount.openingFunds())
-		        .withDeposit(cashAccount.deposit()).withBrokerage(brokerage).withStrategy(strategy).build();
+		        .withCashAccount(cashAccount).withBrokerage(brokerage).withStrategy(strategy).build();
 	}
 
 	protected List<BacktestBootstrapConfiguration> smaUptrends( final EquityConfiguration equity,
