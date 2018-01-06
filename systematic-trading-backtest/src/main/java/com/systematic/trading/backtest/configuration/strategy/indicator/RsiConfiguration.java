@@ -28,12 +28,11 @@ package com.systematic.trading.backtest.configuration.strategy.indicator;
 import java.math.BigDecimal;
 
 import com.systematic.trading.strategy.indicator.IndicatorId;
-import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * @author CJ Hare
  */
-public enum RsiConfiguration implements IndicatorConfiguration {
+public enum RsiConfiguration implements BacktestIndicatorConfiguration {
 
 	SHORT(7, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Short"),
 	MEDIUM(14, BigDecimal.valueOf(30), BigDecimal.valueOf(70), "RSI-Medium"),

@@ -26,14 +26,13 @@
 package com.systematic.trading.backtest.configuration.strategy.indicator;
 
 import com.systematic.trading.strategy.indicator.IndicatorId;
-import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * Configuration common for simple and exponential moving averages.
  * 
  * @author CJ Hare
  */
-public class MovingAverageConfiguration implements IndicatorConfiguration {
+public class MovingAverageConfiguration implements BacktestIndicatorConfiguration {
 
 	private final int lookback;
 	private final int gradientPoints;

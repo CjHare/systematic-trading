@@ -28,28 +28,16 @@ package com.systematic.trading.backtest.configuration.strategy.indicator;
 import com.systematic.trading.strategy.indicator.IndicatorId;
 
 /**
+ * Generic details about configurations.
+ * 
  * @author CJ Hare
  */
-public enum EmaUptrendConfiguration implements BacktestIndicatorConfiguration {
+public interface BacktestIndicatorConfiguration {
 
-	SHORT(20, 5, "EMA-Uptrend-Short"),
-	MEDIUM(50, 5, "EMA-Uptrend-Medium"),
-	LONG(100, 5, "EMA-Uptrend-Long");
-
-	private MovingAverageConfiguration configuration;
-
-	EmaUptrendConfiguration( final int lookback, final int gradientPoints, final String description ) {
-		this.configuration = new MovingAverageConfiguration(lookback, gradientPoints, description);
-	}
-
-	public MovingAverageConfiguration configuration() {
-
-		return configuration;
-	}
-
-	@Override
-	public IndicatorId id() {
-
-		return configuration.id();
-	}
+	/**
+	 * Retrieves the signal type.
+	 * 
+	 * @return the type of signal the configuration matches.
+	 */
+	IndicatorId id();
 }

@@ -26,12 +26,11 @@
 package com.systematic.trading.backtest.configuration.strategy.indicator;
 
 import com.systematic.trading.strategy.indicator.IndicatorId;
-import com.systematic.trading.strategy.indicator.configuration.IndicatorConfiguration;
 
 /**
  * @author CJ Hare
  */
-public enum MacdConfiguration implements IndicatorConfiguration {
+public enum MacdConfiguration implements BacktestIndicatorConfiguration {
 
 	SHORT(6, 13, 5, "MACD-Short"),
 	MEDIUM(12, 26, 9, "MACD-Medium"),
