@@ -55,7 +55,7 @@ public class CashAccountFactory {
 
 	private InterestRate interestRate( final CashAccountConfiguration cashAccount ) {
 
-		return InterestRateFactory.getInstance().create(InterestRateConfigurationType.FLAT_INTEREST_RATE,
+		return new InterestRateFactory().create(InterestRateConfigurationType.FLAT_INTEREST_RATE,
 		        cashAccount.interestRate(), MATH_CONTEXT);
 	}
 
