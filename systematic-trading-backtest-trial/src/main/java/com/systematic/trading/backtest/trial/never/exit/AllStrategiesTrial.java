@@ -38,7 +38,7 @@ import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.CmcMarketsBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;

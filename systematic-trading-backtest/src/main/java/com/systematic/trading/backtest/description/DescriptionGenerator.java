@@ -26,7 +26,7 @@
 package com.systematic.trading.backtest.description;
 
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.confirmation.ConfirmaByConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.size.EntrySizeConfiguration;

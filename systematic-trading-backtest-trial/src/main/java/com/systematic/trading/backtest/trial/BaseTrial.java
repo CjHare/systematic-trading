@@ -33,7 +33,7 @@ import java.util.Map;
 import com.systematic.trading.backtest.BacktestSimulationDates;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.StrategyConfigurationFactory;

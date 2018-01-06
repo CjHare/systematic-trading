@@ -29,7 +29,7 @@
  */
 package com.systematic.trading.backtest.description;
 
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 
 /**
  * Directory names.

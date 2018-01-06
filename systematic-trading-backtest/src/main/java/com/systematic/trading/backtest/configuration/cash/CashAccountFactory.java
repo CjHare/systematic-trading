@@ -35,7 +35,6 @@ import java.time.Period;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
 import com.systematic.trading.simulation.cash.CashAccount;
 import com.systematic.trading.simulation.cash.InterestRate;
 import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;

@@ -35,7 +35,7 @@ import com.systematic.trading.backtest.BacktestTrial;
 import com.systematic.trading.backtest.brokerage.fee.SelfWealthBrokerageFees;
 import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.backtest.configuration.BacktestBootstrapConfiguration;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trial.BaseTrial;

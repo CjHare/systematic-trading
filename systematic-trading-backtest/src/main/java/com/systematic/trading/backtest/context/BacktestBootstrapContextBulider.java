@@ -36,7 +36,7 @@ import com.systematic.trading.backtest.configuration.BacktestBootstrapConfigurat
 import com.systematic.trading.backtest.configuration.TradingStrategyIndicatorFactory;
 import com.systematic.trading.backtest.configuration.brokerage.BrokerageFactoroy;
 import com.systematic.trading.backtest.configuration.cash.CashAccountFactory;
-import com.systematic.trading.backtest.configuration.deposit.DepositConfiguration;
+import com.systematic.trading.backtest.configuration.cash.DepositConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityManagementFeeConfiguration;
 import com.systematic.trading.backtest.configuration.equity.EquityWithFeeConfiguration;
