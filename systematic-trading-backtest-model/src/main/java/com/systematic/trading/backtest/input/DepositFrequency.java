@@ -41,7 +41,7 @@ public enum DepositFrequency {
 	WEEKLY(Period.ofWeeks(1)),
 	MONTHLY(Period.ofWeeks(1));
 
-	private final Period period;
+	private final transient Period period;
 
 	private DepositFrequency( final Period period ) {
 		this.period = period;
