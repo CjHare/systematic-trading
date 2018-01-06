@@ -47,11 +47,6 @@ public class CashAccountFactory {
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
-	private InterestRate interestRate( final CashAccountConfiguration cashAccount ) {
-
-		return new FlatInterestRate(cashAccount.interestRate(), MATH_CONTEXT);
-	}
-
 	public CashAccount create( final LocalDate startDate, final CashAccountConfiguration cashAccount ) {
 
 		final InterestRate annualInterestRate = interestRate(cashAccount);
@@ -59,22 +54,29 @@ public class CashAccountFactory {
 
 		if (deposit.isPresent()) {
 
+			final CashAccount underlyingAccount = cashAccount(annualInterestRate, cashAccount, startDate);
 			final BigDecimal depositAmount = deposit.get().amount();
 			final Period depositFrequency = deposit.get().frequency().period();
-			final CashAccount underlyingAccount = create(annualInterestRate, cashAccount.openingFunds(), startDate);
 
 			return new RegularDepositCashAccountDecorator(depositAmount, underlyingAccount, startDate,
 			        depositFrequency);
 		}
 
-		return create(annualInterestRate, cashAccount.openingFunds(), startDate);
+		return cashAccount(annualInterestRate, cashAccount, startDate);
 	}
 
 	/**
 	 * Create an instance of the a cash account.
 	 */
-	private CashAccount create( final InterestRate rate, final BigDecimal openingFunds, final LocalDate openingDate ) {
+	private CashAccount cashAccount( final InterestRate rate, final CashAccountConfiguration cashAccount,
+	        final LocalDate openingDate ) {
 
-		return new CalculatedDailyPaidMonthlyCashAccount(rate, openingFunds, openingDate, MATH_CONTEXT);
+		return new CalculatedDailyPaidMonthlyCashAccount(rate, cashAccount.openingFunds(), openingDate, MATH_CONTEXT);
 	}
+
+	private InterestRate interestRate( final CashAccountConfiguration cashAccount ) {
+
+		return new FlatInterestRate(cashAccount.interestRate(), MATH_CONTEXT);
+	}
+
 }
