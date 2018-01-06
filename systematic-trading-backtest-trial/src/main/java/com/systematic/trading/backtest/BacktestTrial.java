@@ -28,7 +28,6 @@ package com.systematic.trading.backtest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,6 +50,8 @@ import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.event.BacktestEventListenerPreparation;
 import com.systematic.trading.backtest.event.SilentBacktestEventLisener;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
+import com.systematic.trading.backtest.input.BacktestEndDate;
+import com.systematic.trading.backtest.input.BacktestStartDate;
 import com.systematic.trading.backtest.input.OutputType;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutput;
 import com.systematic.trading.backtest.output.elastic.ElasticBacktestOutputPreparation;
@@ -110,8 +111,8 @@ public class BacktestTrial {
 	        throws ServiceException {
 
 		// Date range is from the first of the starting month until now
-		final LocalDate simulationStartDate = parserdArguments.startDate().date();
-		final LocalDate simulationEndDate = parserdArguments.endDate().date();
+		final BacktestStartDate simulationStartDate = parserdArguments.startDate();
+		final BacktestEndDate simulationEndDate = parserdArguments.endDate();
 
 		final EquityConfiguration equity = equity(parserdArguments);
 

@@ -32,6 +32,8 @@ import java.time.LocalDate;
 import org.junit.Test;
 
 import com.systematic.trading.backtest.exception.InvalidSimulationDatesException;
+import com.systematic.trading.backtest.input.BacktestEndDate;
+import com.systematic.trading.backtest.input.BacktestStartDate;
 
 /**
  * End date must be on or after start date.
@@ -79,7 +81,7 @@ public class BacktestSimulationDatesTest {
 	private void createSimulationDates( final LocalDate startDate, final LocalDate endDate )
 	        throws InvalidSimulationDatesException {
 
-		dates = new BacktestSimulationDates(startDate, endDate);
+		dates = new BacktestSimulationDates(new BacktestStartDate(startDate), new BacktestEndDate(endDate));
 	}
 
 	private void verifySimulationStartDate( final LocalDate expected ) {

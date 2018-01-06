@@ -28,6 +28,8 @@ package com.systematic.trading.backtest;
 import java.time.LocalDate;
 
 import com.systematic.trading.backtest.exception.InvalidSimulationDatesException;
+import com.systematic.trading.backtest.input.BacktestEndDate;
+import com.systematic.trading.backtest.input.BacktestStartDate;
 
 /**
  * Simulation dates and warm up period.
@@ -45,11 +47,11 @@ public class BacktestSimulationDates {
 	 * @param endDate
 	 *            must be on or after the start date.
 	 */
-	public BacktestSimulationDates( final LocalDate startDate, final LocalDate endDate )
+	public BacktestSimulationDates( final BacktestStartDate startDate, final BacktestEndDate endDate )
 	        throws InvalidSimulationDatesException {
-		validateDates(startDate, endDate);
-		this.startDate = startDate;
-		this.endDate = endDate;
+		validateDates(startDate.date(), endDate.date());
+		this.startDate = startDate.date();
+		this.endDate = endDate.date();
 	}
 
 	public LocalDate startDate() {

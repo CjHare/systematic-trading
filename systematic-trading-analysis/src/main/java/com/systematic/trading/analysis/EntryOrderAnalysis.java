@@ -59,6 +59,8 @@ import com.systematic.trading.backtest.description.StandardDescriptionGenerator;
 import com.systematic.trading.backtest.event.BacktestEventListener;
 import com.systematic.trading.backtest.exception.BacktestInitialisationException;
 import com.systematic.trading.backtest.exception.InvalidSimulationDatesException;
+import com.systematic.trading.backtest.input.BacktestEndDate;
+import com.systematic.trading.backtest.input.BacktestStartDate;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.data.DataService;
@@ -186,7 +188,8 @@ public class EntryOrderAnalysis {
 		final LocalDate today = LocalDate.now();
 
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(
-		        today.minus(strategy.entry().priceDataRange()).minusDays(DAYS_OF_SIGNALS), today);
+		        new BacktestStartDate(today.minus(strategy.entry().priceDataRange()).minusDays(DAYS_OF_SIGNALS)),
+		        new BacktestEndDate(today));
 
 		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
 		        CashAccountConfiguration.CALCULATED_DAILY_PAID_MONTHLY, IGNORE_INTEREST_RATE, openingFunds, strategy,
