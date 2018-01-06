@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,11 +62,12 @@ public class CashAccountFactory {
 	public CashAccount create( final LocalDate startDate, final CashAccountConfiguration cashAccount ) {
 
 		final InterestRate annualInterestRate = interestRate(cashAccount);
+		final Optional<DepositConfiguration> deposit = cashAccount.deposit();
 
-		if (cashAccount.deposit().isPresent()) {
+		if (deposit.isPresent()) {
 
-			final BigDecimal depositAmount = cashAccount.deposit().get().amount();
-			final Period depositFrequency = cashAccount.deposit().get().frequency().period();
+			final BigDecimal depositAmount = deposit.get().amount();
+			final Period depositFrequency = deposit.get().frequency().period();
 			final CashAccount underlyingAccount = create(CashAccountConfigurationType.CALCULATED_DAILY_PAID_MONTHLY,
 			        annualInterestRate, cashAccount.openingFunds(), startDate);
 

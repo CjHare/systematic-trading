@@ -308,10 +308,11 @@ public class BacktestTrial {
 
 		if (isFileBasedDisplay(arguments)) {
 
-			if (cashAccount.deposit().isPresent()) {
+			final Optional<DepositConfiguration> deposit = cashAccount.deposit();
 
-				final String outputDirectory = arguments
-				        .outputDirectory(directoryDescription.deposit(cashAccount.deposit().get()));
+			if (deposit.isPresent()) {
+
+				final String outputDirectory = arguments.outputDirectory(directoryDescription.deposit(deposit.get()));
 				try {
 					new ClearFileDestination(outputDirectory).clear();
 				} catch (final IOException e) {
