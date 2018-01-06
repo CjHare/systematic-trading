@@ -37,6 +37,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.simulation.cash.CashAccount;
+import com.systematic.trading.simulation.cash.FlatInterestRate;
 import com.systematic.trading.simulation.cash.InterestRate;
 import com.systematic.trading.simulation.cash.RegularDepositCashAccountDecorator;
 
@@ -55,8 +56,7 @@ public class CashAccountFactory {
 
 	private InterestRate interestRate( final CashAccountConfiguration cashAccount ) {
 
-		return new InterestRateFactory().create(InterestRateConfigurationType.FLAT_INTEREST_RATE,
-		        cashAccount.interestRate(), MATH_CONTEXT);
+		return new FlatInterestRate(cashAccount.interestRate(), MATH_CONTEXT);
 	}
 
 	public CashAccount create( final LocalDate startDate, final CashAccountConfiguration cashAccount ) {
