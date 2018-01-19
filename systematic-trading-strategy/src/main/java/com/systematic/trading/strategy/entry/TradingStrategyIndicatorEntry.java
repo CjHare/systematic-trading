@@ -42,6 +42,7 @@ public class TradingStrategyIndicatorEntry implements Entry {
 	private final Indicator indicator;
 
 	public TradingStrategyIndicatorEntry( final Indicator indicator ) {
+
 		this.indicator = indicator;
 	}
 

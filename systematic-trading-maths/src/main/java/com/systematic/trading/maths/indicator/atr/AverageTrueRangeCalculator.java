@@ -75,6 +75,7 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 	 *            validates and parses input.
 	 */
 	public AverageTrueRangeCalculator( final int lookback, final Validator validator ) {
+
 		validator.verifyGreaterThan(1, lookback);
 
 		this.lookback = lookback;

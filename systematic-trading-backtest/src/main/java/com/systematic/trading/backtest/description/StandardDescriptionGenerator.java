@@ -169,15 +169,9 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 
 	private String textualDisplay( final Period time ) {
 
-		if (Period.ofDays(7).equals(time)) {
-			return "Weekly";
-		}
-		if (Period.ofMonths(1).equals(time)) {
-			return "Monthly";
-		}
-		if (Period.ofYears(1).equals(time)) {
-			return "Yearly";
-		}
+		if (Period.ofDays(7).equals(time)) { return "Weekly"; }
+		if (Period.ofMonths(1).equals(time)) { return "Monthly"; }
+		if (Period.ofYears(1).equals(time)) { return "Yearly"; }
 
 		return time.toString();
 	}
@@ -203,15 +197,9 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 
 	private String brokerage( final BrokerageTransactionFeeStructure brokerage ) {
 
-		if (brokerage instanceof CmcMarketsBrokerageFees) {
-			return "CmcMarkets";
-		}
-		if (brokerage instanceof VanguardBrokerageFees) {
-			return "Vanguard";
-		}
-		if (brokerage instanceof SelfWealthBrokerageFees) {
-			return "SelfWealth";
-		}
+		if (brokerage instanceof CmcMarketsBrokerageFees) { return "CmcMarkets"; }
+		if (brokerage instanceof VanguardBrokerageFees) { return "Vanguard"; }
+		if (brokerage instanceof SelfWealthBrokerageFees) { return "SelfWealth"; }
 
 		throw new IllegalArgumentException(String.format("Unexpected brokerage: %s", brokerage));
 	}

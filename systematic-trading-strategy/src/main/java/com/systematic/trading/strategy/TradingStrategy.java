@@ -84,6 +84,7 @@ public class TradingStrategy implements Strategy {
 
 	public TradingStrategy( final Entry entry, final EntrySize entryPositionSizing, final Exit exit,
 	        final ExitSize exitPositionSizing, final EquityClass type, final int scale ) {
+
 		this.entry = entry;
 		this.exit = exit;
 		this.entryPositionSizing = entryPositionSizing;
@@ -117,10 +118,8 @@ public class TradingStrategy implements Strategy {
 				final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, MATH_CONTEXT)
 				        .divide(closingPrice, MATH_CONTEXT).setScale(scale, BigDecimal.ROUND_DOWN);
 
-				if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) {
-					return Optional.of(new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate,
-					        MATH_CONTEXT));
-				}
+				if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) { return Optional.of(
+				        new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, MATH_CONTEXT)); }
 			}
 		}
 
@@ -136,9 +135,7 @@ public class TradingStrategy implements Strategy {
 	@Override
 	public Optional<EquityOrder> exitTick( final BrokerageTransaction broker, final TradingDayPrices data ) {
 
-		if (exit.exitTick(broker, data)) {
-			throw new UnsupportedOperationException("Implement sell order logic");
-		}
+		if (exit.exitTick(broker, data)) { throw new UnsupportedOperationException("Implement sell order logic"); }
 
 		return noOrder();
 	}
@@ -157,9 +154,7 @@ public class TradingStrategy implements Strategy {
 	private boolean hasDatedSignal( final List<DatedSignal> signals, final TradingDayPrices data ) {
 
 		for (final DatedSignal signal : signals) {
-			if (signal.date().equals(data.date())) {
-				return true;
-			}
+			if (signal.date().equals(data.date())) { return true; }
 		}
 
 		return false;

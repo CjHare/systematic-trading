@@ -49,7 +49,7 @@ public class SelfWealthBrokerageFees implements BrokerageTransactionFeeStructure
 			case BOND:
 			case STOCK:
 				brokerage = NINE_NINTY;
-			break;
+				break;
 			default:
 				throw new UnsupportedEquityClass(type);
 		}

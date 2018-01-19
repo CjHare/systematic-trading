@@ -52,6 +52,7 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 	private final ConfigurationValidator<Integer> bulkApiBucketSizeValidator;
 
 	public FileValidatedBackestOutputFileConfigurationDao() {
+
 		this.numberOfConnectionsValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
 		this.numberOfShardsValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
 		this.numberOfReplicasValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);

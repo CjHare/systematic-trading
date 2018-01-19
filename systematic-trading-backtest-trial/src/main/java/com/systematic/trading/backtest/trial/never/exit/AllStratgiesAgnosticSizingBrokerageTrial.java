@@ -64,6 +64,7 @@ public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implemen
 	}
 
 	public AllStratgiesAgnosticSizingBrokerageTrial() {
+
 		super(new VanguardBrokerageFees(), positionSizing());
 	}
 }

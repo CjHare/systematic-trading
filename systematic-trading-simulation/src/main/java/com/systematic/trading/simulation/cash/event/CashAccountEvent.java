@@ -43,6 +43,7 @@ public class CashAccountEvent implements CashEvent {
 
 	public CashAccountEvent( final BigDecimal fundsBefore, final BigDecimal fundsAfter, final BigDecimal amount,
 	        final CashEventType type, final LocalDate transactionDate ) {
+
 		this.fundsBefore = fundsBefore;
 		this.fundsAfter = fundsAfter;
 		this.amount = amount;

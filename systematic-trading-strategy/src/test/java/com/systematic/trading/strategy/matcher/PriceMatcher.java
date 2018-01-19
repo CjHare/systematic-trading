@@ -49,6 +49,7 @@ public class PriceMatcher extends ArgumentMatcher<Price> {
 	}
 
 	public PriceMatcher( final BigDecimal expected ) {
+
 		this.expected = expected;
 	}
 

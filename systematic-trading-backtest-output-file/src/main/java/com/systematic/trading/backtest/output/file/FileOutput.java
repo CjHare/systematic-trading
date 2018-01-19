@@ -56,6 +56,7 @@ public abstract class FileOutput implements BacktestEventListener {
 	private final ExecutorService pool;
 
 	public FileOutput( final String outputDirectory, final ExecutorService pool ) throws IOException {
+
 		this.baseDirectory = verifiedDirectory(outputDirectory);
 		this.pool = pool;
 	}
@@ -66,10 +67,8 @@ public abstract class FileOutput implements BacktestEventListener {
 	public String verifiedDirectory( final String outputDirectory ) throws IOException {
 
 		final File outputDirectoryFile = new File(outputDirectory);
-		if (!outputDirectoryFile.exists() && !outputDirectoryFile.mkdirs()) {
-			throw new IllegalArgumentException(
-			        String.format("Failed to create / access directory: %s", outputDirectory));
-		}
+		if (!outputDirectoryFile.exists() && !outputDirectoryFile.mkdirs()) { throw new IllegalArgumentException(
+		        String.format("Failed to create / access directory: %s", outputDirectory)); }
 
 		final String directory = outputDirectoryFile.getCanonicalPath();
 		LOG.info("Output directory: {}", () -> directory);

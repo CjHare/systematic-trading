@@ -57,6 +57,5 @@ public final class ElasticTypeName {
 	public static final String TRANSACTION_FEE = "transaction_fee";
 	public static final String TOTAL_COST = "total_cost";
 
-	private ElasticTypeName() {
-	}
+	private ElasticTypeName() {}
 }

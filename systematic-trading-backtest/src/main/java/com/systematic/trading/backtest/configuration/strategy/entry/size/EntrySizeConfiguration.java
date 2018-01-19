@@ -39,6 +39,7 @@ public class EntrySizeConfiguration implements Describable {
 	private final MaximumTrade maximumTrade;
 
 	public EntrySizeConfiguration( final MinimumTrade minimumTrade, final MaximumTrade maximumTrade ) {
+
 		this.minimumTrade = minimumTrade;
 		this.maximumTrade = maximumTrade;
 	}

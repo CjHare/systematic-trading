@@ -40,6 +40,7 @@ public class FileSignalAnalysisDao implements SignalAnalysisDao {
 	private final FileMultithreading file;
 
 	public FileSignalAnalysisDao( final FileMultithreading file ) {
+
 		this.file = file;
 
 		file.write("=== Signal Analysis Events ===\n");

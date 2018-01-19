@@ -45,6 +45,7 @@ public enum RsiConfiguration implements BacktestIndicatorConfiguration {
 
 	RsiConfiguration( final int lookback, final BigDecimal overbought, final BigDecimal oversold,
 	        final String description ) {
+
 		this.lookback = lookback;
 		this.oversold = oversold;
 		this.overbought = overbought;

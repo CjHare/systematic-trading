@@ -35,6 +35,7 @@ public class QuandlColumnName {
 	private final String name;
 
 	public QuandlColumnName( final String name ) {
+
 		this.name = name;
 	}
 

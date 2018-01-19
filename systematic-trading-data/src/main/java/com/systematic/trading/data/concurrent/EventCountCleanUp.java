@@ -51,6 +51,7 @@ public class EventCountCleanUp implements Runnable {
 	private final Duration interval;
 
 	public EventCountCleanUp( final BlockingEventCount ringBuffer, final Duration interval ) {
+
 		this.ringBuffer = ringBuffer;
 		this.interval = interval;
 		running = true;

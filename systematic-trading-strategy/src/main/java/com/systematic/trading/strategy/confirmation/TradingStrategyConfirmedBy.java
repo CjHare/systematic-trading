@@ -49,6 +49,7 @@ public class TradingStrategyConfirmedBy implements Confirmation {
 	 *            inclusive number of days until confirmation signals are accepted.
 	 */
 	public TradingStrategyConfirmedBy( final int confirmationDayRange, final int delayUntilConfirmationRange ) {
+
 		this.confirmationDayRange = confirmationDayRange;
 		this.delayUntilConfirmationRange = delayUntilConfirmationRange;
 	}

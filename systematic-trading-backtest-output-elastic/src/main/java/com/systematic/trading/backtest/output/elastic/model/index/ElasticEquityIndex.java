@@ -47,6 +47,7 @@ public class ElasticEquityIndex extends ElasticCommonIndex {
 
 	public ElasticEquityIndex( final ElasticDao dao, final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
+
 		super(dao, pool, config);
 	}
 

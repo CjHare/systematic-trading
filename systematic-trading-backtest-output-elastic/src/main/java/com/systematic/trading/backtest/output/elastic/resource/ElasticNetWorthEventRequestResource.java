@@ -50,6 +50,7 @@ public class ElasticNetWorthEventRequestResource extends EventResource {
 	private final LocalDate eventDate;
 
 	public ElasticNetWorthEventRequestResource( final NetWorthEvent event ) {
+
 		super(event.type().name());
 		this.cashBalance = event.cashBalance().floatValue();
 		this.equityBalance = event.equityBalance().floatValue();

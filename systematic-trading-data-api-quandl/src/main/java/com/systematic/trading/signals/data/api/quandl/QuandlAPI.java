@@ -55,6 +55,7 @@ public class QuandlAPI implements EquityApi {
 
 	public QuandlAPI( final QuandlApiDao dao, final EquityApiConfiguration configuration,
 	        final QuandlResponseConverter dataFormat ) {
+
 		this.dao = dao;
 		this.dataFormat = dataFormat;
 		this.maximumDurationPerConnection = Period.ofMonths(configuration.maximumMonthsPerConnection());

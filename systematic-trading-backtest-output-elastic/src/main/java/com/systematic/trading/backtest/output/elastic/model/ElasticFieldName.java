@@ -60,6 +60,7 @@ public enum ElasticFieldName {
 	private final String fieldName;
 
 	ElasticFieldName( final String name ) {
+
 		this.fieldName = name;
 	}
 

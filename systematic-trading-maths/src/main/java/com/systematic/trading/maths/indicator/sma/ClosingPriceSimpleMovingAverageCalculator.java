@@ -66,6 +66,7 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 	 */
 	public ClosingPriceSimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues,
 	        final Validator validator ) {
+
 		validator.verifyGreaterThan(1, lookback);
 		validator.verifyGreaterThan(1, daysOfSmaValues);
 

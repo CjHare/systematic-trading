@@ -40,6 +40,7 @@ public class DepositConfiguration {
 	private final DepositFrequency frequency;
 
 	public DepositConfiguration( final BigDecimal amount, final DepositFrequency frequency ) {
+
 		this.frequency = frequency;
 		this.amount = amount;
 	}

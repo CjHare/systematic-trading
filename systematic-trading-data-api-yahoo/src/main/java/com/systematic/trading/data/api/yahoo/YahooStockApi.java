@@ -102,14 +102,14 @@ public class YahooStockApi implements EquityApi {
 
 			switch (numberOfQuotes) {
 				case 0:
-				// No parsing possible, as there are no results
-				break;
+					// No parsing possible, as there are no results
+					break;
 				case 1:
 					data = parseQuoteAsJsonObject(data, query, tickerSymbol);
-				break;
+					break;
 				default:
 					data = parseQuoteAsJsonArray(data, query, numberOfQuotes, tickerSymbol);
-				break;
+					break;
 			}
 
 		} catch (final JSONException e) {

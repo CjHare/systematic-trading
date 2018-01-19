@@ -46,6 +46,7 @@ public class TradingStrategyConfirmationEntry implements Entry {
 
 	public TradingStrategyConfirmationEntry( final Entry anchorIndicator, final Confirmation confirmation,
 	        final Entry confirmationIndicator ) {
+
 		this.anchorIndicator = anchorIndicator;
 		this.confirmation = confirmation;
 		this.confirmationIndicator = confirmationIndicator;

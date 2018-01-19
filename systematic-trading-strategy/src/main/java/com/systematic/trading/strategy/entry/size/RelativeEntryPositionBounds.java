@@ -38,6 +38,7 @@ public class RelativeEntryPositionBounds implements EntryPositionBounds {
 	private final BigDecimal percentage;
 
 	public RelativeEntryPositionBounds( final BigDecimal percentage ) {
+
 		this.percentage = percentage;
 	}
 

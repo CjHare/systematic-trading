@@ -72,6 +72,7 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 	 */
 	public ClosingPriceExponentialMovingAverageCalculator( final int lookback, final int daysOfEmaValues,
 	        final Validator validator ) {
+
 		validator.verifyGreaterThan(1, lookback);
 		validator.verifyGreaterThan(1, daysOfEmaValues);
 

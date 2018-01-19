@@ -39,6 +39,7 @@ public enum PeriodicConfiguration {
 	private final transient Period frequency;
 
 	PeriodicConfiguration( final Period frequency ) {
+
 		this.frequency = frequency;
 	}
 

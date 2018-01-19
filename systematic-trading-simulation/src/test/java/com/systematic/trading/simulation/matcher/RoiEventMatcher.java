@@ -54,6 +54,7 @@ public class RoiEventMatcher extends ArgumentMatcher<ReturnOnInvestmentEvent> {
 
 	RoiEventMatcher( final BigDecimal percentageChange, final LocalDate startDateExclusive,
 	        final LocalDate endDateInclusive ) {
+
 		this.percentageChange = percentageChange;
 		this.startDateExclusive = startDateExclusive;
 		this.endDateInclusive = endDateInclusive;

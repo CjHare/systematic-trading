@@ -40,6 +40,7 @@ public class TickerSymbolLaunchArgument implements LaunchArgument<TickerSymbol> 
 	private final LaunchArgumentValidator validator;
 
 	public TickerSymbolLaunchArgument( final LaunchArgumentValidator validator ) {
+
 		this.validator = validator;
 	}
 

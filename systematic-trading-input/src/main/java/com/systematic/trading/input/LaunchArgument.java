@@ -42,7 +42,7 @@ public interface LaunchArgument<T> {
 		END_DATE("-end_date"),
 		EQUITY_DATASET("-equity_dataset"),
 		FILE_BASE_DIRECTORY("-output_file_base_directory"),
-		INTEREST_RATE("-interest_rate"),		
+		INTEREST_RATE("-interest_rate"),
 		OPENING_FUNDS("-opening_funds"),
 		OUTPUT_TYPE("-output"),
 		START_DATE("-start_date"),
@@ -51,6 +51,7 @@ public interface LaunchArgument<T> {
 		private final String key;
 
 		private ArgumentKey( final String key ) {
+
 			this.key = key;
 		}
 
@@ -62,9 +63,7 @@ public interface LaunchArgument<T> {
 		public static Optional<ArgumentKey> get( final String arg ) {
 
 			for (final ArgumentKey candidate : ArgumentKey.values()) {
-				if (candidate.key.equals(arg)) {
-					return Optional.of(candidate);
-				}
+				if (candidate.key.equals(arg)) { return Optional.of(candidate); }
 			}
 
 			return Optional.empty();

@@ -42,6 +42,7 @@ public class QuandlResultSet {
 	private final List<List<Object>> data;
 
 	public QuandlResultSet( final List<QuandlColumnName> columns, final List<List<Object>> data ) {
+
 		this.columns = columns;
 		this.data = data;
 	}

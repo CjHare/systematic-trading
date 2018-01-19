@@ -66,6 +66,7 @@ public abstract class AllTrials extends BaseTrial implements BacktestConfigurati
 
 	public AllTrials( final BrokerageTransactionFeeStructure brokerage,
 	        final Set<Pair<MinimumTrade, MaximumTrade>> tradeSizes ) {
+
 		this.brokerage = brokerage;
 		this.tradeSizes = tradeSizes;
 	}

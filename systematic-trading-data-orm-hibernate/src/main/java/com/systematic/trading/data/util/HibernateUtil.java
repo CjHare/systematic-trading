@@ -40,8 +40,7 @@ public class HibernateUtil {
 	private static final Logger LOG = LogManager.getLogger(HibernateUtil.class);
 	private static final SessionFactory SESSION_FACTORY = buildSessionFactory();
 
-	private HibernateUtil() {
-	}
+	private HibernateUtil() {}
 
 	private static SessionFactory buildSessionFactory() {
 
@@ -81,8 +80,7 @@ public class HibernateUtil {
 		session.beginTransaction();
 
 		// Just in case the database is present but not 'connected'
-		if (!session.isConnected()) {
-			throw new ExceptionInInitializerError("Failed to connect to database");
+		if (!session.isConnected()) { throw new ExceptionInInitializerError("Failed to connect to database");
 
 		}
 

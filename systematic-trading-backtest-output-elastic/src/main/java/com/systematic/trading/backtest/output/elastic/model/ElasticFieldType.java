@@ -40,6 +40,7 @@ public enum ElasticFieldType {
 	private final String fieldName;
 
 	ElasticFieldType( final String name ) {
+
 		this.fieldName = name;
 	}
 

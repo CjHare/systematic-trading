@@ -81,6 +81,7 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 
 	public CompleteFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
 	        final ExecutorService pool ) throws IOException {
+
 		super(outputDirectory, pool);
 		this.batchId = batchId;
 	}

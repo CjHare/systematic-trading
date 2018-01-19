@@ -43,6 +43,7 @@ public class TradingStrategyOperatorEntry implements Entry {
 	private final Entry righEntry;
 
 	public TradingStrategyOperatorEntry( final Entry leftEntry, final Operator operator, final Entry righEntry ) {
+
 		this.leftEntry = leftEntry;
 		this.righEntry = righEntry;
 		this.operator = operator;

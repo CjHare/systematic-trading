@@ -70,6 +70,7 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 
 	public HibernateHistoryRetrievalRequest( final String equityDataset, final String tickerSymbol,
 	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
+
 		this.equityDataset = equityDataset;
 		this.tickerSymbol = tickerSymbol;
 		this.inclusiveStartDate = Date.valueOf(inclusiveStartDate);
@@ -143,12 +144,8 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 	@Override
 	public boolean equals( Object obj ) {
 
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
+		if (this == obj) { return true; }
+		if (obj == null || getClass() != obj.getClass()) { return false; }
 
 		final HibernateHistoryRetrievalRequest other = (HibernateHistoryRetrievalRequest) obj;
 

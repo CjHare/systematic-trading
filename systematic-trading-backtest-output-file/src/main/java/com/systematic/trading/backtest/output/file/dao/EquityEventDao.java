@@ -32,5 +32,4 @@ import com.systematic.trading.simulation.equity.event.EquityEventListener;
  * 
  * @author CJ Hare
  */
-public interface EquityEventDao extends EquityEventListener {
-}
+public interface EquityEventDao extends EquityEventListener {}

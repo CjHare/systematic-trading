@@ -86,6 +86,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	public DataServiceUpdaterImpl( final DataServiceType serviceType )
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+
 		final RetrievedMonthTradingPricesDao retrievedHistoryDao = new HibernateRetrievedMonthTradingPricesDao();
 		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().configuration();
 
@@ -119,13 +120,9 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private QuandlApiDao dao( final DataServiceType type, final EquityApiConfiguration configuration ) {
 
-		if (isTimeSeriesDataService(type)) {
-			return new HttpQuandlDatasetApiDao(configuration);
-		}
+		if (isTimeSeriesDataService(type)) { return new HttpQuandlDatasetApiDao(configuration); }
 
-		if (isTablesDataService(type)) {
-			return new HttpQuandlDatatableApiDao(configuration);
-		}
+		if (isTablesDataService(type)) { return new HttpQuandlDatatableApiDao(configuration); }
 
 		throw new IllegalArgumentException(String.format("Data service type not catered for: %s", type.type()));
 	}
@@ -143,9 +140,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private void ensureAllRetrievalRequestsProcessed( final String tickerSymbol ) throws CannotRetrieveDataException {
 
 		final List<HistoryRetrievalRequest> remainingRequests = outstandingHistoryRetrievalRequests(tickerSymbol);
-		if (!remainingRequests.isEmpty()) {
-			throw new CannotRetrieveDataException("Failed to retrieve all the required data");
-		}
+		if (!remainingRequests
+		        .isEmpty()) { throw new CannotRetrieveDataException("Failed to retrieve all the required data"); }
 	}
 
 	/**
@@ -203,10 +199,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		pool.shutdown();
 
 		try {
-			if (!pool.awaitTermination(timeout, TimeUnit.SECONDS)) {
-				throw new CannotRetrieveDataException(
-				        String.format("API calls failed to complete in the expected timeout of %s seconds", timeout));
-			}
+			if (!pool.awaitTermination(timeout, TimeUnit.SECONDS)) { throw new CannotRetrieveDataException(
+			        String.format("API calls failed to complete in the expected timeout of %s seconds", timeout)); }
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}

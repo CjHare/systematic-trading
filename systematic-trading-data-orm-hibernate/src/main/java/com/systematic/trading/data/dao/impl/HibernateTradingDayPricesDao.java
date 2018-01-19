@@ -108,14 +108,11 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		session.beginTransaction();
 		final Query query = session.createSQLQuery(sql);
 
-		@SuppressWarnings("rawtypes")
-		final List result = query.list();
+		@SuppressWarnings("rawtypes") final List result = query.list();
 
 		session.getTransaction().commit();
 
-		if (result.isEmpty()) {
-			return null;
-		}
+		if (result.isEmpty()) { return null; }
 
 		// Convert result entries into the DataPoint
 		return tradingDayPricesParser.tradingPrices(tickerSymbol, result.get(0));
@@ -134,14 +131,11 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		query.setDate("start_date", Date.valueOf(startDate));
 		query.setDate("end_date", Date.valueOf(endDate));
 
-		@SuppressWarnings("rawtypes")
-		final List result = query.list();
+		@SuppressWarnings("rawtypes") final List result = query.list();
 
 		session.getTransaction().commit();
 
-		if (result.isEmpty()) {
-			return new TradingDayPrices[0];
-		}
+		if (result.isEmpty()) { return new TradingDayPrices[0]; }
 
 		// Convert result entries into the DataPoint
 		final TradingDayPrices[] data = new TradingDayPrices[result.size()];

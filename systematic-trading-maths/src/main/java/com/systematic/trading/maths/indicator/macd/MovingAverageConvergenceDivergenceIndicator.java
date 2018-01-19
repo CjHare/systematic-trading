@@ -50,5 +50,4 @@ import com.systematic.trading.maths.indicator.SignalCalculator;
  * @author CJ Hare
  */
 public interface MovingAverageConvergenceDivergenceIndicator
-        extends SignalCalculator<MovingAverageConvergenceDivergenceLines> {
-}
+        extends SignalCalculator<MovingAverageConvergenceDivergenceLines> {}

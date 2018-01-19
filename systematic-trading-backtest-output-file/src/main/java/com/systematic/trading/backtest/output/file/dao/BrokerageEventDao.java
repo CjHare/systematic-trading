@@ -32,5 +32,4 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEventListener;
  * 
  * @author CJ Hare
  */
-public interface BrokerageEventDao extends BrokerageEventListener {
-}
+public interface BrokerageEventDao extends BrokerageEventListener {}

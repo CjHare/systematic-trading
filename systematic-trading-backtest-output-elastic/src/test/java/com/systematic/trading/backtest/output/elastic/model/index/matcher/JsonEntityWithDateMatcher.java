@@ -50,6 +50,7 @@ public class JsonEntityWithDateMatcher extends ArgumentMatcher<Entity<?>> {
 	private final LocalDate date;
 
 	public JsonEntityWithDateMatcher( final String expectedJson, final LocalDate date ) {
+
 		this.expectedJson = expectedJson;
 		this.date = date;
 	}

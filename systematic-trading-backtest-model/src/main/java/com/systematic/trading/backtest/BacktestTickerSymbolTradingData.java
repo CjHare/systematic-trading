@@ -57,6 +57,7 @@ public class BacktestTickerSymbolTradingData implements TickerSymbolTradingData 
 	 * Restrictions of no duplicate trading dates, applies date ordering on the given data.
 	 */
 	public BacktestTickerSymbolTradingData( final EquityIdentity equity, final TradingDayPrices[] data ) {
+
 		this.equity = equity;
 
 		final Map<LocalDate, TradingDayPrices> modifiableTradingData = new HashMap<>();
@@ -65,13 +66,11 @@ public class BacktestTickerSymbolTradingData implements TickerSymbolTradingData 
 			modifiableTradingData.put(tradingDay.date(), tradingDay);
 		}
 
-		if (modifiableTradingData.isEmpty()) {
-			throw new IllegalArgumentException("Requires at least one trading day of data");
-		}
+		if (modifiableTradingData
+		        .isEmpty()) { throw new IllegalArgumentException("Requires at least one trading day of data"); }
 
-		if (modifiableTradingData.size() != data.length) {
-			throw new IllegalArgumentException("Duplicate trading dates provided");
-		}
+		if (modifiableTradingData
+		        .size() != data.length) { throw new IllegalArgumentException("Duplicate trading dates provided"); }
 
 		this.tradingData = Collections.unmodifiableMap(modifiableTradingData);
 		this.earliestDate = earliestDate(tradingData);

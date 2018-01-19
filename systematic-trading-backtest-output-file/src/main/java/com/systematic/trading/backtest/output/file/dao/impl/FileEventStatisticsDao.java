@@ -56,6 +56,7 @@ public class FileEventStatisticsDao implements EventStatisticsDao {
 	private final EventStatistics statistics;
 
 	public FileEventStatisticsDao( final EventStatistics statistics, final FileMultithreading file ) {
+
 		this.statistics = statistics;
 		this.file = file;
 		this.histogram = new HistogramOutput();

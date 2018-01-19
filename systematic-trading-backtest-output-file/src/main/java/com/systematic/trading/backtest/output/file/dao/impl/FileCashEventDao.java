@@ -44,6 +44,7 @@ public class FileCashEventDao implements CashEventDao {
 	private final FileMultithreading file;
 
 	public FileCashEventDao( final FileMultithreading file ) {
+
 		this.file = file;
 
 		file.write("=== Cash Events ===\n");

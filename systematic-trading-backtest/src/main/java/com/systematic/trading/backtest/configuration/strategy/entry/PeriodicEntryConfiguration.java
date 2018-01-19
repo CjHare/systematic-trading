@@ -39,6 +39,7 @@ public class PeriodicEntryConfiguration implements EntryConfiguration {
 	private final PeriodicConfiguration frequency;
 
 	public PeriodicEntryConfiguration( final PeriodicConfiguration frequency ) {
+
 		this.frequency = frequency;
 	}
 

@@ -70,6 +70,7 @@ public class ElasticBacktestOutput implements BacktestEventListener {
 
 	public ElasticBacktestOutput( final BacktestBatchId batchId, final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
+
 		final ElasticDao dao = new HttpElasticDao();
 		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao, pool, config);
 		this.cashIndex = new ElasticCashIndex(dao, pool, config);

@@ -52,6 +52,7 @@ public class ElasticBulkApiMetaDataRequestResource {
 
 	public ElasticBulkApiMetaDataRequestResource( final String action, final String index, final String type,
 	        final String id ) {
+
 		this.action = action;
 		this.index = index;
 		this.type = type;
@@ -59,6 +60,7 @@ public class ElasticBulkApiMetaDataRequestResource {
 	}
 
 	public ElasticBulkApiMetaDataRequestResource( final String action ) {
+
 		this(action, null, null, null);
 	}
 

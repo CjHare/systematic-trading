@@ -37,6 +37,7 @@ public class BacktestStartDate {
 	private final LocalDate date;
 
 	public BacktestStartDate( final LocalDate date ) {
+
 		this.date = date;
 	}
 

@@ -44,18 +44,16 @@ public class RetrievedMonthTradingPricesListMatcher extends ArgumentMatcher<List
 	private final List<RetrievedMonthTradingPrices> retrieved;
 
 	public RetrievedMonthTradingPricesListMatcher( final List<RetrievedMonthTradingPrices> retrieved ) {
+
 		this.retrieved = retrieved;
 	}
 
 	public boolean matches( Object argument ) {
 
 		if (argument instanceof List<?>) {
-			@SuppressWarnings("unchecked")
-			final List<RetrievedMonthTradingPrices> actualValues = (List<RetrievedMonthTradingPrices>) argument;
+			@SuppressWarnings("unchecked") final List<RetrievedMonthTradingPrices> actualValues = (List<RetrievedMonthTradingPrices>) argument;
 
-			if (retrieved.size() != actualValues.size()) {
-				return false;
-			}
+			if (retrieved.size() != actualValues.size()) { return false; }
 
 			for (final RetrievedMonthTradingPrices expected : retrieved) {
 				final String expectedTickerSymbol = expected.tickerSymbol();
@@ -63,9 +61,7 @@ public class RetrievedMonthTradingPricesListMatcher extends ArgumentMatcher<List
 				final int expectedMonth = expected.yearMonth().getMonthValue();
 
 				// At least one match needs to be in the actual array of values
-				if (!hasMatch(expectedTickerSymbol, expectedYear, expectedMonth, actualValues)) {
-					return false;
-				}
+				if (!hasMatch(expectedTickerSymbol, expectedYear, expectedMonth, actualValues)) { return false; }
 			}
 
 			return true;

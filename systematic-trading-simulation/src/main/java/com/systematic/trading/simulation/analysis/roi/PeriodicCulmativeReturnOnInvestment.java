@@ -62,6 +62,7 @@ public class PeriodicCulmativeReturnOnInvestment implements ReturnOnInvestmentEv
 	private final ReturnOnInvestment cumulativeROI;
 
 	public PeriodicCulmativeReturnOnInvestment( final LocalDate startingDate, final Period summaryPeriod ) {
+
 		this.date = startingDate;
 		this.summaryPeriod = summaryPeriod;
 		this.lastSummaryDate = startingDate;

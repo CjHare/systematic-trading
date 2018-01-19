@@ -35,6 +35,7 @@ public class TickerSymbol {
 	private final String symbol;
 
 	public TickerSymbol( final String symbol ) {
+
 		this.symbol = symbol;
 	}
 

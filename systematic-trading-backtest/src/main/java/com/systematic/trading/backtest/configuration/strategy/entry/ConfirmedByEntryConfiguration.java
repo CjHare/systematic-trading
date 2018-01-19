@@ -42,6 +42,7 @@ public class ConfirmedByEntryConfiguration implements EntryConfiguration {
 
 	public ConfirmedByEntryConfiguration( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
+
 		this.anchor = anchor;
 		this.confirmBy = confirmBy;
 		this.confirmation = confirmation;

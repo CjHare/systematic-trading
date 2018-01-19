@@ -41,6 +41,7 @@ public class MovingAverageConvergenceDivergenceLines {
 
 	public MovingAverageConvergenceDivergenceLines( final SortedMap<LocalDate, BigDecimal> macd,
 	        final SortedMap<LocalDate, BigDecimal> signalLine ) {
+
 		this.macd = macd;
 		this.signalLine = signalLine;
 	}

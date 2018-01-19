@@ -42,6 +42,7 @@ public enum QuandlProperty {
 	private final String key;
 
 	private QuandlProperty( final String key ) {
+
 		this.key = key;
 	}
 

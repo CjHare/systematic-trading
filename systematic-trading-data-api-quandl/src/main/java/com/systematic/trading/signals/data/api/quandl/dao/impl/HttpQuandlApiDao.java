@@ -57,6 +57,7 @@ public abstract class HttpQuandlApiDao {
 	private final int retryBackoffMs;
 
 	public HttpQuandlApiDao( final EquityApiConfiguration configuration ) {
+
 		this.numberOfRetries = configuration.numberOfRetries();
 		this.retryBackoffMs = configuration.retryBackOffMs();
 	}

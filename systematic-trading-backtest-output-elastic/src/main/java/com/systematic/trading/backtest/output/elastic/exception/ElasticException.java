@@ -36,6 +36,7 @@ public class ElasticException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	public ElasticException( final String message ) {
+
 		super(message);
 	}
 }

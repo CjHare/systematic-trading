@@ -74,6 +74,7 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 	}
 
 	public AllStrategiesTrial() {
+
 		super(new CmcMarketsBrokerageFees(), positionSizing());
 	}
 

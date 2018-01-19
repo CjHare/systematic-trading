@@ -39,6 +39,7 @@ public enum EmaUptrendConfiguration implements BacktestIndicatorConfiguration {
 	private MovingAverageConfiguration configuration;
 
 	EmaUptrendConfiguration( final int lookback, final int gradientPoints, final String description ) {
+
 		this.configuration = new MovingAverageConfiguration(lookback, gradientPoints, description);
 	}
 

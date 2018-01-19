@@ -43,5 +43,4 @@ import com.systematic.trading.maths.indicator.SignalCalculator;
  * 
  * @author CJ Hare
  */
-public interface RelativeStrengthIndexIndicator extends SignalCalculator<RelativeStrengthIndexLine> {
-}
+public interface RelativeStrengthIndexIndicator extends SignalCalculator<RelativeStrengthIndexLine> {}

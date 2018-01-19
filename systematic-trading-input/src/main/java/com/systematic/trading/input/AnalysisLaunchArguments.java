@@ -49,6 +49,7 @@ public class AnalysisLaunchArguments {
 
 	public AnalysisLaunchArguments( final EquityArguments equityArguments,
 	        final LaunchArgument<BigDecimal> openingFundsArgument, final Map<ArgumentKey, String> arguments ) {
+
 		this.openingFunds = openingFundsArgument.get(arguments);
 		this.equityArguments = equityArguments;
 	}

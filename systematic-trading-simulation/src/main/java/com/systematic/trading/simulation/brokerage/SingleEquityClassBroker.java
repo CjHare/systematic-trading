@@ -88,6 +88,7 @@ public class SingleEquityClassBroker implements Brokerage {
 	public SingleEquityClassBroker( final String brokerName, final BrokerageTransactionFeeStructure fees,
 	        final EquityManagementFeeStructure managementFees, final EquityIdentity equity,
 	        final LocalDate startDate ) {
+
 		this.brokerName = brokerName;
 		this.monthlyTradeCounter = new MonthlyRollingCounter();
 		this.lastManagementFee = managementFees.lastManagementFeeDate(startDate);
@@ -120,9 +121,7 @@ public class SingleEquityClassBroker implements Brokerage {
 		final BigDecimal startingEquityBalance = equityBalance;
 		equityBalance = equityBalance.subtract(volume.volume(), MATH_CONTEXT);
 
-		if (equityBalance.compareTo(BigDecimal.ZERO) < 0) {
-			throw new InsufficientEquitiesException();
-		}
+		if (equityBalance.compareTo(BigDecimal.ZERO) < 0) { throw new InsufficientEquitiesException(); }
 
 		final BigDecimal tradeValue = price.price().multiply(volume.volume(), MATH_CONTEXT);
 		final int tradesThisMonth = monthlyTradeCounter.add(tradeDate);

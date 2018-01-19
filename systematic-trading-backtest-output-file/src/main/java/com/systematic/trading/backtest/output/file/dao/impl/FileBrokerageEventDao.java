@@ -44,6 +44,7 @@ public class FileBrokerageEventDao implements BrokerageEventDao {
 	private final FileMultithreading file;
 
 	public FileBrokerageEventDao( final FileMultithreading file ) {
+
 		this.file = file;
 
 		file.write("=== Brokerage Events ===\n");

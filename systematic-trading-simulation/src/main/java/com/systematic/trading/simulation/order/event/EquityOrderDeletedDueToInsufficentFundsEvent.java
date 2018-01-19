@@ -50,10 +50,10 @@ public class EquityOrderDeletedDueToInsufficentFundsEvent implements EquityOrder
 		switch (order.type()) {
 			case ENTRY:
 				this.type = EquityOrderType.DELETE_ENTRY;
-			break;
+				break;
 			case EXIT:
 				this.type = EquityOrderType.DELETE_EXIT;
-			break;
+				break;
 			default:
 				throw new IllegalArgumentException(String.format("Unexpected order type %s", order.type()));
 		}

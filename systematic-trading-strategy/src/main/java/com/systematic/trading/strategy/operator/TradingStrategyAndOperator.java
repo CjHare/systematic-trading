@@ -56,9 +56,7 @@ public class TradingStrategyAndOperator implements Operator {
 	private boolean contains( final List<DatedSignal> left, final DatedSignal contender ) {
 
 		for (final DatedSignal ds : left) {
-			if (ds.date().equals(contender.date()) && ds.type() == contender.type()) {
-				return true;
-			}
+			if (ds.date().equals(contender.date()) && ds.type() == contender.type()) { return true; }
 		}
 
 		return false;

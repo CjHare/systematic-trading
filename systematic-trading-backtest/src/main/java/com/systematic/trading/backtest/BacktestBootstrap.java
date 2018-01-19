@@ -64,6 +64,7 @@ public class BacktestBootstrap {
 
 	public BacktestBootstrap( final BacktestBootstrapContext context, final BacktestEventListener output,
 	        final TickerSymbolTradingData tradingData ) {
+
 		this.context = context;
 		this.tradingData = tradingData;
 		this.output = output;

@@ -57,10 +57,10 @@ public class CumulativeBrokerageEventStatistics implements BrokerageEventStatist
 		switch (event.type()) {
 			case BUY:
 				buyEvents.put(event.equityAmount(), increment(buyEvents, event.equityAmount()));
-			break;
+				break;
 			case SELL:
 				sellEvents.put(event.equityAmount(), increment(sellEvents, event.equityAmount()));
-			break;
+				break;
 			default:
 				throw new IllegalArgumentException(
 				        String.format("Brokerage event type %s is unexpected", event.type()));

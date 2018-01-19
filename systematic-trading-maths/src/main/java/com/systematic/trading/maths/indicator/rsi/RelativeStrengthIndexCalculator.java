@@ -64,6 +64,7 @@ public class RelativeStrengthIndexCalculator implements RelativeStrengthIndexInd
 	 *            validates and parses input.
 	 */
 	public RelativeStrengthIndexCalculator( final RelativeStrengthIndicator rs, final Validator validator ) {
+
 		this.validator = validator;
 		this.rs = rs;
 	}

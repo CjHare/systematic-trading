@@ -35,6 +35,7 @@ public class InsufficientEquitiesException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public InsufficientEquitiesException() {
+
 		super("Unsupported number of equities");
 	}
 }

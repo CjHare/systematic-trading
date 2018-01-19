@@ -63,6 +63,7 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 	}
 
 	public HibernateRetrievedMonthTradingPrices( final String tickerSymbol, final YearMonth yearMonth ) {
+
 		this.tickerSymbol = tickerSymbol;
 		this.year = yearMonth.getYear();
 		this.month = yearMonth.getMonthValue();
@@ -126,12 +127,8 @@ public class HibernateRetrievedMonthTradingPrices implements Serializable, Retri
 	@Override
 	public boolean equals( Object obj ) {
 
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
+		if (this == obj) { return true; }
+		if (obj == null || getClass() != obj.getClass()) { return false; }
 
 		final HibernateRetrievedMonthTradingPrices other = (HibernateRetrievedMonthTradingPrices) obj;
 

@@ -53,10 +53,8 @@ public class FileConfigurationDao implements ConfigurationDao {
 
 		try (InputStream input = CLASSPATH.getResourceAsStream(propertyFile)) {
 
-			if (input == null) {
-				throw new CannotRetrieveConfigurationException(
-				        String.format("Cannt load property file %s on classpath", propertyFile));
-			}
+			if (input == null) { throw new CannotRetrieveConfigurationException(
+			        String.format("Cannt load property file %s on classpath", propertyFile)); }
 
 			properties.load(input);
 		} catch (IOException e) {

@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 public class OpeningPrice extends Price {
 
 	protected OpeningPrice( final BigDecimal amount ) {
+
 		super(amount);
 	}
 
@@ -47,9 +48,7 @@ public class OpeningPrice extends Price {
 	 */
 	public static OpeningPrice valueOf( final BigDecimal amount ) {
 
-		if (amount == null) {
-			throw new IllegalArgumentException("null is not accepted by OpeningPrice.valueOf()");
-		}
+		if (amount == null) { throw new IllegalArgumentException("null is not accepted by OpeningPrice.valueOf()"); }
 
 		return new OpeningPrice(amount);
 	}

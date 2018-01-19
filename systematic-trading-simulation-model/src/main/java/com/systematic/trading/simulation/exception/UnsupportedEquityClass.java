@@ -37,6 +37,7 @@ public class UnsupportedEquityClass extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	public UnsupportedEquityClass( final EquityClass type ) {
+
 		super(String.format("Unsupported Equity class: %s", type));
 	}
 }

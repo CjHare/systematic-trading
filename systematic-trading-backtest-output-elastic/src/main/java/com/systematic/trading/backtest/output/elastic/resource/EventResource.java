@@ -38,6 +38,7 @@ public abstract class EventResource {
 	private final String event;
 
 	public EventResource( final String event ) {
+
 		this.event = event;
 	}
 

@@ -42,9 +42,7 @@ public class ResponseColumnsUtil {
 	public int indexOf( final List<QuandlColumnName> columns, final String name ) throws CannotRetrieveDataException {
 
 		for (int i = 0; i < columns.size(); i++) {
-			if (columnNameEquals(name, columns.get(i))) {
-				return i;
-			}
+			if (columnNameEquals(name, columns.get(i))) { return i; }
 		}
 
 		throw new CannotRetrieveDataException(String.format("Missing expected column: %s", name));
@@ -53,9 +51,7 @@ public class ResponseColumnsUtil {
 	public boolean containsName( final String name, final List<QuandlColumnName> columns ) {
 
 		for (int i = 0; i < columns.size(); i++) {
-			if (columnNameEquals(name, columns.get(i))) {
-				return true;
-			}
+			if (columnNameEquals(name, columns.get(i))) { return true; }
 		}
 
 		return false;

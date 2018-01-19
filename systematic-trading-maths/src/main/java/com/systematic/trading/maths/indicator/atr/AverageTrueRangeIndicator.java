@@ -54,5 +54,4 @@ import com.systematic.trading.maths.indicator.SignalCalculator;
  * 
  * @author CJ Hare
  */
-public interface AverageTrueRangeIndicator extends SignalCalculator<AverageTrueRangeLine> {
-}
+public interface AverageTrueRangeIndicator extends SignalCalculator<AverageTrueRangeLine> {}

@@ -39,6 +39,7 @@ public class Price {
 	private final BigDecimal amount;
 
 	protected Price( final BigDecimal amount ) {
+
 		this.amount = amount;
 	}
 
@@ -51,9 +52,7 @@ public class Price {
 	 */
 	public static Price valueOf( final BigDecimal amount ) {
 
-		if (amount == null) {
-			throw new IllegalArgumentException("null is not accepted by Price.valueOf()");
-		}
+		if (amount == null) { throw new IllegalArgumentException("null is not accepted by Price.valueOf()"); }
 
 		return new Price(amount);
 	}

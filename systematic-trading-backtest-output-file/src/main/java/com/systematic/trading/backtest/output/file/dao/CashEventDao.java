@@ -32,5 +32,4 @@ import com.systematic.trading.simulation.cash.event.CashEventListener;
  * 
  * @author CJ Hare
  */
-public interface CashEventDao extends CashEventListener {
-}
+public interface CashEventDao extends CashEventListener {}

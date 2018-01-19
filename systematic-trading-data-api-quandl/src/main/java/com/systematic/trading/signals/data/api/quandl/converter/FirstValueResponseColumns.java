@@ -81,8 +81,9 @@ public class FirstValueResponseColumns implements ResponseColumns {
 
 	private int firstValueIndex( final List<QuandlColumnName> columns ) throws CannotRetrieveDataException {
 
-		if (hasAtLeastOneValueColumn(columns)) {
-			return columnUtils.indexOf(columns, DATE_COLUMN_NAME) != FIRST_INDEX ? FIRST_INDEX : SECOND_INDEX;
+		if (hasAtLeastOneValueColumn(
+		        columns)) { return columnUtils.indexOf(columns, DATE_COLUMN_NAME) != FIRST_INDEX ? FIRST_INDEX
+		                : SECOND_INDEX;
 
 		}
 

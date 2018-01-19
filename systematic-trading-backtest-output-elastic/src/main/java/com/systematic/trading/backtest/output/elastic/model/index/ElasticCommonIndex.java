@@ -84,6 +84,7 @@ public abstract class ElasticCommonIndex {
 
 	public ElasticCommonIndex( final ElasticDao dao, final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
+
 		this.dao = dao;
 		this.pool = pool;
 

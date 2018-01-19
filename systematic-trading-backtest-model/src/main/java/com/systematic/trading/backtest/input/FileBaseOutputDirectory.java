@@ -37,6 +37,7 @@ public class FileBaseOutputDirectory {
 	private final String directory;
 
 	public FileBaseOutputDirectory( final String directory ) {
+
 		this.directory = directory;
 	}
 

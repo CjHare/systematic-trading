@@ -47,6 +47,7 @@ public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 
 	public ElasticSignalAnalysisIndex( final ElasticDao dao, final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
+
 		super(dao, pool, config);
 	}
 

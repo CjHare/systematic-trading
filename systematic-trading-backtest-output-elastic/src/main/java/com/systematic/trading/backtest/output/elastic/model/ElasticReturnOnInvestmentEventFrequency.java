@@ -39,22 +39,17 @@ public class ElasticReturnOnInvestmentEventFrequency {
 	private final String frequency;
 
 	public ElasticReturnOnInvestmentEventFrequency( final ReturnOnInvestmentEvent event ) {
+
 		this.frequency = frequency(Period.between(event.inclusiveStartDate(), event.exclusiveEndDate()));
 	}
 
 	private String frequency( final Period frequency ) {
 
-		if (isYearly(frequency)) {
-			return ElasticTypeValue.YEARLY;
-		}
+		if (isYearly(frequency)) { return ElasticTypeValue.YEARLY; }
 
-		if (isMonthly(frequency)) {
-			return ElasticTypeValue.MONTHLY;
-		}
+		if (isMonthly(frequency)) { return ElasticTypeValue.MONTHLY; }
 
-		if (isWeekly(frequency)) {
-			return ElasticTypeValue.WEEKLY;
-		}
+		if (isWeekly(frequency)) { return ElasticTypeValue.WEEKLY; }
 
 		return ElasticTypeValue.DAILY;
 	}

@@ -38,6 +38,7 @@ public enum BacktestProperty {
 	private final String key;
 
 	BacktestProperty( final String key ) {
+
 		this.key = key;
 	}
 

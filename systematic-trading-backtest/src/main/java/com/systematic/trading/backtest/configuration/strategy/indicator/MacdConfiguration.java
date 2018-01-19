@@ -43,6 +43,7 @@ public enum MacdConfiguration implements BacktestIndicatorConfiguration {
 
 	MacdConfiguration( final int fastTimePeriods, final int slowTimePeriods, final int signalTimePeriods,
 	        final String description ) {
+
 		this.description = description;
 		this.fastTimePeriods = fastTimePeriods;
 		this.slowTimePeriods = slowTimePeriods;

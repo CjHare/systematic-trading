@@ -37,6 +37,5 @@ public final class ElasticTypeValue {
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
 
-	private ElasticTypeValue() {
-	}
+	private ElasticTypeValue() {}
 }

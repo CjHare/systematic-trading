@@ -208,8 +208,7 @@ public abstract class ElasticIndexTestBase {
 
 		final InOrder order = inOrder(dao);
 		order.verify(dao).mapping(eq(indexName()), equalsBacktestId(batchId));
-		order.verify(dao).putMapping(eq(indexName()), equalsBacktestId(batchId),
-		        equalsJson(jsonPutIndexMapping()));
+		order.verify(dao).putMapping(eq(indexName()), equalsBacktestId(batchId), equalsJson(jsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);
 	}
 
@@ -227,8 +226,7 @@ public abstract class ElasticIndexTestBase {
 
 		final InOrder order = inOrder(dao);
 		order.verify(dao).mapping(eq(indexName()), equalsBacktestId(batchId));
-		order.verify(dao).putMapping(eq(indexName()), equalsBacktestId(batchId),
-		        equalsJson(jsonPutIndexMapping()));
+		order.verify(dao).putMapping(eq(indexName()), equalsBacktestId(batchId), equalsJson(jsonPutIndexMapping()));
 		verifyNoMoreInteractions(dao);
 	}
 

@@ -50,15 +50,14 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 	private final RetrievedMonthTradingPricesDao retrievedMonthsDao;
 
 	public RetrievedYearMonthRecorder( final RetrievedMonthTradingPricesDao retrievedMonthsDao ) {
+
 		this.retrievedMonthsDao = retrievedMonthsDao;
 	}
 
 	@Override
 	public void retrieved( final List<HistoryRetrievalRequest> fulfilledRequests ) {
 
-		if (fulfilledRequests == null || fulfilledRequests.isEmpty()) {
-			return;
-		}
+		if (fulfilledRequests == null || fulfilledRequests.isEmpty()) { return; }
 
 		final List<RetrievedMonthTradingPrices> retrieved = new ArrayList<>();
 
@@ -108,9 +107,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 			final LocalDate contender = fulfilled.inclusiveStartDate().toLocalDate();
 
 			if (expectedStart.isEqual(contender)) {
-				if (isEndTradingMonth(fulfilled.exclusiveEndDate().toLocalDate())) {
-					return true;
-				}
+				if (isEndTradingMonth(fulfilled.exclusiveEndDate().toLocalDate())) { return true; }
 
 				// Continue to see whether the month is complete by another request
 				expectedStart = fulfilled.exclusiveEndDate().toLocalDate();

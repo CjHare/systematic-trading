@@ -48,6 +48,7 @@ public class ElasticReturnOnInvestmentIndex extends ElasticCommonIndex {
 
 	public ElasticReturnOnInvestmentIndex( final ElasticDao dao, final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
+
 		super(dao, pool, config);
 	}
 

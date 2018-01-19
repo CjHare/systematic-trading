@@ -47,6 +47,7 @@ public class JsonEntityMatcher extends ArgumentMatcher<Entity<?>> {
 	private final String expectedJson;
 
 	public JsonEntityMatcher( final String expectedJson ) {
+
 		this.expectedJson = expectedJson;
 	}
 

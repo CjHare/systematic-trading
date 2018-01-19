@@ -50,15 +50,14 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 	private final RetrievedMonthTradingPricesDao retrievedHistoryDao;
 
 	public UnnecessaryHistoryRequestFilterImpl( final RetrievedMonthTradingPricesDao retrievedHistoryDao ) {
+
 		this.retrievedHistoryDao = retrievedHistoryDao;
 	}
 
 	@Override
 	public List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> unfilteredRequests ) {
 
-		if (unfilteredRequests == null) {
-			return new ArrayList<>(0);
-		}
+		if (unfilteredRequests == null) { return new ArrayList<>(0); }
 
 		final List<HistoryRetrievalRequest> filtered = new ArrayList<>(unfilteredRequests.size());
 		final Map<String, List<HistoryRetrievalRequest>> tickerSymbolRequests = splitByTickerSymbolSortByStartDate(
@@ -146,9 +145,7 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 		while (!unknown.isAfter(end)) {
 
-			if (!retrieved.contains(unknown)) {
-				return true;
-			}
+			if (!retrieved.contains(unknown)) { return true; }
 
 			// Progress to the next year month in the range
 			unknown = unknown.plusMonths(1);

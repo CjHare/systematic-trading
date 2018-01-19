@@ -39,6 +39,7 @@ public class ClearFileDestination {
 	private final String outputDirectory;
 
 	public ClearFileDestination( final String outputDirectory ) {
+
 		this.outputDirectory = outputDirectory;
 	}
 
@@ -50,10 +51,8 @@ public class ClearFileDestination {
 		if (outputDirectoryFile.exists()) {
 			deleteSubDirectories(outputDirectoryFile);
 		} else {
-			if (!outputDirectoryFile.mkdirs()) {
-				throw new IllegalArgumentException(
-				        String.format("Failed to create / access directory parent directory: %s", outputDirectory));
-			}
+			if (!outputDirectoryFile.mkdirs()) { throw new IllegalArgumentException(
+			        String.format("Failed to create / access directory parent directory: %s", outputDirectory)); }
 		}
 
 		verifyDirectoryIsEmpty(outputDirectory);
@@ -63,10 +62,9 @@ public class ClearFileDestination {
 
 		final File outputDirectoryFile = new File(outputDirectory);
 
-		if (outputDirectoryFile.listFiles().length != 0) {
-			throw new IllegalArgumentException(String.format("%s was not successfully emptied, still contains: %s",
-			        outputDirectory, outputDirectoryFile.listFiles()));
-		}
+		if (outputDirectoryFile.listFiles().length != 0) { throw new IllegalArgumentException(
+		        String.format("%s was not successfully emptied, still contains: %s", outputDirectory,
+		                outputDirectoryFile.listFiles())); }
 	}
 
 	private void deleteSubDirectories( final File directory ) throws IOException {

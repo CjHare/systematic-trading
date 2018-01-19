@@ -51,6 +51,7 @@ public class FileMultithreading {
 	private final ExecutorService pool;
 
 	public FileMultithreading( final String outputFilename, final ExecutorService pool ) {
+
 		this.outputFilename = outputFilename;
 		this.pool = pool;
 	}

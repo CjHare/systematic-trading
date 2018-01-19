@@ -50,6 +50,7 @@ public class OutputLaunchArgument implements LaunchArgument<OutputType> {
 	private final LaunchArgumentValidator validator;
 
 	public OutputLaunchArgument( final LaunchArgumentValidator validator ) {
+
 		this.validator = validator;
 	}
 

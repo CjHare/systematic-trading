@@ -58,6 +58,7 @@ public class FileValidatedQuandlConfigurationDao implements QuandlConfigurationD
 	private final ConfigurationValidator<String> endpointValidator;
 
 	public FileValidatedQuandlConfigurationDao() {
+
 		this.endpointValidator = new UrlConfigurationValidator();
 		this.numberOfRetiresValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
 		this.retryBackOffValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);

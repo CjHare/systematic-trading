@@ -38,6 +38,7 @@ public class AbsoluteEntryPositionBounds implements EntryPositionBounds {
 	private final BigDecimal value;
 
 	public AbsoluteEntryPositionBounds( final BigDecimal value ) {
+
 		this.value = value;
 	}
 

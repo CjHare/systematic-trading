@@ -88,9 +88,7 @@ public class Networth {
 		final BigDecimal absoluteChange = endNetworth.networth().subtract(totalNetworth, MATH_CONTEXT)
 		        .subtract(adjustment.networth(), MATH_CONTEXT);
 
-		if (BigDecimal.ZERO.compareTo(absoluteChange) == 0) {
-			return BigDecimal.ZERO;
-		}
+		if (BigDecimal.ZERO.compareTo(absoluteChange) == 0) { return BigDecimal.ZERO; }
 
 		return absoluteChange.divide(totalNetworth, MATH_CONTEXT).multiply(ONE_HUNDRED, MATH_CONTEXT);
 	}

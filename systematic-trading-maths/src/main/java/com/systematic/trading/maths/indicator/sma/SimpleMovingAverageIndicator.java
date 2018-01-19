@@ -32,5 +32,4 @@ import com.systematic.trading.maths.indicator.SignalCalculator;
  * 
  * @author CJ Hare
  */
-public interface SimpleMovingAverageIndicator extends SignalCalculator<SimpleMovingAverageLine> {
-}
+public interface SimpleMovingAverageIndicator extends SignalCalculator<SimpleMovingAverageLine> {}

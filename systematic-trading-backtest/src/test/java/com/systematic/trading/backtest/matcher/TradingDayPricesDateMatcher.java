@@ -49,6 +49,7 @@ public class TradingDayPricesDateMatcher extends ArgumentMatcher<TradingDayPrice
 	}
 
 	public TradingDayPricesDateMatcher( final LocalDate expectedDate ) {
+
 		this.expectedDate = expectedDate;
 	}
 

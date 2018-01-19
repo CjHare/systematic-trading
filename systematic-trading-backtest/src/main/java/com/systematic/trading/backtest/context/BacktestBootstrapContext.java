@@ -57,6 +57,7 @@ public class BacktestBootstrapContext {
 	 */
 	public BacktestBootstrapContext( final Strategy tradingStrategy, final Brokerage brokerage,
 	        final CashAccount cashAccount, final BacktestSimulationDates simulationDates ) {
+
 		this.cashAccount = cashAccount;
 		this.tradingStrategy = tradingStrategy;
 		this.brokerage = brokerage;

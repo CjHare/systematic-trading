@@ -47,6 +47,7 @@ public class ElasticOrderIndex extends ElasticCommonIndex {
 
 	public ElasticOrderIndex( final ElasticDao dao, final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
+
 		super(dao, pool, config);
 	}
 

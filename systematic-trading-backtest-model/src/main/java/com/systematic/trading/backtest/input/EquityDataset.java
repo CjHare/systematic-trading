@@ -35,6 +35,7 @@ public class EquityDataset {
 	private final String dataset;
 
 	public EquityDataset( final String dataset ) {
+
 		this.dataset = dataset;
 	}
 

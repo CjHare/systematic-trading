@@ -32,5 +32,4 @@ import com.systematic.trading.strategy.signal.SignalAnalysisListener;
  * 
  * @author CJ Hare
  */
-public interface SignalAnalysisDao extends SignalAnalysisListener {
-}
+public interface SignalAnalysisDao extends SignalAnalysisListener {}

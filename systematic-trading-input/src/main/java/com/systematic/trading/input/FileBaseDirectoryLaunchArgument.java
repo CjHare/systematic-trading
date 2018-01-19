@@ -40,6 +40,7 @@ public class FileBaseDirectoryLaunchArgument implements LaunchArgument<FileBaseO
 	private final LaunchArgumentValidator validator;
 
 	public FileBaseDirectoryLaunchArgument( final LaunchArgumentValidator validator ) {
+
 		this.validator = validator;
 	}
 

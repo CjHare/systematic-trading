@@ -59,6 +59,7 @@ public class MinimalFileOutputService extends FileOutput {
 
 	public MinimalFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
 	        final ExecutorService pool ) throws IOException {
+
 		super(outputDirectory, pool);
 		this.batchId = batchId;
 	}

@@ -48,6 +48,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	private final HistoryRetrievalRequestBuilder builder;
 
 	public HistoryRetrievalRequestMergerImpl( final HistoryRetrievalRequestBuilder builder ) {
+
 		this.builder = builder;
 	}
 
@@ -59,9 +60,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	public List<HistoryRetrievalRequest> merge( final List<HistoryRetrievalRequest> unsortedRequests,
 	        final Period maximum ) {
 
-		if (hasInsufficentRequestsToMerge(unsortedRequests) || isInvalid(maximum)) {
-			return unsortedRequests;
-		}
+		if (hasInsufficentRequestsToMerge(unsortedRequests) || isInvalid(maximum)) { return unsortedRequests; }
 
 		return mergeRequests(sortByStartDate(unsortedRequests), maximum);
 	}

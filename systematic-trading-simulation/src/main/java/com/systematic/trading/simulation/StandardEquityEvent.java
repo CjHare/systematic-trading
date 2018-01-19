@@ -38,6 +38,7 @@ public abstract class StandardEquityEvent {
 
 	public StandardEquityEvent( final BigDecimal equityAmount, final BigDecimal startingEquityBalance,
 	        final BigDecimal endEquityBalance, final LocalDate transactionDate, final BigDecimal equityValue ) {
+
 		this.startingEquityBalance = startingEquityBalance;
 		this.endEquityBalance = endEquityBalance;
 		this.equityalue = equityValue;

@@ -51,6 +51,7 @@ public class ReturnOnInvestmentEventImpl implements ReturnOnInvestmentEvent {
 	 */
 	public ReturnOnInvestmentEventImpl( final BigDecimal percentageChange, final LocalDate exclusiveStartDate,
 	        final LocalDate inclusiveEndDate ) {
+
 		this.percentageChange = percentageChange;
 		this.exclusiveStartDate = exclusiveStartDate;
 		this.inclusiveEndDate = inclusiveEndDate;

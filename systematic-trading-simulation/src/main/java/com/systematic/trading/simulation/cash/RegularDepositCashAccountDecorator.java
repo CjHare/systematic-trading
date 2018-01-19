@@ -63,6 +63,7 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 	 */
 	public RegularDepositCashAccountDecorator( final BigDecimal depositAmount, final CashAccount account,
 	        final LocalDate firstDeposit, final Period interval ) {
+
 		this.account = account;
 		this.depositAmount = depositAmount;
 		this.interval = interval;

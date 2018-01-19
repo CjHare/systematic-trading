@@ -37,6 +37,7 @@ public class BackestOutputFileConfigurationImpl implements BackestOutputFileConf
 	private final int numberOfThreads;
 
 	public BackestOutputFileConfigurationImpl( final int numberOfThreads ) {
+
 		this.numberOfThreads = numberOfThreads;
 	}
 

@@ -43,6 +43,7 @@ public class TradingDaySignalRangeFilter implements SignalRangeFilter {
 	private final int previousTradingDaySignalRange;
 
 	public TradingDaySignalRangeFilter( final int previousTradingDaySignalRange ) {
+
 		this.previousTradingDaySignalRange = previousTradingDaySignalRange;
 	}
 

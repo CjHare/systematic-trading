@@ -40,6 +40,7 @@ public class MacdConfiguration extends IndicatorConfigurationBase {
 
 	public MacdConfiguration( final IndicatorId id, final int fastTimePeriods, final int slowTimePeriods,
 	        final int signalTimePeriods ) {
+
 		super(id);
 		this.fastTimePeriods = fastTimePeriods;
 		this.slowTimePeriods = slowTimePeriods;

@@ -43,6 +43,7 @@ public class IsSortedMap extends ArgumentMatcher<SortedMap<LocalDate, BigDecimal
 	private final SortedMap<LocalDate, BigDecimal> expected;
 
 	public IsSortedMap( final SortedMap<LocalDate, BigDecimal> values ) {
+
 		this.expected = values;
 	}
 
@@ -51,14 +52,11 @@ public class IsSortedMap extends ArgumentMatcher<SortedMap<LocalDate, BigDecimal
 
 		if (argument instanceof SortedMap<?, ?>) {
 
-			@SuppressWarnings("unchecked")
-			final SortedMap<LocalDate, BigDecimal> given = (SortedMap<LocalDate, BigDecimal>) argument;
+			@SuppressWarnings("unchecked") final SortedMap<LocalDate, BigDecimal> given = (SortedMap<LocalDate, BigDecimal>) argument;
 
 			for (final Map.Entry<LocalDate, BigDecimal> entry : expected.entrySet()) {
 
-				if (isMissingEntry(entry, given)) {
-					return false;
-				}
+				if (isMissingEntry(entry, given)) { return false; }
 			}
 
 			return true;

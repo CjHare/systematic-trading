@@ -44,6 +44,7 @@ public class FileEquityEventDao implements EquityEventDao {
 	private final FileMultithreading file;
 
 	public FileEquityEventDao( final FileMultithreading file ) {
+
 		this.file = file;
 
 		file.write("=== Equity Events ===\n");

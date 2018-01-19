@@ -54,6 +54,7 @@ public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<Elasti
 	private static final String ID = "_id";
 
 	public ElasticSearchBulkApiMetaDataSerializer() {
+
 		super(ElasticBulkApiMetaDataRequestResource.class, false);
 	}
 
@@ -61,9 +62,7 @@ public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<Elasti
 	public void serialize( final ElasticBulkApiMetaDataRequestResource value, final JsonGenerator gen,
 	        final SerializerProvider provider ) throws IOException {
 
-		if (value == null) {
-			return;
-		}
+		if (value == null) { return; }
 
 		gen.writeStartObject();
 		gen.writeFieldName(value.action());

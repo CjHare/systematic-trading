@@ -51,6 +51,7 @@ public class TradingStrategyPeriodic implements Periodic {
 	private LocalDate lastOrder;
 
 	public TradingStrategyPeriodic( final LocalDate firstOrder, final Period frequency, final SignalType type ) {
+
 		this.frequency = frequency;
 		this.type = type;
 

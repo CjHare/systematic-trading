@@ -41,5 +41,4 @@ import com.systematic.trading.maths.indicator.SignalCalculator;
  * 
  * @author CJ Hare
  */
-public interface ExponentialMovingAverageIndicator extends SignalCalculator<ExponentialMovingAverageLine> {
-}
+public interface ExponentialMovingAverageIndicator extends SignalCalculator<ExponentialMovingAverageLine> {}

@@ -85,6 +85,7 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	 */
 	public ClosingPriceRelativeStrengthCalculator( final int lookback, final int additionalRsiValues,
 	        final Validator validator ) {
+
 		this.minimumNumberOfPrices = lookback + additionalRsiValues;
 		this.lookback = lookback;
 		this.validator = validator;
@@ -129,15 +130,15 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 
 				case PRICE_TODAY_IS_HIGHER:
 					initialLookback.gain(closeToday.subtract(closeYesterday, MATH_CONTEXT));
-				break;
+					break;
 
 				case PRICE_YESTERDAY_WAS_HIGHER:
 					initialLookback.loss(closeYesterday.subtract(closeToday, MATH_CONTEXT));
-				break;
+					break;
 
 				case NO_PRICE_MOVEMENT:
 				default:
-				break;
+					break;
 			}
 
 			closeYesterday = closeToday;
@@ -173,18 +174,18 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 				case PRICE_TODAY_IS_HIGHER:
 					currentGain = closeToday.subtract(closeYesterday, MATH_CONTEXT);
 					currentLoss = BigDecimal.ZERO;
-				break;
+					break;
 
 				case PRICE_YESTERDAY_WAS_HIGHER:
 					currentGain = BigDecimal.ZERO;
 					currentLoss = closeYesterday.subtract(closeToday, MATH_CONTEXT);
-				break;
+					break;
 
 				case NO_PRICE_MOVEMENT:
 				default:
 					currentGain = BigDecimal.ZERO;
 					currentLoss = BigDecimal.ZERO;
-				break;
+					break;
 			}
 
 			/**

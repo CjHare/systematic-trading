@@ -50,6 +50,7 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 
 	@SuppressWarnings("unchecked")
 	public LimitedSizeQueue( final Class<E> clazz, final int limit ) {
+
 		this.limit = limit;
 
 		// Occur the reflection cost here once
@@ -112,8 +113,7 @@ public class LimitedSizeQueue<E> extends LinkedList<E> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		@SuppressWarnings("unchecked")
-		LimitedSizeQueue<E> other = (LimitedSizeQueue<E>) obj;
+		@SuppressWarnings("unchecked") LimitedSizeQueue<E> other = (LimitedSizeQueue<E>) obj;
 		return limit == other.limit;
 	}
 }

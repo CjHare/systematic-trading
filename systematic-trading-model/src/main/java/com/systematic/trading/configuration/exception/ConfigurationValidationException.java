@@ -38,6 +38,7 @@ public class ConfigurationValidationException extends ServiceException {
 	private static final long serialVersionUID = 1L;
 
 	public ConfigurationValidationException( final String message ) {
+
 		super(message);
 	}
 }

@@ -40,6 +40,7 @@ public class EquityOrderVolume {
 	private final BigDecimal volume;
 
 	private EquityOrderVolume( final BigDecimal volume ) {
+
 		this.volume = volume;
 	}
 
@@ -52,9 +53,7 @@ public class EquityOrderVolume {
 	 */
 	public static EquityOrderVolume valueOf( final BigDecimal volume ) {
 
-		if (volume == null) {
-			throw new IllegalArgumentException("null is not accepted by OrderVolume.valueOf()");
-		}
+		if (volume == null) { throw new IllegalArgumentException("null is not accepted by OrderVolume.valueOf()"); }
 
 		return new EquityOrderVolume(volume);
 	}

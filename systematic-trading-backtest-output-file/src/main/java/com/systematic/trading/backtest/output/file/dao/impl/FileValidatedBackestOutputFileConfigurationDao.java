@@ -49,6 +49,7 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 	private final ConfigurationValidator<Integer> numberOfThreadsValidator;
 
 	public FileValidatedBackestOutputFileConfigurationDao() {
+
 		this.numberOfThreadsValidator = new IntegerConfigurationValidator(0, Integer.MAX_VALUE);
 	}
 

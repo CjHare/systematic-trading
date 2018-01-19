@@ -58,6 +58,7 @@ public class Backtest {
 	private final DataService dataService;
 
 	public Backtest( final DataService dataService, final DataServiceUpdater dataServiceUpdater ) {
+
 		this.dataService = dataService;
 		this.dataServiceUpdater = dataServiceUpdater;
 	}

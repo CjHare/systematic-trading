@@ -35,6 +35,7 @@ public class DataServiceType {
 	private final String type;
 
 	public DataServiceType( final String type ) {
+
 		this.type = type;
 	}
 

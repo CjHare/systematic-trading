@@ -35,5 +35,4 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
-public class ElasticEmptyIndexMapping {
-}
+public class ElasticEmptyIndexMapping {}

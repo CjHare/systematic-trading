@@ -15,6 +15,7 @@ public class AverageGainToLoss {
 	private BigDecimal downward;
 
 	public AverageGainToLoss( final BigDecimal division, final MathContext mathContext ) {
+
 		this.mathContext = mathContext;
 		this.division = division;
 		this.upward = BigDecimal.ZERO;

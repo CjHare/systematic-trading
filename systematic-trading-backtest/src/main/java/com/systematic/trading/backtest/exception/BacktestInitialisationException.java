@@ -38,6 +38,7 @@ public class BacktestInitialisationException extends ServiceException {
 	private static final long serialVersionUID = 1L;
 
 	public BacktestInitialisationException( final Exception cause ) {
+
 		super(cause);
 	}
 }

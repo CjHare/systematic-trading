@@ -32,5 +32,4 @@ import com.systematic.trading.simulation.order.event.OrderEventListener;
  * 
  * @author CJ Hare
  */
-public interface OrderEventFileDao extends OrderEventListener {
-}
+public interface OrderEventFileDao extends OrderEventListener {}

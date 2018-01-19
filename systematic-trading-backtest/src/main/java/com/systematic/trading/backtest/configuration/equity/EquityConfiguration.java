@@ -46,6 +46,7 @@ public class EquityConfiguration {
 
 	public EquityConfiguration( final EquityDataset dataset, final TickerSymbol tickerSymbol,
 	        final EquityClass equityType ) {
+
 		this.equityDataset = dataset;
 		this.tickerSymbol = tickerSymbol;
 		this.equityType = equityType;

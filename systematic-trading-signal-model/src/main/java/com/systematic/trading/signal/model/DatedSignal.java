@@ -40,6 +40,7 @@ public class DatedSignal {
 	private final SignalType type;
 
 	public DatedSignal( final LocalDate date, final SignalType type ) {
+
 		this.date = date;
 		this.type = type;
 	}
@@ -67,12 +68,8 @@ public class DatedSignal {
 	@Override
 	public boolean equals( final Object obj ) {
 
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
+		if (this == obj) { return true; }
+		if (obj == null || getClass() != obj.getClass()) { return false; }
 
 		final DatedSignal other = (DatedSignal) obj;
 		return dateEquals(other) && type == other.type;

@@ -41,6 +41,7 @@ public class PlaceOrderTotalCostEvent implements OrderEvent {
 
 	public PlaceOrderTotalCostEvent( final BigDecimal totalCost, final LocalDate transactionDate,
 	        final EquityOrderType type ) {
+
 		this.totalCost = totalCost;
 		this.transactionDate = transactionDate;
 		this.type = type;

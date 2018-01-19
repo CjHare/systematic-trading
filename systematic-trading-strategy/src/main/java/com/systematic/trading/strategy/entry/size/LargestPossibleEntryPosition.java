@@ -53,6 +53,7 @@ public class LargestPossibleEntryPosition implements EntrySize {
 	 *            upper cap on the opening position size.
 	 */
 	public LargestPossibleEntryPosition( final EntryPositionBounds minimum, final EntryPositionBounds maximum ) {
+
 		this.minimum = minimum;
 		this.maximum = maximum;
 	}
@@ -66,9 +67,7 @@ public class LargestPossibleEntryPosition implements EntrySize {
 
 		final Optional<BigDecimal> minimumPosition = minimumPosition(cashAccount);
 
-		if (!minimumPosition.isPresent()) {
-			return BigDecimal.ZERO;
-		}
+		if (!minimumPosition.isPresent()) { return BigDecimal.ZERO; }
 
 		return minimumPosition.get().max(maximumPosition(cashAccount));
 	}

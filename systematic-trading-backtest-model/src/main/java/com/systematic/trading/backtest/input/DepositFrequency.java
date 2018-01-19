@@ -44,6 +44,7 @@ public enum DepositFrequency {
 	private final transient Period period;
 
 	private DepositFrequency( final Period period ) {
+
 		this.period = period;
 	}
 

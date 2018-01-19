@@ -39,6 +39,7 @@ public class InterestRateLaunchArgument implements LaunchArgument<BigDecimal> {
 	private final LaunchArgumentValidator validator;
 
 	public InterestRateLaunchArgument( final LaunchArgumentValidator validator ) {
+
 		this.validator = validator;
 	}
 

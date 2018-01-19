@@ -53,7 +53,7 @@ public class VanguardBrokerageFees implements BrokerageTransactionFeeStructure {
 			case BOND:
 			case STOCK:
 				brokerage = tradeValue.multiply(EIGHT_BASIS_POINTS, MATH_CONTEXT);
-			break;
+				break;
 			default:
 				throw new UnsupportedEquityClass(type);
 		}

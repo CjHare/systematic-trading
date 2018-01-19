@@ -46,6 +46,7 @@ public class ElasticBrokerageEventRequestResource extends TransactionDateEventRe
 	private final float transactionFee;
 
 	public ElasticBrokerageEventRequestResource( final BrokerageEvent event ) {
+
 		super(event.type().name(), event.transactionDate());
 		this.equityAmount = event.equityAmount().floatValue();
 		this.equityValue = event.equityValue().floatValue();

@@ -234,9 +234,7 @@ public class BacktestTrial {
 
 		final Optional<DepositConfiguration> deposit = cashAccount.deposit();
 
-		if (deposit.isPresent()) {
-			return deposit.get();
-		}
+		if (deposit.isPresent()) { return deposit.get(); }
 
 		// No deposit
 		return new DepositConfiguration(BigDecimal.ZERO, DepositFrequency.MONTHLY);
@@ -271,8 +269,7 @@ public class BacktestTrial {
 			case FILE_COMPLETE:
 			case FILE_MINIMUM:
 			case NO_DISPLAY:
-				return new BacktestEventListenerPreparation() {
-				};
+				return new BacktestEventListenerPreparation() {};
 			default:
 				throw new IllegalArgumentException(unsupportedMessage(type));
 		}

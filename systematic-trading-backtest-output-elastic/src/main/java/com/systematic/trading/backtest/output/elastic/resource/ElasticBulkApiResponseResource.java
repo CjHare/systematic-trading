@@ -44,6 +44,7 @@ public class ElasticBulkApiResponseResource {
 
 	@JsonCreator
 	public ElasticBulkApiResponseResource( @JsonProperty("errors") final boolean errors ) {
+
 		this.errors = errors;
 	}
 

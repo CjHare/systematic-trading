@@ -67,6 +67,7 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 
 	public TradingStrategyIndicator( final IndicatorId id, final U calculator, final SignalGenerator<T> generator,
 	        final SignalRangeFilter signalRangeFilter, final SignalAnalysisListener signalListner ) {
+
 		this.signalRangeFilter = signalRangeFilter;
 		this.calculator = calculator;
 		this.generator = generator;

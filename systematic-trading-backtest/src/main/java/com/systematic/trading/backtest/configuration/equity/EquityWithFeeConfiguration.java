@@ -50,6 +50,7 @@ public class EquityWithFeeConfiguration {
 	 */
 	public EquityWithFeeConfiguration( final EquityIdentity identity,
 	        final EquityManagementFeeStructure managementFee ) {
+
 		this.managementFee = managementFee;
 		this.identity = identity;
 	}

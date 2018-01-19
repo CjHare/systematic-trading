@@ -38,6 +38,7 @@ public class InvalidSimulationDatesException extends ServiceException {
 	private static final long serialVersionUID = 1L;
 
 	public InvalidSimulationDatesException( String message ) {
+
 		super(message);
 	}
 }

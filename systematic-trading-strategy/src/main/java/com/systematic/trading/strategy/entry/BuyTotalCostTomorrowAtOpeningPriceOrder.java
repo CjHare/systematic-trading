@@ -66,6 +66,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	public BuyTotalCostTomorrowAtOpeningPriceOrder( final BigDecimal targetTotalCost, final EquityClass type,
 	        final int equityScale, final LocalDate creationDate, final MathContext mathContext ) {
+
 		this.targetTotalCost = targetTotalCost;
 		this.creationDate = creationDate;
 		this.mathContext = mathContext;

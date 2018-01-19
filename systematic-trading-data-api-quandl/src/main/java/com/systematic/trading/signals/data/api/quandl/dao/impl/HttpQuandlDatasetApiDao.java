@@ -69,6 +69,7 @@ public class HttpQuandlDatasetApiDao extends HttpQuandlApiDao implements QuandlA
 	private final String apiKey;
 
 	public HttpQuandlDatasetApiDao( final EquityApiConfiguration configuration ) {
+
 		super(configuration);
 
 		// Registering the provider for POJO -> JSON

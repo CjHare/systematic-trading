@@ -46,6 +46,7 @@ public class NdjsonListSerializer extends StdSerializer<List<?>> {
 	private static final long serialVersionUID = 1L;
 
 	public NdjsonListSerializer() {
+
 		super(List.class, false);
 	}
 
@@ -56,9 +57,7 @@ public class NdjsonListSerializer extends StdSerializer<List<?>> {
 	public void serialize( final List<?> values, final JsonGenerator gen, final SerializerProvider provider )
 	        throws IOException {
 
-		if (values == null) {
-			return;
-		}
+		if (values == null) { return; }
 
 		for (Object o : values) {
 			gen.writeObject(o);

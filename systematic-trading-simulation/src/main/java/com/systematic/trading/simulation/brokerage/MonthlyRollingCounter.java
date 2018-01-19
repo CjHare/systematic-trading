@@ -71,9 +71,7 @@ public class MonthlyRollingCounter {
 	 */
 	public int get( final LocalDate date ) {
 
-		if (isSameMonthAsLastAddition(date)) {
-			return additionsThisMonth;
-		}
+		if (isSameMonthAsLastAddition(date)) { return additionsThisMonth; }
 
 		return 0;
 	}

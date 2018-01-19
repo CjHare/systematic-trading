@@ -81,9 +81,7 @@ public class QuandlResponseConverter {
 
 	private ResponseColumns columnMapping( final List<QuandlColumnName> columns ) {
 
-		if (allColumns.canParse(columns)) {
-			return allColumns;
-		}
+		if (allColumns.canParse(columns)) { return allColumns; }
 
 		return dateValueColumns;
 	}

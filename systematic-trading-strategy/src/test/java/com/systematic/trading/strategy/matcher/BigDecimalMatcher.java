@@ -45,6 +45,7 @@ public class BigDecimalMatcher extends ArgumentMatcher<BigDecimal> {
 	}
 
 	public BigDecimalMatcher( final BigDecimal expected ) {
+
 		this.expected = expected;
 	}
 

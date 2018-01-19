@@ -34,6 +34,5 @@ public final class ElasticFormat {
 
 	public static final String LOCAL_DATE = "yyyy-MM-dd";
 
-	private ElasticFormat() {
-	}
+	private ElasticFormat() {}
 }

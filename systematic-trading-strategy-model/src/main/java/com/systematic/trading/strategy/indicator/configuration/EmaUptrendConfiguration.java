@@ -40,6 +40,7 @@ public class EmaUptrendConfiguration extends IndicatorConfigurationBase {
 	private final int gradientPoints;
 
 	public EmaUptrendConfiguration( final IndicatorId id, final int lookback, final int gradientPoints ) {
+
 		super(id);
 		this.gradientPoints = gradientPoints;
 		this.lookback = lookback;

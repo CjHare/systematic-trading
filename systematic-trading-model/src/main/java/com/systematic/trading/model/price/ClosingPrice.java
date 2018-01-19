@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 public class ClosingPrice extends Price {
 
 	protected ClosingPrice( final BigDecimal amount ) {
+
 		super(amount);
 	}
 
@@ -47,9 +48,7 @@ public class ClosingPrice extends Price {
 	 */
 	public static ClosingPrice valueOf( final BigDecimal amount ) {
 
-		if (amount == null) {
-			throw new IllegalArgumentException("null is not accepted by ClosingPrice.valueOf()");
-		}
+		if (amount == null) { throw new IllegalArgumentException("null is not accepted by ClosingPrice.valueOf()"); }
 
 		return new ClosingPrice(amount);
 	}

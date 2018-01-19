@@ -40,6 +40,7 @@ public class SmaUptrendConfiguration extends IndicatorConfigurationBase {
 	private final int gradientPoints;
 
 	public SmaUptrendConfiguration( final IndicatorId id, final int lookback, final int gradientPoints ) {
+
 		super(id);
 		this.gradientPoints = gradientPoints;
 		this.lookback = lookback;

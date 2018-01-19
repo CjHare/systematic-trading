@@ -42,6 +42,7 @@ public abstract class TransactionDateEventResource extends EventResource {
 	private final LocalDate transactionDate;
 
 	public TransactionDateEventResource( final String event, final LocalDate transactionDate ) {
+
 		super(event);
 		this.transactionDate = transactionDate;
 	}

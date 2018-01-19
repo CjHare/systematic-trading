@@ -72,6 +72,7 @@ public class HttpQuandlDatatableApiDao extends HttpQuandlApiDao implements Quand
 	private final String apiKey;
 
 	public HttpQuandlDatatableApiDao( final EquityApiConfiguration configuration ) {
+
 		super(configuration);
 
 		// Registering the provider for POJO -> JSON

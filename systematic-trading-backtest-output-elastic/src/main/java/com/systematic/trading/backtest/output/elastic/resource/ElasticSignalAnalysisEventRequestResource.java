@@ -48,6 +48,7 @@ public class ElasticSignalAnalysisEventRequestResource {
 	private final LocalDate signalDate;
 
 	public ElasticSignalAnalysisEventRequestResource( final SignalAnalysisEvent event ) {
+
 		this.signalType = event.signalType().name();
 		this.directionType = event.directionType().name();
 		this.signalDate = event.signalDate();

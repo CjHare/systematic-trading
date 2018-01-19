@@ -46,6 +46,7 @@ public class FlatEquityManagementFeeCalculator implements EquityManagementFeeCal
 	private final BigDecimal annualPercentageFee;
 
 	public FlatEquityManagementFeeCalculator( final BigDecimal annualPercentageFee ) {
+
 		this.annualPercentageFee = annualPercentageFee;
 	}
 

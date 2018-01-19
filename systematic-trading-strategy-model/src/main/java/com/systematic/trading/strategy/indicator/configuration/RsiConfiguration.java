@@ -42,6 +42,7 @@ public class RsiConfiguration extends IndicatorConfigurationBase {
 
 	public RsiConfiguration( final IndicatorId id, final int lookback, final BigDecimal overbought,
 	        final BigDecimal oversold ) {
+
 		super(id);
 		this.lookback = lookback;
 		this.oversold = oversold;

@@ -38,6 +38,7 @@ public enum ConfirmaByConfiguration {
 	private final int delayUntilConfirmationRange;
 
 	ConfirmaByConfiguration( final int delayUntilConfirmationRange, final int confirmationDayRange ) {
+
 		this.confirmationDayRange = confirmationDayRange;
 		this.delayUntilConfirmationRange = delayUntilConfirmationRange;
 	}

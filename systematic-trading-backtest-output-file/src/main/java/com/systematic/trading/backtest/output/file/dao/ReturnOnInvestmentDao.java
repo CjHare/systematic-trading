@@ -32,5 +32,4 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
  * 
  * @author CJ Hare
  */
-public interface ReturnOnInvestmentDao extends ReturnOnInvestmentEventListener {
-}
+public interface ReturnOnInvestmentDao extends ReturnOnInvestmentEventListener {}

@@ -39,6 +39,7 @@ public class MovingAverageConfiguration implements BacktestIndicatorConfiguratio
 	private final String description;
 
 	public MovingAverageConfiguration( final int lookback, final int gradientPoints, final String description ) {
+
 		this.gradientPoints = gradientPoints;
 		this.lookback = lookback;
 		this.description = description;

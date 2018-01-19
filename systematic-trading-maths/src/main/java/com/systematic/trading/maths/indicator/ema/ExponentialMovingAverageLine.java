@@ -39,6 +39,7 @@ public class ExponentialMovingAverageLine {
 	private final SortedMap<LocalDate, BigDecimal> ema;
 
 	public ExponentialMovingAverageLine( final SortedMap<LocalDate, BigDecimal> ema ) {
+
 		this.ema = ema;
 	}
 

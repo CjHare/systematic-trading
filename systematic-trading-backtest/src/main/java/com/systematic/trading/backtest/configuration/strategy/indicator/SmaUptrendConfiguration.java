@@ -39,6 +39,7 @@ public enum SmaUptrendConfiguration implements BacktestIndicatorConfiguration {
 	private MovingAverageConfiguration configuration;
 
 	SmaUptrendConfiguration( final int lookback, final int gradientPoints, final String description ) {
+
 		this.configuration = new MovingAverageConfiguration(lookback, gradientPoints, description);
 	}
 

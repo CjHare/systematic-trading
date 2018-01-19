@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 public class LowestPrice extends Price {
 
 	protected LowestPrice( final BigDecimal amount ) {
+
 		super(amount);
 	}
 
@@ -47,9 +48,7 @@ public class LowestPrice extends Price {
 	 */
 	public static LowestPrice valueOf( final BigDecimal amount ) {
 
-		if (amount == null) {
-			throw new IllegalArgumentException("null is not accepted by LowestPrice.valueOf()");
-		}
+		if (amount == null) { throw new IllegalArgumentException("null is not accepted by LowestPrice.valueOf()"); }
 
 		return new LowestPrice(amount);
 	}

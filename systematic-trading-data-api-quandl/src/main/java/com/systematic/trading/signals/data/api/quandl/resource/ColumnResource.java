@@ -38,10 +38,10 @@ public class ColumnResource {
 
 	private String name;
 
-	public ColumnResource() {
-	}
+	public ColumnResource() {}
 
 	public ColumnResource( final String name ) {
+
 		this.name = name;
 	}
 

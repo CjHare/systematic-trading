@@ -47,6 +47,7 @@ public class NetWorthSummaryEvent implements NetWorthEvent {
 	public NetWorthSummaryEvent( final BigDecimal equityBalance, final BigDecimal equityBalanceValue,
 	        final BigDecimal cashBalance, final BigDecimal networth, final LocalDate eventDate,
 	        final NetWorthEventType type ) {
+
 		this.equityBalance = equityBalance;
 		this.equityBalanceValue = equityBalanceValue;
 		this.cashBalance = cashBalance;

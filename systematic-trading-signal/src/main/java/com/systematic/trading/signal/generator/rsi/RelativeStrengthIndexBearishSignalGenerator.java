@@ -44,6 +44,7 @@ public class RelativeStrengthIndexBearishSignalGenerator extends RelativeStrengt
 	private final BigDecimal overbrought;
 
 	public RelativeStrengthIndexBearishSignalGenerator( final BigDecimal overbrought ) {
+
 		this.overbrought = overbrought;
 	}
 

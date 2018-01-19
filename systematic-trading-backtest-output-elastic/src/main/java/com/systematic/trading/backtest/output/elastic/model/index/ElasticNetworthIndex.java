@@ -47,6 +47,7 @@ public class ElasticNetworthIndex extends ElasticCommonIndex {
 
 	public ElasticNetworthIndex( final ElasticDao dao, final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
+
 		super(dao, pool, config);
 	}
 

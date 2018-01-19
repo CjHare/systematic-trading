@@ -36,6 +36,7 @@ public class BacktestBatchId {
 	private final String name;
 
 	public BacktestBatchId( final String name ) {
+
 		this.name = name;
 	}
 

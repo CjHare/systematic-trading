@@ -37,6 +37,7 @@ public enum BacktestOutputFileProperty {
 	private final String key;
 
 	BacktestOutputFileProperty( final String key ) {
+
 		this.key = key;
 	}
 

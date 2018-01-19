@@ -59,6 +59,7 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverageIndicator fastEma,
 	        final ExponentialMovingAverageIndicator slowEma, final ExponentialMovingAverage signalEma,
 	        final Validator validator ) {
+
 		this.validator = validator;
 		this.signalEma = signalEma;
 		this.slowEma = slowEma;

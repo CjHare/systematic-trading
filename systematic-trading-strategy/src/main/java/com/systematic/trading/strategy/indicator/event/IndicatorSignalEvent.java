@@ -41,6 +41,7 @@ public class IndicatorSignalEvent implements SignalAnalysisEvent {
 	private final IndicatorSignal signal;
 
 	public IndicatorSignalEvent( final IndicatorSignal signal ) {
+
 		this.signal = signal;
 	}
 

@@ -68,14 +68,10 @@ public class FlatInterestRate implements InterestRate {
 	@Override
 	public BigDecimal interest( final BigDecimal funds, final int days, final boolean isLeapYear ) {
 
-		if (days == 0) {
-			return BigDecimal.ZERO;
-		}
+		if (days == 0) { return BigDecimal.ZERO; }
 
-		if (isLeapYear) {
-			return dailyInterestRateLeapYear.multiply(funds, mathContext).multiply(BigDecimal.valueOf(days),
-			        mathContext);
-		}
+		if (isLeapYear) { return dailyInterestRateLeapYear.multiply(funds, mathContext)
+		        .multiply(BigDecimal.valueOf(days), mathContext); }
 
 		return dailyInterestRate.multiply(funds, mathContext).multiply(BigDecimal.valueOf(days), mathContext);
 	}

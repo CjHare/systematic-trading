@@ -63,6 +63,7 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	public FileNetworthComparisonDao( final BacktestBatchId batchId, final BacktestSimulationDates dates,
 	        final EventStatistics statistics, final FileMultithreading file ) {
+
 		this.batchId = batchId;
 		this.statistics = statistics;
 		this.file = file;

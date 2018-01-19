@@ -44,6 +44,7 @@ public class RelativeStrengthIndexBullishSignalGenerator extends RelativeStrengt
 	private final BigDecimal oversold;
 
 	public RelativeStrengthIndexBullishSignalGenerator( final BigDecimal oversold ) {
+
 		this.oversold = oversold;
 	}
 

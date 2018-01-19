@@ -32,5 +32,4 @@ import com.systematic.trading.simulation.analysis.networth.event.NetWorthEventLi
  * 
  * @author CJ Hare
  */
-public interface NetworthComparisonDao extends NetWorthEventListener {
-}
+public interface NetworthComparisonDao extends NetWorthEventListener {}

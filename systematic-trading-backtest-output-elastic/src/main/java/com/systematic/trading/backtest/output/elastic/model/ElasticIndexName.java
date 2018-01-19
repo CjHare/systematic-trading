@@ -43,6 +43,7 @@ public enum ElasticIndexName {
 	private final String indexName;
 
 	ElasticIndexName( final String name ) {
+
 		this.indexName = name;
 	}
 

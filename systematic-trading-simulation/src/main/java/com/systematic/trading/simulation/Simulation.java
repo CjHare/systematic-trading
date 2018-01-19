@@ -89,6 +89,7 @@ public class Simulation {
 
 	public Simulation( final TickerSymbolTradingData tradingData, final Brokerage broker, final CashAccount funds,
 	        final ReturnOnInvestmentListener roi, final Strategy strategy ) {
+
 		this.strategy = strategy;
 		this.funds = funds;
 		this.broker = broker;
@@ -253,9 +254,7 @@ public class Simulation {
 	 */
 	private EquityOrder processOutstandingValidOrder( final EquityOrder order, final TradingDayPrices data ) {
 
-		if (order.areExecutionConditionsMet(data)) {
-			return executeOrder(order, data);
-		}
+		if (order.areExecutionConditionsMet(data)) { return executeOrder(order, data); }
 
 		return order;
 	}

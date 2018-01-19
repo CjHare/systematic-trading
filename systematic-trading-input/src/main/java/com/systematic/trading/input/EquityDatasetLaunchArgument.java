@@ -40,6 +40,7 @@ public class EquityDatasetLaunchArgument implements LaunchArgument<EquityDataset
 	private final LaunchArgumentValidator validator;
 
 	public EquityDatasetLaunchArgument( final LaunchArgumentValidator validator ) {
+
 		this.validator = validator;
 	}
 

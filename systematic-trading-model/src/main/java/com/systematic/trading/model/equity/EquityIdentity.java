@@ -51,6 +51,7 @@ public class EquityIdentity {
 	 *            being whole units only.
 	 */
 	public EquityIdentity( final String tickerSymbol, final EquityClass type, final int scale ) {
+
 		this.tickerSymbol = tickerSymbol;
 		this.scale = scale;
 		this.type = type;

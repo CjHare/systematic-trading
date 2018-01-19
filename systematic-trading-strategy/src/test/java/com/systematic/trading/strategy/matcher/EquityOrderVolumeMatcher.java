@@ -49,6 +49,7 @@ public class EquityOrderVolumeMatcher extends ArgumentMatcher<EquityOrderVolume>
 	}
 
 	public EquityOrderVolumeMatcher( final BigDecimal expected ) {
+
 		this.expected = expected;
 	}
 

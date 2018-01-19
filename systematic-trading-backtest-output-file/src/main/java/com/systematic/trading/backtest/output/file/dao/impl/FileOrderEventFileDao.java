@@ -44,6 +44,7 @@ public class FileOrderEventFileDao implements OrderEventFileDao {
 	private final FileMultithreading file;
 
 	public FileOrderEventFileDao( final FileMultithreading file ) {
+
 		this.file = file;
 
 		file.write("=== Order Events ===\n");

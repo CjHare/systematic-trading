@@ -50,18 +50,18 @@ public class CumulativeCashEventStatistics implements CashEventStatistics {
 		switch (event.type()) {
 			case CREDIT:
 				creditEventCount++;
-			break;
+				break;
 			case DEBIT:
 				debitEventCount++;
-			break;
+				break;
 			case DEPOSIT:
 				depositEventCount++;
 				amountDeposited = amountDeposited.add(event.amount());
-			break;
+				break;
 			case INTEREST:
 				interestEventCount++;
 				interestEarned = interestEarned.add(event.amount());
-			break;
+				break;
 			default:
 				throw new IllegalArgumentException(String.format("Cash event type %s is unexpected", event.type()));
 		}

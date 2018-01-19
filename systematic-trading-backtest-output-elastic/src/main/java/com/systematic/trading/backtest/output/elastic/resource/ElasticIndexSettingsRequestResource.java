@@ -41,6 +41,7 @@ public class ElasticIndexSettingsRequestResource {
 	private final String interval;
 
 	public ElasticIndexSettingsRequestResource( final String interval ) {
+
 		this.interval = interval;
 	}
 

@@ -46,6 +46,7 @@ public class BlockingEventCountQueue implements BlockingEventCount {
 	private final Duration expiry;
 
 	public BlockingEventCountQueue( final int eventsPerDuration, final Duration expiry ) {
+
 		this.ringBuffer = new LinkedBlockingQueue<>(eventsPerDuration);
 		this.expiry = expiry;
 	}

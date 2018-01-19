@@ -38,6 +38,7 @@ public abstract class IndicatorConfigurationBase implements IndicatorConfigurati
 	private final IndicatorId type;
 
 	public IndicatorConfigurationBase( final IndicatorId type ) {
+
 		this.type = type;
 	}
 

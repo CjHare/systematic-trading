@@ -40,6 +40,7 @@ public class DepositAmountLaunchArgument implements LaunchArgument<BigDecimal> {
 	private final LaunchArgumentValidator validator;
 
 	public DepositAmountLaunchArgument( final LaunchArgumentValidator validator ) {
+
 		this.validator = validator;
 	}
 

@@ -44,6 +44,7 @@ public class SingleEquityEvent extends StandardEquityEvent implements EquityEven
 	public SingleEquityEvent( final EquityIdentity id, final BigDecimal startingEquityBalance,
 	        final BigDecimal endEquityBalance, final BigDecimal amount, final EquityEventType type,
 	        final LocalDate transactionDate, final BigDecimal transactionValue ) {
+
 		super(amount, startingEquityBalance, endEquityBalance, transactionDate, transactionValue);
 		this.type = type;
 		this.id = id;

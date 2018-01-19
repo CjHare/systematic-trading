@@ -39,6 +39,7 @@ public class OpeningFundsLaunchArgument implements LaunchArgument<BigDecimal> {
 	private final LaunchArgumentValidator validator;
 
 	public OpeningFundsLaunchArgument( final LaunchArgumentValidator validator ) {
+
 		this.validator = validator;
 	}
 

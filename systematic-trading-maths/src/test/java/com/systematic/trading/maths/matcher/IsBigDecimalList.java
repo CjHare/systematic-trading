@@ -41,10 +41,12 @@ public class IsBigDecimalList extends ArgumentMatcher<List<BigDecimal>> {
 	private final BigDecimal[] expected;
 
 	public IsBigDecimalList( final BigDecimal... bigDecimals ) {
+
 		this.expected = bigDecimals;
 	}
 
 	public IsBigDecimalList( final List<BigDecimal> values ) {
+
 		this.expected = values.toArray(new BigDecimal[0]);
 	}
 
@@ -53,8 +55,7 @@ public class IsBigDecimalList extends ArgumentMatcher<List<BigDecimal>> {
 
 		if (argument instanceof List<?>) {
 
-			@SuppressWarnings("unchecked")
-			final List<BigDecimal> given = (List<BigDecimal>) argument;
+			@SuppressWarnings("unchecked") final List<BigDecimal> given = (List<BigDecimal>) argument;
 
 			for (int i = 0; i < expected.length; i++) {
 				if (given.get(i) != null && given.get(i).compareTo(expected[i]) != 0)

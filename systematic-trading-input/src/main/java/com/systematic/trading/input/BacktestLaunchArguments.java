@@ -88,6 +88,7 @@ public class BacktestLaunchArguments {
 	        final LaunchArgument<BacktestEndDate> endDateArgument,
 	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument,
 	        final Map<ArgumentKey, String> arguments ) {
+
 		this.arguments = arguments;
 		this.depositAmount = depositAmountArgument.get(arguments);
 		this.depositFrequency = depositFrequencyArgument.get(arguments);

@@ -41,17 +41,14 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	@Override
 	public void verifyGreaterThan( final int minimum, final int actual ) {
 
-		if (actual < minimum) {
-			throw new IllegalArgumentException(String.format(MESSAGE_GREATER_THEN, minimum, actual));
-		}
+		if (actual < minimum) { throw new IllegalArgumentException(
+		        String.format(MESSAGE_GREATER_THEN, minimum, actual)); }
 	}
 
 	@Override
 	public void verifyNotNull( final Object instance ) {
 
-		if (instance == null) {
-			throw new IllegalArgumentException(MESSAGE_NULL_INPUT);
-		}
+		if (instance == null) { throw new IllegalArgumentException(MESSAGE_NULL_INPUT); }
 	}
 
 	@Override
@@ -93,9 +90,7 @@ public class IllegalArgumentThrowingValidator implements Validator {
 
 	private void verifyNotNullValue( final Object maybe, final Object values ) {
 
-		if (maybe == null) {
-			throw new IllegalArgumentException(String.format(MESSAGE_NULL_VALUE, values));
-		}
+		if (maybe == null) { throw new IllegalArgumentException(String.format(MESSAGE_NULL_VALUE, values)); }
 	}
 
 	private <T> int lastNonNullIndex( final T[] data ) {
@@ -113,11 +108,8 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	private void validateNumberOfItems( final int numberOfItems, final int minimumNumberOfPrices ) {
 
 		// Enough data to calculate indicator?
-		if (numberOfItems < minimumNumberOfPrices) {
-			throw new IllegalArgumentException(
-			        String.format("At least %s non null data points are needed, only %s given", minimumNumberOfPrices,
-			                numberOfItems));
-		}
+		if (numberOfItems < minimumNumberOfPrices) { throw new IllegalArgumentException(String.format(
+		        "At least %s non null data points are needed, only %s given", minimumNumberOfPrices, numberOfItems)); }
 	}
 
 	private int numberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {

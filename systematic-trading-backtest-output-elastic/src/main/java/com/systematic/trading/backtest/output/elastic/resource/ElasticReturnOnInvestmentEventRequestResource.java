@@ -50,6 +50,7 @@ public class ElasticReturnOnInvestmentEventRequestResource {
 
 	public ElasticReturnOnInvestmentEventRequestResource( final ReturnOnInvestmentEvent event,
 	        final String frequency ) {
+
 		this.percentageChange = event.percentageChange().floatValue();
 		this.inclusiveStartDate = event.inclusiveStartDate();
 		this.exclusiveEndDate = event.exclusiveEndDate();

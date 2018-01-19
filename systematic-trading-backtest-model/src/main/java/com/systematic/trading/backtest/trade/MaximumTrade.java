@@ -42,6 +42,7 @@ public enum MaximumTrade {
 	private final BigDecimal value;
 
 	MaximumTrade( final BigDecimal value ) {
+
 		this.value = value;
 	}
 

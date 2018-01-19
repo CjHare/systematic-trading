@@ -40,6 +40,7 @@ public enum BacktestOutputElasticProperty {
 	private final String key;
 
 	BacktestOutputElasticProperty( final String key ) {
+
 		this.key = key;
 	}
 

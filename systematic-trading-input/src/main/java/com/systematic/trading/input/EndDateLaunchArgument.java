@@ -41,6 +41,7 @@ public class EndDateLaunchArgument implements LaunchArgument<BacktestEndDate> {
 	private final LaunchArgumentValidator validator;
 
 	public EndDateLaunchArgument( final LaunchArgumentValidator validator ) {
+
 		this.validator = validator;
 	}
 

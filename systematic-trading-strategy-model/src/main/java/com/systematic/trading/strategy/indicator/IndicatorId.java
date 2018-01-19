@@ -39,6 +39,7 @@ public class IndicatorId {
 	private final String name;
 
 	public IndicatorId( final String name ) {
+
 		this.name = name;
 
 		// TODO validate name != null or empty string

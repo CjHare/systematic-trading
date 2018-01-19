@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 public class HighestPrice extends Price {
 
 	protected HighestPrice( final BigDecimal price ) {
+
 		super(price);
 	}
 
@@ -47,9 +48,7 @@ public class HighestPrice extends Price {
 	 */
 	public static HighestPrice valueOf( final BigDecimal price ) {
 
-		if (price == null) {
-			throw new IllegalArgumentException("null is not accepted by HighestPrice.valueOf()");
-		}
+		if (price == null) { throw new IllegalArgumentException("null is not accepted by HighestPrice.valueOf()"); }
 
 		return new HighestPrice(price);
 	}

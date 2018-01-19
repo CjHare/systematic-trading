@@ -58,7 +58,7 @@ public class CmcMarketsBrokerageFees implements BrokerageTransactionFeeStructure
 			case BOND:
 			case STOCK:
 				brokerage = stock(tradeValue, tradesThisMonth);
-			break;
+				break;
 			default:
 				throw new UnsupportedEquityClass(type);
 		}

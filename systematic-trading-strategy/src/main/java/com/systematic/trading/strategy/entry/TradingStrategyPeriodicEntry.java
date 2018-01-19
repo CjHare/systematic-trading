@@ -41,6 +41,7 @@ public class TradingStrategyPeriodicEntry implements Entry {
 	private final Periodic frequency;
 
 	public TradingStrategyPeriodicEntry( final Periodic frequency ) {
+
 		this.frequency = frequency;
 	}
 

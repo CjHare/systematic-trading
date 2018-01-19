@@ -76,6 +76,7 @@ public class ExponentialMovingAverageCalculator implements ExponentialMovingAver
 	 *            the scale, precision and rounding to apply to mathematical operations.
 	 */
 	public ExponentialMovingAverageCalculator( final int lookback, final Validator validator ) {
+
 		validator.verifyGreaterThan(1, lookback);
 
 		this.smoothingConstant = smoothingConstant(lookback);

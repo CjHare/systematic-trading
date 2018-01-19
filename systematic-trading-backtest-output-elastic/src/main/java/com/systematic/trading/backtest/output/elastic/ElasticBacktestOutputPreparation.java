@@ -58,6 +58,7 @@ public class ElasticBacktestOutputPreparation implements BacktestEventListenerPr
 	private final ElasticEquityIndex equityIndex;
 
 	public ElasticBacktestOutputPreparation( final BackestOutputElasticConfiguration config ) {
+
 		final ElasticDao dao = new HttpElasticDao();
 		this.signalAnalysisIndex = new ElasticSignalAnalysisIndex(dao, NO_POOL, config);
 		this.cashIndex = new ElasticCashIndex(dao, NO_POOL, config);

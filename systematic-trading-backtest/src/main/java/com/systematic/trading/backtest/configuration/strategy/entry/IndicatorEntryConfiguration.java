@@ -39,6 +39,7 @@ public class IndicatorEntryConfiguration implements EntryConfiguration {
 	private final IndicatorConfiguration indicator;
 
 	public IndicatorEntryConfiguration( final IndicatorConfiguration indicator ) {
+
 		this.indicator = indicator;
 	}
 

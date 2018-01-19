@@ -75,6 +75,7 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	 */
 	public CalculatedDailyPaidMonthlyCashAccount( final InterestRate rate, final BigDecimal openingFunds,
 	        final LocalDate openingDate, final MathContext mathContext ) {
+
 		this.rate = rate;
 		this.funds = openingFunds;
 		this.lastInterestCalculation = openingDate;
@@ -109,9 +110,8 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	@Override
 	public void debit( final BigDecimal debit, final LocalDate transactionDate ) throws InsufficientFundsException {
 
-		if (funds.compareTo(debit) < 0) {
-			throw new InsufficientFundsException(String.format("Attempting to debit %s from only %s", debit, funds));
-		}
+		if (funds.compareTo(debit) < 0) { throw new InsufficientFundsException(
+		        String.format("Attempting to debit %s from only %s", debit, funds)); }
 
 		final BigDecimal fundsBefore = funds;
 
