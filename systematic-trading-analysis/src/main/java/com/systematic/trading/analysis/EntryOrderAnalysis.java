@@ -93,7 +93,7 @@ public class EntryOrderAnalysis {
 	private static final Logger LOG = LogManager.getLogger(EntryOrderAnalysis.class);
 
 	/** Days of signals analysis to generate and display. */
-	private static final int DAYS_OF_SIGNALS = 1;
+	private static final int DAYS_OF_SIGNALS = 3;
 
 	/** For analysis we only want to use the starting funds, no interest payments. */
 	private static final BigDecimal IGNORE_INTEREST_RATE = BigDecimal.ZERO;
