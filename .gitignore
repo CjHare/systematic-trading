@@ -1,18 +1,17 @@
 ### Eclipse ###
-
-.metadata
+local.properties
 bin/
+target/
 tmp/
-*.tmp
+.loadpath
+.metadata
+.prefs
+.recommenders
+.settings/
 *.bak
 *.swp
+*.tmp
 *~.nib
-local.properties
-.settings/
-.loadpath
-.recommenders
-.prefs
-target
 
 # Eclipse Core
 .project
@@ -63,12 +62,12 @@ target
 .idea/tasks.xml
 
 # Sensitive or high-churn files:
+.idea/dynamic.xml
 .idea/dataSources/
 .idea/dataSources.ids
 .idea/dataSources.xml
 .idea/dataSources.local.xml
 .idea/sqlDataSources.xml
-.idea/dynamic.xml
 .idea/uiDesigner.xml
 
 # Gradle:
@@ -84,7 +83,8 @@ target
 ## Plugin-specific files:
 
 # IntelliJ
-/out/
+build/
+out/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
