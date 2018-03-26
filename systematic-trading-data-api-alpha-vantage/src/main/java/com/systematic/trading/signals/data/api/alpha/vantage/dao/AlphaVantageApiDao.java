@@ -23,66 +23,42 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.data.api;
+package com.systematic.trading.signals.data.api.alpha.vantage.dao;
 
 import java.time.LocalDate;
-import java.time.Period;
 
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.model.price.TradingDayPrices;
+import com.systematic.trading.signals.data.api.alpha.vantage.model.AlphaVantageResultSet;
 
 /**
- * External data source for equity price information.
+ * Data Access Object for retrieving data from the AlphaVantage API.
+ * 
+ * DAO's responsibility is ensure the AlphaVantage reply contains the expected JSON format, not the
+ * data
+ * integrity.
  * 
  * @author CJ Hare
  */
-public interface EquityApi {
+public interface AlphaVantageApiDao {
 
 	/**
+	 * Retrieve historical equity price data from AlphaVantage.
 	 * 
 	 * @param equityDataset
-	 *            identifier for the source to retrieve the ticker symbol from.
-	 * @param symbol
-	 *            ticker symbol for the stock to retrieve data on.
+	 *            identifier for the dataset to retrieve the ticker symbol from.
+	 * @param tickerSymbol
+	 *            identifier of the equity to retrieve.
 	 * @param inclusiveStartDate
-	 *            the inclusive start date for the data points.
+	 *            the first day of the historical data to retrieve.
 	 * @param exclusiveEndDate
-	 *            the exclusive end date for the data points.
+	 *            the last day of the historical data to retrieve.
 	 * @param throttler
-	 *            used to throttle the number of connection to abide by API constraints.
-	 * @return the given data parsed into domain objects.
+	 *            synchronization object to limit the connections to the AlphaVantage API.
+	 * @return retrieved AlphaVantage data structure.
 	 * @throws CannotRetrieveDataException
-	 *             problem encountered in retrieving the stock data.
+	 *             problem encountered during connecting to the AlphaVantage API.
 	 */
-	TradingDayPrices[] stockData( String equityDataset, String symbol, LocalDate inclusiveStartDate,
+	AlphaVantageResultSet get( String equityDataset, String tickerSymbol, LocalDate inclusiveStartDate,
 	        LocalDate exclusiveEndDate, BlockingEventCount throttler ) throws CannotRetrieveDataException;
-
-	/**
-	 * Maximum number of time that may be retrieved in one attempt.
-	 * 
-	 * @return number of days that can be retrieved each attempt.
-	 */
-	Period maximumDurationPerConnection();
-
-	/**
-	 * Number of concurrent calls accepted by the API.
-	 * 
-	 * @return number of threads that may simultaneously call the API.
-	 */
-	int maximumConcurrentConnections();
-
-	/**
-	 * Maximum number of seconds that a retrieval will take.
-	 * 
-	 * @return maximum time allowed for a call, worst scenario (i.e. full retries).
-	 */
-	int maximumRetrievalTimeSeconds();
-
-	/**
-	 * Allowed limit on the number of connections to the API.
-	 * 
-	 * @return number of connections allowed per a rolling second.
-	 */
-	int maximumConnectionsPerSecond();
 }
