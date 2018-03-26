@@ -63,7 +63,9 @@ public class ClearFileDestination {
 		final File outputDirectoryFile = new File(outputDirectory);
 
 		if (outputDirectoryFile.listFiles().length != 0) { throw new IllegalArgumentException(
-		        String.format("%s was not successfully emptied, still contains: %s", outputDirectory,
+		        String.format(
+		                "%s was not successfully emptied, still contains: %s",
+		                outputDirectory,
 		                outputDirectoryFile.listFiles())); }
 	}
 

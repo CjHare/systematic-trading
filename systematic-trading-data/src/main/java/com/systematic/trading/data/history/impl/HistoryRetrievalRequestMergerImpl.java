@@ -57,7 +57,8 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 	 * Assumed all requests are for the same ticker symbol. Will only merge requests, no slicing or
 	 * splitting will occur.
 	 */
-	public List<HistoryRetrievalRequest> merge( final List<HistoryRetrievalRequest> unsortedRequests,
+	public List<HistoryRetrievalRequest> merge(
+	        final List<HistoryRetrievalRequest> unsortedRequests,
 	        final Period maximum ) {
 
 		if (hasInsufficentRequestsToMerge(unsortedRequests) || isInvalid(maximum)) { return unsortedRequests; }
@@ -65,7 +66,8 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		return mergeRequests(sortByStartDate(unsortedRequests), maximum);
 	}
 
-	private List<HistoryRetrievalRequest> mergeRequests( final List<HistoryRetrievalRequest> sortedRequests,
+	private List<HistoryRetrievalRequest> mergeRequests(
+	        final List<HistoryRetrievalRequest> sortedRequests,
 	        final Period maximum ) {
 
 		final List<HistoryRetrievalRequest> mergedRequests = new ArrayList<>(sortedRequests.size());
@@ -75,9 +77,15 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 
 		for (int i = 0; i < lastRequestIndex; i++) {
 
-			final Pair<Period, HistoryRetrievalRequestBuilder> mergeOutcome = mergeRequest(maximum,
-			        lastRequest(i, sortedRequests), sortedRequests.get(i), nextRequest(i, sortedRequests), remaining,
-			        mergingRequests, mergedRequests);
+			final Pair<Period,
+			        HistoryRetrievalRequestBuilder> mergeOutcome = mergeRequest(
+			                maximum,
+			                lastRequest(i, sortedRequests),
+			                sortedRequests.get(i),
+			                nextRequest(i, sortedRequests),
+			                remaining,
+			                mergingRequests,
+			                mergedRequests);
 
 			remaining = mergeOutcome.getLeft();
 			mergingRequests = mergeOutcome.getRight();
@@ -88,10 +96,14 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		return mergedRequests;
 	}
 
-	private Pair<Period, HistoryRetrievalRequestBuilder> mergeRequest( final Period maximum,
-	        final Optional<HistoryRetrievalRequest> lastRequest, final HistoryRetrievalRequest request,
-	        final HistoryRetrievalRequest nextRequest, Period remaining,
-	        final HistoryRetrievalRequestBuilder mergingRequests, final List<HistoryRetrievalRequest> mergedRequests ) {
+	private Pair<Period, HistoryRetrievalRequestBuilder> mergeRequest(
+	        final Period maximum,
+	        final Optional<HistoryRetrievalRequest> lastRequest,
+	        final HistoryRetrievalRequest request,
+	        final HistoryRetrievalRequest nextRequest,
+	        Period remaining,
+	        final HistoryRetrievalRequestBuilder mergingRequests,
+	        final List<HistoryRetrievalRequest> mergedRequests ) {
 
 		final Period requestLength = requestLength(request);
 		HistoryRetrievalRequestBuilder nextMergingRequests = mergingRequests;
@@ -133,13 +145,15 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 		return new ImmutablePair<>(nextRequestRemaining, nextMergingRequests);
 	}
 
-	private HistoryRetrievalRequest createRequest( final HistoryRetrievalRequest request,
+	private HistoryRetrievalRequest createRequest(
+	        final HistoryRetrievalRequest request,
 	        final HistoryRetrievalRequestBuilder mergedRequest ) {
 
 		return mergedRequest.withExclusiveEndDate(request.exclusiveEndDate()).build();
 	}
 
-	private HistoryRetrievalRequest createLastRequest( final HistoryRetrievalRequest lastRequest,
+	private HistoryRetrievalRequest createLastRequest(
+	        final HistoryRetrievalRequest lastRequest,
 	        final HistoryRetrievalRequestBuilder mergedRequest ) {
 
 		return mergedRequest.withExclusiveEndDate(lastRequest.exclusiveEndDate()).build();
@@ -185,8 +199,10 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 
 	private List<HistoryRetrievalRequest> sortByStartDate( final List<HistoryRetrievalRequest> requests ) {
 
-		Collections.sort(requests, ( HistoryRetrievalRequest a, HistoryRetrievalRequest b ) -> a.inclusiveStartDate()
-		        .compareTo(b.inclusiveStartDate()));
+		Collections.sort(
+		        requests,
+		        ( HistoryRetrievalRequest a, HistoryRetrievalRequest b ) -> a.inclusiveStartDate()
+		                .compareTo(b.inclusiveStartDate()));
 		return requests;
 	}
 

@@ -68,8 +68,11 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 		// Default constructor used by Hiberante
 	}
 
-	public HibernateHistoryRetrievalRequest( final String equityDataset, final String tickerSymbol,
-	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
+	public HibernateHistoryRetrievalRequest(
+	        final String equityDataset,
+	        final String tickerSymbol,
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) {
 
 		this.equityDataset = equityDataset;
 		this.tickerSymbol = tickerSymbol;

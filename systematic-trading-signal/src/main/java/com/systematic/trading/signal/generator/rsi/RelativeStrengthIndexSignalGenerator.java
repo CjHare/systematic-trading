@@ -43,7 +43,8 @@ import com.systematic.trading.signal.model.DatedSignal;
  */
 public abstract class RelativeStrengthIndexSignalGenerator implements SignalGenerator<RelativeStrengthIndexLine> {
 
-	public List<DatedSignal> generate( final RelativeStrengthIndexLine rsiLine,
+	public List<DatedSignal> generate(
+	        final RelativeStrengthIndexLine rsiLine,
 	        final Predicate<LocalDate> signalRange ) {
 
 		final List<DatedSignal> signals = new ArrayList<>();

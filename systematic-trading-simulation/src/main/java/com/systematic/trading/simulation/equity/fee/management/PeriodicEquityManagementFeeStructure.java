@@ -57,7 +57,9 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	 * @param mathContext
 	 *            context to apply to calculations.
 	 */
-	public PeriodicEquityManagementFeeStructure( final LocalDate feeStartDate, final EquityManagementFeeCalculator fee,
+	public PeriodicEquityManagementFeeStructure(
+	        final LocalDate feeStartDate,
+	        final EquityManagementFeeCalculator fee,
 	        final Period frequency ) {
 
 		this.feeStartDate = feeStartDate;
@@ -66,13 +68,18 @@ public class PeriodicEquityManagementFeeStructure implements EquityManagementFee
 	}
 
 	@Override
-	public BigDecimal update( final BigDecimal numberOfEquities, final LocalDate lastManagementFeeDate,
+	public BigDecimal update(
+	        final BigDecimal numberOfEquities,
+	        final LocalDate lastManagementFeeDate,
 	        final TradingDayPrices tradingData ) {
 
 		final LocalDate tradingDate = tradingData.date();
 
-		if (lastManagementFeeDate.plus(frequency).isBefore(tradingDate)) { return fee.calculate(numberOfEquities,
-		        tradingData.closingPrice(), Period.between(lastManagementFeeDate, tradingDate)); }
+		if (lastManagementFeeDate.plus(frequency)
+		        .isBefore(tradingDate)) { return fee.calculate(
+		                numberOfEquities,
+		                tradingData.closingPrice(),
+		                Period.between(lastManagementFeeDate, tradingDate)); }
 
 		return BigDecimal.ZERO;
 	}

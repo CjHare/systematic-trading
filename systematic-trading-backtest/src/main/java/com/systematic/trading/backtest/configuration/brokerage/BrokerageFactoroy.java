@@ -41,7 +41,9 @@ import com.systematic.trading.simulation.equity.fee.EquityManagementFeeStructure
  */
 public class BrokerageFactoroy {
 
-	public Brokerage create( final EquityWithFeeConfiguration equity, final BrokerageTransactionFeeStructure fees,
+	public Brokerage create(
+	        final EquityWithFeeConfiguration equity,
+	        final BrokerageTransactionFeeStructure fees,
 	        final LocalDate startDate ) {
 
 		final EquityManagementFeeStructure equityManagementFee = equity.managementFee();

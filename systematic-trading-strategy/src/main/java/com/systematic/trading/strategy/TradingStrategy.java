@@ -82,8 +82,13 @@ public class TradingStrategy implements Strategy {
 	/** The trading data as it rolled through the set. */
 	private final LimitedSizeQueue<TradingDayPrices> tradingData;
 
-	public TradingStrategy( final Entry entry, final EntrySize entryPositionSizing, final Exit exit,
-	        final ExitSize exitPositionSizing, final EquityClass type, final int scale ) {
+	public TradingStrategy(
+	        final Entry entry,
+	        final EntrySize entryPositionSizing,
+	        final Exit exit,
+	        final ExitSize exitPositionSizing,
+	        final EquityClass type,
+	        final int scale ) {
 
 		this.entry = entry;
 		this.exit = exit;
@@ -96,7 +101,9 @@ public class TradingStrategy implements Strategy {
 	}
 
 	@Override
-	public Optional<EquityOrder> entryTick( final BrokerageTransactionFee fees, final CashAccount cashAccount,
+	public Optional<EquityOrder> entryTick(
+	        final BrokerageTransactionFee fees,
+	        final CashAccount cashAccount,
 	        final TradingDayPrices data ) {
 
 		// Add the day's data to the rolling queue

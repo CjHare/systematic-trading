@@ -141,7 +141,8 @@ public class OutputLaunchArgumentTest {
 		verifyValidation(null, null);
 	}
 
-	private void outputExpectingException( final String expectedMessage,
+	private void outputExpectingException(
+	        final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
 
 		try {
@@ -164,15 +165,18 @@ public class OutputLaunchArgumentTest {
 
 	private void verifyValidation( final OutputType outputType, final String launchArgument ) {
 
-		verify(validator).validate(outputType == null ? isNull() : eq(outputType), eq(ERROR_MESSAGE),
-		        eq(FIRST_ERROR_ARGUMENT), launchArgument == null ? isNull() : eq(launchArgument));
+		verify(validator).validate(
+		        outputType == null ? isNull() : eq(outputType),
+		        eq(ERROR_MESSAGE),
+		        eq(FIRST_ERROR_ARGUMENT),
+		        launchArgument == null ? isNull() : eq(launchArgument));
 		verifyNoMoreInteractions(validator);
 	}
 
 	private void setUpValidatorException() {
 
-		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
-		        anyString(), anyString());
+		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator)
+		        .validate(any(), anyString(), anyString(), anyString());
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {

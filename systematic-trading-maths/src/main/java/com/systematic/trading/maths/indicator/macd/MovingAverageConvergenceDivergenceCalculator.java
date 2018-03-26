@@ -56,8 +56,10 @@ public class MovingAverageConvergenceDivergenceCalculator implements MovingAvera
 	/** Responsible for parsing and validating the input. */
 	private final Validator validator;
 
-	public MovingAverageConvergenceDivergenceCalculator( final ExponentialMovingAverageIndicator fastEma,
-	        final ExponentialMovingAverageIndicator slowEma, final ExponentialMovingAverage signalEma,
+	public MovingAverageConvergenceDivergenceCalculator(
+	        final ExponentialMovingAverageIndicator fastEma,
+	        final ExponentialMovingAverageIndicator slowEma,
+	        final ExponentialMovingAverage signalEma,
 	        final Validator validator ) {
 
 		this.validator = validator;

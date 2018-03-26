@@ -45,7 +45,9 @@ public class SimulationDatesRangeFilterDecorator implements SignalRangeFilter {
 	/** The filter being decorated. */
 	private final SignalRangeFilter filter;
 
-	public SimulationDatesRangeFilterDecorator( final LocalDate simulationStartDate, final LocalDate simulationEndDate,
+	public SimulationDatesRangeFilterDecorator(
+	        final LocalDate simulationStartDate,
+	        final LocalDate simulationEndDate,
 	        final SignalRangeFilter filter ) {
 
 		this.simulationEndDate = simulationEndDate;

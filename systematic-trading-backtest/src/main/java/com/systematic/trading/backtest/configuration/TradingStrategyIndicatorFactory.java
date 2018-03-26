@@ -67,58 +67,93 @@ public class TradingStrategyIndicatorFactory {
 	 * @param previousTradingDaySignalRange
 	 *            how many days previous to latest trading date to generate signals on.
 	 */
-	public Indicator create( final IndicatorConfiguration signal, final SignalRangeFilter filter,
-	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
+	public Indicator create(
+	        final IndicatorConfiguration signal,
+	        final SignalRangeFilter filter,
+	        final SignalAnalysisListener signalListener,
+	        final int priceDataRange ) {
 
-		if (signal instanceof MacdConfiguration) { return macd((MacdConfiguration) signal, filter, signalListener,
+		if (signal instanceof MacdConfiguration) { return macd(
+		        (MacdConfiguration) signal,
+		        filter,
+		        signalListener,
 		        priceDataRange); }
-		if (signal instanceof RsiConfiguration) { return rsi((RsiConfiguration) signal, filter, signalListener,
+		if (signal instanceof RsiConfiguration) { return rsi(
+		        (RsiConfiguration) signal,
+		        filter,
+		        signalListener,
 		        priceDataRange); }
-		if (signal instanceof SmaUptrendConfiguration) { return smaUptrend((SmaUptrendConfiguration) signal, filter,
-		        signalListener, priceDataRange); }
-		if (signal instanceof EmaUptrendConfiguration) { return emaUptrand((EmaUptrendConfiguration) signal, filter,
-		        signalListener, priceDataRange); }
+		if (signal instanceof SmaUptrendConfiguration) { return smaUptrend(
+		        (SmaUptrendConfiguration) signal,
+		        filter,
+		        signalListener,
+		        priceDataRange); }
+		if (signal instanceof EmaUptrendConfiguration) { return emaUptrand(
+		        (EmaUptrendConfiguration) signal,
+		        filter,
+		        signalListener,
+		        priceDataRange); }
 
-		throw new IllegalArgumentException(String.format("Signal type not catered for: %s of %s", signal,
-		        signal == null ? "null" : signal.getClass()));
+		throw new IllegalArgumentException(
+		        String.format(
+		                "Signal type not catered for: %s of %s",
+		                signal,
+		                signal == null ? "null" : signal.getClass()));
 	}
 
-	private Indicator rsi( final RsiConfiguration rsiConfiguration, final SignalRangeFilter filter,
-	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
+	private Indicator rsi(
+	        final RsiConfiguration rsiConfiguration,
+	        final SignalRangeFilter filter,
+	        final SignalAnalysisListener signalListener,
+	        final int priceDataRange ) {
 
 		final SignalGenerator<RelativeStrengthIndexLine> generator = new RelativeStrengthIndexBullishSignalGenerator(
 		        rsiConfiguration.oversold());
 		final RelativeStrengthIndexCalculator calculator = new RelativeStrengthIndexCalculator(
-		        new ClosingPriceRelativeStrengthCalculator(rsiConfiguration.lookback(), priceDataRange,
+		        new ClosingPriceRelativeStrengthCalculator(
+		                rsiConfiguration.lookback(),
+		                priceDataRange,
 		                new IllegalArgumentThrowingValidator()),
 		        new IllegalArgumentThrowingValidator());
 
-		return new TradingStrategyIndicator<RelativeStrengthIndexLine, RelativeStrengthIndexIndicator>(
-		        rsiConfiguration.id(), calculator, generator, filter, signalListener);
+		return new TradingStrategyIndicator<RelativeStrengthIndexLine,
+		        RelativeStrengthIndexIndicator>(rsiConfiguration.id(), calculator, generator, filter, signalListener);
 	}
 
-	private Indicator smaUptrend( final SmaUptrendConfiguration sma, final SignalRangeFilter filter,
-	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
+	private Indicator smaUptrend(
+	        final SmaUptrendConfiguration sma,
+	        final SignalRangeFilter filter,
+	        final SignalAnalysisListener signalListener,
+	        final int priceDataRange ) {
 
 		final int minimumNumberOfSmaValues = priceDataRange + sma.gradientPoints();
-		final SignalGenerator<SimpleMovingAverageLine> generator = new SimpleMovingAverageBullishGradientSignalGenerator();
-		final SimpleMovingAverageIndicator calculator = new ClosingPriceSimpleMovingAverageCalculator(sma.lookback(),
-		        minimumNumberOfSmaValues, new IllegalArgumentThrowingValidator());
+		final SignalGenerator<
+		        SimpleMovingAverageLine> generator = new SimpleMovingAverageBullishGradientSignalGenerator();
+		final SimpleMovingAverageIndicator calculator = new ClosingPriceSimpleMovingAverageCalculator(
+		        sma.lookback(),
+		        minimumNumberOfSmaValues,
+		        new IllegalArgumentThrowingValidator());
 
-		return new TradingStrategyIndicator<SimpleMovingAverageLine, SimpleMovingAverageIndicator>(sma.id(), calculator,
-		        generator, filter, signalListener);
+		return new TradingStrategyIndicator<SimpleMovingAverageLine,
+		        SimpleMovingAverageIndicator>(sma.id(), calculator, generator, filter, signalListener);
 	}
 
-	private Indicator emaUptrand( final EmaUptrendConfiguration ema, final SignalRangeFilter filter,
-	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
+	private Indicator emaUptrand(
+	        final EmaUptrendConfiguration ema,
+	        final SignalRangeFilter filter,
+	        final SignalAnalysisListener signalListener,
+	        final int priceDataRange ) {
 
-		final SignalGenerator<ExponentialMovingAverageLine> generator = new ExponentialMovingAverageBullishGradientSignalGenerator();
+		final SignalGenerator<
+		        ExponentialMovingAverageLine> generator = new ExponentialMovingAverageBullishGradientSignalGenerator();
 		final int minimumNumberOfEmaValues = priceDataRange + ema.gradientPoints();
 		final ExponentialMovingAverageIndicator calculator = new ClosingPriceExponentialMovingAverageCalculator(
-		        ema.lookback(), minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
+		        ema.lookback(),
+		        minimumNumberOfEmaValues,
+		        new IllegalArgumentThrowingValidator());
 
-		return new TradingStrategyIndicator<ExponentialMovingAverageLine, ExponentialMovingAverageIndicator>(ema.id(),
-		        calculator, generator, filter, signalListener);
+		return new TradingStrategyIndicator<ExponentialMovingAverageLine,
+		        ExponentialMovingAverageIndicator>(ema.id(), calculator, generator, filter, signalListener);
 	}
 
 	/**
@@ -126,21 +161,38 @@ public class TradingStrategyIndicatorFactory {
 	 *            the number of MACD values to create to use in evaluation (perhaps in conjunction
 	 *            with other indicators).
 	 */
-	private Indicator macd( final MacdConfiguration macdConfiguration, final SignalRangeFilter filter,
-	        final SignalAnalysisListener signalListener, final int priceDataRange ) {
+	private Indicator macd(
+	        final MacdConfiguration macdConfiguration,
+	        final SignalRangeFilter filter,
+	        final SignalAnalysisListener signalListener,
+	        final int priceDataRange ) {
 
-		final SignalGenerator<MovingAverageConvergenceDivergenceLines> generator = new MovingAverageConvergenceDivergenceBullishSignalGenerator();
+		final SignalGenerator<
+		        MovingAverageConvergenceDivergenceLines> generator = new MovingAverageConvergenceDivergenceBullishSignalGenerator();
 		final int minimumNumberOfEmaValues = priceDataRange + macdConfiguration.signalTimePeriods();
 		final ExponentialMovingAverageIndicator fastEma = new ClosingPriceExponentialMovingAverageCalculator(
-		        macdConfiguration.fastTimePeriods(), minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
+		        macdConfiguration.fastTimePeriods(),
+		        minimumNumberOfEmaValues,
+		        new IllegalArgumentThrowingValidator());
 		final ExponentialMovingAverageIndicator slowEma = new ClosingPriceExponentialMovingAverageCalculator(
-		        macdConfiguration.slowTimePeriods(), minimumNumberOfEmaValues, new IllegalArgumentThrowingValidator());
+		        macdConfiguration.slowTimePeriods(),
+		        minimumNumberOfEmaValues,
+		        new IllegalArgumentThrowingValidator());
 		final ExponentialMovingAverage signalEma = new ExponentialMovingAverageCalculator(
-		        macdConfiguration.signalTimePeriods(), new IllegalArgumentThrowingValidator());
+		        macdConfiguration.signalTimePeriods(),
+		        new IllegalArgumentThrowingValidator());
 		final MovingAverageConvergenceDivergenceIndicator macd = new MovingAverageConvergenceDivergenceCalculator(
-		        fastEma, slowEma, signalEma, new IllegalArgumentThrowingValidator());
+		        fastEma,
+		        slowEma,
+		        signalEma,
+		        new IllegalArgumentThrowingValidator());
 
-		return new TradingStrategyIndicator<MovingAverageConvergenceDivergenceLines, MovingAverageConvergenceDivergenceIndicator>(
-		        macdConfiguration.id(), macd, generator, filter, signalListener);
+		return new TradingStrategyIndicator<MovingAverageConvergenceDivergenceLines,
+		        MovingAverageConvergenceDivergenceIndicator>(
+		                macdConfiguration.id(),
+		                macd,
+		                generator,
+		                filter,
+		                signalListener);
 	}
 }

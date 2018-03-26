@@ -58,7 +58,9 @@ public class TradingStrategyAndOperatorTest {
 	public void conjoin() {
 
 		final List<DatedSignal> left = signals(signal(LocalDate.of(2011, 4, 18)), signal(LocalDate.of(2011, 6, 26)));
-		final List<DatedSignal> right = signals(signal(LocalDate.of(2011, 4, 18)), signal(LocalDate.of(2011, 5, 21)),
+		final List<DatedSignal> right = signals(
+		        signal(LocalDate.of(2011, 4, 18)),
+		        signal(LocalDate.of(2011, 5, 21)),
 		        signal(LocalDate.of(2011, 6, 26), SignalType.BEARISH));
 
 		final List<DatedSignal> signals = conjoin(left, right);

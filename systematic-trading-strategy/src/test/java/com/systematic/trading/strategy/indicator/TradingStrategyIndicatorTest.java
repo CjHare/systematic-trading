@@ -84,8 +84,8 @@ public class TradingStrategyIndicatorTest {
 	@Before
 	public void setUp() {
 
-		indicator = new TradingStrategyIndicator<Object, SignalCalculator<Object>>(id, calculator, generator,
-		        signalRangeFilter, signalListner);
+		indicator = new TradingStrategyIndicator<Object,
+		        SignalCalculator<Object>>(id, calculator, generator, signalRangeFilter, signalListner);
 
 		setUpCalculator(indocatorCalculation);
 	}

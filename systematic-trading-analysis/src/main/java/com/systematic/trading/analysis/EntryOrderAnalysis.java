@@ -112,9 +112,13 @@ public class EntryOrderAnalysis {
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 		final Map<ArgumentKey, String> arguments = new CommandLineLaunchArgumentsParser().parse(args);
 		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(
-		        new EquityArguments(new DataServiceTypeLaunchArgument(), new EquityDatasetLaunchArgument(validator),
-		                new TickerSymbolLaunchArgument(validator), arguments),
-		        new OpeningFundsLaunchArgument(validator), arguments);
+		        new EquityArguments(
+		                new DataServiceTypeLaunchArgument(),
+		                new EquityDatasetLaunchArgument(validator),
+		                new TickerSymbolLaunchArgument(validator),
+		                arguments),
+		        new OpeningFundsLaunchArgument(validator),
+		        arguments);
 
 		new EntryOrderAnalysis(launchArgs.dataService()).run(launchArgs);
 	}
@@ -147,8 +151,11 @@ public class EntryOrderAnalysis {
 		timer.start();
 
 		try {
-			new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration.backtestDates(),
-			        context(backtestConfiguration, output()), output());
+			new Backtest(dataService, dataServiceUpdater).run(
+			        equity,
+			        backtestConfiguration.backtestDates(),
+			        context(backtestConfiguration, output()),
+			        output());
 
 		} finally {
 			HibernateUtil.sessionFactory().close();
@@ -158,7 +165,8 @@ public class EntryOrderAnalysis {
 		recordExecutionTime(timer);
 	}
 
-	private BacktestBootstrapContext context( final BacktestBootstrapConfiguration config,
+	private BacktestBootstrapContext context(
+	        final BacktestBootstrapConfiguration config,
 	        final BacktestEventListener listener ) {
 
 		return new BacktestBootstrapContextBulider().withConfiguration(config).withSignalAnalysisListeners(listener)
@@ -177,11 +185,14 @@ public class EntryOrderAnalysis {
 
 	private void recordAnalysisPeriod( final BacktestSimulationDates analysisPeriod ) {
 
-		LOG.info("{}", () -> String.format("Analysis start: %s, end: %s", analysisPeriod.startDate(),
-		        analysisPeriod.endDate()));
+		LOG.info(
+		        "{}",
+		        () -> String
+		                .format("Analysis start: %s, end: %s", analysisPeriod.startDate(), analysisPeriod.endDate()));
 	}
 
-	private BacktestBootstrapConfiguration configuration( final EquityConfiguration equity,
+	private BacktestBootstrapConfiguration configuration(
+	        final EquityConfiguration equity,
 	        final BigDecimal openingFunds ) throws InvalidSimulationDatesException {
 
 		final StrategyConfiguration strategy = strategy();
@@ -191,8 +202,12 @@ public class EntryOrderAnalysis {
 		        new BacktestStartDate(today.minus(strategy.entry().priceDataRange()).minusDays(DAYS_OF_SIGNALS)),
 		        new BacktestEndDate(today));
 
-		return new BacktestBootstrapConfiguration(simulationDates, new SelfWealthBrokerageFees(),
-		        new CashAccountConfiguration(IGNORE_INTEREST_RATE, openingFunds), strategy, equity);
+		return new BacktestBootstrapConfiguration(
+		        simulationDates,
+		        new SelfWealthBrokerageFees(),
+		        new CashAccountConfiguration(IGNORE_INTEREST_RATE, openingFunds),
+		        strategy,
+		        equity);
 	}
 
 	private BacktestEventListener output() {
@@ -213,9 +228,12 @@ public class EntryOrderAnalysis {
 		final MinimumTrade minimumTrade = MinimumTrade.ZERO;
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 		final EntryConfiguration entry = factory.entry(
-		        factory.entry(factory.entry(converter.translate(emaConfiguration)), OperatorConfiguration.Selection.OR,
+		        factory.entry(
+		                factory.entry(converter.translate(emaConfiguration)),
+		                OperatorConfiguration.Selection.OR,
 		                factory.entry(converter.translate(smaConfiguration))),
-		        OperatorConfiguration.Selection.AND, factory.entry(converter.translate(rsiConfiguration)));
+		        OperatorConfiguration.Selection.AND,
+		        factory.entry(converter.translate(rsiConfiguration)));
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();

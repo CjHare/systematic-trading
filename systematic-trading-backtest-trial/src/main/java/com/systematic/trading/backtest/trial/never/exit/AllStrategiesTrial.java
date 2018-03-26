@@ -79,8 +79,10 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 	}
 
 	@Override
-	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
+	public List<BacktestBootstrapConfiguration> configuration(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount ) {
 
 		List<BacktestBootstrapConfiguration> configurations = super.configuration(equity, simulationDates, cashAccount);
 

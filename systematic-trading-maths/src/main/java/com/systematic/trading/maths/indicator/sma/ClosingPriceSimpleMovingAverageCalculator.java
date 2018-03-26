@@ -64,7 +64,9 @@ public class ClosingPriceSimpleMovingAverageCalculator implements SimpleMovingAv
 	 * @param store
 	 *            source for the storage array.
 	 */
-	public ClosingPriceSimpleMovingAverageCalculator( final int lookback, final int daysOfSmaValues,
+	public ClosingPriceSimpleMovingAverageCalculator(
+	        final int lookback,
+	        final int daysOfSmaValues,
 	        final Validator validator ) {
 
 		validator.verifyGreaterThan(1, lookback);

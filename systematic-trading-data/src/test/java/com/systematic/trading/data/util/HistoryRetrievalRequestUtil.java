@@ -54,7 +54,10 @@ public class HistoryRetrievalRequestUtil {
 		return fulfilled;
 	}
 
-	public HistoryRetrievalRequest create( final String datasetId, final String tickerSymbol, final LocalDate start,
+	public HistoryRetrievalRequest create(
+	        final String datasetId,
+	        final String tickerSymbol,
+	        final LocalDate start,
 	        final LocalDate end ) {
 
 		return new HistoryRetrievalRequest() {
@@ -100,8 +103,12 @@ public class HistoryRetrievalRequestUtil {
 		}
 
 		if (!found) {
-			fail(String.format("Faled to find a HistoryRetrievalRequest with ticker: %s, start date: %s, end date: %s",
-			        expected.tickerSymbol(), expected.inclusiveStartDate(), expected.exclusiveEndDate()));
+			fail(
+			        String.format(
+			                "Faled to find a HistoryRetrievalRequest with ticker: %s, start date: %s, end date: %s",
+			                expected.tickerSymbol(),
+			                expected.inclusiveStartDate(),
+			                expected.exclusiveEndDate()));
 		}
 	}
 }

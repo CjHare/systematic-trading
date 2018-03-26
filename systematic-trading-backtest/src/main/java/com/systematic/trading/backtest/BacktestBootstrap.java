@@ -62,7 +62,9 @@ public class BacktestBootstrap {
 	/** Unmodifiable trading data for input to the back test. */
 	private final TickerSymbolTradingData tradingData;
 
-	public BacktestBootstrap( final BacktestBootstrapContext context, final BacktestEventListener output,
+	public BacktestBootstrap(
+	        final BacktestBootstrapContext context,
+	        final BacktestEventListener output,
 	        final TickerSymbolTradingData tradingData ) {
 
 		this.context = context;
@@ -83,15 +85,18 @@ public class BacktestBootstrap {
 		// Cumulative recording of investment progression
 		final ReturnOnInvestmentListener roi = new CulmativeReturnOnInvestment();
 
-		final PeriodicCulmativeReturnOnInvestment dailyRoi = new PeriodicCulmativeReturnOnInvestment(earliestDate,
+		final PeriodicCulmativeReturnOnInvestment dailyRoi = new PeriodicCulmativeReturnOnInvestment(
+		        earliestDate,
 		        Period.ofDays(1));
 		roi.addListener(dailyRoi);
 
-		final PeriodicCulmativeReturnOnInvestment monthlyRoi = new PeriodicCulmativeReturnOnInvestment(earliestDate,
+		final PeriodicCulmativeReturnOnInvestment monthlyRoi = new PeriodicCulmativeReturnOnInvestment(
+		        earliestDate,
 		        Period.ofMonths(1));
 		roi.addListener(monthlyRoi);
 
-		final PeriodicCulmativeReturnOnInvestment yearlyRoi = new PeriodicCulmativeReturnOnInvestment(earliestDate,
+		final PeriodicCulmativeReturnOnInvestment yearlyRoi = new PeriodicCulmativeReturnOnInvestment(
+		        earliestDate,
 		        Period.ofYears(1));
 		roi.addListener(yearlyRoi);
 
@@ -115,7 +120,9 @@ public class BacktestBootstrap {
 		cashAccount.addListener(eventStatistics);
 
 		// Creates the net worth events
-		final NetWorthSummaryEventGenerator networthSummay = new NetWorthSummaryEventGenerator(broker, lastTradingDay,
+		final NetWorthSummaryEventGenerator networthSummay = new NetWorthSummaryEventGenerator(
+		        broker,
+		        lastTradingDay,
 		        cashAccount);
 		simulation.addListener(networthSummay);
 

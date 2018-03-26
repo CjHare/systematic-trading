@@ -57,8 +57,10 @@ public class EmaUptrendVsSmaUptrendTrial extends BaseTrial implements BacktestCo
 	}
 
 	@Override
-	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
+	public List<BacktestBootstrapConfiguration> configuration(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 

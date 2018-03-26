@@ -45,7 +45,9 @@ import com.systematic.trading.simulation.cash.event.CashEvent;
  */
 public class ElasticCashIndex extends ElasticCommonIndex {
 
-	public ElasticCashIndex( final ElasticDao dao, final ExecutorService pool,
+	public ElasticCashIndex(
+	        final ElasticDao dao,
+	        final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
 
 		super(dao, pool, config);
@@ -65,10 +67,12 @@ public class ElasticCashIndex extends ElasticCommonIndex {
 	@Override
 	protected ElasticIndexMapping indexMapping() {
 
-		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
-		        pair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
+		return new ElasticIndexMapping(
+		        Arrays.asList(
+		                pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
+		                pair(ElasticFieldName.AMOUNT, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.FUNDS_BEFORE, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.FUNDS_AFTER, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 }

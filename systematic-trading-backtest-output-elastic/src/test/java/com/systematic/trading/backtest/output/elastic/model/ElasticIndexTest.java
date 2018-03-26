@@ -80,7 +80,11 @@ public class ElasticIndexTest {
 
 	private void verifyJson( final int numberOfShards, final int numberOfReplicas, final String json ) {
 
-		assertEquals(String.format("{\"settings\":{\"number_of_shards\":%d,\"number_of_replicas\":%d}}", numberOfShards,
-		        numberOfReplicas), json);
+		assertEquals(
+		        String.format(
+		                "{\"settings\":{\"number_of_shards\":%d,\"number_of_replicas\":%d}}",
+		                numberOfShards,
+		                numberOfReplicas),
+		        json);
 	}
 }

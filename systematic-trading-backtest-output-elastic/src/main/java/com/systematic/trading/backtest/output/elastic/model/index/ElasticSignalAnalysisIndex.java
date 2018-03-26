@@ -45,7 +45,9 @@ import com.systematic.trading.strategy.signal.SignalAnalysisEvent;
  */
 public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 
-	public ElasticSignalAnalysisIndex( final ElasticDao dao, final ExecutorService pool,
+	public ElasticSignalAnalysisIndex(
+	        final ElasticDao dao,
+	        final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
 
 		super(dao, pool, config);
@@ -65,8 +67,10 @@ public class ElasticSignalAnalysisIndex extends ElasticCommonIndex {
 	@Override
 	protected ElasticIndexMapping indexMapping() {
 
-		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.SIGNAL_TYPE, ElasticFieldType.KEYWORD),
-		        pair(ElasticFieldName.DIRECTION_TYPE, ElasticFieldType.TEXT),
-		        pair(ElasticFieldName.SIGNAL_DATE, ElasticFieldType.DATE)));
+		return new ElasticIndexMapping(
+		        Arrays.asList(
+		                pair(ElasticFieldName.SIGNAL_TYPE, ElasticFieldType.KEYWORD),
+		                pair(ElasticFieldName.DIRECTION_TYPE, ElasticFieldType.TEXT),
+		                pair(ElasticFieldName.SIGNAL_DATE, ElasticFieldType.DATE)));
 	}
 }

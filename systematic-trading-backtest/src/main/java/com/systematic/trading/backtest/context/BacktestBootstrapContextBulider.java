@@ -130,15 +130,16 @@ public class BacktestBootstrapContextBulider {
 
 	private Strategy strategy() {
 
-		return new TradingStrategyFactory().strategy(entry(), entryPositionSize(), exit(), exitPositionSize(),
-		        EquityClass.STOCK, EQUITY_SCALE);
+		return new TradingStrategyFactory()
+		        .strategy(entry(), entryPositionSize(), exit(), exitPositionSize(), EquityClass.STOCK, EQUITY_SCALE);
 	}
 
 	private Entry entry() {
 
 		final EntryConfiguration entryConfig = strategy.entry();
 
-		return entry(entryConfig,
+		return entry(
+		        entryConfig,
 		        signalRangeFilter(startConfirmationRange(entryConfig) + endConfirmationRange(entryConfig)),
 		        priceDataRange(entryConfig));
 	}
@@ -152,25 +153,35 @@ public class BacktestBootstrapContextBulider {
 	 * @param signalRange
 	 *            widest signal range, eventually will be overridden by a confirmation.
 	 */
-	private Entry entry( final EntryConfiguration entryConfig, final SignalRangeFilter signalRange,
+	private Entry entry(
+	        final EntryConfiguration entryConfig,
+	        final SignalRangeFilter signalRange,
 	        final long priceDataRange ) {
 
 		if (entryConfig instanceof PeriodicEntryConfiguration) { return periodicEntry(
 		        (PeriodicEntryConfiguration) entryConfig); }
 
 		if (entryConfig instanceof IndicatorEntryConfiguration) { return indicatorEntry(
-		        (IndicatorEntryConfiguration) entryConfig, signalRange, priceDataRange); }
+		        (IndicatorEntryConfiguration) entryConfig,
+		        signalRange,
+		        priceDataRange); }
 
 		if (entryConfig instanceof ConfirmedByEntryConfiguration) { return confirmByEntry(
-		        (ConfirmedByEntryConfiguration) entryConfig, signalRange, priceDataRange); }
+		        (ConfirmedByEntryConfiguration) entryConfig,
+		        signalRange,
+		        priceDataRange); }
 
 		if (entryConfig instanceof OperatorEntryConfiguration) { return operatorEntry(
-		        (OperatorEntryConfiguration) entryConfig, signalRange, priceDataRange); }
+		        (OperatorEntryConfiguration) entryConfig,
+		        signalRange,
+		        priceDataRange); }
 
 		throw new IllegalArgumentException(String.format("Entry configuration not supported: %s", entryConfig));
 	}
 
-	private Entry operatorEntry( final OperatorEntryConfiguration operatorConfig, final SignalRangeFilter signalRange,
+	private Entry operatorEntry(
+	        final OperatorEntryConfiguration operatorConfig,
+	        final SignalRangeFilter signalRange,
 	        final long priceDataRange ) {
 
 		final Operator operator;
@@ -185,31 +196,45 @@ public class BacktestBootstrapContextBulider {
 				break;
 		}
 
-		return new TradingStrategyFactory().entry(entry(operatorConfig.leftEntry(), signalRange, priceDataRange),
-		        operator, entry(operatorConfig.righEntry(), signalRange, priceDataRange));
+		return new TradingStrategyFactory().entry(
+		        entry(operatorConfig.leftEntry(), signalRange, priceDataRange),
+		        operator,
+		        entry(operatorConfig.righEntry(), signalRange, priceDataRange));
 	}
 
-	private Entry confirmByEntry( final ConfirmedByEntryConfiguration confirmedByConfig,
-	        final SignalRangeFilter signalRange, final long priceDataRange ) {
+	private Entry confirmByEntry(
+	        final ConfirmedByEntryConfiguration confirmedByConfig,
+	        final SignalRangeFilter signalRange,
+	        final long priceDataRange ) {
 
 		final ConfirmaByConfiguration by = confirmedByConfig.confirmBy();
 
-		return new TradingStrategyFactory().entry(entry(confirmedByConfig.anchor(), signalRange, priceDataRange),
+		return new TradingStrategyFactory().entry(
+		        entry(confirmedByConfig.anchor(), signalRange, priceDataRange),
 		        new TradingStrategyConfirmedBy(by.confirmationDayRange(), by.delayUntilConfirmationRange()),
 		        entry(confirmedByConfig.confirmation(), signalRange, priceDataRange));
 	}
 
-	private Entry indicatorEntry( final IndicatorEntryConfiguration indicatorConfig,
-	        final SignalRangeFilter signalRange, final long priceDataRange ) {
+	private Entry indicatorEntry(
+	        final IndicatorEntryConfiguration indicatorConfig,
+	        final SignalRangeFilter signalRange,
+	        final long priceDataRange ) {
 
-		return new TradingStrategyFactory().entry(new TradingStrategyIndicatorFactory()
-		        .create(indicatorConfig.indicator(), signalRange, signalAnalysisListener, (int) priceDataRange));
+		return new TradingStrategyFactory().entry(
+		        new TradingStrategyIndicatorFactory().create(
+		                indicatorConfig.indicator(),
+		                signalRange,
+		                signalAnalysisListener,
+		                (int) priceDataRange));
 	}
 
 	private Entry periodicEntry( final PeriodicEntryConfiguration periodicConfig ) {
 
-		return new TradingStrategyFactory().entry(new TradingStrategyPeriodic(simulationDates.startDate(),
-		        (periodicConfig).frequency().frequency(), SignalType.BULLISH));
+		return new TradingStrategyFactory().entry(
+		        new TradingStrategyPeriodic(
+		                simulationDates.startDate(),
+		                (periodicConfig).frequency().frequency(),
+		                SignalType.BULLISH));
 	}
 
 	/**
@@ -223,13 +248,17 @@ public class BacktestBootstrapContextBulider {
 			final int configEnd = confirmedByConfig.confirmBy().confirmationDayRange()
 			        + confirmedByConfig.confirmBy().delayUntilConfirmationRange();
 
-			return Math.max(configEnd, Math.max(endConfirmationRange(confirmedByConfig.anchor()),
-			        endConfirmationRange(confirmedByConfig.confirmation())));
+			return Math.max(
+			        configEnd,
+			        Math.max(
+			                endConfirmationRange(confirmedByConfig.anchor()),
+			                endConfirmationRange(confirmedByConfig.confirmation())));
 		}
 
 		if (entryConfig instanceof OperatorEntryConfiguration) {
 			final OperatorEntryConfiguration operatorConfig = (OperatorEntryConfiguration) entryConfig;
-			return Math.max(endConfirmationRange(operatorConfig.leftEntry()),
+			return Math.max(
+			        endConfirmationRange(operatorConfig.leftEntry()),
 			        endConfirmationRange(operatorConfig.righEntry()));
 		}
 
@@ -242,14 +271,17 @@ public class BacktestBootstrapContextBulider {
 		if (entryConfig instanceof ConfirmedByEntryConfiguration) {
 			final ConfirmedByEntryConfiguration confirmedByConfig = (ConfirmedByEntryConfiguration) entryConfig;
 
-			return Math.min(confirmedByConfig.confirmBy().delayUntilConfirmationRange(),
-			        Math.min(startConfirmationRange(confirmedByConfig.anchor()),
+			return Math.min(
+			        confirmedByConfig.confirmBy().delayUntilConfirmationRange(),
+			        Math.min(
+			                startConfirmationRange(confirmedByConfig.anchor()),
 			                startConfirmationRange(confirmedByConfig.confirmation())));
 		}
 
 		if (entryConfig instanceof OperatorEntryConfiguration) {
 			final OperatorEntryConfiguration operatorConfig = (OperatorEntryConfiguration) entryConfig;
-			return Math.min(startConfirmationRange(operatorConfig.leftEntry()),
+			return Math.min(
+			        startConfirmationRange(operatorConfig.leftEntry()),
 			        startConfirmationRange(operatorConfig.righEntry()));
 		}
 
@@ -259,7 +291,9 @@ public class BacktestBootstrapContextBulider {
 
 	private SignalRangeFilter signalRangeFilter( final int previousTradingDaySignalRange ) {
 
-		return new SimulationDatesRangeFilterDecorator(simulationDates.startDate(), simulationDates.endDate(),
+		return new SimulationDatesRangeFilterDecorator(
+		        simulationDates.startDate(),
+		        simulationDates.endDate(),
 		        new TradingDaySignalRangeFilter(previousTradingDaySignalRange));
 	}
 
@@ -291,7 +325,8 @@ public class BacktestBootstrapContextBulider {
 	private Brokerage brokerage() {
 
 		final EquityManagementFeeCalculator feeCalculator = feeCalculator(equity.managementFee());
-		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(equity.gquityIdentity(),
+		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
+		        equity.gquityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 
 		return new BrokerageFactoroy().create(equityConfiguration, brokerageType, simulationDates.startDate());

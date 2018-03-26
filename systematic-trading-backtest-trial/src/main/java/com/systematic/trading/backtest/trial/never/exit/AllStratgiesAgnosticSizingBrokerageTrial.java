@@ -52,8 +52,8 @@ public class AllStratgiesAgnosticSizingBrokerageTrial extends AllTrials implemen
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new AllStratgiesAgnosticSizingBrokerageTrial(),
-		        launchArgs);
+		new BacktestTrial(launchArgs.dataService())
+		        .runBacktest(new AllStratgiesAgnosticSizingBrokerageTrial(), launchArgs);
 	}
 
 	private static Set<Pair<MinimumTrade, MaximumTrade>> positionSizing() {

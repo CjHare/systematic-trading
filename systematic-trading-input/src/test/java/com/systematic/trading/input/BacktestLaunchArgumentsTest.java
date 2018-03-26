@@ -322,7 +322,8 @@ public class BacktestLaunchArgumentsTest {
 		}
 	}
 
-	private void launchArgumentsExpectingException( final String expectedMessage,
+	private void launchArgumentsExpectingException(
+	        final String expectedMessage,
 	        final Map<ArgumentKey, String> arguments ) {
 
 		try {
@@ -335,9 +336,17 @@ public class BacktestLaunchArgumentsTest {
 
 	private void launchArguments( final Map<ArgumentKey, String> arguments ) {
 
-		parser = new BacktestLaunchArguments(outputTypeArgument, equityArguments, interestRateArgument,
-		        openingFundsArgument, depositAmountArgument, depositFrequencyArgument, startDateArgument,
-		        endDateArgument, directoryArgument, arguments);
+		parser = new BacktestLaunchArguments(
+		        outputTypeArgument,
+		        equityArguments,
+		        interestRateArgument,
+		        openingFundsArgument,
+		        depositAmountArgument,
+		        depositFrequencyArgument,
+		        startDateArgument,
+		        endDateArgument,
+		        directoryArgument,
+		        arguments);
 	}
 
 	private void launchArguments() {
@@ -417,7 +426,9 @@ public class BacktestLaunchArgumentsTest {
 		verifyNoMoreInteractions(directoryArgument);
 	}
 
-	private void verifyOpeningFundsArgument( final String outputValue, final String fileBaseDirectory,
+	private void verifyOpeningFundsArgument(
+	        final String outputValue,
+	        final String fileBaseDirectory,
 	        final String openingFunds ) {
 
 		verify(openingFundsArgument).get(argumentMap(outputValue, fileBaseDirectory, openingFunds));
@@ -487,7 +498,9 @@ public class BacktestLaunchArgumentsTest {
 		when(argumentParser.parse(any(String[].class))).thenReturn(argumentMap(outputValue, fileBaseDirectory));
 	}
 
-	private void setUpArgumentMap( final String outputValue, final String fileBaseDirectory,
+	private void setUpArgumentMap(
+	        final String outputValue,
+	        final String fileBaseDirectory,
 	        final String openingFunds ) {
 
 		when(argumentParser.parse(any(String[].class)))
@@ -509,8 +522,8 @@ public class BacktestLaunchArgumentsTest {
 		return arguments;
 	}
 
-	private Map<ArgumentKey, String> argumentMap( final String outputValue, final String fileBaseDirectory,
-	        final String openingFunds ) {
+	private Map<ArgumentKey,
+	        String> argumentMap( final String outputValue, final String fileBaseDirectory, final String openingFunds ) {
 
 		final Map<ArgumentKey, String> arguments = argumentMap(outputValue, fileBaseDirectory);
 		arguments.put(ArgumentKey.OPENING_FUNDS, openingFunds);

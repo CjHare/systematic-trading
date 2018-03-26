@@ -36,8 +36,12 @@ public class QuandlConnectionConfiguration {
 	private final int retryBackOffMs;
 	private final int maximumRetrievalTimeSeconds;
 
-	public QuandlConnectionConfiguration( final String endpoint, final String apiKey, final int numberOfRetries,
-	        final int retryBackOffMs, final int maximumRetrievalTimeSeconds ) {
+	public QuandlConnectionConfiguration(
+	        final String endpoint,
+	        final String apiKey,
+	        final int numberOfRetries,
+	        final int retryBackOffMs,
+	        final int maximumRetrievalTimeSeconds ) {
 
 		this.endpoint = endpoint;
 		this.apiKey = apiKey;

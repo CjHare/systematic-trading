@@ -71,10 +71,15 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 		final RelativeStrengthLine rs = rs(data);
 
-		verifyRs(rs,
-		        line(point(LocalDate.of(2017, 9, 22), 0.25), point(LocalDate.of(2017, 9, 25), 0.44),
-		                point(LocalDate.of(2017, 9, 26), 0.58), point(LocalDate.of(2017, 9, 27), 0.68),
-		                point(LocalDate.of(2017, 9, 28), 0.76), point(LocalDate.of(2017, 9, 29), 0.82)));
+		verifyRs(
+		        rs,
+		        line(
+		                point(LocalDate.of(2017, 9, 22), 0.25),
+		                point(LocalDate.of(2017, 9, 25), 0.44),
+		                point(LocalDate.of(2017, 9, 26), 0.58),
+		                point(LocalDate.of(2017, 9, 27), 0.68),
+		                point(LocalDate.of(2017, 9, 28), 0.76),
+		                point(LocalDate.of(2017, 9, 29), 0.82)));
 		verifyValidation(data, lookback);
 	}
 
@@ -90,10 +95,15 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 		final RelativeStrengthLine rs = rs(data);
 
-		verifyRs(rs,
-		        line(point(LocalDate.of(2017, 9, 22), 0), point(LocalDate.of(2017, 9, 25), 0),
-		                point(LocalDate.of(2017, 9, 26), 0), point(LocalDate.of(2017, 9, 27), 0),
-		                point(LocalDate.of(2017, 9, 28), 0), point(LocalDate.of(2017, 9, 29), 0)));
+		verifyRs(
+		        rs,
+		        line(
+		                point(LocalDate.of(2017, 9, 22), 0),
+		                point(LocalDate.of(2017, 9, 25), 0),
+		                point(LocalDate.of(2017, 9, 26), 0),
+		                point(LocalDate.of(2017, 9, 27), 0),
+		                point(LocalDate.of(2017, 9, 28), 0),
+		                point(LocalDate.of(2017, 9, 29), 0)));
 		verifyValidation(data, lookback);
 	}
 
@@ -106,9 +116,13 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 		final RelativeStrengthLine rs = rs(data);
 
-		verifyRs(rs,
-		        line(point(LocalDate.of(2017, 7, 17), 0), point(LocalDate.of(2017, 7, 18), 0),
-		                point(LocalDate.of(2017, 7, 19), 0), point(LocalDate.of(2017, 7, 20), 0),
+		verifyRs(
+		        rs,
+		        line(
+		                point(LocalDate.of(2017, 7, 17), 0),
+		                point(LocalDate.of(2017, 7, 18), 0),
+		                point(LocalDate.of(2017, 7, 19), 0),
+		                point(LocalDate.of(2017, 7, 20), 0),
 		                point(LocalDate.of(2017, 7, 21), 0)));
 		verifyValidation(data, lookback);
 	}
@@ -122,11 +136,17 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 		final RelativeStrengthLine rs = rs(data);
 
-		verifyRs(rs,
-		        line(point(LocalDate.of(2017, 10, 10), 0), point(LocalDate.of(2017, 10, 11), 0.25),
-		                point(LocalDate.of(2017, 10, 12), 0.29), point(LocalDate.of(2017, 10, 13), 0.70),
-		                point(LocalDate.of(2017, 10, 16), 1.46), point(LocalDate.of(2017, 10, 17), 1.22),
-		                point(LocalDate.of(2017, 10, 18), 1.69), point(LocalDate.of(2017, 10, 19), 1.13),
+		verifyRs(
+		        rs,
+		        line(
+		                point(LocalDate.of(2017, 10, 10), 0),
+		                point(LocalDate.of(2017, 10, 11), 0.25),
+		                point(LocalDate.of(2017, 10, 12), 0.29),
+		                point(LocalDate.of(2017, 10, 13), 0.70),
+		                point(LocalDate.of(2017, 10, 16), 1.46),
+		                point(LocalDate.of(2017, 10, 17), 1.22),
+		                point(LocalDate.of(2017, 10, 18), 1.69),
+		                point(LocalDate.of(2017, 10, 19), 1.13),
 		                point(LocalDate.of(2017, 10, 20), 0.56)));
 
 		verifyValidation(data, lookback);
@@ -144,16 +164,27 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 		final RelativeStrengthLine rs = rs(data);
 
-		verifyRs(rs,
-		        line(point(LocalDate.of(2010, 1, 5), 2.39), point(LocalDate.of(2010, 1, 6), 1.94),
-		                point(LocalDate.of(2010, 1, 7), 1.96), point(LocalDate.of(2010, 1, 8), 2.26),
-		                point(LocalDate.of(2010, 1, 11), 1.95), point(LocalDate.of(2010, 1, 12), 1.34),
-		                point(LocalDate.of(2010, 1, 13), 1.67), point(LocalDate.of(2010, 1, 14), 1.70),
-		                point(LocalDate.of(2010, 1, 15), 1.25), point(LocalDate.of(2010, 1, 19), 1.64),
-		                point(LocalDate.of(2010, 1, 20), 1.18), point(LocalDate.of(2010, 1, 21), 0.99),
-		                point(LocalDate.of(2010, 1, 22), 0.65), point(LocalDate.of(2010, 1, 25), 0.69),
-		                point(LocalDate.of(2010, 1, 26), 0.70), point(LocalDate.of(2010, 1, 27), 0.82),
-		                point(LocalDate.of(2010, 1, 28), 0.58), point(LocalDate.of(2010, 1, 29), 0.48),
+		verifyRs(
+		        rs,
+		        line(
+		                point(LocalDate.of(2010, 1, 5), 2.39),
+		                point(LocalDate.of(2010, 1, 6), 1.94),
+		                point(LocalDate.of(2010, 1, 7), 1.96),
+		                point(LocalDate.of(2010, 1, 8), 2.26),
+		                point(LocalDate.of(2010, 1, 11), 1.95),
+		                point(LocalDate.of(2010, 1, 12), 1.34),
+		                point(LocalDate.of(2010, 1, 13), 1.67),
+		                point(LocalDate.of(2010, 1, 14), 1.70),
+		                point(LocalDate.of(2010, 1, 15), 1.25),
+		                point(LocalDate.of(2010, 1, 19), 1.64),
+		                point(LocalDate.of(2010, 1, 20), 1.18),
+		                point(LocalDate.of(2010, 1, 21), 0.99),
+		                point(LocalDate.of(2010, 1, 22), 0.65),
+		                point(LocalDate.of(2010, 1, 25), 0.69),
+		                point(LocalDate.of(2010, 1, 26), 0.70),
+		                point(LocalDate.of(2010, 1, 27), 0.82),
+		                point(LocalDate.of(2010, 1, 28), 0.58),
+		                point(LocalDate.of(2010, 1, 29), 0.48),
 		                point(LocalDate.of(2010, 2, 1), 0.60)));
 		verifyValidation(data, lookback);
 	}
@@ -202,8 +233,8 @@ public class ClosingPriceRelativeStrengthCalculatorTest {
 
 	private void setUpValidationErrorEnoughValues() {
 
-		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
-		        anyInt());
+		doThrow(new IllegalArgumentException()).when(validator)
+		        .verifyEnoughValues(any(TradingDayPrices[].class), anyInt());
 	}
 
 	private void setUpValidationErrorNullEntries() {

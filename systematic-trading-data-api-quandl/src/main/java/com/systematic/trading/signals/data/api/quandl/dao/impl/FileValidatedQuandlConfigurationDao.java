@@ -76,31 +76,51 @@ public class FileValidatedQuandlConfigurationDao implements QuandlConfigurationD
 		final Properties properties = new FileConfigurationDao().configuration(QUANDL_PROPERTIES_FILE);
 
 		final String endpoint = stringProperty(properties, QuandlProperty.ENDPOINT, endpointValidator);
-		final int numberOfRetries = integerProperty(properties, QuandlProperty.NUMBER_OF_RETRIES,
+		final int numberOfRetries = integerProperty(
+		        properties,
+		        QuandlProperty.NUMBER_OF_RETRIES,
 		        numberOfRetiresValidator);
 		final int retryBackOffMs = integerProperty(properties, QuandlProperty.RETRY_BACKOFF_MS, retryBackOffValidator);
-		final int maximumRetrievalTimeSeconds = integerProperty(properties,
-		        QuandlProperty.MAXIMUM_RETRIEVAL_TIME_SECONDS, maximumRetrievalTimeValidator);
-		final int maximumConcurrentConnections = integerProperty(properties,
-		        QuandlProperty.MAXIMUM_CONCURRENT_CONNECTIONS, maximumConcurrentConnectionValidator);
-		final int maximumConnectionsPerSecond = integerProperty(properties,
-		        QuandlProperty.MAXIMUM_CONNECTIONS_PER_SECOND, maximumConnectionsPerSecondValidator);
-		final int maximumMonthsPerConnection = integerProperty(properties,
-		        QuandlProperty.MAXIMUM_MONTHS_RETRIEVED_PER_CONNECTION, maximumMonthsPerConnectionsValidator);
+		final int maximumRetrievalTimeSeconds = integerProperty(
+		        properties,
+		        QuandlProperty.MAXIMUM_RETRIEVAL_TIME_SECONDS,
+		        maximumRetrievalTimeValidator);
+		final int maximumConcurrentConnections = integerProperty(
+		        properties,
+		        QuandlProperty.MAXIMUM_CONCURRENT_CONNECTIONS,
+		        maximumConcurrentConnectionValidator);
+		final int maximumConnectionsPerSecond = integerProperty(
+		        properties,
+		        QuandlProperty.MAXIMUM_CONNECTIONS_PER_SECOND,
+		        maximumConnectionsPerSecondValidator);
+		final int maximumMonthsPerConnection = integerProperty(
+		        properties,
+		        QuandlProperty.MAXIMUM_MONTHS_RETRIEVED_PER_CONNECTION,
+		        maximumMonthsPerConnectionsValidator);
 
 		return new QuandlConfiguration(
-		        new QuandlConnectionConfiguration(endpoint, apiKey, numberOfRetries, retryBackOffMs,
+		        new QuandlConnectionConfiguration(
+		                endpoint,
+		                apiKey,
+		                numberOfRetries,
+		                retryBackOffMs,
 		                maximumRetrievalTimeSeconds),
-		        maximumConcurrentConnections, maximumConnectionsPerSecond, maximumMonthsPerConnection);
+		        maximumConcurrentConnections,
+		        maximumConnectionsPerSecond,
+		        maximumMonthsPerConnection);
 	}
 
-	private String stringProperty( final Properties properties, final QuandlProperty property,
+	private String stringProperty(
+	        final Properties properties,
+	        final QuandlProperty property,
 	        final ConfigurationValidator<String> validator ) throws ConfigurationValidationException {
 
 		return validator.validate(property(properties, property));
 	}
 
-	private int integerProperty( final Properties properties, final QuandlProperty property,
+	private int integerProperty(
+	        final Properties properties,
+	        final QuandlProperty property,
 	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
 
 		return validator.validate(property(properties, property));

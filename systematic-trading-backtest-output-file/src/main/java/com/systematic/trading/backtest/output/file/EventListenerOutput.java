@@ -54,7 +54,9 @@ public class EventListenerOutput implements CashEventListener, OrderEventListene
 	private final OrderEventListener orderEventListener;
 	private final BrokerageEventListener brokerageEventListener;
 
-	public EventListenerOutput( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
+	public EventListenerOutput(
+	        final TickerSymbolTradingData tradingData,
+	        final BacktestSimulationDates dates,
 	        final FileMultithreading file ) {
 
 		file.write(header(tradingData, dates));
@@ -91,17 +93,29 @@ public class EventListenerOutput implements CashEventListener, OrderEventListene
 		output.append(String.format("#######################%n"));
 		output.append(String.format("%n"));
 
-		output.append(String.format("Data set for %s from %s to %s%n", tradingData.equityIdentity().tickerSymbol(),
-		        tradingData.earliestDate(), tradingData.latestDate()));
+		output.append(
+		        String.format(
+		                "Data set for %s from %s to %s%n",
+		                tradingData.equityIdentity().tickerSymbol(),
+		                tradingData.earliestDate(),
+		                tradingData.latestDate()));
 
-		output.append(String.format("Simulation dates for %s from %s to %s%n",
-		        tradingData.equityIdentity().tickerSymbol(), dates.startDate(), dates.endDate()));
+		output.append(
+		        String.format(
+		                "Simulation dates for %s from %s to %s%n",
+		                tradingData.equityIdentity().tickerSymbol(),
+		                dates.startDate(),
+		                dates.endDate()));
 
 		final long daysBetween = ChronoUnit.DAYS.between(tradingData.earliestDate(), tradingData.latestDate());
 		final double percentageTradingDays = ((double) tradingData.requiredTradingPrices() / daysBetween) * 100;
 
-		output.append(String.format("# trading days: %s over %s days (%s percentage trading days)%n",
-		        tradingData.requiredTradingPrices(), daysBetween, TWO_DECIMAL_PLACES.format(percentageTradingDays)));
+		output.append(
+		        String.format(
+		                "# trading days: %s over %s days (%s percentage trading days)%n",
+		                tradingData.requiredTradingPrices(),
+		                daysBetween,
+		                TWO_DECIMAL_PLACES.format(percentageTradingDays)));
 
 		output.append(String.format("%n"));
 

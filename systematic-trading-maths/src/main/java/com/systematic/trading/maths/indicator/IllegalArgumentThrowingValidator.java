@@ -108,8 +108,11 @@ public class IllegalArgumentThrowingValidator implements Validator {
 	private void validateNumberOfItems( final int numberOfItems, final int minimumNumberOfPrices ) {
 
 		// Enough data to calculate indicator?
-		if (numberOfItems < minimumNumberOfPrices) { throw new IllegalArgumentException(String.format(
-		        "At least %s non null data points are needed, only %s given", minimumNumberOfPrices, numberOfItems)); }
+		if (numberOfItems < minimumNumberOfPrices) { throw new IllegalArgumentException(
+		        String.format(
+		                "At least %s non null data points are needed, only %s given",
+		                minimumNumberOfPrices,
+		                numberOfItems)); }
 	}
 
 	private int numberOfItems( final int firstNonNullItem, final int lastNonNullItem ) {

@@ -131,7 +131,8 @@ public class AnalysisLaunchArgumentsTest {
 		return arguments;
 	}
 
-	private void createLaunchArgumentsExpectingException( final String expectedMessage,
+	private void createLaunchArgumentsExpectingException(
+	        final String expectedMessage,
 	        final Map<ArgumentKey, String> arguments ) {
 
 		try {

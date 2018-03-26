@@ -122,7 +122,8 @@ public class BacktestTrial {
 		final DepositConfiguration deposit = deposit(cashAccount);
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
-		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(simulationStartDate,
+		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(
+		        simulationStartDate,
 		        simulationEndDate);
 		recordSimulationDates(simulationDates);
 
@@ -138,24 +139,29 @@ public class BacktestTrial {
 		final StopWatch timer = new StopWatch();
 		timer.start();
 
-		final List<BacktestBootstrapConfiguration> backtestConfigurations = configuration.configuration(equity,
-		        simulationDates, cashAccount);
+		final List<BacktestBootstrapConfiguration> backtestConfigurations = configuration
+		        .configuration(equity, simulationDates, cashAccount);
 
 		try {
 			clearOutputDirectory(cashAccount, parserdArguments);
 
 			for (final BacktestBootstrapConfiguration backtestConfiguration : backtestConfigurations) {
-				final BacktestEventListener output = output(deposit, parserdArguments, backtestConfiguration,
+				final BacktestEventListener output = output(
+				        deposit,
+				        parserdArguments,
+				        backtestConfiguration,
 				        outputPool);
 				final BacktestBootstrapContext context = context(backtestConfiguration, output);
 
-				LOG.info("Backtesting beginning for: {}",
+				LOG.info(
+				        "Backtesting beginning for: {}",
 				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, deposit));
 
-				new Backtest(dataService, dataServiceUpdater).run(equity, backtestConfiguration.backtestDates(),
-				        context, output);
+				new Backtest(dataService, dataServiceUpdater)
+				        .run(equity, backtestConfiguration.backtestDates(), context, output);
 
-				LOG.info("Backtesting complete for: {}",
+				LOG.info(
+				        "Backtesting complete for: {}",
 				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, deposit));
 			}
 		} finally {
@@ -167,18 +173,23 @@ public class BacktestTrial {
 
 		outputPreparation.tearDown();
 
-		LOG.info(() -> String.format("Finished outputting %s results, time taken: %s", backtestConfigurations.size(),
-		        Duration.ofMillis(timer.getTime())));
+		LOG.info(
+		        () -> String.format(
+		                "Finished outputting %s results, time taken: %s",
+		                backtestConfigurations.size(),
+		                Duration.ofMillis(timer.getTime())));
 	}
 
 	private CashAccountConfiguration cashAcount( final BacktestLaunchArguments parserdArguments ) {
 
 		return new CashAccountConfiguration(
 		        new DepositConfiguration(parserdArguments.depositAmount(), parserdArguments.depositFrequency()),
-		        parserdArguments.interestRate(), parserdArguments.openingFunds());
+		        parserdArguments.interestRate(),
+		        parserdArguments.openingFunds());
 	}
 
-	private BacktestBootstrapContext context( final BacktestBootstrapConfiguration config,
+	private BacktestBootstrapContext context(
+	        final BacktestBootstrapConfiguration config,
 	        final BacktestEventListener listener ) {
 
 		return new BacktestBootstrapContextBulider().withConfiguration(config).withSignalAnalysisListeners(listener)
@@ -202,9 +213,11 @@ public class BacktestTrial {
 		}
 	}
 
-	private BacktestEventListener output( final DepositConfiguration deposit, final BacktestLaunchArguments arguments,
-	        final BacktestBootstrapConfiguration configuration, final ExecutorService pool )
-	        throws BacktestInitialisationException {
+	private BacktestEventListener output(
+	        final DepositConfiguration deposit,
+	        final BacktestLaunchArguments arguments,
+	        final BacktestBootstrapConfiguration configuration,
+	        final ExecutorService pool ) throws BacktestInitialisationException {
 
 		final BacktestBatchId batchId = batchId(configuration, deposit);
 		final OutputType type = arguments.outputType();
@@ -212,14 +225,20 @@ public class BacktestTrial {
 		try {
 			switch (type) {
 				case ELASTIC_SEARCH:
-					return new ElasticBacktestOutput(batchId, pool,
+					return new ElasticBacktestOutput(
+					        batchId,
+					        pool,
 					        BackestOutputElasticConfigurationSingleton.configuration());
 				case FILE_COMPLETE:
-					return new CompleteFileOutputService(batchId,
-					        outputDirectory(outputDirectory(deposit, arguments), configuration), pool);
+					return new CompleteFileOutputService(
+					        batchId,
+					        outputDirectory(outputDirectory(deposit, arguments), configuration),
+					        pool);
 				case FILE_MINIMUM:
-					return new MinimalFileOutputService(batchId,
-					        outputDirectory(outputDirectory(deposit, arguments), configuration), pool);
+					return new MinimalFileOutputService(
+					        batchId,
+					        outputDirectory(outputDirectory(deposit, arguments), configuration),
+					        pool);
 				case NO_DISPLAY:
 					return new SilentBacktestEventLisener();
 				default:
@@ -240,20 +259,23 @@ public class BacktestTrial {
 		return new DepositConfiguration(BigDecimal.ZERO, DepositFrequency.MONTHLY);
 	}
 
-	private String outputDirectory( final DepositConfiguration depositAmount,
+	private String outputDirectory(
+	        final DepositConfiguration depositAmount,
 	        final BacktestLaunchArguments arguments ) {
 
 		return isFileBasedDisplay(arguments) ? arguments.outputDirectory(directoryDescription.deposit(depositAmount))
 		        : "";
 	}
 
-	private BacktestBatchId batchId( final BacktestBootstrapConfiguration configuration,
+	private BacktestBatchId batchId(
+	        final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
 
 		return new BacktestBatchId(description.bootstrapConfigurationWithDeposit(configuration, depositAmount));
 	}
 
-	private String outputDirectory( final String baseOutputDirectory,
+	private String outputDirectory(
+	        final String baseOutputDirectory,
 	        final BacktestBootstrapConfiguration configuration ) {
 
 		return String.format("%s%s", baseOutputDirectory, description.bootstrapConfiguration(configuration));
@@ -295,7 +317,8 @@ public class BacktestTrial {
 		}
 	}
 
-	private void clearOutputDirectory( final CashAccountConfiguration cashAccount,
+	private void clearOutputDirectory(
+	        final CashAccountConfiguration cashAccount,
 	        final BacktestLaunchArguments arguments ) throws ServiceException {
 		// TODO delete must run BEFORE any of the tests! that'll ensure race conditions are avoided
 

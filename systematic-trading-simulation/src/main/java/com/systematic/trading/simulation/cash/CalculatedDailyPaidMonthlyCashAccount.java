@@ -73,8 +73,11 @@ public class CalculatedDailyPaidMonthlyCashAccount implements CashAccount {
 	 * @param mathContext
 	 *            math context defining the scale and precision to apply to operations.
 	 */
-	public CalculatedDailyPaidMonthlyCashAccount( final InterestRate rate, final BigDecimal openingFunds,
-	        final LocalDate openingDate, final MathContext mathContext ) {
+	public CalculatedDailyPaidMonthlyCashAccount(
+	        final InterestRate rate,
+	        final BigDecimal openingFunds,
+	        final LocalDate openingDate,
+	        final MathContext mathContext ) {
 
 		this.rate = rate;
 		this.funds = openingFunds;

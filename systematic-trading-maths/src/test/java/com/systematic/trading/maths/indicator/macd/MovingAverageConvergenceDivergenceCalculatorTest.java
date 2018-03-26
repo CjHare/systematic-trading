@@ -215,7 +215,8 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		doThrow(new IllegalArgumentException()).when(validator).verifyNotNull(any());
 	}
 
-	private void verifyMacdLines( final MovingAverageConvergenceDivergenceLines lines,
+	private void verifyMacdLines(
+	        final MovingAverageConvergenceDivergenceLines lines,
 	        final SortedMap<LocalDate, BigDecimal> expectedMacd,
 	        final SortedMap<LocalDate, BigDecimal> expectedSignalLine ) {
 
@@ -225,7 +226,8 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 		verifySortedMap(expectedSignalLine, lines.signalLine());
 	}
 
-	private void verifySortedMap( final SortedMap<LocalDate, BigDecimal> expected,
+	private void verifySortedMap(
+	        final SortedMap<LocalDate, BigDecimal> expected,
 	        final SortedMap<LocalDate, BigDecimal> actual ) {
 
 		assertNotNull(actual);
@@ -311,8 +313,8 @@ public class MovingAverageConvergenceDivergenceCalculatorTest {
 
 	private void setUpEngoughValuesValidationException() {
 
-		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
-		        anyInt());
+		doThrow(new IllegalArgumentException()).when(validator)
+		        .verifyEnoughValues(any(TradingDayPrices[].class), anyInt());
 	}
 
 	private void setUpNoNUllEntriesValidationException() {

@@ -56,8 +56,13 @@ import com.systematic.trading.strategy.periodic.Periodic;
  */
 public interface StrategyFactory {
 
-	Strategy strategy( Entry entry, EntrySize entryPositionSizing, Exit exit, ExitSize exitPositionSizing,
-	        EquityClass type, int scale );
+	Strategy strategy(
+	        Entry entry,
+	        EntrySize entryPositionSizing,
+	        Exit exit,
+	        ExitSize exitPositionSizing,
+	        EquityClass type,
+	        int scale );
 
 	Entry entry( Entry leftEntry, Operator op, Entry righEntry );
 

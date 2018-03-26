@@ -63,28 +63,38 @@ public class Backtest {
 		this.dataServiceUpdater = dataServiceUpdater;
 	}
 
-	public void run( final EquityConfiguration equity, final BacktestSimulationDates dates,
-	        final BacktestBootstrapContext context, final BacktestEventListener output ) throws ServiceException {
+	public void run(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates dates,
+	        final BacktestBootstrapContext context,
+	        final BacktestEventListener output ) throws ServiceException {
 
 		final Period warmUp = context.tradingStrategy().warmUpPeriod();
 		recordWarmUpPeriod(warmUp);
-		final TickerSymbolTradingData tradingData = tradingData(equity.equityDataset(), equity.gquityIdentity(), dates,
+		final TickerSymbolTradingData tradingData = tradingData(
+		        equity.equityDataset(),
+		        equity.gquityIdentity(),
+		        dates,
 		        warmUp);
 		final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
 		bootstrap.run();
 	}
 
-	private TickerSymbolTradingData tradingData( final String equityDataset, final EquityIdentity equity,
-	        final BacktestSimulationDates simulationDate, final Period warmUp ) throws ServiceException {
+	private TickerSymbolTradingData tradingData(
+	        final String equityDataset,
+	        final EquityIdentity equity,
+	        final BacktestSimulationDates simulationDate,
+	        final Period warmUp ) throws ServiceException {
 
 		final LocalDate startDate = simulationDate.startDate().minus(warmUp);
 		final LocalDate endDate = simulationDate.endDate();
 
 		if (startDate.getDayOfMonth() != 1) {
-			LOG.debug(String.format(
-			        "Remote data retrieval for start date: %s has been adjusted to the beginning of the month ",
-			        startDate));
+			LOG.debug(
+			        String.format(
+			                "Remote data retrieval for start date: %s has been adjusted to the beginning of the month ",
+			                startDate));
 		}
 
 		if (endDate.getDayOfMonth() != 1) {
@@ -105,7 +115,12 @@ public class Backtest {
 
 	private void recordWarmUpPeriod( final Period warmUpPeriod ) {
 
-		LOG.info("{}", () -> String.format("Simulation Warm Up Period of Days: %s, Months: %s, Years: %s",
-		        warmUpPeriod.getDays(), warmUpPeriod.getMonths(), warmUpPeriod.getYears()));
+		LOG.info(
+		        "{}",
+		        () -> String.format(
+		                "Simulation Warm Up Period of Days: %s, Months: %s, Years: %s",
+		                warmUpPeriod.getDays(),
+		                warmUpPeriod.getMonths(),
+		                warmUpPeriod.getYears()));
 	}
 }

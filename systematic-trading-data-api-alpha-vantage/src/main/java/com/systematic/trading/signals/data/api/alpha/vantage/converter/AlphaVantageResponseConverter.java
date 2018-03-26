@@ -68,9 +68,14 @@ public class AlphaVantageResponseConverter {
 		for (final List<Object> tuple : data) {
 			final LocalDate tradingDate = tradingDate(tuple.get(dateIndex));
 
-			prices.put(tradingDate,
-			        new TradingDayPricesImpl(tickerSymbol, tradingDate, price(tuple.get(openPriceIndex)),
-			                price(tuple.get(lowPriceIndex)), price(tuple.get(highPriceIndex)),
+			prices.put(
+			        tradingDate,
+			        new TradingDayPricesImpl(
+			                tickerSymbol,
+			                tradingDate,
+			                price(tuple.get(openPriceIndex)),
+			                price(tuple.get(lowPriceIndex)),
+			                price(tuple.get(highPriceIndex)),
 			                price(tuple.get(closePriceIndex))));
 		}
 

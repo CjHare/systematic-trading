@@ -66,10 +66,14 @@ public class ElasticIndexMappingTest {
 	@Test
 	public void jsonMultipleFields() throws JsonProcessingException {
 
-		final ElasticIndexMapping index = new ElasticIndexMapping(Arrays.asList(
-		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.EVENT, ElasticFieldType.TEXT),
-		        new ImmutablePair<ElasticFieldName, ElasticFieldType>(ElasticFieldName.AMOUNT,
-		                ElasticFieldType.FLOAT)));
+		final ElasticIndexMapping index = new ElasticIndexMapping(
+		        Arrays.asList(
+		                new ImmutablePair<ElasticFieldName, ElasticFieldType>(
+		                        ElasticFieldName.EVENT,
+		                        ElasticFieldType.TEXT),
+		                new ImmutablePair<ElasticFieldName, ElasticFieldType>(
+		                        ElasticFieldName.AMOUNT,
+		                        ElasticFieldType.FLOAT)));
 
 		final String json = write(index);
 

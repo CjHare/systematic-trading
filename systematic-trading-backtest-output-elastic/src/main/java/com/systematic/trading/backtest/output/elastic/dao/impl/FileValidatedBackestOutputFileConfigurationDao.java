@@ -65,20 +65,33 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 
 		final Properties properties = new FileConfigurationDao().configuration(BACKTEST_OUTPUT_ELASTIC_PROPERTIES_FILE);
 
-		final int numberOfConnections = integerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_CONNECTIONS,
+		final int numberOfConnections = integerProperty(
+		        properties,
+		        BacktestOutputElasticProperty.NUMBER_OF_CONNECTIONS,
 		        numberOfConnectionsValidator);
-		final int numberOfShards = integerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_SHARDS,
+		final int numberOfShards = integerProperty(
+		        properties,
+		        BacktestOutputElasticProperty.NUMBER_OF_SHARDS,
 		        numberOfShardsValidator);
-		final int numberOfReplicas = integerProperty(properties, BacktestOutputElasticProperty.NUMBER_OF_REPLICAS,
+		final int numberOfReplicas = integerProperty(
+		        properties,
+		        BacktestOutputElasticProperty.NUMBER_OF_REPLICAS,
 		        numberOfReplicasValidator);
-		final int bulkApiBucketSize = integerProperty(properties, BacktestOutputElasticProperty.BULK_API_BUCKET_SIZE,
+		final int bulkApiBucketSize = integerProperty(
+		        properties,
+		        BacktestOutputElasticProperty.BULK_API_BUCKET_SIZE,
 		        bulkApiBucketSizeValidator);
 
-		return new BackestOutputFileConfigurationImpl(numberOfConnections, numberOfShards, numberOfReplicas,
+		return new BackestOutputFileConfigurationImpl(
+		        numberOfConnections,
+		        numberOfShards,
+		        numberOfReplicas,
 		        bulkApiBucketSize);
 	}
 
-	private int integerProperty( final Properties properties, final BacktestOutputElasticProperty property,
+	private int integerProperty(
+	        final Properties properties,
+	        final BacktestOutputElasticProperty property,
 	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
 
 		return validator.validate(property(properties, property));

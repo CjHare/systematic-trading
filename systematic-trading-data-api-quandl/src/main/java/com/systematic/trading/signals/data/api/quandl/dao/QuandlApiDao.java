@@ -58,6 +58,10 @@ public interface QuandlApiDao {
 	 * @throws CannotRetrieveDataException
 	 *             problem encountered during connecting to the Quandl API.
 	 */
-	QuandlResultSet get( String equityDataset, String tickerSymbol, LocalDate inclusiveStartDate,
-	        LocalDate exclusiveEndDate, BlockingEventCount throttler ) throws CannotRetrieveDataException;
+	QuandlResultSet get(
+	        String equityDataset,
+	        String tickerSymbol,
+	        LocalDate inclusiveStartDate,
+	        LocalDate exclusiveEndDate,
+	        BlockingEventCount throttler ) throws CannotRetrieveDataException;
 }

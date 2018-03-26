@@ -45,8 +45,11 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 	/**
 	 * Split up the date range into monthly chunks.
 	 */
-	public List<HistoryRetrievalRequest> slice( final String equityDataset, final String tickerSymbol,
-	        final LocalDate startDateInclusive, final LocalDate endDateExclusive ) {
+	public List<HistoryRetrievalRequest> slice(
+	        final String equityDataset,
+	        final String tickerSymbol,
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) {
 
 		final List<HistoryRetrievalRequest> requests = new ArrayList<>();
 		final YearMonth endYearMonth = YearMonth.of(endDateExclusive.getYear(), endDateExclusive.getMonth());
@@ -55,23 +58,35 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 		// Bring the working start date to the start of the next month (if needed)
 		if (isNotBeginningOfMonth(startDateInclusive)) {
 			final LocalDate nextMonthStart = beginningOfNextMonth(startDateInclusive);
-			requests.add(new HibernateHistoryRetrievalRequest(equityDataset, tickerSymbol, startDateInclusive,
-			        nextMonthStart));
+			requests.add(
+			        new HibernateHistoryRetrievalRequest(
+			                equityDataset,
+			                tickerSymbol,
+			                startDateInclusive,
+			                nextMonthStart));
 			workingInclusiveStartDate = nextMonthStart;
 		}
 
 		// Monthly entry for every in between
 		while (isNotReached(endYearMonth, workingInclusiveStartDate)) {
 			final LocalDate nextMonthStart = beginningOfNextMonth(workingInclusiveStartDate);
-			requests.add(new HibernateHistoryRetrievalRequest(equityDataset, tickerSymbol, workingInclusiveStartDate,
-			        nextMonthStart));
+			requests.add(
+			        new HibernateHistoryRetrievalRequest(
+			                equityDataset,
+			                tickerSymbol,
+			                workingInclusiveStartDate,
+			                nextMonthStart));
 			workingInclusiveStartDate = nextMonthStart;
 		}
 
 		// Add the tail entry, when the end date is not beginning of a month
 		if (isNotBeginningOfMonth(endDateExclusive)) {
-			requests.add(new HibernateHistoryRetrievalRequest(equityDataset, tickerSymbol, workingInclusiveStartDate,
-			        endDateExclusive));
+			requests.add(
+			        new HibernateHistoryRetrievalRequest(
+			                equityDataset,
+			                tickerSymbol,
+			                workingInclusiveStartDate,
+			                endDateExclusive));
 		}
 
 		return requests;

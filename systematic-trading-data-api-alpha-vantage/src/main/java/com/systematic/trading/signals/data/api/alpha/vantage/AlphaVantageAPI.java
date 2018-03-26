@@ -52,7 +52,9 @@ public class AlphaVantageAPI implements EquityApi {
 	private final int maximumRetrievalTimeSeconds;
 	private final int maximumConnectionsPerSecond;
 
-	public AlphaVantageAPI( final AlphaVantageApiDao dao, final AlphaVantageResponseConverter dataFormat,
+	public AlphaVantageAPI(
+	        final AlphaVantageApiDao dao,
+	        final AlphaVantageResponseConverter dataFormat,
 	        final EquityApiConfiguration configuration ) {
 
 		this.dao = dao;
@@ -64,12 +66,15 @@ public class AlphaVantageAPI implements EquityApi {
 	}
 
 	@Override
-	public TradingDayPrices[] stockData( final String equityDataset, final String tickerSymbol,
-	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate, final BlockingEventCount throttler )
-	        throws CannotRetrieveDataException {
+	public TradingDayPrices[] stockData(
+	        final String equityDataset,
+	        final String tickerSymbol,
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate,
+	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
-		final AlphaVantageResultSet response = dao.get(equityDataset, tickerSymbol, inclusiveStartDate,
-		        exclusiveEndDate, throttler);
+		final AlphaVantageResultSet response = dao
+		        .get(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
 
 		return dataFormat.convert(tickerSymbol, response);
 	}

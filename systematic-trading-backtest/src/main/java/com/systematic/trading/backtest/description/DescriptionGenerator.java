@@ -45,14 +45,18 @@ import com.systematic.trading.strategy.indicator.configuration.IndicatorConfigur
  */
 public interface DescriptionGenerator {
 
-	String strategy( EntryConfiguration entry, EntrySizeConfiguration entryPositionSizing, ExitConfiguration exit,
+	String strategy(
+	        EntryConfiguration entry,
+	        EntrySizeConfiguration entryPositionSizing,
+	        ExitConfiguration exit,
 	        ExitSizeConfiguration exitPositionSizing );
 
 	String positionSize( MinimumTrade minimumTrade, MaximumTrade maximumTrade );
 
 	String bootstrapConfiguration( BacktestBootstrapConfiguration configuration );
 
-	String bootstrapConfigurationWithDeposit( BacktestBootstrapConfiguration configuration,
+	String bootstrapConfigurationWithDeposit(
+	        BacktestBootstrapConfiguration configuration,
 	        DepositConfiguration depositAmount );
 
 	String periodicEntry( PeriodicConfiguration frequency );

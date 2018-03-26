@@ -200,15 +200,24 @@ public class CulmativeReturnOnInvestmentTest {
 
 	public void interest( final double balanceBefore, final double percentInterest ) {
 
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(balanceBefore),
-		        BigDecimal.valueOf(balanceBefore + balanceBefore * (percentInterest / 100)),
-		        BigDecimal.valueOf(percentInterest), CashEventType.INTEREST, TODAY));
+		calculator.event(
+		        new CashAccountEvent(
+		                BigDecimal.valueOf(balanceBefore),
+		                BigDecimal.valueOf(balanceBefore + balanceBefore * (percentInterest / 100)),
+		                BigDecimal.valueOf(percentInterest),
+		                CashEventType.INTEREST,
+		                TODAY));
 	}
 
 	public void deposit( final double balanceBefore, final double amount ) {
 
-		calculator.event(new CashAccountEvent(BigDecimal.valueOf(balanceBefore),
-		        BigDecimal.valueOf(balanceBefore + amount), BigDecimal.valueOf(amount), CashEventType.DEPOSIT, TODAY));
+		calculator.event(
+		        new CashAccountEvent(
+		                BigDecimal.valueOf(balanceBefore),
+		                BigDecimal.valueOf(balanceBefore + amount),
+		                BigDecimal.valueOf(amount),
+		                CashEventType.DEPOSIT,
+		                TODAY));
 	}
 
 	/**
@@ -271,8 +280,10 @@ public class CulmativeReturnOnInvestmentTest {
 		}
 	}
 
-	private ReturnOnInvestmentEvent isExpectedRoiEvent( final BigDecimal percentageChange,
-	        final LocalDate startDateInclusive, final LocalDate endDateInclusive ) {
+	private ReturnOnInvestmentEvent isExpectedRoiEvent(
+	        final BigDecimal percentageChange,
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateInclusive ) {
 
 		return RoiEventMatcher.argumentMatches(percentageChange, startDateInclusive, endDateInclusive);
 	}

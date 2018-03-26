@@ -97,7 +97,8 @@ public class YahooStockApi implements EquityApi {
 			final JSONObject query = json.getJSONObject("query");
 			final int numberOfQuotes = query.getInt("count");
 
-			LOG.info("{}",
+			LOG.info(
+			        "{}",
 			        () -> String.format("%s data points returned for ticker symbol %s", numberOfQuotes, tickerSymbol));
 
 			switch (numberOfQuotes) {
@@ -122,7 +123,9 @@ public class YahooStockApi implements EquityApi {
 		return data.toArray(new TradingDayPrices[0]);
 	}
 
-	private List<TradingDayPrices> parseQuoteAsJsonObject( List<TradingDayPrices> data, final JSONObject query,
+	private List<TradingDayPrices> parseQuoteAsJsonObject(
+	        List<TradingDayPrices> data,
+	        final JSONObject query,
 	        final String tickerSymbol ) {
 
 		final JSONObject result = query.getJSONObject("results");
@@ -130,8 +133,11 @@ public class YahooStockApi implements EquityApi {
 		return data;
 	}
 
-	private List<TradingDayPrices> parseQuoteAsJsonArray( List<TradingDayPrices> data, final JSONObject query,
-	        final int numberOfQuotes, final String tickerSymbol ) {
+	private List<TradingDayPrices> parseQuoteAsJsonArray(
+	        List<TradingDayPrices> data,
+	        final JSONObject query,
+	        final int numberOfQuotes,
+	        final String tickerSymbol ) {
 
 		final JSONObject results = query.getJSONObject("results");
 		final JSONArray quote = results.getJSONArray("quote");
@@ -155,9 +161,12 @@ public class YahooStockApi implements EquityApi {
 	}
 
 	@Override
-	public TradingDayPrices[] stockData( final String dataset, final String tickerSymbol,
-	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate, final BlockingEventCount throttler )
-	        throws CannotRetrieveDataException {
+	public TradingDayPrices[] stockData(
+	        final String dataset,
+	        final String tickerSymbol,
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate,
+	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
 		final String uri = jsonUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 		LOG.info("{}", () -> String.format("%s API call to: %s", tickerSymbol, uri));

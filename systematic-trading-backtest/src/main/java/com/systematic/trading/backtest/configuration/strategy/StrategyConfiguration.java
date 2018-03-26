@@ -43,8 +43,11 @@ public class StrategyConfiguration implements Describable {
 	private final ExitConfiguration exit;
 	private final ExitSizeConfiguration exitPositionSizing;
 
-	public StrategyConfiguration( final EntryConfiguration entry, final EntrySizeConfiguration entryPositionSizing,
-	        final ExitConfiguration exit, final ExitSizeConfiguration exitPositionSizing ) {
+	public StrategyConfiguration(
+	        final EntryConfiguration entry,
+	        final EntrySizeConfiguration entryPositionSizing,
+	        final ExitConfiguration exit,
+	        final ExitSizeConfiguration exitPositionSizing ) {
 
 		this.entry = entry;
 		this.exit = exit;

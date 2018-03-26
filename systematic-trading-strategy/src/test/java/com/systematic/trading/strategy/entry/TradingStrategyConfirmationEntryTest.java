@@ -209,7 +209,9 @@ public class TradingStrategyConfirmationEntryTest {
 		when(anchorIndicator.analyse(any(TradingDayPrices[].class))).thenReturn(anchorAnalysis);
 	}
 
-	private void setUpTradingDataPoints( final int anchorIndicatorPoints, final int confirmationPoints,
+	private void setUpTradingDataPoints(
+	        final int anchorIndicatorPoints,
+	        final int confirmationPoints,
 	        final int confirmationIndicatorPoints ) {
 
 		when(anchorIndicator.requiredTradingPrices()).thenReturn(anchorIndicatorPoints);

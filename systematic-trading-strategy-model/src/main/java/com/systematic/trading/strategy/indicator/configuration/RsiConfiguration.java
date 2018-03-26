@@ -40,7 +40,10 @@ public class RsiConfiguration extends IndicatorConfigurationBase {
 	private final BigDecimal oversold;
 	private final BigDecimal overbought;
 
-	public RsiConfiguration( final IndicatorId id, final int lookback, final BigDecimal overbought,
+	public RsiConfiguration(
+	        final IndicatorId id,
+	        final int lookback,
+	        final BigDecimal overbought,
 	        final BigDecimal oversold ) {
 
 		super(id);

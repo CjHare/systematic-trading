@@ -40,7 +40,9 @@ public class OperatorEntryConfiguration implements EntryConfiguration {
 	private final OperatorConfiguration.Selection op;
 	private final EntryConfiguration righEntry;
 
-	public OperatorEntryConfiguration( final EntryConfiguration leftEntry, final OperatorConfiguration.Selection op,
+	public OperatorEntryConfiguration(
+	        final EntryConfiguration leftEntry,
+	        final OperatorConfiguration.Selection op,
 	        final EntryConfiguration righEntry ) {
 
 		this.leftEntry = leftEntry;

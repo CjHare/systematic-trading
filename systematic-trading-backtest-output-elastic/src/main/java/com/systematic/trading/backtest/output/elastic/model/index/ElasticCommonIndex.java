@@ -82,7 +82,9 @@ public abstract class ElasticCommonIndex {
 	/** Elastic Search replications of the primary shards. */
 	private final int numberOfReplicas;
 
-	public ElasticCommonIndex( final ElasticDao dao, final ExecutorService pool,
+	public ElasticCommonIndex(
+	        final ElasticDao dao,
+	        final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
 
 		this.dao = dao;
@@ -118,8 +120,11 @@ public abstract class ElasticCommonIndex {
 
 	public void refreshInterval( final boolean enabled ) {
 
-		dao.putSetting(indexName(), Entity.json(new ElasticIndexSettingsRequestResource(
-		        enabled ? INDEX_SETTING_REFRESH_DEFAULT : INDEX_SETTING_REFRESH_DISABLE)));
+		dao.putSetting(
+		        indexName(),
+		        Entity.json(
+		                new ElasticIndexSettingsRequestResource(
+		                        enabled ? INDEX_SETTING_REFRESH_DEFAULT : INDEX_SETTING_REFRESH_DISABLE)));
 	}
 
 	public void flush() {
@@ -161,7 +166,8 @@ public abstract class ElasticCommonIndex {
 
 	protected abstract ElasticIndexName indexName();
 
-	protected Pair<ElasticFieldName, ElasticFieldType> pair( final ElasticFieldName name,
+	protected Pair<ElasticFieldName, ElasticFieldType> pair(
+	        final ElasticFieldName name,
 	        final ElasticFieldType type ) {
 
 		return new ImmutablePair<>(name, type);

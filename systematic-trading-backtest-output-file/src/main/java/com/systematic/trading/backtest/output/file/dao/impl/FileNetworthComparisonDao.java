@@ -61,8 +61,11 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 	private final BacktestBatchId batchId;
 	private final FileMultithreading file;
 
-	public FileNetworthComparisonDao( final BacktestBatchId batchId, final BacktestSimulationDates dates,
-	        final EventStatistics statistics, final FileMultithreading file ) {
+	public FileNetworthComparisonDao(
+	        final BacktestBatchId batchId,
+	        final BacktestSimulationDates dates,
+	        final EventStatistics statistics,
+	        final FileMultithreading file ) {
 
 		this.batchId = batchId;
 		this.statistics = statistics;
@@ -96,14 +99,16 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private String profit( final NetWorthEvent event ) {
 
-		return String.format("Profit: %s", TWO_DECIMAL_PLACES
-		        .format(event.netWorth().subtract(statistics.cashEventStatistics().amountDeposited(), MATH_CONTEXT)));
+		return String.format(
+		        "Profit: %s",
+		        TWO_DECIMAL_PLACES.format(
+		                event.netWorth().subtract(statistics.cashEventStatistics().amountDeposited(), MATH_CONTEXT)));
 	}
 
 	private String deposited() {
 
-		return String.format("Deposited: %s",
-		        TWO_DECIMAL_PLACES.format(statistics.cashEventStatistics().amountDeposited()));
+		return String
+		        .format("Deposited: %s", TWO_DECIMAL_PLACES.format(statistics.cashEventStatistics().amountDeposited()));
 	}
 
 	private String cashAccount( final NetWorthEvent event ) {
@@ -152,8 +157,10 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private String exitOrdersExecuted() {
 
-		return String.format("Exit orders executed: %s", statistics.orderEventStatistics().exitEventCount()
-		        - statistics.orderEventStatistics().deleteExitEventCount());
+		return String.format(
+		        "Exit orders executed: %s",
+		        statistics.orderEventStatistics().exitEventCount()
+		                - statistics.orderEventStatistics().deleteExitEventCount());
 	}
 
 	private String exitOrdersPlaced() {
@@ -178,8 +185,10 @@ public class FileNetworthComparisonDao implements NetworthComparisonDao {
 
 	private String entryOrdersExecuted() {
 
-		return String.format("Entry orders executed: %s", statistics.orderEventStatistics().entryEventCount()
-		        - statistics.orderEventStatistics().deleteEntryEventCount());
+		return String.format(
+		        "Entry orders executed: %s",
+		        statistics.orderEventStatistics().entryEventCount()
+		                - statistics.orderEventStatistics().deleteEntryEventCount());
 	}
 
 	private String entryOrdersPlaced() {

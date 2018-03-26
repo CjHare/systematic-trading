@@ -79,7 +79,9 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 	private SignalAnalysisDao signalAnalysisDisplay;
 	private EquityEventDao equityEventDisplay;
 
-	public CompleteFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
+	public CompleteFileOutputService(
+	        final BacktestBatchId batchId,
+	        final String outputDirectory,
 	        final ExecutorService pool ) throws IOException {
 
 		super(outputDirectory, pool);
@@ -87,23 +89,29 @@ public class CompleteFileOutputService extends FileOutput implements BacktestEve
 	}
 
 	@Override
-	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-	        final EventStatistics eventStatistics, final CumulativeReturnOnInvestment cumulativeRoi,
+	public void init(
+	        final TickerSymbolTradingData tradingData,
+	        final BacktestSimulationDates dates,
+	        final EventStatistics eventStatistics,
+	        final CumulativeReturnOnInvestment cumulativeRoi,
 	        final TradingDayPrices lastTradingDay ) {
 
 		final FileMultithreading returnOnInvestmentFile = fileDisplay("/return-on-investment.txt");
 		this.roiDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.ALL, returnOnInvestmentFile);
 
 		final FileMultithreading returnOnInvestmentDailyFilen = fileDisplay("/return-on-investment-daily.txt");
-		this.roiDailyDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.DAILY,
+		this.roiDailyDisplay = new FileReturnOnInvestmentDao(
+		        ReturnOnInvestmentPeriod.DAILY,
 		        returnOnInvestmentDailyFilen);
 
 		final FileMultithreading returnOnInvestmentMonthlyFile = fileDisplay("/return-on-investment-monthly.txt");
-		this.roiMonthlyDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.MONTHLY,
+		this.roiMonthlyDisplay = new FileReturnOnInvestmentDao(
+		        ReturnOnInvestmentPeriod.MONTHLY,
 		        returnOnInvestmentMonthlyFile);
 
 		final FileMultithreading returnOnInvestmentYearlyFile = fileDisplay("/return-on-investment-yearly.txt");
-		this.roiYearlyDisplay = new FileReturnOnInvestmentDao(ReturnOnInvestmentPeriod.YEARLY,
+		this.roiYearlyDisplay = new FileReturnOnInvestmentDao(
+		        ReturnOnInvestmentPeriod.YEARLY,
 		        returnOnInvestmentYearlyFile);
 
 		final FileMultithreading eventFile = fileDisplay("/events.txt");

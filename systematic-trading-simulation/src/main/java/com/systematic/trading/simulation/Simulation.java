@@ -87,8 +87,12 @@ public class Simulation {
 	/** Trading data to use for the simulation. */
 	private final TickerSymbolTradingData tradingData;
 
-	public Simulation( final TickerSymbolTradingData tradingData, final Brokerage broker, final CashAccount funds,
-	        final ReturnOnInvestmentListener roi, final Strategy strategy ) {
+	public Simulation(
+	        final TickerSymbolTradingData tradingData,
+	        final Brokerage broker,
+	        final CashAccount funds,
+	        final ReturnOnInvestmentListener roi,
+	        final Strategy strategy ) {
 
 		this.strategy = strategy;
 		this.funds = funds;
@@ -168,15 +172,16 @@ public class Simulation {
 	 *            orders carried over from yesterday.
 	 * @return the outstanding orders to carry over to tomorrow.
 	 */
-	private List<EquityOrder> processTradingData( final TradingDayPrices tradingDataToday,
+	private List<EquityOrder> processTradingData(
+	        final TradingDayPrices tradingDataToday,
 	        final List<EquityOrder> orders ) {
 
 		// Attempt to execute the queued orders
 		final List<EquityOrder> withoutAnyOutstandingOrders = processOutstandingOrders(orders, tradingDataToday);
 
 		// Apply analysis to generate more orders
-		final List<EquityOrder> exitOrdersIncluded = addExitOrderForToday(tradingDataToday,
-		        withoutAnyOutstandingOrders);
+		final List<
+		        EquityOrder> exitOrdersIncluded = addExitOrderForToday(tradingDataToday, withoutAnyOutstandingOrders);
 
 		return addEntryOrderForToday(tradingDataToday, exitOrdersIncluded);
 	}
@@ -287,8 +292,11 @@ public class Simulation {
 				case RESUMIT:
 				default:
 					throw new IllegalArgumentException(
-					        String.format("Unsupported insufficient funds action: %s for order: %s using strategy: %s",
-					                action, order, strategy),
+					        String.format(
+					                "Unsupported insufficient funds action: %s for order: %s using strategy: %s",
+					                action,
+					                order,
+					                strategy),
 					        e);
 			}
 		} catch (final InsufficientEquitiesException e) {

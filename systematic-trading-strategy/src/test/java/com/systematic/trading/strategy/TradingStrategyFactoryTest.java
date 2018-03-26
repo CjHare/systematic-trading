@@ -82,8 +82,8 @@ public class TradingStrategyFactoryTest {
 		final Exit exit = mock(Exit.class);
 		final ExitSize exitPositionSizing = mock(ExitSize.class);
 
-		final Strategy strategy = factory.strategy(entry, entryPositionSizing, exit, exitPositionSizing,
-		        EquityClass.STOCK, 2);
+		final Strategy strategy = factory
+		        .strategy(entry, entryPositionSizing, exit, exitPositionSizing, EquityClass.STOCK, 2);
 
 		assertEquals(TradingStrategy.class, strategy.getClass());
 	}

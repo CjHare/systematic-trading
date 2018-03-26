@@ -60,14 +60,16 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		if (unfilteredRequests == null) { return new ArrayList<>(0); }
 
 		final List<HistoryRetrievalRequest> filtered = new ArrayList<>(unfilteredRequests.size());
-		final Map<String, List<HistoryRetrievalRequest>> tickerSymbolRequests = splitByTickerSymbolSortByStartDate(
-		        unfilteredRequests);
+		final Map<String, List<
+		        HistoryRetrievalRequest>> tickerSymbolRequests = splitByTickerSymbolSortByStartDate(unfilteredRequests);
 
 		for (final Map.Entry<String, List<HistoryRetrievalRequest>> entry : tickerSymbolRequests.entrySet()) {
 			final List<HistoryRetrievalRequest> requests = entry.getValue();
 
-			filtered.addAll(keepRelevantRequests(requests,
-			        retrievedMonths(entry.getKey(), earliestStartDate(requests), latestEndDate(requests))));
+			filtered.addAll(
+			        keepRelevantRequests(
+			                requests,
+			                retrievedMonths(entry.getKey(), earliestStartDate(requests), latestEndDate(requests))));
 		}
 
 		return filtered;
@@ -83,8 +85,10 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		return requests.get(requests.size() - 1).exclusiveEndDate().toLocalDate();
 	}
 
-	private List<RetrievedMonthTradingPrices> retrievedMonths( final String tickerSymbol,
-	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) {
+	private List<RetrievedMonthTradingPrices> retrievedMonths(
+	        final String tickerSymbol,
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) {
 
 		return retrievedHistoryDao.requests(tickerSymbol, inclusiveStartDate.getYear(), exclusiveEndDate.getYear());
 	}
@@ -106,12 +110,15 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 	private List<HistoryRetrievalRequest> sortByStartDate( final List<HistoryRetrievalRequest> requests ) {
 
-		Collections.sort(requests, ( HistoryRetrievalRequest a, HistoryRetrievalRequest b ) -> a.inclusiveStartDate()
-		        .compareTo(b.inclusiveStartDate()));
+		Collections.sort(
+		        requests,
+		        ( HistoryRetrievalRequest a, HistoryRetrievalRequest b ) -> a.inclusiveStartDate()
+		                .compareTo(b.inclusiveStartDate()));
 		return requests;
 	}
 
-	private List<HistoryRetrievalRequest> keepRelevantRequests( final List<HistoryRetrievalRequest> requests,
+	private List<HistoryRetrievalRequest> keepRelevantRequests(
+	        final List<HistoryRetrievalRequest> requests,
 	        List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
 
 		List<HistoryRetrievalRequest> filtered = new ArrayList<>(requests.size());
@@ -128,7 +135,8 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 	/**
 	 * The price date range in the request is not stored in the local data source.
 	 */
-	private boolean isRelevantRequest( final HistoryRetrievalRequest request,
+	private boolean isRelevantRequest(
+	        final HistoryRetrievalRequest request,
 	        List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
 
 		final LocalDate startDate = request.inclusiveStartDate().toLocalDate();

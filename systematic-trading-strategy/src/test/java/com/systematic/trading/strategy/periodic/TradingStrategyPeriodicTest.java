@@ -136,7 +136,12 @@ public class TradingStrategyPeriodicTest {
 
 	private TradingDayPrices price( final LocalDate date ) {
 
-		return new TradingDayPricesImpl("tickerSymbol", date, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+		return new TradingDayPricesImpl(
+		        "tickerSymbol",
+		        date,
+		        BigDecimal.ZERO,
+		        BigDecimal.ZERO,
+		        BigDecimal.ZERO,
 		        BigDecimal.ZERO);
 	}
 

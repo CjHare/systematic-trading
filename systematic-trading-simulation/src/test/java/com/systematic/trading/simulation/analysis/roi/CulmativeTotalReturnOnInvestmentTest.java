@@ -89,7 +89,9 @@ public class CulmativeTotalReturnOnInvestmentTest {
 
 	private void verfiyCulumateRoi( final double expectedCulumativeRoi ) {
 
-		assertEquals(String.format("%s != %s", expectedCulumativeRoi, calculator.cumulativeReturnOnInvestment()), 0,
+		assertEquals(
+		        String.format("%s != %s", expectedCulumativeRoi, calculator.cumulativeReturnOnInvestment()),
+		        0,
 		        BigDecimal.valueOf(expectedCulumativeRoi).compareTo(calculator.cumulativeReturnOnInvestment()));
 	}
 }

@@ -80,8 +80,13 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr, line(point(LocalDate.of(2015, 7, 16), 2), point(LocalDate.of(2015, 7, 17), 2),
-		        point(LocalDate.of(2015, 7, 20), 2), point(LocalDate.of(2015, 7, 21), 2)));
+		verifyAtr(
+		        atr,
+		        line(
+		                point(LocalDate.of(2015, 7, 16), 2),
+		                point(LocalDate.of(2015, 7, 17), 2),
+		                point(LocalDate.of(2015, 7, 20), 2),
+		                point(LocalDate.of(2015, 7, 21), 2)));
 		verifyValidation(data, lookback);
 	}
 
@@ -94,8 +99,12 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr, line(point(LocalDate.of(2016, 11, 17), 9), point(LocalDate.of(2016, 11, 18), 12.75),
-		        point(LocalDate.of(2016, 11, 21), 17.06)));
+		verifyAtr(
+		        atr,
+		        line(
+		                point(LocalDate.of(2016, 11, 17), 9),
+		                point(LocalDate.of(2016, 11, 18), 12.75),
+		                point(LocalDate.of(2016, 11, 21), 17.06)));
 		verifyValidation(data, lookback);
 	}
 
@@ -132,8 +141,13 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr, line(point(LocalDate.of(2017, 7, 13), 0), point(LocalDate.of(2017, 7, 14), 16.78),
-		        point(LocalDate.of(2017, 7, 17), 20.34), point(LocalDate.of(2017, 7, 18), 15.87)));
+		verifyAtr(
+		        atr,
+		        line(
+		                point(LocalDate.of(2017, 7, 13), 0),
+		                point(LocalDate.of(2017, 7, 14), 16.78),
+		                point(LocalDate.of(2017, 7, 17), 20.34),
+		                point(LocalDate.of(2017, 7, 18), 15.87)));
 		verifyValidation(data, lookback);
 	}
 
@@ -158,15 +172,25 @@ public class AverageTrueRangeCalculatorTest {
 
 		final AverageTrueRangeLine atr = atr(data);
 
-		verifyAtr(atr,
-		        line(point(LocalDate.of(2010, 4, 21), 0.55), point(LocalDate.of(2010, 4, 22), 0.59),
-		                point(LocalDate.of(2010, 4, 23), 0.59), point(LocalDate.of(2010, 4, 26), 0.57),
-		                point(LocalDate.of(2010, 4, 27), 0.61), point(LocalDate.of(2010, 4, 28), 0.62),
-		                point(LocalDate.of(2010, 4, 29), 0.64), point(LocalDate.of(2010, 4, 30), 0.67),
-		                point(LocalDate.of(2010, 5, 3), 0.69), point(LocalDate.of(2010, 5, 4), 0.77),
-		                point(LocalDate.of(2010, 5, 5), 0.78), point(LocalDate.of(2010, 5, 6), 1.21),
-		                point(LocalDate.of(2010, 5, 7), 1.30), point(LocalDate.of(2010, 5, 10), 1.38),
-		                point(LocalDate.of(2010, 5, 11), 1.37), point(LocalDate.of(2010, 5, 12), 1.34),
+		verifyAtr(
+		        atr,
+		        line(
+		                point(LocalDate.of(2010, 4, 21), 0.55),
+		                point(LocalDate.of(2010, 4, 22), 0.59),
+		                point(LocalDate.of(2010, 4, 23), 0.59),
+		                point(LocalDate.of(2010, 4, 26), 0.57),
+		                point(LocalDate.of(2010, 4, 27), 0.61),
+		                point(LocalDate.of(2010, 4, 28), 0.62),
+		                point(LocalDate.of(2010, 4, 29), 0.64),
+		                point(LocalDate.of(2010, 4, 30), 0.67),
+		                point(LocalDate.of(2010, 5, 3), 0.69),
+		                point(LocalDate.of(2010, 5, 4), 0.77),
+		                point(LocalDate.of(2010, 5, 5), 0.78),
+		                point(LocalDate.of(2010, 5, 6), 1.21),
+		                point(LocalDate.of(2010, 5, 7), 1.30),
+		                point(LocalDate.of(2010, 5, 10), 1.38),
+		                point(LocalDate.of(2010, 5, 11), 1.37),
+		                point(LocalDate.of(2010, 5, 12), 1.34),
 		                point(LocalDate.of(2010, 5, 13), 1.32)));
 		verifyValidation(data, lookback);
 	}
@@ -286,7 +310,10 @@ public class AverageTrueRangeCalculatorTest {
 		return createPrices(dates, high, low, close);
 	}
 
-	private TradingDayPrices[] createPrices( final LocalDate[] dates, final double[] high, final double[] low,
+	private TradingDayPrices[] createPrices(
+	        final LocalDate[] dates,
+	        final double[] high,
+	        final double[] low,
 	        final double[] close ) {
 
 		final TradingDayPrices[] data = new TradingDayPrices[dates.length];

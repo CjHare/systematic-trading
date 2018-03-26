@@ -50,7 +50,9 @@ public class CashAccountConfiguration {
 		this.interestRate = interestRate;
 	}
 
-	public CashAccountConfiguration( final DepositConfiguration deposit, final BigDecimal interestRate,
+	public CashAccountConfiguration(
+	        final DepositConfiguration deposit,
+	        final BigDecimal interestRate,
 	        final BigDecimal openingFunds ) {
 
 		this.deposit = Optional.of(deposit);

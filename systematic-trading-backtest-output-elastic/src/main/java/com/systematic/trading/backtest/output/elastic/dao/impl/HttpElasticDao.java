@@ -112,13 +112,20 @@ public class HttpElasticDao implements ElasticDao {
 		final Response response = url.request(MediaType.APPLICATION_JSON).post(requestBody);
 
 		if (response.getStatus() != 200) { throw new ElasticException(
-		        String.format("Expecting a HTTP 200 instead receieved HTTP %s, URL: %s, body: %s", response.getStatus(),
-		                url, requestBody)); }
+		        String.format(
+		                "Expecting a HTTP 200 instead receieved HTTP %s, URL: %s, body: %s",
+		                response.getStatus(),
+		                url,
+		                requestBody)); }
 
 		final ElasticBulkApiResponseResource eventResponse = response.readEntity(ElasticBulkApiResponseResource.class);
 
-		if (isInvalidResponse(eventResponse)) { throw new ElasticException(String
-		        .format("Unexpected response: %s, to request URL: %s, body: %s", eventResponse, url, requestBody)); }
+		if (isInvalidResponse(eventResponse)) { throw new ElasticException(
+		        String.format(
+		                "Unexpected response: %s, to request URL: %s, body: %s",
+		                eventResponse,
+		                url,
+		                requestBody)); }
 	}
 
 	@Override

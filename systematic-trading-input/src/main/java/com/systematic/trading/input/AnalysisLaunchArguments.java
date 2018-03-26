@@ -47,8 +47,10 @@ public class AnalysisLaunchArguments {
 	/** Funds contained the cash account to use when opening positions. */
 	private final BigDecimal openingFunds;
 
-	public AnalysisLaunchArguments( final EquityArguments equityArguments,
-	        final LaunchArgument<BigDecimal> openingFundsArgument, final Map<ArgumentKey, String> arguments ) {
+	public AnalysisLaunchArguments(
+	        final EquityArguments equityArguments,
+	        final LaunchArgument<BigDecimal> openingFundsArgument,
+	        final Map<ArgumentKey, String> arguments ) {
 
 		this.openingFunds = openingFundsArgument.get(arguments);
 		this.equityArguments = equityArguments;

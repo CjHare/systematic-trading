@@ -59,6 +59,10 @@ public interface AlphaVantageApiDao {
 	 * @throws CannotRetrieveDataException
 	 *             problem encountered during connecting to the AlphaVantage API.
 	 */
-	AlphaVantageResultSet get( String equityDataset, String tickerSymbol, LocalDate inclusiveStartDate,
-	        LocalDate exclusiveEndDate, BlockingEventCount throttler ) throws CannotRetrieveDataException;
+	AlphaVantageResultSet get(
+	        String equityDataset,
+	        String tickerSymbol,
+	        LocalDate inclusiveStartDate,
+	        LocalDate exclusiveEndDate,
+	        BlockingEventCount throttler ) throws CannotRetrieveDataException;
 }

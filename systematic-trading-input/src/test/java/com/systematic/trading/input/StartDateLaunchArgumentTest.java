@@ -119,7 +119,8 @@ public class StartDateLaunchArgumentTest {
 		verifyValidationExceptionOnValidate(null);
 	}
 
-	private void startDateExpectingException( final String expectedMessage,
+	private void startDateExpectingException(
+	        final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
 
 		try {
@@ -137,8 +138,8 @@ public class StartDateLaunchArgumentTest {
 
 	private void setUpValidatorException() {
 
-		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
-		        anyString());
+		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator)
+		        .validate(any(), anyString(), anyString());
 	}
 
 	private void setUpValidatorFormatException() {
@@ -149,7 +150,9 @@ public class StartDateLaunchArgumentTest {
 
 	private void verifyValidation( final String launchArgument ) {
 
-		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
+		verify(validator).validate(
+		        launchArgument == null ? isNull() : eq(launchArgument),
+		        eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verify(validator).validateDateFormat(launchArgument, FORMAT_ERROR_MESSAGE, ArgumentKey.START_DATE.getKey());
 		verifyNoMoreInteractions(validator);
@@ -157,7 +160,9 @@ public class StartDateLaunchArgumentTest {
 
 	private void verifyValidationExceptionOnValidate( final String launchArgument ) {
 
-		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
+		verify(validator).validate(
+		        launchArgument == null ? isNull() : eq(launchArgument),
+		        eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}

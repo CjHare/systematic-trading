@@ -55,7 +55,8 @@ public class ExponentialMovingAverageBullishGradientSignalGenerator
 	}
 
 	@Override
-	public List<DatedSignal> generate( final ExponentialMovingAverageLine indicatorOutput,
+	public List<DatedSignal> generate(
+	        final ExponentialMovingAverageLine indicatorOutput,
 	        final Predicate<LocalDate> signalRange ) {
 
 		final SortedMap<LocalDate, BigDecimal> ema = indicatorOutput.ema();
@@ -75,7 +76,8 @@ public class ExponentialMovingAverageBullishGradientSignalGenerator
 		return signals;
 	}
 
-	private boolean isPositiveGradient( final Map.Entry<LocalDate, BigDecimal> entry,
+	private boolean isPositiveGradient(
+	        final Map.Entry<LocalDate, BigDecimal> entry,
 	        final Map.Entry<LocalDate, BigDecimal> previousEtnry ) {
 
 		return entry.getValue().subtract(previousEtnry.getValue()).compareTo(BigDecimal.ZERO) > 0;

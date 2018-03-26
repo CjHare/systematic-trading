@@ -107,17 +107,29 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		final ExponentialMovingAverageLine ema = ema(data);
 
-		verifyEma(ema,
-		        line(point(LocalDate.of(2010, 4, 7), 22.22), point(LocalDate.of(2010, 4, 8), 22.21),
-		                point(LocalDate.of(2010, 4, 9), 22.24), point(LocalDate.of(2010, 4, 12), 22.27),
-		                point(LocalDate.of(2010, 4, 13), 22.33), point(LocalDate.of(2010, 4, 14), 22.52),
-		                point(LocalDate.of(2010, 4, 15), 22.80), point(LocalDate.of(2010, 4, 16), 22.97),
-		                point(LocalDate.of(2010, 4, 19), 23.13), point(LocalDate.of(2010, 4, 20), 23.28),
-		                point(LocalDate.of(2010, 4, 21), 23.34), point(LocalDate.of(2010, 4, 22), 23.43),
-		                point(LocalDate.of(2010, 4, 23), 23.51), point(LocalDate.of(2010, 4, 26), 23.54),
-		                point(LocalDate.of(2010, 4, 27), 23.47), point(LocalDate.of(2010, 4, 28), 23.40),
-		                point(LocalDate.of(2010, 4, 29), 23.39), point(LocalDate.of(2010, 4, 30), 23.26),
-		                point(LocalDate.of(2010, 5, 3), 23.23), point(LocalDate.of(2010, 5, 4), 23.08),
+		verifyEma(
+		        ema,
+		        line(
+		                point(LocalDate.of(2010, 4, 7), 22.22),
+		                point(LocalDate.of(2010, 4, 8), 22.21),
+		                point(LocalDate.of(2010, 4, 9), 22.24),
+		                point(LocalDate.of(2010, 4, 12), 22.27),
+		                point(LocalDate.of(2010, 4, 13), 22.33),
+		                point(LocalDate.of(2010, 4, 14), 22.52),
+		                point(LocalDate.of(2010, 4, 15), 22.80),
+		                point(LocalDate.of(2010, 4, 16), 22.97),
+		                point(LocalDate.of(2010, 4, 19), 23.13),
+		                point(LocalDate.of(2010, 4, 20), 23.28),
+		                point(LocalDate.of(2010, 4, 21), 23.34),
+		                point(LocalDate.of(2010, 4, 22), 23.43),
+		                point(LocalDate.of(2010, 4, 23), 23.51),
+		                point(LocalDate.of(2010, 4, 26), 23.54),
+		                point(LocalDate.of(2010, 4, 27), 23.47),
+		                point(LocalDate.of(2010, 4, 28), 23.40),
+		                point(LocalDate.of(2010, 4, 29), 23.39),
+		                point(LocalDate.of(2010, 4, 30), 23.26),
+		                point(LocalDate.of(2010, 5, 3), 23.23),
+		                point(LocalDate.of(2010, 5, 4), 23.08),
 		                point(LocalDate.of(2010, 5, 5), 22.92)));
 		verifyValidation(data, lookback);
 	}
@@ -131,10 +143,15 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		final ExponentialMovingAverageLine ema = ema(data);
 
-		verifyEma(ema,
-		        line(point(LocalDate.of(2017, 9, 15), 2), point(LocalDate.of(2017, 9, 18), 3),
-		                point(LocalDate.of(2017, 9, 19), 4), point(LocalDate.of(2017, 9, 20), 5),
-		                point(LocalDate.of(2017, 9, 21), 6), point(LocalDate.of(2017, 9, 22), 7)));
+		verifyEma(
+		        ema,
+		        line(
+		                point(LocalDate.of(2017, 9, 15), 2),
+		                point(LocalDate.of(2017, 9, 18), 3),
+		                point(LocalDate.of(2017, 9, 19), 4),
+		                point(LocalDate.of(2017, 9, 20), 5),
+		                point(LocalDate.of(2017, 9, 21), 6),
+		                point(LocalDate.of(2017, 9, 22), 7)));
 		verifyValidation(data, lookback);
 	}
 
@@ -147,9 +164,13 @@ public class ExponentialMovingAverageCalculatorTest {
 
 		final ExponentialMovingAverageLine ema = ema(data);
 
-		verifyEma(ema,
-		        line(point(LocalDate.of(2017, 10, 12), 4.5), point(LocalDate.of(2017, 10, 13), 4.5),
-		                point(LocalDate.of(2017, 10, 16), 4.5), point(LocalDate.of(2017, 10, 17), 4.5),
+		verifyEma(
+		        ema,
+		        line(
+		                point(LocalDate.of(2017, 10, 12), 4.5),
+		                point(LocalDate.of(2017, 10, 13), 4.5),
+		                point(LocalDate.of(2017, 10, 16), 4.5),
+		                point(LocalDate.of(2017, 10, 17), 4.5),
 		                point(LocalDate.of(2017, 10, 18), 4.5)));
 		verifyValidation(data, lookback);
 	}
@@ -188,7 +209,8 @@ public class ExponentialMovingAverageCalculatorTest {
 		verify(validator).verifyZeroNullEntries(data.values());
 	}
 
-	private void verifyEma( final ExponentialMovingAverageLine actual,
+	private void verifyEma(
+	        final ExponentialMovingAverageLine actual,
 	        final SortedMap<LocalDate, BigDecimal> expected ) {
 
 		assertNotNull(actual);

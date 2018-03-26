@@ -44,7 +44,9 @@ public class LaunchArgumentValidator {
 		}
 	}
 
-	public void validateDateFormat( final String value, final String errorMessage,
+	public void validateDateFormat(
+	        final String value,
+	        final String errorMessage,
 	        final Object... errorMessageArguments ) {
 
 		if (isInvalidArgument(value) || isInvalidFormat(value)) {
@@ -52,7 +54,9 @@ public class LaunchArgumentValidator {
 		}
 	}
 
-	public void validateNotEmpty( final String value, final String errorMessage,
+	public void validateNotEmpty(
+	        final String value,
+	        final String errorMessage,
 	        final Object... errorMessageArguments ) {
 
 		if (isInvalidArgument(value) || isEmpty(value)) {

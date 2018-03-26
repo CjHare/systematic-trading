@@ -38,7 +38,10 @@ public class MacdConfiguration extends IndicatorConfigurationBase {
 	private final int slowTimePeriods;
 	private final int signalTimePeriods;
 
-	public MacdConfiguration( final IndicatorId id, final int fastTimePeriods, final int slowTimePeriods,
+	public MacdConfiguration(
+	        final IndicatorId id,
+	        final int fastTimePeriods,
+	        final int slowTimePeriods,
 	        final int signalTimePeriods ) {
 
 		super(id);

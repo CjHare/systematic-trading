@@ -45,7 +45,9 @@ import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
  */
 public class ElasticBrokerageIndex extends ElasticCommonIndex {
 
-	public ElasticBrokerageIndex( final ElasticDao dao, final ExecutorService pool,
+	public ElasticBrokerageIndex(
+	        final ElasticDao dao,
+	        final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
 
 		super(dao, pool, config);
@@ -65,12 +67,14 @@ public class ElasticBrokerageIndex extends ElasticCommonIndex {
 	@Override
 	protected ElasticIndexMapping indexMapping() {
 
-		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
-		        pair(ElasticFieldName.EQUITY_AMOUNT, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.STARTING_EQUITY_BALANCE, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.END_EQUITY_BALANCE, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE),
-		        pair(ElasticFieldName.EQUITY_VALUE, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.TRANSACTION_FEE, ElasticFieldType.FLOAT)));
+		return new ElasticIndexMapping(
+		        Arrays.asList(
+		                pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
+		                pair(ElasticFieldName.EQUITY_AMOUNT, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.STARTING_EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.END_EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE),
+		                pair(ElasticFieldName.EQUITY_VALUE, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.TRANSACTION_FEE, ElasticFieldType.FLOAT)));
 	}
 }

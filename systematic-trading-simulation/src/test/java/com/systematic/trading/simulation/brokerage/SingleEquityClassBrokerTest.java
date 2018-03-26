@@ -161,31 +161,41 @@ public class SingleEquityClassBrokerTest {
 
 	private BigDecimal sell( final double volume ) throws InsufficientEquitiesException {
 
-		return broker.sell(Price.valueOf(EQUITY_PRICE), EquityOrderVolume.valueOf(BigDecimal.valueOf(volume)),
+		return broker.sell(
+		        Price.valueOf(EQUITY_PRICE),
+		        EquityOrderVolume.valueOf(BigDecimal.valueOf(volume)),
 		        LocalDate.now());
 	}
 
 	private BigDecimal calculateBuy( final double volume ) {
 
-		return broker.cost(Price.valueOf(EQUITY_PRICE), EquityOrderVolume.valueOf(BigDecimal.valueOf(volume)),
+		return broker.cost(
+		        Price.valueOf(EQUITY_PRICE),
+		        EquityOrderVolume.valueOf(BigDecimal.valueOf(volume)),
 		        LocalDate.now());
 	}
 
 	private void buy( final double equityVolume ) {
 
-		broker.buy(Price.valueOf(EQUITY_PRICE), EquityOrderVolume.valueOf(BigDecimal.valueOf(equityVolume)),
+		broker.buy(
+		        Price.valueOf(EQUITY_PRICE),
+		        EquityOrderVolume.valueOf(BigDecimal.valueOf(equityVolume)),
 		        LocalDate.now());
 	}
 
 	private void verifyCost( final double expected, final BigDecimal cost ) {
 
-		assertEquals(String.format("Expected %s != Cost %s", expected, cost), 0,
+		assertEquals(
+		        String.format("Expected %s != Cost %s", expected, cost),
+		        0,
 		        BigDecimal.valueOf(expected).compareTo(cost));
 	}
 
 	private void verifyEquityBalance( final double expected ) {
 
-		assertEquals(String.format("Expected %s != Equity Balance %s", expected, broker.equityBalance()), 0,
+		assertEquals(
+		        String.format("Expected %s != Equity Balance %s", expected, broker.equityBalance()),
+		        0,
 		        BigDecimal.valueOf(expected).compareTo(broker.equityBalance()));
 	}
 
@@ -200,8 +210,8 @@ public class SingleEquityClassBrokerTest {
 		int count = 1;
 
 		for (final double equityCount : numberOfEquities) {
-			verify(feeStructure).cost(BigDecimal.valueOf(equityCount).multiply(EQUITY_PRICE), EquityClass.STOCK,
-			        count++);
+			verify(feeStructure)
+			        .cost(BigDecimal.valueOf(equityCount).multiply(EQUITY_PRICE), EquityClass.STOCK, count++);
 		}
 
 		verifyNoMoreInteractions(feeStructure);

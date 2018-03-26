@@ -65,36 +65,57 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new ShortUptrendsConfirmedByLongUptrendsTrial(),
-		        launchArgs);
+		new BacktestTrial(launchArgs.dataService())
+		        .runBacktest(new ShortUptrendsConfirmedByLongUptrendsTrial(), launchArgs);
 	}
 
 	@Override
-	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
+	public List<BacktestBootstrapConfiguration> configuration(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(periodic(equity, simulationDates, cashAccount, new VanguardBrokerageFees(),
-		        PeriodicConfiguration.WEEKLY));
-		configurations.add(periodic(equity, simulationDates, cashAccount, new VanguardBrokerageFees(),
-		        PeriodicConfiguration.MONTHLY));
+		configurations.add(
+		        periodic(
+		                equity,
+		                simulationDates,
+		                cashAccount,
+		                new VanguardBrokerageFees(),
+		                PeriodicConfiguration.WEEKLY));
+		configurations.add(
+		        periodic(
+		                equity,
+		                simulationDates,
+		                cashAccount,
+		                new VanguardBrokerageFees(),
+		                PeriodicConfiguration.MONTHLY));
 
 		final MaximumTrade maximumTrade = MaximumTrade.ALL;
 
 		// Signal based buying
 		for (final MinimumTrade minimumTrade : MinimumTrade.values()) {
-			configurations.addAll(combinedUptrends(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(),
-			        minimumTrade, maximumTrade));
+			configurations.addAll(
+			        combinedUptrends(
+			                equity,
+			                simulationDates,
+			                cashAccount,
+			                new SelfWealthBrokerageFees(),
+			                minimumTrade,
+			                maximumTrade));
 		}
 
 		return configurations;
 	}
 
-	private List<BacktestBootstrapConfiguration> combinedUptrends( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
-	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	private List<BacktestBootstrapConfiguration> combinedUptrends(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount,
+	        final BrokerageTransactionFeeStructure brokerage,
+	        final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
@@ -103,11 +124,20 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
 
-		configurations
-		        .add(configuration(equity, simulationDates, cashAccount, brokerage,
-		                factory.strategy(factory.entry(shortSmaOrEma(),
-		                        ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_THREE_DAYS, longSmaOrEma()),
-		                        entryPositionSizing, exit, exitPositionSizing)));
+		configurations.add(
+		        configuration(
+		                equity,
+		                simulationDates,
+		                cashAccount,
+		                brokerage,
+		                factory.strategy(
+		                        factory.entry(
+		                                shortSmaOrEma(),
+		                                ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_THREE_DAYS,
+		                                longSmaOrEma()),
+		                        entryPositionSizing,
+		                        exit,
+		                        exitPositionSizing)));
 
 		return configurations;
 	}
@@ -117,8 +147,10 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 
-		return factory.entry(factory.entry(converter.translate(EmaUptrendConfiguration.SHORT)),
-		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.SHORT)));
+		return factory.entry(
+		        factory.entry(converter.translate(EmaUptrendConfiguration.SHORT)),
+		        OperatorConfiguration.Selection.OR,
+		        factory.entry(converter.translate(SmaUptrendConfiguration.SHORT)));
 	}
 
 	private EntryConfiguration longSmaOrEma() {
@@ -126,7 +158,9 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 		final IndicatorConfigurationTranslator converter = new IndicatorConfigurationTranslator();
 		final StrategyConfigurationFactory factory = new StrategyConfigurationFactory();
 
-		return factory.entry(factory.entry(converter.translate(EmaUptrendConfiguration.LONG)),
-		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(SmaUptrendConfiguration.LONG)));
+		return factory.entry(
+		        factory.entry(converter.translate(EmaUptrendConfiguration.LONG)),
+		        OperatorConfiguration.Selection.OR,
+		        factory.entry(converter.translate(SmaUptrendConfiguration.LONG)));
 	}
 }

@@ -131,12 +131,18 @@ public class QuandlResponseConverterTest {
 
 	private void verifyBigDecimalEquals( final double expected, final BigDecimal actual ) {
 
-		assertEquals(String.format("Expected %s != %s", expected, actual), 0,
+		assertEquals(
+		        String.format("Expected %s != %s", expected, actual),
+		        0,
 		        BigDecimal.valueOf(expected).compareTo(actual));
 
 	}
 
-	private List<Object> tuple( final String date, final double open, final double high, final double low,
+	private List<Object> tuple(
+	        final String date,
+	        final double open,
+	        final double high,
+	        final double low,
 	        final double close ) {
 
 		final List<Object> tuple = new ArrayList<>();

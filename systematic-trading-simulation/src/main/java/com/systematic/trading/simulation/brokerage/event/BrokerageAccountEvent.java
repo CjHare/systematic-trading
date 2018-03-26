@@ -40,9 +40,14 @@ public class BrokerageAccountEvent extends StandardEquityEvent implements Broker
 	private final BrokerageAccountEventType type;
 	private final BigDecimal transactionFee;
 
-	public BrokerageAccountEvent( final BigDecimal startingEquityBalance, final BigDecimal endEquityBalance,
-	        final BigDecimal equityAmount, final BrokerageAccountEventType type, final LocalDate transactionDate,
-	        final BigDecimal equityValue, final BigDecimal transactionFee ) {
+	public BrokerageAccountEvent(
+	        final BigDecimal startingEquityBalance,
+	        final BigDecimal endEquityBalance,
+	        final BigDecimal equityAmount,
+	        final BrokerageAccountEventType type,
+	        final LocalDate transactionDate,
+	        final BigDecimal equityValue,
+	        final BigDecimal transactionFee ) {
 
 		super(equityAmount, startingEquityBalance, endEquityBalance, transactionDate, equityValue);
 		this.transactionFee = transactionFee;

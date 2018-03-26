@@ -56,13 +56,18 @@ public class IntegerConfigurationValidator implements ConfigurationValidator<Int
 		try {
 			value = Integer.parseInt((String) input);
 		} catch (final NumberFormatException e) {
-			throw new ConfigurationValidationException(String.format(
-			        "Expecting either an String value containing an Integer to parse, but given: \"%s\"", input));
+			throw new ConfigurationValidationException(
+			        String.format(
+			                "Expecting either an String value containing an Integer to parse, but given: \"%s\"",
+			                input));
 		}
 
 		if (isOutsideRange(value)) { throw new ConfigurationValidationException(
-		        String.format("Expecting an Integer within inclusive range of: %s to %s, but given: %s",
-		                minimumInclusive, maximumInclusive, input));
+		        String.format(
+		                "Expecting an Integer within inclusive range of: %s to %s, but given: %s",
+		                minimumInclusive,
+		                maximumInclusive,
+		                input));
 
 		}
 
@@ -77,7 +82,9 @@ public class IntegerConfigurationValidator implements ConfigurationValidator<Int
 	private void verifyMinimumLessThenMaximum() {
 
 		if (minimumInclusive > maximumInclusive) { throw new IllegalArgumentException(
-		        String.format("Minimum is expected to be less then the maximum, minumum: %s, maximum: %s",
-		                minimumInclusive, maximumInclusive)); }
+		        String.format(
+		                "Minimum is expected to be less then the maximum, minumum: %s, maximum: %s",
+		                minimumInclusive,
+		                maximumInclusive)); }
 	}
 }

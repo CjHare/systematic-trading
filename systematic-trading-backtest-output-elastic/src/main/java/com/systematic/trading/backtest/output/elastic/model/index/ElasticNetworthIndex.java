@@ -45,7 +45,9 @@ import com.systematic.trading.simulation.analysis.networth.event.NetWorthEvent;
  */
 public class ElasticNetworthIndex extends ElasticCommonIndex {
 
-	public ElasticNetworthIndex( final ElasticDao dao, final ExecutorService pool,
+	public ElasticNetworthIndex(
+	        final ElasticDao dao,
+	        final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
 
 		super(dao, pool, config);
@@ -65,11 +67,13 @@ public class ElasticNetworthIndex extends ElasticCommonIndex {
 	@Override
 	protected ElasticIndexMapping indexMapping() {
 
-		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
-		        pair(ElasticFieldName.CASH_BALANCE, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.EQUITY_BALANCE, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.EQUITY_BALANCE_VALUE, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.NETWORTH, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.EVENT_DATE, ElasticFieldType.DATE)));
+		return new ElasticIndexMapping(
+		        Arrays.asList(
+		                pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
+		                pair(ElasticFieldName.CASH_BALANCE, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.EQUITY_BALANCE, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.EQUITY_BALANCE_VALUE, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.NETWORTH, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.EVENT_DATE, ElasticFieldType.DATE)));
 	}
 }

@@ -64,8 +64,12 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	/** The number of decimal places the equity is trading in. */
 	private final int scale;
 
-	public BuyTotalCostTomorrowAtOpeningPriceOrder( final BigDecimal targetTotalCost, final EquityClass type,
-	        final int equityScale, final LocalDate creationDate, final MathContext mathContext ) {
+	public BuyTotalCostTomorrowAtOpeningPriceOrder(
+	        final BigDecimal targetTotalCost,
+	        final EquityClass type,
+	        final int equityScale,
+	        final LocalDate creationDate,
+	        final MathContext mathContext ) {
 
 		this.targetTotalCost = targetTotalCost;
 		this.creationDate = creationDate;
@@ -89,9 +93,11 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	}
 
 	@Override
-	public void execute( final BrokerageTransactionFee fees, final BrokerageTransaction broker,
-	        final CashAccount cashAccount, final TradingDayPrices todaysPrice )
-	        throws InsufficientEquitiesException, InsufficientFundsException {
+	public void execute(
+	        final BrokerageTransactionFee fees,
+	        final BrokerageTransaction broker,
+	        final CashAccount cashAccount,
+	        final TradingDayPrices todaysPrice ) throws InsufficientEquitiesException, InsufficientFundsException {
 
 		final EquityOrderVolume volume = orderVolume(fees, todaysPrice);
 		debitEquityCost(cashAccount, todaysPrice, equityCost(broker, todaysPrice, volume));
@@ -104,19 +110,25 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 		return new PlaceOrderTotalCostEvent(targetTotalCost, creationDate, EquityOrderType.ENTRY);
 	}
 
-	private BigDecimal equityCost( final BrokerageTransaction broker, final TradingDayPrices todaysPrice,
+	private BigDecimal equityCost(
+	        final BrokerageTransaction broker,
+	        final TradingDayPrices todaysPrice,
 	        final EquityOrderVolume volume ) {
 
 		return broker.cost(todaysPrice.openingPrice(), volume, todaysPrice.date());
 	}
 
-	private void debitEquityCost( final CashAccount cashAccount, final TradingDayPrices todaysPrice,
+	private void debitEquityCost(
+	        final CashAccount cashAccount,
+	        final TradingDayPrices todaysPrice,
 	        final BigDecimal actualTotalCost ) throws InsufficientFundsException {
 
 		cashAccount.debit(actualTotalCost, todaysPrice.date());
 	}
 
-	private void addEquities( final BrokerageTransaction broker, final TradingDayPrices todaysPrice,
+	private void addEquities(
+	        final BrokerageTransaction broker,
+	        final TradingDayPrices todaysPrice,
 	        final EquityOrderVolume volume ) {
 
 		broker.buy(todaysPrice.openingPrice(), volume, todaysPrice.date());

@@ -68,18 +68,33 @@ public class FileReturnOnInvestmentDao implements ReturnOnInvestmentDao {
 		final Period elapsed = Period.between(startDateInclusive, endDateExclusive);
 
 		if (isDailyRoiOutput(elapsed)) {
-			output.append(String.format("Daily - ROI: %s percent over %s day(s), from %s to %s%n",
-			        formattedPercentageChange, elapsed.getDays(), startDateInclusive, endDateExclusive));
+			output.append(
+			        String.format(
+			                "Daily - ROI: %s percent over %s day(s), from %s to %s%n",
+			                formattedPercentageChange,
+			                elapsed.getDays(),
+			                startDateInclusive,
+			                endDateExclusive));
 		}
 
 		if (isMonthlyRoiOutput(elapsed)) {
-			output.append(String.format("Monthly - ROI: %s percent over %s month(s), from %s to %s%n",
-			        formattedPercentageChange, roundedMonths(elapsed), startDateInclusive, endDateExclusive));
+			output.append(
+			        String.format(
+			                "Monthly - ROI: %s percent over %s month(s), from %s to %s%n",
+			                formattedPercentageChange,
+			                roundedMonths(elapsed),
+			                startDateInclusive,
+			                endDateExclusive));
 		}
 
 		if (isYearlyRoiOutput(elapsed)) {
-			output.append(String.format("Yearly - ROI: %s percent over %s year(s), from %s to %s%n",
-			        formattedPercentageChange, roundedYears(elapsed), startDateInclusive, endDateExclusive));
+			output.append(
+			        String.format(
+			                "Yearly - ROI: %s percent over %s year(s), from %s to %s%n",
+			                formattedPercentageChange,
+			                roundedYears(elapsed),
+			                startDateInclusive,
+			                endDateExclusive));
 		}
 
 		return output.toString();

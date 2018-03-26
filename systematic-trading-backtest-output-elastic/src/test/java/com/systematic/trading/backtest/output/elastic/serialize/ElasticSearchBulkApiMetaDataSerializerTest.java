@@ -94,8 +94,11 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 	@Test
 	public void serializeActionIndex() throws IOException {
 
-		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action", "index",
-		        null, null);
+		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource(
+		        "action",
+		        "index",
+		        null,
+		        null);
 
 		serialize(value);
 
@@ -105,8 +108,11 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 	@Test
 	public void serializeActionIndexType() throws IOException {
 
-		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action", "index",
-		        "type", null);
+		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource(
+		        "action",
+		        "index",
+		        "type",
+		        null);
 
 		serialize(value);
 
@@ -116,8 +122,11 @@ public class ElasticSearchBulkApiMetaDataSerializerTest {
 	@Test
 	public void serializeActionIndexTypeId() throws IOException {
 
-		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource("action", "index",
-		        "type", "Id");
+		final ElasticBulkApiMetaDataRequestResource value = new ElasticBulkApiMetaDataRequestResource(
+		        "action",
+		        "index",
+		        "type",
+		        "Id");
 
 		serialize(value);
 

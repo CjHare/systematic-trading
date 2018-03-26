@@ -93,7 +93,9 @@ public class VanguardFeeStructureTest {
 
 	private void verifyFee( final double expected, final BigDecimal fee ) {
 
-		assertEquals(String.format("Expected of %s != Fee of %s", expected, fee), 0,
+		assertEquals(
+		        String.format("Expected of %s != Fee of %s", expected, fee),
+		        0,
 		        BigDecimal.valueOf(expected).compareTo(fee));
 	}
 }

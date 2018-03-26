@@ -59,7 +59,9 @@ public class ElasticSearchBulkApiMetaDataSerializer extends StdSerializer<Elasti
 	}
 
 	@Override
-	public void serialize( final ElasticBulkApiMetaDataRequestResource value, final JsonGenerator gen,
+	public void serialize(
+	        final ElasticBulkApiMetaDataRequestResource value,
+	        final JsonGenerator gen,
 	        final SerializerProvider provider ) throws IOException {
 
 		if (value == null) { return; }

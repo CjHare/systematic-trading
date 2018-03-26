@@ -61,8 +61,11 @@ public class RegularDepositCashAccountDecorator implements CashAccount {
 	 * @param interval
 	 *            time between deposit events.
 	 */
-	public RegularDepositCashAccountDecorator( final BigDecimal depositAmount, final CashAccount account,
-	        final LocalDate firstDeposit, final Period interval ) {
+	public RegularDepositCashAccountDecorator(
+	        final BigDecimal depositAmount,
+	        final CashAccount account,
+	        final LocalDate firstDeposit,
+	        final Period interval ) {
 
 		this.account = account;
 		this.depositAmount = depositAmount;

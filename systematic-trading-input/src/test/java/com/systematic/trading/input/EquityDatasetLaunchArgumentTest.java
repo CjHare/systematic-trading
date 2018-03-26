@@ -107,13 +107,15 @@ public class EquityDatasetLaunchArgumentTest {
 
 	private void setUpValidatorException() {
 
-		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
-		        anyString());
+		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator)
+		        .validate(any(), anyString(), anyString());
 	}
 
 	private void verifyValidationExceptionOnValidate( final String launchArgument ) {
 
-		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
+		verify(validator).validate(
+		        launchArgument == null ? isNull() : eq(launchArgument),
+		        eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}
@@ -130,7 +132,8 @@ public class EquityDatasetLaunchArgumentTest {
 		assertTrue(StringUtils.equals(expected, actual.dataset()));
 	}
 
-	private void equityDatasetExpectingException( final String expectedMessage,
+	private void equityDatasetExpectingException(
+	        final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
 
 		try {

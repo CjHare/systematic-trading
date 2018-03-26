@@ -62,8 +62,8 @@ public class HibernateRetrievedMonthTradingPricesDao implements RetrievedMonthTr
 	}
 
 	@Override
-	public List<RetrievedMonthTradingPrices> requests( final String tickerSymbol, final int startYear,
-	        final int endYear ) {
+	public List<
+	        RetrievedMonthTradingPrices> requests( final String tickerSymbol, final int startYear, final int endYear ) {
 
 		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
 		Transaction tx = session.beginTransaction();
@@ -98,8 +98,10 @@ public class HibernateRetrievedMonthTradingPricesDao implements RetrievedMonthTr
 			session.save(request);
 			tx.commit();
 		} catch (final HibernateException e) {
-			LOG.error("{}", () -> String.format("Failed to save request for %s %s", request.tickerSymbol(),
-			        request.yearMonth()));
+			LOG.error(
+			        "{}",
+			        () -> String
+			                .format("Failed to save request for %s %s", request.tickerSymbol(), request.yearMonth()));
 			LOG.error(e);
 
 			if (tx != null && tx.isActive()) {

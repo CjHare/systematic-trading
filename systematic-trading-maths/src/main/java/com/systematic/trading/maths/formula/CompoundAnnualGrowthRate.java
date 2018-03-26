@@ -66,7 +66,7 @@ public class CompoundAnnualGrowthRate {
 		final double change = finishValue.divide(startValue, MATH_CONTEXT).doubleValue();
 		final double power = BigDecimal.ONE.divide(BigDecimal.valueOf(years), MATH_CONTEXT).doubleValue();
 
-		return BigDecimal.valueOf(Math.pow(change, power)).subtract(BigDecimal.ONE, MATH_CONTEXT).multiply(ONE_HHUNDRED,
-		        MATH_CONTEXT);
+		return BigDecimal.valueOf(Math.pow(change, power)).subtract(BigDecimal.ONE, MATH_CONTEXT)
+		        .multiply(ONE_HHUNDRED, MATH_CONTEXT);
 	}
 }

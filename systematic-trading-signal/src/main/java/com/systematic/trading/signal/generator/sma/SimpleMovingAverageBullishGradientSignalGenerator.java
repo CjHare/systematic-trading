@@ -54,7 +54,8 @@ public class SimpleMovingAverageBullishGradientSignalGenerator implements Signal
 	}
 
 	@Override
-	public List<DatedSignal> generate( final SimpleMovingAverageLine indicatorOutput,
+	public List<DatedSignal> generate(
+	        final SimpleMovingAverageLine indicatorOutput,
 	        final Predicate<LocalDate> signalRange ) {
 
 		final SortedMap<LocalDate, BigDecimal> sma = indicatorOutput.sma();
@@ -74,7 +75,8 @@ public class SimpleMovingAverageBullishGradientSignalGenerator implements Signal
 		return signals;
 	}
 
-	private boolean isPositiveGradient( final Map.Entry<LocalDate, BigDecimal> entry,
+	private boolean isPositiveGradient(
+	        final Map.Entry<LocalDate, BigDecimal> entry,
 	        final Map.Entry<LocalDate, BigDecimal> previousEtnry ) {
 
 		return entry.getValue().subtract(previousEtnry.getValue()).compareTo(BigDecimal.ZERO) > 0;

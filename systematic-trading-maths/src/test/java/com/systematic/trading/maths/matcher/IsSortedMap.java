@@ -52,7 +52,8 @@ public class IsSortedMap extends ArgumentMatcher<SortedMap<LocalDate, BigDecimal
 
 		if (argument instanceof SortedMap<?, ?>) {
 
-			@SuppressWarnings("unchecked") final SortedMap<LocalDate, BigDecimal> given = (SortedMap<LocalDate, BigDecimal>) argument;
+			@SuppressWarnings("unchecked") final SortedMap<LocalDate,
+			        BigDecimal> given = (SortedMap<LocalDate, BigDecimal>) argument;
 
 			for (final Map.Entry<LocalDate, BigDecimal> entry : expected.entrySet()) {
 
@@ -65,7 +66,8 @@ public class IsSortedMap extends ArgumentMatcher<SortedMap<LocalDate, BigDecimal
 		return false;
 	}
 
-	private boolean isMissingEntry( Map.Entry<LocalDate, BigDecimal> entry,
+	private boolean isMissingEntry(
+	        Map.Entry<LocalDate, BigDecimal> entry,
 	        final SortedMap<LocalDate, BigDecimal> given ) {
 
 		return !given.containsKey(entry.getKey()) || entry.getValue().compareTo(given.get(entry.getKey())) != 0;

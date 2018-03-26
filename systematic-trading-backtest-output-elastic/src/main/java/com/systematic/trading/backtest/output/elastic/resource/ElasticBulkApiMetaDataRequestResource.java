@@ -50,7 +50,10 @@ public class ElasticBulkApiMetaDataRequestResource {
 	/** Id of the document to act on (optional). */
 	private final String id;
 
-	public ElasticBulkApiMetaDataRequestResource( final String action, final String index, final String type,
+	public ElasticBulkApiMetaDataRequestResource(
+	        final String action,
+	        final String index,
+	        final String type,
 	        final String id ) {
 
 		this.action = action;

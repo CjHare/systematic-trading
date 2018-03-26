@@ -206,7 +206,9 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 		InOrder order = inOrder(rate);
 
 		for (final Pair<Double, Integer> argument : arguments) {
-			order.verify(rate).interest(BigDecimalMatcher.argumentMatches(argument.getLeft()), eq(argument.getRight()),
+			order.verify(rate).interest(
+			        BigDecimalMatcher.argumentMatches(argument.getLeft()),
+			        eq(argument.getRight()),
 			        eq(false));
 		}
 
@@ -220,10 +222,15 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 	private void setUpCashAccount( final double openingFunds ) {
 
-		account = new CalculatedDailyPaidMonthlyCashAccount(rate, BigDecimal.valueOf(openingFunds), ACCOUNT_OPEN_DATE,
+		account = new CalculatedDailyPaidMonthlyCashAccount(
+		        rate,
+		        BigDecimal.valueOf(openingFunds),
+		        ACCOUNT_OPEN_DATE,
 		        MathContext.DECIMAL64);
 
-		assertEquals(String.format("Starting balance incorrect %s != %s", account.balance(), openingFunds), 0,
+		assertEquals(
+		        String.format("Starting balance incorrect %s != %s", account.balance(), openingFunds),
+		        0,
 		        BigDecimal.valueOf(openingFunds).compareTo(account.balance()));
 	}
 
@@ -248,7 +255,9 @@ public class CalculatedDailyPaidMonthlyCashAccountTest {
 
 	private void verifyBalance( final double expectedBalance ) {
 
-		assertEquals(String.format("Balance expected %s != %s", expectedBalance, account.balance()), 0,
+		assertEquals(
+		        String.format("Balance expected %s != %s", expectedBalance, account.balance()),
+		        0,
 		        BigDecimal.valueOf(expectedBalance).compareTo(account.balance()));
 	}
 

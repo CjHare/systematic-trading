@@ -169,10 +169,21 @@ public class RetrievedYearMonthRecorderTest {
 
 		retrieved(fulfilled);
 
-		verifyMonths(YearMonth.of(2010, 5), YearMonth.of(2010, 6), YearMonth.of(2010, 7), YearMonth.of(2010, 8),
-		        YearMonth.of(2010, 9), YearMonth.of(2010, 10), YearMonth.of(2010, 11), YearMonth.of(2010, 12),
-		        YearMonth.of(2011, 1), YearMonth.of(2011, 2), YearMonth.of(2011, 3), YearMonth.of(2011, 4),
-		        YearMonth.of(2011, 5), YearMonth.of(2011, 6));
+		verifyMonths(
+		        YearMonth.of(2010, 5),
+		        YearMonth.of(2010, 6),
+		        YearMonth.of(2010, 7),
+		        YearMonth.of(2010, 8),
+		        YearMonth.of(2010, 9),
+		        YearMonth.of(2010, 10),
+		        YearMonth.of(2010, 11),
+		        YearMonth.of(2010, 12),
+		        YearMonth.of(2011, 1),
+		        YearMonth.of(2011, 2),
+		        YearMonth.of(2011, 3),
+		        YearMonth.of(2011, 4),
+		        YearMonth.of(2011, 5),
+		        YearMonth.of(2011, 6));
 	}
 
 	@Test
@@ -206,8 +217,10 @@ public class RetrievedYearMonthRecorderTest {
 
 	private void verifyMonths( final YearMonth... month ) {
 
-		verify(retrievedMonthsDao).create(argThat(new RetrievedMonthTradingPricesListMatcher(
-		        retrievedMonthTradingPricesUtil.create(tickerSymbol, month))));
+		verify(retrievedMonthsDao).create(
+		        argThat(
+		                new RetrievedMonthTradingPricesListMatcher(
+		                        retrievedMonthTradingPricesUtil.create(tickerSymbol, month))));
 		verifyNoMoreInteractions(retrievedMonthsDao);
 	}
 

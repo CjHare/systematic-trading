@@ -79,8 +79,10 @@ public class BacktestLaunchArguments {
 	/** How often to deposit into the cash account. */
 	private final DepositFrequency depositFrequency;
 
-	public BacktestLaunchArguments( final LaunchArgument<OutputType> outputArgument,
-	        final EquityArguments equityArguments, final LaunchArgument<BigDecimal> interestRateArgument,
+	public BacktestLaunchArguments(
+	        final LaunchArgument<OutputType> outputArgument,
+	        final EquityArguments equityArguments,
+	        final LaunchArgument<BigDecimal> interestRateArgument,
 	        final LaunchArgument<BigDecimal> openingFundsArgument,
 	        final LaunchArgument<BigDecimal> depositAmountArgument,
 	        final LaunchArgument<DepositFrequency> depositFrequencyArgument,

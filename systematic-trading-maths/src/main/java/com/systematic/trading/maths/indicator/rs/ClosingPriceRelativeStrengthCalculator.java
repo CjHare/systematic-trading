@@ -83,7 +83,9 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	 * @param MATH_CONTEXT
 	 *            the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public ClosingPriceRelativeStrengthCalculator( final int lookback, final int additionalRsiValues,
+	public ClosingPriceRelativeStrengthCalculator(
+	        final int lookback,
+	        final int additionalRsiValues,
 	        final Validator validator ) {
 
 		this.minimumNumberOfPrices = lookback + additionalRsiValues;
@@ -214,8 +216,8 @@ public class ClosingPriceRelativeStrengthCalculator implements RelativeStrengthI
 	 */
 	private BigDecimal smooth( final BigDecimal currentValue, final BigDecimal averageValue ) {
 
-		return averageValue.multiply(archive, MATH_CONTEXT).add(currentValue, MATH_CONTEXT).divide(history,
-		        MATH_CONTEXT);
+		return averageValue.multiply(archive, MATH_CONTEXT).add(currentValue, MATH_CONTEXT)
+		        .divide(history, MATH_CONTEXT);
 	}
 
 	private boolean isZeroOrBelow( final BigDecimal value ) {

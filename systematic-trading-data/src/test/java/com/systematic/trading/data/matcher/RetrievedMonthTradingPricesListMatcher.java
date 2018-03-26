@@ -51,7 +51,8 @@ public class RetrievedMonthTradingPricesListMatcher extends ArgumentMatcher<List
 	public boolean matches( Object argument ) {
 
 		if (argument instanceof List<?>) {
-			@SuppressWarnings("unchecked") final List<RetrievedMonthTradingPrices> actualValues = (List<RetrievedMonthTradingPrices>) argument;
+			@SuppressWarnings("unchecked") final List<
+			        RetrievedMonthTradingPrices> actualValues = (List<RetrievedMonthTradingPrices>) argument;
 
 			if (retrieved.size() != actualValues.size()) { return false; }
 
@@ -76,7 +77,10 @@ public class RetrievedMonthTradingPricesListMatcher extends ArgumentMatcher<List
 		description.appendText(retrieved.stream().map(r -> r.toString()).collect(Collectors.joining(", ")));
 	}
 
-	private boolean hasMatch( final String expectedTickerSymbol, final int expectedYear, final int expectedMonth,
+	private boolean hasMatch(
+	        final String expectedTickerSymbol,
+	        final int expectedYear,
+	        final int expectedMonth,
 	        final List<RetrievedMonthTradingPrices> actualValues ) {
 
 		boolean matched = false;

@@ -99,8 +99,10 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	}
 
 	@Override
-	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
+	public List<BacktestBootstrapConfiguration> configuration(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 		final BrokerageTransactionFeeStructure brokerage = new SelfWealthBrokerageFees();
@@ -117,8 +119,14 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 		        indicatorAndIndicator(equity, simulationDates, cashAccount, brokerage, minimumTrade, maximumTrade));
 		configurations
 		        .add(indicatorOrIndicator(equity, simulationDates, cashAccount, brokerage, minimumTrade, maximumTrade));
-		configurations.add(indicatorConfirmedByIndicator(equity, simulationDates, cashAccount, brokerage, minimumTrade,
-		        maximumTrade));
+		configurations.add(
+		        indicatorConfirmedByIndicator(
+		                equity,
+		                simulationDates,
+		                cashAccount,
+		                brokerage,
+		                minimumTrade,
+		                maximumTrade));
 
 		return configurations;
 	}
@@ -127,15 +135,20 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	 * MACD confirmed by RSI, whenever there is a MACD signal with a RSI occurring within three
 	 * days, a buy event is generated.
 	 */
-	private BacktestBootstrapConfiguration indicatorConfirmedByIndicator( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
-	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	private BacktestBootstrapConfiguration indicatorConfirmedByIndicator(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount,
+	        final BrokerageTransactionFeeStructure brokerage,
+	        final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
 		final MacdConfiguration macdConfiguration = MacdConfiguration.MEDIUM;
 		final RsiConfiguration rsiConfiguration = RsiConfiguration.MEDIUM;
 		final ConfirmaByConfiguration confirmBy = ConfirmaByConfiguration.NO_DELAY_RANGE_THREE_DAYS;
-		final EntryConfiguration entry = factory.entry(factory.entry(converter.translate(macdConfiguration)), confirmBy,
+		final EntryConfiguration entry = factory.entry(
+		        factory.entry(converter.translate(macdConfiguration)),
+		        confirmBy,
 		        factory.entry(converter.translate(rsiConfiguration)));
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
@@ -149,15 +162,20 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	/**
 	 * Buy events are generated whenever there is an EMA or SMA uptrend (positive gradient).
 	 */
-	private BacktestBootstrapConfiguration indicatorOrIndicator( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
-	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	private BacktestBootstrapConfiguration indicatorOrIndicator(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount,
+	        final BrokerageTransactionFeeStructure brokerage,
+	        final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
 		final EmaUptrendConfiguration emaConfiguration = EmaUptrendConfiguration.LONG;
 		final SmaUptrendConfiguration smaConfiguration = SmaUptrendConfiguration.LONG;
-		final EntryConfiguration entry = factory.entry(factory.entry(converter.translate(emaConfiguration)),
-		        OperatorConfiguration.Selection.OR, factory.entry(converter.translate(smaConfiguration)));
+		final EntryConfiguration entry = factory.entry(
+		        factory.entry(converter.translate(emaConfiguration)),
+		        OperatorConfiguration.Selection.OR,
+		        factory.entry(converter.translate(smaConfiguration)));
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
@@ -170,15 +188,20 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	 * Whenever there is both an EMA Uptrend (positive gradient) and a RSI signal on the same day, a
 	 * buy signal is generated.
 	 */
-	private BacktestBootstrapConfiguration indicatorAndIndicator( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
-	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	private BacktestBootstrapConfiguration indicatorAndIndicator(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount,
+	        final BrokerageTransactionFeeStructure brokerage,
+	        final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
 		final EmaUptrendConfiguration emaConfiguration = EmaUptrendConfiguration.LONG;
 		final RsiConfiguration rsiConfiguration = RsiConfiguration.MEDIUM;
-		final EntryConfiguration entry = factory.entry(factory.entry(converter.translate(emaConfiguration)),
-		        OperatorConfiguration.Selection.AND, factory.entry(converter.translate(rsiConfiguration)));
+		final EntryConfiguration entry = factory.entry(
+		        factory.entry(converter.translate(emaConfiguration)),
+		        OperatorConfiguration.Selection.AND,
+		        factory.entry(converter.translate(rsiConfiguration)));
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
@@ -191,14 +214,19 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	 * Buying when there is a SMA uptrend that coincides with a monthly periodic (simulation start
 	 * date).
 	 */
-	private BacktestBootstrapConfiguration periodicAndIndicator( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
-	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	private BacktestBootstrapConfiguration periodicAndIndicator(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount,
+	        final BrokerageTransactionFeeStructure brokerage,
+	        final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
 		final EmaUptrendConfiguration emaConfiguration = EmaUptrendConfiguration.LONG;
-		final EntryConfiguration entry = factory.entry(factory.entry(converter.translate(emaConfiguration)),
-		        OperatorConfiguration.Selection.AND, factory.entry(PeriodicConfiguration.MONTHLY));
+		final EntryConfiguration entry = factory.entry(
+		        factory.entry(converter.translate(emaConfiguration)),
+		        OperatorConfiguration.Selection.AND,
+		        factory.entry(PeriodicConfiguration.MONTHLY));
 		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(minimumTrade, maximumTrade);
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();
@@ -210,9 +238,12 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	/**
 	 * Buy signal is generated whenever there is a MACD signal.
 	 */
-	private BacktestBootstrapConfiguration indicator( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
-	        final BrokerageTransactionFeeStructure brokerage, final MinimumTrade minimumTrade,
+	private BacktestBootstrapConfiguration indicator(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount,
+	        final BrokerageTransactionFeeStructure brokerage,
+	        final MinimumTrade minimumTrade,
 	        final MaximumTrade maximumTrade ) {
 
 		final EntryConfiguration entry = factory.entry(converter.translate(MacdConfiguration.MEDIUM));
@@ -227,12 +258,15 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 	/**
 	 * Generates a buy signal monthly, beginning on the simulation start date.
 	 */
-	private BacktestBootstrapConfiguration periodic( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount,
+	private BacktestBootstrapConfiguration periodic(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage ) {
 
 		final EntryConfiguration entry = factory.entry(PeriodicConfiguration.MONTHLY);
-		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(MinimumTrade.ZERO,
+		final EntrySizeConfiguration entryPositionSizing = new EntrySizeConfiguration(
+		        MinimumTrade.ZERO,
 		        MaximumTrade.ALL);
 		final ExitConfiguration exit = factory.exit();
 		final ExitSizeConfiguration exitPositionSizing = new ExitSizeConfiguration();

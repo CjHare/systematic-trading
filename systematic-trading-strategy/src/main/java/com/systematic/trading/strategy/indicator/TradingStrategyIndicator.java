@@ -65,8 +65,12 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 	/** Listener interested in when indicator signals are generated. */
 	private final SignalAnalysisListener signalListner;
 
-	public TradingStrategyIndicator( final IndicatorId id, final U calculator, final SignalGenerator<T> generator,
-	        final SignalRangeFilter signalRangeFilter, final SignalAnalysisListener signalListner ) {
+	public TradingStrategyIndicator(
+	        final IndicatorId id,
+	        final U calculator,
+	        final SignalGenerator<T> generator,
+	        final SignalRangeFilter signalRangeFilter,
+	        final SignalAnalysisListener signalListner ) {
 
 		this.signalRangeFilter = signalRangeFilter;
 		this.calculator = calculator;
@@ -85,8 +89,10 @@ public class TradingStrategyIndicator<T, U extends SignalCalculator<T>> implemen
 
 	private Predicate<LocalDate> signalDateRange( final TradingDayPrices[] data ) {
 
-		return candidateDate -> dateRangeFilter.isWithinSignalRange(signalRangeFilter.earliestSignalDate(data),
-		        signalRangeFilter.latestSignalDate(data), candidateDate);
+		return candidateDate -> dateRangeFilter.isWithinSignalRange(
+		        signalRangeFilter.earliestSignalDate(data),
+		        signalRangeFilter.latestSignalDate(data),
+		        candidateDate);
 	}
 
 	@Override

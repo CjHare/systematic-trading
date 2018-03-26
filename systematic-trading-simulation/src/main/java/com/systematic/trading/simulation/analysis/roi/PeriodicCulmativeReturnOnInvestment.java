@@ -85,7 +85,9 @@ public class PeriodicCulmativeReturnOnInvestment implements ReturnOnInvestmentEv
 		}
 	}
 
-	private void notifyListeners( final BigDecimal percentageChange, final LocalDate exclusiveStartDate,
+	private void notifyListeners(
+	        final BigDecimal percentageChange,
+	        final LocalDate exclusiveStartDate,
 	        final LocalDate inclusiveEndDate ) {
 
 		for (final ReturnOnInvestmentEventListener listener : listeners) {

@@ -56,23 +56,45 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 	}
 
 	@Override
-	public List<BacktestBootstrapConfiguration> configuration( final EquityConfiguration equity,
-	        final BacktestSimulationDates simulationDates, final CashAccountConfiguration cashAccount ) {
+	public List<BacktestBootstrapConfiguration> configuration(
+	        final EquityConfiguration equity,
+	        final BacktestSimulationDates simulationDates,
+	        final CashAccountConfiguration cashAccount ) {
 
 		final List<BacktestBootstrapConfiguration> configurations = new ArrayList<>();
 
 		// Date based buying
-		configurations.add(periodic(equity, simulationDates, cashAccount, new VanguardBrokerageFees(),
-		        PeriodicConfiguration.WEEKLY));
+		configurations.add(
+		        periodic(
+		                equity,
+		                simulationDates,
+		                cashAccount,
+		                new VanguardBrokerageFees(),
+		                PeriodicConfiguration.WEEKLY));
 
-		configurations.add(periodic(equity, simulationDates, cashAccount, new VanguardBrokerageFees(),
-		        PeriodicConfiguration.MONTHLY));
+		configurations.add(
+		        periodic(
+		                equity,
+		                simulationDates,
+		                cashAccount,
+		                new VanguardBrokerageFees(),
+		                PeriodicConfiguration.MONTHLY));
 
-		configurations.add(periodic(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(),
-		        PeriodicConfiguration.WEEKLY));
+		configurations.add(
+		        periodic(
+		                equity,
+		                simulationDates,
+		                cashAccount,
+		                new SelfWealthBrokerageFees(),
+		                PeriodicConfiguration.WEEKLY));
 
-		configurations.add(periodic(equity, simulationDates, cashAccount, new SelfWealthBrokerageFees(),
-		        PeriodicConfiguration.MONTHLY));
+		configurations.add(
+		        periodic(
+		                equity,
+		                simulationDates,
+		                cashAccount,
+		                new SelfWealthBrokerageFees(),
+		                PeriodicConfiguration.MONTHLY));
 
 		return configurations;
 	}

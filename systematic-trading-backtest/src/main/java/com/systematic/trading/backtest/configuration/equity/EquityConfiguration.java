@@ -44,7 +44,9 @@ public class EquityConfiguration {
 	private final EquityClass equityType;
 	private final EquityManagementFeeConfiguration managementFee;
 
-	public EquityConfiguration( final EquityDataset dataset, final TickerSymbol tickerSymbol,
+	public EquityConfiguration(
+	        final EquityDataset dataset,
+	        final TickerSymbol tickerSymbol,
 	        final EquityClass equityType ) {
 
 		this.equityDataset = dataset;

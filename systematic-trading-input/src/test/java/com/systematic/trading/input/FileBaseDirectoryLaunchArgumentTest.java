@@ -118,8 +118,8 @@ public class FileBaseDirectoryLaunchArgumentTest {
 
 	private void setUpValidatorException() {
 
-		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
-		        anyString());
+		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator)
+		        .validate(any(), anyString(), anyString());
 	}
 
 	private void verifyValidation( final Object value ) {

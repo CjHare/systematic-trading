@@ -95,13 +95,18 @@ public class FileEventStatisticsDao implements EventStatisticsDao {
 		output.append(String.format("# Cash account debit events: %s%n", cashStatistics.debitEventCount()));
 		output.append(String.format("# Cash account interest events: %s%n", cashStatistics.interestEventCount()));
 		output.append(String.format("# Cash account deposit events: %s%n", cashStatistics.depositEventCount()));
-		output.append(String.format("Total interest earned: %s%n",
-		        TWO_DECIMAL_PLACES.format(cashStatistics.interestEarned())));
-		output.append(String.format("Total amount deposited: %s%n",
-		        TWO_DECIMAL_PLACES.format(cashStatistics.amountDeposited())));
+		output.append(
+		        String.format(
+		                "Total interest earned: %s%n",
+		                TWO_DECIMAL_PLACES.format(cashStatistics.interestEarned())));
+		output.append(
+		        String.format(
+		                "Total amount deposited: %s%n",
+		                TWO_DECIMAL_PLACES.format(cashStatistics.amountDeposited())));
 	}
 
-	private void addBrokerageStatistics( final BrokerageEventStatistics brokerageStatistics,
+	private void addBrokerageStatistics(
+	        final BrokerageEventStatistics brokerageStatistics,
 	        final StringBuilder output ) {
 
 		final BigInteger sumBrokerageEvents = brokerageStatistics.sellEventCount()
@@ -111,13 +116,16 @@ public class FileEventStatisticsDao implements EventStatisticsDao {
 		output.append(String.format("# Brokerage events: %s%n", sumBrokerageEvents));
 		output.append(String.format("# Sell events: %s%n", brokerageStatistics.sellEventCount()));
 		output.append(String.format("# Buy events: %s%n", brokerageStatistics.buyEventCount()));
-		output.append(String.format("Total amount paid in brokerage: %s%n",
-		        TWO_DECIMAL_PLACES.format(brokerageStatistics.brokerageFees())));
+		output.append(
+		        String.format(
+		                "Total amount paid in brokerage: %s%n",
+		                TWO_DECIMAL_PLACES.format(brokerageStatistics.brokerageFees())));
 
 		addBrokerageBuyHistogram(brokerageStatistics, output);
 	}
 
-	private void addBrokerageBuyHistogram( final BrokerageEventStatistics brokerageStatistics,
+	private void addBrokerageBuyHistogram(
+	        final BrokerageEventStatistics brokerageStatistics,
 	        final StringBuilder output ) {
 
 		output.append(String.format("%n=== Brokerage Buy Histogram ===%n"));
@@ -128,7 +136,9 @@ public class FileEventStatisticsDao implements EventStatisticsDao {
 	private void addEquityStatistics( final EquityEventStatistics equityStatistics, final StringBuilder output ) {
 
 		output.append(String.format("%n=== Equity events ===%n"));
-		output.append(String.format("Total amount of equities paid in management fees: %s%n",
-		        TWO_DECIMAL_PLACES.format(equityStatistics.totalManagmentFeesInEquities())));
+		output.append(
+		        String.format(
+		                "Total amount of equities paid in management fees: %s%n",
+		                TWO_DECIMAL_PLACES.format(equityStatistics.totalManagmentFeesInEquities())));
 	}
 }

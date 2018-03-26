@@ -54,7 +54,8 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 	}
 
 	@Override
-	public List<DatedSignal> generate( final MovingAverageConvergenceDivergenceLines lines,
+	public List<DatedSignal> generate(
+	        final MovingAverageConvergenceDivergenceLines lines,
 	        Predicate<LocalDate> signalRange ) {
 
 		final SortedMap<LocalDate, BigDecimal> macd = lines.macd();
@@ -67,8 +68,12 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 		for (final Map.Entry<LocalDate, BigDecimal> macdEntry : macd.entrySet()) {
 			final LocalDate today = macdEntry.getKey();
 
-			if (yesterday != null && signalRange.test(today) && isBullishSignal(macd.get(today), macd.get(yesterday),
-			        signaLine.get(today), signaLine.get(yesterday))) {
+			if (yesterday != null && signalRange.test(today)
+			        && isBullishSignal(
+			                macd.get(today),
+			                macd.get(yesterday),
+			                signaLine.get(today),
+			                signaLine.get(yesterday))) {
 
 				signals.add(new DatedSignal(today, type()));
 			}
@@ -82,8 +87,11 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 	/**
 	 * Buy (Bullish) signal is from a cross over of the signal line, or crossing over the origin
 	 */
-	private boolean isBullishSignal( final BigDecimal todayMacd, final BigDecimal yesterdayMacd,
-	        final BigDecimal todaySignalLine, final BigDecimal yesterdaySignalLine ) {
+	private boolean isBullishSignal(
+	        final BigDecimal todayMacd,
+	        final BigDecimal yesterdayMacd,
+	        final BigDecimal todaySignalLine,
+	        final BigDecimal yesterdaySignalLine ) {
 
 		return crossingSignalLine(yesterdayMacd, todayMacd, todaySignalLine, yesterdaySignalLine)
 		        || crossingOrigin(yesterdayMacd, todayMacd);
@@ -93,8 +101,11 @@ public class MovingAverageConvergenceDivergenceBullishSignalGenerator
 	 * Between yesterday and today: - MACD need to be moving upwards - today's MACD needs to be
 	 * above today's signal line - yesterday's MACD needs to be below yesterday's signal line
 	 */
-	private boolean crossingSignalLine( final BigDecimal yesterdayMacd, final BigDecimal todayMacd,
-	        final BigDecimal yesterdaySignalLine, final BigDecimal todaySignalLine ) {
+	private boolean crossingSignalLine(
+	        final BigDecimal yesterdayMacd,
+	        final BigDecimal todayMacd,
+	        final BigDecimal yesterdaySignalLine,
+	        final BigDecimal todaySignalLine ) {
 
 		return isHigher(todayMacd, yesterdayMacd) && isEvenOrHigher(todayMacd, todaySignalLine)
 		        && isHigher(yesterdaySignalLine, yesterdayMacd);

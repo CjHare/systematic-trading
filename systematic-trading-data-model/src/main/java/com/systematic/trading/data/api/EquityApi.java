@@ -55,8 +55,12 @@ public interface EquityApi {
 	 * @throws CannotRetrieveDataException
 	 *             problem encountered in retrieving the stock data.
 	 */
-	TradingDayPrices[] stockData( String equityDataset, String symbol, LocalDate inclusiveStartDate,
-	        LocalDate exclusiveEndDate, BlockingEventCount throttler ) throws CannotRetrieveDataException;
+	TradingDayPrices[] stockData(
+	        String equityDataset,
+	        String symbol,
+	        LocalDate inclusiveStartDate,
+	        LocalDate exclusiveEndDate,
+	        BlockingEventCount throttler ) throws CannotRetrieveDataException;
 
 	/**
 	 * Maximum number of time that may be retrieved in one attempt.

@@ -93,7 +93,9 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 
 		final List<HistoryRetrievalRequest> requests = slice(inclusiveStartDate, exclusiveEndDate);
 
-		assertHistoryRetrievalRequest(requests, expectedDates(inclusiveStartDate, LocalDate.of(2011, 5, 1)),
+		assertHistoryRetrievalRequest(
+		        requests,
+		        expectedDates(inclusiveStartDate, LocalDate.of(2011, 5, 1)),
 		        expectedDates(LocalDate.of(2011, 5, 1), exclusiveEndDate));
 	}
 
@@ -105,27 +107,32 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 
 		final List<HistoryRetrievalRequest> requests = slice(inclusiveStartDate, exclusiveEndDate);
 
-		assertHistoryRetrievalRequest(requests, expectedDates(inclusiveStartDate, LocalDate.of(2011, 5, 1)),
+		assertHistoryRetrievalRequest(
+		        requests,
+		        expectedDates(inclusiveStartDate, LocalDate.of(2011, 5, 1)),
 		        expectedDates(LocalDate.of(2011, 5, 1), LocalDate.of(2011, 6, 1)),
 		        expectedDates(LocalDate.of(2011, 6, 1), LocalDate.of(2011, 7, 1)),
 		        expectedDates(LocalDate.of(2011, 7, 1), LocalDate.of(2011, 8, 1)),
 		        expectedDates(LocalDate.of(2011, 8, 1), exclusiveEndDate));
 	}
 
-	private List<HistoryRetrievalRequest> slice( final LocalDate inclusiveStartDate,
+	private List<HistoryRetrievalRequest> slice(
+	        final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) {
 
 		return slicer.slice(dataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
-	private Pair<LocalDate, LocalDate> expectedDates( final LocalDate inclusiveStartDate,
+	private Pair<LocalDate, LocalDate> expectedDates(
+	        final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) {
 
 		return new ImmutablePair<LocalDate, LocalDate>(inclusiveStartDate, exclusiveEndDate);
 	}
 
 	@SafeVarargs
-	private final void assertHistoryRetrievalRequest( final List<HistoryRetrievalRequest> actualValues,
+	private final void assertHistoryRetrievalRequest(
+	        final List<HistoryRetrievalRequest> actualValues,
 	        final Pair<LocalDate, LocalDate>... startEndDates ) {
 
 		assertNotNull(startEndDates);

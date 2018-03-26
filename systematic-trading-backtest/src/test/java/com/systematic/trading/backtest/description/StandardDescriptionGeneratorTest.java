@@ -98,7 +98,8 @@ public class StandardDescriptionGeneratorTest {
 	public void bootstrapConfigurationWithDeposit() {
 
 		final BacktestBootstrapConfiguration configuration = setUpBootstrapConfiguration();
-		final DepositConfiguration depositAmount = new DepositConfiguration(BigDecimal.valueOf(150),
+		final DepositConfiguration depositAmount = new DepositConfiguration(
+		        BigDecimal.valueOf(150),
 		        DepositFrequency.WEEKLY);
 
 		final String description = descriptions.bootstrapConfigurationWithDeposit(configuration, depositAmount);
@@ -177,8 +178,8 @@ public class StandardDescriptionGeneratorTest {
 		final EntryConfiguration anchor = setUpEntry("anCHor");
 		final EntryConfiguration confirmation = setUpEntry("CONfirmaTION");
 
-		final String description = descriptions.entry(anchor, ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_FOUR_DAYS,
-		        confirmation);
+		final String description = descriptions
+		        .entry(anchor, ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_FOUR_DAYS, confirmation);
 
 		assertEquals("anCHor_confirmedBy_CONfirmaTION_in_1_to_5_days", description);
 	}
@@ -189,8 +190,8 @@ public class StandardDescriptionGeneratorTest {
 		final EntryConfiguration anchor = setUpEntryWithSubEntry("anCHor");
 		final EntryConfiguration confirmation = setUpEntryWithSubEntry("CONfirmaTION");
 
-		final String description = descriptions.entry(anchor, ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_FOUR_DAYS,
-		        confirmation);
+		final String description = descriptions
+		        .entry(anchor, ConfirmaByConfiguration.DELAY_ONE_DAY_RANGE_FOUR_DAYS, confirmation);
 
 		assertEquals("(anCHor)_confirmedBy_(CONfirmaTION)_in_1_to_5_days", description);
 	}

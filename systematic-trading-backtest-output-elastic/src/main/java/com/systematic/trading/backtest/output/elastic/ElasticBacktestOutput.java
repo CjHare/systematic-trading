@@ -68,7 +68,9 @@ public class ElasticBacktestOutput implements BacktestEventListener {
 	private final ElasticEquityIndex equityIndex;
 	private final BacktestBatchId batchId;
 
-	public ElasticBacktestOutput( final BacktestBatchId batchId, final ExecutorService pool,
+	public ElasticBacktestOutput(
+	        final BacktestBatchId batchId,
+	        final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
 
 		final ElasticDao dao = new HttpElasticDao();
@@ -83,8 +85,11 @@ public class ElasticBacktestOutput implements BacktestEventListener {
 	}
 
 	@Override
-	public void init( TickerSymbolTradingData tradingData, BacktestSimulationDates dates,
-	        EventStatistics eventStatistics, CumulativeReturnOnInvestment cumulativeRoi,
+	public void init(
+	        TickerSymbolTradingData tradingData,
+	        BacktestSimulationDates dates,
+	        EventStatistics eventStatistics,
+	        CumulativeReturnOnInvestment cumulativeRoi,
 	        TradingDayPrices lastTradingDay ) {
 
 		signalAnalysisIndex.init(batchId);

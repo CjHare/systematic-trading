@@ -149,7 +149,8 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 	@Override
 	public long count( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 
-		final String sql = String.format("SELECT count(1) FROM history_%s WHERE date BETWEEN :start_date AND :end_date",
+		final String sql = String.format(
+		        "SELECT count(1) FROM history_%s WHERE date BETWEEN :start_date AND :end_date",
 		        sanitise(tickerSymbol));
 
 		final Session session = HibernateUtil.sessionFactory().getCurrentSession();
@@ -181,7 +182,8 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 		try {
 			query.executeUpdate();
 		} catch (final HibernateException e) {
-			throw new HibernateException(String.format("Failed inserting %s on %s", data.tickerSymbol(), data.date()),
+			throw new HibernateException(
+			        String.format("Failed inserting %s on %s", data.tickerSymbol(), data.date()),
 			        e);
 		}
 	}

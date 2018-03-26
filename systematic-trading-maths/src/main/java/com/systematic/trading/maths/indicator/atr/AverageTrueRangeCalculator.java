@@ -170,8 +170,8 @@ public class AverageTrueRangeCalculator implements AverageTrueRangeIndicator {
 		 * For a look back of 14: Current ATR = [(Prior ATR x 13) + Current TR] / 14 - Multiply the
 		 * previous 14-day ATR by 13. - Add the most recent day's TR value. - Divide the total by 14
 		 */
-		return priorAverageTrueRange.multiply(priorMultiplier).add(currentTrueRange).divide(lookbackDivider,
-		        MATH_CONTEXT);
+		return priorAverageTrueRange.multiply(priorMultiplier).add(currentTrueRange)
+		        .divide(lookbackDivider, MATH_CONTEXT);
 	}
 
 }

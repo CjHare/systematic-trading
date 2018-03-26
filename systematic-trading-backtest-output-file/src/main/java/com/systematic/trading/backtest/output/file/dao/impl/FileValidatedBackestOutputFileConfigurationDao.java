@@ -59,13 +59,17 @@ public class FileValidatedBackestOutputFileConfigurationDao implements BackestOu
 
 		final Properties properties = new FileConfigurationDao().configuration(BACKTEST_OUTPUT_PROPERTIES_FILE);
 
-		final int numberOfThreads = integerProperty(properties, BacktestOutputFileProperty.NUMBER_OF_THREADS,
+		final int numberOfThreads = integerProperty(
+		        properties,
+		        BacktestOutputFileProperty.NUMBER_OF_THREADS,
 		        numberOfThreadsValidator);
 
 		return new BackestOutputFileConfigurationImpl(numberOfThreads);
 	}
 
-	private int integerProperty( final Properties properties, final BacktestOutputFileProperty property,
+	private int integerProperty(
+	        final Properties properties,
+	        final BacktestOutputFileProperty property,
 	        final ConfigurationValidator<Integer> validator ) throws ConfigurationValidationException {
 
 		return validator.validate(property(properties, property));

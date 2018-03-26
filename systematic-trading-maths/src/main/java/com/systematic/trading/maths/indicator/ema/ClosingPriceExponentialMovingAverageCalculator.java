@@ -70,7 +70,9 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 	 * @param mathContext
 	 *            the scale, precision and rounding to apply to mathematical operations.
 	 */
-	public ClosingPriceExponentialMovingAverageCalculator( final int lookback, final int daysOfEmaValues,
+	public ClosingPriceExponentialMovingAverageCalculator(
+	        final int lookback,
+	        final int daysOfEmaValues,
 	        final Validator validator ) {
 
 		validator.verifyGreaterThan(1, lookback);
@@ -99,7 +101,9 @@ public class ClosingPriceExponentialMovingAverageCalculator implements Exponenti
 		return ema(data, 0, data.length - 1);
 	}
 
-	private ExponentialMovingAverageLine ema( final TradingDayPrices[] data, final int startSmaIndex,
+	private ExponentialMovingAverageLine ema(
+	        final TradingDayPrices[] data,
+	        final int startSmaIndex,
 	        final int endEmaIndex ) {
 
 		final SortedMap<LocalDate, BigDecimal> ema = new TreeMap<>();

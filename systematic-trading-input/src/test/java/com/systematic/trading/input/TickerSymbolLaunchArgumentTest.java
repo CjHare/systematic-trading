@@ -103,7 +103,8 @@ public class TickerSymbolLaunchArgumentTest {
 		verifyValidationExceptionOnValidate(null);
 	}
 
-	private void tickerSymbolExpectingException( final String expectedMessage,
+	private void tickerSymbolExpectingException(
+	        final String expectedMessage,
 	        final Map<ArgumentKey, String> launchArguments ) {
 
 		try {
@@ -121,13 +122,15 @@ public class TickerSymbolLaunchArgumentTest {
 
 	private void setUpValidatorException() {
 
-		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator).validate(any(), anyString(),
-		        anyString());
+		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator)
+		        .validate(any(), anyString(), anyString());
 	}
 
 	private void verifyValidationExceptionOnValidate( final String launchArgument ) {
 
-		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE),
+		verify(validator).validate(
+		        launchArgument == null ? isNull() : eq(launchArgument),
+		        eq(ERROR_MESSAGE),
 		        eq(FIRST_ERROR_ARGUMENT));
 		verifyNoMoreInteractions(validator);
 	}

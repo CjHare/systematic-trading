@@ -94,7 +94,8 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		return oneMonthOut.isBefore(end) || oneMonthOut.isEqual(end);
 	}
 
-	private boolean isMonthCompletedByOtherRequests( final LocalDate end,
+	private boolean isMonthCompletedByOtherRequests(
+	        final LocalDate end,
 	        final List<HistoryRetrievalRequest> fulfilledRequests ) {
 
 		LocalDate expectedStart = end;
@@ -124,7 +125,8 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 
 	private RetrievedMonthTradingPrices retrievedMonth( final String tickerSymbol, final LocalDate yearMonth ) {
 
-		return new HibernateRetrievedMonthTradingPrices(tickerSymbol,
+		return new HibernateRetrievedMonthTradingPrices(
+		        tickerSymbol,
 		        YearMonth.of(yearMonth.getYear(), yearMonth.getMonth().getValue()));
 	}
 

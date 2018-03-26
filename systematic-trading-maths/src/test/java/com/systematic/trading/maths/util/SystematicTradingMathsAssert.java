@@ -65,7 +65,8 @@ public class SystematicTradingMathsAssert {
 		return values;
 	}
 
-	public static void assertValues( final SortedMap<LocalDate, BigDecimal> expected,
+	public static void assertValues(
+	        final SortedMap<LocalDate, BigDecimal> expected,
 	        final SortedMap<LocalDate, BigDecimal> actual ) {
 
 		assertEquals(expected.size(), actual.size());
@@ -77,7 +78,8 @@ public class SystematicTradingMathsAssert {
 		}
 	}
 
-	public static void assertValuesTwoDecimalPlaces( final double[] expected,
+	public static void assertValuesTwoDecimalPlaces(
+	        final double[] expected,
 	        final SortedMap<LocalDate, BigDecimal> actual ) {
 
 		assertArraySizeEqual(expected, actual);
@@ -91,7 +93,9 @@ public class SystematicTradingMathsAssert {
 
 	public static void assertBigDecimalEquals( final BigDecimal expected, BigDecimal actual ) {
 
-		assertEquals(String.format("%s != %s", expected, actual), 0,
+		assertEquals(
+		        String.format("%s != %s", expected, actual),
+		        0,
 		        expected.setScale(TWO_DECIMAL_PLACES, MODE).compareTo(actual.setScale(TWO_DECIMAL_PLACES, MODE)));
 	}
 
@@ -100,10 +104,14 @@ public class SystematicTradingMathsAssert {
 		assertEquals(String.format("%s != %s", expected, actual), 0, BigDecimal.valueOf(expected).compareTo(actual));
 	}
 
-	private static void assertBigDecimalEquals( final double expected, final BigDecimal actual,
+	private static void assertBigDecimalEquals(
+	        final double expected,
+	        final BigDecimal actual,
 	        final RoundingMode mode ) {
 
-		assertEquals(String.format("%s != %s", expected, actual), 0,
+		assertEquals(
+		        String.format("%s != %s", expected, actual),
+		        0,
 		        BigDecimal.valueOf(expected).compareTo(actual.setScale(TWO_DECIMAL_PLACES, mode)));
 	}
 

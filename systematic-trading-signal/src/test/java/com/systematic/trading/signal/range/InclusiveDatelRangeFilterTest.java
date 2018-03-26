@@ -99,7 +99,9 @@ public class InclusiveDatelRangeFilterTest {
 		assertTrue("Date was the latest acceptable, should have passed", result);
 	}
 
-	private boolean isWithinSignalRange( final LocalDate earliestInclusiveDate, final LocalDate latestInclusiveDate,
+	private boolean isWithinSignalRange(
+	        final LocalDate earliestInclusiveDate,
+	        final LocalDate latestInclusiveDate,
 	        final LocalDate candidate ) {
 
 		return filter.isWithinSignalRange(earliestInclusiveDate, latestInclusiveDate, candidate);

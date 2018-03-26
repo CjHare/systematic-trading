@@ -47,20 +47,26 @@ public class StrategyConfigurationFactory {
 
 	// TODO provide factory methods for the sizing too
 
-	public StrategyConfiguration strategy( final EntryConfiguration entry,
-	        final EntrySizeConfiguration entryPositionSizing, final ExitConfiguration exit,
+	public StrategyConfiguration strategy(
+	        final EntryConfiguration entry,
+	        final EntrySizeConfiguration entryPositionSizing,
+	        final ExitConfiguration exit,
 	        final ExitSizeConfiguration exitPositionSizing ) {
 
 		return new StrategyConfiguration(entry, entryPositionSizing, exit, exitPositionSizing);
 	}
 
-	public EntryConfiguration entry( final EntryConfiguration leftEntry, final OperatorConfiguration.Selection op,
+	public EntryConfiguration entry(
+	        final EntryConfiguration leftEntry,
+	        final OperatorConfiguration.Selection op,
 	        final EntryConfiguration righEntry ) {
 
 		return new OperatorEntryConfiguration(leftEntry, op, righEntry);
 	}
 
-	public EntryConfiguration entry( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
+	public EntryConfiguration entry(
+	        final EntryConfiguration anchor,
+	        final ConfirmaByConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
 
 		return new ConfirmedByEntryConfiguration(anchor, confirmBy, confirmation);

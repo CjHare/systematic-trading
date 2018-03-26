@@ -147,8 +147,8 @@ public class EquityArgumentsTest {
 		parser = new EquityArguments(dataServiceArgument, equityDatasetArgument, tickerSymbolArgument, arguments);
 	}
 
-	private Map<ArgumentKey, String> argumentMap( final String dataService, final String equityDataSet,
-	        final String tickerSymbol ) {
+	private Map<ArgumentKey,
+	        String> argumentMap( final String dataService, final String equityDataSet, final String tickerSymbol ) {
 
 		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
 		arguments.put(ArgumentKey.DATA_SERVICE_TYPE, dataService);
@@ -157,7 +157,8 @@ public class EquityArgumentsTest {
 		return arguments;
 	}
 
-	private void createEquityArgumentsExpectingException( final String expectedMessage,
+	private void createEquityArgumentsExpectingException(
+	        final String expectedMessage,
 	        final Map<ArgumentKey, String> arguments ) {
 
 		try {

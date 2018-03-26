@@ -72,11 +72,17 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 		final SimpleMovingAverageLine sma = sma(data);
 
-		verifySma(sma,
-		        line(point(LocalDate.of(2017, 10, 4), 2.0), point(LocalDate.of(2017, 10, 5), 3.0),
-		                point(LocalDate.of(2017, 10, 6), 4.0), point(LocalDate.of(2017, 10, 9), 5.0),
-		                point(LocalDate.of(2017, 10, 10), 6.0), point(LocalDate.of(2017, 10, 11), 7.0),
-		                point(LocalDate.of(2017, 10, 12), 8.0), point(LocalDate.of(2017, 10, 13), 9.0)));
+		verifySma(
+		        sma,
+		        line(
+		                point(LocalDate.of(2017, 10, 4), 2.0),
+		                point(LocalDate.of(2017, 10, 5), 3.0),
+		                point(LocalDate.of(2017, 10, 6), 4.0),
+		                point(LocalDate.of(2017, 10, 9), 5.0),
+		                point(LocalDate.of(2017, 10, 10), 6.0),
+		                point(LocalDate.of(2017, 10, 11), 7.0),
+		                point(LocalDate.of(2017, 10, 12), 8.0),
+		                point(LocalDate.of(2017, 10, 13), 9.0)));
 		verifyValidation(data, 9, lookback);
 	}
 
@@ -89,17 +95,29 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 		final SimpleMovingAverageLine sma = sma(data);
 
-		verifySma(sma,
-		        line(point(LocalDate.of(2010, 4, 7), 22.22), point(LocalDate.of(2010, 4, 8), 22.21),
-		                point(LocalDate.of(2010, 4, 9), 22.23), point(LocalDate.of(2010, 4, 12), 22.26),
-		                point(LocalDate.of(2010, 4, 13), 22.31), point(LocalDate.of(2010, 4, 14), 22.42),
-		                point(LocalDate.of(2010, 4, 15), 22.61), point(LocalDate.of(2010, 4, 16), 22.77),
-		                point(LocalDate.of(2010, 4, 19), 22.91), point(LocalDate.of(2010, 4, 20), 23.08),
-		                point(LocalDate.of(2010, 4, 21), 23.21), point(LocalDate.of(2010, 4, 22), 23.38),
-		                point(LocalDate.of(2010, 4, 23), 23.53), point(LocalDate.of(2010, 4, 26), 23.65),
-		                point(LocalDate.of(2010, 4, 27), 23.71), point(LocalDate.of(2010, 4, 28), 23.69),
-		                point(LocalDate.of(2010, 4, 29), 23.61), point(LocalDate.of(2010, 4, 30), 23.51),
-		                point(LocalDate.of(2010, 5, 3), 23.43), point(LocalDate.of(2010, 5, 4), 23.28),
+		verifySma(
+		        sma,
+		        line(
+		                point(LocalDate.of(2010, 4, 7), 22.22),
+		                point(LocalDate.of(2010, 4, 8), 22.21),
+		                point(LocalDate.of(2010, 4, 9), 22.23),
+		                point(LocalDate.of(2010, 4, 12), 22.26),
+		                point(LocalDate.of(2010, 4, 13), 22.31),
+		                point(LocalDate.of(2010, 4, 14), 22.42),
+		                point(LocalDate.of(2010, 4, 15), 22.61),
+		                point(LocalDate.of(2010, 4, 16), 22.77),
+		                point(LocalDate.of(2010, 4, 19), 22.91),
+		                point(LocalDate.of(2010, 4, 20), 23.08),
+		                point(LocalDate.of(2010, 4, 21), 23.21),
+		                point(LocalDate.of(2010, 4, 22), 23.38),
+		                point(LocalDate.of(2010, 4, 23), 23.53),
+		                point(LocalDate.of(2010, 4, 26), 23.65),
+		                point(LocalDate.of(2010, 4, 27), 23.71),
+		                point(LocalDate.of(2010, 4, 28), 23.69),
+		                point(LocalDate.of(2010, 4, 29), 23.61),
+		                point(LocalDate.of(2010, 4, 30), 23.51),
+		                point(LocalDate.of(2010, 5, 3), 23.43),
+		                point(LocalDate.of(2010, 5, 4), 23.28),
 		                point(LocalDate.of(2010, 5, 5), 23.13)));
 		verifyValidation(data, 14, lookback);
 	}
@@ -176,8 +194,8 @@ public class ClosingPriceSimpleMovingAverageCalculatorTest {
 
 	private void setUValidationErrorNotEnoughValues() {
 
-		doThrow(new IllegalArgumentException()).when(validator).verifyEnoughValues(any(TradingDayPrices[].class),
-		        anyInt());
+		doThrow(new IllegalArgumentException()).when(validator)
+		        .verifyEnoughValues(any(TradingDayPrices[].class), anyInt());
 	}
 
 	private void setUpValidationErrorTooFewsDaysOfSmaValues() {

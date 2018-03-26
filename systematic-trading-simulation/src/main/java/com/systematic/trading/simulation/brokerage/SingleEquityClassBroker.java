@@ -85,8 +85,11 @@ public class SingleEquityClassBroker implements Brokerage {
 	/** Identifier for the broker. */
 	private final String brokerName;
 
-	public SingleEquityClassBroker( final String brokerName, final BrokerageTransactionFeeStructure fees,
-	        final EquityManagementFeeStructure managementFees, final EquityIdentity equity,
+	public SingleEquityClassBroker(
+	        final String brokerName,
+	        final BrokerageTransactionFeeStructure fees,
+	        final EquityManagementFeeStructure managementFees,
+	        final EquityIdentity equity,
 	        final LocalDate startDate ) {
 
 		this.brokerName = brokerName;
@@ -110,8 +113,15 @@ public class SingleEquityClassBroker implements Brokerage {
 		equityBalance = equityBalance.add(volume.volume(), MATH_CONTEXT);
 
 		// Record of the buy transaction
-		notifyListeners(new BrokerageAccountEvent(startingEquityBalance, equityBalance, volume.volume(),
-		        BrokerageAccountEventType.BUY, tradeDate, tradeValue, tradeFee));
+		notifyListeners(
+		        new BrokerageAccountEvent(
+		                startingEquityBalance,
+		                equityBalance,
+		                volume.volume(),
+		                BrokerageAccountEventType.BUY,
+		                tradeDate,
+		                tradeValue,
+		                tradeFee));
 	}
 
 	@Override
@@ -128,8 +138,15 @@ public class SingleEquityClassBroker implements Brokerage {
 		final BigDecimal tradeFee = transactionFee.cost(tradeValue, equity.type(), tradesThisMonth);
 
 		// Record of the sell transaction
-		notifyListeners(new BrokerageAccountEvent(startingEquityBalance, equityBalance, volume.volume(),
-		        BrokerageAccountEventType.SELL, tradeDate, tradeValue, tradeFee));
+		notifyListeners(
+		        new BrokerageAccountEvent(
+		                startingEquityBalance,
+		                equityBalance,
+		                volume.volume(),
+		                BrokerageAccountEventType.SELL,
+		                tradeDate,
+		                tradeValue,
+		                tradeFee));
 
 		return tradeValue.subtract(tradeFee, MATH_CONTEXT);
 	}
@@ -183,8 +200,8 @@ public class SingleEquityClassBroker implements Brokerage {
 		if (BigDecimal.ZERO.compareTo(feeInEquities) != 0) {
 
 			final BigDecimal startingEquityBalance = equityBalance;
-			final BigDecimal transactionValue = tradingData.closingPrice().price().multiply(feeInEquities,
-			        MATH_CONTEXT);
+			final BigDecimal transactionValue = tradingData.closingPrice().price()
+			        .multiply(feeInEquities, MATH_CONTEXT);
 
 			// Erode the original equity balance with the management fee
 			equityBalance = equityBalance.subtract(feeInEquities, MATH_CONTEXT);
@@ -192,8 +209,15 @@ public class SingleEquityClassBroker implements Brokerage {
 			lastManagementFee = equityManagementFee.lastManagementFeeDate(tradingDate);
 
 			// TODO maybe a separate equity object to manage the events: fees / dividends / splits
-			notifyListeners(new SingleEquityEvent(equity, startingEquityBalance, equityBalance, feeInEquities,
-			        EquityEventType.MANAGEMENT_FEE, tradingDate, transactionValue));
+			notifyListeners(
+			        new SingleEquityEvent(
+			                equity,
+			                startingEquityBalance,
+			                equityBalance,
+			                feeInEquities,
+			                EquityEventType.MANAGEMENT_FEE,
+			                tradingDate,
+			                transactionValue));
 		}
 	}
 

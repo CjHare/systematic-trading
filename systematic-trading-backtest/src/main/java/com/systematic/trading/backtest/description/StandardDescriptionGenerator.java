@@ -64,8 +64,11 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	private static final String OPERATOR_SUFFIX = ")";
 
 	@Override
-	public String strategy( final EntryConfiguration entry, final EntrySizeConfiguration entryPositionSizing,
-	        final ExitConfiguration exit, final ExitSizeConfiguration exitPositionSizing ) {
+	public String strategy(
+	        final EntryConfiguration entry,
+	        final EntrySizeConfiguration entryPositionSizing,
+	        final ExitConfiguration exit,
+	        final ExitSizeConfiguration exitPositionSizing ) {
 
 		final StringJoiner out = new StringJoiner(SEPARATOR);
 		out.add(entry.description(this));
@@ -95,7 +98,8 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	}
 
 	@Override
-	public String bootstrapConfigurationWithDeposit( final BacktestBootstrapConfiguration configuration,
+	public String bootstrapConfigurationWithDeposit(
+	        final BacktestBootstrapConfiguration configuration,
 	        final DepositConfiguration depositAmount ) {
 
 		final StringJoiner out = new StringJoiner(SEPARATOR);
@@ -128,7 +132,9 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	}
 
 	@Override
-	public String entry( final EntryConfiguration leftEntry, final OperatorConfiguration.Selection op,
+	public String entry(
+	        final EntryConfiguration leftEntry,
+	        final OperatorConfiguration.Selection op,
 	        final EntryConfiguration righEntry ) {
 
 		final StringBuilder out = new StringBuilder();
@@ -141,7 +147,9 @@ public class StandardDescriptionGenerator implements DescriptionGenerator {
 	}
 
 	@Override
-	public String entry( final EntryConfiguration anchor, final ConfirmaByConfiguration confirmBy,
+	public String entry(
+	        final EntryConfiguration anchor,
+	        final ConfirmaByConfiguration confirmBy,
 	        final EntryConfiguration confirmation ) {
 
 		final int delay = confirmBy.delayUntilConfirmationRange();

@@ -63,8 +63,11 @@ public class LogEntryOrderEventListner implements BacktestEventListener {
 	public void event( final OrderEvent event ) {
 
 		if (event.type() == EquityOrderType.ENTRY) {
-			LOG.info(String.format("Buy event on %s. Place a buy order for the total value of %s",
-			        event.transactionDate(), TWO_DECIMAL_PLACES.format(event.totalCost())));
+			LOG.info(
+			        String.format(
+			                "Buy event on %s. Place a buy order for the total value of %s",
+			                event.transactionDate(),
+			                TWO_DECIMAL_PLACES.format(event.totalCost())));
 
 		}
 	}

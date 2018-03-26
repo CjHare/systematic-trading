@@ -100,7 +100,9 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 			previousDate = latestDate.minus(Period.ofDays(1));
 		}
 
-		final ReturnOnInvestmentEvent event = new ReturnOnInvestmentEventImpl(percentageChange, previousDate,
+		final ReturnOnInvestmentEvent event = new ReturnOnInvestmentEventImpl(
+		        percentageChange,
+		        previousDate,
 		        latestDate);
 
 		// Move the previous date to now
@@ -109,7 +111,9 @@ public class CulmativeReturnOnInvestment implements ReturnOnInvestmentListener {
 		return event;
 	}
 
-	private BigDecimal percentageChangeInNetWorth( final Brokerage broker, final CashAccount cashAccount,
+	private BigDecimal percentageChangeInNetWorth(
+	        final Brokerage broker,
+	        final CashAccount cashAccount,
 	        final TradingDayPrices tradingData ) {
 
 		final Networth netWorth = new Networth();

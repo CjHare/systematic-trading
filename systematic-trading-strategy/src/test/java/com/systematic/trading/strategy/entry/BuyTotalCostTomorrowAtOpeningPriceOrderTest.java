@@ -85,8 +85,12 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 	public void setUp() {
 
 		final int equityDecimalPlaces = 4;
-		order = new BuyTotalCostTomorrowAtOpeningPriceOrder(TOTAL_COST, EquityClass.STOCK, equityDecimalPlaces,
-		        LocalDate.now(), MathContext.DECIMAL64);
+		order = new BuyTotalCostTomorrowAtOpeningPriceOrder(
+		        TOTAL_COST,
+		        EquityClass.STOCK,
+		        equityDecimalPlaces,
+		        LocalDate.now(),
+		        MathContext.DECIMAL64);
 	}
 
 	@Test
@@ -155,7 +159,9 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrderTest {
 
 	private void verifyBuyOrderPlaced( final double equityPrice, final double volume ) {
 
-		verify(broker).buy(PriceMatcher.argumentMatches(equityPrice), EquityOrderVolumeMatcher.argumentMatches(volume),
+		verify(broker).buy(
+		        PriceMatcher.argumentMatches(equityPrice),
+		        EquityOrderVolumeMatcher.argumentMatches(volume),
 		        eq(TODAY));
 		verify(todaysTrading, atLeastOnce()).date();
 		verify(todaysTrading, atLeastOnce()).openingPrice();

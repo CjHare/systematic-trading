@@ -269,7 +269,8 @@ public class TradingStrategyTest {
 		assertEquals(Period.ofDays(expected), actual);
 	}
 
-	private void verifyInsufficentFundsAction( final EquityOrderInsufficientFundsAction expected,
+	private void verifyInsufficentFundsAction(
+	        final EquityOrderInsufficientFundsAction expected,
 	        final EquityOrderInsufficientFundsAction actual ) {
 
 		assertNotNull(actual);

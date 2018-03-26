@@ -136,7 +136,9 @@ public class PeriodicCulmativeReturnOnInvestmentTest {
 		verifyCulumativeRoiEvent(44.49, STARTING_DATE, OVER_END_DATE);
 	}
 
-	private void verifyCulumativeRoiEvent( final double percentageChange, final LocalDate startDateInclusive,
+	private void verifyCulumativeRoiEvent(
+	        final double percentageChange,
+	        final LocalDate startDateInclusive,
 	        final LocalDate endDateInclusive ) {
 
 		verify(listener).event(isExpectedRoiEvent(percentageChange, startDateInclusive, endDateInclusive));
@@ -159,11 +161,13 @@ public class PeriodicCulmativeReturnOnInvestmentTest {
 		calculator.event(event);
 	}
 
-	private ReturnOnInvestmentEvent isExpectedRoiEvent( final double percentageChange,
-	        final LocalDate startDateInclusive, final LocalDate endDateInclusive ) {
+	private ReturnOnInvestmentEvent isExpectedRoiEvent(
+	        final double percentageChange,
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateInclusive ) {
 
-		return RoiEventMatcher.argumentMatches(BigDecimal.valueOf(percentageChange), startDateInclusive,
-		        endDateInclusive);
+		return RoiEventMatcher
+		        .argumentMatches(BigDecimal.valueOf(percentageChange), startDateInclusive, endDateInclusive);
 	}
 
 	private ReturnOnInvestmentEvent setUpRoiEvent( final double change, final LocalDate endDate ) {

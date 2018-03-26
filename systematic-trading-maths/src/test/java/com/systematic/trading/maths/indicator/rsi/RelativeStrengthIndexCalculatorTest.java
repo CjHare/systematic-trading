@@ -80,16 +80,27 @@ public class RelativeStrengthIndexCalculatorTest {
 
 		final RelativeStrengthIndexLine rsi = rsi(data);
 
-		verifyRsi(rsi,
-		        line(point(LocalDate.of(2010, 1, 5), 70.53), point(LocalDate.of(2010, 1, 6), 66.32),
-		                point(LocalDate.of(2010, 1, 7), 66.55), point(LocalDate.of(2010, 1, 8), 69.41),
-		                point(LocalDate.of(2010, 1, 11), 66.35), point(LocalDate.of(2010, 1, 12), 57.97),
-		                point(LocalDate.of(2010, 1, 13), 62.93), point(LocalDate.of(2010, 1, 14), 63.26),
-		                point(LocalDate.of(2010, 1, 15), 56.06), point(LocalDate.of(2010, 1, 19), 62.38),
-		                point(LocalDate.of(2010, 1, 20), 54.71), point(LocalDate.of(2010, 1, 21), 50.42),
-		                point(LocalDate.of(2010, 1, 22), 39.99), point(LocalDate.of(2010, 1, 25), 41.46),
-		                point(LocalDate.of(2010, 1, 26), 41.87), point(LocalDate.of(2010, 1, 27), 45.46),
-		                point(LocalDate.of(2010, 1, 28), 37.30), point(LocalDate.of(2010, 1, 29), 33.08),
+		verifyRsi(
+		        rsi,
+		        line(
+		                point(LocalDate.of(2010, 1, 5), 70.53),
+		                point(LocalDate.of(2010, 1, 6), 66.32),
+		                point(LocalDate.of(2010, 1, 7), 66.55),
+		                point(LocalDate.of(2010, 1, 8), 69.41),
+		                point(LocalDate.of(2010, 1, 11), 66.35),
+		                point(LocalDate.of(2010, 1, 12), 57.97),
+		                point(LocalDate.of(2010, 1, 13), 62.93),
+		                point(LocalDate.of(2010, 1, 14), 63.26),
+		                point(LocalDate.of(2010, 1, 15), 56.06),
+		                point(LocalDate.of(2010, 1, 19), 62.38),
+		                point(LocalDate.of(2010, 1, 20), 54.71),
+		                point(LocalDate.of(2010, 1, 21), 50.42),
+		                point(LocalDate.of(2010, 1, 22), 39.99),
+		                point(LocalDate.of(2010, 1, 25), 41.46),
+		                point(LocalDate.of(2010, 1, 26), 41.87),
+		                point(LocalDate.of(2010, 1, 27), 45.46),
+		                point(LocalDate.of(2010, 1, 28), 37.30),
+		                point(LocalDate.of(2010, 1, 29), 33.08),
 		                point(LocalDate.of(2010, 2, 1), 37.77)));
 
 		verifyRs(data);
@@ -137,8 +148,8 @@ public class RelativeStrengthIndexCalculatorTest {
 	private final void setUpCalculator( final RelativeStrengthLine... rsData ) {
 
 		if (rsData.length > 0) {
-			OngoingStubbing<RelativeStrengthLine> rsResponses = when(
-			        relativeStrength.calculate(any(TradingDayPrices[].class)));
+			OngoingStubbing<
+			        RelativeStrengthLine> rsResponses = when(relativeStrength.calculate(any(TradingDayPrices[].class)));
 			for (final RelativeStrengthLine rs : rsData) {
 				rsResponses = rsResponses.thenReturn(rs);
 			}
@@ -198,7 +209,8 @@ public class RelativeStrengthIndexCalculatorTest {
 		return new RelativeStrengthLine(createRelativeStrengthValues(dates, values));
 	}
 
-	private final SortedMap<LocalDate, BigDecimal> createRelativeStrengthValues( final LocalDate[] dates,
+	private final SortedMap<LocalDate, BigDecimal> createRelativeStrengthValues(
+	        final LocalDate[] dates,
 	        final double[] value ) {
 
 		final SortedMap<LocalDate, BigDecimal> rs = new TreeMap<>();

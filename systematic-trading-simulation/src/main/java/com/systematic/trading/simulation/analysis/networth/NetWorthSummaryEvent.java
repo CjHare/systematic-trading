@@ -44,8 +44,12 @@ public class NetWorthSummaryEvent implements NetWorthEvent {
 	private final LocalDate eventDate;
 	private final NetWorthEventType type;
 
-	public NetWorthSummaryEvent( final BigDecimal equityBalance, final BigDecimal equityBalanceValue,
-	        final BigDecimal cashBalance, final BigDecimal networth, final LocalDate eventDate,
+	public NetWorthSummaryEvent(
+	        final BigDecimal equityBalance,
+	        final BigDecimal equityBalanceValue,
+	        final BigDecimal cashBalance,
+	        final BigDecimal networth,
+	        final LocalDate eventDate,
 	        final NetWorthEventType type ) {
 
 		this.equityBalance = equityBalance;

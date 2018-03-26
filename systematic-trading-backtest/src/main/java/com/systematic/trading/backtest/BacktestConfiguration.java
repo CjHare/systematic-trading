@@ -13,6 +13,8 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
  */
 public interface BacktestConfiguration {
 
-	List<BacktestBootstrapConfiguration> configuration( EquityConfiguration equity,
-	        BacktestSimulationDates simulationDates, CashAccountConfiguration cashAccount );
+	List<BacktestBootstrapConfiguration> configuration(
+	        EquityConfiguration equity,
+	        BacktestSimulationDates simulationDates,
+	        CashAccountConfiguration cashAccount );
 }

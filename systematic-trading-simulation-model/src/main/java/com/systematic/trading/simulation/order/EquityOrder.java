@@ -73,7 +73,10 @@ public interface EquityOrder {
 	 * @throws OrderException
 	 *             when the order fails.
 	 */
-	void execute( BrokerageTransactionFee fees, BrokerageTransaction broker, CashAccount cashAccount,
+	void execute(
+	        BrokerageTransactionFee fees,
+	        BrokerageTransaction broker,
+	        CashAccount cashAccount,
 	        TradingDayPrices todaysTrading ) throws InsufficientEquitiesException, InsufficientFundsException;
 
 	/**

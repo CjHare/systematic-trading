@@ -53,8 +53,13 @@ import com.systematic.trading.strategy.periodic.Periodic;
 public class TradingStrategyFactory implements StrategyFactory {
 
 	@Override
-	public Strategy strategy( final Entry entry, final EntrySize entryPositionSizing, final Exit exit,
-	        final ExitSize exitPositionSizing, final EquityClass type, final int scale ) {
+	public Strategy strategy(
+	        final Entry entry,
+	        final EntrySize entryPositionSizing,
+	        final Exit exit,
+	        final ExitSize exitPositionSizing,
+	        final EquityClass type,
+	        final int scale ) {
 
 		return new TradingStrategy(entry, entryPositionSizing, exit, exitPositionSizing, type, scale);
 	}

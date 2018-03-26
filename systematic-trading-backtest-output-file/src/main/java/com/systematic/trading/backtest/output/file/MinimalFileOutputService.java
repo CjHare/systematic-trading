@@ -57,7 +57,9 @@ public class MinimalFileOutputService extends FileOutput {
 
 	private final BacktestBatchId batchId;
 
-	public MinimalFileOutputService( final BacktestBatchId batchId, final String outputDirectory,
+	public MinimalFileOutputService(
+	        final BacktestBatchId batchId,
+	        final String outputDirectory,
 	        final ExecutorService pool ) throws IOException {
 
 		super(outputDirectory, pool);
@@ -65,8 +67,11 @@ public class MinimalFileOutputService extends FileOutput {
 	}
 
 	@Override
-	public void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-	        final EventStatistics eventStatistics, final CumulativeReturnOnInvestment cumulativeRoi,
+	public void init(
+	        final TickerSymbolTradingData tradingData,
+	        final BacktestSimulationDates dates,
+	        final EventStatistics eventStatistics,
+	        final CumulativeReturnOnInvestment cumulativeRoi,
 	        final TradingDayPrices lastTradingDay ) {
 
 		final FileMultithreading statisticsFile = fileDisplay("/statistics.txt");

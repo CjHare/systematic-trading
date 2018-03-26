@@ -242,7 +242,8 @@ public abstract class ElasticIndexTestBase {
 
 	private void verfiyRefreshInterval( final boolean enabled ) {
 
-		final String expectedJson = String.format("\"refresh_interval\":\"%s\"",
+		final String expectedJson = String.format(
+		        "\"refresh_interval\":\"%s\"",
 		        enabled ? INDEX_SETTING_REFRESH_DEFAULT : INDEX_SETTING_REFRESH_DISABLE);
 
 		verify(dao).putSetting(eq(indexName()), equalsJson(expectedJson));

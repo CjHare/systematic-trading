@@ -45,7 +45,9 @@ import com.systematic.trading.simulation.order.event.OrderEvent;
  */
 public class ElasticOrderIndex extends ElasticCommonIndex {
 
-	public ElasticOrderIndex( final ElasticDao dao, final ExecutorService pool,
+	public ElasticOrderIndex(
+	        final ElasticDao dao,
+	        final ExecutorService pool,
 	        final BackestOutputElasticConfiguration config ) {
 
 		super(dao, pool, config);
@@ -65,8 +67,10 @@ public class ElasticOrderIndex extends ElasticCommonIndex {
 	@Override
 	protected ElasticIndexMapping indexMapping() {
 
-		return new ElasticIndexMapping(Arrays.asList(pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
-		        pair(ElasticFieldName.TOTAL_COST, ElasticFieldType.FLOAT),
-		        pair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
+		return new ElasticIndexMapping(
+		        Arrays.asList(
+		                pair(ElasticFieldName.EVENT, ElasticFieldType.KEYWORD),
+		                pair(ElasticFieldName.TOTAL_COST, ElasticFieldType.FLOAT),
+		                pair(ElasticFieldName.TRANSACTION_DATE, ElasticFieldType.DATE)));
 	}
 }

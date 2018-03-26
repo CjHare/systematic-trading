@@ -102,11 +102,14 @@ public class QuanalAPITest {
 		verifyQuandlCall(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
-	private TradingDayPrices[] callQuandl( final String datasetId, final String tickerSymbol,
-	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+	private TradingDayPrices[] callQuandl(
+	        final String datasetId,
+	        final String tickerSymbol,
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 
-		return new QuandlAPI(dao, configuration, dataFormat).stockData(datasetId, tickerSymbol, inclusiveStartDate,
-		        exclusiveEndDate, throttler);
+		return new QuandlAPI(dao, configuration, dataFormat)
+		        .stockData(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
 	}
 
 	private void verifyTradingDayPrices( final TradingDayPrices[] expected, final TradingDayPrices[] actual ) {
@@ -119,8 +122,11 @@ public class QuanalAPITest {
 		}
 	}
 
-	private void verifyQuandlCall( final String datasetId, final String tickerSymbol,
-	        final LocalDate inclusiveStartDate, final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+	private void verifyQuandlCall(
+	        final String datasetId,
+	        final String tickerSymbol,
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 
 		verify(dao).get(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
 		verifyNoMoreInteractions(dao);
@@ -130,8 +136,13 @@ public class QuanalAPITest {
 	private TradingDayPrices[] setUpQuandlResponse() throws CannotRetrieveDataException {
 
 		final QuandlResultSet results = mock(QuandlResultSet.class);
-		when(dao.get(anyString(), anyString(), any(LocalDate.class), any(LocalDate.class),
-		        any(BlockingEventCount.class))).thenReturn(results);
+		when(
+		        dao.get(
+		                anyString(),
+		                anyString(),
+		                any(LocalDate.class),
+		                any(LocalDate.class),
+		                any(BlockingEventCount.class))).thenReturn(results);
 
 		final TradingDayPrices[] prices = new TradingDayPrices[2];
 		prices[0] = mock(TradingDayPrices.class);

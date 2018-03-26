@@ -51,8 +51,11 @@ public interface BacktestEventListener
 	/**
 	 * Initialisation of the output that occurs prior to performing each simulation.
 	 */
-	default void init( final TickerSymbolTradingData tradingData, final BacktestSimulationDates dates,
-	        final EventStatistics eventStatistics, final CumulativeReturnOnInvestment cumulativeRoi,
+	default void init(
+	        final TickerSymbolTradingData tradingData,
+	        final BacktestSimulationDates dates,
+	        final EventStatistics eventStatistics,
+	        final CumulativeReturnOnInvestment cumulativeRoi,
 	        final TradingDayPrices lastTradingDay ) {
 
 	}

@@ -175,9 +175,12 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 		final List<HistoryRetrievalRequest> filtered = filter(unfilteredRequests);
 
-		verifyRetrievalRequests(asList(create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 7, 1)),
-		        create(LocalDate.of(startYear, 9, 1), LocalDate.of(endYear, 10, 1)),
-		        create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1))), filtered);
+		verifyRetrievalRequests(
+		        asList(
+		                create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 7, 1)),
+		                create(LocalDate.of(startYear, 9, 1), LocalDate.of(endYear, 10, 1)),
+		                create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1))),
+		        filtered);
 		verifyLocalHistoryRequest(startYear, endYear);
 	}
 
@@ -197,9 +200,12 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 
 		final List<HistoryRetrievalRequest> filtered = filter(unfilteredRequests);
 
-		verifyRetrievalRequests(asList(create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 7, 1)),
-		        create(LocalDate.of(startYear, 9, 1), LocalDate.of(endYear, 10, 1)),
-		        create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1))), filtered);
+		verifyRetrievalRequests(
+		        asList(
+		                create(LocalDate.of(startYear, 6, 1), LocalDate.of(endYear, 7, 1)),
+		                create(LocalDate.of(startYear, 9, 1), LocalDate.of(endYear, 10, 1)),
+		                create(LocalDate.of(startYear, 11, 1), LocalDate.of(endYear, 12, 1))),
+		        filtered);
 		verifyLocalHistoryRequest(startYear, endYear);
 	}
 
@@ -220,7 +226,8 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		verifyNoMoreInteractions(retrievedHistoryDao);
 	}
 
-	private void verifyRetrievalRequests( final List<HistoryRetrievalRequest> expected,
+	private void verifyRetrievalRequests(
+	        final List<HistoryRetrievalRequest> expected,
 	        final List<HistoryRetrievalRequest> actual ) {
 
 		assertNotNull(actual);

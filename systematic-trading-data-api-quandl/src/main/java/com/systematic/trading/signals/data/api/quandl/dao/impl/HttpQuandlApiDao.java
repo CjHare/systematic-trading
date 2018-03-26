@@ -77,8 +77,11 @@ public abstract class HttpQuandlApiDao {
 				return response;
 
 			} else {
-				LOG.warn(String.format("Failed to retrieve data, HTTP code: %s, request: %s", response.getStatus(),
-				        url));
+				LOG.warn(
+				        String.format(
+				                "Failed to retrieve data, HTTP code: %s, request: %s",
+				                response.getStatus(),
+				                url));
 
 				waitBackOffDuration(attempt);
 			}

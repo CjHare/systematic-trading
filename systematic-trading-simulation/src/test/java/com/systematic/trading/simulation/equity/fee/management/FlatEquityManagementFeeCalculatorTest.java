@@ -109,11 +109,15 @@ public class FlatEquityManagementFeeCalculatorTest {
 		verifyFee(2287.5, result);
 	}
 
-	private BigDecimal calculateFee( final double numberOfEquities, final double singleEquityValue,
+	private BigDecimal calculateFee(
+	        final double numberOfEquities,
+	        final double singleEquityValue,
 	        final Period durationToCalculate ) {
 
-		return fee.calculate(BigDecimal.valueOf(numberOfEquities),
-		        ClosingPrice.valueOf(BigDecimal.valueOf(singleEquityValue)), durationToCalculate);
+		return fee.calculate(
+		        BigDecimal.valueOf(numberOfEquities),
+		        ClosingPrice.valueOf(BigDecimal.valueOf(singleEquityValue)),
+		        durationToCalculate);
 	}
 
 	private void setUpManagementFee( final double annualPercentageFee ) {
@@ -123,7 +127,9 @@ public class FlatEquityManagementFeeCalculatorTest {
 
 	private void verifyFee( final double expected, final BigDecimal actual ) {
 
-		assertEquals(String.format("%s != %s", expected, actual), 0,
+		assertEquals(
+		        String.format("%s != %s", expected, actual),
+		        0,
 		        BigDecimal.valueOf(expected).compareTo(actual.setScale(3, RoundingMode.HALF_EVEN)));
 	}
 }

@@ -40,8 +40,10 @@ public class QuandlConfiguration implements EquityApiConfiguration {
 
 	private final QuandlConnectionConfiguration connectionConfiguration;
 
-	public QuandlConfiguration( final QuandlConnectionConfiguration connectionConfiguration,
-	        final int maximumConcurrentConnections, final int maximumConnectionsPerSecond,
+	public QuandlConfiguration(
+	        final QuandlConnectionConfiguration connectionConfiguration,
+	        final int maximumConcurrentConnections,
+	        final int maximumConnectionsPerSecond,
 	        final int maximumMonthsPerConnection ) {
 
 		this.connectionConfiguration = connectionConfiguration;

@@ -101,7 +101,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	}
 
 	@Override
-	public void get( final String equityDataset, final String tickerSymbol, final LocalDate startDate,
+	public void get(
+	        final String equityDataset,
+	        final String tickerSymbol,
+	        final LocalDate startDate,
 	        final LocalDate endDate ) throws CannotRetrieveDataException {
 
 		// Ensure there's a table for the data
@@ -151,7 +154,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	        throws CannotRetrieveDataException {
 
 		final ExecutorService pool = Executors.newFixedThreadPool(api.maximumConcurrentConnections());
-		final BlockingEventCount activeConnectionCount = new BlockingEventCountQueue(api.maximumConnectionsPerSecond(),
+		final BlockingEventCount activeConnectionCount = new BlockingEventCountQueue(
+		        api.maximumConnectionsPerSecond(),
 		        THROTTLER_CLEAN_INTERVAL);
 		final EventCountCleanUp activeConnectionCountCleaner = startEventCountCleaner(activeConnectionCount);
 
@@ -165,12 +169,20 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			pool.execute(() -> {
 				try {
 					// Pull the data from the Stock API
-					TradingDayPrices[] tradingData = api.stockData(equityDataset, tickerSymbol, inclusiveStartDate,
-					        exclusiveEndDate, activeConnectionCount);
+					TradingDayPrices[] tradingData = api.stockData(
+					        equityDataset,
+					        tickerSymbol,
+					        inclusiveStartDate,
+					        exclusiveEndDate,
+					        activeConnectionCount);
 
 					if (tradingData.length == 0) {
-						LOG.warn(String.format("No data has been returned for symbol: %s for %s to %s", tickerSymbol,
-						        inclusiveStartDate, exclusiveEndDate));
+						LOG.warn(
+						        String.format(
+						                "No data has been returned for symbol: %s for %s to %s",
+						                tickerSymbol,
+						                inclusiveStartDate,
+						                exclusiveEndDate));
 					}
 
 					// Push to the data source
@@ -218,8 +230,11 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		return throttlerCleanUp;
 	}
 
-	private void lodgeOnlyNeededHistoryRetrievalRequests( final String equityDataset, final String tickerSymbol,
-	        final LocalDate startDate, final LocalDate endDate ) {
+	private void lodgeOnlyNeededHistoryRetrievalRequests(
+	        final String equityDataset,
+	        final String tickerSymbol,
+	        final LocalDate startDate,
+	        final LocalDate endDate ) {
 
 		lodge(merge(filter(slice(equityDataset, tickerSymbol, startDate, endDate))));
 	}
@@ -234,8 +249,11 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		return pendingRetrievalRequestDao.requests(tickerSymbol);
 	}
 
-	private List<HistoryRetrievalRequest> slice( final String equityDataset, final String tickerSymbol,
-	        final LocalDate startDate, final LocalDate endDate ) {
+	private List<HistoryRetrievalRequest> slice(
+	        final String equityDataset,
+	        final String tickerSymbol,
+	        final LocalDate startDate,
+	        final LocalDate endDate ) {
 
 		return historyRetrievalRequestSlicer.slice(equityDataset, tickerSymbol, startDate, endDate);
 	}

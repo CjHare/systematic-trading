@@ -151,8 +151,13 @@ public class TradingDaySignalRangeFilterTest {
 		final TradingDayPrices[] days = new TradingDayPrices[size];
 
 		for (int i = 0; i < days.length; i++) {
-			days[i] = new TradingDayPricesImpl("ABC", LocalDate.ofEpochDay(i), BigDecimal.ONE, BigDecimal.ONE,
-			        BigDecimal.ONE, BigDecimal.ONE);
+			days[i] = new TradingDayPricesImpl(
+			        "ABC",
+			        LocalDate.ofEpochDay(i),
+			        BigDecimal.ONE,
+			        BigDecimal.ONE,
+			        BigDecimal.ONE,
+			        BigDecimal.ONE);
 		}
 
 		return days;

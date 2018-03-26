@@ -78,7 +78,8 @@ public class HistogramOutput {
 			bin++;
 		}
 
-		return String.format("%s to %s",
+		return String.format(
+		        "%s to %s",
 		        TWO_DECIMAL_PLACES.format(binSize.multiply(BigDecimal.valueOf(bin - 1)).add(smallest)),
 		        TWO_DECIMAL_PLACES.format(binSize.multiply(BigDecimal.valueOf(bin)).add(smallest)));
 	}

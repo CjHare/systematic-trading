@@ -270,13 +270,20 @@ public class AllResponseColumnsTest {
 
 	private List<QuandlColumnName> createAllColumns() {
 
-		return createColumns(DATE_COLUMN_NAME, OPEN_PRICE_COLUMN_NAME, HIGH_PRICE_COLUMN_NAME, LOW_PRICE_COLUMN_NAME,
+		return createColumns(
+		        DATE_COLUMN_NAME,
+		        OPEN_PRICE_COLUMN_NAME,
+		        HIGH_PRICE_COLUMN_NAME,
+		        LOW_PRICE_COLUMN_NAME,
 		        CLOSE_PRICE_COLUMN_NAME);
 	}
 
 	private List<QuandlColumnName> createMissingDateColumn() {
 
-		return createColumns(OPEN_PRICE_COLUMN_NAME, HIGH_PRICE_COLUMN_NAME, LOW_PRICE_COLUMN_NAME,
+		return createColumns(
+		        OPEN_PRICE_COLUMN_NAME,
+		        HIGH_PRICE_COLUMN_NAME,
+		        LOW_PRICE_COLUMN_NAME,
 		        CLOSE_PRICE_COLUMN_NAME);
 	}
 
