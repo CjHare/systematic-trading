@@ -65,7 +65,7 @@ public class MacdConfirmedByRsiOrUptrendsTrial extends BaseTrial implements Back
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new MacdConfirmedByRsiOrUptrendsTrial(), launchArgs);
+		new BacktestTrial(launchArgs).runBacktest(new MacdConfirmedByRsiOrUptrendsTrial(), launchArgs);
 	}
 
 	@Override

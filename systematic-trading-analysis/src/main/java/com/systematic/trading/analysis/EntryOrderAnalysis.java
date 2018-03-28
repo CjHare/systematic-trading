@@ -64,11 +64,11 @@ import com.systematic.trading.backtest.input.BacktestStartDate;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.data.DataService;
-import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.EquityApiFactory;
 import com.systematic.trading.data.HibernateDataService;
+import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.input.AnalysisLaunchArguments;
@@ -121,17 +121,22 @@ public class EntryOrderAnalysis {
 		        new OpeningFundsLaunchArgument(validator),
 		        arguments);
 
-		new EntryOrderAnalysis(launchArgs.dataService()).run(launchArgs);
+		new EntryOrderAnalysis(equityApi(launchArgs)).run(launchArgs);
 	}
 
-	public EntryOrderAnalysis( final DataServiceType serviceType ) throws BacktestInitialisationException {
+	private static EquityApi equityApi( final AnalysisLaunchArguments launchArgs )
+	        throws BacktestInitialisationException {
 
 		try {
-			this.dataServiceUpdater = new DataServiceUpdaterImpl(new EquityApiFactory().create(serviceType));
+			return new EquityApiFactory().create(launchArgs.dataService());
 		} catch (ServiceException e) {
 			throw new BacktestInitialisationException(e);
 		}
+	}
 
+	public EntryOrderAnalysis( final EquityApi api ) {
+
+		this.dataServiceUpdater = new DataServiceUpdaterImpl(api);
 		this.dataService = new HibernateDataService();
 		this.description = new StandardDescriptionGenerator();
 	}

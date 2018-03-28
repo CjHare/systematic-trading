@@ -53,7 +53,7 @@ public class UptrendsAndRsidTrial extends BaseTrial implements BacktestConfigura
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new UptrendsAndRsidTrial(), launchArgs);
+		new BacktestTrial(launchArgs).runBacktest(new UptrendsAndRsidTrial(), launchArgs);
 	}
 
 	@Override

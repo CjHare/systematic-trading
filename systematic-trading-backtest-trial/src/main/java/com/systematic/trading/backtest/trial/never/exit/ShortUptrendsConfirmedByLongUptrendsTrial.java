@@ -65,8 +65,7 @@ public class ShortUptrendsConfirmedByLongUptrendsTrial extends BaseTrial impleme
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService())
-		        .runBacktest(new ShortUptrendsConfirmedByLongUptrendsTrial(), launchArgs);
+		new BacktestTrial(launchArgs).runBacktest(new ShortUptrendsConfirmedByLongUptrendsTrial(), launchArgs);
 	}
 
 	@Override

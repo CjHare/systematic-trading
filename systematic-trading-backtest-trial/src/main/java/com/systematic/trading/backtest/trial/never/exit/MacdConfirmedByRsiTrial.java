@@ -53,7 +53,7 @@ public class MacdConfirmedByRsiTrial extends BaseTrial implements BacktestConfig
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new MacdConfirmedByRsiTrial(), launchArgs);
+		new BacktestTrial(launchArgs).runBacktest(new MacdConfirmedByRsiTrial(), launchArgs);
 	}
 
 	@Override

@@ -95,7 +95,7 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new DocumentationExampleTrial(), launchArgs);
+		new BacktestTrial(launchArgs).runBacktest(new DocumentationExampleTrial(), launchArgs);
 	}
 
 	@Override

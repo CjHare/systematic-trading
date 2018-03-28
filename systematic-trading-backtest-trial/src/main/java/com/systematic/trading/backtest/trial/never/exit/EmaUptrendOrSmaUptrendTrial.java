@@ -54,7 +54,7 @@ public class EmaUptrendOrSmaUptrendTrial extends BaseTrial implements BacktestCo
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new EmaUptrendOrSmaUptrendTrial(), launchArgs);
+		new BacktestTrial(launchArgs).runBacktest(new EmaUptrendOrSmaUptrendTrial(), launchArgs);
 	}
 
 	@Override

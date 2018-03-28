@@ -53,7 +53,7 @@ public class MacdRsiTrial extends BaseTrial implements BacktestConfiguration {
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new MacdRsiTrial(), launchArgs);
+		new BacktestTrial(launchArgs).runBacktest(new MacdRsiTrial(), launchArgs);
 	}
 
 	@Override

@@ -57,7 +57,7 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new AllStrategiesTrial(), launchArgs);
+		new BacktestTrial(launchArgs).runBacktest(new AllStrategiesTrial(), launchArgs);
 	}
 
 	private static Set<Pair<MinimumTrade, MaximumTrade>> positionSizing() {

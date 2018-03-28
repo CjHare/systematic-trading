@@ -65,11 +65,11 @@ import com.systematic.trading.backtest.output.file.dao.impl.FileValidatedBackest
 import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
 import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 import com.systematic.trading.data.DataService;
-import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.EquityApiFactory;
 import com.systematic.trading.data.HibernateDataService;
+import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
@@ -100,14 +100,9 @@ public class BacktestTrial {
 	/** Local source of the trading prices. */
 	private final DataService dataService;
 
-	public BacktestTrial( final DataServiceType serviceType ) throws ServiceException {
+	public BacktestTrial( final BacktestLaunchArguments launchArgs ) throws BacktestInitialisationException {
 
-		try {
-			this.dataServiceUpdater = new DataServiceUpdaterImpl(new EquityApiFactory().create(serviceType));
-		} catch (ServiceException e) {
-			throw new BacktestInitialisationException(e);
-		}
-
+		this.dataServiceUpdater = new DataServiceUpdaterImpl(equityApi(launchArgs));
 		this.dataService = new HibernateDataService();
 	}
 
@@ -179,6 +174,15 @@ public class BacktestTrial {
 		                "Finished outputting %s results, time taken: %s",
 		                backtestConfigurations.size(),
 		                Duration.ofMillis(timer.getTime())));
+	}
+
+	private EquityApi equityApi( final BacktestLaunchArguments launchArgs ) throws BacktestInitialisationException {
+
+		try {
+			return new EquityApiFactory().create(launchArgs.dataService());
+		} catch (ServiceException e) {
+			throw new BacktestInitialisationException(e);
+		}
 	}
 
 	private CashAccountConfiguration cashAcount( final BacktestLaunchArguments parserdArguments ) {

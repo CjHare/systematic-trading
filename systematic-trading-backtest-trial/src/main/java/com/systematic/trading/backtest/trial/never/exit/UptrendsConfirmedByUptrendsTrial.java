@@ -67,7 +67,7 @@ public class UptrendsConfirmedByUptrendsTrial extends BaseTrial implements Backt
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new UptrendsConfirmedByUptrendsTrial(), launchArgs);
+		new BacktestTrial(launchArgs).runBacktest(new UptrendsConfirmedByUptrendsTrial(), launchArgs);
 	}
 
 	@Override

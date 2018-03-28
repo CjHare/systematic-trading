@@ -52,7 +52,7 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 
 		final BacktestLaunchArguments launchArgs = launchArguments(args);
 
-		new BacktestTrial(launchArgs.dataService()).runBacktest(new ChangingBaselinesTrial(), launchArgs);
+		new BacktestTrial(launchArgs).runBacktest(new ChangingBaselinesTrial(), launchArgs);
 	}
 
 	@Override
