@@ -67,6 +67,7 @@ import com.systematic.trading.data.DataService;
 import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
+import com.systematic.trading.data.EquityApiFactory;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
@@ -126,7 +127,7 @@ public class EntryOrderAnalysis {
 	public EntryOrderAnalysis( final DataServiceType serviceType ) throws BacktestInitialisationException {
 
 		try {
-			this.dataServiceUpdater = new DataServiceUpdaterImpl(serviceType);
+			this.dataServiceUpdater = new DataServiceUpdaterImpl(new EquityApiFactory().create(serviceType));
 		} catch (ServiceException e) {
 			throw new BacktestInitialisationException(e);
 		}

@@ -33,13 +33,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 import com.systematic.trading.data.api.EquityApi;
-import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.collections.BlockingEventCountQueue;
 import com.systematic.trading.data.concurrent.EventCountCleanUp;
@@ -49,7 +46,6 @@ import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.dao.impl.HibernatePendingRetrievalRequestDao;
 import com.systematic.trading.data.dao.impl.HibernateRetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
-import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.data.history.HistoryRetrievalRequestMerger;
 import com.systematic.trading.data.history.HistoryRetrievalRequestSlicer;
@@ -62,12 +58,6 @@ import com.systematic.trading.data.history.impl.UnnecessaryHistoryRequestFilterI
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.builder.impl.HibernateHistoryRetrievalRequestBuilder;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
-import com.systematic.trading.signals.data.api.quandl.converter.QuandlResponseConverter;
-import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
-import com.systematic.trading.signals.data.api.quandl.dao.impl.FileValidatedQuandlConfigurationDao;
-import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlDatasetApiDao;
-import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlDatatableApiDao;
 
 public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
@@ -84,13 +74,11 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private final UnnecessaryHistoryRequestFilter unecessaryRequestFilter;
 	private final HistoryRetrievalRequestMerger historyRetrievalRequestMerger;
 
-	public DataServiceUpdaterImpl( final DataServiceType serviceType )
-	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+	public DataServiceUpdaterImpl( final EquityApi api ) {
 
 		final RetrievedMonthTradingPricesDao retrievedHistoryDao = new HibernateRetrievedMonthTradingPricesDao();
-		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().configuration();
 
-		this.api = new QuandlAPI(dao(serviceType, configuration), configuration, new QuandlResponseConverter());
+		this.api = api;
 		this.retrievedHistoryRecorder = new RetrievedYearMonthRecorder(retrievedHistoryDao);
 		this.pendingRetrievalRequestDao = new HibernatePendingRetrievalRequestDao();
 		this.tradingDayPricesDao = new HibernateTradingDayPricesDao();
@@ -119,25 +107,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			ensureAllRetrievalRequestsProcessed(tickerSymbol);
 			retrievedHistoryRecorder.retrieved(outstandingRequests);
 		}
-	}
-
-	private QuandlApiDao dao( final DataServiceType type, final EquityApiConfiguration configuration ) {
-
-		if (isTimeSeriesDataService(type)) { return new HttpQuandlDatasetApiDao(configuration); }
-
-		if (isTablesDataService(type)) { return new HttpQuandlDatatableApiDao(configuration); }
-
-		throw new IllegalArgumentException(String.format("Data service type not catered for: %s", type.type()));
-	}
-
-	private boolean isTimeSeriesDataService( final DataServiceType type ) {
-
-		return StringUtils.equals("time-series", type.type());
-	}
-
-	private boolean isTablesDataService( final DataServiceType type ) {
-
-		return StringUtils.equals("tables", type.type());
 	}
 
 	private void ensureAllRetrievalRequestsProcessed( final String tickerSymbol ) throws CannotRetrieveDataException {
