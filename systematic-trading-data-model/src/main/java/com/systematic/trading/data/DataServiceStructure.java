@@ -23,38 +23,25 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.input;
-
-import java.util.Map;
-
-import com.systematic.trading.data.DataServiceType;
+package com.systematic.trading.data;
 
 /**
- * Launch argument parser and validation for the data service type key value pairing.
+ * Data services may contain many possible structures when retrieving data from their service, each
+ * described by a separate data service structure.
  * 
  * @author CJ Hare
  */
-public class DataServiceTypeLaunchArgument implements LaunchArgument<DataServiceType> {
+public class DataServiceStructure {
 
-	/** Provides validation for the launch argument value. */
-	private final LaunchArgumentValidator validator;
+	private final String structure;
 
-	public DataServiceTypeLaunchArgument( final LaunchArgumentValidator validator ) {
+	public DataServiceStructure( final String structure ) {
 
-		this.validator = validator;
+		this.structure = structure;
 	}
 
-	@Override
-	public DataServiceType get( final Map<ArgumentKey, String> arguments ) {
+	public String structure() {
 
-		final String dataService = arguments.get(ArgumentKey.DATA_SERVICE_STRUCTURE);
-
-		validator.validate(dataService, "%s argument is not present", ArgumentKey.DATA_SERVICE_STRUCTURE.getKey());
-		validator.validateNotEmpty(
-		        dataService,
-		        "%s argument cannot be empty",
-		        ArgumentKey.DATA_SERVICE_STRUCTURE.getKey());
-
-		return dataService == null ? null : new DataServiceType(dataService);
+		return structure;
 	}
 }

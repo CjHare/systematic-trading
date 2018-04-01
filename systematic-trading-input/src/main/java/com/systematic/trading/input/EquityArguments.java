@@ -29,6 +29,7 @@ import java.util.Map;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.EquityDataset;
+import com.systematic.trading.data.DataServiceStructure;
 import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
@@ -45,18 +46,23 @@ public class EquityArguments {
 	/** Optional argument, data set to retrieve the ticker symbol from. */
 	private final EquityDataset equityDataset;
 
+	/** The data source to use when retrieving data. */
+	private final DataServiceType dataServiceType;
+
 	/** Optional argument, which data source type to use when retrieving data. */
-	private final DataServiceType dataService;
+	private final DataServiceStructure dataServiceStructure;
 
 	public EquityArguments(
-	        final LaunchArgument<DataServiceType> dataServiceArgument,
+	        final LaunchArgument<DataServiceType> dataServiceTypeArgument,
+	        final LaunchArgument<DataServiceStructure> dataServiceStructureArgument,
 	        final LaunchArgument<EquityDataset> equityDatasetArgument,
 	        final LaunchArgument<TickerSymbol> tickerSymbolArgument,
 	        final Map<ArgumentKey, String> arguments ) {
 
+		this.dataServiceType = dataServiceTypeArgument.get(arguments);
 		this.equityDataset = equityDatasetArgument.get(arguments);
 		this.tickerSymbol = tickerSymbolArgument.get(arguments);
-		this.dataService = dataServiceArgument.get(arguments);
+		this.dataServiceStructure = dataServiceStructureArgument.get(arguments);
 	}
 
 	public TickerSymbol tickerSymbol() {
@@ -69,8 +75,13 @@ public class EquityArguments {
 		return equityDataset;
 	}
 
+	public DataServiceStructure dataServiceStructure() {
+
+		return dataServiceStructure;
+	}
+
 	public DataServiceType dataService() {
 
-		return dataService;
+		return dataServiceType;
 	}
 }

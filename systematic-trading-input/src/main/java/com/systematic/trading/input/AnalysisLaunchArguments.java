@@ -30,7 +30,7 @@ import java.util.Map;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.EquityDataset;
-import com.systematic.trading.data.DataServiceType;
+import com.systematic.trading.data.DataServiceStructure;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
@@ -66,9 +66,9 @@ public class AnalysisLaunchArguments {
 		return equityArguments.equityDataset();
 	}
 
-	public DataServiceType dataService() {
+	public DataServiceStructure dataService() {
 
-		return equityArguments.dataService();
+		return equityArguments.dataServiceStructure();
 	}
 
 	public BigDecimal openingFunds() {

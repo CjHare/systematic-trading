@@ -52,7 +52,7 @@ import com.systematic.trading.backtest.input.DepositFrequency;
 import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
-import com.systematic.trading.data.DataServiceType;
+import com.systematic.trading.data.DataServiceStructure;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
@@ -304,7 +304,7 @@ public class BacktestLaunchArgumentsTest {
 
 	private void setUpDataService( final String serviceName ) {
 
-		when(equityArguments.dataService()).thenReturn(new DataServiceType(serviceName));
+		when(equityArguments.dataServiceStructure()).thenReturn(new DataServiceStructure(serviceName));
 	}
 
 	private void setUpEquityDataSet( final String serviceName ) {
@@ -357,8 +357,8 @@ public class BacktestLaunchArgumentsTest {
 	private void verifyDataService( final String expected ) {
 
 		assertNotNull(parser.dataService());
-		assertEquals(expected, parser.dataService().type());
-		verify(equityArguments, atLeastOnce()).dataService();
+		assertEquals(expected, parser.dataService().structure());
+		verify(equityArguments, atLeastOnce()).dataServiceStructure();
 	}
 
 	private void verifyEquityDataSet( final String expected ) {

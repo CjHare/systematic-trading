@@ -37,6 +37,7 @@ public interface LaunchArgument<T> {
 
 	enum ArgumentKey {
 		DATA_SERVICE_TYPE("-data_service_type"),
+		DATA_SERVICE_STRUCTURE("-data_service_structure"),
 		DEPOSIT_AMOUNT("-deposit_amount"),
 		DEPOSIT_FREQUENCY("-deposit_frequency"),
 		END_DATE("-end_date"),

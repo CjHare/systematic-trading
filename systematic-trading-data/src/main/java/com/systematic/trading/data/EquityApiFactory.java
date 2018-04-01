@@ -45,7 +45,7 @@ import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlDatatab
  */
 public class EquityApiFactory {
 
-	public EquityApi create( final DataServiceType serviceType )
+	public EquityApi create( final DataServiceStructure serviceType )
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 
 		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().configuration();
@@ -53,22 +53,22 @@ public class EquityApiFactory {
 		return new QuandlAPI(dao(serviceType, configuration), configuration, new QuandlResponseConverter());
 	}
 
-	private QuandlApiDao dao( final DataServiceType type, final EquityApiConfiguration configuration ) {
+	private QuandlApiDao dao( final DataServiceStructure type, final EquityApiConfiguration configuration ) {
 
 		if (isTimeSeriesDataService(type)) { return new HttpQuandlDatasetApiDao(configuration); }
 
 		if (isTablesDataService(type)) { return new HttpQuandlDatatableApiDao(configuration); }
 
-		throw new IllegalArgumentException(String.format("Data service type not catered for: %s", type.type()));
+		throw new IllegalArgumentException(String.format("Data service type not catered for: %s", type.structure()));
 	}
 
-	private boolean isTimeSeriesDataService( final DataServiceType type ) {
+	private boolean isTimeSeriesDataService( final DataServiceStructure type ) {
 
-		return StringUtils.equals("time-series", type.type());
+		return StringUtils.equals("time-series", type.structure());
 	}
 
-	private boolean isTablesDataService( final DataServiceType type ) {
+	private boolean isTablesDataService( final DataServiceStructure type ) {
 
-		return StringUtils.equals("tables", type.type());
+		return StringUtils.equals("tables", type.structure());
 	}
 }

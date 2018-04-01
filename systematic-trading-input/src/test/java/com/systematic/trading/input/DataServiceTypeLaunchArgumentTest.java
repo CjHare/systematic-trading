@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.data.DataServiceType;
+import com.systematic.trading.data.DataServiceStructure;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
@@ -50,12 +50,12 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 public class DataServiceTypeLaunchArgumentTest {
 
 	/** Launch argument parser instance being tested. */
-	private DataServiceTypeLaunchArgument argument;
+	private DataServiceStructureLaunchArgument argument;
 
 	@Before
 	public void setUp() {
 
-		argument = new DataServiceTypeLaunchArgument();
+		argument = new DataServiceStructureLaunchArgument();
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class DataServiceTypeLaunchArgumentTest {
 		final String expectedSymbol = "ServiceType";
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
-		final DataServiceType symbol = dataServiceType(launchArguments);
+		final DataServiceStructure symbol = dataServiceType(launchArguments);
 
 		verifyDataServiceType(expectedSymbol, symbol);
 	}
@@ -74,7 +74,7 @@ public class DataServiceTypeLaunchArgumentTest {
 
 		final Map<ArgumentKey, String> launchArguments = setUpArguments(null);
 
-		final DataServiceType symbol = dataServiceType(launchArguments);
+		final DataServiceStructure symbol = dataServiceType(launchArguments);
 
 		verifyNoDataServiceType(symbol);
 	}
@@ -84,32 +84,32 @@ public class DataServiceTypeLaunchArgumentTest {
 
 		final Map<ArgumentKey, String> launchArguments = setUpNoArguments();
 
-		final DataServiceType symbol = dataServiceType(launchArguments);
+		final DataServiceStructure symbol = dataServiceType(launchArguments);
 
 		verifyNoDataServiceType(symbol);
 	}
 
-	private DataServiceType dataServiceType( final Map<ArgumentKey, String> launchArguments ) {
+	private DataServiceStructure dataServiceType( final Map<ArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
 
-	private void verifyNoDataServiceType( final DataServiceType actual ) {
+	private void verifyNoDataServiceType( final DataServiceStructure actual ) {
 
 		assertNull(actual);
 	}
 
-	private void verifyDataServiceType( final String expected, final DataServiceType actual ) {
+	private void verifyDataServiceType( final String expected, final DataServiceStructure actual ) {
 
 		assertNotNull(actual);
-		assertNotNull(actual.type());
-		assertTrue(StringUtils.equals(expected, actual.type()));
+		assertNotNull(actual.structure());
+		assertTrue(StringUtils.equals(expected, actual.structure()));
 	}
 
 	private Map<ArgumentKey, String> setUpArguments( final String value ) {
 
 		final Map<ArgumentKey, String> arguments = new HashMap<>();
-		arguments.put(ArgumentKey.DATA_SERVICE_TYPE, value);
+		arguments.put(ArgumentKey.DATA_SERVICE_STRUCTURE, value);
 		return arguments;
 	}
 

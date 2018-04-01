@@ -35,7 +35,7 @@ import com.systematic.trading.backtest.input.DepositFrequency;
 import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
-import com.systematic.trading.data.DataServiceType;
+import com.systematic.trading.data.DataServiceStructure;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
@@ -133,9 +133,9 @@ public class BacktestLaunchArguments {
 		return equityArguments.equityDataset();
 	}
 
-	public DataServiceType dataService() {
+	public DataServiceStructure dataService() {
 
-		return equityArguments.dataService();
+		return equityArguments.dataServiceStructure();
 	}
 
 	public BigDecimal openingFunds() {

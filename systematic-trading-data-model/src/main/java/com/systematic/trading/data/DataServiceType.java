@@ -26,7 +26,7 @@
 package com.systematic.trading.data;
 
 /**
- * Which type of data service to use when retrieving data.
+ * DataServiceType defines which of the available data sources to retrieve price data from.
  * 
  * @author CJ Hare
  */

@@ -27,34 +27,20 @@ package com.systematic.trading.input;
 
 import java.util.Map;
 
-import com.systematic.trading.data.DataServiceType;
+import com.systematic.trading.data.DataServiceStructure;
 
 /**
- * Launch argument parser and validation for the data service type key value pairing.
+ * Launch argument parser and validation for the data service structure key value pairing.
  * 
  * @author CJ Hare
  */
-public class DataServiceTypeLaunchArgument implements LaunchArgument<DataServiceType> {
-
-	/** Provides validation for the launch argument value. */
-	private final LaunchArgumentValidator validator;
-
-	public DataServiceTypeLaunchArgument( final LaunchArgumentValidator validator ) {
-
-		this.validator = validator;
-	}
+public class DataServiceStructureLaunchArgument implements LaunchArgument<DataServiceStructure> {
 
 	@Override
-	public DataServiceType get( final Map<ArgumentKey, String> arguments ) {
+	public DataServiceStructure get( final Map<ArgumentKey, String> arguments ) {
 
 		final String dataService = arguments.get(ArgumentKey.DATA_SERVICE_STRUCTURE);
 
-		validator.validate(dataService, "%s argument is not present", ArgumentKey.DATA_SERVICE_STRUCTURE.getKey());
-		validator.validateNotEmpty(
-		        dataService,
-		        "%s argument cannot be empty",
-		        ArgumentKey.DATA_SERVICE_STRUCTURE.getKey());
-
-		return dataService == null ? null : new DataServiceType(dataService);
+		return dataService == null ? null : new DataServiceStructure(dataService);
 	}
 }

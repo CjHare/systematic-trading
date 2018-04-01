@@ -52,6 +52,7 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.input.BacktestLaunchArguments;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.input.DataServiceStructureLaunchArgument;
 import com.systematic.trading.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.input.DepositAmountLaunchArgument;
 import com.systematic.trading.input.DepositFrequencyLaunchArgument;
@@ -84,7 +85,8 @@ public abstract class BaseTrial {
 		return new BacktestLaunchArguments(
 		        new OutputLaunchArgument(validator),
 		        new EquityArguments(
-		                new DataServiceTypeLaunchArgument(),
+		                new DataServiceTypeLaunchArgument(validator),
+		                new DataServiceStructureLaunchArgument(),
 		                new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator),
 		                arguments),
