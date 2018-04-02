@@ -26,6 +26,7 @@
 package com.systematic.trading.signals.data.api.alpha.vantage.dao.impl;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -111,14 +112,19 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 
 		final WebTarget url = url(tickerSymbol);
 		final Response response = get(url, throttler);
+		final AlphaVantageResponseResource resource = response.readEntity(AlphaVantageResponseResource.class);
 
-		// TODO deal with error responses (HTTP 200 with error message)
+		errorCheck(url, resource);
 
-		return converter.convert(
-		        tickerSymbol,
-		        inclusiveStartDate,
-		        exclusiveEndDate,
-		        response.readEntity(AlphaVantageResponseResource.class).dataset());
+		return converter.convert(tickerSymbol, inclusiveStartDate, exclusiveEndDate, resource.dataset());
+	}
+
+	private void errorCheck( final WebTarget url, final AlphaVantageResponseResource resource )
+	        throws CannotRetrieveDataException {
+
+		final Optional<String> error = resource.error();
+		if (error.isPresent()) { throw new CannotRetrieveDataException(
+		        String.format("Get call failed: %s%n%s", url, error.get())); }
 	}
 
 	// TODO duplicate code with HttpQuandlApiDao -> utility

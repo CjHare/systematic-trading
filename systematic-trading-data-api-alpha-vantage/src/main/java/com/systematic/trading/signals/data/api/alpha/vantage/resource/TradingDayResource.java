@@ -25,10 +25,10 @@
  */
 package com.systematic.trading.signals.data.api.alpha.vantage.resource;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
@@ -45,7 +45,7 @@ public class TradingDayResource {
 	private String low;
 	private String close;
 
-	@JsonProperty("1. open")
+	@JsonGetter("1. open")
 	public String open() {
 
 		return open;
@@ -57,7 +57,7 @@ public class TradingDayResource {
 		this.open = open;
 	}
 
-	@JsonProperty("2. high")
+	@JsonGetter("2. high")
 	public String high() {
 
 		return high;
@@ -69,7 +69,7 @@ public class TradingDayResource {
 		this.high = high;
 	}
 
-	@JsonProperty("3. low")
+	@JsonGetter("3. low")
 	public String low() {
 
 		return low;
@@ -81,7 +81,7 @@ public class TradingDayResource {
 		this.low = low;
 	}
 
-	@JsonProperty("4. close")
+	@JsonGetter("4. close")
 	public String close() {
 
 		return close;
