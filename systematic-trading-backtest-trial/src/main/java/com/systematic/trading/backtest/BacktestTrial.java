@@ -179,7 +179,7 @@ public class BacktestTrial {
 	private EquityApi equityApi( final BacktestLaunchArguments launchArgs ) throws BacktestInitialisationException {
 
 		try {
-			return new EquityApiFactory().create(launchArgs.dataService());
+			return new EquityApiFactory().create(launchArgs.dataService(), launchArgs.dataServiceStructure());
 		} catch (ServiceException e) {
 			throw new BacktestInitialisationException(e);
 		}

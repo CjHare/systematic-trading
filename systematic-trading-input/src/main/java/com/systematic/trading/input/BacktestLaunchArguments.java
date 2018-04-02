@@ -36,6 +36,7 @@ import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
 import com.systematic.trading.data.DataServiceStructure;
+import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
@@ -133,7 +134,12 @@ public class BacktestLaunchArguments {
 		return equityArguments.equityDataset();
 	}
 
-	public DataServiceStructure dataService() {
+	public DataServiceType dataService() {
+
+		return equityArguments.dataService();
+	}
+
+	public DataServiceStructure dataServiceStructure() {
 
 		return equityArguments.dataServiceStructure();
 	}

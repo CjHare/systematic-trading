@@ -23,62 +23,25 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.input;
+package com.systematic.trading.signals.data.api.alpha.vantage.dao;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
-import com.systematic.trading.backtest.equity.TickerSymbol;
-import com.systematic.trading.backtest.input.EquityDataset;
-import com.systematic.trading.data.DataServiceStructure;
-import com.systematic.trading.data.DataServiceType;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
+import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 
 /**
- * An aggregation facade for parsing the arguments given on launch, their validation and type
- * conversion.
+ * Loader for service API key.
  * 
  * @author CJ Hare
  */
-public class AnalysisLaunchArguments {
+public interface ApiKeyDao {
 
-	/** Equity and it's data source. */
-	private final EquityArguments equityArguments;
-
-	/** Funds contained the cash account to use when opening positions. */
-	private final BigDecimal openingFunds;
-
-	public AnalysisLaunchArguments(
-	        final EquityArguments equityArguments,
-	        final LaunchArgument<BigDecimal> openingFundsArgument,
-	        final Map<ArgumentKey, String> arguments ) {
-
-		this.openingFunds = openingFundsArgument.get(arguments);
-		this.equityArguments = equityArguments;
-	}
-
-	public TickerSymbol tickerSymbol() {
-
-		return equityArguments.tickerSymbol();
-	}
-
-	public EquityDataset equityDataset() {
-
-		return equityArguments.equityDataset();
-	}
-
-	public DataServiceType dataService() {
-
-		return equityArguments.dataService();
-	}
-
-	public DataServiceStructure dataServiceStructure() {
-
-		return equityArguments.dataServiceStructure();
-	}
-
-	public BigDecimal openingFunds() {
-
-		return openingFunds;
-	}
+	/**
+	 * Retrieves the API Key.
+	 * 
+	 * @param keyFileLocation
+	 *            file containing only the API key.
+	 * @return API key.
+	 * @throws CannotRetrieveConfigurationException
+	 *             problem encountered retrieving the API key.
+	 */
+	String apiKey( String keyFileLocation ) throws CannotRetrieveConfigurationException;
 }

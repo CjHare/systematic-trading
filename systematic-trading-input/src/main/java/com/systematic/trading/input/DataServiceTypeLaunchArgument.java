@@ -26,6 +26,7 @@
 package com.systematic.trading.input;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.systematic.trading.data.DataServiceType;
 
@@ -55,6 +56,10 @@ public class DataServiceTypeLaunchArgument implements LaunchArgument<DataService
 		        "%s argument cannot be empty",
 		        ArgumentKey.DATA_SERVICE_STRUCTURE.getKey());
 
-		return dataService == null ? null : new DataServiceType(dataService);
+		Optional<DataServiceType> type = DataServiceType.get(dataService);
+
+		if (type.isPresent()) { return type.get(); }
+
+		throw new IllegalArgumentException(String.format("Data service implementation does not exist %s", type));
 	}
 }

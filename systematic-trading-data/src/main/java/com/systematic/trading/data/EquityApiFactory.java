@@ -31,6 +31,10 @@ import com.systematic.trading.configuration.exception.ConfigurationValidationExc
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
+import com.systematic.trading.signals.data.api.alpha.vantage.AlphaVantageAPI;
+import com.systematic.trading.signals.data.api.alpha.vantage.converter.AlphaVantageResponseConverter;
+import com.systematic.trading.signals.data.api.alpha.vantage.dao.impl.FileValidatedAlphaVantageConfigurationDao;
+import com.systematic.trading.signals.data.api.alpha.vantage.dao.impl.HttpAlphaVantageApiDao;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
 import com.systematic.trading.signals.data.api.quandl.converter.QuandlResponseConverter;
 import com.systematic.trading.signals.data.api.quandl.dao.QuandlApiDao;
@@ -45,12 +49,39 @@ import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlDatatab
  */
 public class EquityApiFactory {
 
-	public EquityApi create( final DataServiceStructure serviceType )
+	public EquityApi create( final DataServiceType serviceType, final DataServiceStructure serviceStructure )
+	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+
+		switch (serviceType) {
+			case QUANDL:
+				return quandl(serviceStructure);
+
+			case ALPHA_VANTAGE:
+
+				return aplhaVantage();
+
+			default:
+				throw new ConfigurationValidationException(
+				        String.format("Unsupported data service type: %s", serviceType.type()));
+		}
+	}
+
+	private EquityApi aplhaVantage() throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+
+		final EquityApiConfiguration configuration = new FileValidatedAlphaVantageConfigurationDao().configuration();
+
+		return new AlphaVantageAPI(
+		        new HttpAlphaVantageApiDao(configuration),
+		        new AlphaVantageResponseConverter(),
+		        configuration);
+	}
+
+	private EquityApi quandl( final DataServiceStructure serviceStructure )
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 
 		final EquityApiConfiguration configuration = new FileValidatedQuandlConfigurationDao().configuration();
 
-		return new QuandlAPI(dao(serviceType, configuration), configuration, new QuandlResponseConverter());
+		return new QuandlAPI(dao(serviceStructure, configuration), configuration, new QuandlResponseConverter());
 	}
 
 	private QuandlApiDao dao( final DataServiceStructure type, final EquityApiConfiguration configuration ) {

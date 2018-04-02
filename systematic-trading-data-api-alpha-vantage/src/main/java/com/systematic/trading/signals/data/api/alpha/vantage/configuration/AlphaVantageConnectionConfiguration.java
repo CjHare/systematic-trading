@@ -23,62 +23,55 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.input;
-
-import java.math.BigDecimal;
-import java.util.Map;
-
-import com.systematic.trading.backtest.equity.TickerSymbol;
-import com.systematic.trading.backtest.input.EquityDataset;
-import com.systematic.trading.data.DataServiceStructure;
-import com.systematic.trading.data.DataServiceType;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
+package com.systematic.trading.signals.data.api.alpha.vantage.configuration;
 
 /**
- * An aggregation facade for parsing the arguments given on launch, their validation and type
- * conversion.
- * 
  * @author CJ Hare
  */
-public class AnalysisLaunchArguments {
+public class AlphaVantageConnectionConfiguration {
 
-	/** Equity and it's data source. */
-	private final EquityArguments equityArguments;
+	private final String endpoint;
+	private final String apiKey;
+	private final int numberOfRetries;
+	private final int retryBackOffMs;
+	private final int maximumRetrievalTimeSeconds;
 
-	/** Funds contained the cash account to use when opening positions. */
-	private final BigDecimal openingFunds;
+	public AlphaVantageConnectionConfiguration(
+	        final String endpoint,
+	        final String apiKey,
+	        final int numberOfRetries,
+	        final int retryBackOffMs,
+	        final int maximumRetrievalTimeSeconds ) {
 
-	public AnalysisLaunchArguments(
-	        final EquityArguments equityArguments,
-	        final LaunchArgument<BigDecimal> openingFundsArgument,
-	        final Map<ArgumentKey, String> arguments ) {
-
-		this.openingFunds = openingFundsArgument.get(arguments);
-		this.equityArguments = equityArguments;
+		this.endpoint = endpoint;
+		this.apiKey = apiKey;
+		this.numberOfRetries = numberOfRetries;
+		this.retryBackOffMs = retryBackOffMs;
+		this.maximumRetrievalTimeSeconds = maximumRetrievalTimeSeconds;
 	}
 
-	public TickerSymbol tickerSymbol() {
+	public String endpoint() {
 
-		return equityArguments.tickerSymbol();
+		return endpoint;
 	}
 
-	public EquityDataset equityDataset() {
+	public String apiKey() {
 
-		return equityArguments.equityDataset();
+		return apiKey;
 	}
 
-	public DataServiceType dataService() {
+	public int numberOfRetries() {
 
-		return equityArguments.dataService();
+		return numberOfRetries;
 	}
 
-	public DataServiceStructure dataServiceStructure() {
+	public int retryBackOffMs() {
 
-		return equityArguments.dataServiceStructure();
+		return retryBackOffMs;
 	}
 
-	public BigDecimal openingFunds() {
+	public int maximumRetrievalTimeSeconds() {
 
-		return openingFunds;
+		return maximumRetrievalTimeSeconds;
 	}
 }

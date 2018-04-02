@@ -23,62 +23,31 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.input;
-
-import java.math.BigDecimal;
-import java.util.Map;
-
-import com.systematic.trading.backtest.equity.TickerSymbol;
-import com.systematic.trading.backtest.input.EquityDataset;
-import com.systematic.trading.data.DataServiceStructure;
-import com.systematic.trading.data.DataServiceType;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
+package com.systematic.trading.signals.data.api.alpha.vantage.configuration;
 
 /**
- * An aggregation facade for parsing the arguments given on launch, their validation and type
- * conversion.
+ * Keys for the AlphaVantage Properties.
  * 
  * @author CJ Hare
  */
-public class AnalysisLaunchArguments {
+public enum AlphaVantageProperty {
+	ENDPOINT("endpoint"),
+	NUMBER_OF_RETRIES("number_of_retries"),
+	MAXIMUM_CONCURRENT_CONNECTIONS("maximum_concurrent_connections"),
+	MAXIMUM_CONNECTIONS_PER_SECOND("maximum_connections_per_second"),
+	MAXIMUM_RETRIEVAL_TIME_SECONDS("maximum_retrieval_time_seconds"),
+	MAXIMUM_MONTHS_RETRIEVED_PER_CONNECTION("maximum_months_retrieved_per_connection"),
+	RETRY_BACKOFF_MS("retry_backoff_ms");
 
-	/** Equity and it's data source. */
-	private final EquityArguments equityArguments;
+	private final String key;
 
-	/** Funds contained the cash account to use when opening positions. */
-	private final BigDecimal openingFunds;
+	private AlphaVantageProperty( final String key ) {
 
-	public AnalysisLaunchArguments(
-	        final EquityArguments equityArguments,
-	        final LaunchArgument<BigDecimal> openingFundsArgument,
-	        final Map<ArgumentKey, String> arguments ) {
-
-		this.openingFunds = openingFundsArgument.get(arguments);
-		this.equityArguments = equityArguments;
+		this.key = key;
 	}
 
-	public TickerSymbol tickerSymbol() {
+	public String key() {
 
-		return equityArguments.tickerSymbol();
-	}
-
-	public EquityDataset equityDataset() {
-
-		return equityArguments.equityDataset();
-	}
-
-	public DataServiceType dataService() {
-
-		return equityArguments.dataService();
-	}
-
-	public DataServiceStructure dataServiceStructure() {
-
-		return equityArguments.dataServiceStructure();
-	}
-
-	public BigDecimal openingFunds() {
-
-		return openingFunds;
+		return key;
 	}
 }

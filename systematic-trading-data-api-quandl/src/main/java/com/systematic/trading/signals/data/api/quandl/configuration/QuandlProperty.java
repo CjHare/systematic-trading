@@ -26,7 +26,7 @@
 package com.systematic.trading.signals.data.api.quandl.configuration;
 
 /**
- * Keys for the Quandl Properties..
+ * Keys for the Quandl Properties.
  * 
  * @author CJ Hare
  */

@@ -46,6 +46,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.data.DataServiceStructure;
+import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
@@ -94,12 +95,23 @@ public class AnalysisLaunchArgumentsTest {
 	@Test
 	public void dataService() {
 
-		final String serviceName = "identity of the data service";
+		final String serviceName = DataServiceType.ALPHA_VANTAGE.type();
 		setUpDataService(serviceName);
 
 		createLaunchArguments();
 
 		verifyDataService(serviceName);
+	}
+
+	@Test
+	public void dataServiceStructure() {
+
+		final String serviceName = "identity of the data service";
+		setUpDataServiceStructure(serviceName);
+
+		createLaunchArguments();
+
+		verifyDataServiceStructure(serviceName);
 	}
 
 	@Test
@@ -165,6 +177,11 @@ public class AnalysisLaunchArgumentsTest {
 
 	private void setUpDataService( final String serviceName ) {
 
+		when(equityArguments.dataService()).thenReturn(DataServiceType.get(serviceName).get());
+	}
+
+	private void setUpDataServiceStructure( final String serviceName ) {
+
 		when(equityArguments.dataServiceStructure()).thenReturn(new DataServiceStructure(serviceName));
 	}
 
@@ -182,7 +199,14 @@ public class AnalysisLaunchArgumentsTest {
 	private void verifyDataService( final String expected ) {
 
 		assertNotNull(parser.dataService());
-		assertEquals(expected, parser.dataService().structure());
+		assertEquals(expected, parser.dataService().type());
+		verify(equityArguments, atLeastOnce()).dataService();
+	}
+
+	private void verifyDataServiceStructure( final String expected ) {
+
+		assertNotNull(parser.dataServiceStructure());
+		assertEquals(expected, parser.dataServiceStructure().structure());
 		verify(equityArguments, atLeastOnce()).dataServiceStructure();
 	}
 
