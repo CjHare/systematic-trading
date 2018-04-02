@@ -46,8 +46,8 @@ import com.systematic.trading.signals.data.api.alpha.vantage.dao.AlphaVantageCon
  */
 public class FileValidatedAlphaVantageConfigurationDao implements AlphaVantageConfigurationDao {
 
-	private static final String QUANDL_PROPERTIES_FILE = "quandl.properties";
-	private static final String QUANDL_API_KEY_FILE = "quandl.key";
+	private static final String ALPHA_VANTAGE_PROPERTIES_FILE = "alpha-vantage.properties";
+	private static final String ALPHA_VANTAGE_API_KEY_FILE = "alpha-vantage.key";
 
 	private final ConfigurationValidator<Integer> numberOfRetiresValidator;
 	private final ConfigurationValidator<Integer> retryBackOffValidator;
@@ -72,8 +72,8 @@ public class FileValidatedAlphaVantageConfigurationDao implements AlphaVantageCo
 	public EquityApiConfiguration configuration()
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 
-		final String apiKey = new FileApiKeyDao().apiKey(QUANDL_API_KEY_FILE);
-		final Properties properties = new FileConfigurationDao().configuration(QUANDL_PROPERTIES_FILE);
+		final String apiKey = new FileApiKeyDao().apiKey(ALPHA_VANTAGE_API_KEY_FILE);
+		final Properties properties = new FileConfigurationDao().configuration(ALPHA_VANTAGE_PROPERTIES_FILE);
 
 		final String endpoint = stringProperty(properties, AlphaVantageProperty.ENDPOINT, endpointValidator);
 		final int numberOfRetries = integerProperty(
