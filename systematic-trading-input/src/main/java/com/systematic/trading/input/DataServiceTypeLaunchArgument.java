@@ -47,13 +47,10 @@ public class DataServiceTypeLaunchArgument implements LaunchArgument<DataService
 	@Override
 	public DataServiceType get( final Map<ArgumentKey, String> arguments ) {
 
-		final String dataService = arguments.get(ArgumentKey.DATA_SERVICE_STRUCTURE);
+		final String dataService = arguments.get(ArgumentKey.DATA_SERVICE_TYPE);
 
-		validator.validate(dataService, "%s argument is not present", ArgumentKey.DATA_SERVICE_STRUCTURE.getKey());
-		validator.validateNotEmpty(
-		        dataService,
-		        "%s argument cannot be empty",
-		        ArgumentKey.DATA_SERVICE_STRUCTURE.getKey());
+		validator.validate(dataService, "%s argument is not present", ArgumentKey.DATA_SERVICE_TYPE.getKey());
+		validator.validateNotEmpty(dataService, "%s argument cannot be empty", ArgumentKey.DATA_SERVICE_TYPE.getKey());
 
 		return new DataServiceType(dataService);
 	}
