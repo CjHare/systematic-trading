@@ -110,7 +110,7 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 	        final LocalDate exclusiveEndDate,
 	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
-		final WebTarget url = url(tickerSymbol);
+		final WebTarget url = url(equityDataset, tickerSymbol);
 		final Response response = get(url, throttler);
 		final AlphaVantageResponseResource resource = response.readEntity(AlphaVantageResponseResource.class);
 
@@ -129,10 +129,11 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 
 	// TODO duplicate code with HttpQuandlApiDao -> utility
 
-	private WebTarget url( final String tickerSymbol ) {
+	private WebTarget url( final String equityDataset, final String tickerSymbol ) {
 
 		return root.path(PATH).queryParam(FUNCTION_SIZE_KEY, FUNCTION_SIZE_VALUE)
-		        .queryParam(OUTPUT_SIZE_KEY, OUTPUT_SIZE_VALUE).queryParam(TICKER_SYMBOL_KEY, tickerSymbol)
+		        .queryParam(OUTPUT_SIZE_KEY, OUTPUT_SIZE_VALUE)
+		        .queryParam(TICKER_SYMBOL_KEY, String.format("%s.%s", tickerSymbol, equityDataset))
 		        .queryParam(API_KEY, apiKey);
 	}
 

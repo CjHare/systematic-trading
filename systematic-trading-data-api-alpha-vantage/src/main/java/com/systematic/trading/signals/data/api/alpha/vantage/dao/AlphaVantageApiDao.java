@@ -46,7 +46,7 @@ public interface AlphaVantageApiDao {
 	 * Retrieve historical equity price data from AlphaVantage.
 	 * 
 	 * @param equityDataset
-	 *            identifier for the dataset to retrieve the ticker symbol from.
+	 *            identifier for the dataset to retrieve the ticker symbol from e.g. AX for the ASX.
 	 * @param tickerSymbol
 	 *            identifier of the equity to retrieve.
 	 * @param inclusiveStartDate
