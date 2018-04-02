@@ -25,14 +25,7 @@
  */
 package com.systematic.trading.signals.data.api.alpha.vantage.dao.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -49,10 +42,9 @@ import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.model.price.impl.TradingDayPricesImpl;
+import com.systematic.trading.signals.data.api.alpha.vantage.converter.AlphaVantageResponseConverter;
 import com.systematic.trading.signals.data.api.alpha.vantage.dao.AlphaVantageApiDao;
-import com.systematic.trading.signals.data.api.alpha.vantage.resource.ResponseResource;
-import com.systematic.trading.signals.data.api.alpha.vantage.resource.TradingDayResource;
+import com.systematic.trading.signals.data.api.alpha.vantage.resource.AlphaVantageResponseResource;
 
 /**
  * HttpAlphaVantageApiDao retrieves time series data from the Alpha Vantage API.
@@ -77,6 +69,9 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 
 	private static final int HTTP_OK = 200;
 
+	/** Converts the resource into the Systematic Trading domain object. */
+	private final AlphaVantageResponseConverter converter;
+
 	/** Base one, number of attempts per a Alpha Vantage call. */
 	private final int numberOfRetries;
 
@@ -89,7 +84,9 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 	/** User key for accessing the Quandl end point. */
 	private final String apiKey;
 
-	public HttpAlphaVantageApiDao( final EquityApiConfiguration configuration ) {
+	public HttpAlphaVantageApiDao(
+	        final EquityApiConfiguration configuration,
+	        final AlphaVantageResponseConverter converter ) {
 
 		this.numberOfRetries = configuration.numberOfRetries();
 		this.retryBackoffMs = configuration.retryBackOffMs();
@@ -101,6 +98,7 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 		this.root = ClientBuilder.newClient(clientConfig).target(configuration.endpoint());
 
 		this.apiKey = configuration.apiKey();
+		this.converter = converter;
 	}
 
 	@Override
@@ -116,45 +114,9 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 
 		// TODO deal with error responses (HTTP 200 with error message)
 
-		return convert(tickerSymbol, response.readEntity(ResponseResource.class).dataset());
+		return converter.convert(tickerSymbol, response.readEntity(AlphaVantageResponseResource.class).dataset());
 	}
 
-	// TODO refactor into a converter (encapsulate the conversion logic)
-	private static final DateTimeFormatter ALPHA_VANTAGE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	private static final int TWO_DECIMAL_PLACES = 2;
-
-	private TradingDayPrices[] convert( final String tickerSymbol, final Map<String, TradingDayResource> dataset ) {
-
-		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<>();
-
-		for (final Map.Entry<String, TradingDayResource> dayPrices : dataset.entrySet()) {
-
-			final LocalDate tradingDate = tradingDate(dayPrices.getKey());
-			final TradingDayResource tradingDay = dayPrices.getValue();
-
-			prices.put(
-			        tradingDate,
-			        new TradingDayPricesImpl(
-			                tickerSymbol,
-			                tradingDate,
-			                price(tradingDay.open()),
-			                price(tradingDay.low()),
-			                price(tradingDay.high()),
-			                price(tradingDay.close())));
-		}
-
-		return prices.values().toArray(new TradingDayPrices[0]);
-	}
-
-	private LocalDate tradingDate( final String date ) {
-
-		return LocalDate.parse(date, ALPHA_VANTAGE_DATE_FORMAT);
-	}
-
-	private BigDecimal price( final String price ) {
-
-		return new BigDecimal(price).setScale(TWO_DECIMAL_PLACES, RoundingMode.HALF_EVEN);
-	}
 	// TODO duplicate code with HttpQuandlApiDao -> utility
 
 	private WebTarget url( final String tickerSymbol ) {

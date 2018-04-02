@@ -39,7 +39,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ResponseResource {
+public class AlphaVantageResponseResource {
 
 	/** Date keyed price data. */
 	private Map<String, TradingDayResource> dataset;

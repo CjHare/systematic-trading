@@ -32,6 +32,7 @@ import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.signals.data.api.alpha.vantage.AlphaVantageAPI;
+import com.systematic.trading.signals.data.api.alpha.vantage.converter.AlphaVantageResponseConverter;
 import com.systematic.trading.signals.data.api.alpha.vantage.dao.impl.FileValidatedAlphaVantageConfigurationDao;
 import com.systematic.trading.signals.data.api.alpha.vantage.dao.impl.HttpAlphaVantageApiDao;
 import com.systematic.trading.signals.data.api.quandl.QuandlAPI;
@@ -72,7 +73,9 @@ public class EquityApiFactory {
 
 		final EquityApiConfiguration configuration = new FileValidatedAlphaVantageConfigurationDao().configuration();
 
-		return new AlphaVantageAPI(new HttpAlphaVantageApiDao(configuration), configuration);
+		return new AlphaVantageAPI(
+		        new HttpAlphaVantageApiDao(configuration, new AlphaVantageResponseConverter()),
+		        configuration);
 	}
 
 	private EquityApi quandl( final DataServiceStructure serviceStructure )
