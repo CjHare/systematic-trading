@@ -52,8 +52,8 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.input.BacktestLaunchArguments;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.input.DataServiceLaunchArgument;
 import com.systematic.trading.input.DataServiceStructureLaunchArgument;
-import com.systematic.trading.input.DataServiceTypeLaunchArgument;
 import com.systematic.trading.input.DepositAmountLaunchArgument;
 import com.systematic.trading.input.DepositFrequencyLaunchArgument;
 import com.systematic.trading.input.EndDateLaunchArgument;
@@ -85,7 +85,7 @@ public abstract class BaseTrial {
 		return new BacktestLaunchArguments(
 		        new OutputLaunchArgument(validator),
 		        new EquityArguments(
-		                new DataServiceTypeLaunchArgument(validator),
+		                new DataServiceLaunchArgument(validator),
 		                new DataServiceStructureLaunchArgument(),
 		                new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator),
@@ -228,7 +228,7 @@ public abstract class BaseTrial {
 	        final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage,
 	        final StrategyConfiguration strategy ) {
-
+		
 		return new BacktestBootstrapConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
 		        .withCashAccount(cashAccount).withBrokerage(brokerage).withStrategy(strategy).build();
 	}

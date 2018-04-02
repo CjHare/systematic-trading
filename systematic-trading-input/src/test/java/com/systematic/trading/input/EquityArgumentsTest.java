@@ -188,7 +188,7 @@ public class EquityArgumentsTest {
 	        final String tickerSymbol ) {
 
 		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
-		arguments.put(ArgumentKey.DATA_SERVICE_TYPE, dataService);
+		arguments.put(ArgumentKey.DATA_SERVICE, dataService);
 		arguments.put(ArgumentKey.DATA_SERVICE_STRUCTURE, dataServiceStructure);
 		arguments.put(ArgumentKey.EQUITY_DATASET, equityDataSet);
 		arguments.put(ArgumentKey.TICKER_SYMBOL, tickerSymbol);

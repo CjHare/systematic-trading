@@ -47,7 +47,7 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class DataServiceTypeLaunchArgumentTest {
+public class DataServiceLaunchArgumentTest {
 
 	/** Launch argument parser instance being tested. */
 	private DataServiceStructureLaunchArgument argument;

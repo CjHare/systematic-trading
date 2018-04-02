@@ -74,7 +74,7 @@ import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.input.AnalysisLaunchArguments;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceStructureLaunchArgument;
-import com.systematic.trading.input.DataServiceTypeLaunchArgument;
+import com.systematic.trading.input.DataServiceLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
@@ -115,7 +115,7 @@ public class EntryOrderAnalysis {
 		final Map<ArgumentKey, String> arguments = new CommandLineLaunchArgumentsParser().parse(args);
 		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(
 		        new EquityArguments(
-		                new DataServiceTypeLaunchArgument(validator),
+		                new DataServiceLaunchArgument(validator),
 		                new DataServiceStructureLaunchArgument(),
 		                new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator),
