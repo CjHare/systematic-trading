@@ -208,7 +208,7 @@ public class BacktestLaunchArgumentsTest {
 	@Test
 	public void dataService() {
 
-		final String serviceName = DataServiceType.QUANDL.type();
+		final String serviceName = "data provider";
 		setUpDataService(serviceName);
 
 		launchArguments();
@@ -316,7 +316,7 @@ public class BacktestLaunchArgumentsTest {
 
 	private void setUpDataService( final String serviceName ) {
 
-		when(equityArguments.dataService()).thenReturn(DataServiceType.get(serviceName).get());
+		when(equityArguments.dataService()).thenReturn(new DataServiceType(serviceName));
 	}
 
 	private void setUpDataServiceStructure( final String serviceName ) {

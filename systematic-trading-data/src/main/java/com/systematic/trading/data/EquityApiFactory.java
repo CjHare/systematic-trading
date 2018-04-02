@@ -49,10 +49,13 @@ import com.systematic.trading.signals.data.api.quandl.dao.impl.HttpQuandlDatatab
  */
 public class EquityApiFactory {
 
+	private static final String QUANDL = "quandl";
+	private static final String ALPHA_VANTAGE = "alpha-vantage";
+
 	public EquityApi create( final DataServiceType serviceType, final DataServiceStructure serviceStructure )
 	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
 
-		switch (serviceType) {
+		switch (serviceType.type()) {
 			case QUANDL:
 				return quandl(serviceStructure);
 

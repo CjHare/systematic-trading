@@ -25,21 +25,16 @@
  */
 package com.systematic.trading.data;
 
-import java.util.Optional;
-
 /**
  * DataServiceType defines which of the available data sources to retrieve price data from.
  * 
  * @author CJ Hare
  */
-public enum DataServiceType {
-
-	ALPHA_VANTAGE("alpha-vantage"),
-	QUANDL("quandl");
+public class DataServiceType {
 
 	private final String type;
 
-	DataServiceType( final String type ) {
+	public DataServiceType( final String type ) {
 
 		this.type = type;
 	}
@@ -47,14 +42,5 @@ public enum DataServiceType {
 	public String type() {
 
 		return type;
-	}
-
-	public static Optional<DataServiceType> get( final String name ) {
-
-		for (final DataServiceType service : DataServiceType.values()) {
-			if (service.type().equals(name)) { return Optional.of(service); }
-		}
-
-		return Optional.empty();
 	}
 }

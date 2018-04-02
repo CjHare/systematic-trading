@@ -78,7 +78,7 @@ public class EquityArgumentsTest {
 	@Test
 	public void dataService() {
 
-		final String service = DataServiceType.QUANDL.type();
+		final String service = "another data service";
 		final Map<ArgumentKey, String> arguments = argumentMap(service, "bbbBBbbbb", "aaaZZZaaa", "eeeeTTTTeeee");
 		setUpDataService(service);
 
@@ -210,7 +210,7 @@ public class EquityArgumentsTest {
 	private void setUpDataService( final String service ) {
 
 		when(dataServiceArgument.get(anyMapOf(ArgumentKey.class, String.class)))
-		        .thenReturn(DataServiceType.get(service).get());
+		        .thenReturn(new DataServiceType(service));
 	}
 
 	private void setUpDataServiceStructure( final String service ) {

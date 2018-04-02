@@ -95,7 +95,7 @@ public class AnalysisLaunchArgumentsTest {
 	@Test
 	public void dataService() {
 
-		final String serviceName = DataServiceType.ALPHA_VANTAGE.type();
+		final String serviceName = "a data providing service";
 		setUpDataService(serviceName);
 
 		createLaunchArguments();
@@ -177,7 +177,7 @@ public class AnalysisLaunchArgumentsTest {
 
 	private void setUpDataService( final String serviceName ) {
 
-		when(equityArguments.dataService()).thenReturn(DataServiceType.get(serviceName).get());
+		when(equityArguments.dataService()).thenReturn(new DataServiceType(serviceName));
 	}
 
 	private void setUpDataServiceStructure( final String serviceName ) {
