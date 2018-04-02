@@ -114,7 +114,11 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 
 		// TODO deal with error responses (HTTP 200 with error message)
 
-		return converter.convert(tickerSymbol, response.readEntity(AlphaVantageResponseResource.class).dataset());
+		return converter.convert(
+		        tickerSymbol,
+		        inclusiveStartDate,
+		        exclusiveEndDate,
+		        response.readEntity(AlphaVantageResponseResource.class).dataset());
 	}
 
 	// TODO duplicate code with HttpQuandlApiDao -> utility

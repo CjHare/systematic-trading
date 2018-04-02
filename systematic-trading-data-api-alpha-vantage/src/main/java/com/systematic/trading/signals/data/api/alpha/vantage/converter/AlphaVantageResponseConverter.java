@@ -47,27 +47,42 @@ public class AlphaVantageResponseConverter {
 	private static final DateTimeFormatter ALPHA_VANTAGE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private static final int TWO_DECIMAL_PLACES = 2;
 
-	public TradingDayPrices[] convert( final String tickerSymbol, final Map<String, TradingDayResource> dataset ) {
+	public TradingDayPrices[] convert(
+	        final String tickerSymbol,
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate,
+	        final Map<String, TradingDayResource> dataset ) {
 
 		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<>();
 
 		for (final Map.Entry<String, TradingDayResource> dayPrices : dataset.entrySet()) {
 
 			final LocalDate tradingDate = tradingDate(dayPrices.getKey());
-			final TradingDayResource tradingDay = dayPrices.getValue();
 
-			prices.put(
-			        tradingDate,
-			        new TradingDayPricesImpl(
-			                tickerSymbol,
-			                tradingDate,
-			                price(tradingDay.open()),
-			                price(tradingDay.low()),
-			                price(tradingDay.high()),
-			                price(tradingDay.close())));
+			if (isWithinRange(inclusiveStartDate, exclusiveEndDate, tradingDate)) {
+				final TradingDayResource tradingDay = dayPrices.getValue();
+
+				prices.put(
+				        tradingDate,
+				        new TradingDayPricesImpl(
+				                tickerSymbol,
+				                tradingDate,
+				                price(tradingDay.open()),
+				                price(tradingDay.low()),
+				                price(tradingDay.high()),
+				                price(tradingDay.close())));
+			}
 		}
 
 		return prices.values().toArray(new TradingDayPrices[0]);
+	}
+
+	private boolean isWithinRange(
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate,
+	        final LocalDate tradingDate ) {
+
+		return !tradingDate.isBefore(inclusiveStartDate) && tradingDate.isBefore(exclusiveEndDate);
 	}
 
 	private LocalDate tradingDate( final String date ) {
