@@ -23,37 +23,36 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.alpha.vantage.model;
+package com.systematic.trading.signals.data.api.alpha.vantage.resource;
 
-import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Domain model abstraction for the AlphaVantage results.
- * 
- * AlphaVantage results may come in a number of formats, requiring abstraction for common use.
+ * Root response object for the Alpha Vantage object chain.
  * 
  * @author CJ Hare
  */
-public class AlphaVantageResultSet {
+@JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ResponseResource {
 
-	/** Column names, ordering matching that of the data. */
-	private final List<AlphaVantageColumnName> columns;
+	/** Date keyed price data. */
+	private Map<String, TradingDayResource> dataset;
 
-	private final List<List<Object>> data;
+	@JsonProperty("Time Series (Daily)")
+	public Map<String, TradingDayResource> dataset() {
 
-	public AlphaVantageResultSet( final List<AlphaVantageColumnName> columns, final List<List<Object>> data ) {
-
-		this.columns = columns;
-		this.data = data;
+		return dataset;
 	}
 
-	public List<AlphaVantageColumnName> columns() {
+	@JsonProperty("Time Series (Daily)")
+	public void dataset( final Map<String, TradingDayResource> dataset ) {
 
-		return columns;
-	}
-
-	public List<List<Object>> data() {
-
-		return data;
+		this.dataset = dataset;
 	}
 }

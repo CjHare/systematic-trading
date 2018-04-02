@@ -25,7 +25,14 @@
  */
 package com.systematic.trading.signals.data.api.alpha.vantage.dao.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -41,8 +48,11 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
+import com.systematic.trading.model.price.TradingDayPrices;
+import com.systematic.trading.model.price.impl.TradingDayPricesImpl;
 import com.systematic.trading.signals.data.api.alpha.vantage.dao.AlphaVantageApiDao;
-import com.systematic.trading.signals.data.api.alpha.vantage.model.AlphaVantageResultSet;
+import com.systematic.trading.signals.data.api.alpha.vantage.resource.ResponseResource;
+import com.systematic.trading.signals.data.api.alpha.vantage.resource.TradingDayResource;
 
 /**
  * HttpAlphaVantageApiDao retrieves time series data from the Alpha Vantage API.
@@ -54,7 +64,14 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 	/** Class' little logger, */
 	private static final Logger LOG = LogManager.getLogger(HttpAlphaVantageApiDao.class);
 
-	private static final String PATH = "query?function=TIME_SERIES_DAILY&outputsize=full";
+	private static final String PATH = "query";
+
+	private static final String FUNCTION_SIZE_KEY = "function";
+	private static final String FUNCTION_SIZE_VALUE = "TIME_SERIES_DAILY";
+
+	private static final String OUTPUT_SIZE_KEY = "outputsize";
+	private static final String OUTPUT_SIZE_VALUE = "full";
+
 	private static final String TICKER_SYMBOL_KEY = "symbol";
 	private static final String API_KEY = "apikey";
 
@@ -87,29 +104,64 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 	}
 
 	@Override
-	public AlphaVantageResultSet get(
+	public TradingDayPrices[] get(
 	        final String equityDataset,
 	        final String tickerSymbol,
 	        final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate,
 	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
-		final WebTarget url = url(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
-
+		final WebTarget url = url(tickerSymbol);
 		final Response response = get(url, throttler);
 
-		// TODO parse
-		return null;
+		// TODO deal with error responses (HTTP 200 with error message)
+
+		return convert(tickerSymbol, response.readEntity(ResponseResource.class).dataset());
 	}
 
+	// TODO refactor into a converter (encapsulate the conversion logic)
+	private static final DateTimeFormatter ALPHA_VANTAGE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private static final int TWO_DECIMAL_PLACES = 2;
+
+	private TradingDayPrices[] convert( final String tickerSymbol, final Map<String, TradingDayResource> dataset ) {
+
+		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<>();
+
+		for (final Map.Entry<String, TradingDayResource> dayPrices : dataset.entrySet()) {
+
+			final LocalDate tradingDate = tradingDate(dayPrices.getKey());
+			final TradingDayResource tradingDay = dayPrices.getValue();
+
+			prices.put(
+			        tradingDate,
+			        new TradingDayPricesImpl(
+			                tickerSymbol,
+			                tradingDate,
+			                price(tradingDay.open()),
+			                price(tradingDay.low()),
+			                price(tradingDay.high()),
+			                price(tradingDay.close())));
+		}
+
+		return prices.values().toArray(new TradingDayPrices[0]);
+	}
+
+	private LocalDate tradingDate( final String date ) {
+
+		return LocalDate.parse(date, ALPHA_VANTAGE_DATE_FORMAT);
+	}
+
+	private BigDecimal price( final String price ) {
+
+		return new BigDecimal(price).setScale(TWO_DECIMAL_PLACES, RoundingMode.HALF_EVEN);
+	}
 	// TODO duplicate code with HttpQuandlApiDao -> utility
 
-	private WebTarget url(
-	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) {
+	private WebTarget url( final String tickerSymbol ) {
 
-		return root.path(PATH).queryParam(TICKER_SYMBOL_KEY, tickerSymbol).queryParam(API_KEY, apiKey);
+		return root.path(PATH).queryParam(FUNCTION_SIZE_KEY, FUNCTION_SIZE_VALUE)
+		        .queryParam(OUTPUT_SIZE_KEY, OUTPUT_SIZE_VALUE).queryParam(TICKER_SYMBOL_KEY, tickerSymbol)
+		        .queryParam(API_KEY, apiKey);
 	}
 
 	private Response get( final WebTarget url, final BlockingEventCount throttler ) throws CannotRetrieveDataException {

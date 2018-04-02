@@ -33,9 +33,7 @@ import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.signals.data.api.alpha.vantage.converter.AlphaVantageResponseConverter;
 import com.systematic.trading.signals.data.api.alpha.vantage.dao.AlphaVantageApiDao;
-import com.systematic.trading.signals.data.api.alpha.vantage.model.AlphaVantageResultSet;
 
 /**
  * AlphaVantageAPI
@@ -44,7 +42,6 @@ import com.systematic.trading.signals.data.api.alpha.vantage.model.AlphaVantageR
  */
 public class AlphaVantageAPI implements EquityApi {
 
-	private final AlphaVantageResponseConverter dataFormat;
 	private final AlphaVantageApiDao dao;
 
 	private final Period maximumDurationPerConnection;
@@ -52,13 +49,9 @@ public class AlphaVantageAPI implements EquityApi {
 	private final int maximumRetrievalTimeSeconds;
 	private final int maximumConnectionsPerSecond;
 
-	public AlphaVantageAPI(
-	        final AlphaVantageApiDao dao,
-	        final AlphaVantageResponseConverter dataFormat,
-	        final EquityApiConfiguration configuration ) {
+	public AlphaVantageAPI( final AlphaVantageApiDao dao, final EquityApiConfiguration configuration ) {
 
 		this.dao = dao;
-		this.dataFormat = dataFormat;
 		this.maximumDurationPerConnection = Period.ofMonths(configuration.maximumMonthsPerConnection());
 		this.maximumConcurrentConnections = configuration.maximumConcurrentConnections();
 		this.maximumRetrievalTimeSeconds = configuration.maximumRetrievalTimeSeconds();
@@ -73,10 +66,7 @@ public class AlphaVantageAPI implements EquityApi {
 	        final LocalDate exclusiveEndDate,
 	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
-		final AlphaVantageResultSet response = dao
-		        .get(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
-
-		return dataFormat.convert(tickerSymbol, response);
+		return dao.get(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
 	}
 
 	@Override

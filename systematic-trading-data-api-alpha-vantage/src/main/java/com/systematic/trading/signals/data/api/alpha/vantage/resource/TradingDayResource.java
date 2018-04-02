@@ -23,24 +23,73 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.signals.data.api.alpha.vantage.model;
+package com.systematic.trading.signals.data.api.alpha.vantage.resource;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Column name in a AlphaVantage result set.
+ * Resource for a trading day object, the leaf return type from AlphaVantage API.
  * 
  * @author CJ Hare
  */
-public class AlphaVantageColumnName {
+@JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TradingDayResource {
 
-	private final String name;
+	private String open;
+	private String high;
+	private String low;
+	private String close;
 
-	public AlphaVantageColumnName( final String name ) {
+	@JsonProperty("1. open")
+	public String open() {
 
-		this.name = name;
+		return open;
 	}
 
-	public String name() {
+	@JsonSetter("1. open")
+	public void open( final String open ) {
 
-		return name;
+		this.open = open;
+	}
+
+	@JsonProperty("2. high")
+	public String high() {
+
+		return high;
+	}
+
+	@JsonSetter("2. high")
+	public void high( final String high ) {
+
+		this.high = high;
+	}
+
+	@JsonProperty("3. low")
+	public String low() {
+
+		return low;
+	}
+
+	@JsonSetter("3. low")
+	public void low( final String low ) {
+
+		this.low = low;
+	}
+
+	@JsonProperty("4. close")
+	public String close() {
+
+		return close;
+	}
+
+	@JsonSetter("4. close")
+	public void close( final String close ) {
+
+		this.close = close;
 	}
 }

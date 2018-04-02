@@ -29,7 +29,7 @@ import java.time.LocalDate;
 
 import com.systematic.trading.data.collections.BlockingEventCount;
 import com.systematic.trading.data.exception.CannotRetrieveDataException;
-import com.systematic.trading.signals.data.api.alpha.vantage.model.AlphaVantageResultSet;
+import com.systematic.trading.model.price.TradingDayPrices;
 
 /**
  * Data Access Object for retrieving data from the AlphaVantage API.
@@ -55,11 +55,11 @@ public interface AlphaVantageApiDao {
 	 *            the last day of the historical data to retrieve.
 	 * @param throttler
 	 *            synchronization object to limit the connections to the AlphaVantage API.
-	 * @return retrieved AlphaVantage data structure.
+	 * @return retrieved AlphaVantage data.
 	 * @throws CannotRetrieveDataException
 	 *             problem encountered during connecting to the AlphaVantage API.
 	 */
-	AlphaVantageResultSet get(
+	TradingDayPrices[] get(
 	        String equityDataset,
 	        String tickerSymbol,
 	        LocalDate inclusiveStartDate,
