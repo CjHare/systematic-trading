@@ -63,10 +63,10 @@ public class AlphaVantageAPI implements EquityApi {
 	        final String equityDataset,
 	        final String tickerSymbol,
 	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate,
+	        final LocalDate inclusiveEndDate,
 	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
-		return dao.get(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
+		return dao.get(equityDataset, tickerSymbol, inclusiveStartDate, inclusiveEndDate, throttler);
 	}
 
 	@Override

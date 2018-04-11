@@ -43,9 +43,9 @@ public class BacktestSimulationDates {
 
 	/**
 	 * @param startDate
-	 *            must be before or on the end date.
+	 *            inclusive date that must be before or on the end date.
 	 * @param endDate
-	 *            must be on or after the start date.
+	 *            inclusive date that must be on or after the start date.
 	 */
 	public BacktestSimulationDates( final BacktestStartDate startDate, final BacktestEndDate endDate )
 	        throws InvalidSimulationDatesException {
@@ -55,11 +55,17 @@ public class BacktestSimulationDates {
 		this.endDate = endDate.date();
 	}
 
+	/**
+	 * Inclusive state date of the simulation.
+	 */
 	public LocalDate startDate() {
 
 		return startDate;
 	}
 
+	/**
+	 * Inclusive end date for the simulation.
+	 */
 	public LocalDate endDate() {
 
 		return endDate;

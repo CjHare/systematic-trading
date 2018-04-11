@@ -50,7 +50,7 @@ public class AlphaVantageResponseConverter {
 	public TradingDayPrices[] convert(
 	        final String tickerSymbol,
 	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate,
+	        final LocalDate inclusiveEndDate,
 	        final Map<String, TradingDayResource> dataset ) {
 
 		final TreeMap<LocalDate, TradingDayPrices> prices = new TreeMap<>();
@@ -59,7 +59,7 @@ public class AlphaVantageResponseConverter {
 
 			final LocalDate tradingDate = tradingDate(dayPrices.getKey());
 
-			if (isWithinRange(inclusiveStartDate, exclusiveEndDate, tradingDate)) {
+			if (isWithinRange(inclusiveStartDate, inclusiveEndDate, tradingDate)) {
 				final TradingDayResource tradingDay = dayPrices.getValue();
 
 				prices.put(
@@ -79,10 +79,10 @@ public class AlphaVantageResponseConverter {
 
 	private boolean isWithinRange(
 	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate,
+	        final LocalDate inclusiveEndDate,
 	        final LocalDate tradingDate ) {
 
-		return !tradingDate.isBefore(inclusiveStartDate) && tradingDate.isBefore(exclusiveEndDate);
+		return !tradingDate.isBefore(inclusiveStartDate) && !tradingDate.isAfter(inclusiveEndDate);
 	}
 
 	private LocalDate tradingDate( final String date ) {
