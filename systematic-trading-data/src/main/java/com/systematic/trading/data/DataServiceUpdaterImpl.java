@@ -92,13 +92,13 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	public void get(
 	        final String equityDataset,
 	        final String tickerSymbol,
-	        final LocalDate startDate,
-	        final LocalDate endDate ) throws CannotRetrieveDataException {
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate) throws CannotRetrieveDataException {
 
 		// Ensure there's a table for the data
 		tradingDayPricesDao.createTableIfAbsent(tickerSymbol);
 
-		lodgeOnlyNeededHistoryRetrievalRequests(equityDataset, tickerSymbol, startDate, endDate);
+		lodgeOnlyNeededHistoryRetrievalRequests(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
 		final List<HistoryRetrievalRequest> outstandingRequests = outstandingHistoryRetrievalRequests(tickerSymbol);
 
@@ -202,10 +202,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private void lodgeOnlyNeededHistoryRetrievalRequests(
 	        final String equityDataset,
 	        final String tickerSymbol,
-	        final LocalDate startDate,
-	        final LocalDate endDate ) {
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) {
 
-		lodge(merge(filter(slice(equityDataset, tickerSymbol, startDate, endDate))));
+		lodge(merge(filter(slice(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate))));
 	}
 
 	private void lodge( final List<HistoryRetrievalRequest> requests ) {
@@ -221,10 +221,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private List<HistoryRetrievalRequest> slice(
 	        final String equityDataset,
 	        final String tickerSymbol,
-	        final LocalDate startDate,
-	        final LocalDate endDate ) {
+	        final LocalDate inclusiveStartDate,
+	        final LocalDate exclusiveEndDate ) {
 
-		return historyRetrievalRequestSlicer.slice(equityDataset, tickerSymbol, startDate, endDate);
+		return historyRetrievalRequestSlicer.slice(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
 	private List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> requests ) {

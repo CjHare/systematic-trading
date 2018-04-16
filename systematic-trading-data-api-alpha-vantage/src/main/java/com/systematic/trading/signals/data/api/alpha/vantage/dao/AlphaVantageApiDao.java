@@ -50,9 +50,9 @@ public interface AlphaVantageApiDao {
 	 * @param tickerSymbol
 	 *            identifier of the equity to retrieve.
 	 * @param inclusiveStartDate
-	 *            the first day of the historical data to retrieve.
-	 * @param inclusiveEndDate
-	 *            the last day of the historical data to retrieve.
+	 *            inclusive first day of the historical data to retrieve.
+	 * @param exclusiveEndDate
+	 *            exclusive last day of the historical data to retrieve.
 	 * @param throttler
 	 *            synchronization object to limit the connections to the AlphaVantage API.
 	 * @return retrieved AlphaVantage data.
@@ -63,6 +63,6 @@ public interface AlphaVantageApiDao {
 	        String equityDataset,
 	        String tickerSymbol,
 	        LocalDate inclusiveStartDate,
-	        LocalDate inclusiveEndDate,
+	        LocalDate exclusiveEndDate,
 	        BlockingEventCount throttler ) throws CannotRetrieveDataException;
 }

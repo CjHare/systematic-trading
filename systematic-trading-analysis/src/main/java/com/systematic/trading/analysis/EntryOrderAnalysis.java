@@ -73,8 +73,8 @@ import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.input.AnalysisLaunchArguments;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
-import com.systematic.trading.input.DataServiceStructureLaunchArgument;
 import com.systematic.trading.input.DataServiceLaunchArgument;
+import com.systematic.trading.input.DataServiceStructureLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.LaunchArgument.ArgumentKey;
@@ -196,7 +196,7 @@ public class EntryOrderAnalysis {
 		LOG.info(
 		        "{}",
 		        () -> String
-		                .format("Analysis start: %s, end: %s", analysisPeriod.startDate(), analysisPeriod.endDate()));
+		                .format("Analysis inclusive start: %s, exclusive end: %s", analysisPeriod.startDate(), analysisPeriod.endDate()));
 	}
 
 	private BacktestBootstrapConfiguration configuration(
@@ -205,10 +205,12 @@ public class EntryOrderAnalysis {
 
 		final StrategyConfiguration strategy = strategy();
 		final LocalDate today = LocalDate.now();
+		final LocalDate inclusiveStartDate = today.minus(strategy.entry().priceDataRange()).minusDays(DAYS_OF_SIGNALS);
+		final LocalDate exclusiveEndDate = today.plusDays(1);
 
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(
-		        new BacktestStartDate(today.minus(strategy.entry().priceDataRange()).minusDays(DAYS_OF_SIGNALS)),
-		        new BacktestEndDate(today));
+		        new BacktestStartDate(inclusiveStartDate),
+		        new BacktestEndDate(exclusiveEndDate));
 
 		return new BacktestBootstrapConfiguration(
 		        simulationDates,

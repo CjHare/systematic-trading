@@ -46,9 +46,9 @@ public interface EquityApi {
 	 * @param symbol
 	 *            ticker symbol for the stock to retrieve data on.
 	 * @param inclusiveStartDate
-	 *            the inclusive start date for the data points.
-	 * @param inclusiveEndDate
-	 *            the inclusive end date for the data points.
+	 *            inclusive start date for the data points.
+	 * @param exclusiveEndDate
+	 *            exclusive end date for the data points.
 	 * @param throttler
 	 *            used to throttle the number of connection to abide by API constraints.
 	 * @return the given data parsed into domain objects.
@@ -59,7 +59,7 @@ public interface EquityApi {
 	        String equityDataset,
 	        String symbol,
 	        LocalDate inclusiveStartDate,
-	        LocalDate inclusiveEndDate,
+	        LocalDate exclusiveEndDate,
 	        BlockingEventCount throttler ) throws CannotRetrieveDataException;
 
 	/**
