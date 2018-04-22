@@ -27,17 +27,34 @@ package com.systematic.trading.data;
 
 import java.time.LocalDate;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.systematic.trading.data.dao.TradingDayPricesDao;
 import com.systematic.trading.data.dao.impl.HibernateTradingDayPricesDao;
 import com.systematic.trading.model.price.TradingDayPrices;
 
 public class HibernateDataService implements DataService {
 
+	/** Classes' logger. */
+	private static final Logger LOG = LogManager.getLogger(HibernateDataService.class);
+
 	private final TradingDayPricesDao dao = new HibernateTradingDayPricesDao();
 
 	@Override
 	public TradingDayPrices[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 
-		return dao.prices(tickerSymbol, startDate, endDate);
+		final TradingDayPrices[] prices = dao.prices(tickerSymbol, startDate, endDate);
+
+		LOG.debug(
+		        String.format(
+		                "Ticker Synbol: %s, Start Date: requested %s - actual %s, End Date: requested %s (exclusive) - actual %s (inclusive)",
+		                tickerSymbol,
+		                startDate,
+		                prices[prices.length - 1].date(),
+		                endDate,
+		                prices[0].date()));
+
+		return prices;
 	}
 }

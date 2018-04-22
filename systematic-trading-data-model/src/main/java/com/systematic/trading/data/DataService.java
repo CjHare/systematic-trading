@@ -45,7 +45,7 @@ public interface DataService {
 	 * @param startDate
 	 *            inclusive beginning date for the data range.
 	 * @param endDate
-	 *            inclusive end date for the data range.
+	 *            exclusive end date for the data range.
 	 * @return all the trading days data points, when none are available size if zero will be
 	 *         returned.
 	 */
