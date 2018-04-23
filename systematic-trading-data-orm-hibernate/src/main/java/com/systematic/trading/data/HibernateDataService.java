@@ -45,16 +45,23 @@ public class HibernateDataService implements DataService {
 	public TradingDayPrices[] get( final String tickerSymbol, final LocalDate startDate, final LocalDate endDate ) {
 
 		final TradingDayPrices[] prices = dao.prices(tickerSymbol, startDate, endDate);
-
-		LOG.debug(
-		        String.format(
-		                "Ticker Synbol: %s, Start Date: requested %s - actual %s, End Date: requested %s (exclusive) - actual %s (inclusive)",
-		                tickerSymbol,
-		                startDate,
-		                prices[prices.length - 1].date(),
-		                endDate,
-		                prices[0].date()));
+		logRetrievedPrices(tickerSymbol, startDate, endDate, prices);
 
 		return prices;
+	}
+
+	private void logRetrievedPrices(
+	        final String tickerSymbol,
+	        final LocalDate startDate,
+	        final LocalDate endDate,
+	        final TradingDayPrices[] prices ) {
+
+		LOG.debug(
+		        "Ticker Synbol: {}, Start Date: requested {} - actual {}, End Date: requested {} (exclusive) - actual {} (inclusive)",
+		        tickerSymbol,
+		        startDate,
+		        prices[prices.length - 1].date(),
+		        endDate,
+		        prices[0].date());
 	}
 }

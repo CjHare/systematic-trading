@@ -93,7 +93,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	        final String equityDataset,
 	        final String tickerSymbol,
 	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate) throws CannotRetrieveDataException {
+	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
 
 		// Ensure there's a table for the data
 		tradingDayPricesDao.createTableIfAbsent(tickerSymbol);
@@ -210,7 +210,20 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 	private void lodge( final List<HistoryRetrievalRequest> requests ) {
 
+		logLodgement(requests);
 		pendingRetrievalRequestDao.create(requests);
+	}
+
+	private void logLodgement( final List<HistoryRetrievalRequest> requests ) {
+
+		if (LOG.isDebugEnabled()) {
+			for (final HistoryRetrievalRequest request : requests) {
+				LOG.debug(
+				        "Retrieval rquest: Start date {} (inclusive), End date {} (exclusive)",
+				        request.inclusiveStartDate().toLocalDate(),
+				        request.exclusiveEndDate().toLocalDate());
+			}
+		}
 	}
 
 	private List<HistoryRetrievalRequest> outstandingHistoryRetrievalRequests( final String tickerSymbol ) {

@@ -70,15 +70,15 @@ public class Backtest {
 	        final BacktestEventListener output ) throws ServiceException {
 
 		final Period warmUp = context.tradingStrategy().warmUpPeriod();
-		recordWarmUpPeriod(warmUp);
+		logWarmUpPeriod(warmUp);
+
 		final TickerSymbolTradingData tradingData = tradingData(
 		        equity.equityDataset(),
 		        equity.gquityIdentity(),
 		        dates,
 		        warmUp);
-		final BacktestBootstrap bootstrap = new BacktestBootstrap(context, output, tradingData);
 
-		bootstrap.run();
+		new BacktestBootstrap(context, output, tradingData).run();
 	}
 
 	private TickerSymbolTradingData tradingData(
@@ -90,17 +90,8 @@ public class Backtest {
 		final LocalDate startDate = simulationDate.startDate().minus(warmUp);
 		final LocalDate endDate = simulationDate.endDate();
 
-		if (startDate.getDayOfMonth() != 1) {
-			LOG.debug(
-			        String.format(
-			                "Remote data retrieval for start date: %s has been adjusted to the beginning of the month ",
-			                startDate));
-		}
-
-		if (endDate.getDayOfMonth() != 1) {
-			LOG.debug(
-			        "With the current data retrieval implementation, an End date of the first day of the month is more efficient");
-		}
+		logPotentialStartDateAdjustment(startDate);
+		logPotentialEndDateWarning(endDate);
 
 		final LocalDate retrievalStartDate = startDate.withDayOfMonth(1);
 
@@ -110,23 +101,38 @@ public class Backtest {
 		// Retrieve from local cache the desired data range
 		final TradingDayPrices[] prices = dataService.get(equity.tickerSymbol(), startDate, endDate);
 
-		recordPriceData(prices);
+		logdPriceData(prices);
 
 		return new BacktestTickerSymbolTradingData(equity, prices);
 	}
 
-	private void recordWarmUpPeriod( final Period warmUpPeriod ) {
+	private void logPotentialEndDateWarning( final LocalDate endDate ) {
 
-		LOG.info(
-		        "{}",
-		        () -> String.format(
-		                "Simulation Warm Up Period of Days: %s, Months: %s, Years: %s",
-		                warmUpPeriod.getDays(),
-		                warmUpPeriod.getMonths(),
-		                warmUpPeriod.getYears()));
+		if (endDate.getDayOfMonth() != 1) {
+			LOG.debug(
+			        "With the current data retrieval implementation, an End date of the first day of the month is more efficient");
+		}
 	}
 
-	private void recordPriceData( final TradingDayPrices[] prices ) {
+	private void logPotentialStartDateAdjustment( final LocalDate startDate ) {
+
+		if (startDate.getDayOfMonth() != 1) {
+			LOG.debug(
+			        "Remote data retrieval for start date: {} has been adjusted to the beginning of the month ",
+			        startDate);
+		}
+	}
+
+	private void logWarmUpPeriod( final Period warmUpPeriod ) {
+
+		LOG.info(
+		        "Simulation Warm Up Period of Days: {}, Months: {}, Years: {}",
+		        warmUpPeriod.getDays(),
+		        warmUpPeriod.getMonths(),
+		        warmUpPeriod.getYears());
+	}
+
+	private void logdPriceData( final TradingDayPrices[] prices ) {
 
 		LOG.info("First {} date: {}", prices[0].tickerSymbol(), prices[0].date());
 		LOG.info("Last {} date: {}", prices[prices.length - 1].tickerSymbol(), prices[prices.length - 1].date());
