@@ -209,6 +209,8 @@ public class UnnecessaryHistoryRequestFilterImplTest {
 		verifyLocalHistoryRequest(startYear, endYear);
 	}
 
+	//TODO add test for end date, twentieth of month
+	
 	private List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> unfilteredRequests ) {
 
 		return filter.filter(unfilteredRequests);

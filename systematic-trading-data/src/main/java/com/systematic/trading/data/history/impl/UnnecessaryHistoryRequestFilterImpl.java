@@ -35,6 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.history.UnnecessaryHistoryRequestFilter;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
@@ -46,6 +49,9 @@ import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
  * @author CJ Hare
  */
 public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRequestFilter {
+
+	/** Classes logger. */
+	private static final Logger LOG = LogManager.getLogger(UnnecessaryHistoryRequestFilterImpl.class);
 
 	private final RetrievedMonthTradingPricesDao retrievedHistoryDao;
 
@@ -59,9 +65,10 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 		if (unfilteredRequests == null) { return new ArrayList<>(0); }
 
-		final List<HistoryRetrievalRequest> filtered = new ArrayList<>(unfilteredRequests.size());
 		final Map<String, List<
 		        HistoryRetrievalRequest>> tickerSymbolRequests = splitByTickerSymbolSortByStartDate(unfilteredRequests);
+
+		final List<HistoryRetrievalRequest> filtered = new ArrayList<>(unfilteredRequests.size());
 
 		for (final Map.Entry<String, List<HistoryRetrievalRequest>> entry : tickerSymbolRequests.entrySet()) {
 			final List<HistoryRetrievalRequest> requests = entry.getValue();
@@ -124,7 +131,11 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		List<HistoryRetrievalRequest> filtered = new ArrayList<>(requests.size());
 
 		for (final HistoryRetrievalRequest request : requests) {
+			logCandidateRequest(request);
+
 			if (isRelevantRequest(request, alreadyRetrieved)) {
+				logRelevantRequest(request);
+
 				filtered.add(request);
 			}
 		}
@@ -133,7 +144,7 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 	}
 
 	/**
-	 * The price date range in the request is not stored in the local data source.
+	 * The date range in the request is not stored in the local data source.
 	 */
 	private boolean isRelevantRequest(
 	        final HistoryRetrievalRequest request,
@@ -145,6 +156,9 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		YearMonth unknown = YearMonth.of(startDate.getYear(), startDate.getMonthValue());
 		final YearMonth end = YearMonth.of(endDate.getYear(), endDate.getMonthValue());
 
+		//TODO by dropping the date, we don't know that we've missed some of them!!!!!!
+		//TODO assuming full month, but it could be partial
+		
 		final Set<YearMonth> retrieved = new HashSet<>();
 
 		for (final RetrievedMonthTradingPrices prices : alreadyRetrieved) {
@@ -155,10 +169,34 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 			if (!retrieved.contains(unknown)) { return true; }
 
-			// Progress to the next year month in the range
+			// Progress to the next  month in the range
 			unknown = unknown.plusMonths(1);
 		}
 
+		//TODO only exclude the last month when it's a complete month
+		//TODO when is it complete month, with the exclusive end date?
+		
 		return false;
+	}
+
+	private void logRelevantRequest( final HistoryRetrievalRequest request ) {
+
+		log("Relevant: ", request);
+	}
+
+	private void logCandidateRequest( final HistoryRetrievalRequest request ) {
+
+		log("Candidate: ", request);
+	}
+
+	private void log( final String prefix, final HistoryRetrievalRequest request ) {
+
+		LOG.debug(
+		        "{} {}, {}, {} (inclusive), {} (exclusive)",
+		        prefix,
+		        request.tickerSymbol(),
+		        request.equityDataset(),
+		        request.inclusiveStartDate().toLocalDate(),
+		        request.exclusiveEndDate().toLocalDate());
 	}
 }

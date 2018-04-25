@@ -98,7 +98,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		// Ensure there's a table for the data
 		tradingDayPricesDao.createTableIfAbsent(tickerSymbol);
 
-		lodgeOnlyNeededHistoryRetrievalRequests(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		lodgeNeededHistoryRetrievalRequests(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 
 		final List<HistoryRetrievalRequest> outstandingRequests = outstandingHistoryRetrievalRequests(tickerSymbol);
 
@@ -199,15 +199,16 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		return throttlerCleanUp;
 	}
 
-	private void lodgeOnlyNeededHistoryRetrievalRequests(
+	private void lodgeNeededHistoryRetrievalRequests(
 	        final String equityDataset,
 	        final String tickerSymbol,
 	        final LocalDate inclusiveStartDate,
 	        final LocalDate exclusiveEndDate ) {
 
-		lodge(merge(filter(slice(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate))));
+		lodge(merge(excludeUncessary(slice(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate))));
 	}
 
+	
 	private void lodge( final List<HistoryRetrievalRequest> requests ) {
 
 		logLodgement(requests);
@@ -240,7 +241,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		return historyRetrievalRequestSlicer.slice(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
 	}
 
-	private List<HistoryRetrievalRequest> filter( final List<HistoryRetrievalRequest> requests ) {
+	private List<HistoryRetrievalRequest> excludeUncessary( final List<HistoryRetrievalRequest> requests ) {
 
 		return unecessaryRequestFilter.filter(requests);
 	}
