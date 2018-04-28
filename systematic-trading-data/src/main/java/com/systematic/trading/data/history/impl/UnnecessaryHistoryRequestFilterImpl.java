@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +45,7 @@ import com.systematic.trading.data.model.HistoryRetrievalRequest;
 import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
 
 /**
- * Filter for unnecessary remote history requests.
+ * Filters out unnecessary remote history requests.
  * 
  * @author CJ Hare
  */
@@ -126,7 +127,9 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 	private List<HistoryRetrievalRequest> keepRelevantRequests(
 	        final List<HistoryRetrievalRequest> requests,
-	        List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
+	        final List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
+
+		logAlreadyRetrieved(alreadyRetrieved);
 
 		List<HistoryRetrievalRequest> filtered = new ArrayList<>(requests.size());
 
@@ -150,15 +153,9 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 	        final HistoryRetrievalRequest request,
 	        List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
 
-		final LocalDate startDate = request.inclusiveStartDate().toLocalDate();
-		final LocalDate endDate = request.exclusiveEndDate().toLocalDate().minusDays(1);
+		YearMonth unknown = yearMonth(request.inclusiveStartDate().toLocalDate());
+		final YearMonth end = yearMonth(request.exclusiveEndDate().toLocalDate().minusDays(1));
 
-		YearMonth unknown = YearMonth.of(startDate.getYear(), startDate.getMonthValue());
-		final YearMonth end = YearMonth.of(endDate.getYear(), endDate.getMonthValue());
-
-		//TODO by dropping the date, we don't know that we've missed some of them!!!!!!
-		//TODO assuming full month, but it could be partial
-		
 		final Set<YearMonth> retrieved = new HashSet<>();
 
 		for (final RetrievedMonthTradingPrices prices : alreadyRetrieved) {
@@ -169,30 +166,42 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 			if (!retrieved.contains(unknown)) { return true; }
 
-			// Progress to the next  month in the range
+			// Progress to the next month in the range
 			unknown = unknown.plusMonths(1);
 		}
 
-		//TODO only exclude the last month when it's a complete month
-		//TODO when is it complete month, with the exclusive end date?
-		
 		return false;
+	}
+
+	private YearMonth yearMonth( final LocalDate date ) {
+
+		return YearMonth.of(date.getYear(), date.getMonthValue());
+	}
+
+	private void logAlreadyRetrieved( final List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
+
+		LOG.debug(
+		        "Already retrieved: {}, {}",
+		        () -> alreadyRetrieved.stream().map(retrieved -> retrieved.tickerSymbol()).collect(Collectors.toSet())
+		                .stream().collect(Collectors.joining(", ")),
+		        () -> alreadyRetrieved.stream().map(retrieved -> retrieved.yearMonth().toString())
+		                .collect(Collectors.joining(", ")));
 	}
 
 	private void logRelevantRequest( final HistoryRetrievalRequest request ) {
 
-		log("Relevant: ", request);
+		log("Relevant", request);
 	}
 
 	private void logCandidateRequest( final HistoryRetrievalRequest request ) {
 
-		log("Candidate: ", request);
+		log("Candidate", request);
 	}
 
 	private void log( final String prefix, final HistoryRetrievalRequest request ) {
 
 		LOG.debug(
-		        "{} {}, {}, {} (inclusive), {} (exclusive)",
+		        "{}: {}, {}, {} (inclusive) - {} (exclusive)",
 		        prefix,
 		        request.tickerSymbol(),
 		        request.equityDataset(),
