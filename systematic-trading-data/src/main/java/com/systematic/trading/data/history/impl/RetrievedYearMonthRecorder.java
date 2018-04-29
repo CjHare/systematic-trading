@@ -25,13 +25,20 @@
  */
 package com.systematic.trading.data.history.impl;
 
-import java.time.DayOfWeek;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.history.RetrievedHistoryPeriodRecorder;
@@ -47,6 +54,9 @@ import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
  */
 public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorder {
 
+	/** Classes logger. */
+	private static final Logger LOG = LogManager.getLogger(RetrievedYearMonthRecorder.class);
+
 	private final RetrievedMonthTradingPricesDao retrievedMonthsDao;
 
 	public RetrievedYearMonthRecorder( final RetrievedMonthTradingPricesDao retrievedMonthsDao ) {
@@ -57,107 +67,227 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 	@Override
 	public void retrieved( final List<HistoryRetrievalRequest> fulfilledRequests ) {
 
-		if (fulfilledRequests == null || fulfilledRequests.isEmpty()) { return; }
+		if (hasFulfilledNothing(fulfilledRequests)) { return; }
 
 		final List<RetrievedMonthTradingPrices> retrieved = new ArrayList<>();
+		final Map<String, List<HistoryRetrievalRequest>> byTickeSymbol = splitByTickerSymbol(fulfilledRequests);
 
-		for (final HistoryRetrievalRequest fulfilled : fulfilledRequests) {
+		for (final Map.Entry<String, List<HistoryRetrievalRequest>> entry : byTickeSymbol.entrySet()) {
 
-			final String tickerSymbol = fulfilled.tickerSymbol();
-			final LocalDate start = fulfilled.inclusiveStartDate().toLocalDate();
-			final LocalDate end = fulfilled.exclusiveEndDate().toLocalDate();
+			final Set<DateRange> ranges = extractDateRanges(entry.getValue());
+			final Set<YearMonth> fulfilledMonths = onlyFullMonths(ranges);
 
-			if (isBeginningTradingMonth(start)) {
-				retrieved.add(retrievedMonth(tickerSymbol, start));
+			for (final YearMonth fulfilledMonth : fulfilledMonths) {
+				retrieved.add(tradningPrices(entry.getKey(), fulfilledMonth));
+			}
+		}
+
+		log(retrieved);
+		store(retrieved);
+	}
+
+	private RetrievedMonthTradingPrices tradningPrices( final String tickerSymbol, final YearMonth fulfilledMonth ) {
+
+		return new HibernateRetrievedMonthTradingPrices(tickerSymbol, fulfilledMonth);
+	}
+
+	/**
+	 * Creates a YearMonth entry for each of the full months covered by the given date ranges.
+	 */
+	private Set<YearMonth> onlyFullMonths( final Set<DateRange> dateRanges ) {
+
+		final Set<YearMonth> fullMonths = new HashSet<>();
+
+		for (final DateRange range : dateRanges) {
+
+			final YearMonth start = beginsFirstOfMonth(range);
+			final YearMonth end = endsLastOfMonth(range);
+			YearMonth fullMonth = start;
+
+			fullMonths.add(start);
+
+			while (fullMonth.isBefore(end)) {
+
+				fullMonth = fullMonth.plusMonths(1);
+				fullMonths.add(fullMonth);
 			}
 
-			if (isOverOneMonthBetween(start, end)) {
-				LocalDate between = start.withDayOfMonth(1).plusMonths(1);
+			fullMonths.add(end);
+		}
 
-				while (between.isBefore(end) && hasDifferentYearMonth(between, end)) {
-					retrieved.add(retrievedMonth(tickerSymbol, between));
-					between = between.plusMonths(1);
+		return fullMonths;
+	}
+
+	/**
+	 * The first month after or on the given date that is the first day of the month.
+	 */
+	private YearMonth beginsFirstOfMonth( final DateRange range ) {
+
+		final LocalDate startDateInclusive = range.startDateInclusive();
+
+		if (startDateInclusive.getDayOfMonth() == 1) {
+			return YearMonth.of(startDateInclusive.getYear(), startDateInclusive.getMonthValue());
+		} else {
+			final LocalDate nextMonth = startDateInclusive.plusMonths(1);
+			return YearMonth.of(nextMonth.getYear(), nextMonth.getMonthValue());
+		}
+	}
+
+	private YearMonth endsLastOfMonth( final DateRange range ) {
+
+		final LocalDate previousMonth = range.endDateExclusive().minusMonths(1);
+		return YearMonth.of(previousMonth.getYear(), previousMonth.getMonthValue());
+	}
+
+	private Set<DateRange> extractDateRanges( final List<HistoryRetrievalRequest> requests ) {
+
+		final Set<DateRange> ranges = new HashSet<>();
+		final List<HistoryRetrievalRequest> unspent = new ArrayList<>(requests);
+
+		while (!unspent.isEmpty()) {
+
+			final HistoryRetrievalRequest earliest = earliestStartDate(unspent);
+			unspent.remove(earliest);
+
+			//TODO tidy up this code
+			Optional<HistoryRetrievalRequest> crossOver = startDateCrossOver(earliest.exclusiveEndDate(), unspent);
+			Optional<HistoryRetrievalRequest> nextCrossOver = crossOver;
+
+			while ( nextCrossOver.isPresent()) {
+				unspent.remove(crossOver.get());
+
+				nextCrossOver = startDateCrossOver(crossOver.get().exclusiveEndDate(), unspent);
+
+				if (nextCrossOver.isPresent()) {
+					crossOver = nextCrossOver;
 				}
+			}
 
-				if (isEndTradingMonth(end) || isMonthCompletedByOtherRequests(end, fulfilledRequests)) {
-					retrieved.add(retrievedMonth(tickerSymbol, end));
+			if (crossOver.isPresent()) {
+				ranges.add(dateRange(earliest, crossOver.get()));
+			} else {
+				ranges.add(dateRange(earliest));
+			}
+		}
+
+		return ranges;
+	}
+
+	// TODO multiple cross overs (not duplicates, similar problem)
+
+	private DateRange dateRange( final HistoryRetrievalRequest range ) {
+
+		return new DateRange(range.inclusiveStartDate().toLocalDate(), range.exclusiveEndDate().toLocalDate());
+	}
+
+	private DateRange dateRange( final HistoryRetrievalRequest start, final HistoryRetrievalRequest end ) {
+
+		return new DateRange(start.inclusiveStartDate().toLocalDate(), end.exclusiveEndDate().toLocalDate());
+	}
+
+	/**
+	 * Finds the request whose with the latest end date, whose start date is before the given end
+	 * date.
+	 */
+	private Optional<HistoryRetrievalRequest> startDateCrossOver(
+	        final Date exclusiveEndDate,
+	        final List<HistoryRetrievalRequest> candidates ) {
+
+		Optional<HistoryRetrievalRequest> crossOver = Optional.empty();
+
+		for (final HistoryRetrievalRequest candidate : candidates) {
+
+			if (candidate.inclusiveStartDate().getTime() <= exclusiveEndDate.getTime()) {
+
+				if (!crossOver.isPresent() || (crossOver.isPresent()
+				        && candidate.exclusiveEndDate().getTime() > crossOver.get().exclusiveEndDate().getTime())) {
+
+					crossOver = Optional.of(candidate);
 				}
 			}
 		}
+
+		return crossOver;
+	}
+
+	private HistoryRetrievalRequest earliestStartDate( final List<HistoryRetrievalRequest> requests ) {
+
+		HistoryRetrievalRequest earliest = requests.get(0);
+
+		for (final HistoryRetrievalRequest candidate : requests) {
+			if (candidate.inclusiveStartDate().getTime() < earliest.inclusiveStartDate().getTime()) {
+				earliest = candidate;
+			}
+		}
+
+		return earliest;
+	}
+
+	private Map<String, List<HistoryRetrievalRequest>> splitByTickerSymbol(
+	        final List<HistoryRetrievalRequest> requests ) {
+
+		final Map<String, List<HistoryRetrievalRequest>> split = new HashMap<>();
+
+		for (final HistoryRetrievalRequest request : requests) {
+
+			ensureListExists(split, request.tickerSymbol());
+
+			final List<HistoryRetrievalRequest> alreadySplit = split.get(request.tickerSymbol());
+			alreadySplit.add(request);
+			split.put(request.tickerSymbol(), alreadySplit);
+		}
+
+		return split;
+	}
+
+	private void ensureListExists( final Map<String, List<HistoryRetrievalRequest>> split, String key ) {
+
+		if (!split.containsKey(key)) {
+			split.put(key, new ArrayList<>());
+		}
+	}
+
+	private boolean hasFulfilledNothing( final List<HistoryRetrievalRequest> fulfilledRequests ) {
+
+		return fulfilledRequests == null || fulfilledRequests.isEmpty();
+	}
+
+	private void store( final List<RetrievedMonthTradingPrices> retrieved ) {
 
 		retrievedMonthsDao.create(retrieved);
 	}
 
-	private boolean isOverOneMonthBetween( final LocalDate start, final LocalDate end ) {
+	private void log( final List<RetrievedMonthTradingPrices> prices ) {
 
-		final LocalDate oneMonthOut = start.plusMonths(1);
-		return oneMonthOut.isBefore(end) || oneMonthOut.isEqual(end);
+		LOG.debug(
+		        "Retrieved: {}, {}",
+		        () -> prices.stream().map(price -> price.tickerSymbol()).collect(Collectors.toSet()).stream()
+		                .collect(Collectors.joining(", ")),
+		        () -> prices.stream().map(price -> price.yearMonth().toString()).collect(Collectors.joining(", ")));
+	}
+}
+
+// TODO this class may already exist in model - look!!!!
+// TODO new class file somewhere
+// TODO inclusive / exclusive dates
+class DateRange {
+
+	private final LocalDate startDateInclusive;
+	private final LocalDate endDateExclusive;
+
+	public DateRange( final LocalDate startDateInclusive, final LocalDate endDateExclusive ) {
+
+		this.startDateInclusive = startDateInclusive;
+		this.endDateExclusive = endDateExclusive;
 	}
 
-	private boolean isMonthCompletedByOtherRequests(
-	        final LocalDate end,
-	        final List<HistoryRetrievalRequest> fulfilledRequests ) {
+	public LocalDate startDateInclusive() {
 
-		LocalDate expectedStart = end;
-
-		final SortedSet<HistoryRetrievalRequest> byStartDate = new TreeSet<>(
-		        ( a, b ) -> a.inclusiveStartDate().compareTo(b.inclusiveStartDate()));
-		fulfilledRequests.stream().forEach(byStartDate::add);
-
-		for (final HistoryRetrievalRequest fulfilled : byStartDate) {
-			final LocalDate contender = fulfilled.inclusiveStartDate().toLocalDate();
-
-			if (expectedStart.isEqual(contender)) {
-				if (isEndTradingMonth(fulfilled.exclusiveEndDate().toLocalDate())) { return true; }
-
-				// Continue to see whether the month is complete by another request
-				expectedStart = fulfilled.exclusiveEndDate().toLocalDate();
-			}
-		}
-
-		return false;
+		return startDateInclusive;
 	}
 
-	private boolean hasDifferentYearMonth( final LocalDate a, final LocalDate b ) {
+	public LocalDate endDateExclusive() {
 
-		return a.getYear() != b.getYear() || a.getMonthValue() != b.getMonthValue();
-	}
-
-	private RetrievedMonthTradingPrices retrievedMonth( final String tickerSymbol, final LocalDate yearMonth ) {
-
-		return new HibernateRetrievedMonthTradingPrices(
-		        tickerSymbol,
-		        YearMonth.of(yearMonth.getYear(), yearMonth.getMonth().getValue()));
-	}
-
-	private boolean isEndTradingMonth( final LocalDate contender ) {
-
-		final YearMonth ym = YearMonth.of(contender.getYear(), contender.getMonth());
-		return isLastDayOfMonth(contender, ym) || isLastFridayOfMonth(contender, ym);
-	}
-
-	private boolean isBeginningTradingMonth( final LocalDate contender ) {
-
-		return isFirstDayOfMonth(contender) || isFirstMondayOfMonth(contender);
-	}
-
-	private boolean isFirstMondayOfMonth( final LocalDate contender ) {
-
-		return contender.getDayOfWeek() == DayOfWeek.MONDAY && contender.getDayOfMonth() < DayOfWeek.values().length;
-	}
-
-	private boolean isFirstDayOfMonth( final LocalDate contender ) {
-
-		return contender.getDayOfMonth() == 1;
-	}
-
-	private boolean isLastDayOfMonth( final LocalDate contender, final YearMonth ym ) {
-
-		return contender.getDayOfMonth() == ym.lengthOfMonth();
-	}
-
-	private boolean isLastFridayOfMonth( final LocalDate contender, final YearMonth ym ) {
-
-		return contender.getDayOfMonth() > ym.lengthOfMonth() - 3 && contender.getDayOfWeek() == DayOfWeek.FRIDAY;
+		return endDateExclusive;
 	}
 }
