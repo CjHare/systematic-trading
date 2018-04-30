@@ -104,18 +104,25 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 			final YearMonth end = endsLastOfMonth(range);
 			YearMonth fullMonth = start;
 
-			fullMonths.add(start);
+			if (atLeastOneMonthBetween(start, end)) {
+				fullMonths.add(start);
 
-			while (fullMonth.isBefore(end)) {
+				while (fullMonth.isBefore(end)) {
 
-				fullMonth = fullMonth.plusMonths(1);
-				fullMonths.add(fullMonth);
+					fullMonth = fullMonth.plusMonths(1);
+					fullMonths.add(fullMonth);
+				}
+
+				fullMonths.add(end);
 			}
-
-			fullMonths.add(end);
 		}
 
 		return fullMonths;
+	}
+
+	private boolean atLeastOneMonthBetween( final YearMonth start, final YearMonth end ) {
+
+		return !start.isAfter(end);
 	}
 
 	/**
@@ -149,11 +156,11 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 			final HistoryRetrievalRequest earliest = earliestStartDate(unspent);
 			unspent.remove(earliest);
 
-			//TODO tidy up this code
+			// TODO tidy up this code
 			Optional<HistoryRetrievalRequest> crossOver = startDateCrossOver(earliest.exclusiveEndDate(), unspent);
 			Optional<HistoryRetrievalRequest> nextCrossOver = crossOver;
 
-			while ( nextCrossOver.isPresent()) {
+			while (nextCrossOver.isPresent()) {
 				unspent.remove(crossOver.get());
 
 				nextCrossOver = startDateCrossOver(crossOver.get().exclusiveEndDate(), unspent);
@@ -254,7 +261,9 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 
 	private void store( final List<RetrievedMonthTradingPrices> retrieved ) {
 
-		retrievedMonthsDao.create(retrieved);
+		if (!retrieved.isEmpty()) {
+			retrievedMonthsDao.create(retrieved);
+		}
 	}
 
 	private void log( final List<RetrievedMonthTradingPrices> prices ) {

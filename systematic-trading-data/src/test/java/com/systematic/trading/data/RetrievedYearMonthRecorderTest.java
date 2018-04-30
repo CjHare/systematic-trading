@@ -45,9 +45,10 @@ import com.systematic.trading.data.dao.RetrievedMonthTradingPricesDao;
 import com.systematic.trading.data.history.impl.RetrievedYearMonthRecorder;
 import com.systematic.trading.data.matcher.RetrievedMonthTradingPricesListMatcher;
 import com.systematic.trading.data.model.HistoryRetrievalRequest;
+import com.systematic.trading.data.model.RetrievedMonthTradingPrices;
 import com.systematic.trading.data.util.HistoryRetrievalRequestUtil;
-import com.systematic.trading.data.util.RetrievedMonthTradingPricesUtil;
 import com.systematic.trading.data.util.RandomStringGenerator;
+import com.systematic.trading.data.util.RetrievedMonthTradingPricesUtil;
 
 /**
  * Does the RetrievedYearMonthRecorder record the year months correctly?
@@ -71,21 +72,17 @@ public class RetrievedYearMonthRecorderTest {
 	private String datasetId;
 
 	/** Random string re-generated every run. */
-	private String tickerSymbol;
-
-	// TODO multiple ticker symbols
-
-	// TODO requests that cross-over
-
-	// TODO multiple cross overs (not duplicates, similar problem)
+	private String firstTickerSymbol;
 
 	@Before
 	public void setUp() {
 
 		recorder = new RetrievedYearMonthRecorder(retrievedMonthsDao);
-		tickerSymbol = RandomStringGenerator.generate();
+		firstTickerSymbol = RandomStringGenerator.generate();
 		datasetId = RandomStringGenerator.generate();
 	}
+
+	// TODO less then one motnh
 
 	@Test
 	public void retrievedNull() {
@@ -105,6 +102,38 @@ public class RetrievedYearMonthRecorderTest {
 		retrieved(fulfilled);
 
 		verifyNoMonthsRetrieved();
+	}
+
+	@Test
+	public void multipleSymbolsOneWholeMonth() {
+
+		final String secondTickerSymbol = RandomStringGenerator.generate();
+		final String thirdTickerSymbol = RandomStringGenerator.generate();
+		final LocalDate startDateInclusive = LocalDate.of(2010, 5, 1);
+		final LocalDate endDateExclusive = LocalDate.of(2010, 6, 1);
+		final List<HistoryRetrievalRequest> fulfilled = asList(request(startDateInclusive, endDateExclusive));
+		fulfilled.addAll(asList(request(secondTickerSymbol, startDateInclusive, endDateExclusive)));
+		fulfilled.addAll(asList(request(thirdTickerSymbol, startDateInclusive, endDateExclusive)));
+
+		retrieved(fulfilled);
+
+		verifyMonths(
+		        asList(
+		                retrievedMonths(firstTickerSymbol, YearMonth.of(2010, 5)),
+		                retrievedMonths(secondTickerSymbol, YearMonth.of(2010, 5)),
+		                retrievedMonths(thirdTickerSymbol, YearMonth.of(2010, 5))));
+	}
+
+	@Test
+	public void underOneMonth() {
+
+		final LocalDate startDateInclusive = LocalDate.of(2010, 5, 1);
+		final LocalDate endDateExclusive = LocalDate.of(2010, 5, 19);
+		final List<HistoryRetrievalRequest> fulfilled = asList(request(startDateInclusive, endDateExclusive));
+
+		retrieved(fulfilled);
+
+		verifyZeroMonth();
 	}
 
 	@Test
@@ -168,6 +197,66 @@ public class RetrievedYearMonthRecorderTest {
 	}
 
 	@Test
+	public void onwMonthWithCrossOver() {
+
+		final LocalDate firstStartDateInclusive = LocalDate.of(2010, 5, 1);
+		final LocalDate firstEndDateExclusive = LocalDate.of(2010, 5, 20);
+		final LocalDate secondStartDateInclusive = LocalDate.of(2010, 5, 15);
+		final LocalDate secondEndDateExclusive = LocalDate.of(2010, 6, 1);
+		final List<HistoryRetrievalRequest> fulfilled = asList(
+		        request(firstStartDateInclusive, firstEndDateExclusive),
+		        request(secondStartDateInclusive, secondEndDateExclusive));
+
+		retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5));
+	}
+
+	@Test
+	public void onwMonthWithMultipleCrossOvers() {
+
+		final LocalDate firstStartDateInclusive = LocalDate.of(2010, 5, 1);
+		final LocalDate firstEndDateExclusive = LocalDate.of(2010, 5, 20);
+		final LocalDate secondStartDateInclusive = LocalDate.of(2010, 5, 15);
+		final LocalDate secondEndDateExclusive = LocalDate.of(2010, 5, 27);
+		final LocalDate thirdStartDateInclusive = LocalDate.of(2010, 5, 22);
+		final LocalDate thirdEndDateExclusive = LocalDate.of(2010, 6, 1);
+
+		final List<HistoryRetrievalRequest> fulfilled = asList(
+		        request(firstStartDateInclusive, firstEndDateExclusive),
+		        request(secondStartDateInclusive, secondEndDateExclusive),
+		        request(thirdStartDateInclusive, thirdEndDateExclusive));
+
+		retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5));
+	}
+
+	/**
+	 * Start date of the first and end date of the third must be chosen, with the third starting
+	 * before the end of the first.
+	 */
+	@Test
+	public void onwMonthWithConflictingCrossOvers() {
+
+		final LocalDate firstStartDateInclusive = LocalDate.of(2010, 5, 1);
+		final LocalDate firstEndDateExclusive = LocalDate.of(2010, 5, 20);
+		final LocalDate secondStartDateInclusive = LocalDate.of(2010, 5, 15);
+		final LocalDate secondEndDateExclusive = LocalDate.of(2010, 5, 27);
+		final LocalDate thirdStartDateInclusive = LocalDate.of(2010, 5, 18);
+		final LocalDate thirdEndDateExclusive = LocalDate.of(2010, 6, 1);
+
+		final List<HistoryRetrievalRequest> fulfilled = asList(
+		        request(firstStartDateInclusive, firstEndDateExclusive),
+		        request(secondStartDateInclusive, secondEndDateExclusive),
+		        request(thirdStartDateInclusive, thirdEndDateExclusive));
+
+		retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5));
+	}
+
+	@Test
 	public void oneYearOneMonth() {
 
 		final LocalDate startDateInclusive = LocalDate.of(2010, 5, 1);
@@ -222,13 +311,41 @@ public class RetrievedYearMonthRecorderTest {
 		recorder.retrieved(fulfilled);
 	}
 
-	private void verifyMonths( final YearMonth... month ) {
+	private void verifyZeroMonth() {
+
+		verifyZeroInteractions(retrievedMonthsDao);
+	}
+
+	private void verifyMonths( final YearMonth... months ) {
 
 		verify(retrievedMonthsDao).create(
 		        argThat(
 		                new RetrievedMonthTradingPricesListMatcher(
-		                        retrievedMonthTradingPricesUtil.create(tickerSymbol, month))));
+		                        retrievedMonthTradingPricesUtil.create(firstTickerSymbol, months))));
 		verifyNoMoreInteractions(retrievedMonthsDao);
+	}
+
+	private void verifyMonths( final List<RetrievedMonthTradingPrices> months ) {
+
+		verify(retrievedMonthsDao).create(argThat(new RetrievedMonthTradingPricesListMatcher(months)));
+		verifyNoMoreInteractions(retrievedMonthsDao);
+	}
+
+	@SafeVarargs
+	private final List<RetrievedMonthTradingPrices> asList( final List<RetrievedMonthTradingPrices>... prices ) {
+
+		final List<RetrievedMonthTradingPrices> allPrices = new ArrayList<>();
+
+		for (final List<RetrievedMonthTradingPrices> price : prices) {
+			allPrices.addAll(price);
+		}
+
+		return allPrices;
+	}
+
+	private List<RetrievedMonthTradingPrices> retrievedMonths( final String tickerSymbol, final YearMonth months ) {
+
+		return retrievedMonthTradingPricesUtil.create(firstTickerSymbol, months);
 	}
 
 	private List<HistoryRetrievalRequest> asList( final HistoryRetrievalRequest... requests ) {
@@ -238,7 +355,15 @@ public class RetrievedYearMonthRecorderTest {
 
 	private HistoryRetrievalRequest request( final LocalDate startDateInclusive, final LocalDate endDateExclusive ) {
 
-		return historyRetrievalRequestUtil.create(datasetId, tickerSymbol, startDateInclusive, endDateExclusive);
+		return historyRetrievalRequestUtil.create(datasetId, firstTickerSymbol, startDateInclusive, endDateExclusive);
+	}
+
+	private HistoryRetrievalRequest request(
+	        final String ticker,
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) {
+
+		return historyRetrievalRequestUtil.create(datasetId, ticker, startDateInclusive, endDateExclusive);
 	}
 
 	private void verifyNoMonthsRetrieved() {
