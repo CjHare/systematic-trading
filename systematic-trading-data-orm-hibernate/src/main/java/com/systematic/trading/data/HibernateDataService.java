@@ -57,7 +57,7 @@ public class HibernateDataService implements DataService {
 	        final TradingDayPrices[] prices ) {
 
 		LOG.debug(
-		        "Ticker Synbol: {}, Start Date: requested {} - actual {}, End Date: requested {} (exclusive) - actual {} (inclusive)",
+		        "Ticker Synbol: {}, Start Date: requested {} - actual {}, End Date: requested {} - actual {}",
 		        tickerSymbol,
 		        startDate,
 		        prices[prices.length - 1].date(),
