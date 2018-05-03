@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -156,31 +155,45 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 			final HistoryRetrievalRequest earliest = earliestStartDate(unspent);
 			unspent.remove(earliest);
 
-			// TODO tidy up this code
-			Optional<HistoryRetrievalRequest> crossOver = startDateCrossOver(earliest.exclusiveEndDate(), unspent);
-			Optional<HistoryRetrievalRequest> nextCrossOver = crossOver;
+			final List<HistoryRetrievalRequest> chained = chainedRequests(earliest.exclusiveEndDate(), unspent);
+			unspent.removeAll(chained);
 
-			while (nextCrossOver.isPresent()) {
-				unspent.remove(crossOver.get());
-
-				nextCrossOver = startDateCrossOver(crossOver.get().exclusiveEndDate(), unspent);
-
-				if (nextCrossOver.isPresent()) {
-					crossOver = nextCrossOver;
-				}
-			}
-
-			if (crossOver.isPresent()) {
-				ranges.add(dateRange(earliest, crossOver.get()));
-			} else {
+			if (chained.isEmpty()) {
 				ranges.add(dateRange(earliest));
+			} else {
+
+				final HistoryRetrievalRequest latest = latestEndDate(chained);
+				ranges.add(dateRange(earliest, latest));
 			}
 		}
 
 		return ranges;
 	}
 
-	// TODO multiple cross overs (not duplicates, similar problem)
+	/**
+	 * Retrieve the set of requests that form a chain, with the start date before or on the given
+	 * end date.
+	 */
+	private List<HistoryRetrievalRequest> chainedRequests(
+	        final Date earliestEndDateExclusive,
+	        final List<HistoryRetrievalRequest> candidates ) {
+
+		final List<HistoryRetrievalRequest> chain = new ArrayList<>(candidates.size());
+		Date latest = earliestEndDateExclusive;
+
+		for (final HistoryRetrievalRequest candidate : candidates) {
+
+			if (candidate.inclusiveStartDate().getTime() <= latest.getTime()) {
+				chain.add(candidate);
+
+				if (candidate.exclusiveEndDate().getTime() > latest.getTime()) {
+					latest = candidate.exclusiveEndDate();
+				}
+			}
+		}
+
+		return chain;
+	}
 
 	private DateRange dateRange( final HistoryRetrievalRequest range ) {
 
@@ -190,31 +203,6 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 	private DateRange dateRange( final HistoryRetrievalRequest start, final HistoryRetrievalRequest end ) {
 
 		return new DateRange(start.inclusiveStartDate().toLocalDate(), end.exclusiveEndDate().toLocalDate());
-	}
-
-	/**
-	 * Finds the request whose with the latest end date, whose start date is before the given end
-	 * date.
-	 */
-	private Optional<HistoryRetrievalRequest> startDateCrossOver(
-	        final Date exclusiveEndDate,
-	        final List<HistoryRetrievalRequest> candidates ) {
-
-		Optional<HistoryRetrievalRequest> crossOver = Optional.empty();
-
-		for (final HistoryRetrievalRequest candidate : candidates) {
-
-			if (candidate.inclusiveStartDate().getTime() <= exclusiveEndDate.getTime()) {
-
-				if (!crossOver.isPresent() || (crossOver.isPresent()
-				        && candidate.exclusiveEndDate().getTime() > crossOver.get().exclusiveEndDate().getTime())) {
-
-					crossOver = Optional.of(candidate);
-				}
-			}
-		}
-
-		return crossOver;
 	}
 
 	private HistoryRetrievalRequest earliestStartDate( final List<HistoryRetrievalRequest> requests ) {
@@ -228,6 +216,19 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		}
 
 		return earliest;
+	}
+
+	private HistoryRetrievalRequest latestEndDate( final List<HistoryRetrievalRequest> requests ) {
+
+		HistoryRetrievalRequest latest = requests.get(0);
+
+		for (final HistoryRetrievalRequest candidate : requests) {
+			if (candidate.exclusiveEndDate().getTime() > latest.exclusiveEndDate().getTime()) {
+				latest = candidate;
+			}
+		}
+
+		return latest;
 	}
 
 	private Map<String, List<HistoryRetrievalRequest>> splitByTickerSymbol(

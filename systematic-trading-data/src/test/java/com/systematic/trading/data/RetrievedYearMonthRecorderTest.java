@@ -232,6 +232,8 @@ public class RetrievedYearMonthRecorderTest {
 		verifyMonths(YearMonth.of(2010, 5));
 	}
 
+	//TODO mutliple blocks of conflicting cross-overs i.e. isolated from each other
+	
 	/**
 	 * Start date of the first and end date of the third must be chosen, with the third starting
 	 * before the end of the first.
