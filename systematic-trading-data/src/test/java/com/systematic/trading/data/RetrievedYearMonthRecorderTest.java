@@ -82,8 +82,6 @@ public class RetrievedYearMonthRecorderTest {
 		datasetId = RandomStringGenerator.generate();
 	}
 
-	// TODO less then one motnh
-
 	@Test
 	public void retrievedNull() {
 
@@ -232,14 +230,12 @@ public class RetrievedYearMonthRecorderTest {
 		verifyMonths(YearMonth.of(2010, 5));
 	}
 
-	//TODO mutliple blocks of conflicting cross-overs i.e. isolated from each other
-	
 	/**
 	 * Start date of the first and end date of the third must be chosen, with the third starting
 	 * before the end of the first.
 	 */
 	@Test
-	public void onwMonthWithConflictingCrossOvers() {
+	public void oneMonthOneBlockOfConflictingCrossOvers() {
 
 		final LocalDate firstStartDateInclusive = LocalDate.of(2010, 5, 1);
 		final LocalDate firstEndDateExclusive = LocalDate.of(2010, 5, 20);
@@ -256,6 +252,45 @@ public class RetrievedYearMonthRecorderTest {
 		retrieved(fulfilled);
 
 		verifyMonths(YearMonth.of(2010, 5));
+	}
+
+	/**
+	 * Two blocks of cross over, with a definite break / division between them.
+	 * 
+	 * Start date of the first and end date of the third must be chosen, with the third starting
+	 * before the end of the first.
+	 * 
+	 * Start date of the forth and end date of the sixth must be chosen, with the sixth starting
+	 * before the end of the first.
+	 */
+	@Test
+	public void twoMonthsTwoBlocksConflictingCrossOvers() {
+
+		final LocalDate firstStartDateInclusive = LocalDate.of(2010, 5, 1);
+		final LocalDate firstEndDateExclusive = LocalDate.of(2010, 5, 20);
+		final LocalDate secondStartDateInclusive = LocalDate.of(2010, 5, 15);
+		final LocalDate secondEndDateExclusive = LocalDate.of(2010, 5, 27);
+		final LocalDate thirdStartDateInclusive = LocalDate.of(2010, 5, 18);
+		final LocalDate thirdEndDateExclusive = LocalDate.of(2010, 6, 1);
+
+		final LocalDate forthStartDateInclusive = LocalDate.of(2010, 7, 1);
+		final LocalDate forthEndDateExclusive = LocalDate.of(2010, 7, 20);
+		final LocalDate fifthStartDateInclusive = LocalDate.of(2010, 7, 15);
+		final LocalDate fifthEndDateExclusive = LocalDate.of(2010, 7, 27);
+		final LocalDate sixthStartDateInclusive = LocalDate.of(2010, 7, 18);
+		final LocalDate sixthEndDateExclusive = LocalDate.of(2010, 8, 1);
+
+		final List<HistoryRetrievalRequest> fulfilled = asList(
+		        request(firstStartDateInclusive, firstEndDateExclusive),
+		        request(secondStartDateInclusive, secondEndDateExclusive),
+		        request(thirdStartDateInclusive, thirdEndDateExclusive),
+		        request(forthStartDateInclusive, forthEndDateExclusive),
+		        request(fifthStartDateInclusive, fifthEndDateExclusive),
+		        request(sixthStartDateInclusive, sixthEndDateExclusive));
+
+		retrieved(fulfilled);
+
+		verifyMonths(YearMonth.of(2010, 5), YearMonth.of(2010, 7));
 	}
 
 	@Test
