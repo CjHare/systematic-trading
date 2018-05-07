@@ -85,11 +85,11 @@ public class HttpQuandlDatasetApiDao extends HttpQuandlApiDao implements QuandlA
 	public QuandlResultSet get(
 	        final String timeSeriesDataset,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate,
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive,
 	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
-		final WebTarget url = url(timeSeriesDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final WebTarget url = url(timeSeriesDataset, tickerSymbol, startDateInclusive, endDateExclusive);
 
 		final Response response = get(url, throttler);
 
@@ -106,12 +106,12 @@ public class HttpQuandlDatasetApiDao extends HttpQuandlApiDao implements QuandlA
 	private WebTarget url(
 	        final String timeSeriesDataset,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) {
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) {
 
 		return root.path(String.format(PATH, timeSeriesDataset, tickerSymbol))
-		        .queryParam(START_DATE_KEY, inclusiveStartDate.format(QUANDL_DATE_FORMAT))
-		        .queryParam(END_DATE_KEY, exclusiveEndDate.minusDays(EXCLUSIVE_OFFSET).format(QUANDL_DATE_FORMAT))
+		        .queryParam(START_DATE_KEY, startDateInclusive.format(QUANDL_DATE_FORMAT))
+		        .queryParam(END_DATE_KEY, endDateExclusive.minusDays(EXCLUSIVE_OFFSET).format(QUANDL_DATE_FORMAT))
 		        .queryParam(API_KEY, apiKey);
 	}
 }

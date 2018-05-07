@@ -90,11 +90,11 @@ public class SingleEquityClassBroker implements Brokerage {
 	        final BrokerageTransactionFeeStructure fees,
 	        final EquityManagementFeeStructure managementFees,
 	        final EquityIdentity equity,
-	        final LocalDate startDate ) {
+	        final LocalDate startDateInclusive ) {
 
 		this.brokerName = brokerName;
 		this.monthlyTradeCounter = new MonthlyRollingCounter();
-		this.lastManagementFee = managementFees.lastManagementFeeDate(startDate);
+		this.lastManagementFee = managementFees.lastManagementFeeDate(startDateInclusive);
 		this.equityManagementFee = managementFees;
 		this.transactionFee = fees;
 		this.equityBalance = BigDecimal.ZERO;

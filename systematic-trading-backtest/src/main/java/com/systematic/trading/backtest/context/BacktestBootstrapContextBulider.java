@@ -109,7 +109,7 @@ public class BacktestBootstrapContextBulider {
 	public BacktestBootstrapContextBulider withConfiguration( final BacktestBootstrapConfiguration configuration ) {
 
 		this.simulationDates = configuration.backtestDates();
-		this.managementFeeStartDate = firstDayOfYear(simulationDates.startDate());
+		this.managementFeeStartDate = firstDayOfYear(simulationDates.startDateInclusive());
 		this.cashAccount = configuration.cashAccount();
 		this.equity = configuration.equity();
 		this.brokerageType = configuration.brokerageFees();
@@ -232,7 +232,7 @@ public class BacktestBootstrapContextBulider {
 
 		return new TradingStrategyFactory().entry(
 		        new TradingStrategyPeriodic(
-		                simulationDates.startDate(),
+		                simulationDates.startDateInclusive(),
 		                (periodicConfig).frequency().frequency(),
 		                SignalType.BULLISH));
 	}
@@ -292,8 +292,8 @@ public class BacktestBootstrapContextBulider {
 	private SignalRangeFilter signalRangeFilter( final int previousTradingDaySignalRange ) {
 
 		return new SimulationDatesRangeFilterDecorator(
-		        simulationDates.startDate(),
-		        simulationDates.endDate(),
+		        simulationDates.startDateInclusive(),
+		        simulationDates.endDateExclusive(),
 		        new TradingDaySignalRangeFilter(previousTradingDaySignalRange));
 	}
 
@@ -319,7 +319,7 @@ public class BacktestBootstrapContextBulider {
 
 	private CashAccount cashAccount() {
 
-		return new CashAccountFactory().create(simulationDates.startDate(), cashAccount);
+		return new CashAccountFactory().create(simulationDates.startDateInclusive(), cashAccount);
 	}
 
 	private Brokerage brokerage() {
@@ -329,7 +329,7 @@ public class BacktestBootstrapContextBulider {
 		        equity.gquityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 
-		return new BrokerageFactoroy().create(equityConfiguration, brokerageType, simulationDates.startDate());
+		return new BrokerageFactoroy().create(equityConfiguration, brokerageType, simulationDates.startDateInclusive());
 	}
 
 	private LocalDate firstDayOfYear( final LocalDate date ) {

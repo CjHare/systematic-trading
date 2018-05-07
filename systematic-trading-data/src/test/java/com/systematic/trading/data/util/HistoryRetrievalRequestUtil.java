@@ -75,13 +75,13 @@ public class HistoryRetrievalRequestUtil {
 			}
 
 			@Override
-			public Date inclusiveStartDate() {
+			public Date startDateInclusive() {
 
 				return Date.valueOf(start);
 			}
 
 			@Override
-			public Date exclusiveEndDate() {
+			public Date endDateExclusive() {
 
 				return Date.valueOf(end);
 			}
@@ -94,8 +94,8 @@ public class HistoryRetrievalRequestUtil {
 
 		for (final HistoryRetrievalRequest actual : actualValues) {
 			found = StringUtils.equals(expected.tickerSymbol(), actual.tickerSymbol())
-			        && expected.inclusiveStartDate().equals(actual.inclusiveStartDate())
-			        && expected.exclusiveEndDate().equals(actual.exclusiveEndDate());
+			        && expected.startDateInclusive().equals(actual.startDateInclusive())
+			        && expected.endDateExclusive().equals(actual.endDateExclusive());
 
 			if (found) {
 				break;
@@ -107,8 +107,8 @@ public class HistoryRetrievalRequestUtil {
 			        String.format(
 			                "Faled to find a HistoryRetrievalRequest with ticker: %s, start date: %s, end date: %s",
 			                expected.tickerSymbol(),
-			                expected.inclusiveStartDate(),
-			                expected.exclusiveEndDate()));
+			                expected.startDateInclusive(),
+			                expected.endDateExclusive()));
 		}
 	}
 }

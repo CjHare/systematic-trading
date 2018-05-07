@@ -197,8 +197,8 @@ public class EntryOrderAnalysis {
 		        "{}",
 		        () -> String.format(
 		                "Analysis inclusive start: %s, exclusive end: %s",
-		                analysisPeriod.startDate(),
-		                analysisPeriod.endDate()));
+		                analysisPeriod.startDateInclusive(),
+		                analysisPeriod.endDateExclusive()));
 	}
 
 	private BacktestBootstrapConfiguration configuration(
@@ -207,12 +207,12 @@ public class EntryOrderAnalysis {
 
 		final StrategyConfiguration strategy = strategy();
 		final LocalDate today = LocalDate.now();
-		final LocalDate inclusiveStartDate = today.minus(strategy.entry().priceDataRange()).minusDays(DAYS_OF_SIGNALS);
-		final LocalDate exclusiveEndDate = today.plusDays(1);
+		final LocalDate startDateInclusive = today.minus(strategy.entry().priceDataRange()).minusDays(DAYS_OF_SIGNALS);
+		final LocalDate endDateExclusive = today.plusDays(1);
 
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(
-		        new BacktestStartDate(inclusiveStartDate),
-		        new BacktestEndDate(exclusiveEndDate));
+		        new BacktestStartDate(startDateInclusive),
+		        new BacktestEndDate(endDateExclusive));
 
 		return new BacktestBootstrapConfiguration(
 		        simulationDates,

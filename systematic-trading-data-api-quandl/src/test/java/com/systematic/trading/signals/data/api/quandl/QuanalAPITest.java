@@ -93,23 +93,23 @@ public class QuanalAPITest {
 
 		final String datasetId = randomDatasetId();
 		final String tickerSymbol = randomTickerSymbol();
-		final LocalDate inclusiveStartDate = randomStartDate();
-		final LocalDate exclusiveEndDate = randomEndDate(inclusiveStartDate);
+		final LocalDate startDateInclusive = randomStartDate();
+		final LocalDate endDateExclusive = randomEndDate(startDateInclusive);
 
-		final TradingDayPrices[] prices = callQuandl(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final TradingDayPrices[] prices = callQuandl(datasetId, tickerSymbol, startDateInclusive, endDateExclusive);
 
 		verifyTradingDayPrices(expectedPrices, prices);
-		verifyQuandlCall(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		verifyQuandlCall(datasetId, tickerSymbol, startDateInclusive, endDateExclusive);
 	}
 
 	private TradingDayPrices[] callQuandl(
 	        final String datasetId,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) throws CannotRetrieveDataException {
 
 		return new QuandlAPI(dao, configuration, dataFormat)
-		        .stockData(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
+		        .stockData(datasetId, tickerSymbol, startDateInclusive, endDateExclusive, throttler);
 	}
 
 	private void verifyTradingDayPrices( final TradingDayPrices[] expected, final TradingDayPrices[] actual ) {
@@ -125,10 +125,10 @@ public class QuanalAPITest {
 	private void verifyQuandlCall(
 	        final String datasetId,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) throws CannotRetrieveDataException {
 
-		verify(dao).get(datasetId, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
+		verify(dao).get(datasetId, tickerSymbol, startDateInclusive, endDateExclusive, throttler);
 		verifyNoMoreInteractions(dao);
 		verifyNoMoreInteractions(throttler);
 	}

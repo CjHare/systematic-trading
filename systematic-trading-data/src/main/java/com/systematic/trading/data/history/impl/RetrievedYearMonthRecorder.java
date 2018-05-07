@@ -156,7 +156,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 			final HistoryRetrievalRequest earliest = earliestStartDate(unspent);
 			unspent.remove(earliest);
 
-			final List<HistoryRetrievalRequest> chained = chainedRequests(earliest.exclusiveEndDate(), unspent);
+			final List<HistoryRetrievalRequest> chained = chainedRequests(earliest.endDateExclusive(), unspent);
 			unspent.removeAll(chained);
 
 			if (chained.isEmpty()) {
@@ -184,11 +184,11 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 
 		for (final HistoryRetrievalRequest candidate : candidates) {
 
-			if (candidate.inclusiveStartDate().getTime() <= latest.getTime()) {
+			if (candidate.startDateInclusive().getTime() <= latest.getTime()) {
 				chain.add(candidate);
 
-				if (candidate.exclusiveEndDate().getTime() > latest.getTime()) {
-					latest = candidate.exclusiveEndDate();
+				if (candidate.endDateExclusive().getTime() > latest.getTime()) {
+					latest = candidate.endDateExclusive();
 				}
 			}
 		}
@@ -198,12 +198,12 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 
 	private DateRange<LocalDate> dateRange( final HistoryRetrievalRequest range ) {
 
-		return new DateRange<>(range.inclusiveStartDate().toLocalDate(), range.exclusiveEndDate().toLocalDate());
+		return new DateRange<>(range.startDateInclusive().toLocalDate(), range.endDateExclusive().toLocalDate());
 	}
 
 	private DateRange<LocalDate> dateRange( final HistoryRetrievalRequest start, final HistoryRetrievalRequest end ) {
 
-		return new DateRange<>(start.inclusiveStartDate().toLocalDate(), end.exclusiveEndDate().toLocalDate());
+		return new DateRange<>(start.startDateInclusive().toLocalDate(), end.endDateExclusive().toLocalDate());
 	}
 
 	private HistoryRetrievalRequest earliestStartDate( final List<HistoryRetrievalRequest> requests ) {
@@ -211,7 +211,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		HistoryRetrievalRequest earliest = requests.get(0);
 
 		for (final HistoryRetrievalRequest candidate : requests) {
-			if (candidate.inclusiveStartDate().getTime() < earliest.inclusiveStartDate().getTime()) {
+			if (candidate.startDateInclusive().getTime() < earliest.startDateInclusive().getTime()) {
 				earliest = candidate;
 			}
 		}
@@ -224,7 +224,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		HistoryRetrievalRequest latest = requests.get(0);
 
 		for (final HistoryRetrievalRequest candidate : requests) {
-			if (candidate.exclusiveEndDate().getTime() > latest.exclusiveEndDate().getTime()) {
+			if (candidate.endDateExclusive().getTime() > latest.endDateExclusive().getTime()) {
 				latest = candidate;
 			}
 		}
@@ -276,8 +276,8 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		                .stream().collect(Collectors.joining(", ")),
 		        () -> fulfilledRequests.stream()
 		                .map(
-		                        request -> request.inclusiveStartDate().toString() + " - "
-		                                + request.exclusiveEndDate().toString())
+		                        request -> request.startDateInclusive().toString() + " - "
+		                                + request.endDateExclusive().toString())
 		                .collect(Collectors.joining(", ")));
 	}
 

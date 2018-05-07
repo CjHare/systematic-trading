@@ -39,22 +39,22 @@ import com.systematic.trading.data.model.builder.HistoryRetrievalRequestBuilder;
  */
 public class HibernateHistoryRetrievalRequestBuilder implements HistoryRetrievalRequestBuilder {
 
-	private LocalDate inclusiveStartDate;
-	private LocalDate exclusiveEndDate;
+	private LocalDate startDateInclusive;
+	private LocalDate endDateExclusive;
 	private String dataset;
 	private String tickerSymbol;
 
 	@Override
-	public HistoryRetrievalRequestBuilder withInclusiveStartDate( Date inclusiveStartDate ) {
+	public HistoryRetrievalRequestBuilder withStartDateInclusive( Date startDateInclusive ) {
 
-		this.inclusiveStartDate = inclusiveStartDate.toLocalDate();
+		this.startDateInclusive = startDateInclusive.toLocalDate();
 		return this;
 	}
 
 	@Override
-	public HistoryRetrievalRequestBuilder withExclusiveEndDate( Date exclusiveEndDate ) {
+	public HistoryRetrievalRequestBuilder withEndDateExclusive( Date endDateExclusive ) {
 
-		this.exclusiveEndDate = exclusiveEndDate.toLocalDate();
+		this.endDateExclusive = endDateExclusive.toLocalDate();
 		return this;
 	}
 
@@ -68,20 +68,20 @@ public class HibernateHistoryRetrievalRequestBuilder implements HistoryRetrieval
 	@Override
 	public HistoryRetrievalRequest build() {
 
-		return new HibernateHistoryRetrievalRequest(dataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		return new HibernateHistoryRetrievalRequest(dataset, tickerSymbol, startDateInclusive, endDateExclusive);
 	}
 
 	@Override
-	public HistoryRetrievalRequestBuilder withExclusiveEndDate( final LocalDate exclusiveEndDate ) {
+	public HistoryRetrievalRequestBuilder withEndDateExclusive( final LocalDate endDateExclusive ) {
 
-		this.exclusiveEndDate = exclusiveEndDate;
+		this.endDateExclusive = endDateExclusive;
 		return this;
 	}
 
 	@Override
-	public HistoryRetrievalRequestBuilder withInclusiveStartDate( final LocalDate inclusiveStartDate ) {
+	public HistoryRetrievalRequestBuilder withStartDateInclusive( final LocalDate startDateInclusive ) {
 
-		this.inclusiveStartDate = inclusiveStartDate;
+		this.startDateInclusive = startDateInclusive;
 		return this;
 	}
 

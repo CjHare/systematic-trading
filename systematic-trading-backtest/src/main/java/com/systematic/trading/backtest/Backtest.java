@@ -87,39 +87,39 @@ public class Backtest {
 	        final BacktestSimulationDates simulationDate,
 	        final Period warmUp ) throws ServiceException {
 
-		final LocalDate startDate = simulationDate.startDate().minus(warmUp);
-		final LocalDate endDate = simulationDate.endDate();
+		final LocalDate startDateInclusive = simulationDate.startDateInclusive().minus(warmUp);
+		final LocalDate endDateExclusive = simulationDate.endDateExclusive();
 
-		logPotentialStartDateAdjustment(startDate);
-		logPotentialEndDateWarning(endDate);
+		logPotentialStartDateAdjustment(startDateInclusive);
+		logPotentialEndDateWarning(endDateExclusive);
 
-		final LocalDate retrievalStartDate = startDate.withDayOfMonth(1);
+		final LocalDate retrievalStartDate = startDateInclusive.withDayOfMonth(1);
 
 		// Retrieve and cache data range from remote data source
-		dataServiceUpdater.get(equityDataset, equity.tickerSymbol(), retrievalStartDate, endDate);
+		dataServiceUpdater.get(equityDataset, equity.tickerSymbol(), retrievalStartDate, endDateExclusive);
 
 		// Retrieve from local cache the desired data range
-		final TradingDayPrices[] prices = dataService.get(equity.tickerSymbol(), startDate, endDate);
+		final TradingDayPrices[] prices = dataService.get(equity.tickerSymbol(), startDateInclusive, endDateExclusive);
 
 		logdPriceData(prices);
 
 		return new BacktestTickerSymbolTradingData(equity, prices);
 	}
 
-	private void logPotentialEndDateWarning( final LocalDate endDate ) {
+	private void logPotentialEndDateWarning( final LocalDate endDateExclsuive ) {
 
-		if (endDate.getDayOfMonth() != 1) {
+		if (endDateExclsuive.getDayOfMonth() != 1) {
 			LOG.debug(
 			        "With the current data retrieval implementation, an End date of the first day of the month is more efficient");
 		}
 	}
 
-	private void logPotentialStartDateAdjustment( final LocalDate startDate ) {
+	private void logPotentialStartDateAdjustment( final LocalDate startDateInclusive ) {
 
-		if (startDate.getDayOfMonth() != 1) {
+		if (startDateInclusive.getDayOfMonth() != 1) {
 			LOG.debug(
 			        "Remote data retrieval for start date: {} has been adjusted to the beginning of the month ",
-			        startDate);
+			        startDateInclusive);
 		}
 	}
 

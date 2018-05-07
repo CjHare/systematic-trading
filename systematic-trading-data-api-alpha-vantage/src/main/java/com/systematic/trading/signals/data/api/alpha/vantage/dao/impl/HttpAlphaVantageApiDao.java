@@ -106,8 +106,8 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 	public TradingDayPrices[] get(
 	        final String equityDataset,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclsuiveEndDate,
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive,
 	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
 		final WebTarget url = url(equityDataset, tickerSymbol);
@@ -116,7 +116,7 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 
 		errorCheck(url, resource);
 
-		return converter.convert(tickerSymbol, inclusiveStartDate, exclsuiveEndDate, resource.dataset());
+		return converter.convert(tickerSymbol, startDateInclusive, endDateExclusive, resource.dataset());
 	}
 
 	private void errorCheck( final WebTarget url, final AlphaVantageResponseResource resource )

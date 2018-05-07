@@ -275,10 +275,10 @@ public class HistoryRetrievalRequestMergerImplTest {
 	private void setUpBuilder( final List<HistoryRetrievalRequest> requests ) {
 
 		when(requestBuilder.withTickerSymbol(anyString())).thenReturn(requestBuilder);
-		when(requestBuilder.withExclusiveEndDate(any(Date.class))).thenReturn(requestBuilder);
-		when(requestBuilder.withExclusiveEndDate(any(LocalDate.class))).thenReturn(requestBuilder);
-		when(requestBuilder.withInclusiveStartDate(any(Date.class))).thenReturn(requestBuilder);
-		when(requestBuilder.withInclusiveStartDate(any(LocalDate.class))).thenReturn(requestBuilder);
+		when(requestBuilder.withEndDateExclusive(any(Date.class))).thenReturn(requestBuilder);
+		when(requestBuilder.withEndDateExclusive(any(LocalDate.class))).thenReturn(requestBuilder);
+		when(requestBuilder.withStartDateInclusive(any(Date.class))).thenReturn(requestBuilder);
+		when(requestBuilder.withStartDateInclusive(any(LocalDate.class))).thenReturn(requestBuilder);
 		when(requestBuilder.withDataset(anyString())).thenReturn(requestBuilder);
 
 		OngoingStubbing<HistoryRetrievalRequest> stubbing = when(requestBuilder.build());

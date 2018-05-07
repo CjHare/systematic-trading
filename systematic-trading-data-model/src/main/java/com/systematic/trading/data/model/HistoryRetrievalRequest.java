@@ -39,7 +39,7 @@ public interface HistoryRetrievalRequest {
 
 	String tickerSymbol();
 
-	Date inclusiveStartDate();
+	Date startDateInclusive();
 
-	Date exclusiveEndDate();
+	Date endDateExclusive();
 }

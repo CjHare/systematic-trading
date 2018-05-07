@@ -66,68 +66,68 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 	@Test
 	public void oneHalfMonth() {
 
-		final LocalDate inclusiveStartDate = LocalDate.of(2011, 5, 1);
-		final LocalDate exclusiveEndDate = LocalDate.of(2011, 5, 18);
+		final LocalDate startDateInclusive = LocalDate.of(2011, 5, 1);
+		final LocalDate endDateExclusive = LocalDate.of(2011, 5, 18);
 
-		final List<HistoryRetrievalRequest> requests = slice(inclusiveStartDate, exclusiveEndDate);
+		final List<HistoryRetrievalRequest> requests = slice(startDateInclusive, endDateExclusive);
 
-		assertHistoryRetrievalRequest(requests, expectedDates(inclusiveStartDate, exclusiveEndDate));
+		assertHistoryRetrievalRequest(requests, expectedDates(startDateInclusive, endDateExclusive));
 	}
 
 	@Test
 	public void oneWholeMonth() {
 
-		final LocalDate inclusiveStartDate = LocalDate.of(2011, 5, 1);
-		final LocalDate exclusiveEndDate = LocalDate.of(2011, 6, 1);
+		final LocalDate startDateInclusive = LocalDate.of(2011, 5, 1);
+		final LocalDate endDateExclusive = LocalDate.of(2011, 6, 1);
 
-		final List<HistoryRetrievalRequest> requests = slice(inclusiveStartDate, exclusiveEndDate);
+		final List<HistoryRetrievalRequest> requests = slice(startDateInclusive, endDateExclusive);
 
-		assertHistoryRetrievalRequest(requests, expectedDates(inclusiveStartDate, exclusiveEndDate));
+		assertHistoryRetrievalRequest(requests, expectedDates(startDateInclusive, endDateExclusive));
 	}
 
 	@Test
 	public void oneHalfOneWholeMonth() {
 
-		final LocalDate inclusiveStartDate = LocalDate.of(2011, 4, 14);
-		final LocalDate exclusiveEndDate = LocalDate.of(2011, 6, 1);
+		final LocalDate startDateInclusive = LocalDate.of(2011, 4, 14);
+		final LocalDate endDateExclusive = LocalDate.of(2011, 6, 1);
 
-		final List<HistoryRetrievalRequest> requests = slice(inclusiveStartDate, exclusiveEndDate);
+		final List<HistoryRetrievalRequest> requests = slice(startDateInclusive, endDateExclusive);
 
 		assertHistoryRetrievalRequest(
 		        requests,
-		        expectedDates(inclusiveStartDate, LocalDate.of(2011, 5, 1)),
-		        expectedDates(LocalDate.of(2011, 5, 1), exclusiveEndDate));
+		        expectedDates(startDateInclusive, LocalDate.of(2011, 5, 1)),
+		        expectedDates(LocalDate.of(2011, 5, 1), endDateExclusive));
 	}
 
 	@Test
 	public void twoHalfThreeWholeMonth() {
 
-		final LocalDate inclusiveStartDate = LocalDate.of(2011, 4, 14);
-		final LocalDate exclusiveEndDate = LocalDate.of(2011, 8, 19);
+		final LocalDate startDateInclusive = LocalDate.of(2011, 4, 14);
+		final LocalDate endDateExclusive = LocalDate.of(2011, 8, 19);
 
-		final List<HistoryRetrievalRequest> requests = slice(inclusiveStartDate, exclusiveEndDate);
+		final List<HistoryRetrievalRequest> requests = slice(startDateInclusive, endDateExclusive);
 
 		assertHistoryRetrievalRequest(
 		        requests,
-		        expectedDates(inclusiveStartDate, LocalDate.of(2011, 5, 1)),
+		        expectedDates(startDateInclusive, LocalDate.of(2011, 5, 1)),
 		        expectedDates(LocalDate.of(2011, 5, 1), LocalDate.of(2011, 6, 1)),
 		        expectedDates(LocalDate.of(2011, 6, 1), LocalDate.of(2011, 7, 1)),
 		        expectedDates(LocalDate.of(2011, 7, 1), LocalDate.of(2011, 8, 1)),
-		        expectedDates(LocalDate.of(2011, 8, 1), exclusiveEndDate));
+		        expectedDates(LocalDate.of(2011, 8, 1), endDateExclusive));
 	}
 
 	private List<HistoryRetrievalRequest> slice(
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) {
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) {
 
-		return slicer.slice(dataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		return slicer.slice(dataset, tickerSymbol, startDateInclusive, endDateExclusive);
 	}
 
 	private Pair<LocalDate, LocalDate> expectedDates(
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) {
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) {
 
-		return new ImmutablePair<LocalDate, LocalDate>(inclusiveStartDate, exclusiveEndDate);
+		return new ImmutablePair<LocalDate, LocalDate>(startDateInclusive, endDateExclusive);
 	}
 
 	@SafeVarargs
@@ -140,8 +140,8 @@ public class MonthlyHistoryRetrievalRequestSlicerTest {
 
 		for (int i = 0; i < startEndDates.length; i++) {
 			assertEquals(tickerSymbol, actualValues.get(i).tickerSymbol());
-			assertEquals(startEndDates[i].getLeft(), actualValues.get(i).inclusiveStartDate().toLocalDate());
-			assertEquals(startEndDates[i].getRight(), actualValues.get(i).exclusiveEndDate().toLocalDate());
+			assertEquals(startEndDates[i].getLeft(), actualValues.get(i).startDateInclusive().toLocalDate());
+			assertEquals(startEndDates[i].getRight(), actualValues.get(i).endDateExclusive().toLocalDate());
 		}
 	}
 }

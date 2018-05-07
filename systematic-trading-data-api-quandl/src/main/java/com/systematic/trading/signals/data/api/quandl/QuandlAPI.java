@@ -70,12 +70,12 @@ public class QuandlAPI implements EquityApi {
 	public TradingDayPrices[] stockData(
 	        final String equityDataset,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate,
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive,
 	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
 		final QuandlResultSet response = dao
-		        .get(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate, throttler);
+		        .get(equityDataset, tickerSymbol, startDateInclusive, endDateExclusive, throttler);
 
 		return dataFormat.convert(tickerSymbol, response);
 	}

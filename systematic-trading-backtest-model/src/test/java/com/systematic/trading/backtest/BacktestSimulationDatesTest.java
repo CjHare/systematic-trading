@@ -86,11 +86,11 @@ public class BacktestSimulationDatesTest {
 
 	private void verifySimulationStartDate( final LocalDate expected ) {
 
-		assertEquals(expected, dates.startDate());
+		assertEquals(expected, dates.startDateInclusive());
 	}
 
 	private void verifySimulationEndDate( final LocalDate expected ) {
 
-		assertEquals(expected, dates.endDate());
+		assertEquals(expected, dates.endDateExclusive());
 	}
 }

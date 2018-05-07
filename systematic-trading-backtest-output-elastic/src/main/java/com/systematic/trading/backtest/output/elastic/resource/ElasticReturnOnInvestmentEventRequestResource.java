@@ -44,8 +44,8 @@ import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEv
 public class ElasticReturnOnInvestmentEventRequestResource {
 
 	private final float percentageChange;
-	private final LocalDate inclusiveStartDate;
-	private final LocalDate exclusiveEndDate;
+	private final LocalDate startDateInclusive;
+	private final LocalDate endDateExclusive;
 	private final String frequency;
 
 	public ElasticReturnOnInvestmentEventRequestResource(
@@ -53,8 +53,8 @@ public class ElasticReturnOnInvestmentEventRequestResource {
 	        final String frequency ) {
 
 		this.percentageChange = event.percentageChange().floatValue();
-		this.inclusiveStartDate = event.inclusiveStartDate();
-		this.exclusiveEndDate = event.exclusiveEndDate();
+		this.startDateInclusive = event.startDateInclusive();
+		this.endDateExclusive = event.endDateExclusive();
 		this.frequency = frequency;
 	}
 
@@ -70,18 +70,18 @@ public class ElasticReturnOnInvestmentEventRequestResource {
 		return frequency;
 	}
 
-	@JsonProperty(ElasticTypeName.INCLUSIVE_START_DATE)
+	@JsonProperty(ElasticTypeName.START_DATE_INCLUSIVE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
-	public LocalDate exlusiveStartDate() {
+	public LocalDate startDateInclusive() {
 
-		return inclusiveStartDate;
+		return startDateInclusive;
 	}
 
-	@JsonProperty(ElasticTypeName.EXCLUSIVE_END_DATE)
+	@JsonProperty(ElasticTypeName.END_DATE_EXCLUSIVE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
-	public LocalDate inclusiveEndDate() {
+	public LocalDate endDateExclusive() {
 
-		return exclusiveEndDate;
+		return endDateExclusive;
 	}
 
 	@Override
@@ -90,10 +90,10 @@ public class ElasticReturnOnInvestmentEventRequestResource {
 		final StringBuilder out = new StringBuilder("ElasticReturnOnInvestmentEventResource [");
 		out.append("percentageChange=");
 		out.append(percentageChange);
-		out.append(", inlusiveStartDate=");
-		out.append(inclusiveStartDate);
-		out.append(", exclusiveEndDate=");
-		out.append(exclusiveEndDate);
+		out.append(", startDateInclusive=");
+		out.append(startDateInclusive);
+		out.append(", endDateExclusive=");
+		out.append(endDateExclusive);
 		out.append("]");
 		return out.toString();
 	}

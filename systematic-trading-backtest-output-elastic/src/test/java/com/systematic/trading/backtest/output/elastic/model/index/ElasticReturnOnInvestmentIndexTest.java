@@ -39,7 +39,7 @@ import com.systematic.trading.backtest.output.elastic.model.ElasticIndexName;
 public class ElasticReturnOnInvestmentIndexTest extends ElasticIndexTestBase {
 
 	private static final String JSON_PUT_INDEX = "{\"settings\":{\"number_of_shards\":5,\"number_of_replicas\":1}}";
-	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"inclusive_start_date\":{\"type\":\"date\"},\"exclusive_end_date\":{\"type\":\"date\"},\"percentage_change\":{\"type\":\"float\"},\"frequency\":{\"type\":\"keyword\"}}}";
+	private static final String JSON_PUT_INDEX_MAPPING = "{\"properties\":{\"start_date_inclusive\":{\"type\":\"date\"},\"percentage_change\":{\"type\":\"float\"},\"end_date_exclusive\":{\"type\":\"date\"},\"frequency\":{\"type\":\"keyword\"}}}";
 
 	@Override
 	protected String jsonPutIndex() {

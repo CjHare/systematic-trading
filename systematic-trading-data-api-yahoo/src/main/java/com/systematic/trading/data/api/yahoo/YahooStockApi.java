@@ -164,11 +164,11 @@ public class YahooStockApi implements EquityApi {
 	public TradingDayPrices[] stockData(
 	        final String dataset,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate,
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive,
 	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
-		final String uri = jsonUrl(tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		final String uri = jsonUrl(tickerSymbol, startDateInclusive, endDateExclusive);
 		LOG.info("{}", () -> String.format("%s API call to: %s", tickerSymbol, uri));
 
 		throttler.add();

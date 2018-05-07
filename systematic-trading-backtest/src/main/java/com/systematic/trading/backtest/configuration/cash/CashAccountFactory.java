@@ -47,25 +47,25 @@ public class CashAccountFactory {
 	/** Scale, precision and rounding to apply to mathematical operations. */
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
-	public CashAccount create( final LocalDate startDate, final CashAccountConfiguration cashAccount ) {
+	public CashAccount create( final LocalDate startDateInclusive, final CashAccountConfiguration cashAccount ) {
 
 		final InterestRate annualInterestRate = interestRate(cashAccount);
 		final Optional<DepositConfiguration> deposit = cashAccount.deposit();
 
 		if (deposit.isPresent()) {
 
-			final CashAccount underlyingAccount = cashAccount(annualInterestRate, cashAccount, startDate);
+			final CashAccount underlyingAccount = cashAccount(annualInterestRate, cashAccount, startDateInclusive);
 			final BigDecimal depositAmount = deposit.get().amount();
 			final Period depositFrequency = deposit.get().frequency().period();
 
 			return new RegularDepositCashAccountDecorator(
 			        depositAmount,
 			        underlyingAccount,
-			        startDate,
+			        startDateInclusive,
 			        depositFrequency);
 		}
 
-		return cashAccount(annualInterestRate, cashAccount, startDate);
+		return cashAccount(annualInterestRate, cashAccount, startDateInclusive);
 	}
 
 	/**

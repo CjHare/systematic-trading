@@ -109,9 +109,8 @@ public class BacktestTrial {
 	public void runBacktest( final BacktestConfiguration configuration, final BacktestLaunchArguments parserdArguments )
 	        throws ServiceException {
 
-		// Date range is from the first of the starting month until now
-		final BacktestStartDate simulationStartDate = parserdArguments.startDate();
-		final BacktestEndDate simulationEndDate = parserdArguments.endDate();
+		final BacktestStartDate simulationStartDateInclusive = parserdArguments.startDateInclusive();
+		final BacktestEndDate simulationEndDateExclusive = parserdArguments.endDateExclusive();
 
 		final EquityConfiguration equity = equity(parserdArguments);
 		final CashAccountConfiguration cashAccount = cashAcount(parserdArguments);
@@ -119,8 +118,8 @@ public class BacktestTrial {
 
 		// Move the date to included the necessary wind up time for the signals to behave correctly
 		final BacktestSimulationDates simulationDates = new BacktestSimulationDates(
-		        simulationStartDate,
-		        simulationEndDate);
+		        simulationStartDateInclusive,
+		        simulationEndDateExclusive);
 		recordSimulationDates(simulationDates);
 
 		// Multi-threading support for output classes
@@ -354,8 +353,8 @@ public class BacktestTrial {
 
 	private void recordSimulationDates( final BacktestSimulationDates simulationDates ) {
 
-		LOG.info("Simulation Start Date: {}", simulationDates.startDate());
-		LOG.info("Simulation End Date: {}", simulationDates.endDate());
+		LOG.info("Simulation Start Date: {}", simulationDates.startDateInclusive());
+		LOG.info("Simulation End Date: {}", simulationDates.endDateExclusive());
 	}
 
 	private String unsupportedMessage( final OutputType type ) {

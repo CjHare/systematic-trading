@@ -58,11 +58,11 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 
 	@Id
 	@Column(name = "start", nullable = false)
-	private Date inclusiveStartDate;
+	private Date startDateInclusive;
 
 	@Id
 	@Column(name = "end", nullable = false)
-	private Date exclusiveEndDate;
+	private Date endDateExclusive;
 
 	public HibernateHistoryRetrievalRequest() {
 		// Default constructor used by Hiberante
@@ -71,13 +71,13 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 	public HibernateHistoryRetrievalRequest(
 	        final String equityDataset,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) {
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExlusive ) {
 
 		this.equityDataset = equityDataset;
 		this.tickerSymbol = tickerSymbol;
-		this.inclusiveStartDate = Date.valueOf(inclusiveStartDate);
-		this.exclusiveEndDate = Date.valueOf(exclusiveEndDate);
+		this.startDateInclusive = Date.valueOf(startDateInclusive);
+		this.endDateExclusive = Date.valueOf(endDateExlusive);
 	}
 
 	@Override
@@ -95,28 +95,28 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 
 	@Override
 	@Column(name = "start")
-	public Date inclusiveStartDate() {
+	public Date startDateInclusive() {
 
-		return inclusiveStartDate;
+		return startDateInclusive;
 	}
 
 	@Column(name = "start")
-	public void inclusiveStartDate( final Date inclusiveStartDate ) {
+	public void startDateInclusive( final Date startDateInclusive ) {
 
-		this.inclusiveStartDate = inclusiveStartDate;
+		this.startDateInclusive = startDateInclusive;
 	}
 
 	@Override
 	@Column(name = "end")
-	public Date exclusiveEndDate() {
+	public Date endDateExclusive() {
 
-		return exclusiveEndDate;
+		return endDateExclusive;
 	}
 
 	@Column(name = "end")
-	public void exclusiveEndDate( final Date exclusiveEndDate ) {
+	public void endDateExclusive( final Date endDateExclusive ) {
 
-		this.exclusiveEndDate = exclusiveEndDate;
+		this.endDateExclusive = endDateExclusive;
 	}
 
 	@Override
@@ -138,8 +138,8 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((equityDataset == null) ? 0 : equityDataset.hashCode());
-		result = prime * result + ((exclusiveEndDate == null) ? 0 : exclusiveEndDate.hashCode());
-		result = prime * result + ((inclusiveStartDate == null) ? 0 : inclusiveStartDate.hashCode());
+		result = prime * result + ((endDateExclusive == null) ? 0 : endDateExclusive.hashCode());
+		result = prime * result + ((startDateInclusive == null) ? 0 : startDateInclusive.hashCode());
 		result = prime * result + ((tickerSymbol == null) ? 0 : tickerSymbol.hashCode());
 		return result;
 	}
@@ -158,14 +158,14 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 
 	private boolean inclusiveStartDateEquals( final HibernateHistoryRetrievalRequest other ) {
 
-		return inclusiveStartDate == other.inclusiveStartDate
-		        || (inclusiveStartDate != null && inclusiveStartDate.equals(other.inclusiveStartDate));
+		return startDateInclusive == other.startDateInclusive
+		        || (startDateInclusive != null && startDateInclusive.equals(other.startDateInclusive));
 	}
 
 	private boolean exclusiveEndDateEquals( final HibernateHistoryRetrievalRequest other ) {
 
-		return exclusiveEndDate == other.exclusiveEndDate
-		        || (exclusiveEndDate != null && exclusiveEndDate.equals(other.exclusiveEndDate));
+		return endDateExclusive == other.endDateExclusive
+		        || (endDateExclusive != null && endDateExclusive.equals(other.endDateExclusive));
 	}
 
 	private boolean tickerSymbolEquals( final HibernateHistoryRetrievalRequest other ) {

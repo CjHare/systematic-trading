@@ -40,7 +40,7 @@ public class ElasticReturnOnInvestmentEventFrequency {
 
 	public ElasticReturnOnInvestmentEventFrequency( final ReturnOnInvestmentEvent event ) {
 
-		this.frequency = frequency(Period.between(event.inclusiveStartDate(), event.exclusiveEndDate()));
+		this.frequency = frequency(Period.between(event.startDateInclusive(), event.endDateExclusive()));
 	}
 
 	private String frequency( final Period frequency ) {

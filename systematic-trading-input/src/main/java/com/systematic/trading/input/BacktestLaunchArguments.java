@@ -60,10 +60,10 @@ public class BacktestLaunchArguments {
 	private final Map<ArgumentKey, String> arguments;
 
 	/** Mandatory start date for the back test. */
-	private final BacktestStartDate startDate;
+	private final BacktestStartDate startDateInclusive;
 
 	/** Mandatory end date for the back test. */
-	private final BacktestEndDate endDate;
+	private final BacktestEndDate endDateExclusive;
 
 	// TODO no BigDecimal - use wrapper types
 	/** Funds contained the cash account to use when opening positions. */
@@ -99,8 +99,8 @@ public class BacktestLaunchArguments {
 		this.interestRate = interestRateArgument.get(arguments);
 		this.outputType = outputArgument.get(arguments);
 		this.fileBaseOutputDirectory = fileBaseOutputDirectoryArgument;
-		this.startDate = startDateArgument.get(arguments);
-		this.endDate = endDateArgument.get(arguments);
+		this.startDateInclusive = startDateArgument.get(arguments);
+		this.endDateExclusive = endDateArgument.get(arguments);
 		this.equityArguments = equityArguments;
 	}
 
@@ -109,14 +109,14 @@ public class BacktestLaunchArguments {
 		return fileBaseOutputDirectory.get(arguments).directory(depositAmount);
 	}
 
-	public BacktestStartDate startDate() {
+	public BacktestStartDate startDateInclusive() {
 
-		return startDate;
+		return startDateInclusive;
 	}
 
-	public BacktestEndDate endDate() {
+	public BacktestEndDate endDateExclusive() {
 
-		return endDate;
+		return endDateExclusive;
 	}
 
 	public OutputType outputType() {

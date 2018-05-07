@@ -92,13 +92,13 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	public void get(
 	        final String equityDataset,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) throws CannotRetrieveDataException {
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) throws CannotRetrieveDataException {
 
 		// Ensure there's a table for the data
 		tradingDayPricesDao.createTableIfAbsent(tickerSymbol);
 
-		lodgeNeededHistoryRetrievalRequests(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		lodgeNeededHistoryRetrievalRequests(equityDataset, tickerSymbol, startDateInclusive, endDateExclusive);
 
 		final List<HistoryRetrievalRequest> outstandingRequests = outstandingHistoryRetrievalRequests(tickerSymbol);
 
@@ -132,8 +132,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 			final String equityDataset = request.equityDataset();
 			final String tickerSymbol = request.tickerSymbol();
-			final LocalDate inclusiveStartDate = request.inclusiveStartDate().toLocalDate();
-			final LocalDate exclusiveEndDate = request.exclusiveEndDate().toLocalDate();
+			final LocalDate startDateInclusive = request.startDateInclusive().toLocalDate();
+			final LocalDate endDateExclusive = request.endDateExclusive().toLocalDate();
 
 			pool.execute(() -> {
 				try {
@@ -141,8 +141,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 					TradingDayPrices[] tradingData = api.stockData(
 					        equityDataset,
 					        tickerSymbol,
-					        inclusiveStartDate,
-					        exclusiveEndDate,
+					        startDateInclusive,
+					        endDateExclusive,
 					        activeConnectionCount);
 
 					if (tradingData.length == 0) {
@@ -150,8 +150,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 						        String.format(
 						                "No data has been returned for symbol: %s for %s to %s",
 						                tickerSymbol,
-						                inclusiveStartDate,
-						                exclusiveEndDate));
+						                startDateInclusive,
+						                endDateExclusive));
 					}
 
 					// Push to the data source
@@ -202,10 +202,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private void lodgeNeededHistoryRetrievalRequests(
 	        final String equityDataset,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) {
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) {
 
-		lodge(merge(excludeUncessary(slice(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate))));
+		lodge(merge(excludeUncessary(slice(equityDataset, tickerSymbol, startDateInclusive, endDateExclusive))));
 	}
 
 	private void lodge( final List<HistoryRetrievalRequest> requests ) {
@@ -220,8 +220,8 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 			for (final HistoryRetrievalRequest request : requests) {
 				LOG.debug(
 				        "Retrieval request: Start date {} (inclusive), End date {} (exclusive)",
-				        request.inclusiveStartDate().toLocalDate(),
-				        request.exclusiveEndDate().toLocalDate());
+				        request.startDateInclusive().toLocalDate(),
+				        request.endDateExclusive().toLocalDate());
 			}
 		}
 	}
@@ -234,10 +234,10 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 	private List<HistoryRetrievalRequest> slice(
 	        final String equityDataset,
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) {
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) {
 
-		return historyRetrievalRequestSlicer.slice(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate);
+		return historyRetrievalRequestSlicer.slice(equityDataset, tickerSymbol, startDateInclusive, endDateExclusive);
 	}
 
 	private List<HistoryRetrievalRequest> excludeUncessary( final List<HistoryRetrievalRequest> requests ) {

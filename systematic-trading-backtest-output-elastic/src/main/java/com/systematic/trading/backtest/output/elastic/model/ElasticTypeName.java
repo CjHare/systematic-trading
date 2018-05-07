@@ -42,12 +42,12 @@ public final class ElasticTypeName {
 	public static final String EQUITY_VALUE = "equity_value";
 	public static final String EVENT = "event";
 	public static final String EVENT_DATE = "event_date";
-	public static final String EXCLUSIVE_END_DATE = "exclusive_end_date";
+	public static final String END_DATE_EXCLUSIVE = "end_date_exclusive";
 	public static final String FUNDS_AFTER = "funds_after";
 	public static final String FUNDS_BEFORE = "funds_before";
 	public static final String FREQUENCY = "frequency";
 	public static final String IDENTITY = "identity";
-	public static final String INCLUSIVE_START_DATE = "inclusive_start_date";
+	public static final String START_DATE_INCLUSIVE = "start_date_inclusive";
 	public static final String NETWORTH = "networth";
 	public static final String PERCENTAGE_CHANGE = "percentage_change";
 	public static final String SIGNAL_DATE = "signal_date";

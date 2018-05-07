@@ -101,8 +101,8 @@ public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequ
 			        () -> String.format(
 			                "Error deleting entry for %s %s %s %s",
 			                request.tickerSymbol(),
-			                request.inclusiveStartDate(),
-			                request.exclusiveEndDate(),
+			                request.startDateInclusive(),
+			                request.endDateExclusive(),
 			                e.getMessage()));
 			LOG.error(e);
 		}
@@ -124,8 +124,8 @@ public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequ
 			        () -> String.format(
 			                "Failed to save request for %s, %s to %s, problem: %s",
 			                request.tickerSymbol(),
-			                request.inclusiveStartDate(),
-			                request.exclusiveEndDate(),
+			                request.startDateInclusive(),
+			                request.endDateExclusive(),
 			                e.getMessage()));
 			LOG.debug(e);
 

@@ -49,9 +49,9 @@ public interface AlphaVantageApiDao {
 	 *            identifier for the dataset to retrieve the ticker symbol from e.g. AX for the ASX.
 	 * @param tickerSymbol
 	 *            identifier of the equity to retrieve.
-	 * @param inclusiveStartDate
+	 * @param startDateInclusive
 	 *            inclusive first day of the historical data to retrieve.
-	 * @param exclusiveEndDate
+	 * @param endDateExclusive
 	 *            exclusive last day of the historical data to retrieve.
 	 * @param throttler
 	 *            synchronization object to limit the connections to the AlphaVantage API.
@@ -62,7 +62,7 @@ public interface AlphaVantageApiDao {
 	TradingDayPrices[] get(
 	        String equityDataset,
 	        String tickerSymbol,
-	        LocalDate inclusiveStartDate,
-	        LocalDate exclusiveEndDate,
+	        LocalDate startDateInclusive,
+	        LocalDate endDateExclusive,
 	        BlockingEventCount throttler ) throws CannotRetrieveDataException;
 }

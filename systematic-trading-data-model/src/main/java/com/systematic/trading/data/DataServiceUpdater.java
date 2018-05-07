@@ -45,13 +45,13 @@ public interface DataServiceUpdater {
 	 * @param tickerSymbol
 	 *            identifier for the equity to retrieve the data on, ensures at least the last two
 	 *            month is available locally.
-	 * @param inclusiveStartDate
+	 * @param startDateInclusive
 	 *            inclusive start date, of the required data set.
-	 * @param exclusiveEndDate
+	 * @param endDateExclusive
 	 *            exclusive end date, of the required data set.
 	 * @throws ServiceException
 	 *             problem has been encountered during the data retrieval.
 	 */
-	void get( String equityDataset, String tickerSymbol, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate )
+	void get( String equityDataset, String tickerSymbol, LocalDate startDateInclusive, LocalDate endDateExclusive )
 	        throws ServiceException;
 }

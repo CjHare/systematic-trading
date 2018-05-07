@@ -85,20 +85,20 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 	private LocalDate earliestStartDate( final List<HistoryRetrievalRequest> requests ) {
 
-		return requests.get(0).inclusiveStartDate().toLocalDate();
+		return requests.get(0).startDateInclusive().toLocalDate();
 	}
 
 	private LocalDate latestEndDate( final List<HistoryRetrievalRequest> requests ) {
 
-		return requests.get(requests.size() - 1).exclusiveEndDate().toLocalDate();
+		return requests.get(requests.size() - 1).endDateExclusive().toLocalDate();
 	}
 
 	private List<RetrievedMonthTradingPrices> retrievedMonths(
 	        final String tickerSymbol,
-	        final LocalDate inclusiveStartDate,
-	        final LocalDate exclusiveEndDate ) {
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) {
 
-		return retrievedHistoryDao.requests(tickerSymbol, inclusiveStartDate.getYear(), exclusiveEndDate.getYear());
+		return retrievedHistoryDao.requests(tickerSymbol, startDateInclusive.getYear(), endDateExclusive.getYear());
 	}
 
 	private Map<String, List<HistoryRetrievalRequest>> splitByTickerSymbolSortByStartDate(
@@ -120,8 +120,8 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 		Collections.sort(
 		        requests,
-		        ( HistoryRetrievalRequest a, HistoryRetrievalRequest b ) -> a.inclusiveStartDate()
-		                .compareTo(b.inclusiveStartDate()));
+		        ( HistoryRetrievalRequest a, HistoryRetrievalRequest b ) -> a.startDateInclusive()
+		                .compareTo(b.startDateInclusive()));
 		return requests;
 	}
 
@@ -153,8 +153,8 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 	        final HistoryRetrievalRequest request,
 	        List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
 
-		YearMonth unknown = yearMonth(request.inclusiveStartDate().toLocalDate());
-		final YearMonth end = yearMonth(request.exclusiveEndDate().toLocalDate().minusDays(1));
+		YearMonth unknown = yearMonth(request.startDateInclusive().toLocalDate());
+		final YearMonth end = yearMonth(request.endDateExclusive().toLocalDate().minusDays(1));
 
 		final Set<YearMonth> retrieved = new HashSet<>();
 
@@ -209,7 +209,7 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		        prefix,
 		        request.tickerSymbol(),
 		        request.equityDataset(),
-		        request.inclusiveStartDate().toLocalDate(),
-		        request.exclusiveEndDate().toLocalDate());
+		        request.startDateInclusive().toLocalDate(),
+		        request.endDateExclusive().toLocalDate());
 	}
 }

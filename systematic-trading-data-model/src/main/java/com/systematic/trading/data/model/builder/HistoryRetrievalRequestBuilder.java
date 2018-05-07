@@ -37,13 +37,13 @@ import com.systematic.trading.data.model.HistoryRetrievalRequest;
  */
 public interface HistoryRetrievalRequestBuilder {
 
-	HistoryRetrievalRequestBuilder withInclusiveStartDate( Date inclusiveStartDate );
+	HistoryRetrievalRequestBuilder withStartDateInclusive( Date startDateInclusive );
 
-	HistoryRetrievalRequestBuilder withInclusiveStartDate( LocalDate inclusiveStartDate );
+	HistoryRetrievalRequestBuilder withStartDateInclusive( LocalDate startDateInclusive );
 
-	HistoryRetrievalRequestBuilder withExclusiveEndDate( Date exclusiveEndDate );
+	HistoryRetrievalRequestBuilder withEndDateExclusive( Date endDateExclusive );
 
-	HistoryRetrievalRequestBuilder withExclusiveEndDate( LocalDate exclusiveEndDate );
+	HistoryRetrievalRequestBuilder withEndDateExclusive( LocalDate endDateExclusive );
 
 	HistoryRetrievalRequestBuilder withDataset( String dataset );
 

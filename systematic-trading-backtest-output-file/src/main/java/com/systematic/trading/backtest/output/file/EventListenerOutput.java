@@ -104,8 +104,8 @@ public class EventListenerOutput implements CashEventListener, OrderEventListene
 		        String.format(
 		                "Simulation dates for %s from %s to %s%n",
 		                tradingData.equityIdentity().tickerSymbol(),
-		                dates.startDate(),
-		                dates.endDate()));
+		                dates.startDateInclusive(),
+		                dates.endDateExclusive()));
 
 		final long daysBetween = ChronoUnit.DAYS.between(tradingData.earliestDate(), tradingData.latestDate());
 		final double percentageTradingDays = ((double) tradingData.requiredTradingPrices() / daysBetween) * 100;

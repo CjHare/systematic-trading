@@ -434,14 +434,14 @@ public class BacktestLaunchArgumentsTest {
 
 	private void verifyStartDate( final LocalDate expected ) {
 
-		assertNotNull(parser.startDate());
-		assertEquals(expected, parser.startDate().date());
+		assertNotNull(parser.startDateInclusive());
+		assertEquals(expected, parser.startDateInclusive().date());
 	}
 
 	private void verifyEndDate( final LocalDate expected ) {
 
-		assertNotNull(parser.endDate());
-		assertEquals(expected, parser.endDate().date());
+		assertNotNull(parser.endDateExclusive());
+		assertEquals(expected, parser.endDateExclusive().date());
 	}
 
 	private void verifyOutputDirectoryArgument( final String outputValue, final String fileBaseDirectory ) {

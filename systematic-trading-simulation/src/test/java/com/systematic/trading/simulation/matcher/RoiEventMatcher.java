@@ -70,8 +70,8 @@ public class RoiEventMatcher extends ArgumentMatcher<ReturnOnInvestmentEvent> {
 		final ReturnOnInvestmentEvent event = (ReturnOnInvestmentEvent) argument;
 
 		return percentageChange.compareTo(event.percentageChange()) == 0
-		        && startDateExclusive.equals(event.inclusiveStartDate())
-		        && endDateInclusive.equals(event.exclusiveEndDate());
+		        && startDateExclusive.equals(event.startDateInclusive())
+		        && endDateInclusive.equals(event.endDateExclusive());
 	}
 
 	@Override

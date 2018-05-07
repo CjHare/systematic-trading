@@ -38,37 +38,37 @@ import com.systematic.trading.backtest.input.BacktestStartDate;
  */
 public class BacktestSimulationDates {
 
-	private final LocalDate inclusiveStartDate;
-	private final LocalDate exclusiveEndDate;
+	private final LocalDate startDateInclusive;
+	private final LocalDate endDateExclusive;
 
 	/**
-	 * @param inclusiveStartDate
+	 * @param startDateInclusive
 	 *            inclusive date that must be before or on the end date.
-	 * @param exclusiveEndDate
+	 * @param endDateExclusive
 	 *            exclusive date that must be on or after the start date.
 	 */
-	public BacktestSimulationDates( final BacktestStartDate inclusiveStartDate, final BacktestEndDate exclusiveEndDate )
+	public BacktestSimulationDates( final BacktestStartDate startDateInclusive, final BacktestEndDate endDateExclusive )
 	        throws InvalidSimulationDatesException {
 
-		validateDates(inclusiveStartDate.date(), exclusiveEndDate.date());
-		this.inclusiveStartDate = inclusiveStartDate.date();
-		this.exclusiveEndDate = exclusiveEndDate.date();
+		validateDates(startDateInclusive.date(), endDateExclusive.date());
+		this.startDateInclusive = startDateInclusive.date();
+		this.endDateExclusive = endDateExclusive.date();
 	}
 
 	/**
 	 * Inclusive state date of the simulation.
 	 */
-	public LocalDate startDate() {
+	public LocalDate startDateInclusive() {
 
-		return inclusiveStartDate;
+		return startDateInclusive;
 	}
 
 	/**
 	 * Exclusive end date for the simulation.
 	 */
-	public LocalDate endDate() {
+	public LocalDate endDateExclusive() {
 
-		return exclusiveEndDate;
+		return endDateExclusive;
 	}
 
 	private void validateDates( final LocalDate startDate, final LocalDate endDate )
