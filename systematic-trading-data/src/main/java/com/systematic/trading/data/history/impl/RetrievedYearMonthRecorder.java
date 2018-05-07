@@ -73,7 +73,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 
 		for (final Map.Entry<String, List<HistoryRetrievalRequest>> entry : byTickeSymbol.entrySet()) {
 
-			final Set<DateRange> ranges = extractDateRanges(entry.getValue());
+			final Set<DateRange<LocalDate>> ranges = extractDateRanges(entry.getValue());
 			final Set<YearMonth> fulfilledMonths = onlyFullMonths(ranges);
 
 			for (final YearMonth fulfilledMonth : fulfilledMonths) {
@@ -93,11 +93,11 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 	/**
 	 * Creates a YearMonth entry for each of the full months covered by the given date ranges.
 	 */
-	private Set<YearMonth> onlyFullMonths( final Set<DateRange> dateRanges ) {
+	private Set<YearMonth> onlyFullMonths( final Set<DateRange<LocalDate>> dateRanges ) {
 
 		final Set<YearMonth> fullMonths = new HashSet<>();
 
-		for (final DateRange range : dateRanges) {
+		for (final DateRange<LocalDate> range : dateRanges) {
 
 			final YearMonth start = beginsFirstOfMonth(range);
 			final YearMonth end = endsLastOfMonth(range);
@@ -127,7 +127,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 	/**
 	 * The first month after or on the given date that is the first day of the month.
 	 */
-	private YearMonth beginsFirstOfMonth( final DateRange range ) {
+	private YearMonth beginsFirstOfMonth( final DateRange<LocalDate> range ) {
 
 		final LocalDate startDateInclusive = range.startDateInclusive();
 
@@ -139,15 +139,15 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		}
 	}
 
-	private YearMonth endsLastOfMonth( final DateRange range ) {
+	private YearMonth endsLastOfMonth( final DateRange<LocalDate> range ) {
 
 		final LocalDate previousMonth = range.endDateExclusive().minusMonths(1);
 		return YearMonth.of(previousMonth.getYear(), previousMonth.getMonthValue());
 	}
 
-	private Set<DateRange> extractDateRanges( final List<HistoryRetrievalRequest> requests ) {
+	private Set<DateRange<LocalDate>> extractDateRanges( final List<HistoryRetrievalRequest> requests ) {
 
-		final Set<DateRange> ranges = new HashSet<>();
+		final Set<DateRange<LocalDate>> ranges = new HashSet<>();
 		final List<HistoryRetrievalRequest> unspent = new ArrayList<>(requests);
 
 		while (!unspent.isEmpty()) {
@@ -195,14 +195,14 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		return chain;
 	}
 
-	private DateRange dateRange( final HistoryRetrievalRequest range ) {
+	private DateRange<LocalDate> dateRange( final HistoryRetrievalRequest range ) {
 
-		return new DateRange(range.inclusiveStartDate().toLocalDate(), range.exclusiveEndDate().toLocalDate());
+		return new DateRange<>(range.inclusiveStartDate().toLocalDate(), range.exclusiveEndDate().toLocalDate());
 	}
 
-	private DateRange dateRange( final HistoryRetrievalRequest start, final HistoryRetrievalRequest end ) {
+	private DateRange<LocalDate> dateRange( final HistoryRetrievalRequest start, final HistoryRetrievalRequest end ) {
 
-		return new DateRange(start.inclusiveStartDate().toLocalDate(), end.exclusiveEndDate().toLocalDate());
+		return new DateRange<>(start.inclusiveStartDate().toLocalDate(), end.exclusiveEndDate().toLocalDate());
 	}
 
 	private HistoryRetrievalRequest earliestStartDate( final List<HistoryRetrievalRequest> requests ) {
@@ -274,30 +274,5 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		        () -> prices.stream().map(price -> price.tickerSymbol()).collect(Collectors.toSet()).stream()
 		                .collect(Collectors.joining(", ")),
 		        () -> prices.stream().map(price -> price.yearMonth().toString()).collect(Collectors.joining(", ")));
-	}
-}
-
-// TODO this class may already exist in model - look!!!!
-// TODO new class file somewhere
-// TODO inclusive / exclusive dates
-class DateRange {
-
-	private final LocalDate startDateInclusive;
-	private final LocalDate endDateExclusive;
-
-	public DateRange( final LocalDate startDateInclusive, final LocalDate endDateExclusive ) {
-
-		this.startDateInclusive = startDateInclusive;
-		this.endDateExclusive = endDateExclusive;
-	}
-
-	public LocalDate startDateInclusive() {
-
-		return startDateInclusive;
-	}
-
-	public LocalDate endDateExclusive() {
-
-		return endDateExclusive;
 	}
 }
