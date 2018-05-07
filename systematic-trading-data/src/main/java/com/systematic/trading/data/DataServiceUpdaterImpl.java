@@ -220,7 +220,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		if (LOG.isDebugEnabled()) {
 			for (final HistoryRetrievalRequest request : requests) {
 				LOG.debug(
-				        "Retrieval rquest: Start date {} (inclusive), End date {} (exclusive)",
+				        "Retrieval request: Start date {} (inclusive), End date {} (exclusive)",
 				        request.inclusiveStartDate().toLocalDate(),
 				        request.exclusiveEndDate().toLocalDate());
 			}

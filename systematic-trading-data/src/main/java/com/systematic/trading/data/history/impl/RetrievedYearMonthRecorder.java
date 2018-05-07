@@ -284,10 +284,10 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 	private void log( final List<RetrievedMonthTradingPrices> persist ) {
 
 		if (persist.isEmpty()) {
-			LOG.debug("All whole months are already persisted");
+			LOG.debug("No months to persist. Every whole month is already persisted");
 		} else {
 			LOG.debug(
-			        "Months that will be persisted: [{}], [{}]",
+			        "Month to persist: [{}], [{}]",
 			        () -> persist.stream().map(price -> price.tickerSymbol()).collect(Collectors.toSet()).stream()
 			                .collect(Collectors.joining(", ")),
 			        () -> persist.stream().map(price -> price.yearMonth().toString())

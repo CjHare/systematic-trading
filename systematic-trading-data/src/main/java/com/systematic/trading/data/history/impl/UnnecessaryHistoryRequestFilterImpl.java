@@ -75,7 +75,7 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 			final List<HistoryRetrievalRequest> requests = entry.getValue();
 
 			filtered.addAll(
-			        keepRelevantRequests(
+			        keepNecessaryRequests(
 			                requests,
 			                retrievedMonths(entry.getKey(), earliestStartDate(requests), latestEndDate(requests))));
 		}
@@ -125,7 +125,7 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		return requests;
 	}
 
-	private List<HistoryRetrievalRequest> keepRelevantRequests(
+	private List<HistoryRetrievalRequest> keepNecessaryRequests(
 	        final List<HistoryRetrievalRequest> requests,
 	        final List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
 
@@ -136,8 +136,8 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 		for (final HistoryRetrievalRequest request : requests) {
 			logCandidateRequest(request);
 
-			if (isRelevantRequest(request, alreadyRetrieved)) {
-				logRelevantRequest(request);
+			if (isNecessaryRequest(request, alreadyRetrieved)) {
+				logNecessaryRequest(request);
 
 				filtered.add(request);
 			}
@@ -149,7 +149,7 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 	/**
 	 * The date range in the request is not stored in the local data source.
 	 */
-	private boolean isRelevantRequest(
+	private boolean isNecessaryRequest(
 	        final HistoryRetrievalRequest request,
 	        List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
 
@@ -180,17 +180,21 @@ public class UnnecessaryHistoryRequestFilterImpl implements UnnecessaryHistoryRe
 
 	private void logAlreadyRetrieved( final List<RetrievedMonthTradingPrices> alreadyRetrieved ) {
 
-		LOG.debug(
-		        "Already retrieved: {}, {}",
-		        () -> alreadyRetrieved.stream().map(retrieved -> retrieved.tickerSymbol()).collect(Collectors.toSet())
-		                .stream().collect(Collectors.joining(", ")),
-		        () -> alreadyRetrieved.stream().map(retrieved -> retrieved.yearMonth().toString())
-		                .collect(Collectors.joining(", ")));
+		if (alreadyRetrieved.isEmpty()) {
+			LOG.debug("No months in the requested range are available locally");
+		} else {
+			LOG.debug(
+			        "Available locally: {}, {}",
+			        () -> alreadyRetrieved.stream().map(retrieved -> retrieved.tickerSymbol())
+			                .collect(Collectors.toSet()).stream().collect(Collectors.joining(", ")),
+			        () -> alreadyRetrieved.stream().map(retrieved -> retrieved.yearMonth().toString())
+			                .collect(Collectors.joining(", ")));
+		}
 	}
 
-	private void logRelevantRequest( final HistoryRetrievalRequest request ) {
+	private void logNecessaryRequest( final HistoryRetrievalRequest request ) {
 
-		log("Relevant", request);
+		log("Necessary", request);
 	}
 
 	private void logCandidateRequest( final HistoryRetrievalRequest request ) {
