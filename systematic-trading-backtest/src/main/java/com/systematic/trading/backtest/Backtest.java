@@ -134,8 +134,6 @@ public class Backtest {
 
 	private void logdPriceData( final TradingDayPrices[] prices ) {
 
-		LOG.info("First {} date: {}", prices[0].tickerSymbol(), prices[0].date());
-		LOG.info("Last {} date: {}", prices[prices.length - 1].tickerSymbol(), prices[prices.length - 1].date());
 		LOG.info("Number of prices for {}: {}", prices[0].tickerSymbol(), prices.length);
 	}
 }
