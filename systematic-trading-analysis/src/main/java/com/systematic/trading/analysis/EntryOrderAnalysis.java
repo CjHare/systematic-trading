@@ -195,8 +195,10 @@ public class EntryOrderAnalysis {
 
 		LOG.info(
 		        "{}",
-		        () -> String
-		                .format("Analysis inclusive start: %s, exclusive end: %s", analysisPeriod.startDate(), analysisPeriod.endDate()));
+		        () -> String.format(
+		                "Analysis inclusive start: %s, exclusive end: %s",
+		                analysisPeriod.startDate(),
+		                analysisPeriod.endDate()));
 	}
 
 	private BacktestBootstrapConfiguration configuration(

@@ -27,7 +27,7 @@
 
 /**
  * AlphaVantageResponseConverter
-
+ * 
  * @author CJ Hare
  */
 public class AlphaVantageResponseConverter {

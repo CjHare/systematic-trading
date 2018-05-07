@@ -32,10 +32,10 @@ package com.systematic.trading.data.history.impl;
  */
 public class DateRange<T> {
 
-	//TODO move into being a model class?
-	//TODO add validation over start/end (not allowed as null)
-	//TODO refactor / remove others such as BacktestSimulationDates
-	
+	// TODO move into being a model class?
+	// TODO add validation over start/end (not allowed as null)
+	// TODO refactor / remove others such as BacktestSimulationDates
+
 	private final T startDateInclusive;
 	private final T endDateExclusive;
 

@@ -228,7 +228,7 @@ public abstract class BaseTrial {
 	        final CashAccountConfiguration cashAccount,
 	        final BrokerageTransactionFeeStructure brokerage,
 	        final StrategyConfiguration strategy ) {
-		
+
 		return new BacktestBootstrapConfigurationBuilder().withEquity(equity).withSimulationDates(simulationDates)
 		        .withCashAccount(cashAccount).withBrokerage(brokerage).withStrategy(strategy).build();
 	}

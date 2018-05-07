@@ -208,7 +208,6 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 		lodge(merge(excludeUncessary(slice(equityDataset, tickerSymbol, inclusiveStartDate, exclusiveEndDate))));
 	}
 
-	
 	private void lodge( final List<HistoryRetrievalRequest> requests ) {
 
 		logLodgement(requests);
