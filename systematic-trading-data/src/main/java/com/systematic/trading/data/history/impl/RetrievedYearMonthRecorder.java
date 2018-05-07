@@ -270,7 +270,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 	private void log( final List<RetrievedMonthTradingPrices> prices ) {
 
 		LOG.debug(
-		        "Retrieved: [{}], [{}]",
+		        "Aready retrieved: [{}], [{}]",
 		        () -> prices.stream().map(price -> price.tickerSymbol()).collect(Collectors.toSet()).stream()
 		                .collect(Collectors.joining(", ")),
 		        () -> prices.stream().map(price -> price.yearMonth().toString()).collect(Collectors.joining(", ")));
