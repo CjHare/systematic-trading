@@ -68,7 +68,7 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 
 		if (hasFulfilledNothing(fulfilledRequests)) { return; }
 
-		final List<RetrievedMonthTradingPrices> retrieved = new ArrayList<>();
+		final List<RetrievedMonthTradingPrices> persist = new ArrayList<>();
 		final Map<String, List<HistoryRetrievalRequest>> byTickeSymbol = splitByTickerSymbol(fulfilledRequests);
 
 		for (final Map.Entry<String, List<HistoryRetrievalRequest>> entry : byTickeSymbol.entrySet()) {
@@ -77,12 +77,13 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 			final Set<YearMonth> fulfilledMonths = onlyFullMonths(ranges);
 
 			for (final YearMonth fulfilledMonth : fulfilledMonths) {
-				retrieved.add(tradningPrices(entry.getKey(), fulfilledMonth));
+				persist.add(tradningPrices(entry.getKey(), fulfilledMonth));
 			}
 		}
 
-		log(retrieved);
-		store(retrieved);
+		logRequests(fulfilledRequests);
+		log(persist);
+		store(persist);
 	}
 
 	private RetrievedMonthTradingPrices tradningPrices( final String tickerSymbol, final YearMonth fulfilledMonth ) {
@@ -260,19 +261,38 @@ public class RetrievedYearMonthRecorder implements RetrievedHistoryPeriodRecorde
 		return fulfilledRequests == null || fulfilledRequests.isEmpty();
 	}
 
-	private void store( final List<RetrievedMonthTradingPrices> retrieved ) {
+	private void store( final List<RetrievedMonthTradingPrices> additionalPriceData ) {
 
-		if (!retrieved.isEmpty()) {
-			retrievedMonthsDao.create(retrieved);
+		if (!additionalPriceData.isEmpty()) {
+			retrievedMonthsDao.create(additionalPriceData);
 		}
 	}
 
-	private void log( final List<RetrievedMonthTradingPrices> prices ) {
+	private void logRequests( final List<HistoryRetrievalRequest> fulfilledRequests ) {
 
 		LOG.debug(
-		        "Aready retrieved: [{}], [{}]",
-		        () -> prices.stream().map(price -> price.tickerSymbol()).collect(Collectors.toSet()).stream()
-		                .collect(Collectors.joining(", ")),
-		        () -> prices.stream().map(price -> price.yearMonth().toString()).collect(Collectors.joining(", ")));
+		        "Retrieved price data: [{}], [{}]",
+		        () -> fulfilledRequests.stream().map(request -> request.tickerSymbol()).collect(Collectors.toSet())
+		                .stream().collect(Collectors.joining(", ")),
+		        () -> fulfilledRequests.stream()
+		                .map(
+		                        request -> request.inclusiveStartDate().toString() + " - "
+		                                + request.exclusiveEndDate().toString())
+		                .collect(Collectors.joining(", ")));
 	}
+
+	private void log( final List<RetrievedMonthTradingPrices> persist ) {
+
+		if (persist.isEmpty()) {
+			LOG.debug("All whole months are already persisted");
+		} else {
+			LOG.debug(
+			        "Months that will be persisted: [{}], [{}]",
+			        () -> persist.stream().map(price -> price.tickerSymbol()).collect(Collectors.toSet()).stream()
+			                .collect(Collectors.joining(", ")),
+			        () -> persist.stream().map(price -> price.yearMonth().toString())
+			                .collect(Collectors.joining(", ")));
+		}
+	}
+
 }
