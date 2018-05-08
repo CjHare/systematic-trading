@@ -86,6 +86,6 @@ public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 	 */
 	private void unmappedArgument( final String argument ) {
 
-		LOG.warn("Unknown / unused argument {}", () -> argument);
+		LOG.warn("Unknown / unused argument {}", argument);
 	}
 }

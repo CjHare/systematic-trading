@@ -300,7 +300,7 @@ public class Simulation {
 					        e);
 			}
 		} catch (final InsufficientEquitiesException e) {
-			LOG.error(e);
+			logExecutionException(e);
 			throw new IllegalArgumentException("Unhandled Order exception", e);
 		}
 	}
@@ -317,5 +317,10 @@ public class Simulation {
 		for (final SimulationStateListener listener : stateListeners) {
 			listener.stateChanged(event);
 		}
+	}
+
+	private void logExecutionException( final InsufficientEquitiesException e ) {
+
+		LOG.error(e);
 	}
 }

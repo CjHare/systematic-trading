@@ -96,15 +96,7 @@ public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequ
 		try {
 			session.delete(request);
 		} catch (final HibernateException e) {
-			LOG.error(
-			        "{}",
-			        () -> String.format(
-			                "Error deleting entry for %s %s %s %s",
-			                request.tickerSymbol(),
-			                request.startDateInclusive(),
-			                request.endDateExclusive(),
-			                e.getMessage()));
-			LOG.error(e);
+			logDeleteException(request, e);
 		}
 
 		tx.commit();
@@ -118,20 +110,38 @@ public class HibernatePendingRetrievalRequestDao implements PendingRetrievalRequ
 			session.save(request);
 			tx.commit();
 		} catch (final HibernateException e) {
-			// May already have the record inserted
-			LOG.info(
-			        "{}",
-			        () -> String.format(
-			                "Failed to save request for %s, %s to %s, problem: %s",
-			                request.tickerSymbol(),
-			                request.startDateInclusive(),
-			                request.endDateExclusive(),
-			                e.getMessage()));
-			LOG.debug(e);
+			logCreateException(request, e);
 
 			if (tx != null && tx.isActive()) {
 				tx.rollback();
 			}
 		}
+	}
+
+	private void logCreateException( final HistoryRetrievalRequest request, final HibernateException e ) {
+
+		// May already have the record inserted
+		LOG.info(
+		        "{}",
+		        () -> String.format(
+		                "Failed to save request for %s, %s to %s, problem: %s",
+		                request.tickerSymbol(),
+		                request.startDateInclusive(),
+		                request.endDateExclusive(),
+		                e.getMessage()));
+		LOG.debug(e);
+	}
+
+	private void logDeleteException( final HistoryRetrievalRequest request, final HibernateException e ) {
+
+		LOG.error(
+		        "{}",
+		        () -> String.format(
+		                "Error deleting entry for %s %s %s %s",
+		                request.tickerSymbol(),
+		                request.startDateInclusive(),
+		                request.endDateExclusive(),
+		                e.getMessage()));
+		LOG.error(e);
 	}
 }

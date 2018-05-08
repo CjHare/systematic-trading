@@ -79,7 +79,7 @@ public class HibernateRetrievedMonthTradingPricesDao implements RetrievedMonthTr
 			return uncast.stream().map(u -> (RetrievedMonthTradingPrices) u).collect(Collectors.toList());
 
 		} catch (final HibernateException e) {
-			LOG.error(e);
+			logRequestsException(e);
 
 		} finally {
 			if (tx != null) {
@@ -98,15 +98,23 @@ public class HibernateRetrievedMonthTradingPricesDao implements RetrievedMonthTr
 			session.save(request);
 			tx.commit();
 		} catch (final HibernateException e) {
-			LOG.error(
-			        "{}",
-			        () -> String
-			                .format("Failed to save request for %s %s", request.tickerSymbol(), request.yearMonth()));
-			LOG.error(e);
+			logCreateException(request, e);
 
 			if (tx != null && tx.isActive()) {
 				tx.rollback();
 			}
 		}
 	}
+
+	private void logRequestsException( final HibernateException e ) {
+
+		LOG.error(e);
+	}
+
+	private void logCreateException( final HibernateRetrievedMonthTradingPrices request, final HibernateException e ) {
+
+		LOG.error("Failed to save request for {} {}", request.tickerSymbol(), request.yearMonth());
+		LOG.error(e);
+	}
+
 }

@@ -66,6 +66,46 @@ public class YahooStockApi implements EquityApi {
 
 	// Dividend API
 	// http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.dividendhistory%20where%20symbol=%22VGS.AX%22%20and%20startDate=%222015-01-01%22%20and%20endDate=%222015-02-01%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys
+	@Override
+	public TradingDayPrices[] stockData(
+	        final String dataset,
+	        final String tickerSymbol,
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive,
+	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
+
+		final String uri = jsonUrl(tickerSymbol, startDateInclusive, endDateExclusive);
+		logRequest(tickerSymbol, uri);
+
+		throttler.add();
+		final String json = HTTP_UTILS.get(uri);
+
+		return parseJson(tickerSymbol, json);
+	}
+
+	@Override
+	public Period maximumDurationPerConnection() {
+
+		return Period.ofYears(1);
+	}
+
+	@Override
+	public int maximumConcurrentConnections() {
+
+		return NUMBER_CONCURRENT_CONNECTIONS;
+	}
+
+	@Override
+	public int maximumRetrievalTimeSeconds() {
+
+		return MAXIMUM_RETRIEVAL_TIME;
+	}
+
+	@Override
+	public int maximumConnectionsPerSecond() {
+
+		return MAXIMUM_CONNECTION_PER_SECOND;
+	}
 
 	private static final HttpUtil HTTP_UTILS = new HttpUtil();
 
@@ -97,9 +137,7 @@ public class YahooStockApi implements EquityApi {
 			final JSONObject query = json.getJSONObject("query");
 			final int numberOfQuotes = query.getInt("count");
 
-			LOG.info(
-			        "{}",
-			        () -> String.format("%s data points returned for ticker symbol %s", numberOfQuotes, tickerSymbol));
+			logResponse(numberOfQuotes, tickerSymbol);
 
 			switch (numberOfQuotes) {
 				case 0:
@@ -115,8 +153,7 @@ public class YahooStockApi implements EquityApi {
 
 		} catch (final JSONException e) {
 			final String message = String.format("Failed in parsing JSON for: %s", tickerSymbol);
-			LOG.error(message, e);
-			LOG.error(result);
+			logParsingFailure(message, e, result);
 			throw new CannotRetrieveDataException(message, e);
 		}
 
@@ -160,44 +197,19 @@ public class YahooStockApi implements EquityApi {
 		return new TradingDayPricesImpl(tickerSymbol, date, openingPrice, lowestPrice, highestPrice, closingPrice);
 	}
 
-	@Override
-	public TradingDayPrices[] stockData(
-	        final String dataset,
-	        final String tickerSymbol,
-	        final LocalDate startDateInclusive,
-	        final LocalDate endDateExclusive,
-	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
+	private void logRequest( final String tickerSymbol, final String uri ) {
 
-		final String uri = jsonUrl(tickerSymbol, startDateInclusive, endDateExclusive);
-		LOG.info("{}", () -> String.format("%s API call to: %s", tickerSymbol, uri));
-
-		throttler.add();
-		final String json = HTTP_UTILS.get(uri);
-
-		return parseJson(tickerSymbol, json);
+		LOG.info("{} API call to: {}", tickerSymbol, uri);
 	}
 
-	@Override
-	public Period maximumDurationPerConnection() {
+	private void logResponse( final int numberOfQuotes, final String tickerSymbol ) {
 
-		return Period.ofYears(1);
+		LOG.info("{} data points returned for ticker symbol {}", numberOfQuotes, tickerSymbol);
 	}
 
-	@Override
-	public int maximumConcurrentConnections() {
+	private void logParsingFailure( final String message, final JSONException e, final String result ) {
 
-		return NUMBER_CONCURRENT_CONNECTIONS;
-	}
-
-	@Override
-	public int maximumRetrievalTimeSeconds() {
-
-		return MAXIMUM_RETRIEVAL_TIME;
-	}
-
-	@Override
-	public int maximumConnectionsPerSecond() {
-
-		return MAXIMUM_CONNECTION_PER_SECOND;
+		LOG.error(message, e);
+		LOG.error(result);
 	}
 }

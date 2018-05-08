@@ -78,9 +78,14 @@ public class BlockingEventCountQueue implements BlockingEventCount {
 				final LocalTime removed = ringBuffer.remove();
 
 				if (candidate != removed) {
-					LOG.error(String.format("Attempted to remove: %s, but removed: %s", candidate, removed));
+					logWrongDateRemoved(candidate, removed);
 				}
 			}
 		}
+	}
+
+	private void logWrongDateRemoved( final LocalTime candidate, final LocalTime removed ) {
+
+		LOG.error("Attempted to remove: {}, but instead removed: {}", candidate, removed);
 	}
 }

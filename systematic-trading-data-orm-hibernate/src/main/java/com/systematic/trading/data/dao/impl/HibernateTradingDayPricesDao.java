@@ -66,9 +66,9 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 			} catch (final HibernateException e) {
 
 				if (e.getCause() instanceof ConstraintViolationException) {
-					// Only constraint violation here will be primary key, or attempting to insert
-					// data already present
-					LOG.debug(e.getMessage());
+					// Constraint violation will be primary key, attempting to insert already
+					// present data
+					logConstraintViolation(e);
 				} else {
 					throw e;
 				}
@@ -209,5 +209,10 @@ public class HibernateTradingDayPricesDao implements TradingDayPricesDao {
 	private String sanitise( final String unsanitised ) {
 
 		return unsanitised.replaceAll("\\.", "_").replaceAll("[-+.^:,]", "_").toLowerCase();
+	}
+
+	private void logConstraintViolation( final HibernateException e ) {
+
+		LOG.debug(e.getMessage());
 	}
 }

@@ -71,7 +71,8 @@ public abstract class FileOutput implements BacktestEventListener {
 		        String.format("Failed to create / access directory: %s", outputDirectory)); }
 
 		final String directory = outputDirectoryFile.getCanonicalPath();
-		LOG.info("Output directory: {}", () -> directory);
+		logOutputDirectory(directory);
+
 		return directory;
 	}
 
@@ -129,5 +130,10 @@ public abstract class FileOutput implements BacktestEventListener {
 
 		eventStatisticsDao().eventStatistics();
 		netWorthSummaryDao().netWorth();
+	}
+
+	private void logOutputDirectory( final String location ) {
+
+		LOG.info("Output directory: {}", location);
 	}
 }

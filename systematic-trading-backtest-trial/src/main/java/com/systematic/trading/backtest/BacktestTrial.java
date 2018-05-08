@@ -148,16 +148,12 @@ public class BacktestTrial {
 				        outputPool);
 				final BacktestBootstrapContext context = context(backtestConfiguration, output);
 
-				LOG.info(
-				        "Backtesting beginning for: {}",
-				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, deposit));
+				logBacktestBegun(backtestConfiguration, deposit);
 
 				new Backtest(dataService, dataServiceUpdater)
 				        .run(equity, backtestConfiguration.backtestDates(), context, output);
 
-				LOG.info(
-				        "Backtesting complete for: {}",
-				        () -> description.bootstrapConfigurationWithDeposit(backtestConfiguration, deposit));
+				logBacktestComplete(backtestConfiguration, deposit);
 			}
 		} finally {
 			HibernateUtil.sessionFactory().close();
@@ -168,10 +164,35 @@ public class BacktestTrial {
 
 		outputPreparation.tearDown();
 
+		logBacktestComplete(backtestConfigurations, timer);
+	}
+
+	private void logBacktestBegun(
+	        final BacktestBootstrapConfiguration configuration,
+	        final DepositConfiguration deposit ) {
+
+		LOG.info(
+		        "\"Backtesting begun for: {}",
+		        () -> description.bootstrapConfigurationWithDeposit(configuration, deposit));
+	}
+
+	private void logBacktestComplete(
+	        final BacktestBootstrapConfiguration configuration,
+	        final DepositConfiguration deposit ) {
+
+		LOG.info(
+		        "Backtesting complete for: {}",
+		        () -> description.bootstrapConfigurationWithDeposit(configuration, deposit));
+	}
+
+	private void logBacktestComplete(
+	        final List<BacktestBootstrapConfiguration> configurations,
+	        final StopWatch timer ) {
+
 		LOG.info(
 		        () -> String.format(
 		                "Finished outputting %s results, time taken: %s",
-		                backtestConfigurations.size(),
+		                configurations.size(),
 		                Duration.ofMillis(timer.getTime())));
 	}
 

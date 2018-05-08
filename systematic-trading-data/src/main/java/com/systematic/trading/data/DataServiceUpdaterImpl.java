@@ -146,12 +146,7 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 					        activeConnectionCount);
 
 					if (tradingData.length == 0) {
-						LOG.warn(
-						        String.format(
-						                "No data has been returned for symbol: %s for %s to %s",
-						                tickerSymbol,
-						                startDateInclusive,
-						                endDateExclusive));
+						logDataNotFound(tickerSymbol, startDateInclusive, endDateExclusive);
 					}
 
 					// Push to the data source
@@ -171,6 +166,18 @@ public class DataServiceUpdaterImpl implements DataServiceUpdater {
 
 		shutdown(pool, requests);
 		activeConnectionCountCleaner.end();
+	}
+
+	private void logDataNotFound(
+	        final String tickerSymbol,
+	        final LocalDate startDateInclusive,
+	        final LocalDate endDateExclusive ) {
+
+		LOG.warn(
+		        "No data has been returned for symbol: {} for {} to {}",
+		        tickerSymbol,
+		        startDateInclusive,
+		        endDateExclusive);
 	}
 
 	private void shutdown( final ExecutorService pool, final List<HistoryRetrievalRequest> requests )

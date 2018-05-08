@@ -142,7 +142,7 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 		int attempt = 1;
 
 		do {
-			LOG.info("Retrieving from {}", url);
+			logRequest(url);
 
 			throttler.add();
 			final Response response = url.request(MediaType.APPLICATION_JSON).get();
@@ -151,12 +151,7 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 				return response;
 
 			} else {
-				LOG.warn(
-				        String.format(
-				                "Failed to retrieve data, HTTP code: %s, request: %s",
-				                response.getStatus(),
-				                url));
-
+				logRequestFailure(url, response);
 				waitBackOffDuration(attempt);
 			}
 
@@ -180,5 +175,15 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 	private boolean isResponseOk( final Response response ) {
 
 		return response.getStatus() == HTTP_OK;
+	}
+
+	private void logRequest( final WebTarget url ) {
+
+		LOG.debug("Retrieving from {}", url);
+	}
+
+	private void logRequestFailure( final WebTarget url, final Response response ) {
+
+		LOG.warn("Failed to retrieve data, HTTP code: {}, request: {}", response.getStatus(), url);
 	}
 }

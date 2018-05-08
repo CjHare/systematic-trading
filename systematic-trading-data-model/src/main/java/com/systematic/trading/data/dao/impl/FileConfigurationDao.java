@@ -58,7 +58,7 @@ public class FileConfigurationDao implements ConfigurationDao {
 
 			properties.load(input);
 		} catch (IOException e) {
-			LOG.error("{}", () -> String.format("Cannt load property file %s, %s", propertyFile, e.getMessage()));
+			LOG.error("Cannt load property file {}, {}", propertyFile, e.getMessage());
 			throw new CannotRetrieveConfigurationException(e);
 		}
 

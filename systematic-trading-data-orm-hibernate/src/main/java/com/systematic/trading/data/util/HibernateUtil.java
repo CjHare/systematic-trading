@@ -42,6 +42,11 @@ public class HibernateUtil {
 
 	private HibernateUtil() {}
 
+	public static SessionFactory sessionFactory() {
+
+		return SESSION_FACTORY;
+	}
+
 	private static SessionFactory buildSessionFactory() {
 
 		try {
@@ -62,14 +67,9 @@ public class HibernateUtil {
 			return factory;
 
 		} catch (final Exception ex) {
-			LOG.error("Initial SessionFactory creation failed.", ex);
+			logCreationException(ex);
 			throw new ExceptionInInitializerError(ex);
 		}
-	}
-
-	public static SessionFactory sessionFactory() {
-
-		return SESSION_FACTORY;
 	}
 
 	private static void verifyDatabaseConnection( final SessionFactory factory ) {
@@ -86,5 +86,10 @@ public class HibernateUtil {
 
 		// ...and release the resources
 		session.getTransaction().commit();
+	}
+
+	private static void logCreationException( final Exception e ) {
+
+		LOG.error("Initial SessionFactory creation failed.", e);
 	}
 }
