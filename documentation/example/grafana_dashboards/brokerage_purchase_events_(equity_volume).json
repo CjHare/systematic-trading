@@ -112,7 +112,7 @@
                   "type": "sum"
                 }
               ],
-              "query": "event:Buy",
+              "query": "event:BUY",
               "refId": "A",
               "timeField": "transaction_date"
             }
