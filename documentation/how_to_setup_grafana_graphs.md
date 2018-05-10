@@ -12,7 +12,7 @@ Create these data sources using '+Add data srouce' from the Grafana's 'Data Sour
 | Equity               | ElasticSearch | equity               | transaction_date     |    5x   | 1d                     |
 | Networth             | ElasticSearch | networth             | event_date           |    5x   | 1d                     |
 | Order                | ElasticSearch | order                | transaction_date     |    5x   | 1d                     |
-| Return On Investment | ElasticSearch | return-on-investment | inclusive_start_date |    5x   | 1d                     |
+| Return On Investment | ElasticSearch | return-on-investment | start_date_inclusive |    5x   | 1d                     |
 | Signal-Analysis      | ElasticSearch | signal-analysis      | signal_date          |    5x   | 1d                     |
 
 

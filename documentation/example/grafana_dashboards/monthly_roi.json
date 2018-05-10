@@ -95,7 +95,7 @@
                   "type": "terms"
                 },
                 {
-                  "field": "inclusive_start_date",
+                  "field": "start_date_inclusive",
                   "id": "2",
                   "settings": {
                     "interval": "auto",
@@ -117,7 +117,7 @@
               ],
               "query": "frequency:Monthly",
               "refId": "A",
-              "timeField": "inclusive_start_date"
+              "timeField": "start_date_inclusive"
             }
           ],
           "thresholds": [],
