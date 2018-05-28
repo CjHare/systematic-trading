@@ -25,9 +25,9 @@
  */
 package com.systematic.trading.backtest.output.elastic.resource;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.cash.event.CashEvent;
 
@@ -51,19 +51,19 @@ public class ElasticCashEventRequestResource extends TransactionDateEventResourc
 		this.fundsAfter = event.fundsAfter().floatValue();
 	}
 
-	@JsonProperty(ElasticTypeName.AMOUNT)
+	@JsonGetter(ElasticTypeName.AMOUNT)
 	public float amount() {
 
 		return amount;
 	}
 
-	@JsonProperty(ElasticTypeName.FUNDS_BEFORE)
+	@JsonGetter(ElasticTypeName.FUNDS_BEFORE)
 	public float fundsBefore() {
 
 		return fundsBefore;
 	}
 
-	@JsonProperty(ElasticTypeName.FUNDS_AFTER)
+	@JsonGetter(ElasticTypeName.FUNDS_AFTER)
 	public float fundsAfter() {
 
 		return fundsAfter;

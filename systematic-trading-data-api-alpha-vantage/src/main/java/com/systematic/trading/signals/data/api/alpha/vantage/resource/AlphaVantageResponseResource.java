@@ -29,10 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
@@ -40,7 +37,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  * 
  * @author CJ Hare
  */
-@JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AlphaVantageResponseResource {
 
@@ -50,7 +46,6 @@ public class AlphaVantageResponseResource {
 	/** Date keyed price data, on error will be empty. */
 	private Map<String, TradingDayResource> dataset = new HashMap<>();
 
-	@JsonGetter("Time Series (Daily)")
 	public Map<String, TradingDayResource> dataset() {
 
 		return dataset;
@@ -62,7 +57,6 @@ public class AlphaVantageResponseResource {
 		this.dataset = dataset;
 	}
 
-	@JsonGetter("Error Message")
 	public Optional<String> error() {
 
 		return error;

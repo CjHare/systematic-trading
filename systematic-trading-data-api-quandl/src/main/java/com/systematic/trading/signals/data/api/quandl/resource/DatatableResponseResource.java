@@ -26,28 +26,25 @@
 package com.systematic.trading.signals.data.api.quandl.resource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Root response object for the Quandl object chain.
  * 
  * @author CJ Hare
  */
-@JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DatatableResponseResource {
 
 	private DatatableResource datatable;
 
-	@JsonProperty("datatable")
+	@JsonSetter("datatable")
 	public DatatableResource datatable() {
 
 		return datatable;
 	}
 
-	@JsonProperty("datatable")
+	@JsonSetter("datatable")
 	public void datatable( final DatatableResource datatable ) {
 
 		this.datatable = datatable;

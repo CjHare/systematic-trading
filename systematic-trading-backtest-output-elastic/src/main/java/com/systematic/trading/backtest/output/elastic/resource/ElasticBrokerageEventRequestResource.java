@@ -25,9 +25,9 @@
  */
 package com.systematic.trading.backtest.output.elastic.resource;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.brokerage.event.BrokerageEvent;
 
@@ -55,31 +55,31 @@ public class ElasticBrokerageEventRequestResource extends TransactionDateEventRe
 		this.transactionFee = event.transactionFee().floatValue();
 	}
 
-	@JsonProperty(ElasticTypeName.EQUITY_VALUE)
+	@JsonGetter(ElasticTypeName.EQUITY_VALUE)
 	public float equityValue() {
 
 		return equityValue;
 	}
 
-	@JsonProperty(ElasticTypeName.EQUITY_AMOUNT)
+	@JsonGetter(ElasticTypeName.EQUITY_AMOUNT)
 	public float equityAmount() {
 
 		return equityAmount;
 	}
 
-	@JsonProperty(ElasticTypeName.STARTING_EQUITY_BALANCE)
+	@JsonGetter(ElasticTypeName.STARTING_EQUITY_BALANCE)
 	public float startingEquityBalance() {
 
 		return startingEquityBalance;
 	}
 
-	@JsonProperty(ElasticTypeName.END_EQUITY_BALANCE)
+	@JsonGetter(ElasticTypeName.END_EQUITY_BALANCE)
 	public float endEquityBalance() {
 
 		return endEquityBalance;
 	}
 
-	@JsonProperty(ElasticTypeName.TRANSACTION_FEE)
+	@JsonGetter(ElasticTypeName.TRANSACTION_FEE)
 	public float transactionFee() {
 
 		return transactionFee;

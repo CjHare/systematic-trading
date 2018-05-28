@@ -25,9 +25,9 @@
  */
 package com.systematic.trading.backtest.output.elastic.resource;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.equity.event.EquityEvent;
 
@@ -53,25 +53,25 @@ public class ElasticEquityEventRequestResource extends TransactionDateEventResou
 		this.equityAmount = event.equityAmount().floatValue();
 	}
 
-	@JsonProperty(ElasticTypeName.IDENTITY)
+	@JsonGetter(ElasticTypeName.IDENTITY)
 	public String identity() {
 
 		return identity;
 	}
 
-	@JsonProperty(ElasticTypeName.STARTING_EQUITY_BALANCE)
+	@JsonGetter(ElasticTypeName.STARTING_EQUITY_BALANCE)
 	public float startingEquityBalance() {
 
 		return startingEquityBalance;
 	}
 
-	@JsonProperty(ElasticTypeName.END_EQUITY_BALANCE)
+	@JsonGetter(ElasticTypeName.END_EQUITY_BALANCE)
 	public float endEquityBalance() {
 
 		return endEquityBalance;
 	}
 
-	@JsonProperty(ElasticTypeName.EQUITY_AMOUNT)
+	@JsonGetter(ElasticTypeName.EQUITY_AMOUNT)
 	public float equityAmount() {
 
 		return equityAmount;

@@ -28,9 +28,9 @@ package com.systematic.trading.backtest.output.elastic.resource;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.strategy.signal.SignalAnalysisEvent;
@@ -54,19 +54,19 @@ public class ElasticSignalAnalysisEventRequestResource {
 		this.signalDate = event.signalDate();
 	}
 
-	@JsonProperty(ElasticTypeName.SIGNAL_TYPE)
+	@JsonGetter(ElasticTypeName.SIGNAL_TYPE)
 	public String signalType() {
 
 		return signalType;
 	}
 
-	@JsonProperty(ElasticTypeName.DIRECTION_TYPE)
+	@JsonGetter(ElasticTypeName.DIRECTION_TYPE)
 	public String directionType() {
 
 		return directionType;
 	}
 
-	@JsonProperty(ElasticTypeName.SIGNAL_DATE)
+	@JsonGetter(ElasticTypeName.SIGNAL_DATE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate signalDate() {
 

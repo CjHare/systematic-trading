@@ -28,8 +28,8 @@ package com.systematic.trading.backtest.output.elastic.resource;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
@@ -59,31 +59,31 @@ public class ElasticNetWorthEventRequestResource extends EventResource {
 		this.eventDate = event.eventDate();
 	}
 
-	@JsonProperty(ElasticTypeName.CASH_BALANCE)
+	@JsonGetter(ElasticTypeName.CASH_BALANCE)
 	public float cashBalance() {
 
 		return cashBalance;
 	}
 
-	@JsonProperty(ElasticTypeName.EQUITY_BALANCE)
+	@JsonGetter(ElasticTypeName.EQUITY_BALANCE)
 	public float equityBalance() {
 
 		return equityBalance;
 	}
 
-	@JsonProperty(ElasticTypeName.EQUITY_BALANCE_VALUE)
+	@JsonGetter(ElasticTypeName.EQUITY_BALANCE_VALUE)
 	public float equityBalanceValue() {
 
 		return equityBalanceValue;
 	}
 
-	@JsonProperty(ElasticTypeName.NETWORTH)
+	@JsonGetter(ElasticTypeName.NETWORTH)
 	public float networth() {
 
 		return networth;
 	}
 
-	@JsonProperty(ElasticTypeName.EVENT_DATE)
+	@JsonGetter(ElasticTypeName.EVENT_DATE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate eventDate() {
 

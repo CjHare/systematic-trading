@@ -25,9 +25,9 @@
  */
 package com.systematic.trading.backtest.output.elastic.resource;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Resource for updating the settings on an Elastic Search Index.
@@ -45,7 +45,7 @@ public class ElasticIndexSettingsRequestResource {
 		this.interval = interval;
 	}
 
-	@JsonProperty("refresh_interval")
+	@JsonGetter("refresh_interval")
 	public String interval() {
 
 		return interval;

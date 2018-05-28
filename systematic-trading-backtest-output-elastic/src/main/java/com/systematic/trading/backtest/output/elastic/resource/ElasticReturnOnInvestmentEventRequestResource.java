@@ -28,9 +28,9 @@ package com.systematic.trading.backtest.output.elastic.resource;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
 import com.systematic.trading.simulation.analysis.roi.event.ReturnOnInvestmentEvent;
@@ -58,26 +58,26 @@ public class ElasticReturnOnInvestmentEventRequestResource {
 		this.frequency = frequency;
 	}
 
-	@JsonProperty(ElasticTypeName.PERCENTAGE_CHANGE)
+	@JsonGetter(ElasticTypeName.PERCENTAGE_CHANGE)
 	public float percentageChange() {
 
 		return percentageChange;
 	}
 
-	@JsonProperty(ElasticTypeName.FREQUENCY)
+	@JsonGetter(ElasticTypeName.FREQUENCY)
 	public String frequency() {
 
 		return frequency;
 	}
 
-	@JsonProperty(ElasticTypeName.START_DATE_INCLUSIVE)
+	@JsonGetter(ElasticTypeName.START_DATE_INCLUSIVE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate startDateInclusive() {
 
 		return startDateInclusive;
 	}
 
-	@JsonProperty(ElasticTypeName.END_DATE_EXCLUSIVE)
+	@JsonGetter(ElasticTypeName.END_DATE_EXCLUSIVE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate endDateExclusive() {
 

@@ -28,8 +28,8 @@ package com.systematic.trading.backtest.output.elastic.resource;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.systematic.trading.backtest.output.elastic.model.ElasticFormat;
 import com.systematic.trading.backtest.output.elastic.model.ElasticTypeName;
@@ -53,13 +53,13 @@ public class ElasticOrderEventRequestResource extends EventResource {
 		this.transactionDate = event.transactionDate();
 	}
 
-	@JsonProperty(ElasticTypeName.TOTAL_COST)
+	@JsonGetter(ElasticTypeName.TOTAL_COST)
 	public float totalCost() {
 
 		return totalCost;
 	}
 
-	@JsonProperty(ElasticTypeName.TRANSACTION_DATE)
+	@JsonGetter(ElasticTypeName.TRANSACTION_DATE)
 	@JsonFormat(pattern = ElasticFormat.LOCAL_DATE)
 	public LocalDate transactionDate() {
 

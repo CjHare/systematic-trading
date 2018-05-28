@@ -25,9 +25,9 @@
  */
 package com.systematic.trading.backtest.output.elastic.resource;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The action and meta data required to accompany all source entries for the Bulk API.
@@ -67,25 +67,25 @@ public class ElasticBulkApiMetaDataRequestResource {
 		this(action, null, null, null);
 	}
 
-	@JsonProperty("action")
+	@JsonGetter("action")
 	public String action() {
 
 		return action;
 	}
 
-	@JsonProperty("index")
+	@JsonGetter("index")
 	public String index() {
 
 		return index;
 	}
 
-	@JsonProperty("type")
+	@JsonGetter("type")
 	public String type() {
 
 		return type;
 	}
 
-	@JsonProperty("id")
+	@JsonGetter("id")
 	public String id() {
 
 		return id;
