@@ -183,22 +183,20 @@ public class EntryOrderAnalysis {
 
 	private void recordStrategy( final StrategyConfiguration strategy ) {
 
-		LOG.info("{}", () -> String.format("Strategy: %s", strategy.description(description)));
+		LOG.info("Finished, time taken: {}", () -> strategy.description(description));
 	}
 
 	private void recordExecutionTime( final StopWatch timer ) {
 
-		LOG.info(() -> String.format("Finished, time taken: %s", Duration.ofMillis(timer.getTime())));
+		LOG.info("Finished, time taken: {}", () -> Duration.ofMillis(timer.getTime()));
 	}
 
 	private void recordAnalysisPeriod( final BacktestSimulationDates analysisPeriod ) {
 
 		LOG.info(
-		        "{}",
-		        () -> String.format(
-		                "Analysis inclusive start: %s, exclusive end: %s",
-		                analysisPeriod.startDateInclusive(),
-		                analysisPeriod.endDateExclusive()));
+		        "Analysis inclusive start: {}, exclusive end: {}",
+		        analysisPeriod.startDateInclusive(),
+		        analysisPeriod.endDateExclusive());
 	}
 
 	private BacktestBootstrapConfiguration configuration(
