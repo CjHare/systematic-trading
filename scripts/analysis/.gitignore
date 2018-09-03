@@ -4,3 +4,5 @@
 # But not these files template files...
 !analysis
 !analysis.bat
+!/logs
+!/logs/log4j.xml
