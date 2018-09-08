@@ -183,7 +183,7 @@ public class EntryOrderAnalysis {
 
 	private void recordStrategy( final StrategyConfiguration strategy ) {
 
-		LOG.info("Finished, time taken: {}", () -> strategy.description(description));
+		LOG.info("Strategy: {}", () -> strategy.description(description));
 	}
 
 	private void recordExecutionTime( final StopWatch timer ) {
