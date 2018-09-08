@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+	<Properties>
+		<Property name="log-path">logs</Property>
+	</Properties>
+
+	<Appenders>
+		<RollingFile name="file-log" fileName="${log-path}/analysis.log" filePattern="${log-path}/analysis-%d{yyyy-MM-dd}.log">
+			<PatternLayout>
+				<pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="7" modulate="true"/>
+			</Policies>
+		</RollingFile>
+
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n" />
+		</Console>
+	</Appenders>
+
+	<Loggers>
+		<Logger name="com.systematic.trading" level="info" additivity="true">
+			<appender-ref ref="file-log" level="info"/>
+		</Logger>
+
+		<Root level="info" additivity="false">
+			<appender-ref ref="console"/>
+		</Root>
+	</Loggers>
+	
+</Configuration>

@@ -6,4 +6,6 @@
 !analysis.bat
 !analysis-console.bat
 !/logs
-!/logs/log4j.xml
+!/logs/config
+!/logs/config/log4j.xml
+!/logs/config/log4j-brk_a.xml
