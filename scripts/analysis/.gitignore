@@ -5,6 +5,8 @@
 !analysis
 !analysis.bat
 !analysis-console.bat
+!brk_a (alpha_vantage).bat
+!brk_a (quandl).bat
 !/logs
 !/logs/config
 !/logs/config/log4j.xml

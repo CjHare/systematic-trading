@@ -48,7 +48,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.input.EquityDataset;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * Testing for the optional DataServiceTypeLaunchArgument

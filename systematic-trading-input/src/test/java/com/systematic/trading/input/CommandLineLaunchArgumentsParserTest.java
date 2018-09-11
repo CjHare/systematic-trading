@@ -33,8 +33,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
-
 /**
  * CommandLineLaunchArgumentsParser test.
  * 

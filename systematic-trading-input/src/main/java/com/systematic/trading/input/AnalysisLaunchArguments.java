@@ -32,7 +32,6 @@ import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.data.DataServiceStructure;
 import com.systematic.trading.data.DataServiceType;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * An aggregation facade for parsing the arguments given on launch, their validation and type

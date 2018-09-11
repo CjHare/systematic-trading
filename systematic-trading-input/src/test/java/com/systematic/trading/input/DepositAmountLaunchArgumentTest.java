@@ -46,7 +46,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.input.DepositFrequency;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * @author CJ Hare
@@ -54,7 +53,7 @@ import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 @RunWith(MockitoJUnitRunner.class)
 public class DepositAmountLaunchArgumentTest {
 
-	private static final LaunchArgument.ArgumentKey KEY = LaunchArgument.ArgumentKey.DEPOSIT_FREQUENCY;
+	private static final ArgumentKey KEY = ArgumentKey.DEPOSIT_FREQUENCY;
 	private static final String ERROR_MESSAGE = "%s argument is not present";
 	private static final String FIRST_ERROR_ARGUMENT = KEY.getKey();
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";

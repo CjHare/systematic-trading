@@ -45,7 +45,6 @@ import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.data.DataServiceStructure;
 import com.systematic.trading.data.DataServiceType;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * Verifying the behavior of the EquityArguments.

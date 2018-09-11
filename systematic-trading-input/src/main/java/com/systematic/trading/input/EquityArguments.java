@@ -31,7 +31,6 @@ import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.data.DataServiceStructure;
 import com.systematic.trading.data.DataServiceType;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * Aggregation of arguments related to the equity and price data source.

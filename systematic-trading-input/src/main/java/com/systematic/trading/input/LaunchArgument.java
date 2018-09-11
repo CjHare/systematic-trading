@@ -26,7 +26,6 @@
 package com.systematic.trading.input;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Launch arguments.
@@ -34,42 +33,6 @@ import java.util.Optional;
  * @author CJ Hare
  */
 public interface LaunchArgument<T> {
-
-	enum ArgumentKey {
-		DATA_SERVICE("-data_service"),
-		DATA_SERVICE_STRUCTURE("-data_service_structure"),
-		DEPOSIT_AMOUNT("-deposit_amount"),
-		DEPOSIT_FREQUENCY("-deposit_frequency"),
-		END_DATE("-end_date"),
-		EQUITY_DATASET("-equity_dataset"),
-		FILE_BASE_DIRECTORY("-output_file_base_directory"),
-		INTEREST_RATE("-interest_rate"),
-		OPENING_FUNDS("-opening_funds"),
-		OUTPUT_TYPE("-output"),
-		START_DATE("-start_date"),
-		TICKER_SYMBOL("-ticker_symbol");
-
-		private final String key;
-
-		private ArgumentKey( final String key ) {
-
-			this.key = key;
-		}
-
-		public String getKey() {
-
-			return key;
-		}
-
-		public static Optional<ArgumentKey> get( final String arg ) {
-
-			for (final ArgumentKey candidate : ArgumentKey.values()) {
-				if (candidate.key.equals(arg)) { return Optional.of(candidate); }
-			}
-
-			return Optional.empty();
-		}
-	}
 
 	T get( Map<ArgumentKey, String> arguments );
 }

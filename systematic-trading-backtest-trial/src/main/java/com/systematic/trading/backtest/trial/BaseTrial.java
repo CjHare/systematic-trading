@@ -50,6 +50,7 @@ import com.systematic.trading.backtest.configuration.strategy.operator.OperatorC
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
+import com.systematic.trading.input.ArgumentKey;
 import com.systematic.trading.input.BacktestLaunchArguments;
 import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
 import com.systematic.trading.input.DataServiceLaunchArgument;
@@ -61,7 +62,6 @@ import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
 import com.systematic.trading.input.InterestRateLaunchArgument;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.OpeningFundsLaunchArgument;
 import com.systematic.trading.input.OutputLaunchArgument;

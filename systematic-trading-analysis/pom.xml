@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
-		<!-- Container dependencies (for instancing concrete instances)-->		
+		<!-- Container dependencies (instancing the concrete)-->		
 		<dependency>
 			<groupId>com.systematic.trading</groupId>
 			<artifactId>systematic-trading-backtest-output-elastic</artifactId>

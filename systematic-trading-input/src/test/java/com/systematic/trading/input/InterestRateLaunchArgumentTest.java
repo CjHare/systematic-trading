@@ -46,15 +46,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
-
 /**
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
 public class InterestRateLaunchArgumentTest {
 
-	private static final LaunchArgument.ArgumentKey KEY = LaunchArgument.ArgumentKey.INTEREST_RATE;
+	private static final ArgumentKey KEY = ArgumentKey.INTEREST_RATE;
 	private static final String ERROR_MESSAGE = "%s argument is not present";
 	private static final String FIRST_ERROR_ARGUMENT = KEY.getKey();
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";

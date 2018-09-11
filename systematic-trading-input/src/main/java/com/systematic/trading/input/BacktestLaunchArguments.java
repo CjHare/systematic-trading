@@ -37,7 +37,6 @@ import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
 import com.systematic.trading.data.DataServiceStructure;
 import com.systematic.trading.data.DataServiceType;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * An aggregation facade for parsing the arguments given on launch, their validation and type

@@ -39,7 +39,6 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.DataServiceStructure;
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
 
 /**
  * Testing for the optional DataServiceTypeLaunchArgument

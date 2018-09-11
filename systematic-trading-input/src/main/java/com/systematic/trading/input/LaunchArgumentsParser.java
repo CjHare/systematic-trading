@@ -27,8 +27,6 @@ package com.systematic.trading.input;
 
 import java.util.Map;
 
-import com.systematic.trading.input.LaunchArgument.ArgumentKey;
-
 /**
  * Parses a feed of launch arguments for the back test application.
  * 
