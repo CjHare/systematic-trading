@@ -25,22 +25,48 @@
  */
 package com.systematic.trading.input;
 
+import java.util.Optional;
+
 /**
- * The acceptable keys for arguments.
+ * The acceptable keys for arguments given through the command line.
  * 
  * @author CJ Hare
  */
-public enum ArgumentKey {
-	DATA_SERVICE,
-	DATA_SERVICE_STRUCTURE,
-	DEPOSIT_AMOUNT,
-	DEPOSIT_FREQUENCY,
-	END_DATE,
-	EQUITY_DATASET,
-	FILE_BASE_DIRECTORY,
-	INTEREST_RATE,
-	OPENING_FUNDS,
-	OUTPUT_TYPE,
-	START_DATE,
-	TICKER_SYMBOL;
+public enum CommandLineInputArgumentKey {
+
+	DATA_SERVICE(ArgumentKey.DATA_SERVICE, "-data_service"),
+	DATA_SERVICE_STRUCTURE(ArgumentKey.DATA_SERVICE_STRUCTURE, "-data_service_structure"),
+	DEPOSIT_AMOUNT(ArgumentKey.DEPOSIT_AMOUNT, "-deposit_amount"),
+	DEPOSIT_FREQUENCY(ArgumentKey.DEPOSIT_FREQUENCY, "-deposit_frequency"),
+	END_DATE(ArgumentKey.END_DATE, "-end_date"),
+	EQUITY_DATASET(ArgumentKey.EQUITY_DATASET, "-equity_dataset"),
+	FILE_BASE_DIRECTORY(ArgumentKey.FILE_BASE_DIRECTORY, "-output_file_base_directory"),
+	INTEREST_RATE(ArgumentKey.INTEREST_RATE, "-interest_rate"),
+	OPENING_FUNDS(ArgumentKey.OPENING_FUNDS, "-opening_funds"),
+	OUTPUT_TYPE(ArgumentKey.OUTPUT_TYPE, "-output"),
+	START_DATE(ArgumentKey.START_DATE, "-start_date"),
+	TICKER_SYMBOL(ArgumentKey.TICKER_SYMBOL, "-ticker_symbol");
+
+	private final String cli;
+	private final ArgumentKey key;
+
+	private CommandLineInputArgumentKey( final ArgumentKey key, final String cli ) {
+
+		this.key = key;
+		this.cli = cli;
+	}
+
+	public ArgumentKey key() {
+
+		return key;
+	}
+
+	public static Optional<ArgumentKey> get( final String arg ) {
+
+		for (final CommandLineInputArgumentKey candidate : CommandLineInputArgumentKey.values()) {
+			if (candidate.cli.equals(arg)) { return Optional.of(candidate.key); }
+		}
+
+		return Optional.empty();
+	}
 }

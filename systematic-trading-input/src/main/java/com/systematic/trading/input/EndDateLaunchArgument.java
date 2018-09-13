@@ -50,8 +50,8 @@ public class EndDateLaunchArgument implements LaunchArgument<BacktestEndDate> {
 
 		final String endDate = arguments.get(ArgumentKey.END_DATE);
 
-		validator.validate(endDate, "%s argument is not present", ArgumentKey.END_DATE.getKey());
-		validator.validateDateFormat(endDate, "%s argument date format is invalid", ArgumentKey.END_DATE.getKey());
+		validator.validate(endDate, "%s argument is not present", ArgumentKey.END_DATE);
+		validator.validateDateFormat(endDate, "%s argument date format is invalid", ArgumentKey.END_DATE);
 
 		return new BacktestEndDate(LocalDate.parse(endDate));
 	}

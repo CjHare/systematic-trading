@@ -50,8 +50,8 @@ public class DepositFrequencyLaunchArgument implements LaunchArgument<DepositFre
 
 		final String frequency = arguments.get(ArgumentKey.DEPOSIT_FREQUENCY);
 
-		validator.validate(frequency, "%s argument is not present", ArgumentKey.DEPOSIT_FREQUENCY.getKey());
-		validator.validateNotEmpty(frequency, "%s argument cannot be empty", ArgumentKey.DEPOSIT_FREQUENCY.getKey());
+		validator.validate(frequency, "%s argument is not present", ArgumentKey.DEPOSIT_FREQUENCY);
+		validator.validateNotEmpty(frequency, "%s argument cannot be empty", ArgumentKey.DEPOSIT_FREQUENCY);
 
 		return DepositFrequency.valueOf(frequency);
 	}

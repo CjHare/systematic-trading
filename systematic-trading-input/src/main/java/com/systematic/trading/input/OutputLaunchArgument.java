@@ -62,7 +62,7 @@ public class OutputLaunchArgument implements LaunchArgument<OutputType> {
 		validator.validate(
 		        outputType,
 		        "%s argument is not in the set of supported OutputTypes: %s",
-		        ArgumentKey.OUTPUT_TYPE.getKey(),
+		        ArgumentKey.OUTPUT_TYPE,
 		        arguments.get(ArgumentKey.OUTPUT_TYPE));
 
 		return outputType;

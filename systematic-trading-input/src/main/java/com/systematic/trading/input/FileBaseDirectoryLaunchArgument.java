@@ -49,7 +49,7 @@ public class FileBaseDirectoryLaunchArgument implements LaunchArgument<FileBaseO
 
 		final String directory = arguments.get(ArgumentKey.FILE_BASE_DIRECTORY);
 
-		validator.validate(directory, "%s argument is not present", ArgumentKey.FILE_BASE_DIRECTORY.getKey());
+		validator.validate(directory, "%s argument is not present", ArgumentKey.FILE_BASE_DIRECTORY);
 
 		return new FileBaseOutputDirectory(directory);
 	}

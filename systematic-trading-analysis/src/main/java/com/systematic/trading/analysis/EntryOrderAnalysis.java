@@ -73,7 +73,7 @@ import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.input.AnalysisLaunchArguments;
 import com.systematic.trading.input.ArgumentKey;
-import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.input.CommandLineInputArgumentParser;
 import com.systematic.trading.input.DataServiceLaunchArgument;
 import com.systematic.trading.input.DataServiceStructureLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
@@ -112,7 +112,7 @@ public class EntryOrderAnalysis {
 	public static void main( final String... args ) throws ServiceException {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
-		final Map<ArgumentKey, String> arguments = new CommandLineLaunchArgumentsParser().parse(args);
+		final Map<ArgumentKey, String> arguments = new CommandLineInputArgumentParser().parse(args);
 		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(
 		        new EquityArguments(
 		                new DataServiceLaunchArgument(validator),

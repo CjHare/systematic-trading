@@ -54,7 +54,7 @@ import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 public class FileBaseDirectoryLaunchArgumentTest {
 
 	private static final String ERROR_MESSAGE = "%s argument is not present";
-	private static final String FIRST_ERROR_ARGUMENT = ArgumentKey.FILE_BASE_DIRECTORY.getKey();
+	private static final ArgumentKey KEY = ArgumentKey.FILE_BASE_DIRECTORY;
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
 	@Mock
@@ -123,7 +123,7 @@ public class FileBaseDirectoryLaunchArgumentTest {
 
 	private void verifyValidation( final Object value ) {
 
-		verify(validator).validate(value == null ? isNull() : eq(value), eq(ERROR_MESSAGE), eq(FIRST_ERROR_ARGUMENT));
+		verify(validator).validate(value == null ? isNull() : eq(value), eq(ERROR_MESSAGE), eq(KEY));
 
 	}
 

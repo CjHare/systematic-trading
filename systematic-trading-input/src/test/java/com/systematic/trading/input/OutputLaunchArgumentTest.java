@@ -54,8 +54,8 @@ import com.systematic.trading.backtest.input.OutputType;
 @RunWith(MockitoJUnitRunner.class)
 public class OutputLaunchArgumentTest {
 
+	private static final ArgumentKey KEY = ArgumentKey.OUTPUT_TYPE;
 	private static final String ERROR_MESSAGE = "%s argument is not in the set of supported OutputTypes: %s";
-	private static final String FIRST_ERROR_ARGUMENT = ArgumentKey.OUTPUT_TYPE.getKey();
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
 	@Mock
@@ -167,7 +167,7 @@ public class OutputLaunchArgumentTest {
 		verify(validator).validate(
 		        outputType == null ? isNull() : eq(outputType),
 		        eq(ERROR_MESSAGE),
-		        eq(FIRST_ERROR_ARGUMENT),
+		        eq(KEY),
 		        launchArgument == null ? isNull() : eq(launchArgument));
 		verifyNoMoreInteractions(validator);
 	}

@@ -48,8 +48,8 @@ public class InterestRateLaunchArgument implements LaunchArgument<BigDecimal> {
 
 		final String openingFunds = arguments.get(ArgumentKey.INTEREST_RATE);
 
-		validator.validate(openingFunds, "%s argument is not present", ArgumentKey.INTEREST_RATE.getKey());
-		validator.validateNotEmpty(openingFunds, "%s argument cannot be empty", ArgumentKey.INTEREST_RATE.getKey());
+		validator.validate(openingFunds, "%s argument is not present", ArgumentKey.INTEREST_RATE);
+		validator.validateNotEmpty(openingFunds, "%s argument cannot be empty", ArgumentKey.INTEREST_RATE);
 
 		return new BigDecimal(openingFunds);
 	}

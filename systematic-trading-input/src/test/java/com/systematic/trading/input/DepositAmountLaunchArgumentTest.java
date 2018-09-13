@@ -55,7 +55,6 @@ public class DepositAmountLaunchArgumentTest {
 
 	private static final ArgumentKey KEY = ArgumentKey.DEPOSIT_FREQUENCY;
 	private static final String ERROR_MESSAGE = "%s argument is not present";
-	private static final String FIRST_ERROR_ARGUMENT = KEY.getKey();
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
 	@Mock
@@ -126,10 +125,7 @@ public class DepositAmountLaunchArgumentTest {
 
 	private void verifyValidationExceptionOnValidate( final String launchArgument ) {
 
-		verify(validator).validate(
-		        launchArgument == null ? isNull() : eq(launchArgument),
-		        eq(ERROR_MESSAGE),
-		        eq(FIRST_ERROR_ARGUMENT));
+		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE), eq(KEY));
 		verifyNoMoreInteractions(validator);
 	}
 

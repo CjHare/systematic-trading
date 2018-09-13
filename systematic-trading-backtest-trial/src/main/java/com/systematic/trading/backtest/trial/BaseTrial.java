@@ -52,7 +52,7 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.input.ArgumentKey;
 import com.systematic.trading.input.BacktestLaunchArguments;
-import com.systematic.trading.input.CommandLineLaunchArgumentsParser;
+import com.systematic.trading.input.CommandLineInputArgumentParser;
 import com.systematic.trading.input.DataServiceLaunchArgument;
 import com.systematic.trading.input.DataServiceStructureLaunchArgument;
 import com.systematic.trading.input.DepositAmountLaunchArgument;
@@ -81,7 +81,7 @@ public abstract class BaseTrial {
 	protected static BacktestLaunchArguments launchArguments( final String... args ) {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
-		final Map<ArgumentKey, String> arguments = new CommandLineLaunchArgumentsParser().parse(args);
+		final Map<ArgumentKey, String> arguments = new CommandLineInputArgumentParser().parse(args);
 		return new BacktestLaunchArguments(
 		        new OutputLaunchArgument(validator),
 		        new EquityArguments(

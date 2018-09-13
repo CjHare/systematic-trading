@@ -66,7 +66,7 @@ public class CommandLineLaunchArgumentsParserTest {
 		final String[] launchArguments = { "-output" };
 
 		try {
-			new CommandLineLaunchArgumentsParser().parse(launchArguments);
+			new CommandLineInputArgumentParser().parse(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals("Missing value for argument key -output", e.getMessage());
@@ -75,7 +75,7 @@ public class CommandLineLaunchArgumentsParserTest {
 
 	private Map<ArgumentKey, String> parse( final String[] launchArguments ) {
 
-		return new CommandLineLaunchArgumentsParser().parse(launchArguments);
+		return new CommandLineInputArgumentParser().parse(launchArguments);
 	}
 
 	private void verifyOutputType( final String expectedOutputType, final Map<ArgumentKey, String> results ) {

@@ -49,8 +49,8 @@ public class DataServiceLaunchArgument implements LaunchArgument<DataServiceType
 
 		final String dataService = arguments.get(ArgumentKey.DATA_SERVICE);
 
-		validator.validate(dataService, "%s argument is not present", ArgumentKey.DATA_SERVICE.getKey());
-		validator.validateNotEmpty(dataService, "%s argument cannot be empty", ArgumentKey.DATA_SERVICE.getKey());
+		validator.validate(dataService, "%s argument is not present", ArgumentKey.DATA_SERVICE);
+		validator.validateNotEmpty(dataService, "%s argument cannot be empty", ArgumentKey.DATA_SERVICE);
 
 		return new DataServiceType(dataService);
 	}

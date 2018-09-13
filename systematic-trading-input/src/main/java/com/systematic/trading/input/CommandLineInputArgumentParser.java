@@ -37,10 +37,10 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author CJ Hare
  */
-public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
+public class CommandLineInputArgumentParser implements LaunchArgumentsParser {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(CommandLineLaunchArgumentsParser.class);
+	private static final Logger LOG = LogManager.getLogger(CommandLineInputArgumentParser.class);
 
 	@Override
 	public Map<ArgumentKey, String> parse( final String[] args ) {
@@ -49,7 +49,7 @@ public class CommandLineLaunchArgumentsParser implements LaunchArgumentsParser {
 
 		for (int i = 0; i < args.length; i += 2) {
 
-			final Optional<ArgumentKey> key = ArgumentKey.get(args[i]);
+			final Optional<ArgumentKey> key = CommandLineInputArgumentKey.get(args[i]);
 
 			if (key.isPresent()) {
 				if (hasInsufficuentArgumentCount(i + 1, args)) {

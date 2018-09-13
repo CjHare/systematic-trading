@@ -50,8 +50,8 @@ public class StartDateLaunchArgument implements LaunchArgument<BacktestStartDate
 
 		final String startDate = arguments.get(ArgumentKey.START_DATE);
 
-		validator.validate(startDate, "%s argument is not present", ArgumentKey.START_DATE.getKey());
-		validator.validateDateFormat(startDate, "%s argument date format is invalid", ArgumentKey.START_DATE.getKey());
+		validator.validate(startDate, "%s argument is not present", ArgumentKey.START_DATE);
+		validator.validateDateFormat(startDate, "%s argument date format is invalid", ArgumentKey.START_DATE);
 
 		return new BacktestStartDate(LocalDate.parse(startDate));
 	}

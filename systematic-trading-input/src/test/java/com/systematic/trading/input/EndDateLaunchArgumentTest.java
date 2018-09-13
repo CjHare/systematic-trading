@@ -55,9 +55,9 @@ import com.systematic.trading.backtest.input.BacktestEndDate;
 @RunWith(MockitoJUnitRunner.class)
 public class EndDateLaunchArgumentTest {
 
+	private static final ArgumentKey KEY = ArgumentKey.END_DATE;
 	private static final String FORMAT_ERROR_MESSAGE = "%s argument date format is invalid";
 	private static final String ERROR_MESSAGE = "%s argument is not present";
-	private static final String FIRST_ERROR_ARGUMENT = ArgumentKey.END_DATE.getKey();
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 	private static final String VALIDATOR_FORMAT_EXCEPTION_MESSAGE = "Validation format exception message";
 
@@ -146,20 +146,14 @@ public class EndDateLaunchArgumentTest {
 
 	private void verifyValidation( final String launchArgument ) {
 
-		verify(validator).validate(
-		        launchArgument == null ? isNull() : eq(launchArgument),
-		        eq(ERROR_MESSAGE),
-		        eq(FIRST_ERROR_ARGUMENT));
-		verify(validator).validateDateFormat(launchArgument, FORMAT_ERROR_MESSAGE, ArgumentKey.END_DATE.getKey());
+		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE), eq(KEY));
+		verify(validator).validateDateFormat(launchArgument, FORMAT_ERROR_MESSAGE, ArgumentKey.END_DATE);
 		verifyNoMoreInteractions(validator);
 	}
 
 	private void verifyValidationExceptionOnValidate( final String launchArgument ) {
 
-		verify(validator).validate(
-		        launchArgument == null ? isNull() : eq(launchArgument),
-		        eq(ERROR_MESSAGE),
-		        eq(FIRST_ERROR_ARGUMENT));
+		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE), eq(KEY));
 		verifyNoMoreInteractions(validator);
 	}
 

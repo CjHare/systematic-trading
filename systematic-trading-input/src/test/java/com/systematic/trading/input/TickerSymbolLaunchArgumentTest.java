@@ -55,8 +55,8 @@ import com.systematic.trading.backtest.equity.TickerSymbol;
 @RunWith(MockitoJUnitRunner.class)
 public class TickerSymbolLaunchArgumentTest {
 
+	private static final ArgumentKey KEY = ArgumentKey.TICKER_SYMBOL;
 	private static final String ERROR_MESSAGE = "%s argument is not present";
-	private static final String FIRST_ERROR_ARGUMENT = ArgumentKey.TICKER_SYMBOL.getKey();
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
 	@Mock
@@ -127,10 +127,7 @@ public class TickerSymbolLaunchArgumentTest {
 
 	private void verifyValidationExceptionOnValidate( final String launchArgument ) {
 
-		verify(validator).validate(
-		        launchArgument == null ? isNull() : eq(launchArgument),
-		        eq(ERROR_MESSAGE),
-		        eq(FIRST_ERROR_ARGUMENT));
+		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE), eq(KEY));
 		verifyNoMoreInteractions(validator);
 	}
 
