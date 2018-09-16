@@ -55,7 +55,7 @@ import com.systematic.trading.backtest.input.BacktestEndDate;
 @RunWith(MockitoJUnitRunner.class)
 public class EndDateLaunchArgumentTest {
 
-	private static final ArgumentKey KEY = ArgumentKey.END_DATE;
+	private static final LaunchArgumentKey KEY = LaunchArgumentKey.END_DATE;
 	private static final String FORMAT_ERROR_MESSAGE = "%s argument date format is invalid";
 	private static final String ERROR_MESSAGE = "%s argument is not present";
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
@@ -77,7 +77,7 @@ public class EndDateLaunchArgumentTest {
 	public void validEndDate() {
 
 		final String expectedStartDate = "2017-06-06";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
 		final BacktestEndDate startDate = endDate(launchArguments);
 
@@ -119,7 +119,7 @@ public class EndDateLaunchArgumentTest {
 		setUpValidatorException();
 
 		try {
-			endDate(new HashMap<ArgumentKey, String>());
+			endDate(new HashMap<LaunchArgumentKey, String>());
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(VALIDATOR_EXCEPTION_MESSAGE, e.getMessage());
@@ -127,7 +127,7 @@ public class EndDateLaunchArgumentTest {
 		}
 	}
 
-	private BacktestEndDate endDate( final Map<ArgumentKey, String> arguments ) {
+	private BacktestEndDate endDate( final Map<LaunchArgumentKey, String> arguments ) {
 
 		return argument.get(arguments);
 	}
@@ -147,7 +147,7 @@ public class EndDateLaunchArgumentTest {
 	private void verifyValidation( final String launchArgument ) {
 
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE), eq(KEY));
-		verify(validator).validateDateFormat(launchArgument, FORMAT_ERROR_MESSAGE, ArgumentKey.END_DATE);
+		verify(validator).validateDateFormat(launchArgument, FORMAT_ERROR_MESSAGE, LaunchArgumentKey.END_DATE);
 		verifyNoMoreInteractions(validator);
 	}
 
@@ -164,10 +164,10 @@ public class EndDateLaunchArgumentTest {
 		assertTrue(LocalDate.parse(expected).equals(axtual.date()));
 	}
 
-	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+	private Map<LaunchArgumentKey, String> setUpArguments( final String value ) {
 
-		final Map<ArgumentKey, String> arguments = new HashMap<>();
-		arguments.put(ArgumentKey.END_DATE, value);
+		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
+		arguments.put(LaunchArgumentKey.END_DATE, value);
 		return arguments;
 	}
 }

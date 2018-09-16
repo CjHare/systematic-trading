@@ -104,7 +104,7 @@ public class BacktestLaunchArgumentsTest {
 	public void outputType() {
 
 		final String outputType = "elastic_search";
-		final Map<ArgumentKey, String> launchArguments = argumentMap(outputType);
+		final Map<LaunchArgumentKey, String> launchArguments = argumentMap(outputType);
 		setUpArgumentMap(outputType);
 		setUpOutputArgument(OutputType.ELASTIC_SEARCH);
 
@@ -119,7 +119,7 @@ public class BacktestLaunchArgumentsTest {
 
 		final String outputDirectory = "../../simulations";
 		final String outputType = "no_display";
-		final Map<ArgumentKey, String> launchArguments = argumentMap(outputType, outputDirectory);
+		final Map<LaunchArgumentKey, String> launchArguments = argumentMap(outputType, outputDirectory);
 		setUpArgumentMap(outputType, outputDirectory);
 		setUpDirectoryArgument(outputDirectory);
 
@@ -135,7 +135,7 @@ public class BacktestLaunchArgumentsTest {
 		final String outputDirectory = "../../simulations";
 		final String outputType = "no_display";
 		final String openingFunds = "101.67";
-		final Map<ArgumentKey, String> launchArguments = argumentMap(outputType, outputDirectory, openingFunds);
+		final Map<LaunchArgumentKey, String> launchArguments = argumentMap(outputType, outputDirectory, openingFunds);
 		setUpArgumentMap(outputType, outputDirectory, openingFunds);
 		setUpOpeningFundsArgument(openingFunds);
 
@@ -149,7 +149,7 @@ public class BacktestLaunchArgumentsTest {
 	public void outputArgumentException() {
 
 		final String outputType = "unmatched output type";
-		final Map<ArgumentKey, String> launchArguments = argumentMap(outputType);
+		final Map<LaunchArgumentKey, String> launchArguments = argumentMap(outputType);
 		setUpOutputArgumentException();
 		setUpArgumentMap(outputType);
 
@@ -162,7 +162,7 @@ public class BacktestLaunchArgumentsTest {
 	public void fileOutputDirectoryException() {
 
 		final String outputType = "unmatched output type";
-		final Map<ArgumentKey, String> launchArguments = argumentMap(outputType);
+		final Map<LaunchArgumentKey, String> launchArguments = argumentMap(outputType);
 		setUpDirectoryArgumentException();
 
 		launchArguments(launchArguments);
@@ -174,7 +174,7 @@ public class BacktestLaunchArgumentsTest {
 	public void openingFundsException() {
 
 		final String outputType = "unmatched output type";
-		final Map<ArgumentKey, String> launchArguments = argumentMap(outputType);
+		final Map<LaunchArgumentKey, String> launchArguments = argumentMap(outputType);
 		setUpOpeningFundsArgumentException();
 
 		launchArgumentsExpectingException(OPENING_FUNDS_EXCEPTION_MESSAGE, launchArguments);
@@ -283,29 +283,29 @@ public class BacktestLaunchArgumentsTest {
 
 	private void setUpDepositFrequency( final DepositFrequency frequency ) {
 
-		when(depositFrequencyArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(frequency);
+		when(depositFrequencyArgument.get(anyMapOf(LaunchArgumentKey.class, String.class))).thenReturn(frequency);
 	}
 
 	private void setUpInterestRate( final double rate ) {
 
-		when(interestRateArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(BigDecimal.valueOf(rate));
+		when(interestRateArgument.get(anyMapOf(LaunchArgumentKey.class, String.class))).thenReturn(BigDecimal.valueOf(rate));
 	}
 
 	private void setUpDepositAmount( final double amount ) {
 
-		when(depositAmountArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		when(depositAmountArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
 		        .thenReturn(BigDecimal.valueOf(amount));
 	}
 
 	private void setUpStartDate( final LocalDate startDate ) {
 
-		when(startDateArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		when(startDateArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
 		        .thenReturn(new BacktestStartDate(startDate));
 	}
 
 	private void setUpEndDate( final LocalDate startDate ) {
 
-		when(endDateArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(new BacktestEndDate(startDate));
+		when(endDateArgument.get(anyMapOf(LaunchArgumentKey.class, String.class))).thenReturn(new BacktestEndDate(startDate));
 	}
 
 	private void setUpTickerSymbol( final String serviceName ) {
@@ -340,7 +340,7 @@ public class BacktestLaunchArgumentsTest {
 
 	private void launchArgumentsExpectingException(
 	        final String expectedMessage,
-	        final Map<ArgumentKey, String> arguments ) {
+	        final Map<LaunchArgumentKey, String> arguments ) {
 
 		try {
 			launchArguments(arguments);
@@ -350,7 +350,7 @@ public class BacktestLaunchArgumentsTest {
 		}
 	}
 
-	private void launchArguments( final Map<ArgumentKey, String> arguments ) {
+	private void launchArguments( final Map<LaunchArgumentKey, String> arguments ) {
 
 		parser = new BacktestLaunchArguments(
 		        outputTypeArgument,
@@ -367,7 +367,7 @@ public class BacktestLaunchArgumentsTest {
 
 	private void launchArguments() {
 
-		launchArguments(new EnumMap<>(ArgumentKey.class));
+		launchArguments(new EnumMap<>(LaunchArgumentKey.class));
 	}
 
 	private void verifyDataService( final String expected ) {
@@ -460,13 +460,13 @@ public class BacktestLaunchArgumentsTest {
 
 	private void verifyStartDateArgument() {
 
-		verify(startDateArgument).get(new EnumMap<>(ArgumentKey.class));
+		verify(startDateArgument).get(new EnumMap<>(LaunchArgumentKey.class));
 		verifyNoMoreInteractions(startDateArgument);
 	}
 
 	private void verifyEndDateArgument() {
 
-		verify(endDateArgument).get(new EnumMap<>(ArgumentKey.class));
+		verify(endDateArgument).get(new EnumMap<>(LaunchArgumentKey.class));
 		verifyNoMoreInteractions(endDateArgument);
 	}
 
@@ -478,36 +478,36 @@ public class BacktestLaunchArgumentsTest {
 
 	private void setUpOutputArgument( final OutputType type ) {
 
-		when(outputTypeArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(type);
+		when(outputTypeArgument.get(anyMapOf(LaunchArgumentKey.class, String.class))).thenReturn(type);
 	}
 
 	private void setUpDirectoryArgument( final String directory ) {
 
-		when(directoryArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		when(directoryArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
 		        .thenReturn(new FileBaseOutputDirectory(directory));
 	}
 
 	private void setUpOpeningFundsArgument( final String openingFunds ) {
 
-		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		when(openingFundsArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
 		        .thenReturn(new BigDecimal(openingFunds));
 	}
 
 	private void setUpOutputArgumentException() {
 
-		when(outputTypeArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		when(outputTypeArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
 		        .thenThrow(new IllegalArgumentException(OUTPUT_EXCEPTION_MESSAGE));
 	}
 
 	private void setUpDirectoryArgumentException() {
 
-		when(directoryArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		when(directoryArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
 		        .thenThrow(new IllegalArgumentException(DIRCTORY_EXCEPTION_MESSAGE));
 	}
 
 	private void setUpOpeningFundsArgumentException() {
 
-		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		when(openingFundsArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
 		        .thenThrow(new IllegalArgumentException(OPENING_FUNDS_EXCEPTION_MESSAGE));
 	}
 
@@ -530,26 +530,26 @@ public class BacktestLaunchArgumentsTest {
 		        .thenReturn(argumentMap(outputValue, fileBaseDirectory, openingFunds));
 	}
 
-	private Map<ArgumentKey, String> argumentMap( final String outputValue ) {
+	private Map<LaunchArgumentKey, String> argumentMap( final String outputValue ) {
 
-		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
-		arguments.put(ArgumentKey.OUTPUT_TYPE, outputValue);
+		final Map<LaunchArgumentKey, String> arguments = new EnumMap<>(LaunchArgumentKey.class);
+		arguments.put(LaunchArgumentKey.OUTPUT_TYPE, outputValue);
 		return arguments;
 	}
 
-	private Map<ArgumentKey, String> argumentMap( final String outputValue, final String fileBaseDirectory ) {
+	private Map<LaunchArgumentKey, String> argumentMap( final String outputValue, final String fileBaseDirectory ) {
 
-		final Map<ArgumentKey, String> arguments = argumentMap(outputValue);
-		arguments.put(ArgumentKey.FILE_BASE_DIRECTORY, fileBaseDirectory);
+		final Map<LaunchArgumentKey, String> arguments = argumentMap(outputValue);
+		arguments.put(LaunchArgumentKey.FILE_BASE_DIRECTORY, fileBaseDirectory);
 
 		return arguments;
 	}
 
-	private Map<ArgumentKey,
+	private Map<LaunchArgumentKey,
 	        String> argumentMap( final String outputValue, final String fileBaseDirectory, final String openingFunds ) {
 
-		final Map<ArgumentKey, String> arguments = argumentMap(outputValue, fileBaseDirectory);
-		arguments.put(ArgumentKey.OPENING_FUNDS, openingFunds);
+		final Map<LaunchArgumentKey, String> arguments = argumentMap(outputValue, fileBaseDirectory);
+		arguments.put(LaunchArgumentKey.OPENING_FUNDS, openingFunds);
 
 		return arguments;
 	}

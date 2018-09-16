@@ -32,38 +32,38 @@ import java.util.Optional;
  * 
  * @author CJ Hare
  */
-public enum CommandLineInputArgumentKey {
+public enum CommandLineInputLaunchArgumentKey {
 
-	DATA_SERVICE(ArgumentKey.DATA_SERVICE, "-data_service"),
-	DATA_SERVICE_STRUCTURE(ArgumentKey.DATA_SERVICE_STRUCTURE, "-data_service_structure"),
-	DEPOSIT_AMOUNT(ArgumentKey.DEPOSIT_AMOUNT, "-deposit_amount"),
-	DEPOSIT_FREQUENCY(ArgumentKey.DEPOSIT_FREQUENCY, "-deposit_frequency"),
-	END_DATE(ArgumentKey.END_DATE, "-end_date"),
-	EQUITY_DATASET(ArgumentKey.EQUITY_DATASET, "-equity_dataset"),
-	FILE_BASE_DIRECTORY(ArgumentKey.FILE_BASE_DIRECTORY, "-output_file_base_directory"),
-	INTEREST_RATE(ArgumentKey.INTEREST_RATE, "-interest_rate"),
-	OPENING_FUNDS(ArgumentKey.OPENING_FUNDS, "-opening_funds"),
-	OUTPUT_TYPE(ArgumentKey.OUTPUT_TYPE, "-output"),
-	START_DATE(ArgumentKey.START_DATE, "-start_date"),
-	TICKER_SYMBOL(ArgumentKey.TICKER_SYMBOL, "-ticker_symbol");
+	DATA_SERVICE(LaunchArgumentKey.DATA_SERVICE, "-data_service"),
+	DATA_SERVICE_STRUCTURE(LaunchArgumentKey.DATA_SERVICE_STRUCTURE, "-data_service_structure"),
+	DEPOSIT_AMOUNT(LaunchArgumentKey.DEPOSIT_AMOUNT, "-deposit_amount"),
+	DEPOSIT_FREQUENCY(LaunchArgumentKey.DEPOSIT_FREQUENCY, "-deposit_frequency"),
+	END_DATE(LaunchArgumentKey.END_DATE, "-end_date"),
+	EQUITY_DATASET(LaunchArgumentKey.EQUITY_DATASET, "-equity_dataset"),
+	FILE_BASE_DIRECTORY(LaunchArgumentKey.FILE_BASE_DIRECTORY, "-output_file_base_directory"),
+	INTEREST_RATE(LaunchArgumentKey.INTEREST_RATE, "-interest_rate"),
+	OPENING_FUNDS(LaunchArgumentKey.OPENING_FUNDS, "-opening_funds"),
+	OUTPUT_TYPE(LaunchArgumentKey.OUTPUT_TYPE, "-output"),
+	START_DATE(LaunchArgumentKey.START_DATE, "-start_date"),
+	TICKER_SYMBOL(LaunchArgumentKey.TICKER_SYMBOL, "-ticker_symbol");
 
 	private final String cli;
-	private final ArgumentKey key;
+	private final LaunchArgumentKey key;
 
-	private CommandLineInputArgumentKey( final ArgumentKey key, final String cli ) {
+	private CommandLineInputLaunchArgumentKey( final LaunchArgumentKey key, final String cli ) {
 
 		this.key = key;
 		this.cli = cli;
 	}
 
-	public ArgumentKey key() {
+	public LaunchArgumentKey key() {
 
 		return key;
 	}
 
-	public static Optional<ArgumentKey> get( final String arg ) {
+	public static Optional<LaunchArgumentKey> get( final String arg ) {
 
-		for (final CommandLineInputArgumentKey candidate : CommandLineInputArgumentKey.values()) {
+		for (final CommandLineInputLaunchArgumentKey candidate : CommandLineInputLaunchArgumentKey.values()) {
 			if (candidate.cli.equals(arg)) { return Optional.of(candidate.key); }
 		}
 

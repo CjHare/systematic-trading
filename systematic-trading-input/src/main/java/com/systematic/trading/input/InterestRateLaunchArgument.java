@@ -44,12 +44,12 @@ public class InterestRateLaunchArgument implements LaunchArgument<BigDecimal> {
 	}
 
 	@Override
-	public BigDecimal get( final Map<ArgumentKey, String> arguments ) {
+	public BigDecimal get( final Map<LaunchArgumentKey, String> arguments ) {
 
-		final String openingFunds = arguments.get(ArgumentKey.INTEREST_RATE);
+		final String openingFunds = arguments.get(LaunchArgumentKey.INTEREST_RATE);
 
-		validator.validate(openingFunds, "%s argument is not present", ArgumentKey.INTEREST_RATE);
-		validator.validateNotEmpty(openingFunds, "%s argument cannot be empty", ArgumentKey.INTEREST_RATE);
+		validator.validate(openingFunds, "%s argument is not present", LaunchArgumentKey.INTEREST_RATE);
+		validator.validateNotEmpty(openingFunds, "%s argument cannot be empty", LaunchArgumentKey.INTEREST_RATE);
 
 		return new BigDecimal(openingFunds);
 	}

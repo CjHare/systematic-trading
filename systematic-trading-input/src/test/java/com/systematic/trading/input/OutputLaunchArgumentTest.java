@@ -54,7 +54,7 @@ import com.systematic.trading.backtest.input.OutputType;
 @RunWith(MockitoJUnitRunner.class)
 public class OutputLaunchArgumentTest {
 
-	private static final ArgumentKey KEY = ArgumentKey.OUTPUT_TYPE;
+	private static final LaunchArgumentKey KEY = LaunchArgumentKey.OUTPUT_TYPE;
 	private static final String ERROR_MESSAGE = "%s argument is not in the set of supported OutputTypes: %s";
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
@@ -74,7 +74,7 @@ public class OutputLaunchArgumentTest {
 	public void noDisplayOutputType() {
 
 		final String outputType = "no_display";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(outputType);
 
 		final OutputType output = output(launchArguments);
 
@@ -86,7 +86,7 @@ public class OutputLaunchArgumentTest {
 	public void fileMinimumOutputType() {
 
 		final String outputType = "file_minimum";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(outputType);
 
 		final OutputType output = output(launchArguments);
 
@@ -98,7 +98,7 @@ public class OutputLaunchArgumentTest {
 	public void fileCompleteOutputType() {
 
 		final String outputType = "file_complete";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(outputType);
 
 		final OutputType output = output(launchArguments);
 
@@ -110,7 +110,7 @@ public class OutputLaunchArgumentTest {
 	public void elasticSearchOutputType() {
 
 		final String outputType = "elastic_search";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(outputType);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(outputType);
 
 		final OutputType output = output(launchArguments);
 
@@ -122,7 +122,7 @@ public class OutputLaunchArgumentTest {
 	public void unknownOutputType() {
 
 		setUpValidatorException();
-		final Map<ArgumentKey, String> launchArguments = setUpArguments("unknown");
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments("unknown");
 
 		outputExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 
@@ -133,7 +133,7 @@ public class OutputLaunchArgumentTest {
 	public void nullOutputType() {
 
 		setUpValidatorException();
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(null);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(null);
 
 		outputExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 
@@ -142,7 +142,7 @@ public class OutputLaunchArgumentTest {
 
 	private void outputExpectingException(
 	        final String expectedMessage,
-	        final Map<ArgumentKey, String> launchArguments ) {
+	        final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		try {
 			output(launchArguments);
@@ -152,7 +152,7 @@ public class OutputLaunchArgumentTest {
 		}
 	}
 
-	private OutputType output( final Map<ArgumentKey, String> launchArguments ) {
+	private OutputType output( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -178,10 +178,10 @@ public class OutputLaunchArgumentTest {
 		        .validate(any(), anyString(), anyString(), anyString());
 	}
 
-	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+	private Map<LaunchArgumentKey, String> setUpArguments( final String value ) {
 
-		final Map<ArgumentKey, String> arguments = new HashMap<>();
-		arguments.put(ArgumentKey.OUTPUT_TYPE, value);
+		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
+		arguments.put(LaunchArgumentKey.OUTPUT_TYPE, value);
 		return arguments;
 	}
 }

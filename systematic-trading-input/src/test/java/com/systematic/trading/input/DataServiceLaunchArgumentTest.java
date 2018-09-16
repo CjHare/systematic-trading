@@ -61,7 +61,7 @@ public class DataServiceLaunchArgumentTest {
 	public void present() {
 
 		final String expectedSymbol = "ServiceType";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
 		final DataServiceStructure symbol = dataServiceType(launchArguments);
 
@@ -71,7 +71,7 @@ public class DataServiceLaunchArgumentTest {
 	@Test
 	public void absentValue() {
 
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(null);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(null);
 
 		final DataServiceStructure symbol = dataServiceType(launchArguments);
 
@@ -81,14 +81,14 @@ public class DataServiceLaunchArgumentTest {
 	@Test
 	public void absentKey() {
 
-		final Map<ArgumentKey, String> launchArguments = setUpNoArguments();
+		final Map<LaunchArgumentKey, String> launchArguments = setUpNoArguments();
 
 		final DataServiceStructure symbol = dataServiceType(launchArguments);
 
 		verifyNoDataServiceType(symbol);
 	}
 
-	private DataServiceStructure dataServiceType( final Map<ArgumentKey, String> launchArguments ) {
+	private DataServiceStructure dataServiceType( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -105,16 +105,16 @@ public class DataServiceLaunchArgumentTest {
 		assertTrue(StringUtils.equals(expected, actual.structure()));
 	}
 
-	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+	private Map<LaunchArgumentKey, String> setUpArguments( final String value ) {
 
-		final Map<ArgumentKey, String> arguments = new HashMap<>();
-		arguments.put(ArgumentKey.DATA_SERVICE_STRUCTURE, value);
+		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
+		arguments.put(LaunchArgumentKey.DATA_SERVICE_STRUCTURE, value);
 		return arguments;
 	}
 
-	private Map<ArgumentKey, String> setUpNoArguments() {
+	private Map<LaunchArgumentKey, String> setUpNoArguments() {
 
-		final Map<ArgumentKey, String> arguments = new HashMap<>();
+		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
 		return arguments;
 	}
 }

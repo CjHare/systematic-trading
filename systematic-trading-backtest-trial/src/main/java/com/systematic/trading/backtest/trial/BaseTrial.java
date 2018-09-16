@@ -50,9 +50,8 @@ import com.systematic.trading.backtest.configuration.strategy.operator.OperatorC
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
-import com.systematic.trading.input.ArgumentKey;
 import com.systematic.trading.input.BacktestLaunchArguments;
-import com.systematic.trading.input.CommandLineInputArgumentParser;
+import com.systematic.trading.input.CommandLineInputLaunchArgumentParser;
 import com.systematic.trading.input.DataServiceLaunchArgument;
 import com.systematic.trading.input.DataServiceStructureLaunchArgument;
 import com.systematic.trading.input.DepositAmountLaunchArgument;
@@ -62,6 +61,7 @@ import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
 import com.systematic.trading.input.FileBaseDirectoryLaunchArgument;
 import com.systematic.trading.input.InterestRateLaunchArgument;
+import com.systematic.trading.input.LaunchArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.OpeningFundsLaunchArgument;
 import com.systematic.trading.input.OutputLaunchArgument;
@@ -81,7 +81,7 @@ public abstract class BaseTrial {
 	protected static BacktestLaunchArguments launchArguments( final String... args ) {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
-		final Map<ArgumentKey, String> arguments = new CommandLineInputArgumentParser().parse(args);
+		final Map<LaunchArgumentKey, String> arguments = new CommandLineInputLaunchArgumentParser().parse(args);
 		return new BacktestLaunchArguments(
 		        new OutputLaunchArgument(validator),
 		        new EquityArguments(

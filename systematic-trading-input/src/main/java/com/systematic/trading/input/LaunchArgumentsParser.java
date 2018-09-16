@@ -34,5 +34,5 @@ import java.util.Map;
  */
 public interface LaunchArgumentsParser {
 
-	Map<ArgumentKey, String> parse( final String[] args );
+	Map<LaunchArgumentKey, String> parse( final String[] args );
 }

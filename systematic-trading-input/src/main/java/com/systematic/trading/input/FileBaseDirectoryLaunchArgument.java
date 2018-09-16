@@ -45,11 +45,11 @@ public class FileBaseDirectoryLaunchArgument implements LaunchArgument<FileBaseO
 	}
 
 	@Override
-	public FileBaseOutputDirectory get( final Map<ArgumentKey, String> arguments ) {
+	public FileBaseOutputDirectory get( final Map<LaunchArgumentKey, String> arguments ) {
 
-		final String directory = arguments.get(ArgumentKey.FILE_BASE_DIRECTORY);
+		final String directory = arguments.get(LaunchArgumentKey.FILE_BASE_DIRECTORY);
 
-		validator.validate(directory, "%s argument is not present", ArgumentKey.FILE_BASE_DIRECTORY);
+		validator.validate(directory, "%s argument is not present", LaunchArgumentKey.FILE_BASE_DIRECTORY);
 
 		return new FileBaseOutputDirectory(directory);
 	}

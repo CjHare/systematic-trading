@@ -34,5 +34,5 @@ import java.util.Map;
  */
 public interface LaunchArgument<T> {
 
-	T get( Map<ArgumentKey, String> arguments );
+	T get( Map<LaunchArgumentKey, String> arguments );
 }

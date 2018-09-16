@@ -45,7 +45,7 @@ public class CommandLineLaunchArgumentsParserTest {
 
 		final String[] launchArguments = { "-output", "elastic_search" };
 
-		final Map<ArgumentKey, String> results = parse(launchArguments);
+		final Map<LaunchArgumentKey, String> results = parse(launchArguments);
 
 		verifyOutputType("elastic_search", results);
 	}
@@ -55,7 +55,7 @@ public class CommandLineLaunchArgumentsParserTest {
 
 		final String[] launchArguments = { "-output", "no_display", "another_argument" };
 
-		final Map<ArgumentKey, String> results = parse(launchArguments);
+		final Map<LaunchArgumentKey, String> results = parse(launchArguments);
 
 		verifyOutputType("no_display", results);
 	}
@@ -66,21 +66,21 @@ public class CommandLineLaunchArgumentsParserTest {
 		final String[] launchArguments = { "-output" };
 
 		try {
-			new CommandLineInputArgumentParser().parse(launchArguments);
+			new CommandLineInputLaunchArgumentParser().parse(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals("Missing value for argument key -output", e.getMessage());
 		}
 	}
 
-	private Map<ArgumentKey, String> parse( final String[] launchArguments ) {
+	private Map<LaunchArgumentKey, String> parse( final String[] launchArguments ) {
 
-		return new CommandLineInputArgumentParser().parse(launchArguments);
+		return new CommandLineInputLaunchArgumentParser().parse(launchArguments);
 	}
 
-	private void verifyOutputType( final String expectedOutputType, final Map<ArgumentKey, String> results ) {
+	private void verifyOutputType( final String expectedOutputType, final Map<LaunchArgumentKey, String> results ) {
 
 		assertNotNull(results);
-		assertEquals(expectedOutputType, results.get(ArgumentKey.OUTPUT_TYPE));
+		assertEquals(expectedOutputType, results.get(LaunchArgumentKey.OUTPUT_TYPE));
 	}
 }

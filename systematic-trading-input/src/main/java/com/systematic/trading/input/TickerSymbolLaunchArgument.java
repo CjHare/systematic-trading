@@ -45,12 +45,12 @@ public class TickerSymbolLaunchArgument implements LaunchArgument<TickerSymbol> 
 	}
 
 	@Override
-	public TickerSymbol get( final Map<ArgumentKey, String> arguments ) {
+	public TickerSymbol get( final Map<LaunchArgumentKey, String> arguments ) {
 
-		final String symbol = arguments.get(ArgumentKey.TICKER_SYMBOL);
+		final String symbol = arguments.get(LaunchArgumentKey.TICKER_SYMBOL);
 
-		validator.validate(symbol, "%s argument is not present", ArgumentKey.TICKER_SYMBOL);
-		validator.validateNotEmpty(symbol, "%s argument cannot be empty", ArgumentKey.TICKER_SYMBOL);
+		validator.validate(symbol, "%s argument is not present", LaunchArgumentKey.TICKER_SYMBOL);
+		validator.validateNotEmpty(symbol, "%s argument cannot be empty", LaunchArgumentKey.TICKER_SYMBOL);
 
 		return new TickerSymbol(symbol);
 	}

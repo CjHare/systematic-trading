@@ -37,19 +37,19 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author CJ Hare
  */
-public class CommandLineInputArgumentParser implements LaunchArgumentsParser {
+public class CommandLineInputLaunchArgumentParser implements LaunchArgumentsParser {
 
 	/** Classes logger. */
-	private static final Logger LOG = LogManager.getLogger(CommandLineInputArgumentParser.class);
+	private static final Logger LOG = LogManager.getLogger(CommandLineInputLaunchArgumentParser.class);
 
 	@Override
-	public Map<ArgumentKey, String> parse( final String[] args ) {
+	public Map<LaunchArgumentKey, String> parse( final String[] args ) {
 
-		final Map<ArgumentKey, String> argumentPairs = new EnumMap<>(ArgumentKey.class);
+		final Map<LaunchArgumentKey, String> argumentPairs = new EnumMap<>(LaunchArgumentKey.class);
 
 		for (int i = 0; i < args.length; i += 2) {
 
-			final Optional<ArgumentKey> key = CommandLineInputArgumentKey.get(args[i]);
+			final Optional<LaunchArgumentKey> key = CommandLineInputLaunchArgumentKey.get(args[i]);
 
 			if (key.isPresent()) {
 				if (hasInsufficuentArgumentCount(i + 1, args)) {

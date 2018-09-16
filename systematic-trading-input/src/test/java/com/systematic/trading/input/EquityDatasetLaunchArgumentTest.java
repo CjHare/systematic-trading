@@ -58,7 +58,7 @@ import com.systematic.trading.backtest.input.EquityDataset;
 public class EquityDatasetLaunchArgumentTest {
 
 	private static final String ERROR_MESSAGE = "%s argument is not present";
-	private static final ArgumentKey KEY = ArgumentKey.EQUITY_DATASET;
+	private static final LaunchArgumentKey KEY = LaunchArgumentKey.EQUITY_DATASET;
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
 	@Mock
@@ -77,7 +77,7 @@ public class EquityDatasetLaunchArgumentTest {
 	public void present() {
 
 		final String expectedSymbol = "ServiceType";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
 		final EquityDataset symbol = equityDataset(launchArguments);
 
@@ -99,7 +99,7 @@ public class EquityDatasetLaunchArgumentTest {
 
 		setUpValidatorException();
 
-		equityDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
+		equityDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<LaunchArgumentKey, String>());
 
 		verifyValidationExceptionOnValidate(null);
 	}
@@ -116,7 +116,7 @@ public class EquityDatasetLaunchArgumentTest {
 		verifyNoMoreInteractions(validator);
 	}
 
-	private EquityDataset equityDataset( final Map<ArgumentKey, String> launchArguments ) {
+	private EquityDataset equityDataset( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -130,7 +130,7 @@ public class EquityDatasetLaunchArgumentTest {
 
 	private void equityDatasetExpectingException(
 	        final String expectedMessage,
-	        final Map<ArgumentKey, String> launchArguments ) {
+	        final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		try {
 			equityDataset(launchArguments);
@@ -140,10 +140,10 @@ public class EquityDatasetLaunchArgumentTest {
 		}
 	}
 
-	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+	private Map<LaunchArgumentKey, String> setUpArguments( final String value ) {
 
-		final Map<ArgumentKey, String> arguments = new HashMap<>();
-		arguments.put(ArgumentKey.EQUITY_DATASET, value);
+		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
+		arguments.put(LaunchArgumentKey.EQUITY_DATASET, value);
 		return arguments;
 	}
 }

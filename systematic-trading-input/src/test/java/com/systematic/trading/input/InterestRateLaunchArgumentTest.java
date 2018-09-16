@@ -52,7 +52,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class InterestRateLaunchArgumentTest {
 
-	private static final ArgumentKey KEY = ArgumentKey.INTEREST_RATE;
+	private static final LaunchArgumentKey KEY = LaunchArgumentKey.INTEREST_RATE;
 	private static final String ERROR_MESSAGE = "%s argument is not present";
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
@@ -72,7 +72,7 @@ public class InterestRateLaunchArgumentTest {
 	public void interestRate() {
 
 		final String expected = "1.2";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(expected);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expected);
 
 		final BigDecimal symbol = value(launchArguments);
 
@@ -94,14 +94,14 @@ public class InterestRateLaunchArgumentTest {
 
 		setUpValidatorException();
 
-		valueExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
+		valueExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<LaunchArgumentKey, String>());
 
 		verifyValidationExceptionOnValidate(null);
 	}
 
 	private void valueExpectingException(
 	        final String expectedMessage,
-	        final Map<ArgumentKey, String> launchArguments ) {
+	        final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		try {
 			value(launchArguments);
@@ -111,7 +111,7 @@ public class InterestRateLaunchArgumentTest {
 		}
 	}
 
-	private BigDecimal value( final Map<ArgumentKey, String> launchArguments ) {
+	private BigDecimal value( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -135,9 +135,9 @@ public class InterestRateLaunchArgumentTest {
 		assertEquals(new BigDecimal(expected), actual);
 	}
 
-	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+	private Map<LaunchArgumentKey, String> setUpArguments( final String value ) {
 
-		final Map<ArgumentKey, String> arguments = new HashMap<>();
+		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
 		arguments.put(KEY, value);
 		return arguments;
 	}

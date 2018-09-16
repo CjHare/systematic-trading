@@ -56,7 +56,7 @@ public class EquityArguments {
 	        final LaunchArgument<DataServiceStructure> dataServiceStructureArgument,
 	        final LaunchArgument<EquityDataset> equityDatasetArgument,
 	        final LaunchArgument<TickerSymbol> tickerSymbolArgument,
-	        final Map<ArgumentKey, String> arguments ) {
+	        final Map<LaunchArgumentKey, String> arguments ) {
 
 		this.dataServiceType = dataServiceTypeArgument.get(arguments);
 		this.equityDataset = equityDatasetArgument.get(arguments);

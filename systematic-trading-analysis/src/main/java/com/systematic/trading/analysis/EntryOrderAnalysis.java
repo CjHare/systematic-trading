@@ -72,8 +72,8 @@ import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.input.AnalysisLaunchArguments;
-import com.systematic.trading.input.ArgumentKey;
-import com.systematic.trading.input.CommandLineInputArgumentParser;
+import com.systematic.trading.input.LaunchArgumentKey;
+import com.systematic.trading.input.CommandLineInputLaunchArgumentParser;
 import com.systematic.trading.input.DataServiceLaunchArgument;
 import com.systematic.trading.input.DataServiceStructureLaunchArgument;
 import com.systematic.trading.input.EquityArguments;
@@ -112,7 +112,7 @@ public class EntryOrderAnalysis {
 	public static void main( final String... args ) throws ServiceException {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
-		final Map<ArgumentKey, String> arguments = new CommandLineInputArgumentParser().parse(args);
+		final Map<LaunchArgumentKey, String> arguments = new CommandLineInputLaunchArgumentParser().parse(args);
 		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(
 		        new EquityArguments(
 		                new DataServiceLaunchArgument(validator),
@@ -123,6 +123,13 @@ public class EntryOrderAnalysis {
 		        new OpeningFundsLaunchArgument(validator),
 		        arguments);
 
+
+		//TODO from the DataServiceType get the set of required/acceptable arguments
+		
+		//TODO construct the set of arguments and parse the input
+		
+		//TODO maybe the EquityFactory needs to accept the set 
+		
 		new EntryOrderAnalysis(equityApi(launchArgs)).run(launchArgs);
 	}
 

@@ -45,12 +45,12 @@ public class EquityDatasetLaunchArgument implements LaunchArgument<EquityDataset
 	}
 
 	@Override
-	public EquityDataset get( final Map<ArgumentKey, String> arguments ) {
+	public EquityDataset get( final Map<LaunchArgumentKey, String> arguments ) {
 
-		final String dataset = arguments.get(ArgumentKey.EQUITY_DATASET);
+		final String dataset = arguments.get(LaunchArgumentKey.EQUITY_DATASET);
 
-		validator.validate(dataset, "%s argument is not present", ArgumentKey.EQUITY_DATASET);
-		validator.validateNotEmpty(dataset, "%s argument cannot be empty", ArgumentKey.EQUITY_DATASET);
+		validator.validate(dataset, "%s argument is not present", LaunchArgumentKey.EQUITY_DATASET);
+		validator.validateNotEmpty(dataset, "%s argument cannot be empty", LaunchArgumentKey.EQUITY_DATASET);
 
 		return new EquityDataset(dataset);
 	}

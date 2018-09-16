@@ -55,7 +55,7 @@ import com.systematic.trading.backtest.input.BacktestStartDate;
 @RunWith(MockitoJUnitRunner.class)
 public class StartDateLaunchArgumentTest {
 
-	private static final ArgumentKey KEY = ArgumentKey.START_DATE;
+	private static final LaunchArgumentKey KEY = LaunchArgumentKey.START_DATE;
 	private static final String FORMAT_ERROR_MESSAGE = "%s argument date format is invalid";
 	private static final String ERROR_MESSAGE = "%s argument is not present";
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
@@ -77,7 +77,7 @@ public class StartDateLaunchArgumentTest {
 	public void validStartDate() {
 
 		final String expectedStartDate = "2017-06-06";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
 		final BacktestStartDate startDate = startDate(launchArguments);
 
@@ -89,7 +89,7 @@ public class StartDateLaunchArgumentTest {
 
 		setUpValidatorFormatException();
 		final String expectedStartDate = "06-06-2017";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expectedStartDate);
 
 		startDateExpectingException(VALIDATOR_FORMAT_EXCEPTION_MESSAGE, launchArguments);
 
@@ -100,7 +100,7 @@ public class StartDateLaunchArgumentTest {
 	public void missingValue() {
 
 		setUpValidatorException();
-		final Map<ArgumentKey, String> launchArguments = setUpArguments("");
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments("");
 
 		startDateExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 
@@ -111,7 +111,7 @@ public class StartDateLaunchArgumentTest {
 	public void missingKey() {
 
 		setUpValidatorException();
-		final Map<ArgumentKey, String> launchArguments = new HashMap<>();
+		final Map<LaunchArgumentKey, String> launchArguments = new HashMap<>();
 
 		startDateExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 
@@ -120,7 +120,7 @@ public class StartDateLaunchArgumentTest {
 
 	private void startDateExpectingException(
 	        final String expectedMessage,
-	        final Map<ArgumentKey, String> launchArguments ) {
+	        final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		try {
 			startDate(launchArguments);
@@ -130,7 +130,7 @@ public class StartDateLaunchArgumentTest {
 		}
 	}
 
-	private BacktestStartDate startDate( final Map<ArgumentKey, String> launchArguments ) {
+	private BacktestStartDate startDate( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -150,7 +150,7 @@ public class StartDateLaunchArgumentTest {
 	private void verifyValidation( final String launchArgument ) {
 
 		verify(validator).validate(launchArgument == null ? isNull() : eq(launchArgument), eq(ERROR_MESSAGE), eq(KEY));
-		verify(validator).validateDateFormat(launchArgument, FORMAT_ERROR_MESSAGE, ArgumentKey.START_DATE);
+		verify(validator).validateDateFormat(launchArgument, FORMAT_ERROR_MESSAGE, LaunchArgumentKey.START_DATE);
 		verifyNoMoreInteractions(validator);
 	}
 
@@ -167,10 +167,10 @@ public class StartDateLaunchArgumentTest {
 		assertTrue(LocalDate.parse(expected).equals(axtual.date()));
 	}
 
-	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+	private Map<LaunchArgumentKey, String> setUpArguments( final String value ) {
 
-		final Map<ArgumentKey, String> arguments = new HashMap<>();
-		arguments.put(ArgumentKey.START_DATE, value);
+		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
+		arguments.put(LaunchArgumentKey.START_DATE, value);
 		return arguments;
 	}
 }

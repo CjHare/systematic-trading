@@ -71,7 +71,7 @@ public class AnalysisLaunchArgumentsTest {
 	public void openingFunds() {
 
 		final String openingFunds = "101.45";
-		final Map<ArgumentKey, String> arguments = argumentMap(openingFunds);
+		final Map<LaunchArgumentKey, String> arguments = argumentMap(openingFunds);
 		setUpOpeningFunds(openingFunds);
 
 		createLaunchArguments(arguments);
@@ -83,7 +83,7 @@ public class AnalysisLaunchArgumentsTest {
 	@Test
 	public void openingFundsException() {
 
-		final Map<ArgumentKey, String> arguments = argumentMap("101.45");
+		final Map<LaunchArgumentKey, String> arguments = argumentMap("101.45");
 		setUpOpeningFundsException();
 
 		createLaunchArgumentsExpectingException(OPENING_FUNDS_EXCEPTION_MESSAGE, arguments);
@@ -135,16 +135,16 @@ public class AnalysisLaunchArgumentsTest {
 		verifyTickerSymbol(tickerSymbol);
 	}
 
-	private Map<ArgumentKey, String> argumentMap( final String openingFunds ) {
+	private Map<LaunchArgumentKey, String> argumentMap( final String openingFunds ) {
 
-		final Map<ArgumentKey, String> arguments = new EnumMap<>(ArgumentKey.class);
-		arguments.put(ArgumentKey.OPENING_FUNDS, openingFunds);
+		final Map<LaunchArgumentKey, String> arguments = new EnumMap<>(LaunchArgumentKey.class);
+		arguments.put(LaunchArgumentKey.OPENING_FUNDS, openingFunds);
 		return arguments;
 	}
 
 	private void createLaunchArgumentsExpectingException(
 	        final String expectedMessage,
-	        final Map<ArgumentKey, String> arguments ) {
+	        final Map<LaunchArgumentKey, String> arguments ) {
 
 		try {
 			createLaunchArguments(arguments);
@@ -154,19 +154,19 @@ public class AnalysisLaunchArgumentsTest {
 		}
 	}
 
-	private void createLaunchArguments( final Map<ArgumentKey, String> arguments ) {
+	private void createLaunchArguments( final Map<LaunchArgumentKey, String> arguments ) {
 
 		parser = new AnalysisLaunchArguments(equityArguments, openingFundsArgument, arguments);
 	}
 
 	private void createLaunchArguments() {
 
-		createLaunchArguments(new EnumMap<>(ArgumentKey.class));
+		createLaunchArguments(new EnumMap<>(LaunchArgumentKey.class));
 	}
 
 	private void setUpOpeningFunds( final String funds ) {
 
-		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class))).thenReturn(new BigDecimal(funds));
+		when(openingFundsArgument.get(anyMapOf(LaunchArgumentKey.class, String.class))).thenReturn(new BigDecimal(funds));
 	}
 
 	private void setUpTickerSymbol( final String serviceName ) {
@@ -191,7 +191,7 @@ public class AnalysisLaunchArgumentsTest {
 
 	private void setUpOpeningFundsException() {
 
-		when(openingFundsArgument.get(anyMapOf(ArgumentKey.class, String.class)))
+		when(openingFundsArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
 		        .thenThrow(new IllegalArgumentException(OPENING_FUNDS_EXCEPTION_MESSAGE));
 	}
 
@@ -229,7 +229,7 @@ public class AnalysisLaunchArgumentsTest {
 		assertEquals(new BigDecimal(expected), parser.openingFunds());
 	}
 
-	private void verifyOpeningFundsArgument( final Map<ArgumentKey, String> arguments ) {
+	private void verifyOpeningFundsArgument( final Map<LaunchArgumentKey, String> arguments ) {
 
 		verify(openingFundsArgument).get(arguments);
 		verifyNoMoreInteractions(openingFundsArgument);

@@ -37,9 +37,9 @@ import com.systematic.trading.data.DataServiceStructure;
 public class DataServiceStructureLaunchArgument implements LaunchArgument<DataServiceStructure> {
 
 	@Override
-	public DataServiceStructure get( final Map<ArgumentKey, String> arguments ) {
+	public DataServiceStructure get( final Map<LaunchArgumentKey, String> arguments ) {
 
-		final String dataService = arguments.get(ArgumentKey.DATA_SERVICE_STRUCTURE);
+		final String dataService = arguments.get(LaunchArgumentKey.DATA_SERVICE_STRUCTURE);
 
 		return dataService == null ? null : new DataServiceStructure(dataService);
 	}

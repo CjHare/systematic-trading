@@ -55,7 +55,7 @@ import com.systematic.trading.backtest.equity.TickerSymbol;
 @RunWith(MockitoJUnitRunner.class)
 public class TickerSymbolLaunchArgumentTest {
 
-	private static final ArgumentKey KEY = ArgumentKey.TICKER_SYMBOL;
+	private static final LaunchArgumentKey KEY = LaunchArgumentKey.TICKER_SYMBOL;
 	private static final String ERROR_MESSAGE = "%s argument is not present";
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
@@ -75,7 +75,7 @@ public class TickerSymbolLaunchArgumentTest {
 	public void validSymbol() {
 
 		final String expectedSymbol = "AAPL";
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
 		final TickerSymbol symbol = tickerSymbol(launchArguments);
 
@@ -97,14 +97,14 @@ public class TickerSymbolLaunchArgumentTest {
 
 		setUpValidatorException();
 
-		tickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
+		tickerSymbolExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<LaunchArgumentKey, String>());
 
 		verifyValidationExceptionOnValidate(null);
 	}
 
 	private void tickerSymbolExpectingException(
 	        final String expectedMessage,
-	        final Map<ArgumentKey, String> launchArguments ) {
+	        final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		try {
 			tickerSymbol(launchArguments);
@@ -114,7 +114,7 @@ public class TickerSymbolLaunchArgumentTest {
 		}
 	}
 
-	private TickerSymbol tickerSymbol( final Map<ArgumentKey, String> launchArguments ) {
+	private TickerSymbol tickerSymbol( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -138,10 +138,10 @@ public class TickerSymbolLaunchArgumentTest {
 		assertTrue(StringUtils.equals(expected, actual.symbol()));
 	}
 
-	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+	private Map<LaunchArgumentKey, String> setUpArguments( final String value ) {
 
-		final Map<ArgumentKey, String> arguments = new HashMap<>();
-		arguments.put(ArgumentKey.TICKER_SYMBOL, value);
+		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
+		arguments.put(LaunchArgumentKey.TICKER_SYMBOL, value);
 		return arguments;
 	}
 }

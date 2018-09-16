@@ -44,12 +44,12 @@ public class OpeningFundsLaunchArgument implements LaunchArgument<BigDecimal> {
 	}
 
 	@Override
-	public BigDecimal get( final Map<ArgumentKey, String> arguments ) {
+	public BigDecimal get( final Map<LaunchArgumentKey, String> arguments ) {
 
-		final String openingFunds = arguments.get(ArgumentKey.OPENING_FUNDS);
+		final String openingFunds = arguments.get(LaunchArgumentKey.OPENING_FUNDS);
 
-		validator.validate(openingFunds, "%s argument is not present", ArgumentKey.OPENING_FUNDS);
-		validator.validateNotEmpty(openingFunds, "%s argument cannot be empty", ArgumentKey.OPENING_FUNDS);
+		validator.validate(openingFunds, "%s argument is not present", LaunchArgumentKey.OPENING_FUNDS);
+		validator.validateNotEmpty(openingFunds, "%s argument cannot be empty", LaunchArgumentKey.OPENING_FUNDS);
 
 		return new BigDecimal(openingFunds);
 	}

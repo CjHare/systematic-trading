@@ -30,7 +30,7 @@ package com.systematic.trading.input;
  * 
  * @author CJ Hare
  */
-public enum ArgumentKey {
+public enum LaunchArgumentKey {
 	DATA_SERVICE,
 	DATA_SERVICE_STRUCTURE,
 	DEPOSIT_AMOUNT,

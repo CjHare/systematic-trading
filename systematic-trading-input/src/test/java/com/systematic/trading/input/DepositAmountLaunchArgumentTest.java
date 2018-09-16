@@ -53,7 +53,7 @@ import com.systematic.trading.backtest.input.DepositFrequency;
 @RunWith(MockitoJUnitRunner.class)
 public class DepositAmountLaunchArgumentTest {
 
-	private static final ArgumentKey KEY = ArgumentKey.DEPOSIT_FREQUENCY;
+	private static final LaunchArgumentKey KEY = LaunchArgumentKey.DEPOSIT_FREQUENCY;
 	private static final String ERROR_MESSAGE = "%s argument is not present";
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
@@ -73,7 +73,7 @@ public class DepositAmountLaunchArgumentTest {
 	public void validDepositFrequency() {
 
 		final String expected = DepositFrequency.WEEKLY.name();
-		final Map<ArgumentKey, String> launchArguments = setUpArguments(expected);
+		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expected);
 
 		final DepositFrequency symbol = value(launchArguments);
 
@@ -95,14 +95,14 @@ public class DepositAmountLaunchArgumentTest {
 
 		setUpValidatorException();
 
-		valueExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<ArgumentKey, String>());
+		valueExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<LaunchArgumentKey, String>());
 
 		verifyValidationExceptionOnValidate(null);
 	}
 
 	private void valueExpectingException(
 	        final String expectedMessage,
-	        final Map<ArgumentKey, String> launchArguments ) {
+	        final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		try {
 			value(launchArguments);
@@ -112,7 +112,7 @@ public class DepositAmountLaunchArgumentTest {
 		}
 	}
 
-	private DepositFrequency value( final Map<ArgumentKey, String> launchArguments ) {
+	private DepositFrequency value( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -136,9 +136,9 @@ public class DepositAmountLaunchArgumentTest {
 		assertEquals(DepositFrequency.valueOf(expected), actual);
 	}
 
-	private Map<ArgumentKey, String> setUpArguments( final String value ) {
+	private Map<LaunchArgumentKey, String> setUpArguments( final String value ) {
 
-		final Map<ArgumentKey, String> arguments = new HashMap<>();
+		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
 		arguments.put(KEY, value);
 		return arguments;
 	}

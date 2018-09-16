@@ -56,7 +56,7 @@ public class BacktestLaunchArguments {
 	private final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectory;
 
 	/** Parsed launch arguments. */
-	private final Map<ArgumentKey, String> arguments;
+	private final Map<LaunchArgumentKey, String> arguments;
 
 	/** Mandatory start date for the back test. */
 	private final BacktestStartDate startDateInclusive;
@@ -89,7 +89,7 @@ public class BacktestLaunchArguments {
 	        final LaunchArgument<BacktestStartDate> startDateArgument,
 	        final LaunchArgument<BacktestEndDate> endDateArgument,
 	        final LaunchArgument<FileBaseOutputDirectory> fileBaseOutputDirectoryArgument,
-	        final Map<ArgumentKey, String> arguments ) {
+	        final Map<LaunchArgumentKey, String> arguments ) {
 
 		this.arguments = arguments;
 		this.depositAmount = depositAmountArgument.get(arguments);

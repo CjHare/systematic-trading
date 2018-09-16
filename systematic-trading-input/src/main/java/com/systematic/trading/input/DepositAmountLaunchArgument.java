@@ -45,12 +45,12 @@ public class DepositAmountLaunchArgument implements LaunchArgument<BigDecimal> {
 	}
 
 	@Override
-	public BigDecimal get( final Map<ArgumentKey, String> arguments ) {
+	public BigDecimal get( final Map<LaunchArgumentKey, String> arguments ) {
 
-		final String depositAmount = arguments.get(ArgumentKey.DEPOSIT_AMOUNT);
+		final String depositAmount = arguments.get(LaunchArgumentKey.DEPOSIT_AMOUNT);
 
-		validator.validate(depositAmount, "%s argument is not present", ArgumentKey.DEPOSIT_AMOUNT);
-		validator.validateNotEmpty(depositAmount, "%s argument cannot be empty", ArgumentKey.DEPOSIT_AMOUNT);
+		validator.validate(depositAmount, "%s argument is not present", LaunchArgumentKey.DEPOSIT_AMOUNT);
+		validator.validateNotEmpty(depositAmount, "%s argument cannot be empty", LaunchArgumentKey.DEPOSIT_AMOUNT);
 
 		return new BigDecimal(depositAmount);
 	}
