@@ -30,7 +30,17 @@
 			<artifactId>jersey-client</artifactId>
 			<version>${jersey.client.version}</version>
 		</dependency>
-		
+		<dependency>
+    		<groupId>org.glassfish.jersey.inject</groupId>
+   	 		<artifactId>jersey-hk2</artifactId>
+			<version>${jersey.client.version}</version>
+    	</dependency>		
+		<dependency>
+      		<groupId>javax.activation</groupId>
+      		<artifactId>activation</artifactId>
+      		<version>${java.beans.activiation.framework}</version>
+    	</dependency>
+    	
 		<!-- JSON libraries -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>

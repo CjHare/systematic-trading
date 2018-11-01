@@ -11,15 +11,15 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<apache.commons.lang.version>3.6</apache.commons.lang.version>
-		<apache.commons.text.version>1.1</apache.commons.text.version>
+		<apache.commons.lang.version>3.8.1</apache.commons.lang.version>
+		<apache.commons.text.version>1.6</apache.commons.text.version>
 		<apache.http.components.version>4.4.1</apache.http.components.version>
 		<apache.log4j.version>2.8.2</apache.log4j.version>		
-		<jackson.version>2.9.0</jackson.version>
-		<java.version>1.8</java.version>
+		<jackson.version>2.9.7</jackson.version>
+		<java.beans.activiation.framework>1.1.1</java.beans.activiation.framework>		
 		<javax.validation.version>2.0.0.Final</javax.validation.version>
 		<jee.version>7.0</jee.version>
-		<jersey.client.version>2.25</jersey.client.version>
+		<jersey.client.version>2.27</jersey.client.version>
 		<jna.version>4.1.0</jna.version>
 		<junit.version>4.12</junit.version>
 		<hibernate.version>4.3.10.Final</hibernate.version>
@@ -83,13 +83,12 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.3</version>
-					<configuration>
-						<source>${java.version}</source>
-						<target>${java.version}</target>
-					</configuration>
+    				<groupId>org.apache.maven.plugins</groupId>
+    				<artifactId>maven-compiler-plugin</artifactId>
+    				<version>3.8.0</version>
+    				<configuration>
+        				<release>11</release>
+				    </configuration>				
 				</plugin>
 			</plugins>
 		</pluginManagement>
