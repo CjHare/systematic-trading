@@ -36,11 +36,23 @@ import com.systematic.trading.data.DataServiceStructure;
  */
 public class DataServiceStructureLaunchArgument implements LaunchArgument<DataServiceStructure> {
 
+	/** Provides validation for the launch argument value. */
+	private final LaunchArgumentValidator validator;
+
+	public DataServiceStructureLaunchArgument( final LaunchArgumentValidator validator ) {
+
+		this.validator = validator;
+	}
+
 	@Override
 	public DataServiceStructure get( final Map<LaunchArgumentKey, String> arguments ) {
 
 		final String dataService = arguments.get(LaunchArgumentKey.DATA_SERVICE_STRUCTURE);
 
-		return dataService == null ? null : new DataServiceStructure(dataService);
+		validator.validate(dataService, "%s argument is not present", LaunchArgumentKey.DATA_SERVICE_STRUCTURE);
+		validator
+		        .validateNotEmpty(dataService, "%s argument cannot be empty", LaunchArgumentKey.DATA_SERVICE_STRUCTURE);
+
+		return new DataServiceStructure(dataService);
 	}
 }

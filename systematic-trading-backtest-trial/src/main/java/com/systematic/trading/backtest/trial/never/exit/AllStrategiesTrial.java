@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.trial.never.exit;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -43,6 +44,8 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.AllTrials;
 import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.LaunchArgumentKey;
+import com.systematic.trading.input.LaunchArgumentValidator;
 
 /**
  * All strategies, all sizing combinations with actual brokerage.
@@ -55,9 +58,11 @@ public class AllStrategiesTrial extends AllTrials implements BacktestConfigurati
 
 	public static void main( final String... args ) throws Exception {
 
-		final BacktestLaunchArguments launchArgs = launchArguments(args);
+		final BacktestLaunchArguments backtestLaunchArgs = launchArguments(args);
+		final Map<LaunchArgumentKey, String> launchArgsByKey = launchArgumentsByKey(args);
 
-		new BacktestTrial(launchArgs).runBacktest(new AllStrategiesTrial(), launchArgs);
+		new BacktestTrial(launchArgsByKey, new LaunchArgumentValidator())
+		        .runBacktest(new AllStrategiesTrial(), backtestLaunchArgs);
 	}
 
 	private static Set<Pair<MinimumTrade, MaximumTrade>> positionSizing() {

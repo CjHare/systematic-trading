@@ -52,8 +52,6 @@ import com.systematic.trading.backtest.input.DepositFrequency;
 import com.systematic.trading.backtest.input.EquityDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
-import com.systematic.trading.data.DataServiceStructure;
-import com.systematic.trading.data.DataServiceType;
 
 /**
  * Test for the BacktestLaunchArgumentParser.
@@ -205,28 +203,6 @@ public class BacktestLaunchArgumentsTest {
 	}
 
 	@Test
-	public void dataService() {
-
-		final String serviceName = "data provider";
-		setUpDataService(serviceName);
-
-		launchArguments();
-
-		verifyDataService(serviceName);
-	}
-
-	@Test
-	public void dataServiceStructure() {
-
-		final String serviceName = "identity of the data service";
-		setUpDataServiceStructure(serviceName);
-
-		launchArguments();
-
-		verifyDataServiceStructure(serviceName);
-	}
-
-	@Test
 	public void equityDataSet() {
 
 		final String serviceName = "identity of the data set";
@@ -288,7 +264,8 @@ public class BacktestLaunchArgumentsTest {
 
 	private void setUpInterestRate( final double rate ) {
 
-		when(interestRateArgument.get(anyMapOf(LaunchArgumentKey.class, String.class))).thenReturn(BigDecimal.valueOf(rate));
+		when(interestRateArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
+		        .thenReturn(BigDecimal.valueOf(rate));
 	}
 
 	private void setUpDepositAmount( final double amount ) {
@@ -305,22 +282,13 @@ public class BacktestLaunchArgumentsTest {
 
 	private void setUpEndDate( final LocalDate startDate ) {
 
-		when(endDateArgument.get(anyMapOf(LaunchArgumentKey.class, String.class))).thenReturn(new BacktestEndDate(startDate));
+		when(endDateArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
+		        .thenReturn(new BacktestEndDate(startDate));
 	}
 
 	private void setUpTickerSymbol( final String serviceName ) {
 
 		when(equityArguments.tickerSymbol()).thenReturn(new TickerSymbol(serviceName));
-	}
-
-	private void setUpDataService( final String serviceName ) {
-
-		when(equityArguments.dataService()).thenReturn(new DataServiceType(serviceName));
-	}
-
-	private void setUpDataServiceStructure( final String serviceName ) {
-
-		when(equityArguments.dataServiceStructure()).thenReturn(new DataServiceStructure(serviceName));
 	}
 
 	private void setUpEquityDataSet( final String serviceName ) {
@@ -368,20 +336,6 @@ public class BacktestLaunchArgumentsTest {
 	private void launchArguments() {
 
 		launchArguments(new EnumMap<>(LaunchArgumentKey.class));
-	}
-
-	private void verifyDataService( final String expected ) {
-
-		assertNotNull(parser.dataService());
-		assertEquals(expected, parser.dataService().type());
-		verify(equityArguments, atLeastOnce()).dataService();
-	}
-
-	private void verifyDataServiceStructure( final String expected ) {
-
-		assertNotNull(parser.dataServiceStructure());
-		assertEquals(expected, parser.dataServiceStructure().structure());
-		verify(equityArguments, atLeastOnce()).dataServiceStructure();
 	}
 
 	private void verifyEquityDataSet( final String expected ) {

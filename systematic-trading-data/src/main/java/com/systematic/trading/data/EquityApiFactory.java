@@ -25,11 +25,16 @@
  */
 package com.systematic.trading.data;
 
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 import com.systematic.trading.data.api.EquityApi;
 import com.systematic.trading.data.api.configuration.EquityApiConfiguration;
+import com.systematic.trading.data.api.configuration.EquityApiLaunchArgument;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.signals.data.api.alpha.vantage.AlphaVantageAPI;
 import com.systematic.trading.signals.data.api.alpha.vantage.converter.AlphaVantageResponseConverter;
@@ -52,21 +57,53 @@ public class EquityApiFactory {
 	private static final String QUANDL = "quandl";
 	private static final String ALPHA_VANTAGE = "alpha-vantage";
 
-	public EquityApi create( final DataServiceType serviceType, final DataServiceStructure serviceStructure )
-	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+	public Set<EquityApiLaunchArgument> launchArguments( final DataServiceType api )
+	        throws ConfigurationValidationException {
 
-		switch (serviceType.type()) {
+		switch (api.type()) {
 			case QUANDL:
-				return quandl(serviceStructure);
+				return EnumSet.of(EquityApiLaunchArgument.DATA_SERVICE_STRUCTURE);
 
 			case ALPHA_VANTAGE:
+				return EnumSet.noneOf(EquityApiLaunchArgument.class);
 
+			// TODO different data service type for alpha vantage Crypto
+
+			default:
+				throw new ConfigurationValidationException(
+				        String.format("Unsupported data service type: %s", api.type()));
+		}
+	}
+
+	public EquityApi create( final DataServiceType api, final EnumMap<EquityApiLaunchArgument, ?> arguments )
+	        throws ConfigurationValidationException, CannotRetrieveConfigurationException {
+
+		switch (api.type()) {
+			case QUANDL:
+				return quandl(serviceStructure(arguments));
+
+			case ALPHA_VANTAGE:
 				return aplhaVantage();
 
 			default:
 				throw new ConfigurationValidationException(
-				        String.format("Unsupported data service type: %s", serviceType.type()));
+				        String.format("Unsupported data service type: %s", api.type()));
 		}
+	}
+
+	private DataServiceStructure serviceStructure( final EnumMap<EquityApiLaunchArgument, ?> arguments )
+	        throws ConfigurationValidationException {
+
+		if (!arguments.containsKey(
+		        EquityApiLaunchArgument.DATA_SERVICE_STRUCTURE)) { throw new ConfigurationValidationException(
+		                "Missing mandatory EquityApi argument of DATA_SERVICE_STRUCTURE"); }
+
+		if (arguments.get(
+		        EquityApiLaunchArgument.DATA_SERVICE_STRUCTURE) instanceof DataServiceStructure) { return (DataServiceStructure) arguments
+		                .get(EquityApiLaunchArgument.DATA_SERVICE_STRUCTURE); }
+
+		throw new ConfigurationValidationException(
+		        "Missing mandatory EquityApi argument of DATA_SERVICE_STRUCTURE of type: DataServiceStructure");
 	}
 
 	private EquityApi aplhaVantage() throws ConfigurationValidationException, CannotRetrieveConfigurationException {

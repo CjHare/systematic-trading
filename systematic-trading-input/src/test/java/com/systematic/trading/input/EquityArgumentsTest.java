@@ -43,8 +43,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.EquityDataset;
-import com.systematic.trading.data.DataServiceStructure;
-import com.systematic.trading.data.DataServiceType;
 
 /**
  * Verifying the behavior of the EquityArguments.
@@ -54,8 +52,6 @@ import com.systematic.trading.data.DataServiceType;
 @RunWith(MockitoJUnitRunner.class)
 public class EquityArgumentsTest {
 
-	private static final String DATA_SERVICE_STRUCTURE_EXCEPTION_MESSAGE = "Data Service Structure exception message";
-	private static final String DATA_SERVICE_EXCEPTION_MESSAGE = "DatAa Service Type exception message";
 	private static final String EQUITY_DATASET_EXCEPTION_MESSAGE = "Equity Dataser exception message";
 	private static final String TICKER_SYMBOL_EXCEPTION_MESSAGE = "Opening Funds exception message";
 
@@ -65,62 +61,8 @@ public class EquityArgumentsTest {
 	@Mock
 	private LaunchArgument<EquityDataset> equityDatasetArgument;
 
-	@Mock
-	private LaunchArgument<DataServiceType> dataServiceArgument;
-
-	@Mock
-	private LaunchArgument<DataServiceStructure> dataServiceStructureArgument;
-
 	/** Equity argument parser instance being tested. */
 	private EquityArguments parser;
-
-	@Test
-	public void dataService() {
-
-		final String service = "another data service";
-		final Map<LaunchArgumentKey, String> arguments = argumentMap(service, "bbbBBbbbb", "aaaZZZaaa", "eeeeTTTTeeee");
-		setUpDataService(service);
-
-		createEquityArguments(arguments);
-
-		verifyDataService(service);
-		verifyDataServiceArgument(arguments);
-	}
-
-	@Test
-	public void dataServiceException() {
-
-		final Map<LaunchArgumentKey, String> arguments = argumentMap("aaaAAAaaa", "bbbBBbbbb", "aaaZZZaaa", "eeeeTTTTeeee");
-		setUpDataServiceException();
-
-		createEquityArgumentsExpectingException(DATA_SERVICE_EXCEPTION_MESSAGE, arguments);
-
-		verifyDataServiceArgument(arguments);
-	}
-
-	@Test
-	public void dataServiceStructure() {
-
-		final String structure = "aaaAAAaaa";
-		final Map<LaunchArgumentKey, String> arguments = argumentMap("zzzXXXXzzzz", structure, "aaaZZZaaa", "eeeeTTTTeeee");
-		setUpDataServiceStructure(structure);
-
-		createEquityArguments(arguments);
-
-		verifyDataServiceStructure(structure);
-		verifyDataServiceArgument(arguments);
-	}
-
-	@Test
-	public void dataServiceStructureException() {
-
-		final Map<LaunchArgumentKey, String> arguments = argumentMap("zzzXXXXzzzz", "aaaAAAaaa", "aaaZZZaaa", "eeeeTTTTeeee");
-		setUpDataServiceStructureException();
-
-		createEquityArgumentsExpectingException(DATA_SERVICE_STRUCTURE_EXCEPTION_MESSAGE, arguments);
-
-		verifyDataServiceArgument(arguments);
-	}
 
 	@Test
 	public void equityDataSet() {
@@ -138,7 +80,8 @@ public class EquityArgumentsTest {
 	@Test
 	public void equityDataSetException() {
 
-		final Map<LaunchArgumentKey, String> arguments = argumentMap("zzzXXXXzzzz", "abcdefg", "BBBbbBBBbbBB", "stuwxyz");
+		final Map<LaunchArgumentKey,
+		        String> arguments = argumentMap("zzzXXXXzzzz", "abcdefg", "BBBbbBBBbbBB", "stuwxyz");
 		setUpEquityDataSetException();
 
 		createEquityArgumentsExpectingException(EQUITY_DATASET_EXCEPTION_MESSAGE, arguments);
@@ -172,12 +115,7 @@ public class EquityArgumentsTest {
 
 	private void createEquityArguments( final Map<LaunchArgumentKey, String> arguments ) {
 
-		parser = new EquityArguments(
-		        dataServiceArgument,
-		        dataServiceStructureArgument,
-		        equityDatasetArgument,
-		        tickerSymbolArgument,
-		        arguments);
+		parser = new EquityArguments(equityDatasetArgument, tickerSymbolArgument, arguments);
 	}
 
 	private Map<LaunchArgumentKey, String> argumentMap(
@@ -206,30 +144,6 @@ public class EquityArgumentsTest {
 		}
 	}
 
-	private void setUpDataService( final String service ) {
-
-		when(dataServiceArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
-		        .thenReturn(new DataServiceType(service));
-	}
-
-	private void setUpDataServiceStructure( final String service ) {
-
-		when(dataServiceStructureArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
-		        .thenReturn(new DataServiceStructure(service));
-	}
-
-	private void setUpDataServiceException() {
-
-		when(dataServiceArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
-		        .thenThrow(new IllegalArgumentException(DATA_SERVICE_EXCEPTION_MESSAGE));
-	}
-
-	private void setUpDataServiceStructureException() {
-
-		when(dataServiceStructureArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
-		        .thenThrow(new IllegalArgumentException(DATA_SERVICE_STRUCTURE_EXCEPTION_MESSAGE));
-	}
-
 	private void setUpEquityDataSet( final String dataSet ) {
 
 		when(equityDatasetArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
@@ -244,25 +158,14 @@ public class EquityArgumentsTest {
 
 	private void setUpTickerSymbol( final String dataSet ) {
 
-		when(tickerSymbolArgument.get(anyMapOf(LaunchArgumentKey.class, String.class))).thenReturn(new TickerSymbol(dataSet));
+		when(tickerSymbolArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
+		        .thenReturn(new TickerSymbol(dataSet));
 	}
 
 	private void setUpTickerException() {
 
 		when(tickerSymbolArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
 		        .thenThrow(new IllegalArgumentException(TICKER_SYMBOL_EXCEPTION_MESSAGE));
-	}
-
-	private void verifyDataService( final String expected ) {
-
-		assertNotNull(parser.dataService());
-		assertEquals(expected, parser.dataService().type());
-	}
-
-	private void verifyDataServiceStructure( final String expected ) {
-
-		assertNotNull(parser.dataServiceStructure());
-		assertEquals(expected, parser.dataServiceStructure().structure());
 	}
 
 	private void verifyEquityDataSet( final String expected ) {
@@ -275,12 +178,6 @@ public class EquityArgumentsTest {
 
 		assertNotNull(parser.tickerSymbol());
 		assertEquals(expected, parser.tickerSymbol().symbol());
-	}
-
-	private void verifyDataServiceArgument( final Map<LaunchArgumentKey, String> arguments ) {
-
-		verify(dataServiceArgument).get(arguments);
-		verifyNoMoreInteractions(dataServiceArgument);
 	}
 
 	private void verifyEquityDataSetArgument( final Map<LaunchArgumentKey, String> arguments ) {

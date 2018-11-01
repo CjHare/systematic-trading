@@ -31,6 +31,7 @@ package com.systematic.trading.backtest.trial.never.exit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
@@ -57,6 +58,8 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.backtest.trial.BaseTrial;
 import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.LaunchArgumentKey;
+import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
 
 /**
@@ -93,9 +96,11 @@ public class DocumentationExampleTrial extends BaseTrial implements BacktestConf
 
 	public static void main( final String... args ) throws Exception {
 
-		final BacktestLaunchArguments launchArgs = launchArguments(args);
+		final BacktestLaunchArguments backtestLaunchArgs = launchArguments(args);
+		final Map<LaunchArgumentKey, String> launchArgsByKey = launchArgumentsByKey(args);
 
-		new BacktestTrial(launchArgs).runBacktest(new DocumentationExampleTrial(), launchArgs);
+		new BacktestTrial(launchArgsByKey, new LaunchArgumentValidator())
+		        .runBacktest(new DocumentationExampleTrial(), backtestLaunchArgs);
 	}
 
 	@Override

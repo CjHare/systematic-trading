@@ -28,8 +28,11 @@ package com.systematic.trading.backtest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -65,15 +68,22 @@ import com.systematic.trading.backtest.output.file.dao.impl.FileValidatedBackest
 import com.systematic.trading.backtest.output.file.util.ClearFileDestination;
 import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 import com.systematic.trading.data.DataService;
+import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.EquityApiFactory;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.api.EquityApi;
+import com.systematic.trading.data.api.configuration.EquityApiLaunchArgument;
 import com.systematic.trading.data.exception.CannotRetrieveConfigurationException;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.DataServiceLaunchArgument;
+import com.systematic.trading.input.EquityApiLaunchArgumentFactory;
+import com.systematic.trading.input.LaunchArgument;
+import com.systematic.trading.input.LaunchArgumentKey;
+import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.model.equity.EquityClass;
 
 /**
@@ -100,9 +110,10 @@ public class BacktestTrial {
 	/** Local source of the trading prices. */
 	private final DataService dataService;
 
-	public BacktestTrial( final BacktestLaunchArguments launchArgs ) throws BacktestInitialisationException {
+	public BacktestTrial( final Map<LaunchArgumentKey, String> arguments, final LaunchArgumentValidator validator )
+	        throws BacktestInitialisationException {
 
-		this.dataServiceUpdater = new DataServiceUpdaterImpl(equityApi(launchArgs));
+		this.dataServiceUpdater = new DataServiceUpdaterImpl(equityApi(arguments, validator));
 		this.dataService = new HibernateDataService();
 	}
 
@@ -196,10 +207,24 @@ public class BacktestTrial {
 		                Duration.ofMillis(timer.getTime())));
 	}
 
-	private EquityApi equityApi( final BacktestLaunchArguments launchArgs ) throws BacktestInitialisationException {
+	private static EquityApi equityApi(
+	        final Map<LaunchArgumentKey, String> arguments,
+	        final LaunchArgumentValidator validator ) throws BacktestInitialisationException {
 
 		try {
-			return new EquityApiFactory().create(launchArgs.dataService(), launchArgs.dataServiceStructure());
+			final DataServiceType api = new DataServiceLaunchArgument(validator).get(arguments);
+			final Set<EquityApiLaunchArgument> mandatoryArguments = new EquityApiFactory().launchArguments(api);
+			final EquityApiLaunchArgumentFactory equityApiLaunchArguments = new EquityApiLaunchArgumentFactory();
+
+			final EnumMap<EquityApiLaunchArgument,
+			        LaunchArgument<?>> equityApiArguments = new EnumMap<>(EquityApiLaunchArgument.class);
+			for (final EquityApiLaunchArgument mandatoryArgument : mandatoryArguments) {
+				equityApiArguments
+				        .put(mandatoryArgument, equityApiLaunchArguments.create(mandatoryArgument, validator));
+			}
+
+			return new EquityApiFactory().create(api, equityApiArguments);
+
 		} catch (ServiceException e) {
 			throw new BacktestInitialisationException(e);
 		}

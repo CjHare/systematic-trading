@@ -27,6 +27,7 @@ package com.systematic.trading.backtest.trial.never.exit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.systematic.trading.backtest.BacktestConfiguration;
 import com.systematic.trading.backtest.BacktestSimulationDates;
@@ -39,6 +40,8 @@ import com.systematic.trading.backtest.configuration.equity.EquityConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.periodic.PeriodicConfiguration;
 import com.systematic.trading.backtest.trial.BaseTrial;
 import com.systematic.trading.input.BacktestLaunchArguments;
+import com.systematic.trading.input.LaunchArgumentKey;
+import com.systematic.trading.input.LaunchArgumentValidator;
 
 /**
  * Comparing indicator and periodic results when they're using different brokerage misses out other
@@ -50,9 +53,11 @@ public class ChangingBaselinesTrial extends BaseTrial implements BacktestConfigu
 
 	public static void main( final String... args ) throws Exception {
 
-		final BacktestLaunchArguments launchArgs = launchArguments(args);
+		final BacktestLaunchArguments backtestLaunchArgs = launchArguments(args);
+		final Map<LaunchArgumentKey, String> launchArgsByKey = launchArgumentsByKey(args);
 
-		new BacktestTrial(launchArgs).runBacktest(new ChangingBaselinesTrial(), launchArgs);
+		new BacktestTrial(launchArgsByKey, new LaunchArgumentValidator())
+		        .runBacktest(new ChangingBaselinesTrial(), backtestLaunchArgs);
 	}
 
 	@Override

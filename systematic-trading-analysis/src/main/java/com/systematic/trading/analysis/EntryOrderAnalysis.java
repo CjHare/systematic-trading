@@ -28,7 +28,9 @@ package com.systematic.trading.analysis;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
@@ -64,20 +66,23 @@ import com.systematic.trading.backtest.input.BacktestStartDate;
 import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.data.DataService;
+import com.systematic.trading.data.DataServiceType;
 import com.systematic.trading.data.DataServiceUpdater;
 import com.systematic.trading.data.DataServiceUpdaterImpl;
 import com.systematic.trading.data.EquityApiFactory;
 import com.systematic.trading.data.HibernateDataService;
 import com.systematic.trading.data.api.EquityApi;
+import com.systematic.trading.data.api.configuration.EquityApiLaunchArgument;
 import com.systematic.trading.data.util.HibernateUtil;
 import com.systematic.trading.exception.ServiceException;
 import com.systematic.trading.input.AnalysisLaunchArguments;
-import com.systematic.trading.input.LaunchArgumentKey;
 import com.systematic.trading.input.CommandLineInputLaunchArgumentParser;
 import com.systematic.trading.input.DataServiceLaunchArgument;
-import com.systematic.trading.input.DataServiceStructureLaunchArgument;
+import com.systematic.trading.input.EquityApiLaunchArgumentFactory;
 import com.systematic.trading.input.EquityArguments;
 import com.systematic.trading.input.EquityDatasetLaunchArgument;
+import com.systematic.trading.input.LaunchArgument;
+import com.systematic.trading.input.LaunchArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
 import com.systematic.trading.input.OpeningFundsLaunchArgument;
 import com.systematic.trading.input.TickerSymbolLaunchArgument;
@@ -113,31 +118,36 @@ public class EntryOrderAnalysis {
 
 		final LaunchArgumentValidator validator = new LaunchArgumentValidator();
 		final Map<LaunchArgumentKey, String> arguments = new CommandLineInputLaunchArgumentParser().parse(args);
+
 		final AnalysisLaunchArguments launchArgs = new AnalysisLaunchArguments(
 		        new EquityArguments(
-		                new DataServiceLaunchArgument(validator),
-		                new DataServiceStructureLaunchArgument(),
 		                new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator),
 		                arguments),
 		        new OpeningFundsLaunchArgument(validator),
 		        arguments);
 
-
-		//TODO from the DataServiceType get the set of required/acceptable arguments
-		
-		//TODO construct the set of arguments and parse the input
-		
-		//TODO maybe the EquityFactory needs to accept the set 
-		
-		new EntryOrderAnalysis(equityApi(launchArgs)).run(launchArgs);
+		new EntryOrderAnalysis(equityApi(arguments, validator)).run(launchArgs);
 	}
 
-	private static EquityApi equityApi( final AnalysisLaunchArguments launchArgs )
-	        throws BacktestInitialisationException {
+	private static EquityApi equityApi(
+	        final Map<LaunchArgumentKey, String> arguments,
+	        final LaunchArgumentValidator validator ) throws BacktestInitialisationException {
 
 		try {
-			return new EquityApiFactory().create(launchArgs.dataService(), launchArgs.dataServiceStructure());
+			final DataServiceType api = new DataServiceLaunchArgument(validator).get(arguments);
+			final Set<EquityApiLaunchArgument> mandatoryArguments = new EquityApiFactory().launchArguments(api);
+			final EquityApiLaunchArgumentFactory equityApiLaunchArguments = new EquityApiLaunchArgumentFactory();
+
+			final EnumMap<EquityApiLaunchArgument,
+			        LaunchArgument<?>> equityApiArguments = new EnumMap<>(EquityApiLaunchArgument.class);
+			for (final EquityApiLaunchArgument mandatoryArgument : mandatoryArguments) {
+				equityApiArguments
+				        .put(mandatoryArgument, equityApiLaunchArguments.create(mandatoryArgument, validator));
+			}
+
+			return new EquityApiFactory().create(api, equityApiArguments);
+
 		} catch (ServiceException e) {
 			throw new BacktestInitialisationException(e);
 		}

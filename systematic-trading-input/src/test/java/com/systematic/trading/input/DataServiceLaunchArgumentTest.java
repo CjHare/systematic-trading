@@ -25,9 +25,13 @@
  */
 package com.systematic.trading.input;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +40,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.data.DataServiceStructure;
@@ -48,13 +53,18 @@ import com.systematic.trading.data.DataServiceStructure;
 @RunWith(MockitoJUnitRunner.class)
 public class DataServiceLaunchArgumentTest {
 
+	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
+
+	@Mock
+	private LaunchArgumentValidator validator;
+
 	/** Launch argument parser instance being tested. */
 	private DataServiceStructureLaunchArgument argument;
 
 	@Before
 	public void setUp() {
 
-		argument = new DataServiceStructureLaunchArgument();
+		argument = new DataServiceStructureLaunchArgument(validator);
 	}
 
 	@Test
@@ -71,31 +81,42 @@ public class DataServiceLaunchArgumentTest {
 	@Test
 	public void absentValue() {
 
+		setUpValidatorException();
 		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(null);
 
-		final DataServiceStructure symbol = dataServiceType(launchArguments);
-
-		verifyNoDataServiceType(symbol);
+		dataServiceTypeExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
 	}
 
 	@Test
 	public void absentKey() {
 
+		setUpValidatorException();
 		final Map<LaunchArgumentKey, String> launchArguments = setUpNoArguments();
 
-		final DataServiceStructure symbol = dataServiceType(launchArguments);
+		dataServiceTypeExpectingException(VALIDATOR_EXCEPTION_MESSAGE, launchArguments);
+	}
 
-		verifyNoDataServiceType(symbol);
+	private void dataServiceTypeExpectingException(
+	        final String expectedMessage,
+	        final Map<LaunchArgumentKey, String> launchArguments ) {
+
+		try {
+			dataServiceType(launchArguments);
+			fail("Expecting exception");
+		} catch (final IllegalArgumentException e) {
+			assertEquals(expectedMessage, e.getMessage());
+		}
+	}
+
+	private void setUpValidatorException() {
+
+		doThrow(new IllegalArgumentException(VALIDATOR_EXCEPTION_MESSAGE)).when(validator)
+		        .validate(any(), anyString(), anyString());
 	}
 
 	private DataServiceStructure dataServiceType( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
-	}
-
-	private void verifyNoDataServiceType( final DataServiceStructure actual ) {
-
-		assertNull(actual);
 	}
 
 	private void verifyDataServiceType( final String expected, final DataServiceStructure actual ) {

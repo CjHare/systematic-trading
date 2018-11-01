@@ -45,8 +45,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.EquityDataset;
-import com.systematic.trading.data.DataServiceStructure;
-import com.systematic.trading.data.DataServiceType;
 
 /**
  * Unit testing for the expected behavior of the AnalysisLaunchArguments.
@@ -89,28 +87,6 @@ public class AnalysisLaunchArgumentsTest {
 		createLaunchArgumentsExpectingException(OPENING_FUNDS_EXCEPTION_MESSAGE, arguments);
 
 		verifyOpeningFundsArgument(arguments);
-	}
-
-	@Test
-	public void dataService() {
-
-		final String serviceName = "a data providing service";
-		setUpDataService(serviceName);
-
-		createLaunchArguments();
-
-		verifyDataService(serviceName);
-	}
-
-	@Test
-	public void dataServiceStructure() {
-
-		final String serviceName = "identity of the data service";
-		setUpDataServiceStructure(serviceName);
-
-		createLaunchArguments();
-
-		verifyDataServiceStructure(serviceName);
 	}
 
 	@Test
@@ -166,22 +142,13 @@ public class AnalysisLaunchArgumentsTest {
 
 	private void setUpOpeningFunds( final String funds ) {
 
-		when(openingFundsArgument.get(anyMapOf(LaunchArgumentKey.class, String.class))).thenReturn(new BigDecimal(funds));
+		when(openingFundsArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
+		        .thenReturn(new BigDecimal(funds));
 	}
 
 	private void setUpTickerSymbol( final String serviceName ) {
 
 		when(equityArguments.tickerSymbol()).thenReturn(new TickerSymbol(serviceName));
-	}
-
-	private void setUpDataService( final String serviceName ) {
-
-		when(equityArguments.dataService()).thenReturn(new DataServiceType(serviceName));
-	}
-
-	private void setUpDataServiceStructure( final String serviceName ) {
-
-		when(equityArguments.dataServiceStructure()).thenReturn(new DataServiceStructure(serviceName));
 	}
 
 	private void setUpEquityDataSet( final String serviceName ) {
@@ -193,20 +160,6 @@ public class AnalysisLaunchArgumentsTest {
 
 		when(openingFundsArgument.get(anyMapOf(LaunchArgumentKey.class, String.class)))
 		        .thenThrow(new IllegalArgumentException(OPENING_FUNDS_EXCEPTION_MESSAGE));
-	}
-
-	private void verifyDataService( final String expected ) {
-
-		assertNotNull(parser.dataService());
-		assertEquals(expected, parser.dataService().type());
-		verify(equityArguments, atLeastOnce()).dataService();
-	}
-
-	private void verifyDataServiceStructure( final String expected ) {
-
-		assertNotNull(parser.dataServiceStructure());
-		assertEquals(expected, parser.dataServiceStructure().structure());
-		verify(equityArguments, atLeastOnce()).dataServiceStructure();
 	}
 
 	private void verifyEquityDataSet( final String expected ) {

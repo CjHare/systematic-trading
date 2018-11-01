@@ -52,8 +52,6 @@ import com.systematic.trading.backtest.trade.MaximumTrade;
 import com.systematic.trading.backtest.trade.MinimumTrade;
 import com.systematic.trading.input.BacktestLaunchArguments;
 import com.systematic.trading.input.CommandLineInputLaunchArgumentParser;
-import com.systematic.trading.input.DataServiceLaunchArgument;
-import com.systematic.trading.input.DataServiceStructureLaunchArgument;
 import com.systematic.trading.input.DepositAmountLaunchArgument;
 import com.systematic.trading.input.DepositFrequencyLaunchArgument;
 import com.systematic.trading.input.EndDateLaunchArgument;
@@ -85,8 +83,6 @@ public abstract class BaseTrial {
 		return new BacktestLaunchArguments(
 		        new OutputLaunchArgument(validator),
 		        new EquityArguments(
-		                new DataServiceLaunchArgument(validator),
-		                new DataServiceStructureLaunchArgument(),
 		                new EquityDatasetLaunchArgument(validator),
 		                new TickerSymbolLaunchArgument(validator),
 		                arguments),
@@ -98,6 +94,11 @@ public abstract class BaseTrial {
 		        new EndDateLaunchArgument(validator),
 		        new FileBaseDirectoryLaunchArgument(validator),
 		        arguments);
+	}
+
+	protected static Map<LaunchArgumentKey, String> launchArgumentsByKey( final String... args ) {
+
+		return new CommandLineInputLaunchArgumentParser().parse(args);
 	}
 
 	protected List<BacktestBootstrapConfiguration> macdConfirmedByRsi(
