@@ -27,6 +27,7 @@ package com.systematic.trading.strategy;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -123,7 +124,7 @@ public class TradingStrategy implements Strategy {
 				final BigDecimal maximumTransactionCost = fees.cost(amount, type, tradingDate);
 				final BigDecimal closingPrice = data.closingPrice().price();
 				final BigDecimal numberOfEquities = amount.subtract(maximumTransactionCost, MATH_CONTEXT)
-				        .divide(closingPrice, MATH_CONTEXT).setScale(scale, BigDecimal.ROUND_DOWN);
+				        .divide(closingPrice, MATH_CONTEXT).setScale(scale, RoundingMode.DOWN);
 
 				if (numberOfEquities.compareTo(BigDecimal.ZERO) > 0) { return Optional.of(
 				        new BuyTotalCostTomorrowAtOpeningPriceOrder(amount, type, scale, tradingDate, MATH_CONTEXT)); }

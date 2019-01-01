@@ -27,6 +27,7 @@ package com.systematic.trading.strategy.entry;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 import com.systematic.trading.model.equity.EquityClass;
@@ -145,6 +146,6 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	private EquityOrderVolume orderVolume( final BigDecimal numberOfEquities ) {
 
-		return EquityOrderVolume.valueOf(numberOfEquities.setScale(scale, BigDecimal.ROUND_DOWN));
+		return EquityOrderVolume.valueOf(numberOfEquities.setScale(scale, RoundingMode.DOWN));
 	}
 }
