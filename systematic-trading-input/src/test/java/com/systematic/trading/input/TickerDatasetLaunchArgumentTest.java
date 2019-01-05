@@ -47,7 +47,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.backtest.input.EquityDataset;
+import com.systematic.trading.backtest.input.TickerDataset;
 
 /**
  * Testing for the optional DataServiceTypeLaunchArgument
@@ -55,22 +55,22 @@ import com.systematic.trading.backtest.input.EquityDataset;
  * @author CJ Hare
  */
 @RunWith(MockitoJUnitRunner.class)
-public class EquityDatasetLaunchArgumentTest {
+public class TickerDatasetLaunchArgumentTest {
 
 	private static final String ERROR_MESSAGE = "%s argument is not present";
-	private static final LaunchArgumentKey KEY = LaunchArgumentKey.EQUITY_DATASET;
+	private static final LaunchArgumentKey KEY = LaunchArgumentKey.TICKER_DATASET;
 	private static final String VALIDATOR_EXCEPTION_MESSAGE = "Validation exception message";
 
 	@Mock
 	private LaunchArgumentValidator validator;
 
 	/** Launch argument parser instance being tested. */
-	private EquityDatasetLaunchArgument argument;
+	private TickerDatasetLaunchArgument argument;
 
 	@Before
 	public void setUp() {
 
-		argument = new EquityDatasetLaunchArgument(validator);
+		argument = new TickerDatasetLaunchArgument(validator);
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class EquityDatasetLaunchArgumentTest {
 		final String expectedSymbol = "ServiceType";
 		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
-		final EquityDataset symbol = equityDataset(launchArguments);
+		final TickerDataset symbol = equityDataset(launchArguments);
 
 		verifyEquityDataset(expectedSymbol, symbol);
 	}
@@ -116,12 +116,12 @@ public class EquityDatasetLaunchArgumentTest {
 		verifyNoMoreInteractions(validator);
 	}
 
-	private EquityDataset equityDataset( final Map<LaunchArgumentKey, String> launchArguments ) {
+	private TickerDataset equityDataset( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
 
-	private void verifyEquityDataset( final String expected, final EquityDataset actual ) {
+	private void verifyEquityDataset( final String expected, final TickerDataset actual ) {
 
 		assertNotNull(actual);
 		assertNotNull(actual.dataset());
@@ -143,7 +143,7 @@ public class EquityDatasetLaunchArgumentTest {
 	private Map<LaunchArgumentKey, String> setUpArguments( final String value ) {
 
 		final Map<LaunchArgumentKey, String> arguments = new HashMap<>();
-		arguments.put(LaunchArgumentKey.EQUITY_DATASET, value);
+		arguments.put(LaunchArgumentKey.TICKER_DATASET, value);
 		return arguments;
 	}
 }

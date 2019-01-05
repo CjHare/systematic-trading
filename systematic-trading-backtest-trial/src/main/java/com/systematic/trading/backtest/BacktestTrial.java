@@ -248,7 +248,7 @@ public class BacktestTrial {
 
 	private EquityConfiguration equity( final BacktestLaunchArguments launchArgs ) {
 
-		return new EquityConfiguration(launchArgs.equityDataset(), launchArgs.tickerSymbol(), EquityClass.STOCK);
+		return new EquityConfiguration(launchArgs.tickerDataset(), launchArgs.tickerSymbol(), EquityClass.STOCK);
 	}
 
 	private void closePool( final ExecutorService pool ) {

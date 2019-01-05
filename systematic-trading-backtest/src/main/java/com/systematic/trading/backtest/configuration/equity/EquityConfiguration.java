@@ -26,7 +26,7 @@
 package com.systematic.trading.backtest.configuration.equity;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
-import com.systematic.trading.backtest.input.EquityDataset;
+import com.systematic.trading.backtest.input.TickerDataset;
 import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.equity.EquityIdentity;
 
@@ -39,18 +39,18 @@ public class EquityConfiguration {
 
 	private static final int SCALE = 4;
 
-	private final EquityDataset equityDataset;
+	private final TickerDataset tickerDataset;
 	private final TickerSymbol tickerSymbol;
 	private final EquityClass equityType;
 	private final EquityManagementFeeConfiguration managementFee;
 
 	public EquityConfiguration(
-	        final EquityDataset dataset,
+	        final TickerDataset dataset,
 	        final TickerSymbol tickerSymbol,
 	        final EquityClass equityType ) {
 
-		this.equityDataset = dataset;
 		this.tickerSymbol = tickerSymbol;
+		this.tickerDataset = dataset;
 		this.equityType = equityType;
 		this.managementFee = EquityManagementFeeConfiguration.NONE;
 	}
@@ -65,8 +65,8 @@ public class EquityConfiguration {
 		return managementFee;
 	}
 
-	public String equityDataset() {
+	public String tickerDataset() {
 
-		return equityDataset == null ? null : equityDataset.dataset();
+		return tickerDataset.dataset();
 	}
 }

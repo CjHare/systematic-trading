@@ -28,7 +28,7 @@ package com.systematic.trading.input;
 import java.util.Map;
 
 import com.systematic.trading.backtest.equity.TickerSymbol;
-import com.systematic.trading.backtest.input.EquityDataset;
+import com.systematic.trading.backtest.input.TickerDataset;
 
 /**
  * Aggregation of arguments related to the equity and price data source.
@@ -37,18 +37,15 @@ import com.systematic.trading.backtest.input.EquityDataset;
  */
 public class EquityArguments {
 
-	/** Ticker Symbol to perform the back testing on. */
 	private final TickerSymbol tickerSymbol;
-
-	/** Optional argument, data set to retrieve the ticker symbol from. */
-	private final EquityDataset equityDataset;
+	private final TickerDataset tickerDataset;
 
 	public EquityArguments(
-	        final LaunchArgument<EquityDataset> equityDatasetArgument,
+	        final LaunchArgument<TickerDataset> tickerDatasetArgument,
 	        final LaunchArgument<TickerSymbol> tickerSymbolArgument,
 	        final Map<LaunchArgumentKey, String> arguments ) {
 
-		this.equityDataset = equityDatasetArgument.get(arguments);
+		this.tickerDataset = tickerDatasetArgument.get(arguments);
 		this.tickerSymbol = tickerSymbolArgument.get(arguments);
 	}
 
@@ -57,8 +54,8 @@ public class EquityArguments {
 		return tickerSymbol;
 	}
 
-	public EquityDataset equityDataset() {
+	public TickerDataset tickerDataset() {
 
-		return equityDataset;
+		return tickerDataset;
 	}
 }

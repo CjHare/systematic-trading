@@ -32,7 +32,7 @@ import com.systematic.trading.backtest.equity.TickerSymbol;
 import com.systematic.trading.backtest.input.BacktestEndDate;
 import com.systematic.trading.backtest.input.BacktestStartDate;
 import com.systematic.trading.backtest.input.DepositFrequency;
-import com.systematic.trading.backtest.input.EquityDataset;
+import com.systematic.trading.backtest.input.TickerDataset;
 import com.systematic.trading.backtest.input.FileBaseOutputDirectory;
 import com.systematic.trading.backtest.input.OutputType;
 
@@ -126,9 +126,9 @@ public class BacktestLaunchArguments {
 		return equityArguments.tickerSymbol();
 	}
 
-	public EquityDataset equityDataset() {
+	public TickerDataset tickerDataset() {
 
-		return equityArguments.equityDataset();
+		return equityArguments.tickerDataset();
 	}
 
 	public BigDecimal openingFunds() {

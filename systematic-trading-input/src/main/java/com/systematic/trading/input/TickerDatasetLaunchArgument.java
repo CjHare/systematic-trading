@@ -23,24 +23,35 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.systematic.trading.backtest.input;
+package com.systematic.trading.input;
+
+import java.util.Map;
+
+import com.systematic.trading.backtest.input.TickerDataset;
 
 /**
- * Equity data set that contains equity data.
+ * Launch argument parser and validation for the equity dataset key value pairing.
  * 
  * @author CJ Hare
  */
-public class EquityDataset {
+public class TickerDatasetLaunchArgument implements LaunchArgument<TickerDataset> {
 
-	private final String dataset;
+	/** Provides validation for the launch argument value. */
+	private final LaunchArgumentValidator validator;
 
-	public EquityDataset( final String dataset ) {
+	public TickerDatasetLaunchArgument( final LaunchArgumentValidator validator ) {
 
-		this.dataset = dataset;
+		this.validator = validator;
 	}
 
-	public String dataset() {
+	@Override
+	public TickerDataset get( final Map<LaunchArgumentKey, String> arguments ) {
 
-		return dataset;
+		final String dataset = arguments.get(LaunchArgumentKey.TICKER_DATASET);
+
+		validator.validate(dataset, "%s argument is not present", LaunchArgumentKey.TICKER_DATASET);
+		validator.validateNotEmpty(dataset, "%s argument cannot be empty", LaunchArgumentKey.TICKER_DATASET);
+
+		return new TickerDataset(dataset);
 	}
 }
