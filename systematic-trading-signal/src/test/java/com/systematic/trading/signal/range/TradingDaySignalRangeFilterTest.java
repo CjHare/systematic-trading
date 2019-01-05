@@ -35,7 +35,6 @@ import org.junit.Test;
 
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.model.price.impl.TradingDayPricesImpl;
-import com.systematic.trading.signal.range.TradingDaySignalRangeFilter;
 
 /**
  * Verifying the expected behaviour of a TradingDaySignalRangeFilter.

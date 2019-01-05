@@ -30,8 +30,6 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import com.systematic.trading.input.LaunchArgumentValidator;
-
 /**
  * Verification of the LaunchArgumentValidator.
  * 

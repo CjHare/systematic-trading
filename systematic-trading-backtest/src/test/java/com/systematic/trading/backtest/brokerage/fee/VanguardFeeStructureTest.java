@@ -33,7 +33,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.backtest.brokerage.fee.VanguardBrokerageFees;
 import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 

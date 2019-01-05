@@ -49,7 +49,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
 import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.signal.generator.SignalGenerator;
-import com.systematic.trading.signal.generator.ema.ExponentialMovingAverageBullishGradientSignalGenerator;
 import com.systematic.trading.signal.model.DatedSignal;
 
 /**

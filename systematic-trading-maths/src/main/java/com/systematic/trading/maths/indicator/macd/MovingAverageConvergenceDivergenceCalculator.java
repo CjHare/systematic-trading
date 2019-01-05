@@ -32,10 +32,10 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
 import com.systematic.trading.model.price.TradingDayPrices;
-import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 
 /**
  * Moving Average Convergence Divergence (MACD) line calculation.

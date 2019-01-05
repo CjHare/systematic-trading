@@ -31,8 +31,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.strategy.model.collection.LimitedSizeQueue;
-
 /**
  * Tests the limited size implementation of LinkedList
  * 

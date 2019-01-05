@@ -29,7 +29,6 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.systematic.trading.configuration.IntegerConfigurationValidator;
 import com.systematic.trading.configuration.exception.ConfigurationValidationException;
 
 /**

@@ -52,9 +52,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.indicator.Validator;
+import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageIndicator;
 import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverageLine;
-import com.systematic.trading.maths.indicator.ema.ExponentialMovingAverage;
 import com.systematic.trading.maths.matcher.IsSortedMap;
 import com.systematic.trading.maths.util.TradingDayPricesBuilder;
 import com.systematic.trading.model.price.TradingDayPrices;

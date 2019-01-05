@@ -48,7 +48,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.systematic.trading.maths.indicator.rsi.RelativeStrengthIndexLine;
 import com.systematic.trading.model.signal.SignalType;
-import com.systematic.trading.signal.generator.rsi.RelativeStrengthIndexBullishSignalGenerator;
 import com.systematic.trading.signal.model.DatedSignal;
 
 /**

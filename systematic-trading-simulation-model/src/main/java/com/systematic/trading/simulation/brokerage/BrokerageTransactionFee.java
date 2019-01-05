@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.systematic.trading.model.equity.EquityClass;
+import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
  * Brokerage fees applied to all an equity transaction.
