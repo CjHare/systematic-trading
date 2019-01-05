@@ -55,7 +55,7 @@ public class EquityConfiguration {
 		this.managementFee = EquityManagementFeeConfiguration.NONE;
 	}
 
-	public EquityIdentity gquityIdentity() {
+	public EquityIdentity equityIdentity() {
 
 		return new EquityIdentity(tickerSymbol.symbol(), equityType, SCALE);
 	}

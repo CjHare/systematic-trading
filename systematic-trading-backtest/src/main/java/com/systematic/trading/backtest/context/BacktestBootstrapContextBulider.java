@@ -326,7 +326,7 @@ public class BacktestBootstrapContextBulider {
 
 		final EquityManagementFeeCalculator feeCalculator = feeCalculator(equity.managementFee());
 		final EquityWithFeeConfiguration equityConfiguration = new EquityWithFeeConfiguration(
-		        equity.gquityIdentity(),
+		        equity.equityIdentity(),
 		        new PeriodicEquityManagementFeeStructure(managementFeeStartDate, feeCalculator, ONE_YEAR));
 
 		return new BrokerageFactoroy().create(equityConfiguration, brokerageType, simulationDates.startDateInclusive());

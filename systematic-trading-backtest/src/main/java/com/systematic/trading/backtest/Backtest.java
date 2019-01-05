@@ -74,7 +74,7 @@ public class Backtest {
 
 		final TickerSymbolTradingData tradingData = tradingData(
 		        equity.equityDataset(),
-		        equity.gquityIdentity(),
+		        equity.equityIdentity(),
 		        dates,
 		        warmUp);
 
