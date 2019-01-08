@@ -56,6 +56,7 @@ public class EquityApiFactory {
 
 	private static final String QUANDL = "quandl";
 	private static final String ALPHA_VANTAGE = "alpha-vantage";
+	private static final String ALPHA_VANTAGE_CRYPTO = "alpha-vantage-crypto";
 
 	public Set<EquityApiLaunchArgument> launchArguments( final DataServiceType api )
 	        throws ConfigurationValidationException {
@@ -67,8 +68,9 @@ public class EquityApiFactory {
 			case ALPHA_VANTAGE:
 				return EnumSet.noneOf(EquityApiLaunchArgument.class);
 
-			// TODO different data service type for alpha vantage Crypto
-
+			case ALPHA_VANTAGE_CRYPTO:
+				return EnumSet.noneOf(EquityApiLaunchArgument.class);
+ 
 			default:
 				throw new ConfigurationValidationException(
 				        String.format("Unsupported data service type: %s", api.type()));
@@ -85,6 +87,10 @@ public class EquityApiFactory {
 			case ALPHA_VANTAGE:
 				return aplhaVantage();
 
+			case ALPHA_VANTAGE_CRYPTO:
+				//TODO need a different type / flag to switch the data formatting layer
+				return aplhaVantage();
+				
 			default:
 				throw new ConfigurationValidationException(
 				        String.format("Unsupported data service type: %s", api.type()));
