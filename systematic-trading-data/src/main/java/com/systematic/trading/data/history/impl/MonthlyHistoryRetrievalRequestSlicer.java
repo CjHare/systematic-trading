@@ -46,7 +46,7 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 	 * Split up the date range into monthly chunks.
 	 */
 	public List<HistoryRetrievalRequest> slice(
-	        final String equityDataset,
+	        final String tickerDataset,
 	        final String tickerSymbol,
 	        final LocalDate startDateInclusive,
 	        final LocalDate endDateExclusive ) {
@@ -60,7 +60,7 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 			final LocalDate nextMonthStart = beginningOfNextMonth(startDateInclusive);
 			requests.add(
 			        new HibernateHistoryRetrievalRequest(
-			                equityDataset,
+			        		tickerDataset,
 			                tickerSymbol,
 			                startDateInclusive,
 			                nextMonthStart));
@@ -72,7 +72,7 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 			final LocalDate nextMonthStart = beginningOfNextMonth(workingInclusiveStartDate);
 			requests.add(
 			        new HibernateHistoryRetrievalRequest(
-			                equityDataset,
+			        		tickerDataset,
 			                tickerSymbol,
 			                workingInclusiveStartDate,
 			                nextMonthStart));
@@ -83,7 +83,7 @@ public class MonthlyHistoryRetrievalRequestSlicer implements HistoryRetrievalReq
 		if (isNotBeginningOfMonth(endDateExclusive)) {
 			requests.add(
 			        new HibernateHistoryRetrievalRequest(
-			                equityDataset,
+			        		tickerDataset,
 			                tickerSymbol,
 			                workingInclusiveStartDate,
 			                endDateExclusive));

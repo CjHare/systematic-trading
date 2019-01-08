@@ -79,7 +79,7 @@ public class TickerDatasetLaunchArgumentTest {
 		final String expectedSymbol = "ServiceType";
 		final Map<LaunchArgumentKey, String> launchArguments = setUpArguments(expectedSymbol);
 
-		final TickerDataset symbol = equityDataset(launchArguments);
+		final TickerDataset symbol = tickerDataset(launchArguments);
 
 		verifyEquityDataset(expectedSymbol, symbol);
 	}
@@ -89,7 +89,7 @@ public class TickerDatasetLaunchArgumentTest {
 
 		setUpValidatorException();
 
-		equityDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
+		tickerDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, setUpArguments(""));
 
 		verifyValidationExceptionOnValidate("");
 	}
@@ -99,7 +99,7 @@ public class TickerDatasetLaunchArgumentTest {
 
 		setUpValidatorException();
 
-		equityDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<LaunchArgumentKey, String>());
+		tickerDatasetExpectingException(VALIDATOR_EXCEPTION_MESSAGE, new HashMap<LaunchArgumentKey, String>());
 
 		verifyValidationExceptionOnValidate(null);
 	}
@@ -116,7 +116,7 @@ public class TickerDatasetLaunchArgumentTest {
 		verifyNoMoreInteractions(validator);
 	}
 
-	private TickerDataset equityDataset( final Map<LaunchArgumentKey, String> launchArguments ) {
+	private TickerDataset tickerDataset( final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		return argument.get(launchArguments);
 	}
@@ -128,12 +128,12 @@ public class TickerDatasetLaunchArgumentTest {
 		assertTrue(StringUtils.equals(expected, actual.dataset()));
 	}
 
-	private void equityDatasetExpectingException(
+	private void tickerDatasetExpectingException(
 	        final String expectedMessage,
 	        final Map<LaunchArgumentKey, String> launchArguments ) {
 
 		try {
-			equityDataset(launchArguments);
+			tickerDataset(launchArguments);
 			fail("Expecting exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals(expectedMessage, e.getMessage());

@@ -45,7 +45,7 @@ public interface AlphaVantageApiDao {
 	/**
 	 * Retrieve historical equity price data from AlphaVantage.
 	 * 
-	 * @param equityDataset
+	 * @param tickerDataset
 	 *            identifier for the dataset to retrieve the ticker symbol from e.g. AX for the ASX.
 	 * @param tickerSymbol
 	 *            identifier of the equity to retrieve.
@@ -60,7 +60,7 @@ public interface AlphaVantageApiDao {
 	 *             problem encountered during connecting to the AlphaVantage API.
 	 */
 	TradingDayPrices[] get(
-	        String equityDataset,
+	        String tickerDataset,
 	        String tickerSymbol,
 	        LocalDate startDateInclusive,
 	        LocalDate endDateExclusive,

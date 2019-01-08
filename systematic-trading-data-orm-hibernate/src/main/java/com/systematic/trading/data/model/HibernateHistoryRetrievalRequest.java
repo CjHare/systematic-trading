@@ -50,7 +50,7 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 
 	@Id
 	@Column(name = "dataset", nullable = false)
-	private String equityDataset;
+	private String tickerDataset;
 
 	@Id
 	@Column(name = "ticker_symbol", nullable = false)
@@ -69,12 +69,12 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 	}
 
 	public HibernateHistoryRetrievalRequest(
-	        final String equityDataset,
+	        final String tickerDataset,
 	        final String tickerSymbol,
 	        final LocalDate startDateInclusive,
 	        final LocalDate endDateExlusive ) {
 
-		this.equityDataset = equityDataset;
+		this.tickerDataset = tickerDataset;
 		this.tickerSymbol = tickerSymbol;
 		this.startDateInclusive = Date.valueOf(startDateInclusive);
 		this.endDateExclusive = Date.valueOf(endDateExlusive);
@@ -121,15 +121,15 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 
 	@Override
 	@Column(name = "dataset")
-	public String equityDataset() {
+	public String tickerDataset() {
 
-		return equityDataset;
+		return tickerDataset;
 	}
 
 	@Column(name = "dataset")
-	public void equityDataset( final String equityDataset ) {
+	public void tickerDataset( final String tickerDataset ) {
 
-		this.equityDataset = equityDataset;
+		this.tickerDataset = tickerDataset;
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((equityDataset == null) ? 0 : equityDataset.hashCode());
+		result = prime * result + ((tickerDataset == null) ? 0 : tickerDataset.hashCode());
 		result = prime * result + ((endDateExclusive == null) ? 0 : endDateExclusive.hashCode());
 		result = prime * result + ((startDateInclusive == null) ? 0 : startDateInclusive.hashCode());
 		result = prime * result + ((tickerSymbol == null) ? 0 : tickerSymbol.hashCode());
@@ -175,7 +175,7 @@ public class HibernateHistoryRetrievalRequest implements Serializable, HistoryRe
 
 	private boolean equityDatasetEquals( final HibernateHistoryRetrievalRequest other ) {
 
-		return equityDataset == other.equityDataset
-		        || (equityDataset != null && equityDataset.equals(other.equityDataset));
+		return tickerDataset == other.tickerDataset
+		        || (tickerDataset != null && tickerDataset.equals(other.tickerDataset));
 	}
 }

@@ -40,7 +40,7 @@ public interface DataServiceUpdater {
 	/**
 	 * Obtains the latest trading data for the equity.
 	 * 
-	 * @param equityDataset
+	 * @param tickerDataset
 	 *            identifier for the dataset to retrieve the ticker symbol from.
 	 * @param tickerSymbol
 	 *            identifier for the equity to retrieve the data on, ensures at least the last two
@@ -52,6 +52,6 @@ public interface DataServiceUpdater {
 	 * @throws ServiceException
 	 *             problem has been encountered during the data retrieval.
 	 */
-	void get( String equityDataset, String tickerSymbol, LocalDate startDateInclusive, LocalDate endDateExclusive )
+	void get( String tickerDataset, String tickerSymbol, LocalDate startDateInclusive, LocalDate endDateExclusive )
 	        throws ServiceException;
 }

@@ -41,7 +41,7 @@ public interface EquityApi {
 
 	/**
 	 * 
-	 * @param equityDataset
+	 * @param tickerDataset
 	 *            identifier for the source to retrieve the ticker symbol from.
 	 * @param symbol
 	 *            ticker symbol for the stock to retrieve data on.
@@ -56,7 +56,7 @@ public interface EquityApi {
 	 *             problem encountered in retrieving the stock data.
 	 */
 	TradingDayPrices[] stockData(
-	        String equityDataset,
+	        String tickerDataset,
 	        String symbol,
 	        LocalDate startDateInclusive,
 	        LocalDate endDateExclusive,

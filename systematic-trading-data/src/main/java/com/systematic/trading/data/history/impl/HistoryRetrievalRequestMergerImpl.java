@@ -208,7 +208,7 @@ public class HistoryRetrievalRequestMergerImpl implements HistoryRetrievalReques
 
 	private HistoryRetrievalRequestBuilder resetBuilder( final HistoryRetrievalRequest request ) {
 
-		return builder.withTickerSymbol(request.tickerSymbol()).withDataset(request.equityDataset())
+		return builder.withTickerSymbol(request.tickerSymbol()).withDataset(request.tickerDataset())
 		        .withStartDateInclusive(request.startDateInclusive());
 	}
 }

@@ -60,13 +60,13 @@ public class AlphaVantageAPI implements EquityApi {
 
 	@Override
 	public TradingDayPrices[] stockData(
-	        final String equityDataset,
+	        final String tickerDataset,
 	        final String tickerSymbol,
 	        final LocalDate startDateInclusive,
 	        final LocalDate endDateExclusive,
 	        final BlockingEventCount throttler ) throws CannotRetrieveDataException {
 
-		return dao.get(equityDataset, tickerSymbol, startDateInclusive, endDateExclusive, throttler);
+		return dao.get(tickerDataset, tickerSymbol, startDateInclusive, endDateExclusive, throttler);
 	}
 
 	@Override

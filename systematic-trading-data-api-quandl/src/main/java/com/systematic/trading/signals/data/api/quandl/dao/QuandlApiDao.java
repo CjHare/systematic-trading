@@ -44,7 +44,7 @@ public interface QuandlApiDao {
 	/**
 	 * Retrieve historical equity price data from Quandl.
 	 * 
-	 * @param equityDataset
+	 * @param tickerDataset
 	 *            identifier for the dataset to retrieve the ticker symbol from.
 	 * @param tickerSymbol
 	 *            identifier of the equity to retrieve.
@@ -59,7 +59,7 @@ public interface QuandlApiDao {
 	 *             problem encountered during connecting to the Quandl API.
 	 */
 	QuandlResultSet get(
-	        String equityDataset,
+	        String tickerDataset,
 	        String tickerSymbol,
 	        LocalDate startDateInclusive,
 	        LocalDate endDateExclusive,
