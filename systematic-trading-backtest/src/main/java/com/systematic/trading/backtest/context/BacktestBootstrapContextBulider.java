@@ -45,7 +45,6 @@ import com.systematic.trading.backtest.configuration.strategy.entry.EntryConfigu
 import com.systematic.trading.backtest.configuration.strategy.entry.IndicatorEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.OperatorEntryConfiguration;
 import com.systematic.trading.backtest.configuration.strategy.entry.PeriodicEntryConfiguration;
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.signal.SignalType;
 import com.systematic.trading.signal.range.SignalRangeFilter;
 import com.systematic.trading.signal.range.SimulationDatesRangeFilterDecorator;
@@ -131,7 +130,7 @@ public class BacktestBootstrapContextBulider {
 	private Strategy strategy() {
 
 		return new TradingStrategyFactory()
-		        .strategy(entry(), entryPositionSize(), exit(), exitPositionSize(), EquityClass.STOCK, EQUITY_SCALE);
+		        .strategy(entry(), entryPositionSize(), exit(), exitPositionSize(), EQUITY_SCALE);
 	}
 
 	private Entry entry() {
@@ -158,23 +157,21 @@ public class BacktestBootstrapContextBulider {
 	        final SignalRangeFilter signalRange,
 	        final long priceDataRange ) {
 
-		if (entryConfig instanceof PeriodicEntryConfiguration) { return periodicEntry(
-		        (PeriodicEntryConfiguration) entryConfig); }
+		if (entryConfig instanceof PeriodicEntryConfiguration) {
+			return periodicEntry((PeriodicEntryConfiguration) entryConfig);
+		}
 
-		if (entryConfig instanceof IndicatorEntryConfiguration) { return indicatorEntry(
-		        (IndicatorEntryConfiguration) entryConfig,
-		        signalRange,
-		        priceDataRange); }
+		if (entryConfig instanceof IndicatorEntryConfiguration) {
+			return indicatorEntry((IndicatorEntryConfiguration) entryConfig, signalRange, priceDataRange);
+		}
 
-		if (entryConfig instanceof ConfirmedByEntryConfiguration) { return confirmByEntry(
-		        (ConfirmedByEntryConfiguration) entryConfig,
-		        signalRange,
-		        priceDataRange); }
+		if (entryConfig instanceof ConfirmedByEntryConfiguration) {
+			return confirmByEntry((ConfirmedByEntryConfiguration) entryConfig, signalRange, priceDataRange);
+		}
 
-		if (entryConfig instanceof OperatorEntryConfiguration) { return operatorEntry(
-		        (OperatorEntryConfiguration) entryConfig,
-		        signalRange,
-		        priceDataRange); }
+		if (entryConfig instanceof OperatorEntryConfiguration) {
+			return operatorEntry((OperatorEntryConfiguration) entryConfig, signalRange, priceDataRange);
+		}
 
 		throw new IllegalArgumentException(String.format("Entry configuration not supported: %s", entryConfig));
 	}

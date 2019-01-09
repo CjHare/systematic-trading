@@ -247,7 +247,7 @@ public class StandardDescriptionGeneratorTest {
 		final StrategyConfiguration strategy = mock(StrategyConfiguration.class);
 		when(strategy.description(any(DescriptionGenerator.class))).thenReturn("sTrategy-deScription");
 		final EquityConfiguration equity = mock(EquityConfiguration.class);
-		when(equity.equityIdentity()).thenReturn(new EquityIdentity("ZXY", null, 0));
+		when(equity.equityIdentity()).thenReturn(new EquityIdentity("ZXY", 0));
 
 		return new BacktestBootstrapConfiguration(backtestDates, brokerageFees, cashAccount, strategy, equity);
 	}

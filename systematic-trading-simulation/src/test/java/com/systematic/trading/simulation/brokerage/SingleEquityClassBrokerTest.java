@@ -41,7 +41,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.equity.EquityIdentity;
 import com.systematic.trading.model.price.Price;
 import com.systematic.trading.simulation.brokerage.exception.InsufficientEquitiesException;
@@ -74,8 +73,6 @@ public class SingleEquityClassBrokerTest {
 	public void setUp() {
 
 		broker = new SingleEquityClassBroker("BrokerName", feeStructure, equityFee, equity, LocalDate.now());
-
-		when(equity.type()).thenReturn(EquityClass.STOCK);
 	}
 
 	@Test
@@ -154,7 +151,7 @@ public class SingleEquityClassBrokerTest {
 
 		setUpBrokerageFee(6.78787);
 
-		final BigDecimal fee = broker.cost(EQUITY_PRICE, EquityClass.STOCK, LocalDate.now());
+		final BigDecimal fee = broker.cost(EQUITY_PRICE, LocalDate.now());
 
 		verifyCost(6.78787, fee);
 	}
@@ -201,8 +198,7 @@ public class SingleEquityClassBrokerTest {
 
 	private void setUpBrokerageFee( final double transactionCost ) {
 
-		when(feeStructure.cost(any(BigDecimal.class), any(EquityClass.class), anyInt()))
-		        .thenReturn(BigDecimal.valueOf(transactionCost));
+		when(feeStructure.cost(any(BigDecimal.class), anyInt())).thenReturn(BigDecimal.valueOf(transactionCost));
 	}
 
 	private void verifyFeeCalculation( final double... numberOfEquities ) {
@@ -210,8 +206,7 @@ public class SingleEquityClassBrokerTest {
 		int count = 1;
 
 		for (final double equityCount : numberOfEquities) {
-			verify(feeStructure)
-			        .cost(BigDecimal.valueOf(equityCount).multiply(EQUITY_PRICE), EquityClass.STOCK, count++);
+			verify(feeStructure).cost(BigDecimal.valueOf(equityCount).multiply(EQUITY_PRICE), count++);
 		}
 
 		verifyNoMoreInteractions(feeStructure);

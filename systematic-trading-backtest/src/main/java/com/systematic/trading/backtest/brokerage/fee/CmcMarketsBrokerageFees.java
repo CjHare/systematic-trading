@@ -35,9 +35,7 @@ import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.app
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
-import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
  * Fees for the online broker Bell Direct.
@@ -50,20 +48,9 @@ public class CmcMarketsBrokerageFees implements BrokerageTransactionFeeStructure
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	@Override
-	public BigDecimal cost( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
+	public BigDecimal cost( final BigDecimal tradeValue, final int tradesThisMonth ) {
 
-		final BigDecimal brokerage;
-
-		switch (type) {
-			case BOND:
-			case STOCK:
-				brokerage = stock(tradeValue, tradesThisMonth);
-				break;
-			default:
-				throw new UnsupportedEquityClass(type);
-		}
-
-		return brokerage;
+		return stock(tradeValue, tradesThisMonth);
 	}
 
 	private BigDecimal stock( final BigDecimal tradeValue, final int tradesThisMonth ) {

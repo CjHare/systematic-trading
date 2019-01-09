@@ -25,7 +25,6 @@
  */
 package com.systematic.trading.strategy;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.strategy.confirmation.Confirmation;
 import com.systematic.trading.strategy.entry.Entry;
 import com.systematic.trading.strategy.entry.TradingStrategyConfirmationEntry;
@@ -56,10 +55,9 @@ public class TradingStrategyFactory implements StrategyFactory {
 	        final EntrySize entryPositionSizing,
 	        final Exit exit,
 	        final ExitSize exitPositionSizing,
-	        final EquityClass type,
 	        final int scale ) {
 
-		return new TradingStrategy(entry, entryPositionSizing, exit, exitPositionSizing, type, scale);
+		return new TradingStrategy(entry, entryPositionSizing, exit, exitPositionSizing, scale);
 	}
 
 	@Override

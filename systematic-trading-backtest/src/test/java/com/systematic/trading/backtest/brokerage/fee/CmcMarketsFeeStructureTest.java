@@ -32,9 +32,6 @@ import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.systematic.trading.model.equity.EquityClass;
-import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
-
 /**
  * Test the fee structure for Bell Direct.
  * 
@@ -134,27 +131,9 @@ public class CmcMarketsFeeStructureTest {
 		verifyFee(37.5, fee);
 	}
 
-	@Test(expected = UnsupportedEquityClass.class)
-	public void equityClassFuture() {
-
-		feeStructure.cost(BigDecimal.ZERO, EquityClass.FUTURE, 0);
-	}
-
-	@Test(expected = UnsupportedEquityClass.class)
-	public void equityClassForex() {
-
-		feeStructure.cost(BigDecimal.ZERO, EquityClass.FOREX, 0);
-	}
-
-	@Test(expected = UnsupportedEquityClass.class)
-	public void equityClassMetal() {
-
-		feeStructure.cost(BigDecimal.ZERO, EquityClass.METAL, 0);
-	}
-
 	private BigDecimal calculateFee( final double tradeValue, final int inclusiveNumberOfTrades ) {
 
-		return feeStructure.cost(BigDecimal.valueOf(tradeValue), EquityClass.STOCK, inclusiveNumberOfTrades);
+		return feeStructure.cost(BigDecimal.valueOf(tradeValue), inclusiveNumberOfTrades);
 	}
 
 	private void verifyFee( final double expected, final BigDecimal fee ) {

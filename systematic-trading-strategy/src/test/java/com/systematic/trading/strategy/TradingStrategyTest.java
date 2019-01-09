@@ -45,7 +45,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.price.ClosingPrice;
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signal.model.DatedSignal;
@@ -67,7 +66,6 @@ import com.systematic.trading.strategy.exit.size.ExitSize;
 @RunWith(MockitoJUnitRunner.class)
 public class TradingStrategyTest {
 
-	private static final EquityClass TYPE = EquityClass.STOCK;
 	private static final int SCALE = 55;
 
 	@Mock
@@ -100,7 +98,7 @@ public class TradingStrategyTest {
 	@Before
 	public void setUp() {
 
-		strategy = new TradingStrategy(entry, entryPositionSizing, exit, exitPositionSizing, TYPE, SCALE);
+		strategy = new TradingStrategy(entry, entryPositionSizing, exit, exitPositionSizing, SCALE);
 
 		setUpTradingDayPrices();
 	}
@@ -239,8 +237,7 @@ public class TradingStrategyTest {
 
 	private void setUpFees( final double value ) {
 
-		when(fees.cost(any(BigDecimal.class), any(EquityClass.class), any(LocalDate.class)))
-		        .thenReturn(BigDecimal.valueOf(value));
+		when(fees.cost(any(BigDecimal.class), any(LocalDate.class))).thenReturn(BigDecimal.valueOf(value));
 	}
 
 	private void setUpExitUpdateAction() {
@@ -301,6 +298,6 @@ public class TradingStrategyTest {
 
 	private void verifyFeeDelegation( final double entrySizePosition ) {
 
-		verify(fees).cost(BigDecimal.valueOf(entrySizePosition), TYPE, LocalDate.now());
+		verify(fees).cost(BigDecimal.valueOf(entrySizePosition), LocalDate.now());
 	}
 }

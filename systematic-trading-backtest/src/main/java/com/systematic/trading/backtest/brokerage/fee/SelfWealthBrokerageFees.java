@@ -29,9 +29,7 @@ import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.NIN
 
 import java.math.BigDecimal;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
-import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
  * Fees for the SelfWealth online broker.
@@ -41,19 +39,8 @@ import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 public class SelfWealthBrokerageFees implements BrokerageTransactionFeeStructure {
 
 	@Override
-	public BigDecimal cost( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
+	public BigDecimal cost( final BigDecimal tradeValue, final int tradesThisMonth ) {
 
-		final BigDecimal brokerage;
-
-		switch (type) {
-			case BOND:
-			case STOCK:
-				brokerage = NINE_NINTY;
-				break;
-			default:
-				throw new UnsupportedEquityClass(type);
-		}
-
-		return brokerage;
+		return NINE_NINTY;
 	}
 }

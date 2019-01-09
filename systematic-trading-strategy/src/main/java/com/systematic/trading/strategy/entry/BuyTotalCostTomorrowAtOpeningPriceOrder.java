@@ -30,7 +30,6 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.simulation.brokerage.BrokerageTransaction;
 import com.systematic.trading.simulation.brokerage.BrokerageTransactionFee;
@@ -56,9 +55,6 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 	/** Scale and precision to apply to mathematical operations. */
 	private final MathContext mathContext;
 
-	/** The type of equity being traded. */
-	private final EquityClass type;
-
 	/** Date on which the order was created. */
 	private final LocalDate creationDate;
 
@@ -67,7 +63,6 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	public BuyTotalCostTomorrowAtOpeningPriceOrder(
 	        final BigDecimal targetTotalCost,
-	        final EquityClass type,
 	        final int equityScale,
 	        final LocalDate creationDate,
 	        final MathContext mathContext ) {
@@ -76,7 +71,6 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 		this.creationDate = creationDate;
 		this.mathContext = mathContext;
 		this.scale = equityScale;
-		this.type = type;
 	}
 
 	@Override
@@ -137,7 +131,7 @@ public class BuyTotalCostTomorrowAtOpeningPriceOrder implements EquityOrder {
 
 	private EquityOrderVolume orderVolume( final BrokerageTransactionFee fees, final TradingDayPrices todaysPrice ) {
 
-		final BigDecimal maximumTransactionCost = fees.cost(targetTotalCost, type, todaysPrice.date());
+		final BigDecimal maximumTransactionCost = fees.cost(targetTotalCost, todaysPrice.date());
 		final BigDecimal openingPrice = todaysPrice.openingPrice().price();
 		final BigDecimal numberOfEquities = targetTotalCost.subtract(maximumTransactionCost, mathContext)
 		        .divide(openingPrice, mathContext);

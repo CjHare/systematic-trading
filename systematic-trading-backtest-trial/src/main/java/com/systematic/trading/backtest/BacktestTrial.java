@@ -84,7 +84,6 @@ import com.systematic.trading.input.EquityApiLaunchArgumentFactory;
 import com.systematic.trading.input.LaunchArgument;
 import com.systematic.trading.input.LaunchArgumentKey;
 import com.systematic.trading.input.LaunchArgumentValidator;
-import com.systematic.trading.model.equity.EquityClass;
 
 /**
  * Setup specific behaviour for the Trial of back tests.
@@ -248,7 +247,7 @@ public class BacktestTrial {
 
 	private EquityConfiguration equity( final BacktestLaunchArguments launchArgs ) {
 
-		return new EquityConfiguration(launchArgs.tickerDataset(), launchArgs.tickerSymbol(), EquityClass.STOCK);
+		return new EquityConfiguration(launchArgs.tickerDataset(), launchArgs.tickerSymbol());
 	}
 
 	private void closePool( final ExecutorService pool ) {

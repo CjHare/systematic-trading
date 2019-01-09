@@ -30,9 +30,7 @@ import static com.systematic.trading.backtest.brokerage.fee.BrokerageFeeUtil.EIG
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import com.systematic.trading.model.equity.EquityClass;
 import com.systematic.trading.simulation.brokerage.fee.BrokerageTransactionFeeStructure;
-import com.systematic.trading.simulation.exception.UnsupportedEquityClass;
 
 /**
  * Spread for the online Vanguard retail managed fund.
@@ -45,19 +43,8 @@ public class VanguardBrokerageFees implements BrokerageTransactionFeeStructure {
 	private static final MathContext MATH_CONTEXT = MathContext.DECIMAL32;
 
 	@Override
-	public BigDecimal cost( final BigDecimal tradeValue, final EquityClass type, final int tradesThisMonth ) {
+	public BigDecimal cost( final BigDecimal tradeValue, final int tradesThisMonth ) {
 
-		final BigDecimal brokerage;
-
-		switch (type) {
-			case BOND:
-			case STOCK:
-				brokerage = tradeValue.multiply(EIGHT_BASIS_POINTS, MATH_CONTEXT);
-				break;
-			default:
-				throw new UnsupportedEquityClass(type);
-		}
-
-		return brokerage;
+		return tradeValue.multiply(EIGHT_BASIS_POINTS, MATH_CONTEXT);
 	}
 }
