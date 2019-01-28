@@ -46,7 +46,8 @@ import com.systematic.trading.model.price.TradingDayPrices;
 import com.systematic.trading.signals.data.api.alpha.vantage.converter.AlphaVantageResponseConverter;
 import com.systematic.trading.signals.data.api.alpha.vantage.dao.AlphaVantageApiDao;
 import com.systematic.trading.signals.data.api.alpha.vantage.dao.AlphaVantageApiFormatter;
-import com.systematic.trading.signals.data.api.alpha.vantage.resource.AlphaVantageResponseResource;
+import com.systematic.trading.signals.data.api.alpha.vantage.resource.DigitalCurrencyDailyAudResource;
+import com.systematic.trading.signals.data.api.alpha.vantage.resource.ErrorPossibleResponseResource;
 
 /**
  * HttpAlphaVantageApiDao retrieves time series data from the Alpha Vantage API.
@@ -107,14 +108,20 @@ public class HttpAlphaVantageApiDao implements AlphaVantageApiDao {
 
 		final WebTarget url = apiFormatter.url(root, tickerDataset, tickerSymbol, apiKey);
 		final Response response = get(url, throttler);
-		final AlphaVantageResponseResource resource = response.readEntity(AlphaVantageResponseResource.class);
+
+		final DigitalCurrencyDailyAudResource resource = response.readEntity(DigitalCurrencyDailyAudResource.class);
+		// TODO Or this could be
+		// final AlphaVantageTimeSeriesDailyResponseResource resource =
+		// response.readEntity(AlphaVantageTimeSeriesDailyResponseResource.class);
 
 		errorCheck(url, resource);
 
 		return converter.convert(tickerSymbol, startDateInclusive, endDateExclusive, resource.dataset());
+		//TODO need or this could be
+		// return converter.convert(tickerSymbol, startDateInclusive, endDateExclusive, resource.dataset());
 	}
 
-	private void errorCheck( final WebTarget url, final AlphaVantageResponseResource resource )
+	private void errorCheck( final WebTarget url, final ErrorPossibleResponseResource resource )
 	        throws CannotRetrieveDataException {
 
 		final Optional<String> error = resource.error();

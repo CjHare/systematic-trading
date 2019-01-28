@@ -32,62 +32,63 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Resource for a trading day object, the leaf return type from AlphaVantage API.
+ * Resource for a trading day object, the leaf return type from AlphaVantage API in Australian
+ * dollars..
  * 
  * @author CJ Hare
  */
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TradingDayResource {
+public class DigitalCurrencyDailyAudResource {
 
 	private String open;
 	private String high;
 	private String low;
 	private String close;
 
-	@JsonGetter("1. open")
+	@JsonGetter("1a. open (AUD)")
 	public String open() {
 
 		return open;
 	}
 
-	@JsonSetter("1. open")
+	@JsonSetter("1a. open (AUD)")
 	public void open( final String open ) {
 
 		this.open = open;
 	}
 
-	@JsonGetter("2. high")
+	@JsonGetter("2a. high (AUD)")
 	public String high() {
 
 		return high;
 	}
 
-	@JsonSetter("2. high")
+	@JsonSetter("2a. high (AUD)")
 	public void high( final String high ) {
 
 		this.high = high;
 	}
 
-	@JsonGetter("3. low")
+	@JsonGetter("3a. low (AUD)")
 	public String low() {
 
 		return low;
 	}
 
-	@JsonSetter("3. low")
+	@JsonSetter("3a. low (AUD)")
 	public void low( final String low ) {
 
 		this.low = low;
 	}
 
-	@JsonGetter("4. close")
+	@JsonGetter("4a. close (AUD)")
 	public String close() {
 
 		return close;
 	}
 
-	@JsonSetter("4. close")
+	@JsonSetter("4a. close (AUD)")
 	public void close( final String close ) {
 
 		this.close = close;

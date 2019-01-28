@@ -27,7 +27,6 @@ package com.systematic.trading.signals.data.api.alpha.vantage.resource;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -38,33 +37,20 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  * @author CJ Hare
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AlphaVantageResponseResource {
-
-	/** Optional error message, only present on failure */
-	private Optional<String> error = Optional.empty();
+public class AlphaVantageTimeSeriesDailyResponseResource extends ErrorPossibleResponseResource {
 
 	/** Date keyed price data, on error will be empty. */
-	private Map<String, TradingDayResource> dataset = new HashMap<>();
+	private Map<String, TimeSeriesDailyResource> dataset = new HashMap<>();
 
-	public Map<String, TradingDayResource> dataset() {
+	public Map<String, TimeSeriesDailyResource> dataset() {
 
 		return dataset;
 	}
 
 	@JsonSetter("Time Series (Daily)")
-	public void dataset( final Map<String, TradingDayResource> dataset ) {
+	public void dataset( final Map<String, TimeSeriesDailyResource> dataset ) {
 
 		this.dataset = dataset;
 	}
 
-	public Optional<String> error() {
-
-		return error;
-	}
-
-	@JsonSetter("Error Message")
-	public void error( final String error ) {
-
-		this.error = Optional.of(error);
-	}
 }
